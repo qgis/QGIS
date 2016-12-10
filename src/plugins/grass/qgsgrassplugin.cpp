@@ -39,7 +39,6 @@
 #include "qgsproviderregistry.h"
 #include "qgsrendererregistry.h"
 #include "qgsvectorlayer.h"
-#include "qgsmaplayerregistry.h"
 
 #include <QAction>
 #include <QFileInfo>
@@ -280,7 +279,7 @@ void QgsGrassPlugin::initGui()
   connect( QgsGrass::instance(), SIGNAL( newLayer( QString, QString ) ), SLOT( onNewLayer( QString, QString ) ) );
 
   // Connect start/stop editing
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( onLayerWasAdded( QgsMapLayer* ) ) );
+  connect( QgsProject::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( onLayerWasAdded( QgsMapLayer* ) ) );
 
   connect( qGisInterface->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
            SLOT( onCurrentLayerChanged( QgsMapLayer* ) ) );
@@ -456,7 +455,7 @@ void QgsGrassPlugin::onFieldsChanged()
   QString uri = grassProvider->dataSourceUri();
   uri.remove( QRegExp( "[^_]*$" ) );
   QgsDebugMsg( "uri = " + uri );
-  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
   {
     if ( !layer || layer->type() != QgsMapLayer::VectorLayer )
     {
@@ -826,12 +825,12 @@ void QgsGrassPlugin::unload()
   disconnect( QgsGrass::instance(), SIGNAL( regionPenChanged() ), this, SLOT( displayRegion() ) );
   disconnect( QgsGrass::instance(), SIGNAL( newLayer( QString, QString ) ), this, SLOT( onNewLayer( QString, QString ) ) );
 
-  disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( onLayerWasAdded( QgsMapLayer* ) ) );
+  disconnect( QgsProject::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( onLayerWasAdded( QgsMapLayer* ) ) );
 
   disconnect( qGisInterface->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
               this, SLOT( onCurrentLayerChanged( QgsMapLayer* ) ) );
 
-  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
   {
     if ( !layer || layer->type() != QgsMapLayer::VectorLayer )
     {

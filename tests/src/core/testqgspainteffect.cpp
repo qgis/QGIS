@@ -32,7 +32,7 @@
 #include "qgsmapsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgssymbol.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsfillsymbollayer.h"
@@ -702,7 +702,7 @@ void TestQgsPaintEffect::layerEffectPolygon()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   polysLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << polysLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << polysLayer );
 
   QgsMapSettings ms;
   QgsSimpleFillSymbolLayer* fill = new QgsSimpleFillSymbolLayer;
@@ -733,7 +733,7 @@ void TestQgsPaintEffect::layerEffectLine()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   lineLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QgsMapSettings ms;
   QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
@@ -762,7 +762,7 @@ void TestQgsPaintEffect::layerEffectMarker()
   QFileInfo pointFileInfo( pointFileName );
   QgsVectorLayer* pointLayer = new QgsVectorLayer( pointFileInfo.filePath(),
       pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << pointLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << pointLayer );
 
   QgsMapSettings ms;
   QgsSimpleMarkerSymbolLayer* marker = new QgsSimpleMarkerSymbolLayer;
@@ -793,7 +793,7 @@ void TestQgsPaintEffect::vectorLayerEffect()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   polysLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << polysLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << polysLayer );
 
   QgsMapSettings ms;
   QgsSimpleFillSymbolLayer* fill = new QgsSimpleFillSymbolLayer;
@@ -828,7 +828,7 @@ void TestQgsPaintEffect::mapUnits()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   lineLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QgsMapSettings ms;
   QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
@@ -864,7 +864,7 @@ void TestQgsPaintEffect::composer()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   lineLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QgsMapSettings ms;
   QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;

@@ -24,6 +24,7 @@
 class QDomDocument;
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
+class QgsProject;
 
 /**
   \class QgsMapThemeCollection
@@ -112,7 +113,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         friend class QgsMapThemeCollection;
     };
 
-    QgsMapThemeCollection();
+    QgsMapThemeCollection( QgsProject* project );
 
     /**
      * Returns whether a map theme with a matching name exists.
@@ -224,6 +225,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
     typedef QMap<QString, MapThemeRecord> MapThemeRecordMap;
     MapThemeRecordMap mMapThemes;
+    //! project used to retrieve layers from layer IDs
+    QgsProject* mProject;
 };
 
 

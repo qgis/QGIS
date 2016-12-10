@@ -16,7 +16,7 @@
 
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgssnappingutils.h"
@@ -115,7 +115,7 @@ void QgsMapCanvasTracer::configure()
     case QgsSnappingConfig::AllLayers:
       Q_FOREACH ( const QString& layerId, visibleLayerIds )
       {
-        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerId ) );
         if ( vl )
           layers << vl;
       }

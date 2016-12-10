@@ -24,7 +24,6 @@
 #include <qgsvectordataprovider.h>
 #include <qgsapplication.h>
 #include <qgsvectorlayerjoinbuffer.h>
-#include <qgsmaplayerregistry.h>
 #include <qgslayerdefinition.h>
 #include <qgsproject.h>
 
@@ -156,7 +155,7 @@ void TestVectorLayerJoinBuffer::initTestCase()
     QgsVectorLayer* vl = mLayers.value( QPair<QString, QString>( QStringLiteral( "A" ), provider ) );
     vl->dataProvider()->addFeatures( QgsFeatureList() << fA1 << fA2 );
     QVERIFY( vl->featureCount() == 2 );
-    QgsMapLayerRegistry::instance()->addMapLayer( vl );
+    QgsProject::instance()->addMapLayer( vl );
   }
 
   Q_FOREACH ( const QString provider, mProviders )
@@ -164,7 +163,7 @@ void TestVectorLayerJoinBuffer::initTestCase()
     QgsVectorLayer* vl = mLayers.value( QPair<QString, QString>( QStringLiteral( "B" ), provider ) );
     vl->dataProvider()->addFeatures( QgsFeatureList() << fB1 << fB2 );
     QVERIFY( vl->featureCount() == 2 );
-    QgsMapLayerRegistry::instance()->addMapLayer( vl );
+    QgsProject::instance()->addMapLayer( vl );
   }
 
   Q_FOREACH ( const QString provider, mProviders )
@@ -172,7 +171,7 @@ void TestVectorLayerJoinBuffer::initTestCase()
     QgsVectorLayer* vl = mLayers.value( QPair<QString, QString>( QStringLiteral( "C" ), provider ) );
     vl->dataProvider()->addFeatures( QgsFeatureList() << fC1 );
     QVERIFY( vl->featureCount() == 1 );
-    QgsMapLayerRegistry::instance()->addMapLayer( vl );
+    QgsProject::instance()->addMapLayer( vl );
   }
 
   Q_FOREACH ( const QString provider, mProviders )
@@ -180,10 +179,10 @@ void TestVectorLayerJoinBuffer::initTestCase()
     QgsVectorLayer* vl = mLayers.value( QPair<QString, QString>( QStringLiteral( "X" ), provider ) );
     vl->dataProvider()->addFeatures( QgsFeatureList() << fX1 );
     QVERIFY( vl->featureCount() == 1 );
-    QgsMapLayerRegistry::instance()->addMapLayer( vl );
+    QgsProject::instance()->addMapLayer( vl );
   }
 
-  QVERIFY( QgsMapLayerRegistry::instance()->mapLayers().count() == 4*mProviders.count() );
+  QVERIFY( QgsProject::instance()->mapLayers().count() == 4*mProviders.count() );
 }
 
 void TestVectorLayerJoinBuffer::init()
@@ -376,7 +375,7 @@ void TestVectorLayerJoinBuffer::testJoinSubset()
   QFETCH( bool, memoryCache );
   QFETCH( QString, provider );
 
-  QVERIFY( QgsMapLayerRegistry::instance()->mapLayers().count() == 4*mProviders.count() );
+  QVERIFY( QgsProject::instance()->mapLayers().count() == 4*mProviders.count() );
 
   QgsVectorLayer* vlA = mLayers.value( QPair<QString, QString>( QStringLiteral( "A" ), provider ) );
   QgsVectorLayer* vlX = mLayers.value( QPair<QString, QString>( QStringLiteral( "X" ), provider ) );
@@ -475,16 +474,16 @@ void TestVectorLayerJoinBuffer::testJoinLayerDefinitionFile()
 {
   bool r;
 
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsProject::instance()->removeAllMapLayers();
 
   // Create two layers
   QgsVectorLayer* layerA = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=key:integer&field=value:double&index=yes" ), QStringLiteral( "layerA" ), QStringLiteral( "memory" ) );
   QVERIFY( layerA );
-  QgsMapLayerRegistry::instance()->addMapLayer( layerA );
+  QgsProject::instance()->addMapLayer( layerA );
 
   QgsVectorLayer* layerB = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer&index=yes" ), QStringLiteral( "layerB" ), QStringLiteral( "memory" ) );
   QVERIFY( layerB );
-  QgsMapLayerRegistry::instance()->addMapLayer( layerB );
+  QgsProject::instance()->addMapLayer( layerB );
 
   // Create vector join
   QgsVectorJoinInfo joinInfo;
@@ -503,14 +502,14 @@ void TestVectorLayerJoinBuffer::testJoinLayerDefinitionFile()
   QVERIFY2( r, errorMessage.toUtf8().constData() );
 
   // Clear
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsProject::instance()->removeAllMapLayers();
 
   // Load QLR
   r = QgsLayerDefinition::loadLayerDefinition( qlrDoc, QgsProject::instance()->layerTreeRoot(), errorMessage );
   QVERIFY2( r, errorMessage.toUtf8().constData() );
 
   // Get layer
-  QList<QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayersByName( QStringLiteral( "layerB" ) );
+  QList<QgsMapLayer*> mapLayers = QgsProject::instance()->mapLayersByName( QStringLiteral( "layerB" ) );
   QCOMPARE( mapLayers.count(), 1 );
 
   QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( mapLayers.value( 0 ) );
@@ -538,8 +537,8 @@ void TestVectorLayerJoinBuffer::testCacheUpdate()
   QVERIFY( vlA->isValid() );
   QgsVectorLayer* vlB = new QgsVectorLayer( QStringLiteral( "Point?field=id_b:integer&field=value_b" ), QStringLiteral( "cacheB" ), QStringLiteral( "memory" ) );
   QVERIFY( vlB->isValid() );
-  QgsMapLayerRegistry::instance()->addMapLayer( vlA );
-  QgsMapLayerRegistry::instance()->addMapLayer( vlB );
+  QgsProject::instance()->addMapLayer( vlA );
+  QgsProject::instance()->addMapLayer( vlB );
 
   QgsFeature fA1( vlA->dataProvider()->fields(), 1 );
   fA1.setAttribute( QStringLiteral( "id_a" ), 1 );
@@ -600,8 +599,8 @@ void TestVectorLayerJoinBuffer::testCacheUpdate()
   QCOMPARE( fA2.attribute( "id_a" ).toInt(), 3 );
   QCOMPARE( fA2.attribute( "B_value_b" ).toInt(), 12 );
 
-  QgsMapLayerRegistry::instance()->removeMapLayer( vlA );
-  QgsMapLayerRegistry::instance()->removeMapLayer( vlB );
+  QgsProject::instance()->removeMapLayer( vlA );
+  QgsProject::instance()->removeMapLayer( vlB );
 }
 
 

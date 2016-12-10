@@ -20,7 +20,6 @@
 #include "qgscomposermap.h"
 #include "qgscomposerutils.h"
 #include "qgsfeatureiterator.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgscomposerframe.h"
 #include "qgsatlascomposition.h"
@@ -63,7 +62,7 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* compos
     , mFeatureFilter( QLatin1String( "" ) )
 {
   //set first vector layer from layer registry as default one
-  QMap<QString, QgsMapLayer*> layerMap =  QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> layerMap =  QgsProject::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::const_iterator mapIt = layerMap.constBegin();
   for ( ; mapIt != layerMap.constEnd(); ++mapIt )
   {
@@ -80,7 +79,7 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* compos
     //listen for modifications to layer and refresh table when they occur
     connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( refreshAttributes() ) );
   }
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
+  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
 
   if ( mComposition )
   {
@@ -736,7 +735,7 @@ bool QgsComposerAttributeTableV2::readXml( const QDomElement& itemElem, const QD
   }
   else
   {
-    QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    QgsMapLayer* ml = QgsProject::instance()->mapLayer( layerId );
     if ( ml )
     {
       mVectorLayer = dynamic_cast<QgsVectorLayer*>( ml );

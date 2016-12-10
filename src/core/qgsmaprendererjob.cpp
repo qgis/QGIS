@@ -24,7 +24,7 @@
 #include "qgslogger.h"
 #include "qgsrendercontext.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaprenderercache.h"
@@ -191,7 +191,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
 
     QgsDebugMsgLevel( "Rendering at layer item " + layerId, 2 );
 
-    QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    QgsMapLayer *ml = QgsProject::instance()->mapLayer( layerId );
 
     if ( !ml )
     {

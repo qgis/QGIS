@@ -18,7 +18,7 @@ import qgis  # NOQA
 
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QFileInfo, QDate, QDateTime
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsMapSettings, QgsComposition, QgsComposerLabel, QgsFeatureRequest, QgsFeature, QgsExpression
+from qgis.core import QgsVectorLayer, QgsProject, QgsMapSettings, QgsComposition, QgsComposerLabel, QgsFeatureRequest, QgsFeature, QgsExpression
 from utilities import unitTestDataPath
 
 start_app()
@@ -31,7 +31,7 @@ class TestQgsComposerLabel(unittest.TestCase):
         vectorFileInfo = QFileInfo(TEST_DATA_DIR + "/france_parts.shp")
         mVectorLayer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
 
-        QgsMapLayerRegistry.instance().addMapLayers([mVectorLayer])
+        QgsProject.instance().addMapLayers([mVectorLayer])
 
         # create composition with composer map
         mapSettings = QgsMapSettings()

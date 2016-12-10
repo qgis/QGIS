@@ -22,7 +22,7 @@
 
 #include "qgsmessagelog.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsxmlutils.h"
 #include "qgscsexception.h"
 #include "qgsgeometry.h"
@@ -535,7 +535,6 @@ QgsRectangle QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRe
 QgsRectangle QgsMapSettings::fullExtent() const
 {
   QgsDebugMsg( "called." );
-  QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
 
   // reset the map canvas extent since the extent may now be smaller
   // We can't use a constructor since QgsRectangle normalizes the rectangle upon construction
@@ -548,7 +547,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
   QgsDebugMsg( QString( "Layer count: %1" ).arg( mLayers.count() ) );
   while ( it != mLayers.end() )
   {
-    QgsMapLayer * lyr = registry->mapLayer( *it );
+    QgsMapLayer * lyr = QgsProject::instance()->mapLayer( *it );
     if ( !lyr )
     {
       QgsDebugMsg( QString( "WARNING: layer '%1' not found in map layer registry!" ).arg( *it ) );

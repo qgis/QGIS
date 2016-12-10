@@ -29,7 +29,6 @@
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmaptoolemitpoint.h"
 #include "qgsmaptopixel.h"

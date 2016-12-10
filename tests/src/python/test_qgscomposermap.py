@@ -25,7 +25,7 @@ from qgis.core import (QgsComposerMap,
                        QgsRasterLayer,
                        QgsComposition,
                        QgsMapSettings,
-                       QgsMapLayerRegistry,
+                       QgsProject,
                        QgsMultiBandColorRenderer,
                        )
 
@@ -51,7 +51,7 @@ class TestQgsComposerMap(unittest.TestCase):
         mRasterLayer.setRenderer(rasterRenderer)
         #pipe = mRasterLayer.pipe()
         #assert pipe.set(rasterRenderer), 'Cannot set pipe renderer'
-        QgsMapLayerRegistry.instance().addMapLayers([mRasterLayer])
+        QgsProject.instance().addMapLayers([mRasterLayer])
 
         # create composition with composer map
         self.mMapSettings = QgsMapSettings()

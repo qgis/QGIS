@@ -21,7 +21,6 @@
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsvectorlayerjoinbuffer.h>
-#include <qgsmaplayerregistry.h>
 #include <qgsfieldexpressionwidget.h>
 #include <qgsproject.h>
 
@@ -74,12 +73,12 @@ void TestQgsFieldExpressionWidget::initTestCase()
   mLayerA = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerA->isValid() );
   QVERIFY( mLayerA->fields().count() == 1 );
-  QgsMapLayerRegistry::instance()->addMapLayer( mLayerA );
+  QgsProject::instance()->addMapLayer( mLayerA );
   // LAYER B //
   mLayerB = new QgsVectorLayer( QStringLiteral( "Point?field=id_b:integer&field=value_b" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerB->isValid() );
   QVERIFY( mLayerB->fields().count() == 2 );
-  QgsMapLayerRegistry::instance()->addMapLayer( mLayerB );
+  QgsProject::instance()->addMapLayer( mLayerB );
 
   // init widget
   mWidget = new QgsFieldExpressionWidget();
@@ -139,7 +138,7 @@ void TestQgsFieldExpressionWidget::testRemoveJoin()
 void TestQgsFieldExpressionWidget::asExpression()
 {
   QgsVectorLayer* layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int&field=fld2:int&field=fld3:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
-  QgsMapLayerRegistry::instance()->addMapLayer( layer );
+  QgsProject::instance()->addMapLayer( layer );
 
   QScopedPointer< QgsFieldExpressionWidget > widget( new QgsFieldExpressionWidget() );
   widget->setLayer( layer );
@@ -160,13 +159,13 @@ void TestQgsFieldExpressionWidget::asExpression()
   widget->setField( QStringLiteral( "fld3" ) );
   QCOMPARE( widget->asExpression(), QString( "\"fld3\"" ) );
 
-  QgsMapLayerRegistry::instance()->removeMapLayer( layer );
+  QgsProject::instance()->removeMapLayer( layer );
 }
 
 void TestQgsFieldExpressionWidget::testIsValid()
 {
   QgsVectorLayer* layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int&field=name%20with%20space:string" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
-  QgsMapLayerRegistry::instance()->addMapLayer( layer );
+  QgsProject::instance()->addMapLayer( layer );
 
   QScopedPointer< QgsFieldExpressionWidget > widget( new QgsFieldExpressionWidget() );
   widget->setLayer( layer );
@@ -217,13 +216,13 @@ void TestQgsFieldExpressionWidget::testIsValid()
   QCOMPARE( spy.last().at( 0 ).toString(), QString( "2 *" ) );
   QVERIFY( !spy.last().at( 1 ).toBool() );
 
-  QgsMapLayerRegistry::instance()->removeMapLayer( layer );
+  QgsProject::instance()->removeMapLayer( layer );
 }
 
 void TestQgsFieldExpressionWidget::testFilters()
 {
   QgsVectorLayer* layer = new QgsVectorLayer( QStringLiteral( "point?field=intfld:int&field=stringfld:string&field=string2fld:string&field=longfld:long&field=doublefld:double&field=datefld:date&field=timefld:time&field=datetimefld:datetime" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
-  QgsMapLayerRegistry::instance()->addMapLayer( layer );
+  QgsProject::instance()->addMapLayer( layer );
 
   QScopedPointer< QgsFieldExpressionWidget > widget( new QgsFieldExpressionWidget() );
   widget->setLayer( layer );
@@ -270,7 +269,7 @@ void TestQgsFieldExpressionWidget::testFilters()
   QCOMPARE( widget->mCombo->count(), 1 );
   QCOMPARE( widget->mCombo->itemText( 0 ), QString( "timefld" ) );
 
-  QgsMapLayerRegistry::instance()->removeMapLayer( layer );
+  QgsProject::instance()->removeMapLayer( layer );
 }
 
 QTEST_MAIN( TestQgsFieldExpressionWidget )

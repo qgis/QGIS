@@ -17,7 +17,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvirtuallayerdefinitionutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvirtuallayerdefinition.h"
 
 QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVectorLayer* layer )
@@ -56,7 +56,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
   Q_FOREACH ( const QgsVectorJoinInfo& join, layer->vectorJoins() )
   {
     QString joinName = QStringLiteral( "j%1" ).arg( ++joinIdx );
-    QgsVectorLayer* joinedLayer = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join.joinLayerId ) );
+    QgsVectorLayer* joinedLayer = static_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( join.joinLayerId ) );
     if ( !joinedLayer )
       continue;
     QString prefix = join.prefix.isEmpty() ? joinedLayer->name() + "_" : join.prefix;

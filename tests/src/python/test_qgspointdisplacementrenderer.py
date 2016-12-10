@@ -32,7 +32,7 @@ from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
 
 from qgis.core import (QgsVectorLayer,
-                       QgsMapLayerRegistry,
+                       QgsProject,
                        QgsRectangle,
                        QgsMultiRenderChecker,
                        QgsPointDisplacementRenderer,
@@ -59,7 +59,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
     def setUp(self):
         myShpFile = os.path.join(TEST_DATA_DIR, 'points.shp')
         self.layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayer(self.layer)
+        QgsProject.instance().addMapLayer(self.layer)
 
         self.renderer = QgsPointDisplacementRenderer()
         sym1 = QgsMarkerSymbol.createSimple({'color': '#ff00ff', 'size': '3', 'outline_style': 'no'})
@@ -79,7 +79,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.mapsettings.setLayers(rendered_layers)
 
     def tearDown(self):
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
     def _setProperties(self, r):
         """ set properties for a renderer for testing with _checkProperties"""

@@ -20,7 +20,6 @@
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
@@ -731,7 +730,7 @@ int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format 
 
     QgsMessageLog::logMessage( mErrors.join( QStringLiteral( "\n" ) ) );
 
-    QgsMapLayerRegistry::instance()->removeAllMapLayers();
+    QgsProject::instance()->removeAllMapLayers();
     if ( featureCounter <= startIndex )
       startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
     endGetFeature( request, format );
@@ -1202,7 +1201,7 @@ int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format 
 
   }
 
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsProject::instance()->removeAllMapLayers();
   if ( featureCounter <= startIndex )
     startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
   endGetFeature( request, format );

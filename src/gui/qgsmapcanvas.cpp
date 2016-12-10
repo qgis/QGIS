@@ -47,7 +47,6 @@ email                : sherman at mrcc.com
 #include "qgsmapcanvasmap.h"
 #include "qgsmapcanvassnappingutils.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaptoolpan.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptopixel.h"
@@ -260,7 +259,7 @@ QgsMapLayer* QgsMapCanvas::layer( int index )
 {
   const QStringList& layers = mapSettings().layers();
   if ( index >= 0 && index < ( int ) layers.size() )
-    return QgsMapLayerRegistry::instance()->mapLayer( layers[index] );
+    return QgsProject::instance()->mapLayer( layers[index] );
   else
     return nullptr;
 }
@@ -596,7 +595,7 @@ void QgsMapCanvas::refreshMap()
   QStringList layersForGeometryCache;
   Q_FOREACH ( const QString& id, mSettings.layers() )
   {
-    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) ) )
+    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( id ) ) )
     {
       if ( vl->isEditable() )
         layersForGeometryCache << id;
@@ -1644,7 +1643,7 @@ QList<QgsMapLayer*> QgsMapCanvas::layers() const
   QList<QgsMapLayer*> lst;
   Q_FOREACH ( const QString& layerID, mapSettings().layers() )
   {
-    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
+    QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerID );
     if ( layer )
       lst.append( layer );
   }
@@ -1752,7 +1751,7 @@ void QgsMapCanvas::updateDatumTransformEntries()
   QString destAuthId = mSettings.destinationCrs().authid();
   Q_FOREACH ( const QString& layerID, mSettings.layers() )
   {
-    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
+    QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerID );
     if ( !layer )
       continue;
 

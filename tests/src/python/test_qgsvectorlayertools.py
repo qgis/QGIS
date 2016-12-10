@@ -15,7 +15,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeatureRequest, QgsVectorLayer, QgsMapLayerRegistry, QgsVectorLayerTools
+from qgis.core import QgsFeatureRequest, QgsVectorLayer, QgsProject, QgsVectorLayerTools
 from qgis.testing import start_app, unittest
 
 import os
@@ -55,7 +55,7 @@ class TestQgsVectorLayerTools(unittest.TestCase):
         # Create test layer
         cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."someData" (geom) sql=', 'layer', 'postgres')
 
-        QgsMapLayerRegistry.instance().addMapLayer(cls.vl)
+        QgsProject.instance().addMapLayer(cls.vl)
 
         cls.vltools = SubQgsVectorLayerTools()
 

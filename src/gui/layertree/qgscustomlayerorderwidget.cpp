@@ -24,7 +24,7 @@
 #include "qgslayertreemapcanvasbridge.h"
 
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 
 
 
@@ -111,14 +111,14 @@ QVariant CustomLayerOrderModel::data( const QModelIndex& index, int role ) const
 
   if ( role == Qt::DisplayRole )
   {
-    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( id );
+    QgsMapLayer* layer = QgsProject::instance()->mapLayer( id );
     if ( layer )
       return layer->name();
   }
 
   if ( role == Qt::UserRole + 1 )
   {
-    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( id );
+    QgsMapLayer* layer = QgsProject::instance()->mapLayer( id );
     if ( layer )
       return layer->id();
   }

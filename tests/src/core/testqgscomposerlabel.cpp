@@ -18,7 +18,6 @@
 #include "qgsapplication.h"
 #include "qgscomposition.h"
 #include "qgscomposerlabel.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsmultirenderchecker.h"
@@ -77,7 +76,7 @@ void TestQgsComposerLabel::initTestCase()
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      QStringLiteral( "ogr" ) );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   //create composition with composer map
   mMapSettings->setLayers( QStringList() << mVectorLayer->id() );

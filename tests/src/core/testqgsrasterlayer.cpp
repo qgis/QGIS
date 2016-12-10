@@ -31,7 +31,7 @@
 #include <qgsrasterpyramid.h>
 #include <qgsrasterbandstats.h>
 #include <qgsrasteridentifyresult.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 #include <qgsapplication.h>
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
@@ -175,7 +175,7 @@ void TestQgsRasterLayer::initTestCase()
       geoJp2RasterFileInfo.completeBaseName() );
 
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpRasterLayer
     << mpLandsatRasterLayer
     << mpFloat32RasterLayer
@@ -583,9 +583,9 @@ void TestQgsRasterLayer::registry()
       myRasterFileInfo.completeBaseName() );
   QVERIFY( mypLayer->isValid() );
 
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mypLayer, false );
-  QgsMapLayerRegistry::instance()->removeMapLayers(
+  QgsProject::instance()->removeMapLayers(
     QStringList() << mypLayer->id() );
 }
 

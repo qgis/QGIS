@@ -20,7 +20,6 @@
 #include "qgsmultirenderchecker.h"
 #include "qgscomposermap.h"
 #include "qgscomposerscalebar.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
@@ -87,7 +86,7 @@ void TestQgsComposerScaleBar::initTestCase()
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
   mRasterLayer->setRenderer( rasterRenderer );
 
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
   //create composition with composer map
   mMapSettings->setLayers( QStringList() << mRasterLayer->id() );

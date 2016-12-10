@@ -22,7 +22,7 @@
 
 // Qgis includes
 #include <qgsvectorlayer.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 #include <qgsproviderregistry.h>
 #include <qgsvectordataprovider.h>
 
@@ -50,7 +50,7 @@ RgExportDlg::RgExportDlg( QWidget* parent, Qt::WindowFlags fl )
   //fill list of layers
   mcbLayers->insertItem( 0, tr( "New temporary layer" ), QVariant( "-1" ) );
 
-  QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> mapLayers = QgsProject::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::iterator layer_it = mapLayers.begin();
 
   for ( ; layer_it != mapLayers.end(); ++layer_it )
@@ -90,12 +90,12 @@ QgsVectorLayer* RgExportDlg::mapLayer() const
     myLayer->updateFields();
     QList<QgsMapLayer *> myList;
     myList << myLayer;
-    QgsMapLayerRegistry::instance()->addMapLayers( myList );
+    QgsProject::instance()->addMapLayers( myList );
   }
   else
   {
     // return selected layer
-    myLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+    myLayer = dynamic_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerId ) );
   }
 
   return myLayer;

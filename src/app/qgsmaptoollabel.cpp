@@ -20,7 +20,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
@@ -679,7 +679,7 @@ QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition& p )
     : valid( false )
     , pos( p )
 {
-  layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( pos.layerID ) );
+  layer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( pos.layerID ) );
   if ( layer && layer->labeling() )
   {
     settings = layer->labeling()->settings( layer, pos.providerID );

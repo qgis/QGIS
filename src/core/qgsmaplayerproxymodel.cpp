@@ -16,7 +16,7 @@
 #include "qgsmaplayerproxymodel.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
@@ -57,7 +57,7 @@ void QgsMapLayerProxyModel::setExceptedLayerIds( const QStringList& ids )
 
   Q_FOREACH ( const QString& id, ids )
   {
-    QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( id );
+    QgsMapLayer* l = QgsProject::instance()->mapLayer( id );
     if ( l )
       mExceptList << l;
   }

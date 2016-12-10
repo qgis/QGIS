@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvaluerelationconfigdlg.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
 
@@ -55,7 +55,7 @@ QgsEditorWidgetConfig QgsValueRelationConfigDlg::config()
 
 void QgsValueRelationConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
 {
-  QgsVectorLayer* lyr = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( config.value( QStringLiteral( "Layer" ) ).toString() ) );
+  QgsVectorLayer* lyr = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( config.value( QStringLiteral( "Layer" ) ).toString() ) );
   mLayerName->setLayer( lyr );
   mKeyColumn->setField( config.value( QStringLiteral( "Key" ) ).toString() );
   mValueColumn->setField( config.value( QStringLiteral( "Value" ) ).toString() );

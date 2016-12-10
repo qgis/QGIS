@@ -250,6 +250,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
   - removeLegendLayerAction() moved to QgisInterface::removeCustomActionForLayerType()
 - QgsLegendModel was removed.
 - QgsMapCanvasMap. It is an internal class used by map canvas.
+- QgsMapLayerRegistry. Its functionality has been moved to QgsProject.
 - QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.
 - QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.
 - QgsRendererV2DataDefinedMenus was removed. Use QgsDataDefinedButton instead.

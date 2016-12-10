@@ -23,7 +23,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 
@@ -872,9 +872,9 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
 
   lbl->setBuddy( mLayerPassword );
 
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ),
+  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ),
            this, SLOT( updateQgisLayers() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ),
+  connect( QgsProject::instance(), SIGNAL( layersRemoved( QStringList ) ),
            this, SLOT( updateQgisLayers() ) );
 
   // Fill in QGIS layers
@@ -899,7 +899,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
     mLayerComboBox->addItem( tr( "Select a layer" ), QVariant() );
   }
 
-  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
   {
     if ( !layer ) continue;
 
@@ -1263,8 +1263,8 @@ QgsGrassModuleSelection::QgsGrassModuleSelection(
   connect( mModeComboBox, SIGNAL( currentIndexChanged( int ) ), SLOT( onModeChanged() ) );
   l->addWidget( mModeComboBox );
 
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ), SLOT( onLayerChanged() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ), SLOT( onLayerChanged() ) );
+  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ), SLOT( onLayerChanged() ) );
+  connect( QgsProject::instance(), SIGNAL( layersRemoved( QStringList ) ), SLOT( onLayerChanged() ) );
 
   // Fill in layer current fields
   onLayerChanged();
@@ -1280,7 +1280,7 @@ void QgsGrassModuleSelection::onLayerChanged()
 
   QStringList layerIds;
   // add new layers matching selected input layer if not yet present
-  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
   {
     QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vectorLayer && vectorLayer->providerType() == QLatin1String( "grass" ) )
@@ -1363,7 +1363,7 @@ QgsVectorLayer * QgsGrassModuleSelection::currentSelectionLayer()
   {
     return 0;
   }
-  QgsMapLayer *layer = QgsMapLayerRegistry::instance()->mapLayer( id );
+  QgsMapLayer *layer = QgsProject::instance()->mapLayer( id );
   return qobject_cast<QgsVectorLayer *>( layer );
 }
 
@@ -1377,13 +1377,13 @@ void QgsGrassModuleSelection::onModeChanged()
     QgsDebugMsg( "uri = " + uri );
 
     QgsVectorLayer *layer = new QgsVectorLayer( uri, name, QStringLiteral( "grass" ) );
-    QgsMapLayerRegistry::instance()->addMapLayer( layer );
+    QgsProject::instance()->addMapLayer( layer );
     onLayerChanged(); // update with added layer
   }
   else if ( mModeComboBox->itemData( index ).toInt() == Layer )
   {
     QString id = mModeComboBox->itemData( index, Qt::UserRole + 1 ).toString();
-    QgsMapLayer *layer = QgsMapLayerRegistry::instance()->mapLayer( id );
+    QgsMapLayer *layer = QgsProject::instance()->mapLayer( id );
     QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vectorLayer )
     {

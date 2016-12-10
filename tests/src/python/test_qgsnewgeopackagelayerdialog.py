@@ -22,7 +22,7 @@ from qgis.PyQt.QtCore import QObject, QCoreApplication, QSettings, Qt, QEventLoo
 from qgis.PyQt.QtWidgets import QApplication, QWidget, QLineEdit, QDialogButtonBox, QTreeWidget, QComboBox, QPushButton, QToolButton
 from qgis.PyQt.QtTest import QTest
 
-from qgis.core import Qgis, QgsMapLayerRegistry, QgsWkbTypes
+from qgis.core import Qgis, QgsProject, QgsWkbTypes
 from qgis.gui import QgsNewGeoPackageLayerDialog
 from qgis.testing import (start_app,
                           unittest
@@ -146,12 +146,12 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         QTest.mouseClick(ok_button, Qt.LeftButton)
         self.assertTrue(self.accepted)
 
-        layers = QgsMapLayerRegistry.instance().mapLayers()
+        layers = QgsProject.instance().mapLayers()
         self.assertEqual(len(layers), 1)
         layer = layers[list(layers.keys())[0]]
         self.assertEqual(layer.name(), 'test')
         self.assertEqual(layer.geometryType(), QgsWkbTypes.PointGeometry)
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
         ds = ogr.Open(dbname)
         lyr = ds.GetLayer(0)
@@ -205,7 +205,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         dialog.setProperty('question_existing_db_answer_add_new_layer', None)
         self.assertTrue(self.accepted)
 
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
         ds = ogr.Open(dbname)
         self.assertEqual(ds.GetLayerCount(), 2)
         ds = None
@@ -217,7 +217,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         dialog.setProperty('question_existing_db_answer_overwrite', None)
         self.assertTrue(self.accepted)
 
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
         ds = ogr.Open(dbname)
         self.assertEqual(ds.GetLayerCount(), 1)
         ds = None
@@ -244,11 +244,11 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
 
         # Only check with OGR 2.0 since the IDENTIFIER and DESCRIPTION creation options don't exist in OGR 1.11
         if version_num >= GDAL_COMPUTE_VERSION(2, 0, 0):
-            layers = QgsMapLayerRegistry.instance().mapLayers()
+            layers = QgsProject.instance().mapLayers()
             self.assertEqual(len(layers), 1)
             layer = layers[list(layers.keys())[0]]
             self.assertEqual(layer.name(), 'my_identifier')
-            QgsMapLayerRegistry.instance().removeAllMapLayers()
+            QgsProject.instance().removeAllMapLayers()
 
             ds = ogr.Open(dbname)
             sql_lyr = ds.ExecuteSQL('SELECT * FROM gpkg_contents')
@@ -262,7 +262,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
             self.assertEqual(identifier, 'my_identifier')
             self.assertEqual(description, 'my_description')
         else:
-            QgsMapLayerRegistry.instance().removeAllMapLayers()
+            QgsProject.instance().removeAllMapLayers()
 
         # Try invalid path
         mDatabaseEdit.setText('/this/is/invalid/test.gpkg')

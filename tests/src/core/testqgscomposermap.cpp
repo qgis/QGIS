@@ -19,7 +19,6 @@
 #include "qgscomposition.h"
 #include "qgsmultirenderchecker.h"
 #include "qgscomposermap.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
@@ -79,22 +78,22 @@ void TestQgsComposerMap::initTestCase()
                                      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
   mRasterLayer->setRenderer( rasterRenderer );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
   QFileInfo pointFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
   mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
                                      pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mPointsLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mPointsLayer );
 
   QFileInfo polyFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/polys.shp" );
   mPolysLayer = new QgsVectorLayer( polyFileInfo.filePath(),
                                     polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mPolysLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mPolysLayer );
 
   QFileInfo lineFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/lines.shp" );
   mLinesLayer = new QgsVectorLayer( lineFileInfo.filePath(),
                                     lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mLinesLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLinesLayer );
 }
 
 void TestQgsComposerMap::cleanupTestCase()

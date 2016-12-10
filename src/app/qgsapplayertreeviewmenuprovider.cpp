@@ -27,7 +27,6 @@
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerstyleguiutils.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsrenderer.h"
@@ -487,7 +486,7 @@ void QgsAppLayerTreeViewMenuProvider::editVectorSymbol()
     return;
 
   QString layerId = action->property( "layerId" ).toString();
-  QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+  QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerId ) );
   if ( !layer )
     return;
 
@@ -516,7 +515,7 @@ void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor& color 
     return;
 
   QString layerId = action->property( "layerId" ).toString();
-  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerId ) );
   if ( !layer )
     return;
 
@@ -608,7 +607,7 @@ void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &co
   QgsSymbol* newSymbol = originalSymbol->clone();
   newSymbol->setColor( color );
   node->setSymbol( newSymbol );
-  if ( QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) ) )
+  if ( QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerId ) ) )
   {
     layer->emitStyleChanged();
   }

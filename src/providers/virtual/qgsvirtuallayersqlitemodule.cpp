@@ -26,7 +26,7 @@ email                : hugo dot mercier at oslandia dot com
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
 #include <qgsgeometry.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 #include <qgsproviderregistry.h>
 #include "qgsinterval.h"
 #include <sqlite3.h>
@@ -354,7 +354,7 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
     {
       layerid = layerid.mid( 1, layerid.size() - 2 );
     }
-    QgsMapLayer *l = QgsMapLayerRegistry::instance()->mapLayer( layerid );
+    QgsMapLayer *l = QgsProject::instance()->mapLayer( layerid );
     if ( !l || l->type() != QgsMapLayer::VectorLayer )
     {
       if ( outErr )

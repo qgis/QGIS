@@ -17,7 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
@@ -66,11 +66,11 @@ void TestProjectionIssues::initTestCase()
 
   QList<QgsMapLayer *> mapLayers;
   mapLayers.append( mRasterLayer );
-  QgsMapLayerRegistry::instance()->addMapLayers( mapLayers );
+  QgsProject::instance()->addMapLayers( mapLayers );
 
   // Add all layers in registry to the canvas
   QList<QgsMapCanvasLayer> canvasLayers;
-  Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer* layer, QgsProject::instance()->mapLayers() )
   {
     canvasLayers.append( QgsMapCanvasLayer( layer ) );
   }

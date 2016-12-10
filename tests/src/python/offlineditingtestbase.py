@@ -36,7 +36,7 @@ from qgis.core import (
     QgsPoint,
     QgsFeatureRequest,
     QgsExpression,
-    QgsMapLayerRegistry,
+    QgsProject,
     QgsOfflineEditing,
 )
 
@@ -76,7 +76,7 @@ class OfflineTestBase(object):
         layer.addFeatures(features)
         assert layer.commitChanges()
         # Add the online layer
-        self.registry = QgsMapLayerRegistry.instance()
+        self.registry = QgsProject.instance()
         self.registry.removeAllMapLayers()
         assert self.registry.addMapLayer(self._getOnlineLayer('test_point')) is not None
 

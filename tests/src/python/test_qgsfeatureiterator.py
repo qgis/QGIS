@@ -16,7 +16,7 @@ import qgis  # NOQA
 
 import os
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsField, NULL, QgsMapLayerRegistry, QgsVectorJoinInfo
+from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsField, NULL, QgsProject, QgsVectorJoinInfo
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QVariant
 
@@ -173,7 +173,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         self.assertTrue(pr.addFeatures([f]))
         layer.addExpressionField('"fldint"*2', QgsField('exp1', QVariant.LongLong))
 
-        QgsMapLayerRegistry.instance().addMapLayers([layer, joinLayer])
+        QgsProject.instance().addMapLayers([layer, joinLayer])
 
         join = QgsVectorJoinInfo()
         join.targetFieldName = "exp1"
@@ -193,7 +193,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         self.assertEqual(attrs[4], 246)
         self.assertFalse(fi.nextFeature(f))
 
-        QgsMapLayerRegistry.instance().removeMapLayers([layer.id(), joinLayer.id()])
+        QgsProject.instance().removeMapLayers([layer.id(), joinLayer.id()])
 
     def test_JoinUsingExpression2(self):
         """ test joining a layer using a virtual field (the other way!) """
@@ -215,7 +215,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         f.setAttributes(["test", 123])
         self.assertTrue(pr.addFeatures([f]))
 
-        QgsMapLayerRegistry.instance().addMapLayers([layer, joinLayer])
+        QgsProject.instance().addMapLayers([layer, joinLayer])
 
         join = QgsVectorJoinInfo()
         join.targetFieldName = "fldint"
@@ -235,7 +235,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         self.assertEqual(attrs[4], 321)
         self.assertFalse(fi.nextFeature(f))
 
-        QgsMapLayerRegistry.instance().removeMapLayers([layer.id(), joinLayer.id()])
+        QgsProject.instance().removeMapLayers([layer.id(), joinLayer.id()])
 
     def test_JoinUsingFeatureRequestExpression(self):
         """ test requesting features using a filter expression which requires joined columns """
@@ -258,7 +258,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         f2.setAttributes(["test", 124])
         self.assertTrue(pr.addFeatures([f1, f2]))
 
-        QgsMapLayerRegistry.instance().addMapLayers([layer, joinLayer])
+        QgsProject.instance().addMapLayers([layer, joinLayer])
 
         join = QgsVectorJoinInfo()
         join.targetFieldName = "fldint"
@@ -273,7 +273,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         self.assertEqual(f['fldint'], 124)
         self.assertEqual(f['joinlayer_z'], 654)
 
-        QgsMapLayerRegistry.instance().removeMapLayers([layer.id(), joinLayer.id()])
+        QgsProject.instance().removeMapLayers([layer.id(), joinLayer.id()])
 
 
 if __name__ == '__main__':

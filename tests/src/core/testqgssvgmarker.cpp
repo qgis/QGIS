@@ -26,7 +26,7 @@
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 #include <qgssymbol.h>
 #include <qgssinglesymbolrenderer.h>
 #include "qgsmarkersymbollayer.h"
@@ -95,7 +95,7 @@ void TestQgsSvgMarkerSymbol::initTestCase()
                                       pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPointsLayer );
 
   //setup symbol

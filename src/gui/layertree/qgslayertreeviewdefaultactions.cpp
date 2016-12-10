@@ -20,7 +20,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
 #include <QAction>
@@ -188,7 +188,7 @@ void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas* canvas )
 
   QList<QgsMapLayer*> layers;
   Q_FOREACH ( const QString& layerId, groupNode->findLayerIds() )
-    layers << QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    layers << QgsProject::instance()->mapLayer( layerId );
 
   zoomToLayers( canvas, layers );
 }

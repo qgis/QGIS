@@ -18,7 +18,7 @@
 #include <qgsapplication.h>
 #include <qgsmapcanvas.h>
 #include <qgsvectorlayer.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 #include <qgsrenderchecker.h>
 #include <qgsvectordataprovider.h>
 #include <qgsmaptoolpan.h>
@@ -143,7 +143,7 @@ void TestQgsMapCanvas::testMagnification()
   QList<QgsMapCanvasLayer> layers;
   layers.append( layer );
   mCanvas->setLayerSet( layers );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
 
   mCanvas->setExtent( layer->extent() );
 
@@ -222,7 +222,7 @@ void TestQgsMapCanvas::testMagnificationExtent()
   QList<QgsMapCanvasLayer> layers;
   layers.append( layer );
   mCanvas->setLayerSet( layers );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
 
   // zoomToFullExtent
   mCanvas->zoomToFullExtent();

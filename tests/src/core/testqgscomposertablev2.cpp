@@ -27,7 +27,6 @@
 #include "qgsfeature.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsfontutils.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 
@@ -103,7 +102,7 @@ void TestQgsComposerTableV2::initTestCase()
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      QStringLiteral( "ogr" ) );
-  QgsMapLayerRegistry::instance()->addMapLayer( mVectorLayer );
+  QgsProject::instance()->addMapLayer( mVectorLayer );
 
   mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
   mMapSettings->setCrsTransformEnabled( false );
@@ -438,7 +437,7 @@ void TestQgsComposerTableV2::attributeTableAtlasSource()
   vectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                     vectorFileInfo.completeBaseName(),
                                     QStringLiteral( "ogr" ) );
-  QgsMapLayerRegistry::instance()->addMapLayer( vectorLayer );
+  QgsProject::instance()->addMapLayer( vectorLayer );
   mComposition->atlasComposition().setCoverageLayer( vectorLayer );
   mComposition->atlasComposition().setEnabled( true );
   QVERIFY( mComposition->atlasComposition().beginRender() );
@@ -480,7 +479,7 @@ void TestQgsComposerTableV2::attributeTableAtlasSource()
   mComposition->atlasComposition().endRender();
 
   //try for a crash when removing current atlas layer
-  QgsMapLayerRegistry::instance()->removeMapLayer( vectorLayer->id() );
+  QgsProject::instance()->removeMapLayer( vectorLayer->id() );
   table->refreshAttributes();
 
   mComposition->removeMultiFrame( table );
@@ -495,7 +494,7 @@ void TestQgsComposerTableV2::attributeTableRelationSource()
       vectorFileInfo.completeBaseName(),
       QStringLiteral( "ogr" ) );
 
-  QgsMapLayerRegistry::instance()->addMapLayer( atlasLayer );
+  QgsProject::instance()->addMapLayer( atlasLayer );
 
   //setup atlas
   mComposition->atlasComposition().setCoverageLayer( atlasLayer );
@@ -566,7 +565,7 @@ void TestQgsComposerTableV2::attributeTableRelationSource()
   mComposition->atlasComposition().endRender();
 
   //try for a crash when removing current atlas layer
-  QgsMapLayerRegistry::instance()->removeMapLayer( atlasLayer->id() );
+  QgsProject::instance()->removeMapLayer( atlasLayer->id() );
 
   table->refreshAttributes();
 

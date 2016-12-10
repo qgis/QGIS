@@ -18,7 +18,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 
 #include <QDomElement>
 #include <QStringList>
@@ -77,7 +77,7 @@ QgsLayerTreeGroup* QgsLayerTreeGroup::addGroup( const QString &name )
 
 QgsLayerTreeLayer*QgsLayerTreeGroup::insertLayer( int index, QgsMapLayer* layer )
 {
-  if ( !layer || QgsMapLayerRegistry::instance()->mapLayer( layer->id() ) != layer )
+  if ( !layer || QgsProject::instance()->mapLayer( layer->id() ) != layer )
     return nullptr;
 
   QgsLayerTreeLayer* ll = new QgsLayerTreeLayer( layer );
@@ -87,7 +87,7 @@ QgsLayerTreeLayer*QgsLayerTreeGroup::insertLayer( int index, QgsMapLayer* layer 
 
 QgsLayerTreeLayer* QgsLayerTreeGroup::addLayer( QgsMapLayer* layer )
 {
-  if ( !layer || QgsMapLayerRegistry::instance()->mapLayer( layer->id() ) != layer )
+  if ( !layer || QgsProject::instance()->mapLayer( layer->id() ) != layer )
     return nullptr;
 
   QgsLayerTreeLayer* ll = new QgsLayerTreeLayer( layer );

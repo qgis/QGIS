@@ -22,7 +22,6 @@
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
 #include "qgscomposermodel.h"
-#include "qgsmaplayerregistry.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendrenderer.h"
@@ -422,7 +421,7 @@ static void _readOldLegendGroup( QDomElement& elem, QgsLayerTreeGroup* parentGro
     if ( itemElem.tagName() == QLatin1String( "LayerItem" ) )
     {
       QString layerId = itemElem.attribute( QStringLiteral( "layerId" ) );
-      if ( QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId ) )
+      if ( QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId ) )
       {
         QgsLayerTreeLayer* nodeLayer = parentGroup->addLayer( layer );
         QString userText = itemElem.attribute( QStringLiteral( "userText" ) );

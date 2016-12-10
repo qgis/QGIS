@@ -39,7 +39,6 @@
 #endif
 #include "qgsbench.h"
 #include "qgslogger.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaprendererparalleljob.h"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsproject.h"
@@ -142,7 +141,6 @@ QgsBench::~QgsBench()
 
 bool QgsBench::openProject( const QString & theFileName )
 {
-  // QgsProject loads layers to QgsMapLayerRegistry singleton
   QFileInfo file( theFileName );
   if ( ! QgsProject::instance()->read( file ) )
   {
@@ -177,7 +175,7 @@ void QgsBench::render()
 
   QgsDebugMsg( "extent: " +  mMapSettings.extent().toString() );
 
-  QMap<QString, QgsMapLayer*> layersMap = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> layersMap = QgsProject::instance()->mapLayers();
 
   QStringList layers( layersMap.keys() );
 

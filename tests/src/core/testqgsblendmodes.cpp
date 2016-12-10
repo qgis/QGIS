@@ -26,7 +26,7 @@
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 #include <qgsmultibandcolorrenderer.h>
 #include <qgsrasterlayer.h>
 #include "qgsrasterdataprovider.h"
@@ -97,7 +97,7 @@ void TestQgsBlendModes::initTestCase()
   QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPointsLayer );
 
   //create a poly layer that will be used in tests
@@ -110,7 +110,7 @@ void TestQgsBlendModes::initTestCase()
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPolysLayer );
 
   //create a line layer that will be used in tests
@@ -119,7 +119,7 @@ void TestQgsBlendModes::initTestCase()
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
                                      myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   mpLinesLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpLinesLayer );
 
   //create two raster layers
@@ -131,9 +131,9 @@ void TestQgsBlendModes::initTestCase()
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer1->dataProvider(), 1, 2, 3 );
   mRasterLayer1->setRenderer( rasterRenderer );
   mRasterLayer2->setRenderer(( QgsRasterRenderer* ) rasterRenderer->clone() );
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mRasterLayer1 );
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mRasterLayer2 );
 
   // points extent was not always reliable

@@ -1548,7 +1548,6 @@ ACCEPTABLE_MISSING_ADDED_NOTE = [
     "QgsRendererWidget",
     "QgsComposerLabel",
     "QgsRuleBasedRenderer::Rule",
-    "QgsMapLayerRegistry",
     "QgsMapRendererCache",
     "QgsDataSourceUri",
     "QgsVectorLayerSelectionManager",

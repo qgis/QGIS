@@ -31,7 +31,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget, QVBoxLayout, QSizePolicy
 from qgis.PyQt.QtGui import QCursor, QColor, QPalette
 
-from qgis.core import QgsMapLayerRegistry
+from qgis.core import QgsProject
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 
@@ -246,6 +246,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
                             '\nOpen the results dialog to check it.'))
 
     def closeEvent(self, evt):
-        QgsMapLayerRegistry.instance().layerWasAdded.disconnect(self.mainWidget.layerRegistryChanged)
-        QgsMapLayerRegistry.instance().layersWillBeRemoved.disconnect(self.mainWidget.layerRegistryChanged)
+        QgsProject.instance().layerWasAdded.disconnect(self.mainWidget.layerRegistryChanged)
+        QgsProject.instance().layersWillBeRemoved.disconnect(self.mainWidget.layerRegistryChanged)
         super(AlgorithmDialog, self).closeEvent(evt)

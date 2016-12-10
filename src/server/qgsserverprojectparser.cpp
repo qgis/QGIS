@@ -22,7 +22,6 @@
 #include "qgsconfigparserutils.h"
 #include "qgscsexception.h"
 #include "qgsdatasourceuri.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayerjoinbuffer.h"
@@ -234,8 +233,8 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
 
   if ( layer )
   {
-    if ( !QgsMapLayerRegistry::instance()->mapLayer( id ) )
-      QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
+    if ( !QgsProject::instance()->mapLayer( id ) )
+      QgsProject::instance()->addMapLayer( layer, false, false );
     if ( layer->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -285,8 +284,8 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
       return nullptr;
     }
     // Insert layer in registry and cache before addValueRelationLayersForLayer
-    if ( !QgsMapLayerRegistry::instance()->mapLayer( id ) )
-      QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
+    if ( !QgsProject::instance()->mapLayer( id ) )
+      QgsProject::instance()->addMapLayer( layer, false, false );
     if ( useCache )
     {
       QgsMSLayerCache::instance()->insertLayer( absoluteUri, id, layer, mProjectPath );
@@ -1567,9 +1566,9 @@ void QgsServerProjectParser::addJoinLayersForElement( const QDomElement& layerEl
   {
     QString id = joinNodeList.at( i ).toElement().attribute( QStringLiteral( "joinLayerId" ) );
     QgsMapLayer* layer = mapLayerFromLayerId( id );
-    if ( layer && !QgsMapLayerRegistry::instance()->mapLayer( id ) )
+    if ( layer && !QgsProject::instance()->mapLayer( id ) )
     {
-      QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
+      QgsProject::instance()->addMapLayer( layer, false, false );
     }
   }
 }
@@ -1590,14 +1589,14 @@ void QgsServerProjectParser::addValueRelationLayersForLayer( const QgsVectorLaye
       continue;
 
     QString layerId = cfg.value( QStringLiteral( "Layer" ) ).toString();
-    if ( QgsMapLayerRegistry::instance()->mapLayer( layerId ) )
+    if ( QgsProject::instance()->mapLayer( layerId ) )
       continue;
 
     QgsMapLayer *layer = mapLayerFromLayerId( layerId );
     if ( !layer )
       continue;
 
-    QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
+    QgsProject::instance()->addMapLayer( layer, false, false );
   }
 }
 
@@ -1629,7 +1628,7 @@ void QgsServerProjectParser::addGetFeatureLayers( const QDomElement& layerElem )
 
     if ( ml )
     {
-      QgsMapLayerRegistry::instance()->addMapLayer( ml, false, false );
+      QgsProject::instance()->addMapLayer( ml, false, false );
     }
     idx += rx.matchedLength();
   }

@@ -22,7 +22,6 @@
 #include <qgsproject.h>
 #include <qgsmaptoolemitpoint.h>
 
-#include <qgsmaplayerregistry.h>
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
 
@@ -197,7 +196,7 @@ QgisInterface* RoadGraphPlugin::iface()
 
 const QgsGraphDirector* RoadGraphPlugin::director() const
 {
-  QList< QgsMapLayer* > mapLayers = QgsMapLayerRegistry::instance()->mapLayersByName( mSettings->mLayerName );
+  QList< QgsMapLayer* > mapLayers = QgsProject::instance()->mapLayersByName( mSettings->mLayerName );
   if ( mapLayers.isEmpty() )
     return nullptr;
 

@@ -47,7 +47,6 @@
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsxmlutils.h"
 
 
@@ -835,7 +834,7 @@ QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document, bo
     {
       layers << layer;
       if ( addToRegistry )
-        QgsMapLayerRegistry::instance()->addMapLayer( layer, addToLegend );
+        QgsProject::instance()->addMapLayer( layer, addToLegend );
     }
   }
   return layers;
@@ -1693,7 +1692,7 @@ static QList<const QgsMapLayer*> _depOutEdges( const QgsMapLayer* vl, const QgsM
   {
     Q_FOREACH ( const QgsMapLayerDependency& dep, layers )
     {
-      if ( const QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( dep.layerId() ) )
+      if ( const QgsMapLayer* l = QgsProject::instance()->mapLayer( dep.layerId() ) )
         lst << l;
     }
   }
@@ -1701,7 +1700,7 @@ static QList<const QgsMapLayer*> _depOutEdges( const QgsMapLayer* vl, const QgsM
   {
     Q_FOREACH ( const QgsMapLayerDependency& dep, vl->dependencies() )
     {
-      if ( const QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( dep.layerId() ) )
+      if ( const QgsMapLayer* l = QgsProject::instance()->mapLayer( dep.layerId() ) )
         lst << l;
     }
   }

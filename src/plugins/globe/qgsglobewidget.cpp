@@ -16,7 +16,6 @@
 #include "qgsglobewidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgisinterface.h"
@@ -86,8 +85,8 @@ QgsGlobeWidget::QgsGlobeWidget( QgisInterface* iface, QWidget *parent )
   setAttribute( Qt::WA_DeleteOnClose );
 
   connect( mQgisIface->mapCanvas(), SIGNAL( layersChanged() ), this, SLOT( updateLayerSelectionMenu() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( updateLayerSelectionMenu() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerRemoved( QString ) ), this, SLOT( updateLayerSelectionMenu() ) );
+  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( updateLayerSelectionMenu() ) );
+  connect( QgsProject::instance(), SIGNAL( layerRemoved( QString ) ), this, SLOT( updateLayerSelectionMenu() ) );
 
   updateLayerSelectionMenu();
 }

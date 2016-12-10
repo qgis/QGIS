@@ -23,7 +23,6 @@
 //
 #include "qgisinterface.h"
 #include "qgsapplication.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmessagebar.h"
 
 //

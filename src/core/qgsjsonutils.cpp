@@ -18,7 +18,6 @@
 #include "qgsogrutils.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsrelation.h"
 #include "qgsrelationmanager.h"
 #include "qgsproject.h"
@@ -55,7 +54,7 @@ void QgsJSONExporter::setVectorLayer( const QgsVectorLayer* vectorLayer )
 
 QgsVectorLayer *QgsJSONExporter::vectorLayer() const
 {
-  return qobject_cast< QgsVectorLayer* >( QgsMapLayerRegistry::instance()->mapLayer( mLayerId ) );
+  return qobject_cast< QgsVectorLayer* >( QgsProject::instance()->mapLayer( mLayerId ) );
 }
 
 void QgsJSONExporter::setSourceCrs( const QgsCoordinateReferenceSystem& crs )

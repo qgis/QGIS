@@ -19,7 +19,7 @@
 #include "qgscomposition.h"
 #include "qgscomposermap.h"
 #include "qgscomposertexttable.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmapsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -78,7 +78,7 @@ void TestQgsComposerDD::initTestCase()
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mVectorLayer->setSimplifyMethod( simplifyMethod );
 
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   //create composition with composer map
   mMapSettings->setLayers( QStringList() << mVectorLayer->id() );

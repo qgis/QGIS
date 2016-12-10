@@ -18,7 +18,7 @@
 
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmaptopixel.h"
@@ -231,7 +231,7 @@ void QgsMapOverviewCanvas::setLayerSet( const QStringList& layerSet )
 
   Q_FOREACH ( const QString& layerID, mSettings.layers() )
   {
-    if ( QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
+    if ( QgsMapLayer* ml = QgsProject::instance()->mapLayer( layerID ) )
       disconnect( ml, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );
   }
 
@@ -239,7 +239,7 @@ void QgsMapOverviewCanvas::setLayerSet( const QStringList& layerSet )
 
   Q_FOREACH ( const QString& layerID, mSettings.layers() )
   {
-    if ( QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
+    if ( QgsMapLayer* ml = QgsProject::instance()->mapLayer( layerID ) )
       connect( ml, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );
   }
 

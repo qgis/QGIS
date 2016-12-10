@@ -31,7 +31,7 @@ from qgis.PyQt.QtCore import QSize
 
 from qgis.core import (
     QgsVectorLayer,
-    QgsMapLayerRegistry,
+    QgsProject,
     QgsRectangle,
     QgsMultiRenderChecker,
     QgsSingleSymbolRenderer,
@@ -53,7 +53,7 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
     def setUp(self):
         myShpFile = os.path.join(TEST_DATA_DIR, 'polys.shp')
         self.layer = QgsVectorLayer(myShpFile, 'Polys', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayer(self.layer)
+        QgsProject.instance().addMapLayer(self.layer)
 
         self.iface = get_iface()
         rendered_layers = [self.layer.id()]
@@ -64,7 +64,7 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
         self.mapsettings.setLayers(rendered_layers)
 
     def tearDown(self):
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
     def testPartNum(self):
         # Create rulebased style

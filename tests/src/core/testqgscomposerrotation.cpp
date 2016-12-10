@@ -23,7 +23,7 @@
 #include "qgscomposerlabel.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsfontutils.h"
 #include "qgsrasterdataprovider.h"
 #include <QObject>
@@ -80,7 +80,7 @@ void TestQgsComposerRotation::initTestCase()
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   mRasterLayer->setRenderer( rasterRenderer );
 
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
   mMapSettings->setLayers( QStringList() << mRasterLayer->id() );
   mMapSettings->setCrsTransformEnabled( false );

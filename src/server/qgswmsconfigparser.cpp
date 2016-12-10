@@ -17,7 +17,7 @@
 
 #include "qgswmsconfigparser.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmapserviceexception.h"
 
 #include "qgscomposerlabel.h"
@@ -344,7 +344,7 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
     layer->setRenderer( renderer.take() );
     layerSet.prepend( layer.data()->id() );
     highlightLayers.append( layer.data()->id() );
-    QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << layer.take() );
+    QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer.take() );
   }
   return highlightLayers;
 }
@@ -534,7 +534,7 @@ void QgsWmsConfigParser::removeHighlightLayers( const QStringList& layerIds )
   QStringList::const_iterator idIt = layerIds.constBegin();
   for ( ; idIt != layerIds.constEnd(); ++idIt )
   {
-    QgsMapLayerRegistry::instance()->removeMapLayers( QStringList() << *idIt );
+    QgsProject::instance()->removeMapLayers( QStringList() << *idIt );
   }
 }
 

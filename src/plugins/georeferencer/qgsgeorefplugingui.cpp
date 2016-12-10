@@ -42,7 +42,6 @@
 #include "qgscomposerframe.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcoordsdialog.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptoolpan.h"
 
@@ -1108,7 +1107,7 @@ void QgsGeorefPluginGui::setupConnections()
   connect( mCanvas, SIGNAL( zoomLastStatusChanged( bool ) ), mActionZoomLast, SLOT( setEnabled( bool ) ) );
   connect( mCanvas, SIGNAL( zoomNextStatusChanged( bool ) ), mActionZoomNext, SLOT( setEnabled( bool ) ) );
   // Connect when one Layer is removed - Case where change the Projetct in QGIS
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( layerWillBeRemoved( QString ) ) );
+  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( layerWillBeRemoved( QString ) ) );
 
   // Connect extents changed - Use for need add again Raster
   connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
@@ -1119,7 +1118,7 @@ void QgsGeorefPluginGui::removeOldLayer()
   // delete layer (and don't signal it as it's our private layer)
   if ( mLayer )
   {
-    QgsMapLayerRegistry::instance()->removeMapLayers(
+    QgsProject::instance()->removeMapLayers(
       ( QStringList() << mLayer->id() ) );
     mLayer = nullptr;
   }
@@ -1165,7 +1164,7 @@ void QgsGeorefPluginGui::addRaster( const QString& file )
   mLayer = new QgsRasterLayer( file, QStringLiteral( "Raster" ) );
 
   // so layer is not added to legend
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mLayer, false, false );
 
   // add layer to map canvas

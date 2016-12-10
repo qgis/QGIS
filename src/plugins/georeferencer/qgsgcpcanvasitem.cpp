@@ -15,7 +15,7 @@
 
 #include "qgsgcpcanvasitem.h"
 #include "qgsgeorefdatapoint.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsrasterlayer.h"
 
 QgsGCPCanvasItem::QgsGCPCanvasItem( QgsMapCanvas* mapCanvas, const QgsGeorefDataPoint* dataPoint, bool isGCPSource )
@@ -190,7 +190,7 @@ double QgsGCPCanvasItem::residualToScreenFactor() const
   if ( !canvasLayers.isEmpty() )
   {
     QString layerId = canvasLayers.at( 0 );
-    QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    QgsMapLayer* mapLayer = QgsProject::instance()->mapLayer( layerId );
     if ( mapLayer )
     {
       QgsRasterLayer* rasterLayer = dynamic_cast<QgsRasterLayer*>( mapLayer );

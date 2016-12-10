@@ -25,7 +25,6 @@
 #include "qgsvectordataprovider.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsmessagelog.h"
 #include "qgsexpressioncontext.h"
@@ -46,7 +45,7 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition )
 {
 
   //listen out for layer removal
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
+  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
 }
 
 QgsAtlasComposition::~QgsAtlasComposition()
@@ -630,7 +629,7 @@ void QgsAtlasComposition::readXml( const QDomElement& atlasElem, const QDomDocum
 
   // look for stored layer name
   mCoverageLayer = nullptr;
-  QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::const_iterator it = layers.begin(); it != layers.end(); ++it )
   {
     if ( it.key() == atlasElem.attribute( QStringLiteral( "coverageLayer" ) ) )

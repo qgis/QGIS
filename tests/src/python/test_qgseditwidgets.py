@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsMapLayerRegistry, QgsFeature, QgsGeometry, QgsPoint, QgsProject, QgsRelation, QgsVectorLayer, NULL,
+from qgis.core import (QgsProject, QgsFeature, QgsGeometry, QgsPoint, QgsProject, QgsRelation, QgsVectorLayer, NULL,
                        QgsField)
 from qgis.gui import QgsEditorWidgetRegistry
 
@@ -75,7 +75,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
         layer.dataProvider().addAttributes([QgsField('max', QVariant.String, 'string', 10),
                                             QgsField('nomax', QVariant.String, 'string', 0)])
         layer.updateFields()
-        QgsMapLayerRegistry.instance().addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         reg = QgsEditorWidgetRegistry.instance()
         config = {'IsMultiline': 'True'}
@@ -93,13 +93,13 @@ class TestQgsTextEditWidget(unittest.TestCase):
 
         self.assertEqual(w.value(), 'this_is_a_')
 
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
     def test_ValueMap_representValue(self):
         layer = QgsVectorLayer("none?field=number1:integer&field=number2:double&field=text1:string&field=number3:integer&field=number4:double&field=text2:string",
                                "layer", "memory")
         assert layer.isValid()
-        QgsMapLayerRegistry.instance().addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
         f = QgsFeature()
         f.setAttributes([2, 2.5, 'NULL', None, None, None])
         assert layer.dataProvider().addFeatures([f])
@@ -127,12 +127,12 @@ class TestQgsTextEditWidget(unittest.TestCase):
         self.assertEqual(factory.representValue(layer, 4, config, None, None), '(NULL)')
         self.assertEqual(factory.representValue(layer, 5, config, None, None), '(NULL)')
 
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
     def test_ValueMap_set_get(self):
         layer = QgsVectorLayer("none?field=number:integer", "layer", "memory")
         assert layer.isValid()
-        QgsMapLayerRegistry.instance().addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
         reg = QgsEditorWidgetRegistry.instance()
         configWdg = reg.createConfigWidget('ValueMap', layer, 0, None)
 
@@ -144,7 +144,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
         configWdg.setConfig(config)
         self.assertEqual(configWdg.config(), config)
 
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
     def test_ValueRelation_representValue(self):
 
@@ -154,7 +154,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
         second_layer = QgsVectorLayer("none?field=pkid:integer&field=decoded:string",
                                       "second_layer", "memory")
         assert second_layer.isValid()
-        QgsMapLayerRegistry.instance().addMapLayer(second_layer)
+        QgsProject.instance().addMapLayer(second_layer)
         f = QgsFeature()
         f.setAttributes([123])
         assert first_layer.dataProvider().addFeatures([f])
@@ -190,7 +190,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
         config = {'Layer': second_layer.id(), 'Key': 'pkid', 'Value': 'invalid'}
         self.assertEqual(factory.representValue(first_layer, 0, config, None, '456'), '(456)')
 
-        QgsMapLayerRegistry.instance().removeMapLayer(second_layer.id())
+        QgsProject.instance().removeMapLayer(second_layer.id())
 
     def test_RelationReference_representValue(self):
 
@@ -200,7 +200,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
         second_layer = QgsVectorLayer("none?field=pkid:integer&field=decoded:string",
                                       "second_layer", "memory")
         assert second_layer.isValid()
-        QgsMapLayerRegistry.instance().addMapLayers([first_layer, second_layer])
+        QgsProject.instance().addMapLayers([first_layer, second_layer])
         f = QgsFeature()
         f.setAttributes([123])
         assert first_layer.dataProvider().addFeatures([f])
@@ -278,7 +278,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
         second_layer.setDisplayExpression('decoded')
         self.assertEqual(factory.representValue(first_layer, 0, config, None, '123'), '123')
 
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
 if __name__ == '__main__':
     unittest.main()

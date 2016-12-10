@@ -17,7 +17,7 @@ class QgsLayerTreeRegistryBridge : QObject
 %End
 
   public:
-    explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup* root, QObject *parent /TransferThis/ = 0 );
+    explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup* root, QgsProject* project, QObject *parent /TransferThis/ = 0 );
 
     void setEnabled( bool enabled );
     bool isEnabled() const;

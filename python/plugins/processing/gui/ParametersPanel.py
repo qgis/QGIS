@@ -33,7 +33,7 @@ __revision__ = '$Format:%H$'
 import os
 import locale
 
-from qgis.core import QgsMapLayerRegistry, QgsMapLayer
+from qgis.core import QgsMapLayer
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, QVariant

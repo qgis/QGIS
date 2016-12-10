@@ -21,7 +21,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometryutils.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmultisurface.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
@@ -252,7 +251,7 @@ QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstract
   QStringList::const_iterator aIt = avoidIntersectionsList.constBegin();
   for ( ; aIt != avoidIntersectionsList.constEnd(); ++aIt )
   {
-    currentLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( *aIt ) );
+    currentLayer = dynamic_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( *aIt ) );
     if ( currentLayer )
     {
       QgsFeatureIds ignoreIds;

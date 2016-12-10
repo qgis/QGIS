@@ -23,7 +23,6 @@
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsofflineediting.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
@@ -58,7 +57,7 @@ extern "C"
 
 QgsOfflineEditing::QgsOfflineEditing()
 {
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layerAdded( QgsMapLayer* ) ) );
+  connect( QgsProject::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layerAdded( QgsMapLayer* ) ) );
 }
 
 QgsOfflineEditing::~QgsOfflineEditing()
@@ -107,7 +106,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
 
       Q_FOREACH ( const QString& layerId, layerIds )
       {
-        QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+        QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId );
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
         if ( !vl )
           continue;
@@ -122,7 +121,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
         {
           if ( joinIt->prefix.isNull() )
           {
-            QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinIt->joinLayerId ) );
+            QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( joinIt->joinLayerId ) );
 
             if ( vl )
               joinIt->prefix = vl->name() + '_';
@@ -137,7 +136,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
       {
         emit layerProgressUpdated( i + 1, layerIds.count() );
 
-        QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerIds.at( i ) );
+        QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerIds.at( i ) );
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
         if ( vl )
         {
@@ -148,7 +147,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
           {
             layerIdMapping.insert( origLayerId, newLayer );
             // remove remote layer
-            QgsMapLayerRegistry::instance()->removeMapLayers(
+            QgsProject::instance()->removeMapLayers(
               QStringList() << origLayerId );
           }
         }
@@ -216,7 +215,7 @@ void QgsOfflineEditing::synchronize()
 
   // restore and sync remote layers
   QList<QgsMapLayer*> offlineLayers;
-  QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> mapLayers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::iterator layer_it = mapLayers.begin() ; layer_it != mapLayers.end(); ++layer_it )
   {
     QgsMapLayer* layer = layer_it.value();
@@ -255,7 +254,7 @@ void QgsOfflineEditing::synchronize()
       QgsVectorLayer* offlineLayer = qobject_cast<QgsVectorLayer*>( layer );
 
       // register this layer with the central layers registry
-      QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << remoteLayer, true );
+      QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << remoteLayer, true );
 
       // copy style
       copySymbology( offlineLayer, remoteLayer );
@@ -317,7 +316,7 @@ void QgsOfflineEditing::synchronize()
       // again with the same path
       offlineLayer->dataProvider()->invalidateConnections( QgsDataSourceUri( offlineLayer->source() ).database() );
       // remove offline layer
-      QgsMapLayerRegistry::instance()->removeMapLayers( QStringList() << qgisLayerId );
+      QgsProject::instance()->removeMapLayers( QStringList() << qgisLayerId );
 
 
       // disable offline project
@@ -588,7 +587,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
       newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER, layer->providerType() );
 
       // register this layer with the central layers registry
-      QgsMapLayerRegistry::instance()->addMapLayers(
+      QgsProject::instance()->addMapLayers(
         QList<QgsMapLayer *>() << newLayer );
 
       // copy style
@@ -1205,7 +1204,7 @@ void QgsOfflineEditing::committedFeaturesAdded( const QString& qgisLayerId, cons
   int layerId = getOrCreateLayerId( db, qgisLayerId );
 
   // get new feature ids from db
-  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( qgisLayerId );
+  QgsMapLayer* layer = QgsProject::instance()->mapLayer( qgisLayerId );
   QgsDataSourceUri uri = QgsDataSourceUri( layer->source() );
 
   // only store feature ids

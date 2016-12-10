@@ -26,7 +26,7 @@
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
@@ -95,7 +95,7 @@ void TestQgsInvertedPolygon::initTestCase()
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
 
   mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
   mReport += QLatin1String( "<h1>Inverted Polygon Renderer Tests</h1>\n" );
@@ -159,7 +159,7 @@ void TestQgsInvertedPolygon::curvedPolygons()
   QgsVectorLayer* curvedLayer = new QgsVectorLayer( myCurvedPolyFileInfo.filePath() + "|layername=polys",
       myCurvedPolyFileInfo.completeBaseName(), "ogr" );
   curvedLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << curvedLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << curvedLayer );
 
   mReport += "<h2>Inverted polygon renderer, curved polygons test</h2>\n";
   mMapSettings.setLayers( QStringList() << curvedLayer->id() );

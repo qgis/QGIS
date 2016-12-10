@@ -30,7 +30,7 @@ import os
 import traceback
 from qgis.PyQt.QtWidgets import QApplication
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsMapLayerRegistry
+from qgis.core import QgsProject
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingResults import ProcessingResults
@@ -63,7 +63,7 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
             try:
                 if hasattr(out, "layer") and out.layer is not None:
                     out.layer.setName(out.description)
-                    QgsMapLayerRegistry.instance().addMapLayers([out.layer])
+                    QgsProject.instance().addMapLayers([out.layer])
                 else:
                     if ProcessingConfig.getSetting(
                             ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):

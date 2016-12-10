@@ -28,7 +28,6 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsprojectlayergroupdialog.h"
 #include "qgsrasterlayer.h"
@@ -140,7 +139,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   ///////////////////////////////////////////////////////////
   // Properties stored in QgsProject
 
-  Q_FOREACH ( QgsVectorLayer* layer, QgsMapLayerRegistry::instance()->layers<QgsVectorLayer*>() )
+  Q_FOREACH ( QgsVectorLayer* layer, QgsProject::instance()->layers<QgsVectorLayer*>() )
   {
     if ( layer->isEditable() )
     {
@@ -239,7 +238,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   QStringList noIdentifyLayerIdList = QgsProject::instance()->nonIdentifiableLayers();
 
-  const QMap<QString, QgsMapLayer*> &mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer*> &mapLayers = QgsProject::instance()->mapLayers();
 
   if ( mMapCanvas->currentLayer() )
   {
@@ -919,7 +918,7 @@ void QgsProjectProperties::apply()
       noIdentifyLayerList << id;
     }
     bool readonly = twIdentifyLayers->item( i, 3 )->checkState() == Qt::Checked;
-    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( id ) );
     if ( vl )
       vl->setReadOnly( readonly );
   }
@@ -1211,7 +1210,7 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
   if ( !onFlyEnabled )
   {
     // reset projection to default
-    const QMap<QString, QgsMapLayer*> &mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+    const QMap<QString, QgsMapLayer*> &mapLayers = QgsProject::instance()->mapLayers();
 
     if ( mMapCanvas->currentLayer() )
     {
@@ -1405,7 +1404,7 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
     crsList << srs.authid();
   }
 
-  const QMap<QString, QgsMapLayer*> &mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer*> &mapLayers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
     crsList << it.value()->crs().authid();

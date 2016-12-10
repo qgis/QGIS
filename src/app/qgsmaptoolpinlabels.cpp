@@ -20,7 +20,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
 #include "qgsmaptoolselectutils.h"
@@ -198,7 +198,7 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
       }
 
       QColor lblcolor = QColor( 54, 129, 255, 63 );
-      QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( pos.layerID );
+      QgsMapLayer* layer = QgsProject::instance()->mapLayer( pos.layerID );
       if ( !layer )
       {
         continue;

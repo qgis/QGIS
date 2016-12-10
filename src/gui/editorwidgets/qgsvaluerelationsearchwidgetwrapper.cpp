@@ -16,7 +16,6 @@
 #include "qgsvaluerelationsearchwidgetwrapper.h"
 
 #include "qgsfields.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsvaluerelationwidgetfactory.h"
 #include "qgsvectorlayer.h"
 #include "qgsfilterlineedit.h"

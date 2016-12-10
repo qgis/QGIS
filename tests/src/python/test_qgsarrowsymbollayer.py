@@ -35,7 +35,7 @@ from qgis.core import (
     QgsSingleSymbolRenderer,
     QgsLineSymbol,
     QgsFillSymbol,
-    QgsMapLayerRegistry,
+    QgsProject,
     QgsRectangle,
     QgsArrowSymbolLayer,
     QgsSymbol,
@@ -60,7 +60,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
 
         lines_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
         self.lines_layer = QgsVectorLayer(lines_shp, 'Lines', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayer(self.lines_layer)
+        QgsProject.instance().addMapLayer(self.lines_layer)
 
         # Create style
         sym2 = QgsLineSymbol.createSimple({'color': '#fdbf6f'})
@@ -73,7 +73,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         self.mapsettings.setBackgroundColor(QColor("white"))
 
     def tearDown(self):
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
     def test_1(self):
         sym = self.lines_layer.renderer().symbol()

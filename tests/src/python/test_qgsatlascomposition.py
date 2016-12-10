@@ -22,7 +22,7 @@ import tempfile
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from qgis.PyQt.QtCore import QFileInfo, QRectF, qWarning
-from qgis.core import QgsUnitTypes, QgsVectorLayer, QgsMapLayerRegistry, QgsMapSettings, QgsCoordinateReferenceSystem, \
+from qgis.core import QgsUnitTypes, QgsVectorLayer, QgsProject, QgsMapSettings, QgsCoordinateReferenceSystem, \
     QgsComposition, QgsFillSymbol, QgsSingleSymbolRenderer, QgsComposerLabel, QgsComposerMap, QgsFontUtils, \
     QgsRectangle, QgsComposerLegend, QgsFeature, QgsGeometry, QgsPoint, QgsRendererCategory, QgsCategorizedSymbolRenderer, QgsMarkerSymbol
 from qgscompositionchecker import QgsCompositionChecker
@@ -40,7 +40,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         vectorFileInfo = QFileInfo(tmppath + "/france_parts.shp")
         mVectorLayer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
 
-        QgsMapLayerRegistry.instance().addMapLayers([mVectorLayer])
+        QgsProject.instance().addMapLayers([mVectorLayer])
 
         # create composition with composer map
         self.mapSettings = QgsMapSettings()
@@ -282,7 +282,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
                                                   QgsRendererCategory(2, QgsMarkerSymbol.createSimple({"color": "0,0,255"}), "blue")])
         ptLayer.setRenderer(r)
 
-        QgsMapLayerRegistry.instance().addMapLayer(ptLayer)
+        QgsProject.instance().addMapLayer(ptLayer)
 
         # add the point layer to the map settings
         layers = self.mapSettings.layers()
@@ -311,7 +311,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         # restore state
         self.mapSettings.setLayers([layers[1]])
         self.mComposition.removeComposerItem(legend)
-        QgsMapLayerRegistry.instance().removeMapLayer(ptLayer.id())
+        QgsProject.instance().removeMapLayer(ptLayer.id())
 
 
 if __name__ == '__main__':

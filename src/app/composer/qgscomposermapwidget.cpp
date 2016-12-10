@@ -31,7 +31,6 @@
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsmaplayerregistry.h"
 #include "qgscomposershape.h"
 #include "qgspaperitem.h"
 #include "qgsproject.h"

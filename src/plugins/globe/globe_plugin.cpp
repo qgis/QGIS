@@ -34,7 +34,6 @@
 #include <qgsapplication.h>
 #include <qgsmapcanvas.h>
 #include <qgsvectorlayer.h>
-#include <qgsmaplayerregistry.h>
 #include <qgsfeature.h>
 #include <qgsgeometry.h>
 #include <qgsproject.h>
@@ -896,7 +895,7 @@ void GlobePlugin::updateLayers()
     // Disconnect any previous repaintRequested signals
     foreach ( const QString& layerId, mTileSource->layerSet() )
     {
-      QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+      QgsMapLayer* mapLayer = QgsProject::instance()->mapLayer( layerId );
       if ( mapLayer )
         disconnect( mapLayer, SIGNAL( repaintRequested() ), this, SLOT( layerChanged() ) );
       if ( dynamic_cast<QgsVectorLayer*>( mapLayer ) )
@@ -906,7 +905,7 @@ void GlobePlugin::updateLayers()
     mMapNode->getMap()->getModelLayers( modelLayers );
     foreach ( const osg::ref_ptr<osgEarth::ModelLayer>& modelLayer, modelLayers )
     {
-      QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( QString::fromStdString( modelLayer->getName() ) );
+      QgsMapLayer* mapLayer = QgsProject::instance()->mapLayer( QString::fromStdString( modelLayer->getName() ) );
       if ( mapLayer )
         disconnect( mapLayer, SIGNAL( repaintRequested() ), this, SLOT( layerChanged() ) );
       if ( dynamic_cast<QgsVectorLayer*>( mapLayer ) )
@@ -917,7 +916,7 @@ void GlobePlugin::updateLayers()
 
     Q_FOREACH ( const QString& layerId, selectedLayers )
     {
-      QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+      QgsMapLayer* mapLayer = QgsProject::instance()->mapLayer( layerId );
       connect( mapLayer, SIGNAL( repaintRequested() ), this, SLOT( layerChanged() ) );
 
       QgsGlobeVectorLayerConfig* layerConfig = 0;

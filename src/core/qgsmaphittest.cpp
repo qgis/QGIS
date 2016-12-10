@@ -17,7 +17,7 @@
 #include "qgsmaphittest.h"
 
 #include "qgsfeatureiterator.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsrendercontext.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsrenderer.h"
@@ -58,7 +58,7 @@ void QgsMapHitTest::run()
 
   Q_FOREACH ( const QString& layerID, mSettings.layers() )
   {
-    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) );
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerID ) );
     if ( !vl || !vl->renderer() )
       continue;
 

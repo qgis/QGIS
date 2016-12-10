@@ -36,7 +36,7 @@ from qgis.PyQt.QtGui import QFont, QColor
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDataSourceUri,
-    QgsMapLayerRegistry,
+    QgsProject,
     QgsMapSettings,
     QgsPalLabeling,
     QgsPalLayerSettings,
@@ -76,7 +76,7 @@ class TestQgsPalLabeling(unittest.TestCase):
     _TestFont = getTestFont()  # Roman at 12 pt
     """:type: QFont"""
     _MapRegistry = None
-    """:type: QgsMapLayerRegistry"""
+    """:type: QgsProject"""
     _MapSettings = None
     """:type: QgsMapSettings"""
     _Canvas = None
@@ -113,7 +113,7 @@ class TestQgsPalLabeling(unittest.TestCase):
 
         # initialize class MapRegistry, Canvas, MapRenderer, Map and PAL
         # noinspection PyArgumentList
-        cls._MapRegistry = QgsMapLayerRegistry.instance()
+        cls._MapRegistry = QgsProject.instance()
 
         cls._MapSettings = cls.getBaseMapSettings()
         osize = cls._MapSettings.outputSize()

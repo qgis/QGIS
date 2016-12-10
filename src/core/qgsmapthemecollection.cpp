@@ -18,7 +18,6 @@
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsproject.h"
 #include "qgsrenderer.h"
@@ -26,9 +25,10 @@
 
 #include <QInputDialog>
 
-QgsMapThemeCollection::QgsMapThemeCollection()
+QgsMapThemeCollection::QgsMapThemeCollection( QgsProject* project )
+    : mProject( project )
 {
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ),
+  connect( project, SIGNAL( layersRemoved( QStringList ) ),
            this, SLOT( registryLayersRemoved( QStringList ) ) );
 }
 
@@ -106,7 +106,7 @@ void QgsMapThemeCollection::applyMapThemeCheckedLegendNodesToLayer( const QStrin
   if ( !mMapThemes.contains( name ) )
     return;
 
-  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
+  QgsMapLayer* layer = mProject->mapLayer( layerID );
   if ( !layer )
     return;
 
@@ -141,7 +141,7 @@ QMap<QString, QString> QgsMapThemeCollection::mapThemeStyleOverrides( const QStr
   const QgsMapThemeCollection::MapThemeRecord& rec = mMapThemes[presetName];
   Q_FOREACH ( const QString& layerID, lst )
   {
-    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
+    QgsMapLayer* layer = mProject->mapLayer( layerID );
     if ( !layer )
       continue;
 
@@ -180,7 +180,7 @@ void QgsMapThemeCollection::reconnectToLayersStyleManager()
 
   Q_FOREACH ( const QString& layerID, layerIDs )
   {
-    if ( QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
+    if ( QgsMapLayer* ml = mProject->mapLayer( layerID ) )
       connect( ml->styleManager(), SIGNAL( styleRenamed( QString, QString ) ), this, SLOT( layerStyleRenamed( QString, QString ) ) );
   }
 }
@@ -202,7 +202,7 @@ void QgsMapThemeCollection::readXml( const QDomDocument& doc )
     while ( !visPresetLayerElem.isNull() )
     {
       QString layerID = visPresetLayerElem.attribute( QStringLiteral( "id" ) );
-      if ( QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
+      if ( mProject->mapLayer( layerID ) )
       {
         rec.mVisibleLayerIds << layerID; // only use valid layer IDs
         if ( visPresetLayerElem.hasAttribute( QStringLiteral( "style" ) ) )
@@ -224,7 +224,7 @@ void QgsMapThemeCollection::readXml( const QDomDocument& doc )
       }
 
       QString layerID = checkedLegendNodesElem.attribute( QStringLiteral( "id" ) );
-      if ( QgsMapLayerRegistry::instance()->mapLayer( layerID ) ) // only use valid IDs
+      if ( mProject->mapLayer( layerID ) ) // only use valid IDs
         rec.mPerLayerCheckedLegendSymbols.insert( layerID, checkedLegendNodes );
       checkedLegendNodesElem = checkedLegendNodesElem.nextSiblingElement( QStringLiteral( "checked-legend-nodes" ) );
     }

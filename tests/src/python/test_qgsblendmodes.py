@@ -32,7 +32,7 @@ from qgis.PyQt.QtGui import QPainter, QColor
 
 from qgis.core import (QgsVectorLayer,
                        QgsVectorSimplifyMethod,
-                       QgsMapLayerRegistry,
+                       QgsProject,
                        QgsMultiRenderChecker,
                        QgsRasterLayer,
                        QgsMultiBandColorRenderer,
@@ -58,7 +58,7 @@ class TestQgsBlendModes(unittest.TestCase):
         self.iface = get_iface()
 
         # initialize class MapRegistry, Canvas, MapRenderer, Map and PAL
-        self.mMapRegistry = QgsMapLayerRegistry.instance()
+        self.mMapRegistry = QgsProject.instance()
 
         # create point layer
         myShpFile = os.path.join(TEST_DATA_DIR, 'points.shp')

@@ -23,7 +23,7 @@
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectorlayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgenericprojectionselector.h"
 
@@ -499,7 +499,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
     myList << layer;
     //addMapLayers returns a list of all successfully added layers
     //so we compare that to our original list.
-    if ( myList == QgsMapLayerRegistry::instance()->addMapLayers( myList ) )
+    if ( myList == QgsProject::instance()->addMapLayers( myList ) )
       return true;
   }
   else

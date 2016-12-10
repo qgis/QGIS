@@ -44,7 +44,7 @@ from osgeo import ogr
 
 from qgis.PyQt.QtCore import QVariant, QSettings
 from qgis.core import (Qgis, QgsFields, QgsField, QgsGeometry, QgsRectangle, QgsWkbTypes,
-                       QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer,
+                       QgsSpatialIndex, QgsProject, QgsMapLayer, QgsVectorLayer,
                        QgsVectorFileWriter, QgsDistanceArea, QgsDataSourceUri, QgsCredentials,
                        QgsFeatureRequest, QgsWkbTypes)
 
@@ -402,7 +402,7 @@ def duplicateInMemory(layer, newName='', addToRegistry=False):
 
     if addToRegistry:
         if memLayer.isValid():
-            QgsMapLayerRegistry.instance().addMapLayer(memLayer)
+            QgsProject.instance().addMapLayer(memLayer)
         else:
             raise RuntimeError('Layer invalid')
 

@@ -25,7 +25,6 @@
 #include "qgsmaplayerrenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmapsettings.h"
 #include "qgsdistancearea.h"
 #include "qgsproject.h"
@@ -379,7 +378,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
     QgsDebugMsg( "If there is a QPaintEngine error here, it is caused by an emit call" );
 
     //emit drawingProgress(myRenderCounter++, mLayerSet.size());
-    QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    QgsMapLayer *ml = QgsProject::instance()->mapLayer( layerId );
 
     if ( !ml )
     {
@@ -902,14 +901,12 @@ QgsRectangle QgsMapRenderer::fullExtent()
   if ( !mFullExtent.isNull() )
     return mFullExtent;
 
-  QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
-
   // iterate through the map layers and test each layers extent
   // against the current min and max values
   QgsDebugMsg( QString( "Layer count: %1" ).arg( mLayerSet.count() ) );
   Q_FOREACH ( const QString layerId, mLayerSet )
   {
-    QgsMapLayer * lyr = registry->mapLayer( layerId );
+    QgsMapLayer * lyr = QgsProject::instance()->mapLayer( layerId );
     if ( !lyr )
     {
       QgsDebugMsg( QString( "WARNING: layer '%1' not found in map layer registry!" ).arg( layerId ) );

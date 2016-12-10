@@ -61,7 +61,7 @@ class QgsMapThemeCollection : QObject
 
     };
 
-    QgsMapThemeCollection();
+    QgsMapThemeCollection( QgsProject* project );
 
     /**
      * Returns whether a map theme with a matching name exists.

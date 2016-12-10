@@ -28,7 +28,7 @@ from qgis.PyQt.QtCore import Qt, QSettings, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
 from qgis.PyQt.QtGui import QCursor
 
-from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils, QgsMapLayer, QgsProviderRegistry, QgsCoordinateReferenceSystem, QgsVectorLayerImport, QgsProject, QgsMapLayerRegistry
+from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils, QgsMapLayer, QgsProviderRegistry, QgsCoordinateReferenceSystem, QgsVectorLayerImport, QgsProject
 from qgis.gui import QgsMessageViewer
 from qgis.utils import iface
 
@@ -183,7 +183,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         else:
             layerId = self.cboInputLayer.itemData(index)
-            self.inLayer = QgsMapLayerRegistry.instance().mapLayer(layerId)
+            self.inLayer = QgsProject.instance().mapLayer(layerId)
             self.inLayerMustBeDestroyed = False
 
         self.checkSupports()

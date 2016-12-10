@@ -16,7 +16,7 @@
 #include "qgsglobefeatureidentify.h"
 
 #include "qgsmapcanvas.h"
-#include <qgsmaplayerregistry.h>
+#include "qgsproject.h"
 #include <qgsrubberband.h>
 #include <qgsvectorlayer.h>
 #include <qgslogger.h>
@@ -59,7 +59,7 @@ void QgsGlobeFeatureIdentifyCallback::onHit( osgEarth::ObjectID id )
   std::string layerId;
   if ( feature->getUserValue( "qgisLayerId", layerId ) )
   {
-    QgsVectorLayer* lyr = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( QString::fromStdString( layerId ) ) );
+    QgsVectorLayer* lyr = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( QString::fromStdString( layerId ) ) );
 #endif
     if ( lyr )
     {

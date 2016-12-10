@@ -20,7 +20,7 @@
 #include "qgstransaction.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -50,7 +50,7 @@ QgsTransaction* QgsTransaction::create( const QStringList& layerIds )
   if ( layerIds.isEmpty() )
     return nullptr;
 
-  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerIds.first() ) );
+  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerIds.first() ) );
   if ( !layer )
     return nullptr;
 
@@ -85,7 +85,7 @@ QgsTransaction::~QgsTransaction()
 
 bool QgsTransaction::addLayer( const QString& layerId )
 {
-  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerId ) );
   return addLayer( layer );
 }
 
@@ -113,7 +113,7 @@ bool QgsTransaction::addLayer( QgsVectorLayer* layer )
   }
 
   connect( this, &QgsTransaction::afterRollback, layer->dataProvider(), &QgsVectorDataProvider::dataChanged );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( onLayersDeleted( QStringList ) ) );
+  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( onLayersDeleted( QStringList ) ) );
   mLayers.insert( layer );
 
   if ( mTransactionActive )

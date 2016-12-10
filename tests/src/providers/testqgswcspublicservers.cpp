@@ -29,7 +29,7 @@
 #include <qgsapplication.h>
 #include <qgsdatasourceuri.h>
 #include <qgslogger.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 #include <qgsmaprenderersequentialjob.h>
 #include <qgsproviderregistry.h>
 #include <qgsrasterdataprovider.h>
@@ -457,7 +457,7 @@ void TestQgsWcsPublicServers::test()
               myLog << provider + "_max:" + QString::number( myStats.maximumValue );
             }
 
-            QgsMapLayerRegistry::instance()->addMapLayer( myLayer, false );
+            QgsProject::instance()->addMapLayer( myLayer, false );
 
             QgsMapSettings mapSettings;
             mapSettings.setLayers( QStringList( myLayer->id() ) );
@@ -524,7 +524,7 @@ void TestQgsWcsPublicServers::test()
         myStream << myLog.join( QStringLiteral( "\n" ) );
 
         myLogFile.close();
-        QgsMapLayerRegistry::instance()->removeAllMapLayers();
+        QgsProject::instance()->removeAllMapLayers();
       }
       if ( !mCoverage.isEmpty() && ! myCoverageFound )
       {

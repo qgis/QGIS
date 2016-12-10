@@ -25,7 +25,6 @@
 #include "qgscomposermultiframecommand.h"
 #include "qgscomposertablecolumn.h"
 #include "qgscomposermap.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsproject.h"

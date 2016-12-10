@@ -22,7 +22,6 @@
 #include "qgsmultirenderchecker.h"
 #include "qgsfontutils.h"
 #include "qgsvectorlayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectordataprovider.h"
 #include "qgsproject.h"
@@ -281,7 +280,7 @@ void TestQgsComposerHtml::javascriptSetFeature()
   f3.setAttributes( QgsAttributes() << "foobar" << 124 <<  554 );
   QVERIFY( pr->addFeatures( QgsFeatureList() << f1 <<  f2 <<  f3 ) );
 
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << childLayer << parentLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << childLayer << parentLayer );
 
   //atlas
   mComposition->atlasComposition().setCoverageLayer( parentLayer );
@@ -321,7 +320,7 @@ void TestQgsComposerHtml::javascriptSetFeature()
   delete htmlItem;
   QVERIFY( result );
 
-  QgsMapLayerRegistry::instance()->removeMapLayers( QList<QgsMapLayer *>() << childLayer << parentLayer );
+  QgsProject::instance()->removeMapLayers( QList<QgsMapLayer *>() << childLayer << parentLayer );
 }
 
 

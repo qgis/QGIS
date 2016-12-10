@@ -168,7 +168,6 @@
 #include "qgsmapcanvassnappingutils.h"
 #include "qgsmapcanvastracer.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmapsettings.h"
@@ -2802,9 +2801,9 @@ void QgisApp::setupConnections()
            this, SLOT( markDirty() ) );
 
   // connect map layer registry
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ),
+  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ),
            this, SLOT( layersWereAdded( QList<QgsMapLayer *> ) ) );
-  connect( QgsMapLayerRegistry::instance(),
+  connect( QgsProject::instance(),
            SIGNAL( layersWillBeRemoved( QStringList ) ),
            this, SLOT( removingLayers( QStringList ) ) );
 
@@ -3717,7 +3716,7 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
   }
 
   // Register this layer with the layers registry
-  QgsMapLayerRegistry::instance()->addMapLayers( myList );
+  QgsProject::instance()->addMapLayers( myList );
   Q_FOREACH ( QgsMapLayer *l, myList )
   {
     bool ok;
@@ -4090,7 +4089,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   if ( ! myList.isEmpty() )
   {
     // Register layer(s) with the layers registry
-    QgsMapLayerRegistry::instance()->addMapLayers( myList );
+    QgsProject::instance()->addMapLayers( myList );
     Q_FOREACH ( QgsMapLayer *l, myList )
     {
       bool ok;
@@ -4176,7 +4175,7 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
     //qWarning("incrementing iterator");
   }
 
-  QgsMapLayerRegistry::instance()->addMapLayers( myList );
+  QgsProject::instance()->addMapLayers( myList );
 
   // load default style after adding to process readCustomSymbology signals
   Q_FOREACH ( QgsMapLayer *l, myList )
@@ -4247,7 +4246,7 @@ void QgisApp::addSelectedVectorLayer( const QString& uri, const QString& layerNa
 
 void QgisApp::replaceSelectedVectorLayer( const QString& oldId, const QString& uri, const QString& layerName, const QString& provider )
 {
-  QgsMapLayer* old = QgsMapLayerRegistry::instance()->mapLayer( oldId );
+  QgsMapLayer* old = QgsProject::instance()->mapLayer( oldId );
   if ( !old )
     return;
   QgsVectorLayer* oldLayer = static_cast<QgsVectorLayer*>( old );
@@ -4255,13 +4254,13 @@ void QgisApp::replaceSelectedVectorLayer( const QString& oldId, const QString& u
   if ( !newLayer || !newLayer->isValid() )
     return;
 
-  QgsMapLayerRegistry::instance()->addMapLayer( newLayer, /*addToLegend*/ false, /*takeOwnership*/ true );
+  QgsProject::instance()->addMapLayer( newLayer, /*addToLegend*/ false, /*takeOwnership*/ true );
   duplicateVectorStyle( oldLayer, newLayer );
 
   // insert the new layer just below the old one
   QgsLayerTreeUtils::insertLayerBelow( QgsProject::instance()->layerTreeRoot(), oldLayer, newLayer );
   // and remove the old layer
-  QgsMapLayerRegistry::instance()->removeMapLayer( oldLayer );
+  QgsProject::instance()->removeMapLayer( oldLayer );
 } // QgisApp:replaceSelectedVectorLayer
 
 void QgisApp::addMssqlLayer()
@@ -4647,7 +4646,7 @@ void QgisApp::fileOpenAfterLaunch()
 
   // check if a data source is already loaded via command line or filesystem
   // empty project with layer loaded, but may not trigger a dirty project at this point
-  if ( QgsProject::instance() && QgsMapLayerRegistry::instance()->count() > 0 )
+  if ( QgsProject::instance() && QgsProject::instance()->count() > 0 )
   {
     return;
   }
@@ -4807,7 +4806,7 @@ void QgisApp::newMemoryLayer()
     QList< QgsMapLayer* > layers;
     layers << newLayer;
 
-    QgsMapLayerRegistry::instance()->addMapLayers( layers );
+    QgsProject::instance()->addMapLayers( layers );
     newLayer->startEditing();
   }
 }
@@ -7348,7 +7347,7 @@ void QgisApp::deselectAll()
   if ( renderFlagState )
     mMapCanvas->setRenderFlag( false );
 
-  QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); ++it )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
@@ -7657,7 +7656,7 @@ QgsVectorLayer *QgisApp::pasteAsNewMemoryVector( const QString & theLayerName )
 
   mMapCanvas->freeze();
 
-  QgsMapLayerRegistry::instance()->addMapLayer( layer );
+  QgsProject::instance()->addMapLayer( layer );
 
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
@@ -8283,7 +8282,7 @@ void QgisApp::layerSubsetString()
       if ( newLayer->isValid() )
       {
         duplicateVectorStyle( vlayer, newLayer );
-        QgsMapLayerRegistry::instance()->addMapLayer( newLayer, /*addToLegend*/ false, /*takeOwnership*/ true );
+        QgsProject::instance()->addMapLayer( newLayer, /*addToLegend*/ false, /*takeOwnership*/ true );
         QgsLayerTreeUtils::insertLayerBelow( QgsProject::instance()->layerTreeRoot(), vlayer, newLayer );
         mLayerTreeView->setCurrentLayer( newLayer );
         // hide the old layer
@@ -8375,7 +8374,7 @@ void QgisApp::removingLayers( const QStringList& theLayers )
   Q_FOREACH ( const QString &layerId, theLayers )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>(
-                               QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+                               QgsProject::instance()->mapLayer( layerId ) );
     if ( !vlayer || !vlayer->isEditable() )
       return;
 
@@ -8385,7 +8384,7 @@ void QgisApp::removingLayers( const QStringList& theLayers )
 
 void QgisApp::removeAllLayers()
 {
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsProject::instance()->removeAllMapLayers();
 }
 
 void QgisApp::removeLayer()
@@ -8568,7 +8567,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *>& lyrList )
     QList<QgsMapLayer *> myList;
     myList << dupLayer;
     QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( false );
-    QgsMapLayerRegistry::instance()->addMapLayers( myList );
+    QgsProject::instance()->addMapLayers( myList );
     QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
 
     QgsLayerTreeLayer* nodeSelectedLyr = mLayerTreeView->layerTreeModel()->rootGroup()->findLayer( selectedLyr->id() );
@@ -9064,7 +9063,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
     if ( oldCapitalise != mySettings.value( QStringLiteral( "/qgis/capitaliseLayerName" ), QVariant( false ) ).toBool() )
     {
       // if the layer capitalization has changed, we need to update all layer names
-      Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
+      Q_FOREACH ( QgsMapLayer* layer, QgsProject::instance()->mapLayers() )
         layer->setName( layer->originalName() );
     }
 
@@ -9391,7 +9390,7 @@ QgsVectorLayer* QgisApp::addVectorLayer( const QString& vectorLayerPath, const Q
       // Register this layer with the layers registry
       QList<QgsMapLayer *> myList;
       myList << layer;
-      QgsMapLayerRegistry::instance()->addMapLayers( myList );
+      QgsProject::instance()->addMapLayers( myList );
       bool ok;
       layer->loadDefaultStyle( ok );
     }
@@ -9435,7 +9434,7 @@ void QgisApp::addMapLayer( QgsMapLayer *theMapLayer )
     // Register this layer with the layers registry
     QList<QgsMapLayer *> myList;
     myList << theMapLayer;
-    QgsMapLayerRegistry::instance()->addMapLayers( myList );
+    QgsProject::instance()->addMapLayers( myList );
     // add it to the mapcanvas collection
     // not necessary since adding to registry adds to canvas mMapCanvas->addLayer(theMapLayer);
   }
@@ -9515,9 +9514,9 @@ bool QgisApp::saveDirty()
   bool hasUnsavedEdits = false;
   // extra check to see if there are any vector layers with unsaved provider edits
   // to ensure user has opportunity to save any editing
-  if ( QgsMapLayerRegistry::instance()->count() > 0 )
+  if ( QgsProject::instance()->count() > 0 )
   {
-    QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+    QMap<QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
     for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); ++it )
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
@@ -9552,7 +9551,7 @@ bool QgisApp::saveDirty()
   QSettings settings;
   bool askThem = settings.value( QStringLiteral( "qgis/askToSaveProjectChanges" ), true ).toBool();
 
-  if ( askThem && QgsProject::instance()->isDirty() && QgsMapLayerRegistry::instance()->count() > 0 )
+  if ( askThem && QgsProject::instance()->isDirty() && QgsProject::instance()->count() > 0 )
   {
     // flag project as dirty since dirty state of canvas is reset if "dirty"
     // is based on a zoom or pan
@@ -9581,7 +9580,7 @@ bool QgisApp::saveDirty()
 bool QgisApp::checkTasksDependOnProject()
 {
   QSet< QString > activeTaskDescriptions;
-  QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::const_iterator layerIt = layers.constBegin();
 
   for ( ; layerIt != layers.constEnd(); ++layerIt )
@@ -10535,7 +10534,7 @@ void QgisApp::updateLabelToolButtons()
 {
   bool enableMove = false, enableRotate = false, enablePin = false, enableShowHide = false, enableChange = false;
 
-  QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); ++it )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( it.value() );
@@ -11041,7 +11040,7 @@ bool QgisApp::addRasterLayer( QgsRasterLayer *theRasterLayer )
   // register this layer with the central layers registry
   QList<QgsMapLayer *> myList;
   myList << theRasterLayer;
-  QgsMapLayerRegistry::instance()->addMapLayers( myList );
+  QgsProject::instance()->addMapLayers( myList );
 
   return true;
 }
@@ -11280,7 +11279,7 @@ QgsPluginLayer* QgisApp::addPluginLayer( const QString& uri, const QString& base
 
   layer->setName( baseName );
 
-  QgsMapLayerRegistry::instance()->addMapLayer( layer );
+  QgsProject::instance()->addMapLayer( layer );
 
   return layer;
 }

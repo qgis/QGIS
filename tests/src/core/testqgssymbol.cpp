@@ -26,7 +26,7 @@
 #include "qgscolorramp.h"
 #include "qgscptcityarchive.h"
 #include "qgsvectorlayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgssinglesymbolrenderer.h"
@@ -113,7 +113,7 @@ void TestQgsSymbol::initTestCase()
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPointsLayer );
 
   //
@@ -124,7 +124,7 @@ void TestQgsSymbol::initTestCase()
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPolysLayer );
 
 
@@ -136,7 +136,7 @@ void TestQgsSymbol::initTestCase()
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
                                      myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpLinesLayer );
 
   mReport += QLatin1String( "<h1>StyleV2 Tests</h1>\n" );

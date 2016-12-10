@@ -28,6 +28,7 @@
 #include "qgsgetrequesthandler.h"
 #include "qgspostrequesthandler.h"
 #include "qgssoaprequesthandler.h"
+#include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
 #include "qgswmsserver.h"
@@ -36,7 +37,6 @@
 #include "qgsmapserviceexception.h"
 #include "qgspallabeling.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsserverlogger.h"
 #include "qgseditorwidgetregistry.h"
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -452,7 +452,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
 
   int logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsProject::instance()->removeAllMapLayers();
 
   // Clean up  Expression Context
   // because each call to QgsMapLayer::draw add items to QgsExpressionContext scope

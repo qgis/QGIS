@@ -34,7 +34,6 @@
 #include "qgslegendrenderer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 

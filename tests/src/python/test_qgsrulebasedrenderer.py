@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtCore import QSize
 
 from qgis.core import (QgsVectorLayer,
-                       QgsMapLayerRegistry,
+                       QgsProject,
                        QgsRectangle,
                        QgsMultiRenderChecker,
                        QgsRuleBasedRenderer,
@@ -57,7 +57,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         self.iface = get_iface()
         myShpFile = os.path.join(TEST_DATA_DIR, 'rectangles.shp')
         layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Create rulebased style
         sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
@@ -84,7 +84,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         self.mapsettings.setLayers(rendered_layers)
 
     def tearDown(self):
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
     def testElse(self):
         # Setup rendering check

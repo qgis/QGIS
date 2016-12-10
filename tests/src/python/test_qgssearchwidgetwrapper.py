@@ -22,7 +22,7 @@ from qgis.gui import (QgsSearchWidgetWrapper,
                       QgsDateTimeSearchWidgetWrapper)
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
-                       QgsMapLayerRegistry,
+                       QgsProject,
                        )
 from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.PyQt.QtWidgets import QWidget
@@ -179,7 +179,7 @@ class PyQgsValueRelationSearchWidgetWrapper(unittest.TestCase):
         f3 = QgsFeature(parent_layer.fields(), 3)
         f3.setAttributes(['c', 3, 'value c'])
         parent_layer.dataProvider().addFeatures([f1, f2, f3])
-        QgsMapLayerRegistry.instance().addMapLayers([layer, parent_layer])
+        QgsProject.instance().addMapLayers([layer, parent_layer])
 
         config = {"Layer": parent_layer.id(),
                   "Key": 'stringkey',

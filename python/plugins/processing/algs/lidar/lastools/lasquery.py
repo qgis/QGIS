@@ -34,7 +34,7 @@ import os
 from .LAStoolsUtils import LAStoolsUtils
 from processing.core.parameters import ParameterExtent
 from .LAStoolsAlgorithm import LAStoolsAlgorithm
-from qgis.core import QgsMapLayer, QgsMapLayerRegistry
+from qgis.core import QgsMapLayer, QgsProject
 
 
 class lasquery(LAStoolsAlgorithm):
@@ -58,7 +58,7 @@ class lasquery(LAStoolsAlgorithm):
         aoiCoords = aoi.split(',')
 
         # get layers
-        layers = QgsMapLayerRegistry.instance().mapLayers()
+        layers = QgsProject.instance().mapLayers()
 
         # loop over layers
         for name, layer in list(layers.items()):

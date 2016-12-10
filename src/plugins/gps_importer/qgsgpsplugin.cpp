@@ -21,7 +21,7 @@
 #include "qgisinterface.h"
 #include "qgisgui.h"
 #include "qgsapplication.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsdataprovider.h"
@@ -123,8 +123,7 @@ void QgsGPSPlugin::run()
   // find all GPX layers
   std::vector<QgsVectorLayer*> gpxLayers;
   QMap<QString, QgsMapLayer*>::const_iterator iter;
-  QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
-  QMap<QString, QgsMapLayer*> layers = registry->mapLayers();
+  QMap<QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
   for ( iter = layers.constBegin();
         iter != layers.constEnd(); ++iter )
   {

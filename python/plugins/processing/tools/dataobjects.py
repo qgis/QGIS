@@ -38,7 +38,7 @@ from qgis.core import (Qgis,
                        QgsRasterLayer,
                        QgsWkbTypes,
                        QgsVectorLayer,
-                       QgsMapLayerRegistry,
+                       QgsProject,
                        QgsCoordinateReferenceSystem)
 from qgis.gui import QgsSublayersDialog
 from qgis.utils import iface
@@ -206,7 +206,7 @@ def load(fileName, name=None, crs=None, style=None):
             else:
                 style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
         qgslayer.loadNamedStyle(style)
-        QgsMapLayerRegistry.instance().addMapLayers([qgslayer])
+        QgsProject.instance().addMapLayers([qgslayer])
     else:
         qgslayer = QgsRasterLayer(fileName, name)
         if qgslayer.isValid():
@@ -215,7 +215,7 @@ def load(fileName, name=None, crs=None, style=None):
             if style is None:
                 style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
             qgslayer.loadNamedStyle(style)
-            QgsMapLayerRegistry.instance().addMapLayers([qgslayer])
+            QgsProject.instance().addMapLayers([qgslayer])
         else:
             if prjSetting:
                 settings.setValue('/Projections/defaultBehaviour', prjSetting)

@@ -22,7 +22,6 @@
 #include "qgscomposerutils.h"
 #include "qgslogger.h"
 #include "qgsmaprenderercustompainterjob.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaptopixel.h"
 #include "qgspainting.h"
@@ -560,7 +559,7 @@ QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context 
     //need to convert layer names to layer ids
     Q_FOREACH ( const QString& name, layerNames )
     {
-      QList< QgsMapLayer* > matchingLayers = QgsMapLayerRegistry::instance()->mapLayersByName( name );
+      QList< QgsMapLayer* > matchingLayers = QgsProject::instance()->mapLayersByName( name );
       Q_FOREACH ( QgsMapLayer* layer, matchingLayers )
       {
         renderLayerSet << layer->id();
@@ -1126,7 +1125,7 @@ bool QgsComposerMap::containsWmsLayer() const
 
   for ( ; layer_it != layers.constEnd(); ++layer_it )
   {
-    currentLayer = QgsMapLayerRegistry::instance()->mapLayer( *layer_it );
+    currentLayer = QgsProject::instance()->mapLayer( *layer_it );
     if ( currentLayer )
     {
       QgsRasterLayer* currentRasterLayer = qobject_cast<QgsRasterLayer *>( currentLayer );
@@ -1172,7 +1171,7 @@ bool QgsComposerMap::containsAdvancedEffects() const
 
   for ( ; layer_it != layers.constEnd(); ++layer_it )
   {
-    currentLayer = QgsMapLayerRegistry::instance()->mapLayer( *layer_it );
+    currentLayer = QgsProject::instance()->mapLayer( *layer_it );
     if ( currentLayer )
     {
       if ( currentLayer->blendMode() != QPainter::CompositionMode_SourceOver )
@@ -1209,11 +1208,11 @@ bool QgsComposerMap::containsAdvancedEffects() const
 void QgsComposerMap::connectUpdateSlot()
 {
   //connect signal from layer registry to update in case of new or deleted layers
-  QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
-  if ( layerRegistry )
+  QgsProject* project = QgsProject::instance();
+  if ( project )
   {
-    connect( layerRegistry, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( layersChanged() ) );
-    connect( layerRegistry, SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layersChanged() ) );
+    connect( project, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( layersChanged() ) );
+    connect( project, SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layersChanged() ) );
   }
 }
 
@@ -1592,7 +1591,7 @@ void QgsComposerMap::storeCurrentLayerStyles()
   mLayerStyleOverrides.clear();
   Q_FOREACH ( const QString& layerID, mLayerSet )
   {
-    if ( QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
+    if ( QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerID ) )
     {
       QgsMapLayerStyle style;
       style.readFromLayer( layer );
@@ -1612,7 +1611,7 @@ void QgsComposerMap::syncLayerSet()
   QStringList currentLayerSet;
   if ( mKeepLayerSet )
   {
-    currentLayerSet = QgsMapLayerRegistry::instance()->mapLayers().uniqueKeys();
+    currentLayerSet = QgsProject::instance()->mapLayers().uniqueKeys();
   }
   else //only consider layers visible in the map
   {

@@ -75,7 +75,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QgsMapLayer::LayerType type() const;
 
-    //! Returns the layer's unique ID, which is used to access this layer from QgsMapLayerRegistry.
+    //! Returns the layer's unique ID, which is used to access this layer from QgsProject.
     QString id() const;
 
     /**

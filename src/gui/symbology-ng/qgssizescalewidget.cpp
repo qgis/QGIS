@@ -18,7 +18,7 @@
 
 #include "qgsvectorlayer.h"
 #include "qgsfeatureiterator.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgssymbol.h"
 #include "qgslayertreelayer.h"
 #include "qgslayertreemodellegendnode.h"
@@ -105,7 +105,7 @@ QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsS
     : mSymbol( symbol )
     // we just use the minimumValue and maximumValue from the layer, unfortunately they are
     // non const, so we get the layer from the registry instead
-    , mLayer( layer ? dynamic_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( layer->id() ) ) : nullptr )
+    , mLayer( layer ? dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layer->id() ) ) : nullptr )
     , mMapCanvas( nullptr )
 {
   setupUi( this );

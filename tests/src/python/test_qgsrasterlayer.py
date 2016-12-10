@@ -24,7 +24,7 @@ from qgis.core import (QgsRaster,
                        QgsRasterLayer,
                        QgsColorRampShader,
                        QgsContrastEnhancement,
-                       QgsMapLayerRegistry,
+                       QgsProject,
                        QgsMapSettings,
                        QgsPoint,
                        QgsRasterShader,
@@ -132,7 +132,7 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         rasterRenderer.setRasterTransparency(rasterTransparency)
 
-        QgsMapLayerRegistry.instance().addMapLayers([myRasterLayer, ])
+        QgsProject.instance().addMapLayers([myRasterLayer, ])
 
         myMapSettings = QgsMapSettings()
         myMapSettings.setLayers([myRasterLayer.id()])
@@ -155,7 +155,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myMessage = 'Raster not loaded: %s' % myPath
         assert myRasterLayer.isValid(), myMessage
         # crash on next line
-        QgsMapLayerRegistry.instance().addMapLayers([myRasterLayer])
+        QgsProject.instance().addMapLayers([myRasterLayer])
 
     def testShaderCrash(self):
         """Check if we assign a shader and then reassign it no crash occurs."""

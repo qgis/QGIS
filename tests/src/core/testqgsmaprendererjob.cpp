@@ -36,7 +36,7 @@
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -183,7 +183,7 @@ void TestQgsMapRendererJob::initTestCase()
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QVERIFY( mpPolysLayer->isValid() );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   // add the test layer to the maprender
   mMapSettings->setLayers( QStringList() << mpPolysLayer->id() );
   mReport += QLatin1String( "<h1>Map Render Tests</h1>\n" );
@@ -285,7 +285,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
     QFAIL( errorMsg.toLocal8Bit().data() );
   }
 
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << vectorLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << vectorLayer );
 
   QImage globalImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
   globalImage.fill( Qt::white );
@@ -317,7 +317,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
     globalPainter.drawImage( globalImageX, globalImageY, img );
   }
 
-  QgsMapLayerRegistry::instance()->removeMapLayers( QStringList() << vectorLayer->id() );
+  QgsProject::instance()->removeMapLayers( QStringList() << vectorLayer->id() );
 
   QString renderedImagePath = QDir::tempPath() + "/" + QTest::currentDataTag() + QStringLiteral( ".png" );
   globalImage.save( renderedImagePath );

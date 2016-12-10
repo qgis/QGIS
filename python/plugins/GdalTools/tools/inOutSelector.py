@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import Qt, pyqtSignal, pyqtProperty
 from qgis.PyQt.QtWidgets import QWidget, QComboBox
 
-from qgis.core import QgsMapLayerRegistry, QgsMapLayer
+from qgis.core import QgsProject, QgsMapLayer
 
 from .ui_inOutSelector import Ui_GdalToolsInOutSelector
 
@@ -233,7 +233,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
     def layer(self):
         if self.getType() != self.FILE and self.combo.currentIndex() >= 0:
             layerID = self.combo.itemData(self.combo.currentIndex())
-            return QgsMapLayerRegistry.instance().mapLayer(layerID)
+            return QgsProject.instance().mapLayer(layerID)
         return None
 
     def filename(self):

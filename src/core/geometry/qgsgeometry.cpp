@@ -32,9 +32,7 @@ email                : morb at ozemail dot com dot au
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 
-#include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
-#include "qgsproject.h"
 #include "qgsgeometryvalidator.h"
 
 #include "qgsmulticurve.h"

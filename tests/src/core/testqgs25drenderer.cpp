@@ -27,7 +27,7 @@
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 #include <qgssymbol.h>
 #include <qgs25drenderer.h>
 #include "qgscomposition.h"
@@ -91,7 +91,7 @@ void TestQgs25DRenderer::initTestCase()
   QgsExpressionContextUtils::setLayerVariable( mpPolysLayer, QStringLiteral( "qgis_25d_angle" ), 45 );
 
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPolysLayer );
 
   mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );

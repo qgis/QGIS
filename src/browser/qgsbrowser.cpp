@@ -27,7 +27,7 @@
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
 #include "qgsconditionalstyle.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
@@ -145,9 +145,9 @@ void QgsBrowser::itemClicked( const QModelIndex& index )
     mParamWidget = nullptr;
   }
 
-  // QgsMapLayerRegistry deletes the previous layer(s) for us
+  // QgsProject deletes the previous layer(s) for us
   // TODO: in future we could cache the layers in the registry
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsProject::instance()->removeAllMapLayers();
   mLayer = nullptr;
 
   // this should probably go to the model and only emit signal when a layer is clicked
@@ -236,7 +236,7 @@ bool QgsBrowser::layerClicked( QgsLayerItem *item )
 
   QgsDebugMsg( "Layer created" );
 
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mLayer );
 
   return true;
