@@ -64,7 +64,6 @@ QgsCapabilitiesCache* QgsServer::sCapabilitiesCache = nullptr;
 QgsMapRenderer* QgsServer::sMapRenderer = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 QgsServerInterfaceImpl*QgsServer::sServerInterface = nullptr;
-bool QgsServer::sInitPython = true;
 #endif
 // Initialization must run once for all servers
 bool QgsServer::sInitialised =  false;
@@ -316,10 +315,6 @@ bool QgsServer::init( )
     return false;
   }
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-  sInitPython = false;
-#endif
-
   QgsServerLogger::instance();
 
 #ifndef _MSC_VER
@@ -398,27 +393,13 @@ bool QgsServer::init( )
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Roman" ) << QStringLiteral( "Bold" ) );
 #endif
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache );
-  if ( sInitPython )
-  {
-    // Init plugins
-    if ( ! QgsServerPlugins::initPlugins( sServerInterface ) )
-    {
-      QgsMessageLog::logMessage( QStringLiteral( "No server python plugins are available" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-    }
-    else
-    {
-      QgsMessageLog::logMessage( QStringLiteral( "Server python plugins loaded" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-    }
-  }
-#endif
-
   QgsEditorWidgetRegistry::initEditors();
   sInitialised = true;
   QgsMessageLog::logMessage( QStringLiteral( "Server initialized" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   return true;
 }
+
+
 
 void QgsServer::putenv( const QString &var, const QString &val )
 {
@@ -644,6 +625,24 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   // Returns the header and response bytestreams (to be used in Python bindings)
   return theRequestHandler->getResponse();
 }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+void QgsServer::initPython()
+{
+  /*
+  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache );
+    // Init plugins
+  if ( ! QgsServerPlugins::initPlugins( sServerInterface ) )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "No server python plugins are available" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Server python plugins loaded" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  }
+  */
+}
+#endif
 
 #if 0
 // The following code was used to test type conversion in python bindings
