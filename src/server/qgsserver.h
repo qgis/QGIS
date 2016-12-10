@@ -78,9 +78,13 @@ class SERVER_EXPORT QgsServer
     QPair<QByteArray, QByteArray> testQPair( QPair<QByteArray, QByteArray> pair );
 #endif
 
-    //! Returns a pointer to the server interface
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
+    //! Returns a pointer to the server interface
     QgsServerInterfaceImpl* serverInterface() { return sServerInterface; }
+
+    //! Intialize python
+    //! Note: not in python bindings
+    void initPython( );
 #endif
 
   private:
@@ -120,7 +124,6 @@ class SERVER_EXPORT QgsServer
     static QgsMapRenderer* sMapRenderer;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     static QgsServerInterfaceImpl* sServerInterface;
-    static bool sInitPython;
 #endif
     //! Initialization must run once for all servers
     static bool sInitialised;
