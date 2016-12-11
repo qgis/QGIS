@@ -134,8 +134,7 @@ void QgsBrowser::itemClicked( const QModelIndex& index )
   // clear the previous stuff
   setLayer( nullptr );
 
-  QList<QgsMapCanvasLayer> nolayers;
-  mapCanvas->setLayerSet( nolayers );
+  mapCanvas->setLayers( QList<QgsMapLayer*>() );
   metaTextBrowser->clear();
   if ( mParamWidget )
   {
@@ -431,9 +430,7 @@ void QgsBrowser::updateCurrentTab()
     if ( mLayer && mLayer->isValid() )
     {
       // Create preview: add to map canvas
-      QList<QgsMapCanvasLayer> layers;
-      layers << QgsMapCanvasLayer( mLayer );
-      mapCanvas->setLayerSet( layers );
+      mapCanvas->setLayers( QList<QgsMapLayer*>() << mLayer );
       QgsRectangle fullExtent = mLayer->extent();
       fullExtent.scale( 1.05 ); // add some border
       mapCanvas->setExtent( fullExtent );

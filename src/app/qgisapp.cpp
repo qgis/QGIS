@@ -2968,7 +2968,7 @@ void QgisApp::createOverview()
   // add to the Panel submenu
   mPanelMenu->addAction( mOverviewDock->toggleViewAction() );
 
-  mMapCanvas->enableOverviewMode( mOverviewCanvas );
+  mLayerTreeCanvasBridge->setOvervewCanvas( mOverviewCanvas );
 
   // moved here to set anti aliasing to both map canvas and overview
   QSettings mySettings;
@@ -9622,9 +9622,9 @@ void QgisApp::closeProject()
   removeAnnotationItems();
   // clear out any stuff from project
   mMapCanvas->freeze( true );
-  QList<QgsMapCanvasLayer> emptyList;
-  mMapCanvas->setLayerSet( emptyList );
+  mMapCanvas->setLayers( QList<QgsMapLayer*>() );
   mMapCanvas->clearCache();
+  mOverviewCanvas->setLayers( QList<QgsMapLayer*>() );
   removeAllLayers();
 }
 

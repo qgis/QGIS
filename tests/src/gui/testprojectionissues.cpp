@@ -69,15 +69,15 @@ void TestProjectionIssues::initTestCase()
   QgsProject::instance()->addMapLayers( mapLayers );
 
   // Add all layers in registry to the canvas
-  QList<QgsMapCanvasLayer> canvasLayers;
+  QList<QgsMapLayer*> canvasLayers;
   Q_FOREACH ( QgsMapLayer* layer, QgsProject::instance()->mapLayers() )
   {
-    canvasLayers.append( QgsMapCanvasLayer( layer ) );
+    canvasLayers.append( layer );
   }
 
   // create canvas
   mMapCanvas = new QgsMapCanvas();
-  mMapCanvas->setLayerSet( canvasLayers );
+  mMapCanvas->setLayers( canvasLayers );
 
   //reproject to SWEDREF 99 TM
   QgsCoordinateReferenceSystem destCRS;

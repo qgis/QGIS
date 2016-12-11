@@ -1168,9 +1168,7 @@ void QgsGeorefPluginGui::addRaster( const QString& file )
     QList<QgsMapLayer *>() << mLayer, false, false );
 
   // add layer to map canvas
-  QList<QgsMapCanvasLayer> layers;
-  layers.append( QgsMapCanvasLayer( mLayer ) );
-  mCanvas->setLayerSet( layers );
+  mCanvas->setLayers( QList<QgsMapLayer*>() << mLayer );
 
   mAgainAddRaster = false;
 

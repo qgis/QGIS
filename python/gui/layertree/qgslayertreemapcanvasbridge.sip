@@ -28,6 +28,13 @@ class QgsLayerTreeMapCanvasBridge : QObject
     QgsLayerTreeGroup* rootGroup() const;
     QgsMapCanvas* mapCanvas() const;
 
+    //! Associates overview canvas with the bridge, so the overview will be updated whenever main canvas is updated
+    //! @note added in 3.0
+    void setOvervewCanvas( QgsMapOverviewCanvas* overviewCanvas );
+    //! Returns associated overview canvas (may be null)
+    //! @note added in 3.0
+    QgsMapOverviewCanvas* overviewCanvas() const;
+
     bool hasCustomLayerOrder() const;
     QStringList customLayerOrder() const;
 
@@ -61,7 +68,7 @@ class QgsLayerTreeMapCanvasBridge : QObject
 
     void defaultLayerOrder( QgsLayerTreeNode* node, QStringList& order ) const;
 
-    void setCanvasLayers( QgsLayerTreeNode* node, QList<QgsMapCanvasLayer>& layers );
+    void setCanvasLayers( QgsLayerTreeNode* node, QList<QgsMapLayer*> &canvasLayers, QList<QgsMapLayer*>& overviewLayers );
 
     void deferredSetCanvasLayers();
 

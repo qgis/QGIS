@@ -42,14 +42,14 @@ TestRendererGUI::TestRendererGUI( QWidget *parent ) :
 void TestRendererGUI::loadLayers()
 {
   // load just first vector layer
-  QList<QgsMapCanvasLayer> canvasLayers;
+  QList<QgsMapLayer*> canvasLayers;
   foreach ( QgsMapLayer* layer, QgsProject::instance()->mapLayers().values() )
   {
     if ( layer->type() == QgsMapLayer::VectorLayer )
-      canvasLayers << QgsMapCanvasLayer( layer );
+      canvasLayers << layer;
   }
 
-  mMapCanvas->setLayerSet( canvasLayers );
+  mMapCanvas->setLayers( canvasLayers );
 }
 
 void TestRendererGUI::setRenderer()

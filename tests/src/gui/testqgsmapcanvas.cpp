@@ -140,9 +140,7 @@ void TestQgsMapCanvas::testMagnification()
       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // prepare map canvas
-  QList<QgsMapCanvasLayer> layers;
-  layers.append( layer );
-  mCanvas->setLayerSet( layers );
+  mCanvas->setLayers( QList<QgsMapLayer*>() << layer );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
 
   mCanvas->setExtent( layer->extent() );
@@ -219,9 +217,7 @@ void TestQgsMapCanvas::testMagnificationExtent()
       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // prepare map canvas
-  QList<QgsMapCanvasLayer> layers;
-  layers.append( layer );
-  mCanvas->setLayerSet( layers );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << layer );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
 
   // zoomToFullExtent

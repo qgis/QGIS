@@ -249,6 +249,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
   - addLegendLayerActionForLayer() moved to QgisInterface::addCustomActionForLayer()
   - removeLegendLayerAction() moved to QgisInterface::removeCustomActionForLayerType()
 - QgsLegendModel was removed.
+- QgsMapCanvasLayer. Map canvas and overview canvas are updated separately with their own setLayers() calls.
 - QgsMapCanvasMap. It is an internal class used by map canvas.
 - QgsMapLayerRegistry. Its functionality has been moved to QgsProject.
 - QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.
@@ -1069,6 +1070,7 @@ and the new ramp can be retrieved after executing the dialog by calling ramp().
 QgsMapCanvas        {#qgis_api_break_3_0_QgsMapCanvas}
 ------------
 
+- setLayerSet() has been replaced by setLayers() which accepts list of QgsMapLayer objects instead of QgsMapCanvasLayer objects
 - rotationEnabled() and enableRotation() have been removed, since map rotation is now always supported
 - The "name" parameter has been removed from constructor. Use QObject::setObjectName() to set canvas name if necessary.
 - map() has been removed because QgsMapCanvasMap is not available in API anymore.
@@ -1081,6 +1083,7 @@ QgsMapCanvas        {#qgis_api_break_3_0_QgsMapCanvas}
 - setWheelAction() and WheelAction enum have been removed. Custom wheel actions are not supported anymore.
 - updateMap(), showError(), useImageToRender() have been removed. They did nothing since 2.4.
 - setProgress() signal has been removed. It was not emitted since 2.0.
+- enableOverviewMode() and updateOverview() have been removed. Map canvas does not keep pointer to overview canvas anymore. Use QgsLayerTreeMapCanvasBridge::setOverviewCanvas() to set up updates of overview canvas together with main canvas.
 
 
 QgsMapCanvasItem        {#qgis_api_break_3_0_QgsMapCanvasItem}

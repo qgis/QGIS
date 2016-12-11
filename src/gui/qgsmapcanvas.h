@@ -65,39 +65,6 @@ class QgsMapTool;
 class QgsSnappingUtils;
 class QgsRubberBand;
 
-/** \ingroup gui
-  * A class that stores visibility and presence in overview flags together
-  * with pointer to the layer.
-  *
-*/
-class GUI_EXPORT QgsMapCanvasLayer
-{
-  public:
-    QgsMapCanvasLayer( QgsMapLayer* layer, bool visible = true, bool isInOverview = false )
-        : mLayer( layer )
-        , mVisible( visible )
-        , mInOverview( isInOverview )
-    {}
-
-    void setVisible( bool visible ) { mVisible = visible; }
-    void setInOverview( bool isInOverview ) { mInOverview = isInOverview; }
-
-    bool isVisible() const { return mVisible; }
-    bool isInOverview() const { return mInOverview; }
-
-    QgsMapLayer* layer() { return mLayer; }
-    const QgsMapLayer* layer() const { return mLayer; }
-
-  private:
-    QgsMapLayer* mLayer;
-
-    //! Flag whether layer is visible
-    bool mVisible;
-
-    //! Flag whether layer is shown in overview
-    bool mInOverview;
-};
-
 
 /** \ingroup gui
  * Map canvas is a class for displaying all GIS data types on a canvas.
@@ -119,15 +86,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.16
     double magnificationFactor() const;
 
-    void setLayerSet( QList<QgsMapCanvasLayer>& layers );
+    //! Set list of layers that should be shown in the canvas
+    //! @note added in 3.0
+    void setLayers( const QList<QgsMapLayer*>& layers );
 
     void setCurrentLayer( QgsMapLayer* layer );
-
-    // ### QGIS 3: make QgsMapCanvas independent from overview
-    void updateOverview();
-
-    // ### QGIS 3: make QgsMapCanvas independent from overview
-    void enableOverviewMode( QgsMapOverviewCanvas* overview );
 
     //! Get access to properties used for map rendering
     //! @note added in 2.4
@@ -665,9 +628,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! owns pixmap with rendered map and controls rendering
     QgsMapCanvasMap* mMap;
-
-    //! map overview widget - it's controlled by QgsMapCanvas
-    QgsMapOverviewCanvas* mMapOverview;
 
     //! Flag indicating if the map canvas is frozen.
     bool mFrozen;
