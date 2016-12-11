@@ -61,7 +61,7 @@ void TestQgsProject::cleanupTestCase()
 
 void TestQgsProject::testReadPath()
 {
-  QgsProject* prj = QgsProject::instance();
+  QgsProject* prj = new QgsProject;
   // this is a bit hacky as we do not really load such project
   QString prefix;
 #if defined(Q_OS_WIN)
@@ -82,6 +82,7 @@ void TestQgsProject::testReadPath()
   QCOMPARE( prj->readPath( "./x.gz" ), QString( prefix + "/home/qgis/x.gz" ) );
   QCOMPARE( prj->readPath( "/vsigzip/./x.gz" ), QString( "/vsigzip/%1/home/qgis/x.gz" ).arg( prefix ) ); // not sure how useful this really is...
 
+  delete prj;
 }
 
 void TestQgsProject::testProjectUnits()
@@ -94,7 +95,7 @@ void TestQgsProject::testProjectUnits()
   QSettings s;
   s.setValue( QStringLiteral( "/qgis/measure/displayunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceFeet ) );
 
-  QgsProject* prj = QgsProject::instance();
+  QgsProject* prj = new QgsProject;
   // new project should inherit QGIS default distance unit
   prj->clear();
   QCOMPARE( prj->distanceUnits(), QgsUnitTypes::DistanceFeet );
@@ -123,15 +124,19 @@ void TestQgsProject::testProjectUnits()
   //test setting new units for project
   prj->setAreaUnits( QgsUnitTypes::AreaAcres );
   QCOMPARE( prj->areaUnits(), QgsUnitTypes::AreaAcres );
+
+  delete prj;
 }
 
 void TestQgsProject::variablesChanged()
 {
-  QSignalSpy spyVariablesChanged( QgsProject::instance(), SIGNAL( variablesChanged() ) );
+  QgsProject* prj = new QgsProject;
+  QSignalSpy spyVariablesChanged( prj, SIGNAL( variablesChanged() ) );
   QgsStringMap vars;
   vars.insert( QStringLiteral( "variable" ), QStringLiteral( "1" ) );
-  QgsProject::instance()->setVariables( vars );
+  prj->setVariables( vars );
   QVERIFY( spyVariablesChanged.count() == 1 );
+  delete prj;
 }
 
 

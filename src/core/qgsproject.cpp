@@ -2060,18 +2060,18 @@ void QgsProject::setEvaluateDefaultValues( bool evaluateDefaultValues )
 
 void QgsProject::setTopologicalEditing( bool enabled )
 {
-  QgsProject::instance()->writeEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/TopologicalEditing" ), ( enabled ? 1 : 0 ) );
+  writeEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/TopologicalEditing" ), ( enabled ? 1 : 0 ) );
   emit topologicalEditingChanged();
 }
 
 bool QgsProject::topologicalEditing() const
 {
-  return QgsProject::instance()->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/TopologicalEditing" ), 0 );
+  return readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/TopologicalEditing" ), 0 );
 }
 
 QgsUnitTypes::DistanceUnit QgsProject::distanceUnits() const
 {
-  QString distanceUnitString = QgsProject::instance()->readEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), QString() );
+  QString distanceUnitString = readEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), QString() );
   if ( !distanceUnitString.isEmpty() )
     return QgsUnitTypes::decodeDistanceUnit( distanceUnitString );
 
@@ -2089,7 +2089,7 @@ void QgsProject::setDistanceUnits( QgsUnitTypes::DistanceUnit unit )
 
 QgsUnitTypes::AreaUnit QgsProject::areaUnits() const
 {
-  QString areaUnitString = QgsProject::instance()->readEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), QString() );
+  QString areaUnitString = readEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), QString() );
   if ( !areaUnitString.isEmpty() )
     return QgsUnitTypes::decodeAreaUnit( areaUnitString );
 
@@ -2161,7 +2161,7 @@ void QgsProject::setNonIdentifiableLayers( const QStringList& layerIds )
 
 QStringList QgsProject::nonIdentifiableLayers() const
 {
-  return QgsProject::instance()->readListEntry( QStringLiteral( "Identify" ), QStringLiteral( "/disabledLayers" ) );
+  return readListEntry( QStringLiteral( "Identify" ), QStringLiteral( "/disabledLayers" ) );
 }
 
 bool QgsProject::autoTransaction() const

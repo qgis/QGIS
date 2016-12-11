@@ -68,10 +68,6 @@ class QgsVectorLayer;
 
 */
 
-// TODO Might want to consider moving from Singleton; i.e., allowing more than one
-// project.  Just as the GIMP can have simultaneous multiple images, perhaps
-// QGIS can one day have simultaneous multiple projects.
-
 class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenerator
 {
     Q_OBJECT
@@ -86,6 +82,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
   public:
     //! Returns the QgsProject singleton instance
     static QgsProject* instance();
+
+    /**
+     * Create a new QgsProject.
+     *
+     * Most of the time you want to use QgsProject::instance() instead as many components of QGIS work with the singleton.
+     */
+    explicit QgsProject( QObject* parent = nullptr );
 
     ~QgsProject();
 
@@ -919,13 +922,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void onMapLayerDeleted( QObject* obj );
 
   private:
-
-    /**
-     * Create a new QgsProject.
-     * Private since it's (still) a singleton.
-     * You want to use QgsProject::instance() instead.
-     */
-    explicit QgsProject( QObject* parent = nullptr );
 
     static QgsProject* sProject;
 

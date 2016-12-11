@@ -23,6 +23,13 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     //! Returns the QgsProject singleton instance
     static QgsProject* instance();
 
+    /**
+     * Create a new QgsProject.
+     *
+     * Most of the time you want to use QgsProject::instance() instead as many components of QGIS work with the singleton.
+     */
+    explicit QgsProject( QObject* parent /TransferThis/ = nullptr );
+
     ~QgsProject();
 
     /** Sets the project's title.
@@ -809,13 +816,5 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @note promoted to public slot in 2.16
      */
     void setDirty( bool b = true );
-
-  private:
-    /**
-     * Create a new QgsProject.
-     * Private since it's (still) a singleton.
-     * You want to use QgsProject::instance() instead.
-     */
-    explicit QgsProject( QObject* parent = nullptr );
 
 };
