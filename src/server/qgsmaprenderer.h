@@ -218,6 +218,9 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
     //! change current layer set
     void setLayerSet( const QStringList& layers );
 
+    //! returns current list of layers
+    QList<QgsMapLayer*> layers();
+
     //! updates extent of the layer set
     void updateFullExtent();
 

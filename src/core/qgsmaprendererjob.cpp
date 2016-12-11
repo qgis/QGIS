@@ -24,7 +24,7 @@
 #include "qgslogger.h"
 #include "qgsrendercontext.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaprenderercache.h"
@@ -173,7 +173,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
   LayerRenderJobs layerJobs;
 
   // render all layers in the stack, starting at the base
-  QListIterator<QString> li( mSettings.layers() );
+  QListIterator<QgsMapLayer*> li( mSettings.layers() );
   li.toBack();
 
   if ( mCache )
@@ -187,17 +187,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
 
   while ( li.hasPrevious() )
   {
-    QString layerId = li.previous();
-
-    QgsDebugMsgLevel( "Rendering at layer item " + layerId, 2 );
-
-    QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
-
-    if ( !ml )
-    {
-      mErrors.append( Error( layerId, tr( "Layer not found in registry." ) ) );
-      continue;
-    }
+    QgsMapLayer* ml = li.previous();
 
     QgsDebugMsgLevel( QString( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  blendmode:%5" )
                       .arg( ml->name() )
@@ -226,7 +216,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
       QgsDebugMsgLevel( "extent: " + r1.toString(), 3 );
       if ( !r1.isFinite() || !r2.isFinite() )
       {
-        mErrors.append( Error( layerId, tr( "There was a problem transforming the layer's extent. Layer skipped." ) ) );
+        mErrors.append( Error( ml->id(), tr( "There was a problem transforming the layer's extent. Layer skipped." ) ) );
         continue;
       }
     }
@@ -281,7 +271,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
                                       mSettings.outputImageFormat() );
       if ( mypFlattenedImage->isNull() )
       {
-        mErrors.append( Error( layerId, tr( "Insufficient memory for image %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
+        mErrors.append( Error( ml->id(), tr( "Insufficient memory for image %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
         delete mypFlattenedImage;
         layerJobs.removeLast();
         continue;

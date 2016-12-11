@@ -284,13 +284,13 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         if query.strip().endswith(';'):
             query = query.strip()[:-1]
 
-        from qgis.core import QgsMapLayer, QgsMapLayerRegistry
+        from qgis.core import QgsMapLayer
 
         layerType = QgsMapLayer.VectorLayer if self.vectorRadio.isChecked() else QgsMapLayer.RasterLayer
 
         # get a new layer name
         names = []
-        for layer in list(QgsMapLayerRegistry.instance().mapLayers().values()):
+        for layer in list(QgsProject.instance().mapLayers().values()):
             names.append(layer.name())
 
         layerName = self.layerNameEdit.text()
@@ -317,8 +317,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             if layer == None:
                 return
 
-            from qgis.core import QgsMapLayerRegistry
-            QgsMapLayerRegistry.instance().addMapLayers([layer], True)
+            QgsProject.instance().addMapLayers([layer], True)
         finally:
             QApplication.restoreOverrideCursor()
 

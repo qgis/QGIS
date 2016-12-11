@@ -49,7 +49,6 @@
 
 #include <qgslogger.h>
 #include <qgsvectorlayer.h>
-#include <qgsmaplayerregistry.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayerdiagramprovider.h>
 #include <qgsvectorlayerlabelprovider.h>
@@ -3215,7 +3214,7 @@ bool QgsPalLabeling::willUseLayer( QgsVectorLayer* layer )
 
 bool QgsPalLabeling::staticWillUseLayer( const QString& layerID )
 {
-  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) );
+  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerID ) );
   if ( !layer )
     return false;
   return staticWillUseLayer( layer );

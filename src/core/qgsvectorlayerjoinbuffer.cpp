@@ -19,7 +19,7 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 
 #include <QDomElement>
@@ -38,7 +38,7 @@ static QList<QgsVectorLayer*> _outEdges( QgsVectorLayer* vl )
   QList<QgsVectorLayer*> lst;
   Q_FOREACH ( const QgsVectorJoinInfo& info, vl->vectorJoins() )
   {
-    if ( QgsVectorLayer* joinVl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( info.joinLayerId ) ) )
+    if ( QgsVectorLayer* joinVl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( info.joinLayerId ) ) )
       lst << joinVl;
   }
   return lst;
@@ -87,7 +87,7 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorJoinInfo& joinInfo )
   // During project load the joined layers possibly do not exist yet so the connection will not be created,
   // but then QgsProject makes sure to call createJoinCaches() which will do the connection.
   // Unique connection makes sure we do not respond to one layer's update more times (in case of multiple join)
-  if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinInfo.joinLayerId ) ) )
+  if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( joinInfo.joinLayerId ) ) )
   {
     connect( vl, &QgsVectorLayer::updatedFields, this, &QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields, Qt::UniqueConnection );
     connect( vl, &QgsVectorLayer::layerModified, this, &QgsVectorLayerJoinBuffer::joinedLayerModified, Qt::UniqueConnection );
@@ -111,7 +111,7 @@ bool QgsVectorLayerJoinBuffer::removeJoin( const QString& joinLayerId )
     }
   }
 
-  if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinLayerId ) ) )
+  if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( joinLayerId ) ) )
   {
     disconnect( vl, &QgsVectorLayer::updatedFields, this, &QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields );
   }
@@ -128,7 +128,7 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
     return;
   }
 
-  QgsVectorLayer* cacheLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinInfo.joinLayerId ) );
+  QgsVectorLayer* cacheLayer = dynamic_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( joinInfo.joinLayerId ) );
   if ( cacheLayer )
   {
     int joinFieldIndex;
@@ -213,7 +213,7 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
   QList< QgsVectorJoinInfo>::const_iterator joinIt = mVectorJoins.constBegin();
   for ( int joinIdx = 0 ; joinIt != mVectorJoins.constEnd(); ++joinIt, ++joinIdx )
   {
-    QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinIt->joinLayerId ) );
+    QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( joinIt->joinLayerId ) );
     if ( !joinLayer )
     {
       continue;
@@ -271,7 +271,7 @@ void QgsVectorLayerJoinBuffer::createJoinCaches()
       cacheJoinLayer( *joinIt );
 
     // make sure we are connected to the joined layer
-    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinIt->joinLayerId ) ) )
+    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( joinIt->joinLayerId ) ) )
     {
       connect( vl, &QgsVectorLayer::updatedFields, this, &QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields, Qt::UniqueConnection );
       connect( vl, &QgsVectorLayer::layerModified, this, &QgsVectorLayerJoinBuffer::joinedLayerModified, Qt::UniqueConnection );

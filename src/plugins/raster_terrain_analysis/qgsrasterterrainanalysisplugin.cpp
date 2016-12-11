@@ -19,7 +19,6 @@
 #include "qgis.h"
 #include "qgisinterface.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsaspectfilter.h"
 #include "qgshillshadefilter.h"
 #include "qgsslopefilter.h"

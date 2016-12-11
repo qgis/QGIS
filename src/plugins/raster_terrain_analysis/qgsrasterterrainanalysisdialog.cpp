@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterterrainanalysisdialog.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include <QColorDialog>
 #include <QDir>
@@ -55,7 +55,7 @@ QgsRasterTerrainAnalysisDialog::QgsRasterTerrainAnalysisDialog( DisplayMode mode
 
   //insert available raster layers
   //enter available layers into the combo box
-  QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> mapLayers = QgsProject::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::iterator layer_it = mapLayers.begin();
 
   //insert available input layers
@@ -124,7 +124,7 @@ QList< QgsRelief::ReliefColor > QgsRasterTerrainAnalysisDialog::reliefColors() c
 
 QString QgsRasterTerrainAnalysisDialog::inputFile() const
 {
-  QgsMapLayer* inputLayer = QgsMapLayerRegistry::instance()->mapLayer( mElevationLayerComboBox->currentData().toString() );
+  QgsMapLayer* inputLayer = QgsProject::instance()->mapLayer( mElevationLayerComboBox->currentData().toString() );
   if ( !inputLayer )
   {
     return QLatin1String( "" );

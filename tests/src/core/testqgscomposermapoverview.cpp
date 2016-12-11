@@ -20,7 +20,7 @@
 #include "qgsmultirenderchecker.h"
 #include "qgscomposermap.h"
 #include "qgscomposermapoverview.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
@@ -74,10 +74,8 @@ void TestQgsComposerMapOverview::initTestCase()
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   mRasterLayer->setRenderer( rasterRenderer );
 
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
-
   //create composition with composer map
-  mMapSettings->setLayers( QStringList() << mRasterLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
   mMapSettings->setCrsTransformEnabled( false );
   mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
@@ -92,6 +90,7 @@ void TestQgsComposerMapOverview::cleanupTestCase()
 {
   delete mComposition;
   delete mMapSettings;
+  delete mRasterLayer;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

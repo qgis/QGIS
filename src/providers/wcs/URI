@@ -41,7 +41,7 @@ Python console example, adds new layer to map canvas:
   layer = QgsRasterLayer( QString(uri.encodedUri()), "WCS test", "wcs" )
   layer.isValid()
 
-  QgsMapLayerRegistry.instance().addMapLayer(layer)
+  QgsProject.instance().addMapLayer(layer)
 
 
 another standalone script, downloads WCS layer to local file:

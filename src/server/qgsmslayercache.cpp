@@ -17,7 +17,7 @@
 
 #include "qgsmslayercache.h"
 #include "qgsmessagelog.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
@@ -189,9 +189,9 @@ void QgsMSLayerCache::removeLeastUsedEntry()
 
 void QgsMSLayerCache::freeEntryRessources( QgsMSLayerCacheEntry& entry )
 {
-  // remove layer from QgsMapLayerRegistry before delete it
-  if ( QgsMapLayerRegistry::instance()->mapLayer( entry.layerPointer->id() ) )
-    QgsMapLayerRegistry::instance()->removeMapLayer( entry.layerPointer->id() );
+  // remove layer from QgsProject before delete it
+  if ( QgsProject::instance()->mapLayer( entry.layerPointer->id() ) )
+    QgsProject::instance()->removeMapLayer( entry.layerPointer->id() );
 
   delete entry.layerPointer;
 

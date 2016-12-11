@@ -17,7 +17,7 @@
 #include <QObject>
 
 #include "qgsapplication.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmaprenderercache.h"
 #include "qgsmaprendererjob.h"
 #include "qgsvectorlayer.h"
@@ -51,7 +51,7 @@ static QString _loadLayer( QString path )
 {
   QgsMapLayer* layer = new QgsVectorLayer( path, "testlayer", "ogr" );
   Q_ASSERT( layer->isValid() );
-  QgsMapLayerRegistry::instance()->addMapLayer( layer );
+  QgsProject::instance()->addMapLayer( layer );
   return layer->id();
 }
 
@@ -225,7 +225,7 @@ void TestQgsMapRendererJob::testErrors()
 {
   QgsVectorLayer* l = new QgsVectorLayer( "/data/gis/sas/trans-trail-l.dbf", "test", "ogr" );
   QVERIFY( l->isValid() );
-  QgsMapLayerRegistry::instance()->addMapLayer( l );
+  QgsProject::instance()->addMapLayer( l );
   QgsMapSettings settings( _mapSettings( QStringList( l->id() ) ) );
 
   l->setRenderer( nullptr ); // this has to produce an error
@@ -237,7 +237,7 @@ void TestQgsMapRendererJob::testErrors()
   QCOMPARE( job.errors().count(), 1 );
   QCOMPARE( job.errors()[0].layerID, l->id() );
 
-  QgsMapLayerRegistry::instance()->removeMapLayer( l->id() );
+  QgsProject::instance()->removeMapLayer( l->id() );
 
   QString fakeLayerID = "non-existing layer ID";
   QgsMapSettings settings2( _mapSettings( QStringList( fakeLayerID ) ) );
@@ -254,7 +254,7 @@ void TestQgsMapRendererJob::testCache()
 {
   QgsVectorLayer* l = new QgsVectorLayer( "/data/gis/sas/trans-trail-l.dbf", "test", "ogr" );
   QVERIFY( l->isValid() );
-  QgsMapLayerRegistry::instance()->addMapLayer( l );
+  QgsProject::instance()->addMapLayer( l );
   QgsMapSettings settings( _mapSettings( QStringList( l->id() ) ) );
 
   QgsMapRendererCache cache;
@@ -285,7 +285,7 @@ void TestQgsMapRendererJob::testCache()
   QVERIFY( timeCachedMS < 10 );
   qDebug( "CACHING %d vs %d (ms)", timeNotCachedMS, timeCachedMS );
 
-  QgsMapLayerRegistry::instance()->removeMapLayer( l->id() );
+  QgsProject::instance()->removeMapLayer( l->id() );
 }
 
 

@@ -17,7 +17,6 @@
 
 #include "qgsmaptoolmovelabel.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include <QMouseEvent>

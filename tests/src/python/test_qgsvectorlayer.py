@@ -31,7 +31,6 @@ from qgis.core import (Qgis,
                        QgsField,
                        QgsFieldConstraints,
                        QgsFields,
-                       QgsMapLayerRegistry,
                        QgsVectorJoinInfo,
                        QgsSymbol,
                        QgsSingleSymbolRenderer,
@@ -1194,7 +1193,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         joinLayer = createJoinLayer()
         joinLayer2 = createJoinLayer()
-        QgsMapLayerRegistry.instance().addMapLayers([joinLayer, joinLayer2])
+        QgsProject.instance().addMapLayers([joinLayer, joinLayer2])
 
         layer = createLayerWithOnePoint()
 
@@ -1248,7 +1247,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         """ test calculating min/max/uniqueValues on joined field """
         joinLayer = createJoinLayer()
         layer = createLayerWithTwoPoints()
-        QgsMapLayerRegistry.instance().addMapLayers([joinLayer, layer])
+        QgsProject.instance().addMapLayers([joinLayer, layer])
 
         join = QgsVectorJoinInfo()
         join.targetFieldName = "fldint"

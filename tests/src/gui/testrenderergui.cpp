@@ -17,7 +17,6 @@
 #include <qgsapplication.h>
 #include <qgsmapcanvas.h>
 #include <qgsvectorlayer.h>
-#include <qgsmaplayerregistry.h>
 #include <qgsproject.h>
 #include <qgsrendererpropertiesdialog.h>
 #include <qgsstyle.h>
@@ -44,7 +43,7 @@ void TestRendererGUI::loadLayers()
 {
   // load just first vector layer
   QList<QgsMapCanvasLayer> canvasLayers;
-  foreach ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  foreach ( QgsMapLayer* layer, QgsProject::instance()->mapLayers().values() )
   {
     if ( layer->type() == QgsMapLayer::VectorLayer )
       canvasLayers << QgsMapCanvasLayer( layer );

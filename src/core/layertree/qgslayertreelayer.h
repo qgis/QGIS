@@ -24,7 +24,7 @@ class QgsMapLayer;
  * Layer tree node points to a map layer.
  *
  * When using with existing QgsMapLayer instance, it is expected that the layer
- * has been registered in QgsMapLayerRegistry earlier.
+ * has been registered in QgsProject earlier.
  *
  * The node can exist also without a valid instance of a layer (just ID). That
  * means the referenced layer does not need to be loaded in order to use it

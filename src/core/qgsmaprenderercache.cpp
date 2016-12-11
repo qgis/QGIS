@@ -15,7 +15,7 @@
 
 #include "qgsmaprenderercache.h"
 
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmaplayer.h"
 
 QgsMapRendererCache::QgsMapRendererCache()
@@ -38,7 +38,7 @@ void QgsMapRendererCache::clearInternal()
   QMap<QString, QImage>::const_iterator it = mCachedImages.constBegin();
   for ( ; it != mCachedImages.constEnd(); ++it )
   {
-    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( it.key() );
+    QgsMapLayer* layer = QgsProject::instance()->mapLayer( it.key() );
     if ( layer )
     {
       disconnect( layer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );
@@ -71,7 +71,7 @@ void QgsMapRendererCache::setCacheImage( const QString& layerId, const QImage& i
   mCachedImages[layerId] = img;
 
   // connect to the layer to listen to layer's repaintRequested() signals
-  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+  QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId );
   if ( layer )
   {
     connect( layer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );
@@ -97,7 +97,7 @@ void QgsMapRendererCache::clearCacheImage( const QString& layerId )
 
   mCachedImages.remove( layerId );
 
-  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+  QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId );
   if ( layer )
   {
     disconnect( layer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );

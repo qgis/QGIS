@@ -17,7 +17,8 @@ class QgsLayerTreeRegistryBridge : QObject
 %End
 
   public:
-    explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup* root, QObject *parent /TransferThis/ = 0 );
+    //! Create the instance that synchronizes given project with a layer tree root
+    explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup* root, QgsProject* project, QObject *parent /TransferThis/ = 0 );
 
     void setEnabled( bool enabled );
     bool isEnabled() const;

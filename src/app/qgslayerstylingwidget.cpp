@@ -37,7 +37,6 @@
 #include "qgsundowidget.h"
 #include "qgsrenderer.h"
 #include "qgsrendererregistry.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsmaplayerconfigwidget.h"
@@ -58,7 +57,7 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas* canvas, const QList<
 {
   setupUi( this );
 
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QgsMapLayer* ) ), this, SLOT( layerAboutToBeRemoved( QgsMapLayer* ) ) );
+  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QgsMapLayer* ) ), this, SLOT( layerAboutToBeRemoved( QgsMapLayer* ) ) );
 
   QSettings settings;
   mLiveApplyCheck->setChecked( settings.value( QStringLiteral( "UI/autoApplyStyling" ), true ).toBool() );

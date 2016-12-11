@@ -22,7 +22,6 @@
 
 #include <qgisinterface.h>
 #include <qgisgui.h>
-#include <qgsmaplayerregistry.h>
 #include <qgsproject.h>
 #include <qgsmessagebar.h>
 #include <qgsmapcanvas.h>
@@ -88,8 +87,8 @@ void QgsOfflineEditingPlugin::initGui()
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( updateActions() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( newProject() ), this, SLOT( updateActions() ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateActions() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( updateActions() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( updateActions() ) );
+  connect( QgsProject::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( updateActions() ) );
+  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( updateActions() ) );
   updateActions();
 }
 
@@ -149,7 +148,7 @@ void QgsOfflineEditingPlugin::help()
 
 void QgsOfflineEditingPlugin::updateActions()
 {
-  bool hasLayers = QgsMapLayerRegistry::instance()->count() > 0;
+  bool hasLayers = QgsProject::instance()->count() > 0;
   bool isOfflineProject = mOfflineEditing->isOfflineProject();
   mActionConvertProject->setEnabled( hasLayers && !isOfflineProject );
   mActionSynchronize->setEnabled( hasLayers && isOfflineProject );

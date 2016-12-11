@@ -42,6 +42,7 @@
 QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas, QWidget* parent )
     : QWidget( parent )
     , mProject( project )
+    , mConfig( project )
     , mCanvas( canvas )
     , mModeAction( nullptr )
     , mTypeAction( nullptr )

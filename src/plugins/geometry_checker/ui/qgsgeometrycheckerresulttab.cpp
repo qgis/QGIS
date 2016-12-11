@@ -28,7 +28,7 @@
 #include "qgsgeometry.h"
 #include "qgisinterface.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
@@ -65,7 +65,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface* iface, 
   connect( ui.pushButtonFixWithPrompt, SIGNAL( clicked() ), this, SLOT( fixErrorsWithPrompt() ) );
   connect( ui.pushButtonErrorResolutionSettings, SIGNAL( clicked() ), this, SLOT( setDefaultResolutionMethods() ) );
   connect( ui.checkBoxHighlight, SIGNAL( clicked() ), this, SLOT( highlightErrors() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( checkRemovedLayer( QStringList ) ) );
+  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( checkRemovedLayer( QStringList ) ) );
   connect( ui.pushButtonExport, SIGNAL( clicked() ), this, SLOT( exportErrors() ) );
 
   if (( mFeaturePool->getLayer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
@@ -277,7 +277,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString& file )
 
   // Remove existing layer with same uri
   QStringList toRemove;
-  Q_FOREACH ( QgsMapLayer* maplayer, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer* maplayer, QgsProject::instance()->mapLayers() )
   {
     if ( dynamic_cast<QgsVectorLayer*>( maplayer ) &&
          static_cast<QgsVectorLayer*>( maplayer )->dataProvider()->dataSourceUri() == layer->dataProvider()->dataSourceUri() )
@@ -287,10 +287,10 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString& file )
   }
   if ( !toRemove.isEmpty() )
   {
-    QgsMapLayerRegistry::instance()->removeMapLayers( toRemove );
+    QgsProject::instance()->removeMapLayers( toRemove );
   }
 
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << layer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << layer );
   return true;
 }
 

@@ -25,7 +25,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgslegendrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrenderchecker.h"
@@ -163,14 +163,14 @@ void TestQgsLegendRenderer::cleanupTestCase()
 void TestQgsLegendRenderer::init()
 {
   mVL1 = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
-  QgsMapLayerRegistry::instance()->addMapLayer( mVL1 );
+  QgsProject::instance()->addMapLayer( mVL1 );
 
   QgsLineSymbol* sym1 = new QgsLineSymbol();
   sym1->setColor( Qt::magenta );
   mVL1->setRenderer( new QgsSingleSymbolRenderer( sym1 ) );
 
   mVL2 = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "Polygon Layer" ), QStringLiteral( "memory" ) );
-  QgsMapLayerRegistry::instance()->addMapLayer( mVL2 );
+  QgsProject::instance()->addMapLayer( mVL2 );
 
   QgsFillSymbol* sym2 = new QgsFillSymbol();
   sym2->setColor( Qt::cyan );
@@ -203,12 +203,12 @@ void TestQgsLegendRenderer::init()
     pr->addFeatures( features );
     mVL3->updateFields();
   }
-  QgsMapLayerRegistry::instance()->addMapLayer( mVL3 );
+  QgsProject::instance()->addMapLayer( mVL3 );
 
   static char raster_array[] = { 1, 2, 2, 1 };
   QString rasterUri = QStringLiteral( "MEM:::DATAPOINTER=%1,PIXELS=2,LINES=2" ).arg(( qulonglong ) raster_array );
   mRL = new QgsRasterLayer( rasterUri, QStringLiteral( "Raster Layer" ), QStringLiteral( "gdal" ) );
-  QgsMapLayerRegistry::instance()->addMapLayer( mRL );
+  QgsProject::instance()->addMapLayer( mRL );
 
   QgsCategoryList cats;
   QgsMarkerSymbol* sym3_1 = new QgsMarkerSymbol();
@@ -236,7 +236,7 @@ void TestQgsLegendRenderer::cleanup()
   delete mRoot;
   mRoot = 0;
 
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsProject::instance()->removeAllMapLayers();
 }
 
 
@@ -402,12 +402,7 @@ void TestQgsLegendRenderer::testFilterByMap()
   mapSettings.setExtent( QgsRectangle( 0, 0, 10.0, 4.0 ) );
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
-  QStringList ll;
-  Q_FOREACH ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
-  {
-    ll << l->id();
-  }
-  mapSettings.setLayers( ll );
+  mapSettings.setLayers( QgsProject::instance()->mapLayers().values() );
 
   legendModel.setLegendFilterByMap( &mapSettings );
 
@@ -446,7 +441,7 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
     pr->addFeatures( features );
     vl4->updateFields();
   }
-  QgsMapLayerRegistry::instance()->addMapLayer( vl4 );
+  QgsProject::instance()->addMapLayer( vl4 );
 
   //setup categorized renderer with duplicate symbols
   QgsCategoryList cats;
@@ -473,7 +468,7 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
   mapSettings.setExtent( QgsRectangle( 0, 0, 10.0, 4.0 ) );
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
-  mapSettings.setLayers( QStringList() << vl4->id() );
+  mapSettings.setLayers( QList<QgsMapLayer*>() << vl4 );
 
   legendModel.setLegendFilterByMap( &mapSettings );
 
@@ -482,7 +477,7 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
 
-  QgsMapLayerRegistry::instance()->removeMapLayer( vl4 );
+  QgsProject::instance()->removeMapLayer( vl4 );
 }
 
 bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, const QString& testName )
@@ -496,7 +491,7 @@ bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, 
   for ( int i = 1; i <= itemCount; ++i )
   {
     QgsVectorLayer* vl = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "Layer %1" ).arg( i ), QStringLiteral( "memory" ) );
-    QgsMapLayerRegistry::instance()->addMapLayer( vl );
+    QgsProject::instance()->addMapLayer( vl );
     vl->setRenderer( new QgsSingleSymbolRenderer( sym->clone() ) );
     root->addLayer( vl );
     layers << vl;
@@ -512,7 +507,7 @@ bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, 
 
   Q_FOREACH ( QgsVectorLayer* l, layers )
   {
-    QgsMapLayerRegistry::instance()->removeMapLayer( l );
+    QgsProject::instance()->removeMapLayer( l );
   }
   return result;
 }
@@ -572,12 +567,7 @@ void TestQgsLegendRenderer::testFilterByPolygon()
   mapSettings.setExtent( QgsRectangle( 0, 0, 10.0, 4.0 ) );
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
-  QStringList ll;
-  Q_FOREACH ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
-  {
-    ll << l->id();
-  }
-  mapSettings.setLayers( ll );
+  mapSettings.setLayers( QgsProject::instance()->mapLayers().values() );
 
   // select only within a polygon
   QgsGeometry geom( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((0 0,2 0,2 2,0 2,0 0))" ) ) );
@@ -609,12 +599,7 @@ void TestQgsLegendRenderer::testFilterByExpression()
   mapSettings.setExtent( QgsRectangle( 0, 0, 10.0, 4.0 ) );
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
-  QStringList ll;
-  Q_FOREACH ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
-  {
-    ll << l->id();
-  }
-  mapSettings.setLayers( ll );
+  mapSettings.setLayers( QgsProject::instance()->mapLayers().values() );
 
   // use an expression to only include the red point
   QgsLayerTreeLayer* layer = legendModel.rootGroup()->findLayer( mVL3->id() );
@@ -642,7 +627,7 @@ void TestQgsLegendRenderer::testFilterByExpression()
 void TestQgsLegendRenderer::testDiagramAttributeLegend()
 {
   QgsVectorLayer* vl4 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "Point Layer" ), QStringLiteral( "memory" ) );
-  QgsMapLayerRegistry::instance()->addMapLayer( vl4 );
+  QgsProject::instance()->addMapLayer( vl4 );
 
   QgsDiagramSettings ds;
   ds.categoryColors = QList<QColor>() << QColor( 255, 0, 0 ) << QColor( 0, 255, 0 );
@@ -675,13 +660,13 @@ void TestQgsLegendRenderer::testDiagramAttributeLegend()
   _renderLegend( QStringLiteral( "legend_diagram_attributes" ), &legendModel, settings );
   QVERIFY( _verifyImage( "legend_diagram_attributes", mReport ) );
 
-  QgsMapLayerRegistry::instance()->removeMapLayer( vl4 );
+  QgsProject::instance()->removeMapLayer( vl4 );
 }
 
 void TestQgsLegendRenderer::testDiagramSizeLegend()
 {
   QgsVectorLayer* vl4 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "Point Layer" ), QStringLiteral( "memory" ) );
-  QgsMapLayerRegistry::instance()->addMapLayer( vl4 );
+  QgsProject::instance()->addMapLayer( vl4 );
 
   QgsDiagramSettings ds;
   ds.categoryColors = QList<QColor>() << QColor( 255, 0, 0 ) << QColor( 0, 255, 0 );
@@ -715,7 +700,7 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
   _renderLegend( QStringLiteral( "legend_diagram_size" ), &legendModel, settings );
   QVERIFY( _verifyImage( "legend_diagram_size", mReport ) );
 
-  QgsMapLayerRegistry::instance()->removeMapLayer( vl4 );
+  QgsProject::instance()->removeMapLayer( vl4 );
 }
 
 QTEST_MAIN( TestQgsLegendRenderer )

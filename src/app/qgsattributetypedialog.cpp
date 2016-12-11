@@ -18,7 +18,6 @@
 #include "qgsattributetypedialog.h"
 #include "qgsattributetypeloaddialog.h"
 #include "qgsvectordataprovider.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmapcanvas.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgisapp.h"

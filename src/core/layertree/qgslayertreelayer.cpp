@@ -17,7 +17,7 @@
 
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
@@ -26,7 +26,7 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
     , mLayer( nullptr )
     , mVisible( Qt::Checked )
 {
-  Q_ASSERT( QgsMapLayerRegistry::instance()->mapLayer( mLayerId ) == layer );
+  Q_ASSERT( QgsProject::instance()->mapLayer( mLayerId ) == layer );
   attachToLayer();
 }
 
@@ -53,21 +53,21 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer& other )
 void QgsLayerTreeLayer::attachToLayer()
 {
   // layer is not necessarily already loaded
-  QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( mLayerId );
+  QgsMapLayer* l = QgsProject::instance()->mapLayer( mLayerId );
   if ( l )
   {
     mLayer = l;
     mLayerName = l->name();
     connect( l, SIGNAL( nameChanged() ), this, SLOT( layerNameChanged() ) );
     // make sure we are notified if the layer is removed
-    connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( registryLayersWillBeRemoved( QStringList ) ) );
+    connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( registryLayersWillBeRemoved( QStringList ) ) );
   }
   else
   {
     if ( mLayerName.isEmpty() )
       mLayerName = QStringLiteral( "(?)" );
     // wait for the layer to be eventually loaded
-    connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( registryLayersAdded( QList<QgsMapLayer*> ) ) );
+    connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( registryLayersAdded( QList<QgsMapLayer*> ) ) );
   }
 }
 
@@ -115,7 +115,7 @@ QgsLayerTreeLayer* QgsLayerTreeLayer::readXml( QDomElement& element )
 
   QgsLayerTreeLayer* nodeLayer = nullptr;
 
-  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
+  QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerID );
 
   if ( layer )
     nodeLayer = new QgsLayerTreeLayer( layer );
@@ -159,7 +159,7 @@ void QgsLayerTreeLayer::registryLayersAdded( const QList<QgsMapLayer*>& layers )
   {
     if ( l->id() == mLayerId )
     {
-      disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( registryLayersAdded( QList<QgsMapLayer*> ) ) );
+      disconnect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( registryLayersAdded( QList<QgsMapLayer*> ) ) );
       attachToLayer();
       emit layerLoaded();
       break;
@@ -174,8 +174,8 @@ void QgsLayerTreeLayer::registryLayersWillBeRemoved( const QStringList& layerIds
     emit layerWillBeUnloaded();
 
     // stop listening to removal signals and start hoping that the layer may be added again
-    disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( registryLayersWillBeRemoved( QStringList ) ) );
-    connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( registryLayersAdded( QList<QgsMapLayer*> ) ) );
+    disconnect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( registryLayersWillBeRemoved( QStringList ) ) );
+    connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( registryLayersAdded( QList<QgsMapLayer*> ) ) );
 
     mLayer = nullptr;
   }

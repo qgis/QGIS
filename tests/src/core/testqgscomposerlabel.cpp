@@ -18,7 +18,6 @@
 #include "qgsapplication.h"
 #include "qgscomposition.h"
 #include "qgscomposerlabel.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsmultirenderchecker.h"
@@ -77,10 +76,9 @@ void TestQgsComposerLabel::initTestCase()
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      QStringLiteral( "ogr" ) );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   //create composition with composer map
-  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mVectorLayer );
   mMapSettings->setCrsTransformEnabled( false );
   mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
@@ -105,6 +103,7 @@ void TestQgsComposerLabel::cleanupTestCase()
 
   delete mComposition;
   delete mMapSettings;
+  delete mVectorLayer;
 
   QgsApplication::exitQgis();
 }

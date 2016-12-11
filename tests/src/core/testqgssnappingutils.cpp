@@ -21,7 +21,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsgeometry.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgssnappingutils.h"
 #include "qgssnappingconfig.h"
 
@@ -74,7 +74,7 @@ class TestQgsSnappingUtils : public QObject
       flist << ff;
       mVL->dataProvider()->addFeatures( flist );
 
-      QgsMapLayerRegistry::instance()->addMapLayer( mVL );
+      QgsProject::instance()->addMapLayer( mVL );
     }
 
     void cleanupTestCase()
@@ -151,7 +151,7 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( !m.isValid() );
 
       // now check with our layer
-      mapSettings.setLayers( QStringList() << mVL->id() );
+      mapSettings.setLayers( QList<QgsMapLayer*>() << mVL );
       u.setMapSettings( mapSettings );
 
       QgsPointLocator::Match m2 = u.snapToMap( QPoint( 100, 100 ) );

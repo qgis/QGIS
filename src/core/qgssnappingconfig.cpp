@@ -20,7 +20,6 @@
 #include <QSettings>
 
 #include "qgslogger.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 
@@ -105,7 +104,8 @@ bool QgsSnappingConfig::IndividualLayerSettings::operator ==( const QgsSnappingC
 }
 
 
-QgsSnappingConfig::QgsSnappingConfig()
+QgsSnappingConfig::QgsSnappingConfig( QgsProject* project )
+    : mProject( project )
 {
   reset();
 }
@@ -158,7 +158,7 @@ void QgsSnappingConfig::reset()
 
   // set advanced config
   mIndividualLayerSettings = QHash<QgsVectorLayer *, IndividualLayerSettings>();
-  Q_FOREACH ( QgsMapLayer *ml, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer *ml, mProject->mapLayers() )
   {
     QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( ml );
     if ( vl )
@@ -334,7 +334,7 @@ void QgsSnappingConfig::readProject( const QDomDocument& doc )
       double tolerance = settingElement.attribute( QStringLiteral( "tolerance" ) ).toDouble();
       QgsTolerance::UnitType units = ( QgsTolerance::UnitType )settingElement.attribute( QStringLiteral( "units" ) ).toInt();
 
-      QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+      QgsMapLayer* ml = mProject->mapLayer( layerId );
       if ( !ml || ml->type() != QgsMapLayer::VectorLayer )
         continue;
 
@@ -414,27 +414,27 @@ void QgsSnappingConfig::readLegacySettings()
   mMode = ActiveLayer;
   mIndividualLayerSettings.clear();
 
-  QString snapMode = QgsProject::instance()->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/SnappingMode" ) );
+  QString snapMode = mProject->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/SnappingMode" ) );
 
-  QString snapType = QgsProject::instance()->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapType" ), QStringLiteral( "off" ) );
+  QString snapType = mProject->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapType" ), QStringLiteral( "off" ) );
   if ( snapType == QLatin1String( "to segment" ) )
     mType = Segment;
   else if ( snapType == QLatin1String( "to vertex and segment" ) )
     mType = VertexAndSegment;
   else if ( snapType == QLatin1String( "to vertex" ) )
     mType = Vertex;
-  mTolerance = QgsProject::instance()->readDoubleEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapTolerance" ), 0 );
-  mUnits =  static_cast< QgsTolerance::UnitType >( QgsProject::instance()->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapToleranceUnit" ), QgsTolerance::ProjectUnits ) );
+  mTolerance = mProject->readDoubleEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapTolerance" ), 0 );
+  mUnits =  static_cast< QgsTolerance::UnitType >( mProject->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapToleranceUnit" ), QgsTolerance::ProjectUnits ) );
 
-  mIntersectionSnapping = QgsProject::instance()->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/IntersectionSnapping" ), 0 );
+  mIntersectionSnapping = mProject->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/IntersectionSnapping" ), 0 );
 
   //read snapping settings from project
   bool snappingDefinedInProject, ok;
-  QStringList layerIdList = QgsProject::instance()->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingList" ), QStringList(), &snappingDefinedInProject );
-  QStringList enabledList = QgsProject::instance()->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingEnabledList" ), QStringList(), &ok );
-  QStringList toleranceList = QgsProject::instance()->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingToleranceList" ), QStringList(), &ok );
-  QStringList toleranceUnitList = QgsProject::instance()->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingToleranceUnitList" ), QStringList(), &ok );
-  QStringList snapToList = QgsProject::instance()->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnapToList" ), QStringList(), &ok );
+  QStringList layerIdList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingList" ), QStringList(), &snappingDefinedInProject );
+  QStringList enabledList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingEnabledList" ), QStringList(), &ok );
+  QStringList toleranceList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingToleranceList" ), QStringList(), &ok );
+  QStringList toleranceUnitList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingToleranceUnitList" ), QStringList(), &ok );
+  QStringList snapToList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnapToList" ), QStringList(), &ok );
 
   // lists must have the same size, otherwise something is wrong
   if ( layerIdList.size() != enabledList.size() ||
@@ -462,7 +462,7 @@ void QgsSnappingConfig::readLegacySettings()
   QStringList::const_iterator enabledIt( enabledList.constBegin() );
   for ( ; layerIt != layerIdList.constEnd(); ++layerIt, ++tolIt, ++tolUnitIt, ++snapIt, ++enabledIt )
   {
-    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( *layerIt ) );
+    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mProject->mapLayer( *layerIt ) );
     if ( !vlayer || !vlayer->hasGeometryType() )
       continue;
 

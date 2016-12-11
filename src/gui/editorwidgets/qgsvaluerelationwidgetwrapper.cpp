@@ -17,7 +17,7 @@
 
 #include "qgis.h"
 #include "qgsfields.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvaluerelationwidgetfactory.h"
 #include "qgsvectorlayer.h"
 #include "qgsfilterlineedit.h"
@@ -193,7 +193,7 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
 {
   ValueRelationCache cache;
 
-  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( config.value( QStringLiteral( "Layer" ) ).toString() ) );
+  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( config.value( QStringLiteral( "Layer" ) ).toString() ) );
 
   if ( !layer )
     return cache;

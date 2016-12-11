@@ -22,7 +22,6 @@
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgslayertree.h"
-#include "qgsmaplayerregistry.h"
 #include "qgslayerdefinition.h"
 
 bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsLayerTreeGroup *rootGroup, QString &errorMessage )

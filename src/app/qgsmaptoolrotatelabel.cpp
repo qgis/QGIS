@@ -17,7 +17,6 @@
 
 #include "qgsmaptoolrotatelabel.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
 #include "qgspallabeling.h"
 #include "qgspointrotationitem.h"
 #include "qgsrubberband.h"

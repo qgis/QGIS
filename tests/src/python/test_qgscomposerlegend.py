@@ -20,7 +20,7 @@ from qgis.core import (QgsComposerLegend,
                        QgsComposition,
                        QgsMapSettings,
                        QgsVectorLayer,
-                       QgsMapLayerRegistry,
+                       QgsProject,
                        QgsMarkerSymbol,
                        QgsSingleSymbolRenderer,
                        QgsRectangle
@@ -43,14 +43,14 @@ class TestQgsComposerLegend(unittest.TestCase):
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayers([point_layer])
+        QgsProject.instance().addMapLayers([point_layer])
 
         marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no', 'size': '5', 'size_unit': 'MapUnit'})
 
         point_layer.setRenderer(QgsSingleSymbolRenderer(marker_symbol))
 
         s = QgsMapSettings()
-        s.setLayers([point_layer.id()])
+        s.setLayers([point_layer])
         s.setCrsTransformEnabled(False)
         composition = QgsComposition(s)
         composition.setPaperSize(297, 210)
@@ -75,17 +75,17 @@ class TestQgsComposerLegend(unittest.TestCase):
         result, message = checker.testComposition()
         self.assertTrue(result, message)
 
-        QgsMapLayerRegistry.instance().removeMapLayers([point_layer.id()])
+        QgsProject.instance().removeMapLayers([point_layer.id()])
 
     def testResizeWithMapContent(self):
         """Test test legend resizes to match map content"""
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayers([point_layer])
+        QgsProject.instance().addMapLayers([point_layer])
 
         s = QgsMapSettings()
-        s.setLayers([point_layer.id()])
+        s.setLayers([point_layer])
         s.setCrsTransformEnabled(False)
         composition = QgsComposition(s)
         composition.setPaperSize(297, 210)
@@ -113,17 +113,17 @@ class TestQgsComposerLegend(unittest.TestCase):
         result, message = checker.testComposition()
         self.assertTrue(result, message)
 
-        QgsMapLayerRegistry.instance().removeMapLayers([point_layer.id()])
+        QgsProject.instance().removeMapLayers([point_layer.id()])
 
     def testResizeDisabled(self):
         """Test that test legend does not resize if auto size is disabled"""
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayers([point_layer])
+        QgsProject.instance().addMapLayers([point_layer])
 
         s = QgsMapSettings()
-        s.setLayers([point_layer.id()])
+        s.setLayers([point_layer])
         s.setCrsTransformEnabled(False)
         composition = QgsComposition(s)
         composition.setPaperSize(297, 210)
@@ -155,17 +155,17 @@ class TestQgsComposerLegend(unittest.TestCase):
         result, message = checker.testComposition()
         self.assertTrue(result, message)
 
-        QgsMapLayerRegistry.instance().removeMapLayers([point_layer.id()])
+        QgsProject.instance().removeMapLayers([point_layer.id()])
 
     def testResizeDisabledCrop(self):
         """Test that if legend resizing is disabled, and legend is too small, then content is cropped"""
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayers([point_layer])
+        QgsProject.instance().addMapLayers([point_layer])
 
         s = QgsMapSettings()
-        s.setLayers([point_layer.id()])
+        s.setLayers([point_layer])
         s.setCrsTransformEnabled(False)
         composition = QgsComposition(s)
         composition.setPaperSize(297, 210)
@@ -197,7 +197,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         result, message = checker.testComposition()
         self.assertTrue(result, message)
 
-        QgsMapLayerRegistry.instance().removeMapLayers([point_layer.id()])
+        QgsProject.instance().removeMapLayers([point_layer.id()])
 
 if __name__ == '__main__':
     unittest.main()

@@ -23,7 +23,6 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 
@@ -63,7 +62,7 @@ QgsSpatialQueryDialog::~QgsSpatialQueryDialog()
 bool QgsSpatialQueryDialog::hasPossibleQuery( QString &msg )
 {
   // Count the number of vector layer
-  QMap <QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap <QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
   QMapIterator <QString, QgsMapLayer*> item( layers );
   QgsMapLayer * mapLayer = nullptr;
   QgsVectorLayer * lyr = nullptr;
@@ -298,7 +297,7 @@ bool QgsSpatialQueryDialog::addLayerSubset( const QString& name, const QString& 
     delete addLyr;
     return false;
   }
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << addLyr );
   return true;
 } // bool QgsSpatialQueryDialog::addLayerSubset( QString name, QString subset )
@@ -352,9 +351,9 @@ QString QgsSpatialQueryDialog::getDescriptionInvalidFeaturesShow( bool isTarget 
 
 void QgsSpatialQueryDialog::connectAll()
 {
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ),
+  connect( QgsProject::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ),
            this, SLOT( signal_qgis_layerWasAdded( QgsMapLayer* ) ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ),
+  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ),
            this, SLOT( signal_qgis_layerWillBeRemoved( QString ) ) );
   connect( ckbLogProcessing, SIGNAL( clicked( bool ) ),
            this, SLOT( on_ckbLogProcessing_clicked( bool ) ) );
@@ -362,9 +361,9 @@ void QgsSpatialQueryDialog::connectAll()
 
 void QgsSpatialQueryDialog::disconnectAll()
 {
-  disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ),
+  disconnect( QgsProject::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ),
               this, SLOT( signal_qgis_layerWasAdded( QgsMapLayer* ) ) );
-  disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ),
+  disconnect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ),
               this, SLOT( signal_qgis_layerWillBeRemoved( QString ) ) );
 
   if ( mLayerTarget )
@@ -532,7 +531,7 @@ void QgsSpatialQueryDialog::populateCbTargetLayer()
 {
   cbTargetLayer->blockSignals( true );
 
-  QMap <QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap <QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
   QMapIterator <QString, QgsMapLayer*> item( layers );
   QgsMapLayer * mapLayer = nullptr;
   QgsVectorLayer * lyr = nullptr;

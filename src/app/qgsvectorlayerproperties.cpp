@@ -37,7 +37,6 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgspluginmetadata.h"
 #include "qgspluginregistry.h"
@@ -1062,7 +1061,7 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
   joinedLayers.reserve( joins.size() );
   for ( int i = 0; i < joins.size(); ++i )
   {
-    joinedLayers.append( QgsMapLayerRegistry::instance()->mapLayer( joins[i].joinLayerId ) );
+    joinedLayers.append( QgsProject::instance()->mapLayer( joins[i].joinLayerId ) );
   }
 
   QgsJoinDialog d( mLayer, joinedLayers );
@@ -1072,7 +1071,7 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
     //create attribute index if possible
     if ( d.createAttributeIndex() )
     {
-      QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( info.joinLayerId ) );
+      QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( info.joinLayerId ) );
       if ( joinLayer )
       {
         joinLayer->dataProvider()->createAttributeIndex( joinLayer->fields().indexFromName( info.joinFieldName ) );
@@ -1111,7 +1110,7 @@ void QgsVectorLayerProperties::on_mJoinTreeWidget_itemDoubleClicked( QTreeWidget
     else
     {
       // remove already joined layers from possible list to be displayed in dialog
-      joinedLayers.append( QgsMapLayerRegistry::instance()->mapLayer( joins[i].joinLayerId ) );
+      joinedLayers.append( QgsProject::instance()->mapLayer( joins[i].joinLayerId ) );
     }
   }
   if ( j == -1 )
@@ -1136,7 +1135,7 @@ void QgsVectorLayerProperties::on_mJoinTreeWidget_itemDoubleClicked( QTreeWidget
     //create attribute index if possible
     if ( d.createAttributeIndex() )
     {
-      QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( info.joinLayerId ) );
+      QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( info.joinLayerId ) );
       if ( joinLayer )
       {
         joinLayer->dataProvider()->createAttributeIndex( joinLayer->fields().indexFromName( info.joinFieldName ) );
@@ -1154,7 +1153,7 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorJoinInfo& joi
 {
   QTreeWidgetItem* joinItem = new QTreeWidgetItem();
 
-  QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join.joinLayerId ) );
+  QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( join.joinLayerId ) );
   if ( !mLayer || !joinLayer )
   {
     return;

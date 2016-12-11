@@ -24,7 +24,7 @@
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 #include <qgsmaplayer.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 #include <qgsgeometry.h>
 #include <qgsvertexmarker.h>
 #include <qgsfeature.h>
@@ -59,7 +59,6 @@ checkDock::checkDock( QgisInterface* qIface, QWidget* parent )
   mErrorTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
   mErrorTableView->verticalHeader()->setDefaultSectionSize( 20 );
 
-  mLayerRegistry = QgsMapLayerRegistry::instance();
   mConfigureDialog = new rulesDialog( mTest->testMap(), qIface, parent );
   mTestTable = mConfigureDialog->rulesTable();
 
@@ -89,7 +88,7 @@ checkDock::checkDock( QgisInterface* qIface, QWidget* parent )
   connect( mFixButton, SIGNAL( clicked() ), this, SLOT( fix() ) );
   connect( mErrorTableView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( errorListClicked( const QModelIndex & ) ) );
 
-  connect( mLayerRegistry, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( parseErrorListByLayer( QString ) ) );
+  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( parseErrorListByLayer( QString ) ) );
 
   connect( this, SIGNAL( visibilityChanged( bool ) ), this, SLOT( updateRubberBands( bool ) ) );
   connect( qgsInterface, SIGNAL( newProjectCreated() ), mConfigureDialog, SLOT( clearRules() ) );
@@ -151,7 +150,7 @@ void checkDock::deleteErrors()
 
 void checkDock::parseErrorListByLayer( const QString& layerId )
 {
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayerRegistry->mapLayer( layerId ) );
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerId ) );
   QList<TopolError*>::Iterator it = mErrorList.begin();
 
   while ( it != mErrorList.end() )
@@ -329,17 +328,17 @@ void checkDock::runTests( ValidateType type )
     QString layer2Str = mTestTable->item( i, 5 )->text();
 
     // test if layer1 is in the registry
-    if ( !(( QgsVectorLayer* )mLayerRegistry->mapLayers().contains( layer1Str ) ) )
+    if ( !(( QgsVectorLayer* )QgsProject::instance()->mapLayers().contains( layer1Str ) ) )
     {
       QgsMessageLog::logMessage( tr( "Layer %1 not found in registry." ).arg( layer1Str ), tr( "Topology plugin" ) );
       return;
     }
 
-    QgsVectorLayer* layer1 = ( QgsVectorLayer* )mLayerRegistry->mapLayer( layer1Str );
+    QgsVectorLayer* layer1 = ( QgsVectorLayer* )QgsProject::instance()->mapLayer( layer1Str );
     QgsVectorLayer* layer2 = nullptr;
 
-    if (( QgsVectorLayer* )mLayerRegistry->mapLayers().contains( layer2Str ) )
-      layer2 = ( QgsVectorLayer* )mLayerRegistry->mapLayer( layer2Str );
+    if (( QgsVectorLayer* )QgsProject::instance()->mapLayers().contains( layer2Str ) )
+      layer2 = ( QgsVectorLayer* )QgsProject::instance()->mapLayer( layer2Str );
 
     QProgressDialog progress( testName, tr( "Abort" ), 0, layer1->featureCount(), this );
     progress.setWindowModality( Qt::WindowModal );

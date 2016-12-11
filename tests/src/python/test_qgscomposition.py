@@ -23,7 +23,7 @@ from qgis.core import (QgsComposition,
                        QgsPoint,
                        QgsRasterLayer,
                        QgsMultiBandColorRenderer,
-                       QgsMapLayerRegistry,
+                       QgsProject,
                        QgsMapSettings
                        )
 
@@ -99,10 +99,10 @@ class TestQgsComposition(unittest.TestCase):
         myPipe = myRasterLayer.pipe()
         assert myPipe.set(myRenderer), "Cannot set pipe renderer"
 
-        QgsMapLayerRegistry.instance().addMapLayers([myRasterLayer])
+        QgsProject.instance().addMapLayers([myRasterLayer])
 
         myMapSettings = QgsMapSettings()
-        myMapSettings.setLayers([myRasterLayer.id()])
+        myMapSettings.setLayers([myRasterLayer])
         myMapSettings.setCrsTransformEnabled(False)
 
         myComposition = QgsComposition(myMapSettings)

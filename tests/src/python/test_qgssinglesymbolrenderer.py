@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtCore import QSize
 
 from qgis.core import (QgsVectorLayer,
-                       QgsMapLayerRegistry,
+                       QgsProject,
                        QgsRectangle,
                        QgsMultiRenderChecker,
                        QgsSingleSymbolRenderer,
@@ -50,7 +50,7 @@ class TestQgsSingleSymbolRenderer(unittest.TestCase):
         self.iface = get_iface()
         myShpFile = os.path.join(TEST_DATA_DIR, 'polys_overlapping.shp')
         layer = QgsVectorLayer(myShpFile, 'Polys', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
 
         # Create rulebased style
         sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
@@ -58,7 +58,7 @@ class TestQgsSingleSymbolRenderer(unittest.TestCase):
         self.renderer = QgsSingleSymbolRenderer(sym1)
         layer.setRenderer(self.renderer)
 
-        rendered_layers = [layer.id()]
+        rendered_layers = [layer]
         self.mapsettings = self.iface.mapCanvas().mapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
         self.mapsettings.setOutputDpi(96)

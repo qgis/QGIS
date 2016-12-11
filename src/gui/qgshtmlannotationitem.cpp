@@ -20,7 +20,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpression.h"
@@ -167,7 +167,7 @@ void QgsHtmlAnnotationItem::readXml( const QDomDocument& doc, const QDomElement&
   mVectorLayer = nullptr;
   if ( itemElem.hasAttribute( QStringLiteral( "vectorLayer" ) ) )
   {
-    mVectorLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( itemElem.attribute( QStringLiteral( "vectorLayer" ), QLatin1String( "" ) ) ) );
+    mVectorLayer = dynamic_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( itemElem.attribute( QStringLiteral( "vectorLayer" ), QLatin1String( "" ) ) ) );
     if ( mVectorLayer )
     {
       QObject::connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( setFeatureForMapPosition() ) );

@@ -22,7 +22,7 @@
 #include "qgscomposermapoverview.h"
 #include "qgsatlascomposition.h"
 #include "qgscomposerlabel.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgssymbol.h"
@@ -111,8 +111,6 @@ void TestQgsAtlasComposition::initTestCase()
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mVectorLayer->setSimplifyMethod( simplifyMethod );
 
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
-
   mReport = QStringLiteral( "<h1>Composer Atlas Tests</h1>\n" );
 }
 
@@ -125,6 +123,7 @@ TestQgsAtlasComposition::~TestQgsAtlasComposition()
 void TestQgsAtlasComposition::cleanupTestCase()
 {
   delete mComposition;
+  delete mVectorLayer;
   QgsApplication::exitQgis();
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
@@ -140,7 +139,7 @@ void TestQgsAtlasComposition::cleanupTestCase()
 void TestQgsAtlasComposition::init()
 {
   //create composition with composer map
-  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mVectorLayer );
   mMapSettings->setCrsTransformEnabled( true );
   mMapSettings->setMapUnits( QgsUnitTypes::DistanceMeters );
 
@@ -424,14 +423,14 @@ void TestQgsAtlasComposition::test_signals()
 
 void TestQgsAtlasComposition::test_remove_layer()
 {
-  QgsMapLayerRegistry::instance()->addMapLayer( mVectorLayer2 );
+  QgsProject::instance()->addMapLayer( mVectorLayer2 );
   mAtlas->setCoverageLayer( mVectorLayer2 );
   mAtlas->setEnabled( true );
 
   QSignalSpy spyToggled( mAtlas, SIGNAL( toggled( bool ) ) );
 
   //remove coverage layer while atlas is enabled
-  QgsMapLayerRegistry::instance()->removeMapLayer( mVectorLayer2->id() );
+  QgsProject::instance()->removeMapLayer( mVectorLayer2->id() );
   mVectorLayer2 = 0;
 
   QVERIFY( !mAtlas->enabled() );

@@ -29,7 +29,6 @@
 #include "qgslegendrenderer.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
@@ -840,7 +839,7 @@ QImage* QgsWmsServer::getLegendGraphics()
   Q_FOREACH ( const QString& layerId, layerIds )
   {
     // get layer
-    QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    QgsMapLayer *ml = QgsProject::instance()->mapLayer( layerId );
     // create tree layer node
     QgsLayerTreeLayer *layer = rootGroup.addLayer( ml );
     // store the layer's name
@@ -943,7 +942,7 @@ QImage* QgsWmsServer::getLegendGraphics()
       legendNode->drawSymbol( legendSettings, &ctx, itemHeight );
     }
 
-    QgsMapLayerRegistry::instance()->removeAllMapLayers();
+    QgsProject::instance()->removeAllMapLayers();
     return paintImage;
   }
 
@@ -999,11 +998,11 @@ QImage* QgsWmsServer::getLegendGraphics()
   // reset layers' name
   Q_FOREACH ( const QString& layerId, layerIds )
   {
-    QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    QgsMapLayer *ml = QgsProject::instance()->mapLayer( layerId );
     ml->setName( layerNameMap[ layerId ] );
   }
   //  clear map layer registry
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsProject::instance()->removeAllMapLayers();
   return paintImage;
 }
 
@@ -1024,7 +1023,7 @@ void QgsWmsServer::runHitTest( QPainter* painter, HitTest& hitTest )
 
   Q_FOREACH ( const QString& layerID, mMapRenderer->layerSet() )
   {
-    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) );
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerID ) );
     if ( !vl || !vl->renderer() )
       continue;
 
@@ -1287,7 +1286,7 @@ QByteArray* QgsWmsServer::getPrint( const QString& formatString )
   delete theImage;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
   {
     if ( !mAccessControl->layerReadPermission( layer ) )
     {
@@ -1435,7 +1434,7 @@ QImage* QgsWmsServer::getMap( HitTest* hitTest )
   mMapRenderer->setLayerSet( layerSet );
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
   {
     if ( !mAccessControl->layerReadPermission( layer ) )
     {
@@ -1482,7 +1481,7 @@ QImage* QgsWmsServer::getMap( HitTest* hitTest )
 
   // QgsMessageLog::logMessage( "clearing filters" );
   if ( !hitTest )
-    QgsMapLayerRegistry::instance()->removeAllMapLayers();
+    QgsProject::instance()->removeAllMapLayers();
 
   //#ifdef QGISDEBUG
   //  theImage->save( QDir::tempPath() + QDir::separator() + "lastrender.png" );
@@ -1695,7 +1694,7 @@ int QgsWmsServer::getFeatureInfo( QDomDocument& result, const QString& version )
     }
   }
 
-  //get the layer registered in QgsMapLayerRegistry and apply possible filters
+  //get the layer registered in QgsProject and apply possible filters
   ( void )layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
 
   //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
@@ -1777,7 +1776,7 @@ int QgsWmsServer::getFeatureInfo( QDomDocument& result, const QString& version )
       {
         continue;
       }
-      QgsMapLayer * registeredMapLayer = QgsMapLayerRegistry::instance()->mapLayer( currentLayer->id() );
+      QgsMapLayer * registeredMapLayer = QgsProject::instance()->mapLayer( currentLayer->id() );
       if ( registeredMapLayer )
       {
         currentLayer = registeredMapLayer;
@@ -1909,7 +1908,7 @@ int QgsWmsServer::getFeatureInfo( QDomDocument& result, const QString& version )
   //force restoration of original filters
   filterRestorer.reset();
 
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsProject::instance()->removeAllMapLayers();
   delete featuresRect;
   return 0;
 }
@@ -2643,7 +2642,7 @@ QStringList QgsWmsServer::layerSet( const QStringList &layersList,
              ( theMapLayer->minimumScale() <= scaleDenominator && theMapLayer->maximumScale() >= scaleDenominator ) )
         {
           layerKeys.push_front( theMapLayer->id() );
-          QgsMapLayerRegistry::instance()->addMapLayers(
+          QgsProject::instance()->addMapLayers(
             QList<QgsMapLayer *>() << theMapLayer, false, false );
         }
       }
@@ -2695,7 +2694,7 @@ void QgsWmsServer::applyRequestedLayerFilters( const QStringList& layerList , QH
       //we need to find the maplayer objects matching the layer name
       QList<QgsMapLayer*> layersToFilter;
 
-      Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
+      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
       {
         if ( layer )
         {
@@ -2760,7 +2759,7 @@ void QgsWmsServer::applyAccessControlLayersFilters( const QStringList& layerList
 {
   Q_FOREACH ( const QString& layerName, layerList )
   {
-    QList<QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayersByName( layerName );
+    QList<QgsMapLayer*> mapLayers = QgsProject::instance()->mapLayersByName( layerName );
     Q_FOREACH ( QgsMapLayer* mapLayer, mapLayers )
     {
       applyAccessControlLayerFilters( mapLayer, originalLayerFilters );
@@ -2922,7 +2921,7 @@ QStringList QgsWmsServer::applyFeatureSelections( const QStringList& layerList )
     QString layerName = layerIdSplit.at( 0 );
     QgsVectorLayer* vLayer = nullptr;
 
-    Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
+    Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
     {
       if ( layer )
       {
@@ -2962,7 +2961,7 @@ QStringList QgsWmsServer::applyFeatureSelections( const QStringList& layerList )
 
 void QgsWmsServer::clearFeatureSelections( const QStringList& layerIds ) const
 {
-  const QMap<QString, QgsMapLayer*>& layerMap = QgsMapLayerRegistry::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer*>& layerMap = QgsProject::instance()->mapLayers();
 
   Q_FOREACH ( const QString& id, layerIds )
   {
@@ -3258,7 +3257,7 @@ void QgsWmsServer::convertFeatureInfoToSIA2045( QDomDocument& doc )
       QString currentLayerId = currentLayerElem.attribute( QStringLiteral( "id" ) );
       if ( !currentLayerId.isEmpty() )
       {
-        QgsMapLayer* currentLayer = QgsMapLayerRegistry::instance()->mapLayer( currentLayerId );
+        QgsMapLayer* currentLayer = QgsProject::instance()->mapLayer( currentLayerId );
         if ( currentLayer )
         {
           QString WMSPropertyAttributesString = currentLayer->customProperty( QStringLiteral( "WMSPropertyAttributes" ) ).toString();

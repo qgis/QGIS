@@ -31,7 +31,6 @@
 #include <qgsrasterpyramid.h>
 #include <qgsrasterbandstats.h>
 #include "qgsrasterdataprovider.h"
-#include <qgsmaplayerregistry.h>
 #include <qgsapplication.h>
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>

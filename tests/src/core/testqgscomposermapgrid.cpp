@@ -20,7 +20,6 @@
 #include "qgsmultirenderchecker.h"
 #include "qgscomposermap.h"
 #include "qgscomposermapgrid.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsfontutils.h"
 #include <QObject>
 #include <QtTest/QtTest>

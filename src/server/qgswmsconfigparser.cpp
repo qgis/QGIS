@@ -17,7 +17,7 @@
 
 #include "qgswmsconfigparser.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmapserviceexception.h"
 
 #include "qgscomposerlabel.h"
@@ -147,7 +147,8 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
     QStringList layerSet;
     if ( currentMap->keepLayerSet() )
     {
-      layerSet = currentMap->layerSet();
+      Q_FOREACH ( QgsMapLayer* layer, currentMap->layers() )
+        layerSet << layer->id();
     }
     else
     {
@@ -193,7 +194,14 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
     //add highlight layers
     highlightLayers.append( addHighlightLayers( parameterMap, layerSet, mapId + ":" ) );
 
-    currentMap->setLayerSet( layerSet );
+    QList<QgsMapLayer*> layers;
+    Q_FOREACH ( const QString& layerId, layerSet )
+    {
+      if ( QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId ) )
+        layers << layer;
+    }
+
+    currentMap->setLayers( layers );
     currentMap->setKeepLayerSet( true );
 
     //remove highlight layers from the composer legends
@@ -232,7 +240,9 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
 
       // get model and layer tree root of the legend
       QgsLegendModelV2* model = currentLegend->model();
-      QStringList layerSet = map->layerSet();
+      QStringList layerSet;
+      Q_FOREACH ( QgsMapLayer* layer, map->layers() )
+        layerSet << layer->id();
       setLayerIdsToLegendModel( model, layerSet, map->scale() );
     }
   }
@@ -344,7 +354,7 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
     layer->setRenderer( renderer.take() );
     layerSet.prepend( layer.data()->id() );
     highlightLayers.append( layer.data()->id() );
-    QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << layer.take() );
+    QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer.take() );
   }
   return highlightLayers;
 }
@@ -534,7 +544,7 @@ void QgsWmsConfigParser::removeHighlightLayers( const QStringList& layerIds )
   QStringList::const_iterator idIt = layerIds.constBegin();
   for ( ; idIt != layerIds.constEnd(); ++idIt )
   {
-    QgsMapLayerRegistry::instance()->removeMapLayers( QStringList() << *idIt );
+    QgsProject::instance()->removeMapLayers( QStringList() << *idIt );
   }
 }
 

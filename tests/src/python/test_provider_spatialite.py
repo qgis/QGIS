@@ -25,7 +25,6 @@ from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
                        QgsProject,
-                       QgsMapLayerRegistry,
                        QgsField,
                        QgsFieldConstraints,
                        QgsVectorLayerUtils)
@@ -373,8 +372,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(artist.isValid())
         track = QgsVectorLayer("dbname=%s table=test_relation_b (geometry)" % self.dbname, "test_relation_b", "spatialite")
         self.assertTrue(track.isValid())
-        QgsMapLayerRegistry.instance().addMapLayer(artist)
-        QgsMapLayerRegistry.instance().addMapLayer(track)
+        QgsProject.instance().addMapLayer(artist)
+        QgsProject.instance().addMapLayer(track)
         try:
             relMgr = QgsProject.instance().relationManager()
             relations = relMgr.discoverRelations([], [artist, track])
@@ -388,8 +387,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
             self.assertEqual([2], a2t.referencingFields())
             self.assertEqual([0], a2t.referencedFields())
         finally:
-            QgsMapLayerRegistry.instance().removeMapLayer(track.id())
-            QgsMapLayerRegistry.instance().removeMapLayer(artist.id())
+            QgsProject.instance().removeMapLayer(track.id())
+            QgsProject.instance().removeMapLayer(artist.id())
 
     def testNotNullConstraint(self):
         vl = QgsVectorLayer("dbname=%s table=test_constraints key='id'" % self.dbname, "test_constraints",

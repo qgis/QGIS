@@ -13,6 +13,33 @@ class QgsMapThemeCollection : QObject
 %End
   public:
 
+    /**
+     * \ingroup core
+     * Individual record of a visible layer in a map theme record.
+     * @note Added in QGIS 3.0
+     */
+    class MapThemeLayerRecord
+    {
+      public:
+        //! Initialize layer record with a map layer - it will be stored as a weak pointer
+        MapThemeLayerRecord( QgsMapLayer* l = nullptr );
+
+        bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord& other ) const;
+        bool operator!=( const QgsMapThemeCollection::MapThemeLayerRecord& other ) const;
+
+        //! Returns map layer or null if the layer does not exist anymore
+        QgsMapLayer* layer() const;
+
+        //! Whether current style is valid and should be applied
+        bool usingCurrentStyle;
+        //! Name of the current style of the layer
+        QString currentStyle;
+        //! Whether checkedLegendItems should be applied
+        bool usingLegendItems;
+        //! Rule keys of check legend items in layer tree model
+        QSet<QString> checkedLegendItems;
+    };
+
     /** \ingroup core
      * Individual map theme record of visible layers and styles.
      */
@@ -23,45 +50,21 @@ class QgsMapThemeCollection : QObject
         bool operator==( const QgsMapThemeCollection::MapThemeRecord& other ) const;
         bool operator!=( const QgsMapThemeCollection::MapThemeRecord& other ) const;
 
-        /**
-         * Ordered list of visible layers
-         */
-        QStringList visibleLayerIds() const;
+        //! Returns a list of records for all visible layer belonging to the theme.
+        QList<QgsMapThemeCollection::MapThemeLayerRecord> layerRecords() const;
 
-        /**
-         * Ordered list of visible layers
-         */
-        void setVisibleLayerIds( const QStringList& visibleLayerIds );
+        //! Sets layer records for the theme.
+        void setLayerRecords( const QList<QgsMapThemeCollection::MapThemeLayerRecord>& records );
 
-        /**
-         * Lists which legend symbols are checked for layers which support this and where
-         * not all symbols are checked.
-         * @note not available in Python bindings
-         */
-//        QMap<QString, QSet<QString> > perLayerCheckedLegendSymbols() const;
-
-        /**
-         * Lists which legend symbols are checked for layers which support this and where
-         * not all symbols are checked.
-         * @note not available in Python bindings
-         */
-//        void setPerLayerCheckedLegendSymbols(const QMap<QString, QSet<QString> >& perLayerCheckedLegendSymbols);
-
-        /**
-         * The currently used style name for layers with multiple styles.
-         * The map has layer ids as keys and style names as values.
-         */
-        QMap<QString, QString> perLayerCurrentStyle() const;
-
-        /**
-         * The currently used style name for layers with multiple styles.
-         * The map has layer ids as keys and style names as values.
-         */
-        void setPerLayerCurrentStyle(const QMap<QString, QString>& perLayerCurrentStyle);
-
+        //! Return set with only records for valid layers
+        //! @note not available in python bindings
+        // QHash<QgsMapLayer*, QgsMapThemeCollection::MapThemeLayerRecord> validLayerRecords() const;
     };
 
-    QgsMapThemeCollection();
+    /**
+     * Create map theme collection that handles themes of the given project.
+     */
+    QgsMapThemeCollection( QgsProject* project );
 
     /**
      * Returns whether a map theme with a matching name exists.
@@ -103,13 +106,18 @@ class QgsMapThemeCollection : QObject
      *
      * @note The order of the returned list is not guaranteed to reflect the order of layers
      * in the canvas.
+     * @note Added in QGIS 3.0
      */
-    QStringList mapThemeVisibleLayers( const QString& name ) const;
+    QStringList mapThemeVisibleLayerIds( const QString& name ) const;
 
     /**
-     * Apply check states of legend nodes of a given layer as defined in the map theme.
+     * Returns the list of layers that are visible for the specified map theme.
+     *
+     * @note The order of the returned list is not guaranteed to reflect the order of layers
+     * in the canvas.
+     * @note Added in QGIS 3.0
      */
-    void applyMapThemeCheckedLegendNodesToLayer( const QString& name, const QString& layerID );
+    QList<QgsMapLayer*> mapThemeVisibleLayers( const QString& name ) const;
 
     /**
      * Get layer style overrides (for QgsMapSettings) of the visible layers for given map theme.
@@ -130,12 +138,18 @@ class QgsMapThemeCollection : QObject
     void writeXml( QDomDocument& doc );
 
     /**
-     * Static method for adding visible layers from a layer tree group to a map theme
-     * record.
-     * @param parent layer tree group parent
-     * @param rec map theme record to amend
+     * Static method to create theme from the current state of layer visibilities in layer tree,
+     * current style of layers and check state of legend items (from a layer tree model).
+     * @note added in QGIS 3.0
      */
-    static void addVisibleLayersToMapTheme( QgsLayerTreeGroup* parent, MapThemeRecord& rec );
+    static MapThemeRecord createThemeFromCurrentState( QgsLayerTreeGroup* root, QgsLayerTreeModel* model );
+
+    /**
+     * Apply theme given by its name and modify layer tree, current style of layers and checked
+     * legend items of passed layer tree model.
+     * @note added in QGIS 3.0
+     */
+    void applyTheme( const QString& name, QgsLayerTreeGroup* root, QgsLayerTreeModel* model );
 
   signals:
 

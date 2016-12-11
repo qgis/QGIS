@@ -62,7 +62,7 @@ class CommanderWindow(QDialog):
                 out.write('from qgis.core import *\n')
                 out.write('import processing\n\n')
                 out.write('def removeall():\n')
-                out.write('\tmapreg = QgsMapLayerRegistry.instance()\n')
+                out.write('\tmapreg = QgsProject.instance()\n')
                 out.write('\tmapreg.removeAllMapLayers()\n\n')
                 out.write('def load(*args):\n')
                 out.write('\tprocessing.load(args[0])\n')

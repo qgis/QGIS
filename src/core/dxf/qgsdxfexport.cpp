@@ -36,7 +36,6 @@
 #include "qgsfeatureiterator.h"
 #include "qgslinesymbollayer.h"
 #include "qgsvectorlayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsunittypes.h"
 #include "qgstextlabelfeature.h"
 #include "qgscrscache.h"

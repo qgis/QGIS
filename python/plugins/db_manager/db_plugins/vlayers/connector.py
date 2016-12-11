@@ -26,7 +26,7 @@ from qgis.PyQt.QtCore import QUrl, QTemporaryFile
 from ..connector import DBConnector
 from ..plugin import Table
 
-from qgis.core import Qgis, QgsDataSourceUri, QgsVirtualLayerDefinition, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer, QgsCoordinateReferenceSystem, QgsWkbTypes
+from qgis.core import Qgis, QgsDataSourceUri, QgsVirtualLayerDefinition, QgsProject, QgsMapLayer, QgsVectorLayer, QgsCoordinateReferenceSystem, QgsWkbTypes
 
 import sqlite3
 
@@ -98,7 +98,7 @@ class VLayerRegistry(object):
         lid = self.layers.get(l)
         if lid is None:
             return lid
-        return QgsMapLayerRegistry.instance().mapLayer(lid)
+        return QgsProject.instance().mapLayer(lid)
 
 
 class VLayerConnector(DBConnector):
@@ -190,7 +190,7 @@ class VLayerConnector(DBConnector):
         reg = VLayerRegistry.instance()
         VLayerRegistry.instance().reset()
         lst = []
-        for _, l in list(QgsMapLayerRegistry.instance().mapLayers().items()):
+        for _, l in list(QgsProject.instance().mapLayers().items()):
             if l.type() == QgsMapLayer.VectorLayer:
 
                 lname = l.name()
@@ -277,7 +277,7 @@ class VLayerConnector(DBConnector):
     def getTableExtent(self, table, geom):
         is_id, t = table
         if is_id:
-            l = QgsMapLayerRegistry.instance().mapLayer(t)
+            l = QgsProject.instance().mapLayer(t)
         else:
             l = VLayerRegistry.instance().getLayer(t)
         e = l.extent()

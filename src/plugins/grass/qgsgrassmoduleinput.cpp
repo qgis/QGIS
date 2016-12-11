@@ -32,7 +32,6 @@
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 

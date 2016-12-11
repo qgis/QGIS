@@ -21,7 +21,6 @@
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 #include <qgsmaplayer.h>
-#include <qgsmaplayerregistry.h>
 #include <qgsproviderregistry.h>
 #include <qgslogger.h>
 #include <qgisinterface.h>
@@ -76,13 +75,12 @@ void rulesDialog::setHorizontalHeaderItems()
   mRulesTable->setHorizontalHeaderLabels( labels );
 }
 
-void rulesDialog::readTest( int index, QgsMapLayerRegistry* layerRegistry )
+void rulesDialog::readTest( int index, QgsProject* project )
 {
   QString testName;
   QString layer1Id;
   QString layer2Id;
   QString tolerance;
-  QgsProject* project = QgsProject::instance();
   QString postfix = QStringLiteral( "%1" ).arg( index );
 
   testName = project->readEntry( QStringLiteral( "Topol" ), "/testname_" + postfix, QLatin1String( "" ) );
@@ -91,10 +89,10 @@ void rulesDialog::readTest( int index, QgsMapLayerRegistry* layerRegistry )
   layer2Id = project->readEntry( QStringLiteral( "Topol" ), "/layer2_" + postfix, QLatin1String( "" ) );
 
   QgsVectorLayer* l1;
-  if ( !( QgsVectorLayer* )layerRegistry->mapLayers().contains( layer1Id ) )
+  if ( !( QgsVectorLayer* )project->mapLayers().contains( layer1Id ) )
     return;
 
-  l1 = ( QgsVectorLayer* )layerRegistry->mapLayer( layer1Id );
+  l1 = ( QgsVectorLayer* )project->mapLayer( layer1Id );
   if ( !l1 )
     return;
 
@@ -104,11 +102,11 @@ void rulesDialog::readTest( int index, QgsMapLayerRegistry* layerRegistry )
 
   if ( mTestConfMap[testName].useSecondLayer )
   {
-    if ( !( QgsVectorLayer* )layerRegistry->mapLayers().contains( layer2Id ) )
+    if ( !( QgsVectorLayer* )project->mapLayers().contains( layer2Id ) )
       return;
     else
     {
-      l2 = ( QgsVectorLayer* )layerRegistry->mapLayer( layer2Id );
+      l2 = ( QgsVectorLayer* )project->mapLayer( layer2Id );
       layer2Name = l2->name();
     }
   }
@@ -149,12 +147,12 @@ void rulesDialog::readTest( int index, QgsMapLayerRegistry* layerRegistry )
 void rulesDialog::projectRead()
 {
   clearRules();
-  QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
+  QgsProject* project = QgsProject::instance();
   int testCount = QgsProject::instance()->readNumEntry( QStringLiteral( "Topol" ), QStringLiteral( "/testCount" ) );
   mRulesTable->clearContents();
 
   for ( int i = 0; i < testCount; ++i )
-    readTest( i, layerRegistry );
+    readTest( i, project );
 }
 
 void rulesDialog::showControls( const QString& testName )
@@ -167,15 +165,14 @@ void rulesDialog::showControls( const QString& testName )
   mLayer2Box->clear();
   mLayer2Box->addItem( tr( "No layer" ) );
   TopologyRule topologyRule = mTestConfMap[testName];
-  QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
-  QList<QString> layerList = layerRegistry->mapLayers().keys();
+  QList<QString> layerList = QgsProject::instance()->mapLayers().keys();
 
   if ( topologyRule.useSecondLayer )
   {
     mLayer2Box->setVisible( true );
     for ( int i = 0; i < layerList.count(); ++i )
     {
-      QgsVectorLayer* v1 = ( QgsVectorLayer* )layerRegistry->mapLayer( layerList[i] );
+      QgsVectorLayer* v1 = ( QgsVectorLayer* )QgsProject::instance()->mapLayer( layerList[i] );
 
       if ( !v1 )
       {
@@ -318,8 +315,7 @@ void rulesDialog::updateRuleItems( const QString &layerName )
 
   QString layerId = mLayer1Box->currentData().toString();
 
-  QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
-  QgsVectorLayer* vlayer = ( QgsVectorLayer* )layerRegistry->mapLayer( layerId );
+  QgsVectorLayer* vlayer = ( QgsVectorLayer* )QgsProject::instance()->mapLayer( layerId );
 
   if ( !vlayer )
   {
@@ -340,9 +336,7 @@ void rulesDialog::updateRuleItems( const QString &layerName )
 
 void rulesDialog::initGui()
 {
-  QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
-
-  QList<QString> layerList = layerRegistry->mapLayers().keys();
+  QList<QString> layerList = QgsProject::instance()->mapLayers().keys();
 
   mLayer1Box->clear();
   mLayer1Box->addItem( tr( "No layer" ) );
@@ -353,7 +347,7 @@ void rulesDialog::initGui()
   mLayer1Box->blockSignals( true );
   for ( int i = 0; i < layerList.size(); ++i )
   {
-    QgsVectorLayer* v1 = ( QgsVectorLayer* )layerRegistry->mapLayer( layerList[i] );
+    QgsVectorLayer* v1 = ( QgsVectorLayer* )QgsProject::instance()->mapLayer( layerList[i] );
     qDebug() << "layerid = " + layerList[i];
 
     // add layer name to the layer combo boxes

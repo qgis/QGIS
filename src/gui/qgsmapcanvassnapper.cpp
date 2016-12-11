@@ -17,7 +17,6 @@
 
 #include "qgsmapcanvassnapper.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
@@ -263,7 +262,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
     }
 
     //layer
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( *layerIt ) );
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( *layerIt ) );
     if ( !vlayer || !vlayer->hasGeometryType() )
       continue;
 

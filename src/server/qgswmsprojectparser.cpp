@@ -20,7 +20,7 @@
 #include "qgsconfigparserutils.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmapserviceexception.h"
 #include "qgspallabeling.h"
@@ -535,10 +535,10 @@ QgsComposition* QgsWmsProjectParser::initComposition( const QString& composerTem
         QgsLayerTreeGroup* root = model->rootGroup();
         QStringList layerIds = root->findLayerIds();
         // for each layer find in the layer tree
-        // load it if the layer id is not QgsMapLayerRegistry
+        // load it if the layer id is not QgsProject
         Q_FOREACH ( const QString& layerId, layerIds )
         {
-          QgsMapLayer * layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+          QgsMapLayer * layer = QgsProject::instance()->mapLayer( layerId );
           if ( layer )
           {
             continue;
@@ -559,7 +559,7 @@ QgsComposition* QgsWmsProjectParser::initComposition( const QString& composerTem
               layer = mProjectParser->createLayerFromElement( layerElemIt.value(), true );
             }
           }
-          QgsMapLayerRegistry::instance()->addMapLayer( layer );
+          QgsProject::instance()->addMapLayer( layer );
         }
         legend->updateLegend();
       }

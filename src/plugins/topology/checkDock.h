@@ -31,7 +31,6 @@
 #include "topolTest.h"
 #include "dockModel.h"
 
-class QgsMapLayerRegistry;
 class QgsRubberBand;
 class QgsVertexMarker;
 class QgisApp;
@@ -128,7 +127,6 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
     QTableWidget* mTestTable;
 
     topolTest* mTest;
-    QgsMapLayerRegistry* mLayerRegistry;
 
     /**
      * Runs tests from the test table

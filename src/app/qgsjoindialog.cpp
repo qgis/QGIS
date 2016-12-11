@@ -17,7 +17,7 @@
 
 #include "qgsjoindialog.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayercombobox.h"
@@ -68,7 +68,7 @@ QgsJoinDialog::~QgsJoinDialog()
 
 void QgsJoinDialog::setJoinInfo( const QgsVectorJoinInfo& joinInfo )
 {
-  mJoinLayerComboBox->setLayer( QgsMapLayerRegistry::instance()->mapLayer( joinInfo.joinLayerId ) );
+  mJoinLayerComboBox->setLayer( QgsProject::instance()->mapLayer( joinInfo.joinLayerId ) );
   mJoinFieldComboBox->setField( joinInfo.joinFieldName );
   mTargetFieldComboBox->setField( joinInfo.targetFieldName );
   mCacheInMemoryCheckBox->setChecked( joinInfo.memoryCache );

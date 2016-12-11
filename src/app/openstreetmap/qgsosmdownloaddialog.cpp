@@ -23,7 +23,7 @@
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatetransform.h"
 
@@ -63,7 +63,7 @@ QgsOSMDownloadDialog::~QgsOSMDownloadDialog()
 
 void QgsOSMDownloadDialog::populateLayers()
 {
-  QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::iterator it;
   for ( it = layers.begin(); it != layers.end(); ++it )
   {
@@ -138,7 +138,7 @@ void QgsOSMDownloadDialog::onCurrentLayerChanged( int index )
     return;
 
   QString layerId = cboLayers->itemData( index ).toString();
-  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+  QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId );
   if ( !layer )
     return;
 

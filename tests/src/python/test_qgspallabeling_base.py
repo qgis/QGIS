@@ -36,7 +36,7 @@ from qgis.PyQt.QtGui import QFont, QColor
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDataSourceUri,
-    QgsMapLayerRegistry,
+    QgsProject,
     QgsMapSettings,
     QgsPalLabeling,
     QgsPalLayerSettings,
@@ -76,7 +76,7 @@ class TestQgsPalLabeling(unittest.TestCase):
     _TestFont = getTestFont()  # Roman at 12 pt
     """:type: QFont"""
     _MapRegistry = None
-    """:type: QgsMapLayerRegistry"""
+    """:type: QgsProject"""
     _MapSettings = None
     """:type: QgsMapSettings"""
     _Canvas = None
@@ -113,7 +113,7 @@ class TestQgsPalLabeling(unittest.TestCase):
 
         # initialize class MapRegistry, Canvas, MapRenderer, Map and PAL
         # noinspection PyArgumentList
-        cls._MapRegistry = QgsMapLayerRegistry.instance()
+        cls._MapRegistry = QgsProject.instance()
 
         cls._MapSettings = cls.getBaseMapSettings()
         osize = cls._MapSettings.outputSize()
@@ -154,8 +154,8 @@ class TestQgsPalLabeling(unittest.TestCase):
         lyr_id = layer.id()
         cls._MapRegistry.removeMapLayer(lyr_id)
         ms_layers = cls._MapSettings.layers()
-        if lyr_id in ms_layers:
-            ms_layers.remove(lyr_id)
+        if layer in ms_layers:
+            ms_layers.remove(layer)
             cls._MapSettings.setLayers(ms_layers)
 
     @classmethod
@@ -176,7 +176,7 @@ class TestQgsPalLabeling(unittest.TestCase):
         # qDebug('render_lyr = {0}'.format(repr(vlayer)))
         cls._MapRegistry.addMapLayer(vlayer)
         # place new layer on top of render stack
-        render_lyrs = [vlayer.id()]
+        render_lyrs = [vlayer]
         render_lyrs.extend(cls._MapSettings.layers())
         # qDebug('render_lyrs = {0}'.format(repr(render_lyrs)))
         cls._MapSettings.setLayers(render_lyrs)

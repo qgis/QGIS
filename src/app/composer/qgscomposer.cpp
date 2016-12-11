@@ -62,7 +62,6 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsgeometry.h"
 #include "qgspaperitem.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsprevieweffect.h"
 #include "qgsvectorlayer.h"
 #include "qgscomposerimageexportoptionsdialog.h"

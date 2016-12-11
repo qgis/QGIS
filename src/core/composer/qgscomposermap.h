@@ -174,9 +174,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setKeepLayerSet( bool enabled ) {mKeepLayerSet = enabled;}
 
     //! Getter for stored layer set that is used if mKeepLayerSet is true
-    QStringList layerSet() const {return mLayerSet;}
+    QList<QgsMapLayer*> layers() const;
     //! Setter for stored layer set that is used if mKeepLayerSet is true
-    void setLayerSet( const QStringList& layerSet ) {mLayerSet = layerSet;}
+    void setLayers( const QList<QgsMapLayer*> layers );
     //! Stores the current layer set of the qgis mapcanvas in mLayerSet
     void storeCurrentLayerSet();
 
@@ -484,7 +484,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     bool mKeepLayerSet;
 
     //! Stored layer list (used if layer live-link mKeepLayerSet is disabled)
-    QStringList mLayerSet;
+    QList< QPointer<QgsMapLayer> > mLayers;
 
     bool mKeepLayerStyles;
     //! Stored style names (value) to be used with particular layer IDs (key) instead of default style
@@ -537,7 +537,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void updateToolTip();
 
     //! Returns a list of the layers to render for this map item
-    QStringList layersToRender( const QgsExpressionContext* context = nullptr ) const;
+    QList<QgsMapLayer*> layersToRender( const QgsExpressionContext* context = nullptr ) const;
 
     //! Returns current layer style overrides for this map item
     QMap<QString, QString> layerStyleOverridesToRender( const QgsExpressionContext& context ) const;

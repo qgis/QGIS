@@ -18,7 +18,7 @@
 #include "qgscomposerlegendstyle.h"
 #include "qgscomposerlegenditem.h"
 #include "qgscomposerlegend.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsrenderer.h"
 #include "qgssymbol.h"
@@ -288,7 +288,7 @@ void QgsComposerLayerItem::readXml( const QDomElement& itemElem, bool xServerAva
 void QgsComposerLayerItem::setDefaultStyle( double scaleDenominator, const QString& rule )
 {
   // set default style according to number of symbols
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId() ) );
+  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerId() ) );
   if ( vLayer )
   {
     QgsFeatureRenderer* renderer = vLayer->renderer();

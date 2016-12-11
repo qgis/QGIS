@@ -24,7 +24,7 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgisinterface.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorfilewriter.h"
@@ -54,8 +54,8 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface* iface , Q
 
   connect( mRunButton, SIGNAL( clicked() ), this, SLOT( runChecks() ) );
   connect( ui.comboBoxInputLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( validateInput() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( updateLayers() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( updateLayers() ) );
+  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( updateLayers() ) );
+  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( updateLayers() ) );
   connect( ui.radioButtonOutputNew, SIGNAL( toggled( bool ) ), ui.lineEditOutput, SLOT( setEnabled( bool ) ) );
   connect( ui.radioButtonOutputNew, SIGNAL( toggled( bool ) ), ui.pushButtonOutputBrowse, SLOT( setEnabled( bool ) ) );
   connect( ui.buttonGroupOutput, SIGNAL( buttonClicked( int ) ), this, SLOT( validateInput() ) );
@@ -87,7 +87,7 @@ void QgsGeometryCheckerSetupTab::updateLayers()
   QgsMapLayer* currentLayer = isVisible() ? 0 : mIface->mapCanvas()->currentLayer();
   int currIdx = -1;
   int idx = 0;
-  Q_FOREACH ( QgsVectorLayer* layer, QgsMapLayerRegistry::instance()->layers<QgsVectorLayer*>() )
+  Q_FOREACH ( QgsVectorLayer* layer, QgsProject::instance()->layers<QgsVectorLayer*>() )
   {
     ui.comboBoxInputLayer->addItem( layer->name(), layer->id() );
     if ( layer->name() == prevLayer )
@@ -203,7 +203,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
     // Remove existing layer with same uri
     QStringList toRemove;
-    Q_FOREACH ( QgsMapLayer* maplayer, QgsMapLayerRegistry::instance()->mapLayers() )
+    Q_FOREACH ( QgsMapLayer* maplayer, QgsProject::instance()->mapLayers() )
     {
       if ( dynamic_cast<QgsVectorLayer*>( maplayer ) &&
            static_cast<QgsVectorLayer*>( maplayer )->dataProvider()->dataSourceUri().startsWith( filename ) )
@@ -213,7 +213,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
     }
     if ( !toRemove.isEmpty() )
     {
-      QgsMapLayerRegistry::instance()->removeMapLayers( toRemove );
+      QgsProject::instance()->removeMapLayers( toRemove );
     }
 
     QString errMsg;
@@ -296,7 +296,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   layer->setReadOnly( true );
   if ( ui.radioButtonOutputNew->isChecked() )
   {
-    QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << layer );
+    QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << layer );
   }
 
   //! Run *

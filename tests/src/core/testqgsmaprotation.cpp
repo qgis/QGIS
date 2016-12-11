@@ -24,7 +24,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmultibandcolorrenderer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgspallabeling.h"
 #include "qgsfontutils.h"
@@ -82,32 +82,24 @@ void TestQgsMapRotation::initTestCase()
 
   mMapSettings = new QgsMapSettings();
 
-  QList<QgsMapLayer *> mapLayers;
-
   //create a raster layer that will be used in all tests...
   QFileInfo rasterFileInfo( mTestDataDir + "rgb256x256.png" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   mRasterLayer->setRenderer( rasterRenderer );
-  mapLayers << mRasterLayer;
 
   //create a point layer that will be used in all tests...
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  mapLayers << mPointsLayer;
 
   //create a line layer that will be used in all tests...
   QString myLinesFileName = mTestDataDir + "lines_cardinals.shp";
   QFileInfo myLinesFileInfo( myLinesFileName );
   mLinesLayer = new QgsVectorLayer( myLinesFileInfo.filePath(),
                                     myLinesFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  mapLayers << mLinesLayer;
-
-  // Register all layers with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers( mapLayers );
 
   // This is needed to correctly set rotation center,
   // the actual size doesn't matter as QgsRenderChecker will
@@ -128,6 +120,9 @@ TestQgsMapRotation::~TestQgsMapRotation()
 void TestQgsMapRotation::cleanupTestCase()
 {
   delete mMapSettings;
+  delete mPointsLayer;
+  delete mLinesLayer;
+  delete mRasterLayer;
   QgsApplication::exitQgis();
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
@@ -142,7 +137,7 @@ void TestQgsMapRotation::cleanupTestCase()
 
 void TestQgsMapRotation::rasterLayer()
 {
-  mMapSettings->setLayers( QStringList() << mRasterLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
   mMapSettings->setExtent( mRasterLayer->extent() );
   mMapSettings->setRotation( 45 );
   // This ensures rotated image is all visible by tweaking scale
@@ -155,7 +150,7 @@ void TestQgsMapRotation::rasterLayer()
 
 void TestQgsMapRotation::pointsLayer()
 {
-  mMapSettings->setLayers( QStringList() << mPointsLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mPointsLayer );
 
   // SVG points, fixed (no) rotation
   QString qml = mTestDataDir + "points.qml";
@@ -200,7 +195,7 @@ void TestQgsMapRotation::pointsLayer()
 
 void TestQgsMapRotation::linesLayer()
 {
-  mMapSettings->setLayers( QStringList() << mLinesLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mLinesLayer );
 
   // Arrowed line with parallel labels
   QString qml = mTestDataDir + "lines_cardinals_arrowed_parallel_label.qml";

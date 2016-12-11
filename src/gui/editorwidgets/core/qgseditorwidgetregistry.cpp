@@ -19,7 +19,6 @@
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgssearchwidgetwrapper.h"
 
@@ -84,8 +83,8 @@ QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
   connect( QgsProject::instance(), SIGNAL( readMapLayer( QgsMapLayer*, const QDomElement& ) ), this, SLOT( readMapLayer( QgsMapLayer*, const QDomElement& ) ) );
   // connect( QgsProject::instance(), SIGNAL( writeMapLayer( QgsMapLayer*, QDomElement&, QDomDocument& ) ), this, SLOT( writeMapLayer( QgsMapLayer*, QDomElement&, QDomDocument& ) ) );
 
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QgsMapLayer* ) ), this, SLOT( mapLayerWillBeRemoved( QgsMapLayer* ) ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( mapLayerAdded( QgsMapLayer* ) ) );
+  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QgsMapLayer* ) ), this, SLOT( mapLayerWillBeRemoved( QgsMapLayer* ) ) );
+  connect( QgsProject::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( mapLayerAdded( QgsMapLayer* ) ) );
 }
 
 QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()

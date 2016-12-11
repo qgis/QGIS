@@ -20,7 +20,6 @@
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsmaplayerregistry.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 

@@ -52,7 +52,6 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
@@ -1412,7 +1411,7 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   mJoinBuffer->readXml( layer_node );
 
   updateFields();
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
+  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
 
   QString errorMsg;
   if ( !readSymbology( layer_node, errorMsg ) )
@@ -1543,7 +1542,7 @@ void QgsVectorLayer::setDataSource( const QString& dataSource, const QString& ba
     setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
   }
 
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
+  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
   emit repaintRequested();
 }
 
@@ -1596,7 +1595,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       QStringList stuff = reg.capturedTexts();
       QString lName = stuff[1];
 
-      const QMap<QString, QgsMapLayer*> &layers = QgsMapLayerRegistry::instance()->mapLayers();
+      const QMap<QString, QgsMapLayer*> &layers = QgsProject::instance()->mapLayers();
 
       QMap<QString, QgsMapLayer*>::const_iterator it;
       for ( it = layers.constBegin(); it != layers.constEnd() && ( *it )->name() != lName; ++it )
@@ -4399,7 +4398,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
   // disconnect layers that are not present in the list of dependencies anymore
   Q_FOREACH ( const QgsMapLayerDependency& dep, mDependencies )
   {
-    QgsVectorLayer* lyr = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( dep.layerId() ) );
+    QgsVectorLayer* lyr = static_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( dep.layerId() ) );
     if ( lyr == nullptr )
       continue;
     disconnect( lyr, &QgsVectorLayer::featureAdded, this, &QgsVectorLayer::dataChanged );
@@ -4419,7 +4418,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
   // connect to new layers
   Q_FOREACH ( const QgsMapLayerDependency& dep, mDependencies )
   {
-    QgsVectorLayer* lyr = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( dep.layerId() ) );
+    QgsVectorLayer* lyr = static_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( dep.layerId() ) );
     if ( lyr == nullptr )
       continue;
     connect( lyr, &QgsVectorLayer::featureAdded, this, &QgsVectorLayer::dataChanged );

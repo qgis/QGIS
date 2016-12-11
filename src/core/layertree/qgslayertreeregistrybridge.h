@@ -22,6 +22,7 @@
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
 class QgsMapLayer;
+class QgsProject;
 
 
 /** \ingroup core
@@ -40,7 +41,8 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup* root, QObject *parent = nullptr );
+    //! Create the instance that synchronizes given project with a layer tree root
+    explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup* root, QgsProject* project, QObject *parent = nullptr );
 
     void setEnabled( bool enabled ) { mEnabled = enabled; }
     bool isEnabled() const { return mEnabled; }
@@ -68,6 +70,7 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
 
   protected:
     QgsLayerTreeGroup* mRoot;
+    QgsProject* mProject;
     QStringList mLayerIdsForRemoval;
     bool mRegistryRemovingLayers;
     bool mEnabled;

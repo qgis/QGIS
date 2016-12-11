@@ -18,7 +18,7 @@
 #include "qgsfeedback.h"
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgspallabeling.h"
 #include "qgsvectorlayer.h"
@@ -304,7 +304,7 @@ void QgsMapRendererJob::updateLayerGeometryCaches()
   for ( ; it != mGeometryCaches.constEnd(); ++it )
   {
     const QgsGeometryCache& cache = it.value();
-    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( it.key() ) ) )
+    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( it.key() ) ) )
       * vl->cache() = cache;
   }
   mGeometryCaches.clear();

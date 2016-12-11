@@ -26,7 +26,6 @@
 #include "qgscolorramp.h"
 #include "qgscptcityarchive.h"
 #include "qgsvectorlayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgssinglesymbolrenderer.h"

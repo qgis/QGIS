@@ -17,7 +17,7 @@
 
 #include "qgsdataitem.h"
 #include "qgsmaplayermodel.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 
@@ -29,7 +29,7 @@ QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *>& layers, QObject 
     , mAllowEmpty( false )
     , mShowCrs( false )
 {
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
+  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
   addLayers( layers );
 }
 
@@ -40,9 +40,9 @@ QgsMapLayerModel::QgsMapLayerModel( QObject *parent )
     , mAllowEmpty( false )
     , mShowCrs( false )
 {
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( addLayers( QList<QgsMapLayer*> ) ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
-  addLayers( QgsMapLayerRegistry::instance()->mapLayers().values() );
+  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( addLayers( QList<QgsMapLayer*> ) ) );
+  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
+  addLayers( QgsProject::instance()->mapLayers().values() );
 }
 
 void QgsMapLayerModel::setItemsCheckable( bool checkable )

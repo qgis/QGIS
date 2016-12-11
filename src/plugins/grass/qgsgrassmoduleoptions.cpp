@@ -26,7 +26,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -479,7 +479,7 @@ QStringList QgsGrassModuleStandardOptions::checkOutput()
 QList<QgsGrassProvider *> QgsGrassModuleStandardOptions::grassProviders()
 {
   QList<QgsGrassProvider *> providers;
-  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
   {
     if ( layer->type() == QgsMapLayer::VectorLayer )
     {
@@ -500,7 +500,7 @@ QList<QgsGrassProvider *> QgsGrassModuleStandardOptions::grassProviders()
 QList<QgsGrassRasterProvider *> QgsGrassModuleStandardOptions::grassRasterProviders()
 {
   QList<QgsGrassRasterProvider *> providers;
-  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
   {
     if ( layer->type() == QgsMapLayer::RasterLayer )
     {

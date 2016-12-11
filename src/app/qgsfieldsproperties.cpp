@@ -23,7 +23,6 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldsproperties.h"
 #include "qgslogger.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectordataprovider.h"

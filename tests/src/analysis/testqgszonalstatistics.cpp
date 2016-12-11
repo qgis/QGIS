@@ -20,7 +20,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 #include "qgszonalstatistics.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the zonal statistics class
@@ -71,7 +71,7 @@ void TestQgsZonalStatistics::initTestCase()
   }
 
   mVectorLayer = new QgsVectorLayer( myTempPath + "polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mVectorLayer );
 
   mRasterPath = myTempPath + "edge_problem.asc";

@@ -29,7 +29,6 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgisapp.h"
 

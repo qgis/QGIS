@@ -22,7 +22,8 @@
 
 #include "qgsmessagelog.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsmaplayerlistutils.h"
+#include "qgsproject.h"
 #include "qgsxmlutils.h"
 #include "qgscsexception.h"
 #include "qgsgeometry.h"
@@ -254,14 +255,20 @@ void QgsMapSettings::setOutputDpi( double dpi )
 }
 
 
-QStringList QgsMapSettings::layers() const
+QStringList QgsMapSettings::layerIds() const
 {
-  return mLayers;
+  return _qgis_listQPointerToIDs( mLayers );
 }
 
-void QgsMapSettings::setLayers( const QStringList& layers )
+
+QList<QgsMapLayer*> QgsMapSettings::layers() const
 {
-  mLayers = layers;
+  return _qgis_listQPointerToRaw( mLayers );
+}
+
+void QgsMapSettings::setLayers( const QList<QgsMapLayer*>& layers )
+{
+  mLayers = _qgis_listRawToQPointer( layers );
 }
 
 QMap<QString, QString> QgsMapSettings::layerStyleOverrides() const
@@ -535,7 +542,6 @@ QgsRectangle QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRe
 QgsRectangle QgsMapSettings::fullExtent() const
 {
   QgsDebugMsg( "called." );
-  QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
 
   // reset the map canvas extent since the extent may now be smaller
   // We can't use a constructor since QgsRectangle normalizes the rectangle upon construction
@@ -544,25 +550,16 @@ QgsRectangle QgsMapSettings::fullExtent() const
 
   // iterate through the map layers and test each layers extent
   // against the current min and max values
-  QStringList::const_iterator it = mLayers.begin();
   QgsDebugMsg( QString( "Layer count: %1" ).arg( mLayers.count() ) );
-  while ( it != mLayers.end() )
+  Q_FOREACH ( const QPointer<QgsMapLayer>& layerPtr, mLayers )
   {
-    QgsMapLayer * lyr = registry->mapLayer( *it );
-    if ( !lyr )
-    {
-      QgsDebugMsg( QString( "WARNING: layer '%1' not found in map layer registry!" ).arg( *it ) );
-    }
-    else
+    if ( QgsMapLayer* lyr = layerPtr.data() )
     {
       QgsDebugMsg( "Updating extent using " + lyr->name() );
       QgsDebugMsg( "Input extent: " + lyr->extent().toString() );
 
       if ( lyr->extent().isNull() )
-      {
-        ++it;
         continue;
-      }
 
       // Layer extents are stored in the coordinate system (CS) of the
       // layer. The extent must be projected to the canvas CS
@@ -570,9 +567,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
 
       QgsDebugMsg( "Output extent: " + extent.toString() );
       fullExtent.unionRect( extent );
-
     }
-    ++it;
   }
 
   if ( fullExtent.width() == 0.0 || fullExtent.height() == 0.0 )

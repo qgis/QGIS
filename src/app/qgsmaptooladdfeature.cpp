@@ -23,7 +23,6 @@
 #include "qgslinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmapmouseevent.h"
 #include "qgspolygon.h"
 #include "qgsproject.h"
@@ -303,7 +302,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
           QStringList::const_iterator lIt = intersectionLayers.constBegin();
           for ( ; lIt != intersectionLayers.constEnd(); ++lIt )
           {
-            QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( *lIt );
+            QgsMapLayer* ml = QgsProject::instance()->mapLayer( *lIt );
             QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
             //can only add topological points if background layer is editable...
             if ( vl && vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )

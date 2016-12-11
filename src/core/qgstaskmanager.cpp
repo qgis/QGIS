@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgstaskmanager.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include <QtConcurrentRun>
 
 
@@ -325,7 +325,7 @@ QgsTaskManager::QgsTaskManager( QObject* parent )
     , mTaskMutex( new QMutex( QMutex::Recursive ) )
     , mNextTaskId( 0 )
 {
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
+  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
            this, SLOT( layersWillBeRemoved( QStringList ) ) );
 }
 

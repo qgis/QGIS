@@ -35,7 +35,7 @@ from qgis.core import (
     QgsFillSymbol,
     QgsLineSymbol,
     QgsMarkerSymbol,
-    QgsMapLayerRegistry,
+    QgsProject,
     QgsRectangle,
     QgsGeometryGeneratorSymbolLayer,
     QgsSymbol,
@@ -63,9 +63,9 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         self.polys_layer = QgsVectorLayer(polys_shp, 'Polygons', 'ogr')
         self.points_layer = QgsVectorLayer(points_shp, 'Points', 'ogr')
         self.lines_layer = QgsVectorLayer(lines_shp, 'Lines', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayer(self.polys_layer)
-        QgsMapLayerRegistry.instance().addMapLayer(self.lines_layer)
-        QgsMapLayerRegistry.instance().addMapLayer(self.points_layer)
+        QgsProject.instance().addMapLayer(self.polys_layer)
+        QgsProject.instance().addMapLayer(self.lines_layer)
+        QgsProject.instance().addMapLayer(self.points_layer)
 
         # Create style
         sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
@@ -82,7 +82,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         self.mapsettings.setExtent(QgsRectangle(-133, 22, -70, 52))
 
     def tearDown(self):
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
     def test_marker(self):
         sym = self.polys_layer.renderer().symbol()
@@ -90,7 +90,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         sym_layer.setSymbolType(QgsSymbol.Marker)
         sym.changeSymbolLayer(0, sym_layer)
 
-        rendered_layers = [self.polys_layer.id()]
+        rendered_layers = [self.polys_layer]
         self.mapsettings.setLayers(rendered_layers)
 
         renderchecker = QgsMultiRenderChecker()
@@ -109,7 +109,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         marker_layer.setSymbolType(QgsSymbol.Marker)
         sym.appendSymbolLayer(marker_layer)
 
-        rendered_layers = [self.polys_layer.id()]
+        rendered_layers = [self.polys_layer]
         self.mapsettings.setLayers(rendered_layers)
 
         renderchecker = QgsMultiRenderChecker()
@@ -125,7 +125,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         self.assertIsNotNone(buffer_layer.subSymbol())
         sym.appendSymbolLayer(buffer_layer)
 
-        rendered_layers = [self.lines_layer.id()]
+        rendered_layers = [self.lines_layer]
         self.mapsettings.setLayers(rendered_layers)
 
         renderchecker = QgsMultiRenderChecker()
@@ -141,7 +141,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         self.assertIsNotNone(buffer_layer.subSymbol())
         sym.appendSymbolLayer(buffer_layer)
 
-        rendered_layers = [self.points_layer.id()]
+        rendered_layers = [self.points_layer]
         self.mapsettings.setLayers(rendered_layers)
 
         renderchecker = QgsMultiRenderChecker()

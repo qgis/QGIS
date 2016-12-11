@@ -98,7 +98,6 @@ typedef SInt32 SRefCon;
 #include "qgslogger.h"
 #include "qgsdxfexport.h"
 #include "qgsmapthemes.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 
 /** Print usage text
@@ -1200,9 +1199,9 @@ int main( int argc, char *argv[] )
     QList< QPair<QgsVectorLayer *, int > > layers;
     if ( !dxfPreset.isEmpty() )
     {
-      Q_FOREACH ( const QString& layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfPreset ) )
+      Q_FOREACH ( QgsMapLayer* layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfPreset ) )
       {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( layer ) );
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vl )
           continue;
         layers << qMakePair<QgsVectorLayer *, int>( vl, -1 );
@@ -1211,7 +1210,7 @@ int main( int argc, char *argv[] )
     }
     else
     {
-      Q_FOREACH ( QgsMapLayer *ml, QgsMapLayerRegistry::instance()->mapLayers() )
+      Q_FOREACH ( QgsMapLayer *ml, QgsProject::instance()->mapLayers() )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( !vl )

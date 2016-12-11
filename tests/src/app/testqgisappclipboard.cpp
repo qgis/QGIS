@@ -25,7 +25,6 @@
 #include "qgsfeaturestore.h"
 #include <qgsfield.h>
 #include <qgsclipboard.h>
-#include <qgsmaplayerregistry.h>
 #include <qgsvectorlayer.h>
 #include "qgsgeometry.h"
 #include "qgspointv2.h"

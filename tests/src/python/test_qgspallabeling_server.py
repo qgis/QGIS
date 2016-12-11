@@ -116,7 +116,7 @@ class TestServerBase(TestQgsPalLabeling):
         ms = self._TestMapSettings
         osize = ms.outputSize()
         dpi = str(int(ms.outputDpi()))
-        lyrs = [str(self._MapRegistry.mapLayer(i).name()) for i in ms.layers()]
+        lyrs = [str(layer.name()) for layer in ms.layers()]
         lyrs.reverse()
         params = {
             'SERVICE': 'WMS',
