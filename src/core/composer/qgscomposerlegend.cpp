@@ -46,7 +46,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mForceResize( false )
     , mSizeToContents( true )
 {
-  mLegendModel = new QgsLegendModelV2( QgsProject::instance()->layerTreeRoot() );
+  mLegendModel = new QgsLegendModel( QgsProject::instance()->layerTreeRoot() );
 
   connect( &composition->atlasComposition(), SIGNAL( renderEnded() ), this, SLOT( onAtlasEnded() ) );
   connect( &composition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( onAtlasFeature( QgsFeature* ) ) );
@@ -737,14 +737,14 @@ void QgsComposerLegend::onAtlasEnded()
 #include "qgslayertreemodellegendnode.h"
 #include "qgsvectorlayer.h"
 
-QgsLegendModelV2::QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject* parent )
+QgsLegendModel::QgsLegendModel( QgsLayerTreeGroup* rootNode, QObject* parent )
     : QgsLayerTreeModel( rootNode, parent )
 {
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
 }
 
-QVariant QgsLegendModelV2::data( const QModelIndex& index, int role ) const
+QVariant QgsLegendModel::data( const QModelIndex& index, int role ) const
 {
   // handle custom layer node labels
   if ( QgsLayerTreeNode* node = index2node( index ) )
@@ -766,7 +766,7 @@ QVariant QgsLegendModelV2::data( const QModelIndex& index, int role ) const
   return QgsLayerTreeModel::data( index, role );
 }
 
-Qt::ItemFlags QgsLegendModelV2::flags( const QModelIndex& index ) const
+Qt::ItemFlags QgsLegendModel::flags( const QModelIndex& index ) const
 {
   // make the legend nodes selectable even if they are not by default
   if ( index2legendNode( index ) )
