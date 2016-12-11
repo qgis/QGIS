@@ -30,10 +30,10 @@ class QgsLegendSettings
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 
     /** Returns reference to modifiable style */
-    QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s );
+    QgsLegendStyle & rstyle( QgsLegendStyle::Style s );
     /** Returns style */
-    QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const;
-    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style );
+    QgsLegendStyle style( QgsLegendStyle::Style s ) const;
+    void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle& style );
 
     double boxSpace() const;
     void setBoxSpace( double s );

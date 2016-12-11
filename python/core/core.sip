@@ -76,6 +76,7 @@
 %Include qgslabelsearchtree.sip
 %Include qgslegendrenderer.sip
 %Include qgslegendsettings.sip
+%Include qgslegendstyle.sip
 %Include qgslogger.sip
 %Include qgsmaphittest.sip
 %Include qgsmaplayer.sip
@@ -191,7 +192,6 @@
 %Include composer/qgscomposeritemgroup.sip
 %Include composer/qgscomposerlabel.sip
 %Include composer/qgscomposerlegend.sip
-%Include composer/qgscomposerlegendstyle.sip
 %Include composer/qgscomposermap.sip
 %Include composer/qgscomposermapgrid.sip
 %Include composer/qgscomposermapitem.sip

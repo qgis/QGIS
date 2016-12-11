@@ -1,7 +1,7 @@
-class QgsComposerLegendStyle
+class QgsLegendStyle
 {
 %TypeHeaderCode
-#include <qgscomposerlegendstyle.h>
+#include <qgslegendstyle.h>
 %End
   public:
     enum Style
@@ -21,7 +21,7 @@ class QgsComposerLegendStyle
       Left,
       Right,
     };
-    QgsComposerLegendStyle();
+    QgsLegendStyle();
 
     QFont font() const;
     QFont & rfont();

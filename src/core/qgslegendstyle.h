@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgscomposerlegendstyle.h
+                         qgslegendstyle.h
                          -------------------
     begin                : March 2013
     copyright            : (C) 2013 by Radim Blazek
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCOMPOSERLEGENDSTYLE_H
-#define QGSCOMPOSERLEGENDSTYLE_H
+#ifndef QGSLEGENDSTYLE_H
+#define QGSLEGENDSTYLE_H
 
 #include <QFont>
 #include <QMap>
@@ -27,7 +27,7 @@
 /** \ingroup core
  * Composer legend components style
  */
-class CORE_EXPORT QgsComposerLegendStyle
+class CORE_EXPORT QgsLegendStyle
 {
   public:
     enum Style
@@ -47,7 +47,7 @@ class CORE_EXPORT QgsComposerLegendStyle
       Left = 2,
       Right = 3
     };
-    QgsComposerLegendStyle();
+    QgsLegendStyle();
 
     QFont font() const { return mFont; }
     QFont & rfont() { return mFont; }

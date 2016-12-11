@@ -21,7 +21,7 @@
 
 class QRectF;
 
-#include "qgscomposerlegendstyle.h"
+#include "qgslegendstyle.h"
 
 
 /** \ingroup core
@@ -52,10 +52,10 @@ class CORE_EXPORT QgsLegendSettings
     void setTitleAlignment( Qt::AlignmentFlag alignment ) { mTitleAlignment = alignment; }
 
     //! Returns reference to modifiable style
-    QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s ) { return mStyleMap[s]; }
+    QgsLegendStyle & rstyle( QgsLegendStyle::Style s ) { return mStyleMap[s]; }
     //! Returns style
-    QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const { return mStyleMap.value( s ); }
-    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style ) { mStyleMap[s] = style; }
+    QgsLegendStyle style( QgsLegendStyle::Style s ) const { return mStyleMap.value( s ); }
+    void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle& style ) { mStyleMap[s] = style; }
 
     double boxSpace() const {return mBoxSpace;}
     void setBoxSpace( double s ) {mBoxSpace = s;}
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsLegendSettings
     QColor mRasterBorderColor;
     double mRasterBorderWidth;
 
-    QMap<QgsComposerLegendStyle::Style, QgsComposerLegendStyle> mStyleMap;
+    QMap<QgsLegendStyle::Style, QgsLegendStyle> mStyleMap;
 
     //! Conversion ratio between millimeters and map units - for symbols with size given in map units
     double mMmPerMapUnit;

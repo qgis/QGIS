@@ -42,12 +42,12 @@ static QString _fileNameForTest( const QString& testName )
 
 static void _setStandardTestFont( QgsLegendSettings& settings, const QString& style = QStringLiteral( "Roman" ) )
 {
-  QList< QgsComposerLegendStyle::Style> styles;
-  styles << QgsComposerLegendStyle::Title
-  << QgsComposerLegendStyle::Group
-  << QgsComposerLegendStyle::Subgroup
-  << QgsComposerLegendStyle::SymbolLabel;
-  Q_FOREACH ( QgsComposerLegendStyle::Style st, styles )
+  QList< QgsLegendStyle::Style> styles;
+  styles << QgsLegendStyle::Title
+  << QgsLegendStyle::Group
+  << QgsLegendStyle::Subgroup
+  << QgsLegendStyle::SymbolLabel;
+  Q_FOREACH ( QgsLegendStyle::Style st, styles )
   {
     QFont font( QgsFontUtils::getStandardTestFont( style ) );
     font.setPointSizeF( settings.style( st ).font().pointSizeF() );

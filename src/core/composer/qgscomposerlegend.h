@@ -135,18 +135,18 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 
     //! Returns reference to modifiable style
-    QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s );
+    QgsLegendStyle & rstyle( QgsLegendStyle::Style s );
     //! Returns style
-    QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const;
-    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style );
+    QgsLegendStyle style( QgsLegendStyle::Style s ) const;
+    void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle& style );
 
-    QFont styleFont( QgsComposerLegendStyle::Style s ) const;
+    QFont styleFont( QgsLegendStyle::Style s ) const;
     //! Set style font
-    void setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f );
+    void setStyleFont( QgsLegendStyle::Style s, const QFont& f );
 
     //! Set style margin
-    void setStyleMargin( QgsComposerLegendStyle::Style s, double margin );
-    void setStyleMargin( QgsComposerLegendStyle::Style s, QgsComposerLegendStyle::Side side, double margin );
+    void setStyleMargin( QgsLegendStyle::Style s, double margin );
+    void setStyleMargin( QgsLegendStyle::Style s, QgsLegendStyle::Side side, double margin );
 
     double boxSpace() const;
     void setBoxSpace( double s );

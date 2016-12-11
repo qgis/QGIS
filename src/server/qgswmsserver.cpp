@@ -904,13 +904,13 @@ QImage* QgsWmsServer::getLegendGraphics()
   QgsLegendSettings legendSettings;
   legendSettings.setTitle( QString() );
   legendSettings.setBoxSpace( boxSpace );
-  legendSettings.rstyle( QgsComposerLegendStyle::Subgroup ).setMargin( QgsComposerLegendStyle::Top, layerSpace );
+  legendSettings.rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Top, layerSpace );
   // TODO: not available: layer title space
-  legendSettings.rstyle( QgsComposerLegendStyle::Symbol ).setMargin( QgsComposerLegendStyle::Top, symbolSpace );
-  legendSettings.rstyle( QgsComposerLegendStyle::SymbolLabel ).setMargin( QgsComposerLegendStyle::Left, iconLabelSpace );
+  legendSettings.rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Top, symbolSpace );
+  legendSettings.rstyle( QgsLegendStyle::SymbolLabel ).setMargin( QgsLegendStyle::Left, iconLabelSpace );
   legendSettings.setSymbolSize( QSizeF( symbolWidth, symbolHeight ) );
-  legendSettings.rstyle( QgsComposerLegendStyle::Subgroup ).setFont( layerFont );
-  legendSettings.rstyle( QgsComposerLegendStyle::SymbolLabel ).setFont( itemFont );
+  legendSettings.rstyle( QgsLegendStyle::Subgroup ).setFont( layerFont );
+  legendSettings.rstyle( QgsLegendStyle::SymbolLabel ).setFont( itemFont );
   // TODO: not available: layer font color
   legendSettings.setFontColor( itemFontColor );
 
@@ -960,7 +960,7 @@ QImage* QgsWmsServer::getLegendGraphics()
 #endif
 
       // layer titles - hidden or not
-      QgsLegendRenderer::setNodeLegendStyle( nodeLayer, mDrawLegendLayerLabel ? QgsComposerLegendStyle::Subgroup : QgsComposerLegendStyle::Hidden );
+      QgsLegendRenderer::setNodeLegendStyle( nodeLayer, mDrawLegendLayerLabel ? QgsLegendStyle::Subgroup : QgsLegendStyle::Hidden );
 
       // rule item titles
       if ( !mDrawLegendItemLabel )

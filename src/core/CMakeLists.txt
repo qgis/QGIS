@@ -142,6 +142,7 @@ SET(QGIS_CORE_SRCS
   qgslayerdefinition.cpp
   qgslegendrenderer.cpp
   qgslegendsettings.cpp
+  qgslegendstyle.cpp
   qgslocalec.cpp
   qgslogger.cpp
   qgsmaphittest.cpp
@@ -256,7 +257,6 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposeritemgroup.cpp
   composer/qgscomposerlabel.cpp
   composer/qgscomposerlegend.cpp
-  composer/qgscomposerlegendstyle.cpp
   composer/qgscomposermap.cpp
   composer/qgscomposermapgrid.cpp
   composer/qgscomposermapitem.cpp
@@ -669,6 +669,7 @@ SET(QGIS_CORE_HDRS
   qgslabelsearchtree.h
   qgslegendrenderer.h
   qgslegendsettings.h
+  qgslegendstyle.h
   qgslogger.h
   qgsmaphittest.h
   qgsmaplayerdependency.h
@@ -768,7 +769,6 @@ SET(QGIS_CORE_HDRS
   composer/qgscomposerarrow.h
   composer/qgscomposerframe.h
   composer/qgscomposeritemcommand.h
-  composer/qgscomposerlegendstyle.h
   composer/qgscomposermultiframecommand.h
   composer/qgscomposertexttable.h
   composer/qgsdoubleboxscalebarstyle.h

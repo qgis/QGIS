@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgscomposerlegendstyle.cpp
+                         qgslegendstyle.cpp
                          ---------------------
     begin                : March 2013
     copyright            : (C) 2013 by Radim Blazek
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposerlegendstyle.h"
+#include "qgslegendstyle.h"
 #include "qgscomposition.h"
 #include "qgsfontutils.h"
 #include <QFont>
@@ -26,7 +26,7 @@
 #include <QDomDocument>
 #include <QDomNode>
 
-QgsComposerLegendStyle::QgsComposerLegendStyle()
+QgsLegendStyle::QgsLegendStyle()
 {
   //get default composer font from settings
   QSettings settings;
@@ -37,7 +37,7 @@ QgsComposerLegendStyle::QgsComposerLegendStyle()
   }
 }
 
-void QgsComposerLegendStyle::setMargin( double margin )
+void QgsLegendStyle::setMargin( double margin )
 {
   mMarginMap[Top] = margin;
   mMarginMap[Bottom] = margin;
@@ -45,7 +45,7 @@ void QgsComposerLegendStyle::setMargin( double margin )
   mMarginMap[Right] = margin;
 }
 
-void QgsComposerLegendStyle::writeXml( const QString& name, QDomElement& elem, QDomDocument & doc ) const
+void QgsLegendStyle::writeXml( const QString& name, QDomElement& elem, QDomDocument & doc ) const
 {
   if ( elem.isNull() ) return;
 
@@ -63,7 +63,7 @@ void QgsComposerLegendStyle::writeXml( const QString& name, QDomElement& elem, Q
   elem.appendChild( styleElem );
 }
 
-void QgsComposerLegendStyle::readXml( const QDomElement& elem, const QDomDocument& doc )
+void QgsLegendStyle::readXml( const QDomElement& elem, const QDomDocument& doc )
 {
   Q_UNUSED( doc );
   if ( elem.isNull() ) return;
@@ -79,7 +79,7 @@ void QgsComposerLegendStyle::readXml( const QDomElement& elem, const QDomDocumen
   mMarginMap[Right] = elem.attribute( QStringLiteral( "marginRight" ), QStringLiteral( "0" ) ).toDouble();
 }
 
-QString QgsComposerLegendStyle::styleName( Style s )
+QString QgsLegendStyle::styleName( Style s )
 {
   switch ( s )
   {
@@ -101,7 +101,7 @@ QString QgsComposerLegendStyle::styleName( Style s )
   return QLatin1String( "" );
 }
 
-QgsComposerLegendStyle::Style QgsComposerLegendStyle::styleFromName( const QString& styleName )
+QgsLegendStyle::Style QgsLegendStyle::styleFromName( const QString& styleName )
 {
   if ( styleName == QLatin1String( "hidden" ) ) return Hidden;
   else if ( styleName == QLatin1String( "title" ) ) return Title;
@@ -112,7 +112,7 @@ QgsComposerLegendStyle::Style QgsComposerLegendStyle::styleFromName( const QStri
   return Undefined;
 }
 
-QString QgsComposerLegendStyle::styleLabel( Style s )
+QString QgsLegendStyle::styleLabel( Style s )
 {
   switch ( s )
   {

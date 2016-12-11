@@ -59,7 +59,7 @@ bool QgsLayerTreeModelLegendNode::setData( const QVariant& value, int role )
 
 QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( const QgsLegendSettings& settings, ItemContext* ctx )
 {
-  QFont symbolLabelFont = settings.style( QgsComposerLegendStyle::SymbolLabel ).font();
+  QFont symbolLabelFont = settings.style( QgsLegendStyle::SymbolLabel ).font();
 
   double textHeight = settings.fontHeightCharacterMM( symbolLabelFont, QChar( '0' ) );
   // itemHeight here is not realy item height, it is only for symbol
@@ -91,7 +91,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings& set
 {
   QSizeF labelSize( 0, 0 );
 
-  QFont symbolLabelFont = settings.style( QgsComposerLegendStyle::SymbolLabel ).font();
+  QFont symbolLabelFont = settings.style( QgsLegendStyle::SymbolLabel ).font();
   double textHeight = settings.fontHeightCharacterMM( symbolLabelFont, QChar( '0' ) );
 
   QStringList lines = settings.splitStringForWrapping( data( Qt::DisplayRole ).toString() );
