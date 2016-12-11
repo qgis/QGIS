@@ -1879,8 +1879,8 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:orthagonalize
-    name: Orthagonalize polys
+  - algorithm: qgis:orthogonalize
+    name: Orthogonalize polys
     params:
       INPUT_LAYER:
         name: custom/polys_to_orth.gml
@@ -1894,8 +1894,8 @@ tests:
             precision: 7
 
 
-  - algorithm: qgis:orthagonalize
-    name: Orthagonalize lines
+  - algorithm: qgis:orthogonalize
+    name: Orthogonalize lines
     params:
       INPUT_LAYER:
         name: custom/lines_to_orth.gml
@@ -1907,3 +1907,4 @@ tests:
         compare:
           geometry:
             precision: 7
+

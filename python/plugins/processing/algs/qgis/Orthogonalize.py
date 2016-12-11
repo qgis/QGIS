@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    Orthagonalize.py
+    Orthogonalize.py
     ----------------
     Date                 : December 2016
     Copyright            : (C) 2016 by Nyall Dawson
@@ -33,7 +33,7 @@ from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 
-class Orthagonalize(GeoAlgorithm):
+class Orthogonalize(GeoAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
@@ -42,7 +42,7 @@ class Orthagonalize(GeoAlgorithm):
     ANGLE_TOLERANCE = 'ANGLE_TOLERANCE'
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Orthagonalize')
+        self.name, self.i18n_name = self.trAlgorithm('Orthogonalize')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
         self.tags = self.tr('rectangle,perpendicular,right,angles,square,quadrilateralise')
 
@@ -59,7 +59,7 @@ class Orthagonalize(GeoAlgorithm):
         max_iterations.isAdvanced = True
         self.addParameter(max_iterations)
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Orthagonalized')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Orthogonalized')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -79,10 +79,10 @@ class Orthagonalize(GeoAlgorithm):
             output_feature = input_feature
             input_geometry = input_feature.geometry()
             if input_geometry:
-                output_geometry = input_geometry.orthagonalize(1.0e-8, max_iterations, angle_tolerance)
+                output_geometry = input_geometry.orthogonalize(1.0e-8, max_iterations, angle_tolerance)
                 if not output_geometry:
                     raise GeoAlgorithmExecutionException(
-                        self.tr('Error orthagonalizing geometry'))
+                        self.tr('Error orthogonalizing geometry'))
 
                 output_feature.setGeometry(output_geometry)
 
