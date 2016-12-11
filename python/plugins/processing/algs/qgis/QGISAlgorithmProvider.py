@@ -184,6 +184,11 @@ from .DropGeometry import DropGeometry
 from .BasicStatistics import BasicStatisticsForField
 from .Heatmap import Heatmap
 from .Orthagonalize import Orthagonalize
+from .ShortestPathPointToPoint import ShortestPathPointToPoint
+from .ShortestPathPointToLayer import ShortestPathPointToLayer
+from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
+from .ServiceAreaFromPoint import ServiceAreaFromPoint
+from .ServiceAreaFromLayer import ServiceAreaFromLayer
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -245,11 +250,15 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         ReliefAuto(), ZonalStatisticsQgis(),
                         IdwInterpolationZValue(), IdwInterpolationAttribute(),
                         TinInterpolationZValue(), TinInterpolationAttribute(),
-                        RemoveNullGeometry(), ExtractByExpression(), ExtendLines(),
-                        ExtractSpecificNodes(), GeometryByExpression(), SnapGeometriesToLayer(),
-                        PoleOfInaccessibility(), CreateAttributeIndex(), DropGeometry(),
-                        BasicStatisticsForField(), RasterCalculator(), Heatmap(),
-                        Orthagonalize()
+                        RemoveNullGeometry(), ExtractByExpression(),
+                        ExtendLines(), ExtractSpecificNodes(),
+                        GeometryByExpression(), SnapGeometriesToLayer(),
+                        PoleOfInaccessibility(), CreateAttributeIndex(),
+                        DropGeometry(), BasicStatisticsForField(),
+                        RasterCalculator(), Heatmap(), Orthagonalize(),
+                        ShortestPathPointToPoint(), ShortestPathPointToLayer(),
+                        ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
+                        ServiceAreaFromLayer()
                         ]
 
         if hasMatplotlib:
