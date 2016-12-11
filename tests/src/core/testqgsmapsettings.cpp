@@ -23,6 +23,8 @@
 #include "qgspoint.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgsmaplayerlistutils.h"
+#include "qgsvectorlayer.h"
 
 class TestQgsMapSettings: public QObject
 {
@@ -32,6 +34,7 @@ class TestQgsMapSettings: public QObject
     void visibleExtent();
     void mapUnitsPerPixel();
     void visiblePolygon();
+    void testMapLayerListUtils();
   private:
     QString toString( const QPolygonF& p, int decimalPlaces = 2 ) const;
 };
@@ -144,6 +147,51 @@ void TestQgsMapSettings::visiblePolygon()
   ms.setRotation( -45 );
   QCOMPARE( toString( ms.visiblePolygon() ),
             QString( "32.32 28.03,103.03 -42.67,67.67 -78.03,-3.03 -7.32" ) );
+}
+
+void TestQgsMapSettings::testMapLayerListUtils()
+{
+  QgsVectorLayer* vlA = new QgsVectorLayer( "Point", "a", "memory" );
+  QgsVectorLayer* vlB = new QgsVectorLayer( "Point", "b", "memory" );
+
+  QList<QgsMapLayer*> listRawSource;
+  listRawSource << vlA << vlB;
+
+  QList< QPointer<QgsMapLayer> > listQPointer = _qgis_listRawToQPointer( listRawSource );
+
+  QCOMPARE( listQPointer.count(), 2 );
+  QCOMPARE( listQPointer[0].data(), vlA );
+  QCOMPARE( listQPointer[1].data(), vlB );
+
+  QList<QgsMapLayer*> listRaw = _qgis_listQPointerToRaw( listQPointer );
+
+  QCOMPARE( listRaw.count(), 2 );
+  QCOMPARE( listRaw[0], vlA );
+  QCOMPARE( listRaw[1], vlB );
+
+  QStringList listIDs = _qgis_listQPointerToIDs( listQPointer );
+
+  QCOMPARE( listIDs.count(), 2 );
+  QCOMPARE( listIDs[0], vlA->id() );
+  QCOMPARE( listIDs[1], vlB->id() );
+
+  // now delete one layer!
+  // QPointer to vlA must get invalidated
+  delete vlA;
+
+  QCOMPARE( listQPointer.count(), 2 );  // still two items but one is invalid
+
+  QList<QgsMapLayer*> listRaw2 = _qgis_listQPointerToRaw( listQPointer );
+
+  QCOMPARE( listRaw2.count(), 1 );
+  QCOMPARE( listRaw2[0], vlB );
+
+  QStringList listIDs2 = _qgis_listQPointerToIDs( listQPointer );
+
+  QCOMPARE( listIDs2.count(), 1 );
+  QCOMPARE( listIDs2[0], vlB->id() );
+
+  delete vlB;
 }
 
 QTEST_MAIN( TestQgsMapSettings )
