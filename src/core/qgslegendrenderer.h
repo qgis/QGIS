@@ -66,8 +66,7 @@ class CORE_EXPORT QgsLegendRenderer
   private:
 
     /** Nucleon is either group title, layer title or layer child item.
-     *  Nucleon is similar to QgsComposerLegendItem but it does not have
-     *  the same hierarchy. E.g. layer title nucleon is just title, it does not
+     *  E.g. layer title nucleon is just title, it does not
      *  include all layer subitems, the same with groups.
      */
     class Nucleon

@@ -17,8 +17,6 @@
 
 #include "qgscomposerlegendwidget.h"
 #include "qgscomposerlegend.h"
-#include "qgscomposerlegenditem.h"
-#include "qgscomposerlegenditemdialog.h"
 #include "qgscomposerlegendlayersdialog.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposermap.h"

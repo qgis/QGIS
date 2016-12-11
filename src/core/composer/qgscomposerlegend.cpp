@@ -18,7 +18,6 @@
 
 #include "qgscomposerlegendstyle.h"
 #include "qgscomposerlegend.h"
-#include "qgscomposerlegenditem.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
 #include "qgscomposermodel.h"

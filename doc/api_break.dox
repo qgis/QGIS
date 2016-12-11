@@ -236,6 +236,7 @@ All the functionality from the old QgsColorDialog has been moved to the new clas
 - QgsComposerAttributeTable and associated classes (eg QgsComposerAttributeTableCompare,
 QgsComposerAttributeTableColumnModel, QgsComposerTableSortColumnsProxyModel) were removed.
 Use QgsComposerAttributeTableV2 instead.
+- QgsComposerLegendItem and subclasses were removed (QgsComposerSymbolItem, QgsComposerRasterSymbolItem, QgsComposerLayerItem, QgsComposerGroupItem, QgsComposerStyleItem).
 - QgsComposerTable was removed. Use QgsComposerAttributeTableV2 instead.
 - ComposerTextTable was removed. Use ComposerTextTableV2 instead.
 - QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,

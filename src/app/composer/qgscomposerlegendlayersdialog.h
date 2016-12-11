@@ -38,4 +38,4 @@ class QgsComposerLegendLayersDialog: public QDialog, private Ui::QgsComposerLege
     QMap<QListWidgetItem*, QgsMapLayer*> mItemLayerMap;
 };
 
-#endif //QGSCOMPOSERLEGENDITEMDIALOG_H
+#endif //QGSCOMPOSERLEGENDLAYERSDIALOG_H

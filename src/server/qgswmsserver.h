@@ -28,8 +28,6 @@
 
 class QgsCapabilitiesCache;
 class QgsCoordinateReferenceSystem;
-class QgsComposerLayerItem;
-class QgsComposerLegendItem;
 class QgsComposition;
 class QgsConfigParser;
 class QgsFeature;

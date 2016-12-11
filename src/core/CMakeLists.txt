@@ -256,7 +256,6 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposeritemgroup.cpp
   composer/qgscomposerlabel.cpp
   composer/qgscomposerlegend.cpp
-  composer/qgscomposerlegenditem.cpp
   composer/qgscomposerlegendstyle.cpp
   composer/qgscomposermap.cpp
   composer/qgscomposermapgrid.cpp
@@ -769,7 +768,6 @@ SET(QGIS_CORE_HDRS
   composer/qgscomposerarrow.h
   composer/qgscomposerframe.h
   composer/qgscomposeritemcommand.h
-  composer/qgscomposerlegenditem.h
   composer/qgscomposerlegendstyle.h
   composer/qgscomposermultiframecommand.h
   composer/qgscomposertexttable.h

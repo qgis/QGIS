@@ -18,7 +18,6 @@
 
 #include "qgsapplication.h"
 #include "qgscategorizedsymbolrenderer.h"
-#include "qgscomposerlegenditem.h"
 #include "qgsfontutils.h"
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"

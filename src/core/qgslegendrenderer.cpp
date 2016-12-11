@@ -15,7 +15,7 @@
 
 #include "qgslegendrenderer.h"
 
-#include "qgscomposerlegenditem.h"
+#include "qgscomposerlegendstyle.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"

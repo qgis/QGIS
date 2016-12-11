@@ -23,8 +23,6 @@ class QRectF;
 
 #include "qgscomposerlegendstyle.h"
 
-class QgsComposerLegendItem;
-
 
 /** \ingroup core
  * @brief The QgsLegendSettings class stores the appearance and layout settings

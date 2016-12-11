@@ -24,8 +24,6 @@
 
 class QgsLayerTreeModel;
 class QgsSymbol;
-class QgsComposerGroupItem;
-class QgsComposerLayerItem;
 class QgsComposerMap;
 class QgsLegendRenderer;
 
