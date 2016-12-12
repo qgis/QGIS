@@ -21,20 +21,20 @@ PATH=$TOPLEVEL/scripts:$PATH
 cd $TOPLEVEL
 
 if ! type -p astyle.sh >/dev/null; then
-	echo astyle.sh not found
-	exit 1
+  echo astyle.sh not found
+  exit 1
 fi
 
 if ! type -p colordiff >/dev/null; then
-	colordiff()
-	{
-		cat "$@"
-	}
+  colordiff()
+  {
+    cat "$@"
+  }
 fi
 
 if [ "$1" = "-c" ]; then
-	echo "Cleaning..."
-	remove_temporary_files.sh
+  echo "Cleaning..."
+  remove_temporary_files.sh
 fi
 
 set -e
@@ -42,9 +42,15 @@ set -e
 # determine changed files
 MODIFIED=$(git status --porcelain| sed -ne "s/^ *[MA]  *//p" | sort -u)
 
+CODE=$(./$TOPLEVEL/scripts/chkspelling_ag.sh $MODIFIED)
+if [ code -eq 1]; then
+  exit 1
+fi
+
+
 if [ -z "$MODIFIED" ]; then
-	echo nothing was modified
-	exit 0
+  echo nothing was modified
+  exit 0
 fi
 
 # save original changes
@@ -58,42 +64,42 @@ ASTYLEDIFF=astyle.$REV.diff
 i=0
 N=$(echo $MODIFIED | wc -w)
 for f in $MODIFIED; do
-	(( i++ )) || true
+  (( i++ )) || true
 
-	case "$f" in
-	src/core/gps/qextserialport/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
-		echo $f skipped
-		continue
-		;;
+  case "$f" in
+  src/core/gps/qextserialport/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
+    echo $f skipped
+    continue
+    ;;
 
-	*.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.py)
-		;;
+  *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.py)
+    ;;
 
-	*)
-		continue
-		;;
-	esac
+  *)
+    continue
+    ;;
+  esac
 
-	m=$f.$REV.prepare
+  m=$f.$REV.prepare
 
-	cp $f $m
-	ASTYLEPROGRESS=" [$i/$N]" astyle.sh $f
-	if diff -u $m $f >>$ASTYLEDIFF; then
-		# no difference found
-		rm $m
-	fi
+  cp $f $m
+  ASTYLEPROGRESS=" [$i/$N]" astyle.sh $f
+  if diff -u $m $f >>$ASTYLEDIFF; then
+    # no difference found
+    rm $m
+  fi
 done
 
 if [ -s "$ASTYLEDIFF" ]; then
-	if tty -s; then
-		# review astyle changes
-		colordiff <$ASTYLEDIFF | less -r
-	else
-		echo "Files changed (see $ASTYLEDIFF)"
-	fi
-	exit 1
+  if tty -s; then
+    # review astyle changes
+    colordiff <$ASTYLEDIFF | less -r
+  else
+    echo "Files changed (see $ASTYLEDIFF)"
+  fi
+  exit 1
 else
-	rm $ASTYLEDIFF
+  rm $ASTYLEDIFF
 fi
 
 exit 0
