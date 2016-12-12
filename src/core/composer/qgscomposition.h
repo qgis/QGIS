@@ -608,8 +608,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void setPreventCursorChange( const bool preventChange ) { mPreventCursorChange = preventChange; }
     bool preventCursorChange() const { return mPreventCursorChange; }
 
+#ifndef QT_NO_PRINTER
     //printing
-
     //! Prepare the printer for printing
     void beginPrint( QPrinter& printer, const bool evaluateDDPageSize = false );
     //! Prepare the printer for printing in a PDF
@@ -631,6 +631,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @returns true if export was successful
      */
     bool exportAsPDF( const QString& file );
+#endif
 
     /** Renders a composer page to an image.
      * @param page page number, 0 based such that the first page is page 0

@@ -18,11 +18,11 @@
 
 
 #include <QWidget>
-#include <QPrinter>
 
 #ifdef WITH_QTWEBKIT
 #include <QWebView>
 #include <QDesktopWidget>
+
 
 /** \ingroup core
  */
@@ -45,6 +45,8 @@ class CORE_EXPORT QgsWebView : public QWebView
 #else
 #include "qgswebpage.h"
 #include <QTextBrowser>
+class QPrinter;
+
 
 /** \ingroup core
  * @brief The QgsWebView class is a collection of stubs to mimic the API of QWebView on systems where the real
