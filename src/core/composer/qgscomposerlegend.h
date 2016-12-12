@@ -39,6 +39,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     Q_OBJECT
 
   public:
+    //! Construct the model based on the given layer tree
     QgsLegendModel( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
 
     QVariant data( const QModelIndex& index, int role ) const override;

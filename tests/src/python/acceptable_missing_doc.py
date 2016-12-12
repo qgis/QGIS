@@ -709,7 +709,7 @@ ACCEPTABLE_MISSING_ADDED_NOTE = [
     "QgsAttributeTypeLoadDialog",
     "QgsProject",
     "QgsDirectoryParamWidget",
-    "QgsLegendModelV2",
+    "QgsLegendModel",
     "QgsLayerTreeNode",
     "QgsSlopeFilter",
     "QgsPointLocator_VisitorArea",
