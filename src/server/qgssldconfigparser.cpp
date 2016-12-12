@@ -60,7 +60,7 @@ QgsSLDConfigParser::QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, Q
     , mXMLDoc( doc )
     , mParameterMap( parameters )
     , mSLDNamespace( QStringLiteral( "http://www.opengis.net/sld" ) )
-    , mOutputUnits( QgsMapRenderer::Pixels )
+    , mOutputUnits( QgsUnitTypes::RenderUnit::RenderPixels )
     , mFallbackParser( nullptr )
 {
 
@@ -76,11 +76,11 @@ QgsSLDConfigParser::QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, Q
       {
         if ( unitString == QLatin1String( "mm" ) )
         {
-          mOutputUnits = QgsMapRenderer::Millimeters;
+          mOutputUnits = QgsUnitTypes::RenderUnit::RenderMillimeters;
         }
         else if ( unitString == QLatin1String( "pixel" ) )
         {
-          mOutputUnits = QgsMapRenderer::Pixels;
+          mOutputUnits = QgsUnitTypes::RenderUnit::RenderPixels;
         }
       }
     }
@@ -490,7 +490,7 @@ QDomDocument QgsSLDConfigParser::describeLayer( QStringList& layerList, const QS
   return QDomDocument();
 }
 
-QgsMapRenderer::OutputUnits QgsSLDConfigParser::outputUnits() const
+QgsUnitTypes::RenderUnit QgsSLDConfigParser::outputUnits() const
 {
   return mOutputUnits;
 }
@@ -564,11 +564,11 @@ void QgsSLDConfigParser::drawOverlays( QPainter* p, int dpi, int width, int heig
   }
 }
 
-void QgsSLDConfigParser::loadLabelSettings( QgsLabelingEngineInterface * lbl ) const
+void QgsSLDConfigParser::loadLabelSettings() const
 {
   if ( mFallbackParser )
   {
-    mFallbackParser->loadLabelSettings( lbl );
+    mFallbackParser->loadLabelSettings();
   }
 }
 
@@ -724,20 +724,11 @@ bool QgsSLDConfigParser::wmsInspireActivated() const
   return false;
 }
 
-QgsComposition* QgsSLDConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
+QgsComposition* QgsSLDConfigParser::initComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const
 {
   if ( mFallbackParser )
   {
-    return mFallbackParser->createPrintComposition( composerTemplate, mapRenderer, parameterMap, highlightLayers );
-  }
-  return nullptr;
-}
-
-QgsComposition* QgsSLDConfigParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const
-{
-  if ( mFallbackParser )
-  {
-    return mFallbackParser->initComposition( composerTemplate, mapRenderer, mapList, legendList, labelList, htmlFrameList );
+    return mFallbackParser->initComposition( composerTemplate, mapSettings, mapList, legendList, labelList, htmlFrameList );
   }
   return nullptr;
 }
@@ -768,9 +759,9 @@ void QgsSLDConfigParser::addExternalGMLData( const QString &, QDomDocument * )
   //soon...
 }
 
-QList< QPair< QString, QgsLayerCoordinateTransform > > QgsSLDConfigParser::layerCoordinateTransforms() const
+QList< QPair< QString, QgsDatumTransformStore::Entry > > QgsSLDConfigParser::layerCoordinateTransforms() const
 {
-  return QList< QPair< QString, QgsLayerCoordinateTransform > >();
+  return QList< QPair< QString, QgsDatumTransformStore::Entry > >();
 }
 
 int QgsSLDConfigParser::nLayers() const

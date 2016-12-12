@@ -28,6 +28,7 @@ class QgsAccessControl;
 
 class QTextDocument;
 class QSvgRenderer;
+class QgsMapSettings;
 
 class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
 {
@@ -73,14 +74,14 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
     void inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
     //printing
-    QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const override;
+    QgsComposition* initComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const override;
     void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
     //todo: fixme
     void setScaleDenominator( double ) override {}
     void addExternalGMLData( const QString&, QDomDocument* ) override {}
 
-    QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const override;
+    QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const override;
 
     //! Fills a layer and a style list. The two list have the same number of entries and the style and the layer at a position belong together (similar to the HTTP parameters 'Layers' and 'Styles'. Returns 0 in case of success
     int layersAndStyles( QStringList& layers, QStringList& styles ) const override;
@@ -95,7 +96,7 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
     QDomDocument describeLayer( QStringList& layerList, const QString& hrefString ) const override;
 
     //! Returns if output are MM or PIXEL
-    QgsMapRenderer::OutputUnits outputUnits() const override;
+    QgsUnitTypes::RenderUnit outputUnits() const override;
 
     //! True if the feature info response should contain the wkt geometry for vector features
     bool featureInfoWithWktGeometry() const override;
@@ -118,8 +119,8 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
     //! Draw text annotation items from the QGIS projectfile
     void drawOverlays( QPainter* p, int dpi, int width, int height ) const override;
 
-    //! Load PAL engine settings from projectfile
-    void loadLabelSettings( QgsLabelingEngineInterface* lbl ) const override;
+    //! Load PAL engine settings  into global project instance
+    void loadLabelSettings() const override;
 
     int nLayers() const override;
 
@@ -182,6 +183,8 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
     void cleanupTextAnnotationItems();
 
     QString getCapaServiceUrl( QDomDocument& doc ) const;
+
+    void readLabelSettings( int& searchMethod, int& nCandPoint, int& nCandLine, int& nCandPoly, bool& showingCandidates, bool& drawRectOnly, bool& showingShadowRects, bool& showingAllLabels, bool& showingPartialsLabels, bool& drawOutlineLabels ) const;
 };
 
 #endif // QGSWMSPROJECTPARSER_H

@@ -468,7 +468,7 @@ bool QgsWmsProjectParser::wmsInspireActivated() const
   return inspireActivated;
 }
 
-QgsComposition* QgsWmsProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlList ) const
+QgsComposition* QgsWmsProjectParser::initComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlList ) const
 {
   //Create composition from xml
   QDomElement composerElem = composerByName( composerTemplate );
@@ -483,7 +483,7 @@ QgsComposition* QgsWmsProjectParser::initComposition( const QString& composerTem
     return nullptr;
   }
 
-  QgsComposition* composition = new QgsComposition( mapRenderer->mapSettings() ); //set resolution, paper size from composer element attributes
+  QgsComposition* composition = new QgsComposition( mapSettings ); //set resolution, paper size from composer element attributes
   if ( !composition->readXml( compositionElem, *( mProjectParser->xmlDocument() ) ) )
   {
     delete composition;
@@ -799,7 +799,7 @@ void QgsWmsProjectParser::inspireCapabilities( QDomElement& parentElement, QDomD
   parentElement.appendChild( inspireCapabilitiesElem );
 }
 
-QList< QPair< QString, QgsLayerCoordinateTransform > > QgsWmsProjectParser::layerCoordinateTransforms() const
+QList< QPair< QString, QgsDatumTransformStore::Entry > > QgsWmsProjectParser::layerCoordinateTransforms() const
 {
   return mProjectParser->layerCoordinateTransforms();
 }
@@ -1992,9 +1992,9 @@ QDomDocument QgsWmsProjectParser::describeLayer( QStringList& layerList, const Q
   return myDocument;
 }
 
-QgsMapRenderer::OutputUnits QgsWmsProjectParser::outputUnits() const
+QgsUnitTypes::RenderUnit QgsWmsProjectParser::outputUnits() const
 {
-  return QgsMapRenderer::Millimeters;
+  return QgsUnitTypes::RenderUnit::RenderMillimeters;
 }
 
 bool QgsWmsProjectParser::featureInfoWithWktGeometry() const
@@ -2233,77 +2233,89 @@ void QgsWmsProjectParser::drawOverlays( QPainter* p, int dpi, int width, int hei
   }
 }
 
-void QgsWmsProjectParser::loadLabelSettings( QgsLabelingEngineInterface* lbl ) const
+void QgsWmsProjectParser::loadLabelSettings() const
 {
-  QgsPalLabeling* pal = dynamic_cast<QgsPalLabeling*>( lbl );
-  if ( pal )
+  int searchMethod, nCandPoint, nCandLine, nCandPoly;
+  bool showingCandidates, drawRectOnly, showingShadowRects, showingAllLabels, showingPartialsLabels, drawOutlineLabels;
+
+  readLabelSettings( searchMethod, nCandPoint, nCandLine, nCandPoly, showingCandidates, drawRectOnly, showingShadowRects, showingAllLabels, showingPartialsLabels, drawOutlineLabels );
+
+  QgsProject::instance()->writeEntry( "PAL", "/SearchMethod", searchMethod );
+  QgsProject::instance()->writeEntry( "PAL", "/CandidatesPoint", nCandPoint );
+  QgsProject::instance()->writeEntry( "PAL", "/CandidatesLine", nCandLine );
+  QgsProject::instance()->writeEntry( "PAL", "/CandidatesPolygon", nCandPoly );
+
+  QgsProject::instance()->writeEntry( "PAL", "/ShowingCandidates", showingCandidates );
+  QgsProject::instance()->writeEntry( "PAL", "/DrawRectOnly", drawRectOnly );
+  QgsProject::instance()->writeEntry( "PAL", "/ShowingShadowRects", showingShadowRects );
+  QgsProject::instance()->writeEntry( "PAL", "/ShowingAllLabels", showingAllLabels );
+  QgsProject::instance()->writeEntry( "PAL", "/ShowingPartialsLabels", showingPartialsLabels );
+  QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", drawOutlineLabels );
+}
+
+void QgsWmsProjectParser::readLabelSettings( int& searchMethod, int& nCandPoint, int& nCandLine, int& nCandPoly, bool& showingCandidates, bool& drawRectOnly, bool& showingShadowRects, bool& showingAllLabels, bool& showingPartialsLabels, bool& drawOutlineLabels ) const
+{
+  searchMethod = static_cast< int >( QgsPalLabeling::Chain );
+  nCandPoint = 8;
+  nCandLine = 8;
+  nCandPoly = 8;
+  showingCandidates = false;
+  drawRectOnly = false;
+  showingShadowRects = false;
+  showingAllLabels = false;
+  showingPartialsLabels = true;
+  drawOutlineLabels = true;
+
+  QDomElement propertiesElem = mProjectParser->propertiesElem();
+  if ( propertiesElem.isNull() )
   {
-    QDomElement propertiesElem = mProjectParser->propertiesElem();
-    if ( propertiesElem.isNull() )
-    {
-      return;
-    }
+    return;
+  }
 
-    QDomElement palElem = propertiesElem.firstChildElement( QStringLiteral( "PAL" ) );
-    if ( palElem.isNull() )
-    {
-      return;
-    }
+  QDomElement palElem = propertiesElem.firstChildElement( "PAL" );
+  if ( palElem.isNull() )
+  {
+    return;
+  }
 
-    //pal::Pal default positions for candidates;
-    int candPoint, candLine, candPoly;
-    pal->numCandidatePositions( candPoint, candLine, candPoly );
+  QDomElement candPointElem = palElem.firstChildElement( "CandidatesPoint" );
+  if ( !candPointElem.isNull() )
+  {
+    nCandPoint = candPointElem.text().toInt();
+  }
+  QDomElement candLineElem = palElem.firstChildElement( "CandidatesLine" );
+  if ( !candLineElem.isNull() )
+  {
+    nCandLine = candLineElem.text().toInt();
+  }
+  QDomElement candPolyElem = palElem.firstChildElement( "CandidatesPolygon" );
+  if ( !candPolyElem.isNull() )
+  {
+    nCandPoly = candPolyElem.text().toInt();
+  }
 
-    //mCandPoint
-    QDomElement candPointElem = palElem.firstChildElement( QStringLiteral( "CandidatesPoint" ) );
-    if ( !candPointElem.isNull() )
-    {
-      candPoint = candPointElem.text().toInt();
-    }
+  QDomElement showCandElem = palElem.firstChildElement( "ShowingCandidates" );
+  if ( !showCandElem.isNull() )
+  {
+    showingCandidates = showCandElem.text().compare( "true", Qt::CaseInsensitive ) == 0;
+  }
 
-    //mCandLine
-    QDomElement candLineElem = palElem.firstChildElement( QStringLiteral( "CandidatesLine" ) );
-    if ( !candLineElem.isNull() )
-    {
-      candLine = candLineElem.text().toInt();
-    }
+  QDomElement showAllLabelsElem = palElem.firstChildElement( "ShowingAllLabels" );
+  if ( !showAllLabelsElem.isNull() )
+  {
+    showingAllLabels = showAllLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0;
+  }
 
-    //mCandPolygon
-    QDomElement candPolyElem = palElem.firstChildElement( QStringLiteral( "CandidatesPolygon" ) );
-    if ( !candPolyElem.isNull() )
-    {
-      candPoly = candPolyElem.text().toInt();
-    }
+  QDomElement showPartialsLabelsElem = palElem.firstChildElement( "ShowingPartialsLabels" );
+  if ( !showPartialsLabelsElem.isNull() )
+  {
+    showingPartialsLabels = showPartialsLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0;
+  }
 
-    pal->setNumCandidatePositions( candPoint, candLine, candPoly );
-
-    //mShowingCandidates
-    QDomElement showCandElem = palElem.firstChildElement( QStringLiteral( "ShowingCandidates" ) );
-    if ( !showCandElem.isNull() )
-    {
-      pal->setShowingCandidates( showCandElem.text().compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
-    }
-
-    //mShowingAllLabels
-    QDomElement showAllLabelsElem = palElem.firstChildElement( QStringLiteral( "ShowingAllLabels" ) );
-    if ( !showAllLabelsElem.isNull() )
-    {
-      pal->setShowingAllLabels( showAllLabelsElem.text().compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
-    }
-
-    //mShowingPartialsLabels
-    QDomElement showPartialsLabelsElem = palElem.firstChildElement( QStringLiteral( "ShowingPartialsLabels" ) );
-    if ( !showPartialsLabelsElem.isNull() )
-    {
-      pal->setShowingPartialsLabels( showPartialsLabelsElem.text().compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
-    }
-
-    //mDrawOutlineLabels
-    // TODO: This should probably always be true (already default) for WMS, regardless of any project setting.
-    //       Not much sense to output text-as-text, when text-as-outlines gives better results.
-
-    //save settings into global project instance (QgsMapRendererCustomPainterJob reads label settings from there)
-    pal->saveEngineSettings();
+  QDomElement drawOutlineLabelsElem = palElem.firstChildElement( "DrawOutlineLabels" );
+  if ( !drawOutlineLabelsElem.isNull() )
+  {
+    drawOutlineLabels = drawOutlineLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0;
   }
 }
 

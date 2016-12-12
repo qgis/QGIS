@@ -20,7 +20,6 @@
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
-#include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"

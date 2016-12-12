@@ -20,7 +20,7 @@
 
 #include "qgsconfig.h"
 #include "qgsvectorlayer.h"
-#include "qgsmaprenderer.h"
+#include "qgsdatumtransformstore.h"
 
 #include <QDomElement>
 #include <QHash>
@@ -99,7 +99,7 @@ class SERVER_EXPORT QgsServerProjectParser
 
     QList<QDomElement> publishedComposerElements() const;
 
-    QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const;
+    QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const;
 
     /** Returns the text of the <layername> element for a layer element
     @return name or a null string in case of error*/

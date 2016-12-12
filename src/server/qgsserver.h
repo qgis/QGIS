@@ -30,9 +30,9 @@
 #include <QFileInfo>
 #include "qgsrequesthandler.h"
 #include "qgsapplication.h"
-#include "qgsmaprenderer.h"
 #include "qgsconfigcache.h"
 #include "qgscapabilitiescache.h"
+#include "qgsmapsettings.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsserverplugins.h"
@@ -121,7 +121,6 @@ class SERVER_EXPORT QgsServer
     // Status
     static QString* sConfigFilePath;
     static QgsCapabilitiesCache* sCapabilitiesCache;
-    static QgsMapRenderer* sMapRenderer;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     static QgsServerInterfaceImpl* sServerInterface;
 #endif

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmsutils.cpp
+    qgsmapserverutils.cpp
     ---------------------
     begin                : August 2010
     copyright            : (C) 2010 by Marco Hugentobler
@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsmsutils.h"
+#include "qgsmapserverutils.h"
 #include "qgslogger.h"
 #include <stdlib.h>
 #include <time.h>
@@ -20,7 +20,7 @@
 #include <QFileInfo>
 #include <QTextStream>
 
-QString QgsMSUtils::createTempFilePath()
+QString QgsMapServerUtils::createTempFilePath()
 {
 
 
@@ -67,7 +67,7 @@ QString QgsMSUtils::createTempFilePath()
   return tempFilePath;
 }
 
-int QgsMSUtils::createTextFile( const QString& filePath, const QString& text )
+int QgsMapServerUtils::createTextFile( const QString& filePath, const QString& text )
 {
   QFile file( filePath );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )

@@ -38,6 +38,7 @@ QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings& settings )
     : mSettings( settings )
     , mCache( nullptr )
     , mRenderingTime( 0 )
+    , mFeatureFilterProvider( nullptr )
 {
 }
 
@@ -248,6 +249,9 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
     job.context.setLabelingEngineV2( labelingEngine2 );
     job.context.setCoordinateTransform( ct );
     job.context.setExtent( r1 );
+
+    if ( mFeatureFilterProvider )
+      job.context.setFeatureFilterProvider( mFeatureFilterProvider );
 
     // if we can use the cache, let's do it and avoid rendering!
     if ( mCache && !mCache->cacheImage( ml->id() ).isNull() )

@@ -27,6 +27,7 @@
 #include "qgscomposerhtml.h"
 #include "qgscomposerframe.h"
 #include "qgscomposition.h"
+#include "qgsmapsettings.h"
 
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
@@ -45,20 +46,14 @@ QgsWmsConfigParser::~QgsWmsConfigParser()
 
 }
 
-QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
-{
-  QStringList highlightLayers;
-  return createPrintComposition( composerTemplate, mapRenderer, parameterMap, highlightLayers );
-}
-
-QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
+QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
 {
   QList<QgsComposerMap*> composerMaps;
   QList<QgsComposerLegend*> composerLegends;
   QList<QgsComposerLabel*> composerLabels;
   QList<const QgsComposerHtml*> composerHtmls;
 
-  QgsComposition* c = initComposition( composerTemplate, mapRenderer, composerMaps, composerLegends, composerLabels, composerHtmls );
+  QgsComposition* c = initComposition( composerTemplate, mapSettings, composerMaps, composerLegends, composerLabels, composerHtmls );
   if ( !c )
   {
     return nullptr;
@@ -113,7 +108,7 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
 
     //Change x- and y- of extent for WMS 1.3.0 if axis inverted
     QString version = parameterMap.value( QStringLiteral( "VERSION" ) );
-    if ( version == QLatin1String( "1.3.0" ) && mapRenderer && mapRenderer->destinationCrs().hasAxisInverted() )
+    if ( version == QLatin1String( "1.3.0" ) && mapSettings.destinationCrs().hasAxisInverted() )
     {
       r.invert();
     }

@@ -32,7 +32,7 @@ class QgsConfigParser;
 class QgsFeature;
 class QgsFeatureRenderer;
 class QgsMapLayer;
-class QgsMapRenderer;
+class QgsMapSettings;
 class QgsPoint;
 class QgsRasterLayer;
 class QgsRasterRenderer;
@@ -41,6 +41,8 @@ class QgsRenderContext;
 class QgsVectorLayer;
 class QgsSymbol;
 class QgsSymbol;
+class QgsAccessControl;
+
 class QColor;
 class QFile;
 class QFont;
@@ -57,9 +59,8 @@ class QgsWmsServer: public QgsOWSServer
 {
   public:
     /** Constructor. Does _NOT_ take ownership of
-        QgsConfigParser, QgsCapabilitiesCache and QgsMapRenderer*/
-    QgsWmsServer( const QString& configFilePath, QMap<QString, QString> &parameters, QgsWmsConfigParser* cp, QgsRequestHandler* rh,
-                  QgsMapRenderer* renderer, QgsCapabilitiesCache* capCache, const QgsAccessControl* accessControl );
+        QgsConfigParser, QgsCapabilitiesCache*/
+    QgsWmsServer( const QString& configFilePath, QMap<QString, QString> &parameters, QgsWmsConfigParser* cp, QgsRequestHandler* rh, QgsCapabilitiesCache* capCache, const QgsAccessControl* accessControl );
     ~QgsWmsServer();
 
     void executeRequest() override;
