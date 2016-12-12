@@ -147,11 +147,28 @@ void QgsWMSServer::executeRequest()
   }
 
   //version
-  QString version = mParameters.value( "VERSION", "1.3.0" );
+  QString version = "1.3.0";
+  if ( mParameters.contains( "VERSION" ) )
+  {
+    version = mParameters.value( "VERSION" );
+  }
+  else if ( mParameters.contains( "WMTVER" ) ) //WMTVER needs to be supported by WMS 1.1.1 for backwards compatibility with WMS 1.0.0
+  {
+    version = mParameters.value( "WMTVER" );
+  }
+
   bool getProjectSettings = ( request.compare( "GetProjectSettings", Qt::CaseInsensitive ) == 0 );
   if ( getProjectSettings )
   {
     version = "1.3.0"; //getProjectSettings extends WMS 1.3.0 capabilities
+  }
+
+  if ( version == "1.1.1" )
+  {
+    if ( request.compare( "capabilities", Qt::CaseInsensitive ) == 0 )
+    {
+      request = QString( "GetCapabilities" );
+    }
   }
 
   //GetCapabilities
@@ -423,6 +440,12 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
     hrefString = serviceUrl();
   }
 
+  //href needs to be a prefix
+  if ( !hrefString.endsWith( "?" ) && !hrefString.endsWith( "&" ) )
+  {
+    hrefString.append( hrefString.contains( "?" ) ? "&" : "?" );
+  }
+
   if ( version == "1.1.1" )
   {
     doc = QDomDocument( "WMT_MS_Capabilities SYSTEM 'http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd'" );  //WMS 1.1.1 needs DOCTYPE  "SYSTEM http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd"
@@ -556,7 +579,7 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
 
   //Exception element is mandatory
   elem = doc.createElement( "Exception" );
-  appendFormats( doc, elem, QStringList() << ( version == "1.1.1" ? "application/vnd.ogc.se_xml" : "text/xml" ) );
+  appendFormats( doc, elem, QStringList() << ( version == "1.1.1" ? "application/vnd.ogc.se_xml" : "XML" ) );
   capabilityElement.appendChild( elem );
 
   //UserDefinedSymbolization element
@@ -690,6 +713,10 @@ static QgsRectangle _parseBBOX( const QString &bboxStr, bool &ok )
   }
 
   ok = true;
+  if ( d[2] <= d[0] || d[3] <= d[1] )
+  {
+    throw QgsMapServiceException( "InvalidParameterValue", "BBOX is empty" );
+  }
   return QgsRectangle( d[0], d[1], d[2], d[3] );
 }
 
@@ -1456,6 +1483,17 @@ QImage* QgsWMSServer::getMap( HitTest* hitTest )
   //  theImage->save( QDir::tempPath() + QDir::separator() + "lastrender.png" );
   //#endif
 
+  thePainter.end();
+
+  //test if width / height ratio of image is the same as the ratio of WIDTH / HEIGHT parameters. If not, the image has to be scaled (required by WMS spec)
+  int widthParam = mParameters.value( "WIDTH", "0" ).toInt();
+  int heightParam = mParameters.value( "HEIGHT", "0" ).toInt();
+  if ( widthParam != theImage->width() || heightParam != theImage->height() )
+  {
+    //scale image
+    *theImage = theImage->scaled( widthParam, heightParam, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+  }
+
   return theImage;
 }
 
@@ -1577,7 +1615,6 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
   QgsRectangle mapExtent = mMapRenderer->extent();
   double scaleDenominator = scaleCalc.calculate( mapExtent, outputImage->width() );
   mConfigParser->setScaleDenominator( scaleDenominator );
-  delete outputImage; //no longer needed for feature info
 
   //read FEATURE_COUNT
   int featureCount = 1;
@@ -1616,6 +1653,16 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
   {
     j = -1;
   }
+
+  //In case the output image is distorted (WIDTH/HEIGHT ratio not equal to BBOX width/height), I and J need to be adapted as well
+  int widthParam = mParameters.value( "WIDTH", "-1" ).toInt();
+  int heightParam = mParameters.value( "HEIGHT", "-1" ).toInt();
+  if (( i != -1 && j != -1 && widthParam != -1 && heightParam != -1 ) && ( widthParam != outputImage->width() || heightParam != outputImage->height() ) )
+  {
+    i *= ( outputImage->width() / ( double )widthParam );
+    j *= ( outputImage->height() / ( double )heightParam );
+  }
+  delete outputImage; //no longer needed for feature info
 
   //Normally, I/J or X/Y are mandatory parameters.
   //However, in order to make attribute only queries via the FILTER parameter, it is allowed to skip them if the FILTER parameter is there
@@ -1953,6 +2000,29 @@ QImage* QgsWMSServer::createImage( int width, int height ) const
     }
   }
 
+  //Adapt width / height if the aspect ratio does not correspond with the BBOX.
+  //Required by WMS spec. 1.3.
+  bool bboxOk;
+  QgsRectangle mapExtent = _parseBBOX( mParameters.value( "BBOX" ), bboxOk );
+  if ( bboxOk )
+  {
+    double mapWidthHeightRatio = mapExtent.width() / mapExtent.height();
+    double imageWidthHeightRatio = ( double )width / ( double )height;
+    if ( !qgsDoubleNear( mapWidthHeightRatio, imageWidthHeightRatio, 0.0001 ) )
+    {
+      if ( mapWidthHeightRatio >= imageWidthHeightRatio )
+      {
+        //decrease image height
+        height = width / mapWidthHeightRatio;
+      }
+      else
+      {
+        //decrease image width
+        width = height * mapWidthHeightRatio;
+      }
+    }
+  }
+
   if ( width < 0 || height < 0 )
   {
     return nullptr;
@@ -1969,6 +2039,19 @@ QImage* QgsWMSServer::createImage( int width, int height ) const
   //transparent parameter
   bool transparent = mParameters.value( "TRANSPARENT" ).compare( "true", Qt::CaseInsensitive ) == 0;
 
+  //background  color
+  QString bgColorString = mParameters.value( "BGCOLOR" );
+  if ( bgColorString.startsWith( "0x", Qt::CaseInsensitive ) )
+  {
+    bgColorString.replace( 0, 2, "#" );
+  }
+  QColor backgroundColor;
+  backgroundColor.setNamedColor( bgColorString );
+  if ( !backgroundColor.isValid() )
+  {
+    backgroundColor = QColor( Qt::white );
+  }
+
   //use alpha channel only if necessary because it slows down performance
   if ( transparent && !jpeg )
   {
@@ -1978,7 +2061,7 @@ QImage* QgsWMSServer::createImage( int width, int height ) const
   else
   {
     theImage = new QImage( width, height, QImage::Format_RGB32 );
-    theImage->fill( qRgb( 255, 255, 255 ) );
+    theImage->fill( backgroundColor );
   }
 
   if ( !theImage )
@@ -2014,17 +2097,32 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
   mMapRenderer->setOutputSize( QSize( paintDevice->width(), paintDevice->height() ), paintDevice->logicalDpiX() );
 
   //map extent
-  bool bboxOk;
-  QgsRectangle mapExtent = _parseBBOX( mParameters.value( "BBOX", "0,0,0,0" ), bboxOk );
+  bool bboxOk = true;
+  QgsRectangle mapExtent;
+  if ( mParameters.contains( "BBOX" ) )
+  {
+    mapExtent = _parseBBOX( mParameters.value( "BBOX", "0,0,0,0" ), bboxOk );
+  }
+
   if ( !bboxOk )
   {
     //throw a service exception
     throw QgsMapServiceException( "InvalidParameterValue", "Invalid BBOX parameter" );
   }
 
+  if ( mParameters.contains( "BBOX" ) && mapExtent.isEmpty() )
+  {
+    throw QgsMapServiceException( "InvalidParameterValue", "BBOX is empty" );
+  }
+
   QGis::UnitType mapUnits = QGis::Degrees;
 
   QString crs = mParameters.value( "CRS", mParameters.value( "SRS" ) );
+  if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
+  {
+    crs = QString( "EPSG:4326" );
+    mapExtent.invert();
+  }
 
   QgsCoordinateReferenceSystem outputCRS;
 
@@ -2149,6 +2247,12 @@ bool QgsWMSServer::infoPointToMapCoordinates( int i, int j, QgsPoint* infoPoint,
   if ( !mapRenderer || !infoPoint )
   {
     return false;
+  }
+
+  //check if i, j are in the pixel range of the image
+  if ( i < 0 || i > mapRenderer->width() || j < 0 || j > mapRenderer->height() )
+  {
+    throw QgsMapServiceException( "InvalidPoint", "I/J parameters not within the pixel range" );
   }
 
   double xRes = mapRenderer->extent().width() / mapRenderer->width();

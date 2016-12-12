@@ -65,6 +65,9 @@ void QgsConfigParserUtils::appendCRSElementsToLayer( QDomElement& layerElement, 
       appendCRSElementToLayer( layerElement, CRSPrecedingElement, crs, doc );
     }
   }
+
+  //Support for CRS:84 is mandatory (equals EPSG:4326 with reversed axis)
+  appendCRSElementToLayer( layerElement, CRSPrecedingElement, QString( "CRS:84" ), doc );
 }
 
 void QgsConfigParserUtils::appendCRSElementToLayer( QDomElement& layerElement, const QDomElement& precedingElement,
@@ -77,12 +80,19 @@ void QgsConfigParserUtils::appendCRSElementToLayer( QDomElement& layerElement, c
   layerElement.insertAfter( crsElement, precedingElement );
 }
 
-void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent,
+void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& lExtent,
     const QgsCoordinateReferenceSystem& layerCRS, const QStringList &crsList, const QStringList& constrainedCrsList )
 {
   if ( layerElem.isNull() )
   {
     return;
+  }
+
+  QgsRectangle layerExtent = lExtent;
+  if ( qgsDoubleNear( layerExtent.xMinimum(), layerExtent.xMaximum() ) || qgsDoubleNear( layerExtent.yMinimum(), layerExtent.yMaximum() ) )
+  {
+    //layer bbox cannot be empty
+    layerExtent.grow( 0.000001 );
   }
 
   QgsCoordinateReferenceSystem wgs84 = QgsCRSCache::instance()->crsByOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
