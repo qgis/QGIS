@@ -67,7 +67,7 @@ void QgsConfigParserUtils::appendCRSElementsToLayer( QDomElement& layerElement, 
   }
 
   //Support for CRS:84 is mandatory (equals EPSG:4326 with reversed axis)
-  appendCrsElementToLayer( layerElement, CRSPrecedingElement, QString( "CRS:84" ), doc );
+  appendCRSElementToLayer( layerElement, CRSPrecedingElement, QString( "CRS:84" ), doc );
 }
 
 void QgsConfigParserUtils::appendCRSElementToLayer( QDomElement& layerElement, const QDomElement& precedingElement,
