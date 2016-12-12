@@ -268,6 +268,7 @@ void QgsProjectFileTransform::transform0100to0110()
 {
   if ( ! mDom.isNull() )
   {
+#ifndef QT_NO_PRINTER
     //Change 'outlinewidth' in QgsSymbol
     QPrinter myPrinter( QPrinter::ScreenResolution );
     int screenDpi = myPrinter.resolution();
@@ -302,6 +303,7 @@ void QgsProjectFileTransform::transform0100to0110()
       QDomText newPointSizeText = mDom.createTextNode( QString::number( static_cast< int >( pointSize ) ) );
       currentPointSizeElem.replaceChild( newPointSizeText, pointSizeTextNode );
     }
+#endif
   }
 }
 

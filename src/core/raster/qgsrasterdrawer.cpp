@@ -66,6 +66,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
 
     QImage img = block->image();
 
+#ifndef QT_NO_PRINTER
     // Because of bug in Acrobat Reader we must use "white" transparent color instead
     // of "black" for PDF. See #9101.
     QPrinter *printer = dynamic_cast<QPrinter *>( p->device() );
@@ -87,6 +88,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
         }
       }
     }
+#endif
 
     if ( feedback && feedback->renderPartialOutput() )
     {

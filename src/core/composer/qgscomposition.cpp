@@ -2777,6 +2777,8 @@ void QgsComposition::deleteAndRemoveMultiFrames()
   mMultiFrames.clear();
 }
 
+#ifndef QT_NO_PRINTER
+
 void QgsComposition::beginPrintAsPDF( QPrinter& printer, const QString& file )
 {
   printer.setOutputFileName( file );
@@ -2808,6 +2810,8 @@ bool QgsComposition::exportAsPDF( const QString& file )
   return print( printer );
 }
 
+#endif
+
 void QgsComposition::georeferenceOutput( const QString& file, QgsComposerMap* map,
     const QRectF& exportRegion, double dpi ) const
 {
@@ -2835,6 +2839,8 @@ void QgsComposition::georeferenceOutput( const QString& file, QgsComposerMap* ma
   CPLSetConfigOption( "GDAL_PDF_DPI", nullptr );
   delete[] t;
 }
+
+#ifndef QT_NO_PRINTER
 
 void QgsComposition::doPrint( QPrinter& printer, QPainter& p, bool startNewPage )
 {
@@ -2928,6 +2934,8 @@ bool QgsComposition::print( QPrinter &printer, const bool evaluateDDPageSize )
   p.end();
   return true;
 }
+
+#endif
 
 QImage QgsComposition::printPageAsRaster( int page, QSize imageSize, int dpi )
 {
