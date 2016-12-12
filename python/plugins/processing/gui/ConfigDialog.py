@@ -29,8 +29,7 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import (Qt,
-                              QEvent
-                              )
+                              QEvent)
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QDialog,
                                  QStyle,
@@ -44,7 +43,9 @@ from qgis.PyQt.QtWidgets import (QFileDialog,
 from qgis.PyQt.QtGui import (QIcon,
                              QPushButton,
                              QStandardItemModel,
-                             QStandardItem)
+                             QStandardItem,
+                             QApplication,
+                             QCursor)
 
 from qgis.gui import (QgsDoubleSpinBox,
                       QgsSpinBox
@@ -56,8 +57,7 @@ from processing.core.ProcessingConfig import (ProcessingConfig,
                                               Setting)
 from processing.core.Processing import Processing
 from processing.gui.DirectorySelectorDialog import DirectorySelectorDialog
-from processing.gui.menus import defaultMenuEntries, updateMenus
-from processing.gui.menus import menusSettingsGroup
+from processing.gui.menus import defaultMenuEntries, updateMenus, menusSettingsGroup
 
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -91,7 +91,8 @@ class ConfigDialog(BASE, WIDGET):
 
         self.fillTree()
 
-        self.tree.expanded.connect(self.adjustColumns)
+        self.saveMenus = False
+        self.tree.expanded.connect(self.itemExpanded)
 
     def textChanged(self):
         text = unicode(self.searchBox.text().lower())
@@ -190,14 +191,14 @@ class ConfigDialog(BASE, WIDGET):
         """
         Filter 'Menus' items
         """
-        menusItem = QStandardItem(self.tr('Menus (requires restart)'))
+        self.menusItem = QStandardItem(self.tr('Menus (requires restart)'))
         icon = QIcon(os.path.join(pluginPath, 'images', 'menu.png'))
-        menusItem.setIcon(icon)
-        menusItem.setEditable(False)
+        self.menusItem.setIcon(icon)
+        self.menusItem.setEditable(False)
         emptyItem = QStandardItem()
         emptyItem.setEditable(False)
 
-        rootItem.insertRow(0, [menusItem, emptyItem])
+        rootItem.insertRow(0, [self.menusItem, emptyItem])
 
         button = QPushButton(self.tr('Reset to defaults'))
         button.clicked.connect(self.resetMenusToDefaults)
@@ -246,7 +247,7 @@ class ConfigDialog(BASE, WIDGET):
             emptyItem = QStandardItem()
             emptyItem.setEditable(False)
 
-            menusItem.appendRow([groupItem, emptyItem])
+            self.menusItem.appendRow([groupItem, emptyItem])
 
         self.tree.sortByColumn(0, Qt.AscendingOrder)
         self.adjustColumns()
@@ -259,24 +260,32 @@ class ConfigDialog(BASE, WIDGET):
                 setting = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
                 item = self.items[setting]
                 item.setData(d, Qt.EditRole)
+        self.saveMenus = True
 
     def accept(self):
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         for setting in self.items.keys():
-            if isinstance(setting.value, bool):
-                setting.setValue(self.items[setting].checkState() == Qt.Checked)
-            else:
-                try:
-                    setting.setValue(unicode(self.items[setting].text()))
-                except ValueError as e:
-                    QMessageBox.warning(self, self.tr('Wrong value'),
-                                        self.tr('Wrong value for parameter "%s":\n\n%s' % (setting.description, unicode(e))))
-                    return
-            setting.save()
+            if setting.group != menusSettingsGroup or self.saveMenus:
+                if isinstance(setting.value, bool):
+                    setting.setValue(self.items[setting].checkState() == Qt.Checked)
+                else:
+                    try:
+                        setting.setValue(unicode(self.items[setting].text()))
+                    except ValueError as e:
+                        QMessageBox.warning(self, self.tr('Wrong value'),
+                                            self.tr('Wrong value for parameter "%s":\n\n%s' % (setting.description, unicode(e))))
+                        return
+                setting.save()
         Processing.updateAlgsList()
         settingsWatcher.settingsChanged.emit()
         updateMenus()
-
+        QApplication.restoreOverrideCursor()
         QDialog.accept(self)
+
+    def itemExpanded(self, idx):
+        if idx == self.menusItem.index():
+            self.saveMenus = True
+        self.adjustColumns()
 
     def adjustColumns(self):
         self.tree.resizeColumnToContents(0)
