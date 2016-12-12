@@ -519,7 +519,7 @@ void QgsPluginManager::reloadModelData()
       }
       else
       {
-        mypDetailItem->setData( QPixmap( QgsApplication::defaultThemePath() + "/plugin.png" ), Qt::DecorationRole );
+        mypDetailItem->setData( QPixmap( QgsApplication::defaultThemePath() + "/propertyicons/plugin.svg" ), Qt::DecorationRole );
       }
 
       mypDetailItem->setEditable( false );

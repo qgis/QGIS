@@ -242,8 +242,8 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyle* s
   iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "unlocked.svg" ) ), QSize(), QIcon::Active, QIcon::Off );
   btnLock->setIcon( iconLock );
   btnDuplicate->setIcon( QIcon( QgsApplication::iconPath( "mActionDuplicateLayer.svg" ) ) );
-  btnUp->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.svg" ) ) );
-  btnDown->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.svg" ) ) );
+  btnUp->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowUp.svg" ) ) );
+  btnDown->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowDown.svg" ) ) );
 
   model = new QStandardItemModel( layersTree );
   // Set the symbol
