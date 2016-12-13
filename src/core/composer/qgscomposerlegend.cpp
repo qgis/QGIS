@@ -288,6 +288,9 @@ void QgsComposerLegend::setStyleFont( QgsLegendStyle::Style s, const QFont& f ) 
 void QgsComposerLegend::setStyleMargin( QgsLegendStyle::Style s, double margin ) { rstyle( s ).setMargin( margin ); }
 void QgsComposerLegend::setStyleMargin( QgsLegendStyle::Style s, QgsLegendStyle::Side side, double margin ) { rstyle( s ).setMargin( side, margin ); }
 
+double QgsComposerLegend::lineSpacing() const { return mSettings.lineSpacing(); }
+void QgsComposerLegend::setLineSpacing( double spacing ) { mSettings.setLineSpacing( spacing ); }
+
 double QgsComposerLegend::boxSpace() const { return mSettings.boxSpace(); }
 void QgsComposerLegend::setBoxSpace( double s ) { mSettings.setBoxSpace( s ); }
 
@@ -370,6 +373,7 @@ bool QgsComposerLegend::writeXml( QDomElement& elem, QDomDocument & doc ) const
 
   composerLegendElem.setAttribute( QStringLiteral( "symbolWidth" ), QString::number( mSettings.symbolSize().width() ) );
   composerLegendElem.setAttribute( QStringLiteral( "symbolHeight" ), QString::number( mSettings.symbolSize().height() ) );
+  composerLegendElem.setAttribute( QStringLiteral( "lineSpacing" ), QString::number( mSettings.lineSpacing() ) );
 
   composerLegendElem.setAttribute( QStringLiteral( "rasterBorder" ), mSettings.drawRasterBorder() );
   composerLegendElem.setAttribute( QStringLiteral( "rasterBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSettings.rasterBorderColor() ) );
@@ -501,6 +505,7 @@ bool QgsComposerLegend::readXml( const QDomElement& itemElem, const QDomDocument
 
   mSettings.setSymbolSize( QSizeF( itemElem.attribute( QStringLiteral( "symbolWidth" ), QStringLiteral( "7.0" ) ).toDouble(), itemElem.attribute( QStringLiteral( "symbolHeight" ), QStringLiteral( "14.0" ) ).toDouble() ) );
   mSettings.setWmsLegendSize( QSizeF( itemElem.attribute( QStringLiteral( "wmsLegendWidth" ), QStringLiteral( "50" ) ).toDouble(), itemElem.attribute( QStringLiteral( "wmsLegendHeight" ), QStringLiteral( "25" ) ).toDouble() ) );
+  mSettings.setLineSpacing( itemElem.attribute( QStringLiteral( "lineSpacing" ), "1.0" ).toDouble() );
 
   mSettings.setDrawRasterBorder( itemElem.attribute( QStringLiteral( "rasterBorder" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
   mSettings.setRasterBorderColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "rasterBorderColor" ), QStringLiteral( "0,0,0" ) ) ) );

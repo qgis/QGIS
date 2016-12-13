@@ -114,6 +114,7 @@ class TestQgsLegendRenderer : public QObject
     void testBigMarker();
     void testMapUnits();
     void testTallSymbol();
+    void testLineSpacing();
     void testLongSymbolText();
     void testThreeColumns();
     void testFilterByMap();
@@ -358,6 +359,28 @@ void TestQgsLegendRenderer::testTallSymbol()
   QVERIFY( _verifyImage( testName, mReport ) );
 
   mVL2->setName( QStringLiteral( "Polygon Layer" ) );
+}
+
+void TestQgsLegendRenderer::testLineSpacing()
+{
+  QString testName = "legend_line_spacing";
+
+  QgsCategorizedSymbolRenderer* catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer*>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategoryLabel( 1, "This is\nthree lines\nlong label" );
+
+  mVL2->setName( "This is a two lines\nlong label" );
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsLegendSettings settings;
+  settings.setWrapChar( "\n" );
+  settings.setLineSpacing( 3 );
+  _setStandardTestFont( settings );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+
+  mVL2->setName( "Polygon Layer" );
 }
 
 void TestQgsLegendRenderer::testLongSymbolText()
