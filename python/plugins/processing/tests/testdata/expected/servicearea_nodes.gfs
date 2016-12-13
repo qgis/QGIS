@@ -1,9 +1,9 @@
 <GMLFeatureClassList>
   <GMLFeatureClass>
-    <Name>servicearea</Name>
-    <ElementPath>servicearea</ElementPath>
-    <!--POLYGON-->
-    <GeometryType>3</GeometryType>
+    <Name>servicearea_nodes</Name>
+    <ElementPath>servicearea_nodes</ElementPath>
+    <!--MULTIPOINT-->
+    <GeometryType>4</GeometryType>
     <SRSName>EPSG:32733</SRSName>
     <DatasetSpecificInfo>
       <FeatureCount>2</FeatureCount>
@@ -17,6 +17,12 @@
       <ElementPath>type</ElementPath>
       <Type>String</Type>
       <Width>5</Width>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>start</Name>
+      <ElementPath>start</ElementPath>
+      <Type>String</Type>
+      <Width>28</Width>
     </PropertyDefn>
   </GMLFeatureClass>
 </GMLFeatureClassList>

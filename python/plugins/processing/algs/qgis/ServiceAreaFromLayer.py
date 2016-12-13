@@ -26,6 +26,7 @@ __copyright__ = '(C) 2016, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
+from collections import OrderedDict
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
@@ -76,10 +77,10 @@ class ServiceAreaFromLayer(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.svg'))
 
     def defineCharacteristics(self):
-        self.DIRECTIONS = {self.tr('Forward direction'): QgsVectorLayerDirector.DirectionForward,
-                           self.tr('Backward direction'): QgsVectorLayerDirector.DirectionForward,
-                           self.tr('Both directions'): QgsVectorLayerDirector.DirectionForward
-                          }
+        self.DIRECTIONS = OrderedDict([
+                (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
+                (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
+                (self.tr('Both directions'), QgsVectorLayerDirector.DirectionForward)])
 
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
@@ -122,7 +123,7 @@ class ServiceAreaFromLayer(GeoAlgorithm):
         params.append(ParameterSelection(self.DEFAULT_DIRECTION,
                                          self.tr('Default direction'),
                                          list(self.DIRECTIONS.keys()),
-                                         default=0))
+                                         default=2))
         params.append(ParameterTableField(self.SPEED_FIELD,
                                           self.tr('Speed field'),
                                           self.INPUT_VECTOR,
@@ -174,7 +175,7 @@ class ServiceAreaFromLayer(GeoAlgorithm):
         writerPoints = self.getOutputFromName(
             self.OUTPUT_POINTS).getVectorWriter(
                 fields,
-                QgsWkbTypes.Point,
+                QgsWkbTypes.MultiPoint,
                 layer.crs())
 
         writerPolygons = self.getOutputFromName(

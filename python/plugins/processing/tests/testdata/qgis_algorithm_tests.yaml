@@ -1909,8 +1909,8 @@ tests:
 
   # These tests dissabled because algs require access to iface which
   # is not available in the test suite.
-  #- algorithm: qgis:shortestpath
-  #  name: Shortest path (shortest route)
+  #- algorithm: qgis:shortestpathpointtopoint
+  #  name: Shortest path (point to point, shortest route)
   #  params:
   #    DEFAULT_DIRECTION: '2'
   #    DEFAULT_SPEED: 5.0
@@ -1925,9 +1925,9 @@ tests:
   #    OUTPUT_LAYER:
   #      name: expected/shortest.gml
   #      type: vector
-
-  #- algorithm: qgis:shortestpath
-  #  name: Shortest path (fastest route)
+  #
+  #- algorithm: qgis:shortestpathpointtopoint
+  #  name: Shortest path (point to point, fastest route)
   #  params:
   #    DEFAULT_DIRECTION: '2'
   #    DEFAULT_SPEED: 60.0
@@ -1943,9 +1943,9 @@ tests:
   #    OUTPUT_LAYER:
   #      name: expected/fastest.gml
   #      type: vector
-
-  #- algorithm: qgis:servicearea
-  #  name: Service area (route length)
+  #
+  #- algorithm: qgis:serviceareafrompoint
+  #  name: Service area (from point, shortest)
   #  params:
   #    DEFAULT_DIRECTION: '2'
   #    DEFAULT_SPEED: 5.0
@@ -1957,6 +1957,9 @@ tests:
   #    TOLERANCE: 0.0
   #    TRAVEL_COST: 700.0
   #  results:
-  #    OUTPUT_LAYER:
-  #      name: expected/servicearea.gml
+  #    OUTPUT_POINTS:
+  #      name: expected/servicearea_nodes.gml
+  #      type: vector
+  #    OUTPUT_POLYGON:
+  #      name: expected/servicearea_bounds.gml
   #      type: vector

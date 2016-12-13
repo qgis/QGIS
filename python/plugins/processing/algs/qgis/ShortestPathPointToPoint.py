@@ -26,6 +26,7 @@ __copyright__ = '(C) 2016, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
+from collections import OrderedDict
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
@@ -77,10 +78,10 @@ class ShortestPathPointToPoint(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.svg'))
 
     def defineCharacteristics(self):
-        self.DIRECTIONS = {self.tr('Forward direction'): QgsVectorLayerDirector.DirectionForward,
-                           self.tr('Backward direction'): QgsVectorLayerDirector.DirectionForward,
-                           self.tr('Both directions'): QgsVectorLayerDirector.DirectionForward
-                          }
+        self.DIRECTIONS = OrderedDict([
+                (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
+                (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
+                (self.tr('Both directions'), QgsVectorLayerDirector.DirectionForward)])
 
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
