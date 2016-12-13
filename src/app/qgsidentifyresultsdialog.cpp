@@ -77,7 +77,6 @@ QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWeb
 {
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
   page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
-  // page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
 #ifdef WITH_QTWEBKIT
   page()->setForwardUnsupportedContent( true );
 #endif
