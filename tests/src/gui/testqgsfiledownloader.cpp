@@ -78,8 +78,8 @@ class TestQgsFileDownloader: public QObject
 
     void testValidDownload();
     void testInValidDownload();
-    void testCanceledDownload();
     void testInvalidFile();
+    void testCanceledDownload();
     void testInvalidUrl();
     void testBlankUrl();
 #ifndef QT_NO_SSL
@@ -172,7 +172,7 @@ void TestQgsFileDownloader::testInValidDownload()
   QVERIFY( mError );
   QVERIFY( !mCanceled );
   QVERIFY( mTempFile->size() == 0 );
-  QCOMPARE( mErrorMessage, QString( "Network error 3: Host www.doesnotexistofthatimsure.qgis not found" ) );
+  QCOMPARE( mErrorMessage, QString( "Download failed: Host www.doesnotexistofthatimsure.qgis not found" ) );
 }
 
 void TestQgsFileDownloader::testCanceledDownload()
@@ -184,7 +184,7 @@ void TestQgsFileDownloader::testCanceledDownload()
   QVERIFY( !mError );
   QVERIFY( mProgress );
   QVERIFY( mCanceled );
-  QVERIFY( mTempFile->size() == 0 );
+  QVERIFY( !mTempFile->exists() );
 }
 
 void TestQgsFileDownloader::testInvalidFile()
@@ -205,7 +205,7 @@ void TestQgsFileDownloader::testInvalidUrl()
   QVERIFY( !mCompleted );
   QVERIFY( mError );
   QVERIFY( !mCanceled );
-  QCOMPARE( mErrorMessage, QString( "Network error 301: Protocol \"xyz\" is unknown" ) );
+  QCOMPARE( mErrorMessage, QString( "Download failed: Protocol \"xyz\" is unknown" ) );
 }
 
 void TestQgsFileDownloader::testBlankUrl()
@@ -216,7 +216,7 @@ void TestQgsFileDownloader::testBlankUrl()
   QVERIFY( !mCompleted );
   QVERIFY( mError );
   QVERIFY( !mCanceled );
-  QCOMPARE( mErrorMessage, QString( "Network error 301: Protocol \"\" is unknown" ) );
+  QCOMPARE( mErrorMessage, QString( "Download failed: Protocol \"\" is unknown" ) );
 }
 
 #ifndef QT_NO_SSL
@@ -226,11 +226,11 @@ void TestQgsFileDownloader::testSslError_data()
   QTest::addColumn<QString>( "result" );
 
   QTest::newRow( "expired" ) << "https://expired.badssl.com/"
-  << "Network error 6: SSL handshake failed;SSL Errors: ;The certificate has expired";
+  << "SSL Errors: ;The certificate has expired";
   QTest::newRow( "self-signed" ) << "https://self-signed.badssl.com/"
-  << "Network error 6: SSL handshake failed;SSL Errors: ;The certificate is self-signed, and untrusted";
+  << "SSL Errors: ;The certificate is self-signed, and untrusted";
   QTest::newRow( "untrusted-root" ) << "https://untrusted-root.badssl.com/"
-  << "Network error 6: SSL handshake failed;No certificates could be verified;SSL Errors: ;The issuer certificate of a locally looked up certificate could not be found";
+  << "No certificates could be verified;SSL Errors: ;The issuer certificate of a locally looked up certificate could not be found";
 }
 
 void TestQgsFileDownloader::testSslError()
