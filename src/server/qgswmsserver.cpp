@@ -2012,13 +2012,13 @@ QImage* QgsWmsServer::createImage( int width, int height, bool useBbox ) const
       {
         if ( mapWidthHeightRatio >= imageWidthHeightRatio )
         {
-          //decrease image height
-          height = width / mapWidthHeightRatio;
+          //increase image height
+          height = width * mapWidthHeightRatio;
         }
         else
         {
-          //decrease image width
-          width = height * mapWidthHeightRatio;
+          //increase image width
+          width = height / mapWidthHeightRatio;
         }
       }
     }
