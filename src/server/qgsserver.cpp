@@ -81,7 +81,6 @@ QgsServer::QgsServer( bool captureOutput )
   }
   sCaptureOutput = captureOutput;
   init();
-  saveEnvVars();
 }
 
 
@@ -241,38 +240,6 @@ void QgsServer::printRequestInfos()
   }
 }
 
-void QgsServer::dummyMessageHandler( QtMsgType type, const char *msg )
-{
-#if 0 //def QGSMSDEBUG
-  QString output;
-
-  switch ( type )
-  {
-    case QtDebugMsg:
-      output += "Debug: ";
-      break;
-    case QtCriticalMsg:
-      output += "Critical: ";
-      break;
-    case QtWarningMsg:
-      output += "Warning: ";
-      break;
-    case QtFatalMsg:
-      output += "Fatal: ";
-  }
-
-  output += msg;
-
-  QgsLogger::logMessageToFile( output );
-
-  if ( type == QtFatalMsg )
-    abort();
-#else
-  Q_UNUSED( type );
-  Q_UNUSED( msg );
-#endif
-}
-
 /**
  * @brief QgsServer::configPath
  * @param defaultConfigPath
@@ -316,10 +283,6 @@ bool QgsServer::init( )
   }
 
   QgsServerLogger::instance();
-
-#ifndef _MSC_VER
-  qInstallMsgHandler( dummyMessageHandler );
-#endif
 
   QString optionsPath = getenv( "QGIS_OPTIONS_PATH" );
   if ( !optionsPath.isEmpty() )
@@ -420,13 +383,6 @@ void QgsServer::putenv( const QString &var, const QString &val )
  */
 QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryString )
 {
-  //apply environment variables
-  QHash< QString, QString >::const_iterator envIt = mEnvironmentVariables.constBegin();
-  for ( ; envIt != mEnvironmentVariables.constEnd(); ++envIt )
-  {
-    putenv( envIt.key(), envIt.value() );
-  }
-
   /*
    * This is mainly for python bindings, passing QUERY_STRING
    * to handleRequest without using os.environment
@@ -636,29 +592,4 @@ void QgsServer::initPython()
   }
 }
 #endif
-
-#if 0
-// The following code was used to test type conversion in python bindings
-QPair<QByteArray, QByteArray> QgsServer::testQPair( QPair<QByteArray, QByteArray> pair )
-{
-  return pair;
-}
-#endif
-
-void QgsServer::saveEnvVars()
-{
-  saveEnvVar( QStringLiteral( "MAX_CACHE_LAYERS" ) );
-  saveEnvVar( QStringLiteral( "DEFAULT_DATUM_TRANSFORM" ) );
-}
-
-void QgsServer::saveEnvVar( const QString& variableName )
-{
-  const char* env = getenv( variableName.toLocal8Bit() );
-  if ( !env )
-  {
-    return;
-  }
-
-  mEnvironmentVariables.insert( variableName, QString::fromLocal8Bit( env ) );
-}
 
