@@ -113,8 +113,9 @@ class QgsWmsServer: public QgsOWSServer
     QByteArray* getPrint( const QString& formatString );
 
     /** Creates an xml document that describes the result of the getFeatureInfo request.
-       @return 0 in case of success*/
-    int getFeatureInfo( QDomDocument& result, const QString& version = "1.3.0" );
+     * May throw an exception
+     */
+    QDomDocument getFeatureInfo( const QString& version = "1.3.0" );
 
     //! Sets configuration parser for administration settings. Does not take ownership
     void setAdminConfigParser( QgsWmsConfigParser* parser ) { mConfigParser = parser; }
@@ -127,56 +128,63 @@ class QgsWmsServer: public QgsOWSServer
     QgsWmsServer();
 
     /** Initializes WMS layers and configures rendering.
-      @param layersList out: list with WMS layer names
-      @param stylesList out: list with WMS style names
-      @param layerIdList out: list with QGIS layer ids
-      @return image configured (or 0 in case of error). The calling function takes ownership of the image*/
+     * @param layersList out: list with WMS layer names
+     * @param stylesList out: list with WMS style names
+     * @param layerIdList out: list with QGIS layer ids
+     * @return image configured. The calling function takes ownership of the image
+     * may throw an exception
+     */
     QImage* initializeRendering( QStringList& layersList, QStringList& stylesList, QStringList& layerIdList, QgsMapSettings& mapSettings );
 
     /** Creates a QImage from the HEIGHT and WIDTH parameters
-     @param width image width (or -1 if width should be taken from WIDTH wms parameter)
-     @param height image height (or -1 if height should be taken from HEIGHT wms parameter)
-     @param useBbox flag to indicate if the BBOX has to be used to adapt aspect ratio
-     @return 0 in case of error*/
+     * @param width image width (or -1 if width should be taken from WIDTH wms parameter)
+     * @param height image height (or -1 if height should be taken from HEIGHT wms parameter)
+     * @param useBbox flag to indicate if the BBOX has to be used to adapt aspect ratio
+     * @return a non null pointer
+     * may throw an exception
+     */
     QImage* createImage( int width = -1, int height = -1, bool useBbox = true ) const;
 
     /** Configures mapSettings to the parameters
-     HEIGHT, WIDTH, BBOX, CRS.
-     @param paintDevice the device that is used for painting (for dpi)
-     @return 0 in case of success*/
-    int configureMapSettings( const QPaintDevice* paintDevice, QgsMapSettings& mapSettings ) const;
+     * HEIGHT, WIDTH, BBOX, CRS.
+     * @param paintDevice the device that is used for painting (for dpi)
+     * may throw an exception
+     */
+    void configureMapSettings( const QPaintDevice* paintDevice, QgsMapSettings& mapSettings ) const;
 
     /** Reads the layers and style lists from the parameters LAYERS and STYLES
-     @return 0 in case of success*/
-    int readLayersAndStyles( QStringList& layersList, QStringList& stylesList ) const;
+     * may throw an exception
+     */
+    void readLayersAndStyles( QStringList& layersList, QStringList& stylesList ) const;
 
-    /** If the parameter SLD exists, mSLDParser is configured appropriately. The lists are
-    set to the layer and style names according to the SLD
-    @return 0 in case of success*/
-    int initializeSLDParser( QStringList& layersList, QStringList& stylesList );
-    static bool infoPointToMapCoordinates( int i, int j, QgsPoint* infoPoint, const QgsMapSettings& mapSettings );
+    /**
+     * If the parameter SLD exists, mSLDParser is configured appropriately. The lists are
+     * set to the layer and style names according to the SLD
+     * may throw an exception
+     */
+    void initializeSLDParser( QStringList& layersList, QStringList& stylesList );
 
     /** Appends feature info xml for the layer to the layer element of the feature info dom document
     @param featureBBox the bounding box of the selected features in output CRS
-    @return 0 in case of success*/
-    int featureInfoFromVectorLayer( QgsVectorLayer* layer,
-                                    const QgsPoint* infoPoint,
-                                    int nFeatures,
-                                    QDomDocument& infoDocument,
-                                    QDomElement& layerElement,
-                                    const QgsMapSettings& mapSettings,
-                                    QgsRenderContext& renderContext,
-                                    const QString& version,
-                                    const QString& infoFormat,
-                                    QgsRectangle* featureBBox = nullptr ) const;
+    @return true in case of success*/
+    bool featureInfoFromVectorLayer( QgsVectorLayer* layer,
+                                     const QgsPoint* infoPoint,
+                                     int nFeatures,
+                                     QDomDocument& infoDocument,
+                                     QDomElement& layerElement,
+                                     const QgsMapSettings& mapSettings,
+                                     QgsRenderContext& renderContext,
+                                     const QString& version,
+                                     const QString& infoFormat,
+                                     QgsRectangle* featureBBox = nullptr ) const;
     //! Appends feature info xml for the layer to the layer element of the dom document
-    int featureInfoFromRasterLayer( QgsRasterLayer* layer,
-                                    const QgsMapSettings& mapSettings,
-                                    const QgsPoint* infoPoint,
-                                    QDomDocument& infoDocument,
-                                    QDomElement& layerElement,
-                                    const QString& version,
-                                    const QString& infoFormat ) const;
+    bool featureInfoFromRasterLayer( QgsRasterLayer* layer,
+                                     const QgsMapSettings& mapSettings,
+                                     const QgsPoint* infoPoint,
+                                     QDomDocument& infoDocument,
+                                     QDomElement& layerElement,
+                                     const QString& version,
+                                     const QString& infoFormat ) const;
 
     /** Creates a layer set and returns a stringlist with layer ids that can be passed to a renderer. Usually used in conjunction with readLayersAndStyles
        @param scaleDenominator Filter out layer if scale based visibility does not match (or use -1 if no scale restriction)*/
@@ -190,10 +198,6 @@ class QgsWmsServer: public QgsOWSServer
     //! Read legend parameter from the request or from the first print composer in the project
     void legendParameters( double& boxSpace, double& layerSpace, double& layerTitleSpace,
                            double& symbolSpace, double& iconLabelSpace, double& symbolWidth, double& symbolHeight, QFont& layerFont, QFont& itemFont, QColor& layerFontColor, QColor& itemFontColor );
-
-#if 0
-    QImage* printCompositionToImage( QgsComposition* c ) const;
-#endif
 
     /** Apply filter (subset) strings from the request to the layers. Example: '&FILTER=<layer1>:"AND property > 100",<layer2>:"AND bla = 'hallo!'" '
      * @param layerList list of layer IDs to filter

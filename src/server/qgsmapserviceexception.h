@@ -20,6 +20,8 @@
 
 #include <QString>
 
+#include "qgsexception.h"
+
 /** \ingroup server
  * \class  QgsMapServiceException
  * \brief Exception class for WMS service exceptions.
@@ -31,7 +33,7 @@
  *  * "OperationNotSupported"
  */
 
-class SERVER_EXPORT QgsMapServiceException
+class SERVER_EXPORT QgsMapServiceException : public QgsException
 {
   public:
     QgsMapServiceException( const QString& code, const QString& message );
