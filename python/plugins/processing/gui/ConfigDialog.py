@@ -42,11 +42,11 @@ from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QToolButton,
                                  QHBoxLayout,
                                  QComboBox,
-                                 QPushButton)
+                                 QPushButton,
+                                 QApplication)
 from qgis.PyQt.QtGui import (QIcon,
                              QStandardItemModel,
                              QStandardItem,
-                             QApplication,
                              QCursor)
 
 from qgis.gui import (QgsDoubleSpinBox,
