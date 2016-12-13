@@ -33,6 +33,7 @@
 #include "qgsconfigcache.h"
 #include "qgscapabilitiescache.h"
 #include "qgsmapsettings.h"
+#include "qgsmessagelog.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsserverplugins.h"
@@ -105,10 +106,16 @@ class SERVER_EXPORT QgsServer
     static void dummyMessageHandler( QtMsgType type, const char *msg );
     // Mainly for debug
     static void printRequestInfos();
-    // Mainly for debug
+
+    /**
+     * @brief QgsServer::printRequestParameters prints the request parameters
+     * @param parameterMap
+     * @param logLevel
+     */
     static void printRequestParameters(
       const QMap< QString, QString>& parameterMap,
-      int logLevel );
+      QgsMessageLog::MessageLevel logLevel );
+
     static QFileInfo defaultProjectFile();
     static QFileInfo defaultAdminSLD();
     static void setupNetworkAccessManager();

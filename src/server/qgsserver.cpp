@@ -179,9 +179,9 @@ QFileInfo QgsServer::defaultProjectFile()
  * @param parameterMap
  * @param logLevel
  */
-void QgsServer::printRequestParameters( const QMap< QString, QString>& parameterMap, int logLevel )
+void QgsServer::printRequestParameters( const QMap< QString, QString>& parameterMap, QgsMessageLog::MessageLevel logLevel )
 {
-  if ( logLevel > 0 )
+  if ( logLevel > QgsMessageLog::INFO )
   {
     return;
   }
@@ -434,13 +434,13 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   if ( ! queryString.isEmpty() )
     putenv( QStringLiteral( "QUERY_STRING" ), queryString );
 
-  int logLevel = QgsServerLogger::instance()->logLevel();
+  QgsMessageLog::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
   QgsProject::instance()->removeAllMapLayers();
 
   qApp->processEvents();
 
-  if ( logLevel < 1 )
+  if ( logLevel == QgsMessageLog::INFO )
   {
     time.start();
     printRequestInfos();
@@ -614,7 +614,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
 
   theRequestHandler->sendResponse();
 
-  if ( logLevel < 1 )
+  if ( logLevel == QgsMessageLog::INFO )
   {
     QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
