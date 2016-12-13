@@ -18,6 +18,12 @@
 
 QgsPostgresExpressionCompiler::QgsPostgresExpressionCompiler( QgsPostgresFeatureSource* source )
     : QgsSqlExpressionCompiler( source->mFields )
+    , mGeometryColumn( source->mGeometryColumn )
+    , mSpatialColType( source->mSpatialColType )
+    , mDetectedGeomType( source->mDetectedGeomType )
+    , mRequestedGeomType( source->mRequestedGeomType )
+    , mRequestedSrid( source->mRequestedSrid )
+    , mDetectedSrid( source->mDetectedSrid )
 {
 }
 
@@ -32,3 +38,150 @@ QString QgsPostgresExpressionCompiler::quotedValue( const QVariant& value, bool&
   return QgsPostgresConn::quotedValue( value );
 }
 
+static const QMap<QString, QString>& functionNamesSqlFunctionsMap()
+{
+  static QMap<QString, QString> fnNames;
+  if ( fnNames.isEmpty() )
+  {
+    fnNames =
+    {
+      { "sqrt", "sqrt" },
+      { "radians", "radians" },
+      { "degrees", "degrees" },
+      { "abs", "abs" },
+      { "cos", "cos" },
+      { "sin", "sin" },
+      { "tan", "tan" },
+      { "acos", "acos" },
+      { "asin", "asin" },
+      { "atan", "atan" },
+      { "atan2", "atan2" },
+      { "exp", "exp" },
+      { "ln", "ln" },
+      { "log", "log" },
+      { "log10", "log" },
+      { "round", "round" },
+      { "floor", "floor" },
+      { "ceil", "ceil" },
+      { "pi", "pi" },
+      // geometry functions
+      //{ "azimuth", "ST_Azimuth" },
+      { "x", "ST_X" },
+      { "y", "ST_Y" },
+      //{ "z", "ST_Z" },
+      //{ "m", "ST_M" },
+      { "x_min", "ST_XMin" },
+      { "y_min", "ST_YMin" },
+      { "x_max", "ST_XMax" },
+      { "y_max", "ST_YMax" },
+      { "area", "ST_Area" },
+      { "perimeter", "ST_Perimeter" },
+      { "relate", "ST_Relate" },
+      { "disjoint", "ST_Disjoint" },
+      { "intersects", "ST_Intersects" },
+      //{ "touches", "ST_Touches" },
+      { "crosses", "ST_Crosses" },
+      { "contains", "ST_Contains" },
+      { "overlaps", "ST_Overlaps" },
+      { "within", "ST_Within" },
+      { "translate", "ST_Translate" },
+      { "buffer", "ST_Buffer" },
+      { "centroid", "ST_Centroid" },
+      { "point_on_surface", "ST_PointOnSurface" },
+      //{ "reverse", "ST_Reverse" },
+      //{ "is_closed", "ST_IsClosed" },
+      //{ "convex_hull", "ST_ConvexHull" },
+      //{ "difference", "ST_Difference" },
+      { "distance", "ST_Distance" },
+      //{ "intersection", "ST_Intersection" },
+      //{ "sym_difference", "ST_SymDifference" },
+      //{ "combine", "ST_Union" },
+      //{ "union", "ST_Union" },
+      { "geom_from_wkt", "ST_GeomFromText" },
+      { "geom_from_gml", "ST_GeomFromGML" }
+    };
+  }
+  return fnNames;
+}
+
+QString QgsPostgresExpressionCompiler::sqlFunctionFromFunctionName( const QString& fnName ) const
+{
+  return functionNamesSqlFunctionsMap().value( fnName, QString() );
+}
+
+QStringList QgsPostgresExpressionCompiler::sqlArgumentsFromFunctionName( const QString& fnName, const QStringList& fnArgs ) const
+{
+  QStringList args( fnArgs );
+  if ( fnName == "geom_from_wkt" )
+  {
+    args << ( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
+  }
+  else if ( fnName == "geom_from_gml" )
+  {
+    args << ( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
+  }
+  else if ( fnName == "x" || fnName == "y" )
+  {
+    args = QStringList( QStringLiteral( "ST_Centroid(%1)" ).arg( args[0] ) );
+  }
+  else if ( fnName == "buffer" && args.length() == 2 )
+  {
+    args << "8";
+  }
+  // x and y functions have to be adapted
+  return args;
+}
+
+QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( const QgsExpression::Node* node, QString& result )
+{
+  switch ( node->nodeType() )
+  {
+    case QgsExpression::ntFunction:
+    {
+      const QgsExpression::NodeFunction* n = static_cast<const QgsExpression::NodeFunction*>( node );
+
+      QgsExpression::Function* fd = QgsExpression::Functions()[n->fnIndex()];
+      if ( fd->name() == "$geometry" )
+      {
+        result = quotedIdentifier( mGeometryColumn );
+        return Complete;
+      }
+      /*
+       * These methods are tricky
+       * QGIS expression versions of these return ellipsoidal measurements
+       * based on the project settings, and also convert the result to the
+       * units specified in project properties.
+      else if ( fd->name() == "$area" )
+      {
+        result = QStringLiteral( "ST_Area(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
+        return Complete;
+      }
+      else if ( fd->name() == "$length" )
+      {
+        result = QStringLiteral( "ST_Length(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
+        return Complete;
+      }
+      else if ( fd->name() == "$perimeter" )
+      {
+        result = QStringLiteral( "ST_Perimeter(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
+        return Complete;
+      }
+      else if ( fd->name() == "$x" )
+      {
+        result = QStringLiteral( "ST_X(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
+        return Complete;
+      }
+      else if ( fd->name() == "$y" )
+      {
+        result = QStringLiteral( "ST_Y(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
+        return Complete;
+      }
+      */
+    }
+
+    default:
+      return QgsSqlExpressionCompiler::compileNode( node, result );
+  }
+
+  return Fail;
+}
