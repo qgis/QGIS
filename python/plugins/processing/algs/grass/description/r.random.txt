@@ -1,8 +1,0 @@
-r.random
-Creates a raster layer and vector point map containing randomly located points.
-Raster (r.*)
-ParameterRaster|input|Input raster layer|False
-ParameterRaster|cover|Input cover raster layer|False
-ParameterNumber|n|The number of points to allocate|0|None|10
-OutputRaster|raster_output|Random raster
-OutputVector|vector_output|random vector
