@@ -7,7 +7,7 @@ Content-Type: text/xml; charset=utf-8
   <Title>QGIS TestProject</Title>
   <Abstract>Some UTF8 text èòù</Abstract>
   <OnlineResource></OnlineResource>
-  <Fees>conditions unknown</Fees>
+  <Fees>None</Fees>
   <AccessConstraints>None</AccessConstraints>
  </Service>
  <Capability>
