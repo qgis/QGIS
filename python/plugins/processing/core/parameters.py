@@ -1063,18 +1063,25 @@ class ParameterSelection(Parameter):
         elif isinstance(self.options, str):
             self.options = self.options.split(";")
 
+        # compute options as (value, text)
+        options = []
+        for i, option in enumerate(self.options):
+            if option is None or isinstance(option, basestring):
+                options.append((i, option))
+            else:
+                options.append((option[0], option[1]))
+        self.options = options
+        self.values = [option[0] for option in options]
+
+        self.value = None
         if default is not None:
-            try:
-                self.default = int(default)
-            except:
-                self.default = 0
-            self.value = self.default
+            self.setValue(self.default)
 
     def setValue(self, value):
         if value is None:
             if not self.optional:
                 return False
-            self.value = 0
+            self.value = None
             return True
 
         if isinstance(value, list):
@@ -1082,22 +1089,32 @@ class ParameterSelection(Parameter):
                 return False
             values = []
             for v in value:
+                if v in self.values:
+                    values.append(v)
+                    continue
                 try:
-                    n = int(v)
-                    values.append(n)
+                    v = int(v)
                 except:
+                    pass
+                if not v in self.values:
                     return False
+                values.append(v)
             if not self.optional and len(values) == 0:
                 return False
             self.value = values
             return True
         else:
-            try:
-                n = int(value)
-                self.value = n
+            if value in self.values:
+                self.value = value
                 return True
+            try:
+                value = int(value)
             except:
+                pass
+            if not value in self.values:
                 return False
+            self.value = value
+            return True
 
     @classmethod
     def fromScriptCode(self, line):
@@ -1508,46 +1525,6 @@ class ParameterVector(ParameterDataObject):
         elif definition.lower().strip() == 'vector polygon':
             return ParameterVector(name, descName,
                                    [dataobjects.TYPE_VECTOR_POLYGON], isOptional)
-
-
-class ParameterGeometryPredicate(Parameter):
-
-    predicates = ('intersects',
-                  'contains',
-                  'disjoint',
-                  'equals',
-                  'touches',
-                  'overlaps',
-                  'within',
-                  'crosses')
-
-    def __init__(self, name='', description='', left=None, right=None,
-                 optional=False, enabledPredicates=None):
-        Parameter.__init__(self, name, description, None, optional)
-        self.left = left
-        self.right = right
-        self.value = None
-        self.enabledPredicates = enabledPredicates
-        if self.enabledPredicates is None:
-            self.enabledPredicates = self.predicates
-
-    def getValueAsCommandLineParameter(self):
-        return str(self.value)
-
-    def setValue(self, value):
-        if value is None:
-            if not self.optional:
-                return False
-            self.value = None
-            return True
-        elif len(value) == 0 and not self.optional:
-            return False
-
-        if isinstance(value, str):
-            self.value = value.split(';')  # relates to ModelerAlgorithm.resolveValue
-        else:
-            self.value = value
-        return True
 
 
 paramClasses = [c for c in list(sys.modules[__name__].__dict__.values()) if isclass(c) and issubclass(c, Parameter)]

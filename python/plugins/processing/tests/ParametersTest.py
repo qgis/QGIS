@@ -272,7 +272,7 @@ class ParameterSelectionTest(unittest.TestCase):
         parameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'], default=0.0)
         self.assertEqual(parameter.value, 0)
         parameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'], default='a')
-        self.assertEqual(parameter.value, 0)
+        self.assertEqual(parameter.value, None)
 
     def testOptional(self):
         optionalParameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'], default=0, optional=True)
@@ -280,7 +280,7 @@ class ParameterSelectionTest(unittest.TestCase):
         optionalParameter.setValue(1)
         self.assertEqual(optionalParameter.value, 1)
         self.assertTrue(optionalParameter.setValue(None))
-        self.assertEqual(optionalParameter.value, 0)
+        self.assertEqual(optionalParameter.value, None)
 
         requiredParameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'], default=0, optional=False)
         self.assertEqual(requiredParameter.value, 0)
@@ -288,6 +288,22 @@ class ParameterSelectionTest(unittest.TestCase):
         self.assertEqual(requiredParameter.value, 1)
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, 1)
+
+    def testTupleOptions(self):
+        options = (
+            ('o1', 'option1'),
+            ('o2', 'option2'),
+            ('o3', 'option3'))
+
+        optionalParameter = ParameterSelection('myName', 'myDesc', options, default='o1')
+        self.assertEqual(optionalParameter.value, 'o1')
+        optionalParameter.setValue('o2')
+        self.assertEqual(optionalParameter.value, 'o2')
+
+        optionalParameter = ParameterSelection('myName', 'myDesc', options, default=['o1', 'o2'], multiple=True)
+        self.assertEqual(optionalParameter.value, ['o1', 'o2'])
+        optionalParameter.setValue(['o2'])
+        self.assertEqual(optionalParameter.value, ['o2'])
 
 
 class ParameterFileTest(unittest.TestCase):
