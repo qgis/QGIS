@@ -45,7 +45,6 @@ from numpy import nan_to_num
 import processing
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider
-from processing.algs.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
 from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
 from processing.algs.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider
 from processing.algs.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
