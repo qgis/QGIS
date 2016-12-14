@@ -182,11 +182,6 @@ void QgsFileDownloader::onFinished()
   this->deleteLater();
 }
 
-void QgsFileDownloader::onNetworkError( QNetworkReply::NetworkError err )
-{
-  Q_ASSERT( mReply );
-  error( QString( "Network error %1: %2" ).arg( err ).arg( mReply->errorString() ) );
-}
 
 void QgsFileDownloader::onDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
