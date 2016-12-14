@@ -55,7 +55,7 @@ class QgsService
     /**
      * Return true if the given method is supported for that
      * service.
-     * @param method QGSMethodType the 
+     * @param method QGSMethodType the
      * @return QString containing the configuration file path
      */
     virtual bool allowMethod( QgsServerRequest::Method ) const = 0;

@@ -20,22 +20,22 @@
 #include "qgsservicepythonloader.h"
 #include "qgsserviceregistry.h"
 #include "qgsmessagelog.h"
-#include <QLibrary> 
+#include <QLibrary>
 #include <QDir>
 
 typedef void unloadHook_t( QgsServiceModule* );
 
 class QgsServicePythonModuleEntry
 {
-    public:
-        QgsServicePythonModuleEntry( const QString& location )
-        : mLocation(location)
-        , mModule(nullptr)
-        {}
+  public:
+    QgsServicePythonModuleEntry( const QString& location )
+        : mLocation( location )
+        , mModule( nullptr )
+    {}
 
-        QString           mLocation;
-        QgsServiceModule* mModule;
-        unloadHook_t*     mUnloadHook;
+    QString           mLocation;
+    QgsServiceModule* mModule;
+    unloadHook_t*     mUnloadHook;
 };
 
 
@@ -52,31 +52,32 @@ QgsServicePythonLoader::~QgsServicePythonLoader()
 
 void QgsServicePythonLoader::loadModules( const QString& modulePath, QgsServiceRegistry& registrar )
 {
-    //TODO
+  //TODO
 }
 
 
 void QgsServicePythonLoader::unloadModules()
 {
-    ModuleTable::iterator it  = mModules.begin();
-    ModuleTable::iterator end = mModules.end();
+  ModuleTable::iterator it  = mModules.begin();
+  ModuleTable::iterator end = mModules.end();
 
-    while( it!=end ) 
-    {
-        unloadModuleEntry( it->get() );
-        ++it;
-    }
+  while ( it != end )
+  {
+    unloadModuleEntry( it->get() );
+    ++it;
+  }
 
-    mModules.clear();
+  mModules.clear();
 }
 
 
 void QgsServicePythonLoader::unloadModuleEntry( QgsServicePythonModuleEntry* entry )
 {
-   // Call cleanup function if it exists
-   if( entry->mUnloadHook ) {
-       entry->mUnloadHook( entry->mModule );
-   }
+  // Call cleanup function if it exists
+  if ( entry->mUnloadHook )
+  {
+    entry->mUnloadHook( entry->mModule );
+  }
 }
 
 

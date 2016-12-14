@@ -28,9 +28,9 @@ class QgsServiceRegistry;
  * QgsServiceModule
  * Class defining the service module interface for QGIS server services
  *
- * This class acts as a service registrar for services. 
+ * This class acts as a service registrar for services.
  *
- * For dynamic modules, a QgsServiceModule instance is returned from the QGS_ServiceModule_Init() entry point 
+ * For dynamic modules, a QgsServiceModule instance is returned from the QGS_ServiceModule_Init() entry point
  */
 class SERVER_EXPORT QgsServiceModule
 {

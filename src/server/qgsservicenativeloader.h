@@ -44,13 +44,13 @@ class SERVER_EXPORT QgsServiceNativeLoader: public QgsServiceLoader
     QgsServiceNativeLoader();
 
     //! Destructor
-   ~QgsServiceNativeLoader();
+    ~QgsServiceNativeLoader();
 
     /**
      * Lead all medules from path
      * @param modulePath the path to look for module
      * @parama registrar QgsServiceRegistry instance for registering services
-     */    
+     */
     void loadModules( const QString& modulePath, QgsServiceRegistry& registrar ) override;
 
     /**
@@ -59,12 +59,12 @@ class SERVER_EXPORT QgsServiceNativeLoader: public QgsServiceLoader
     void unloadModules() override;
 
     /**
-     * Load the native module from path 
+     * Load the native module from path
      *
      * @param location QString location holding the module relalive path
      * @return a qgsservicemodule instance
      */
-    QgsServiceModule* loadNativeModule( const QString& location );     
+    QgsServiceModule* loadNativeModule( const QString& location );
 
 
   private:
@@ -76,9 +76,9 @@ class SERVER_EXPORT QgsServiceNativeLoader: public QgsServiceLoader
      * @return a module hook entry
      */
     QgsServiceNativeModuleEntry* findModuleEntry( const QString& path );
-    
+
     /**
-     *  Unload medule hook 
+     *  Unload medule hook
      */
     void unloadModuleEntry( QgsServiceNativeModuleEntry* entry );
 

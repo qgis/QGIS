@@ -21,15 +21,15 @@
 
 
 QgsServerRequest::QgsServerRequest( const QString& url, Method method )
-: mUrl(url)
-, mMethod(method)
+    : mUrl( url )
+    , mMethod( method )
 {
 
 }
 
 QgsServerRequest::QgsServerRequest( const QUrl& url, Method method )
-: mUrl(url)
-, mMethod(method)
+    : mUrl( url )
+    , mMethod( method )
 {
 
 }
@@ -37,27 +37,27 @@ QgsServerRequest::QgsServerRequest( const QUrl& url, Method method )
 //! destructor
 QgsServerRequest::~QgsServerRequest()
 {
-    
+
 }
 
 QString QgsServerRequest::getHeader( const QString& name ) const
 {
-    return "";
+  return "";
 }
 
-QUrl QgsServerRequest::url() const 
+QUrl QgsServerRequest::url() const
 {
-    return mUrl;
+  return mUrl;
 }
 
 QgsServerRequest::Method QgsServerRequest::method() const
 {
-    return mMethod;
+  return mMethod;
 }
 
 QByteArray QgsServerRequest::data() const
 {
-    return QByteArray();
+  return QByteArray();
 }
 
 

@@ -43,13 +43,13 @@ class SERVER_EXPORT QgsServicePythonLoader: public QgsServiceLoader
     QgsServicePythonLoader();
 
     //! Destructor
-   ~QgsServicePythonLoader();
+    ~QgsServicePythonLoader();
 
     /**
      * Lead all medules from path
      * @param modulePath the path to look for module
      * @parama registrar QgsServiceRegistry instance for registering services
-     */    
+     */
     void loadModules( const QString& modulePath, QgsServiceRegistry& registrar ) override;
 
     /**
@@ -61,7 +61,7 @@ class SERVER_EXPORT QgsServicePythonLoader: public QgsServiceLoader
     typedef QHash<QString, std::shared_ptr<QgsServicePythonModuleEntry> > ModuleTable;
 
     /**
-     *  Unload medule hook 
+     *  Unload medule hook
      */
     void unloadModuleEntry( QgsServicePythonModuleEntry* entry );
 

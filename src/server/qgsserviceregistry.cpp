@@ -22,145 +22,146 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
-namespace {
+namespace
+{
 
-    // Build a key entry from name and version
-    QString makeServiceKey( const QString& name, const QString& version  )
-    {
-        return QString( "%1_%2" ).arg(name,version);
-    }
+// Build a key entry from name and version
+  QString makeServiceKey( const QString& name, const QString& version )
+  {
+    return QString( "%1_%2" ).arg( name, version );
+  }
 
-    // Compare two version strings:
-    // The strings are splitted into dot separated segment
-    // Each segment are compared up to the shortest number of segment of the 
-    // lists. Remaining segments are dropped.
-    // If both segments can be intepreted as numbers the are compared as numbers, otherwise 
-    // They are compared lexicographically.
-    // Return true if v1 is greater than v2
-    bool isVersionGreater( const QString& v1, const QString& v2 )
+// Compare two version strings:
+// The strings are splitted into dot separated segment
+// Each segment are compared up to the shortest number of segment of the
+// lists. Remaining segments are dropped.
+// If both segments can be intepreted as numbers the are compared as numbers, otherwise
+// They are compared lexicographically.
+// Return true if v1 is greater than v2
+  bool isVersionGreater( const QString& v1, const QString& v2 )
+  {
+    QStringList l1 = v1.split( '.' );
+    QStringList l2 = v2.split( '.' );
+    QStringList::iterator it1 = l1.begin();
+    QStringList::iterator it2 = l2.begin();
+    bool isint;
+    while ( it1 != l1.end() && it2 != l2.end() )
     {
-        QStringList l1 = v1.split('.');
-        QStringList l2 = v2.split('.');
-        QStringList::iterator it1 = l1.begin();
-        QStringList::iterator it2 = l2.begin();
-        bool isint;
-        while( it1 != l1.end() && it2 != l2.end() ) 
+      if ( *it1 != *it2 )
+      {
+        // Compare as numbers
+        int i1 = it1->toInt( &isint );
+        if ( isint )
         {
-            if ( *it1 != *it2 )
-            {
-                // Compare as numbers
-                int i1 = it1->toInt(&isint);
-                if(isint) 
-                {
-                    int i2 = it2->toInt(&isint);
-                    if( isint && i1 != i2 )
-                    {
-                        return i1 > i2;
-                    }
-                }
-                // Compare lexicographically
-                if ( !isint )
-                {
-                    return *it1 > *it2;
-                }
-            }
-            ++it1;
-            ++it2;
+          int i2 = it2->toInt( &isint );
+          if ( isint && i1 != i2 )
+          {
+            return i1 > i2;
+          }
         }
-        // We reach the end of one of the list 
-        return false;
+        // Compare lexicographically
+        if ( !isint )
+        {
+          return *it1 > *it2;
+        }
+      }
+      ++it1;
+      ++it2;
     }
-    
+    // We reach the end of one of the list
+    return false;
+  }
+
 } // namespace
 
 QgsServiceRegistry::QgsServiceRegistry()
 {
-    //TODO
+  //TODO
 }
 
 QgsServiceRegistry::~QgsServiceRegistry()
 {
-    cleanUp();
+  cleanUp();
 }
 
 QgsService* QgsServiceRegistry::getService( const QString& name, const QString& version )
 {
-    QgsService* service = nullptr;
-    QString key;
+  QgsService* service = nullptr;
+  QString key;
 
-    // Check that we have a service of that name
-    VersionTable::const_iterator v = mVersions.constFind(name);
-    if( v != mVersions.constEnd() )
-    { 
-        key = version.isEmpty() ? v->second : makeServiceKey(name, version );
-        ServiceTable::const_iterator it = mServices.constFind(key);
-        if( it != mServices.constEnd() )
-        {
-            service = it->get();
-        }
-        else
-        {
-            QgsMessageLog::logMessage( QString("Service %1 %2 not found").arg(name, version) );
-        }
+  // Check that we have a service of that name
+  VersionTable::const_iterator v = mVersions.constFind( name );
+  if ( v != mVersions.constEnd() )
+  {
+    key = version.isEmpty() ? v->second : makeServiceKey( name, version );
+    ServiceTable::const_iterator it = mServices.constFind( key );
+    if ( it != mServices.constEnd() )
+    {
+      service = it->get();
     }
     else
     {
-        QgsMessageLog::logMessage( QString("Service %1 is not registered").arg(name) );
+      QgsMessageLog::logMessage( QString( "Service %1 %2 not found" ).arg( name, version ) );
     }
-    return service;  
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QString( "Service %1 is not registered" ).arg( name ) );
+  }
+  return service;
 }
 
 void QgsServiceRegistry::registerService( QgsService* service )
 {
-    QString name    = service->name();
-    QString version = service->version();
+  QString name    = service->name();
+  QString version = service->version();
 
-    // Test if service is already registered
-    QString key = makeServiceKey( name, version );
-    if( mServices.constFind(key) != mServices.constEnd() )
-    {
-        QgsMessageLog::logMessage( QString("Error Service %1 %2 is already registered").arg(name,version) );
-        return;    
-    }
+  // Test if service is already registered
+  QString key = makeServiceKey( name, version );
+  if ( mServices.constFind( key ) != mServices.constEnd() )
+  {
+    QgsMessageLog::logMessage( QString( "Error Service %1 %2 is already registered" ).arg( name, version ) );
+    return;
+  }
 
-    QgsMessageLog::logMessage( QString( "Adding service %1 %2").arg(name,version) );
-    mServices.insert( key, std::shared_ptr<QgsService>(service) ); 
+  QgsMessageLog::logMessage( QString( "Adding service %1 %2" ).arg( name, version ) );
+  mServices.insert( key, std::shared_ptr<QgsService>( service ) );
 
-    // Check the default version
-    // and replace with te new one if it has a higher version
-    VersionTable::const_iterator v = mVersions.constFind( name );
-    if( v != mVersions.constEnd() )
+  // Check the default version
+  // and replace with te new one if it has a higher version
+  VersionTable::const_iterator v = mVersions.constFind( name );
+  if ( v != mVersions.constEnd() )
+  {
+    if ( isVersionGreater( version, v->first ) )
     {
-        if( isVersionGreater( version, v->first ) )
-        {
-            // Replace the default version key
-            mVersions.insert( name, VersionTable::mapped_type( version, key ) );
-        } 
+      // Replace the default version key
+      mVersions.insert( name, VersionTable::mapped_type( version, key ) );
     }
-    else 
-    {
-        // Insert the service as the default one
-        mVersions.insert( name, VersionTable::mapped_type( version, key ) );
-    }
+  }
+  else
+  {
+    // Insert the service as the default one
+    mVersions.insert( name, VersionTable::mapped_type( version, key ) );
+  }
 }
 
 void QgsServiceRegistry::init( const QString& nativeModulePath, const QString& pythonModulePath )
 {
-    mNativeLoader.loadModules(nativeModulePath, *this );
-    #ifdef HAVE_SERVER_PYTHON_SERVICES
-    mPythonLoader.loadModules(pythonModulePath, *this );        
-    #endif
+  mNativeLoader.loadModules( nativeModulePath, *this );
+#ifdef HAVE_SERVER_PYTHON_SERVICES
+  mPythonLoader.loadModules( pythonModulePath, *this );
+#endif
 }
 
 void QgsServiceRegistry::cleanUp()
 {
-    // Release all services
-    mServices.clear();     
+  // Release all services
+  mServices.clear();
 
-    mNativeLoader.unloadModules();
-    #ifdef HAVE_SERVER_PYTHON_SERVICES
-    mPythonLoader.unloadModules();        
-    #endif
+  mNativeLoader.unloadModules();
+#ifdef HAVE_SERVER_PYTHON_SERVICES
+  mPythonLoader.unloadModules();
+#endif
 }
 
 

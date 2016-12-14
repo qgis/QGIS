@@ -22,43 +22,43 @@
 // Service
 class SampleService: public QgsService
 {
-    public:
-        QString name()    const { return "SampleService"; }
-        QString version() const { return "1.0"; }
+  public:
+    QString name()    const { return "SampleService"; }
+    QString version() const { return "1.0"; }
 
-        bool allowMethod( QgsServerRequest::Method method ) const 
-        { 
-            return method == QgsServerRequest::GetMethod; 
-        }
+    bool allowMethod( QgsServerRequest::Method method ) const
+    {
+      return method == QgsServerRequest::GetMethod;
+    }
 
-        void executeRequest( const QgsServerRequest& request, QgsServerResponse& response )
-        {
-            QgsDebugMsg( "SampleService::executeRequest called" );
-            response.write( QString("Hello world from myService") );     
-        }
-}; 
+    void executeRequest( const QgsServerRequest& request, QgsServerResponse& response )
+    {
+      QgsDebugMsg( "SampleService::executeRequest called" );
+      response.write( QString( "Hello world from myService" ) );
+    }
+};
 
-// Module 
+// Module
 class QgsSampleModule: public QgsServiceModule
 {
-    public:
-        void registerSelf( QgsServiceRegistry& registry )
-        {
-            QgsDebugMsg( "SampleModule::registerSelf called" );
-            registry.registerService( new  SampleService() );
-        }
+  public:
+    void registerSelf( QgsServiceRegistry& registry )
+    {
+      QgsDebugMsg( "SampleModule::registerSelf called" );
+      registry.registerService( new  SampleService() );
+    }
 };
 
 // Entry points
-QGISEXTERN QgsServiceModule* QGS_ServiceModule_Init()                 
-{                                                                     
-   static QgsSampleModule module;                                         
-   return &module;                                                    
-}                                                                     
-QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule* )          
-{                                                                     
-   // Nothing to do             
-}                                                                    
+QGISEXTERN QgsServiceModule* QGS_ServiceModule_Init()
+{
+  static QgsSampleModule module;
+  return &module;
+}
+QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule* )
+{
+  // Nothing to do
+}
 
 
 

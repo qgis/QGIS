@@ -35,7 +35,6 @@
  */
 class SERVER_EXPORT QgsService
 {
-
   public:
 
     //! Constructor

@@ -28,52 +28,52 @@ class QgsServerRequest
 %TypeHeaderCode
 #include "qgsserverrequest.h"
 %End
-    public:
-         
-       enum Method {
-           HeadMethod, PutMethod, GetMethod, PostMethod, DeleteMethod 
-       };
+  public:
 
-       /**
-        * Constructor
-        *
-        * @param url the url string
-        * @param method the request method
-        */
-       QgsServerRequest( const QString& url, Method method );
-       
-       /**
-        * Constructor
-        *
-        * @param url QUrl
-        * @param method the request method (default to GetMethod)
-        */
-       QgsServerRequest( const QUrl& url, Method method = GetMethod );
+    enum Method {
+      HeadMethod, PutMethod, GetMethod, PostMethod, DeleteMethod
+    };
 
-       //! destructor
-       virtual ~QgsServerRequest();
+    /**
+     * Constructor
+     *
+     * @param url the url string
+     * @param method the request method
+     */
+    QgsServerRequest( const QString& url, Method method );
 
-       /**
-        * @return the value of the header field for that request
-        */
-       virtual QString getHeader( const QString& name ) const; 
+    /**
+     * Constructor
+     *
+     * @param url QUrl
+     * @param method the request method (default to GetMethod)
+     */
+    QgsServerRequest( const QUrl& url, Method method = GetMethod );
 
-       /**
-        * @return the request url
-        */
-       virtual QUrl url() const; 
+    //! destructor
+    virtual ~QgsServerRequest();
 
-       /**
-        * @return the request method
-        */
-       virtual Method method() const;
+    /**
+     * @return the value of the header field for that request
+     */
+    virtual QString getHeader( const QString& name ) const;
 
-       /**
-        * Return post/put data
-        * Check for QByteArray::isNull() to check if data
-        * is available.
-        */
-       virtual QByteArray data() const;
+    /**
+     * @return the request url
+     */
+    virtual QUrl url() const;
+
+    /**
+     * @return the request method
+     */
+    virtual Method method() const;
+
+    /**
+     * Return post/put data
+     * Check for QByteArray::isNull() to check if data
+     * is available.
+     */
+    virtual QByteArray data() const;
 
 };
 

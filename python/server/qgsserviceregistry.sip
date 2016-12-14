@@ -22,7 +22,7 @@
  * QgsServiceRegistry
  * Class defining the registry manager for QGIS server services
  *
- * This class provides methods for registering and retrieving 
+ * This class provides methods for registering and retrieving
  * services.
  *
  * IMPORTANT: The registry hold ownership of registered services and
@@ -41,11 +41,11 @@ class QgsServiceRegistry
     QgsServiceRegistry();
 
     //! Destructor
-   ~QgsServiceRegistry();
+    ~QgsServiceRegistry();
 
     /**
      * Retrieve a service from its name
-     * @param name the name of the service 
+     * @param name the name of the service
      * @param version the required version (optional)
      * @return QgsService
      */
@@ -53,7 +53,7 @@ class QgsServiceRegistry
 
     /**
      * Register a service by its name
-     * 
+     *
      * This method is intended to  be called by modules for registering
      * services. A module may register multiple services.
      * The registry gain ownership of services.
@@ -62,13 +62,13 @@ class QgsServiceRegistry
      */
     void registerService( QgsService* service /Transfer/ );
 
-    /** 
+    /**
      * Initialize registry, load modules and auto register services
      * @param nativeModulepath the native module path
      * @param pythonModulePath the python module path
      *
      * If pythonModulePath is not specified the environnement variables QGIS_PYTHON_SERVICE_PATH
-     * is examined. 
+     * is examined.
      */
     void init( const QString& nativeModulepath, const QString& pythonModulePath = QString() );
 

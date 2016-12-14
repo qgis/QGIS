@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QLibrary> 
+#include <QLibrary>
 #include <QDir>
 
 #include "qgsservicenativeloader.h"
@@ -32,15 +32,15 @@ typedef void unloadHook_t( QgsServiceModule* );
 
 class QgsServiceNativeModuleEntry
 {
-    public:
-        QgsServiceNativeModuleEntry( const QString& location )
-        : mLocation(location)
-        , mModule(nullptr)
-        {}
+  public:
+    QgsServiceNativeModuleEntry( const QString& location )
+        : mLocation( location )
+        , mModule( nullptr )
+    {}
 
-        QString           mLocation;
-        QgsServiceModule* mModule;
-        unloadHook_t*     mUnloadHook;
+    QString           mLocation;
+    QgsServiceModule* mModule;
+    unloadHook_t*     mUnloadHook;
 };
 
 //! Constructor
@@ -56,27 +56,27 @@ QgsServiceNativeLoader::~QgsServiceNativeLoader()
 
 void QgsServiceNativeLoader::loadModules( const QString& modulePath, QgsServiceRegistry& registrar )
 {
-    QDir moduleDir(modulePath);
-    moduleDir.setSorting( QDir::Name | QDir::IgnoreCase );
-    moduleDir.setFilter( QDir::Files );
+  QDir moduleDir( modulePath );
+  moduleDir.setSorting( QDir::Name | QDir::IgnoreCase );
+  moduleDir.setFilter( QDir::Files );
 
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
-    moduleDir.setNameFilters( QStringList( "*.dll" ) );
+  moduleDir.setNameFilters( QStringList( "*.dll" ) );
 #else
-    moduleDir.setNameFilters( QStringList( "*.so" ) );
-#endif 
+  moduleDir.setNameFilters( QStringList( "*.so" ) );
+#endif
 
-    QgsDebugMsg( QString( "Checking %1 for native services modules" ).arg( moduleDir.path() ) );
+  QgsDebugMsg( QString( "Checking %1 for native services modules" ).arg( moduleDir.path() ) );
 
-    Q_FOREACH( const QFileInfo& fi, moduleDir.entryInfoList() )
+  Q_FOREACH ( const QFileInfo& fi, moduleDir.entryInfoList() )
+  {
+    QgsServiceModule* module = loadNativeModule( fi.filePath() );
+    if ( module )
     {
-        QgsServiceModule* module = loadNativeModule( fi.filePath() );
-        if( module )
-        {
-            // Register services
-            module->registerSelf( registrar );
-        }
+      // Register services
+      module->registerSelf( registrar );
     }
+  }
 }
 
 
@@ -84,85 +84,86 @@ typedef QgsServiceModule* serviceEntryPoint_t();
 
 QgsServiceModule* QgsServiceNativeLoader::loadNativeModule( const QString& location )
 {
-    QgsServiceNativeModuleEntry* entry = findModuleEntry( location );
-    if( entry )
-    {
-        return entry->mModule;
-    }
+  QgsServiceNativeModuleEntry* entry = findModuleEntry( location );
+  if ( entry )
+  {
+    return entry->mModule;
+  }
 
-    QLibrary lib( location );
-    QgsDebugMsg( QString("Loading native module %1").arg(location) );
-    if( !lib.load() ) 
-    {
-        QgsMessageLog::logMessage( QString("Failed to load library %1: %2").arg(lib.fileName(), lib.errorString()) );
-        return nullptr;
-    }
-    // Load entry point 
-    serviceEntryPoint_t*
-    entryPointFunc = reinterpret_cast<serviceEntryPoint_t*>( cast_to_fptr( lib.resolve("QGS_ServiceModule_Init") ));
-
-    if( entryPointFunc ) 
-    {
-        QgsServiceModule* module = entryPointFunc();
-        if( module )
-        {
-            entry = new QgsServiceNativeModuleEntry( location );
-            entry->mModule     = module;
-            entry->mUnloadHook = reinterpret_cast<unloadHook_t*>( cast_to_fptr( lib.resolve("QGS_ServiceModule_Exit") ));
-
-            // Add entry
-            mModules.insert( location, ModuleTable::mapped_type(entry) );
-            return module;
-        } 
-        else
-        {
-           QgsMessageLog::logMessage( QString("No entry point for module %1").arg(lib.fileName()) );
-        }
-    } 
-    else 
-    {
-        QgsMessageLog::logMessage( QString("Error: entry point returned null for %1").arg(lib.fileName()) );
-    }
-
-    // No module found: release library 
-    lib.unload();
+  QLibrary lib( location );
+  QgsDebugMsg( QString( "Loading native module %1" ).arg( location ) );
+  if ( !lib.load() )
+  {
+    QgsMessageLog::logMessage( QString( "Failed to load library %1: %2" ).arg( lib.fileName(), lib.errorString() ) );
     return nullptr;
-}  
+  }
+  // Load entry point
+  serviceEntryPoint_t*
+  entryPointFunc = reinterpret_cast<serviceEntryPoint_t*>( cast_to_fptr( lib.resolve( "QGS_ServiceModule_Init" ) ) );
+
+  if ( entryPointFunc )
+  {
+    QgsServiceModule* module = entryPointFunc();
+    if ( module )
+    {
+      entry = new QgsServiceNativeModuleEntry( location );
+      entry->mModule     = module;
+      entry->mUnloadHook = reinterpret_cast<unloadHook_t*>( cast_to_fptr( lib.resolve( "QGS_ServiceModule_Exit" ) ) );
+
+      // Add entry
+      mModules.insert( location, ModuleTable::mapped_type( entry ) );
+      return module;
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QString( "No entry point for module %1" ).arg( lib.fileName() ) );
+    }
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QString( "Error: entry point returned null for %1" ).arg( lib.fileName() ) );
+  }
+
+  // No module found: release library
+  lib.unload();
+  return nullptr;
+}
 
 void QgsServiceNativeLoader::unloadModules()
 {
-    ModuleTable::iterator it  = mModules.begin();
-    ModuleTable::iterator end = mModules.end();
+  ModuleTable::iterator it  = mModules.begin();
+  ModuleTable::iterator end = mModules.end();
 
-    while( it!=end ) 
-    {
-        unloadModuleEntry( it->get() );
-        ++it;
-    }
+  while ( it != end )
+  {
+    unloadModuleEntry( it->get() );
+    ++it;
+  }
 
-    mModules.clear();
+  mModules.clear();
 }
 
 QgsServiceNativeModuleEntry* QgsServiceNativeLoader::findModuleEntry( const QString& location )
 {
-    QgsServiceNativeModuleEntry* entry = nullptr;
-    ModuleTable::iterator item = mModules.find(location);
-    if( item != mModules.end() )
-    {
-        entry = item->get();
-    }
-    return entry;
+  QgsServiceNativeModuleEntry* entry = nullptr;
+  ModuleTable::iterator item = mModules.find( location );
+  if ( item != mModules.end() )
+  {
+    entry = item->get();
+  }
+  return entry;
 }
-    
+
 void QgsServiceNativeLoader::unloadModuleEntry( QgsServiceNativeModuleEntry* entry )
 {
-   // Call cleanup function if it exists
-   if( entry->mUnloadHook ) {
-       entry->mUnloadHook( entry->mModule );
-   }
+  // Call cleanup function if it exists
+  if ( entry->mUnloadHook )
+  {
+    entry->mUnloadHook( entry->mModule );
+  }
 
-   QLibrary lib( entry->mLocation );
-   lib.unload();
+  QLibrary lib( entry->mLocation );
+  lib.unload();
 }
 
 

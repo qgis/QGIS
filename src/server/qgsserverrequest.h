@@ -19,7 +19,7 @@
 #ifndef QGSSERVERREQUEST_H
 #define QGSSERVERREQUEST_H
 
-#include <QUrl> 
+#include <QUrl>
 
 /**
  * \ingroup server
@@ -27,61 +27,62 @@
  * Class defining request interface passed to services QgsService::executeRequest() method
  */
 
-// Note about design: this intreface must be passed along to python and thus signatures methods must be 
+// Note about design: this intreface must be passed along to python and thus signatures methods must be
 // compatible with pyQGIS/pyQT api and rules.
 
 class SERVER_EXPORT QgsServerRequest
 {
-    public:
-         
-       enum Method {
-           HeadMethod, PutMethod, GetMethod, PostMethod, DeleteMethod 
-       };
+  public:
 
-       /**
-        * Constructor
-        *
-        * @param url the url string
-        * @param method the request method
-        */
-       QgsServerRequest( const QString& url, Method method );
-       
-       /**
-        * Constructor
-        *
-        * @param url QUrl
-        * @param method the request method
-        */
-       QgsServerRequest( const QUrl& url, Method method = GetMethod );
+    enum Method
+    {
+      HeadMethod, PutMethod, GetMethod, PostMethod, DeleteMethod
+    };
 
-       //! destructor
-       virtual ~QgsServerRequest();
+    /**
+     * Constructor
+     *
+     * @param url the url string
+     * @param method the request method
+     */
+    QgsServerRequest( const QString& url, Method method );
 
-       /**
-        * @return the value of the header field for that request
-        */
-       virtual QString getHeader( const QString& name ) const; 
+    /**
+     * Constructor
+     *
+     * @param url QUrl
+     * @param method the request method
+     */
+    QgsServerRequest( const QUrl& url, Method method = GetMethod );
 
-       /**
-        * @return  the request url
-        */
-       virtual QUrl url() const; 
+    //! destructor
+    virtual ~QgsServerRequest();
 
-       /**
-        * @return the request method
-        */
-       virtual Method method() const;
+    /**
+     * @return the value of the header field for that request
+     */
+    virtual QString getHeader( const QString& name ) const;
 
-       /**
-        * Return post/put data
-        * Check for QByteArray::isNull() to check if data
-        * is available.
-        */
-        virtual QByteArray data() const;
+    /**
+     * @return  the request url
+     */
+    virtual QUrl url() const;
 
-    protected:
-        QUrl        mUrl;
-        Method      mMethod;
+    /**
+     * @return the request method
+      */
+    virtual Method method() const;
+
+    /**
+     * Return post/put data
+     * Check for QByteArray::isNull() to check if data
+     * is available.
+     */
+    virtual QByteArray data() const;
+
+  protected:
+    QUrl   mUrl;
+    Method mMethod;
 
 };
 

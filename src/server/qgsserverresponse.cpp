@@ -36,47 +36,47 @@ QgsServerResponse::~QgsServerResponse()
 
 void QgsServerResponse::write( const QString& data )
 {
-    QIODevice* iodev = io();
-    if( iodev )
-    {
-        QTextStream stream(iodev);
-        stream << data;
-    }
-    else
-    {
-        QgsMessageLog::logMessage("Error: No IODevice in QgsServerResponse !!!");
-    }
+  QIODevice* iodev = io();
+  if ( iodev )
+  {
+    QTextStream stream( iodev );
+    stream << data;
+  }
+  else
+  {
+    QgsMessageLog::logMessage( "Error: No IODevice in QgsServerResponse !!!" );
+  }
 }
 
 
 qint64 QgsServerResponse::write( const QByteArray& byteArray )
 {
-    QIODevice* iodev = io();
-    if( iodev )
-    {
-        return iodev->write(byteArray);
-    }
-    return 0;
+  QIODevice* iodev = io();
+  if ( iodev )
+  {
+    return iodev->write( byteArray );
+  }
+  return 0;
 }
 
 
 qint64 QgsServerResponse::write( const char* data, qint64 maxsize )
 {
-     QIODevice* iodev = io();
-     if( iodev )
-     {
-        return iodev->write(data, maxsize);
-     }
-     return 0;
+  QIODevice* iodev = io();
+  if ( iodev )
+  {
+    return iodev->write( data, maxsize );
+  }
+  return 0;
 }
 
 qint64 QgsServerResponse::write( const char* data )
 {
-    QIODevice* iodev = io();
-    if( iodev )
-    { 
-        return iodev->write(data);
-    }
-    return 0;
+  QIODevice* iodev = io();
+  if ( iodev )
+  {
+    return iodev->write( data );
+  }
+  return 0;
 }
 

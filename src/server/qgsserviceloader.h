@@ -44,7 +44,7 @@ class SERVER_EXPORT QgsServiceLoader
      * Lead all medules from path
      * @param modulePath the path to look for module
      * @param registrar QgsServiceRegistry instance for registering services
-     */    
+     */
     virtual void loadModules( const QString& modulePath, QgsServiceRegistry& registrar ) = 0;
 
     /**
