@@ -75,8 +75,6 @@ class GUI_EXPORT QgsFileDownloader : public QObject
     void onReadyRead();
     /** Called when the network reply has finished */
     void onFinished();
-    /** Called on Network Error */
-    void onNetworkError( QNetworkReply::NetworkError err );
     /** Called on data ready to be processed */
     void onDownloadProgress( qint64 bytesReceived, qint64 bytesTotal );
     /** Called when a network request times out  */

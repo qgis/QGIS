@@ -78,7 +78,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         self.assertTrue(self.progress_was_called)
         self.assertFalse(self.canceled_was_called)
         self.assertTrue(self.error_was_called)
-        self.assertEqual(self.error_args[1], [u'Network error 3: Host www.doesnotexistofthatimsure.qgis not found'])
+        self.assertEqual(self.error_args[1], [u'Download failed: Host www.doesnotexistofthatimsure.qgis not found'])
         self.assertFalse(os.path.isfile(destination))
 
     def test_dowloadCanceled(self):
@@ -99,7 +99,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         self.assertFalse(self.canceled_was_called)
         self.assertTrue(self.error_was_called)
         self.assertFalse(os.path.isfile(destination))
-        self.assertEqual(self.error_args[1], [u"Network error 301: Protocol \"xyz\" is unknown"])
+        self.assertEqual(self.error_args[1], [u"Download failed: Protocol \"xyz\" is unknown"])
 
     def test_InvalidFile(self):
         self._make_download('https://github.com/qgis/QGIS/archive/master.zip', "")
@@ -117,7 +117,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         self.assertFalse(self.canceled_was_called)
         self.assertTrue(self.error_was_called)
         self.assertFalse(os.path.isfile(destination))
-        self.assertEqual(self.error_args[1], [u"Network error 301: Protocol \"\" is unknown"])
+        self.assertEqual(self.error_args[1], [u"Download failed: Protocol \"\" is unknown"])
 
     def ssl_compare(self, name, url, error):
         destination = tempfile.mktemp()
@@ -130,12 +130,12 @@ class TestQgsFileDownloader(unittest.TestCase):
         self.assertFalse(os.path.isfile(destination), msg)
         result = sorted(self.error_args[1])
         result = ';'.join(result)
-        self.assertEqual(result, error, msg + "expected:\n%s\nactual:\n%s\n" % (result, error))
+        self.assertEqual(result, error, msg + "expected:\n%s\nactual:\n%s\n" % (error, result))
 
     def test_sslExpired(self):
-        self.ssl_compare("expired", "https://expired.badssl.com/", "Network error 6: SSL handshake failed;SSL Errors: ;The certificate has expired")
-        self.ssl_compare("self-signed", "https://self-signed.badssl.com/", "Network error 6: SSL handshake failed;SSL Errors: ;The certificate is self-signed, and untrusted")
-        self.ssl_compare("untrusted-root", "https://untrusted-root.badssl.com/", "Network error 6: SSL handshake failed;No certificates could be verified;SSL Errors: ;The issuer certificate of a locally looked up certificate could not be found;The root CA certificate is not trusted for this purpose")
+        self.ssl_compare("expired", "https://expired.badssl.com/", "SSL Errors: ;The certificate has expired")
+        self.ssl_compare("self-signed", "https://self-signed.badssl.com/", "SSL Errors: ;The certificate is self-signed, and untrusted")
+        self.ssl_compare("untrusted-root", "https://untrusted-root.badssl.com/", "No certificates could be verified;SSL Errors: ;The issuer certificate of a locally looked up certificate could not be found;The root CA certificate is not trusted for this purpose")
 
     def _set_slot(self, *args, **kwargs):
         #print('_set_slot(%s) called' % args[0])
