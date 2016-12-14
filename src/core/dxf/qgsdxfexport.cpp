@@ -3787,6 +3787,8 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QgsCoordinat
       case QgsWKBTypes::CircularString:
       case QgsWKBTypes::CompoundCurve:
         tempGeom = geom->segmentize();
+        if ( !tempGeom )
+          break;
         FALLTHROUGH;
       case QgsWKBTypes::LineString:
         if ( !qgsDoubleNear( offset, 0.0 ) )
@@ -3805,6 +3807,8 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QgsCoordinat
 
       case QgsWKBTypes::MultiCurve:
         tempGeom = geom->segmentize();
+        if ( !tempGeom )
+          break;
         FALLTHROUGH;
       case QgsWKBTypes::MultiLineString:
       {
@@ -3829,6 +3833,8 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QgsCoordinat
 
       case QgsWKBTypes::CurvePolygon:
         tempGeom = geom->segmentize();
+        if ( !tempGeom )
+          break;
         FALLTHROUGH;
       case QgsWKBTypes::Polygon:
       {
@@ -3887,6 +3893,8 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QgsCoordinat
     {
       case QgsWKBTypes::CurvePolygon:
         tempGeom = tempGeom->segmentize();
+        if ( !tempGeom )
+          break;
         FALLTHROUGH;
       case QgsWKBTypes::Polygon:
         writePolygon( tempGeom->coordinateSequence().at( 0 ), layer, "SOLID", brushColor );
