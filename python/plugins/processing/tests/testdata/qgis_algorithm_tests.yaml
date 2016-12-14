@@ -1919,6 +1919,9 @@ tests:
       OUTPUT:
         name: expected/reprojected.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:variabledistancebuffer
     name: variable buffer on points
@@ -1933,6 +1936,9 @@ tests:
       OUTPUT:
         name: expected/variable_buffer_points.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:variabledistancebuffer
     name: variable buffer on points with dissolve option
@@ -1947,6 +1953,9 @@ tests:
       OUTPUT:
         name: expected/variable_buffer_points_dissolved.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:adduniquevalueindexfield
     name: add unique field based on another field
