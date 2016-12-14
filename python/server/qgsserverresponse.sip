@@ -38,7 +38,7 @@ class QgsServerResponse
 
        /** Set Header entry 
         *  Add Header entry to the response 
-        *  Note that it is usually an error to set Header after writng data
+        *  Note that it is usually an error to set Header after writing data
         */
         virtual void setHeader( const QString& key, const QString& value ) = 0;
         
@@ -49,8 +49,8 @@ class QgsServerResponse
 
         /**
          * Send error
-         * This method delegate error handling at the server level. This is different
-         * from calling setReturnCodei() along with and a specific response body.
+         * This method delegates error handling at the server level. This is different
+         * from calling setReturnCode() along with and a specific response body.
          * @param code HHTP return code value
          * @param message An informative error message
          */
@@ -65,9 +65,9 @@ class QgsServerResponse
 
        /**
         * Write chunk of data
-        * They is a convenient method that will write directly to the 
+        * This is a convenient method that will write directly to the 
         * underlying I/O device
-        * @return the number of bytes that were actually writtene
+        * @return the number of bytes that were actually written
         */ 
         virtual qint64 write(const QByteArray& byteArray );
 

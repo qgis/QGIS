@@ -28,7 +28,7 @@
  */
 
 // Note about design: this intreface must be passed along to python and thus signatures methods must be 
-// compatible with pyQGS/pyQT api and rules.
+// compatible with pyQGIS/pyQT api and rules.
 
 class SERVER_EXPORT QgsServerRequest
 {
@@ -41,7 +41,7 @@ class SERVER_EXPORT QgsServerRequest
        /**
         * Constructor
         *
-        * @param url the lurl string
+        * @param url the url string
         * @param method the request method
         */
        QgsServerRequest( const QString& url, Method method );

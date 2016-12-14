@@ -33,7 +33,7 @@ class QgsService;
 /**
  * \ingroup server
  * QgsServiceRegistry
- * Class defining the cegistry manager for QGIS server services
+ * Class defining the registry manager for QGIS server services
  *
  * This class provides methods for registering and retrieving 
  * services.
@@ -59,7 +59,7 @@ class SERVER_EXPORT QgsServiceRegistry
      * @param version the version string (optional) 
      * @return QgsService
      *
-     * If the version is not provided the higher version of the service is rerturnod 
+     * If the version is not provided the higher version of the service is returned 
      */
     QgsService* getService( const QString& name, const QString& version = QString() );
 

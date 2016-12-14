@@ -20,7 +20,7 @@
 /**
  * \ingroup server
  * QgsServiceRegistry
- * Class defining the cegistry manager for QGIS server services
+ * Class defining the registry manager for QGIS server services
  *
  * This class provides methods for registering and retrieving 
  * services.

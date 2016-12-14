@@ -445,6 +445,8 @@ IF (WIN32)
   SET (DEFAULT_PLUGIN_SUBDIR  plugins)
   SET (DEFAULT_INCLUDE_SUBDIR include)
 
+  SET (DEFAULT_SERVER_MODULE_SUBDIR server)
+
   IF (MSVC)
     SET (DEFAULT_BIN_SUBDIR bin)
     SET (DEFAULT_CGIBIN_SUBDIR bin)
@@ -518,6 +520,9 @@ ELSE (WIN32)
     SET (DEFAULT_PLUGIN_SUBDIR   ../PlugIns/qgis)
     SET (QGIS_PLUGIN_SUBDIR_REV  ../../MacOS)
     SET (DEFAULT_INCLUDE_SUBDIR  include/qgis)
+
+    SET (DEFAULT_SERVER_MODULE_SUBDIR ../PlugIns/server)
+
     # path for framework references when running from build directory
     # changed later to reference in-app resources upon install
     SET (CMAKE_INSTALL_NAME_DIR ${CMAKE_BINARY_DIR}/output/lib)
@@ -541,6 +546,8 @@ ELSE (WIN32)
     SET (DEFAULT_LIBEXEC_SUBDIR lib${LIB_SUFFIX}/qgis)
     SET (DEFAULT_PLUGIN_SUBDIR  lib${LIB_SUFFIX}/qgis/plugins)
     SET (DEFAULT_INCLUDE_SUBDIR include/qgis)
+
+    SET (DEFAULT_SERVER_MODULE_SUBDIR lib${LIB_SUFFIX}/qgis/server)
   ENDIF (APPLE)
 
 ENDIF (WIN32)
@@ -587,6 +594,8 @@ SET (QGIS_DATA_SUBDIR    ${DEFAULT_DATA_SUBDIR}    CACHE STRING "Subdirectory wh
 SET (QGIS_PLUGIN_SUBDIR  ${DEFAULT_PLUGIN_SUBDIR}  CACHE STRING "Subdirectory where plugins will be installed")
 SET (QGIS_INCLUDE_SUBDIR ${DEFAULT_INCLUDE_SUBDIR} CACHE STRING "Subdirectory where header files will be installed")
 
+SET (QGIS_SERVER_MODULE_SUBDIR  ${DEFAULT_SERVER_MODULE_SUBDIR}  CACHE STRING "Subdirectory where server modules will be installed")
+
 # mark *_SUBDIR variables as advanced as this is not something
 # that an average user would use
 MARK_AS_ADVANCED (QGIS_BIN_SUBDIR QGIS_CGIBIN_SUBDIR QGIS_LIB_SUBDIR QGIS_LIBEXEC_SUBDIR QGIS_DATA_SUBDIR QGIS_PLUGIN_SUBDIR QGIS_INCLUDE_SUBDIR)
@@ -599,6 +608,8 @@ SET (QGIS_LIBEXEC_DIR ${QGIS_LIBEXEC_SUBDIR})
 SET (QGIS_DATA_DIR    ${QGIS_DATA_SUBDIR})
 SET (QGIS_PLUGIN_DIR  ${QGIS_PLUGIN_SUBDIR})
 SET (QGIS_INCLUDE_DIR ${QGIS_INCLUDE_SUBDIR})
+
+SET (QGIS_SERVER_MODULE_DIR ${QGIS_SERVER_MODULE_SUBDIR})
 
 # set the default locations where the targets (executables, libraries) will land when compiled
 # this is to allow running qgis from the source tree without having to actually do a "make install"

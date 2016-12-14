@@ -14,6 +14,8 @@ IF (ENABLE_TESTS)
    ADD_DEFINITIONS(-DENABLE_MS_TESTS=1)
 ENDIF (ENABLE_TESTS)
 
+ADD_SUBDIRECTORY(services)
+
 ########################################################
 # Files
 
@@ -49,7 +51,6 @@ SET ( qgis_mapserv_SRCS
   qgssldconfigparser.cpp
   qgsconfigparserutils.cpp
   qgsserver.cpp
-#XXX https://github.com/qgis/QGIS-Enhancement-Proposals/issues/74
   qgsservice.cpp
   qgsservicemodule.cpp
   qgsserviceloader.cpp

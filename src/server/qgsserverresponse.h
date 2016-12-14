@@ -44,7 +44,7 @@ class SERVER_EXPORT QgsServerResponse
 
        /** Set Header entry 
         *  Add Header entry to the response 
-        *  Note that it is usually an error to set Header after writng data
+        *  Note that it is usually an error to set Header after writing data
         */
         virtual void setHeader( const QString& key, const QString& value ) = 0;
         
@@ -55,8 +55,8 @@ class SERVER_EXPORT QgsServerResponse
 
         /**
          * Send error
-         * This method delegate error handling at the server level. This is different
-         * from calling setReturnCodei() along with and a specific response body.
+         * This method delegates error handling at the server level. This is different
+         * from calling setReturnCode() along with and a specific response body.
          * @param code HHTP return code value
          * @param message An informative error message
          */
@@ -70,10 +70,10 @@ class SERVER_EXPORT QgsServerResponse
         virtual void write( const QString& data );
 
        /**
-        * Write chunk af data
+        * Write chunk of data
         * This is a convenient method that will write directly
         * to the underlying I/O device
-        * @creturn the number of bytes that were actually written
+        * @return the number of bytes that were actually written
         */
         virtual qint64 write( const QByteArray &byteArray );
 
@@ -84,7 +84,7 @@ class SERVER_EXPORT QgsServerResponse
         * to the underlying I/O device
         * @return the number of bytes written
         *
-        *  @note not available in pything bindings
+        *  @note not available in python bindings
         */
         virtual qint64 write( const char* data, qint64 maxsize);
 
@@ -95,7 +95,7 @@ class SERVER_EXPORT QgsServerResponse
         * to the underlying I/O device
         * @return the number of bytes written
         *
-        * @note not available in pything bindings
+        * @note not available in python bindings
         */
         virtual qint64 write( const char* data );
 

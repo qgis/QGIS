@@ -37,7 +37,7 @@ class QgsServerRequest
        /**
         * Constructor
         *
-        * @param url the lurl string
+        * @param url the url string
         * @param method the request method
         */
        QgsServerRequest( const QString& url, Method method );

@@ -1,9 +1,9 @@
 /***************************************************************************
-                          qgsservicemodule.h
+                           qgsmodule.h
 
-  Class defining the service module interface for QGIS server services.
-  -------------------
-  begin                : 2016-12-05
+  Define some boilerplate code for implementing modules
+  -----------------------------
+  begin                : 2016-12-13
   copyright            : (C) 2016 by David Marteau
   email                : david dot marteau at 3liz dot com
  ***************************************************************************/
@@ -17,34 +17,11 @@
  *                                                                         *
  ***************************************************************************/
 
-/**
- * \ingroup server
- * QgsServiceModule
- * Class defining the service module interface for QGIS server services
- *
- * This class acts as a service registrar for services. 
- *
- * For dynamic modules, a QgsServiceModule instance is returned from the QGS_ServiceModule_Init() entry point 
- */
-class QgsServiceModule
-{
-%TypeHeaderCode
+#include "qgis.h"
 #include "qgsservicemodule.h"
 #include "qgsserviceregistry.h"
-%End
-  public:
-
-    //! Constructor
-    QgsServiceModule();
-
-    //! Destructor
-    virtual ~QgsServiceModule() = 0;
-
-    /**
-     * Ask module to registe all provided services
-     * @param registry QgsServiceRegistry
-     */
-    virtual void registerSelf( QgsServiceRegistry& registry ) = 0;
-};
+#include "qgsservice.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
 
 
