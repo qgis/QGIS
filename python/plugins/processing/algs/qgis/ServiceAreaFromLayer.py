@@ -37,7 +37,7 @@ from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkSpeedStrategy,
                            QgsGraphBuilder,
                            QgsGraphAnalyzer
-                          )
+                           )
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -47,10 +47,10 @@ from processing.core.parameters import (ParameterVector,
                                         ParameterString,
                                         ParameterTableField,
                                         ParameterSelection
-                                       )
+                                        )
 from processing.core.outputs import (OutputNumber,
                                      OutputVector
-                                    )
+                                     )
 from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -78,13 +78,13 @@ class ServiceAreaFromLayer(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.DIRECTIONS = OrderedDict([
-                (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
-                (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
-                (self.tr('Both directions'), QgsVectorLayerDirector.DirectionForward)])
+            (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
+            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
+            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionForward)])
 
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
-                          ]
+                           ]
 
         self.name, self.i18n_name = self.trAlgorithm('Service area (from layer)')
         self.group, self.i18n_group = self.trAlgorithm('Network analysis')
@@ -148,9 +148,9 @@ class ServiceAreaFromLayer(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_VECTOR))
+            self.getParameterValue(self.INPUT_VECTOR))
         startPoints = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.START_POINTS))
+            self.getParameterValue(self.START_POINTS))
         strategy = self.getParameterValue(self.STRATEGY)
         travelCost = self.getParameterValue(self.TRAVEL_COST)
 
@@ -237,7 +237,7 @@ class ServiceAreaFromLayer(GeoAlgorithm):
             tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
             for j, v in enumerate(cost):
                 if v > travelCost and tree[j] != -1:
-                    vertexId = graph.edge(tree [j]).outVertex()
+                    vertexId = graph.edge(tree[j]).outVertex()
                     if cost[vertexId] <= travelCost:
                         vertices.append(j)
 

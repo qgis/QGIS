@@ -61,7 +61,7 @@ class SplitWithLines(GeoAlgorithm):
         fieldList = layerA.fields()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                        QgsWkbTypes.multiType(layerA.wkbType()), layerA.crs())
+                                                                     QgsWkbTypes.multiType(layerA.wkbType()), layerA.crs())
 
         spatialIndex = QgsSpatialIndex()
         splitGeoms = {}
@@ -166,7 +166,7 @@ class SplitWithLines(GeoAlgorithm):
             for aGeom in inGeoms:
                 passed = True
 
-                if QgsWkbTypes.geometryType( aGeom.wkbType() )  == QgsWkbTypes.LineGeometry:
+                if QgsWkbTypes.geometryType(aGeom.wkbType()) == QgsWkbTypes.LineGeometry:
                     numPoints = aGeom.geometry().numPoints()
 
                     if numPoints <= 2:

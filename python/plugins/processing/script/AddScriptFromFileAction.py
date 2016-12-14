@@ -53,8 +53,8 @@ class AddScriptFromFileAction(ToolboxAction):
         settings = QSettings()
         lastDir = settings.value('Processing/lastScriptsDir', '')
         filenames, selected_filter = QFileDialog.getOpenFileNames(self.toolbox,
-                                                                self.tr('Script files', 'AddScriptFromFileAction'), lastDir,
-                                                                self.tr('Script files (*.py *.PY)', 'AddScriptFromFileAction'))
+                                                                  self.tr('Script files', 'AddScriptFromFileAction'), lastDir,
+                                                                  self.tr('Script files (*.py *.PY)', 'AddScriptFromFileAction'))
         if filenames:
             validAlgs = 0
             wrongAlgs = []
@@ -73,7 +73,6 @@ class AddScriptFromFileAction(ToolboxAction):
                 algList.reloadProvider('script')
             if wrongAlgs:
                 QMessageBox.warning(self.toolbox,
-                                        self.tr('Error reading scripts', 'AddScriptFromFileAction'),
-                                        self.tr('The following files do not contain a valid script:\n-', 'AddScriptFromFileAction')
-                                        + "\n-".join(wrongAlgs))
-
+                                    self.tr('Error reading scripts', 'AddScriptFromFileAction'),
+                                    self.tr('The following files do not contain a valid script:\n-', 'AddScriptFromFileAction')
+                                    + "\n-".join(wrongAlgs))

@@ -37,7 +37,7 @@ from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkSpeedStrategy,
                            QgsGraphBuilder,
                            QgsGraphAnalyzer
-                          )
+                           )
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -49,7 +49,7 @@ from processing.core.parameters import (ParameterVector,
                                         ParameterString,
                                         ParameterTableField,
                                         ParameterSelection
-                                       )
+                                        )
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -77,13 +77,13 @@ class ShortestPathPointToLayer(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.DIRECTIONS = OrderedDict([
-                (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
-                (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
-                (self.tr('Both directions'), QgsVectorLayerDirector.DirectionForward)])
+            (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
+            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
+            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionForward)])
 
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
-                          ]
+                           ]
 
         self.name, self.i18n_name = self.trAlgorithm('Shortest path (point to layer)')
         self.group, self.i18n_group = self.trAlgorithm('Network analysis')
@@ -92,7 +92,7 @@ class ShortestPathPointToLayer(GeoAlgorithm):
                                           self.tr('Vector layer representing network'),
                                           [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterPoint(self.START_POINT,
-                                          self.tr('Start point')))
+                                         self.tr('Start point')))
         self.addParameter(ParameterVector(self.END_POINTS,
                                           self.tr('Vector layer with end points'),
                                           [dataobjects.TYPE_VECTOR_POINT]))
@@ -143,10 +143,10 @@ class ShortestPathPointToLayer(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_VECTOR))
+            self.getParameterValue(self.INPUT_VECTOR))
         startPoint = self.getParameterValue(self.START_POINT)
         endPoints = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.END_POINTS))
+            self.getParameterValue(self.END_POINTS))
         strategy = self.getParameterValue(self.STRATEGY)
 
         directionFieldName = self.getParameterValue(self.DIRECTION_FIELD)
@@ -227,7 +227,7 @@ class ShortestPathPointToLayer(GeoAlgorithm):
         route = []
 
         total = 100.0 / count
-        for i in range(1, count +1):
+        for i in range(1, count + 1):
             idxEnd = graph.findVertex(snappedPoints[i])
 
             if tree[idxEnd] == -1:

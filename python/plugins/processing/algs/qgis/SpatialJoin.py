@@ -180,7 +180,7 @@ class SpatialJoin(GeoAlgorithm):
 
                     res = False
                     for predicate in predicates:
-                        res= getattr(inGeom, predicate)(inGeomB)
+                        res = getattr(inGeom, predicate)(inGeomB)
                         if res:
                             break
 

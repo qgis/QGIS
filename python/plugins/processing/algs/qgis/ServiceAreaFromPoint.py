@@ -37,7 +37,7 @@ from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkSpeedStrategy,
                            QgsGraphBuilder,
                            QgsGraphAnalyzer
-                          )
+                           )
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -48,10 +48,10 @@ from processing.core.parameters import (ParameterVector,
                                         ParameterString,
                                         ParameterTableField,
                                         ParameterSelection
-                                       )
+                                        )
 from processing.core.outputs import (OutputNumber,
                                      OutputVector
-                                    )
+                                     )
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -79,13 +79,13 @@ class ServiceAreaFromPoint(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.DIRECTIONS = OrderedDict([
-                (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
-                (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
-                (self.tr('Both directions'), QgsVectorLayerDirector.DirectionForward)])
+            (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
+            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
+            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionForward)])
 
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
-                          ]
+                           ]
 
         self.name, self.i18n_name = self.trAlgorithm('Service area (from point)')
         self.group, self.i18n_group = self.trAlgorithm('Network analysis')
@@ -94,7 +94,7 @@ class ServiceAreaFromPoint(GeoAlgorithm):
                                           self.tr('Vector layer representing network'),
                                           [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterPoint(self.START_POINT,
-                                          self.tr('Start point')))
+                                         self.tr('Start point')))
         self.addParameter(ParameterSelection(self.STRATEGY,
                                              self.tr('Path type to calculate'),
                                              self.STRATEGIES,
@@ -148,7 +148,7 @@ class ServiceAreaFromPoint(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_VECTOR))
+            self.getParameterValue(self.INPUT_VECTOR))
         startPoint = self.getParameterValue(self.START_POINT)
         strategy = self.getParameterValue(self.STRATEGY)
         travelCost = self.getParameterValue(self.TRAVEL_COST)
@@ -205,7 +205,7 @@ class ServiceAreaFromPoint(GeoAlgorithm):
         vertices = []
         for i, v in enumerate(cost):
             if v > travelCost and tree[i] != -1:
-                vertexId = graph.edge(tree [i]).outVertex()
+                vertexId = graph.edge(tree[i]).outVertex()
                 if cost[vertexId] <= travelCost:
                     vertices.append(i)
 
