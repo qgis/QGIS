@@ -3207,11 +3207,6 @@ QgsPalLabeling::~QgsPalLabeling()
   mEngine = nullptr;
 }
 
-bool QgsPalLabeling::willUseLayer( QgsVectorLayer* layer )
-{
-  return staticWillUseLayer( layer );
-}
-
 bool QgsPalLabeling::staticWillUseLayer( const QString& layerID )
 {
   QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerID ) );
@@ -3233,66 +3228,6 @@ bool QgsPalLabeling::staticWillUseLayer( QgsVectorLayer* layer )
   return enabled;
 }
 
-
-void QgsPalLabeling::clearActiveLayers()
-{
-}
-
-void QgsPalLabeling::clearActiveLayer( const QString &layerID )
-{
-  Q_UNUSED( layerID );
-}
-
-
-int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<QString>& attrNames, QgsRenderContext& ctx )
-{
-  if ( !willUseLayer( layer ) )
-  {
-    return 0;
-  }
-
-  if ( !layer->labeling() )
-    return 0;
-
-  QgsVectorLayerLabelProvider* lp = layer->labeling()->provider( layer );
-  if ( !lp )
-    return 0;
-
-  //QgsVectorLayerLabelProvider* lp = new QgsVectorLayerLabelProvider( layer, false );
-  // need to be added before calling prepare() - uses map settings from engine
-  mEngine->addProvider( lp );
-  mLabelProviders[layer->id()] = lp; // fast lookup table by layer ID
-
-  if ( !lp->prepare( ctx, attrNames ) )
-  {
-    mEngine->removeProvider( lp );
-    return 0;
-  }
-
-  return 1; // init successful
-}
-
-int QgsPalLabeling::prepareDiagramLayer( QgsVectorLayer* layer, QSet<QString>& attrNames, QgsRenderContext& ctx )
-{
-  QgsVectorLayerDiagramProvider* dp = new QgsVectorLayerDiagramProvider( layer, false );
-  // need to be added before calling prepare() - uses map settings from engine
-  mEngine->addProvider( dp );
-  mDiagramProviders[layer->id()] = dp; // fast lookup table by layer ID
-
-  if ( !dp->prepare( ctx, attrNames ) )
-  {
-    mEngine->removeProvider( dp );
-    return 0;
-  }
-
-  return 1;
-}
-
-void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, QgsRenderContext &context )
-{
-  if ( QgsVectorLayerLabelProvider* provider = mLabelProviders.value( layerID, nullptr ) )
-    provider->registerFeature( f, context );
-}
 
 bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry& geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry* clipGeometry )
 {
@@ -3470,23 +3405,6 @@ bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext& context, const 
   return true; //should never be reached. Return true in this case to label such geometries anyway.
 }
 
-void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext &context )
-{
-  if ( QgsVectorLayerDiagramProvider* provider = mDiagramProviders.value( layerID, nullptr ) )
-    provider->registerFeature( feat, context );
-}
-
-
-void QgsPalLabeling::init( const QgsMapSettings& mapSettings )
-{
-  mEngine->setMapSettings( mapSettings );
-}
-
-void QgsPalLabeling::exit()
-{
-  delete mEngine;
-  mEngine = new QgsLabelingEngine();
-}
 
 void QgsPalLabeling::dataDefinedTextStyle( QgsPalLayerSettings& tmpLyr,
     const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues )
@@ -3901,19 +3819,8 @@ void QgsPalLabeling::dataDefinedDropShadow( QgsPalLayerSettings& tmpLyr,
 }
 
 
-
-void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
-{
-  mEngine->run( context );
-}
-
 void QgsPalLabeling::deleteTemporaryData()
 {
-}
-
-QgsLabelingResults *QgsPalLabeling::takeResults()
-{
-  return mEngine->takeResults();
 }
 
 void QgsPalLabeling::numCandidatePositions( int& candPoint, int& candLine, int& candPolygon )
@@ -4066,18 +3973,6 @@ void QgsPalLabeling::clearEngineSettings()
   QgsProject::instance()->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ) );
   QgsProject::instance()->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ) );
 }
-
-QgsPalLabeling* QgsPalLabeling::clone()
-{
-  QgsPalLabeling* lbl = new QgsPalLabeling();
-  lbl->setShowingAllLabels( isShowingAllLabels() );
-  lbl->setShowingCandidates( isShowingCandidates() );
-  lbl->setDrawLabelRectOnly( drawLabelRectOnly() );
-  lbl->setShowingPartialsLabels( isShowingPartialsLabels() );
-  lbl->setDrawingOutlineLabels( isDrawingOutlineLabels() );
-  return lbl;
-}
-
 
 QgsLabelingResults::QgsLabelingResults()
 {

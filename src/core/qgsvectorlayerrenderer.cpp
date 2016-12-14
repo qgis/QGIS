@@ -314,19 +314,8 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator& fit )
       // labeling - register feature
       if ( rendered )
       {
-        if ( mContext.labelingEngine() )
-        {
-          if ( mLabeling )
-          {
-            mContext.labelingEngine()->registerFeature( mLayerID, fet, mContext );
-          }
-          if ( mDiagrams )
-          {
-            mContext.labelingEngine()->registerDiagramFeature( mLayerID, fet, mContext );
-          }
-        }
         // new labeling engine
-        if ( mContext.labelingEngineV2() && ( mLabelProvider || mDiagramProvider ) )
+        if ( mContext.labelingEngine() && ( mLabelProvider || mDiagramProvider ) )
         {
           QScopedPointer<QgsGeometry> obstacleGeometry;
           QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, mContext );
@@ -415,20 +404,8 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator& fit )
       mCache->cacheGeometry( fet.id(), fet.geometry() );
     }
 
-    if ( mContext.labelingEngine() )
-    {
-      mContext.expressionContext().setFeature( fet );
-      if ( mLabeling )
-      {
-        mContext.labelingEngine()->registerFeature( mLayerID, fet, mContext );
-      }
-      if ( mDiagrams )
-      {
-        mContext.labelingEngine()->registerDiagramFeature( mLayerID, fet, mContext );
-      }
-    }
     // new labeling engine
-    if ( mContext.labelingEngineV2() )
+    if ( mContext.labelingEngine() )
     {
       QScopedPointer<QgsGeometry> obstacleGeometry;
       QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, mContext );
@@ -536,89 +513,68 @@ void QgsVectorLayerRenderer::stopRenderer( QgsSingleSymbolRenderer* selRenderer 
 
 void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QSet<QString>& attributeNames )
 {
-  if ( !mContext.labelingEngine() )
+  if ( QgsLabelingEngine* engine2 = mContext.labelingEngine() )
   {
-    if ( QgsLabelingEngine* engine2 = mContext.labelingEngineV2() )
+    if ( layer->labeling() )
     {
-      if ( layer->labeling() )
+      mLabelProvider = layer->labeling()->provider( layer );
+      if ( mLabelProvider )
       {
-        mLabelProvider = layer->labeling()->provider( layer );
-        if ( mLabelProvider )
+        engine2->addProvider( mLabelProvider );
+        if ( !mLabelProvider->prepare( mContext, attributeNames ) )
         {
-          engine2->addProvider( mLabelProvider );
-          if ( !mLabelProvider->prepare( mContext, attributeNames ) )
-          {
-            engine2->removeProvider( mLabelProvider );
-            mLabelProvider = nullptr; // deleted by engine
-          }
+          engine2->removeProvider( mLabelProvider );
+          mLabelProvider = nullptr; // deleted by engine
         }
       }
     }
-    return;
   }
-
-  if ( mContext.labelingEngine()->prepareLayer( layer, attributeNames, mContext ) )
-  {
-    mLabeling = true;
 
 #if 0 // TODO: limit of labels, font not found
-    QgsPalLayerSettings& palyr = mContext.labelingEngine()->layer( mLayerID );
+  QgsPalLayerSettings& palyr = mContext.labelingEngine()->layer( mLayerID );
 
-    // see if feature count limit is set for labeling
-    if ( palyr.limitNumLabels && palyr.maxNumLabels > 0 )
+  // see if feature count limit is set for labeling
+  if ( palyr.limitNumLabels && palyr.maxNumLabels > 0 )
+  {
+    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                          .setFilterRect( mContext.extent() )
+                                          .setSubsetOfAttributes( QgsAttributeList() ) );
+
+    // total number of features that may be labeled
+    QgsFeature f;
+    int nFeatsToLabel = 0;
+    while ( fit.nextFeature( f ) )
     {
-      QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                            .setFilterRect( mContext.extent() )
-                                            .setSubsetOfAttributes( QgsAttributeList() ) );
-
-      // total number of features that may be labeled
-      QgsFeature f;
-      int nFeatsToLabel = 0;
-      while ( fit.nextFeature( f ) )
-      {
-        nFeatsToLabel++;
-      }
-      palyr.mFeaturesToLabel = nFeatsToLabel;
+      nFeatsToLabel++;
     }
-
-    // notify user about any font substitution
-    if ( !palyr.mTextFontFound && !mLabelFontNotFoundNotified )
-    {
-      emit labelingFontNotFound( this, palyr.mTextFontFamily );
-      mLabelFontNotFoundNotified = true;
-    }
-#endif
+    palyr.mFeaturesToLabel = nFeatsToLabel;
   }
+
+  // notify user about any font substitution
+  if ( !palyr.mTextFontFound && !mLabelFontNotFoundNotified )
+  {
+    emit labelingFontNotFound( this, palyr.mTextFontFamily );
+    mLabelFontNotFoundNotified = true;
+  }
+#endif
 }
 
 void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QSet<QString>& attributeNames )
 {
-  if ( !mContext.labelingEngine() )
+  if ( QgsLabelingEngine* engine2 = mContext.labelingEngine() )
   {
-    if ( QgsLabelingEngine* engine2 = mContext.labelingEngineV2() )
+    if ( layer->diagramsEnabled() )
     {
-      if ( layer->diagramsEnabled() )
+      mDiagramProvider = new QgsVectorLayerDiagramProvider( layer );
+      // need to be added before calling prepare() - uses map settings from engine
+      engine2->addProvider( mDiagramProvider );
+      if ( !mDiagramProvider->prepare( mContext, attributeNames ) )
       {
-        mDiagramProvider = new QgsVectorLayerDiagramProvider( layer );
-        // need to be added before calling prepare() - uses map settings from engine
-        engine2->addProvider( mDiagramProvider );
-        if ( !mDiagramProvider->prepare( mContext, attributeNames ) )
-        {
-          engine2->removeProvider( mDiagramProvider );
-          mDiagramProvider = nullptr;  // deleted by engine
-        }
+        engine2->removeProvider( mDiagramProvider );
+        mDiagramProvider = nullptr;  // deleted by engine
       }
     }
-    return;
   }
-
-  if ( !layer->diagramsEnabled() )
-    return;
-
-  mDiagrams = true;
-
-  mContext.labelingEngine()->prepareDiagramLayer( layer, attributeNames, mContext ); // will make internal copy of diagSettings + initialize it
-
 }
 
 /*  -----------------------------------------  */

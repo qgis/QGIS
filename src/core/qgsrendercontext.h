@@ -30,7 +30,6 @@
 class QPainter;
 
 class QgsAbstractGeometry;
-class QgsLabelingEngineInterface;
 class QgsLabelingEngine;
 class QgsMapSettings;
 class QgsFeatureFilterProvider;
@@ -127,11 +126,9 @@ class CORE_EXPORT QgsRenderContext
 
     double rendererScale() const {return mRendererScale;}
 
-    QgsLabelingEngineInterface* labelingEngine() const { return mLabelingEngine; }
-
     //! Get access to new labeling engine (may be nullptr)
     //! @note not available in Python bindings
-    QgsLabelingEngine* labelingEngineV2() const { return mLabelingEngine2; }
+    QgsLabelingEngine* labelingEngine() const { return mLabelingEngine; }
 
     QColor selectionColor() const { return mSelectionColor; }
 
@@ -160,10 +157,9 @@ class CORE_EXPORT QgsRenderContext
 
     void setForceVectorOutput( bool force );
 
-    void setLabelingEngine( QgsLabelingEngineInterface* iface ) { mLabelingEngine = iface; }
     //! Assign new labeling engine
     //! @note not available in Python bindings
-    void setLabelingEngineV2( QgsLabelingEngine* engine2 ) { mLabelingEngine2 = engine2; }
+    void setLabelingEngine( QgsLabelingEngine* engine2 ) { mLabelingEngine = engine2; }
     void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
 
     /** Sets whether vector selections should be shown in the rendered map
@@ -263,11 +259,8 @@ class CORE_EXPORT QgsRenderContext
     //! Map scale
     double mRendererScale;
 
-    //! Labeling engine (can be nullptr)
-    QgsLabelingEngineInterface* mLabelingEngine;
-
     //! Newer labeling engine implementation (can be nullptr)
-    QgsLabelingEngine* mLabelingEngine2;
+    QgsLabelingEngine* mLabelingEngine;
 
     //! Color used for features that are marked as selected
     QColor mSelectionColor;

@@ -31,7 +31,6 @@ QgsRenderContext::QgsRenderContext()
     , mRasterScaleFactor( 1.0 )
     , mRendererScale( 1.0 )
     , mLabelingEngine( nullptr )
-    , mLabelingEngine2( nullptr )
     , mGeometry( nullptr )
     , mFeatureFilterProvider( nullptr )
     , mSegmentationTolerance( M_PI_2 / 90 )
@@ -51,7 +50,6 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext& rh )
     , mRasterScaleFactor( rh.mRasterScaleFactor )
     , mRendererScale( rh.mRendererScale )
     , mLabelingEngine( rh.mLabelingEngine )
-    , mLabelingEngine2( rh.mLabelingEngine2 )
     , mSelectionColor( rh.mSelectionColor )
     , mVectorSimplifyMethod( rh.mVectorSimplifyMethod )
     , mExpressionContext( rh.mExpressionContext )
@@ -74,7 +72,6 @@ QgsRenderContext&QgsRenderContext::operator=( const QgsRenderContext & rh )
   mRasterScaleFactor = rh.mRasterScaleFactor;
   mRendererScale = rh.mRendererScale;
   mLabelingEngine = rh.mLabelingEngine;
-  mLabelingEngine2 = rh.mLabelingEngine2;
   mSelectionColor = rh.mSelectionColor;
   mVectorSimplifyMethod = rh.mVectorSimplifyMethod;
   mExpressionContext = rh.mExpressionContext;

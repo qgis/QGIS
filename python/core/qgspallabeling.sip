@@ -102,44 +102,6 @@ class QgsLabelPosition
     QString providerID;
 };
 
-/** Labeling engine interface. */
-class QgsLabelingEngineInterface
-{
-%TypeHeaderCode
-#include <qgspallabeling.h>
-%End
-
-  public:
-
-    virtual ~QgsLabelingEngineInterface();
-
-    //! called when we're going to start with rendering
-    virtual void init( const QgsMapSettings& mapSettings ) = 0;
-    //! called to find out whether the layer is used for labeling
-    virtual bool willUseLayer( QgsVectorLayer* layer ) = 0;
-    //! clears all PAL layer settings for registered layers
-    virtual void clearActiveLayers() = 0;
-    //! clears data defined objects from PAL layer settings for a registered layer
-    virtual void clearActiveLayer( const QString& layerID ) = 0;
-    //! called when starting rendering of a layer
-    virtual int prepareLayer( QgsVectorLayer* layer, QSet<QString>& attrNames, QgsRenderContext& ctx ) = 0;
-    //! adds a diagram layer to the labeling engine
-    //! @note added in QGIS 2.12
-    virtual int prepareDiagramLayer( QgsVectorLayer *layer, QSet<QString>& attrNames, QgsRenderContext& ctx );
-    //! called for every feature
-    virtual void registerFeature( const QString &layerID, QgsFeature& feat, QgsRenderContext& context ) = 0;
-    //! called for every diagram feature
-    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context );
-    //! called when the map is drawn and labels should be placed
-    virtual void drawLabeling( QgsRenderContext& context ) = 0;
-    //! called when we're done with rendering
-    virtual void exit() = 0;
-
-    //! called when passing engine among map renderers
-    virtual QgsLabelingEngineInterface* clone() = 0 /Factory/;
-};
-
-
 
 class QgsPalLayerSettings
 {
@@ -674,7 +636,7 @@ class QgsLabelingResults
 };
 
 
-class QgsPalLabeling : QgsLabelingEngineInterface
+class QgsPalLabeling
 {
 %TypeHeaderCode
 #include <qgspallabeling.h>
@@ -721,48 +683,10 @@ class QgsPalLabeling : QgsLabelingEngineInterface
      */
     void setDrawLabelRectOnly( bool drawRect );
 
-    // implemented methods from labeling engine interface
-
-    //! called when we're going to start with rendering
-    virtual void init( const QgsMapSettings& mapSettings );
-    //! called to find out whether the layer is used for labeling
-    virtual bool willUseLayer( QgsVectorLayer* layer );
-
     //! called to find out whether the layer is used for labeling
     //! @note added in 2.4
     static bool staticWillUseLayer( QgsVectorLayer* layer );
     static bool staticWillUseLayer( const QString& layerID );
-
-    //! clears all PAL layer settings for registered layers
-    virtual void clearActiveLayers();
-    //! clears data defined objects from PAL layer settings for a registered layer
-    virtual void clearActiveLayer( const QString& layerID );
-    //! hook called when drawing layer before issuing select()
-    virtual int prepareLayer( QgsVectorLayer* layer, QSet<QString>& attrNames, QgsRenderContext& ctx );
-    //! adds a diagram layer to the labeling engine
-    //! @note added in QGIS 2.12
-    virtual int prepareDiagramLayer( QgsVectorLayer* layer, QSet<QString>& attrNames, QgsRenderContext& ctx );
-
-    /** Register a feature for labelling.
-     * @param layerID string identifying layer associated with label
-     * @param feat feature to label
-     * @param context render context. The QgsExpressionContext contained within the render context
-     * must have already had the feature and fields sets prior to calling this method.
-     */
-    virtual void registerFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context );
-
-    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context );
-    //! called when the map is drawn and labels should be placed
-    virtual void drawLabeling( QgsRenderContext& context );
-    //! called when we're done with rendering
-    virtual void exit();
-
-    //! Return pointer to recently computed results (in drawLabeling()) and pass the ownership of results to the caller
-    //! @note added in 2.4
-    QgsLabelingResults* takeResults() /TransferBack/;
-
-    //! called when passing engine among map renderers
-    virtual QgsPalLabeling* clone() /Factory/;
 
     //! @note not available in python bindings
     // void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );

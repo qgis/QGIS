@@ -246,7 +246,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
 
     job.context = QgsRenderContext::fromMapSettings( mSettings );
     job.context.setPainter( painter );
-    job.context.setLabelingEngineV2( labelingEngine2 );
+    job.context.setLabelingEngine( labelingEngine2 );
     job.context.setCoordinateTransform( ct );
     job.context.setExtent( r1 );
 

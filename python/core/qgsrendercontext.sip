@@ -85,11 +85,9 @@ class QgsRenderContext
 
     double rendererScale() const;
 
-    QgsLabelingEngineInterface* labelingEngine();
-
     //! Get access to new labeling engine (may be nullptr)
     //! @note not available in Python bindings
-    // QgsLabelingEngine* labelingEngineV2() const { return mLabelingEngine2; }
+    // QgsLabelingEngine* labelingEngine() const;
 
     QColor selectionColor() const;
 
@@ -119,10 +117,9 @@ class QgsRenderContext
 
     void setForceVectorOutput( bool force );
 
-    void setLabelingEngine( QgsLabelingEngineInterface* iface );
     //! Assign new labeling engine
     //! @note not available in Python bindings
-    // void setLabelingEngineV2( QgsLabelingEngine* engine2 ) { mLabelingEngine2 = engine2; }
+    // void setLabelingEngine( QgsLabelingEngine* engine2 );
     void setSelectionColor( const QColor& color );
 
     /** Sets whether vector selections should be shown in the rendered map
