@@ -40,6 +40,11 @@ QgsServerRequest::~QgsServerRequest()
     
 }
 
+QString QgsServerRequest::getHeader( const QString& name ) const
+{
+    return "";
+}
+
 QUrl QgsServerRequest::url() const 
 {
     return mUrl;

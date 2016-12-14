@@ -58,6 +58,11 @@ class SERVER_EXPORT QgsServerRequest
        virtual ~QgsServerRequest();
 
        /**
+        * @return the value of the header field for that request
+        */
+       virtual QString getHeader( const QString& name ) const; 
+
+       /**
         * @return  the request url
         */
        virtual QUrl url() const; 
