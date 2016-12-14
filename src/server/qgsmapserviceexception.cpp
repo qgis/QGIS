@@ -17,7 +17,9 @@
 
 #include "qgsmapserviceexception.h"
 
-QgsMapServiceException::QgsMapServiceException( const QString& code, const QString& message ): mCode( code ), mMessage( message )
+QgsMapServiceException::QgsMapServiceException( const QString& code, const QString& message ):
+    QgsException( message ),
+    mCode( code ), mMessage( message )
 {
 
 }

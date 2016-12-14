@@ -37,9 +37,11 @@ class CORE_EXPORT QgsMessageLog : public QObject
 
     enum MessageLevel
     {
+      ALL = 0,
       INFO = 0,
       WARNING = 1,
-      CRITICAL = 2
+      CRITICAL = 2,
+      NONE = 3
     };
 
     //! add a message to the instance (and create it if necessary)
