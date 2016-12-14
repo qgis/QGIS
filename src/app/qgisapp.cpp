@@ -136,6 +136,7 @@
 #include "qgsdockwidget.h"
 #include "qgsdxfexport.h"
 #include "qgsdxfexportdialog.h"
+#include "qgsdwgimportdialog.h"
 #include "qgsdecorationcopyright.h"
 #include "qgsdecorationnortharrow.h"
 #include "qgsdecorationscalebar.h"
@@ -1574,6 +1575,7 @@ void QgisApp::createActions()
   connect( mActionShowComposerManager, SIGNAL( triggered() ), this, SLOT( showComposerManager() ) );
   connect( mActionExit, SIGNAL( triggered() ), this, SLOT( fileExit() ) );
   connect( mActionDxfExport, SIGNAL( triggered() ), this, SLOT( dxfExport() ) );
+  connect( mActionDwgImport, SIGNAL( triggered() ), this, SLOT( dwgImport() ) );
 
   // Edit Menu Items
 
@@ -5235,6 +5237,12 @@ void QgisApp::dxfExport()
     }
     QApplication::restoreOverrideCursor();
   }
+}
+
+void QgisApp::dwgImport()
+{
+  QgsDwgImportDialog d;
+  d.exec();
 }
 
 void QgisApp::openLayerDefinition( const QString & path )
