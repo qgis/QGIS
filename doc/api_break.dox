@@ -245,7 +245,8 @@ Use QgsComposerAttributeTableV2 instead.
 so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).
 - QgsHttpTransaction. This class was outdated and code should be ported to native Qt or Python implementations.
-- QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.
+- QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngine.
+- QgsLabelingEngineInterface. Replaced by QgsLabelingEngine.
 - QgsLegendInterface was removed. It was replaced by layer tree API (QgsLayerTreeNode class and others).
   Methods that deal with custom actions in main window's layer tree context menu were moved to QgisInterface:
   - addLegendLayerAction() moved to QgisInterface::addCustomActionForLayerType()
@@ -1114,7 +1115,7 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 - theMinScale and theMaxScale parameters in setMinimumScale and setMaximumScale were renamed to scale
 - The layerCrsChanged() signal was renamed to crsChanged()
 - theError parameter in appendError() and setError() were renamed to 'error'.
-- drawLabels() method was removed. It used old deprecated labeling. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.
+- drawLabels() method was removed. It used old deprecated labeling. Replaced by labeling based on PAL library, see QgsLabelingEngine.
 - readLayerXML() was renamed to readLayerXml()
 - writeLayerXML() was renamed to writeLayerXml()
 
@@ -1146,7 +1147,7 @@ QgsMapRendererJob        {#qgis_api_break_3_0_QgsMapRendererJob}
 
 - reprojectToLayerExtent() now takes a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should
 be used instead of a null pointer if no transformation is required.
-- prepareJobs() and drawLabeling() (neither available in PyQGIS) do not take QgsPalLabeling parameter anymore. All drawing of labels is done by QgsLabelingEngineV2.
+- prepareJobs() and drawLabeling() (neither available in PyQGIS) do not take QgsPalLabeling parameter anymore. All drawing of labels is done by QgsLabelingEngine.
 - drawOldLabeling(), drawNewLabeling() were removed. The method drawLabeling() should be used instead.
 
 
@@ -1249,6 +1250,7 @@ and for forcing certain items to always sort on top.
 QgsPalLabeling        {#qgis_api_break_3_0_QgsPalLabeling}
 --------------
 
+- all methods implemented from QgsLabelingEngineInterface have been removed: init(), willUseLayer(), clearActiveLayers(), clearActiveLayer(), prepareLayer(), prepareDiagramLayer(), registerFeature(), registerDiagramFeature(), drawLabeling(), exit(), clone(). Labeling is now driven by QgsLabelingEngine.
 - init(QgsMapRenderer*) has been removed. Use init(const QgsMapSettings&) instead.
 - prepareGeometry and geometryRequiresPreparation now take geometry references, not pointers.
 - layer() was removed. If direct access to QgsPalLayerSettings is necessary, use QgsPalLayerSettings::fromLayer()
@@ -1592,7 +1594,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - addTopologicalPoints() now takes a geometry reference, not a pointer.
 - commitErrors() now returns an object, rather than a reference. This has no effect on PyQGIS code.
 - subsetString() was made const. This has no effect on PyQGIS code, but c++ code implementing derived layer classes will need to update the signature of this method to match.
-- label(), enableLabels(), hasLabelsEnabled(), drawLabels() have been removed. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.
+- label(), enableLabels(), hasLabelsEnabled(), drawLabels() have been removed. Replaced by labeling based on PAL library, see QgsLabelingEngine.
 - Signal layerDeleted() has been removed. Replaced by Qt signal destroyed().
 - Deprecated editor widget methods and enums and structs: struct RangeData, enum FeatureFormSuppress, enum EditType, addAttributeEditorWidget(), editorWidgetV2(), editorWidgetConfig(), attributeEditorElements(), editType(), setEditType(), editorLayout(), setEditorLayout, setEditorWidgetV2Config(), setCheckedState(), editForm(), setEditForm(), featureFormSuppress(), setFeatureFormSuppress(), editFormInit(), setEditFormInit(), valueMap(), range(), dateFormat(), fieldEditable(), labelOnTop(), setFieldEditable() and setLabelOnTop().  Use editFormConfig()
 - select() replaced by selectByRect()
