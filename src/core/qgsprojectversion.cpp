@@ -100,3 +100,8 @@ QString QgsProjectVersion::text()
     return QStringLiteral( "%1.%2.%3-%4" ).arg( mMajor ).arg( mMinor ).arg( mSub ).arg( mName );
   }
 }
+
+bool QgsProjectVersion::isNull() const
+{
+  return mMajor == 0 && mMinor == 0 && mSub == 0;
+}

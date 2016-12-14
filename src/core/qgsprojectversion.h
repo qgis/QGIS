@@ -32,6 +32,9 @@ class CORE_EXPORT QgsProjectVersion
 
   public:
 
+    /**
+     * Creates a new NULL version
+     */
     QgsProjectVersion()
         : mMajor( 0 )
         , mMinor( 0 )
@@ -44,6 +47,11 @@ class CORE_EXPORT QgsProjectVersion
     int minorVersion() { return mMinor;}
     int subVersion()   { return mSub;}
     QString text();
+
+    /**
+     * Returns true if this is a NULL project version.
+     */
+    bool isNull() const;
 
     /** Boolean equal operator
      */
