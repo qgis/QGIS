@@ -414,7 +414,7 @@ class TestPALConfig(TestQgsPalLabeling):
         lyr = self.defaultLayerSettings()
         lyr.writeToLayer(self.layer)
         msg = '\nLayer labeling not activated, as reported by labelingEngine'
-        self.assertTrue(self._Pal.willUseLayer(self.layer), msg)
+        self.assertTrue(QgsPalLabeling.staticWillUseLayer(self.layer), msg)
 
     def test_write_read_settings(self):
         # Verify written PAL settings are same when read from layer
