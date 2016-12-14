@@ -1087,6 +1087,7 @@ GEOSGeometry* QgsGeos::asGeos( const QgsAbstractGeometryV2* geom, double precisi
 
         case QgsWKBTypes::UnknownGeometry:
         case QgsWKBTypes::NullGeometry:
+        default:
           return nullptr;
           break;
       }

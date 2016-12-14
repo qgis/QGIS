@@ -922,6 +922,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void fileSaveAs();
     //! Export project in dxf format
     void dxfExport();
+    //! Import layers in dwg format
+    void dwgImport();
     //! Open the project file corresponding to the
     //! text)= of the given action.
     void openProject( QAction *action );
