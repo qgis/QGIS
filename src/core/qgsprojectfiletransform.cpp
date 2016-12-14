@@ -35,7 +35,7 @@
 typedef QgsProjectVersion PFV;
 
 
-QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] =
+QgsProjectFileTransform::TransformItem QgsProjectFileTransform::sTransformers[] =
 {
   {PFV( 0, 8, 0 ), PFV( 0, 8, 1 ), &QgsProjectFileTransform::transformNull},
   {PFV( 0, 8, 1 ), PFV( 0, 9, 0 ), &QgsProjectFileTransform::transform081to090},
@@ -60,7 +60,10 @@ QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] =
   {PFV( 2, 0, 0 ), PFV( 2, 1, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 2, 1, 0 ), PFV( 2, 2, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 2, 2, 0 ), PFV( 2, 3, 0 ), &QgsProjectFileTransform::transform2200to2300},
-  {PFV( 2, 18, 0 ), PFV( 2, 99, 0 ), &QgsProjectFileTransform::transform2180to2990},
+  // A transformer with a NULL from version means that it should be run when upgrading
+  // from any version and will take care that it's not going to cause trouble if it's
+  // run several times on the same file.
+  {PFV(), PFV( 2, 99, 0 ), &QgsProjectFileTransform::transform2990},
 };
 
 bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion& newVersion )
@@ -68,15 +71,16 @@ bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion& newVersio
   Q_UNUSED( newVersion );
   bool returnValue = false;
 
-  if ( ! mDom.isNull() )
+  if ( !mDom.isNull() )
   {
-    for ( std::size_t i = 0; i < sizeof( transformers ) / sizeof( transform ); i++ )
+    for ( std::size_t i = 0; i < sizeof( sTransformers ) / sizeof( TransformItem ); i++ )
     {
-      if ( transformers[i].from == mCurrentVersion )
+      const TransformItem& transformer = sTransformers[i];
+      if ( transformer.from == mCurrentVersion || transformer.from.isNull() )
       {
         // Run the transformer, and update the revision in every case
-        ( this->*( transformers[i].transformFunc ) )();
-        mCurrentVersion = transformers[i].to;
+        ( this->*( transformer.transformFunc ) )();
+        mCurrentVersion = transformer.to;
         returnValue = true;
       }
     }
@@ -614,7 +618,7 @@ void QgsProjectFileTransform::transform2200to2300()
   }
 }
 
-void QgsProjectFileTransform::transform2180to2990()
+void QgsProjectFileTransform::transform2990()
 {
   QDomNodeList mapLayers = mDom.elementsByTagName( QStringLiteral( "maplayer" ) );
 
