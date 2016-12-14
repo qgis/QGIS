@@ -1938,7 +1938,7 @@ tests:
         type: vector
         compare:
           geometry:
-            precision: 7
+            precision: 5
 
   - algorithm: qgis:variabledistancebuffer
     name: variable buffer on points with dissolve option
@@ -1955,7 +1955,7 @@ tests:
         type: vector
         compare:
           geometry:
-            precision: 7
+            precision: 5
 
   - algorithm: qgis:adduniquevalueindexfield
     name: add unique field based on another field
