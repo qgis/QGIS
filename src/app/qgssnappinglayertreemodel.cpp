@@ -321,7 +321,10 @@ bool QgsSnappingLayerTreeModel::nodeShown( QgsLayerTreeNode* node ) const
   {
     QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
     if ( layer && layer->type() == QgsMapLayer::VectorLayer )
-      return true;
+    {
+      QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
+      return vl && vl->hasGeometryType();
+    }
   }
   return false;
 }
