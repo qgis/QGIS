@@ -1907,6 +1907,86 @@ tests:
           geometry:
             precision: 7
 
+
+  - algorithm: qgis:reprojectlayer
+    name: reproject vector layer
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      TARGET_CRS: EPSG:3857
+    results:
+      OUTPUT:
+        name: expected/reprojected.gml
+        type: vector
+
+  - algorithm: qgis:variabledistancebuffer
+    name: variable buffer on points
+    params:
+      DISSOLVE: false
+      FIELD: buffer
+      INPUT:
+        name: custom/variable_buffer.gml
+        type: vector
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/variable_buffer_points.gml
+        type: vector
+
+  - algorithm: qgis:variabledistancebuffer
+    name: variable buffer on points with dissolve option
+    params:
+      DISSOLVE: true
+      FIELD: buffer
+      INPUT:
+        name: custom/variable_buffer.gml
+        type: vector
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/variable_buffer_points_dissolved.gml
+        type: vector
+
+  - algorithm: qgis:adduniquevalueindexfield
+    name: add unique field based on another field
+    params:
+      FIELD: id2
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/add_unique_field.gml
+        type: vector
+
+  - algorithm: qgis:linestopolygons
+    name: convert lines to polygon
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_to_polygon.gml
+        type: vector
+
+  - algorithm: qgis:joinattributestable
+    name: join the attribute table by common field
+    params:
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+      INPUT_LAYER_2:
+        name: table.dbf
+        type: table
+      TABLE_FIELD: id
+      TABLE_FIELD_2: ID
+    results:
+      OUTPUT_LAYER:
+        name: expected/join_attribute_table.gml
+        type: vector
+
   # These tests dissabled because algs require access to iface which
   # is not available in the test suite.
   #- algorithm: qgis:shortestpathpointtopoint
