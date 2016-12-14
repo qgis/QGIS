@@ -29,7 +29,6 @@
 #include <memory>
 
 class QgsService;
-class QgsServiceEntry;
 
 /**
  * \ingroup server
@@ -65,18 +64,16 @@ class SERVER_EXPORT QgsServiceRegistry
     QgsService* getService( const QString& name, const QString& version = QString() );
 
     /**
-     * Register a service by its name
+     * Register a service by its name and version
      * 
      * This method is intended to  be called by modules for registering
      * services. A module may register multiple services.
      *
      * The registry gain ownership of services and will call 'delete' on cleanup
      *
-     * @param name the name of the service
      * @param service a QgsServerResponse to be registered
-     * @param version the version string for the service  (required)
      */
-    void registerService( const QString& name, const QString& version,  QgsService* service );
+    void registerService( QgsService* service );
 
     /** 
      * Initialize registry, load modules and auto register services
@@ -94,7 +91,7 @@ class SERVER_EXPORT QgsServiceRegistry
     void cleanUp();
 
   private:
-    typedef QHash<QString, std::shared_ptr<QgsServiceEntry> > ServiceTable;
+    typedef QHash<QString, std::shared_ptr<QgsService> > ServiceTable;
     typedef QHash<QString, QPair<QString, QString> > VersionTable;
 
     QgsServiceNativeLoader mNativeLoader;

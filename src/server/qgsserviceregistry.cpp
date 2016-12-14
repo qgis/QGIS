@@ -73,28 +73,6 @@ namespace {
     
 } // namespace
 
-class QgsServiceEntry
-{
-    public:
-       ~QgsServiceEntry() 
-        {
-            // We have the ownership by design
-            // XXX Take care of /Transfer/ decorator for registerService in sip 
-            QgsDebugMsg( QString("Deleting service %1 %2").arg(mName, mVersion) );
-            delete mService;
-        }
-
-       QgsServiceEntry( const QString& name, QgsService* service, const QString& version )
-       : mName(name)
-       , mService(service)
-       , mVersion(version)
-       {}
-
-       QString     mName;
-       QgsService* mService;
-       QString     mVersion;    
-};
-
 QgsServiceRegistry::QgsServiceRegistry()
 {
     //TODO
@@ -115,10 +93,10 @@ QgsService* QgsServiceRegistry::getService( const QString& name, const QString& 
     if( v != mVersions.constEnd() )
     { 
         key = version.isEmpty() ? v->second : makeServiceKey(name, version );
-        ServiceTable::iterator it = mServices.find(key);
-        if( it != mServices.end() )
+        ServiceTable::const_iterator it = mServices.constFind(key);
+        if( it != mServices.constEnd() )
         {
-            service = (*it)->mService;
+            service = it->get();
         }
         else
         {
@@ -132,8 +110,11 @@ QgsService* QgsServiceRegistry::getService( const QString& name, const QString& 
     return service;  
 }
 
-void QgsServiceRegistry::registerService( const QString& name,  const QString& version, QgsService* service )
+void QgsServiceRegistry::registerService( QgsService* service )
 {
+    QString name    = service->name();
+    QString version = service->version();
+
     // Test if service is already registered
     QString key = makeServiceKey( name, version );
     if( mServices.constFind(key) != mServices.constEnd() )
@@ -143,7 +124,7 @@ void QgsServiceRegistry::registerService( const QString& name,  const QString& v
     }
 
     QgsMessageLog::logMessage( QString( "Adding service %1 %2").arg(name,version) );
-    mServices.insert( key, std::make_shared<QgsServiceEntry>( name, service, version ) ); 
+    mServices.insert( key, std::shared_ptr<QgsService>(service) ); 
 
     // Check the default version
     // and replace with te new one if it has a higher version

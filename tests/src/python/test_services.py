@@ -31,9 +31,17 @@ class Response(QgsServerResponse):
 
 class MyService(QgsService):
     
-    def __init__(self, response):
+    def __init__(self, name, version, response):
         QgsService.__init__(self)
         self._response = response
+        self._name     = name
+        self._version  = version
+
+    def name(self):
+        return self._name
+
+    def version(self):
+        return self._version
 
     def executeRequest( self, request, response ):
         
@@ -51,9 +59,9 @@ class TestServices(unittest.TestCase):
 
         reg = QgsServiceRegistry()
 
-        myserv = MyService("Hello world")
+        myserv = MyService("STUFF", "1.0", "Hello world")
 
-        reg.registerService("STUFF", "1.0", myserv )
+        reg.registerService( myserv )
 
         # Retrieve service
         request  = QgsServerRequest("http://DoStufff", QgsServerRequest.GetMethod)
@@ -71,16 +79,15 @@ class TestServices(unittest.TestCase):
     def test_version_registration(self):
 
         reg     = QgsServiceRegistry()
-        myserv1 = MyService("1.0")
-        myserv2 = MyService("1.1")
+        myserv1 = MyService("STUFF", "1.0", "Hello")
+        myserv2 = MyService("STUFF", "1.1", "Hello")
    
-        reg.registerService("STUFF", myserv1._response, myserv1 )
-        reg.registerService("STUFF", myserv2._response, myserv2)
-
+        reg.registerService( myserv1 )
+        reg.registerService( myserv2)
 
         service = reg.getService("STUFF")
         self.assertIsNotNone(service)
-        self.assertEquals(service._response, myserv2._response)
+        self.assertEquals(service.version(), "1.1")
 
         service = reg.getService("STUFF", "2.0")
         self.assertIsNone(service)

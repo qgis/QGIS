@@ -43,6 +43,16 @@ class QgsService
     virtual ~QgsService();
 
     /**
+     * @return the name of the service
+     */
+    virtual QString name() const = 0;
+
+    /**
+     * @return the version of the service
+     */
+    virtual QString version() const = 0;
+
+    /**
      * Return true if the given method is supported for that
      * service.
      * @param method QGSMethodType the 

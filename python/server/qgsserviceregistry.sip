@@ -23,8 +23,10 @@
  * Class defining the cegistry manager for QGIS server services
  *
  * This class provides methods for registering and retrieving 
- * services. Note that the regstiry does not hord ownership of
- * registered service but vill call the 'release' method on cleanup)
+ * services.
+ *
+ * IMPORTANT: The registry hold ownership of registered services and
+ * will call 'delete'  on cleanup
  *
  */
 class QgsServiceRegistry
@@ -32,8 +34,6 @@ class QgsServiceRegistry
 %TypeHeaderCode
 #include "qgsserviceregistry.h"
 #include "qgsservice.h"
-#include "qgsserverrequest.h"
-#include "qgsserverresponse.h"
 %End
   public:
 
@@ -58,11 +58,9 @@ class QgsServiceRegistry
      * services. A module may register multiple services.
      * The registry gain ownership of services.
      *
-     * @param name the name of the service
      * @param service a QgsServerResponse to be registered
-     * @param version the service version 
      */
-    void registerService( const QString& name,  const QString& version, QgsService* service /Transfer/ );
+    void registerService( QgsService* service /Transfer/ );
 
     /** 
      * Initialize registry, load modules and auto register services
