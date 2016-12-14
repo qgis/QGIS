@@ -60,7 +60,6 @@ void QgsFileDownloader::startDownload()
   mReply = nam->get( request );
 
   connect( mReply, SIGNAL( readyRead() ), this, SLOT( onReadyRead() ) );
-  connect( mReply, SIGNAL( error( QNetworkReply::NetworkError ) ), this, SLOT( onNetworkError( QNetworkReply::NetworkError ) ) );
   connect( mReply, SIGNAL( finished() ), this, SLOT( onFinished() ) );
   connect( mReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( onDownloadProgress( qint64, qint64 ) ) );
   connect( nam, SIGNAL( requestTimedOut( QNetworkReply* ) ), this, SLOT( onRequestTimedOut() ) );
@@ -161,7 +160,7 @@ void QgsFileDownloader::onFinished()
     if ( mReply->error() )
     {
       mFile.remove();
-      error( tr( "Download failed: %1." ).arg( mReply->errorString() ) );
+      error( tr( "Download failed: %1" ).arg( mReply->errorString() ) );
     }
     else if ( !redirectionTarget.isNull() )
     {
@@ -174,18 +173,15 @@ void QgsFileDownloader::onFinished()
       startDownload();
       return;
     }
-    // All done
-    emit downloadCompleted();
+    else
+    {
+      emit downloadCompleted();
+    }
   }
   emit downloadExited();
   this->deleteLater();
 }
 
-void QgsFileDownloader::onNetworkError( QNetworkReply::NetworkError err )
-{
-  Q_ASSERT( mReply );
-  error( QString( "Network error %1: %2" ).arg( err ).arg( mReply->errorString() ) );
-}
 
 void QgsFileDownloader::onDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
