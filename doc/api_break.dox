@@ -681,8 +681,7 @@ QgsCptCitySelectionItem        {#qgis_api_break_3_0_QgsCptCitySelectionItem}
 QgsCRSCache        {#qgis_api_break_3_0_QgsCRSCache}
 -----------
 
-- QgsCRSCache has been renamed to QgsCrsCache
-- updateCRSCache() has been renamed to updateCrsCache
+- QgsCRSCache has been dropped.  QgsCoordinateReferenceSystem now has an internal cache
 
 
 QgsCursors        {#qgis_api_break_3_0_QgsCursors}
