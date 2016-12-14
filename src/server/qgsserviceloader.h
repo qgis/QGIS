@@ -33,7 +33,8 @@ class SERVER_EXPORT QgsServiceLoader
 {
   public:
 
-    //! Constructor (required by SIP bindings ???)
+    //! Constructor
+    // XXX if not defined then dynamic linker complains about missing symbol
     QgsServiceLoader();
 
     //! Destructor

@@ -53,7 +53,7 @@ class TestServices(unittest.TestCase):
 
         myserv = MyService("Hello world")
 
-        reg.registerService("STUFF", myserv, "1.0" )
+        reg.registerService("STUFF", "1.0", myserv )
 
         # Retrieve service
         request  = QgsServerRequest("http://DoStufff", QgsServerRequest.GetMethod)
@@ -74,8 +74,8 @@ class TestServices(unittest.TestCase):
         myserv1 = MyService("1.0")
         myserv2 = MyService("1.1")
    
-        reg.registerService("STUFF", myserv1, myserv1._response)
-        reg.registerService("STUFF", myserv2, myserv2._response)
+        reg.registerService("STUFF", myserv1._response, myserv1 )
+        reg.registerService("STUFF", myserv2._response, myserv2)
 
 
         service = reg.getService("STUFF")

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsserverresponse.h
+                          qgsserverresponse.sip
 
   Define response class for services
   -------------------
@@ -21,12 +21,8 @@
  * \ingroup server
  * QgsServerResponse
  * Class defining response interface passed to services QgsService::executeRequest() method
- *
- *  Note:
- *  This class is intended to be used from python code: method signatures and return types should be 
- *  compatible with pyQGIS/pyQT types and rules.
- *
  */
+
 class QgsServerResponse
 {
 %TypeHeaderCode
@@ -40,33 +36,40 @@ class QgsServerResponse
         //! destructor
         virtual ~QgsServerResponse();
 
-       /** Set header entry 
-        *  Add header entry to the response 
-        *  Note that it is usually an error to set hedaer after writng data
+       /** Set Header entry 
+        *  Add Header entry to the response 
+        *  Note that it is usually an error to set Header after writng data
         */
         virtual void setHeader( const QString& key, const QString& value ) = 0;
         
-       /** Set the http return code 
+       /** Set the http return code
+        * @param code HTTP return code value
         */
         virtual void setReturnCode( int code ) = 0;
 
         /**
-         * Send error 
+         * Send error
+         * This method delegate error handling at the server level. This is different
+         * from calling setReturnCodei() along with and a specific response body.
+         * @param code HHTP return code value
+         * @param message An informative error message
          */
         virtual void sendError( int code,  const QString& message ) = 0;
 
         /**
-         * Write string 
+         * Write string
+         * This is a convenient method that will write directly
+         * to the underlying I/O device
          */
         virtual void write(const QString& data );
 
        /**
-        * Write chunk af data
-        * They are convenience method that will write directly to the 
+        * Write chunk of data
+        * They is a convenient method that will write directly to the 
         * underlying I/O device
-        */
+        * @return the number of bytes that were actually writtene
+        */ 
         virtual qint64 write(const QByteArray& byteArray );
-
 
         /**
          * Return the underlying QIODevice

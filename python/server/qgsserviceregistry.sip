@@ -62,7 +62,7 @@ class QgsServiceRegistry
      * @param service a QgsServerResponse to be registered
      * @param version the service version 
      */
-    void registerService( const QString& name,  QgsService* service /Transfer/, const QString& version );
+    void registerService( const QString& name,  const QString& version, QgsService* service /Transfer/ );
 
     /** 
      * Initialize registry, load modules and auto register services

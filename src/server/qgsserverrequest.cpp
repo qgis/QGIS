@@ -40,7 +40,7 @@ QgsServerRequest::~QgsServerRequest()
     
 }
 
-const QUrl& QgsServerRequest::url() const 
+QUrl QgsServerRequest::url() const 
 {
     return mUrl;
 }
@@ -50,9 +50,9 @@ QgsServerRequest::Method QgsServerRequest::method() const
     return mMethod;
 }
 
-const QByteArray* QgsServerRequest::data() const
+QByteArray QgsServerRequest::data() const
 {
-    return nullptr;
+    return QByteArray();
 }
 
 

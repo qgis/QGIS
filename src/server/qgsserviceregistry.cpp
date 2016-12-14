@@ -25,7 +25,7 @@
 namespace {
 
     // Build a key entry from name and version
-    QString make_service_key( const QString& name, const QString& version  )
+    QString makeServiceKey( const QString& name, const QString& version  )
     {
         return QString( "%1_%2" ).arg(name,version);
     }
@@ -37,7 +37,7 @@ namespace {
     // If both segments can be intepreted as numbers the are compared as numbers, otherwise 
     // They are compared lexicographically.
     // Return true if v1 is greater than v2
-    bool is_version_greater( const QString& v1, const QString& v2 )
+    bool isVersionGreater( const QString& v1, const QString& v2 )
     {
         QStringList l1 = v1.split('.');
         QStringList l2 = v2.split('.');
@@ -111,10 +111,10 @@ QgsService* QgsServiceRegistry::getService( const QString& name, const QString& 
     QString key;
 
     // Check that we have a service of that name
-    VersionTable::iterator v = mVersions.find(name);
-    if( v != mVersions.end() )
+    VersionTable::const_iterator v = mVersions.constFind(name);
+    if( v != mVersions.constEnd() )
     { 
-        key = version.isEmpty() ? v->second : make_service_key(name, version );
+        key = version.isEmpty() ? v->second : makeServiceKey(name, version );
         ServiceTable::iterator it = mServices.find(key);
         if( it != mServices.end() )
         {
@@ -132,11 +132,11 @@ QgsService* QgsServiceRegistry::getService( const QString& name, const QString& 
     return service;  
 }
 
-void QgsServiceRegistry::registerService( const QString& name,  QgsService* service, const QString& version )
+void QgsServiceRegistry::registerService( const QString& name,  const QString& version, QgsService* service )
 {
     // Test if service is already registered
-    QString key = make_service_key( name, version );
-    if( mServices.find(key) != mServices.end() )
+    QString key = makeServiceKey( name, version );
+    if( mServices.constFind(key) != mServices.constEnd() )
     {
         QgsMessageLog::logMessage( QString("Error Service %1 %2 is already registered").arg(name,version) );
         return;    
@@ -147,10 +147,10 @@ void QgsServiceRegistry::registerService( const QString& name,  QgsService* serv
 
     // Check the default version
     // and replace with te new one if it has a higher version
-    VersionTable::iterator v = mVersions.find( name );
-    if( v != mVersions.end() )
+    VersionTable::const_iterator v = mVersions.constFind( name );
+    if( v != mVersions.constEnd() )
     {
-        if( is_version_greater( version, v->first ) )
+        if( isVersionGreater( version, v->first ) )
         {
             // Replace the default version key
             mVersions.insert( name, VersionTable::mapped_type( version, key ) );

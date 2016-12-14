@@ -1,7 +1,7 @@
 /***************************************************************************
                           qgsserverrequest.h
 
-  Define ruquest class for getting request contents
+  Define request class for getting request contents
   -------------------
   begin                : 2016-12-05
   copyright            : (C) 2016 by David Marteau
@@ -20,11 +20,9 @@
 /**
  * \ingroup server
  * QgsServerRequest
- * Class defining request intreface passed to services QgsService::executeRequest() method
- *
- *  Note about design: this intreface must be passed along to python and thus signatures methods must be 
- *  compatible with pyQGS/pyQT api and rules.
+ * Class defining request interface passed to services QgsService::executeRequest() method
  */
+
 class QgsServerRequest
 {
 %TypeHeaderCode
@@ -48,29 +46,29 @@ class QgsServerRequest
         * Constructor
         *
         * @param url QUrl
-        * @param method the rquest method
+        * @param method the request method (default to GetMethod)
         */
-       QgsServerRequest( const QUrl& url, Method method );
+       QgsServerRequest( const QUrl& url, Method method = GetMethod );
 
        //! destructor
        virtual ~QgsServerRequest();
 
        /**
-        * @return  the request url
+        * @return the request url
         */
-       virtual const QUrl& url() const; 
+       virtual QUrl url() const; 
 
        /**
-        * @return the rquest method
+        * @return the request method
         */
        virtual Method method() const;
 
        /**
         * Return post/put data
-        * The default implementation retfurn nullptr
-        * @return a QByteArray pointer or nullptr
+        * Check for QByteArray::isNull() to check if data
+        * is available.
         */
-       virtual const QByteArray* data() const;
+       virtual QByteArray data() const;
 
 };
 
