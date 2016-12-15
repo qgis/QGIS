@@ -73,6 +73,17 @@ class QgsFloatingWidget : QWidget
      */
     void setAnchorWidgetPoint( AnchorPoint point );
 
+  signals:
+
+    //! Emitted when the anchor widget changes
+    void anchorWidgetChanged( QWidget* widget );
+
+    //! Emitted when the anchor point changes
+    void anchorPointChanged( AnchorPoint point );
+
+    //! Emitted when the anchor widget point changes
+    void anchorWidgetPointChanged( AnchorPoint point );
+
   protected:
     void showEvent( QShowEvent* e );
     virtual void paintEvent( QPaintEvent* e );
