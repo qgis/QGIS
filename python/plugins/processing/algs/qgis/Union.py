@@ -161,9 +161,6 @@ class Union(GeoAlgorithm):
                 if len(lstIntersectingB) != 0:
                     intB = QgsGeometry.unaryUnion(lstIntersectingB)
                     diff_geom = diff_geom.difference(intB)
-                    if diff_geom.isGeosEmpty() or not diff_geom.isGeosValid():
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
 
                 if diff_geom.wkbType() == 0 or QgsWkbTypes.flatType(diff_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                     temp_list = diff_geom.asGeometryCollection()
@@ -214,9 +211,6 @@ class Union(GeoAlgorithm):
                     if engine.intersects(tmpGeom.geometry()):
                         add = True
                         diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))
-                        if diff_geom.isGeosEmpty() or not diff_geom.isGeosValid():
-                            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                                   self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
                     else:
                         try:
                             # Ihis only happends if the bounding box
