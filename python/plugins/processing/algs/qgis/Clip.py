@@ -119,16 +119,7 @@ class Clip(GeoAlgorithm):
                     if new_geom.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(new_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                         int_com = in_feat.geometry().combine(new_geom)
                         int_sym = in_feat.geometry().symDifference(new_geom)
-                        if not int_com or not int_sym:
-                            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                                   self.tr('GEOS geoprocessing error: One or more '
-                                                           'input features have invalid geometry.'))
-                        else:
-                            new_geom = int_com.difference(int_sym)
-                            if new_geom.isGeosEmpty() or not new_geom.isGeosValid():
-                                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                                       self.tr('GEOS geoprocessing error: One or more '
-                                                               'input features have invalid geometry.'))
+                        new_geom = int_com.difference(int_sym)
                 else:
                     # clip geometry totally contains feature geometry, so no need to perform intersection
                     new_geom = in_feat.geometry()

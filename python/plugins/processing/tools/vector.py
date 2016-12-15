@@ -122,7 +122,7 @@ def features(layer, request=QgsFeatureRequest()):
                     if ignoreInvalid:
                         return False
                     else:
-                        raise GeoAlgorithmExecutionException(self.tr('Features with invalid geometries found. Please fix these errors or specify the "Ignore invalid input features" flag'))
+                        raise GeoAlgorithmExecutionException(self.tr('Features with invalid geometries found. Please fix these geometries or specify the "Ignore invalid input features" flag'))
                 return True
 
             if invalidFeaturesMethod == self.IGNORE: 
