@@ -405,6 +405,15 @@ void QgsAttributeForm::filterTriggered()
     setMode( SingleEditMode );
 }
 
+void QgsAttributeForm::searchZoomTo()
+{
+  QString filter = createFilterExpression();
+  if ( filter.isEmpty() )
+    return;
+
+  emit zoomToFeatures( filter );
+}
+
 void QgsAttributeForm::filterAndTriggered()
 {
   QString filter = createFilterExpression();
@@ -1309,6 +1318,12 @@ void QgsAttributeForm::init()
     connect( clearButton, &QPushButton::clicked, this, &QgsAttributeForm::resetSearch );
     boxLayout->addWidget( clearButton );
     boxLayout->addStretch( 1 );
+
+    QPushButton* zoomButton = new QPushButton();
+    zoomButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+    zoomButton->setText( tr( "&Zoom to features" ) );
+    connect( zoomButton, &QToolButton::clicked, this, &QgsAttributeForm::searchZoomTo );
+    boxLayout->addWidget( zoomButton );
 
     QToolButton* selectButton = new QToolButton();
     selectButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );

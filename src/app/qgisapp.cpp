@@ -7520,6 +7520,7 @@ void QgisApp::selectByForm()
 
   QgsSelectByFormDialog* dlg = new QgsSelectByFormDialog( vlayer, context, this );
   dlg->setMessageBar( messageBar() );
+  dlg->setMapCanvas( mapCanvas() );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
   dlg->show();
 }
