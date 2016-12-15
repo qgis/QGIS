@@ -29,6 +29,8 @@
 #include "qgsrasterresamplefilter.h"
 #include "qgsbilinearrasterresampler.h"
 #include "qgscubicrasterresampler.h"
+#include "qgsmultibandcolorrenderer.h"
+#include "qgssinglebandgrayrenderer.h"
 
 
 static void _initRendererWidgetFunctions()
@@ -103,6 +105,8 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
   // finally sync to the layer - even though some actions may emit widgetChanged signal,
   // this is not a problem - nobody is listening to our signals yet
   syncToLayer( mRasterLayer );
+
+  connect( mRasterLayer, SIGNAL( styleChanged() ), this, SLOT( refreshAfterSyleChanged() ) );
 }
 
 QgsRendererRasterPropertiesWidget::~QgsRendererRasterPropertiesWidget()
@@ -130,14 +134,15 @@ void QgsRendererRasterPropertiesWidget::apply()
   QgsRasterRendererWidget* rendererWidget = dynamic_cast<QgsRasterRendererWidget*>( stackedWidget->currentWidget() );
   if ( rendererWidget )
   {
+    rendererWidget->doComputations();
+
     QgsRasterRenderer* newRenderer = rendererWidget->renderer();
 
     // there are transparency related data stored in renderer instances, but they
     // are not configured in the widget, so we need to copy them over from existing renderer
     QgsRasterRenderer* oldRenderer = mRasterLayer->renderer();
     if ( oldRenderer )
-      newRenderer->copyCommonProperties( oldRenderer );
-
+      newRenderer->copyCommonProperties( oldRenderer, false );
     mRasterLayer->setRenderer( newRenderer );
   }
 
@@ -359,4 +364,42 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
     whileBlocking( cboRenderers )->setCurrentIndex( widgetIndex );
   }
 
+}
+
+void QgsRendererRasterPropertiesWidget::refreshAfterSyleChanged()
+{
+  if ( mRendererWidget )
+  {
+    QgsRasterRenderer* renderer = mRasterLayer->renderer();
+    if ( QgsMultiBandColorRenderer* mbcr = dynamic_cast<QgsMultiBandColorRenderer*>( renderer ) )
+    {
+      const QgsContrastEnhancement* redCe = mbcr->redContrastEnhancement();
+      if ( redCe )
+      {
+        mRendererWidget->setMin( QString::number( redCe->minimumValue() ), 0 );
+        mRendererWidget->setMax( QString::number( redCe->maximumValue() ), 0 );
+      }
+      const QgsContrastEnhancement* greenCe = mbcr->greenContrastEnhancement();
+      if ( greenCe )
+      {
+        mRendererWidget->setMin( QString::number( greenCe->minimumValue() ), 1 );
+        mRendererWidget->setMax( QString::number( greenCe->maximumValue() ), 1 );
+      }
+      const QgsContrastEnhancement* blueCe = mbcr->blueContrastEnhancement();
+      if ( blueCe )
+      {
+        mRendererWidget->setMin( QString::number( blueCe->minimumValue() ), 2 );
+        mRendererWidget->setMax( QString::number( blueCe->maximumValue() ), 2 );
+      }
+    }
+    else if ( QgsSingleBandGrayRenderer* sbgr = dynamic_cast<QgsSingleBandGrayRenderer*>( renderer ) )
+    {
+      const QgsContrastEnhancement* ce = sbgr->contrastEnhancement();
+      if ( ce )
+      {
+        mRendererWidget->setMin( QString::number( ce->minimumValue() ) );
+        mRendererWidget->setMax( QString::number( ce->maximumValue() ) );
+      }
+    }
+  }
 }

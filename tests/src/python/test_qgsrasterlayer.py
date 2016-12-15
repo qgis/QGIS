@@ -19,6 +19,7 @@ import os
 
 from qgis.PyQt.QtCore import QFileInfo
 from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsRaster,
                        QgsRasterLayer,
@@ -27,6 +28,7 @@ from qgis.core import (QgsRaster,
                        QgsProject,
                        QgsMapSettings,
                        QgsPoint,
+                       QgsRasterMinMaxOrigin,
                        QgsRasterShader,
                        QgsRasterTransparency,
                        QgsRenderChecker,
@@ -89,7 +91,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myRasterLayer.setRenderer(renderer)
         myRasterLayer.setContrastEnhancement(
             QgsContrastEnhancement.StretchToMinimumMaximum,
-            QgsRaster.ContrastEnhancementMinMax)
+            QgsRasterMinMaxOrigin.MinMax)
 
         myContrastEnhancement = myRasterLayer.renderer().contrastEnhancement()
         # print ("myContrastEnhancement.minimumValue = %.17g" %
@@ -228,6 +230,63 @@ class TestQgsRasterLayer(unittest.TestCase):
         layer.setRenderer(r)
         assert self.rendererChanged
         assert layer.renderer() == r
+
+    def testQgsRasterMinMaxOrigin(self):
+
+        mmo = QgsRasterMinMaxOrigin()
+        mmo_default = QgsRasterMinMaxOrigin()
+        self.assertEqual(mmo, mmo_default)
+
+        mmo = QgsRasterMinMaxOrigin()
+        self.assertEqual(mmo.limits(), QgsRasterMinMaxOrigin.None_)
+        mmo.setLimits(QgsRasterMinMaxOrigin.CumulativeCut)
+        self.assertEqual(mmo.limits(), QgsRasterMinMaxOrigin.CumulativeCut)
+        self.assertNotEqual(mmo, mmo_default)
+
+        mmo = QgsRasterMinMaxOrigin()
+        self.assertEqual(mmo.extent(), QgsRasterMinMaxOrigin.WholeRaster)
+        mmo.setExtent(QgsRasterMinMaxOrigin.UpdatedCanvas)
+        self.assertEqual(mmo.extent(), QgsRasterMinMaxOrigin.UpdatedCanvas)
+        self.assertNotEqual(mmo, mmo_default)
+
+        mmo = QgsRasterMinMaxOrigin()
+        self.assertEqual(mmo.statAccuracy(), QgsRasterMinMaxOrigin.Estimated)
+        mmo.setStatAccuracy(QgsRasterMinMaxOrigin.Exact)
+        self.assertEqual(mmo.statAccuracy(), QgsRasterMinMaxOrigin.Exact)
+        self.assertNotEqual(mmo, mmo_default)
+
+        mmo = QgsRasterMinMaxOrigin()
+        self.assertAlmostEqual(mmo.cumulativeCutLower(), 0.02)
+        mmo.setCumulativeCutLower(0.1)
+        self.assertAlmostEqual(mmo.cumulativeCutLower(), 0.1)
+        self.assertNotEqual(mmo, mmo_default)
+
+        mmo = QgsRasterMinMaxOrigin()
+        self.assertAlmostEqual(mmo.cumulativeCutUpper(), 0.98)
+        mmo.setCumulativeCutUpper(0.9)
+        self.assertAlmostEqual(mmo.cumulativeCutUpper(), 0.9)
+        self.assertNotEqual(mmo, mmo_default)
+
+        mmo = QgsRasterMinMaxOrigin()
+        self.assertAlmostEqual(mmo.stdDevFactor(), 2.0)
+        mmo.setStdDevFactor(2.5)
+        self.assertAlmostEqual(mmo.stdDevFactor(), 2.5)
+        self.assertNotEqual(mmo, mmo_default)
+
+        mmo = QgsRasterMinMaxOrigin()
+        mmo.setLimits(QgsRasterMinMaxOrigin.CumulativeCut)
+        mmo.setExtent(QgsRasterMinMaxOrigin.UpdatedCanvas)
+        mmo.setStatAccuracy(QgsRasterMinMaxOrigin.Exact)
+        mmo.setCumulativeCutLower(0.1)
+        mmo.setCumulativeCutUpper(0.9)
+        mmo.setStdDevFactor(2.5)
+        doc = QDomDocument()
+        parentElem = doc.createElement("test")
+        mmo.writeXml(doc, parentElem)
+        mmoUnserialized = QgsRasterMinMaxOrigin()
+        mmoUnserialized.readXml(parentElem)
+        self.assertEqual(mmo, mmoUnserialized)
+
 
 if __name__ == '__main__':
     unittest.main()

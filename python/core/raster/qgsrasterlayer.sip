@@ -10,11 +10,6 @@ class QgsRasterLayer : QgsMapLayer
 %End
 
   public:
-    /** \brief Default cumulative cut lower limit */
-    static const double CUMULATIVE_CUT_LOWER;
-
-    /** \brief Default cumulative cut upper limit */
-    static const double CUMULATIVE_CUT_UPPER;
 
     /** \brief Default sample size (number of pixels) for estimated statistics/histogram calculation */
     static const double SAMPLE_SIZE;
@@ -165,7 +160,7 @@ class QgsRasterLayer : QgsMapLayer
 
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
-                                 QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax,
+                                 QgsRasterMinMaxOrigin::Limits theLimits = QgsRasterMinMaxOrigin::MinMax,
                                  const QgsRectangle& theExtent = QgsRectangle(),
                                  int theSampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                  bool theGenerateLookupTableFlag = true );

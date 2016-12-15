@@ -855,6 +855,8 @@ void QgsRasterLayerProperties::apply()
   QgsRasterRendererWidget* rendererWidget = dynamic_cast<QgsRasterRendererWidget*>( mRendererStackedWidget->currentWidget() );
   if ( rendererWidget )
   {
+    rendererWidget->doComputations();
+
     mRasterLayer->setRenderer( rendererWidget->renderer() );
   }
 

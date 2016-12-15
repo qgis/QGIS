@@ -274,6 +274,7 @@
 %Include raster/qgsrasterinterface.sip
 %Include raster/qgsrasteriterator.sip
 %Include raster/qgsrasterlayer.sip
+%Include raster/qgsrasterminmaxorigin.sip
 %Include raster/qgsrasternuller.sip
 %Include raster/qgsrasterpipe.sip
 %Include raster/qgsrasterprojector.sip

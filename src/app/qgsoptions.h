@@ -206,6 +206,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     QStringList i18nList();
     void initContrastEnhancement( QComboBox *cbox, const QString& name, const QString& defaultVal );
     void saveContrastEnhancement( QComboBox *cbox, const QString& name );
+    void initMinMaxLimits( QComboBox *cbox, const QString& name, const QString& defaultVal );
+    void saveMinMaxLimits( QComboBox *cbox, const QString& name );
     QgsCoordinateReferenceSystem mDefaultCrs;
     QgsCoordinateReferenceSystem mLayerDefaultCrs;
     bool mLoadedGdalDriverList;

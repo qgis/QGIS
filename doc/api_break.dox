@@ -1311,6 +1311,14 @@ QgsProject        {#qgis_api_break_3_0_QgsProject}
 - clearProperties() was removed. Use clear() instead.
 
 
+QgsRaster        {#qgis_api_break_3_0_QgsRaster}
+---------
+
+- QgsRaster::ContrastEnhancementLimits has been removed, use QgsRasterMinMaxOrigin::Limits
+- QgsRaster::contrastEnhancementLimitsAsString() has been removed, use QgsRasterMinMaxOrigin::limitsString()
+- QgsRaster::contrastEnhancementLimitsFromString() has been removed, use QgsRasterMinMaxOrigin::limitsFromString()
+
+
 QgsRasterCalcNode        {#qgis_api_break_3_0_QgsRasterCalcNode}
 -----------------
 
@@ -1341,13 +1349,18 @@ QgsRasterLayer        {#qgis_api_break_3_0_QgsRasterLayer}
 - setDrawingStyle() was removed. Use setRendererForDrawingStyle() or setRenderer() instead.
 - previewAsPixmap() was removed. Use previewAsImage() instead.
 - updateProgress() had no effect and was removed.
-
+- CUMULATIVE_CUT_LOWER and CUMULATIVE_CUT_UPPER have been moved to QgsRasterMinMaxOrigin
+- the second parameter of setContrastEnhancement() has changed type. It is now QgsRasterMinMaxOrigin::Limits
 
 QgsRasterProjector        {#qgis_api_break_3_0_QgsRasterProjector}
 ------------------
 
 - extentSize() now takes a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should be used instead of a null pointer if no transformation is required.
 
+QgsRasterRenderer
+-----------------
+
+- MinMaxOrigin enum, minMaxOriginName(), minMaxOriginLabel(), minMaxOriginFromName() removed. Use minMaxOrigin() instead
 
 QgsRelation        {#qgis_api_break_3_0_QgsRelation}
 -----------
@@ -1426,6 +1439,12 @@ QgsSimpleMarkerSymbolLayerWidget        {#qgis_api_break_3_0_QgsSimpleMarkerSymb
 --------------------------------
 
 - setName() was removed.
+
+
+QgsSingleBandPseudoColorRenderer        {#qgis_api_break_3_0_QgsSingleBandPseudoColorRenderer}
+--------------------------------
+
+- classificationMinMaxOrigin() and setClassificationMinMaxOrigin() removed. Use minMaxOrigin() and setMinMaxOrigin()
 
 
 QgsSingleSymbolRendererWidget        {#qgis_api_break_3_0_QgsSingleSymbolRendererWidget}

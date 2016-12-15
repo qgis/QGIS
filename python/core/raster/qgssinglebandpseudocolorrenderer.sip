@@ -40,8 +40,6 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
     double classificationMax() const;
     void setClassificationMin( double min );
     void setClassificationMax( double max );
-    int classificationMinMaxOrigin() const;
-    void setClassificationMinMaxOrigin( int origin );
 
   private:
 

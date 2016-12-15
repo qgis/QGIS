@@ -45,6 +45,7 @@
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
+#include "qgstestutils.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
@@ -90,6 +91,7 @@ class TestQgsRasterLayer : public QObject
     void multiBandColorRenderer();
     void setRenderer();
     void regression992(); //test for issue #992 - GeoJP2 images improperly displayed as all black
+    void testRefreshRendererIfNeeded();
 
 
   private:
@@ -206,7 +208,7 @@ void TestQgsRasterLayer::cleanupTestCase()
 void TestQgsRasterLayer::isValid()
 {
   QVERIFY( mpRasterLayer->isValid() );
-  mpRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax );
+  mpRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax );
   mMapSettings->setExtent( mpRasterLayer->extent() );
   QVERIFY( render( "raster" ) );
 }
@@ -355,7 +357,7 @@ void TestQgsRasterLayer::colorRamp4()
 void TestQgsRasterLayer::landsatBasic()
 {
   QVERIFY2( mpLandsatRasterLayer->isValid(), "landsat.tif layer is not valid!" );
-  mpLandsatRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax );
+  mpLandsatRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax );
   mMapSettings->setLayers( QList<QgsMapLayer*>() << mpLandsatRasterLayer );
   mMapSettings->setExtent( mpLandsatRasterLayer->extent() );
   QVERIFY( render( "landsat_basic" ) );
@@ -632,7 +634,7 @@ void TestQgsRasterLayer::transparency()
   QVERIFY( mpFloat32RasterLayer->isValid() );
   QgsSingleBandGrayRenderer* renderer = new QgsSingleBandGrayRenderer( mpRasterLayer->dataProvider(), 1 );
   mpFloat32RasterLayer->setRenderer( renderer );
-  mpFloat32RasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax );
+  mpFloat32RasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax );
 
   qDebug( "contrastEnhancement.minimumValue = %.17g", renderer->contrastEnhancement()->minimumValue() );
   qDebug( "contrastEnhancement.maximumValue = %.17g", renderer->contrastEnhancement()->maximumValue() );
@@ -693,6 +695,32 @@ void TestQgsRasterLayer::regression992()
   mMapSettings->setExtent( mGeoJp2RasterLayer->extent() );
   mMapSettings->setLayers( QList<QgsMapLayer*>() << mGeoJp2RasterLayer );
   QVERIFY( render( "raster_geojp2", 400 ) );
+}
+
+void TestQgsRasterLayer::testRefreshRendererIfNeeded()
+{
+  QVERIFY2( mpLandsatRasterLayer->isValid(), "landsat.tif layer is not valid!" );
+  mpLandsatRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mpLandsatRasterLayer );
+  mMapSettings->setExtent( mpLandsatRasterLayer->extent() );
+  double initMinVal = dynamic_cast<QgsMultiBandColorRenderer*>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
+
+  // Should do nothing
+  QgsRectangle newExtent = QgsRectangle( 785000, 3340000, 785100, 3340100 );
+  mpLandsatRasterLayer->refreshRendererIfNeeded( mpLandsatRasterLayer->renderer(), newExtent );
+  QCOMPARE( mpLandsatRasterLayer->renderer()->minMaxOrigin().limits(), QgsRasterMinMaxOrigin::MinMax );
+  double minVal = dynamic_cast<QgsMultiBandColorRenderer*>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
+  QGSCOMPARENEAR( initMinVal, minVal, 1e-5 );
+
+  // Change to UpdatedCanvas
+  QgsRasterMinMaxOrigin mmo = mpLandsatRasterLayer->renderer()->minMaxOrigin();
+  mmo.setExtent( QgsRasterMinMaxOrigin::UpdatedCanvas );
+  mmo.setStatAccuracy( QgsRasterMinMaxOrigin::Exact );
+  mpLandsatRasterLayer->renderer()->setMinMaxOrigin( mmo );
+  QCOMPARE( mpLandsatRasterLayer->renderer()->minMaxOrigin().extent(), QgsRasterMinMaxOrigin::UpdatedCanvas );
+  mpLandsatRasterLayer->refreshRendererIfNeeded( mpLandsatRasterLayer->renderer(), newExtent );
+  double newMinVal = dynamic_cast<QgsMultiBandColorRenderer*>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
+  QGSCOMPARENOTNEAR( initMinVal, newMinVal, 1e-5 );
 }
 
 QTEST_MAIN( TestQgsRasterLayer )

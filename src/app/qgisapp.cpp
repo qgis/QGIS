@@ -8785,11 +8785,9 @@ void QgisApp::legendLayerStretchUsingCurrentExtent()
   QgsRasterLayer *layer =  qobject_cast<QgsRasterLayer *>( currentLayer );
   if ( layer )
   {
-    QgsContrastEnhancement::ContrastEnhancementAlgorithm contrastEnhancementAlgorithm = QgsContrastEnhancement::StretchToMinimumMaximum;
-
     QgsRectangle myRectangle;
     myRectangle = mMapCanvas->mapSettings().outputExtentToLayerExtent( layer, mMapCanvas->extent() );
-    layer->setContrastEnhancement( contrastEnhancementAlgorithm, QgsRaster::ContrastEnhancementMinMax, myRectangle );
+    layer->refreshContrastEnhancement( myRectangle );
 
     mLayerTreeView->refreshLayerSymbology( layer->id() );
     mMapCanvas->refresh();
@@ -9116,25 +9114,25 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
 
 void QgisApp::fullHistogramStretch()
 {
-  histogramStretch( false, QgsRaster::ContrastEnhancementMinMax );
+  histogramStretch( false, QgsRasterMinMaxOrigin::MinMax );
 }
 
 void QgisApp::localHistogramStretch()
 {
-  histogramStretch( true, QgsRaster::ContrastEnhancementMinMax );
+  histogramStretch( true, QgsRasterMinMaxOrigin::MinMax );
 }
 
 void QgisApp::fullCumulativeCutStretch()
 {
-  histogramStretch( false, QgsRaster::ContrastEnhancementCumulativeCut );
+  histogramStretch( false, QgsRasterMinMaxOrigin::CumulativeCut );
 }
 
 void QgisApp::localCumulativeCutStretch()
 {
-  histogramStretch( true, QgsRaster::ContrastEnhancementCumulativeCut );
+  histogramStretch( true, QgsRasterMinMaxOrigin::CumulativeCut );
 }
 
-void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRaster::ContrastEnhancementLimits theLimits )
+void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRasterMinMaxOrigin::Limits theLimits )
 {
   QgsMapLayer * myLayer = mLayerTreeView->currentLayer();
 

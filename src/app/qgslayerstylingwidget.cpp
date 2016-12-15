@@ -42,6 +42,7 @@
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerstylemanagerwidget.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsrasterminmaxwidget.h"
 
 
 QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas* canvas, const QList<QgsMapLayerConfigWidgetFactory*>& pages, QWidget *parent )
@@ -378,15 +379,47 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
   else if ( mCurrentLayer->type() == QgsMapLayer::RasterLayer )
   {
     QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer*>( mCurrentLayer );
+    bool hasMinMaxCollapsedState = false;
+    bool minMaxCollapsed = false;
 
     switch ( row )
     {
       case 0: // Style
+      {
+        // Backup collapsed state of min/max group so as to restore it
+        // on the new widget.
+        if ( mRasterStyleWidget )
+        {
+          QgsRasterRendererWidget* currentRenderWidget = mRasterStyleWidget->currentRenderWidget();
+          if ( currentRenderWidget )
+          {
+            QgsRasterMinMaxWidget* mmWidget = currentRenderWidget->minMaxWidget();
+            if ( mmWidget )
+            {
+              hasMinMaxCollapsedState = true;
+              minMaxCollapsed = mmWidget->isCollapsed();
+            }
+          }
+        }
         mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetStack );
+        if ( hasMinMaxCollapsedState )
+        {
+          QgsRasterRendererWidget* currentRenderWidget = mRasterStyleWidget->currentRenderWidget();
+          if ( currentRenderWidget )
+          {
+            QgsRasterMinMaxWidget* mmWidget = currentRenderWidget->minMaxWidget();
+            if ( mmWidget )
+            {
+              mmWidget->setCollapsed( minMaxCollapsed );
+            }
+          }
+        }
         mRasterStyleWidget->setDockMode( true );
         connect( mRasterStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
         mWidgetStack->setMainPanel( mRasterStyleWidget );
         break;
+      }
+
       case 1: // Transparency
       {
         QgsRasterTransparencyWidget* transwidget = new QgsRasterTransparencyWidget( rlayer, mMapCanvas, mWidgetStack );
