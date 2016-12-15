@@ -31,7 +31,7 @@ class QgsDwgImporter : public DRW_Interface
     QgsDwgImporter( const QString &database, const QgsCoordinateReferenceSystem &crs );
     ~QgsDwgImporter();
 
-    bool import( const QString &drawing, QString &error, bool expandInserts );
+    bool import( const QString &drawing, QString &error, bool expandInserts, bool useCurves );
 
     //! Called when header is parsed.
     void addHeader( const DRW_Header* data ) override;
@@ -184,6 +184,8 @@ class QgsDwgImporter : public DRW_Interface
 
     bool expandInserts( QString &error );
 
+    bool createFeature( OGRLayerH layer, OGRFeatureH f, const QgsAbstractGeometry &g ) const;
+
     OGRDataSourceH mDs;
     QString mDatabase;
     bool mInTransaction;
@@ -191,6 +193,7 @@ class QgsDwgImporter : public DRW_Interface
     int mBlockHandle;
     int mCrs;
     OGRSpatialReferenceH mCrsH;
+    bool mUseCurves;
 
     QHash<QString, QString> mLayerColor;
     QHash<QString, double> mLayerLinewidth;

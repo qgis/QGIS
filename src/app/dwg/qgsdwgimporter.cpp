@@ -65,6 +65,7 @@ QgsDwgImporter::QgsDwgImporter( const QString &database, const QgsCoordinateRefe
     , mBlockHandle( -1 )
     , mCrs( crs.srsid() )
     , mCrsH( nullptr )
+    , mUseCurves( true )
 {
   QgsDebugCall;
 
@@ -139,20 +140,22 @@ void QgsDwgImporter::startTransaction()
 {
   Q_ASSERT( mDs );
 
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
   mInTransaction = GDALDatasetStartTransaction( mDs, 0 ) == OGRERR_NONE;
-
   if ( !mInTransaction )
   {
     LOG( QObject::tr( "Could not start transaction\nDatabase:%1\nError:%2" )
          .arg( mDatabase )
          .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
+#endif
 }
 
 void QgsDwgImporter::commitTransaction()
 {
   Q_ASSERT( mDs != nullptr );
 
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
   if ( mInTransaction && GDALDatasetCommitTransaction( mDs ) != OGRERR_NONE )
   {
     LOG( QObject::tr( "Could not commit transaction\nDatabase:%1\nError:%2" )
@@ -160,6 +163,7 @@ void QgsDwgImporter::commitTransaction()
          .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
   mInTransaction = false;
+#endif
 }
 
 QgsDwgImporter::~QgsDwgImporter()
@@ -175,9 +179,28 @@ QgsDwgImporter::~QgsDwgImporter()
   }
 }
 
-bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpandInserts )
+bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpandInserts, bool useCurves )
 {
   QgsDebugCall;
+
+  OGRwkbGeometryType lineGeomType, hatchGeomType;
+  if( useCurves )
+  {
+#if !defined(GDAL_COMPUTE_VERSION) || GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,0,0)
+    error = QObject::tr( "Curves only supported with GDAL2" );
+    return false;
+#else
+    lineGeomType = wkbCompoundCurveZ;
+    hatchGeomType = wkbCurvePolygonZ;
+#endif
+  }
+  else
+  {
+    lineGeomType = wkbLineString25D;
+    hatchGeomType = wkbPolygon25D;
+  }
+
+  mUseCurves = useCurves;
 
   QFileInfo fi( drawing );
   if ( !fi.isReadable() )
@@ -289,6 +312,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   << field( "linewidth", OFTReal ) \
   << field( "ltscale", OFTReal ) \
   << field( "visible", OFTInteger )
+
 
   QList<table> tables = QList<table>()
                         << table( "drawing", QObject::tr( "Imported drawings" ), wkbNone, QList<field>()
@@ -417,13 +441,13 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
                                   << field( "thickness", OFTReal )
                                   << field( "ext", OFTRealList )
                                 )
-                        << table( "lines", QObject::tr( "LINE entities" ), wkbCompoundCurveZ, QList<field>()
+                        << table( "lines", QObject::tr( "LINE entities" ), lineGeomType, QList<field>()
                                   ENTITY_ATTRIBUTES
                                   << field( "thickness", OFTReal )
                                   << field( "ext", OFTRealList )
                                   << field( "width", OFTReal )
                                 )
-                        << table( "polylines", QObject::tr( "POLYLINE entities" ), wkbCompoundCurveZ, QList<field>()
+                        << table( "polylines", QObject::tr( "POLYLINE entities" ), lineGeomType, QList<field>()
                                   ENTITY_ATTRIBUTES
                                   << field( "width", OFTReal )
                                   << field( "thickness", OFTReal )
@@ -444,7 +468,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
                                   << field( "alignv", OFTInteger )
                                   << field( "interlin", OFTReal )
                                 )
-                        << table( "hatches", QObject::tr( "HATCH entities" ), wkbCurvePolygon, QList<field>()
+                        << table( "hatches", QObject::tr( "HATCH entities" ), hatchGeomType, QList<field>()
                                   ENTITY_ATTRIBUTES
                                   << field( "thickness", OFTReal )
                                   << field( "ext", OFTRealList )
@@ -1149,6 +1173,34 @@ void QgsDwgImporter::addAppId( const DRW_AppId &data )
   Q_UNUSED( data );
 }
 
+bool QgsDwgImporter::createFeature( OGRLayerH layer, OGRFeatureH f, const QgsAbstractGeometry &g0 ) const
+{
+  const QgsAbstractGeometry *g;
+  QScopedPointer<QgsAbstractGeometry> sg( nullptr );
+
+  if( !mUseCurves && g0.hasCurvedSegments() )
+  {
+    sg.reset( g0.segmentize() );
+    g = sg.data();
+  }
+  else
+  {
+    g = &g0;
+  }
+
+  QByteArray wkb = g->asWkb();
+  OGRGeometryH geom;
+  if ( OGR_G_CreateFromWkb( (unsigned char *) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
+  {
+    LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+  }
+
+  OGR_F_SetGeometryDirectly( f, geom );
+
+  return OGR_L_CreateFeature( layer, f ) == OGRERR_NONE;
+}
+
+
 void QgsDwgImporter::addBlock( const DRW_Block &data )
 {
   Q_ASSERT( mBlockHandle < 0 );
@@ -1168,17 +1220,8 @@ void QgsDwgImporter::addBlock( const DRW_Block &data )
   SETINTEGER( flags );
 
   QgsPointV2 p( QgsWkbTypes::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z );
-  QByteArray wkb = p.asWkb();
-  OGRGeometryH geom;
-  if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-  {
-    LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
 
-  }
-
-  OGR_F_SetGeometryDirectly( f, geom );
-
-  if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+  if ( !createFeature( layer, f, p ) )
   {
     LOG( QObject::tr( "Could not add block [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
@@ -1236,17 +1279,7 @@ void QgsDwgImporter::addPoint( const DRW_Point &data )
   setPoint( dfn, f, "ext", data.extPoint );
 
   QgsPointV2 p( QgsWkbTypes::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z );
-  QByteArray wkb = p.asWkb();
-  OGRGeometryH geom;
-  if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-  {
-    LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
-
-  }
-
-  OGR_F_SetGeometryDirectly( f, geom );
-
-  if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+  if ( !createFeature( layer, f, p ) )
   {
     LOG( QObject::tr( "Could not add point [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
@@ -1297,17 +1330,7 @@ void QgsDwgImporter::addArc( const DRW_Arc &data )
                << QgsPointV2( QgsWkbTypes::PointZ, data.basePoint.x + cos( a2 ) * data.mRadius, data.basePoint.y + sin( a2 ) * data.mRadius )
              );
 
-  QByteArray wkb = c.asWkb();
-  OGRGeometryH geom;
-  if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-  {
-    LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
-
-  }
-
-  OGR_F_SetGeometryDirectly( f, geom );
-
-  if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+  if ( !createFeature( layer, f, c ) )
   {
     LOG( QObject::tr( "Could not add arc [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
@@ -1335,17 +1358,7 @@ void QgsDwgImporter::addCircle( const DRW_Circle &data )
                << QgsPointV2( QgsWkbTypes::PointZ, data.basePoint.x - data.mRadius, data.basePoint.y, data.basePoint.z )
              );
 
-  QByteArray wkb = c.asWkb();
-  OGRGeometryH geom;
-  if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-  {
-    LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
-
-  }
-
-  OGR_F_SetGeometryDirectly( f, geom );
-
-  if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+  if ( !createFeature( layer, f, c ) )
   {
     LOG( QObject::tr( "Could not add circle [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
@@ -1494,18 +1507,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
 
         setPoint( dfn, f, "ext", data.extPoint );
 
-        // QgsDebugMsg( QString( "write curve:%1" ).arg( cc.asWkt() ) );
-
-        QByteArray wkb = cc.asWkb();
-
-        OGRGeometryH geom;
-        if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-        {
-          LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
-        }
-
-        OGR_F_SetGeometryDirectly( f, geom );
-        if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+        if ( !createFeature( layer, f, cc ) )
         {
           LOG( QObject::tr( "Could not add linestring [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
         }
@@ -1574,16 +1576,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
       poly.setExteriorRing( ls );
       // QgsDebugMsg( QString( "write poly:%1" ).arg( poly.asWkt() ) );
 
-      QByteArray wkb = poly.asWkb();
-      OGRGeometryH geom;
-      if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-      {
-        LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
-      }
-
-      OGR_F_SetGeometryDirectly( f, geom );
-
-      if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+      if ( !createFeature( layer, f, poly ) )
       {
         LOG( QObject::tr( "Could not add polygon [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
       }
@@ -1627,16 +1620,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
 
     // QgsDebugMsg( QString( "write curve:%1" ).arg( cc.asWkt() ) );
 
-    QByteArray wkb = cc.asWkb();
-
-    OGRGeometryH geom;
-    if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-    {
-      LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
-    }
-
-    OGR_F_SetGeometryDirectly( f, geom );
-    if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+    if ( !createFeature( layer, f, cc ) )
     {
       LOG( QObject::tr( "Could not add linestring [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     }
@@ -1715,16 +1699,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
 
         // QgsDebugMsg( QString( "write curve:%1" ).arg( cc.asWkt() ) );
 
-        QByteArray wkb = cc.asWkb();
-
-        OGRGeometryH geom;
-        if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-        {
-          LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
-        }
-
-        OGR_F_SetGeometryDirectly( f, geom );
-        if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+        if ( !createFeature( layer, f, cc ) )
         {
           LOG( QObject::tr( "Could not add linestring [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
         }
@@ -1798,16 +1773,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
       poly.setExteriorRing( ls );
       // QgsDebugMsg( QString( "write poly:%1" ).arg( poly.asWkt() ) );
 
-      QByteArray wkb = poly.asWkb();
-      OGRGeometryH geom;
-      if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-      {
-        LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
-      }
-
-      OGR_F_SetGeometryDirectly( f, geom );
-
-      if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+      if ( !createFeature( layer, f, poly ) )
       {
         LOG( QObject::tr( "Could not add polygon [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
       }
@@ -1851,16 +1817,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
 
     // QgsDebugMsg( QString( "write curve:%1" ).arg( cc.asWkt() ) );
 
-    QByteArray wkb = cc.asWkb();
-
-    OGRGeometryH geom;
-    if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-    {
-      LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
-    }
-
-    OGR_F_SetGeometryDirectly( f, geom );
-    if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+    if ( !createFeature( layer, f, cc ) )
     {
       LOG( QObject::tr( "Could not add linestring [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     }
@@ -2099,17 +2056,7 @@ void QgsDwgImporter::addSpline( const DRW_Spline *data )
     ps << QgsPointV2( p[i] );
   l.setPoints( ps );
 
-  QByteArray wkb = l.asWkb();
-  OGRGeometryH geom;
-  if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-  {
-    LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
-
-  }
-
-  OGR_F_SetGeometryDirectly( f, geom );
-
-  if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+  if ( !createFeature( layer, f, l ) )
   {
     LOG( QObject::tr( "Could not add spline [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
@@ -2147,16 +2094,8 @@ void QgsDwgImporter::addInsert( const DRW_Insert &data )
   SETDOUBLE( rowspace );
 
   QgsPointV2 p( QgsWkbTypes::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z );
-  QByteArray wkb = p.asWkb();
-  OGRGeometryH geom;
-  if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-  {
-    LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
-  }
 
-  OGR_F_SetGeometryDirectly( f, geom );
-
-  if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+  if ( !createFeature( layer, f, p ) )
   {
     LOG( QObject::tr( "Could not add point [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
@@ -2205,16 +2144,7 @@ void QgsDwgImporter::addSolid( const DRW_Solid &data )
   ls->setPoints( s );
   poly.setExteriorRing( ls );
 
-  QByteArray wkb = poly.asWkb();
-  OGRGeometryH geom;
-  if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-  {
-    LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
-  }
-
-  OGR_F_SetGeometryDirectly( f, geom );
-
-  if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+  if ( !createFeature( layer, f, poly ) )
   {
     LOG( QObject::tr( "Could not add polygon [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
@@ -2247,17 +2177,7 @@ void QgsDwgImporter::addMText( const DRW_MText &data )
 
   QgsPointV2 p( QgsWkbTypes::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z );
 
-  QByteArray wkb = p.asWkb();
-  OGRGeometryH geom;
-  if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-  {
-    LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
-
-  }
-
-  OGR_F_SetGeometryDirectly( f, geom );
-
-  if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+  if ( !createFeature( layer, f, p ) )
   {
     LOG( QObject::tr( "Could not add line [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
@@ -2290,17 +2210,8 @@ void QgsDwgImporter::addText( const DRW_Text &data )
 
   QgsPointV2 p( QgsWkbTypes::PointZ, data.secPoint.x, data.secPoint.y, data.secPoint.z );
 
-  QByteArray wkb = p.asWkb();
-  OGRGeometryH geom;
-  if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-  {
-    LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
 
-  }
-
-  OGR_F_SetGeometryDirectly( f, geom );
-
-  if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+  if ( !createFeature( layer, f, p ) )
   {
     LOG( QObject::tr( "Could not add line [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
@@ -2430,17 +2341,7 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
     }
   }
 
-  QByteArray wkb = p.asWkb();
-  OGRGeometryH geom;
-  if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-  {
-    LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
-
-  }
-
-  OGR_F_SetGeometryDirectly( f, geom );
-
-  if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+  if ( !createFeature( layer, f, p ) )
   {
     LOG( QObject::tr( "Could not add polygon [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
@@ -2467,17 +2368,7 @@ void QgsDwgImporter::addLine( const DRW_Line& data )
                << QgsPointV2( QgsWkbTypes::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z )
                << QgsPointV2( QgsWkbTypes::PointZ, data.secPoint.x, data.secPoint.y, data.secPoint.z ) );
 
-  OGRGeometryH geom;
-  QByteArray wkb = l.asWkb();
-  if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
-  {
-    LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
-
-  }
-
-  OGR_F_SetGeometryDirectly( f, geom );
-
-  if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
+  if ( !createFeature( layer, f, l ) )
   {
     LOG( QObject::tr( "Could not add line [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }

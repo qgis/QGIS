@@ -1962,6 +1962,7 @@ void QgisApp::createMenus()
 
   // Layer menu
 #ifndef SUPPORT_GEOPACKAGE
+  mProjectMenu->removeAction( mActionDwgImport );
   mNewLayerMenu->removeAction( mActionNewGeoPackageLayer );
 #endif
 
