@@ -161,7 +161,7 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(s[3].offset, 0.8)
         self.assertEqual(s[3].color, QColor(50, 20, 10))
 
-        # test continous invert function
+        # test continuous invert function
         r.invert()
         self.assertEqual(r.color(0), QColor(0, 200, 0))
         self.assertEqual(r.color(1), QColor(200, 0, 0))

@@ -626,7 +626,7 @@ void QgsTaskManager::taskStatusChanged( int status )
 
   if ( status == QgsTask::Terminated )
   {
-    //recursively cancel dependant tasks
+    //recursively cancel dependent tasks
     cancelDependentTasks( id );
   }
 
@@ -790,9 +790,9 @@ void QgsTaskManager::cancelDependentTasks( long taskId )
   {
     if ( it.value().contains( cancelledTask ) )
     {
-      // found task with this dependancy
+      // found task with this dependency
 
-      // cancel it - note that this will be recursive, so any tasks dependant
+      // cancel it - note that this will be recursive, so any tasks dependent
       // on this one will also be cancelled
       QgsTask* dependentTask = task( it.key() );
       if ( dependentTask )

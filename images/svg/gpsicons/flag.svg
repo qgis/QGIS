@@ -1,11 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="svg644" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="579.997px" height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997"
-	 xml:space="preserve">
-<path fill="param(fill) #000" fill-opacity="param(fill-opacity)" stroke="param(outline) #FFF" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width) 0" d="M231.846,472.572V31.806h-22.18v440.557
-	c-34.016,2.649-59.419,18.767-59.419,38.871c0,22.021,30.456,39.271,69.337,39.271c38.877,0,69.332-17.25,69.332-39.271
-	C288.917,491.595,264.674,475.764,231.846,472.572z"/>
-<polygon fill="param(fill) #000" fill-opacity="param(fill-opacity)" stroke="param(outline) #FFF" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width) 0" points="235.243,29.492 233.723,207.628 429.749,210.329 "/>
+<svg enable-background="new 0 0 579.997 579.997" height="579.997" viewBox="0 0 579.997 579.997" width="579.997" xmlns="http://www.w3.org/2000/svg">
+<path d="m231.846 472.572v-440.766h-22.18v440.557c-34.016 2.649-59.419 18.767-59.419 38.871 0 22.021 30.456 39.271 69.337 39.271 38.877 0 69.332-17.25 69.332-39.271.001-19.639-24.242-35.47-57.07-38.662z" fill="param(fill) #000" fill-opacity="255" stroke="param(outline) #FFF" stroke-opacity="255" stroke-width="param(outline-width) 0"/>
+<path d="m235.243 29.492l-1.52 178.136 196.026 2.701z" fill="param(fill) #000" fill-opacity="255" stroke="param(outline) #FFF" stroke-opacity="255" stroke-width="param(outline-width) 0"/>
 </svg>
