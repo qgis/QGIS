@@ -1997,10 +1997,10 @@ tests:
         type: vector
 
   - algorithm: qgis:addfieldtoattributestable
-    name: add INTEGER field to attribute table
+    name: add integer field to attribute table
     params:
       FIELD_LENGTH: 10
-      FIELD_NAME: INT
+      FIELD_NAME: int_num
       FIELD_PRECISION: 0
       FIELD_TYPE: '0'
       INPUT_LAYER:
@@ -2008,14 +2008,14 @@ tests:
         type: vector
     results:
       OUTPUT_LAYER:
-        name: expected/add_field_int.gml
+        name: expected/add_field_integer.geojson
         type: vector
 
   - algorithm: qgis:addfieldtoattributestable
-    name: add FLOAT field to attribute table
+    name: add float field to attribute table
     params:
       FIELD_LENGTH: 10
-      FIELD_NAME: FLO
+      FIELD_NAME: flo_num
       FIELD_PRECISION: 2
       FIELD_TYPE: '1'
       INPUT_LAYER:
@@ -2023,14 +2023,14 @@ tests:
         type: vector
     results:
       OUTPUT_LAYER:
-        name: expected/add_field_flo.gml
+        name: expected/add_field_float.geojson
         type: vector
 
   - algorithm: qgis:addfieldtoattributestable
-    name: add STRING field to attribute table
+    name: add string field to attribute table
     params:
-      FIELD_LENGTH: 20
-      FIELD_NAME: STR
+      FIELD_LENGTH: 10
+      FIELD_NAME: char
       FIELD_PRECISION: 0
       FIELD_TYPE: '2'
       INPUT_LAYER:
@@ -2038,32 +2038,8 @@ tests:
         type: vector
     results:
       OUTPUT_LAYER:
-        name: expected/add_field_str.gml
+        name: expected/add_field_string.geojson
         type: vector
-
-  - algorithm: qgis:basicstatisticsforfields
-    name: FLOAT statistics for field
-    params:
-      FIELD_NAME: floatval
-      INPUT_LAYER:
-        name: polys.gml
-        type: table
-    results:
-      OUTPUT_HTML_FILE:
-        name: expected/basic_statistics_float.html
-        type: file
-
-  - algorithm: qgis:basicstatisticsforfields
-    name: basic statistic for field
-    params:
-      FIELD_NAME: intval
-      INPUT_LAYER:
-        name: polys.gml
-        type: table
-    results:
-      OUTPUT_HTML_FILE:
-        name: expected/basic_statistics_int.html
-        type: file
 
   - algorithm: qgis:convexhull
     name: Simple convex hull
@@ -2107,7 +2083,7 @@ tests:
         type: vector
 
   - algorithm: qgis:countpointsinpolygonweighted
-    name: weighted count of points in polygon
+    name: Test (qgis:countpointsinpolygonweighted)
     params:
       FIELD: COUNT
       POINTS:
@@ -2119,7 +2095,7 @@ tests:
       WEIGHT: unique
     results:
       OUTPUT:
-        name: expected/count_points_weighted.gml
+        name: expected/count_unique_points.geojson
         type: vector
 
 
