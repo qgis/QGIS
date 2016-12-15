@@ -22,6 +22,7 @@
 class QgsAttributeForm;
 class QgsMessageBar;
 class QgsVectorLayer;
+class QgsMapCanvas;
 
 /** \ingroup app
  * \class QgsSelectByFormDialog
@@ -54,9 +55,21 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
      */
     void setMessageBar( QgsMessageBar* messageBar );
 
+    /**
+     * Sets a map canvas associated with the dialog.
+     */
+    void setMapCanvas( QgsMapCanvas* canvas );
+
+  private slots:
+
+    void zoomToFeatures( const QString& filter );
+
   private:
 
     QgsAttributeForm* mForm;
+    QgsVectorLayer* mLayer;
+    QgsMessageBar* mMessageBar;
+    QgsMapCanvas* mMapCanvas;
 
 };
 

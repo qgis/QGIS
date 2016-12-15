@@ -191,6 +191,12 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void closed();
 
+    /**
+     * Emitted when the user chooses to zoom to a filtered set of features.
+     * @note added in QGIS 3.0
+     */
+    void zoomToFeatures( const QString& filter );
+
   public slots:
 
     /**
@@ -250,6 +256,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void filterOrTriggered();
     void filterTriggered();
 
+    void searchZoomTo();
     void searchSetSelection();
     void searchAddToSelection();
     void searchRemoveFromSelection();
