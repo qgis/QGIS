@@ -1548,10 +1548,18 @@
   </action>
   <action name="mActionToggleFullScreen">
    <property name="text">
-    <string>Toggle Full Screen Mode</string>
+    <string>Toggle Full Scr&amp;een Mode</string>
    </property>
    <property name="shortcut">
     <string>F11</string>
+   </property>
+  </action>
+  <action name="mActionTogglePanelsVisibility">
+   <property name="text">
+    <string>Toggle Panel &amp;Visibility</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Tab</string>
    </property>
   </action>
   <action name="mActionProjectProperties">
