@@ -52,6 +52,7 @@ class ProcessingConfig(object):
     VECTOR_POLYGON_STYLE = 'VECTOR_POLYGON_STYLE'
     SHOW_RECENT_ALGORITHMS = 'SHOW_RECENT_ALGORITHMS'
     USE_SELECTED = 'USE_SELECTED'
+    FILTER_INVALID_GEOMETRIES = 'FILTER_INVALID_GEOMETRIES'
     USE_FILENAME_AS_LAYER_NAME = 'USE_FILENAME_AS_LAYER_NAME'
     KEEP_DIALOG_OPEN = 'KEEP_DIALOG_OPEN'
     SHOW_DEBUG_IN_DIALOG = 'SHOW_DEBUG_IN_DIALOG'
@@ -84,6 +85,14 @@ class ProcessingConfig(object):
             ProcessingConfig.tr('General'),
             ProcessingConfig.USE_SELECTED,
             ProcessingConfig.tr('Use only selected features'), True))
+        invalidFeaturesOptions = [ProcessingConfig.tr('Do not filter (better performance'),
+                                  ProcessingConfig.tr('Ignore features with invalid geometries'),
+                                  ProcessingConfig.tr('Stop algorithm execution when a geometry is invalid')]
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.FILTER_INVALID_GEOMETRIES,
+            ProcessingConfig.tr('Invalid features filtering'), invalidFeaturesOptions[2],
+            valuetype=Setting.SELECTION, options=invalidFeaturesOptions))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.USE_FILENAME_AS_LAYER_NAME,
