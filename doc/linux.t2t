@@ -132,11 +132,23 @@ interactive dialog.
 Now on with the build:
 
 ```
-make
-make install
+make -jX
 ```
 
-It may take a little while to build depending on your platform.
+where X is the number of available cores. Without the -j option
+it may take a little while to build depending on your platform.
+
+Then you can directly run from the build directory:
+
+```
+./output/bin/qgis
+```
+
+Another option is to install to your system:
+
+```
+make install
+```
 
 After that you can try to run QGIS:
 
@@ -145,7 +157,7 @@ $HOME/apps/bin/qgis
 ```
 
 If all has worked properly the QGIS application should start up and appear
-on your screen.  If you get the error message "error while loading shared libraries",
+on your screen. If you get the error message "error while loading shared libraries",
 execute this command in your shell.
 
 ```
@@ -156,7 +168,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/apps/lib/
 == Building Debian packages ==
 
 Instead of creating a personal installation as in the previous step you can
-also create debian package.  This is done from the QGIS root directory, where
+also create debian package. This is done from the QGIS root directory, where
 you'll find a debian directory.
 
 First you need to install the debian packaging tools once:
