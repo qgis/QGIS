@@ -90,7 +90,7 @@ qgis:countuniquepointsinpolygon: >
   A new polygons layer is generated, with the exact same content as the input polygons layer, but containing an additional field with the points count corresponding to each polygon.
 
 qgis:createattributeindex: >
-  Creates an index to speed up queries made against a field in a table. Support for index creation is dependant on the layer's data provider and the field type.
+  Creates an index to speed up queries made against a field in a table. Support for index creation is dependent on the layer's data provider and the field type.
 
 qgis:createconstantrasterlayer: >
   Given an input raster layer an a value, this algorithm generates a new layer with the same extent and cellsize as the input one, and all cells with the specified value.

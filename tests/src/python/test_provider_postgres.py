@@ -548,7 +548,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         default_clause = 'nextval(\'qgis_test."someData_pk_seq"\'::regclass)'
         self.assertEqual(vl.dataProvider().defaultValueClause(0), default_clause)
 
-        # check that provider default clause takes precendence over passed attribute values
+        # check that provider default clause takes precedence over passed attribute values
         # this also checks that the inbuilt unique constraint handling is bypassed in the case of a provider default clause
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5, 3: 'map'})
         self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", "'qgis'::text", None, None])

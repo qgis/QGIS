@@ -202,7 +202,7 @@ class TestQgsTaskManager : public QObject
     void allTasksFinished();
     void activeTasks();
     void holdTask();
-    void dependancies();
+    void dependencies();
     void layerDependencies();
     void managerWithSubTasks();
     void managerWithSubTasks2();
@@ -923,11 +923,11 @@ void TestQgsTaskManager::holdTask()
   task->cancel();
 }
 
-void TestQgsTaskManager::dependancies()
+void TestQgsTaskManager::dependencies()
 {
   QgsTaskManager manager;
 
-  //test that cancelling tasks cancels all tasks which are dependant on them
+  //test that cancelling tasks cancels all tasks which are dependent on them
   CancelableTask* task = new CancelableTask();
   task->hold();
   CancelableTask* childTask = new CancelableTask();
@@ -952,7 +952,7 @@ void TestQgsTaskManager::dependancies()
   QCOMPARE( childTask->status(), QgsTask::Terminated );
   QCOMPARE( task->status(), QgsTask::Terminated );
 
-  // test that tasks are queued until dependancies are resolved
+  // test that tasks are queued until dependencies are resolved
   task = new CancelableTask();
   childTask = new CancelableTask();
   childTask->hold();
@@ -1023,7 +1023,7 @@ void TestQgsTaskManager::layerDependencies()
 
   QgsTaskManager manager;
 
-  //test that remove layers cancels all tasks which are dependant on them
+  //test that remove layers cancels all tasks which are dependent on them
   TestTask* task = new TestTask();
   task->hold();
   task->setDependentLayers( QStringList() << layer2->id() << layer3->id() );
