@@ -19,6 +19,7 @@
 #include <QDialog>
 #include <QHBoxLayout>
 #include <QTimer>
+#include <QCompleter>
 
 #include "qgsattributeform.h"
 #include "qgsattributetablefiltermodel.h"
@@ -542,6 +543,14 @@ void QgsRelationReferenceWidget::init()
     }
 
     mComboBox->setModel( mFeatureListModel );
+
+    delete mComboBox->completer();
+    QCompleter* completer = new QCompleter( mComboBox->model(), mComboBox );
+    completer->setModel( mComboBox->model() );
+    completer->setFilterMode( Qt::MatchContains );
+    completer->setCaseSensitivity( Qt::CaseInsensitive );
+    mComboBox->setCompleter( completer );
+
 
     QVariant nullValue = QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" );
 
