@@ -1554,6 +1554,14 @@
     <string>F11</string>
    </property>
   </action>
+  <action name="mActionTogglePanelsVisibility">
+   <property name="text">
+    <string>Toggle Panel Visibility</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Tab</string>
+   </property>
+  </action>
   <action name="mActionProjectProperties">
    <property name="icon">
     <iconset resource="../../images/images.qrc">

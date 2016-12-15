@@ -1714,6 +1714,7 @@ void QgisApp::createActions()
   // Settings Menu Items
 
   connect( mActionToggleFullScreen, SIGNAL( triggered() ), this, SLOT( toggleFullScreen() ) );
+  connect( mActionTogglePanelsVisibility, SIGNAL( triggered() ), this, SLOT( togglePanelsVisibility() ) );
   connect( mActionProjectProperties, SIGNAL( triggered() ), this, SLOT( projectProperties() ) );
   connect( mActionOptions, SIGNAL( triggered() ), this, SLOT( options() ) );
   connect( mActionCustomProjection, SIGNAL( triggered() ), this, SLOT( customProjection() ) );
@@ -1998,6 +1999,7 @@ void QgisApp::createMenus()
     mViewMenu->addMenu( mPanelMenu );
     mViewMenu->addMenu( mToolbarMenu );
     mViewMenu->addAction( mActionToggleFullScreen );
+    mViewMenu->addAction( mActionTogglePanelsVisibility );
   }
   else
   {
@@ -2006,6 +2008,7 @@ void QgisApp::createMenus()
     mSettingsMenu->insertMenu( before, mPanelMenu );
     mSettingsMenu->insertMenu( before, mToolbarMenu );
     mSettingsMenu->insertAction( before, mActionToggleFullScreen );
+    mSettingsMenu->insertAction( before, mActionTogglePanelsVisibility );
     mSettingsMenu->insertSeparator( before );
   }
 
@@ -5619,6 +5622,62 @@ void QgisApp::toggleFullScreen()
     }
     showFullScreen();
     mFullScreenMode = true;
+  }
+}
+
+void QgisApp::togglePanelsVisibility()
+{
+  QSettings settings;
+
+  QStringList docksTitle = settings.value( "UI/hiddenDocksTitle", QString() ).toStringList();
+  QStringList docksActive = settings.value( "UI/hiddenDocksActive", QString() ).toStringList();
+
+  QList<QDockWidget*> docks = findChildren<QDockWidget*>();
+  QList<QTabBar *> tabBars = findChildren<QTabBar *>();
+
+  if ( docksTitle.isEmpty() )
+  {
+
+    Q_FOREACH ( QDockWidget* dock, docks )
+    {
+      if ( dock->isVisible() && !dock->isFloating() )
+      {
+        docksTitle << dock->windowTitle();
+        dock->setVisible( false );
+      }
+    }
+
+    Q_FOREACH ( QTabBar* tabBar, tabBars )
+    {
+      docksActive << tabBar->tabText( tabBar->currentIndex() );
+    }
+
+    settings.setValue( QStringLiteral( "/UI/hiddenDocksTitle" ), docksTitle );
+    settings.setValue( QStringLiteral( "/UI/hiddenDocksActive" ), docksActive );
+  }
+  else
+  {
+    Q_FOREACH ( QDockWidget* dock, docks )
+    {
+      if ( docksTitle.contains( dock->windowTitle() ) )
+      {
+        dock->setVisible( true );
+      }
+    }
+
+    Q_FOREACH ( QTabBar* tabBar, tabBars )
+    {
+      for ( int i = 0; i < tabBar->count(); ++i )
+      {
+        if ( docksActive.contains( tabBar->tabText( i ) ) )
+        {
+          tabBar->setCurrentIndex( i );
+        }
+      }
+    }
+
+    settings.setValue( QStringLiteral( "/UI/hiddenDocksTitle" ), QStringList() );
+    settings.setValue( QStringLiteral( "/UI/hiddenDocksActive" ), QStringList() );
   }
 }
 
