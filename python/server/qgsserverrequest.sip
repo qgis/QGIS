@@ -30,7 +30,8 @@ class QgsServerRequest
 %End
   public:
 
-    enum Method {
+    enum Method
+    {
       HeadMethod, PutMethod, GetMethod, PostMethod, DeleteMethod
     };
 
@@ -61,12 +62,17 @@ class QgsServerRequest
     /**
      * @return the request url
      */
-    virtual QUrl url() const;
+    QUrl url() const;
 
     /**
      * @return the request method
      */
-    virtual Method method() const;
+    Method method() const;
+
+    /**
+     *      * @return query params
+     *           */
+    QMap<QString, QString> parameters() const;
 
     /**
      * Return post/put data

@@ -20,6 +20,7 @@
 #define QGSSERVERREQUEST_H
 
 #include <QUrl>
+#include <QMap>
 
 /**
  * \ingroup server
@@ -59,19 +60,20 @@ class SERVER_EXPORT QgsServerRequest
     virtual ~QgsServerRequest();
 
     /**
-     * @return the value of the header field for that request
-     */
-    virtual QString getHeader( const QString& name ) const;
-
-    /**
      * @return  the request url
      */
-    virtual QUrl url() const;
+    QUrl url() const;
 
     /**
      * @return the request method
       */
-    virtual Method method() const;
+    Method method() const;
+
+    /**
+     * Return a map of query parameters with keys converted
+     * to uppercase
+     */
+    QMap<QString, QString> parameters() const;
 
     /**
      * Return post/put data
@@ -80,10 +82,19 @@ class SERVER_EXPORT QgsServerRequest
      */
     virtual QByteArray data() const;
 
-  protected:
-    QUrl   mUrl;
-    Method mMethod;
+    /**
+     * @return the value of the header field for that request
+     */
+    virtual QString getHeader( const QString& name ) const;
 
+  private:
+    QUrl       mUrl;
+    Method     mMethod;
+    // We mark as mutable in order
+    // to support lazy initialization
+    // Use QMap here because it will be faster for small
+    // number of elements
+    mutable QMap<QString, QString> mParams;
 };
 
 #endif

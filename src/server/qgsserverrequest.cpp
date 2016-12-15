@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include "qgsserverrequest.h"
-
+#include <QUrlQuery>
 
 QgsServerRequest::QgsServerRequest( const QString& url, Method method )
     : mUrl( url )
@@ -54,6 +54,23 @@ QUrl QgsServerRequest::url() const
 QgsServerRequest::Method QgsServerRequest::method() const
 {
   return mMethod;
+}
+
+QMap<QString, QString> QgsServerRequest::parameters() const
+{
+  // Lazy build of the parameter map
+  if ( mParams.isEmpty() && mUrl.hasQuery() )
+  {
+    typedef QPair<QString, QString> pair_t;
+
+    QUrlQuery query( mUrl );
+    QList<pair_t> items = query.queryItems();
+    Q_FOREACH ( const pair_t& pair, items )
+    {
+      mParams.insert( pair.first.toUpper(), pair.second );
+    }
+  }
+  return mParams;
 }
 
 QByteArray QgsServerRequest::data() const
