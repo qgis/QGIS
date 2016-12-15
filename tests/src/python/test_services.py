@@ -108,7 +108,7 @@ class TestServices(unittest.TestCase):
         self.assertEqual( service.version(), "1.0c" )
         
         # Remove one service
-        removed = reg.unRegisterService("STUFF", "1.0c")
+        removed = reg.unregisterService("STUFF", "1.0c")
         self.assertEqual( removed, 1 )
 
         # Check that we get the highest version
@@ -116,7 +116,7 @@ class TestServices(unittest.TestCase):
         self.assertEqual( service.version(), "1.0b" )
         
          # Remove all services
-        removed = reg.unRegisterService("STUFF")
+        removed = reg.unregisterService("STUFF")
         self.assertEqual( removed, 2 )
 
          # Check that there is no more services available

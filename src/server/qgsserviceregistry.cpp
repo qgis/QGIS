@@ -148,7 +148,7 @@ void QgsServiceRegistry::registerService( QgsService* service )
   }
 }
 
-int QgsServiceRegistry::unRegisterService( const QString& name, const QString& version )
+int QgsServiceRegistry::unregisterService( const QString& name, const QString& version )
 {
   // Check that we have a service of that name
   int removed = 0;

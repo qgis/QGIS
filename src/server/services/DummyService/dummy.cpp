@@ -31,8 +31,9 @@ class SampleService: public QgsService
       return method == QgsServerRequest::GetMethod;
     }
 
-    void executeRequest( const QgsServerRequest& /*request*/, QgsServerResponse& response )
+    void executeRequest( const QgsServerRequest& request, QgsServerResponse& response )
     {
+      Q_UNUSED( request );
       QgsDebugMsg( "SampleService::executeRequest called" );
       response.write( QString( "Hello world from myService" ) );
     }

@@ -72,7 +72,7 @@ class QgsServiceRegistry
      * If the version is not specified then all versions from the specified service 
      * are unloaded
      */
-    int unRegisterService( const QString& name, const QString& version = QString() );
+    int unregisterService( const QString& name, const QString& version = QString() );
 
     /**
      * Initialize registry, load modules and auto register services
