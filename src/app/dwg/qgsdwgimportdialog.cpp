@@ -84,6 +84,12 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   leDatabase->setText( s.value( "/DwgImport/lastDatabase", "" ).toString() );
   cbExpandInserts->setChecked( s.value( "/DwgImport/lastExpandInserts", true ).toBool() );
   cbMergeLayers->setChecked( s.value( "/DwgImport/lastMergeLayers", false ).toBool() );
+  cbUseCurves->setChecked( s.value( "/DwgImport/lastUseCurves", true ).toBool() );
+
+#if !defined(GDAL_COMPUTE_VERSION) || GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,0,0)
+  cbUseCurves->setChecked( false );
+  cbUseCurves->setHidden( true );
+#endif
 
   leDrawing->setReadOnly( true );
   pbImportDrawing->setHidden( true );
@@ -109,6 +115,7 @@ QgsDwgImportDialog::~QgsDwgImportDialog()
   s.setValue( "/DwgImport/lastDatabase", leDatabase->text() );
   s.setValue( "/DwgImport/lastExpandInserts", cbExpandInserts->isChecked() );
   s.setValue( "/DwgImport/lastMergeLayers", cbMergeLayers->isChecked() );
+  s.setValue( "/DwgImport/lastUseCurves", cbUseCurves->isChecked() );
   s.setValue( "/Windows/DwgImport/geometry", saveGeometry() );
 }
 
@@ -267,7 +274,7 @@ void QgsDwgImportDialog::on_pbImportDrawing_clicked()
   QgsDwgImporter importer( leDatabase->text(), mCrsSelector->crs() );
 
   QString error;
-  if ( importer.import( leDrawing->text(), error, cbExpandInserts->isChecked() ) )
+  if ( importer.import( leDrawing->text(), error, cbExpandInserts->isChecked(), cbUseCurves->isChecked() ) )
   {
     QgisApp::instance()->messageBar()->pushMessage( tr( "Drawing import completed." ), QgsMessageBar::INFO, 4 );
   }
