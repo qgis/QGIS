@@ -22,6 +22,9 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
+#include <algorithm>
+#include <functional>
+
 namespace
 {
 
@@ -145,23 +148,81 @@ void QgsServiceRegistry::registerService( QgsService* service )
   }
 }
 
-void QgsServiceRegistry::init( const QString& nativeModulePath, const QString& pythonModulePath )
+int QgsServiceRegistry::unRegisterService( const QString& name, const QString& version )
+{
+  // Check that we have a service of that name
+  int removed = 0;
+  VersionTable::const_iterator v = mVersions.constFind( name );
+  if ( v != mVersions.constEnd() )
+  {
+    if ( version.isEmpty() )
+    {
+      // No version specified, remove all versions
+      ServiceTable::iterator it = mServices.begin();
+      while ( it != mServices.end() )
+      {
+        if (( *it )->name() == name )
+        {
+          QgsMessageLog::logMessage( QString( "Unregistering service %1 %2" ).arg( name, ( *it )->version() ) );
+          it = mServices.erase( it );
+          ++removed;
+        }
+        else
+        {
+          ++it;
+        }
+      }
+      // Remove from version table
+      mVersions.remove( name );
+    }
+    else
+    {
+      QString key = makeServiceKey( name, version );
+      ServiceTable::iterator found = mServices.find( key );
+      if ( found != mServices.end() )
+      {
+        QgsMessageLog::logMessage( QString( "Unregistering service %1 %2" ).arg( name, version ) );
+        mServices.erase( found );
+        removed = 1;
+
+        // Find if we have other services of that name
+        // but with different version
+        //
+        QString maxVer;
+        std::function < void ( const ServiceTable::mapped_type& ) >
+        findGreaterVersion = [name,&maxVer]( const ServiceTable::mapped_type & service )
+        {
+          if ( service->name() == name &&
+               ( maxVer.isEmpty() || isVersionGreater( service->version(), maxVer ) ) )
+            maxVer = service->version();
+        };
+
+        mVersions.remove( name );
+
+        std::for_each( mServices.constBegin(), mServices.constEnd(), findGreaterVersion );
+        if ( !maxVer.isEmpty() )
+        {
+          // Set the new default service
+          QString key = makeServiceKey( name, maxVer );
+          mVersions.insert( name, VersionTable::mapped_type( version, key ) );
+        }
+      }
+    }
+  }
+  return removed;
+}
+
+void QgsServiceRegistry::init( const QString& nativeModulePath )
 {
   mNativeLoader.loadModules( nativeModulePath, *this );
-#ifdef HAVE_SERVER_PYTHON_SERVICES
-  mPythonLoader.loadModules( pythonModulePath, *this );
-#endif
 }
 
 void QgsServiceRegistry::cleanUp()
 {
   // Release all services
+  mVersions.clear();
   mServices.clear();
-
   mNativeLoader.unloadModules();
-#ifdef HAVE_SERVER_PYTHON_SERVICES
-  mPythonLoader.unloadModules();
-#endif
 }
 
 

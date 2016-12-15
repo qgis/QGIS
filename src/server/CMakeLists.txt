@@ -55,7 +55,6 @@ SET ( qgis_mapserv_SRCS
   qgsservicemodule.cpp
   qgsserviceloader.cpp
   qgsservicenativeloader.cpp
-  qgsservicepythonloader.cpp
   qgsserviceregistry.cpp
   qgsserverrequest.cpp
   qgsserverresponse.cpp

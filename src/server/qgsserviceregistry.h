@@ -25,7 +25,6 @@
 #include <QString>
 
 #include "qgsservicenativeloader.h"
-#include "qgsservicepythonloader.h"
 #include <memory>
 
 class QgsService;
@@ -76,14 +75,22 @@ class SERVER_EXPORT QgsServiceRegistry
     void registerService( QgsService* service );
 
     /**
+     * Unregister service from its name and version
+     *
+     * @param name the tame of the service
+     * @param version (optional) the specific version to unload
+     * @return the number of services unregistered
+     *
+     * If the version is not specified then all versions from the specified service
+     * are unloaded
+     */
+    int unRegisterService( const QString& name, const QString& version = QString() );
+
+    /**
      * Initialize registry, load modules and auto register services
      * @param nativeModulepath the native module path
-     * @param pythonModulePath the python module path
-     *
-     * If pythonModulePath is not specified the environnement variables QGIS_PYTHON_SERVICE_PATH
-     * is examined.
      */
-    void init( const QString& nativeModulepath, const QString& pythonModulePath = QString() );
+    void init( const QString& nativeModulepath );
 
     /**
      * Clean up registered service and unregister modules
@@ -95,7 +102,6 @@ class SERVER_EXPORT QgsServiceRegistry
     typedef QHash<QString, QPair<QString, QString> > VersionTable;
 
     QgsServiceNativeLoader mNativeLoader;
-    QgsServicePythonLoader mPythonLoader;
 
     ServiceTable mServices;
     VersionTable mVersions;

@@ -74,7 +74,7 @@ class TestServices(unittest.TestCase):
         io = response.io();
         io.seek(0)
 
-        self.assertEquals(QTextStream(io).readLine(), "Hello world")
+        self.assertEqual(QTextStream(io).readLine(), "Hello world")
 
     def test_version_registration(self):
 
@@ -87,10 +87,46 @@ class TestServices(unittest.TestCase):
 
         service = reg.getService("STUFF")
         self.assertIsNotNone(service)
-        self.assertEquals(service.version(), "1.1")
+        self.assertEqual(service.version(), "1.1")
 
         service = reg.getService("STUFF", "2.0")
         self.assertIsNone(service)
+
+    def test_unregister_services(self):
+
+        reg  = QgsServiceRegistry()
+        serv1 = MyService("STUFF", "1.0a", "Hello")
+        serv2 = MyService("STUFF", "1.0b", "Hello")
+        serv3 = MyService("STUFF", "1.0c", "Hello")
+
+        reg.registerService(serv1)
+        reg.registerService(serv2)
+        reg.registerService(serv3)
+
+        # Check we get the highest version
+        service = reg.getService("STUFF")
+        self.assertEqual( service.version(), "1.0c" )
+        
+        # Remove one service
+        removed = reg.unRegisterService("STUFF", "1.0c")
+        self.assertEqual( removed, 1 )
+
+        # Check that we get the highest version
+        service = reg.getService("STUFF")
+        self.assertEqual( service.version(), "1.0b" )
+        
+         # Remove all services
+        removed = reg.unRegisterService("STUFF")
+        self.assertEqual( removed, 2 )
+
+         # Check that there is no more services available
+        service = reg.getService("STUFF")
+        self.assertIsNone(service)
+       
+
+
+
+
 
 if __name__ == '__main__':
     unittest.main()

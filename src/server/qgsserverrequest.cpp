@@ -40,7 +40,7 @@ QgsServerRequest::~QgsServerRequest()
 
 }
 
-QString QgsServerRequest::getHeader( const QString& name ) const
+QString QgsServerRequest::getHeader( const QString& /*name*/ ) const
 {
   return "";
 }
