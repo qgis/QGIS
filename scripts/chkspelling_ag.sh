@@ -15,11 +15,13 @@
 ###########################################################################
 
 # optional arguments: files to be checked
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+AGIGNORE=${DIR}/.agignore
 
 RE=$(cut -d: -f1 scripts/spelling.dat |  tr '\n' '\|' | sed -e 's/|$//')
 if [ ! $# -eq 0 ]; then
-  EXCLUDE=$(cat ci/travis/.agignore | sed -e 's/\s*#.*$//' -e '/^\s*$/d' | tr '\n' '|' | sed -e 's/|$//')
+  EXCLUDE=$(cat $AGIGNORE | sed -e 's/\s*#.*$//' -e '/^\s*$/d' | tr '\n' '|' | sed -e 's/|$//')
   FILES=$(echo $@ | tr -s '[[:blank:]]' '\n' | egrep -iv "$EXCLUDE" | tr '\n' ' ' )
   echo "Running spell check on files: $FILES"
 else
@@ -28,7 +30,7 @@ fi
 
 
 exec 5>&1
-OUTPUT=$(ag --smart-case --all-text --nopager --numbers --word-regexp --path-to-ignore scripts/.agignore "$RE" $FILES |tee /dev/fd/5)
+OUTPUT=$(unbuffer ag --smart-case --all-text --nopager --numbers --word-regexp --path-to-ignore $AGIGNORE "$RE" $FILES |tee /dev/fd/5)
 
 
 if [[ !  -z  $OUTPUT  ]]; then

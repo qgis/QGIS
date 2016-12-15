@@ -41,11 +41,7 @@ set -e
 
 # determine changed files
 MODIFIED=$(git status --porcelain| sed -ne "s/^ *[MA]  *//p" | sort -u)
-
-CODE=$(./$TOPLEVEL/scripts/chkspelling_ag.sh $MODIFIED)
-if [ code -eq 1]; then
-  exit 1
-fi
+${TOPLEVEL}/scripts/chkspelling_ag.sh $MODIFIED
 
 
 if [ -z "$MODIFIED" ]; then

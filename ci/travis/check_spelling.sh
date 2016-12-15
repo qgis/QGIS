@@ -11,7 +11,6 @@ if [[ !  -z  $TRAVIS_PULL_REQUEST_BRANCH  ]]; then
   echo "TRAVIS PR BRANCH: $TRAVIS_PULL_REQUEST_BRANCH"
   FILES=$(git diff --name-only HEAD $(git merge-base HEAD master) | tr '\n' ' ' ) 
 fi
-
            
-CODE=$(./scripts/chkspelling_ag.sh)
-exit $CODE
+./scripts/chkspelling_ag.sh $FILES
+
