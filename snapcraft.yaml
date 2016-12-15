@@ -55,6 +55,7 @@ parts:
       - libqca-qt5-2-plugins
     stage-packages:
       - coreutils
+      - libqca-qt5-2-plugins
       - libqt5sql5-sqlite
       - python3-sip
       - python3-sip-dev
