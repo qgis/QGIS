@@ -319,14 +319,9 @@ bool QgsSnappingLayerTreeModel::nodeShown( QgsLayerTreeNode* node ) const
   }
   else
   {
-    QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
-    if ( layer && layer->type() == QgsMapLayer::VectorLayer )
-    {
-      QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
-      return vl && vl->hasGeometryType();
-    }
+    QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsLayerTree::toLayer( node )->layer() );
+    return layer && layer->hasGeometryType();
   }
-  return false;
 }
 
 QVariant QgsSnappingLayerTreeModel::headerData( int section, Qt::Orientation orientation, int role ) const
