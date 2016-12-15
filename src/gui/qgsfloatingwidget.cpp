@@ -34,12 +34,15 @@ QgsFloatingWidget::QgsFloatingWidget( QWidget *parent )
   {
     mParentEventFilter = new QgsFloatingWidgetEventFilter( parent );
     parent->installEventFilter( mParentEventFilter );
-    connect( mParentEventFilter, SIGNAL( anchorPointChanged() ), this, SLOT( anchorPointChanged() ) );
+    connect( mParentEventFilter, &QgsFloatingWidgetEventFilter::anchorPointChanged, this, &QgsFloatingWidget::onAnchorPointChanged );
   }
 }
 
 void QgsFloatingWidget::setAnchorWidget( QWidget *widget )
 {
+  if ( widget == mAnchorWidget )
+    return;
+
   // remove existing event filter
   if ( mAnchorWidget )
   {
@@ -53,10 +56,11 @@ void QgsFloatingWidget::setAnchorWidget( QWidget *widget )
   {
     mAnchorEventFilter = new QgsFloatingWidgetEventFilter( mAnchorWidget );
     mAnchorWidget->installEventFilter( mAnchorEventFilter );
-    connect( mAnchorEventFilter, SIGNAL( anchorPointChanged() ), this, SLOT( anchorPointChanged() ) );
+    connect( mAnchorEventFilter, &QgsFloatingWidgetEventFilter::anchorPointChanged, this, &QgsFloatingWidget::onAnchorPointChanged );
   }
 
-  anchorPointChanged();
+  onAnchorPointChanged();
+  emit anchorWidgetChanged( mAnchorWidget );
 }
 
 QWidget *QgsFloatingWidget::anchorWidget()
@@ -64,9 +68,29 @@ QWidget *QgsFloatingWidget::anchorWidget()
   return mAnchorWidget;
 }
 
+void QgsFloatingWidget::setAnchorPoint( QgsFloatingWidget::AnchorPoint point )
+{
+  if ( point == mFloatAnchorPoint )
+    return;
+
+  mFloatAnchorPoint = point;
+  onAnchorPointChanged();
+  emit anchorPointChanged( mFloatAnchorPoint );
+}
+
+void QgsFloatingWidget::setAnchorWidgetPoint( QgsFloatingWidget::AnchorPoint point )
+{
+  if ( point == mAnchorWidgetAnchorPoint )
+    return;
+
+  mAnchorWidgetAnchorPoint = point;
+  onAnchorPointChanged();
+  emit anchorWidgetPointChanged( mAnchorWidgetAnchorPoint );
+}
+
 void QgsFloatingWidget::showEvent( QShowEvent *e )
 {
-  anchorPointChanged();
+  onAnchorPointChanged();
   QWidget::showEvent( e );
 }
 
@@ -79,8 +103,11 @@ void QgsFloatingWidget::paintEvent( QPaintEvent* e )
   style()->drawPrimitive( QStyle::PE_Widget, &opt, &p, this );
 }
 
-void QgsFloatingWidget::anchorPointChanged()
+void QgsFloatingWidget::onAnchorPointChanged()
 {
+  if ( !parentWidget() )
+    return;
+
   if ( mAnchorWidget )
   {
     QPoint anchorWidgetOrigin;
