@@ -75,6 +75,7 @@
 %Include qgsfieldmodel.sip
 %Include qgsfieldproxymodel.sip
 %Include qgsfieldvalidator.sip
+%Include qgsfieldvalueslineedit.sip
 %Include qgsfiledropedit.sip
 %Include qgsfilewidget.sip
 %Include qgsfiledownloader.sip
