@@ -4048,11 +4048,6 @@ void QgsComposer::createComposerView()
 
   //view does not accept focus via tab
   mView->setFocusPolicy( Qt::ClickFocus );
-  //instead, if view is focused and tab is pressed than mActionHidePanels is triggered,
-  //to toggle display of panels
-  QShortcut* tab = new QShortcut( Qt::Key_Tab, mView );
-  tab->setContext( Qt::WidgetWithChildrenShortcut );
-  connect( tab, SIGNAL( activated() ), mActionHidePanels, SLOT( trigger() ) );
 }
 
 void QgsComposer::writeWorldFile( const QString& worldFileName, double a, double b, double c, double d, double e, double f ) const

@@ -1024,7 +1024,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Toggle Full Scr&amp;een</string>
+    <string>Toggle Full Screen</string>
    </property>
    <property name="toolTip">
     <string>Toggle full screen mode</string>
@@ -1038,13 +1038,13 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;Hide Panels</string>
+    <string>&amp;Toggle Panel Visibility</string>
    </property>
    <property name="toolTip">
     <string>Hide panels</string>
    </property>
    <property name="shortcut">
-    <string>F10</string>
+    <string>Ctrl+Tab</string>
    </property>
   </action>
   <action name="mActionShowPage">

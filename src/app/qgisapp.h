@@ -418,6 +418,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionShowPythonDialog() { return mActionShowPythonDialog; }
 
     QAction *actionToggleFullScreen() { return mActionToggleFullScreen; }
+    QAction *actionTogglePanelsVisibility() { return mActionTogglePanelsVisibility; }
     QAction *actionOptions() { return mActionOptions; }
     QAction *actionCustomProjection() { return mActionCustomProjection; }
     QAction *actionConfigureShortcuts() { return mActionConfigureShortcuts; }
@@ -1276,6 +1277,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Toggle full screen mode
     void toggleFullScreen();
+
+    //! Toggle visibility of opened panels
+    void togglePanelsVisibility();
 
     //! Set minimized mode of active window
     void showActiveWindowMinimized();
