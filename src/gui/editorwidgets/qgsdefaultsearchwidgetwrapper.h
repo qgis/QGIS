@@ -17,7 +17,7 @@
 #define QGSDEFAULTSEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
-#include <qgsfilterlineedit.h>
+#include "qgsfilterlineedit.h"
 
 #include <QCheckBox>
 
