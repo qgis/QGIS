@@ -28,7 +28,6 @@
 #include "qgsfontutils.h"
 #include "qgsgetrequesthandler.h"
 #include "qgspostrequesthandler.h"
-#include "qgssoaprequesthandler.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
@@ -136,7 +135,6 @@ QgsRequestHandler* QgsServer::createRequestHandler( const bool captureOutput )
   {
     if ( strcmp( requestMethod, "POST" ) == 0 )
     {
-      //requestHandler = new QgsSOAPRequestHandler();
       requestHandler = new QgsPostRequestHandler( captureOutput );
     }
     else

@@ -25,7 +25,6 @@ SET ( qgis_mapserv_SRCS
 #  qgshttptransaction.cpp
   qgsgetrequesthandler.cpp
   qgspostrequesthandler.cpp
-  qgssoaprequesthandler.cpp
   qgsowsserver.cpp
   qgswmsserver.cpp
   qgswfsserver.cpp
