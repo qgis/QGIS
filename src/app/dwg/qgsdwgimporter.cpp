@@ -184,7 +184,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   QgsDebugCall;
 
   OGRwkbGeometryType lineGeomType, hatchGeomType;
-  if( useCurves )
+  if ( useCurves )
   {
 #if !defined(GDAL_COMPUTE_VERSION) || GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,0,0)
     error = QObject::tr( "Curves only supported with GDAL2" );
@@ -1178,7 +1178,7 @@ bool QgsDwgImporter::createFeature( OGRLayerH layer, OGRFeatureH f, const QgsAbs
   const QgsAbstractGeometry *g;
   QScopedPointer<QgsAbstractGeometry> sg( nullptr );
 
-  if( !mUseCurves && g0.hasCurvedSegments() )
+  if ( !mUseCurves && g0.hasCurvedSegments() )
   {
     sg.reset( g0.segmentize() );
     g = sg.data();
@@ -1190,7 +1190,7 @@ bool QgsDwgImporter::createFeature( OGRLayerH layer, OGRFeatureH f, const QgsAbs
 
   QByteArray wkb = g->asWkb();
   OGRGeometryH geom;
-  if ( OGR_G_CreateFromWkb( (unsigned char *) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
+  if ( OGR_G_CreateFromWkb(( unsigned char * ) wkb.constData(), nullptr, &geom, wkb.size() ) != OGRERR_NONE )
   {
     LOG( QObject::tr( "Could not create geometry [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
