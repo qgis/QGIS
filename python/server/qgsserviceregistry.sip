@@ -63,13 +63,13 @@ class QgsServiceRegistry
     void registerService( QgsService* service /Transfer/ );
 
     /**
-     * Unregister service from its name and version 
+     * Unregister service from its name and version
      *
      * @param name the tame of the service
      * @param version (optional) the specific version to unload
      * @return the number of unregstered services
      *
-     * If the version is not specified then all versions from the specified service 
+     * If the version is not specified then all versions from the specified service
      * are unloaded
      */
     int unregisterService( const QString& name, const QString& version = QString() );

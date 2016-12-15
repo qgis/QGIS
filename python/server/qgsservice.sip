@@ -62,9 +62,8 @@ class QgsService
 
     /**
      * Execute the requests and set result in QgsServerRequest
-     * @param request a QgsServerRequest instance
-     * @param response a QgsServerResponse instance
      */
-    virtual void executeRequest( const QgsServerRequest& request, QgsServerResponse& response ) = 0;
+    virtual void executeRequest( const QgsServerRequest& request, QgsServerResponse& response,
+                                 QgsProject* project = nullptr ) = 0;
 };
 
