@@ -46,7 +46,13 @@ class MultipleInputDialog(BASE, WIDGET):
 
         self.lstLayers.setSelectionMode(QAbstractItemView.NoSelection)
 
-        self.options = options
+        self.options = []
+        for i, option in enumerate(options):
+            if option is None or isinstance(option, basestring):
+                self.options.append((i, option))
+            else:
+                self.options.append((option[0], option[1]))
+
         self.selectedoptions = selectedoptions or []
 
         # Additional buttons
