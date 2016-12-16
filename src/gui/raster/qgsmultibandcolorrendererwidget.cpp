@@ -80,6 +80,7 @@ QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer
     setFromRenderer( mRasterLayer->renderer() );
     onBandChanged( 0 ); // reset mMinMaxWidget bands
 
+    connect( mContrastEnhancementAlgorithmComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
     connect( mRedMinLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
     connect( mRedMaxLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
     connect( mGreenMaxLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
