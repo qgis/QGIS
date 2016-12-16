@@ -22,8 +22,9 @@
 #include "qgsmslayercache.h"
 
 //! Constructor
-QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache )
+QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache, QgsServiceRegistry* srvRegistry )
     : mCapabilitiesCache( capCache )
+    , mServiceRegistry(srvRegistry)
 {
   mRequestHandler = nullptr;
   mAccessControls = new QgsAccessControl();
@@ -89,5 +90,8 @@ void QgsServerInterfaceImpl::removeProjectLayers( const QString& path )
   QgsMSLayerCache::instance()->removeProjectLayers( path );
 }
 
-
+QgsServiceRegistry* QgsServerInterfaceImpl::serviceRegistry()
+{
+  return mServiceRegistry;  
+}
 

@@ -45,8 +45,9 @@ class SampleService: public QgsService
 class QgsSampleModule: public QgsServiceModule
 {
   public:
-    void registerSelf( QgsServiceRegistry& registry )
+    void registerSelf( QgsServiceRegistry& registry, QgsServerInterface* serverIface )
     {
+      Q_UNUSED( serverIface );
       QgsDebugMsg( "SampleModule::registerSelf called" );
       registry.registerService( new  SampleService() );
     }

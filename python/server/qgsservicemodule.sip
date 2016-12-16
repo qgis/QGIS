@@ -44,7 +44,8 @@ class QgsServiceModule
      * Ask module to registe all provided services
      * @param registry QgsServiceRegistry
      */
-    virtual void registerSelf( QgsServiceRegistry& registry ) = 0;
+    virtual void registerSelf( QgsServiceRegistry& registry, 
+           QgsServerInterface* serverIface = nullptr ) = 0;
 };
 
 

@@ -54,7 +54,8 @@ QgsServiceNativeLoader::~QgsServiceNativeLoader()
 
 }
 
-void QgsServiceNativeLoader::loadModules( const QString& modulePath, QgsServiceRegistry& registrar )
+void QgsServiceNativeLoader::loadModules( const QString& modulePath, QgsServiceRegistry& registrar,
+       QgsServerInterface* serverIface )
 {
   QDir moduleDir( modulePath );
   moduleDir.setSorting( QDir::Name | QDir::IgnoreCase );
@@ -74,7 +75,7 @@ void QgsServiceNativeLoader::loadModules( const QString& modulePath, QgsServiceR
     if ( module )
     {
       // Register services
-      module->registerSelf( registrar );
+      module->registerSelf( registrar, serverIface );
     }
   }
 }

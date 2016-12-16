@@ -53,7 +53,6 @@ SET ( qgis_mapserv_SRCS
   qgsserver.cpp
   qgsservice.cpp
   qgsservicemodule.cpp
-  qgsserviceloader.cpp
   qgsservicenativeloader.cpp
   qgsserviceregistry.cpp
   qgsserverrequest.cpp

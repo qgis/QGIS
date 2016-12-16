@@ -22,10 +22,9 @@
 class QgsServiceModule;
 class QgsServiceRegistry;
 class QgsServiceNativeModuleEntry;
+class QgsServerInterface;
 
-#include "qgsserviceloader.h"
 #include <QHash>
-
 #include <memory>
 
 /**
@@ -36,7 +35,7 @@ class QgsServiceNativeModuleEntry;
  * This class provides methods for loading and managing hook for native (C++) modules
  *
  */
-class SERVER_EXPORT QgsServiceNativeLoader: public QgsServiceLoader
+class SERVER_EXPORT QgsServiceNativeLoader
 {
   public:
 
@@ -49,14 +48,16 @@ class SERVER_EXPORT QgsServiceNativeLoader: public QgsServiceLoader
     /**
      * Lead all medules from path
      * @param modulePath the path to look for module
-     * @parama registrar QgsServiceRegistry instance for registering services
+     * @param registrar QgsServiceRegistry instance for registering services
+     * @param serverIface QgsServerInterface instarce 
      */
-    void loadModules( const QString& modulePath, QgsServiceRegistry& registrar ) override;
+    void loadModules( const QString& modulePath, QgsServiceRegistry& registrar,
+           QgsServerInterface* serverIface = nullptr );
 
     /**
      * Unload all modules
      */
-    void unloadModules() override;
+    void unloadModules();
 
     /**
      * Load the native module from path

@@ -193,9 +193,7 @@ class QgsServer
     */
 
     /** Returns a pointer to the server interface */
-%If (HAVE_SERVER_PYTHON_PLUGINS)
-     QgsServerInterface* serverInterface();
-%End
+    QgsServerInterface* serverInterface();
 
   private:
     QgsServer( const QgsServer& );

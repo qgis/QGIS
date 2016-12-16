@@ -34,14 +34,15 @@
 #include "qgscapabilitiescache.h"
 #include "qgsmapsettings.h"
 #include "qgsmessagelog.h"
+#include "qgsserviceregistry.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsserverplugins.h"
 #include "qgsserverfilter.h"
-#include "qgsserverinterfaceimpl.h"
 #include "qgis_server.h"
 #endif
 
+#include "qgsserverinterfaceimpl.h"
 
 /** \ingroup server
  * The QgsServer class provides OGC web services.
@@ -59,7 +60,7 @@ class SERVER_EXPORT QgsServer
      * @param var environment variable name
      * @param val value
      * @note added in 2.14
-     */
+    / */
     void putenv( const QString &var, const QString &val );
 
     /** Handles the request. The output is normally printed trough FCGI printf
@@ -75,10 +76,10 @@ class SERVER_EXPORT QgsServer
      */
     QPair<QByteArray, QByteArray> handleRequest( const QString& queryString = QString() );
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
     //! Returns a pointer to the server interface
     QgsServerInterfaceImpl* serverInterface() { return sServerInterface; }
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     //! Intialize python
     //! Note: not in python bindings
     void initPython( );
@@ -125,6 +126,10 @@ class SERVER_EXPORT QgsServer
     //! Initialization must run once for all servers
     static bool sInitialised;
     static bool sCaptureOutput;
+
+    //! service registry
+    static QgsServiceRegistry sServiceRegistry;
+    
 };
 #endif // QGSSERVER_H
 

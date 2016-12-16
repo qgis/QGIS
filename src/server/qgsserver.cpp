@@ -39,9 +39,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsserverlogger.h"
 #include "qgseditorwidgetregistry.h"
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrolfilter.h"
-#endif
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>
@@ -61,14 +59,12 @@
 
 QString* QgsServer::sConfigFilePath = nullptr;
 QgsCapabilitiesCache* QgsServer::sCapabilitiesCache = nullptr;
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-QgsServerInterfaceImpl*QgsServer::sServerInterface = nullptr;
-#endif
+QgsServerInterfaceImpl* QgsServer::sServerInterface = nullptr;
 // Initialization must run once for all servers
 bool QgsServer::sInitialised =  false;
 bool QgsServer::sCaptureOutput = true;
 
-
+QgsServiceRegistry QgsServer::sServiceRegistry;
 
 QgsServer::QgsServer( bool captureOutput )
 {
@@ -348,9 +344,10 @@ bool QgsServer::init( )
 
   QgsEditorWidgetRegistry::initEditors();
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache );
-#endif
+  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache, &sServiceRegistry );
+
+  // Load service modules
+  sServiceRegistry.init( QgsApplication::libexecPath() + "/server", sServerInterface );
 
   sInitialised = true;
   QgsMessageLog::logMessage( QStringLiteral( "Server initialized" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );

@@ -521,7 +521,8 @@ ELSE (WIN32)
     SET (QGIS_PLUGIN_SUBDIR_REV  ../../MacOS)
     SET (DEFAULT_INCLUDE_SUBDIR  include/qgis)
 
-    SET (DEFAULT_SERVER_MODULE_SUBDIR ../PlugIns/server)
+    # Set server moodules path to DEFAULT_LIBEXEC_SUBDIR+'/server' 
+    SET (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
 
     # path for framework references when running from build directory
     # changed later to reference in-app resources upon install
@@ -547,7 +548,7 @@ ELSE (WIN32)
     SET (DEFAULT_PLUGIN_SUBDIR  lib${LIB_SUFFIX}/qgis/plugins)
     SET (DEFAULT_INCLUDE_SUBDIR include/qgis)
 
-    SET (DEFAULT_SERVER_MODULE_SUBDIR lib${LIB_SUFFIX}/qgis/server)
+    SET (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/qgis/server)
   ENDIF (APPLE)
 
 ENDIF (WIN32)

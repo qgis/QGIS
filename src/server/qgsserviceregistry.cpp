@@ -79,7 +79,7 @@ namespace
 
 QgsServiceRegistry::QgsServiceRegistry()
 {
-  //TODO
+
 }
 
 QgsServiceRegistry::~QgsServiceRegistry()
@@ -212,9 +212,9 @@ int QgsServiceRegistry::unregisterService( const QString& name, const QString& v
   return removed;
 }
 
-void QgsServiceRegistry::init( const QString& nativeModulePath )
+void QgsServiceRegistry::init( const QString& nativeModulePath, QgsServerInterface* serverIface )
 {
-  mNativeLoader.loadModules( nativeModulePath, *this );
+  mNativeLoader.loadModules( nativeModulePath, *this, serverIface );
 }
 
 void QgsServiceRegistry::cleanUp()

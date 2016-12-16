@@ -27,6 +27,7 @@
 #include "qgsaccesscontrolfilter.h"
 #include "qgsaccesscontrol.h"
 #include "qgis_server.h"
+#include "qgsserviceregistry.h"
 
 /**
  * \ingroup server
@@ -131,6 +132,12 @@ class SERVER_EXPORT QgsServerInterface
      * @param path the path of the project which own the layers to be removed
      */
     virtual void removeProjectLayers( const QString& path ) = 0;
+
+    /**
+     * Return the service registry 
+     * @return QgsServiceResgistry
+     */
+    virtual QgsServiceRegistry* serviceRegistry() = 0;
 
   private:
     QString mConfigFilePath;

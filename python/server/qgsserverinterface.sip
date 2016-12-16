@@ -124,6 +124,12 @@ class QgsServerInterface
      */
     virtual void removeProjectLayers( const QString& path ) = 0;
 
+    /**
+     * Return the service registry 
+     * @return QgsServiceResgistry
+     */
+    virtual QgsServiceRegistry* serviceRegistry() = 0 /KeepReference/;
+
   private:
     /** Constructor */
     QgsServerInterface();

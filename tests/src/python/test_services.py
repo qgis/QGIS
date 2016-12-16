@@ -2,7 +2,9 @@
 """
 from qgis.PyQt.QtCore import QBuffer, QIODevice, QTextStream
 from qgis.testing import unittest
-from qgis.server import (QgsServiceRegistry, 
+from qgis.core import QgsApplication
+from qgis.server import (QgsServer,
+                         QgsServiceRegistry, 
                          QgsService,
                          QgsServerRequest,
                          QgsServerResponse)
@@ -76,7 +78,7 @@ class TestServices(unittest.TestCase):
 
         self.assertEqual(QTextStream(io).readLine(), "Hello world")
 
-    def test_version_registration(self):
+    def test_0_version_registration(self):
 
         reg     = QgsServiceRegistry()
         myserv1 = MyService("STUFF", "1.0", "Hello")
@@ -92,7 +94,7 @@ class TestServices(unittest.TestCase):
         service = reg.getService("STUFF", "2.0")
         self.assertIsNone(service)
 
-    def test_unregister_services(self):
+    def test_1_unregister_services(self):
 
         reg  = QgsServiceRegistry()
         serv1 = MyService("STUFF", "1.0a", "Hello")
@@ -123,8 +125,16 @@ class TestServices(unittest.TestCase):
         service = reg.getService("STUFF")
         self.assertIsNone(service)
        
+    def test_2_server_initialization(self):
 
+        qgisapp = QgsApplication([], False)
+        server  = QgsServer()
 
+        # Check that our 'SampleService is registered
+        iface   = server.serverInterface()
+        service = iface.serviceRegistry().getService('SampleService')
+        
+        self.assertIsNotNone(service)
 
 
 

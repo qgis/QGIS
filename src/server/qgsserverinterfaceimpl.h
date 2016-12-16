@@ -37,7 +37,8 @@ class QgsServerInterfaceImpl : public QgsServerInterface
   public:
 
     //! Constructor
-    explicit QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache );
+    explicit QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache,
+                                     QgsServiceRegistry* srvRegistry );
 
 
     ~QgsServerInterfaceImpl();
@@ -50,6 +51,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     void registerFilter( QgsServerFilter *filter, int priority = 0 ) override;
     QgsServerFiltersMap filters() override { return mFilters; }
     //! Register an access control filter
+    //
     void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 ) override;
 
     /** Gets the helper over all the registered access control filters
@@ -63,6 +65,8 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     void removeConfigCacheEntry( const QString& path ) override;
     void removeProjectLayers( const QString& path ) override;
 
+    QgsServiceRegistry* serviceRegistry() override;
+
   private:
 
     QString mConfigFilePath;
@@ -70,7 +74,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     QgsAccessControl* mAccessControls;
     QgsCapabilitiesCache* mCapabilitiesCache;
     QgsRequestHandler* mRequestHandler;
-
+    QgsServiceRegistry* mServiceRegistry;
 };
 
 #endif // QGSSERVERINTERFACEIMPL_H
