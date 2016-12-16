@@ -2,8 +2,8 @@ r.cost
 r.cost.coordinates - Creates a raster layer of cumulative cost of moving across a raster layer whose cell values represent cost.
 Raster (r.*)
 ParameterRaster|input|Unit cost layer|False
-ParameterString|start_coordinates|Coordinates of starting point(s) (E,N)|0,0
-ParameterString|stop_coordinates|Coordinates of stopping point(s) (E,N)|
+ParameterPoint|start_coordinates|Coordinates of starting point(s) (E,N)|0,0
+ParameterPoint|stop_coordinates|Coordinates of stopping point(s) (E,N)|0,0
 ParameterBoolean|-k|Use the 'Knight's move'; slower, but more accurate|False
 ParameterBoolean|-n|Keep null values in output raster layer|True
 ParameterNumber|max_cost|Maximum cumulative cost|0|None|0
