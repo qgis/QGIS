@@ -112,6 +112,10 @@ void QgsRasterRenderer::_writeXml( QDomDocument& doc, QDomElement& rasterRendere
   {
     mRasterTransparency->writeXml( doc, rasterRendererElem );
   }
+
+  QDomElement minMaxOriginElem = doc.createElement( QStringLiteral( "minMaxOrigin" ) );
+  mMinMaxOrigin.writeXml( doc, minMaxOriginElem );
+  rasterRendererElem.appendChild( minMaxOriginElem );
 }
 
 void QgsRasterRenderer::readXml( const QDomElement& rendererElem )
@@ -132,9 +136,15 @@ void QgsRasterRenderer::readXml( const QDomElement& rendererElem )
     mRasterTransparency = new QgsRasterTransparency();
     mRasterTransparency->readXml( rasterTransparencyElem );
   }
+
+  QDomElement minMaxOriginElem = rendererElem.firstChildElement( QStringLiteral( "minMaxOrigin" ) );
+  if ( !minMaxOriginElem.isNull() )
+  {
+    mMinMaxOrigin.readXml( minMaxOriginElem );
+  }
 }
 
-void QgsRasterRenderer::copyCommonProperties( const QgsRasterRenderer* other )
+void QgsRasterRenderer::copyCommonProperties( const QgsRasterRenderer* other, bool copyMinMaxOrigin )
 {
   if ( !other )
     return;
@@ -142,150 +152,6 @@ void QgsRasterRenderer::copyCommonProperties( const QgsRasterRenderer* other )
   setOpacity( other->opacity() );
   setAlphaBand( other->alphaBand() );
   setRasterTransparency( other->rasterTransparency() ? new QgsRasterTransparency( *other->rasterTransparency() ) : nullptr );
-}
-
-QString QgsRasterRenderer::minMaxOriginName( int theOrigin )
-{
-  if ( theOrigin == MinMaxUnknown )
-  {
-    return QStringLiteral( "Unknown" );
-  }
-  else if ( theOrigin == MinMaxUser )
-  {
-    return QStringLiteral( "User" );
-  }
-
-  QString name;
-  if ( theOrigin & MinMaxMinMax )
-  {
-    name += QLatin1String( "MinMax" );
-  }
-  else if ( theOrigin & MinMaxCumulativeCut )
-  {
-    name += QLatin1String( "CumulativeCut" );
-  }
-  else if ( theOrigin & MinMaxStdDev )
-  {
-    name += QLatin1String( "StdDev" );
-  }
-
-  if ( theOrigin & MinMaxFullExtent )
-  {
-    name += QLatin1String( "FullExtent" );
-  }
-  else if ( theOrigin & MinMaxSubExtent )
-  {
-    name += QLatin1String( "SubExtent" );
-  }
-
-  if ( theOrigin & MinMaxEstimated )
-  {
-    name += QLatin1String( "Estimated" );
-  }
-  else if ( theOrigin & MinMaxExact )
-  {
-    name += QLatin1String( "Exact" );
-  }
-  return name;
-}
-
-QString QgsRasterRenderer::minMaxOriginLabel( int theOrigin )
-{
-  if ( theOrigin == MinMaxUnknown )
-  {
-    return tr( "Unknown" );
-  }
-  else if ( theOrigin == MinMaxUser )
-  {
-    return tr( "User defined" );
-  }
-
-  QString label;
-  QString est_exact;
-  QString values;
-  QString extent;
-
-  if ( theOrigin & MinMaxEstimated )
-  {
-    est_exact = tr( "Estimated" );
-  }
-  else if ( theOrigin & MinMaxExact )
-  {
-    est_exact = tr( "Exact" );
-  }
-
-  if ( theOrigin & MinMaxMinMax )
-  {
-    values = tr( "min / max" );
-  }
-  else if ( theOrigin & MinMaxCumulativeCut )
-  {
-    values = tr( "cumulative cut" );
-  }
-  else if ( theOrigin & MinMaxStdDev )
-  {
-    values = tr( "standard deviation" );
-  }
-
-  if ( theOrigin & MinMaxFullExtent )
-  {
-    extent = tr( "full extent" );
-  }
-  else if ( theOrigin & MinMaxSubExtent )
-  {
-    extent = tr( "sub extent" );
-  }
-
-  label = QCoreApplication::translate( "QgsRasterRenderer", "%1 %2 of %3.",
-                                       "min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent" )
-          .arg( est_exact,
-                values,
-                extent );
-  return label;
-}
-
-int QgsRasterRenderer::minMaxOriginFromName( const QString& theName )
-{
-  if ( theName.contains( QLatin1String( "Unknown" ) ) )
-  {
-    return MinMaxUnknown;
-  }
-  else if ( theName.contains( QLatin1String( "User" ) ) )
-  {
-    return MinMaxUser;
-  }
-
-  int origin = 0;
-
-  if ( theName.contains( QLatin1String( "MinMax" ) ) )
-  {
-    origin |= MinMaxMinMax;
-  }
-  else if ( theName.contains( QLatin1String( "CumulativeCut" ) ) )
-  {
-    origin |= MinMaxCumulativeCut;
-  }
-  else if ( theName.contains( QLatin1String( "StdDev" ) ) )
-  {
-    origin |= MinMaxStdDev;
-  }
-
-  if ( theName.contains( QLatin1String( "FullExtent" ) ) )
-  {
-    origin |= MinMaxFullExtent;
-  }
-  else if ( theName.contains( QLatin1String( "SubExtent" ) ) )
-  {
-    origin |= MinMaxSubExtent;
-  }
-
-  if ( theName.contains( QLatin1String( "Estimated" ) ) )
-  {
-    origin |= MinMaxEstimated;
-  }
-  else if ( theName.contains( QLatin1String( "Exact" ) ) )
-  {
-    origin |= MinMaxExact;
-  }
-  return origin;
+  if ( copyMinMaxOrigin )
+    setMinMaxOrigin( other->minMaxOrigin() );
 }

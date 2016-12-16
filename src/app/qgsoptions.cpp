@@ -31,6 +31,8 @@
 #include "qgsproject.h"
 #include "qgsdualview.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterminmaxorigin.h"
+#include "qgscontrastenhancement.h"
 
 #include "qgsattributetablefiltermodel.h"
 #include "qgsrasterformatsaveoptionswidget.h"
@@ -653,22 +655,24 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   spnGreen->setValue( mSettings->value( QStringLiteral( "/Raster/defaultGreenBand" ), 2 ).toInt() );
   spnBlue->setValue( mSettings->value( QStringLiteral( "/Raster/defaultBlueBand" ), 3 ).toInt() );
 
-  initContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, QStringLiteral( "singleBand" ), QStringLiteral( "StretchToMinimumMaximum" ) );
-  initContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, QStringLiteral( "multiBandSingleByte" ), QStringLiteral( "NoEnhancement" ) );
-  initContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandMultiByte, QStringLiteral( "multiBandMultiByte" ), QStringLiteral( "StretchToMinimumMaximum" ) );
+  initContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, QStringLiteral( "singleBand" ),
+                           QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsRasterLayer::SINGLE_BAND_ENHANCEMENT_ALGORITHM ) );
+  initContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, QStringLiteral( "multiBandSingleByte" ),
+                           QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsRasterLayer::MULTIPLE_BAND_SINGLE_BYTE_ENHANCEMENT_ALGORITHM ) );
+  initContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandMultiByte, QStringLiteral( "multiBandMultiByte" ),
+                           QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM ) );
 
-  cboxContrastEnhancementLimits->addItem( tr( "Cumulative pixel count cut" ), "CumulativeCut" );
-  cboxContrastEnhancementLimits->addItem( tr( "Minimum / maximum" ), "MinMax" );
-  cboxContrastEnhancementLimits->addItem( tr( "Mean +/- standard deviation" ), "StdDev" );
+  initMinMaxLimits( cboxContrastEnhancementLimitsSingleBand, QStringLiteral( "singleBand" ),
+                    QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::SINGLE_BAND_MIN_MAX_LIMITS ) );
+  initMinMaxLimits( cboxContrastEnhancementLimitsMultiBandSingleByte, QStringLiteral( "multiBandSingleByte" ),
+                    QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS ) );
+  initMinMaxLimits( cboxContrastEnhancementLimitsMultiBandMultiByte, QStringLiteral( "multiBandMultiByte" ),
+                    QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS ) );
 
-  QString contrastEnchacementLimits = mSettings->value( QStringLiteral( "/Raster/defaultContrastEnhancementLimits" ), "CumulativeCut" ).toString();
+  spnThreeBandStdDev->setValue( mSettings->value( QStringLiteral( "/Raster/defaultStandardDeviation" ), QgsRasterMinMaxOrigin::DEFAULT_STDDEV_FACTOR ).toDouble() );
 
-  cboxContrastEnhancementLimits->setCurrentIndex( cboxContrastEnhancementLimits->findData( contrastEnchacementLimits ) );
-
-  spnThreeBandStdDev->setValue( mSettings->value( QStringLiteral( "/Raster/defaultStandardDeviation" ), 2.0 ).toDouble() );
-
-  mRasterCumulativeCutLowerDoubleSpinBox->setValue( 100.0 * mSettings->value( QStringLiteral( "/Raster/cumulativeCutLower" ), QString::number( QgsRasterLayer::CUMULATIVE_CUT_LOWER ) ).toDouble() );
-  mRasterCumulativeCutUpperDoubleSpinBox->setValue( 100.0 * mSettings->value( QStringLiteral( "/Raster/cumulativeCutUpper" ), QString::number( QgsRasterLayer::CUMULATIVE_CUT_UPPER ) ).toDouble() );
+  mRasterCumulativeCutLowerDoubleSpinBox->setValue( 100.0 * mSettings->value( QStringLiteral( "/Raster/cumulativeCutLower" ), QString::number( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_LOWER ) ).toDouble() );
+  mRasterCumulativeCutUpperDoubleSpinBox->setValue( 100.0 * mSettings->value( QStringLiteral( "/Raster/cumulativeCutUpper" ), QString::number( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_UPPER ) ).toDouble() );
 
   //set the color for selections
   int myRed = mSettings->value( QStringLiteral( "/qgis/default_selection_color_red" ), 255 ).toInt();
@@ -1268,8 +1272,9 @@ void QgsOptions::saveOptions()
   saveContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, QStringLiteral( "multiBandSingleByte" ) );
   saveContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandMultiByte, QStringLiteral( "multiBandMultiByte" ) );
 
-  QString contrastEnhancementLimits = cboxContrastEnhancementLimits->currentData().toString();
-  mSettings->setValue( QStringLiteral( "/Raster/defaultContrastEnhancementLimits" ), contrastEnhancementLimits );
+  saveMinMaxLimits( cboxContrastEnhancementLimitsSingleBand, QStringLiteral( "singleBand" ) );
+  saveMinMaxLimits( cboxContrastEnhancementLimitsMultiBandSingleByte, QStringLiteral( "multiBandSingleByte" ) );
+  saveMinMaxLimits( cboxContrastEnhancementLimitsMultiBandMultiByte, QStringLiteral( "multiBandMultiByte" ) );
 
   mSettings->setValue( QStringLiteral( "/Raster/defaultStandardDeviation" ), spnThreeBandStdDev->value() );
 
@@ -2071,14 +2076,18 @@ void QgsOptions::initContrastEnhancement( QComboBox *cbox, const QString& name, 
 {
   QSettings settings;
 
-  //add items to the color enhanceContrast combo box
-  cbox->addItem( tr( "No Stretch" ), "NoEnhancement" );
-  cbox->addItem( tr( "Stretch To MinMax" ), "StretchToMinimumMaximum" );
-  cbox->addItem( tr( "Stretch And Clip To MinMax" ), "StretchAndClipToMinimumMaximum" );
-  cbox->addItem( tr( "Clip To MinMax" ), "ClipToMinimumMaximum" );
+  //add items to the color enhanceContrast combo boxes
+  cbox->addItem( tr( "No Stretch" ),
+                 QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::NoEnhancement ) );
+  cbox->addItem( tr( "Stretch To MinMax" ),
+                 QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::StretchToMinimumMaximum ) );
+  cbox->addItem( tr( "Stretch And Clip To MinMax" ),
+                 QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::StretchAndClipToMinimumMaximum ) );
+  cbox->addItem( tr( "Clip To MinMax" ),
+                 QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::ClipToMinimumMaximum ) );
 
-  QString contrastEnchacement = mSettings->value( "/Raster/defaultContrastEnhancementAlgorithm/" + name, defaultVal ).toString();
-  cbox->setCurrentIndex( cbox->findData( contrastEnchacement ) );
+  QString contrastEnhancement = mSettings->value( "/Raster/defaultContrastEnhancementAlgorithm/" + name, defaultVal ).toString();
+  cbox->setCurrentIndex( cbox->findData( contrastEnhancement ) );
 }
 
 void QgsOptions::saveContrastEnhancement( QComboBox *cbox, const QString& name )
@@ -2086,6 +2095,29 @@ void QgsOptions::saveContrastEnhancement( QComboBox *cbox, const QString& name )
   QSettings settings;
   QString value = cbox->currentData().toString();
   mSettings->setValue( "/Raster/defaultContrastEnhancementAlgorithm/" + name, value );
+}
+
+void QgsOptions::initMinMaxLimits( QComboBox *cbox, const QString& name, const QString& defaultVal )
+{
+  QSettings settings;
+
+  //add items to the color limitsContrast combo boxes
+  cbox->addItem( tr( "Cumulative pixel count cut" ),
+                 QgsRasterMinMaxOrigin::limitsString( QgsRasterMinMaxOrigin::CumulativeCut ) );
+  cbox->addItem( tr( "Minimum / maximum" ),
+                 QgsRasterMinMaxOrigin::limitsString( QgsRasterMinMaxOrigin::MinMax ) );
+  cbox->addItem( tr( "Mean +/- standard deviation" ),
+                 QgsRasterMinMaxOrigin::limitsString( QgsRasterMinMaxOrigin::StdDev ) );
+
+  QString contrastLimits = mSettings->value( "/Raster/defaultContrastEnhancementLimits/" + name, defaultVal ).toString();
+  cbox->setCurrentIndex( cbox->findData( contrastLimits ) );
+}
+
+void QgsOptions::saveMinMaxLimits( QComboBox *cbox, const QString& name )
+{
+  QSettings settings;
+  QString value = cbox->currentData().toString();
+  mSettings->setValue( "/Raster/defaultContrastEnhancementLimits/" + name, value );
 }
 
 void QgsOptions::on_mRemoveDefaultTransformButton_clicked()

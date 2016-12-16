@@ -24,6 +24,7 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #include <limits>
 
 #include "qgis.h"
+#include "qgsraster.h"
 
 class QgsContrastEnhancementFunction;
 class QDomDocument;
@@ -65,6 +66,12 @@ class CORE_EXPORT QgsContrastEnhancement
     //! \brief Helper function that returns the minimum possible value for a GDAL data type
     static double minimumValuePossible( Qgis::DataType );
 
+    //! \brief Return a string to serialize ContrastEnhancementAlgorithm
+    static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
+
+    //! \brief Deserialize ContrastEnhancementAlgorithm
+    static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString& contrastEnhancementString );
+
     /*
      *
      * Non-Static Inline methods
@@ -77,10 +84,6 @@ class CORE_EXPORT QgsContrastEnhancement
     double minimumValue() const { return mMinimumValue; }
 
     ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return mContrastEnhancementAlgorithm; }
-
-    static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
-
-    static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString& contrastEnhancementString );
 
     /*
      *
@@ -136,8 +139,6 @@ class CORE_EXPORT QgsContrastEnhancement
 
     //! \brief Maximum range of values for a given data type
     double mRasterDataTypeRange;
-
-
 
     //! \brief Method to generate a new lookup table
     bool generateLookupTable();

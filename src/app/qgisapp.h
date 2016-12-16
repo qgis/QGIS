@@ -125,6 +125,7 @@ class QgsDiagramProperties;
 #include "qgsmimedatautils.h"
 #include "qgswelcomepageitemsmodel.h"
 #include "qgsraster.h"
+#include "qgsrasterminmaxorigin.h"
 
 #include "ui_qgisapp.h"
 
@@ -1526,7 +1527,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createDecorations();
 
     //! Do histogram stretch for singleband gray / multiband color rasters
-    void histogramStretch( bool visibleAreaOnly = false, QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax );
+    void histogramStretch( bool visibleAreaOnly = false, QgsRasterMinMaxOrigin::Limits theLimits = QgsRasterMinMaxOrigin::MinMax );
 
     //! Apply raster brightness
     void adjustBrightnessContrast( int delta, bool updateBrightness = true );

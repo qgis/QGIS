@@ -37,9 +37,34 @@ class QgsRasterMinMaxWidget: QWidget
     /** Return the selected sample size. */
     int sampleSize();
 
-    // Load programmaticaly with current values
-    void load();
+    //! \brief Set the "source" of min/max values.
+    void setFromMinMaxOrigin( const QgsRasterMinMaxOrigin& );
+
+    //! \brief Return a QgsRasterMinMaxOrigin object with the widget values.
+    QgsRasterMinMaxOrigin minMaxOrigin();
+
+    //! Hide updated extent radio button
+    void hideUpdatedExtent();
+
+    //! Load programmaticaly with current values
+    void doComputations();
+
+    //! Uncheck cumulative cut, min/max, std-dev radio buttons
+    void userHasSetManualMinMaxValues();
+
+    //! Return if the widget is collaped.
+    bool isCollapsed() const;
+
+    //! Set collapsed state of widget
+    void setCollapsed(bool b);
 
   signals:
-    void load( int theBandNo, double theMin, double theMax, int origin );
+    /**
+     * Emitted when something on the widget has changed.
+     * All widgets will fire this event to notify of an internal change.
+     */
+    void widgetChanged();
+
+    //! signal emitted when new min/max values are computed from statistics.
+    void load( int theBandNo, double theMin, double theMax );
 };

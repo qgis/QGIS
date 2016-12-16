@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>857</width>
-    <height>658</height>
+    <width>1029</width>
+    <height>726</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -308,7 +308,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>8</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -337,8 +337,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>712</width>
-                <height>693</height>
+                <width>723</width>
+                <height>640</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1023,8 +1023,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>601</width>
-                <height>877</height>
+                <width>607</width>
+                <height>850</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1456,8 +1456,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>540</width>
-                <height>741</height>
+                <width>545</width>
+                <height>694</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1813,9 +1813,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>735</width>
-                <height>1038</height>
+                <y>-299</y>
+                <width>839</width>
+                <height>982</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2233,45 +2233,67 @@
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_11">
                      <item>
-                      <widget class="QWidget" name="widget_3" native="true">
-                       <layout class="QHBoxLayout" name="horizontalLayout_22">
-                        <property name="leftMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="topMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="rightMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="bottomMargin">
-                         <number>0</number>
-                        </property>
-                        <item>
-                         <widget class="QLabel" name="label_37">
-                          <property name="text">
-                           <string>Single band gray</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QComboBox" name="cboxContrastEnhancementAlgorithmSingleBand"/>
-                        </item>
-                        <item>
-                         <spacer name="horizontalSpacer_23">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>208</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
-                       </layout>
-                      </widget>
+                      <layout class="QGridLayout" name="gridLayout_33">
+                       <item row="4" column="2">
+                        <widget class="QComboBox" name="cboxContrastEnhancementLimitsMultiBandSingleByte"/>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QLabel" name="label_50">
+                         <property name="text">
+                          <string>Algorithm</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="1">
+                        <widget class="QComboBox" name="cboxContrastEnhancementAlgorithmSingleBand"/>
+                       </item>
+                       <item row="3" column="0">
+                        <widget class="QLabel" name="label_37">
+                         <property name="text">
+                          <string>Single band gray</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="2">
+                        <widget class="QLabel" name="label_51">
+                         <property name="text">
+                          <string>Limits (minimum/maximum)</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="2">
+                        <widget class="QComboBox" name="cboxContrastEnhancementLimitsSingleBand"/>
+                       </item>
+                       <item row="4" column="1">
+                        <widget class="QComboBox" name="cboxContrastEnhancementAlgorithmMultiBandSingleByte"/>
+                       </item>
+                       <item row="4" column="0">
+                        <widget class="QLabel" name="label_38">
+                         <property name="text">
+                          <string>Multi band color (byte / band) </string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="5" column="0">
+                        <widget class="QLabel" name="label_39">
+                         <property name="text">
+                          <string>Multi band color (&gt; byte / band) </string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="5" column="1">
+                        <widget class="QComboBox" name="cboxContrastEnhancementAlgorithmMultiBandMultiByte"/>
+                       </item>
+                       <item row="5" column="2">
+                        <widget class="QComboBox" name="cboxContrastEnhancementLimitsMultiBandMultiByte"/>
+                       </item>
+                      </layout>
                      </item>
                      <item>
                       <widget class="QWidget" name="widget_4" native="true">
@@ -2288,29 +2310,6 @@
                         <property name="bottomMargin">
                          <number>0</number>
                         </property>
-                        <item>
-                         <widget class="QLabel" name="label_38">
-                          <property name="text">
-                           <string>Multi band color (byte / band) </string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QComboBox" name="cboxContrastEnhancementAlgorithmMultiBandSingleByte"/>
-                        </item>
-                        <item>
-                         <spacer name="horizontalSpacer_24">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>208</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
                        </layout>
                       </widget>
                      </item>
@@ -2329,29 +2328,6 @@
                         <property name="bottomMargin">
                          <number>0</number>
                         </property>
-                        <item>
-                         <widget class="QLabel" name="label_39">
-                          <property name="text">
-                           <string>Multi band color (&gt; byte / band) </string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QComboBox" name="cboxContrastEnhancementAlgorithmMultiBandMultiByte"/>
-                        </item>
-                        <item>
-                         <spacer name="horizontalSpacer_25">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>208</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
                        </layout>
                       </widget>
                      </item>
@@ -2377,29 +2353,6 @@
                         <property name="bottomMargin">
                          <number>0</number>
                         </property>
-                        <item>
-                         <widget class="QLabel" name="label_40">
-                          <property name="text">
-                           <string>Limits (minimum/maximum)</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QComboBox" name="cboxContrastEnhancementLimits"/>
-                        </item>
-                        <item>
-                         <spacer name="horizontalSpacer_26">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>208</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
                        </layout>
                       </widget>
                      </item>
@@ -2612,8 +2565,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>148</width>
-                <height>276</height>
+                <width>147</width>
+                <height>240</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2759,8 +2712,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>526</width>
-                <height>354</height>
+                <width>528</width>
+                <height>327</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3102,8 +3055,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>639</width>
-                <height>668</height>
+                <width>650</width>
+                <height>612</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3533,8 +3486,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>522</width>
-                <height>591</height>
+                <width>514</width>
+                <height>571</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3802,8 +3755,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>670</width>
-                <height>718</height>
+                <width>586</width>
+                <height>701</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4357,8 +4310,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>457</width>
-                <height>382</height>
+                <width>474</width>
+                <height>372</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4496,8 +4449,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>557</width>
-                <height>677</height>
+                <width>574</width>
+                <height>644</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4579,7 +4532,7 @@
                   <item row="0" column="0">
                    <widget class="QRadioButton" name="radOtfNone">
                     <property name="text">
-                     <string>Don't enable 'on the fly' reprojection</string>
+                     <string>Don't enable 'on the fl&amp;y' reprojection</string>
                     </property>
                    </widget>
                   </item>
@@ -4609,7 +4562,7 @@
                   <item row="2" column="0">
                    <widget class="QRadioButton" name="radOtfTransform">
                     <property name="text">
-                     <string>Enable 'on the &amp;fly' reprojection by default</string>
+                     <string>Enable 'on t&amp;he fly' reprojection by default</string>
                     </property>
                    </widget>
                   </item>
@@ -4743,7 +4696,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>302</width>
-                <height>238</height>
+                <height>226</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4851,8 +4804,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>670</width>
-                <height>793</height>
+                <width>542</width>
+                <height>737</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5489,9 +5442,6 @@
   <tabstop>spnGreen</tabstop>
   <tabstop>spnBlue</tabstop>
   <tabstop>cboxContrastEnhancementAlgorithmSingleBand</tabstop>
-  <tabstop>cboxContrastEnhancementAlgorithmMultiBandSingleByte</tabstop>
-  <tabstop>cboxContrastEnhancementAlgorithmMultiBandMultiByte</tabstop>
-  <tabstop>cboxContrastEnhancementLimits</tabstop>
   <tabstop>mRasterCumulativeCutLowerDoubleSpinBox</tabstop>
   <tabstop>mRasterCumulativeCutUpperDoubleSpinBox</tabstop>
   <tabstop>spnThreeBandStdDev</tabstop>

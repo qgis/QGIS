@@ -65,8 +65,6 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     double classificationMax() const { return mClassificationMax; }
     void setClassificationMin( double min ) { mClassificationMin = min; }
     void setClassificationMax( double max ) { mClassificationMax = max; }
-    int classificationMinMaxOrigin() const { return mClassificationMinMaxOrigin; }
-    void setClassificationMinMaxOrigin( int origin ) { mClassificationMinMaxOrigin = origin; }
 
   private:
     QgsRasterShader* mShader;
@@ -76,8 +74,6 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     // values are not used by renderer in rendering process
     double mClassificationMin;
     double mClassificationMax;
-
-    int mClassificationMinMaxOrigin;
 
     QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer& );
     const QgsSingleBandPseudoColorRenderer& operator=( const QgsSingleBandPseudoColorRenderer& );
