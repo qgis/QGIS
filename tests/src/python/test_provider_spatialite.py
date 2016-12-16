@@ -154,13 +154,28 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         cur.execute("COMMIT")
         con.close()
 
+        cls.dirs_to_cleanup = []
+
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
         # for the time being, keep the file to check with qgis
         # if os.path.exists(cls.dbname) :
         #    os.remove(cls.dbname)
-        pass
+        for dirname in cls.dirs_to_cleanup:
+            shutil.rmtree(dirname, True)
+
+    def getEditableLayer(self):
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        datasource = os.path.join(tmpdir, 'spatialite.db')
+        shutil.copy(os.path.join(srcpath, 'spatialite.db'), datasource)
+
+        vl = QgsVectorLayer(
+            'dbname=\'{}\' table="somedata" (geom) sql='.format(datasource), 'test',
+            'spatialite')
+        return vl
 
     def setUp(self):
         """Run before each test."""

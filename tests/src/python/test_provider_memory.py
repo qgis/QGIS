@@ -46,13 +46,11 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
 
     @classmethod
-    def setUpClass(cls):
-        """Run before all tests"""
-        # Create test layer
-        cls.vl = QgsVectorLayer('Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
-                                'test', 'memory')
-        assert (cls.vl.isValid())
-        cls.provider = cls.vl.dataProvider()
+    def createLayer(cls):
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'test', 'memory')
+        assert (vl.isValid())
 
         f1 = QgsFeature()
         f1.setAttributes([5, -200, NULL, 'NuLl', '5'])
@@ -73,7 +71,16 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         f5.setAttributes([4, 400, 'Honey', 'Honey', '4'])
         f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
 
-        cls.provider.addFeatures([f1, f2, f3, f4, f5])
+        vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
+        return vl
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        # Create test layer
+        cls.vl = cls.createLayer()
+        assert (cls.vl.isValid())
+        cls.provider = cls.vl.dataProvider()
 
         # poly layer
         cls.poly_vl = QgsVectorLayer('Polygon?crs=epsg:4326&field=pk:integer&key=pk',
@@ -101,6 +108,9 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+
+    def getEditableLayer(self):
+        return self.createLayer()
 
     def testGetFeaturesSubsetAttributes2(self):
         """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return
