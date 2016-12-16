@@ -24,7 +24,7 @@
 //! Constructor
 QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache, QgsServiceRegistry* srvRegistry )
     : mCapabilitiesCache( capCache )
-    , mServiceRegistry(srvRegistry)
+    , mServiceRegistry( srvRegistry )
 {
   mRequestHandler = nullptr;
   mAccessControls = new QgsAccessControl();
@@ -92,6 +92,6 @@ void QgsServerInterfaceImpl::removeProjectLayers( const QString& path )
 
 QgsServiceRegistry* QgsServerInterfaceImpl::serviceRegistry()
 {
-  return mServiceRegistry;  
+  return mServiceRegistry;
 }
 

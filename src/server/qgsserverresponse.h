@@ -56,7 +56,9 @@ class SERVER_EXPORT QgsServerResponse
     /**
      * Send error
      * This method delegates error handling at the server level. This is different
-     * from calling setReturnCode() along with and a specific response body.
+     * from calling setReturnCode() wich let you return a specific response body.
+     * Calling sendError() will end the transaction and any attempt to write data 
+     * or set headers will be an error.
      * @param code HHTP return code value
      * @param message An informative error message
      */

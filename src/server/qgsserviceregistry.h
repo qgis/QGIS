@@ -89,10 +89,10 @@ class SERVER_EXPORT QgsServiceRegistry
 
     /**
      * Initialize registry, load modules and auto register services
-     * @param serverIface the server interface 
+     * @param serverIface the server interface
      * @param nativeModulepath the native module path
      */
-    void init( const QString& nativeModulepath, QgsServerInterface* serverIface =nullptr );
+    void init( const QString& nativeModulepath, QgsServerInterface* serverIface = nullptr );
 
     /**
      * Clean up registered service and unregister modules

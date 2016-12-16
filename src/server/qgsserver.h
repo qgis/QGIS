@@ -60,7 +60,7 @@ class SERVER_EXPORT QgsServer
      * @param var environment variable name
      * @param val value
      * @note added in 2.14
-    / */
+     */
     void putenv( const QString &var, const QString &val );
 
     /** Handles the request. The output is normally printed trough FCGI printf
@@ -129,7 +129,7 @@ class SERVER_EXPORT QgsServer
 
     //! service registry
     static QgsServiceRegistry sServiceRegistry;
-    
+
 };
 #endif // QGSSERVER_H
 

@@ -49,10 +49,10 @@ class SERVER_EXPORT QgsServiceNativeLoader
      * Lead all medules from path
      * @param modulePath the path to look for module
      * @param registrar QgsServiceRegistry instance for registering services
-     * @param serverIface QgsServerInterface instarce 
+     * @param serverIface QgsServerInterface instarce
      */
     void loadModules( const QString& modulePath, QgsServiceRegistry& registrar,
-           QgsServerInterface* serverIface = nullptr );
+                      QgsServerInterface* serverIface = nullptr );
 
     /**
      * Unload all modules

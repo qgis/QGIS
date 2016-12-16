@@ -51,7 +51,7 @@ class QgsServerResponse
      * Send error
      * This method delegates error handling at the server level. This is different
      * from calling setReturnCode() along with and a specific response body.
-     * @param code HHTP return code value
+     * @param code HTTP return code value
      * @param message An informative error message
      */
     virtual void sendError( int code,  const QString& message ) = 0;
@@ -61,7 +61,7 @@ class QgsServerResponse
      * This is a convenient method that will write directly
      * to the underlying I/O device
      */
-    virtual void write(const QString& data );
+    virtual void write( const QString& data );
 
     /**
      * Write chunk of data
@@ -69,7 +69,7 @@ class QgsServerResponse
      * underlying I/O device
      * @return the number of bytes that were actually written
      */
-    virtual qint64 write(const QByteArray& byteArray );
+    virtual qint64 write( const QByteArray& byteArray );
 
     /**
      * Return the underlying QIODevice

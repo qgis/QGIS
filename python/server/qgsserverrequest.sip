@@ -70,8 +70,8 @@ class QgsServerRequest
     Method method() const;
 
     /**
-     *      * @return query params
-     *           */
+     * @return query params
+     */
     QMap<QString, QString> parameters() const;
 
     /**

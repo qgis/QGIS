@@ -55,7 +55,7 @@ QgsServiceNativeLoader::~QgsServiceNativeLoader()
 }
 
 void QgsServiceNativeLoader::loadModules( const QString& modulePath, QgsServiceRegistry& registrar,
-       QgsServerInterface* serverIface )
+    QgsServerInterface* serverIface )
 {
   QDir moduleDir( modulePath );
   moduleDir.setSorting( QDir::Name | QDir::IgnoreCase );
