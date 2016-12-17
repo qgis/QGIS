@@ -550,7 +550,7 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int theBandNumber )
     {
       QgsDebugMsgLevel( "....got color ramp item list", 4 );
       myShader.setColorRampItemList( myColorRampItemList );
-      myShader.setColorRampType( QgsColorRampShader::DISCRETE );
+      myShader.setColorRampType( QgsColorRampShader::Discrete );
       // Draw image
       int mySize = 100;
       QPixmap myPalettePixmap( mySize, mySize );
@@ -758,7 +758,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
       // TODO: this should go somewhere else
       QgsRasterShader* shader = new QgsRasterShader();
       QgsColorRampShader* colorRampShader = new QgsColorRampShader();
-      colorRampShader->setColorRampType( QgsColorRampShader::INTERPOLATED );
+      colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
       colorRampShader->setColorRampItemList( colorTable );
       shader->setRasterShaderFunction( colorRampShader );
       r->setShader( shader );

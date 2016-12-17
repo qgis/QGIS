@@ -36,13 +36,6 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 
   public:
 
-    enum Mode
-    {
-      Continuous = 1, // Using breaks from color palette
-      EqualInterval = 2,
-      Quantile = 3
-    };
-
     QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
     ~QgsSingleBandPseudoColorRendererWidget();
 

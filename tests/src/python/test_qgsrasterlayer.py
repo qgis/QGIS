@@ -171,7 +171,7 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         myRasterShader = QgsRasterShader()
         myColorRampShader = QgsColorRampShader()
-        myColorRampShader.setColorRampType(QgsColorRampShader.INTERPOLATED)
+        myColorRampShader.setColorRampType(QgsColorRampShader.Interpolated)
         myItems = []
         myItem = QgsColorRampShader.ColorRampItem(
             10, QColor('#ffff00'), 'foo')
@@ -193,7 +193,7 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         myRasterShader = QgsRasterShader()
         myColorRampShader = QgsColorRampShader()
-        myColorRampShader.setColorRampType(QgsColorRampShader.INTERPOLATED)
+        myColorRampShader.setColorRampType(QgsColorRampShader.Interpolated)
         myItems = []
         myItem = QgsColorRampShader.ColorRampItem(10,
                                                   QColor('#ffff00'), 'foo')
