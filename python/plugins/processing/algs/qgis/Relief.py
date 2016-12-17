@@ -35,6 +35,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import (Parameter,
                                         ParameterRaster,
                                         ParameterNumber,
+                                        ParameterBoolean,
                                         _splitParameterOptions)
 from processing.core.outputs import OutputRaster, OutputTable
 from processing.tools import raster
@@ -46,6 +47,7 @@ class Relief(GeoAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     Z_FACTOR = 'Z_FACTOR'
+    AUTO_COLORS = 'AUTO_COLORS'
     COLORS = 'COLORS'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     FREQUENCY_DISTRIBUTION = 'FREQUENCY_DISTRIBUTION'
@@ -62,16 +64,19 @@ class Relief(GeoAlgorithm):
                 'widget_wrapper': 'processing.algs.qgis.ui.ReliefColorsWidget.ReliefColorsWidgetWrapper'
             }
 
-            def __init__(self, name='', description='', parent=None):
-                Parameter.__init__(self, name, description)
+            def __init__(self, name='', description='', parent=None, optional=True):
+                Parameter.__init__(self, name, description, None, optional)
                 self.parent = parent
 
             def setValue(self, value):
                 if value is None:
-                    return False
+                    if not self.optional:
+                        return False
+                    self.value = None
+                    return True
 
                 if isinstance(value, str):
-                    self.value = value
+                    self.value = value if value != '' else None
                 else:
                     self.value = ParameterReliefColors.colorsToString(value)
                 return True
@@ -105,9 +110,15 @@ class Relief(GeoAlgorithm):
         self.addParameter(ParameterRaster(self.INPUT_LAYER,
                                           self.tr('Elevation layer')))
         self.addParameter(ParameterNumber(self.Z_FACTOR,
-                                          self.tr('Z factor'), 1.0, 999999.99, 1.0))
+                                          self.tr('Z factor'),
+                                          1.0, 999999.99, 1.0))
+        self.addParameter(ParameterBoolean(self.AUTO_COLORS,
+                                           self.tr('Generate relief classes automaticaly'),
+                                           False))
         self.addParameter(ParameterReliefColors(self.COLORS,
-                                                self.tr('Relief colors'), self.INPUT_LAYER))
+                                                self.tr('Relief colors'),
+                                                self.INPUT_LAYER,
+                                                True))
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Relief')))
         self.addOutput(OutputTable(self.FREQUENCY_DISTRIBUTION,
@@ -116,21 +127,30 @@ class Relief(GeoAlgorithm):
     def processAlgorithm(self, progress):
         inputFile = self.getParameterValue(self.INPUT_LAYER)
         zFactor = self.getParameterValue(self.Z_FACTOR)
-        colors = self.getParameterValue(self.COLORS).split(';')
+        automaticColors = self.getParameterValue(self.AUTO_COLORS)
+        colors = self.getParameterValue(self.COLORS)
         outputFile = self.getOutputValue(self.OUTPUT_LAYER)
         frequencyDistribution = self.getOutputValue(self.FREQUENCY_DISTRIBUTION)
 
         outputFormat = raster.formatShortNameFromFileName(outputFile)
 
-        reliefColors = []
-        for c in colors:
-            v = c.split(',')
-            color = QgsRelief.ReliefColor(QColor(int(v[2]), int(v[3]), int(v[4])),
-                                          float(v[0]),
-                                          float(v[1]))
-            reliefColors.append(color)
-
         relief = QgsRelief(inputFile, outputFile, outputFormat)
+
+        if automaticColors:
+            reliefColors = relief.calculateOptimizedReliefClasses()
+        else:
+            if colors is None:
+                raise GeoAlgorithmExecutionException(
+                    self.tr('Specify relief colors or activate "Generate relief classes automaticaly" option.'))
+
+            reliefColors = []
+            for c in colors.split(';'):
+                v = c.split(',')
+                color = QgsRelief.ReliefColor(QColor(int(v[2]), int(v[3]), int(v[4])),
+                                              float(v[0]),
+                                              float(v[1]))
+                reliefColors.append(color)
+
         relief.setReliefColors(reliefColors)
         relief.setZFactor(zFactor)
         relief.exportFrequencyDistributionToCsv(frequencyDistribution)
