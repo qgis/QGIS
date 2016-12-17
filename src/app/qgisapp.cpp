@@ -9656,7 +9656,7 @@ bool QgisApp::checkTasksDependOnProject()
     {
       Q_FOREACH ( QgsTask* task, tasks )
       {
-        activeTaskDescriptions.insert( tr( " • %1" ).arg( task->description() ) );
+        activeTaskDescriptions.insert( trUtf8( " • %1" ).arg( task->description() ) );
       }
     }
   }

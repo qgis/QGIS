@@ -776,7 +776,11 @@ void QgsDwgImporter::addHeader( const DRW_Header *data )
 
     if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
     {
-      LOG( QObject::tr( "Could not add header record %1 [%2]" ).arg( k, QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+      LOG( QObject::tr( "Could not add %3 %1 [%2]" )
+           .arg( k )
+           .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+           .arg( QObject::tr( "header record" ) )
+         );
     }
 
     OGR_F_Destroy( f );
@@ -844,7 +848,11 @@ void QgsDwgImporter::addLType( const DRW_LType &data )
 
   if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
   {
-    LOG( QObject::tr( "Could not add add line type %1 [%2]" ).arg( data.name.c_str() ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    LOG( QObject::tr( "Could not add %3 %1 [%2]" )
+         .arg( data.name.c_str() )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+         .arg( QObject::tr( "line type" ) )
+       );
   }
 
   OGR_F_Destroy( f );
@@ -930,7 +938,11 @@ void QgsDwgImporter::addLayer( const DRW_Layer &data )
 
   if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
   {
-    LOG( QObject::tr( "Could not add add layer %1 [%2]" ).arg( data.name.c_str(), QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    LOG( QObject::tr( "Could not add %3 %1 [%2]" )
+         .arg( data.name.c_str() )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+         .arg( QObject::tr( "layer" ) )
+       );
   }
 
   OGR_F_Destroy( f );
@@ -1130,7 +1142,11 @@ void QgsDwgImporter::addDimStyle( const DRW_Dimstyle &data )
 
   if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
   {
-    LOG( QObject::tr( "Could not add add layer %1 [%2]" ).arg( data.name.c_str() ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    LOG( QObject::tr( "Could not add %3 %1 [%2]" )
+         .arg( data.name.c_str() )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+         .arg( QObject::tr( "dimension style" ) )
+       );
   }
 
   OGR_F_Destroy( f );
@@ -1162,7 +1178,11 @@ void QgsDwgImporter::addTextStyle( const DRW_Textstyle &data )
 
   if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
   {
-    LOG( QObject::tr( "Could not add add text style %1 [%2]" ).arg( data.name.c_str() ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    LOG( QObject::tr( "Could not add %3 %1 [%2]" )
+         .arg( data.name.c_str() )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+         .arg( QObject::tr( "text style" ) )
+       );
   }
 
   OGR_F_Destroy( f );
@@ -1223,7 +1243,10 @@ void QgsDwgImporter::addBlock( const DRW_Block &data )
 
   if ( !createFeature( layer, f, p ) )
   {
-    LOG( QObject::tr( "Could not add block [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    LOG( QObject::tr( "Could not add %2 [%1]" )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+         .arg( QObject::tr( "block" ) )
+       );
   }
 }
 
@@ -1281,7 +1304,10 @@ void QgsDwgImporter::addPoint( const DRW_Point &data )
   QgsPointV2 p( QgsWkbTypes::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z );
   if ( !createFeature( layer, f, p ) )
   {
-    LOG( QObject::tr( "Could not add point [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    LOG( QObject::tr( "Could not add %2 [%1]" )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+         .arg( QObject::tr( "point" ) )
+       );
   }
 }
 
@@ -1332,7 +1358,10 @@ void QgsDwgImporter::addArc( const DRW_Arc &data )
 
   if ( !createFeature( layer, f, c ) )
   {
-    LOG( QObject::tr( "Could not add arc [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    LOG( QObject::tr( "Could not add %2 [%1]" )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+         .arg( QObject::tr( "arc" ) )
+       );
   }
 }
 
@@ -1360,7 +1389,10 @@ void QgsDwgImporter::addCircle( const DRW_Circle &data )
 
   if ( !createFeature( layer, f, c ) )
   {
-    LOG( QObject::tr( "Could not add circle [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    LOG( QObject::tr( "Could not add %2 [%1]" )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+         .arg( QObject::tr( "circle" ) )
+       );
   }
 }
 
@@ -1509,7 +1541,10 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
 
         if ( !createFeature( layer, f, cc ) )
         {
-          LOG( QObject::tr( "Could not add linestring [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+          LOG( QObject::tr( "Could not add %2 [%1]" )
+               .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+               .arg( QObject::tr( "line string" ) )
+             );
         }
 
         cc.clear();
@@ -1578,7 +1613,10 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
 
       if ( !createFeature( layer, f, poly ) )
       {
-        LOG( QObject::tr( "Could not add polygon [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+        LOG( QObject::tr( "Could not add %2 [%1]" )
+             .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+             .arg( QObject::tr( "polygon" ) )
+           );
       }
     }
   }
@@ -1622,7 +1660,10 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
 
     if ( !createFeature( layer, f, cc ) )
     {
-      LOG( QObject::tr( "Could not add linestring [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+      LOG( QObject::tr( "Could not add %2 [%1]" )
+           .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+           .arg( QObject::tr( "line string" ) )
+         );
     }
   }
 }
@@ -1701,7 +1742,10 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
 
         if ( !createFeature( layer, f, cc ) )
         {
-          LOG( QObject::tr( "Could not add linestring [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+          LOG( QObject::tr( "Could not add %2 [%1]" )
+               .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+               .arg( QObject::tr( "line string" ) )
+             );
         }
 
         cc.clear();
@@ -1775,7 +1819,10 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
 
       if ( !createFeature( layer, f, poly ) )
       {
-        LOG( QObject::tr( "Could not add polygon [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+        LOG( QObject::tr( "Could not add %2 [%1]" )
+             .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+             .arg( QObject::tr( "polygon" ) )
+           );
       }
     }
   }
@@ -1819,7 +1866,10 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
 
     if ( !createFeature( layer, f, cc ) )
     {
-      LOG( QObject::tr( "Could not add linestring [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+      LOG( QObject::tr( "Could not add %2 [%1]" )
+           .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+           .arg( QObject::tr( "line string" ) )
+         );
     }
   }
 }
@@ -2058,7 +2108,10 @@ void QgsDwgImporter::addSpline( const DRW_Spline *data )
 
   if ( !createFeature( layer, f, l ) )
   {
-    LOG( QObject::tr( "Could not add spline [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    LOG( QObject::tr( "Could not add %2 [%1]" )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+         .arg( QObject::tr( "spline" ) )
+       );
   }
 }
 
@@ -2097,7 +2150,10 @@ void QgsDwgImporter::addInsert( const DRW_Insert &data )
 
   if ( !createFeature( layer, f, p ) )
   {
-    LOG( QObject::tr( "Could not add point [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    LOG( QObject::tr( "Could not add %2 [%1]" )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+         .arg( QObject::tr( "point" ) )
+       );
   }
 }
 
@@ -2146,7 +2202,10 @@ void QgsDwgImporter::addSolid( const DRW_Solid &data )
 
   if ( !createFeature( layer, f, poly ) )
   {
-    LOG( QObject::tr( "Could not add polygon [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    LOG( QObject::tr( "Could not add %2 [%1]" )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+         .arg( QObject::tr( "polygon" ) )
+       );
   }
 }
 
@@ -2179,7 +2238,10 @@ void QgsDwgImporter::addMText( const DRW_MText &data )
 
   if ( !createFeature( layer, f, p ) )
   {
-    LOG( QObject::tr( "Could not add line [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    LOG( QObject::tr( "Could not add %2 [%1]" )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+         .arg( QObject::tr( "point" ) )
+       );
   }
 }
 
@@ -2213,7 +2275,10 @@ void QgsDwgImporter::addText( const DRW_Text &data )
 
   if ( !createFeature( layer, f, p ) )
   {
-    LOG( QObject::tr( "Could not add line [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    LOG( QObject::tr( "Could not add %2 [%1]" )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+         .arg( QObject::tr( "point" ) )
+       );
   }
 }
 
@@ -2320,7 +2385,7 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
         ls->setPoints( QgsPointSequence()
                        << QgsPointV2( QgsWkbTypes::PointZ, l->basePoint.x, l->basePoint.y, l->basePoint.z )
                        << QgsPointV2( QgsWkbTypes::PointZ, l->secPoint.x, l->secPoint.y, l->secPoint.z ) );
-        // QgsDebugMsg( QString( "add linestring:%1" ).arg( ls->asWkt() ) );
+        // QgsDebugMsg( QString( "add line string:%1" ).arg( ls->asWkt() ) );
         cc->addCurve( ls );
       }
       else
@@ -2343,7 +2408,10 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
 
   if ( !createFeature( layer, f, p ) )
   {
-    LOG( QObject::tr( "Could not add polygon [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    LOG( QObject::tr( "Could not add %2 [%1]" )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+         .arg( QObject::tr( "polygon" ) )
+       );
   }
 }
 
@@ -2370,7 +2438,10 @@ void QgsDwgImporter::addLine( const DRW_Line& data )
 
   if ( !createFeature( layer, f, l ) )
   {
-    LOG( QObject::tr( "Could not add line [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    LOG( QObject::tr( "Could not add %2 [%1]" )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
+         .arg( QObject::tr( "line string" ) )
+       );
   }
 }
 
