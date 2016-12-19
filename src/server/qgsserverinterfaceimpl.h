@@ -23,7 +23,6 @@
 #include "qgscapabilitiescache.h"
 #include "qgsgetrequesthandler.h"
 #include "qgspostrequesthandler.h"
-#include "qgssoaprequesthandler.h"
 
 /**
  * QgsServerInterface
