@@ -23,6 +23,7 @@ src/plugins/grass/qtermwidget/
 
 #Specific files
 ChangeLog
+doc/contributors.json
 Exception_to_GPL_for_Qt.txt
 images/themes/default/svgbase/hammer.svg
 images/themes/default/propertyicons/general.svg

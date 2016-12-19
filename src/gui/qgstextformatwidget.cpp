@@ -132,20 +132,20 @@ void QgsTextFormatWidget::initWidget()
 
   // color buttons
   mPreviewBackgroundBtn->setColorDialogTitle( tr( "Select fill color" ) );
-  mPreviewBackgroundBtn->setContext( QStringLiteral( "labelling" ) );
+  mPreviewBackgroundBtn->setContext( QStringLiteral( "labeling" ) );
   mPreviewBackgroundBtn->setColor( QColor( 255, 255, 255 ) );
   btnTextColor->setColorDialogTitle( tr( "Select text color" ) );
-  btnTextColor->setContext( QStringLiteral( "labelling" ) );
+  btnTextColor->setContext( QStringLiteral( "labeling" ) );
   btnTextColor->setDefaultColor( Qt::black );
   btnBufferColor->setColorDialogTitle( tr( "Select buffer color" ) );
-  btnBufferColor->setContext( QStringLiteral( "labelling" ) );
+  btnBufferColor->setContext( QStringLiteral( "labeling" ) );
   btnBufferColor->setDefaultColor( Qt::white );
   mShapeBorderColorBtn->setColorDialogTitle( tr( "Select border color" ) );
-  mShapeBorderColorBtn->setContext( QStringLiteral( "labelling" ) );
+  mShapeBorderColorBtn->setContext( QStringLiteral( "labeling" ) );
   mShapeFillColorBtn->setColorDialogTitle( tr( "Select fill color" ) );
-  mShapeFillColorBtn->setContext( QStringLiteral( "labelling" ) );
+  mShapeFillColorBtn->setContext( QStringLiteral( "labeling" ) );
   mShadowColorBtn->setColorDialogTitle( tr( "Select shadow color" ) );
-  mShadowColorBtn->setContext( QStringLiteral( "labelling" ) );
+  mShadowColorBtn->setContext( QStringLiteral( "labeling" ) );
   mShadowColorBtn->setDefaultColor( Qt::black );
 
   // set up quadrant offset button group

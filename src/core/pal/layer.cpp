@@ -170,7 +170,7 @@ bool Layer::registerFeature( QgsLabelFeature* lf )
 
     if ( lf->isObstacle() && featureGeomIsObstacleGeom )
     {
-      //if we are not labelling the layer, only insert it into the obstacle list and avoid an
+      //if we are not labeling the layer, only insert it into the obstacle list and avoid an
       //unnecessary copy
       if ( mLabelLayer && labelWellDefined )
       {

@@ -1162,7 +1162,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   QgsFeatureRenderer* theRenderer = rendererFromUserStyle( userStyleElem, contourLayer );
   contourLayer->setRenderer( theRenderer );
 
-  //add labelling if requested
+  //add labeling if requested
   labelSettingsFromUserStyle( userStyleElem, contourLayer );
 
   QgsDebugMsg( "Returning the contour layer" );

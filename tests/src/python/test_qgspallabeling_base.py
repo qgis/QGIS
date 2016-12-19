@@ -139,7 +139,7 @@ class TestQgsPalLabeling(unittest.TestCase):
 
     @classmethod
     def setDefaultEngineSettings(cls):
-        """Restore default settings for pal labelling"""
+        """Restore default settings for pal labeling"""
         cls._Pal = QgsPalLabeling()
 
     @classmethod

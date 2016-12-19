@@ -950,7 +950,7 @@
       <widget objectName="mLabelFieldComboBox" class="QComboBox" label=""/>
       <widget objectName="mLabelFontButton" class="QPushButton" label="Label font..."/>
       <widget objectName="mLabelColorLabel" class="QLabel" label="Label color:"/>
-      <widget objectName="mScaleDependentLabelsCheckBox" class="QCheckBox" label="Use scale dependent labelling"/>
+      <widget objectName="mScaleDependentLabelsCheckBox" class="QCheckBox" label="Use scale dependent labeling"/>
       <widget objectName="mMaxScaleLabel" class="QLabel" label="max scale denominator:"/>
       <widget objectName="mMaxScaleDenominatorEdit" class="QLineEdit" label=""/>
     </widget>

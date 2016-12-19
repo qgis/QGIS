@@ -480,7 +480,7 @@ class QgsPalLayerSettings
     // called from register feature hook
     void calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f = 0, QgsRenderContext* context = 0 );
 
-    /** Register a feature for labelling.
+    /** Register a feature for labeling.
      * @param f feature to label
      * @param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.

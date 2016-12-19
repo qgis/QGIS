@@ -92,7 +92,7 @@
       <item row="3" column="0" colspan="2">
        <widget class="QCheckBox" name="mScaleDependentLabelsCheckBox">
         <property name="text">
-         <string>Use scale dependent labelling</string>
+         <string>Use scale dependent labeling</string>
         </property>
        </widget>
       </item>
