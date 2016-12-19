@@ -698,7 +698,7 @@ class ProviderTestCase(object):
         assert count == 3, 'Got {}'.format(count)
 
     def testClosedIterators(self):
-        """ Test behaviour of closed iterators """
+        """ Test behavior of closed iterators """
 
         # Test retrieving feature after closing iterator
         f_it = self.provider.getFeatures(QgsFeatureRequest())

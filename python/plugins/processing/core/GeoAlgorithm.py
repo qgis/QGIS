@@ -82,7 +82,7 @@ class GeoAlgorithm(object):
 
         # If the algorithm is run as part of a model, the parent model
         # can be set in this variable, to allow for customized
-        # behaviour, in case some operations should be run differently
+        # behavior, in case some operations should be run differently
         # when running as part of a model
         self.model = None
 

@@ -84,7 +84,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      */
     void setAcceptLiveUpdates( const bool accept ) { mAcceptLiveUpdates = accept; }
 
-    /** Sets whether the drop down menu should be shown for the button. The default behaviour is to
+    /** Sets whether the drop down menu should be shown for the button. The default behavior is to
      * show the menu.
      * @param showMenu set to false to hide the drop down menu
      * @see showMenu

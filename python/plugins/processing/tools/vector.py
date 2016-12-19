@@ -91,7 +91,7 @@ def features(layer, request=QgsFeatureRequest()):
     or all of them.
 
     This should be used by algorithms instead of calling the Qgis API
-    directly, to ensure a consistent behaviour across algorithms.
+    directly, to ensure a consistent behavior across algorithms.
     """
     class Features(object):
 

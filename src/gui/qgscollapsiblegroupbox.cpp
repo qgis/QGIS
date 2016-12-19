@@ -138,7 +138,7 @@ void QgsCollapsibleGroupBoxBasic::mousePressEvent( QMouseEvent *event )
     return;
   }
 
-  // default behaviour - pass to QGroupBox
+  // default behavior - pass to QGroupBox
   QGroupBox::mousePressEvent( event );
 }
 
@@ -158,7 +158,7 @@ void QgsCollapsibleGroupBoxBasic::mouseReleaseEvent( QMouseEvent *event )
     return;
   }
 
-  // default behaviour - pass to QGroupBox
+  // default behavior - pass to QGroupBox
   QGroupBox::mouseReleaseEvent( event );
 }
 
@@ -167,7 +167,7 @@ void QgsCollapsibleGroupBoxBasic::changeEvent( QEvent *event )
   // always re-enable mCollapseButton when groupbox was previously disabled
   // e.g. resulting from a disabled parent of groupbox, or a signal/slot connection
 
-  // default behaviour - pass to QGroupBox
+  // default behavior - pass to QGroupBox
   QGroupBox::changeEvent( event );
 
   if ( event->type() == QEvent::EnabledChange && isEnabled() )

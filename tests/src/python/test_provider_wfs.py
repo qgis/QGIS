@@ -1831,9 +1831,9 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, [(1), (2)])
 
     def testWrongCapabilityExtent(self):
-        """Test behaviour when capability extent is wrong."""
+        """Test behavior when capability extent is wrong."""
 
-        # Note the logic that is tested is purely heuristic, trying to recover from wrong server behaviour,
+        # Note the logic that is tested is purely heuristic, trying to recover from wrong server behavior,
         # so it might be legitimate to change that at a later point.
 
         endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_wrong_capability_extent'

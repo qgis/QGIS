@@ -230,7 +230,7 @@ void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
     if ( resizeMode() != QgsComposerMultiFrame::RepeatOnEveryPage && !mIsRecalculatingSize )
     {
       //removing a frame forces the multi frame to UseExistingFrames resize mode
-      //otherwise the frame may not actually be removed, leading to confusing ui behaviour
+      //otherwise the frame may not actually be removed, leading to confusing ui behavior
       mResizeMode = QgsComposerMultiFrame::UseExistingFrames;
       emit changed();
       recalculateFrameSizes();

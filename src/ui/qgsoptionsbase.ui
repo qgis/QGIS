@@ -1572,7 +1572,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QComboBox" name="cmbAttrTableBehaviour">
+                   <widget class="QComboBox" name="cmbAttrTableBehavior">
                     <item>
                      <property name="text">
                       <string/>
@@ -1589,7 +1589,7 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Attribute table behaviour</string>
+                     <string>Attribute table behavior</string>
                     </property>
                    </widget>
                   </item>
@@ -4565,7 +4565,7 @@
                 </spacer>
                </item>
                <item row="2" column="0">
-                <widget class="QgsCollapsibleGroupBox" name="grpProjectionBehaviour">
+                <widget class="QgsCollapsibleGroupBox" name="grpProjectionBehavior">
                  <property name="title">
                   <string>CRS for new layers</string>
                  </property>
@@ -5509,7 +5509,7 @@
   <tabstop>mCurrentVariablesQGISChxBx</tabstop>
   <tabstop>mOptionsScrollArea_11</tabstop>
   <tabstop>cbxAttributeTableDocked</tabstop>
-  <tabstop>cmbAttrTableBehaviour</tabstop>
+  <tabstop>cmbAttrTableBehavior</tabstop>
   <tabstop>mAttrTableViewComboBox</tabstop>
   <tabstop>spinBoxAttrTableRowCache</tabstop>
   <tabstop>leNullValue</tabstop>

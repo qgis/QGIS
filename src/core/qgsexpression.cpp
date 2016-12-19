@@ -1612,7 +1612,7 @@ static QVariant fcnDayOfWeek( const QVariantList& values, const QgsExpressionCon
     return QVariant();
 
   // return dayOfWeek() % 7 so that values range from 0 (sun) to 6 (sat)
-  // (to match PostgreSQL behaviour)
+  // (to match PostgreSQL behavior)
   return date.dayOfWeek() % 7;
 }
 

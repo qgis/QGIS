@@ -169,7 +169,7 @@ class CORE_EXPORT QgsPalLayerSettings
       BottomRight, //!< Label on bottom right of point
     };
 
-    //! Behaviour modifier for label offset and distance, only applies in some
+    //! Behavior modifier for label offset and distance, only applies in some
     //! label placement modes.
     //TODO QGIS 3.0 - move to QgsLabelingEngine
     enum OffsetType

@@ -112,7 +112,7 @@ class CORE_EXPORT QgsLabelFeature
      * within this zone, and the feature will not be labeled if no candidates can be generated which
      * are not contained within the zone.
      * @param geometry permissible zone geometry. If an invalid QgsGeometry is passed then no zone limit
-     * will be applied to the label candidates (this is the default behaviour).
+     * will be applied to the label candidates (this is the default behavior).
      * @note added in QGIS 3.0
      * @see permissibleZone()
      */

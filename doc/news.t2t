@@ -50,7 +50,7 @@ This release has following new features:
 - User Interface: Improved color pickers
 - User Interface: Copy cell contents from attribute table
 - User Interface: Improved HiDPI support
-- User Interface: Improved map select tool behaviour
+- User Interface: Improved map select tool behavior
 - Symbology: Arrow symbol layer
 - Symbology: New "Filled marker" symbol layer type
 - Symbology: New accessibility and low vision symbols
@@ -160,7 +160,7 @@ This release has following new features:
 - Digitising : Configurable rubber band color
 - Digitising : Autotrace
 - Digitising : Trace digitising tool
-- General : Changed behaviour of strpos function
+- General : Changed behavior of strpos function
 - General : Field calculator can be used to update feature's geometry
 - General : Virtual layers
 - General : Zoom to feature with right-click in attribute table
@@ -325,7 +325,7 @@ This is a minor release increment with the following feature:
 - New field calculator bar in attribute table.
 - DXF export improvements.
 - Advanced digitizing tools.
-- Improved snapping options and behaviour.
+- Improved snapping options and behavior.
 - Better simplify tool - including support for on the fly reprojection being enabled.
 - Qt5 support (optional - default packages are still currently built against Qt4).
 - Spatial bookmark import/export.
@@ -621,7 +621,7 @@ were made.
 - Allow setting I/O encoding for OGR layers in vector layer properties.
 - Fix #4414 (SVG indicators for arrows are not shown)
 - Label direction symbol shouldn't depend on "map" vs. "line" orientation.
-- Set prompt as default behaviour for unknown CRS
+- Set prompt as default behavior for unknown CRS
 - For EPSG initialize GDAL CRS from authid instead of proj.4 string
 - Fix #4439 (Crash when changing style in Layer Properties)
 - Fix #4444 (Error when loading Python plugins)
@@ -2138,7 +2138,7 @@ Fixed some more instances of the same bug in raster layer
 Disable overview widget for release. Minor bugfix in rasterlayer picker up by
 Larsl which is only encountered bu i8n users. Miscellaneous other fixes
 including proper rotation support for north arrows in all 4 corners of
-display, inproved refresh behaviour of n-arrow and copyright plugin, better
+display, inproved refresh behavior of n-arrow and copyright plugin, better
 state hadnling for copyright plugin.
 
 2004-05-25 [larsl] 0.2.0devel34

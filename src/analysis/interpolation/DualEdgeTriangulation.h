@@ -75,8 +75,8 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     virtual double getYMin() const override { return yMin; }
     //! Returns the number of points
     virtual int getNumberOfPoints() const override;
-    //! Sets the behaviour of the triangulation in case of crossing forced lines
-    virtual void setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b ) override;
+    //! Sets the behavior of the triangulation in case of crossing forced lines
+    virtual void setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b ) override;
     //! Sets the color of the normal edges
     virtual void setEdgeColor( int r, int g, int b ) override;
     //! Sets the color of the forced edges
@@ -123,8 +123,8 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     QVector<HalfEdge*> mHalfEdge;
     //! Association to an interpolator object
     TriangleInterpolator* mTriangleInterpolator;
-    //! Member to store the behaviour in case of crossing forced segments
-    Triangulation::forcedCrossBehaviour mForcedCrossBehaviour;
+    //! Member to store the behavior in case of crossing forced segments
+    Triangulation::ForcedCrossBehavior mForcedCrossBehavior;
     //! Color to paint the normal edges
     QColor mEdgeColor;
     //! Color to paint the forced edges
@@ -183,7 +183,7 @@ inline DualEdgeTriangulation::DualEdgeTriangulation()
     , yMax( 0 )
     , yMin( 0 )
     , mTriangleInterpolator( nullptr )
-    , mForcedCrossBehaviour( Triangulation::DELETE_FIRST )
+    , mForcedCrossBehavior( Triangulation::DeleteFirst )
     , mEdgeColor( 0, 255, 0 )
     , mForcedEdgeColor( 0, 0, 255 )
     , mBreakEdgeColor( 100, 100, 0 )
@@ -204,7 +204,7 @@ inline DualEdgeTriangulation::DualEdgeTriangulation( int nop, Triangulation* dec
     , yMax( 0 )
     , yMin( 0 )
     , mTriangleInterpolator( nullptr )
-    , mForcedCrossBehaviour( Triangulation::DELETE_FIRST )
+    , mForcedCrossBehavior( Triangulation::DeleteFirst )
     , mEdgeColor( 0, 255, 0 )
     , mForcedEdgeColor( 0, 0, 255 )
     , mBreakEdgeColor( 100, 100, 0 )

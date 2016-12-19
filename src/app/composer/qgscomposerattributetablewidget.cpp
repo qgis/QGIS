@@ -50,8 +50,8 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
   mEmptyModeComboBox->addItem( tr( "Hide entire table" ), QgsComposerTableV2::HideTable );
   mEmptyModeComboBox->addItem( tr( "Show set message" ), QgsComposerTableV2::ShowMessage );
 
-  mWrapBehaviourComboBox->addItem( tr( "Truncate text" ), QgsComposerTableV2::TruncateText );
-  mWrapBehaviourComboBox->addItem( tr( "Wrap text" ), QgsComposerTableV2::WrapText );
+  mWrapBehaviorComboBox->addItem( tr( "Truncate text" ), QgsComposerTableV2::TruncateText );
+  mWrapBehaviorComboBox->addItem( tr( "Wrap text" ), QgsComposerTableV2::WrapText );
 
   bool atlasEnabled = atlasComposition() && atlasComposition()->enabled();
   mSourceComboBox->addItem( tr( "Layer features" ), QgsComposerAttributeTableV2::LayerAttributes );
@@ -503,13 +503,13 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
   mHeaderHAlignmentComboBox->setCurrentIndex(( int )mComposerTable->headerHAlignment() );
   mHeaderModeComboBox->setCurrentIndex(( int )mComposerTable->headerMode() );
 
-  mEmptyModeComboBox->setCurrentIndex( mEmptyModeComboBox->findData( mComposerTable->emptyTableBehaviour() ) );
+  mEmptyModeComboBox->setCurrentIndex( mEmptyModeComboBox->findData( mComposerTable->emptyTableBehavior() ) );
   mEmptyMessageLineEdit->setText( mComposerTable->emptyTableMessage() );
-  mEmptyMessageLineEdit->setEnabled( mComposerTable->emptyTableBehaviour() == QgsComposerTableV2::ShowMessage );
-  mEmptyMessageLabel->setEnabled( mComposerTable->emptyTableBehaviour() == QgsComposerTableV2::ShowMessage );
+  mEmptyMessageLineEdit->setEnabled( mComposerTable->emptyTableBehavior() == QgsComposerTableV2::ShowMessage );
+  mEmptyMessageLabel->setEnabled( mComposerTable->emptyTableBehavior() == QgsComposerTableV2::ShowMessage );
   mDrawEmptyCheckBox->setChecked( mComposerTable->showEmptyRows() );
   mWrapStringLineEdit->setText( mComposerTable->wrapString() );
-  mWrapBehaviourComboBox->setCurrentIndex( mWrapBehaviourComboBox->findData( mComposerTable->wrapBehaviour() ) );
+  mWrapBehaviorComboBox->setCurrentIndex( mWrapBehaviorComboBox->findData( mComposerTable->wrapBehavior() ) );
 
   mResizeModeComboBox->setCurrentIndex( mResizeModeComboBox->findData( mComposerTable->resizeMode() ) );
   mAddFramePushButton->setEnabled( mComposerTable->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
@@ -627,7 +627,7 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
   mHideEmptyBgCheckBox->blockSignals( b );
   mDrawEmptyCheckBox->blockSignals( b );
   mWrapStringLineEdit->blockSignals( b );
-  mWrapBehaviourComboBox->blockSignals( b );
+  mWrapBehaviorComboBox->blockSignals( b );
 }
 
 void QgsComposerAttributeTableWidget::setMaximumNumberOfFeatures( int n )
@@ -986,15 +986,15 @@ void QgsComposerAttributeTableWidget::on_mEmptyModeComboBox_currentIndexChanged(
   QgsComposition* composition = mComposerTable->composition();
   if ( composition )
   {
-    composition->beginMultiFrameCommand( mComposerTable, tr( "Change empty table behaviour" ) );
-    mComposerTable->setEmptyTableBehaviour(( QgsComposerTableV2::EmptyTableMode ) mEmptyModeComboBox->itemData( index ).toInt() );
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Change empty table behavior" ) );
+    mComposerTable->setEmptyTableBehavior(( QgsComposerTableV2::EmptyTableMode ) mEmptyModeComboBox->itemData( index ).toInt() );
     composition->endMultiFrameCommand();
-    mEmptyMessageLineEdit->setEnabled( mComposerTable->emptyTableBehaviour() == QgsComposerTableV2::ShowMessage );
-    mEmptyMessageLabel->setEnabled( mComposerTable->emptyTableBehaviour() == QgsComposerTableV2::ShowMessage );
+    mEmptyMessageLineEdit->setEnabled( mComposerTable->emptyTableBehavior() == QgsComposerTableV2::ShowMessage );
+    mEmptyMessageLabel->setEnabled( mComposerTable->emptyTableBehavior() == QgsComposerTableV2::ShowMessage );
   }
 }
 
-void QgsComposerAttributeTableWidget::on_mWrapBehaviourComboBox_currentIndexChanged( int index )
+void QgsComposerAttributeTableWidget::on_mWrapBehaviorComboBox_currentIndexChanged( int index )
 {
   if ( !mComposerTable )
   {
@@ -1005,7 +1005,7 @@ void QgsComposerAttributeTableWidget::on_mWrapBehaviourComboBox_currentIndexChan
   if ( composition )
   {
     composition->beginMultiFrameCommand( mComposerTable, tr( "Change table wrap mode" ) );
-    mComposerTable->setWrapBehaviour(( QgsComposerTableV2::WrapBehaviour ) mWrapBehaviourComboBox->itemData( index ).toInt() );
+    mComposerTable->setWrapBehavior(( QgsComposerTableV2::WrapBehavior ) mWrapBehaviorComboBox->itemData( index ).toInt() );
     composition->endMultiFrameCommand();
   }
 }

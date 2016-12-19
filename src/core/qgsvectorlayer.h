@@ -430,8 +430,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
       InvalidLayer = 4, //!< Edit failed due to invalid layer
     };
 
-    //! Selection behaviour
-    enum SelectBehaviour
+    //! Selection behavior
+    enum SelectBehavior
     {
       SetSelection, //!< Set selection, removing any existing selection
       AddToSelection, //!< Add selection to current selection
@@ -607,34 +607,34 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Select features found within the search rectangle (in layer's coordinates)
      * @param rect search rectangle
-     * @param behaviour selection type, allows adding to current selection, removing
+     * @param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
      * @see invertSelectionInRectangle(QgsRectangle & rect)
      * @see selectByExpression()
      * @see selectByIds()
      */
-    void selectByRect( QgsRectangle & rect, SelectBehaviour behaviour = SetSelection );
+    void selectByRect( QgsRectangle & rect, SelectBehavior behavior = SetSelection );
 
     /** Select matching features using an expression.
      * @param expression expression to evaluate to select features
-     * @param behaviour selection type, allows adding to current selection, removing
+     * @param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
      * @note added in QGIS 2.16
      * @see selectByRect()
      * @see selectByIds()
      */
-    void selectByExpression( const QString& expression, SelectBehaviour behaviour = SetSelection );
+    void selectByExpression( const QString& expression, SelectBehavior behavior = SetSelection );
 
     /** Select matching features using a list of feature IDs. Will emit the
      * selectionChanged() signal with the clearAndSelect flag set.
      * @param ids feature IDs to select
-     * @param behaviour selection type, allows adding to current selection, removing
+     * @param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
      * @note added in QGIS 2.16
      * @see selectByRect()
      * @see selectByExpression()
      */
-    void selectByIds( const QgsFeatureIds &ids, SelectBehaviour behaviour = SetSelection );
+    void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
 
     /**
      * Modifies the current selection on this layer

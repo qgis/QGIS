@@ -35,13 +35,13 @@ class QgsPanelWidget;
 class GUI_EXPORT QgsColorButton : public QToolButton
 {
     Q_OBJECT
-    Q_ENUMS( Behaviour )
+    Q_ENUMS( Behavior )
     Q_PROPERTY( QString colorDialogTitle READ colorDialogTitle WRITE setColorDialogTitle )
     Q_PROPERTY( bool acceptLiveUpdates READ acceptLiveUpdates WRITE setAcceptLiveUpdates )
     Q_PROPERTY( QColor color READ color WRITE setColor )
     Q_PROPERTY( bool allowAlpha READ allowAlpha WRITE setAllowAlpha )
     Q_PROPERTY( bool showMenu READ showMenu WRITE setShowMenu )
-    Q_PROPERTY( Behaviour behaviour READ behaviour WRITE setBehaviour )
+    Q_PROPERTY( Behavior behavior READ behavior WRITE setBehavior )
     Q_PROPERTY( QColor defaultColor READ defaultColor WRITE setDefaultColor )
     Q_PROPERTY( bool showNoColor READ showNoColor WRITE setShowNoColor )
     Q_PROPERTY( QString noColorString READ noColorString WRITE setNoColorString )
@@ -49,9 +49,9 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
   public:
 
-    /** Specifies the behaviour when the button is clicked
+    /** Specifies the behavior when the button is clicked
      */
-    enum Behaviour
+    enum Behavior
     {
       ShowDialog = 0, //!< Show a color picker dialog when clicked
       SignalOnly //!< Emit colorClicked signal only, no dialog
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     void setAcceptLiveUpdates( const bool accept ) { mAcceptLiveUpdates = accept; }
 
-    /** Sets whether the drop down menu should be shown for the button. The default behaviour is to
+    /** Sets whether the drop down menu should be shown for the button. The default behavior is to
      * show the menu.
      * @param showMenu set to false to hide the drop down menu
      * @see showMenu
@@ -125,18 +125,18 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     bool showMenu() const { return menu() ? true : false; }
 
-    /** Sets the behaviour for when the button is clicked. The default behaviour is to show
+    /** Sets the behavior for when the button is clicked. The default behavior is to show
      * a color picker dialog.
-     * @param behaviour behaviour when button is clicked
-     * @see behaviour
+     * @param behavior behavior when button is clicked
+     * @see behavior
      */
-    void setBehaviour( const Behaviour behaviour );
+    void setBehavior( const Behavior behavior );
 
-    /** Returns the behaviour for when the button is clicked.
-     * @returns behaviour when button is clicked
-     * @see setBehaviour
+    /** Returns the behavior for when the button is clicked.
+     * @returns behavior when button is clicked
+     * @see setBehavior
      */
-    Behaviour behaviour() const { return mBehaviour; }
+    Behavior behavior() const { return mBehavior; }
 
     /** Sets the default color for the button, which is shown in the button's drop down menu for the
      * "default color" option.
@@ -308,10 +308,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     void colorChanged( const QColor &color );
 
-    /** Emitted when the button is clicked, if the button's behaviour is set to SignalOnly
+    /** Emitted when the button is clicked, if the button's behavior is set to SignalOnly
      * @param color button color
-     * @see setBehaviour
-     * @see behaviour
+     * @see setBehavior
+     * @see behavior
      */
     void colorClicked( const QColor &color );
 
@@ -363,7 +363,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
   private:
 
-    Behaviour mBehaviour;
+    Behavior mBehavior;
     QString mColorDialogTitle;
     QColor mColor;
 

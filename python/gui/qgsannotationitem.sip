@@ -53,7 +53,7 @@ class QgsAnnotationItem: QgsMapCanvasItem, QgsAnnotation
 
     virtual QSizeF minimumFrameSize() const;
 
-    /** Returns the mouse move behaviour for a given position
+    /** Returns the mouse move behavior for a given position
       @param pos the position in scene coordinates*/
     QgsAnnotationItem::MouseMoveAction moveActionForPosition( QPointF pos ) const;
     /** Returns suitable cursor shape for mouse move action*/

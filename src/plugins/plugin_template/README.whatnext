@@ -24,7 +24,7 @@ instance of the QgisInterface is passed to the plugin when it loads. Please
 consult the QGIS development team if there is functionality required in the
 QGisInterface that is not available.
 
-QgsPlugin is an ABC that defines required behaviour your plugin must provide.
+QgsPlugin is an ABC that defines required behavior your plugin must provide.
 See below for more details.
 
 What are all the files in my generated plugin directory for?
@@ -40,7 +40,7 @@ This is the class that provides the 'glue' between your custom application
 logic and the QGIS application. You will see that a number of methods are
 already implemented for you - including some examples of how to add a raster or
 vector layer to the main application map canvas. This class is a concrete
-implementation of QgisPlugin (which defines required behaviour for a plugin).
+implementation of QgisPlugin (which defines required behavior for a plugin).
 In particular, a plugin has a number of static methods and members so that the
 QgsPluginManager and plugin loader logic can identify each plugin, create an
 appropriate menu entry for it etc. Note there is nothing stopping you creating

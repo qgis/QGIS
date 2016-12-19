@@ -33,7 +33,7 @@ class QgsColorScheme
 
   public:
 
-    /** Flags for controlling behaviour of color scheme
+    /** Flags for controlling behavior of color scheme
      */
     enum SchemeFlag
     {

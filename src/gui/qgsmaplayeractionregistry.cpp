@@ -93,7 +93,7 @@ void QgsMapLayerAction::triggerForLayer( QgsMapLayer* layer )
 }
 
 //
-// Static calls to enforce singleton behaviour
+// Static calls to enforce singleton behavior
 //
 QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::mInstance = nullptr;
 QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::instance()

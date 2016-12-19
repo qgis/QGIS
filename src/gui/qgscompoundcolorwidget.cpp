@@ -116,37 +116,37 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
   mAlphaSlider->setComponent( QgsColorWidget::Alpha );
 
   mSwatchButton1->setShowMenu( false );
-  mSwatchButton1->setBehaviour( QgsColorButton::SignalOnly );
+  mSwatchButton1->setBehavior( QgsColorButton::SignalOnly );
   mSwatchButton2->setShowMenu( false );
-  mSwatchButton2->setBehaviour( QgsColorButton::SignalOnly );
+  mSwatchButton2->setBehavior( QgsColorButton::SignalOnly );
   mSwatchButton3->setShowMenu( false );
-  mSwatchButton3->setBehaviour( QgsColorButton::SignalOnly );
+  mSwatchButton3->setBehavior( QgsColorButton::SignalOnly );
   mSwatchButton4->setShowMenu( false );
-  mSwatchButton4->setBehaviour( QgsColorButton::SignalOnly );
+  mSwatchButton4->setBehavior( QgsColorButton::SignalOnly );
   mSwatchButton5->setShowMenu( false );
-  mSwatchButton5->setBehaviour( QgsColorButton::SignalOnly );
+  mSwatchButton5->setBehavior( QgsColorButton::SignalOnly );
   mSwatchButton6->setShowMenu( false );
-  mSwatchButton6->setBehaviour( QgsColorButton::SignalOnly );
+  mSwatchButton6->setBehavior( QgsColorButton::SignalOnly );
   mSwatchButton7->setShowMenu( false );
-  mSwatchButton7->setBehaviour( QgsColorButton::SignalOnly );
+  mSwatchButton7->setBehavior( QgsColorButton::SignalOnly );
   mSwatchButton8->setShowMenu( false );
-  mSwatchButton8->setBehaviour( QgsColorButton::SignalOnly );
+  mSwatchButton8->setBehavior( QgsColorButton::SignalOnly );
   mSwatchButton9->setShowMenu( false );
-  mSwatchButton9->setBehaviour( QgsColorButton::SignalOnly );
+  mSwatchButton9->setBehavior( QgsColorButton::SignalOnly );
   mSwatchButton10->setShowMenu( false );
-  mSwatchButton10->setBehaviour( QgsColorButton::SignalOnly );
+  mSwatchButton10->setBehavior( QgsColorButton::SignalOnly );
   mSwatchButton11->setShowMenu( false );
-  mSwatchButton11->setBehaviour( QgsColorButton::SignalOnly );
+  mSwatchButton11->setBehavior( QgsColorButton::SignalOnly );
   mSwatchButton12->setShowMenu( false );
-  mSwatchButton12->setBehaviour( QgsColorButton::SignalOnly );
+  mSwatchButton12->setBehavior( QgsColorButton::SignalOnly );
   mSwatchButton13->setShowMenu( false );
-  mSwatchButton13->setBehaviour( QgsColorButton::SignalOnly );
+  mSwatchButton13->setBehavior( QgsColorButton::SignalOnly );
   mSwatchButton14->setShowMenu( false );
-  mSwatchButton14->setBehaviour( QgsColorButton::SignalOnly );
+  mSwatchButton14->setBehavior( QgsColorButton::SignalOnly );
   mSwatchButton15->setShowMenu( false );
-  mSwatchButton15->setBehaviour( QgsColorButton::SignalOnly );
+  mSwatchButton15->setBehavior( QgsColorButton::SignalOnly );
   mSwatchButton16->setShowMenu( false );
-  mSwatchButton16->setBehaviour( QgsColorButton::SignalOnly );
+  mSwatchButton16->setBehavior( QgsColorButton::SignalOnly );
   //restore custom colors
   mSwatchButton1->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor1" ), QVariant( QColor() ) ).value<QColor>() );
   mSwatchButton2->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor2" ), QVariant( QColor() ) ).value<QColor>() );
@@ -735,7 +735,7 @@ void QgsCompoundColorWidget::keyPressEvent( QKeyEvent *e )
 {
   if ( !mPickingColor )
   {
-    //if not picking a color, use default tool button behaviour
+    //if not picking a color, use default tool button behavior
     QWidget::keyPressEvent( e );
     return;
   }

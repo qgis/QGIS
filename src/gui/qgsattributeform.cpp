@@ -456,13 +456,13 @@ void QgsAttributeForm::pushSelectedFeaturesMessage()
   }
 }
 
-void QgsAttributeForm::runSearchSelect( QgsVectorLayer::SelectBehaviour behaviour )
+void QgsAttributeForm::runSearchSelect( QgsVectorLayer::SelectBehavior behavior )
 {
   QString filter = createFilterExpression();
   if ( filter.isEmpty() )
     return;
 
-  mLayer->selectByExpression( filter, behaviour );
+  mLayer->selectByExpression( filter, behavior );
   pushSelectedFeaturesMessage();
   if ( mContext.formMode() == QgsAttributeEditorContext::Embed )
     setMode( SingleEditMode );
