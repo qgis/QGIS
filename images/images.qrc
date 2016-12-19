@@ -97,7 +97,6 @@
         <file>themes/default/join_bevel.svg</file>
         <file>themes/default/join_miter.svg</file>
         <file>themes/default/join_round.svg</file>
-        <file>themes/default/join_style.svg</file>
         <file>themes/default/locked.svg</file>
         <file>themes/default/lockedGray.svg</file>
         <file>themes/default/mAction.svg</file>
@@ -143,10 +142,10 @@
         <file>themes/default/mActionAlignVCenter.svg</file>
         <file>themes/default/mActionAllEdits.svg</file>
         <file>themes/default/mActionAnnotation.svg</file>
-        <file>themes/default/mActionArrowDown.png</file>
-        <file>themes/default/mActionArrowLeft.png</file>
-        <file>themes/default/mActionArrowRight.png</file>
-        <file>themes/default/mActionArrowUp.png</file>
+        <file>themes/default/mActionArrowDown.svg</file>
+        <file>themes/default/mActionArrowLeft.svg</file>
+        <file>themes/default/mActionArrowRight.svg</file>
+        <file>themes/default/mActionArrowUp.svg</file>
         <file>themes/default/mActionAtlasFirst.svg</file>
         <file>themes/default/mActionAtlasLast.svg</file>
         <file>themes/default/mActionAtlasNext.svg</file>
@@ -458,10 +457,8 @@
         <file>themes/default/stars_full.png</file>
         <file>themes/default/styleicons/color.svg</file>
         <file>themes/default/symbologyAdd.svg</file>
-        <file>themes/default/symbologyDown.svg</file>
         <file>themes/default/symbologyEdit.png</file>
         <file>themes/default/symbologyRemove.svg</file>
-        <file>themes/default/symbologyUp.svg</file>
         <file>themes/default/sync_views.svg</file>
         <file>themes/default/text.svg</file>
         <file>themes/default/tracking.svg</file>

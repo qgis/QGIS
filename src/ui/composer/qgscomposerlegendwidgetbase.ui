@@ -252,7 +252,7 @@
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionArrowDown.png</normaloff>:/images/themes/default/mActionArrowDown.png</iconset>
+                <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -269,7 +269,7 @@
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionArrowUp.png</normaloff>:/images/themes/default/mActionArrowUp.png</iconset>
+                <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
               </property>
               <property name="iconSize">
                <size>

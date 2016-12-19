@@ -84,8 +84,8 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WindowFlags fl, bo
     connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
 
     // TODO: do it without QgisApp
-    //mLayerUpButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowUp.png" ) );
-    //mLayerDownButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowDown.png" ) );
+    //mLayerUpButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowUp.svg" ) );
+    //mLayerDownButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowDown.svg" ) );
 
     QHBoxLayout *layout = new QHBoxLayout;
 
