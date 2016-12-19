@@ -505,6 +505,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsproject.h
   qgsrelationmanager.h
   qgsrunprocess.h
+  qgssnappingconfig.h
   qgssnappingutils.h
   qgstaskmanager.h
   qgstracer.h
@@ -707,7 +708,6 @@ SET(QGIS_CORE_HDRS
   qgsprojectbadlayerhandler.h
   qgsprojectfiletransform.h
   qgsprojectproperty.h
-  qgssnappingconfig.h
   qgsprojectversion.h
   qgsprovidermetadata.h
   qgsproviderregistry.h
@@ -722,7 +722,6 @@ SET(QGIS_CORE_HDRS
   qgsscaleutils.h
   qgssimplifymethod.h
   qgssnapper.h
-  qgssnappingconfig.h
   qgssnappingutils.h
   qgsspatialindex.h
   qgssqlexpressioncompiler.h

@@ -29,6 +29,10 @@ class QgsVectorLayer;
  */
 class CORE_EXPORT QgsSnappingConfig
 {
+    Q_GADGET
+
+    Q_PROPERTY( QgsProject* project READ project WRITE setProject )
+
   public:
 
     /**
@@ -118,7 +122,7 @@ class CORE_EXPORT QgsSnappingConfig
     /**
      * Constructor with default parameters defined in global settings
      */
-    explicit QgsSnappingConfig( QgsProject* project );
+    explicit QgsSnappingConfig( QgsProject* project = nullptr );
 
     ~QgsSnappingConfig();
 
@@ -177,8 +181,6 @@ class CORE_EXPORT QgsSnappingConfig
      */
     bool operator!= ( const QgsSnappingConfig& other ) const;
 
-  public:
-
     /**
      * Reads the configuration from the specified QGIS project document.
      *
@@ -216,6 +218,20 @@ class CORE_EXPORT QgsSnappingConfig
      * @note Added in QGIS 3.0
      */
     bool removeLayers( const QList<QgsMapLayer*>& layers );
+
+    /**
+     * The project from which the snapped layers should be retrieved
+     *
+     * \note Added in QGIS 3.0
+     */
+    QgsProject* project() const;
+
+    /**
+     * \copydoc project()
+     *
+     * \note Added in QGIS 3.0
+     */
+    void setProject( QgsProject* project );
 
   private:
     void readLegacySettings();

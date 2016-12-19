@@ -87,7 +87,7 @@ class QgsSnappingConfig
     /**
      * Constructor with default parameters defined in global settings
      */
-    explicit QgsSnappingConfig( QgsProject* project );
+    explicit QgsSnappingConfig( QgsProject* project = nullptr );
 
     ~QgsSnappingConfig();
 
@@ -221,5 +221,7 @@ class QgsSnappingConfig
      * @note Added in QGIS 3.0
      */
     bool removeLayers( const QList<QgsMapLayer*>& layers );
+    QgsProject* project() const;
+    void setProject(QgsProject* project);
 
 };
