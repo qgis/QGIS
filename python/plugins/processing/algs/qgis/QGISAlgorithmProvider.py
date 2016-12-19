@@ -167,10 +167,8 @@ from .Slope import Slope
 from .Ruggedness import Ruggedness
 from .Hillshade import Hillshade
 from .Relief import Relief
-from .IdwInterpolationZValue import IdwInterpolationZValue
-from .IdwInterpolationAttribute import IdwInterpolationAttribute
-from .TinInterpolationZValue import TinInterpolationZValue
-from .TinInterpolationAttribute import TinInterpolationAttribute
+from .IdwInterpolation import IdwInterpolation
+from .TinInterpolation import TinInterpolation
 from .ZonalStatisticsQgis import ZonalStatisticsQgis
 from .RemoveNullGeometry import RemoveNullGeometry
 from .ExtendLines import ExtendLines
@@ -248,8 +246,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SingleSidedBuffer(), PointsAlongGeometry(),
                         Aspect(), Slope(), Ruggedness(), Hillshade(),
                         Relief(), ZonalStatisticsQgis(),
-                        IdwInterpolationZValue(), IdwInterpolationAttribute(),
-                        TinInterpolationZValue(), TinInterpolationAttribute(),
+                        IdwInterpolation(), TinInterpolation(),
                         RemoveNullGeometry(), ExtractByExpression(),
                         ExtendLines(), ExtractSpecificNodes(),
                         GeometryByExpression(), SnapGeometriesToLayer(),
