@@ -30,7 +30,8 @@ fi
 
 
 exec 5>&1
-OUTPUT=$(unbuffer ag --smart-case --all-text --nopager --numbers --word-regexp --path-to-ignore $AGIGNORE "$RE" $FILES |tee /dev/fd/5)
+# "path-to-ignore" option differs on ag version: --path-to-ignore on fedora, --path-to-agignore on ubuntu 16.04: using short option
+OUTPUT=$(unbuffer ag --smart-case --all-text --nopager --numbers --word-regexp -p $AGIGNORE "$RE" $FILES |tee /dev/fd/5)
 
 
 if [[ !  -z  $OUTPUT  ]]; then
