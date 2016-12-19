@@ -44,6 +44,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     Q_OBJECT
 
     Q_PROPERTY( QStringList mapThemes READ mapThemes NOTIFY mapThemesChanged )
+    Q_PROPERTY( QgsProject* project READ project WRITE setProject NOTIFY projectChanged )
 
   public:
 
@@ -124,7 +125,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     /**
      * Create map theme collection that handles themes of the given project.
      */
-    QgsMapThemeCollection( QgsProject* project );
+    QgsMapThemeCollection( QgsProject* project = nullptr );
 
     /**
      * Returns whether a map theme with a matching name exists.
@@ -218,6 +219,19 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      */
     void applyTheme( const QString& name, QgsLayerTreeGroup* root, QgsLayerTreeModel* model );
 
+    /**
+     * The QgsProject on which this map theme collection works.
+     *
+     * \note Added in QGIS 3.0
+     */
+    QgsProject* project();
+
+    /**
+     * \copydoc project()
+     * \note Added in QGIS 3.0
+     */
+    void setProject( QgsProject* project );
+
   signals:
 
     /**
@@ -225,6 +239,14 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * @note Added in QGIS 3.0
      */
     void mapThemesChanged();
+
+    /**
+     * Emitted when the project changes
+     *
+     * \copydoc project()
+     * \note Added in QGIS 3.0
+     */
+    void projectChanged();
 
   private slots:
 
