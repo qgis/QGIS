@@ -417,25 +417,17 @@ void QgsSnappingConfig::readLegacySettings()
 
   QString snapMode = mProject->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/SnappingMode" ) );
 
-  QString snapType = mProject->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapType" ), QStringLiteral( "off" ) );
-  if ( snapType == QLatin1String( "to segment" ) )
-    mType = Segment;
-  else if ( snapType == QLatin1String( "to vertex and segment" ) )
-    mType = VertexAndSegment;
-  else if ( snapType == QLatin1String( "to vertex" ) )
-    mType = Vertex;
   mTolerance = mProject->readDoubleEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapTolerance" ), 0 );
   mUnits =  static_cast< QgsTolerance::UnitType >( mProject->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapToleranceUnit" ), QgsTolerance::ProjectUnits ) );
 
   mIntersectionSnapping = mProject->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/IntersectionSnapping" ), 0 );
 
   //read snapping settings from project
-  bool snappingDefinedInProject, ok;
-  QStringList layerIdList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingList" ), QStringList(), &snappingDefinedInProject );
-  QStringList enabledList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingEnabledList" ), QStringList(), &ok );
-  QStringList toleranceList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingToleranceList" ), QStringList(), &ok );
-  QStringList toleranceUnitList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingToleranceUnitList" ), QStringList(), &ok );
-  QStringList snapToList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnapToList" ), QStringList(), &ok );
+  QStringList layerIdList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingList" ), QStringList() );
+  QStringList enabledList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingEnabledList" ), QStringList() );
+  QStringList toleranceList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingToleranceList" ), QStringList() );
+  QStringList toleranceUnitList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingToleranceUnitList" ), QStringList() );
+  QStringList snapToList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnapToList" ), QStringList() );
 
   // lists must have the same size, otherwise something is wrong
   if ( layerIdList.size() != enabledList.size() ||
@@ -443,9 +435,6 @@ void QgsSnappingConfig::readLegacySettings()
        layerIdList.size() != toleranceUnitList.size() ||
        layerIdList.size() != snapToList.size() )
     return;
-
-  if ( !snappingDefinedInProject )
-    return; // nothing defined in project - use current layer
 
   // Use snapping information from the project
   if ( snapMode == QLatin1String( "current_layer" ) )
@@ -474,6 +463,19 @@ void QgsSnappingConfig::readLegacySettings()
                   );
 
     mIndividualLayerSettings.insert( vlayer, IndividualLayerSettings( *enabledIt == QLatin1String( "enabled" ), t, tolIt->toDouble(), static_cast<QgsTolerance::UnitType>( tolUnitIt->toInt() ) ) );
+  }
+
+  QString snapType = mProject->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapType" ), QStringLiteral( "off" ) );
+  mEnabled = true;
+  if ( snapType == QLatin1String( "to segment" ) )
+    mType = Segment;
+  else if ( snapType == QLatin1String( "to vertex and segment" ) )
+    mType = VertexAndSegment;
+  else if ( snapType == QLatin1String( "to vertex" ) )
+    mType = Vertex;
+  else if ( mMode != AdvancedConfiguration ) // Type is off but mode is advanced
+  {
+    mEnabled = false;
   }
 }
 
