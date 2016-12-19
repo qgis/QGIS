@@ -42,7 +42,6 @@ class TestQgsAttributeTableModel(unittest.TestCase):
         self.cache = QgsVectorLayerCache(self.layer, 100)
         self.am = QgsAttributeTableModel(self.cache)
         self.am.loadLayer()
-        self.am.loadAttributes()
 
     def tearDown(self):
         del self.am

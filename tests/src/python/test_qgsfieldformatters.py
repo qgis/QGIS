@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsMapLayerRegistry, QgsFeature, QgsGeometry, QgsPoint,
+from qgis.core import (QgsFeature, QgsGeometry, QgsPoint,
                        QgsProject, QgsRelation, QgsVectorLayer, NULL, QgsField,
                        QgsValueMapFieldFormatter, QgsValueRelationFieldFormatter,
                        QgsRelationReferenceFieldFormatter)
@@ -34,7 +34,7 @@ class TestQgsValueMapFieldFormatter(unittest.TestCase):
         layer = QgsVectorLayer("none?field=number1:integer&field=number2:double&field=text1:string&field=number3:integer&field=number4:double&field=text2:string",
                                "layer", "memory")
         self.assertTrue(layer.isValid())
-        QgsMapLayerRegistry.instance().addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
         f = QgsFeature()
         f.setAttributes([2, 2.5, 'NULL', None, None, None])
         layer.dataProvider().addFeatures([f])
@@ -60,7 +60,7 @@ class TestQgsValueMapFieldFormatter(unittest.TestCase):
         self.assertEqual(fieldFormatter.representValue(layer, 4, config, None, None), '(NULL)')
         self.assertEqual(fieldFormatter.representValue(layer, 5, config, None, None), '(NULL)')
 
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
 
 class TestQgsValueRelationFieldFormatter(unittest.TestCase):
@@ -73,7 +73,7 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
         second_layer = QgsVectorLayer("none?field=pkid:integer&field=decoded:string",
                                       "second_layer", "memory")
         self.assertTrue(second_layer.isValid())
-        QgsMapLayerRegistry.instance().addMapLayer(second_layer)
+        QgsProject.instance().addMapLayer(second_layer)
         f = QgsFeature()
         f.setAttributes([123])
         first_layer.dataProvider().addFeatures([f])
@@ -107,7 +107,7 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
         config = {'Layer': second_layer.id(), 'Key': 'pkid', 'Value': 'invalid'}
         self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '456'), '(456)')
 
-        QgsMapLayerRegistry.instance().removeMapLayer(second_layer.id())
+        QgsProject.instance().removeMapLayer(second_layer.id())
 
 
 class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
@@ -120,7 +120,7 @@ class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
         second_layer = QgsVectorLayer("none?field=pkid:integer&field=decoded:string",
                                       "second_layer", "memory")
         self.assertTrue(second_layer.isValid())
-        QgsMapLayerRegistry.instance().addMapLayers([first_layer, second_layer])
+        QgsProject.instance().addMapLayers([first_layer, second_layer])
         f = QgsFeature()
         f.setAttributes([123])
         first_layer.dataProvider().addFeatures([f])
@@ -196,7 +196,7 @@ class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
         second_layer.setDisplayExpression('decoded')
         self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '123'), '123')
 
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
 if __name__ == '__main__':
     unittest.main()

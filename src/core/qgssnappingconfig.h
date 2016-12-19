@@ -227,7 +227,7 @@ class CORE_EXPORT QgsSnappingConfig
     QgsProject* project() const;
 
     /**
-     * \copydoc project()
+     * The project from which the snapped layers should be retrieved
      *
      * \note Added in QGIS 3.0
      */
