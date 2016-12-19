@@ -150,11 +150,13 @@ class QgsMapThemeCollection : QObject
      * @note added in QGIS 3.0
      */
     void applyTheme( const QString& name, QgsLayerTreeGroup* root, QgsLayerTreeModel* model );
-
+    QgsProject* project();
+    void setProject( QgsProject* project );
   signals:
 
     /** Emitted when map themes within the collection are changed.
      */
     void mapThemesChanged();
+    void projectChanged();
 };
 

@@ -222,6 +222,6 @@ class QgsSnappingConfig
      */
     bool removeLayers( const QList<QgsMapLayer*>& layers );
     QgsProject* project() const;
-    void setProject(QgsProject* project);
+    void setProject( QgsProject* project );
 
 };

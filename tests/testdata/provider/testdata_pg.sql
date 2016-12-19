@@ -457,7 +457,7 @@ CREATE TABLE qgis_test.widget_styles(
 );
 
 INSERT INTO qgis_editor_widget_styles VALUES
-('qgis_test', 'widget_styles', 'fld1', 'FooEdit', '<config type="Map"><Option name="param1" value="value1" type="String"/><Option name="param2" value="2" type="String"/></config>');
+('qgis_test', 'widget_styles', 'fld1', 'FooEdit', '<config type="Map"><Option name="param1" value="value1" type="QString"/><Option name="param2" value="2" type="QString"/></config>');
 
 
 -----------------------------
