@@ -208,7 +208,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   mRadAutodetect->setChecked( true );
 #endif
 
-  //auto digitising behaviour
+  //auto digitising behavior
   mCbxAutoAddVertices->setChecked( mySettings.value( QStringLiteral( "/gps/autoAddVertices" ), "false" ).toBool() );
 
   mCbxAutoCommit->setChecked( mySettings.value( QStringLiteral( "/gps/autoCommit" ), "false" ).toBool() );
@@ -688,7 +688,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
   {
     mLastGpsPosition = myNewCenter;
 
-    // Pan based on user specified behaviour
+    // Pan based on user specified behavior
     if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
     {
       QgsCoordinateReferenceSystem mypSRS = mpCanvas->mapSettings().destinationCrs();

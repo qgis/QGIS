@@ -376,7 +376,7 @@ class CORE_EXPORT QgsFeatureRenderer
     void setOrderByEnabled( bool enabled );
 
     /** Sets an embedded renderer (subrenderer) for this feature renderer. The base class implementation
-     * does nothing with subrenderers, but individual derived classes can use these to modify their behaviour.
+     * does nothing with subrenderers, but individual derived classes can use these to modify their behavior.
      * @param subRenderer the embedded renderer. Ownership will be transferred.
      * @see embeddedRenderer()
      * @note added in QGIS 2.16

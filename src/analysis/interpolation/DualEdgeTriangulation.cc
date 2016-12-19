@@ -1268,7 +1268,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
     }
     else if ( MathUtils::lineIntersection( mPointVector[p1], mPointVector[p2], mPointVector[mHalfEdge[mHalfEdge[actedge]->getNext()]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[actedge]->getNext()]->getDual()]->getPoint()] ) )
     {
-      if ( mHalfEdge[mHalfEdge[actedge]->getNext()]->getForced() && mForcedCrossBehaviour == Triangulation::SnappingType_VERTICE )//if the crossed edge is a forced edge, we have to snap the forced line to the next node
+      if ( mHalfEdge[mHalfEdge[actedge]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::SnappingTypeVertex )//if the crossed edge is a forced edge, we have to snap the forced line to the next node
       {
         Point3D crosspoint;
         int p3, p4;
@@ -1290,7 +1290,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
           return e;
         }
       }
-      else if ( mHalfEdge[mHalfEdge[actedge]->getNext()]->getForced() && mForcedCrossBehaviour == Triangulation::INSERT_VERTICE )//if the crossed edge is a forced edge, we have to insert a new vertice on this edge
+      else if ( mHalfEdge[mHalfEdge[actedge]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::InsertVertex )//if the crossed edge is a forced edge, we have to insert a new vertice on this edge
       {
         Point3D crosspoint;
         int p3, p4;
@@ -1356,7 +1356,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   {
     if ( MathUtils::lineIntersection( mPointVector[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getPoint()], mPointVector[p1], mPointVector[p2] ) )
     {
-      if ( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getForced() && mForcedCrossBehaviour == Triangulation::SnappingType_VERTICE )//if the crossed edge is a forced edge and mForcedCrossBehaviour is SnappingType_VERTICE, we have to snap the forced line to the next node
+      if ( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::SnappingTypeVertex )//if the crossed edge is a forced edge and mForcedCrossBehavior is SnappingType_VERTICE, we have to snap the forced line to the next node
       {
         Point3D crosspoint;
         int p3, p4;
@@ -1378,7 +1378,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
           return e;
         }
       }
-      else if ( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getForced() && mForcedCrossBehaviour == Triangulation::INSERT_VERTICE )//if the crossed edge is a forced edge, we have to insert a new vertice on this edge
+      else if ( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::InsertVertex )//if the crossed edge is a forced edge, we have to insert a new vertice on this edge
       {
         Point3D crosspoint;
         int p3, p4;
@@ -1403,7 +1403,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
     }
     else if ( MathUtils::lineIntersection( mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getPoint()], mPointVector[p1], mPointVector[p2] ) )
     {
-      if ( mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getForced() && mForcedCrossBehaviour == Triangulation::SnappingType_VERTICE )//if the crossed edge is a forced edge and mForcedCrossBehaviour is SnappingType_VERTICE, we have to snap the forced line to the next node
+      if ( mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::SnappingTypeVertex )//if the crossed edge is a forced edge and mForcedCrossBehavior is SnappingType_VERTICE, we have to snap the forced line to the next node
       {
         Point3D crosspoint;
         int p3, p4;
@@ -1425,7 +1425,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
           return e;
         }
       }
-      else if ( mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getForced() && mForcedCrossBehaviour == Triangulation::INSERT_VERTICE )//if the crossed edge is a forced edge, we have to insert a new vertice on this edge
+      else if ( mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::InsertVertex )//if the crossed edge is a forced edge, we have to insert a new vertice on this edge
       {
         Point3D crosspoint;
         int p3, p4;
@@ -1568,9 +1568,9 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   return leftPolygon.first();
 }
 
-void DualEdgeTriangulation::setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b )
+void DualEdgeTriangulation::setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b )
 {
-  mForcedCrossBehaviour = b;
+  mForcedCrossBehavior = b;
 }
 
 void DualEdgeTriangulation::setEdgeColor( int r, int g, int b )

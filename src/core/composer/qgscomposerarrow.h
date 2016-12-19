@@ -228,10 +228,10 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     QColor mArrowHeadOutlineColor;
     QColor mArrowHeadFillColor;
 
-    /** Indicates QGIS version to mimic bounding box behaviour for. The line placement changed in version 2.4, so a value
+    /** Indicates QGIS version to mimic bounding box behavior for. The line placement changed in version 2.4, so a value
      * of 22 is used to indicate that the line should be drawn using the older placement routine.
      */
-    int mBoundsBehaviour;
+    int mBoundsBehavior;
 
     QgsLineSymbol* mLineSymbol;
 

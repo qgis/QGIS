@@ -159,13 +159,13 @@ void usage( const QString& appName )
 
 
 /////////////////////////////////////////////////////////////////
-// Command line options 'behaviour' flag setup
+// Command line options 'behavior' flag setup
 ////////////////////////////////////////////////////////////////
 
 // These two are global so that they can be set by the OpenDocuments
 // AppleEvent handler as well as by the main routine argv processing
 
-// This behaviour will cause QGIS to autoload a project
+// This behavior will cause QGIS to autoload a project
 static QString myProjectFileName = QLatin1String( "" );
 
 // This is the 'leftover' arguments collection
@@ -500,16 +500,16 @@ int main( int argc, char *argv[] )
   qsrand( time( nullptr ) );
 
   /////////////////////////////////////////////////////////////////
-  // Command line options 'behaviour' flag setup
+  // Command line options 'behavior' flag setup
   ////////////////////////////////////////////////////////////////
 
   //
   // Parse the command line arguments, looking to see if the user has asked for any
-  // special behaviours. Any remaining non command arguments will be kept aside to
+  // special behaviors. Any remaining non command arguments will be kept aside to
   // be passed as a list of layers and / or a project that should be loaded.
   //
 
-  // This behaviour is used to load the app, snapshot the map,
+  // This behavior is used to load the app, snapshot the map,
   // save the image to disk and then exit
   QString mySnapshotFileName = QLatin1String( "" );
   int mySnapshotWidth = 800;
@@ -533,7 +533,7 @@ int main( int argc, char *argv[] )
   QString dxfPreset;
   QgsRectangle dxfExtent;
 
-  // This behaviour will set initial extent of map canvas, but only if
+  // This behavior will set initial extent of map canvas, but only if
   // there are no command line arguments. This gives a usable map
   // extent when qgis starts with no layers loaded. When layers are
   // loaded, we let the layers define the initial extent.
@@ -541,7 +541,7 @@ int main( int argc, char *argv[] )
   if ( argc == 1 )
     myInitialExtent = QStringLiteral( "-1,-1,1,1" );
 
-  // This behaviour will allow you to force the use of a translation file
+  // This behavior will allow you to force the use of a translation file
   // which is useful for testing
   QString myTranslationCode;
 
@@ -763,7 +763,7 @@ int main( int argc, char *argv[] )
 
 
   /////////////////////////////////////////////////////////////////////
-  // Now we have the handlers for the different behaviours...
+  // Now we have the handlers for the different behaviors...
   ////////////////////////////////////////////////////////////////////
 
   /////////////////////////////////////////////////////////////////////

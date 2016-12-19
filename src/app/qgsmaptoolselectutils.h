@@ -52,7 +52,7 @@ namespace QgsMapToolSelectUtils
     for any required geometry transformations
     @param selectGeometry the geometry to select the layers features. This geometry
     must be in terms of the canvas coordinate system.
-    @param selectBehaviour behaviour of select (ie replace selection, add to selection)
+    @param selectBehavior behavior of select (ie replace selection, add to selection)
     @param doContains features will only be selected if fully contained within
     the selection rubber band (otherwise intersection is enough).
     @param singleSelect only selects the closest feature to the selectGeometry.
@@ -60,7 +60,7 @@ namespace QgsMapToolSelectUtils
   */
   void setSelectedFeatures( QgsMapCanvas* canvas,
                             const QgsGeometry& selectGeometry,
-                            QgsVectorLayer::SelectBehaviour selectBehaviour = QgsVectorLayer::SetSelection,
+                            QgsVectorLayer::SelectBehavior selectBehavior = QgsVectorLayer::SetSelection,
                             bool doContains = true,
                             bool singleSelect = false );
 

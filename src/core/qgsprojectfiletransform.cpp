@@ -609,7 +609,7 @@ void QgsProjectFileTransform::transform1800to1900()
 
 void QgsProjectFileTransform::transform2200to2300()
 {
-  //composer: set placement for all picture items to middle, to mimic <=2.2 behaviour
+  //composer: set placement for all picture items to middle, to mimic <=2.2 behavior
   QDomNodeList composerPictureList = mDom.elementsByTagName( QStringLiteral( "ComposerPicture" ) );
   for ( int i = 0; i < composerPictureList.size(); ++i )
   {

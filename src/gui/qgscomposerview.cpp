@@ -242,7 +242,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         selectedItem = composition()->composerItemAt( scenePoint, previousSelectedItem, true );
 
         //if we didn't find a lower item we'll use the top-most as fall-back
-        //this duplicates mapinfo/illustrator/etc behaviour where ctrl-clicks are "cyclic"
+        //this duplicates mapinfo/illustrator/etc behavior where ctrl-clicks are "cyclic"
         if ( !selectedItem )
         {
           selectedItem = composition()->composerItemAt( scenePoint, true );
@@ -2005,7 +2005,7 @@ void QgsComposerView::wheelEvent( QWheelEvent* event )
 
 void QgsComposerView::wheelZoom( QWheelEvent * event )
 {
-  //get mouse wheel zoom behaviour settings
+  //get mouse wheel zoom behavior settings
   QSettings mySettings;
   double zoomFactor = mySettings.value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toDouble();
 

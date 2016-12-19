@@ -33,7 +33,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="labelAltitudeClamping">
             <property name="toolTip">
-             <string>Terrain following behaviour</string>
+             <string>Terrain following behavior</string>
             </property>
             <property name="text">
              <string>Clamping</string>

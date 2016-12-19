@@ -403,7 +403,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     bool isValid() const;
 
     /** Perform some validation on this CRS. If the CRS doesn't validate the
-     * default behaviour settings for layers with unknown CRS will be
+     * default behavior settings for layers with unknown CRS will be
      * consulted and acted on accordingly. By hell or high water this
      * method will do its best to make sure that this CRS is valid - even
      * if that involves resorting to a hard coded default of geocs:wgs84.

@@ -16,7 +16,7 @@
 #     which is typically a shared library, should be linked to. The built
 #     module will also be install into Python's site-packages directory.
 #
-# The behaviour of the ADD_SIP_PYTHON_MODULE macro can be controlled by a
+# The behavior of the ADD_SIP_PYTHON_MODULE macro can be controlled by a
 # number of variables:
 #
 # SIP_INCLUDES - List of directories which SIP will scan through when looking

@@ -82,7 +82,7 @@ class CORE_EXPORT QgsSymbol
     };
 
 
-    //! Flags controlling behaviour of symbols during rendering
+    //! Flags controlling behavior of symbols during rendering
     enum RenderHint
     {
       DynamicRotation = 2, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
@@ -383,7 +383,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * @param u
      * @param alpha
      * @param selected set to true if symbol should be drawn in a "selected" state
-     * @param renderHints flags controlling rendering behaviour
+     * @param renderHints flags controlling rendering behavior
      * @param f
      * @param fields
      * @param mapUnitScale

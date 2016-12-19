@@ -61,7 +61,7 @@ QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool create
     , mHorizontalGrid( true )
     , mVerticalGrid( true )
     , mBackgroundColor( Qt::white )
-    , mWrapBehaviour( TruncateText )
+    , mWrapBehavior( TruncateText )
 {
 
   if ( mComposition )
@@ -96,7 +96,7 @@ QgsComposerTableV2::QgsComposerTableV2()
     , mHorizontalGrid( true )
     , mVerticalGrid( true )
     , mBackgroundColor( Qt::white )
-    , mWrapBehaviour( TruncateText )
+    , mWrapBehavior( TruncateText )
 {
   initStyles();
 }
@@ -128,7 +128,7 @@ bool QgsComposerTableV2::writeXml( QDomElement& elem, QDomDocument & doc, bool i
   elem.setAttribute( QStringLiteral( "verticalGrid" ), mVerticalGrid );
   elem.setAttribute( QStringLiteral( "showGrid" ), mShowGrid );
   elem.setAttribute( QStringLiteral( "backgroundColor" ), QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
-  elem.setAttribute( QStringLiteral( "wrapBehaviour" ), QString::number( static_cast< int >( mWrapBehaviour ) ) );
+  elem.setAttribute( QStringLiteral( "wrapBehavior" ), QString::number( static_cast< int >( mWrapBehavior ) ) );
 
   //columns
   QDomElement displayColumnsElem = doc.createElement( QStringLiteral( "displayColumns" ) );
@@ -198,7 +198,7 @@ bool QgsComposerTableV2::readXml( const QDomElement &itemElem, const QDomDocumen
   mShowGrid = itemElem.attribute( QStringLiteral( "showGrid" ), QStringLiteral( "1" ) ).toInt();
   mGridColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "gridColor" ), QStringLiteral( "0,0,0,255" ) ) );
   mBackgroundColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "backgroundColor" ), QStringLiteral( "255,255,255,0" ) ) );
-  mWrapBehaviour = QgsComposerTableV2::WrapBehaviour( itemElem.attribute( QStringLiteral( "wrapBehaviour" ), QStringLiteral( "0" ) ).toInt() );
+  mWrapBehavior = QgsComposerTableV2::WrapBehavior( itemElem.attribute( QStringLiteral( "wrapBehavior" ), QStringLiteral( "0" ) ).toInt() );
 
   //restore column specifications
   qDeleteAll( mColumns );
@@ -473,7 +473,7 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
         QString str = cellContents.toString();
 
         Qt::TextFlag textFlag = static_cast< Qt::TextFlag >( 0 );
-        if ( column->width() <= 0 && mWrapBehaviour == TruncateText )
+        if ( column->width() <= 0 && mWrapBehavior == TruncateText )
         {
           //automatic column width, so we use the Qt::TextDontClip flag when drawing contents, as this works nicer for italicised text
           //which may slightly exceed the calculated width
@@ -581,7 +581,7 @@ void QgsComposerTableV2::setCellMargin( const double margin )
   emit changed();
 }
 
-void QgsComposerTableV2::setEmptyTableBehaviour( const QgsComposerTableV2::EmptyTableMode mode )
+void QgsComposerTableV2::setEmptyTableBehavior( const QgsComposerTableV2::EmptyTableMode mode )
 {
   if ( mode == mEmptyTableMode )
   {
@@ -785,14 +785,14 @@ void QgsComposerTableV2::setBackgroundColor( const QColor &color )
   emit changed();
 }
 
-void QgsComposerTableV2::setWrapBehaviour( QgsComposerTableV2::WrapBehaviour behaviour )
+void QgsComposerTableV2::setWrapBehavior( QgsComposerTableV2::WrapBehavior behavior )
 {
-  if ( behaviour == mWrapBehaviour )
+  if ( behavior == mWrapBehavior )
   {
     return;
   }
 
-  mWrapBehaviour = behaviour;
+  mWrapBehavior = behavior;
   recalculateTableSize();
 
   emit changed();
@@ -1151,7 +1151,7 @@ void QgsComposerTableV2::drawHorizontalGridLines( QPainter *painter, int firstRo
 
 bool QgsComposerTableV2::textRequiresWrapping( const QString& text, double columnWidth, const QFont &font ) const
 {
-  if ( qgsDoubleNear( columnWidth, 0.0 ) || mWrapBehaviour != WrapText )
+  if ( qgsDoubleNear( columnWidth, 0.0 ) || mWrapBehavior != WrapText )
     return false;
 
   QStringList multiLineSplit = text.split( '\n' );

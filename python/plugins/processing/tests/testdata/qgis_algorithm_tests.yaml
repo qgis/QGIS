@@ -1477,7 +1477,7 @@ tests:
   - algorithm: qgis:snapgeometriestolayer
     name: Snap points to lines (prefer nodes)
     params:
-      BEHAVIOUR: '0'
+      BEHAVIOR: '0'
       INPUT:
         name: snap_points.gml
         type: vector
@@ -1493,7 +1493,7 @@ tests:
   - algorithm: qgis:snapgeometriestolayer
     name: Snap points to lines (prefer closest)
     params:
-      BEHAVIOUR: '1'
+      BEHAVIOR: '1'
       INPUT:
         name: snap_points.gml
         type: vector

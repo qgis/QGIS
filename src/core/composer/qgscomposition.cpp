@@ -1902,7 +1902,7 @@ void QgsComposition::unlockAllItems()
       QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( mypItem, QLatin1String( "" ), parentCommand );
       subcommand->savePreviousState();
       mypItem->setPositionLock( false );
-      //select unlocked items, same behaviour as illustrator
+      //select unlocked items, same behavior as illustrator
       mypItem->setSelected( true );
       emit selectedItemChanged( mypItem );
       subcommand->saveAfterState();

@@ -781,7 +781,7 @@ bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocumen
   mPictureWidth = itemElem.attribute( QStringLiteral( "pictureWidth" ), QStringLiteral( "10" ) ).toDouble();
   mPictureHeight = itemElem.attribute( QStringLiteral( "pictureHeight" ), QStringLiteral( "10" ) ).toDouble();
   mResizeMode = QgsComposerPicture::ResizeMode( itemElem.attribute( QStringLiteral( "resizeMode" ), QStringLiteral( "0" ) ).toInt() );
-  //when loading from xml, default to anchor point of middle to match pre 2.4 behaviour
+  //when loading from xml, default to anchor point of middle to match pre 2.4 behavior
   mPictureAnchor = static_cast< QgsComposerItem::ItemPositionMode >( itemElem.attribute( QStringLiteral( "anchorPoint" ), QString::number( QgsComposerItem::Middle ) ).toInt() );
 
   mSvgFillColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 255, 255, 255 ) ) ) );

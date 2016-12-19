@@ -226,7 +226,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      * @param gisdbase full path to GRASS GISDBASE.
      * @param location location name (not path!).
      * @param mapset current mupset. Note that some variables depend on mapset and
-     * may influence behaviour of some functions (e.g. search path etc.)
+     * may influence behavior of some functions (e.g. search path etc.)
      */
     static void setMapset( const QString &gisdbase, const QString &location, const QString &mapset );
 

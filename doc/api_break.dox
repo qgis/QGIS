@@ -475,6 +475,11 @@ QgsColorBrewerColorRampDialog        {#qgis_api_break_3_0_QgsColorBrewerColorRam
 and the new ramp can be retrieved after executing the dialog by calling ramp().
 - Some internal methods which were previously public or protected were made private.
 
+QgsColorButton     {#qgis_api_break_3_0_QgsColorButton}
+--------------
+
+- Behaviour enum and its corresponding setter/getter have been renamed to Behavior <!--#spellok-->
+
 
 QgsColorRampShader        {#qgis_api_break_3_0_QgsColorRampShader}
 ------------------
@@ -611,7 +616,10 @@ QgsComposerTableV2        {#qgis_api_break_3_0_QgsComposerTableV2}
 
 - rowsVisible(), rowRange(), drawHorizontalGridLines() and
  drawVerticalGridLines() were removed.
- 
+- WrapBehaviour enum and its setter and getter methods has been renamed to WrapBehavior <!--#spellok-->
+- EmptyTableBehaviour enum and its setter and getter methods has been renamed to EmptyTableBehavior <!--#spellok-->
+
+
  QgsComposerView        {#qgis_api_break_3_0_QgsComposerView}
 --------------------
 
@@ -1146,7 +1154,7 @@ and the new ramp can be retrieved after executing the dialog by calling ramp().
 QgsLinearlyInterpolatedDiagramRenderer        {#qgis_api_break_3_0_QgsLinearlyInterpolatedDiagramRenderer}
 --------------------------------------
 
-- The classificationAttribute() and setClassificationAttribute() methods were replace by 
+- The classificationAttribute() and setClassificationAttribute() methods were replace by
 classificationField() and setClassificationField() which use the field names instead of field
 indexes.
 
@@ -1715,7 +1723,7 @@ capabilities have been removed, as they were unused and had no effect.
 - capabilities() now returns a typesafe QgsVectorDataProvider::Capabilities object, not an integer.
 - convertToProviderType() now takes a geometry reference, not a pointer.
 - geometryType() has been renamed to wkbType() to be in line with QgsVectorLayer
-- The behaviour of defaultValue() has changed from 2.x. In 2.x, defaultValue() would return a SQL
+- The behavior of defaultValue() has changed from 2.x. In 2.x, defaultValue() would return a SQL
 clause fragment which must be evaluated by the provider in order to calculate the default value. In
 QGIS 3.0 defaultValue() only returns literal, constant defaultValues. A new method defaultValueClause
 has been added which returns the SQL clause fragments which must be evaluated by the provider itself.
@@ -1827,6 +1835,7 @@ optional property map passing down layer level properties to the SLD encoders. I
 - setScaleMethodToSymbol was removed. This is now handled using data defined scaling at a symbol layer level
 - usedAttributes is now a const method and returns QSet<QString> instead of QStringList
 
+
 Processing        {#qgis_api_break_3_0_Processing}
 ----------
 
@@ -1837,6 +1846,13 @@ need to update their use of the progress argument to utilise the QgsProcessingFe
 - Similarly, Python processing scripts no longer have access to a progress variable for reporting their progress. Instead they have a feedback
 object of type QgsProcessingFeedback, and will need to adapt their use of progress reporting to the QgsProcessingFeedback API.
 - SilentProgress was removed. Use the base QgsProcessingFeedback class instead.
+
+
+Triangulation        {#qgis_api_break_3_0_Triangulation}
+-------------
+
+- forcedCrossBehaviour enum and its setter and getter have been renamed to ForcedCrossBehavior. Its members have been renamed: SnappingType_VERTICE: SnappingTypeVertex, DELETE_FIRST: DeleteFirst, INSERT_VERTEX: InsertVertex. <!--#spellok-->
+
 
 
 QGIS 2.4        {#qgis_api_break_2_4}

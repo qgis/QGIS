@@ -98,13 +98,13 @@ void usage( std::string const & appName )
 
 
 /////////////////////////////////////////////////////////////////
-// Command line options 'behaviour' flag setup
+// Command line options 'behavior' flag setup
 ////////////////////////////////////////////////////////////////
 
 // These two are global so that they can be set by the OpenDocuments
 // AppleEvent handler as well as by the main routine argv processing
 
-// This behaviour will cause QGIS to autoload a project
+// This behavior will cause QGIS to autoload a project
 static QString myProjectFileName = QLatin1String( "" );
 
 // This is the 'leftover' arguments collection
@@ -121,12 +121,12 @@ int main( int argc, char *argv[] )
 #endif  // Q_OS_WIN
 
   /////////////////////////////////////////////////////////////////
-  // Command line options 'behaviour' flag setup
+  // Command line options 'behavior' flag setup
   ////////////////////////////////////////////////////////////////
 
   //
   // Parse the command line arguments, looking to see if the user has asked for any
-  // special behaviours. Any remaining non command arguments will be kept aside to
+  // special behaviors. Any remaining non command arguments will be kept aside to
   // be passed as a list of layers and / or a project that should be loaded.
   //
 
@@ -140,7 +140,7 @@ int main( int argc, char *argv[] )
   bool myParallel = false;
   QString myPrintTime = QStringLiteral( "total" );
 
-  // This behaviour will set initial extent of map canvas, but only if
+  // This behavior will set initial extent of map canvas, but only if
   // there are no command line arguments. This gives a usable map
   // extent when qgis starts with no layers loaded. When layers are
   // loaded, we let the layers define the initial extent.
@@ -351,7 +351,7 @@ int main( int argc, char *argv[] )
 #endif // Q_OS_WIN
 
   /////////////////////////////////////////////////////////////////////
-  // Now we have the handlers for the different behaviours...
+  // Now we have the handlers for the different behaviors...
   ////////////////////////////////////////////////////////////////////
 
   /////////////////////////////////////////////////////////////////////

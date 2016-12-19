@@ -503,7 +503,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
 {
   static QString authid = QString::null;
   QSettings mySettings;
-  QString myDefaultProjectionOption = mySettings.value( QStringLiteral( "/Projections/defaultBehaviour" ), "prompt" ).toString();
+  QString myDefaultProjectionOption = mySettings.value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString();
   if ( myDefaultProjectionOption == QLatin1String( "prompt" ) )
   {
     // @note this class is not a descendent of QWidget so we can't pass
@@ -544,7 +544,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
     QgsDebugMsg( "Layer srs set from project: " + authid );
     messageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to project CRS %1 - %2" ).arg( authid, srs.description() ), QgsMessageBar::WARNING, messageTimeout() );
   }
-  else ///Projections/defaultBehaviour==useGlobal
+  else ///Projections/defaultBehavior==useGlobal
   {
     authid = mySettings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
     srs.createFromOgcWmsCrs( authid );
@@ -2497,7 +2497,7 @@ void QgisApp::createStatusBar()
   mOnTheFlyProjectionStatusButton->setWhatsThis( tr( "This icon shows whether "
       "on the fly coordinate reference system transformation is enabled or not. "
       "Click the icon to bring up "
-      "the project properties dialog to alter this behaviour." ) );
+      "the project properties dialog to alter this behavior." ) );
   mOnTheFlyProjectionStatusButton->setToolTip( tr( "CRS status - Click "
       "to open coordinate reference system dialog" ) );
   connect( mOnTheFlyProjectionStatusButton, SIGNAL( clicked() ),

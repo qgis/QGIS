@@ -97,7 +97,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
 ///@endcond
 
 //
-// Static calls to enforce singleton behaviour
+// Static calls to enforce singleton behavior
 //
 QgsNetworkAccessManager* QgsNetworkAccessManager::instance()
 {

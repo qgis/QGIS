@@ -107,7 +107,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
     }
     // Otherwise if we have just one single top-level layers with children, then
     // skip this top-level layer and iterate directly on its children
-    // Note (E. Rouault): this was the historical behaviour before fixing #13762
+    // Note (E. Rouault): this was the historical behavior before fixing #13762
     else if ( capabilityProperty.layers.size() == 1 )
     {
       Q_FOREACH ( const QgsWmsLayerProperty &layerProperty, capabilityProperty.layers[0].layer )

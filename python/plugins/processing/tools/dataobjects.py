@@ -190,8 +190,8 @@ def load(fileName, name=None, crs=None, style=None):
     prjSetting = None
     settings = QSettings()
     if crs is not None:
-        prjSetting = settings.value('/Projections/defaultBehaviour')
-        settings.setValue('/Projections/defaultBehaviour', '')
+        prjSetting = settings.value('/Projections/defaultBehavior')
+        settings.setValue('/Projections/defaultBehavior', '')
     if name is None:
         name = os.path.split(fileName)[1]
     qgslayer = QgsVectorLayer(fileName, name, 'ogr')
@@ -218,11 +218,11 @@ def load(fileName, name=None, crs=None, style=None):
             QgsProject.instance().addMapLayers([qgslayer])
         else:
             if prjSetting:
-                settings.setValue('/Projections/defaultBehaviour', prjSetting)
+                settings.setValue('/Projections/defaultBehavior', prjSetting)
             raise RuntimeError('Could not load layer: ' + str(fileName)
                                + '\nCheck the processing framework log to look for errors')
     if prjSetting:
-        settings.setValue('/Projections/defaultBehaviour', prjSetting)
+        settings.setValue('/Projections/defaultBehavior', prjSetting)
 
     return qgslayer
 
@@ -273,8 +273,8 @@ def getObjectFromUri(uri, forceLoad=True):
             return table
     if forceLoad and os.path.exists(uri):
         settings = QSettings()
-        prjSetting = settings.value('/Projections/defaultBehaviour')
-        settings.setValue('/Projections/defaultBehaviour', '')
+        prjSetting = settings.value('/Projections/defaultBehavior')
+        settings.setValue('/Projections/defaultBehavior', '')
 
         # If is not opened, we open it
         name = os.path.basename(uri)
@@ -282,17 +282,17 @@ def getObjectFromUri(uri, forceLoad=True):
             layer = QgsVectorLayer(uri, name, provider)
             if layer.isValid():
                 if prjSetting:
-                    settings.setValue('/Projections/defaultBehaviour', prjSetting)
+                    settings.setValue('/Projections/defaultBehavior', prjSetting)
                 _loadedLayers[normalizeLayerSource(layer.source())] = layer
                 return layer
         layer = QgsRasterLayer(uri, name)
         if layer.isValid():
             if prjSetting:
-                settings.setValue('/Projections/defaultBehaviour', prjSetting)
+                settings.setValue('/Projections/defaultBehavior', prjSetting)
             _loadedLayers[normalizeLayerSource(layer.source())] = layer
             return layer
         if prjSetting:
-            settings.setValue('/Projections/defaultBehaviour', prjSetting)
+            settings.setValue('/Projections/defaultBehavior', prjSetting)
     else:
         return None
 

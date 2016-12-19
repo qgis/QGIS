@@ -134,7 +134,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   QgsFeatureRequest r;
   if ( mLayer->geometryType() != QgsWkbTypes::NullGeometry &&
-       settings.value( QStringLiteral( "/qgis/attributeTableBehaviour" ), QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
+       settings.value( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
   {
     QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
     QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( theLayer, mc->extent() ) );
@@ -258,7 +258,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mMainViewButtonGroup->setId( mAttributeViewButton, QgsDualView::AttributeEditor );
 
   // Load default attribute table filter
-  QgsAttributeTableFilterModel::FilterMode defaultFilterMode = ( QgsAttributeTableFilterModel::FilterMode ) settings.value( QStringLiteral( "/qgis/attributeTableBehaviour" ), QgsAttributeTableFilterModel::ShowAll ).toInt();
+  QgsAttributeTableFilterModel::FilterMode defaultFilterMode = ( QgsAttributeTableFilterModel::FilterMode ) settings.value( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ).toInt();
 
   switch ( defaultFilterMode )
   {
