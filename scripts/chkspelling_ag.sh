@@ -36,6 +36,15 @@ OUTPUT=$(unbuffer ag --smart-case --all-text --nopager --numbers --word-regexp -
 
 if [[ !  -z  $OUTPUT  ]]; then
   echo "Spelling errors have been found"
+  echo "****"
+  # < ---------- get files + error ---------------------------------------------------------------------->
+  ag --smart-case --only-matching --nogroup --nonumbers --all-text --word-regexp -p $AGIGNORE "$RE" $FILES | \
+  #                                     <-- generate sed command .... <------------------------------ get correction word ----------------->     <------------------------------- match case -------------------------------------------> <-----replace : by / ------> ...finalize sed command>
+  sed -e 's/\(\S*\):\([[:alnum:]]*\)$/  echo "sed -i s\/"$( echo "\2:$(ag --nonumbers --ignore-case \2 scripts\/spelling.dat | cut -d: -f2)" | sed -r \x27s\/([A-Z]+):(.*)\/\\1:\\U\\2\/; s\/([A-Z][a-z]+):([a-z])\/\\1:\\U\\2\\L\/\x27  | sed -e \x27s\/:\/\\\/\/\x27)"\/ \1" /e' | \
+  # remove duplicate line
+  sort -u
+  echo "****"
+  echo "Run above commands to fix spelling errors."
   exit 1
 else
   exit 0
