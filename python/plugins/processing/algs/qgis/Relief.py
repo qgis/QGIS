@@ -75,6 +75,10 @@ class Relief(GeoAlgorithm):
                     self.value = None
                     return True
 
+                if value == '':
+                   if not self.optional:
+                       return False
+
                 if isinstance(value, str):
                     self.value = value if value != '' else None
                 else:
@@ -100,11 +104,11 @@ class Relief(GeoAlgorithm):
             def colorsToString(colors):
                 s = ''
                 for c in colors:
-                    s += '{:.2f}, {:.2f}, {:d}, {:d}, {:d};'.format(c[0],
-                                                                    c[1],
-                                                                    c[2],
-                                                                    c[3],
-                                                                    c[4])
+                    s += '{:f}, {:f}, {:d}, {:d}, {:d};'.format(c[0],
+                                                                c[1],
+                                                                c[2],
+                                                                c[3],
+                                                                c[4])
                 return s[:-1]
 
         self.addParameter(ParameterRaster(self.INPUT_LAYER,

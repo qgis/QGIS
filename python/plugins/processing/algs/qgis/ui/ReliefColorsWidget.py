@@ -239,11 +239,11 @@ class ReliefColorsWidget(BASE, WIDGET):
         rColors = self.reliefColors()
         colors = ''
         for c in rColors:
-            colors += '{:.2f}, {:.2f}, {:d}, {:d}, {:d};'.format(c.minElevation,
-                                                                 c.maxElevation,
-                                                                 c.color.red(),
-                                                                 c.color.green(),
-                                                                 c.color.blue())
+            colors += '{:f}, {:f}, {:d}, {:d}, {:d};'.format(c.minElevation,
+                                                             c.maxElevation,
+                                                             c.color.red(),
+                                                             c.color.green(),
+                                                             c.color.blue())
         return colors[:-1]
 
 
