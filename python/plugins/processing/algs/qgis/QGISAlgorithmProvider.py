@@ -166,7 +166,7 @@ from .Aspect import Aspect
 from .Slope import Slope
 from .Ruggedness import Ruggedness
 from .Hillshade import Hillshade
-from .ReliefAuto import ReliefAuto
+from .Relief import Relief
 from .IdwInterpolationZValue import IdwInterpolationZValue
 from .IdwInterpolationAttribute import IdwInterpolationAttribute
 from .TinInterpolationZValue import TinInterpolationZValue
@@ -247,7 +247,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         OffsetLine(), PolygonCentroids(), Translate(),
                         SingleSidedBuffer(), PointsAlongGeometry(),
                         Aspect(), Slope(), Ruggedness(), Hillshade(),
-                        ReliefAuto(), ZonalStatisticsQgis(),
+                        Relief(), ZonalStatisticsQgis(),
                         IdwInterpolationZValue(), IdwInterpolationAttribute(),
                         TinInterpolationZValue(), TinInterpolationAttribute(),
                         RemoveNullGeometry(), ExtractByExpression(),

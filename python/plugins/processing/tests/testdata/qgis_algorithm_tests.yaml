@@ -1136,9 +1136,28 @@ tests:
         hash: 58365b3715b925d6286e7f082ebd9c2a20f09fa1c922176d3f238002
         type: rasterhash
 
-  - algorithm: qgis:reliefautomaticcolors
-    name: Relief (automatic colors calculation)
+  - algorithm: qgis:relief
+    name: Relief (automatic colors generation)
     params:
+      AUTO_COLORS: true
+      INPUT_LAYER:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT_LAYER:
+        hash: 7fe0e0174185fd743e23760f33615adf10f771b4275f320db6f7f4f8
+        type: rasterhash
+
+  - algorithm: qgis:relief
+    name: Relief (custom colors)
+    params:
+      AUTO_COLORS: false
+      COLORS: 85.000000, 104.436508, 7, 165, 144;104.436508, 104.436508, 12, 221, 162;104.436508,
+        104.436508, 33, 252, 183;104.436508, 104.436508, 247, 252, 152;104.436508, 104.436508,
+        252, 196, 8;104.436508, 190.333333, 252, 166, 15;190.333333, 226.698413, 175,
+        101, 15;226.698413, 226.698413, 255, 133, 92;226.698413, 243.000000, 204, 204,
+        204
       INPUT_LAYER:
         name: dem.tif
         type: raster
