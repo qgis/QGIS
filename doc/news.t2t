@@ -61,7 +61,7 @@ This release has following new features:
 - Symbology: Control outline join style for simple, ellipse, and font markers
 - Symbology: New map tool for interactively setting point symbol offset
 - Symbology: Style Dock
-- Labelling: Labeling map tools now work with rule-based labeling
+- Labeling: Labeling map tools now work with rule-based labeling
 - Diagrams: Legend entries for diagram size
 - Diagrams: Unit selection for outline width
 - Diagrams: Diagrams behave like labels and can be managed from toolbar
@@ -169,10 +169,10 @@ This release has following new features:
 - General : New expression functions in 2.14
 - General : Better control over placement of map elements
 - General : Paid bugfixing programme
-- Labelling : Actual rendered symbol is now considered as an obstacle for point feature labels
-- Labelling : "Cartographic" placement mode for point labels
-- Labelling : Applying label distance from symbol bounds
-- Labelling : Control over label rendering order
+- Labeling : Actual rendered symbol is now considered as an obstacle for point feature labels
+- Labeling : "Cartographic" placement mode for point labels
+- Labeling : Applying label distance from symbol bounds
+- Labeling : Control over label rendering order
 - Layer Legend : applying the same style to selected layers or to legend group
 - Layer Legend : New options for filtering legend elements
 - Layer Legend : Filter legend by expression
@@ -233,13 +233,13 @@ This release has following new features:
 - General : User Interface Theme support
 - General : New expression functions in 2.12
 - General : Variables in expressions
-- Labelling : Data defined quadrant when in "around point" mode
-- Labelling : Draw only labels which fit inside polygons
-- Labelling : Control priority of labeling obstacles
-- Labelling : New options to control how polygon layers act as obstacles
-- Labelling : Data defined control over label priority
-- Labelling : Option for obstacle-only layers
-- Labelling : Rule-based labeling
+- Labeling : Data defined quadrant when in "around point" mode
+- Labeling : Draw only labels which fit inside polygons
+- Labeling : Control priority of labeling obstacles
+- Labeling : New options to control how polygon layers act as obstacles
+- Labeling : Data defined control over label priority
+- Labeling : Option for obstacle-only layers
+- Labeling : Rule-based labeling
 - Map Composer : Atlas navigation improvements
 - Map Composer : Custom format for grid annotations
 - Map Composer : Multiline text handling and automatic text wrapping in composer attribute tables
@@ -499,7 +499,7 @@ key new features.
 - HTML support has been added map composer label item to give you even
       more control over your final maps. HTML labels support full css styles
       sheets, html, and even javascript if you are that way inclined.
-- The labelling system has been totally overhauled - it now includes many
+- The labeling system has been totally overhauled - it now includes many
       new features such as drop shadows, 'highway shields', many more data bound
       options, and various performance enhancements. We are slowly doing away
       with the 'old labels' system, although you will still find that
@@ -553,7 +553,7 @@ key new features.
 - Customization - allows setting up simplified QGIS interface by hiding various components of main window and widgets in dialogs.
 - New symbol layer types - Line Pattern Fill, Point Pattern fill
 - Composers - have multiple lines on legend items using a specified character
-- Expression based labelling
+- Expression based labeling
 - Heatmap tool - a new core plugin has been added for generating raster heatmaps from point data. You may need to activate this plugin using the plugin manager.
 - GPS Tracking - The GPS live tracking user interface was overhauled and many fixes and improvements were added to it.
 - Menu Re-organisation - The menus were re-organised a little - we now have separate menus for Vector and Raster and many plugins were updated to place their menus in the new Vector and Raster top level menus.
@@ -880,7 +880,7 @@ as' option, you can now specify OGR creation options.
 - In the table of contents, it is now possible to select and remove several layers at once.
 - 
 
-==Labelling (New generation only)==
+==Labeling (New generation only)==
 
 - Data defined label position in labeling-ng.
 - Line wrapping, data defined font and buffer settings for labeling-ng.
@@ -962,7 +962,7 @@ colors
 information to display groups in the composer legend.
 - Show selected feature count in status bar 
 - Query option added to layer menu to subset vector layers
-- Option to label only selected features (on the 'old' labelling tool)
+- Option to label only selected features (on the 'old' labeling tool)
 - Load/save queries created in the query builder.
 - Manual adding of categories in symbology-ng.
 - Georeferencer: possibility to configure if residuals should be showed in
@@ -1782,7 +1782,7 @@ Added display/label field handling. Field is now set when the layer is
    added by examining the fields and attempting to make a "smart" choice. The
    user can later change this field from the layer properties dialog. This field
    is used as the item name in the identify box (top of the tree for each feature
-   and its attributes) and will eventually be used in labelling features.
+   and its attributes) and will eventually be used in labeling features.
 Cleanup of postgres add layer dialog 
 Removed excessive debug output from qgsfeature 
 

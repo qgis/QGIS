@@ -52,7 +52,7 @@ namespace pal
 
   /**
    * \ingroup core
-   * \brief A set of features which influence the labelling process
+   * \brief A set of features which influence the labeling process
    * \class pal::Layer
    * \note not available in Python bindings
    */
@@ -120,7 +120,7 @@ namespace pal
        *
        * Active means "is currently displayed or used as obstacles". When a layer is
        * deactivated then feature of this layer will not be used for either
-       * labelling or as obstacles.
+       * labeling or as obstacles.
        *
        * @param active set to true to make the layer active, or false to deactivate the layer
        * @see active

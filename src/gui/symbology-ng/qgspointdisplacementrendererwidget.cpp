@@ -117,7 +117,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
 
   mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( mRenderer->placement() ) );
 
-  //scale dependent labelling
+  //scale dependent labeling
   mMaxScaleDenominatorEdit->setText( QString::number( mRenderer->maxLabelScaleDenominator() ) );
   mMaxScaleDenominatorEdit->setValidator( new QDoubleValidator( mMaxScaleDenominatorEdit ) );
   if ( mRenderer->maxLabelScaleDenominator() > 0 )

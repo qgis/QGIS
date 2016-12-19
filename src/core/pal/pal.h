@@ -74,7 +74,7 @@ namespace pal
   Q_DECLARE_FLAGS( LineArrangementFlags, LineArrangementFlag )
 
   /** \ingroup core
-   *  \brief Main Pal labelling class
+   *  \brief Main Pal labeling class
    *
    *  A pal object will contains layers and global information such as which search method
    *  will be used.
