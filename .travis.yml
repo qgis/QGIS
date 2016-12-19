@@ -13,6 +13,7 @@ matrix:
         apt: true
         directories:
           - $HOME/.ccache
+        timeout: 1000
       compiler: clang
       python: "3.3"
       addons:
