@@ -19,7 +19,7 @@ src/plugins/grass/qtermwidget/
 *.*.orig
 *.*.sortinc
 *.*.prepare
-
+.agignore
 
 #Specific files
 ChangeLog
