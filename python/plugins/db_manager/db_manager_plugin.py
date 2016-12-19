@@ -25,7 +25,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QAction, QApplication
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsMapLayerRegistry, QgsMapLayer, QgsDataSourceUri
+from qgis.core import QgsProject, QgsMapLayer, QgsDataSourceUri
 import re
 
 from . import resources_rc  # NOQA
@@ -57,9 +57,9 @@ class DBManagerPlugin(object):
         self.layerAction.setObjectName("dbManagerUpdateSqlLayer")
         self.layerAction.triggered.connect(self.onUpdateSqlLayer)
         self.iface.addCustomActionForLayerType(self.layerAction, "", QgsMapLayer.VectorLayer, False)
-        for l in list(QgsMapLayerRegistry.instance().mapLayers().values()):
+        for l in list(QgsProject.instance().mapLayers().values()):
             self.onLayerWasAdded(l)
-        QgsMapLayerRegistry.instance().layerWasAdded.connect(self.onLayerWasAdded)
+        QgsProject.instance().layerWasAdded.connect(self.onLayerWasAdded)
 
     def unload(self):
         # Remove the plugin menu item and icon
@@ -73,7 +73,7 @@ class DBManagerPlugin(object):
             self.iface.removeToolBarIcon(self.action)
 
         self.iface.removeCustomActionForLayerType(self.layerAction)
-        QgsMapLayerRegistry.instance().layerWasAdded.disconnect(self.onLayerWasAdded)
+        QgsProject.instance().layerWasAdded.disconnect(self.onLayerWasAdded)
 
         if self.dlg is not None:
             self.dlg.close()

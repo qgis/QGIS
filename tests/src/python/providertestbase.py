@@ -23,6 +23,7 @@ from qgis.core import (
     QgsAbstractFeatureIterator,
     QgsExpressionContextScope,
     QgsExpressionContext,
+    QgsVectorDataProvider,
     NULL
 )
 
@@ -44,14 +45,17 @@ class ProviderTestCase(object):
         evaluation are equal.
     '''
 
-    def testGetFeatures(self):
+    def testGetFeatures(self, provider=None, extra_features=[], skip_features=[], changed_attributes={}, changed_geometries={}):
         """ Test that expected results are returned when fetching all features """
 
         # IMPORTANT - we do not use `for f in provider.getFeatures()` as we are also
         # testing that existing attributes & geometry in f are overwritten correctly
         # (for f in ... uses a new QgsFeature for every iteration)
 
-        it = self.provider.getFeatures()
+        if not provider:
+            provider = self.provider
+
+        it = provider.getFeatures()
         f = QgsFeature()
         attributes = {}
         geometries = {}
@@ -73,16 +77,38 @@ class ProviderTestCase(object):
                                1: [1, 100, 'Orange', 'oranGe', '1'],
                                2: [2, 200, 'Apple', 'Apple', '2'],
                                4: [4, 400, 'Honey', 'Honey', '4']}
-        self.assertEqual(attributes, expected_attributes, 'Expected {}, got {}'.format(expected_attributes, attributes))
 
         expected_geometries = {1: 'Point (-70.332 66.33)',
                                2: 'Point (-68.2 70.8)',
                                3: None,
                                4: 'Point(-65.32 78.3)',
                                5: 'Point(-71.123 78.23)'}
+        for f in extra_features:
+            expected_attributes[f[0]] = f.attributes()
+            if f.hasGeometry():
+                expected_geometries[f[0]] = f.geometry().exportToWkt()
+            else:
+                expected_geometries[f[0]] = None
+
+        for i in skip_features:
+            del expected_attributes[i]
+            del expected_geometries[i]
+        for i, a in changed_attributes.items():
+            for attr_idx, v in a.items():
+                expected_attributes[i][attr_idx] = v
+        for i, g, in changed_geometries.items():
+            if g:
+                expected_geometries[i] = g.exportToWkt()
+            else:
+                expected_geometries[i] = None
+
+        self.assertEqual(attributes, expected_attributes, 'Expected {}, got {}'.format(expected_attributes, attributes))
+
+        self.assertEqual(len(expected_geometries), len(geometries))
+
         for pk, geom in list(expected_geometries.items()):
             if geom:
-                assert compareWkt(geom, geometries[pk]), "Geometry {} mismatch Expected:\n{}\nGot:\n{}\n".format(pk, geom, geometries[pk].exportToWkt())
+                assert compareWkt(geom, geometries[pk]), "Geometry {} mismatch Expected:\n{}\nGot:\n{}\n".format(pk, geom, geometries[pk])
             else:
                 self.assertFalse(geometries[pk], 'Expected null geometry for {}'.format(pk))
 
@@ -652,3 +678,127 @@ class ProviderTestCase(object):
 
             assert f.hasGeometry(), 'Expected geometry, got none'
             self.assertTrue(f.isValid())
+
+    def testAddFeature(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        f1 = QgsFeature()
+        f1.setAttributes([6, -220, NULL, 'String', '15'])
+        f1.setGeometry(QgsGeometry.fromWkt('Point (-72.345 71.987)'))
+
+        f2 = QgsFeature()
+        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13'])
+
+        if l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
+            # expect success
+            result, added = l.dataProvider().addFeatures([f1, f2])
+            self.assertTrue(result, 'Provider reported AddFeatures capability, but returned False to addFeatures')
+            f1.setId(added[0].id())
+            f2.setId(added[1].id())
+
+            # check result
+            self.testGetFeatures(l.dataProvider(), [f1, f2])
+
+            # add empty list, should return true for consistency
+            self.assertTrue(l.dataProvider().addFeatures([]))
+
+        else:
+            # expect fail
+            self.assertFalse(l.dataProvider().addFeatures([f1, f2]), 'Provider reported no AddFeatures capability, but returned true to addFeatures')
+
+    def testDeleteFeatures(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        #find 2 features to delete
+        features = [f for f in l.dataProvider().getFeatures()]
+        to_delete = [f.id() for f in features if f.attributes()[0] in [1, 3]]
+
+        if l.dataProvider().capabilities() & QgsVectorDataProvider.DeleteFeatures:
+            # expect success
+            result = l.dataProvider().deleteFeatures(to_delete)
+            self.assertTrue(result, 'Provider reported DeleteFeatures capability, but returned False to deleteFeatures')
+
+            # check result
+            self.testGetFeatures(l.dataProvider(), skip_features=[1, 3])
+
+            # delete empty list, should return true for consistency
+            self.assertTrue(l.dataProvider().deleteFeatures([]))
+
+        else:
+            # expect fail
+            self.assertFalse(l.dataProvider().deleteFeatures(to_delete),
+                             'Provider reported no DeleteFeatures capability, but returned true to deleteFeatures')
+
+    def testChangeAttributes(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        #find 2 features to change
+        features = [f for f in l.dataProvider().getFeatures()]
+        # need to keep order here
+        to_change = [f for f in features if f.attributes()[0] == 1]
+        to_change.extend([f for f in features if f.attributes()[0] == 3])
+        # changes by feature id, for changeAttributeValues call
+        changes = {to_change[0].id(): {1: 501, 3: 'new string'}, to_change[1].id(): {1: 502, 4: 'NEW'}}
+        # changes by pk, for testing after retrieving changed features
+        new_attr_map = {1: {1: 501, 3: 'new string'}, 3: {1: 502, 4: 'NEW'}}
+
+        if l.dataProvider().capabilities() & QgsVectorDataProvider.ChangeAttributeValues:
+            # expect success
+            result = l.dataProvider().changeAttributeValues(changes)
+            self.assertTrue(result, 'Provider reported ChangeAttributeValues capability, but returned False to changeAttributeValues')
+
+            # check result
+            self.testGetFeatures(l.dataProvider(), changed_attributes=new_attr_map)
+
+            # change empty list, should return true for consistency
+            self.assertTrue(l.dataProvider().changeAttributeValues({}))
+
+        else:
+            # expect fail
+            self.assertFalse(l.dataProvider().changeAttributeValues(changes),
+                             'Provider reported no ChangeAttributeValues capability, but returned true to changeAttributeValues')
+
+    def testChangeGeometries(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        # find 2 features to change
+        features = [f for f in l.dataProvider().getFeatures()]
+        to_change = [f for f in features if f.attributes()[0] == 1]
+        to_change.extend([f for f in features if f.attributes()[0] == 3])
+        # changes by feature id, for changeGeometryValues call
+        changes = {to_change[0].id(): QgsGeometry.fromWkt('Point (10 20)'), to_change[1].id(): QgsGeometry()}
+        # changes by pk, for testing after retrieving changed features
+        new_geom_map = {1: QgsGeometry.fromWkt('Point ( 10 20 )'), 3: QgsGeometry()}
+
+        if l.dataProvider().capabilities() & QgsVectorDataProvider.ChangeGeometries:
+            # expect success
+            result = l.dataProvider().changeGeometryValues(changes)
+            self.assertTrue(result,
+                            'Provider reported ChangeGeometries capability, but returned False to changeGeometryValues')
+
+            # check result
+            self.testGetFeatures(l.dataProvider(), changed_geometries=new_geom_map)
+
+            # change empty list, should return true for consistency
+            self.assertTrue(l.dataProvider().changeGeometryValues({}))
+
+        else:
+            # expect fail
+            self.assertFalse(l.dataProvider().changeGeometryValues(changes),
+                             'Provider reported no ChangeGeometries capability, but returned true to changeGeometryValues')

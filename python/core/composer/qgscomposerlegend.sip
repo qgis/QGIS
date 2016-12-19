@@ -5,14 +5,15 @@
  *
  * @note added in 2.6
  */
-class QgsLegendModelV2 : QgsLayerTreeModel
+class QgsLegendModel : QgsLayerTreeModel
 {
 %TypeHeaderCode
 #include <qgscomposerlegend.h>
 %End
 
   public:
-    QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject *parent /TransferThis/ = 0 );
+    //! Construct the model based on the given layer tree
+    QgsLegendModel( QgsLayerTreeGroup* rootNode, QObject *parent /TransferThis/ = 0 );
 
     QVariant data( const QModelIndex& index,  int role ) const;
 
@@ -27,7 +28,7 @@ class QgsComposerLegend : QgsComposerItem
 {
 %TypeHeaderCode
 #include <qgscomposerlegend.h>
-#include <qgscomposerlegendstyle.h>
+#include <qgslegendstyle.h>
 %End
 
   public:
@@ -61,7 +62,7 @@ class QgsComposerLegend : QgsComposerItem
     bool resizeToContents() const;
 
     //! @note added in 2.6
-    QgsLegendModelV2* model();
+    QgsLegendModel* model();
 
     //! @note added in 2.6
     void setAutoUpdateModel( bool autoUpdate );
@@ -107,18 +108,30 @@ class QgsComposerLegend : QgsComposerItem
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 
     /** Returns reference to modifiable style */
-    QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s );
+    QgsLegendStyle & rstyle( QgsLegendStyle::Style s );
     /** Returns style */
-    QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const;
-    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style );
+    QgsLegendStyle style( QgsLegendStyle::Style s ) const;
+    void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle& style );
 
-    QFont styleFont( QgsComposerLegendStyle::Style s ) const;
+    QFont styleFont( QgsLegendStyle::Style s ) const;
     /** Set style font */
-    void setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f );
+    void setStyleFont( QgsLegendStyle::Style s, const QFont& f );
 
     /** Set style margin*/
-    void setStyleMargin( QgsComposerLegendStyle::Style s, double margin );
-    void setStyleMargin( QgsComposerLegendStyle::Style s, QgsComposerLegendStyle::Side side, double margin );
+    void setStyleMargin( QgsLegendStyle::Style s, double margin );
+    void setStyleMargin( QgsLegendStyle::Style s, QgsLegendStyle::Side side, double margin );
+
+    /** Returns the spacing in-between lines in mm
+     * @note added in 3.0
+     * @see setLineSpacing
+     */
+    double lineSpacing() const;
+    /** Sets the spacing in-between multiple lines
+     * @param spacing Double value to use as spacing in between multiple lines
+     * @note added in 3.0
+     * @see lineSpacing
+     */
+    void setLineSpacing( double spacing );
 
     double boxSpace() const;
     void setBoxSpace( double s );

@@ -39,6 +39,9 @@ int main( int argc, char * argv[] )
 {
   QgsApplication app( argc, argv, getenv( "DISPLAY" ), QString(), QStringLiteral( "server" ) );
   QgsServer server( false );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  server.initPython();
+#endif
   // Starts FCGI loop
   while ( fcgi_accept() >= 0 )
   {

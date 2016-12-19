@@ -18,8 +18,9 @@ pluginPath = os.path.dirname(__file__)
 WIDGET_ADD_NEW, BASE_ADD_NEW = uic.loadUiType(
     os.path.join(pluginPath, 'AddNewExpressionDialog.ui'))
 
+
 class AddNewExpressionDialog(BASE_ADD_NEW, WIDGET_ADD_NEW):
-    
+
     def __init__(self, expression):
         super(AddNewExpressionDialog, self).__init__()
         self.setupUi(self)
@@ -32,7 +33,7 @@ class AddNewExpressionDialog(BASE_ADD_NEW, WIDGET_ADD_NEW):
 
     def cancelPressed(self):
         self.close()
-        
+
     def okPressed(self):
         self.name = self.txtName.text()
         self.expression = self.txtExpression.toPlainText()
@@ -40,6 +41,7 @@ class AddNewExpressionDialog(BASE_ADD_NEW, WIDGET_ADD_NEW):
 
 WIDGET_DLG, BASE_DLG = uic.loadUiType(
     os.path.join(pluginPath, 'PredefinedExpressionDialog.ui'))
+
 
 class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
 
@@ -74,11 +76,12 @@ class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
         self.filledExpression = self.expression
         for name, combo in self.comboBoxes.items():
             self.filledExpression = self.filledExpression.replace(name,
-                                            self.options[combo.currentText()])
+                                                                  self.options[combo.currentText()])
         self.close()
 
 WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ExpressionWidget.ui'))
+
 
 class ExpressionWidget(BASE, WIDGET):
 
@@ -104,17 +107,16 @@ class ExpressionWidget(BASE, WIDGET):
             button.clicked.connect(partial(addButtonText, button.text()))
         self.listWidget.itemDoubleClicked.connect(doubleClicked)
 
-        self.expressions = {} 
+        self.expressions = {}
         if os.path.exists(self.expsFile()):
-            with open(self.expsFile()) as f:    
+            with open(self.expsFile()) as f:
                 self.expressions.update(json.load(f))
-        self.expressions.update(self._expressions)        
-        
+        self.expressions.update(self._expressions)
+
         self.fillPredefined()
         self.buttonAddPredefined.clicked.connect(self.addPredefined)
 
         self.buttonSavePredefined.clicked.connect(self.savePredefined)
-        
 
     def expsFile(self):
         return os.path.join(userFolder(), 'rastercalcexpressions.json')
@@ -125,22 +127,22 @@ class ExpressionWidget(BASE, WIDGET):
         dlg.exec_()
         if dlg.filledExpression:
             self.text.setPlainText(dlg.filledExpression)
-   
+
     def savePredefined(self):
         exp = self.text.toPlainText()
         used = [v for v in self.options.values() if v in exp]
-        
+
         for i, v in enumerate(used):
             exp = exp.replace(v, chr(97 + i))
-            
+
         dlg = AddNewExpressionDialog(exp)
         dlg.exec_()
         if dlg.name:
             self.expressions[dlg.name] = dlg.expression
-            
-        with open(self.expsFile(), "w") as f:    
+
+        with open(self.expsFile(), "w") as f:
             f.write(json.dumps(self.expressions))
-            
+
     def fillPredefined(self):
         self.comboPredefined.clear()
         for expression in self.expressions:

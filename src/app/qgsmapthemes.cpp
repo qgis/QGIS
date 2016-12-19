@@ -21,7 +21,6 @@
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgslayertreeview.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsproject.h"
 #include "qgsrenderer.h"
@@ -55,66 +54,12 @@ QgsMapThemes::QgsMapThemes()
   connect( mMenu, SIGNAL( aboutToShow() ), this, SLOT( menuAboutToShow() ) );
 }
 
-void QgsMapThemes::addPerLayerCheckedLegendSymbols( QgsMapThemeCollection::MapThemeRecord& rec )
-{
-  QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
-
-  Q_FOREACH ( const QString& layerID, rec.visibleLayerIds() )
-  {
-    QgsLayerTreeLayer* nodeLayer = model->rootGroup()->findLayer( layerID );
-    if ( !nodeLayer )
-      continue;
-
-    bool hasCheckableItems = false;
-    bool someItemsUnchecked = false;
-    QSet<QString> checkedItems;
-    Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer, true ) )
-    {
-      if ( legendNode->flags() & Qt::ItemIsUserCheckable )
-      {
-        hasCheckableItems = true;
-
-        if ( legendNode->data( Qt::CheckStateRole ).toInt() == Qt::Checked )
-          checkedItems << legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
-        else
-          someItemsUnchecked = true;
-      }
-    }
-
-    QMap<QString, QSet<QString> > checkedSymbols = rec.perLayerCheckedLegendSymbols();
-
-    if ( hasCheckableItems && someItemsUnchecked )
-      checkedSymbols.insert( nodeLayer->layerId(), checkedItems );
-
-    rec.setPerLayerCheckedLegendSymbols( checkedSymbols );
-  }
-}
-
-void QgsMapThemes::addPerLayerCurrentStyle( QgsMapThemeCollection::MapThemeRecord& rec )
-{
-  QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
-
-  QMap<QString, QString> styles = rec.perLayerCurrentStyle();
-
-  Q_FOREACH ( const QString& layerID, rec.visibleLayerIds() )
-  {
-    QgsLayerTreeLayer* nodeLayer = model->rootGroup()->findLayer( layerID );
-    if ( !nodeLayer )
-      continue;
-
-    styles[layerID] = nodeLayer->layer()->styleManager()->currentStyle();
-  }
-  rec.setPerLayerCurrentStyle( styles );
-}
 
 QgsMapThemeCollection::MapThemeRecord QgsMapThemes::currentState()
 {
-  QgsMapThemeCollection::MapThemeRecord rec;
   QgsLayerTreeGroup* root = QgsProject::instance()->layerTreeRoot();
-  QgsMapThemeCollection::addVisibleLayersToMapTheme( root, rec );
-  addPerLayerCheckedLegendSymbols( rec );
-  addPerLayerCurrentStyle( rec );
-  return rec;
+  QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
+  return QgsMapThemeCollection::createThemeFromCurrentState( root, model );
 }
 
 QgsMapThemes* QgsMapThemes::instance()
@@ -135,21 +80,23 @@ void QgsMapThemes::updatePreset( const QString& name )
   QgsProject::instance()->mapThemeCollection()->update( name, currentState() );
 }
 
-QStringList QgsMapThemes::orderedPresetVisibleLayers( const QString& name ) const
+QList<QgsMapLayer*> QgsMapThemes::orderedPresetVisibleLayers( const QString& name ) const
 {
-  QStringList visibleIds = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( name );
+  QStringList visibleIds = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayerIds( name );
 
   // also make sure to order the layers according to map canvas order
   QgsLayerTreeMapCanvasBridge* bridge = QgisApp::instance()->layerTreeCanvasBridge();
   QStringList order = bridge->hasCustomLayerOrder() ? bridge->customLayerOrder() : bridge->defaultLayerOrder();
-  QStringList order2;
+  QList<QgsMapLayer*> lst;
   Q_FOREACH ( const QString& layerID, order )
   {
     if ( visibleIds.contains( layerID ) )
-      order2 << layerID;
+    {
+      if ( QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerID ) )
+        lst << layer;
+    }
   }
-
-  return order2;
+  return lst;
 }
 
 QMenu* QgsMapThemes::menu()
@@ -192,64 +139,15 @@ void QgsMapThemes::replaceTriggered()
   addPreset( actionPreset->text() );
 }
 
-void QgsMapThemes::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const QgsMapThemeCollection::MapThemeRecord& rec )
-{
-  Q_FOREACH ( QgsLayerTreeNode* node, parent->children() )
-  {
-    if ( QgsLayerTree::isGroup( node ) )
-      applyStateToLayerTreeGroup( QgsLayerTree::toGroup( node ), rec );
-    else if ( QgsLayerTree::isLayer( node ) )
-    {
-      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
-      bool isVisible = rec.visibleLayerIds().contains( nodeLayer->layerId() );
-      nodeLayer->setVisible( isVisible ? Qt::Checked : Qt::Unchecked );
-
-      if ( isVisible )
-      {
-        if ( rec.perLayerCurrentStyle().contains( nodeLayer->layerId() ) )
-        {
-          // apply desired style first
-          nodeLayer->layer()->styleManager()->setCurrentStyle( rec.perLayerCurrentStyle().value( nodeLayer->layerId() ) );
-        }
-
-        QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
-        if ( rec.perLayerCheckedLegendSymbols().contains( nodeLayer->layerId() ) )
-        {
-          const QSet<QString>& checkedNodes = rec.perLayerCheckedLegendSymbols().value( nodeLayer->layerId() );
-          // some nodes are not checked
-          Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer, true ) )
-          {
-            Qt::CheckState shouldHaveState = checkedNodes.contains( legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() ) ? Qt::Checked : Qt::Unchecked;
-            if (( legendNode->flags() & Qt::ItemIsUserCheckable ) &&
-                legendNode->data( Qt::CheckStateRole ).toInt() != shouldHaveState )
-              legendNode->setData( shouldHaveState, Qt::CheckStateRole );
-          }
-        }
-        else
-        {
-          // all nodes should be checked
-          Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer, true ) )
-          {
-            if (( legendNode->flags() & Qt::ItemIsUserCheckable ) &&
-                legendNode->data( Qt::CheckStateRole ).toInt() != Qt::Checked )
-              legendNode->setData( Qt::Checked, Qt::CheckStateRole );
-          }
-        }
-      }
-    }
-  }
-}
-
 
 void QgsMapThemes::applyState( const QString& presetName )
 {
   if ( !QgsProject::instance()->mapThemeCollection()->hasMapTheme( presetName ) )
     return;
 
-  applyStateToLayerTreeGroup( QgsProject::instance()->layerTreeRoot(), QgsProject::instance()->mapThemeCollection()->mapThemeState( presetName ) );
-
-  // also make sure that the preset is up-to-date (not containing any non-existent legend items)
-  QgsProject::instance()->mapThemeCollection()->update( presetName, currentState() );
+  QgsLayerTreeGroup* root = QgsProject::instance()->layerTreeRoot();
+  QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
+  QgsProject::instance()->mapThemeCollection()->applyTheme( presetName, root, model );
 }
 
 void QgsMapThemes::removeCurrentPreset()

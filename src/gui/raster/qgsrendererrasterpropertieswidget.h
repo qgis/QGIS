@@ -79,6 +79,9 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
 
     //! Enable or disable colorize controls depending on checkbox
     void toggleColorizeControls( bool colorizeEnabled );
+
+    void refreshAfterSyleChanged();
+
   private:
     void setRendererWidget( const QString& rendererName );
 

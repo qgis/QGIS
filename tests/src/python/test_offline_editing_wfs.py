@@ -39,7 +39,6 @@ from time import sleep
 from utilities import unitTestDataPath, waitServer
 from qgis.core import (
     QgsVectorLayer,
-    QgsMapLayerRegistry,
     QgsAuthManager
 )
 

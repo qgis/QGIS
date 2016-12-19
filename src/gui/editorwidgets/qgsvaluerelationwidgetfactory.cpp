@@ -17,7 +17,6 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsvaluerelationconfigdlg.h"
 #include "qgsvaluerelationsearchwidgetwrapper.h"
 #include "qgsvectorlayer.h"

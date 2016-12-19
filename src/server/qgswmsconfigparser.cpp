@@ -17,7 +17,7 @@
 
 #include "qgswmsconfigparser.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmapserviceexception.h"
 
 #include "qgscomposerlabel.h"
@@ -27,6 +27,7 @@
 #include "qgscomposerhtml.h"
 #include "qgscomposerframe.h"
 #include "qgscomposition.h"
+#include "qgsmapsettings.h"
 
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
@@ -45,20 +46,14 @@ QgsWmsConfigParser::~QgsWmsConfigParser()
 
 }
 
-QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
-{
-  QStringList highlightLayers;
-  return createPrintComposition( composerTemplate, mapRenderer, parameterMap, highlightLayers );
-}
-
-QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
+QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
 {
   QList<QgsComposerMap*> composerMaps;
   QList<QgsComposerLegend*> composerLegends;
   QList<QgsComposerLabel*> composerLabels;
   QList<const QgsComposerHtml*> composerHtmls;
 
-  QgsComposition* c = initComposition( composerTemplate, mapRenderer, composerMaps, composerLegends, composerLabels, composerHtmls );
+  QgsComposition* c = initComposition( composerTemplate, mapSettings, composerMaps, composerLegends, composerLabels, composerHtmls );
   if ( !c )
   {
     return nullptr;
@@ -113,7 +108,7 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
 
     //Change x- and y- of extent for WMS 1.3.0 if axis inverted
     QString version = parameterMap.value( QStringLiteral( "VERSION" ) );
-    if ( version == QLatin1String( "1.3.0" ) && mapRenderer && mapRenderer->destinationCrs().hasAxisInverted() )
+    if ( version == QLatin1String( "1.3.0" ) && mapSettings.destinationCrs().hasAxisInverted() )
     {
       r.invert();
     }
@@ -147,7 +142,8 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
     QStringList layerSet;
     if ( currentMap->keepLayerSet() )
     {
-      layerSet = currentMap->layerSet();
+      Q_FOREACH ( QgsMapLayer* layer, currentMap->layers() )
+        layerSet << layer->id();
     }
     else
     {
@@ -193,7 +189,14 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
     //add highlight layers
     highlightLayers.append( addHighlightLayers( parameterMap, layerSet, mapId + ":" ) );
 
-    currentMap->setLayerSet( layerSet );
+    QList<QgsMapLayer*> layers;
+    Q_FOREACH ( const QString& layerId, layerSet )
+    {
+      if ( QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId ) )
+        layers << layer;
+    }
+
+    currentMap->setLayers( layers );
     currentMap->setKeepLayerSet( true );
 
     //remove highlight layers from the composer legends
@@ -231,8 +234,10 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
       }
 
       // get model and layer tree root of the legend
-      QgsLegendModelV2* model = currentLegend->model();
-      QStringList layerSet = map->layerSet();
+      QgsLegendModel* model = currentLegend->model();
+      QStringList layerSet;
+      Q_FOREACH ( QgsMapLayer* layer, map->layers() )
+        layerSet << layer->id();
       setLayerIdsToLegendModel( model, layerSet, map->scale() );
     }
   }
@@ -344,7 +349,7 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
     layer->setRenderer( renderer.take() );
     layerSet.prepend( layer.data()->id() );
     highlightLayers.append( layer.data()->id() );
-    QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << layer.take() );
+    QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer.take() );
   }
   return highlightLayers;
 }
@@ -534,11 +539,11 @@ void QgsWmsConfigParser::removeHighlightLayers( const QStringList& layerIds )
   QStringList::const_iterator idIt = layerIds.constBegin();
   for ( ; idIt != layerIds.constEnd(); ++idIt )
   {
-    QgsMapLayerRegistry::instance()->removeMapLayers( QStringList() << *idIt );
+    QgsProject::instance()->removeMapLayers( QStringList() << *idIt );
   }
 }
 
-void QgsWmsConfigParser::setLayerIdsToLegendModel( QgsLegendModelV2* model, const QStringList& layerSet, double scale )
+void QgsWmsConfigParser::setLayerIdsToLegendModel( QgsLegendModel* model, const QStringList& layerSet, double scale )
 {
   if ( !model )
   {

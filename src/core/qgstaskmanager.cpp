@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgstaskmanager.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include <QtConcurrentRun>
 
 
@@ -325,7 +325,7 @@ QgsTaskManager::QgsTaskManager( QObject* parent )
     , mTaskMutex( new QMutex( QMutex::Recursive ) )
     , mNextTaskId( 0 )
 {
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
+  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
            this, SLOT( layersWillBeRemoved( QStringList ) ) );
 }
 
@@ -626,7 +626,7 @@ void QgsTaskManager::taskStatusChanged( int status )
 
   if ( status == QgsTask::Terminated )
   {
-    //recursively cancel dependant tasks
+    //recursively cancel dependent tasks
     cancelDependentTasks( id );
   }
 
@@ -790,9 +790,9 @@ void QgsTaskManager::cancelDependentTasks( long taskId )
   {
     if ( it.value().contains( cancelledTask ) )
     {
-      // found task with this dependancy
+      // found task with this dependency
 
-      // cancel it - note that this will be recursive, so any tasks dependant
+      // cancel it - note that this will be recursive, so any tasks dependent
       // on this one will also be cancelled
       QgsTask* dependentTask = task( it.key() );
       if ( dependentTask )

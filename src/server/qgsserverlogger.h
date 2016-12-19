@@ -30,12 +30,26 @@ class QgsServerLogger: public QObject
 {
     Q_OBJECT
   public:
+
+    /**
+     * Get the singleton instance
+     */
     static QgsServerLogger* instance();
 
-    int logLevel() const { return mLogLevel; }
-    //QString logFile() const { return mLogFile; }
+    /**
+     * Get the current log level
+     */
+    QgsMessageLog::MessageLevel logLevel() const { return mLogLevel; }
 
   public slots:
+
+    /**
+     * Log a message from the server context
+     *
+     * @param message the message
+     * @param tag tag of the message
+     * @param level log level of the message
+     */
     void logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level );
 
   protected:
@@ -46,7 +60,7 @@ class QgsServerLogger: public QObject
 
     QFile mLogFile;
     QTextStream mTextStream;
-    int mLogLevel;
+    QgsMessageLog::MessageLevel mLogLevel;
 };
 
 #endif // QGSSERVERLOGGER_H

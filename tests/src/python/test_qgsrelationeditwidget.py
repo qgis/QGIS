@@ -21,7 +21,6 @@ from qgis.core import (
     QgsVectorLayer,
     QgsProject,
     QgsRelation,
-    QgsMapLayerRegistry,
     QgsTransaction,
     QgsFeatureRequest,
     QgsVectorLayerTools
@@ -57,9 +56,9 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         cls.vl_a = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."authors" sql=', 'authors', 'postgres')
         cls.vl_link = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."books_authors" sql=', 'books_authors', 'postgres')
 
-        QgsMapLayerRegistry.instance().addMapLayer(cls.vl_b)
-        QgsMapLayerRegistry.instance().addMapLayer(cls.vl_a)
-        QgsMapLayerRegistry.instance().addMapLayer(cls.vl_link)
+        QgsProject.instance().addMapLayer(cls.vl_b)
+        QgsProject.instance().addMapLayer(cls.vl_a)
+        QgsProject.instance().addMapLayer(cls.vl_link)
 
         cls.relMgr = QgsProject.instance().relationManager()
 

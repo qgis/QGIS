@@ -200,7 +200,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   // by yjacolin
   myTip.setTitle( tr( "Copy, paste and cut in QGIS" ) );
   myTip.setContent( tr( "Copy, paste, and cut work as in another applications in QGIS. Select a "
-                        "feature (a geometry or an attribut row in the attribute table) and use "
+                        "feature (a geometry or an attribute row in the attribute table) and use "
                         "one of these shortcuts: Ctrl+C to copy, Ctrl+X to cut, and Ctrl+V to paste."
                       ) );
   addGuiTip( myTip );

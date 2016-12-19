@@ -26,7 +26,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QFile, QFileInfo
 from qgis.PyQt.QtWidgets import QWidget, QMessageBox
-from qgis.core import QgsMapLayerRegistry, QgsMapLayer
+from qgis.core import QgsProject, QgsMapLayer
 
 from .ui_widgetProjection import Ui_GdalToolsWidget as Ui_Widget
 from .widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget
@@ -164,7 +164,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
     def checkLayer(self):
         layerList = []
 
-        layerMap = QgsMapLayerRegistry.instance().mapLayers()
+        layerMap = QgsProject.instance().mapLayers()
         for name, layer in layerMap.items():
             if layer.type() == QgsMapLayer.RasterLayer:
                 layerList.append(str(layer.source()))

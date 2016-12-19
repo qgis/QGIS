@@ -60,7 +60,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle* style, QWidget* parent )
   mSplitter->restoreState( settings.value( QStringLiteral( "/Windows/StyleV2Manager/splitter" ) ).toByteArray() );
 
   tabItemType->setDocumentMode( true );
-  searchBox->setPlaceholderText( tr( "Filter symbols…" ) );
+  searchBox->setPlaceholderText( trUtf8( "Filter symbols…" ) );
 
   connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
 
@@ -244,7 +244,7 @@ void QgsStyleManagerDialog::on_tabItemType_currentChanged( int )
 {
   // when in Color Ramp tab, add menu to add item button and hide "Export symbols as PNG/SVG"
   bool flag = currentItemType() != 3;
-  searchBox->setPlaceholderText( flag ? tr( "Filter symbols…" ) : tr( "Filter color ramps…" ) );
+  searchBox->setPlaceholderText( flag ? trUtf8( "Filter symbols…" ) : trUtf8( "Filter color ramps…" ) );
   btnAddItem->setMenu( flag ? nullptr : mMenuBtnAddItemColorRamp );
   actnExportAsPNG->setVisible( flag );
   actnExportAsSVG->setVisible( flag );

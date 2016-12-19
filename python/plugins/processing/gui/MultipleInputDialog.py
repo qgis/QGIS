@@ -46,7 +46,13 @@ class MultipleInputDialog(BASE, WIDGET):
 
         self.lstLayers.setSelectionMode(QAbstractItemView.NoSelection)
 
-        self.options = options
+        self.options = []
+        for i, option in enumerate(options):
+            if option is None or isinstance(option, basestring):
+                self.options.append((i, option))
+            else:
+                self.options.append((option[0], option[1]))
+
         self.selectedoptions = selectedoptions or []
 
         # Additional buttons
@@ -68,9 +74,10 @@ class MultipleInputDialog(BASE, WIDGET):
 
     def populateList(self):
         model = QStandardItemModel()
-        for i, option in enumerate(self.options):
-            item = QStandardItem(option)
-            item.setCheckState(Qt.Checked if i in self.selectedoptions else Qt.Unchecked)
+        for value, text in self.options:
+            item = QStandardItem(text)
+            item.setData(value, Qt.UserRole)
+            item.setCheckState(Qt.Checked if value in self.selectedoptions else Qt.Unchecked)
             item.setCheckable(True)
             model.appendRow(item)
 
@@ -82,7 +89,7 @@ class MultipleInputDialog(BASE, WIDGET):
         for i in range(model.rowCount()):
             item = model.item(i)
             if item.checkState() == Qt.Checked:
-                self.selectedoptions.append(i)
+                self.selectedoptions.append(item.data(Qt.UserRole))
         QDialog.accept(self)
 
     def reject(self):

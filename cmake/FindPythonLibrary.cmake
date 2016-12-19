@@ -107,7 +107,7 @@ else(EXISTS "${PYTHON_INCLUDE_PATH}" AND EXISTS "${PYTHON_LIBRARY}" AND EXISTS "
       message(STATUS "Found Python executable: ${PYTHON_EXECUTABLE}")
       message(STATUS "Found Python version: ${PYTHON_LONG_VERSION}")
       message(STATUS "Found Python library: ${PYTHON_LIBRARY}")
-      message(STATUS "Found Python site-pacakges: ${PYTHON_SITE_PACKAGES_DIR}")
+      message(STATUS "Found Python site-packages: ${PYTHON_SITE_PACKAGES_DIR}")
     endif(NOT PYTHONLIBRARY_FIND_QUIETLY)
   else(PYTHONLIBRARY_FOUND)
     if(PYTHONLIBRARY_FIND_REQUIRED)

@@ -1,0 +1,16 @@
+<svg height="16" width="16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<linearGradient id="a" gradientUnits="userSpaceOnUse" x1="11.5" x2="10.5" y1="22.5" y2="21.5">
+<stop offset="0" stop-color="#888a85"/>
+<stop offset="1" stop-color="#b3b4b1"/>
+</linearGradient>
+<linearGradient id="b" gradientUnits="userSpaceOnUse" x1="9.5" x2="8.5" y1="25.5" y2="24.5">
+<stop offset="0" stop-color="#babdb6"/>
+<stop offset="1" stop-color="#babdb6" stop-opacity="0"/>
+</linearGradient>
+<g transform="translate(0 -16)">
+<path d="m6.5 11.5c0 0-2 3-6 4 2.777738.04718 8 0 8-3l-2-1z" style="fill:#555753;fill-rule:evenodd;stroke:#555753;stroke-linecap:round;stroke-linejoin:round;overflow:visible" transform="translate(0 16)"/>
+<path d="m9 23l3 2-3 3c0 0-1.4311544-.178334-2-1-.5688457-.821666 2.0632051-3.936795 2-4z" style="fill-rule:evenodd;stroke:#888a85;stroke-width:.75;stroke-linecap:round;stroke-linejoin:round;overflow:visible;fill:url(#b)"/>
+<path d="m9 23c0 0 5.615129-6.183975 6.5-6.5.884871-.316025-2.931154 8.057564-3.5 8.5-.568846.442436-2.4525583-1.093725-3-2z" style="stroke:#888a85;stroke-width:.75;stroke-linecap:round;stroke-linejoin:round;overflow:visible;fill:url(#a)"/>
+<text line-height="125%" style="font-size:8;font-weight:bold;letter-spacing:0;word-spacing:0;fill:#333;font-family:Verdana" x="1.484375" xml:space="preserve" y="22.316406"><tspan x="1.484375" y="22.316406">X</tspan></text>
+</g>
+</svg>

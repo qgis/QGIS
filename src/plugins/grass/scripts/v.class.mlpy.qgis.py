@@ -27,13 +27,13 @@
 #%end
 #%option G_OPT_V_MAP
 #%  key: input
-#%  description: Input vector map (attribut table required)
+#%  description: Input vector map (attribute table required)
 #%  required: yes
 #%  multiple: no
 #%end
 #%option G_OPT_V_MAP
 #%  key: training
-#%  description: Training vector map (attribut table required)
+#%  description: Training vector map (attribute table required)
 #%  required: yes
 #%  multiple: no
 #%end

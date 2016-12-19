@@ -37,7 +37,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QObject, QSettings, QFileInfo, QDir, QCoreApplication, pyqtSignal
 from qgis.PyQt.QtWidgets import QFileDialog
 
-from qgis.core import QgsApplication, QgsMapLayerRegistry, QgsRectangle, QgsProviderRegistry, QgsLogger, QgsProject
+from qgis.core import QgsApplication, QgsRectangle, QgsProviderRegistry, QgsLogger, QgsProject
 from qgis.gui import QgsEncodingFileDialog
 
 from osgeo import gdal, ogr, osr
@@ -182,9 +182,9 @@ class LayerRegistry(QObject):
 
         LayerRegistry.layers = self.getAllLayers()
         LayerRegistry._instance = self
-        QgsMapLayerRegistry.instance().removeAll.connect(self.removeAllLayers)
-        QgsMapLayerRegistry.instance().layerWasAdded.connect(self.layerAdded)
-        QgsMapLayerRegistry.instance().layerWillBeRemoved.connect(self.removeLayer)
+        QgsProject.instance().removeAll.connect(self.removeAllLayers)
+        QgsProject.instance().layerWasAdded.connect(self.layerAdded)
+        QgsProject.instance().layerWillBeRemoved.connect(self.removeLayer)
 
     def getAllLayers(self):
         return list(node.layer() for node in QgsProject.instance().layerTreeRoot().findLayers())

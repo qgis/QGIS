@@ -47,7 +47,6 @@ email                : sherman at mrcc.com
 #include "qgsmapcanvasmap.h"
 #include "qgsmapcanvassnappingutils.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaptoolpan.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptopixel.h"
@@ -98,7 +97,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent )
     : QGraphicsView( parent )
     , mCanvasProperties( new CanvasProperties )
     , mMap( nullptr )
-    , mMapOverview( nullptr )
     , mFrozen( false )
     , mRefreshScheduled( false )
     , mRenderFlag( true ) // by default, the canvas is rendered
@@ -246,9 +244,6 @@ double QgsMapCanvas::magnificationFactor() const
 void QgsMapCanvas::enableAntiAliasing( bool theFlag )
 {
   mSettings.setFlag( QgsMapSettings::Antialiasing, theFlag );
-
-  if ( mMapOverview )
-    mMapOverview->enableAntiAliasing( theFlag );
 } // anti aliasing
 
 void QgsMapCanvas::enableMapTileRendering( bool theFlag )
@@ -258,9 +253,9 @@ void QgsMapCanvas::enableMapTileRendering( bool theFlag )
 
 QgsMapLayer* QgsMapCanvas::layer( int index )
 {
-  const QStringList& layers = mapSettings().layers();
+  QList<QgsMapLayer*> layers = mapSettings().layers();
   if ( index >= 0 && index < ( int ) layers.size() )
-    return QgsMapLayerRegistry::instance()->mapLayer( layers[index] );
+    return layers[index];
   else
     return nullptr;
 }
@@ -289,120 +284,44 @@ const QgsMapToPixel * QgsMapCanvas::getCoordinateTransform()
   return &mapSettings().mapToPixel();
 }
 
-void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
+void QgsMapCanvas::setLayers( const QList<QgsMapLayer*>& layers )
 {
-  // create layer set
-  QStringList layerSet, layerSetOverview;
-
-  int i;
-  for ( i = 0; i < layers.size(); i++ )
-  {
-    QgsMapCanvasLayer &lyr = layers[i];
-    if ( !lyr.layer() )
-    {
-      continue;
-    }
-
-    if ( lyr.isVisible() )
-    {
-      layerSet.push_back( lyr.layer()->id() );
-    }
-
-    if ( lyr.isInOverview() )
-    {
-      layerSetOverview.push_back( lyr.layer()->id() );
-    }
-  }
-
-  const QStringList& layerSetOld = mapSettings().layers();
-
-  bool layerSetChanged = layerSetOld != layerSet;
+  QList<QgsMapLayer*> oldLayers = mSettings.layers();
 
   // update only if needed
-  if ( layerSetChanged )
-  {
-    QgsDebugMsg( "Layers changed to: " + layerSet.join( ", " ) );
+  if ( layers == oldLayers )
+    return;
 
-    for ( i = 0; i < layerCount(); i++ )
+  Q_FOREACH ( QgsMapLayer* layer, oldLayers )
+  {
+    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::refresh );
+    disconnect( layer, &QgsMapLayer::crsChanged, this, &QgsMapCanvas::layerCrsChange );
+    if ( QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
-      // Add check if vector layer when disconnecting from selectionChanged slot
-      // Ticket #811 - racicot
-      QgsMapLayer *currentLayer = layer( i );
-      if ( !currentLayer )
-        continue;
-      disconnect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
-      disconnect( currentLayer, SIGNAL( crsChanged() ), this, SLOT( layerCrsChange() ) );
-      QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
-      if ( isVectLyr )
-      {
-        disconnect( isVectLyr, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
-      }
+      disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
     }
+  }
 
-    mSettings.setLayers( layerSet );
+  mSettings.setLayers( layers );
 
-    for ( i = 0; i < layerCount(); i++ )
+  Q_FOREACH ( QgsMapLayer* layer, layers )
+  {
+    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::refresh );
+    connect( layer, &QgsMapLayer::crsChanged, this, &QgsMapCanvas::layerCrsChange );
+    if ( QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
-      // Add check if vector layer when connecting to selectionChanged slot
-      // Ticket #811 - racicot
-      QgsMapLayer *currentLayer = layer( i );
-      if ( !currentLayer )
-        continue;
-      connect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
-      connect( currentLayer, SIGNAL( crsChanged() ), this, SLOT( layerCrsChange() ) );
-      QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
-      if ( isVectLyr )
-      {
-        connect( isVectLyr, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
-      }
+      connect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
     }
-
-    updateDatumTransformEntries();
-
-    QgsDebugMsg( "Layers have changed, refreshing" );
-    emit layersChanged();
-
-    refresh();
   }
 
-  if ( mMapOverview )
-  {
-    const QStringList& layerSetOvOld = mMapOverview->layerSet();
-    if ( layerSetOvOld != layerSetOverview )
-    {
-      mMapOverview->setLayerSet( layerSetOverview );
-    }
+  updateDatumTransformEntries();
 
-    // refresh overview maplayers even if layer set is the same
-    // because full extent might have changed
-    updateOverview();
-  }
-} // setLayerSet
+  QgsDebugMsg( "Layers have changed, refreshing" );
+  emit layersChanged();
 
-void QgsMapCanvas::enableOverviewMode( QgsMapOverviewCanvas* overview )
-{
-  if ( mMapOverview )
-  {
-    // disconnect old map overview if exists
-    disconnect( this,       SIGNAL( hasCrsTransformEnabledChanged( bool ) ),
-                mMapOverview, SLOT( hasCrsTransformEnabled( bool ) ) );
-    disconnect( this,       SIGNAL( destinationCrsChanged() ),
-                mMapOverview, SLOT( destinationCrsChanged() ) );
-
-    // map overview is not owned by map canvas so don't delete it...
-  }
-
-  mMapOverview = overview;
-
-  if ( overview )
-  {
-    // connect to the map render to copy its projection settings
-    connect( this,       SIGNAL( hasCrsTransformEnabledChanged( bool ) ),
-             overview,     SLOT( hasCrsTransformEnabled( bool ) ) );
-    connect( this,       SIGNAL( destinationCrsChanged() ),
-             overview,     SLOT( destinationCrsChanged() ) );
-  }
+  refresh();
 }
+
 
 const QgsMapSettings &QgsMapCanvas::mapSettings() const
 {
@@ -522,16 +441,6 @@ int QgsMapCanvas::mapUpdateInterval() const
 }
 
 
-void QgsMapCanvas::updateOverview()
-{
-  // redraw overview
-  if ( mMapOverview )
-  {
-    mMapOverview->refresh();
-  }
-}
-
-
 QgsMapLayer* QgsMapCanvas::currentLayer()
 {
   return mCurrentLayer;
@@ -594,12 +503,12 @@ void QgsMapCanvas::refreshMap()
   mJob->setCache( mCache );
 
   QStringList layersForGeometryCache;
-  Q_FOREACH ( const QString& id, mSettings.layers() )
+  Q_FOREACH ( QgsMapLayer* layer, mSettings.layers() )
   {
-    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) ) )
+    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer ) )
     {
       if ( vl->isEditable() )
-        layersForGeometryCache << id;
+        layersForGeometryCache << vl->id();
     }
   }
   mJob->setRequestedGeometryCacheForLayers( layersForGeometryCache );
@@ -1641,14 +1550,7 @@ int QgsMapCanvas::layerCount() const
 
 QList<QgsMapLayer*> QgsMapCanvas::layers() const
 {
-  QList<QgsMapLayer*> lst;
-  Q_FOREACH ( const QString& layerID, mapSettings().layers() )
-  {
-    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
-    if ( layer )
-      lst.append( layer );
-  }
-  return lst;
+  return mapSettings().layers();
 }
 
 
@@ -1750,12 +1652,8 @@ void QgsMapCanvas::updateDatumTransformEntries()
     return;
 
   QString destAuthId = mSettings.destinationCrs().authid();
-  Q_FOREACH ( const QString& layerID, mSettings.layers() )
+  Q_FOREACH ( QgsMapLayer* layer, mSettings.layers() )
   {
-    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
-    if ( !layer )
-      continue;
-
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
     if ( vl && vl->geometryType() == QgsWkbTypes::NullGeometry )
       continue;

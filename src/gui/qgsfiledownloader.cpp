@@ -60,7 +60,6 @@ void QgsFileDownloader::startDownload()
   mReply = nam->get( request );
 
   connect( mReply, &QNetworkReply::readyRead, this, &QgsFileDownloader::onReadyRead );
-  connect( mReply, static_cast < void ( QNetworkReply::* )( QNetworkReply::NetworkError ) > ( &QNetworkReply::error ), this, &QgsFileDownloader::onNetworkError );
   connect( mReply, &QNetworkReply::finished, this, &QgsFileDownloader::onFinished );
   connect( mReply, &QNetworkReply::downloadProgress, this, &QgsFileDownloader::onDownloadProgress );
   connect( nam, &QgsNetworkAccessManager::requestTimedOut, this, &QgsFileDownloader::onRequestTimedOut );
@@ -108,7 +107,7 @@ void QgsFileDownloader::error( QStringList errorMessages )
 {
   for ( auto end = errorMessages.size(), i = 0; i != end; ++i )
   {
-    mErrors.append( errorMessages[i] );
+    mErrors << errorMessages[i];
   }
   // Show error
   if ( mGuiNotificationsEnabled )
@@ -161,7 +160,7 @@ void QgsFileDownloader::onFinished()
     if ( mReply->error() )
     {
       mFile.remove();
-      error( tr( "Download failed: %1." ).arg( mReply->errorString() ) );
+      error( tr( "Download failed: %1" ).arg( mReply->errorString() ) );
     }
     else if ( !redirectionTarget.isNull() )
     {
@@ -174,18 +173,15 @@ void QgsFileDownloader::onFinished()
       startDownload();
       return;
     }
-    // All done
-    emit downloadCompleted();
+    else
+    {
+      emit downloadCompleted();
+    }
   }
   emit downloadExited();
   this->deleteLater();
 }
 
-void QgsFileDownloader::onNetworkError( QNetworkReply::NetworkError err )
-{
-  Q_ASSERT( mReply );
-  error( QString( "Network error %1: %2" ).arg( err ).arg( mReply->errorString() ) );
-}
 
 void QgsFileDownloader::onDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )
 {

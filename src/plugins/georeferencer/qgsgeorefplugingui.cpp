@@ -42,7 +42,6 @@
 #include "qgscomposerframe.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcoordsdialog.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptoolpan.h"
 
@@ -687,7 +686,7 @@ void QgsGeorefPluginGui::localHistogramStretch()
 {
   QgsRectangle rectangle = mIface->mapCanvas()->mapSettings().outputExtentToLayerExtent( mLayer, mIface->mapCanvas()->extent() );
 
-  mLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax, rectangle );
+  mLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax, rectangle );
   mCanvas->refresh();
 }
 
@@ -1108,7 +1107,7 @@ void QgsGeorefPluginGui::setupConnections()
   connect( mCanvas, SIGNAL( zoomLastStatusChanged( bool ) ), mActionZoomLast, SLOT( setEnabled( bool ) ) );
   connect( mCanvas, SIGNAL( zoomNextStatusChanged( bool ) ), mActionZoomNext, SLOT( setEnabled( bool ) ) );
   // Connect when one Layer is removed - Case where change the Projetct in QGIS
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( layerWillBeRemoved( QString ) ) );
+  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( layerWillBeRemoved( QString ) ) );
 
   // Connect extents changed - Use for need add again Raster
   connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
@@ -1119,7 +1118,7 @@ void QgsGeorefPluginGui::removeOldLayer()
   // delete layer (and don't signal it as it's our private layer)
   if ( mLayer )
   {
-    QgsMapLayerRegistry::instance()->removeMapLayers(
+    QgsProject::instance()->removeMapLayers(
       ( QStringList() << mLayer->id() ) );
     mLayer = nullptr;
   }
@@ -1165,13 +1164,11 @@ void QgsGeorefPluginGui::addRaster( const QString& file )
   mLayer = new QgsRasterLayer( file, QStringLiteral( "Raster" ) );
 
   // so layer is not added to legend
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mLayer, false, false );
 
   // add layer to map canvas
-  QList<QgsMapCanvasLayer> layers;
-  layers.append( QgsMapCanvasLayer( mLayer ) );
-  mCanvas->setLayerSet( layers );
+  mCanvas->setLayers( QList<QgsMapLayer*>() << mLayer );
 
   mAgainAddRaster = false;
 
@@ -1545,9 +1542,8 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeor
   //composer map
   QgsComposerMap* composerMap = new QgsComposerMap( composition, leftMargin, topMargin, contentWidth, contentHeight );
   composerMap->setKeepLayerSet( true );
-  QStringList list;
-  list.append( mCanvas->mapSettings().layers()[0] );
-  composerMap->setLayerSet( list );
+  QgsMapLayer* firstLayer = mCanvas->mapSettings().layers()[0];
+  composerMap->setLayers( QList<QgsMapLayer*>() << firstLayer );
   composerMap->zoomToExtent( rlayer->extent() );
   composition->addItem( composerMap );
   printer.setFullPage( true );
@@ -1645,7 +1641,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   }
 
   QgsComposerMap* composerMap = new QgsComposerMap( composition, leftMargin, titleLabel->rect().bottom() + titleLabel->pos().y(), mapWidthMM, mapHeightMM );
-  composerMap->setLayerSet( mCanvas->mapSettings().layers() );
+  composerMap->setLayers( mCanvas->mapSettings().layers() );
   composerMap->zoomToExtent( layerExtent );
   composerMap->setMapCanvas( mCanvas );
   composition->addItem( composerMap );

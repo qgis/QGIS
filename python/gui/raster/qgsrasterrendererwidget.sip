@@ -7,14 +7,6 @@ class QgsRasterRendererWidget: QWidget
     QgsRasterRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent );
     virtual ~QgsRasterRendererWidget();
 
-    enum LoadMinMaxAlgo
-    {
-      Estimate,
-      Actual,
-      CurrentExtent,
-      CumulativeCut   // 2 - 98% cumulative cut
-    };
-
     virtual QgsRasterRenderer* renderer() = 0 /Factory/;
 
     void setRasterLayer( QgsRasterLayer* layer );
@@ -42,6 +34,8 @@ class QgsRasterRendererWidget: QWidget
     virtual QString stdDev();
     virtual void setStdDev( const QString& value );
     virtual int selectedBand( int index = 0 );
+    virtual void doComputations();
+    virtual QgsRasterMinMaxWidget* minMaxWidget();
 
   signals:
     /**

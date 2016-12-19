@@ -88,7 +88,7 @@ my $translators= {
 	'tr' => 'Osman Yalçın YILMAZ, Omur Saygin',
 	'uk' => 'Alexander Bruy',
 	'vi' => 'Phùng Văn Doanh, Bùi Hữu Mạnh, Nguyễn Văn Thanh, Nguyễn Hữu Phúc, Cao Minh Tu',
-	'zh-Hant' => 'Calvin Ngei, Zhang Jun, Richard Xie',
+	'zh-Hant' => 'Calvin Ngei, Zhang Jun, Richard Xie, Dennis Raylin Chen',
 	'zh-Hans' => 'Calvin Ngei, Lisashen',
 };
 

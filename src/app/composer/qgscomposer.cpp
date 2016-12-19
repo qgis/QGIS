@@ -62,7 +62,6 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsgeometry.h"
 #include "qgspaperitem.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsprevieweffect.h"
 #include "qgsvectorlayer.h"
 #include "qgscomposerimageexportoptionsdialog.h"
@@ -369,10 +368,10 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mToolbarMenu = new QMenu( tr( "&Toolbars" ), this );
   mToolbarMenu->setObjectName( QStringLiteral( "mToolbarMenu" ) );
   viewMenu->addSeparator();
-  viewMenu->addAction( mActionToggleFullScreen );
-  viewMenu->addAction( mActionHidePanels );
   viewMenu->addMenu( mPanelMenu );
   viewMenu->addMenu( mToolbarMenu );
+  viewMenu->addAction( mActionToggleFullScreen );
+  viewMenu->addAction( mActionHidePanels );
   // toolBar already exists, add other widgets as they are created
   mToolbarMenu->addAction( mComposerToolbar->toggleViewAction() );
   mToolbarMenu->addAction( mPaperNavToolbar->toggleViewAction() );
@@ -4049,11 +4048,6 @@ void QgsComposer::createComposerView()
 
   //view does not accept focus via tab
   mView->setFocusPolicy( Qt::ClickFocus );
-  //instead, if view is focused and tab is pressed than mActionHidePanels is triggered,
-  //to toggle display of panels
-  QShortcut* tab = new QShortcut( Qt::Key_Tab, mView );
-  tab->setContext( Qt::WidgetWithChildrenShortcut );
-  connect( tab, SIGNAL( activated() ), mActionHidePanels, SLOT( trigger() ) );
 }
 
 void QgsComposer::writeWorldFile( const QString& worldFileName, double a, double b, double c, double d, double e, double f ) const

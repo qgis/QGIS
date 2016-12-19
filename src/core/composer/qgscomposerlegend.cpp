@@ -16,16 +16,14 @@
  ***************************************************************************/
 #include <limits>
 
-#include "qgscomposerlegendstyle.h"
 #include "qgscomposerlegend.h"
-#include "qgscomposerlegenditem.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
 #include "qgscomposermodel.h"
-#include "qgsmaplayerregistry.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendrenderer.h"
+#include "qgslegendstyle.h"
 #include "qgslogger.h"
 #include "qgsmapsettings.h"
 #include "qgsproject.h"
@@ -48,7 +46,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mForceResize( false )
     , mSizeToContents( true )
 {
-  mLegendModel = new QgsLegendModelV2( QgsProject::instance()->layerTreeRoot() );
+  mLegendModel = new QgsLegendModel( QgsProject::instance()->layerTreeRoot() );
 
   connect( &composition->atlasComposition(), SIGNAL( renderEnded() ), this, SLOT( onAtlasEnded() ) );
   connect( &composition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( onAtlasFeature( QgsFeature* ) ) );
@@ -280,15 +278,18 @@ QString QgsComposerLegend::title() const { return mSettings.title(); }
 Qt::AlignmentFlag QgsComposerLegend::titleAlignment() const { return mSettings.titleAlignment(); }
 void QgsComposerLegend::setTitleAlignment( Qt::AlignmentFlag alignment ) { mSettings.setTitleAlignment( alignment ); }
 
-QgsComposerLegendStyle& QgsComposerLegend::rstyle( QgsComposerLegendStyle::Style s ) { return mSettings.rstyle( s ); }
-QgsComposerLegendStyle QgsComposerLegend::style( QgsComposerLegendStyle::Style s ) const { return mSettings.style( s ); }
-void QgsComposerLegend::setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style ) { mSettings.setStyle( s, style ); }
+QgsLegendStyle& QgsComposerLegend::rstyle( QgsLegendStyle::Style s ) { return mSettings.rstyle( s ); }
+QgsLegendStyle QgsComposerLegend::style( QgsLegendStyle::Style s ) const { return mSettings.style( s ); }
+void QgsComposerLegend::setStyle( QgsLegendStyle::Style s, const QgsLegendStyle& style ) { mSettings.setStyle( s, style ); }
 
-QFont QgsComposerLegend::styleFont( QgsComposerLegendStyle::Style s ) const { return mSettings.style( s ).font(); }
-void QgsComposerLegend::setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f ) { rstyle( s ).setFont( f ); }
+QFont QgsComposerLegend::styleFont( QgsLegendStyle::Style s ) const { return mSettings.style( s ).font(); }
+void QgsComposerLegend::setStyleFont( QgsLegendStyle::Style s, const QFont& f ) { rstyle( s ).setFont( f ); }
 
-void QgsComposerLegend::setStyleMargin( QgsComposerLegendStyle::Style s, double margin ) { rstyle( s ).setMargin( margin ); }
-void QgsComposerLegend::setStyleMargin( QgsComposerLegendStyle::Style s, QgsComposerLegendStyle::Side side, double margin ) { rstyle( s ).setMargin( side, margin ); }
+void QgsComposerLegend::setStyleMargin( QgsLegendStyle::Style s, double margin ) { rstyle( s ).setMargin( margin ); }
+void QgsComposerLegend::setStyleMargin( QgsLegendStyle::Style s, QgsLegendStyle::Side side, double margin ) { rstyle( s ).setMargin( side, margin ); }
+
+double QgsComposerLegend::lineSpacing() const { return mSettings.lineSpacing(); }
+void QgsComposerLegend::setLineSpacing( double spacing ) { mSettings.setLineSpacing( spacing ); }
 
 double QgsComposerLegend::boxSpace() const { return mSettings.boxSpace(); }
 void QgsComposerLegend::setBoxSpace( double s ) { mSettings.setBoxSpace( s ); }
@@ -372,6 +373,7 @@ bool QgsComposerLegend::writeXml( QDomElement& elem, QDomDocument & doc ) const
 
   composerLegendElem.setAttribute( QStringLiteral( "symbolWidth" ), QString::number( mSettings.symbolSize().width() ) );
   composerLegendElem.setAttribute( QStringLiteral( "symbolHeight" ), QString::number( mSettings.symbolSize().height() ) );
+  composerLegendElem.setAttribute( QStringLiteral( "lineSpacing" ), QString::number( mSettings.lineSpacing() ) );
 
   composerLegendElem.setAttribute( QStringLiteral( "rasterBorder" ), mSettings.drawRasterBorder() );
   composerLegendElem.setAttribute( QStringLiteral( "rasterBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSettings.rasterBorderColor() ) );
@@ -392,11 +394,11 @@ bool QgsComposerLegend::writeXml( QDomElement& elem, QDomDocument & doc ) const
   QDomElement composerLegendStyles = doc.createElement( QStringLiteral( "styles" ) );
   composerLegendElem.appendChild( composerLegendStyles );
 
-  style( QgsComposerLegendStyle::Title ).writeXml( QStringLiteral( "title" ), composerLegendStyles, doc );
-  style( QgsComposerLegendStyle::Group ).writeXml( QStringLiteral( "group" ), composerLegendStyles, doc );
-  style( QgsComposerLegendStyle::Subgroup ).writeXml( QStringLiteral( "subgroup" ), composerLegendStyles, doc );
-  style( QgsComposerLegendStyle::Symbol ).writeXml( QStringLiteral( "symbol" ), composerLegendStyles, doc );
-  style( QgsComposerLegendStyle::SymbolLabel ).writeXml( QStringLiteral( "symbolLabel" ), composerLegendStyles, doc );
+  style( QgsLegendStyle::Title ).writeXml( QStringLiteral( "title" ), composerLegendStyles, doc );
+  style( QgsLegendStyle::Group ).writeXml( QStringLiteral( "group" ), composerLegendStyles, doc );
+  style( QgsLegendStyle::Subgroup ).writeXml( QStringLiteral( "subgroup" ), composerLegendStyles, doc );
+  style( QgsLegendStyle::Symbol ).writeXml( QStringLiteral( "symbol" ), composerLegendStyles, doc );
+  style( QgsLegendStyle::SymbolLabel ).writeXml( QStringLiteral( "symbolLabel" ), composerLegendStyles, doc );
 
   if ( mCustomLayerTree )
   {
@@ -422,7 +424,7 @@ static void _readOldLegendGroup( QDomElement& elem, QgsLayerTreeGroup* parentGro
     if ( itemElem.tagName() == QLatin1String( "LayerItem" ) )
     {
       QString layerId = itemElem.attribute( QStringLiteral( "layerId" ) );
-      if ( QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId ) )
+      if ( QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId ) )
       {
         QgsLayerTreeLayer* nodeLayer = parentGroup->addLayer( layer );
         QString userText = itemElem.attribute( QStringLiteral( "userText" ) );
@@ -478,15 +480,15 @@ bool QgsComposerLegend::readXml( const QDomElement& itemElem, const QDomDocument
     for ( int i = 0; i < stylesNode.childNodes().size(); i++ )
     {
       QDomElement styleElem = stylesNode.childNodes().at( i ).toElement();
-      QgsComposerLegendStyle style;
+      QgsLegendStyle style;
       style.readXml( styleElem, doc );
       QString name = styleElem.attribute( QStringLiteral( "name" ) );
-      QgsComposerLegendStyle::Style s;
-      if ( name == QLatin1String( "title" ) ) s = QgsComposerLegendStyle::Title;
-      else if ( name == QLatin1String( "group" ) ) s = QgsComposerLegendStyle::Group;
-      else if ( name == QLatin1String( "subgroup" ) ) s = QgsComposerLegendStyle::Subgroup;
-      else if ( name == QLatin1String( "symbol" ) ) s = QgsComposerLegendStyle::Symbol;
-      else if ( name == QLatin1String( "symbolLabel" ) ) s = QgsComposerLegendStyle::SymbolLabel;
+      QgsLegendStyle::Style s;
+      if ( name == QLatin1String( "title" ) ) s = QgsLegendStyle::Title;
+      else if ( name == QLatin1String( "group" ) ) s = QgsLegendStyle::Group;
+      else if ( name == QLatin1String( "subgroup" ) ) s = QgsLegendStyle::Subgroup;
+      else if ( name == QLatin1String( "symbol" ) ) s = QgsLegendStyle::Symbol;
+      else if ( name == QLatin1String( "symbolLabel" ) ) s = QgsLegendStyle::SymbolLabel;
       else continue;
       setStyle( s, style );
     }
@@ -503,6 +505,7 @@ bool QgsComposerLegend::readXml( const QDomElement& itemElem, const QDomDocument
 
   mSettings.setSymbolSize( QSizeF( itemElem.attribute( QStringLiteral( "symbolWidth" ), QStringLiteral( "7.0" ) ).toDouble(), itemElem.attribute( QStringLiteral( "symbolHeight" ), QStringLiteral( "14.0" ) ).toDouble() ) );
   mSettings.setWmsLegendSize( QSizeF( itemElem.attribute( QStringLiteral( "wmsLegendWidth" ), QStringLiteral( "50" ) ).toDouble(), itemElem.attribute( QStringLiteral( "wmsLegendHeight" ), QStringLiteral( "25" ) ).toDouble() ) );
+  mSettings.setLineSpacing( itemElem.attribute( QStringLiteral( "lineSpacing" ), "1.0" ).toDouble() );
 
   mSettings.setDrawRasterBorder( itemElem.attribute( QStringLiteral( "rasterBorder" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
   mSettings.setRasterBorderColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "rasterBorderColor" ), QStringLiteral( "0,0,0" ) ) ) );
@@ -547,40 +550,40 @@ bool QgsComposerLegend::readXml( const QDomElement& itemElem, const QDomDocument
   QString titleFontString = itemElem.attribute( QStringLiteral( "titleFont" ) );
   if ( !titleFontString.isEmpty() )
   {
-    rstyle( QgsComposerLegendStyle::Title ).rfont().fromString( titleFontString );
+    rstyle( QgsLegendStyle::Title ).rfont().fromString( titleFontString );
   }
   //group font
   QString groupFontString = itemElem.attribute( QStringLiteral( "groupFont" ) );
   if ( !groupFontString.isEmpty() )
   {
-    rstyle( QgsComposerLegendStyle::Group ).rfont().fromString( groupFontString );
+    rstyle( QgsLegendStyle::Group ).rfont().fromString( groupFontString );
   }
 
   //layer font
   QString layerFontString = itemElem.attribute( QStringLiteral( "layerFont" ) );
   if ( !layerFontString.isEmpty() )
   {
-    rstyle( QgsComposerLegendStyle::Subgroup ).rfont().fromString( layerFontString );
+    rstyle( QgsLegendStyle::Subgroup ).rfont().fromString( layerFontString );
   }
   //item font
   QString itemFontString = itemElem.attribute( QStringLiteral( "itemFont" ) );
   if ( !itemFontString.isEmpty() )
   {
-    rstyle( QgsComposerLegendStyle::SymbolLabel ).rfont().fromString( itemFontString );
+    rstyle( QgsLegendStyle::SymbolLabel ).rfont().fromString( itemFontString );
   }
 
   if ( !itemElem.attribute( QStringLiteral( "groupSpace" ) ).isEmpty() )
   {
-    rstyle( QgsComposerLegendStyle::Group ).setMargin( QgsComposerLegendStyle::Top, itemElem.attribute( QStringLiteral( "groupSpace" ), QStringLiteral( "3.0" ) ).toDouble() );
+    rstyle( QgsLegendStyle::Group ).setMargin( QgsLegendStyle::Top, itemElem.attribute( QStringLiteral( "groupSpace" ), QStringLiteral( "3.0" ) ).toDouble() );
   }
   if ( !itemElem.attribute( QStringLiteral( "layerSpace" ) ).isEmpty() )
   {
-    rstyle( QgsComposerLegendStyle::Subgroup ).setMargin( QgsComposerLegendStyle::Top, itemElem.attribute( QStringLiteral( "layerSpace" ), QStringLiteral( "3.0" ) ).toDouble() );
+    rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Top, itemElem.attribute( QStringLiteral( "layerSpace" ), QStringLiteral( "3.0" ) ).toDouble() );
   }
   if ( !itemElem.attribute( QStringLiteral( "symbolSpace" ) ).isEmpty() )
   {
-    rstyle( QgsComposerLegendStyle::Symbol ).setMargin( QgsComposerLegendStyle::Top, itemElem.attribute( QStringLiteral( "symbolSpace" ), QStringLiteral( "2.0" ) ).toDouble() );
-    rstyle( QgsComposerLegendStyle::SymbolLabel ).setMargin( QgsComposerLegendStyle::Top, itemElem.attribute( QStringLiteral( "symbolSpace" ), QStringLiteral( "2.0" ) ).toDouble() );
+    rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Top, itemElem.attribute( QStringLiteral( "symbolSpace" ), QStringLiteral( "2.0" ) ).toDouble() );
+    rstyle( QgsLegendStyle::SymbolLabel ).setMargin( QgsLegendStyle::Top, itemElem.attribute( QStringLiteral( "symbolSpace" ), QStringLiteral( "2.0" ) ).toDouble() );
   }
   // <<<<<<< < 2.0 projects backward compatibility
 
@@ -739,14 +742,14 @@ void QgsComposerLegend::onAtlasEnded()
 #include "qgslayertreemodellegendnode.h"
 #include "qgsvectorlayer.h"
 
-QgsLegendModelV2::QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject* parent )
+QgsLegendModel::QgsLegendModel( QgsLayerTreeGroup* rootNode, QObject* parent )
     : QgsLayerTreeModel( rootNode, parent )
 {
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
 }
 
-QVariant QgsLegendModelV2::data( const QModelIndex& index, int role ) const
+QVariant QgsLegendModel::data( const QModelIndex& index, int role ) const
 {
   // handle custom layer node labels
   if ( QgsLayerTreeNode* node = index2node( index ) )
@@ -768,7 +771,7 @@ QVariant QgsLegendModelV2::data( const QModelIndex& index, int role ) const
   return QgsLayerTreeModel::data( index, role );
 }
 
-Qt::ItemFlags QgsLegendModelV2::flags( const QModelIndex& index ) const
+Qt::ItemFlags QgsLegendModel::flags( const QModelIndex& index ) const
 {
   // make the legend nodes selectable even if they are not by default
   if ( index2legendNode( index ) )

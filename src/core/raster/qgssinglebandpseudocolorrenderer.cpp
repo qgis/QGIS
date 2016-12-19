@@ -30,7 +30,6 @@ QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterInt
     , mBand( band )
     , mClassificationMin( std::numeric_limits<double>::quiet_NaN() )
     , mClassificationMax( std::numeric_limits<double>::quiet_NaN() )
-    , mClassificationMinMaxOrigin( QgsRasterRenderer::MinMaxUnknown )
 {
 }
 
@@ -107,7 +106,50 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& 
   // TODO: add _readXML in superclass?
   r->setClassificationMin( elem.attribute( QStringLiteral( "classificationMin" ), QStringLiteral( "NaN" ) ).toDouble() );
   r->setClassificationMax( elem.attribute( QStringLiteral( "classificationMax" ), QStringLiteral( "NaN" ) ).toDouble() );
-  r->setClassificationMinMaxOrigin( QgsRasterRenderer::minMaxOriginFromName( elem.attribute( QStringLiteral( "classificationMinMaxOrigin" ), QStringLiteral( "Unknown" ) ) ) );
+
+  // Backward compatibility with serialization of QGIS 2.X era
+  QString minMaxOrigin = elem.attribute( QStringLiteral( "classificationMinMaxOrigin" ) );
+  if ( !minMaxOrigin.isEmpty() )
+  {
+    if ( minMaxOrigin.contains( QLatin1String( "MinMax" ) ) )
+    {
+      r->mMinMaxOrigin.setLimits( QgsRasterMinMaxOrigin::MinMax );
+    }
+    else if ( minMaxOrigin.contains( QLatin1String( "CumulativeCut" ) ) )
+    {
+      r->mMinMaxOrigin.setLimits( QgsRasterMinMaxOrigin::CumulativeCut );
+    }
+    else if ( minMaxOrigin.contains( QLatin1String( "StdDev" ) ) )
+    {
+      r->mMinMaxOrigin.setLimits( QgsRasterMinMaxOrigin::StdDev );
+    }
+    else
+    {
+      r->mMinMaxOrigin.setLimits( QgsRasterMinMaxOrigin::None );
+    }
+
+    if ( minMaxOrigin.contains( QLatin1String( "FullExtent" ) ) )
+    {
+      r->mMinMaxOrigin.setExtent( QgsRasterMinMaxOrigin::WholeRaster );
+    }
+    else if ( minMaxOrigin.contains( QLatin1String( "SubExtent" ) ) )
+    {
+      r->mMinMaxOrigin.setExtent( QgsRasterMinMaxOrigin::CurrentCanvas );
+    }
+    else
+    {
+      r->mMinMaxOrigin.setExtent( QgsRasterMinMaxOrigin::WholeRaster );
+    }
+
+    if ( minMaxOrigin.contains( QLatin1String( "Estimated" ) ) )
+    {
+      r->mMinMaxOrigin.setStatAccuracy( QgsRasterMinMaxOrigin::Estimated );
+    }
+    else // if ( minMaxOrigin.contains( QLatin1String( "Exact" ) ) )
+    {
+      r->mMinMaxOrigin.setStatAccuracy( QgsRasterMinMaxOrigin::Exact );
+    }
+  }
 
   return r;
 }
@@ -228,7 +270,6 @@ void QgsSingleBandPseudoColorRenderer::writeXml( QDomDocument& doc, QDomElement&
   }
   rasterRendererElem.setAttribute( QStringLiteral( "classificationMin" ), QgsRasterBlock::printValue( mClassificationMin ) );
   rasterRendererElem.setAttribute( QStringLiteral( "classificationMax" ), QgsRasterBlock::printValue( mClassificationMax ) );
-  rasterRendererElem.setAttribute( QStringLiteral( "classificationMinMaxOrigin" ), QgsRasterRenderer::minMaxOriginName( mClassificationMinMaxOrigin ) );
 
   parentElem.appendChild( rasterRendererElem );
 }

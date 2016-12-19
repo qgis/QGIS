@@ -60,14 +60,13 @@ class CORE_EXPORT QgsLegendRenderer
     void drawLegend( QPainter* painter );
 
 
-    static void setNodeLegendStyle( QgsLayerTreeNode* node, QgsComposerLegendStyle::Style style );
-    static QgsComposerLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode* node, QgsLayerTreeModel* model );
+    static void setNodeLegendStyle( QgsLayerTreeNode* node, QgsLegendStyle::Style style );
+    static QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode* node, QgsLayerTreeModel* model );
 
   private:
 
     /** Nucleon is either group title, layer title or layer child item.
-     *  Nucleon is similar to QgsComposerLegendItem but it does not have
-     *  the same hierarchy. E.g. layer title nucleon is just title, it does not
+     *  E.g. layer title nucleon is just title, it does not
      *  include all layer subitems, the same with groups.
      */
     class Nucleon
@@ -137,7 +136,7 @@ class CORE_EXPORT QgsLegendRenderer
      */
     QSizeF drawGroupTitle( QgsLayerTreeGroup* nodeGroup, QPainter* painter = nullptr, QPointF point = QPointF() );
 
-    QgsComposerLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode* node );
+    QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode* node );
 
   private:
     QgsLayerTreeModel* mLegendModel;

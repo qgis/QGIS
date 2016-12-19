@@ -33,6 +33,7 @@
 #include "qgsraster.h"
 #include "qgsrasterpipe.h"
 #include "qgsrasterviewport.h"
+#include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
 
 class QgsMapToPixel;
@@ -136,14 +137,27 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 {
     Q_OBJECT
   public:
-    //! \brief Default cumulative cut lower limit
-    static const double CUMULATIVE_CUT_LOWER;
-
-    //! \brief Default cumulative cut upper limit
-    static const double CUMULATIVE_CUT_UPPER;
 
     //! \brief Default sample size (number of pixels) for estimated statistics/histogram calculation
     static const double SAMPLE_SIZE;
+
+    //! \brief Default enhancement algorithm for single band raster
+    static const QgsContrastEnhancement::ContrastEnhancementAlgorithm SINGLE_BAND_ENHANCEMENT_ALGORITHM;
+
+    //! \brief Default enhancement algorithm for multiple band raster of type Byte
+    static const QgsContrastEnhancement::ContrastEnhancementAlgorithm MULTIPLE_BAND_SINGLE_BYTE_ENHANCEMENT_ALGORITHM;
+
+    //! \brief Default enhancement algorithm for multiple band raster of type different from Byte
+    static const QgsContrastEnhancement::ContrastEnhancementAlgorithm MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM;
+
+    //! \brief Default enhancement limits for single band raster
+    static const QgsRasterMinMaxOrigin::Limits SINGLE_BAND_MIN_MAX_LIMITS;
+
+    //! \brief Default enhancement limits for multiple band raster of type Byte
+    static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS;
+
+    //! \brief Default enhancement limits for multiple band raster of type different from Byte
+    static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS;
 
     //! \brief Constructor. Provider is not set.
     QgsRasterLayer();
@@ -291,10 +305,29 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
-                                 QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax,
+                                 QgsRasterMinMaxOrigin::Limits theLimits = QgsRasterMinMaxOrigin::MinMax,
                                  const QgsRectangle& theExtent = QgsRectangle(),
                                  int theSampleSize = SAMPLE_SIZE,
                                  bool theGenerateLookupTableFlag = true );
+
+    /** \brief Refresh contrast enhancement with new extent.
+     *  @note not available in python bindings
+     */
+    // Used by QgisApp::legendLayerStretchUsingCurrentExtent()
+    void refreshContrastEnhancement( const QgsRectangle& theExtent );
+
+    /** \brief Refresh renderer with new extent, if needed
+     *  @note not available in python bindings
+     */
+    // Used by QgsRasterLayerRenderer
+    void refreshRendererIfNeeded( QgsRasterRenderer* rasterRenderer, const QgsRectangle& theExtent );
+
+    /** \brief Return default contrast enhancemnt settings for that type of raster.
+     *  @note not available in python bindings
+     */
+    bool defaultContrastEnhancementSettings(
+      QgsContrastEnhancement::ContrastEnhancementAlgorithm& myAlgorithm,
+      QgsRasterMinMaxOrigin::Limits& myLimits ) const;
 
     //! \brief Set default contrast enhancement
     void setDefaultContrastEnhancement();
@@ -368,6 +401,20 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! Sets corresponding renderer for style
     void setRendererForDrawingStyle( QgsRaster::DrawingStyle theDrawingStyle );
 
+    void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
+                                 QgsRasterMinMaxOrigin::Limits theLimits,
+                                 const QgsRectangle& theExtent,
+                                 int theSampleSize,
+                                 bool theGenerateLookupTableFlag,
+                                 QgsRasterRenderer* rasterRenderer );
+
+    void computeMinMax( int band,
+                        const QgsRasterMinMaxOrigin& mmo,
+                        QgsRasterMinMaxOrigin::Limits limits,
+                        const QgsRectangle& extent,
+                        int sampleSize,
+                        double& min, double& max );
+
     //! \brief  Constant defining flag for XML and a constant that signals property not used
     const QString QSTRING_NOT_SET;
     const QString TRSTRING_NOT_SET;
@@ -386,6 +433,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     LayerType mRasterType;
 
     QgsRasterPipe mPipe;
+
+    //! To save computations and possible infinite cycle of notifications
+    QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;
 };
 
 #endif

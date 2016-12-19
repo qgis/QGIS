@@ -22,7 +22,7 @@
 #include "qgslogger.h"
 #include "qgspythonutils.h"
 #include "qgsserverlogger.h"
-#include "qgsmsutils.h"
+#include "qgsmapserverutils.h"
 
 #include <QLibrary>
 

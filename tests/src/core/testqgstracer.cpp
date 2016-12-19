@@ -17,7 +17,6 @@
 
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
-#include <qgsmaplayerregistry.h>
 #include <qgstestutils.h>
 #include <qgstracer.h>
 #include <qgsvectorlayer.h>

@@ -32,6 +32,15 @@
     QVERIFY( qgsDoubleNear( value, expected, epsilon ) ); \
   }
 
+#define QGSCOMPARENOTNEAR(value,not_expected,epsilon) { \
+    bool _xxxresult = qgsDoubleNear( value, not_expected, epsilon ); \
+    if ( _xxxresult  ) \
+    { \
+      qDebug( "Expecting %f to be differerent from %f (diff %f > %f)", static_cast< double >( value ), static_cast< double >( not_expected ), qAbs( static_cast< double >( not_expected ) - value ), static_cast< double >( epsilon ) ); \
+    } \
+    QVERIFY( !qgsDoubleNear( value, not_expected, epsilon ) ); \
+  }
+
 #define QGSCOMPARENEARPOINT(point1,point2,epsilon) { \
     QGSCOMPARENEAR( point1.x(), point2.x(), epsilon ); \
     QGSCOMPARENEAR( point1.y(), point2.y(), epsilon ); \

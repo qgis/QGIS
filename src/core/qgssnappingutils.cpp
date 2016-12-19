@@ -16,7 +16,6 @@
 #include "qgssnappingutils.h"
 
 #include "qgsgeometry.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
@@ -24,6 +23,7 @@
 QgsSnappingUtils::QgsSnappingUtils( QObject* parent )
     : QObject( parent )
     , mCurrentLayer( nullptr )
+    , mSnappingConfig( QgsProject::instance() )
     , mStrategy( IndexHybrid )
     , mHybridPerLayerFeatureLimit( 50000 )
     , mIsIndexing( false )
@@ -279,8 +279,8 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
     QgsRectangle aoi = _areaOfInterest( pointMap, tolerance );
 
     QList<LayerAndAreaOfInterest> layers;
-    Q_FOREACH ( const QString& layerID, mMapSettings.layers() )
-      if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) ) )
+    Q_FOREACH ( QgsMapLayer* layer, mMapSettings.layers() )
+      if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer ) )
         layers << qMakePair( vl, aoi );
     prepareIndex( layers );
 
@@ -469,9 +469,9 @@ QString QgsSnappingUtils::dump()
   }
   else if ( mSnappingConfig.mode() == QgsSnappingConfig::AllLayers )
   {
-    Q_FOREACH ( const QString& layerID, mMapSettings.layers() )
+    Q_FOREACH ( QgsMapLayer* layer, mMapSettings.layers() )
     {
-      if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) ) )
+      if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer ) )
         layers << LayerConfig( vl, QgsPointLocator::Types( mSnappingConfig.type() ), mSnappingConfig.tolerance(), mSnappingConfig.units() );
     }
   }

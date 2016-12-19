@@ -1136,9 +1136,28 @@ tests:
         hash: 58365b3715b925d6286e7f082ebd9c2a20f09fa1c922176d3f238002
         type: rasterhash
 
-  - algorithm: qgis:reliefautomaticcolors
-    name: Relief (automatic colors calculation)
+  - algorithm: qgis:relief
+    name: Relief (automatic colors generation)
     params:
+      AUTO_COLORS: true
+      INPUT_LAYER:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT_LAYER:
+        hash: 7fe0e0174185fd743e23760f33615adf10f771b4275f320db6f7f4f8
+        type: rasterhash
+
+  - algorithm: qgis:relief
+    name: Relief (custom colors)
+    params:
+      AUTO_COLORS: false
+      COLORS: 85.000000, 104.436508, 7, 165, 144;104.436508, 104.436508, 12, 221, 162;104.436508,
+        104.436508, 33, 252, 183;104.436508, 104.436508, 247, 252, 152;104.436508, 104.436508,
+        252, 196, 8;104.436508, 190.333333, 252, 166, 15;190.333333, 226.698413, 175,
+        101, 15;226.698413, 226.698413, 255, 133, 92;226.698413, 243.000000, 204, 204,
+        204
       INPUT_LAYER:
         name: dem.tif
         type: raster
@@ -1162,7 +1181,7 @@ tests:
       OUTPUT:
         name: expected/line_intersection.gml
         type: vector
-  
+
   # Case 2: Keep fid field from both layers
   - algorithm: qgis:lineintersections
     name: Line Intersection Keep fid from Both
@@ -1850,7 +1869,7 @@ tests:
         type: rasterhash
 
   - algorithm: qgis:rastercalculator
-    name: Raster Calculator 
+    name: Raster Calculator
     params:
       LAYERS:
         params:
@@ -1879,8 +1898,8 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:orthagonalize
-    name: Orthagonalize polys
+  - algorithm: qgis:orthogonalize
+    name: Orthogonalize polys
     params:
       INPUT_LAYER:
         name: custom/polys_to_orth.gml
@@ -1893,9 +1912,8 @@ tests:
           geometry:
             precision: 7
 
-
-  - algorithm: qgis:orthagonalize
-    name: Orthagonalize lines
+  - algorithm: qgis:orthogonalize
+    name: Orthogonalize lines
     params:
       INPUT_LAYER:
         name: custom/lines_to_orth.gml
@@ -1907,3 +1925,175 @@ tests:
         compare:
           geometry:
             precision: 7
+
+
+  - algorithm: qgis:reprojectlayer
+    name: reproject vector layer
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      TARGET_CRS: EPSG:3857
+    results:
+      OUTPUT:
+        name: expected/reprojected.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:variabledistancebuffer
+    name: variable buffer on points
+    params:
+      DISSOLVE: false
+      FIELD: buffer
+      INPUT:
+        name: custom/variable_buffer.gml
+        type: vector
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/variable_buffer_points.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 5
+
+  - algorithm: qgis:variabledistancebuffer
+    name: variable buffer on points with dissolve option
+    params:
+      DISSOLVE: true
+      FIELD: buffer
+      INPUT:
+        name: custom/variable_buffer.gml
+        type: vector
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/variable_buffer_points_dissolved.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 5
+
+  - algorithm: qgis:adduniquevalueindexfield
+    name: add unique field based on another field
+    params:
+      FIELD: id2
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/add_unique_field.gml
+        type: vector
+
+  - algorithm: qgis:linestopolygons
+    name: convert lines to polygon
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_to_polygon.gml
+        type: vector
+
+  - algorithm: qgis:joinattributestable
+    name: join the attribute table by common field
+    params:
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+      INPUT_LAYER_2:
+        name: table.dbf
+        type: table
+      TABLE_FIELD: id
+      TABLE_FIELD_2: ID
+    results:
+      OUTPUT_LAYER:
+        name: expected/join_attribute_table.gml
+        type: vector
+
+  - algorithm: qgis:convexhull
+    name: Simple convex hull
+    params:
+      INPUT:
+        name: custom/points_hull.gml
+        type: vector
+      METHOD: '0'
+    results:
+      OUTPUT:
+        name: expected/convex_hull.gml
+        type: vector
+
+  - algorithm: qgis:convexhull
+    name: Convex hull based on field attribute
+    params:
+      FIELD: hull
+      INPUT:
+        name: custom/points_hull.gml
+        type: vector
+      METHOD: '1'
+    results:
+      OUTPUT:
+        name: expected/convex_hull_fields.gml
+        type: vector
+
+
+  # These tests dissabled because algs require access to iface which
+  # is not available in the test suite.
+  #- algorithm: qgis:shortestpathpointtopoint
+  #  name: Shortest path (point to point, shortest route)
+  #  params:
+  #    DEFAULT_DIRECTION: '2'
+  #    DEFAULT_SPEED: 5.0
+  #    END_POINT: 1003534.816864,6222363.591221
+  #    INPUT_VECTOR:
+  #      name: roads.gml
+  #      type: vector
+  #    START_POINT: 1000943.661493,6220332.253368
+  #    STRATEGY: '0'
+  #    TOLERANCE: 0.0
+  #  results:
+  #    OUTPUT_LAYER:
+  #      name: expected/shortest.gml
+  #      type: vector
+  #
+  #- algorithm: qgis:shortestpathpointtopoint
+  #  name: Shortest path (point to point, fastest route)
+  #  params:
+  #    DEFAULT_DIRECTION: '2'
+  #    DEFAULT_SPEED: 60.0
+  #    END_POINT: 1003534.816864,6222363.591221
+  #    INPUT_VECTOR:
+  #      name: roads.gml
+  #      type: vector
+  #    SPEED_FIELD: SPEED
+  #    START_POINT: 1000943.661493,6220332.253368
+  #    STRATEGY: '1'
+  #    TOLERANCE: 0.0
+  #  results:
+  #    OUTPUT_LAYER:
+  #      name: expected/fastest.gml
+  #      type: vector
+  #
+  #- algorithm: qgis:serviceareafrompoint
+  #  name: Service area (from point, shortest)
+  #  params:
+  #    DEFAULT_DIRECTION: '2'
+  #    DEFAULT_SPEED: 5.0
+  #    INPUT_VECTOR:
+  #      name: roads.gml
+  #      type: vector
+  #    START_POINT: 1002660.341692,6222015.780774
+  #    STRATEGY: '0'
+  #    TOLERANCE: 0.0
+  #    TRAVEL_COST: 700.0
+  #  results:
+  #    OUTPUT_POINTS:
+  #      name: expected/servicearea_nodes.gml
+  #      type: vector
+  #    OUTPUT_POLYGON:
+  #      name: expected/servicearea_bounds.gml
+  #      type: vector

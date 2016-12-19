@@ -23,7 +23,6 @@ email                : tim at linfiniti.com
 #include "qgshuesaturationfilter.h"
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
 #include "qgsmultibandcolorrenderer.h"
@@ -79,9 +78,21 @@ typedef bool isvalidrasterfilename_t( QString const & theFileNameQString, QStrin
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
 
-const double QgsRasterLayer::CUMULATIVE_CUT_LOWER = 0.02;
-const double QgsRasterLayer::CUMULATIVE_CUT_UPPER = 0.98;
 const double QgsRasterLayer::SAMPLE_SIZE = 250000;
+
+const QgsContrastEnhancement::ContrastEnhancementAlgorithm
+QgsRasterLayer::SINGLE_BAND_ENHANCEMENT_ALGORITHM = QgsContrastEnhancement::StretchToMinimumMaximum;
+const QgsContrastEnhancement::ContrastEnhancementAlgorithm
+QgsRasterLayer::MULTIPLE_BAND_SINGLE_BYTE_ENHANCEMENT_ALGORITHM = QgsContrastEnhancement::NoEnhancement;
+const QgsContrastEnhancement::ContrastEnhancementAlgorithm
+QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM = QgsContrastEnhancement::StretchToMinimumMaximum;
+
+const QgsRasterMinMaxOrigin::Limits
+QgsRasterLayer::SINGLE_BAND_MIN_MAX_LIMITS = QgsRasterMinMaxOrigin::MinMax;
+const QgsRasterMinMaxOrigin::Limits
+QgsRasterLayer::MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS = QgsRasterMinMaxOrigin::MinMax;
+const QgsRasterMinMaxOrigin::Limits
+QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS = QgsRasterMinMaxOrigin::CumulativeCut;
 
 QgsRasterLayer::QgsRasterLayer()
     : QgsMapLayer( RasterLayer )
@@ -836,30 +847,86 @@ void QgsRasterLayer::closeDataProvider()
   mDataProvider = nullptr;
 }
 
-void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, QgsRaster::ContrastEnhancementLimits theLimits, const QgsRectangle& theExtent, int theSampleSize, bool theGenerateLookupTableFlag )
+void QgsRasterLayer::computeMinMax( int band,
+                                    const QgsRasterMinMaxOrigin& mmo,
+                                    QgsRasterMinMaxOrigin::Limits limits,
+                                    const QgsRectangle& extent,
+                                    int sampleSize,
+                                    double& min, double& max )
+{
+
+  min = std::numeric_limits<double>::quiet_NaN();
+  max = std::numeric_limits<double>::quiet_NaN();
+
+  if ( limits == QgsRasterMinMaxOrigin::MinMax )
+  {
+    QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( band, QgsRasterBandStats::Min | QgsRasterBandStats::Max, extent, sampleSize );
+    min = myRasterBandStats.minimumValue;
+    max = myRasterBandStats.maximumValue;
+  }
+  else if ( limits == QgsRasterMinMaxOrigin::StdDev )
+  {
+    QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( band, QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, extent, sampleSize );
+    min = myRasterBandStats.mean - ( mmo.stdDevFactor() * myRasterBandStats.stdDev );
+    max = myRasterBandStats.mean + ( mmo.stdDevFactor() * myRasterBandStats.stdDev );
+  }
+  else if ( limits == QgsRasterMinMaxOrigin::CumulativeCut )
+  {
+    const double myLower = mmo.cumulativeCutLower();
+    const double myUpper = mmo.cumulativeCutUpper();
+    QgsDebugMsgLevel( QString( "myLower = %1 myUpper = %2" ).arg( myLower ).arg( myUpper ), 4 );
+    mDataProvider->cumulativeCut( band, myLower, myUpper, min, max, extent, sampleSize );
+  }
+  QgsDebugMsgLevel( QString( "band = %1 min = %2 max = %3" ).arg( band ).arg( min ).arg( max ), 4 );
+
+}
+
+
+void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, QgsRasterMinMaxOrigin::Limits theLimits, const QgsRectangle& theExtent, int theSampleSize, bool theGenerateLookupTableFlag )
+{
+  setContrastEnhancement( theAlgorithm,
+                          theLimits,
+                          theExtent,
+                          theSampleSize,
+                          theGenerateLookupTableFlag,
+                          mPipe.renderer() );
+}
+
+void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
+    QgsRasterMinMaxOrigin::Limits theLimits,
+    const QgsRectangle& theExtent,
+    int theSampleSize,
+    bool theGenerateLookupTableFlag,
+    QgsRasterRenderer* rasterRenderer )
 {
   QgsDebugMsgLevel( QString( "theAlgorithm = %1 theLimits = %2 theExtent.isEmpty() = %3" ).arg( theAlgorithm ).arg( theLimits ).arg( theExtent.isEmpty() ), 4 );
-  if ( !mPipe.renderer() || !mDataProvider )
+  if ( !rasterRenderer || !mDataProvider )
   {
     return;
   }
 
   QList<int> myBands;
   QList<QgsContrastEnhancement*> myEnhancements;
+  QgsRasterMinMaxOrigin myMinMaxOrigin;
+  QgsRasterRenderer* myRasterRenderer = nullptr;
   QgsSingleBandGrayRenderer* myGrayRenderer = nullptr;
   QgsMultiBandColorRenderer* myMultiBandRenderer = nullptr;
-  QString rendererType  = mPipe.renderer()->type();
+  QString rendererType  = rasterRenderer->type();
   if ( rendererType == QLatin1String( "singlebandgray" ) )
   {
-    myGrayRenderer = dynamic_cast<QgsSingleBandGrayRenderer*>( mPipe.renderer() );
+    myGrayRenderer = dynamic_cast<QgsSingleBandGrayRenderer*>( rasterRenderer );
     if ( !myGrayRenderer ) return;
     myBands << myGrayRenderer->grayBand();
+    myRasterRenderer = myGrayRenderer;
+    myMinMaxOrigin = myGrayRenderer->minMaxOrigin();
   }
   else if ( rendererType == QLatin1String( "multibandcolor" ) )
   {
-    myMultiBandRenderer = dynamic_cast<QgsMultiBandColorRenderer*>( mPipe.renderer() );
+    myMultiBandRenderer = dynamic_cast<QgsMultiBandColorRenderer*>( rasterRenderer );
     if ( !myMultiBandRenderer ) return;
     myBands << myMultiBandRenderer->redBand() << myMultiBandRenderer->greenBand() << myMultiBandRenderer->blueBand();
+    myRasterRenderer = myMultiBandRenderer;
+    myMinMaxOrigin = myMultiBandRenderer->minMaxOrigin();
   }
 
   Q_FOREACH ( int myBand, myBands )
@@ -870,34 +937,12 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
       QgsContrastEnhancement* myEnhancement = new QgsContrastEnhancement( static_cast< Qgis::DataType >( myType ) );
       myEnhancement->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
 
-      double myMin = std::numeric_limits<double>::quiet_NaN();
-      double myMax = std::numeric_limits<double>::quiet_NaN();
+      double min;
+      double max;
+      computeMinMax( myBand, myMinMaxOrigin, theLimits, theExtent, theSampleSize, min, max );
 
-      if ( theLimits == QgsRaster::ContrastEnhancementMinMax )
-      {
-        QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( myBand, QgsRasterBandStats::Min | QgsRasterBandStats::Max, theExtent, theSampleSize );
-        myMin = myRasterBandStats.minimumValue;
-        myMax = myRasterBandStats.maximumValue;
-      }
-      else if ( theLimits == QgsRaster::ContrastEnhancementStdDev )
-      {
-        double myStdDev = 1; // make optional?
-        QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( myBand, QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, theExtent, theSampleSize );
-        myMin = myRasterBandStats.mean - ( myStdDev * myRasterBandStats.stdDev );
-        myMax = myRasterBandStats.mean + ( myStdDev * myRasterBandStats.stdDev );
-      }
-      else if ( theLimits == QgsRaster::ContrastEnhancementCumulativeCut )
-      {
-        QSettings mySettings;
-        double myLower = mySettings.value( QStringLiteral( "/Raster/cumulativeCutLower" ), QString::number( CUMULATIVE_CUT_LOWER ) ).toDouble();
-        double myUpper = mySettings.value( QStringLiteral( "/Raster/cumulativeCutUpper" ), QString::number( CUMULATIVE_CUT_UPPER ) ).toDouble();
-        QgsDebugMsgLevel( QString( "myLower = %1 myUpper = %2" ).arg( myLower ).arg( myUpper ), 4 );
-        mDataProvider->cumulativeCut( myBand, myLower, myUpper, myMin, myMax, theExtent, theSampleSize );
-      }
-
-      QgsDebugMsgLevel( QString( "myBand = %1 myMin = %2 myMax = %3" ).arg( myBand ).arg( myMin ).arg( myMax ), 4 );
-      myEnhancement->setMinimumValue( myMin );
-      myEnhancement->setMaximumValue( myMax );
+      myEnhancement->setMinimumValue( min );
+      myEnhancement->setMaximumValue( max );
       myEnhancements.append( myEnhancement );
     }
     else
@@ -920,57 +965,208 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
   //delete all remaining unused enhancements
   qDeleteAll( myEnhancements );
 
-  emit repaintRequested();
-  emit styleChanged();
+  myMinMaxOrigin.setLimits( theLimits );
+  if ( theExtent != QgsRectangle() &&
+       myMinMaxOrigin.extent() == QgsRasterMinMaxOrigin::WholeRaster )
+  {
+    myMinMaxOrigin.setExtent( QgsRasterMinMaxOrigin::CurrentCanvas );
+  }
+  if ( myRasterRenderer )
+  {
+    myRasterRenderer->setMinMaxOrigin( myMinMaxOrigin );
+  }
+
+  if ( rasterRenderer == renderer() )
+  {
+    emit repaintRequested();
+    emit styleChanged();
+    emit rendererChanged();
+  }
+}
+
+void QgsRasterLayer::refreshContrastEnhancement( const QgsRectangle& theExtent )
+{
+  QgsSingleBandGrayRenderer* singleBandRenderer = nullptr;
+  QgsMultiBandColorRenderer* multiBandRenderer = nullptr;
+  const QgsContrastEnhancement* ce = nullptr;
+  if (( singleBandRenderer = dynamic_cast<QgsSingleBandGrayRenderer*>( renderer() ) ) )
+  {
+    ce = singleBandRenderer->contrastEnhancement();
+  }
+  else if (( multiBandRenderer = dynamic_cast<QgsMultiBandColorRenderer*>( renderer() ) ) )
+  {
+    ce = multiBandRenderer->redContrastEnhancement();
+  }
+
+  if ( ce )
+  {
+    setContrastEnhancement( ce->contrastEnhancementAlgorithm() == QgsContrastEnhancement::NoEnhancement ?
+                            QgsContrastEnhancement::StretchToMinimumMaximum : ce->contrastEnhancementAlgorithm(),
+                            renderer()->minMaxOrigin().limits() == QgsRasterMinMaxOrigin::None ?
+                            QgsRasterMinMaxOrigin::MinMax : renderer()->minMaxOrigin().limits(),
+                            theExtent,
+                            SAMPLE_SIZE,
+                            true,
+                            renderer() );
+  }
+  else
+  {
+    QgsContrastEnhancement::ContrastEnhancementAlgorithm myAlgorithm;
+    QgsRasterMinMaxOrigin::Limits myLimits;
+    if ( defaultContrastEnhancementSettings( myAlgorithm, myLimits ) )
+    {
+      setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum,
+                              myLimits,
+                              theExtent,
+                              SAMPLE_SIZE,
+                              true,
+                              renderer() );
+    }
+  }
+}
+
+void QgsRasterLayer::refreshRendererIfNeeded( QgsRasterRenderer* rasterRenderer,
+    const QgsRectangle& theExtent )
+{
+  if ( !( mDataProvider &&
+          mLastRectangleUsedByRefreshContrastEnhancementIfNeeded != theExtent &&
+          rasterRenderer->minMaxOrigin().limits() != QgsRasterMinMaxOrigin::None &&
+          rasterRenderer->minMaxOrigin().extent() == QgsRasterMinMaxOrigin::UpdatedCanvas ) )
+    return;
+
+  QgsSingleBandGrayRenderer* singleBandRenderer = nullptr;
+  QgsMultiBandColorRenderer* multiBandRenderer = nullptr;
+  QgsSingleBandPseudoColorRenderer* sbpcr = nullptr;
+  const QgsContrastEnhancement* ce = nullptr;
+  if (( singleBandRenderer = dynamic_cast<QgsSingleBandGrayRenderer*>( rasterRenderer ) ) )
+  {
+    ce = singleBandRenderer->contrastEnhancement();
+  }
+  else if (( multiBandRenderer = dynamic_cast<QgsMultiBandColorRenderer*>( rasterRenderer ) ) )
+  {
+    ce = multiBandRenderer->redContrastEnhancement();
+  }
+  else if (( sbpcr = dynamic_cast<QgsSingleBandPseudoColorRenderer*>( rasterRenderer ) ) )
+  {
+    mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = theExtent;
+    double min;
+    double max;
+    computeMinMax( sbpcr->band(),
+                   rasterRenderer->minMaxOrigin(),
+                   rasterRenderer->minMaxOrigin().limits(), theExtent,
+                   SAMPLE_SIZE, min, max );
+    sbpcr->setClassificationMin( min );
+    sbpcr->setClassificationMax( max );
+    dynamic_cast<QgsSingleBandPseudoColorRenderer*>( renderer() )->setClassificationMin( min );
+    dynamic_cast<QgsSingleBandPseudoColorRenderer*>( renderer() )->setClassificationMax( max );
+    emit styleChanged();
+    emit rendererChanged();
+    return;
+  }
+
+  if ( ce &&
+       ce->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
+  {
+    mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = theExtent;
+
+    setContrastEnhancement( ce->contrastEnhancementAlgorithm(),
+                            rasterRenderer->minMaxOrigin().limits(),
+                            theExtent,
+                            SAMPLE_SIZE,
+                            true,
+                            rasterRenderer );
+
+    // Update main renderer so that the legends get updated
+    if ( singleBandRenderer )
+      dynamic_cast<QgsSingleBandGrayRenderer*>( renderer() )->setContrastEnhancement( new QgsContrastEnhancement( * singleBandRenderer->contrastEnhancement() ) );
+    else if ( multiBandRenderer )
+    {
+      if ( multiBandRenderer->redContrastEnhancement() )
+      {
+        dynamic_cast<QgsMultiBandColorRenderer*>( renderer() )->setRedContrastEnhancement( new QgsContrastEnhancement( *multiBandRenderer->redContrastEnhancement() ) );
+      }
+      if ( multiBandRenderer->greenContrastEnhancement() )
+      {
+        dynamic_cast<QgsMultiBandColorRenderer*>( renderer() )->setGreenContrastEnhancement( new QgsContrastEnhancement( *multiBandRenderer->greenContrastEnhancement() ) );
+      }
+      if ( multiBandRenderer->blueContrastEnhancement() )
+      {
+        dynamic_cast<QgsMultiBandColorRenderer*>( renderer() )->setBlueContrastEnhancement( new QgsContrastEnhancement( *multiBandRenderer->blueContrastEnhancement() ) );
+      }
+    }
+
+    emit styleChanged();
+    emit rendererChanged();
+  }
+}
+
+bool QgsRasterLayer::defaultContrastEnhancementSettings(
+  QgsContrastEnhancement::ContrastEnhancementAlgorithm& myAlgorithm,
+  QgsRasterMinMaxOrigin::Limits& myLimits ) const
+{
+  QSettings mySettings;
+
+  QString key;
+  QString defaultAlg;
+  QString defaultLimits;
+
+  // TODO: we should not test renderer class here, move it somehow to renderers
+  if ( dynamic_cast<QgsSingleBandGrayRenderer*>( renderer() ) )
+  {
+    key = QStringLiteral( "singleBand" );
+    defaultAlg = QgsContrastEnhancement::contrastEnhancementAlgorithmString(
+                   SINGLE_BAND_ENHANCEMENT_ALGORITHM );
+    defaultLimits = QgsRasterMinMaxOrigin::limitsString(
+                      SINGLE_BAND_MIN_MAX_LIMITS );
+  }
+  else if ( dynamic_cast<QgsMultiBandColorRenderer*>( renderer() ) )
+  {
+    if ( QgsRasterBlock::typeSize( dataProvider()->sourceDataType( 1 ) ) == 1 )
+    {
+      key = QStringLiteral( "multiBandSingleByte" );
+      defaultAlg = QgsContrastEnhancement::contrastEnhancementAlgorithmString(
+                     MULTIPLE_BAND_SINGLE_BYTE_ENHANCEMENT_ALGORITHM );
+      defaultLimits = QgsRasterMinMaxOrigin::limitsString(
+                        MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS );
+    }
+    else
+    {
+      key = QStringLiteral( "multiBandMultiByte" );
+      defaultAlg = QgsContrastEnhancement::contrastEnhancementAlgorithmString(
+                     MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM );
+      defaultLimits = QgsRasterMinMaxOrigin::limitsString(
+                        MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS );
+    }
+  }
+
+  if ( key.isEmpty() )
+  {
+    QgsDebugMsg( "No default contrast enhancement for this drawing style" );
+    myAlgorithm = QgsContrastEnhancement::contrastEnhancementAlgorithmFromString( QString() );
+    myLimits = QgsRasterMinMaxOrigin::limitsFromString( QString() );
+    return false;
+  }
+  QgsDebugMsgLevel( "key = " + key, 4 );
+
+  QString myAlgorithmString = mySettings.value( "/Raster/defaultContrastEnhancementAlgorithm/" + key, defaultAlg ).toString();
+  QgsDebugMsgLevel( "myAlgorithmString = " + myAlgorithmString, 4 );
+
+  myAlgorithm = QgsContrastEnhancement::contrastEnhancementAlgorithmFromString( myAlgorithmString );
+
+  QString myLimitsString = mySettings.value( "/Raster/defaultContrastEnhancementLimits/" + key, defaultLimits ).toString();
+  QgsDebugMsgLevel( "myLimitsString = " + myLimitsString, 4 );
+  myLimits = QgsRasterMinMaxOrigin::limitsFromString( myLimitsString );
+
+  return true;
 }
 
 void QgsRasterLayer::setDefaultContrastEnhancement()
 {
   QgsDebugMsgLevel( "Entered", 4 );
 
-  QSettings mySettings;
-
-  QString myKey;
-  QString myDefault;
-
-  // TODO: we should not test renderer class here, move it somehow to renderers
-  if ( dynamic_cast<QgsSingleBandGrayRenderer*>( renderer() ) )
-  {
-    myKey = QStringLiteral( "singleBand" );
-    myDefault = QStringLiteral( "StretchToMinimumMaximum" );
-  }
-  else if ( dynamic_cast<QgsMultiBandColorRenderer*>( renderer() ) )
-  {
-    if ( QgsRasterBlock::typeSize( dataProvider()->sourceDataType( 1 ) ) == 1 )
-    {
-      myKey = QStringLiteral( "multiBandSingleByte" );
-      myDefault = QStringLiteral( "NoEnhancement" );
-    }
-    else
-    {
-      myKey = QStringLiteral( "multiBandMultiByte" );
-      myDefault = QStringLiteral( "StretchToMinimumMaximum" );
-    }
-  }
-
-  if ( myKey.isEmpty() )
-  {
-    QgsDebugMsg( "No default contrast enhancement for this drawing style" );
-  }
-  QgsDebugMsgLevel( "myKey = " + myKey, 4 );
-
-  QString myAlgorithmString = mySettings.value( "/Raster/defaultContrastEnhancementAlgorithm/" + myKey, myDefault ).toString();
-  QgsDebugMsgLevel( "myAlgorithmString = " + myAlgorithmString, 4 );
-
-  QgsContrastEnhancement::ContrastEnhancementAlgorithm myAlgorithm = QgsContrastEnhancement::contrastEnhancementAlgorithmFromString( myAlgorithmString );
-
-  if ( myAlgorithm == QgsContrastEnhancement::NoEnhancement )
-  {
-    return;
-  }
-
-  QString myLimitsString = mySettings.value( QStringLiteral( "/Raster/defaultContrastEnhancementLimits" ), "CumulativeCut" ).toString();
-  QgsRaster::ContrastEnhancementLimits myLimits = QgsRaster::contrastEnhancementLimitsFromString( myLimitsString );
+  QgsContrastEnhancement::ContrastEnhancementAlgorithm myAlgorithm;
+  QgsRasterMinMaxOrigin::Limits myLimits;
+  defaultContrastEnhancementSettings( myAlgorithm, myLimits );
 
   setContrastEnhancement( myAlgorithm, myLimits );
 }

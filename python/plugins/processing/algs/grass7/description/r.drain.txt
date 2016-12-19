@@ -3,7 +3,7 @@ Traces a flow through an elevation model on a raster map.
 Raster (r.*)
 ParameterRaster|input|Elevation|False
 ParameterRaster|direction|Name of input movement direction map associated with the cost surface|True
-ParameterString|start_coordinates|Map coordinates of starting point(s) (E,N)|0.0,0.0|False|True
+ParameterPoint|start_coordinates|Map coordinates of starting point(s) (E,N)|0.0,0.0|True
 ParameterVector|start_points|Vector layer containing starting point(s)|0|True
 ParameterBoolean|-c|Copy input cell values on output|False
 ParameterBoolean|-a|Accumulate input values along the path|False

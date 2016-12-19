@@ -244,7 +244,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision ,
 }
 
 
-// helpers for orthagonalize
+// helpers for orthogonalize
 // adapted from original code in potlach/id osm editor
 
 bool dotProductWithinAngleTolerance( double dotProduct, double lowerThreshold, double upperThreshold )
@@ -340,7 +340,7 @@ QgsVector calcMotion( const QgsPointV2& a, const QgsPointV2& b, const QgsPointV2
   return new_v.normalized() * ( 0.1 * dotProduct * scale );
 }
 
-QgsLineString* doOrthagonalize( QgsLineString* ring, int iterations, double tolerance, double lowerThreshold, double upperThreshold )
+QgsLineString* doOrthogonalize( QgsLineString* ring, int iterations, double tolerance, double lowerThreshold, double upperThreshold )
 {
   double minScore = DBL_MAX;
 
@@ -410,7 +410,7 @@ QgsLineString* doOrthagonalize( QgsLineString* ring, int iterations, double tole
 }
 
 
-QgsAbstractGeometry* orthagonalizeGeom( const QgsAbstractGeometry* geom, int maxIterations, double tolerance, double lowerThreshold, double upperThreshold )
+QgsAbstractGeometry* orthogonalizeGeom( const QgsAbstractGeometry* geom, int maxIterations, double tolerance, double lowerThreshold, double upperThreshold )
 {
   QScopedPointer< QgsAbstractGeometry > segmentizedCopy;
   if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
@@ -421,7 +421,7 @@ QgsAbstractGeometry* orthagonalizeGeom( const QgsAbstractGeometry* geom, int max
 
   if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
   {
-    return doOrthagonalize( static_cast< QgsLineString* >( geom->clone() ),
+    return doOrthogonalize( static_cast< QgsLineString* >( geom->clone() ),
                             maxIterations, tolerance, lowerThreshold, upperThreshold );
   }
   else
@@ -430,11 +430,11 @@ QgsAbstractGeometry* orthagonalizeGeom( const QgsAbstractGeometry* geom, int max
     const QgsPolygonV2* polygon = static_cast< const QgsPolygonV2* >( geom );
     QgsPolygonV2* result = new QgsPolygonV2();
 
-    result->setExteriorRing( doOrthagonalize( static_cast< QgsLineString* >( polygon->exteriorRing()->clone() ),
+    result->setExteriorRing( doOrthogonalize( static_cast< QgsLineString* >( polygon->exteriorRing()->clone() ),
                              maxIterations, tolerance, lowerThreshold, upperThreshold ) );
     for ( int i = 0; i < polygon->numInteriorRings(); ++i )
     {
-      result->addInteriorRing( doOrthagonalize( static_cast< QgsLineString* >( polygon->interiorRing( i )->clone() ),
+      result->addInteriorRing( doOrthogonalize( static_cast< QgsLineString* >( polygon->interiorRing( i )->clone() ),
                                maxIterations, tolerance, lowerThreshold, upperThreshold ) );
     }
 
@@ -442,7 +442,7 @@ QgsAbstractGeometry* orthagonalizeGeom( const QgsAbstractGeometry* geom, int max
   }
 }
 
-QgsGeometry QgsInternalGeometryEngine::orthagonalize( double tolerance, int maxIterations, double angleThreshold ) const
+QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxIterations, double angleThreshold ) const
 {
   if ( !mGeometry || ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) != QgsWkbTypes::LineGeometry
                        && QgsWkbTypes::geometryType( mGeometry->wkbType() ) != QgsWkbTypes::PolygonGeometry ) )
@@ -460,7 +460,7 @@ QgsGeometry QgsInternalGeometryEngine::orthagonalize( double tolerance, int maxI
     geometryList.reserve( numGeom );
     for ( int i = 0; i < numGeom; ++i )
     {
-      geometryList << orthagonalizeGeom( gc->geometryN( i ), maxIterations, tolerance, lowerThreshold, upperThreshold );
+      geometryList << orthogonalizeGeom( gc->geometryN( i ), maxIterations, tolerance, lowerThreshold, upperThreshold );
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
@@ -472,6 +472,6 @@ QgsGeometry QgsInternalGeometryEngine::orthagonalize( double tolerance, int maxI
   }
   else
   {
-    return QgsGeometry( orthagonalizeGeom( mGeometry, maxIterations, tolerance, lowerThreshold, upperThreshold ) );
+    return QgsGeometry( orthogonalizeGeom( mGeometry, maxIterations, tolerance, lowerThreshold, upperThreshold ) );
   }
 }

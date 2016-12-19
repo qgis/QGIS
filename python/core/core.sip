@@ -76,6 +76,7 @@
 %Include qgslabelsearchtree.sip
 %Include qgslegendrenderer.sip
 %Include qgslegendsettings.sip
+%Include qgslegendstyle.sip
 %Include qgslogger.sip
 %Include qgsmaphittest.sip
 %Include qgsmaplayer.sip
@@ -83,7 +84,6 @@
 %Include qgsmaplayerlegend.sip
 %Include qgsmaplayermodel.sip
 %Include qgsmaplayerproxymodel.sip
-%Include qgsmaplayerregistry.sip
 %Include qgsmaplayerrenderer.sip
 %Include qgsmaplayerstylemanager.sip
 %Include qgsmaprenderercache.sip
@@ -192,8 +192,6 @@
 %Include composer/qgscomposeritemgroup.sip
 %Include composer/qgscomposerlabel.sip
 %Include composer/qgscomposerlegend.sip
-%Include composer/qgscomposerlegenditem.sip
-%Include composer/qgscomposerlegendstyle.sip
 %Include composer/qgscomposermap.sip
 %Include composer/qgscomposermapgrid.sip
 %Include composer/qgscomposermapitem.sip
@@ -276,6 +274,7 @@
 %Include raster/qgsrasterinterface.sip
 %Include raster/qgsrasteriterator.sip
 %Include raster/qgsrasterlayer.sip
+%Include raster/qgsrasterminmaxorigin.sip
 %Include raster/qgsrasternuller.sip
 %Include raster/qgsrasterpipe.sip
 %Include raster/qgsrasterprojector.sip

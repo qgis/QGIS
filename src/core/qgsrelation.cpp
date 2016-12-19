@@ -18,7 +18,7 @@
 #include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
 QgsRelation::QgsRelation()
@@ -44,7 +44,7 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node )
   QString id = elem.attribute( QStringLiteral( "id" ) );
   QString name = elem.attribute( QStringLiteral( "name" ) );
 
-  const QMap<QString, QgsMapLayer*>& mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer*>& mapLayers = QgsProject::instance()->mapLayers();
 
   QgsMapLayer* referencingLayer = mapLayers[referencingLayerId];
   QgsMapLayer* referencedLayer = mapLayers[referencedLayerId];
@@ -318,7 +318,7 @@ bool QgsRelation::hasEqualDefinition( const QgsRelation& other ) const
 
 void QgsRelation::updateRelationStatus()
 {
-  const QMap<QString, QgsMapLayer*>& mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer*>& mapLayers = QgsProject::instance()->mapLayers();
 
   mReferencingLayer = qobject_cast<QgsVectorLayer*>( mapLayers[mReferencingLayerId] );
   mReferencedLayer = qobject_cast<QgsVectorLayer*>( mapLayers[mReferencedLayerId] );

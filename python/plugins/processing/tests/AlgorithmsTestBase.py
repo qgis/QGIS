@@ -45,7 +45,6 @@ from numpy import nan_to_num
 import processing
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider
-from processing.algs.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
 from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
 from processing.algs.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider
 from processing.algs.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
@@ -57,7 +56,7 @@ from processing.algs.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvid
 from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider
 
 
-from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsMapLayerRegistry
+from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsProject
 
 from qgis.testing import _UnexpectedSuccess
 
@@ -87,7 +86,7 @@ class AlgorithmsTest(object):
         :param name: The identifier name used in the test output heading
         :param defs: A python dict containing a test algorithm definition
         """
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
         params = self.load_params(defs['params'])
 
@@ -181,7 +180,7 @@ class AlgorithmsTest(object):
             lyr = QgsRasterLayer(filepath, param['name'], 'gdal')
 
         self.assertTrue(lyr.isValid(), 'Could not load layer "{}"'.format(filepath))
-        QgsMapLayerRegistry.instance().addMapLayer(lyr)
+        QgsProject.instance().addMapLayer(lyr)
         return lyr
 
     def filepath_from_param(self, param):

@@ -22,12 +22,14 @@
 #include "qgsconfig.h"
 #include "qgsserver.h"
 
+#include "qgsmapsettings.h"
 #include "qgsauthmanager.h"
 #include "qgscapabilitiescache.h"
 #include "qgsfontutils.h"
 #include "qgsgetrequesthandler.h"
 #include "qgspostrequesthandler.h"
 #include "qgssoaprequesthandler.h"
+#include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
 #include "qgswmsserver.h"
@@ -36,7 +38,6 @@
 #include "qgsmapserviceexception.h"
 #include "qgspallabeling.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsserverlogger.h"
 #include "qgseditorwidgetregistry.h"
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -61,10 +62,8 @@
 
 QString* QgsServer::sConfigFilePath = nullptr;
 QgsCapabilitiesCache* QgsServer::sCapabilitiesCache = nullptr;
-QgsMapRenderer* QgsServer::sMapRenderer = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 QgsServerInterfaceImpl*QgsServer::sServerInterface = nullptr;
-bool QgsServer::sInitPython = true;
 #endif
 // Initialization must run once for all servers
 bool QgsServer::sInitialised =  false;
@@ -82,7 +81,6 @@ QgsServer::QgsServer( bool captureOutput )
   }
   sCaptureOutput = captureOutput;
   init();
-  saveEnvVars();
 }
 
 
@@ -180,9 +178,9 @@ QFileInfo QgsServer::defaultProjectFile()
  * @param parameterMap
  * @param logLevel
  */
-void QgsServer::printRequestParameters( const QMap< QString, QString>& parameterMap, int logLevel )
+void QgsServer::printRequestParameters( const QMap< QString, QString>& parameterMap, QgsMessageLog::MessageLevel logLevel )
 {
-  if ( logLevel > 0 )
+  if ( logLevel > QgsMessageLog::INFO )
   {
     return;
   }
@@ -242,38 +240,6 @@ void QgsServer::printRequestInfos()
   }
 }
 
-void QgsServer::dummyMessageHandler( QtMsgType type, const char *msg )
-{
-#if 0 //def QGSMSDEBUG
-  QString output;
-
-  switch ( type )
-  {
-    case QtDebugMsg:
-      output += "Debug: ";
-      break;
-    case QtCriticalMsg:
-      output += "Critical: ";
-      break;
-    case QtWarningMsg:
-      output += "Warning: ";
-      break;
-    case QtFatalMsg:
-      output += "Fatal: ";
-  }
-
-  output += msg;
-
-  QgsLogger::logMessageToFile( output );
-
-  if ( type == QtFatalMsg )
-    abort();
-#else
-  Q_UNUSED( type );
-  Q_UNUSED( msg );
-#endif
-}
-
 /**
  * @brief QgsServer::configPath
  * @param defaultConfigPath
@@ -316,15 +282,7 @@ bool QgsServer::init( )
     return false;
   }
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-  sInitPython = false;
-#endif
-
   QgsServerLogger::instance();
-
-#ifndef _MSC_VER
-  qInstallMsgHandler( dummyMessageHandler );
-#endif
 
   QString optionsPath = getenv( "QGIS_OPTIONS_PATH" );
   if ( !optionsPath.isEmpty() )
@@ -391,34 +349,23 @@ bool QgsServer::init( )
 
   //create cache for capabilities XML
   sCapabilitiesCache = new QgsCapabilitiesCache();
-  sMapRenderer =  new QgsMapRenderer;
-  sMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
 #ifdef ENABLE_MS_TESTS
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Roman" ) << QStringLiteral( "Bold" ) );
 #endif
 
+  QgsEditorWidgetRegistry::initEditors();
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache );
-  if ( sInitPython )
-  {
-    // Init plugins
-    if ( ! QgsServerPlugins::initPlugins( sServerInterface ) )
-    {
-      QgsMessageLog::logMessage( QStringLiteral( "No server python plugins are available" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-    }
-    else
-    {
-      QgsMessageLog::logMessage( QStringLiteral( "Server python plugins loaded" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-    }
-  }
 #endif
 
-  QgsEditorWidgetRegistry::initEditors();
   sInitialised = true;
   QgsMessageLog::logMessage( QStringLiteral( "Server initialized" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   return true;
 }
+
+
 
 void QgsServer::putenv( const QString &var, const QString &val )
 {
@@ -436,13 +383,6 @@ void QgsServer::putenv( const QString &var, const QString &val )
  */
 QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryString )
 {
-  //apply environment variables
-  QHash< QString, QString >::const_iterator envIt = mEnvironmentVariables.constBegin();
-  for ( ; envIt != mEnvironmentVariables.constEnd(); ++envIt )
-  {
-    putenv( envIt.key(), envIt.value() );
-  }
-
   /*
    * This is mainly for python bindings, passing QUERY_STRING
    * to handleRequest without using os.environment
@@ -450,19 +390,13 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   if ( ! queryString.isEmpty() )
     putenv( QStringLiteral( "QUERY_STRING" ), queryString );
 
-  int logLevel = QgsServerLogger::instance()->logLevel();
+  QgsMessageLog::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
-
-  // Clean up  Expression Context
-  // because each call to QgsMapLayer::draw add items to QgsExpressionContext scope
-  // list. This prevent the scope list to grow indefinitely and seriously deteriorate
-  // performances and memory in the long run
-  sMapRenderer->rendererContext()->setExpressionContext( QgsExpressionContext() );
+  QgsProject::instance()->removeAllMapLayers();
 
   qApp->processEvents();
 
-  if ( logLevel < 1 )
+  if ( logLevel == QgsMessageLog::INFO )
   {
     time.start();
     printRequestInfos();
@@ -608,7 +542,6 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
           , parameterMap
           , p
           , theRequestHandler.data()
-          , sMapRenderer
           , sCapabilitiesCache
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
           , accessControl
@@ -637,7 +570,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
 
   theRequestHandler->sendResponse();
 
-  if ( logLevel < 1 )
+  if ( logLevel == QgsMessageLog::INFO )
   {
     QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
@@ -645,28 +578,18 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   return theRequestHandler->getResponse();
 }
 
-#if 0
-// The following code was used to test type conversion in python bindings
-QPair<QByteArray, QByteArray> QgsServer::testQPair( QPair<QByteArray, QByteArray> pair )
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+void QgsServer::initPython()
 {
-  return pair;
+  // Init plugins
+  if ( ! QgsServerPlugins::initPlugins( sServerInterface ) )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "No server python plugins are available" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Server python plugins loaded" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  }
 }
 #endif
-
-void QgsServer::saveEnvVars()
-{
-  saveEnvVar( QStringLiteral( "MAX_CACHE_LAYERS" ) );
-  saveEnvVar( QStringLiteral( "DEFAULT_DATUM_TRANSFORM" ) );
-}
-
-void QgsServer::saveEnvVar( const QString& variableName )
-{
-  const char* env = getenv( variableName.toLocal8Bit() );
-  if ( !env )
-  {
-    return;
-  }
-
-  mEnvironmentVariables.insert( variableName, QString::fromLocal8Bit( env ) );
-}
 

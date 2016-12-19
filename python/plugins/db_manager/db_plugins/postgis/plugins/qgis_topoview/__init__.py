@@ -24,7 +24,7 @@ from builtins import str
 
 from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsMapLayerRegistry, QgsVectorLayer, Qgis, QgsWkbTypes
+from qgis.core import QgsProject, QgsVectorLayer, Qgis, QgsWkbTypes
 from qgis.gui import QgsMessageBar
 
 import os
@@ -227,7 +227,7 @@ def run(item, action, mainwindow):
         nodeLayers = [layerNode, layerNodeLabel]
         edgeLayers = [layerEdge, layerDirectedEdge, layerEdgeLabel, layerEdgeFaceLeft, layerEdgeFaceRight, layerEdgeNextLeft, layerEdgeNextRight]
 
-        QgsMapLayerRegistry.instance().addMapLayers(faceLayers, False)
+        QgsProject.instance().addMapLayers(faceLayers, False)
 
         groupFaces = QgsLayerTreeGroup(u'Faces')
         for layer in faceLayers:

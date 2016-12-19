@@ -32,9 +32,7 @@ email                : morb at ozemail dot com dot au
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 
-#include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
-#include "qgsproject.h"
 #include "qgsgeometryvalidator.h"
 
 #include "qgsmulticurve.h"
@@ -921,11 +919,11 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double& area, double &angle
   return minBounds;
 }
 
-QgsGeometry QgsGeometry::orthagonalize( double tolerance, int maxIterations, double angleThreshold ) const
+QgsGeometry QgsGeometry::orthogonalize( double tolerance, int maxIterations, double angleThreshold ) const
 {
   QgsInternalGeometryEngine engine( *this );
 
-  return engine.orthagonalize( tolerance, maxIterations, angleThreshold );
+  return engine.orthogonalize( tolerance, maxIterations, angleThreshold );
 }
 
 bool QgsGeometry::intersects( const QgsRectangle& r ) const

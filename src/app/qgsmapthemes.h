@@ -48,7 +48,7 @@ class APP_EXPORT QgsMapThemes : public QObject
 
     //! Return list of layer IDs that should be visible for particular preset.
     //! The order will match the layer order from the map canvas
-    QStringList orderedPresetVisibleLayers( const QString& name ) const;
+    QList<QgsMapLayer*> orderedPresetVisibleLayers( const QString& name ) const;
 
     //! Convenience menu that lists available presets and actions for management
     QMenu* menu();

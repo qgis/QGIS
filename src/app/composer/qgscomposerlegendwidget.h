@@ -66,6 +66,7 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void on_mFontColorButton_colorChanged( const QColor& newFontColor );
     void on_mBoxSpaceSpinBox_valueChanged( double d );
     void on_mColumnSpaceSpinBox_valueChanged( double d );
+    void on_mLineSpacingSpinBox_valueChanged( double d );
     void on_mCheckBoxAutoUpdate_stateChanged( int state );
     void composerMapChanged( QgsComposerItem* item );
     void on_mCheckboxResizeContents_toggled( bool checked );

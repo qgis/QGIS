@@ -190,7 +190,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
      */
     bool getCurrentMapRegion( QgsGrassModuleInput * param, struct Cell_head *window );
 
-    // List of providers used by layers in QgsMapLayerRegistry
+    // List of providers used by layers in QgsProject
     QList<QgsGrassProvider *> grassProviders();
     QList<QgsGrassRasterProvider *> grassRasterProviders();
 

@@ -25,6 +25,7 @@
 class QgsRasterLayer;
 class QgsRasterRenderer;
 class QgsMapCanvas;
+class QgsRasterMinMaxWidget;
 
 /** \ingroup gui
  * \class QgsRasterRendererWidget
@@ -43,14 +44,6 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     {}
 
     virtual ~QgsRasterRendererWidget() {}
-
-    enum LoadMinMaxAlgo
-    {
-      Estimate,
-      Actual,
-      CurrentExtent,
-      CumulativeCut   // 2 - 98% cumulative cut
-    };
 
     virtual QgsRasterRenderer* renderer() = 0;
 
@@ -79,6 +72,12 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     virtual QString stdDev() { return QString(); }
     virtual void setStdDev( const QString& value ) { Q_UNUSED( value ); }
     virtual int selectedBand( int index = 0 ) { Q_UNUSED( index ); return -1; }
+
+    //! Load programmaticaly with current values
+    virtual void doComputations() { }
+
+    //! Return min/max widget when it exists.
+    virtual QgsRasterMinMaxWidget* minMaxWidget() { return nullptr; }
 
   signals:
 

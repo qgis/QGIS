@@ -142,6 +142,7 @@ SET(QGIS_CORE_SRCS
   qgslayerdefinition.cpp
   qgslegendrenderer.cpp
   qgslegendsettings.cpp
+  qgslegendstyle.cpp
   qgslocalec.cpp
   qgslogger.cpp
   qgsmaphittest.cpp
@@ -149,7 +150,6 @@ SET(QGIS_CORE_SRCS
   qgsmaplayerlegend.cpp
   qgsmaplayermodel.cpp
   qgsmaplayerproxymodel.cpp
-  qgsmaplayerregistry.cpp
   qgsmaplayerstylemanager.cpp
   qgsmaprenderercache.cpp
   qgsmaprenderercustompainterjob.cpp
@@ -257,8 +257,6 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposeritemgroup.cpp
   composer/qgscomposerlabel.cpp
   composer/qgscomposerlegend.cpp
-  composer/qgscomposerlegenditem.cpp
-  composer/qgscomposerlegendstyle.cpp
   composer/qgscomposermap.cpp
   composer/qgscomposermapgrid.cpp
   composer/qgscomposermapitem.cpp
@@ -320,6 +318,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsrasteriterator.cpp
   raster/qgsrasterlayer.cpp
   raster/qgsrasterlayerrenderer.cpp
+  raster/qgsrasterminmaxorigin.cpp
   raster/qgsrasternuller.cpp
   raster/qgsrasterpipe.cpp
   raster/qgsrasterprojector.cpp
@@ -474,7 +473,6 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmaplayerlegend.h
   qgsmaplayermodel.h
   qgsmaplayerproxymodel.h
-  qgsmaplayerregistry.h
   qgsmaplayerstylemanager.h
   qgsmaprenderercache.h
   qgsmaprenderercustompainterjob.h
@@ -672,6 +670,7 @@ SET(QGIS_CORE_HDRS
   qgslabelsearchtree.h
   qgslegendrenderer.h
   qgslegendsettings.h
+  qgslegendstyle.h
   qgslogger.h
   qgsmaphittest.h
   qgsmaplayerdependency.h
@@ -771,8 +770,6 @@ SET(QGIS_CORE_HDRS
   composer/qgscomposerarrow.h
   composer/qgscomposerframe.h
   composer/qgscomposeritemcommand.h
-  composer/qgscomposerlegenditem.h
-  composer/qgscomposerlegendstyle.h
   composer/qgscomposermultiframecommand.h
   composer/qgscomposertexttable.h
   composer/qgsdoubleboxscalebarstyle.h
@@ -804,6 +801,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasteridentifyresult.h
   raster/qgsrasterinterface.h
   raster/qgsrasteriterator.h
+  raster/qgsrasterminmaxorigin.h
   raster/qgsrasternuller.h
   raster/qgsrasterpipe.h
   raster/qgsrasterprojector.h

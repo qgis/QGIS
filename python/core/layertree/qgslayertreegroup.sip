@@ -46,6 +46,9 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
     //! Remove all child nodes. The nodes will be deleted.
     void removeAllChildren();
 
+    //! Find layer node representing the map layer. Searches recursively the whole sub-tree.
+    //! @note added in 3.0
+    QgsLayerTreeLayer* findLayer( QgsMapLayer* layer ) const;
     //! Find layer node representing the map layer specified by its ID. Searches recursively the whole sub-tree.
     QgsLayerTreeLayer* findLayer( const QString& layerId );
     //! Find all layer nodes. Searches recursively the whole sub-tree.

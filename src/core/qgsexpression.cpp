@@ -34,7 +34,6 @@
 #include "qgsgeometryengine.h"
 #include "qgsgeometryutils.h"
 #include "qgslogger.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsogcutils.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerutils.h"
@@ -338,11 +337,11 @@ QgsVectorLayer* getVectorLayer( const QVariant& value, QgsExpression* )
   if ( !vl )
   {
     QString layerString = value.toString();
-    vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerString ) ); //search by id first
+    vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerString ) ); //search by id first
 
     if ( !vl )
     {
-      QList<QgsMapLayer *> layersByName = QgsMapLayerRegistry::instance()->mapLayersByName( layerString );
+      QList<QgsMapLayer *> layersByName = QgsProject::instance()->mapLayersByName( layerString );
       if ( !layersByName.isEmpty() )
       {
         vl = qobject_cast<QgsVectorLayer*>( layersByName.at( 0 ) );
@@ -3349,10 +3348,10 @@ static QVariant fcnGetLayerProperty( const QVariantList& values, const QgsExpres
   QString layerIdOrName = getStringValue( values.at( 0 ), parent );
 
   //try to find a matching layer by name
-  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerIdOrName ); //search by id first
+  QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerIdOrName ); //search by id first
   if ( !layer )
   {
-    QList<QgsMapLayer *> layersByName = QgsMapLayerRegistry::instance()->mapLayersByName( layerIdOrName );
+    QList<QgsMapLayer *> layersByName = QgsProject::instance()->mapLayersByName( layerIdOrName );
     if ( !layersByName.isEmpty() )
     {
       layer = layersByName.at( 0 );
@@ -3430,10 +3429,10 @@ static QVariant fcnGetRasterBandStat( const QVariantList& values, const QgsExpre
   QString layerIdOrName = getStringValue( values.at( 0 ), parent );
 
   //try to find a matching layer by name
-  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerIdOrName ); //search by id first
+  QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerIdOrName ); //search by id first
   if ( !layer )
   {
-    QList<QgsMapLayer *> layersByName = QgsMapLayerRegistry::instance()->mapLayersByName( layerIdOrName );
+    QList<QgsMapLayer *> layersByName = QgsProject::instance()->mapLayersByName( layerIdOrName );
     if ( !layersByName.isEmpty() )
     {
       layer = layersByName.at( 0 );

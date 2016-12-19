@@ -125,6 +125,7 @@ class QgsDiagramProperties;
 #include "qgsmimedatautils.h"
 #include "qgswelcomepageitemsmodel.h"
 #include "qgsraster.h"
+#include "qgsrasterminmaxorigin.h"
 
 #include "ui_qgisapp.h"
 
@@ -418,6 +419,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionShowPythonDialog() { return mActionShowPythonDialog; }
 
     QAction *actionToggleFullScreen() { return mActionToggleFullScreen; }
+    QAction *actionTogglePanelsVisibility() { return mActionTogglePanelsVisibility; }
     QAction *actionOptions() { return mActionOptions; }
     QAction *actionCustomProjection() { return mActionCustomProjection; }
     QAction *actionConfigureShortcuts() { return mActionConfigureShortcuts; }
@@ -969,6 +971,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void fileSaveAs();
     //! Export project in dxf format
     void dxfExport();
+    //! Import layers in dwg format
+    void dwgImport();
     //! Open the project file corresponding to the
     //! text)= of the given action.
     void openProject( QAction *action );
@@ -1277,6 +1281,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Toggle full screen mode
     void toggleFullScreen();
 
+    //! Toggle visibility of opened panels
+    void togglePanelsVisibility();
+
     //! Set minimized mode of active window
     void showActiveWindowMinimized();
 
@@ -1520,7 +1527,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createDecorations();
 
     //! Do histogram stretch for singleband gray / multiband color rasters
-    void histogramStretch( bool visibleAreaOnly = false, QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax );
+    void histogramStretch( bool visibleAreaOnly = false, QgsRasterMinMaxOrigin::Limits theLimits = QgsRasterMinMaxOrigin::MinMax );
 
     //! Apply raster brightness
     void adjustBrightnessContrast( int delta, bool updateBrightness = true );

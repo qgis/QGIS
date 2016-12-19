@@ -19,7 +19,7 @@
 #include "qgspluginlayerregistry.h"
 #include "qgslogger.h"
 #include "qgspluginlayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 
 QgsPluginLayerType::QgsPluginLayerType( const QString& name )
     : mName( name )
@@ -107,7 +107,7 @@ bool QgsPluginLayerRegistry::removePluginLayerType( const QString& typeName )
     return false;
 
   // remove all remaining layers of this type - to avoid invalid behaviour
-  QList<QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers().values();
+  QList<QgsMapLayer*> layers = QgsProject::instance()->mapLayers().values();
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
     if ( layer->type() == QgsMapLayer::PluginLayer )
@@ -115,7 +115,7 @@ bool QgsPluginLayerRegistry::removePluginLayerType( const QString& typeName )
       QgsPluginLayer* pl = qobject_cast<QgsPluginLayer*>( layer );
       if ( pl->pluginLayerType() == typeName )
       {
-        QgsMapLayerRegistry::instance()->removeMapLayers(
+        QgsProject::instance()->removeMapLayers(
           QStringList() << layer->id() );
       }
     }

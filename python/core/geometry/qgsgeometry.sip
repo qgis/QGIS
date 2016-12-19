@@ -421,14 +421,14 @@ class QgsGeometry
     QgsGeometry orientedMinimumBoundingBox( double& area /Out/, double &angle /Out/, double& width /Out/, double& height /Out/ ) const;
 
     /**
-     * Attempts to orthagonalize a line or polygon geometry by shifting vertices to make the geometries
+     * Attempts to orthogonalize a line or polygon geometry by shifting vertices to make the geometries
      * angles either right angles or flat lines. This is an iterative algorithm which will loop until
      * either the vertices are within a specified tolerance of right angles or a set number of maximum
      * iterations is reached. The angle threshold parameter specifies how close to a right angle or
      * straight line an angle must be before it is attempted to be straightened.
      * @note added in QGIS 3.0
      */
-    QgsGeometry orthagonalize( double tolerance = 1.0E-8, int maxIterations = 1000, double angleThreshold = 15.0 ) const;
+    QgsGeometry orthogonalize( double tolerance = 1.0E-8, int maxIterations = 1000, double angleThreshold = 15.0 ) const;
 
     /** Test for intersection with a rectangle (uses GEOS) */
     bool intersects( const QgsRectangle& r ) const;

@@ -28,12 +28,9 @@
 #include "qgswfsprojectparser.h"
 
 class QgsCoordinateReferenceSystem;
-class QgsComposerLayerItem;
-class QgsComposerLegendItem;
 class QgsComposition;
 class QgsFields;
 class QgsMapLayer;
-class QgsMapRenderer;
 class QgsPoint;
 class QgsRasterLayer;
 class QgsConfigParser;

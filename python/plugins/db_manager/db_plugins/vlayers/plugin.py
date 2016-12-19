@@ -24,7 +24,7 @@ from .connector import VLayerConnector
 
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsVirtualLayerDefinition
+from qgis.core import QgsVectorLayer, QgsProject, QgsVirtualLayerDefinition
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, TableField
 
@@ -178,7 +178,7 @@ class LVectorTable(LTable, VectorTable):
         return
 
     def toMapLayer(self):
-        return QgsMapLayerRegistry.instance().mapLayer(self.geomTableName)
+        return QgsProject.instance().mapLayer(self.geomTableName)
 
 
 class LTableField(TableField):

@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsrastercalcdialog.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsrastercalcnode.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
@@ -121,7 +121,7 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalcDialog::rasterEntries() const
 
 void QgsRasterCalcDialog::insertAvailableRasterBands()
 {
-  const QMap<QString, QgsMapLayer*>& layers = QgsMapLayerRegistry::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer*>& layers = QgsProject::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::const_iterator layerIt = layers.constBegin();
 
   bool firstLayer = true;

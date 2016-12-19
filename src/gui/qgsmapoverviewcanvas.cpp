@@ -18,7 +18,7 @@
 
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmaptopixel.h"
@@ -42,7 +42,9 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapC
 
   mSettings.setFlag( QgsMapSettings::DrawLabeling, false );
 
-  connect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( drawExtentRect() ) );
+  connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapOverviewCanvas::drawExtentRect );
+  connect( mMapCanvas, &QgsMapCanvas::hasCrsTransformEnabledChanged, this, &QgsMapOverviewCanvas::hasCrsTransformEnabled );
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapOverviewCanvas::destinationCrsChanged );
 }
 
 QgsMapOverviewCanvas::~QgsMapOverviewCanvas()
@@ -225,25 +227,23 @@ void QgsMapOverviewCanvas::setBackgroundColor( const QColor& color )
   setPalette( palette );
 }
 
-void QgsMapOverviewCanvas::setLayerSet( const QStringList& layerSet )
+void QgsMapOverviewCanvas::setLayers( const QList<QgsMapLayer*>& layers )
 {
-  QgsDebugMsg( "layerSet: " + layerSet.join( ", " ) );
-
-  Q_FOREACH ( const QString& layerID, mSettings.layers() )
+  Q_FOREACH ( QgsMapLayer* ml, mSettings.layers() )
   {
-    if ( QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
-      disconnect( ml, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );
+    disconnect( ml, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );
   }
 
-  mSettings.setLayers( layerSet );
+  mSettings.setLayers( layers );
 
-  Q_FOREACH ( const QString& layerID, mSettings.layers() )
+  Q_FOREACH ( QgsMapLayer* ml, mSettings.layers() )
   {
-    if ( QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
-      connect( ml, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );
+    connect( ml, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );
   }
 
   updateFullExtent();
+
+  refresh();
 }
 
 void QgsMapOverviewCanvas::updateFullExtent()
@@ -271,7 +271,7 @@ void QgsMapOverviewCanvas::destinationCrsChanged()
   mSettings.setDestinationCrs( mMapCanvas->mapSettings().destinationCrs() );
 }
 
-QStringList QgsMapOverviewCanvas::layerSet() const
+QList<QgsMapLayer*> QgsMapOverviewCanvas::layers() const
 {
   return mSettings.layers();
 }

@@ -177,6 +177,9 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
 
   // copy the whole raster pipe!
   mPipe = new QgsRasterPipe( *layer->pipe() );
+  QgsRasterRenderer* rasterRenderer = mPipe->renderer();
+  if ( rasterRenderer )
+    layer->refreshRendererIfNeeded( rasterRenderer, myRasterExtent );
 }
 
 QgsRasterLayerRenderer::~QgsRasterLayerRenderer()

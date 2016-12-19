@@ -57,7 +57,7 @@ class QgsSLDConfigParser : public QgsWmsConfigParser
     QDomDocument describeLayer( QStringList& layerList, const QString& hrefString ) const override;
 
     //! Returns if output are MM or PIXEL
-    QgsMapRenderer::OutputUnits outputUnits() const override;
+    QgsUnitTypes::RenderUnit outputUnits() const override;
 
     //! Returns an ID-list of layers which are not queryable (comes from <properties> -> <Identify> -> <disabledLayers in the project file
     QStringList identifyDisabledLayers() const override;
@@ -83,8 +83,8 @@ class QgsSLDConfigParser : public QgsWmsConfigParser
     //! Draw text annotation items from the QGIS projectfile
     void drawOverlays( QPainter* p, int dpi, int width, int height ) const override;
 
-    //! Load PAL engine settings from projectfile
-    void loadLabelSettings( QgsLabelingEngineInterface* lbl ) const override;
+    //! Load PAL engine settings  into global project instance
+    void loadLabelSettings() const override;
 
     QString serviceUrl() const override;
 
@@ -116,10 +116,10 @@ class QgsSLDConfigParser : public QgsWmsConfigParser
     //printing
 
     //! Creates a print composition, usually for a GetPrint request. Replaces map and label parameters
-    QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const;
+    QgsComposition* createPrintComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const;
 
     //! Creates a composition from the project file (probably delegated to the fallback parser)
-    QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const override;
+    QgsComposition* initComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const override;
 
     //! Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element
     void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
@@ -127,7 +127,7 @@ class QgsSLDConfigParser : public QgsWmsConfigParser
     void setScaleDenominator( double denom ) override;
     void addExternalGMLData( const QString& layerName, QDomDocument* gmlDoc ) override;
 
-    QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const override;
+    QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const override;
 
     int nLayers() const override;
 
@@ -146,7 +146,7 @@ class QgsSLDConfigParser : public QgsWmsConfigParser
     QString mSLDNamespace;
 
     //! Output units (pixel or mm)
-    QgsMapRenderer::OutputUnits mOutputUnits;
+    QgsUnitTypes::RenderUnit mOutputUnits;
 
     QgsWmsConfigParser *mFallbackParser;
 

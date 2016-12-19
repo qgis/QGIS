@@ -32,7 +32,7 @@
 #include "qgsmapsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgssymbol.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsfillsymbollayer.h"
@@ -702,7 +702,6 @@ void TestQgsPaintEffect::layerEffectPolygon()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   polysLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << polysLayer );
 
   QgsMapSettings ms;
   QgsSimpleFillSymbolLayer* fill = new QgsSimpleFillSymbolLayer;
@@ -715,12 +714,13 @@ void TestQgsPaintEffect::layerEffectPolygon()
   QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( fillSymbol );
 
   polysLayer->setRenderer( renderer );
-  ms.setLayers( QStringList() << polysLayer->id() );
+  ms.setLayers( QList<QgsMapLayer*>() << polysLayer );
   ms.setExtent( polysLayer->extent() );
 
   mReport += QLatin1String( "<h2>Paint effect symbol layer test (polygon)</h2>\n" );
   bool result = mapRenderCheck( QStringLiteral( "painteffect_poly" ), ms );
   QVERIFY( result );
+  delete polysLayer;
 }
 
 void TestQgsPaintEffect::layerEffectLine()
@@ -733,7 +733,6 @@ void TestQgsPaintEffect::layerEffectLine()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   lineLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QgsMapSettings ms;
   QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
@@ -747,12 +746,13 @@ void TestQgsPaintEffect::layerEffectLine()
   QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( lineSymbol );
 
   lineLayer->setRenderer( renderer );
-  ms.setLayers( QStringList() << lineLayer->id() );
+  ms.setLayers( QList<QgsMapLayer*>() << lineLayer );
   ms.setExtent( lineLayer->extent() );
 
   mReport += QLatin1String( "<h2>Paint effect symbol layer test (line)</h2>\n" );
   bool result = mapRenderCheck( QStringLiteral( "painteffect_line" ), ms );
   QVERIFY( result );
+  delete lineLayer;
 }
 
 void TestQgsPaintEffect::layerEffectMarker()
@@ -762,7 +762,6 @@ void TestQgsPaintEffect::layerEffectMarker()
   QFileInfo pointFileInfo( pointFileName );
   QgsVectorLayer* pointLayer = new QgsVectorLayer( pointFileInfo.filePath(),
       pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << pointLayer );
 
   QgsMapSettings ms;
   QgsSimpleMarkerSymbolLayer* marker = new QgsSimpleMarkerSymbolLayer;
@@ -775,12 +774,13 @@ void TestQgsPaintEffect::layerEffectMarker()
   QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( markerSymbol );
 
   pointLayer->setRenderer( renderer );
-  ms.setLayers( QStringList() << pointLayer->id() );
+  ms.setLayers( QList<QgsMapLayer*>() << pointLayer );
   ms.setExtent( pointLayer->extent() );
 
   mReport += QLatin1String( "<h2>Paint effect symbol layer test (point)</h2>\n" );
   bool result = mapRenderCheck( QStringLiteral( "painteffect_marker" ), ms );
   QVERIFY( result );
+  delete pointLayer;
 }
 
 void TestQgsPaintEffect::vectorLayerEffect()
@@ -793,7 +793,6 @@ void TestQgsPaintEffect::vectorLayerEffect()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   polysLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << polysLayer );
 
   QgsMapSettings ms;
   QgsSimpleFillSymbolLayer* fill = new QgsSimpleFillSymbolLayer;
@@ -810,12 +809,13 @@ void TestQgsPaintEffect::vectorLayerEffect()
 
   polysLayer->setRenderer( renderer );
 
-  ms.setLayers( QStringList() << polysLayer->id() );
+  ms.setLayers( QList<QgsMapLayer*>() << polysLayer );
   ms.setExtent( polysLayer->extent() );
 
   mReport += QLatin1String( "<h2>Paint effect layer test</h2>\n" );
   bool result = mapRenderCheck( QStringLiteral( "painteffect_layer" ), ms );
   QVERIFY( result );
+  delete polysLayer;
 }
 
 void TestQgsPaintEffect::mapUnits()
@@ -828,7 +828,6 @@ void TestQgsPaintEffect::mapUnits()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   lineLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QgsMapSettings ms;
   QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
@@ -845,12 +844,13 @@ void TestQgsPaintEffect::mapUnits()
   renderer->setPaintEffect( effect );
 
   lineLayer->setRenderer( renderer );
-  ms.setLayers( QStringList() << lineLayer->id() );
+  ms.setLayers( QList<QgsMapLayer*>() << lineLayer );
   ms.setExtent( lineLayer->extent() );
 
   mReport += QLatin1String( "<h2>Paint effect map units test</h2>\n" );
   bool result = mapRenderCheck( QStringLiteral( "painteffect_mapunits" ), ms );
   QVERIFY( result );
+  delete lineLayer;
 }
 
 void TestQgsPaintEffect::composer()
@@ -864,7 +864,6 @@ void TestQgsPaintEffect::composer()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   lineLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QgsMapSettings ms;
   QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
@@ -880,7 +879,7 @@ void TestQgsPaintEffect::composer()
   renderer->setPaintEffect( effect );
 
   lineLayer->setRenderer( renderer );
-  ms.setLayers( QStringList() << lineLayer->id() );
+  ms.setLayers( QList<QgsMapLayer*>() << lineLayer );
   ms.setCrsTransformEnabled( false );
 
   QgsComposition* composition = new QgsComposition( ms );
@@ -902,6 +901,7 @@ void TestQgsPaintEffect::composer()
   bool result = imageCheck( QStringLiteral( "painteffect_composer" ), outputImage );
   delete composition;
   QVERIFY( result );
+  delete lineLayer;
 }
 
 

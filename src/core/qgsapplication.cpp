@@ -19,7 +19,7 @@
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproviderregistry.h"
 #include "qgsexpression.h"
@@ -901,8 +901,8 @@ void QgsApplication::initQgis()
   // set the provider plugin path (this creates provider registry)
   QgsProviderRegistry::instance( pluginPath() );
 
-  // create map layer registry if doesn't exist
-  QgsMapLayerRegistry::instance();
+  // create project instance if doesn't exist
+  QgsProject::instance();
 
   // Make sure we have a NAM created on the main thread.
   QgsNetworkAccessManager::instance();

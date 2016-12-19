@@ -17,7 +17,7 @@
 #include <QObject>
 
 #include "qgsapplication.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayer.h"
@@ -60,12 +60,12 @@ void TestQgsMapLayerStyleManager::cleanupTestCase()
 void TestQgsMapLayerStyleManager::init()
 {
   mVL = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
-  QgsMapLayerRegistry::instance()->addMapLayer( mVL );
+  QgsProject::instance()->addMapLayer( mVL );
 }
 
 void TestQgsMapLayerStyleManager::cleanup()
 {
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsProject::instance()->removeAllMapLayers();
 }
 
 void TestQgsMapLayerStyleManager::testDefault()

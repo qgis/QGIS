@@ -20,11 +20,24 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgscolordialog.h"
+
 #include <QColorDialog>
+#include <QInputDialog>
+#include <QMenu>
 
 QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent ): QgsRasterRendererWidget( layer, extent )
 {
   setupUi( this );
+
+  contextMenu = new QMenu( tr( "Options" ), this );
+  contextMenu->addAction( tr( "Change color" ), this, SLOT( changeColor() ) );
+  contextMenu->addAction( tr( "Change transparency" ), this, SLOT( changeTransparency() ) );
+
+  mTreeWidget->setColumnWidth( ColorColumn, 50 );
+  mTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
+  mTreeWidget->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  connect( mTreeWidget, &QTreeView::customContextMenuRequested,  [=]( const QPoint& ) { contextMenu->exec( QCursor::pos() ); }
+         );
 
   if ( mRasterLayer )
   {
@@ -72,17 +85,17 @@ QgsRasterRenderer* QgsPalettedRendererWidget::renderer()
 
 void QgsPalettedRendererWidget::on_mTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column )
 {
-  if ( column == 1 && item ) //change item color
+  if ( column == ColorColumn && item ) //change item color
   {
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    QColor c = QgsColorDialog::getColor( item->background( column ).color(), nullptr );
+    QColor c = QgsColorDialog::getColor( item->background( column ).color(), this, QStringLiteral( "Change color" ), true );
     if ( c.isValid() )
     {
       item->setBackground( column, QBrush( c ) );
       emit widgetChanged();
     }
   }
-  else if ( column == 2 && item )
+  else if ( column == LabelColumn && item )
   {
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
   }
@@ -90,7 +103,7 @@ void QgsPalettedRendererWidget::on_mTreeWidget_itemDoubleClicked( QTreeWidgetIte
 
 void QgsPalettedRendererWidget::on_mTreeWidget_itemChanged( QTreeWidgetItem * item, int column )
 {
-  if ( column == 2 && item ) //palette label modified
+  if ( column == LabelColumn && item ) //palette label modified
   {
     emit widgetChanged();
   }
@@ -131,5 +144,53 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
         ++index;
       }
     }
+  }
+}
+
+void QgsPalettedRendererWidget::changeColor()
+{
+  QList<QTreeWidgetItem *> itemList;
+  itemList = mTreeWidget->selectedItems();
+  if ( itemList.isEmpty() )
+  {
+    return;
+  }
+  QTreeWidgetItem* firstItem = itemList.first();
+
+  QColor newColor = QgsColorDialog::getColor( firstItem->background( ColorColumn ).color(), this, QStringLiteral( "Change color" ), true );
+  if ( newColor.isValid() )
+  {
+    Q_FOREACH ( QTreeWidgetItem *item, itemList )
+    {
+      item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      item->setBackground( ColorColumn, QBrush( newColor ) );
+    }
+    emit widgetChanged();
+  }
+}
+
+void QgsPalettedRendererWidget::changeTransparency()
+{
+  QList<QTreeWidgetItem *> itemList;
+  itemList = mTreeWidget->selectedItems();
+  if ( itemList.isEmpty() )
+  {
+    return;
+  }
+  QTreeWidgetItem* firstItem = itemList.first();
+
+  bool ok;
+  double oldTransparency = ( firstItem->background( ColorColumn ).color().alpha() / 255.0 ) * 100.0;
+  double transparency = QInputDialog::getDouble( this, tr( "Transparency" ), tr( "Change color transparency [%]" ), oldTransparency, 0.0, 100.0, 0, &ok );
+  if ( ok )
+  {
+    int newTransparency = transparency / 100 * 255;
+    Q_FOREACH ( QTreeWidgetItem *item, itemList )
+    {
+      QColor newColor = item->background( ColorColumn ).color();
+      newColor.setAlpha( newTransparency );
+      item->setBackground( ColorColumn, QBrush( newColor ) );
+    }
+    emit widgetChanged();
   }
 }

@@ -31,7 +31,6 @@
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
 #include <qgsrenderer.h>
 //qgis test includes
 #include "qgsmultirenderchecker.h"
@@ -88,11 +87,8 @@ class TestQgsDiagram : public QObject
       mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                          myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
-      // Register the layer with the registry
-      QgsMapLayerRegistry::instance()->addMapLayer( mPointsLayer );
-
       // Create map composition to draw on
-      mMapSettings->setLayers( QStringList() << mPointsLayer->id() );
+      mMapSettings->setLayers( QList<QgsMapLayer*>() << mPointsLayer );
 
       mReport += QLatin1String( "<h1>Diagram Tests</h1>\n" );
     }
@@ -101,6 +97,7 @@ class TestQgsDiagram : public QObject
     void cleanupTestCase()
     {
       delete mMapSettings;
+      delete mPointsLayer;
 
       QString myReportFile = QDir::tempPath() + "/qgistest.html";
       QFile myFile( myReportFile );

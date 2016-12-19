@@ -18,7 +18,7 @@
 #include <qgsapplication.h>
 #include <qgsmapcanvas.h>
 #include <qgsvectorlayer.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 #include <qgsrenderchecker.h>
 #include <qgsvectordataprovider.h>
 #include <qgsmaptoolpan.h>
@@ -140,10 +140,8 @@ void TestQgsMapCanvas::testMagnification()
       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // prepare map canvas
-  QList<QgsMapCanvasLayer> layers;
-  layers.append( layer );
-  mCanvas->setLayerSet( layers );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
+  mCanvas->setLayers( QList<QgsMapLayer*>() << layer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
 
   mCanvas->setExtent( layer->extent() );
 
@@ -219,10 +217,8 @@ void TestQgsMapCanvas::testMagnificationExtent()
       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // prepare map canvas
-  QList<QgsMapCanvasLayer> layers;
-  layers.append( layer );
-  mCanvas->setLayerSet( layers );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << layer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
 
   // zoomToFullExtent
   mCanvas->zoomToFullExtent();

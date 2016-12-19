@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsProject, QgsMapLayerRegistry
+from qgis.core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsProject
 
 from qgis.testing import start_app, unittest
 
@@ -49,7 +49,7 @@ class TestQgsGeometryAvoidIntersections(unittest.TestCase):
         # create a layer with some polygons that will be used as a source for "avoid intersections"
         l = QgsVectorLayer('MultiPolygon', 'test_layer', 'memory')
         assert l.isValid()
-        QgsMapLayerRegistry.instance().addMapLayer(l)
+        QgsProject.instance().addMapLayer(l)
         QgsProject.instance().writeEntry("Digitizing", "/AvoidIntersectionsList", [l.id()])
 
         features = []

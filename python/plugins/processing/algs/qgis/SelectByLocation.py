@@ -35,7 +35,6 @@ from qgis.core import QgsGeometry, QgsFeatureRequest
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterGeometryPredicate
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
@@ -59,6 +58,16 @@ class SelectByLocation(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Select by location')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
+        self.predicates = (
+            ('intersects', self.tr('intersects')),
+            ('contains', self.tr('contains')),
+            ('disjoint', self.tr('disjoint')),
+            ('equals', self.tr('equals')),
+            ('touches', self.tr('touches')),
+            ('overlaps', self.tr('overlaps')),
+            ('within', self.tr('within')),
+            ('crosses', self.tr('crosses')))
+
         self.methods = [self.tr('creating new selection'),
                         self.tr('adding to current selection'),
                         self.tr('removing from current selection')]
@@ -67,9 +76,10 @@ class SelectByLocation(GeoAlgorithm):
                                           self.tr('Layer to select from')))
         self.addParameter(ParameterVector(self.INTERSECT,
                                           self.tr('Additional layer (intersection layer)')))
-        self.addParameter(ParameterGeometryPredicate(self.PREDICATE,
-                                                     self.tr('Geometric predicate'),
-                                                     left=self.INPUT, right=self.INTERSECT))
+        self.addParameter(ParameterSelection(self.PREDICATE,
+                                             self.tr('Geometric predicate'),
+                                             self.predicates,
+                                             multiple=True))
         self.addParameter(ParameterNumber(self.PRECISION,
                                           self.tr('Precision'),
                                           0.0, None, 0.0))
@@ -118,20 +128,7 @@ class SelectByLocation(GeoAlgorithm):
                             except:
                                 pass  # already removed
                     else:
-                        if predicate == 'intersects':
-                            res = tmpGeom.intersects(geom)
-                        elif predicate == 'contains':
-                            res = tmpGeom.contains(geom)
-                        elif predicate == 'equals':
-                            res = tmpGeom.equals(geom)
-                        elif predicate == 'touches':
-                            res = tmpGeom.touches(geom)
-                        elif predicate == 'overlaps':
-                            res = tmpGeom.overlaps(geom)
-                        elif predicate == 'within':
-                            res = tmpGeom.within(geom)
-                        elif predicate == 'crosses':
-                            res = tmpGeom.crosses(geom)
+                        res = getattr(tmpGeom, predicate)(geom)
                         if res:
                             selectedSet.append(feat.id())
                             break

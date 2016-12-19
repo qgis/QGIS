@@ -20,7 +20,7 @@ Email                : nyall dot dawson at gmail dot com
 #include "qgsrasterlayer.h"
 #include "qgsrastermatrix.h"
 #include "qgsapplication.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 
 Q_DECLARE_METATYPE( QgsRasterCalcNode::Operator )
 
@@ -86,7 +86,7 @@ void  TestQgsRasterCalculator::initTestCase()
   mpLandsatRasterLayer4326 = new QgsRasterLayer( landsat4326RasterFileInfo.filePath(),
       landsat4326RasterFileInfo.completeBaseName() );
 
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpLandsatRasterLayer << mpLandsatRasterLayer4326 );
 }
 

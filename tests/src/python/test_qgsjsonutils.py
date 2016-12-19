@@ -19,7 +19,6 @@ from qgis.core import (QgsJSONUtils,
                        QgsJSONExporter,
                        QgsCoordinateReferenceSystem,
                        QgsProject,
-                       QgsMapLayerRegistry,
                        QgsFeature,
                        QgsField,
                        QgsFields,
@@ -449,7 +448,7 @@ class TestQgsJSONUtils(unittest.TestCase):
         f3.setAttributes(["foobar", 124, 554])
         assert pr.addFeatures([f1, f2, f3])
 
-        QgsMapLayerRegistry.instance().addMapLayers([child, parent])
+        QgsProject.instance().addMapLayers([child, parent])
 
         rel = QgsRelation()
         rel.setRelationId('rel1')

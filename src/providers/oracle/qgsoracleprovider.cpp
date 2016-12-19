@@ -110,6 +110,7 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
   QgsDebugMsg( QString( "Query is: %1" ).arg( mQuery ) );
   QgsDebugMsg( QString( "Where clause is: %1" ).arg( mSqlWhereClause ) );
   QgsDebugMsg( QString( "SRID is: %1" ).arg( mSrid ) );
+  QgsDebugMsg( QString( "Using estimated metadata: %1" ).arg( mUseEstimatedMetadata ? "yes" : "no" ) );
 
   // no table/query passed, the provider could be used to get tables
   if ( mQuery.isEmpty() )

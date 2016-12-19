@@ -18,7 +18,7 @@
 #include "qgswfsprojectparser.h"
 #include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsmapserviceexception.h"
 #include "qgsaccesscontrol.h"
@@ -495,7 +495,7 @@ void QgsWfsProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
       }
     }
   }
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsProject::instance()->removeAllMapLayers();
   return;
 }
 

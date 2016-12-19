@@ -20,7 +20,6 @@
 #include "qgsatlascomposition.h"
 #include "qgscomposition.h"
 #include "qgsfieldmodel.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaplayerproxymodel.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgscomposermap.h"

@@ -20,7 +20,7 @@
 #include "qgsdataitem.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayercombobox.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsrasterlayer.h"
 
 #include <QCheckBox>
@@ -35,7 +35,7 @@
 
 static QgsMapLayer* _rasterLayer( const QString& filename )
 {
-  QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
     if ( layer->type() == QgsMapLayer::RasterLayer && layer->source() == filename )
@@ -362,7 +362,7 @@ void QgsAlignRasterDialog::runAlign()
       {
         QgsRasterLayer* layer = new QgsRasterLayer( item.outputFilename, QFileInfo( item.outputFilename ).baseName() );
         if ( layer->isValid() )
-          QgsMapLayerRegistry::instance()->addMapLayer( layer );
+          QgsProject::instance()->addMapLayer( layer );
         else
           delete layer;
       }

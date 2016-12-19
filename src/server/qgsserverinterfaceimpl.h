@@ -24,7 +24,6 @@
 #include "qgsgetrequesthandler.h"
 #include "qgspostrequesthandler.h"
 #include "qgssoaprequesthandler.h"
-#include "qgsmaprenderer.h"
 
 /**
  * QgsServerInterface

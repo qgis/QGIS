@@ -20,7 +20,7 @@
 #include <qgsfontutils.h>
 #include <qgslogger.h>
 #include "qgsfeatureiterator.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
@@ -64,7 +64,7 @@ void QgsLabelPropertyDialog::on_buttonBox_clicked( QAbstractButton *button )
 void QgsLabelPropertyDialog::init( const QString& layerId, const QString& providerId, int featureId, const QString& labelText )
 {
   //get feature attributes
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerId ) );
   if ( !vlayer )
   {
     return;

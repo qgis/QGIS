@@ -26,7 +26,7 @@
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 #include <qgssymbol.h>
 #include <qgssinglesymbolrenderer.h>
 #include "qgsmarkersymbollayer.h"
@@ -96,10 +96,6 @@ void TestQgsFilledMarkerSymbol::initTestCase()
   mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
                                       pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
-  // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer );
-
   //setup symbol
   QgsGradientFillSymbolLayer* gradientFill = new QgsGradientFillSymbolLayer();
   gradientFill->setColor( QColor( "red" ) );
@@ -124,7 +120,7 @@ void TestQgsFilledMarkerSymbol::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QStringList() << mpPointsLayer->id() );
+  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPointsLayer );
   mReport += QLatin1String( "<h1>Filled Marker Tests</h1>\n" );
 
 }
@@ -138,6 +134,8 @@ void TestQgsFilledMarkerSymbol::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  delete mpPointsLayer;
 
   QgsApplication::exitQgis();
 }

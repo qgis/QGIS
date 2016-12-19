@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatisticalsummary.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
@@ -89,7 +89,7 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   connect( mFieldExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( refreshStatistics() ) );
   connect( mSelectedOnlyCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( refreshStatistics() ) );
   connect( mButtonRefresh, SIGNAL( clicked( bool ) ), this, SLOT( refreshStatistics() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersRemoved( QStringList ) ) );
+  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersRemoved( QStringList ) ) );
 
   QSettings settings;
   Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )

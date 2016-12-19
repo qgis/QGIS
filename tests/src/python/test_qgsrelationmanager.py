@@ -17,7 +17,7 @@ import qgis  # NOQA
 from qgis.core import (QgsVectorLayer,
                        QgsRelation,
                        QgsRelationManager,
-                       QgsMapLayerRegistry
+                       QgsProject
                        )
 from qgis.testing import start_app, unittest
 
@@ -42,10 +42,10 @@ class TestQgsRelationManager(unittest.TestCase):
     def setUp(self):
         self.referencedLayer = createReferencedLayer()
         self.referencingLayer = createReferencingLayer()
-        QgsMapLayerRegistry.instance().addMapLayers([self.referencedLayer, self.referencingLayer])
+        QgsProject.instance().addMapLayers([self.referencedLayer, self.referencingLayer])
 
     def tearDown(self):
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
     def createRelation(self):
         rel = QgsRelation()

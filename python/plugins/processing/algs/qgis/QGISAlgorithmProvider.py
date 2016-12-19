@@ -166,7 +166,7 @@ from .Aspect import Aspect
 from .Slope import Slope
 from .Ruggedness import Ruggedness
 from .Hillshade import Hillshade
-from .ReliefAuto import ReliefAuto
+from .Relief import Relief
 from .IdwInterpolationZValue import IdwInterpolationZValue
 from .IdwInterpolationAttribute import IdwInterpolationAttribute
 from .TinInterpolationZValue import TinInterpolationZValue
@@ -183,7 +183,12 @@ from .CreateAttributeIndex import CreateAttributeIndex
 from .DropGeometry import DropGeometry
 from .BasicStatistics import BasicStatisticsForField
 from .Heatmap import Heatmap
-from .Orthagonalize import Orthagonalize
+from .Orthogonalize import Orthogonalize
+from .ShortestPathPointToPoint import ShortestPathPointToPoint
+from .ShortestPathPointToLayer import ShortestPathPointToLayer
+from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
+from .ServiceAreaFromPoint import ServiceAreaFromPoint
+from .ServiceAreaFromLayer import ServiceAreaFromLayer
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -242,14 +247,18 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         OffsetLine(), PolygonCentroids(), Translate(),
                         SingleSidedBuffer(), PointsAlongGeometry(),
                         Aspect(), Slope(), Ruggedness(), Hillshade(),
-                        ReliefAuto(), ZonalStatisticsQgis(),
+                        Relief(), ZonalStatisticsQgis(),
                         IdwInterpolationZValue(), IdwInterpolationAttribute(),
                         TinInterpolationZValue(), TinInterpolationAttribute(),
-                        RemoveNullGeometry(), ExtractByExpression(), ExtendLines(),
-                        ExtractSpecificNodes(), GeometryByExpression(), SnapGeometriesToLayer(),
-                        PoleOfInaccessibility(), CreateAttributeIndex(), DropGeometry(),
-                        BasicStatisticsForField(), RasterCalculator(), Heatmap(),
-                        Orthagonalize()
+                        RemoveNullGeometry(), ExtractByExpression(),
+                        ExtendLines(), ExtractSpecificNodes(),
+                        GeometryByExpression(), SnapGeometriesToLayer(),
+                        PoleOfInaccessibility(), CreateAttributeIndex(),
+                        DropGeometry(), BasicStatisticsForField(),
+                        RasterCalculator(), Heatmap(), Orthogonalize(),
+                        ShortestPathPointToPoint(), ShortestPathPointToLayer(),
+                        ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
+                        ServiceAreaFromLayer()
                         ]
 
         if hasMatplotlib:

@@ -14,7 +14,6 @@
  ***************************************************************************/
 #include "qgsellipsesymbollayerwidget.h"
 #include "qgsellipsesymbollayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include <QColorDialog>
 

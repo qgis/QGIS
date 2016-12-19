@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsowsserver.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmessagelog.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"

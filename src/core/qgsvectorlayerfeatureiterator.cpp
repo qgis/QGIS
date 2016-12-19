@@ -16,7 +16,6 @@
 
 #include "qgsexpressionfieldbuffer.h"
 #include "qgsgeometrysimplifier.h"
-#include "qgsmaplayerregistry.h"
 #include "qgssimplifymethod.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayereditbuffer.h"
@@ -506,7 +505,7 @@ void QgsVectorLayerFeatureIterator::prepareJoin( int fieldIdx )
   const QgsVectorJoinInfo* joinInfo = mSource->mJoinBuffer->joinForFieldIndex( fieldIdx, mSource->mFields, sourceLayerIndex );
   Q_ASSERT( joinInfo );
 
-  QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinInfo->joinLayerId ) );
+  QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( joinInfo->joinLayerId ) );
   Q_ASSERT( joinLayer );
 
   if ( !mFetchJoinInfo.contains( joinInfo ) )

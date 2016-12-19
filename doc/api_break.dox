@@ -73,6 +73,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsCentroidFillSymbolLayerV2Widget<td>QgsCentroidFillSymbolLayerWidget
 <tr><td>QgsCircularStringV2<td>QgsCircularString
 <tr><td>QgsColorButtonV2<td>QgsColorButton
+<tr><td>QgsComposerLegendStyle<td>QgsLegendStyle
 <tr><td>QgsComposerSymbolV2Item<td>QgsComposerSymbolItem
 <tr><td>QgsComposerTableAvailableSortProxyModelV2<td>QgsComposerTableAvailableSortProxyModel
 <tr><td>QgsCompoundCurveV2<td>QgsCompoundCurve
@@ -101,6 +102,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsGraduatedSymbolRendererV2ViewStyle<td>QgsGraduatedSymbolRendererViewStyle
 <tr><td>QgsGraduatedSymbolRendererV2Widget<td>QgsGraduatedSymbolRendererWidget
 <tr><td>QgsLabelingEngineV2<td>QgsLabelingEngine
+<td><td>QgsLegendModelV2<td>QgsLegendModel
 <tr><td>QgsLegendSymbolItemV2<td>QgsLegendSymbolItem
 <tr><td>QgsLineStringV2<td>QgsLineString
 <tr><td>QgsLineSymbolLayerV2<td>QgsLineSymbolLayer
@@ -236,20 +238,24 @@ All the functionality from the old QgsColorDialog has been moved to the new clas
 - QgsComposerAttributeTable and associated classes (eg QgsComposerAttributeTableCompare,
 QgsComposerAttributeTableColumnModel, QgsComposerTableSortColumnsProxyModel) were removed.
 Use QgsComposerAttributeTableV2 instead.
+- QgsComposerLegendItem and subclasses were removed (QgsComposerSymbolItem, QgsComposerRasterSymbolItem, QgsComposerLayerItem, QgsComposerGroupItem, QgsComposerStyleItem).
 - QgsComposerTable was removed. Use QgsComposerAttributeTableV2 instead.
 - ComposerTextTable was removed. Use ComposerTextTableV2 instead.
 - QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,
 so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).
 - QgsHttpTransaction. This class was outdated and code should be ported to native Qt or Python implementations.
-- QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.
+- QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngine.
+- QgsLabelingEngineInterface. Replaced by QgsLabelingEngine.
 - QgsLegendInterface was removed. It was replaced by layer tree API (QgsLayerTreeNode class and others).
   Methods that deal with custom actions in main window's layer tree context menu were moved to QgisInterface:
   - addLegendLayerAction() moved to QgisInterface::addCustomActionForLayerType()
   - addLegendLayerActionForLayer() moved to QgisInterface::addCustomActionForLayer()
   - removeLegendLayerAction() moved to QgisInterface::removeCustomActionForLayerType()
 - QgsLegendModel was removed.
+- QgsMapCanvasLayer. Map canvas and overview canvas are updated separately with their own setLayers() calls.
 - QgsMapCanvasMap. It is an internal class used by map canvas.
+- QgsMapLayerRegistry. Its functionality has been moved to QgsProject.
 - QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.
 - QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.
 - QgsRendererV2DataDefinedMenus was removed. Use QgsDataDefinedButton instead.
@@ -526,6 +532,7 @@ QgsComposerLegendItem        {#qgis_api_break_3_0_QgsComposerLegendItem}
 QgsComposerMap        {#qgis_api_break_3_0_QgsComposerMap}
 --------------
 
+- layerSet() and setLayerSet() have been replaced by layers() and setLayers() which work with list of layers instead of layer IDs
 - containsWMSLayer() has been renamed to containsWmsLayer()
 - mapRenderer() has been removed. Use mapSettings() instead.
 - All grid style and format enums were moved to QgsComposerMapGrid.
@@ -675,8 +682,7 @@ QgsCptCitySelectionItem        {#qgis_api_break_3_0_QgsCptCitySelectionItem}
 QgsCRSCache        {#qgis_api_break_3_0_QgsCRSCache}
 -----------
 
-- QgsCRSCache has been renamed to QgsCrsCache
-- updateCRSCache() has been renamed to updateCrsCache
+- QgsCRSCache has been dropped.  QgsCoordinateReferenceSystem now has an internal cache
 
 
 QgsCursors        {#qgis_api_break_3_0_QgsCursors}
@@ -1067,6 +1073,7 @@ and the new ramp can be retrieved after executing the dialog by calling ramp().
 QgsMapCanvas        {#qgis_api_break_3_0_QgsMapCanvas}
 ------------
 
+- setLayerSet() has been replaced by setLayers() which accepts list of QgsMapLayer objects instead of QgsMapCanvasLayer objects
 - rotationEnabled() and enableRotation() have been removed, since map rotation is now always supported
 - The "name" parameter has been removed from constructor. Use QObject::setObjectName() to set canvas name if necessary.
 - map() has been removed because QgsMapCanvasMap is not available in API anymore.
@@ -1079,6 +1086,7 @@ QgsMapCanvas        {#qgis_api_break_3_0_QgsMapCanvas}
 - setWheelAction() and WheelAction enum have been removed. Custom wheel actions are not supported anymore.
 - updateMap(), showError(), useImageToRender() have been removed. They did nothing since 2.4.
 - setProgress() signal has been removed. It was not emitted since 2.0.
+- enableOverviewMode() and updateOverview() have been removed. Map canvas does not keep pointer to overview canvas anymore. Use QgsLayerTreeMapCanvasBridge::setOverviewCanvas() to set up updates of overview canvas together with main canvas.
 
 
 QgsMapCanvasItem        {#qgis_api_break_3_0_QgsMapCanvasItem}
@@ -1106,7 +1114,7 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 - theMinScale and theMaxScale parameters in setMinimumScale and setMaximumScale were renamed to scale
 - The layerCrsChanged() signal was renamed to crsChanged()
 - theError parameter in appendError() and setError() were renamed to 'error'.
-- drawLabels() method was removed. It used old deprecated labeling. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.
+- drawLabels() method was removed. It used old deprecated labeling. Replaced by labeling based on PAL library, see QgsLabelingEngine.
 - readLayerXML() was renamed to readLayerXml()
 - writeLayerXML() was renamed to writeLayerXml()
 
@@ -1120,6 +1128,7 @@ QgsMapLayerRegistry        {#qgis_api_break_3_0_QgsMapLayerRegistry}
 QgsMapOverviewCanvas        {#qgis_api_break_3_0_QgsMapOverviewCanvas}
 --------------------
 
+- layerSet() and setLayerSet() have been replaced by layers() and setLayers() which work with list of layers instead of layer IDs
 - destinationSrsChanged() was renamed to destinationCrsChanged()
 
 
@@ -1137,7 +1146,7 @@ QgsMapRendererJob        {#qgis_api_break_3_0_QgsMapRendererJob}
 
 - reprojectToLayerExtent() now takes a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should
 be used instead of a null pointer if no transformation is required.
-- prepareJobs() and drawLabeling() (neither available in PyQGIS) do not take QgsPalLabeling parameter anymore. All drawing of labels is done by QgsLabelingEngineV2.
+- prepareJobs() and drawLabeling() (neither available in PyQGIS) do not take QgsPalLabeling parameter anymore. All drawing of labels is done by QgsLabelingEngine.
 - drawOldLabeling(), drawNewLabeling() were removed. The method drawLabeling() should be used instead.
 
 
@@ -1173,6 +1182,7 @@ The whole class has been refactored to stop using WKB and to use QgsAbstractGeom
 QgsMapSettings        {#qgis_api_break_3_0_QgsMapSettings}
 --------------
 
+- layers() and setLayers() now work with list of layers instead of layer IDs
 - layerTransform() now returns a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
 be returned instead of a null pointer if no transformation is required.
 - destinationCrs() now returns a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
@@ -1236,9 +1246,15 @@ has improved sort capabilities including the ability to set custom sort values f
 and for forcing certain items to always sort on top.
 
 
+QgsPalettedRasterRenderer        {#qgis_api_break_3_0_QgsPalettedRasterRenderer}
+-------------------------
+
+- The rgbArray() method was made private
+
 QgsPalLabeling        {#qgis_api_break_3_0_QgsPalLabeling}
 --------------
 
+- all methods implemented from QgsLabelingEngineInterface have been removed: init(), willUseLayer(), clearActiveLayers(), clearActiveLayer(), prepareLayer(), prepareDiagramLayer(), registerFeature(), registerDiagramFeature(), drawLabeling(), exit(), clone(). Labeling is now driven by QgsLabelingEngine.
 - init(QgsMapRenderer*) has been removed. Use init(const QgsMapSettings&) instead.
 - prepareGeometry and geometryRequiresPreparation now take geometry references, not pointers.
 - layer() was removed. If direct access to QgsPalLayerSettings is necessary, use QgsPalLayerSettings::fromLayer()
@@ -1297,6 +1313,14 @@ QgsProject        {#qgis_api_break_3_0_QgsProject}
 - clearProperties() was removed. Use clear() instead.
 
 
+QgsRaster        {#qgis_api_break_3_0_QgsRaster}
+---------
+
+- QgsRaster::ContrastEnhancementLimits has been removed, use QgsRasterMinMaxOrigin::Limits
+- QgsRaster::contrastEnhancementLimitsAsString() has been removed, use QgsRasterMinMaxOrigin::limitsString()
+- QgsRaster::contrastEnhancementLimitsFromString() has been removed, use QgsRasterMinMaxOrigin::limitsFromString()
+
+
 QgsRasterCalcNode        {#qgis_api_break_3_0_QgsRasterCalcNode}
 -----------------
 
@@ -1327,13 +1351,18 @@ QgsRasterLayer        {#qgis_api_break_3_0_QgsRasterLayer}
 - setDrawingStyle() was removed. Use setRendererForDrawingStyle() or setRenderer() instead.
 - previewAsPixmap() was removed. Use previewAsImage() instead.
 - updateProgress() had no effect and was removed.
-
+- CUMULATIVE_CUT_LOWER and CUMULATIVE_CUT_UPPER have been moved to QgsRasterMinMaxOrigin
+- the second parameter of setContrastEnhancement() has changed type. It is now QgsRasterMinMaxOrigin::Limits
 
 QgsRasterProjector        {#qgis_api_break_3_0_QgsRasterProjector}
 ------------------
 
 - extentSize() now takes a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should be used instead of a null pointer if no transformation is required.
 
+QgsRasterRenderer
+-----------------
+
+- MinMaxOrigin enum, minMaxOriginName(), minMaxOriginLabel(), minMaxOriginFromName() removed. Use minMaxOrigin() instead
 
 QgsRelation        {#qgis_api_break_3_0_QgsRelation}
 -----------
@@ -1412,6 +1441,12 @@ QgsSimpleMarkerSymbolLayerWidget        {#qgis_api_break_3_0_QgsSimpleMarkerSymb
 --------------------------------
 
 - setName() was removed.
+
+
+QgsSingleBandPseudoColorRenderer        {#qgis_api_break_3_0_QgsSingleBandPseudoColorRenderer}
+--------------------------------
+
+- classificationMinMaxOrigin() and setClassificationMinMaxOrigin() removed. Use minMaxOrigin() and setMinMaxOrigin()
 
 
 QgsSingleSymbolRendererWidget        {#qgis_api_break_3_0_QgsSingleSymbolRendererWidget}
@@ -1582,7 +1617,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - addTopologicalPoints() now takes a geometry reference, not a pointer.
 - commitErrors() now returns an object, rather than a reference. This has no effect on PyQGIS code.
 - subsetString() was made const. This has no effect on PyQGIS code, but c++ code implementing derived layer classes will need to update the signature of this method to match.
-- label(), enableLabels(), hasLabelsEnabled(), drawLabels() have been removed. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.
+- label(), enableLabels(), hasLabelsEnabled(), drawLabels() have been removed. Replaced by labeling based on PAL library, see QgsLabelingEngine.
 - Signal layerDeleted() has been removed. Replaced by Qt signal destroyed().
 - Deprecated editor widget methods and enums and structs: struct RangeData, enum FeatureFormSuppress, enum EditType, addAttributeEditorWidget(), editorWidgetV2(), editorWidgetConfig(), attributeEditorElements(), editType(), setEditType(), editorLayout(), setEditorLayout, setEditorWidgetV2Config(), setCheckedState(), editForm(), setEditForm(), featureFormSuppress(), setFeatureFormSuppress(), editFormInit(), setEditFormInit(), valueMap(), range(), dateFormat(), fieldEditable(), labelOnTop(), setFieldEditable() and setLabelOnTop().  Use editFormConfig()
 - select() replaced by selectByRect()

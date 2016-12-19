@@ -30,9 +30,10 @@
 #include <QFileInfo>
 #include "qgsrequesthandler.h"
 #include "qgsapplication.h"
-#include "qgsmaprenderer.h"
 #include "qgsconfigcache.h"
 #include "qgscapabilitiescache.h"
+#include "qgsmapsettings.h"
+#include "qgsmessagelog.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsserverplugins.h"
@@ -73,25 +74,20 @@ class SERVER_EXPORT QgsServer
      * @return the response headers and body QPair of QByteArray if called from python bindings, empty otherwise
      */
     QPair<QByteArray, QByteArray> handleRequest( const QString& queryString = QString() );
-#if 0
-    // The following code was used to test type conversion in python bindings
-    QPair<QByteArray, QByteArray> testQPair( QPair<QByteArray, QByteArray> pair );
-#endif
 
-    //! Returns a pointer to the server interface
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
+    //! Returns a pointer to the server interface
     QgsServerInterfaceImpl* serverInterface() { return sServerInterface; }
+
+    //! Intialize python
+    //! Note: not in python bindings
+    void initPython( );
 #endif
 
   private:
 
     //! Server initialization
     static bool init();
-
-    void saveEnvVars();
-
-    //! Saves environment variable into mEnvironmentVariables if defined
-    void saveEnvVar( const QString& variableName );
 
     // All functions that where previously in the main file are now
     // static methods of this class
@@ -101,10 +97,16 @@ class SERVER_EXPORT QgsServer
     static void dummyMessageHandler( QtMsgType type, const char *msg );
     // Mainly for debug
     static void printRequestInfos();
-    // Mainly for debug
+
+    /**
+     * @brief QgsServer::printRequestParameters prints the request parameters
+     * @param parameterMap
+     * @param logLevel
+     */
     static void printRequestParameters(
       const QMap< QString, QString>& parameterMap,
-      int logLevel );
+      QgsMessageLog::MessageLevel logLevel );
+
     static QFileInfo defaultProjectFile();
     static QFileInfo defaultAdminSLD();
     static void setupNetworkAccessManager();
@@ -117,17 +119,12 @@ class SERVER_EXPORT QgsServer
     // Status
     static QString* sConfigFilePath;
     static QgsCapabilitiesCache* sCapabilitiesCache;
-    static QgsMapRenderer* sMapRenderer;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     static QgsServerInterfaceImpl* sServerInterface;
-    static bool sInitPython;
 #endif
     //! Initialization must run once for all servers
     static bool sInitialised;
     static bool sCaptureOutput;
-
-    //! Pass important environment variables to the fcgi processes
-    QHash< QString, QString > mEnvironmentVariables;
 };
 #endif // QGSSERVER_H
 

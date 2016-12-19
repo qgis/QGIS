@@ -3668,49 +3668,49 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertAlmostEqual(width, 4.4884, places=3)
         self.assertAlmostEqual(height, 6.4420, places=3)
 
-    def testOrthagonalize(self):
+    def testOrthogonalize(self):
         empty = QgsGeometry()
-        o = empty.orthagonalize()
+        o = empty.orthogonalize()
         self.assertFalse(o)
 
         # not a useful geometry
         point = QgsGeometry.fromWkt('Point(1 2)')
-        o = point.orthagonalize()
+        o = point.orthogonalize()
         self.assertFalse(o)
 
         # polygon
         polygon = QgsGeometry.fromWkt('Polygon((-0.699 0.892, -0.703 0.405, -0.022 0.361, 0.014 0.851, -0.699 0.892))')
-        o = polygon.orthagonalize()
+        o = polygon.orthogonalize()
         exp = 'Polygon ((-0.69899999999999995 0.89200000000000002, -0.72568713635737736 0.38414056283699533, -0.00900222326098143 0.34648000752227009, 0.01768491457044956 0.85433944198378253, -0.69899999999999995 0.89200000000000002))'
         result = o.exportToWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
-                        "orthagonalize: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+                        "orthogonalize: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
         # polygon with ring
         polygon = QgsGeometry.fromWkt('Polygon ((-0.698 0.892, -0.702 0.405, -0.022 0.360, 0.014 0.850, -0.698 0.892),(-0.619 0.777, -0.619 0.574, -0.515 0.567, -0.517 0.516, -0.411 0.499, -0.379 0.767, -0.619 0.777),(-0.322 0.506, -0.185 0.735, -0.046 0.428, -0.322 0.506))')
-        o = polygon.orthagonalize()
+        o = polygon.orthogonalize()
         exp = 'Polygon ((-0.69799999999999995 0.89200000000000002, -0.72515703079591087 0.38373993222914216, -0.00901577368860811 0.34547552423418099, 0.01814125858957143 0.85373558928902782, -0.69799999999999995 0.89200000000000002),(-0.61899999999999999 0.77700000000000002, -0.63403125159063511 0.56020458713735533, -0.53071476068518508 0.55304126003523246, -0.5343108192220235 0.5011754225601015, -0.40493624158682306 0.49220537936424585, -0.3863089084840608 0.76086661681561074, -0.61899999999999999 0.77700000000000002),(-0.32200000000000001 0.50600000000000001, -0.185 0.73499999999999999, -0.046 0.42799999999999999, -0.32200000000000001 0.50600000000000001))'
         result = o.exportToWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
-                        "orthagonalize: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+                        "orthogonalize: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
         # multipolygon
 
         polygon = QgsGeometry.fromWkt('MultiPolygon(((-0.550 -1.553, -0.182 -0.954, -0.182 -0.954, 0.186 -1.538, -0.550 -1.553)),'
                                       '((0.506 -1.376, 0.433 -1.081, 0.765 -0.900, 0.923 -1.132, 0.923 -1.391, 0.506 -1.376)))')
-        o = polygon.orthagonalize()
+        o = polygon.orthogonalize()
         exp = 'MultiPolygon (((-0.55000000000000004 -1.55299999999999994, -0.182 -0.95399999999999996, -0.182 -0.95399999999999996, 0.186 -1.53800000000000003, -0.55000000000000004 -1.55299999999999994)),((0.50600000000000001 -1.37599999999999989, 0.34888970623957499 -1.04704644438350125, 0.78332709454235683 -0.83955640656085295, 0.92300000000000004 -1.1319999999999999, 0.91737248858460974 -1.38514497083566535, 0.50600000000000001 -1.37599999999999989)))'
         result = o.exportToWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
-                        "orthagonalize: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+                        "orthogonalize: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
         #line
         line = QgsGeometry.fromWkt('LineString (-1.07445631048298162 -0.91619958829825165, 0.04022568180912156 -0.95572731852137571, 0.04741254184968957 -0.61794489661467789, 0.68704308546024517 -0.66106605685808595)')
-        o = line.orthagonalize()
+        o = line.orthogonalize()
         exp = 'LineString (-1.07445631048298162 -0.91619958829825165, 0.04812855116470245 -0.96433184892270418, 0.06228000950284909 -0.63427853851139493, 0.68704308546024517 -0.66106605685808595)'
         result = o.exportToWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
-                        "orthagonalize: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+                        "orthogonalize: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
 
 if __name__ == '__main__':

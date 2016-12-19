@@ -49,6 +49,8 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsSingleBandPseudoColorRendererWidget( layer, theExtent ); }
     QgsRasterRenderer* renderer() override;
     void setMapCanvas( QgsMapCanvas* canvas ) override;
+    void doComputations() override;
+    QgsRasterMinMaxWidget* minMaxWidget() override { return mMinMaxWidget; }
 
     void setFromRenderer( const QgsRasterRenderer* r );
 
@@ -57,7 +59,8 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     /** Executes the single band pseudo raster classficiation
      */
     void classify();
-    void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
+    //! called when new min/max values are loaded
+    void loadMinMax( int theBandNo, double theMin, double theMax );
 
   private:
 
@@ -72,6 +75,8 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void autoLabel();
     void setUnitFromLabels();
 
+    QMenu* contextMenu;
+
   private slots:
 
     void applyColorRamp();
@@ -85,21 +90,24 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void mColormapTreeWidget_itemEdited( QTreeWidgetItem* item, int column );
     void on_mBandComboBox_currentIndexChanged( int index );
     void on_mColorInterpolationComboBox_currentIndexChanged( int index );
-    void on_mMinLineEdit_textChanged( const QString & text ) { Q_UNUSED( text ); resetClassifyButton(); }
-    void on_mMaxLineEdit_textChanged( const QString & text ) { Q_UNUSED( text ); resetClassifyButton(); }
-    void on_mMinLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); mMinMaxOrigin = QgsRasterRenderer::MinMaxUser; showMinMaxOrigin(); }
-    void on_mMaxLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); mMinMaxOrigin = QgsRasterRenderer::MinMaxUser; showMinMaxOrigin(); }
+    void on_mMinLineEdit_textChanged( const QString & ) { resetClassifyButton(); }
+    void on_mMaxLineEdit_textChanged( const QString & ) { resetClassifyButton(); }
+    void on_mMinLineEdit_textEdited( const QString & text ) ;
+    void on_mMaxLineEdit_textEdited( const QString & text ) ;
     void on_mClassificationModeComboBox_currentIndexChanged( int index );
+    void changeColor();
+    void changeTransparency();
 
   private:
 
     void setLineEditValue( QLineEdit *theLineEdit, double theValue );
     double lineEditValue( const QLineEdit *theLineEdit ) const;
     void resetClassifyButton();
-    void showMinMaxOrigin();
     QgsRasterMinMaxWidget * mMinMaxWidget;
+    bool mDisableMinMaxWidgetRefresh;
     int mMinMaxOrigin;
 
+    void minMaxModified();
 };
 
 

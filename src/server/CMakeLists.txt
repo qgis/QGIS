@@ -31,7 +31,6 @@ SET ( qgis_mapserv_SRCS
   qgswfsserver.cpp
   qgswcsserver.cpp
   qgsmapserviceexception.cpp
-  qgsmaprenderer.cpp
   qgsmslayercache.cpp
   qgsmslayerbuilder.cpp
   qgshostedvdsbuilder.cpp
@@ -41,7 +40,7 @@ SET ( qgis_mapserv_SRCS
   qgsremotedatasourcebuilder.cpp
   qgssentdatasourcebuilder.cpp
   qgsserverlogger.cpp
-  qgsmsutils.cpp
+  qgsmapserverutils.cpp
   qgswcsprojectparser.cpp
   qgswfsprojectparser.cpp
   qgswmsconfigparser.cpp
@@ -67,7 +66,6 @@ SET (qgis_mapserv_MOC_HDRS
   qgscapabilitiescache.h
   qgsconfigcache.h
 #  qgshttptransaction.h
-  qgsmaprenderer.h
   qgsmslayercache.h
   qgsserverlogger.h
   qgsserverstreamingdevice.h

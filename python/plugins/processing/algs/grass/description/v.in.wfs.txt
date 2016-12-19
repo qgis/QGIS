@@ -1,5 +1,0 @@
-v.in.wfs
-Import GetFeature from WFS
-Vector (v.*)
-ParameterString|wfs|GetFeature URL starting with 'http'|http://
-OutputVector|output|Converted

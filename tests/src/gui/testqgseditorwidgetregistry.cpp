@@ -18,7 +18,6 @@
 #include "qgseditorwidgetautoconf.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-#include "qgsmaplayerregistry.h"
 
 
 class TestQgsEditorWidgetRegistry: public QObject
@@ -117,8 +116,8 @@ class TestQgsEditorWidgetRegistry: public QObject
       //build two layers
       QgsVectorLayer vl1( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=name:string&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
       QgsVectorLayer vl2( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
-      QgsMapLayerRegistry::instance()->addMapLayer( &vl1, false, false );
-      QgsMapLayerRegistry::instance()->addMapLayer( &vl2, false, false );
+      QgsProject::instance()->addMapLayer( &vl1, false, false );
+      QgsProject::instance()->addMapLayer( &vl2, false, false );
 
       //create a relation between them
       QgsRelation relation;

@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 import os
 
-from qgis.core import (QgsMapLayerRegistry,
+from qgis.core import (QgsProject,
                        QgsVectorLayer,
                        QgsMapSettings,
                        QgsSnappingUtils,
@@ -77,7 +77,7 @@ class TestLayerDependencies(unittest.TestCase):
         assert (cls.linesLayer.isValid())
         cls.pointsLayer2 = QgsVectorLayer("dbname='%s' table=\"node2\" (geom) sql=" % fn, "_points2", "spatialite")
         assert (cls.pointsLayer2.isValid())
-        QgsMapLayerRegistry.instance().addMapLayers([cls.pointsLayer, cls.linesLayer, cls.pointsLayer2])
+        QgsProject.instance().addMapLayers([cls.pointsLayer, cls.linesLayer, cls.pointsLayer2])
 
         # save the project file
         fo = tempfile.NamedTemporaryFile()
@@ -213,7 +213,7 @@ class TestLayerDependencies(unittest.TestCase):
 
     def test_signalConnection(self):
         # remove all layers
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
         # set dependencies and add back layers
         self.pointsLayer = QgsVectorLayer("dbname='%s' table=\"node\" (geom) sql=" % self.fn, "points", "spatialite")
         assert (self.pointsLayer.isValid())
@@ -224,9 +224,9 @@ class TestLayerDependencies(unittest.TestCase):
         self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
         self.pointsLayer2.setDependencies([QgsMapLayerDependency(self.pointsLayer.id())])
         # this should update connections between layers
-        QgsMapLayerRegistry.instance().addMapLayers([self.pointsLayer])
-        QgsMapLayerRegistry.instance().addMapLayers([self.linesLayer])
-        QgsMapLayerRegistry.instance().addMapLayers([self.pointsLayer2])
+        QgsProject.instance().addMapLayers([self.pointsLayer])
+        QgsProject.instance().addMapLayers([self.linesLayer])
+        QgsProject.instance().addMapLayers([self.pointsLayer2])
 
         ms = QgsMapSettings()
         ms.setOutputSize(QSize(100, 100))

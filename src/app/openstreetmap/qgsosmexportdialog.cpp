@@ -18,7 +18,7 @@
 #include "qgsosmdatabase.h"
 
 #include "qgsdatasourceuri.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
 #include <QApplication>
@@ -174,7 +174,7 @@ void QgsOSMExportDialog::onOK()
     uri.setDataSource( QString(), editLayerName->text(), QStringLiteral( "geometry" ) );
     QgsVectorLayer* vlayer = new QgsVectorLayer( uri.uri(), editLayerName->text(), QStringLiteral( "spatialite" ) );
     if ( vlayer->isValid() )
-      QgsMapLayerRegistry::instance()->addMapLayer( vlayer );
+      QgsProject::instance()->addMapLayer( vlayer );
   }
 
   QApplication::restoreOverrideCursor();

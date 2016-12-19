@@ -19,6 +19,7 @@
 #include "qgstolerance.h"
 
 class QDomDocument;
+class QgsProject;
 class QgsVectorLayer;
 
 
@@ -117,7 +118,7 @@ class CORE_EXPORT QgsSnappingConfig
     /**
      * Constructor with default parameters defined in global settings
      */
-    explicit QgsSnappingConfig();
+    explicit QgsSnappingConfig( QgsProject* project );
 
     ~QgsSnappingConfig();
 
@@ -219,6 +220,8 @@ class CORE_EXPORT QgsSnappingConfig
   private:
     void readLegacySettings();
 
+    //! associated project for this snapping configuration
+    QgsProject* mProject;
     bool mEnabled;
     SnappingMode mMode;
     SnappingType mType;

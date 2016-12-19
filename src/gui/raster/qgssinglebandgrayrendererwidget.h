@@ -42,18 +42,26 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
 
     QString min( int index = 0 ) override { Q_UNUSED( index ); return mMinLineEdit->text(); }
     QString max( int index = 0 ) override { Q_UNUSED( index ); return mMaxLineEdit->text(); }
-    void setMin( const QString& value, int index = 0 ) override { Q_UNUSED( index ); mMinLineEdit->setText( value ); }
-    void setMax( const QString& value, int index = 0 ) override { Q_UNUSED( index ); mMaxLineEdit->setText( value ); }
+    void setMin( const QString& value, int index = 0 ) override;
+    void setMax( const QString& value, int index = 0 ) override;
     int selectedBand( int index = 0 ) override { Q_UNUSED( index ); return mGrayBandComboBox->currentIndex() + 1; }
+    void doComputations() override;
+    QgsRasterMinMaxWidget* minMaxWidget() override { return mMinMaxWidget; }
 
   public slots:
-    void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
+    //! called when new min/max values are loaded
+    void loadMinMax( int theBandNo, double theMin, double theMax );
 
   private slots:
     void on_mGrayBandComboBox_currentIndexChanged( int index );
+    void on_mMinLineEdit_textChanged( const QString & );
+    void on_mMaxLineEdit_textChanged( const QString & );
 
   private:
     QgsRasterMinMaxWidget * mMinMaxWidget;
+    bool mDisableMinMaxWidgetRefresh;
+
+    void minMaxModified();
 };
 
 #endif // QGSSINGLEBANDGRAYRENDERERWIDGET_H

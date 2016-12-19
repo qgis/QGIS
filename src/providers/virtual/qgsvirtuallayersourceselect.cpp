@@ -21,7 +21,7 @@ email                : hugo dot mercier at oslandia dot com
 #include <layertree/qgslayertreeview.h>
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 #include <qgsgenericprojectionselector.h>
 #include <layertree/qgslayertreemodel.h>
 #include <layertree/qgslayertreegroup.h>
@@ -106,7 +106,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
   }
 
   // configure auto completion with table and column names
-  Q_FOREACH ( QgsMapLayer* l, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer* l, QgsProject::instance()->mapLayers() )
   {
     if ( l->type() == QgsMapLayer::VectorLayer )
     {
@@ -134,7 +134,7 @@ void QgsVirtualLayerSourceSelect::onLayerComboChanged( int idx )
     return;
 
   QString lid = mLayerNameCombo->itemData( idx ).toString();
-  QgsVectorLayer* l = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( lid ) );
+  QgsVectorLayer* l = static_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( lid ) );
   if ( !l )
     return;
   QgsVirtualLayerDefinition def = QgsVirtualLayerDefinition::fromUrl( QUrl::fromEncoded( l->source().toUtf8() ) );
@@ -295,7 +295,7 @@ void QgsVirtualLayerSourceSelect::onImportLayer()
     QStringList ids = mEmbeddedSelectionDialog->layers();
     Q_FOREACH ( const QString& id, ids )
     {
-      QgsVectorLayer *vl = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
+      QgsVectorLayer *vl = static_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( id ) );
       addEmbeddedLayer( vl->name(), vl->providerType(), vl->dataProvider()->encoding(), vl->source() );
     }
   }
@@ -315,7 +315,7 @@ void QgsVirtualLayerSourceSelect::on_buttonBox_accepted()
   if ( idx != -1 )
   {
     QString id( mLayerNameCombo->itemData( idx ).toString() );
-    if ( !id.isEmpty() && mLayerNameCombo->currentText() == QgsMapLayerRegistry::instance()->mapLayer( id )->name() )
+    if ( !id.isEmpty() && mLayerNameCombo->currentText() == QgsProject::instance()->mapLayer( id )->name() )
     {
       int r = QMessageBox::warning( nullptr, tr( "Warning" ), tr( "A virtual layer of this name already exists, would you like to overwrite it?" ), QMessageBox::Yes | QMessageBox::No );
       if ( r == QMessageBox::Yes )

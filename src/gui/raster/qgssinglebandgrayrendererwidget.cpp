@@ -24,6 +24,7 @@
 QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent )
     : QgsRasterRendererWidget( layer, extent )
     , mMinMaxWidget( nullptr )
+    , mDisableMinMaxWidgetRefresh( false )
 {
   setupUi( this );
 
@@ -50,8 +51,11 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
     mMinMaxContainerWidget->setLayout( layout );
     layout->addWidget( mMinMaxWidget );
 
-    connect( mMinMaxWidget, SIGNAL( load( int, double, double, int ) ),
-             this, SLOT( loadMinMax( int, double, double, int ) ) );
+    connect( mMinMaxWidget, &QgsRasterMinMaxWidget::widgetChanged,
+             this, &QgsSingleBandGrayRendererWidget::widgetChanged );
+
+    connect( mMinMaxWidget, &QgsRasterMinMaxWidget::load,
+             this, &QgsSingleBandGrayRendererWidget::loadMinMax );
 
     //fill available bands into combo box
     int nBands = provider->bandCount();
@@ -98,13 +102,18 @@ QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
   e->setMaximumValue( mMaxLineEdit->text().toDouble() );
   e->setContrastEnhancementAlgorithm(( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementComboBox->currentData().toInt() ) );
 
-
   QgsSingleBandGrayRenderer* renderer = new QgsSingleBandGrayRenderer( provider, band );
   renderer->setContrastEnhancement( e );
 
   renderer->setGradient(( QgsSingleBandGrayRenderer::Gradient ) mGradientComboBox->currentData().toInt() );
+  renderer->setMinMaxOrigin( mMinMaxWidget->minMaxOrigin() );
 
   return renderer;
+}
+
+void QgsSingleBandGrayRendererWidget::doComputations()
+{
+  mMinMaxWidget->doComputations();
 }
 
 void QgsSingleBandGrayRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
@@ -113,12 +122,37 @@ void QgsSingleBandGrayRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
   mMinMaxWidget->setMapCanvas( canvas );
 }
 
-void QgsSingleBandGrayRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )
+void QgsSingleBandGrayRendererWidget::on_mMinLineEdit_textChanged( const QString & )
+{
+  minMaxModified();
+}
+
+void QgsSingleBandGrayRendererWidget::on_mMaxLineEdit_textChanged( const QString & )
+{
+  minMaxModified();
+}
+
+void QgsSingleBandGrayRendererWidget::minMaxModified()
+{
+  if ( !mDisableMinMaxWidgetRefresh )
+  {
+    if (( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementComboBox->currentData().toInt() ) == QgsContrastEnhancement::NoEnhancement )
+    {
+      mContrastEnhancementComboBox->setCurrentIndex(
+        mContrastEnhancementComboBox->findData(( int ) QgsContrastEnhancement::StretchToMinimumMaximum ) );
+    }
+    mMinMaxWidget->userHasSetManualMinMaxValues();
+  }
+}
+
+
+void QgsSingleBandGrayRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax )
 {
   Q_UNUSED( theBandNo );
-  Q_UNUSED( theOrigin );
+
   QgsDebugMsg( QString( "theBandNo = %1 theMin = %2 theMax = %3" ).arg( theBandNo ).arg( theMin ).arg( theMax ) );
 
+  mDisableMinMaxWidgetRefresh = true;
   if ( qIsNaN( theMin ) )
   {
     mMinLineEdit->clear();
@@ -136,12 +170,7 @@ void QgsSingleBandGrayRendererWidget::loadMinMax( int theBandNo, double theMin, 
   {
     mMaxLineEdit->setText( QString::number( theMax ) );
   }
-
-  //automaticlly activate contrast enhancement algorithm if set to none
-  if ( mContrastEnhancementComboBox->currentData().toInt() == QgsContrastEnhancement::NoEnhancement )
-  {
-    mContrastEnhancementComboBox->setCurrentIndex( mContrastEnhancementComboBox->findData( QgsContrastEnhancement::StretchToMinimumMaximum ) );
-  }
+  mDisableMinMaxWidgetRefresh = false;
 }
 
 void QgsSingleBandGrayRendererWidget::on_mGrayBandComboBox_currentIndexChanged( int index )
@@ -163,10 +192,28 @@ void QgsSingleBandGrayRendererWidget::setFromRenderer( const QgsRasterRenderer* 
 
     mGradientComboBox->setCurrentIndex( mGradientComboBox->findData( gr->gradient() ) );
     //minmax
+    mDisableMinMaxWidgetRefresh = true;
     mMinLineEdit->setText( QString::number( ce->minimumValue() ) );
     mMaxLineEdit->setText( QString::number( ce->maximumValue() ) );
+    mDisableMinMaxWidgetRefresh = false;
     //contrast enhancement algorithm
     mContrastEnhancementComboBox->setCurrentIndex(
       mContrastEnhancementComboBox->findData(( int )( ce->contrastEnhancementAlgorithm() ) ) );
+
+    mMinMaxWidget->setFromMinMaxOrigin( gr->minMaxOrigin() );
   }
+}
+
+void QgsSingleBandGrayRendererWidget::setMin( const QString& value, int )
+{
+  mDisableMinMaxWidgetRefresh = true;
+  mMinLineEdit->setText( value );
+  mDisableMinMaxWidgetRefresh = false;
+}
+
+void QgsSingleBandGrayRendererWidget::setMax( const QString& value, int )
+{
+  mDisableMinMaxWidgetRefresh = true;
+  mMaxLineEdit->setText( value );
+  mDisableMinMaxWidgetRefresh = false;
 }

@@ -29,7 +29,6 @@
 #include "qgsexpressioncontext.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsdistancearea.h"
 #include "qgsrasterlayer.h"
@@ -87,7 +86,7 @@ class TestQgsExpression: public QObject
       QFileInfo pointFileInfo( pointsFileName );
       mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
                                          pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-      QgsMapLayerRegistry::instance()->addMapLayer( mPointsLayer );
+      QgsProject::instance()->addMapLayer( mPointsLayer );
       mPointsLayer->setTitle( QStringLiteral( "layer title" ) );
       mPointsLayer->setAbstract( QStringLiteral( "layer abstract" ) );
       mPointsLayer->setKeywordList( QStringLiteral( "layer,keywords" ) );
@@ -101,7 +100,7 @@ class TestQgsExpression: public QObject
       QFileInfo rasterFileInfo( rasterFileName );
       mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                          rasterFileInfo.completeBaseName() );
-      QgsMapLayerRegistry::instance()->addMapLayer( mRasterLayer );
+      QgsProject::instance()->addMapLayer( mRasterLayer );
 
       // test memory layer for get_feature tests
       mMemoryLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
@@ -119,7 +118,7 @@ class TestQgsExpression: public QObject
       f4.setAttribute( QStringLiteral( "col1" ), 41 );
       f4.setAttribute( QStringLiteral( "col2" ), "test4" );
       mMemoryLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
-      QgsMapLayerRegistry::instance()->addMapLayer( mMemoryLayer );
+      QgsProject::instance()->addMapLayer( mMemoryLayer );
 
       // test layer for aggregates
       mAggregatesLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=col3:integer" ), QStringLiteral( "aggregate_layer" ), QStringLiteral( "memory" ) );
@@ -155,7 +154,7 @@ class TestQgsExpression: public QObject
       af6.setAttribute( QStringLiteral( "col2" ), "test4" );
       af6.setAttribute( QStringLiteral( "col3" ), 3 );
       mAggregatesLayer->dataProvider()->addFeatures( QgsFeatureList() << af1 << af2 << af3 << af4 << af5 << af6 );
-      QgsMapLayerRegistry::instance()->addMapLayer( mAggregatesLayer );
+      QgsProject::instance()->addMapLayer( mAggregatesLayer );
 
       mChildLayer = new QgsVectorLayer( QStringLiteral( "Point?field=parent:integer&field=col2:string&field=col3:integer" ), QStringLiteral( "child_layer" ), QStringLiteral( "memory" ) );
       QVERIFY( mChildLayer->isValid() );
@@ -180,7 +179,7 @@ class TestQgsExpression: public QObject
       cf5.setAttribute( QStringLiteral( "col2" ), QVariant( QVariant::String ) );
       cf5.setAttribute( QStringLiteral( "col3" ), 7 );
       mChildLayer->dataProvider()->addFeatures( QgsFeatureList() << cf1 << cf2 << cf3 << cf4 << cf5 );
-      QgsMapLayerRegistry::instance()->addMapLayer( mChildLayer );
+      QgsProject::instance()->addMapLayer( mChildLayer );
 
       QgsRelation rel;
       rel.setRelationId( QStringLiteral( "my_rel" ) );

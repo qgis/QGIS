@@ -17,7 +17,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsmaptooloffsetcurve.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
@@ -361,7 +361,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
     return;
   }
 
-  QgsVectorLayer* sourceLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mSourceLayerId ) );
+  QgsVectorLayer* sourceLayer = dynamic_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( mSourceLayerId ) );
   if ( !sourceLayer )
   {
     return;

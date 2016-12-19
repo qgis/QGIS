@@ -1,29 +1,6 @@
 %Feature HAVE_TOUCH
 
 /** \ingroup gui
-  * A class that stores visibility and presence in overview flags together
-  * with pointer to the layer.
-  *
-*/
-class QgsMapCanvasLayer
-{
-%TypeHeaderCode
-#include <qgsmapcanvas.h>
-%End
-  public:
-    QgsMapCanvasLayer( QgsMapLayer* layer, bool visible = true, bool isInOverview = false );
-
-    void setVisible( bool visible );
-    void setInOverview( bool isInOverview );
-
-    bool isVisible() const;
-    bool isInOverview() const;
-
-    const QgsMapLayer* layer() const;
-};
-
-
-/** \ingroup gui
  * Map canvas is a class for displaying all GIS data types on a canvas.
  */
 
@@ -52,15 +29,11 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.16
     double magnificationFactor() const;
 
-    void setLayerSet( QList<QgsMapCanvasLayer>& layers );
+    //! Set list of layers that should be shown in the canvas
+    //! @note added in 3.0
+    void setLayers( const QList<QgsMapLayer*>& layers );
 
     void setCurrentLayer( QgsMapLayer* layer );
-
-    // ### QGIS 3: make QgsMapCanvas independent from overview
-    void updateOverview();
-
-    // ### QGIS 3: make QgsMapCanvas independent from overview
-    void enableOverviewMode( QgsMapOverviewCanvas* overview );
 
     //! Get access to properties used for map rendering
     //! @note added in 2.4

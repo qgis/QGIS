@@ -117,10 +117,10 @@ class QgsTask : QObject
      * Subtasks allow a single task to be created which
      * consists of multiple smaller tasks. Subtasks are not visible or indepedently
      * controllable by users. Ownership of the subtask is transferred.
-     * Subtasks can have an optional list of dependant tasks, which must be completed
+     * Subtasks can have an optional list of dependent tasks, which must be completed
      * before the subtask can begin. By default subtasks are considered independent
      * of the parent task, ie they can be run either before, after, or at the same
-     * time as the parent task. This behaviour can be overriden through the subTaskDependency
+     * time as the parent task. This behaviour can be overridden through the subTaskDependency
      * argument.
      *
      * The parent task must be added to a QgsTaskManager for subtasks to be utilised.
@@ -286,7 +286,7 @@ class QgsTaskManager : QObject
     long addTask( QgsTask* task /Transfer/, int priority = 0 );
 
     /**
-     * Adds a task to the manager, using a full task definition (including dependancy
+     * Adds a task to the manager, using a full task definition (including dependency
      * handling). Ownership of the task is transferred to the manager, and the task
      * manager will be responsible for starting the task. The priority argument can
      * be used to control the run queue's order of execution.

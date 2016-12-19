@@ -22,7 +22,6 @@
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"

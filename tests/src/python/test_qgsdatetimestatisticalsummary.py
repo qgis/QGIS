@@ -180,7 +180,7 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
     def testMissing(self):
         s = QgsDateTimeStatisticalSummary()
         s.calculate([NULL,
-                    'not a date'])
+                     'not a date'])
         self.assertEqual(s.countMissing(), 2)
 
 

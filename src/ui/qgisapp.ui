@@ -51,6 +51,7 @@
     <addaction name="mActionSaveProjectAs"/>
     <addaction name="mActionSaveMapAsImage"/>
     <addaction name="mActionDxfExport"/>
+    <addaction name="mActionDwgImport"/>
     <addaction name="separator"/>
     <addaction name="mActionSnappingOptions"/>
     <addaction name="mActionNewPrintComposer"/>
@@ -1547,10 +1548,18 @@
   </action>
   <action name="mActionToggleFullScreen">
    <property name="text">
-    <string>Toggle Full Screen Mode</string>
+    <string>Toggle Full Scr&amp;een Mode</string>
    </property>
    <property name="shortcut">
     <string>F11</string>
+   </property>
+  </action>
+  <action name="mActionTogglePanelsVisibility">
+   <property name="text">
+    <string>Toggle Panel &amp;Visibility</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Tab</string>
    </property>
   </action>
   <action name="mActionProjectProperties">
@@ -2300,6 +2309,11 @@ Acts on currently active editable layer</string>
   <action name="mActionDxfExport">
    <property name="text">
     <string>DXF Export...</string>
+   </property>
+  </action>
+  <action name="mActionDwgImport">
+   <property name="text">
+    <string>DWG/DXF Import...</string>
    </property>
   </action>
   <action name="mActionFillRing">

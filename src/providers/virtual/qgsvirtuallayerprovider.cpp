@@ -28,7 +28,7 @@ extern "C"
 #include "qgsvirtuallayerdefinition.h"
 #include "qgsvirtuallayerfeatureiterator.h"
 #include "qgsvectorlayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
 
@@ -104,7 +104,7 @@ bool QgsVirtualLayerProvider::loadSourceLayers()
   {
     if ( layer.isReferenced() )
     {
-      QgsMapLayer *l = QgsMapLayerRegistry::instance()->mapLayer( layer.reference() );
+      QgsMapLayer *l = QgsProject::instance()->mapLayer( layer.reference() );
       if ( !l )
       {
         PROVIDER_ERROR( QString( "Cannot find layer %1" ).arg( layer.reference() ) );
@@ -232,7 +232,7 @@ bool QgsVirtualLayerProvider::createIt()
       }
       // is it in loaded layers ?
       bool found = false;
-      Q_FOREACH ( const QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
+      Q_FOREACH ( const QgsMapLayer *l, QgsProject::instance()->mapLayers() )
       {
         if ( l->type() != QgsMapLayer::VectorLayer )
           continue;

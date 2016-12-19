@@ -276,7 +276,7 @@ class OTBAlgorithm(GeoAlgorithm):
             elif isinstance(param, ParameterSelection):
                 commands.append(param.name)
                 idx = int(param.value)
-                commands.append(str(param.options[idx]))
+                commands.append(str(param.options[idx][1]))
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     commands.append(param.name)

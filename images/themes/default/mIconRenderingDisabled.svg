@@ -1,0 +1,19 @@
+<svg height="16" width="16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<linearGradient id="a" gradientUnits="userSpaceOnUse" x1="11.5" x2="10.5" y1="22.5" y2="21.5">
+<stop offset="0" stop-color="#888a85"/>
+<stop offset="1" stop-color="#b3b4b1"/>
+</linearGradient>
+<linearGradient id="b" gradientUnits="userSpaceOnUse" x1="9.5" x2="8.5" y1="25.5" y2="24.5">
+<stop offset="0" stop-color="#babdb6"/>
+<stop offset="1" stop-color="#babdb6" stop-opacity="0"/>
+</linearGradient>
+<g stroke-linecap="round" stroke-linejoin="round" transform="translate(0 -16)">
+<path d="m6.5 11.5c0 0-2 3-6 4 2.777738.04718 8 0 8-3l-2-1z" fill="#555753" fill-rule="evenodd" overflow="visible" stroke="#555753" transform="translate(0 16)"/>
+<path d="m9 23l3 2-3 3c0 0-1.4311544-.178334-2-1-.5688457-.821666 2.0632051-3.936795 2-4z" fill="url(#b)" fill-rule="evenodd" overflow="visible" stroke="#888a85" stroke-width=".75"/>
+<path d="m9 23c0 0 5.615129-6.183975 6.5-6.5.884871-.316025-2.931154 8.057564-3.5 8.5-.568846.442436-2.4525583-1.093725-3-2z" fill="url(#a)" overflow="visible" stroke="#888a85" stroke-width=".75"/>
+<g fill="none" stroke="#c00" stroke-width="2" transform="matrix(-1 0 0 1 16 0)">
+<path d="m14.5 8c0 3.589851-2.910149 6.5-6.5 6.5-3.5898509 0-6.5-2.910149-6.5-6.5 0-3.5898509 2.9101491-6.5 6.5-6.5 3.589851 0 6.5 2.9101491 6.5 6.5z" opacity=".8" overflow="visible" transform="translate(0 16)"/>
+<path d="m4.5 11.5l7-7" opacity=".8" overflow="visible" transform="translate(0 16)"/>
+</g>
+</g>
+</svg>

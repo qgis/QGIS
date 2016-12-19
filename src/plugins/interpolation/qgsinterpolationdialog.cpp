@@ -23,7 +23,7 @@
 #include "qgsidwinterpolatordialog.h"
 #include "qgstininterpolatordialog.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include <QComboBox>
@@ -40,7 +40,7 @@ QgsInterpolationDialog::QgsInterpolationDialog( QWidget* parent, QgisInterface* 
   restoreGeometry( settings.value( QStringLiteral( "/Interpolation/geometry" ) ).toByteArray() );
 
   //enter available layers into the combo box
-  QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> mapLayers = QgsProject::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::iterator layer_it = mapLayers.begin();
 
   for ( ; layer_it != mapLayers.end(); ++layer_it )
@@ -338,7 +338,7 @@ void QgsInterpolationDialog::on_mConfigureInterpolationButton_clicked()
 
 QgsVectorLayer* QgsInterpolationDialog::vectorLayerFromName( const QString& name )
 {
-  QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> mapLayers = QgsProject::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::iterator layer_it = mapLayers.begin();
 
   for ( ; layer_it != mapLayers.end(); ++layer_it )
