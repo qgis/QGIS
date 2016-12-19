@@ -157,9 +157,7 @@ class CORE_EXPORT QgsEditFormConfig
      * <li>Color (QgsColorWidgetWrapper)</li>
      * <li>DateTime (QgsDateTimeEditWrapper)</li>
      * <li>Enumeration (QgsEnumerationWidgetWrapper)</li>
-     * <li>FileName (QgsFileNameWidgetWrapper)</li>
      * <li>Hidden (QgsHiddenWidgetWrapper)</li>
-     * <li>Photo (QgsPhotoWidgetWrapper)</li>
      * <li>Range (QgsRangeWidgetWrapper)</li>
      * <li>RelationReference (QgsRelationReferenceWidgetWrapper)</li>
      * <li>TextEdit (QgsTextEditWrapper)</li>
@@ -167,7 +165,6 @@ class CORE_EXPORT QgsEditFormConfig
      * <li>UuidGenerator (QgsUuidWidgetWrapper)</li>
      * <li>ValueMap (QgsValueMapWidgetWrapper)</li>
      * <li>ValueRelation (QgsValueRelationWidgetWrapper)</li>
-     * <li>WebView (QgsWebViewWidgetWrapper)</li>
      * </ul>
      *
      * @param fieldName   The name of the field

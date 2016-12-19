@@ -244,6 +244,7 @@ Use QgsComposerAttributeTableV2 instead.
 - QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,
 so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).
+- QgsFileNameWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsHttpTransaction. This class was outdated and code should be ported to native Qt or Python implementations.
 - QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngine.
 - QgsLabelingEngineInterface. Replaced by QgsLabelingEngine.
@@ -257,10 +258,12 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsMapCanvasMap. It is an internal class used by map canvas.
 - QgsMapLayerRegistry. Its functionality has been moved to QgsProject.
 - QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.
+- QgsPhotoWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.
 - QgsRendererV2DataDefinedMenus was removed. Use QgsDataDefinedButton instead.
 - QgsLegacyHelpers.
 - QgsProviderCountCalcEvent and QgsProviderExtentCalcEvent. These classes were unused in QGIS core and unmaintained.
+- QgsWebviewWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 
 
 General changes        {#qgis_api_break_3_0_global}
