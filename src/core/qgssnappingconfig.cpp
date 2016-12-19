@@ -107,7 +107,8 @@ bool QgsSnappingConfig::IndividualLayerSettings::operator ==( const QgsSnappingC
 QgsSnappingConfig::QgsSnappingConfig( QgsProject* project )
     : mProject( project )
 {
-  reset();
+  if ( project )
+    reset();
 }
 
 QgsSnappingConfig::~QgsSnappingConfig()
@@ -474,4 +475,17 @@ void QgsSnappingConfig::readLegacySettings()
 
     mIndividualLayerSettings.insert( vlayer, IndividualLayerSettings( *enabledIt == QLatin1String( "enabled" ), t, tolIt->toDouble(), static_cast<QgsTolerance::UnitType>( tolUnitIt->toInt() ) ) );
   }
+}
+
+QgsProject* QgsSnappingConfig::project() const
+{
+  return mProject;
+}
+
+void QgsSnappingConfig::setProject( QgsProject* project )
+{
+  if ( mProject != project )
+    mProject = project;
+
+  reset();
 }
