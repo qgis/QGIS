@@ -29,8 +29,7 @@
 QgsMapThemeCollection::QgsMapThemeCollection( QgsProject* project )
     : mProject( project )
 {
-  connect( project, SIGNAL( layersRemoved( QStringList ) ),
-           this, SLOT( registryLayersRemoved( QStringList ) ) );
+  connect( project, &QgsProject::layersRemoved, this, &QgsMapThemeCollection::registryLayersRemoved );
 }
 
 QgsMapThemeCollection::MapThemeLayerRecord QgsMapThemeCollection::createThemeLayerRecord( QgsLayerTreeLayer* nodeLayer, QgsLayerTreeModel* model )
@@ -158,6 +157,22 @@ void QgsMapThemeCollection::applyTheme( const QString& name, QgsLayerTreeGroup* 
 
   // also make sure that the preset is up-to-date (not containing any non-existent legend items)
   update( name, createThemeFromCurrentState( root, model ) );
+}
+
+QgsProject* QgsMapThemeCollection::project()
+{
+  return mProject;
+}
+
+void QgsMapThemeCollection::setProject( QgsProject* project )
+{
+  if ( project == mProject )
+    return;
+
+  disconnect( mProject, &QgsProject::layersRemoved, this, &QgsMapThemeCollection::registryLayersRemoved );
+  mProject = project;
+  connect( mProject, &QgsProject::layersRemoved, this, &QgsMapThemeCollection::registryLayersRemoved );
+  emit projectChanged();
 }
 
 
