@@ -262,7 +262,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         QPixmap pixmap( icon.pixmap( 16, 16 ) );
 
         QPainter painter( &pixmap );
-        painter.drawPixmap( 0, 0, 16, 16, QgsApplication::getThemePixmap( vlayer->isModified() ? "/mIconEditableEdits.png" : "/mIconEditable.png" ) );
+        painter.drawPixmap( 0, 0, 16, 16, QgsApplication::getThemePixmap( vlayer->isModified() ? "/mIconEditableEdits.svg" : "/mActionToggleEditing.svg" ) );
         painter.end();
 
         icon = QIcon( pixmap );
