@@ -166,6 +166,7 @@ ENDIF (WITH_APIDOC)
 
 IF (WITH_SERVER)
   ADD_PYTHON_TEST(PyQgsServer test_qgsserver.py)
+  ADD_PYTHON_TEST(PyQgsServerSettings test_qgsserver_settings.py)
   ADD_PYTHON_TEST(PyQgsServerAccessControl test_qgsserver_accesscontrol.py)
   ADD_PYTHON_TEST(PyQgsServerWFST test_qgsserver_wfst.py)
   ADD_PYTHON_TEST(PyQgsOfflineEditingWFS test_offline_editing_wfs.py)

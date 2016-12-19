@@ -22,12 +22,25 @@
 
 #include <QStringList>
 
+void QgsAccessControl::resolveFilterFeatures( const QList<QgsMapLayer*> &layers )
+{
+  Q_FOREACH ( QgsMapLayer* l, layers )
+  {
+    if ( l->type() == QgsMapLayer::LayerType::VectorLayer )
+    {
+      const QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( l );
+      mFilterFeaturesExpressions[vl->id()] = resolveFilterFeatures( vl );
+    }
+  }
 
-//! Filter the features of the layer
-void QgsAccessControl::filterFeatures( const QgsVectorLayer* layer, QgsFeatureRequest& featureRequest ) const
+  mResolved = true;
+}
+
+QString QgsAccessControl::resolveFilterFeatures( const QgsVectorLayer* layer ) const
 {
   QStringList expressions = QStringList();
   QgsAccessControlFilterMap::const_iterator acIterator;
+
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
     QString expression = acIterator.value()->layerFilterExpression( layer );
@@ -36,9 +49,34 @@ void QgsAccessControl::filterFeatures( const QgsVectorLayer* layer, QgsFeatureRe
       expressions.append( expression );
     }
   }
+
+  QString expression;
   if ( !expressions.isEmpty() )
   {
-    featureRequest.setFilterExpression( QStringLiteral( "((" ).append( expressions.join( QStringLiteral( ") AND (" ) ) ).append( "))" ) );
+    expression = QStringLiteral( "((" ).append( expressions.join( QStringLiteral( ") AND (" ) ) ).append( "))" );
+  }
+
+  return expression;
+}
+
+//! Filter the features of the layer
+void QgsAccessControl::filterFeatures( const QgsVectorLayer* layer, QgsFeatureRequest& featureRequest ) const
+{
+
+  QString expression;
+
+  if ( mResolved && mFilterFeaturesExpressions.keys().contains( layer->id() ) )
+  {
+    expression = mFilterFeaturesExpressions[layer->id()];
+  }
+  else
+  {
+    expression = resolveFilterFeatures( layer );
+  }
+
+  if ( !expression.isEmpty() )
+  {
+    featureRequest.setFilterExpression( expression );
   }
 }
 

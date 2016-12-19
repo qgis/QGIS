@@ -21,6 +21,7 @@
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
 #include "qgsserver.h"
+#include "qgsmslayercache.h"
 
 #include "qgsmapsettings.h"
 #include "qgsauthmanager.h"
@@ -67,6 +68,7 @@ QgsServerInterfaceImpl*QgsServer::sServerInterface = nullptr;
 // Initialization must run once for all servers
 bool QgsServer::sInitialised =  false;
 bool QgsServer::sCaptureOutput = true;
+QgsServerSettings QgsServer::sSettings;
 
 
 
@@ -103,12 +105,8 @@ void QgsServer::setupNetworkAccessManager()
   QSettings settings;
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
   QNetworkDiskCache *cache = new QNetworkDiskCache( nullptr );
-  QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
-  if ( cacheDirectory.isEmpty() )
-    cacheDirectory = QgsApplication::qgisSettingsDirPath() + "cache";
-  qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 50 * 1024 * 1024 ).toULongLong();
-  QgsMessageLog::logMessage( QStringLiteral( "setCacheDirectory: %1" ).arg( cacheDirectory ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( QStringLiteral( "setMaximumCacheSize: %1" ).arg( cacheSize ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  qint64 cacheSize = sSettings.cacheSize();
+  QString cacheDirectory = sSettings.cacheDirectory();
   cache->setCacheDirectory( cacheDirectory );
   cache->setMaximumCacheSize( cacheSize );
   QgsMessageLog::logMessage( QStringLiteral( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
@@ -241,7 +239,7 @@ void QgsServer::printRequestInfos()
 QString QgsServer::configPath( const QString& defaultConfigPath, const QMap<QString, QString>& parameters )
 {
   QString cfPath( defaultConfigPath );
-  QString projectFile = getenv( "QGIS_PROJECT_FILE" );
+  QString projectFile = sSettings.projectFile();
   if ( !projectFile.isEmpty() )
   {
     cfPath = projectFile;
@@ -274,16 +272,7 @@ bool QgsServer::init( )
     return false;
   }
 
-  QgsServerLogger::instance();
-
-  QString optionsPath = getenv( "QGIS_OPTIONS_PATH" );
-  if ( !optionsPath.isEmpty() )
-  {
-    QgsMessageLog::logMessage( "Options PATH: " + optionsPath, QStringLiteral( "Server" ), QgsMessageLog::INFO );
-    QSettings::setDefaultFormat( QSettings::IniFormat );
-    QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optionsPath );
-  }
-
+  // init core application
   QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
@@ -295,11 +284,28 @@ bool QgsServer::init( )
   QgsApplication::setPrefixPath( CMAKE_INSTALL_PREFIX, true );
 #endif
 
+  // skip gdal ecw drivers
 #if defined(SERVER_SKIP_ECW)
   QgsMessageLog::logMessage( "Skipping GDAL ECW drivers in server.", "Server", QgsMessageLog::INFO );
   QgsApplication::skipGdalDriver( "ECW" );
   QgsApplication::skipGdalDriver( "JP2ECW" );
 #endif
+
+  // reload settings to take into account QCoreApplication and QgsApplication
+  // configuration
+  sSettings.load();
+
+  // init and configure logger
+  QgsServerLogger::instance();
+  QgsServerLogger::instance()->setLogLevel( sSettings.logLevel() );
+  QgsServerLogger::instance()->setLogFile( sSettings.logFile() );
+
+  // init and configure cache
+  QgsMSLayerCache::instance();
+  QgsMSLayerCache::instance()->setMaxCacheLayers( sSettings.maxCacheLayers() );
+
+  // log settings currently used
+  sSettings.logSummary();
 
   setupNetworkAccessManager();
   QDomImplementation::setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
@@ -366,6 +372,7 @@ void QgsServer::putenv( const QString &var, const QString &val )
 #else
   setenv( var.toStdString().c_str(), val.toStdString().c_str(), 1 );
 #endif
+  sSettings.load( var );
 }
 
 /**
@@ -428,7 +435,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   // Copy the parameters map
   QMap<QString, QString> parameterMap( theRequestHandler->parameterMap() );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  const QgsAccessControl* accessControl = nullptr;
+  QgsAccessControl* accessControl = nullptr;
   accessControl = sServerInterface->accessControls();
 #endif
 
@@ -479,6 +486,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
       {
         QgsWCSServer wcsServer(
           configFilePath
+          , sSettings
           , parameterMap
           , p
           , theRequestHandler.data()
@@ -505,6 +513,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
       {
         QgsWfsServer wfsServer(
           configFilePath
+          , sSettings
           , parameterMap
           , p
           , theRequestHandler.data()
@@ -531,6 +540,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
       {
         QgsWmsServer wmsServer(
           configFilePath
+          , sSettings
           , parameterMap
           , p
           , theRequestHandler.data()
