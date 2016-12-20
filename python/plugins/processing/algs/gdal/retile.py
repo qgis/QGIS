@@ -80,7 +80,7 @@ class retile(GdalAlgorithm):
                                       self.tr('Pixel size to be used for the output file (XSIZE YSIZE like 512 512)'),
                                       None, False, True))
         params.append(ParameterSelection(self.ALGORITHM,
-                                         self.tr('Resampling algorithm'), self.ALGO, 0, False, True))
+                                         self.tr('Resampling algorithm'), self.ALGO, 0, False, optional=True))
         params.append(ParameterCrs(self.S_SRS,
                                    self.tr('Override source CRS'), None, True))
         params.append(ParameterNumber(self.PYRAMIDLEVELS,
@@ -91,10 +91,10 @@ class retile(GdalAlgorithm):
                                        False, True))
         params.append(ParameterSelection(self.RTYPE,
                                          self.tr('Output raster type'),
-                                         self.TYPE, 5, False, True))
+                                         self.TYPE, 5, False, optional=True))
         params.append(ParameterSelection(self.FORMAT,
                                          self.tr('Output raster format'),
-                                         list(GdalUtils.getSupportedRasters().keys()), 0, False, True))
+                                         list(GdalUtils.getSupportedRasters().keys()), 0, False, optional=True))
         params.append(ParameterBoolean(self.USEDIRFOREACHROW,
                                        self.tr('Use a directory for each row'),
                                        False, True))
