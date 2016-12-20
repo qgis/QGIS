@@ -226,7 +226,7 @@ qgis:meancoordinates: >
   If an attribute is selected in the  <Unique ID  field> parameters, features will be grouped according to values in this field. Instead of a single point with the center of mass of the whole layer, the  output layer will contain a center of mass for the features in each category.
 
 qgis:mergevectorlayers: >
-  This algorithm combines two vector layer of the same geometry type into a single one.
+  This algorithm combines multiple vector layers of the same geometry type into a single one.
 
   If attributes tables are different, the attribute table of the resulting layer will contain the attributes from both input layers
 
