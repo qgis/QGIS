@@ -87,7 +87,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDefaultValue(self):
         self.provider.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, True)
-        self.assertTrue(isinstance(self.provider.defaultValue(0), int))
+        self.assertIsInstance(self.provider.defaultValue(0), int)
         self.assertEqual(self.provider.defaultValue(1), NULL)
         self.assertEqual(self.provider.defaultValue(2), 'qgis')
         self.provider.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, False)
@@ -110,13 +110,13 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         f = next(vl.getFeatures(QgsFeatureRequest()))
 
         date_idx = vl.fields().lookupField('date_field')
-        self.assertTrue(isinstance(f.attributes()[date_idx], QDate))
+        self.assertIsInstance(f.attributes()[date_idx], QDate)
         self.assertEqual(f.attributes()[date_idx], QDate(2004, 3, 4))
         time_idx = vl.fields().lookupField('time_field')
-        self.assertTrue(isinstance(f.attributes()[time_idx], QTime))
+        self.assertIsInstance(f.attributes()[time_idx], QTime)
         self.assertEqual(f.attributes()[time_idx], QTime(13, 41, 52))
         datetime_idx = vl.fields().lookupField('datetime_field')
-        self.assertTrue(isinstance(f.attributes()[datetime_idx], QDateTime))
+        self.assertIsInstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2004, 3, 4), QTime(13, 41, 52)))
 
     def testQueryLayers(self):
@@ -370,7 +370,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         f = next(vl.getFeatures(QgsFeatureRequest()))
 
         value_idx = vl.fields().lookupField('value')
-        self.assertTrue(isinstance(f.attributes()[value_idx], dict))
+        self.assertIsInstance(f.attributes()[value_idx], dict)
         self.assertEqual(f.attributes()[value_idx], {'a': 'b', '1': '2'})
 
         new_f = QgsFeature(vl.fields())
@@ -401,7 +401,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         f = next(vl.getFeatures(QgsFeatureRequest()))
 
         value_idx = vl.fields().lookupField('value')
-        self.assertTrue(isinstance(f.attributes()[value_idx], list))
+        self.assertIsInstance(f.attributes()[value_idx], list)
         self.assertEqual(f.attributes()[value_idx], ['a', 'b', 'c'])
 
         new_f = QgsFeature(vl.fields())
@@ -432,7 +432,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         f = next(vl.getFeatures(QgsFeatureRequest()))
 
         value_idx = vl.fields().lookupField('value')
-        self.assertTrue(isinstance(f.attributes()[value_idx], list))
+        self.assertIsInstance(f.attributes()[value_idx], list)
         self.assertEqual(f.attributes()[value_idx], [1, 2, -5])
 
     def testDoubleArray(self):
@@ -446,7 +446,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         f = next(vl.getFeatures(QgsFeatureRequest()))
 
         value_idx = vl.fields().lookupField('value')
-        self.assertTrue(isinstance(f.attributes()[value_idx], list))
+        self.assertIsInstance(f.attributes()[value_idx], list)
         self.assertEqual(f.attributes()[value_idx], [1.1, 2, -5.12345])
 
     def testNotNullConstraint(self):

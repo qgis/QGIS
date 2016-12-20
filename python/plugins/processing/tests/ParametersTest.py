@@ -102,13 +102,13 @@ class ParameterBooleanTest(unittest.TestCase):
         parameter = ParameterBoolean('myName', 'myDescription')
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterBoolean))
+        self.assertIsInstance(result, ParameterBoolean)
         self.assertFalse(result.optional)
 
         parameter.optional = True
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterBoolean))
+        self.assertIsInstance(result, ParameterBoolean)
         self.assertTrue(result.optional)
 
 
@@ -138,12 +138,12 @@ class ParameterCRSTest(unittest.TestCase):
         parameter = ParameterCrs('myName', 'myDescription')
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterCrs))
+        self.assertIsInstance(result, ParameterCrs)
 
         parameter.optional = True
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterCrs))
+        self.assertIsInstance(result, ParameterCrs)
         self.assertTrue(result.optional)
 
 
@@ -192,12 +192,12 @@ class ParameterExtentTest(unittest.TestCase):
         parameter = ParameterExtent('myName', 'myDescription')
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterExtent))
+        self.assertIsInstance(result, ParameterExtent)
 
         parameter.optional = True
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterExtent))
+        self.assertIsInstance(result, ParameterExtent)
         self.assertTrue(result.optional)
 
 
@@ -234,12 +234,12 @@ class ParameterPointTest(unittest.TestCase):
         parameter = ParameterPoint('myName', 'myDescription')
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterPoint))
+        self.assertIsInstance(result, ParameterPoint)
 
         parameter.optional = True
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterPoint))
+        self.assertIsInstance(result, ParameterPoint)
         self.assertTrue(result.optional)
 
 
@@ -354,12 +354,12 @@ class ParameterFileTest(unittest.TestCase):
         parameter = ParameterFile('myName', 'myDescription')
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterFile))
+        self.assertIsInstance(result, ParameterFile)
 
         parameter.optional = True
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterFile))
+        self.assertIsInstance(result, ParameterFile)
         self.assertTrue(result.optional)
 
 
@@ -476,12 +476,12 @@ class ParameterMultipleInputTest(unittest.TestCase):
         parameter = ParameterMultipleInput('myName', 'myDescription')
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterMultipleInput))
+        self.assertIsInstance(result, ParameterMultipleInput)
 
         parameter.optional = True
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterMultipleInput))
+        self.assertIsInstance(result, ParameterMultipleInput)
         self.assertTrue(result.optional)
 
 
@@ -542,12 +542,12 @@ class ParameterNumberTest(unittest.TestCase):
         parameter = ParameterNumber('myName', 'myDescription')
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterNumber))
+        self.assertIsInstance(result, ParameterNumber)
 
         parameter.optional = True
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterNumber))
+        self.assertIsInstance(result, ParameterNumber)
         self.assertTrue(result.optional)
 
 
@@ -577,12 +577,12 @@ class ParameterStringTest(unittest.TestCase):
         parameter = ParameterString('myName', 'myDescription', default='test')
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterString))
+        self.assertIsInstance(result, ParameterString)
 
         parameter.optional = True
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterString))
+        self.assertIsInstance(result, ParameterString)
         self.assertTrue(result.optional)
 
 
@@ -612,12 +612,12 @@ class ParameterExpressionTest(unittest.TestCase):
         parameter = ParameterExpression('myName', 'myDescription', default='test')
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterExpression))
+        self.assertIsInstance(result, ParameterExpression)
 
         parameter.optional = True
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterExpression))
+        self.assertIsInstance(result, ParameterExpression)
         self.assertTrue(result.optional)
 
 
@@ -640,12 +640,12 @@ class ParameterTableFieldTest(unittest.TestCase):
             'myName', 'myDesc', parent_name)
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterTableField))
+        self.assertIsInstance(result, ParameterTableField)
 
         parameter.optional = True
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterTableField))
+        self.assertIsInstance(result, ParameterTableField)
         self.assertTrue(result.optional)
 
 
@@ -656,12 +656,12 @@ class ParameterTableTest(unittest.TestCase):
             'myName', 'myDesc')
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterTable))
+        self.assertIsInstance(result, ParameterTable)
 
         parameter.optional = True
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
-        self.assertTrue(isinstance(result, ParameterTable))
+        self.assertIsInstance(result, ParameterTable)
         self.assertTrue(result.optional)
 
 if __name__ == '__main__':
