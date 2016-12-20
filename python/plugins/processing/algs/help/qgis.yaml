@@ -237,7 +237,7 @@ qgis:mergelines: >
   If any parts of the input MultiLineString geometries are not connected, the resultant geometry will be a MultiLineString containing any lines which could be merged and any non-connected line parts.
 
 qgis:mergevectorlayers: >
-  This algorithm combines two vector layer of the same geometry type into a single one.
+  This algorithm combines multiple vector layers of the same geometry type into a single one.
 
   If attributes tables are different, the attribute table of the resulting layer will contain the attributes from both input layers
 
