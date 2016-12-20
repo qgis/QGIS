@@ -2152,15 +2152,16 @@ tests:
       JPEGCOMPRESSION: 75
       NO_DATA: '-9999'
       PREDICTOR: 1
-      PROJWIN: 18.67577659094868,18.697606995166602,45.78977722846116,45.803663432327596
+      PROJWIN: 18.67460436727692,18.698371162148714,45.78995019401027,45.804344168369234
       RTYPE: '5'
       TFW: false
       TILED: false
       ZLEVEL: 6
     results:
       OUTPUT:
-        hash: e9b911b2b132177ac5bc5ed2e9179e8f3891d6b6a0200352d8a813bf
+        hash: df5de501bcec0c10f738d77f3b48d5545b48f0a22e0e028a8b1ccbe7
         type: rasterhash
+
 
   - algorithm: gdalogr:cliprasterbymasklayer
     name: clip by extent standard (with crop to cutline)
