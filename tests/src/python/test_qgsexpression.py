@@ -60,7 +60,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     def testCanBeRegistered(self):
         QgsExpression.registerFunction(self.testfun)
         index = QgsExpression.functionIndex('testfun')
-        self.assertTrue(not index == -1)
+        self.assertNotEqual(index, -1)
 
     def testAutoCountsCorrectArgs(self):
         function = self.autocount
@@ -81,11 +81,11 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     def testCanUnregisterFunction(self):
         QgsExpression.registerFunction(self.testfun)
         index = QgsExpression.functionIndex('testfun')
-        self.assertTrue(not index == -1)
+        self.assertNotEqual(index, -1)
         error = QgsExpression.unregisterFunction('testfun')
         self.assertTrue(error)
         index = QgsExpression.functionIndex('testfun')
-        self.assertTrue(index == -1)
+        self.assertEqual(index, -1)
 
     def testCanEvaluateFunction(self):
         QgsExpression.registerFunction(self.testfun)
