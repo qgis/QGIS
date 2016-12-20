@@ -33,7 +33,7 @@ class TestQgsColorSchemeRegistry(unittest.TestCase):
     def testCreateEmpty(self):
         """Test creating an empty color scheme registry"""
         registry = QgsColorSchemeRegistry()
-        self.assertGreater(len(registry.schemes()), 0)
+        self.assertEqual(len(registry.schemes()), 0)
 
     def testAddScheme(self):
         """Test adding a scheme to a registry"""
