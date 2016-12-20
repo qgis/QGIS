@@ -687,6 +687,13 @@ QgsCptCitySelectionItem        {#qgis_api_break_3_0_QgsCptCitySelectionItem}
 
 - parseXML() has been renamed to parseXml()
 
+
+QgsCustomLayerOrderWidget        {#qgis_api_break_3_0_QgsCustomLayerOrderWidget}
+-------------------------
+
+- the signature of the visibilityChanged() signal is changed to visibilityChanged( QgsLayerTreeNode *node )
+
+
 QgsCRSCache        {#qgis_api_break_3_0_QgsCRSCache}
 -----------
 
@@ -1059,12 +1066,16 @@ QgsLayerTreeGroup        {#qgis_api_break_3_0_QgsLayerTreeGroup}
 -----------------
 
 - readChildrenFromXML() has been renamed to readChildrenFromXml()
-
+- isVisible() is moved to QgsLayerTreeNode
+- setVisible() is replaced by QgsLayerTreeNode::setItemVisibilityChecked()
+- protected methods updateVisibilityFromChildren() and updateChildVisibility() removed
 
 QgsLayerTreeLayer        {#qgis_api_break_3_0_QgsLayerTreeLayer}
 -----------------
 
 - setLayerName(), layerName() were renamed to setName(), name()
+- isVisible() is moved to QgsLayerTreeNode
+- setVisible() is replaced by QgsLayerTreeNode::setItemVisibilityChecked()
 
 
 QgsLayerTreeModel        {#qgis_api_break_3_0_QgsLayerTreeMode}
@@ -1090,7 +1101,7 @@ QgsLayerTreeNode        {#qgis_api_break_3_0_QgsLayerTreeNode}
 
 - readCommonXML() has been renamed to readCommonXml()
 - writeCommonXML() has been renamed to writeCommonXml()
-
+- the signature of the visibilityChanged() signal is changed to visibilityChanged( QgsLayerTreeNode *node )
 
 QgsLimitedRandomColorRampDialog        {#qgis_api_break_3_0_QgsLimitedRandomRampDialog}
 -------------------------------

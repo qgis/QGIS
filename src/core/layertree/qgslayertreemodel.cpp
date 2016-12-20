@@ -284,12 +284,12 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         if ( qobject_cast<QgsVectorLayer*>( nodeLayer->layer() )->geometryType() == QgsWkbTypes::NullGeometry )
           return QVariant(); // do not show checkbox for non-spatial tables
       }
-      return nodeLayer->isVisible();
+      return nodeLayer->itemVisibilityChecked() ? Qt::Checked : Qt::Unchecked;
     }
     else if ( QgsLayerTree::isGroup( node ) )
     {
       QgsLayerTreeGroup* nodeGroup = QgsLayerTree::toGroup( node );
-      return nodeGroup->isVisible();
+      return nodeGroup->itemVisibilityChecked() ? Qt::Checked : Qt::Unchecked;
     }
   }
   else if ( role == Qt::FontRole )
@@ -307,7 +307,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     if ( QgsLayerTree::isLayer( node ) )
     {
       const QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
-      if ( layer && !layer->isInScaleRange( mLegendMapViewScale ) )
+      if ( !node->isVisible() || ( layer && !layer->isInScaleRange( mLegendMapViewScale ) ) )
       {
         brush.setColor( Qt::lightGray );
       }
@@ -393,20 +393,18 @@ bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value
     if ( !testFlag( AllowNodeChangeVisibility ) )
       return false;
 
-    if ( QgsLayerTree::isLayer( node ) )
+    bool checked = static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked;
+    if ( testFlag( ActionHierarchical ) )
     {
-      QgsLayerTreeLayer* layer = QgsLayerTree::toLayer( node );
-      layer->setVisible( static_cast< Qt::CheckState >( value.toInt() ) );
-      return true;
+      if ( node->children().isEmpty() )
+        node->setItemVisibilityCheckedParentRecursive( checked );
+      else
+        node->setItemVisibilityCheckedRecursive( checked );
     }
-
-    if ( QgsLayerTree::isGroup( node ) )
+    else
     {
-      QgsLayerTreeGroup* group = QgsLayerTree::toGroup( node );
-      group->setVisible( static_cast< Qt::CheckState >( value.toInt() ) );
-      return true;
+      node->setItemVisibilityChecked( checked );
     }
-
     return true;
   }
   else if ( role == Qt::EditRole )
@@ -934,7 +932,7 @@ void QgsLayerTreeModel::connectToRootNode()
   connect( mRootNode, SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeAddedChildren( QgsLayerTreeNode*, int, int ) ) );
   connect( mRootNode, SIGNAL( willRemoveChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeWillRemoveChildren( QgsLayerTreeNode*, int, int ) ) );
   connect( mRootNode, SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeRemovedChildren() ) );
-  connect( mRootNode, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SLOT( nodeVisibilityChanged( QgsLayerTreeNode* ) ) );
+  connect( mRootNode, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeModel::nodeVisibilityChanged );
   connect( mRootNode, SIGNAL( nameChanged( QgsLayerTreeNode*, QString ) ), this, SLOT( nodeNameChanged( QgsLayerTreeNode*, QString ) ) );
 
   connect( mRootNode, SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode*, QString ) ) );

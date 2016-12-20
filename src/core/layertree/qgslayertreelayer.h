@@ -58,9 +58,6 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     //! @note added in 3.0
     void setName( const QString& n ) override;
 
-    Qt::CheckState isVisible() const { return mVisible; }
-    void setVisible( Qt::CheckState visible );
-
     static QgsLayerTreeLayer* readXml( QDomElement& element );
     virtual void writeXml( QDomElement& parentElement ) override;
 
@@ -88,7 +85,6 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     QString mLayerId;
     QString mLayerName; // only used if layer does not exist
     QgsMapLayer* mLayer; // not owned! may be null
-    Qt::CheckState mVisible;
 };
 
 

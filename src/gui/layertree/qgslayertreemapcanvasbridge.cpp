@@ -37,7 +37,7 @@ QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup *roo
   connect( root, SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeAddedChildren( QgsLayerTreeNode*, int, int ) ) );
   connect( root, SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode*, QString ) ) );
   connect( root, SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeRemovedChildren() ) );
-  connect( root, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SLOT( nodeVisibilityChanged() ) );
+  connect( root, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeMapCanvasBridge::nodeVisibilityChanged );
 
   setCanvasLayers();
 }
@@ -127,7 +127,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
       QgsLayerTreeLayer* nodeLayer = mRoot->findLayer( layerId );
       if ( nodeLayer )
       {
-        if ( nodeLayer->isVisible() == Qt::Checked )
+        if ( nodeLayer->isVisible() )
           canvasLayers << nodeLayer->layer();
         if ( nodeLayer->customProperty( QStringLiteral( "overview" ), 0 ).toInt() )
           overviewLayers << nodeLayer->layer();
@@ -262,7 +262,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers( QgsLayerTreeNode *node, QList
   if ( QgsLayerTree::isLayer( node ) )
   {
     QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
-    if ( nodeLayer->isVisible() == Qt::Checked )
+    if ( nodeLayer->isVisible() )
       canvasLayers << nodeLayer->layer();
     if ( nodeLayer->customProperty( QStringLiteral( "overview" ), 0 ).toInt() )
       overviewLayers << nodeLayer->layer();

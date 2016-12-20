@@ -123,6 +123,60 @@ QAction* QgsLayerTreeViewDefaultActions::actionMutuallyExclusiveGroup( QObject* 
   return a;
 }
 
+QAction* QgsLayerTreeViewDefaultActions::actionCheckAndAllChildren( QObject* parent )
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node || !QgsLayerTree::isGroup( node ) || node->isItemVisibilityCheckedRecursive() )
+    return nullptr;
+  QAction* a = new QAction( tr( "Check and all its children (Ctrl-click)" ), parent );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::checkAndAllChildren );
+  return a;
+}
+
+QAction* QgsLayerTreeViewDefaultActions::actionUncheckAndAllChildren( QObject* parent )
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node || !QgsLayerTree::isGroup( node ) || node->isItemVisibilityUncheckedRecursive() )
+    return nullptr;
+  QAction* a = new QAction( tr( "Uncheck and all its children (Ctrl-click)" ), parent );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::uncheckAndAllChildren );
+  return a;
+}
+
+QAction* QgsLayerTreeViewDefaultActions::actionCheckAndAllParents( QObject* parent )
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node || !QgsLayerTree::isLayer( node ) || node->isVisible() )
+    return nullptr;
+  QAction* a = new QAction( tr( "Check and all its parents (Ctrl-click)" ), parent );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::checkAndAllParents );
+  return a;
+}
+
+void QgsLayerTreeViewDefaultActions::checkAndAllChildren()
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node )
+    return;
+  node->setItemVisibilityCheckedRecursive( true );
+}
+
+void QgsLayerTreeViewDefaultActions::uncheckAndAllChildren()
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node )
+    return;
+  node->setItemVisibilityCheckedRecursive( false );
+}
+
+void QgsLayerTreeViewDefaultActions::checkAndAllParents()
+{
+  QgsLayerTreeNode* node = mView->currentNode();
+  if ( !node )
+    return;
+  node->setItemVisibilityCheckedParentRecursive( true );
+}
+
 void QgsLayerTreeViewDefaultActions::addGroup()
 {
   QgsLayerTreeGroup* group = mView->currentGroupNode();

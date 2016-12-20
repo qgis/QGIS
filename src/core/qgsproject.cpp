@@ -2016,7 +2016,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
     QgsLayerTreeLayer *layer = newGroup->findLayer( layerId );
     if ( layer )
     {
-      layer->setVisible( invisibleLayers.contains( layerId ) ? Qt::Unchecked : Qt::Checked );
+      layer->setItemVisibilityChecked( invisibleLayers.contains( layerId ) );
     }
   }
 

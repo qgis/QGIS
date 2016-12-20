@@ -180,12 +180,12 @@ void QgsOfflineEditingPluginGui::restoreState()
 void QgsOfflineEditingPluginGui::selectAll()
 {
   Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
-    nodeLayer->setVisible( Qt::Checked );
+    nodeLayer->setItemVisibilityChecked( true );
 }
 
 
 void QgsOfflineEditingPluginGui::unSelectAll()
 {
   Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
-    nodeLayer->setVisible( Qt::Unchecked );
+    nodeLayer->setItemVisibilityChecked( false );
 }

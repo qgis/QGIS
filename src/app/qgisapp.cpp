@@ -2808,7 +2808,7 @@ void QgisApp::setupConnections()
            this, SLOT( markDirty() ) );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ),
            this, SLOT( updateNewLayerInsertionPoint() ) );
-  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ),
+  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( visibilityChanged( QgsLayerTreeNode* ) ),
            this, SLOT( markDirty() ) );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ),
            this, SLOT( markDirty() ) );
@@ -5759,9 +5759,8 @@ void QgisApp::stopRendering()
 void QgisApp::hideAllLayers()
 {
   QgsDebugMsg( "hiding all layers!" );
+  mLayerTreeView->layerTreeModel()->rootGroup()->setItemVisibilityCheckedRecursive( false );
 
-  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
-    nodeLayer->setVisible( Qt::Unchecked );
 }
 
 
@@ -5769,9 +5768,7 @@ void QgisApp::hideAllLayers()
 void QgisApp::showAllLayers()
 {
   QgsDebugMsg( "Showing all layers!" );
-
-  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
-    nodeLayer->setVisible( Qt::Checked );
+  mLayerTreeView->layerTreeModel()->rootGroup()->setItemVisibilityCheckedRecursive( true );
 }
 
 //reimplements method from base (gui) class
@@ -5781,10 +5778,7 @@ void QgisApp::hideSelectedLayers()
 
   Q_FOREACH ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
   {
-    if ( QgsLayerTree::isGroup( node ) )
-      QgsLayerTree::toGroup( node )->setVisible( Qt::Unchecked );
-    else if ( QgsLayerTree::isLayer( node ) )
-      QgsLayerTree::toLayer( node )->setVisible( Qt::Unchecked );
+    node->setItemVisibilityChecked( false );
   }
 }
 
@@ -5796,7 +5790,7 @@ void QgisApp::hideDeselectedLayers()
   {
     if ( selectedLayerNodes.contains( nodeLayer ) )
       continue;
-    nodeLayer->setVisible( Qt::Unchecked );
+    nodeLayer->setItemVisibilityChecked( false );
   }
 }
 
@@ -5807,10 +5801,12 @@ void QgisApp::showSelectedLayers()
 
   Q_FOREACH ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
   {
-    if ( QgsLayerTree::isGroup( node ) )
-      QgsLayerTree::toGroup( node )->setVisible( Qt::Checked );
-    else if ( QgsLayerTree::isLayer( node ) )
-      QgsLayerTree::toLayer( node )->setVisible( Qt::Checked );
+    QgsLayerTreeNode* nodeIter = node;
+    while ( nodeIter )
+    {
+      nodeIter->setItemVisibilityChecked( true );
+      nodeIter = nodeIter->parent();
+    }
   }
 }
 
@@ -8373,7 +8369,7 @@ void QgisApp::layerSubsetString()
         // hide the old layer
         QgsLayerTreeLayer* vLayerTreeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( vlayer->id() );
         if ( vLayerTreeLayer )
-          vLayerTreeLayer->setVisible( Qt::Unchecked );
+          vLayerTreeLayer->setItemVisibilityChecked( false );
         vlayer = newLayer;
       }
       else
@@ -8663,7 +8659,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *>& lyrList )
     QgsLayerTreeLayer* nodeDupLayer = parentGroup->insertLayer( parentGroup->children().indexOf( nodeSelectedLyr ) + 1, dupLayer );
 
     // always set duplicated layers to not visible so layer can be configured before being turned on
-    nodeDupLayer->setVisible( Qt::Unchecked );
+    nodeDupLayer->setItemVisibilityChecked( false );
 
     // duplicate the layer style
     QString errMsg;

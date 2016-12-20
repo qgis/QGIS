@@ -82,6 +82,8 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     QgsLayerTreeNode *parent() { return mParent; }
     //! Get list of children of the node. Children are owned by the parent
     QList<QgsLayerTreeNode*> children() { return mChildren; }
+    //! Get list of children of the node. Children are owned by the parent
+    const QList<QgsLayerTreeNode*>& children() const { return mChildren; }
 
     //! Return name of the node
     //! @note added in 3.0
@@ -100,6 +102,34 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
 
     //! Create a copy of the node. Returns new instance
     virtual QgsLayerTreeNode *clone() const = 0;
+
+    //! Returns whether a node is really visible (ie checked and all its ancestors checked as well)
+    //! @note added in 3.0
+    bool isVisible() const;
+
+    //! Returns whether a node is checked (independantly of its ancestors or children)
+    //! @note added in 3.0
+    bool itemVisibilityChecked() const { return mChecked; }
+
+    //! Check or uncheck a node (independantly of its ancestors or children)
+    //! @note added in 3.0
+    void setItemVisibilityChecked( bool checked );
+
+    //! Check or uncheck a node and all its children (taking into account exclusion rules)
+    //! @note added in 3.0
+    virtual void setItemVisibilityCheckedRecursive( bool checked );
+
+    //! Check or uncheck a node and all its parents
+    //! @note added in 3.0
+    void setItemVisibilityCheckedParentRecursive( bool checked );
+
+    //! Return whether this node is checked and all its children.
+    //! @note added in 3.0
+    bool isItemVisibilityCheckedRecursive() const;
+
+    //! Return whether this node is unchecked and all its children.
+    //! @note added in 3.0
+    bool isItemVisibilityUncheckedRecursive() const;
 
     //! Return whether the node should be shown as expanded or collapsed in GUI
     bool isExpanded() const;
@@ -128,7 +158,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Emitted when one or more nodes has been removed from a node within the tree
     void removedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     //! Emitted when check state of a node within the tree has been changed
-    void visibilityChanged( QgsLayerTreeNode *node, Qt::CheckState state );
+    void visibilityChanged( QgsLayerTreeNode *node );
     //! Emitted when a custom property of a node within the tree has been changed or removed
     void customPropertyChanged( QgsLayerTreeNode *node, const QString& key );
     //! Emitted when the collapsed/expanded state of a node within the tree has been changed
@@ -139,12 +169,15 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
 
   protected:
 
-    QgsLayerTreeNode( NodeType t );
+    //! Constructor
+    QgsLayerTreeNode( NodeType t, bool checked = true );
     QgsLayerTreeNode( const QgsLayerTreeNode &other );
 
     // low-level utility functions
 
+    //! Read common XML elements.
     void readCommonXml( QDomElement &element );
+    //! Write common XML elements.
     void writeCommonXml( QDomElement &element );
 
     //! Low-level insertion of children to the node. The children must not have any parent yet!
@@ -155,6 +188,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
   protected:
     //! type of the node - determines which subclass is used
     NodeType mNodeType;
+    bool mChecked;
     //! pointer to the parent node - null in case of root node
     QgsLayerTreeNode *mParent;
     //! list of children - node is responsible for their deletion
