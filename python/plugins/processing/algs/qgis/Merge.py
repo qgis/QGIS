@@ -52,13 +52,12 @@ class Merge(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         inLayers = self.getParameterValue(self.LAYERS)
-        paths = inLayers.split(';')
 
         layers = []
         fields = QgsFields()
         totalFeatureCount = 0
-        for x in xrange(0, len(paths)):
-            layer = QgsVectorLayer(paths[x], unicode(x), 'ogr')
+        for layerSource in inLayers.split(';'):
+            layer = dataobjects.getObjectFromUri(layerSource)
 
             if (len(layers) > 0):
                 if (layer.wkbType() != layers[0].wkbType()):
