@@ -567,7 +567,7 @@ class ParameterFixedTable(Parameter):
         if definition.startswith("point"):
             descName = _createDescriptiveName(name)
             default = definition.strip()[len('point') + 1:] or None
-            return ParameterPoint(name, descName, default, isOptional)
+            return ParameterFixedTable(name, descName, default, isOptional)
 
 
 class ParameterMultipleInput(ParameterDataObject):
