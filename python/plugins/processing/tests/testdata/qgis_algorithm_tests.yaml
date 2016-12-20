@@ -1234,7 +1234,9 @@ tests:
       COLUMNS: 300
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0, 8, -5, 3
-      INTERPOLATION_DATA: /home/alex/devel/qgis/python/plugins/processing/tests/testdata/pointsz.gml,False,1,0
+      INTERPOLATION_DATA:
+        name: pointsz.gml,False,1,0
+        type: interpolation
       ROWS: 300
     results:
       OUTPUT_LAYER:
@@ -1249,7 +1251,9 @@ tests:
       COLUMNS: 300
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0, 8, -5, 3
-      INTERPOLATION_DATA: /home/alex/devel/qgis/python/plugins/processing/tests/testdata/pointsz.gml,True,-1,0
+      INTERPOLATION_DATA:
+        name: pointsz.gml,True,-1,0
+        type: interpolation
       ROWS: 300
     results:
       OUTPUT_LAYER:
@@ -1263,7 +1267,9 @@ tests:
       CELLSIZE_Y: 0.02667
       COLUMNS: 300
       EXTENT: 0, 8, -5, 3
-      INTERPOLATION_DATA: /home/alex/devel/qgis/python/plugins/processing/tests/testdata/pointsz.gml,False,1,0
+      INTERPOLATION_DATA:
+        name: pointsz.gml,False,1,0
+        type: interpolation
       METHOD: '0'
       ROWS: 300
     results:
@@ -1281,7 +1287,9 @@ tests:
       CELLSIZE_Y: 0.02667
       COLUMNS: 300
       EXTENT: 0, 8, -5, 3
-      INTERPOLATION_DATA: /home/alex/devel/qgis/python/plugins/processing/tests/testdata/pointsz.gml,True,-1,0
+      INTERPOLATION_DATA:
+        name: pointsz.gml,True,-1,0
+        type: interpolation
       METHOD: '1'
       ROWS: 300
     results:
@@ -1291,7 +1299,6 @@ tests:
       #TRIANULATION_FILE:
       #  name: expected/triangulation.gml
       #  type: vector
-
 
   - algorithm: qgis:removenullgeometries
     name: Remove null geometries
