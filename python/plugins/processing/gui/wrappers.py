@@ -500,7 +500,7 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
                 options = dataobjects.getTables(sorting=False)
             else:
                 options = dataobjects.getVectorLayers([self.param.datatype], sorting=False)
-            opts = [self.getExtendedLayerName(opt) for opt in options]
+            opts = [getExtendedLayerName(opt) for opt in options]
             self.widget.updateForOptions(opts)
 
     def setValue(self, value):
