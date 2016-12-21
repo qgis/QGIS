@@ -23,6 +23,7 @@ Required build dependencies:
 - Qwt >= 5.0 & (< 6.1 with internal QwtPolar)
 - expat >= 1.95
 - QScintilla2
+-
 
 Optional dependencies:
 
@@ -33,8 +34,8 @@ Optional dependencies:
 - for georeferencer - GSL >= 1.8
 - for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
 - for gps plugin - gpsbabel
-- for mapserver export and PyQGIS - Python >= 2.3 (2.5+ preferred)
-- for python support - SIP >= 4.12, PyQt >= 4.8.3 must match Qt version, Qscintilla2
+- for mapserver export and PyQGIS - Python >= 3.3
+- for python support - SIP >= 4.12, PyQt >= 5.3 must match Qt version, Qscintilla2
 - for qgis mapserver - FastCGI
 - for oracle provider - Oracle OCI library
 -
