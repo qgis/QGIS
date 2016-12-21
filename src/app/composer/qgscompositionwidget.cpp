@@ -53,7 +53,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   connect( mVariableEditor, SIGNAL( scopeChanged() ), this, SLOT( variablesChanged() ) );
   // listen out for variable edits
   connect( QgsApplication::instance(), &QgsApplication::customVariablesChanged, this, &QgsCompositionWidget::updateVariables );
-  connect( QgsProject::instance(), &QgsProject::variablesChanged, this, &QgsCompositionWidget::updateVariables );
+  connect( QgsProject::instance(), &QgsProject::customVariablesChanged, this, &QgsCompositionWidget::updateVariables );
 
   if ( mComposition )
   {

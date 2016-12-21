@@ -589,7 +589,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::projectScope()
 
   QgsExpressionContextScope* scope = new QgsExpressionContextScope( QObject::tr( "Project" ) );
 
-  const QgsStringMap vars = QgsProject::instance()->variables();
+  const QgsStringMap vars = QgsProject::instance()->customVariables();
 
   QgsStringMap::const_iterator it = vars.constBegin();
 
@@ -615,16 +615,16 @@ void QgsExpressionContextUtils::setProjectVariable( const QString& name, const Q
 {
   QgsProject* project = QgsProject::instance();
 
-  QgsStringMap vars = project->variables();
+  QgsStringMap vars = project->customVariables();
 
   vars.insert( name, value.toString() );
 
-  project->setVariables( vars );
+  project->setCustomVariables( vars );
 }
 
 void QgsExpressionContextUtils::setProjectVariables( const QgsStringMap& variables )
 {
-  QgsProject::instance()->setVariables( variables );
+  QgsProject::instance()->setCustomVariables( variables );
 }
 
 QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( const QgsMapLayer* layer )
