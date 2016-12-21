@@ -57,7 +57,7 @@ class Cover(FusionAlgorithm):
         self.addParameter(ParameterFile(
             self.GROUND, self.tr('Input ground DTM layer')))
         self.addParameter(ParameterNumber(
-            self.CELLSIZE, self.tr('Cellsize'), 0, None, 10.0))
+            self.CELLSIZE, self.tr('Cell Size'), 0, None, 10.0))
         self.addParameter(ParameterNumber(
             self.HEIGHTBREAK, self.tr('Heightbreak'), 0, None, 10.0))
         self.addParameter(ParameterSelection(

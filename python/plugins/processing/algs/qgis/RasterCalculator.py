@@ -81,7 +81,7 @@ class RasterCalculator(GeoAlgorithm):
                                                               multiline=True,
                                                               metadata={'widget_wrapper': ExpressionWidgetWrapper}))
         self.addParameter(ParameterNumber(self.CELLSIZE,
-                                          self.tr('Cellsize (use 0 or empty to set it automatically)'),
+                                          self.tr('Cell size (use 0 or empty to set it automatically)'),
                                           minValue=0.0, default=0.0, optional=True))
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Output extent'),

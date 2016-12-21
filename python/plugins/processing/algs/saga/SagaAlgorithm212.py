@@ -293,7 +293,7 @@ class SagaAlgorithm212(GeoAlgorithm):
             return commands
 
     def getOutputCellsize(self):
-        """Tries to guess the cellsize of the output, searching for
+        """Tries to guess the cell size of the output, searching for
         a parameter with an appropriate name for it.
         """
 
