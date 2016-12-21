@@ -1448,7 +1448,7 @@ DOT_NUM_THREADS        = 0
 
 # By default doxygen will write a font called FreeSans.ttf to the output
 # directory and reference it in all dot files that doxygen generates. This
-# font does not include all possible unicode characters however, so when you need
+# font does not include all possible Unicode characters however, so when you need
 # these (or just want a differently looking font) you can specify the font name
 # using DOT_FONTNAME. You need need to make sure dot is able to find the font,
 # which can be done by putting it in a standard location or by setting the

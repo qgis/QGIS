@@ -133,7 +133,7 @@ class Eliminate(GeoAlgorithm):
                     y = str(comparisonvalue)
                 except ValueError:
                     selectionError = True
-                    msg = self.tr('Cannot convert "%s" to unicode' % str(comparisonvalue))
+                    msg = self.tr('Cannot convert "%s" to Unicode' % str(comparisonvalue))
             elif selectType == QVariant.Date:
                 # date
                 dateAndFormat = comparisonvalue.split(' ')
