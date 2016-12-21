@@ -561,12 +561,19 @@ class ParameterFixedTable(Parameter):
         tablestring = tablestring[:-1]
         return tablestring
 
+    def getAsScriptCode(self):
+        param_type = ''
+        if self.optional:
+            param_type += 'optional '
+        param_type += 'fixedtable'
+        return '##' + self.name + '=' + param_type
+
     @classmethod
     def fromScriptCode(self, line):
         isOptional, name, definition = _splitParameterOptions(line)
-        if definition.startswith("point"):
+        if definition.startswith("fixedtable"):
             descName = _createDescriptiveName(name)
-            default = definition.strip()[len('point') + 1:] or None
+            default = definition.strip()[len('fixedtable') + 1:] or None
             return ParameterFixedTable(name, descName, default, isOptional)
 
 
