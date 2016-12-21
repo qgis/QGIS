@@ -1554,5 +1554,3 @@ def getParameterFromString(s):
                     return param
             except AttributeError:
                 pass
-            except:
-                return None
