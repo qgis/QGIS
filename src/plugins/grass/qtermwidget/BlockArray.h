@@ -40,7 +40,6 @@ struct Block {
     size_t size;
 };
 
-// ///////////////////////////////////////////////////////
 
 class BlockArray {
 public:

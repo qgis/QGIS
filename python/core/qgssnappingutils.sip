@@ -51,7 +51,8 @@ class QgsSnappingUtils : QObject
     {
       IndexAlwaysFull,    //!< For all layers build index of full extent. Uses more memory, but queries are faster.
       IndexNeverFull,     //!< For all layers only create temporary indexes of small extent. Low memory usage, slower queries.
-      IndexHybrid         //!< For "big" layers using IndexNeverFull, for the rest IndexAlwaysFull. Compromise between speed and memory usage.
+      IndexHybrid,        //!< For "big" layers using IndexNeverFull, for the rest IndexAlwaysFull. Compromise between speed and memory usage.
+      IndexExtent         //!< For all layer build index of extent given in map settings
     };
 
     /** Set a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be */
