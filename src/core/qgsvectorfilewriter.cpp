@@ -1535,7 +1535,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          ) );
 
   layerOptions.insert( QStringLiteral( "FORMAT" ), new SetOption(
-                         QObject::tr( "Controls the format used for the geometry column. Defaults to WKB."
+                         QObject::tr( "Controls the format used for the geometry column. Defaults to WKB. "
                                       "This is generally more space and processing efficient, but harder "
                                       "to inspect or use in simple applications than WKT (Well Known Text)." ),
                          QStringList()
@@ -1569,7 +1569,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                                       "for databases that have big string blobs. However, use with care, since "
                                       "the value of such columns will be seen as compressed binary content with "
                                       "other SQLite utilities (or previous OGR versions). With OGR, when inserting, "
-                                      "modifying or queryings compressed columns, compression/decompression is "
+                                      "modifying or querying compressed columns, compression/decompression is "
                                       "done transparently. However, such columns cannot be (easily) queried with "
                                       "an attribute filter or WHERE clause. Note: in table definition, such columns "
                                       "have the 'VARCHAR_deflate' declaration type." ),

@@ -2488,7 +2488,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
                                "with layers not being clipped to the map "
                                "bounding box.</p>" )
                          + tr( "If you require a vector-based output file from "
-                               "Qgis it is suggested that you try printing "
+                               "QGIS it is suggested that you try printing "
                                "to PostScript if the SVG output is not "
                                "satisfactory."
                                "</p>" ) );

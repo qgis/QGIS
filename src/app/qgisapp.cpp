@@ -6369,7 +6369,7 @@ void QgisApp::saveAsLayerDefinition()
   bool saved = QgsLayerDefinition::exportLayerDefinition( path, mLayerTreeView->selectedNodes(), errorMessage );
   if ( !saved )
   {
-    messageBar()->pushMessage( tr( "Error saving layer definintion file" ), errorMessage, QgsMessageBar::WARNING );
+    messageBar()->pushMessage( tr( "Error saving layer definition file" ), errorMessage, QgsMessageBar::WARNING );
   }
 }
 

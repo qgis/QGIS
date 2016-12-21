@@ -146,7 +146,7 @@ class ProcessingConfig(object):
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.RECENT_ALGORITHMS,
-            ProcessingConfig.tr('Recent algs'), '', hidden=True))
+            ProcessingConfig.tr('Recent algorithms'), '', hidden=True))
         extensions = processing.tools.dataobjects.getSupportedOutputVectorLayerExtensions()
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),

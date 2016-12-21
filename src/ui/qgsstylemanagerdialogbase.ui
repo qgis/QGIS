@@ -468,7 +468,7 @@
     <string>Export selected symbol(s) as PNG…</string>
    </property>
    <property name="toolTip">
-    <string>Export selected symbo(s) as PNG</string>
+    <string>Export selected symbol(s) as PNG</string>
    </property>
   </action>
   <action name="actnExportAsSVG">

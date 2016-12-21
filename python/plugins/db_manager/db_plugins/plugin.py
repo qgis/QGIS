@@ -424,7 +424,7 @@ class Database(DbItemObject):
         QApplication.restoreOverrideCursor()
         try:
             if not isinstance(item, Table) or item.isView:
-                parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table for editation."),
+                parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table to edit."),
                                            QgsMessageBar.INFO, parent.iface.messageTimeout())
                 return
             from ..dlg_table_properties import DlgTableProperties
