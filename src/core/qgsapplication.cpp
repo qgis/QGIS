@@ -1258,6 +1258,75 @@ void QgsApplication::copyPath( const QString& src, const QString& dst )
   }
 }
 
+QgsStringMap QgsApplication::customVariables()
+{
+  //read values from QSettings
+  QSettings settings;
+
+  QgsStringMap variables;
+
+  //check if settings contains any variables
+  if ( settings.contains( QStringLiteral( "/variables/values" ) ) )
+  {
+    QList< QVariant > customVariableVariants = settings.value( QStringLiteral( "/variables/values" ) ).toList();
+    QList< QVariant > customVariableNames = settings.value( QStringLiteral( "/variables/names" ) ).toList();
+    int variableIndex = 0;
+    for ( QList< QVariant >::const_iterator it = customVariableVariants.constBegin();
+          it != customVariableVariants.constEnd(); ++it )
+    {
+      if ( variableIndex >= customVariableNames.length() )
+      {
+        break;
+      }
+
+      QVariant value = ( *it );
+      QString name = customVariableNames.at( variableIndex ).toString();
+
+      variables.insert( name, value.toString() );
+      variableIndex++;
+    }
+  }
+
+  return variables;
+}
+
+void QgsApplication::setCustomVariables( const QgsStringMap& variables )
+{
+  QSettings settings;
+
+  QList< QVariant > customVariableVariants;
+  QList< QVariant > customVariableNames;
+
+  QMap< QString, QString >::const_iterator it = variables.constBegin();
+  for ( ; it != variables.constEnd(); ++it )
+  {
+    customVariableNames << it.key();
+    customVariableVariants << it.value();
+  }
+
+  settings.setValue( QStringLiteral( "/variables/names" ), customVariableNames );
+  settings.setValue( QStringLiteral( "/variables/values" ), customVariableVariants );
+
+  emit instance()->customVariablesChanged();
+}
+
+void QgsApplication::setCustomVariable( const QString& name, const QString& value )
+{
+  // save variable to settings
+  QSettings settings;
+
+  QList< QVariant > customVariableVariants = settings.value( QStringLiteral( "/variables/values" ) ).toList();
+  QList< QVariant > customVariableNames = settings.value( QStringLiteral( "/variables/names" ) ).toList();
+
+  customVariableVariants << value;
+  customVariableNames << name;
+
+  settings.setValue( QStringLiteral( "/variables/names" ), customVariableNames );
+  settings.setValue( QStringLiteral( "/variables/values" ), customVariableVariants );
+
+  emit instance()->customVariablesChanged();
+}
+
 QString QgsApplication::nullRepresentation()
 {
   QgsApplication* app = instance();
@@ -1438,12 +1507,6 @@ QgsTaskManager* QgsApplication::taskManager()
 {
   return instance()->mTaskManager;
 }
-
-void QgsApplication::emitSettingsChanged()
-{
-  emit settingsChanged();
-}
-
 
 QgsFieldFormatterRegistry* QgsApplication::fieldFormatterRegistry()
 {
