@@ -144,6 +144,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      *
      */
     bool read( QDomNode& layerNode );
+    bool write(const QString& filename);
 
     /** Writes the project to a file.
      * @param file destination file

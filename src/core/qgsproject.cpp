@@ -1147,6 +1147,13 @@ bool QgsProject::read( QDomNode &layerNode )
   return false;
 }
 
+bool QgsProject::write( const QString& filename )
+{
+  mFile.setFileName( filename );
+
+  return write();
+}
+
 bool QgsProject::write( QFileInfo const &file )
 {
   mFile.setFileName( file.filePath() );
