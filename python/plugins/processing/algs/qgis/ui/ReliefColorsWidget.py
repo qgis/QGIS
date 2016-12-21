@@ -59,8 +59,8 @@ class ReliefColorsWidget(BASE, WIDGET):
 
         self.btnAdd.setIcon(QgsApplication.getThemeIcon('/symbologyAdd.svg'))
         self.btnRemove.setIcon(QgsApplication.getThemeIcon('/symbologyRemove.svg'))
-        self.btnUp.setIcon(QgsApplication.getThemeIcon('/symbologyUp.svg'))
-        self.btnDown.setIcon(QgsApplication.getThemeIcon('/symbologyDown.svg'))
+        self.btnUp.setIcon(QgsApplication.getThemeIcon('/mActionArrowUp.svg'))
+        self.btnDown.setIcon(QgsApplication.getThemeIcon('/mActionArrowDown.svg'))
         self.btnLoad.setIcon(QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
         self.btnSave.setIcon(QgsApplication.getThemeIcon('/mActionFileSave.svg'))
         self.btnAuto.setIcon(QgsApplication.getThemeIcon('/mActionDraw.svg'))

@@ -327,8 +327,8 @@ class FieldsMappingPanel(BASE, WIDGET):
 
         self.addButton.setIcon(QgsApplication.getThemeIcon("/mActionNewAttribute.svg"))
         self.deleteButton.setIcon(QgsApplication.getThemeIcon('/mActionDeleteAttribute.svg'))
-        self.upButton.setIcon(QgsApplication.getThemeIcon('/mActionArrowUp.png'))
-        self.downButton.setIcon(QgsApplication.getThemeIcon('/mActionArrowDown.png'))
+        self.upButton.setIcon(QgsApplication.getThemeIcon('/mActionArrowUp.svg'))
+        self.downButton.setIcon(QgsApplication.getThemeIcon('/mActionArrowDown.svg'))
         self.resetButton.setIcon(QgsApplication.getThemeIcon('/mIconClear.svg'))
 
         self.model = FieldsMappingModel()

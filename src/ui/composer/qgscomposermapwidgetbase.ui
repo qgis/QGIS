@@ -543,7 +543,7 @@
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
-                <normaloff>:/images/themes/default/symbologyUp.svg</normaloff>:/images/themes/default/symbologyUp.svg</iconset>
+                <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
               </property>
              </widget>
             </item>
@@ -557,7 +557,7 @@
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
-                <normaloff>:/images/themes/default/symbologyDown.svg</normaloff>:/images/themes/default/symbologyDown.svg</iconset>
+                <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
               </property>
              </widget>
             </item>
@@ -658,7 +658,7 @@
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
-                <normaloff>:/images/themes/default/symbologyUp.svg</normaloff>:/images/themes/default/symbologyUp.svg</iconset>
+                <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
               </property>
              </widget>
             </item>
@@ -672,7 +672,7 @@
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
-                <normaloff>:/images/themes/default/symbologyDown.svg</normaloff>:/images/themes/default/symbologyDown.svg</iconset>
+                <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
               </property>
              </widget>
             </item>
