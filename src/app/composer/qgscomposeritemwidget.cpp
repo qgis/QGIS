@@ -177,12 +177,9 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   updateVariables();
   connect( mVariableEditor, SIGNAL( scopeChanged() ), this, SLOT( variablesChanged() ) );
   // listen out for variable edits
-  QgsApplication* app = qobject_cast<QgsApplication*>( QgsApplication::instance() );
-  if ( app )
-  {
-    connect( app, SIGNAL( settingsChanged() ), this, SLOT( updateVariables() ) );
-  }
-  connect( QgsProject::instance(), SIGNAL( variablesChanged() ), this, SLOT( updateVariables() ) );
+  connect( QgsApplication::instance(), &QgsApplication::customVariablesChanged, this, &QgsComposerItemWidget::updateVariables );
+  connect( QgsProject::instance(), &QgsProject::variablesChanged, this, &QgsComposerItemWidget::updateVariables );
+
   if ( mItem->composition() )
     connect( mItem->composition(), SIGNAL( variablesChanged() ), this, SLOT( updateVariables() ) );
 }

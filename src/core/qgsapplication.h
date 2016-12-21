@@ -417,25 +417,42 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static void setNullRepresentation( const QString& nullRepresentation );
 
-  public slots:
-
-    /** Causes the application instance to emit the settingsChanged() signal. This should
-     * be called whenever global, application-wide settings are altered to advise listeners
-     * that they may need to update their state.
-     * @see settingsChanged()
-     * @note added in QGIS 3.0
+    /**
+     * Custom expression variables for this application.
+     * This does not include generated variables (like system name, user name etc.)
+     *
+     * \see QgsExpressionContextUtils::globalVariables().
+     * \note Added in QGIS 3.0
      */
-    void emitSettingsChanged();
+    static QgsStringMap customVariables();
+
+    /**
+     * Custom expression variables for this application.
+     * Do not include generated variables (like system name, user name etc.)
+     *
+     * \see QgsExpressionContextUtils::globalVariables().
+     * \note Added in QGIS 3.0
+     */
+    static void setCustomVariables( const QgsStringMap& customVariables );
+
+
+    /**
+     * Set a single custom expression variable.
+     *
+     * \note Added in QGIS 3.0
+     */
+    static void setCustomVariable( const QString& name, const QString& value );
 
   signals:
     //! @note not available in python bindings
     void preNotify( QObject * receiver, QEvent * event, bool * done );
 
-    /** Emitted whenever any global, application-wide settings are changed.
+    /**
+     * Emitted whenever a custom global variable changes.
      * @note added in QGIS 3.0
-     * @see emitSettingsChanged()
      */
-    void settingsChanged();
+    void customVariablesChanged();
+
 
     /**
      * \copydoc nullRepresentation()
