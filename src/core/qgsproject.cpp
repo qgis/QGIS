@@ -448,7 +448,7 @@ void QgsProject::clear()
   mAutoTransaction = false;
   mEvaluateDefaultValues = false;
   mDirty = false;
-  mVariables.clear();
+  mCustomVariables.clear();
 
   mEmbeddedLayers.clear();
   mRelationManager->clear();
@@ -925,19 +925,19 @@ bool QgsProject::read()
   QStringList variableNames = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableNames" ) );
   QStringList variableValues = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableValues" ) );
 
-  mVariables.clear();
+  mCustomVariables.clear();
   if ( variableNames.length() == variableValues.length() )
   {
     for ( int i = 0; i < variableNames.length(); ++i )
     {
-      mVariables.insert( variableNames.at( i ), variableValues.at( i ) );
+      mCustomVariables.insert( variableNames.at( i ), variableValues.at( i ) );
     }
   }
   else
   {
     QgsMessageLog::logMessage( tr( "Project Variables Invalid" ), tr( "The project contains invalid variable settings." ) );
   }
-  emit variablesChanged();
+  emit customVariablesChanged();
 
   // read the project: used by map canvas and legend
   emit readProject( *doc );
@@ -994,14 +994,14 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
   }
 }
 
-QgsStringMap QgsProject::variables() const
+QgsStringMap QgsProject::customVariables() const
 {
-  return mVariables;
+  return mCustomVariables;
 }
 
-void QgsProject::setVariables( const QgsStringMap& variables )
+void QgsProject::setCustomVariables( const QgsStringMap& variables )
 {
-  if ( variables == mVariables )
+  if ( variables == mCustomVariables )
     return;
 
   //write variable to project
@@ -1018,9 +1018,9 @@ void QgsProject::setVariables( const QgsStringMap& variables )
   writeEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableNames" ), variableNames );
   writeEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableValues" ), variableValues );
 
-  mVariables = variables;
+  mCustomVariables = variables;
 
-  emit variablesChanged();
+  emit customVariablesChanged();
 }
 
 QStringList QgsProject::avoidIntersectionsList() const

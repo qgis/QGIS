@@ -504,13 +504,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * To get all available variables including generated ones
      * use QgsExpressionContextUtils::projectScope() instead.
      */
-    QgsStringMap variables() const;
+    QgsStringMap customVariables() const;
 
     /**
      * A map of custom project variables.
      * Be careful not to set generated variables.
      */
-    void setVariables( const QgsStringMap& variables );
+    void setCustomVariables( const QgsStringMap& customVariables );
 
     //
     // Functionality from QgsMapLayerRegistry
@@ -767,7 +767,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /** Emitted whenever the expression variables stored in the project have been changed.
      * @note added in QGIS 3.0
      */
-    void variablesChanged();
+    void customVariablesChanged();
 
     /**
      * Emitted whenever a new transaction group has been created or a
@@ -994,7 +994,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QScopedPointer<QgsMapThemeCollection> mMapThemeCollection;
 
-    QgsStringMap mVariables;
+    QgsStringMap mCustomVariables;
 
     QFile mFile;                 // current physical project file
     mutable QgsPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable

@@ -426,13 +426,13 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * To get all available variables including generated ones
      * use QgsExpressionContextUtils::projectScope() instead.
      */
-    QgsStringMap variables() const;
+    QgsStringMap customVariables() const;
 
     /**
      * A map of custom project variables.
      * Be careful not to set generated variables.
      */
-    void setVariables( const QgsStringMap& variables );
+    void setCustomVariables( const QgsStringMap& customVariables );
 
     //
     // Functionality from QgsMapLayerRegistry
@@ -661,7 +661,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     /** Emitted whenever the expression variables stored in the project have been changed.
      * @note added in QGIS 3.0
      */
-    void variablesChanged();
+    void customVariablesChanged();
 
     /**
      * Emitted whenever a new transaction group has been created or a
