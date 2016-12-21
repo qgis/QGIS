@@ -1048,13 +1048,15 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
     }
 
   }
+#if 0
   //TODO what to do with other vars? e.g. schemeNames
-  // // add schemes to archive
-  // mSchemeMap[ path ] = schemeNames;
-  // schemeCount += schemeName.count();
-  // schemeNames.clear();
-  // listVariant.clear();
-  // prevName = "";
+  // add schemes to archive
+  mSchemeMap[ path ] = schemeNames;
+  schemeCount += schemeName.count();
+  schemeNames.clear();
+  listVariant.clear();
+  prevName = "";
+#endif
   return mRampsMap;
 }
 
