@@ -593,12 +593,29 @@ class ParameterStringTest(unittest.TestCase):
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
         self.assertIsInstance(result, ParameterString)
+        self.assertEqual(result.default, parameter.default)
 
+        parameter.default = None
         parameter.optional = True
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
         self.assertIsInstance(result, ParameterString)
         self.assertTrue(result.optional)
+        self.assertEqual(result.default, parameter.default)
+
+        parameter.default = 'None'
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterString)
+        self.assertTrue(result.optional)
+        self.assertEqual(result.default, parameter.default)
+
+        parameter.default = 'It\'s Mario'
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterString)
+        self.assertTrue(result.optional)
+        self.assertEqual(result.default, parameter.default)
 
 
 class ParameterExpressionTest(unittest.TestCase):

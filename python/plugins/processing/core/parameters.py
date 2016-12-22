@@ -1191,7 +1191,7 @@ class ParameterString(Parameter):
         if self.optional:
             param_type += 'optional '
         param_type += 'string '
-        return '##' + self.name + '=' + param_type + str(self.default)
+        return '##' + self.name + '=' + param_type + repr(self.default)
 
     @classmethod
     def fromScriptCode(self, line):
@@ -1201,6 +1201,8 @@ class ParameterString(Parameter):
             default = definition.strip()[len('string') + 1:] or None
             if default == 'None':
                 default = None
+            elif default.startswith('"') or default.startswith('\''):
+                default = eval(default)
             if default:
                 return ParameterString(name, descName, default, optional=isOptional)
             else:
