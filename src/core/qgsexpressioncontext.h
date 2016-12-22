@@ -564,7 +564,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * @see setGlobalVariable()
      * @see globalScope()
      */
-    static void setGlobalVariables( const QgsStringMap& variables );
+    static void setGlobalVariables( const QVariantMap& variables );
 
     /** Creates a new scope which contains variables and functions relating to the current QGIS project.
      * For instance, project path and title, and variables specified through the project properties.
@@ -587,7 +587,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * @see setProjectVariable()
      * @see projectScope()
      */
-    static void setProjectVariables( const QgsStringMap& variables );
+    static void setProjectVariables( const QVariantMap& variables );
 
     /** Creates a new scope which contains variables and functions relating to a QgsMapLayer.
      * For instance, layer name, id and fields.
@@ -611,7 +611,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * @see setLayerVariable()
      * @see layerScope()
      */
-    static void setLayerVariables( QgsMapLayer* layer, const QgsStringMap& variables );
+    static void setLayerVariables( QgsMapLayer* layer, const QVariantMap& variables );
 
     /** Creates a new scope which contains variables and functions relating to a QgsMapSettings object.
      * For instance, map scale and rotation.
@@ -649,7 +649,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * @see setCompositionVariable()
      * @see compositionScope()
      */
-    static void setCompositionVariables( QgsComposition* composition, const QgsStringMap& variables );
+    static void setCompositionVariables( QgsComposition* composition, const QVariantMap& variables );
 
     /** Creates a new scope which contains variables and functions relating to a QgsAtlasComposition.
      * For instance, current page name and number.
@@ -680,7 +680,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * @see setComposerItemVariable()
      * @see composerItemScope()
      */
-    static void setComposerItemVariables( QgsComposerItem* composerItem, const QgsStringMap& variables );
+    static void setComposerItemVariables( QgsComposerItem* composerItem, const QVariantMap& variables );
 
     /** Helper function for creating an expression context which contains just a feature and fields
      * collection. Generally this method should not be used as the created context does not include

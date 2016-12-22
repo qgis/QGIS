@@ -994,12 +994,12 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
   }
 }
 
-QgsStringMap QgsProject::customVariables() const
+QVariantMap QgsProject::customVariables() const
 {
   return mCustomVariables;
 }
 
-void QgsProject::setCustomVariables( const QgsStringMap& variables )
+void QgsProject::setCustomVariables( const QVariantMap& variables )
 {
   if ( variables == mCustomVariables )
     return;
@@ -1008,11 +1008,11 @@ void QgsProject::setCustomVariables( const QgsStringMap& variables )
   QStringList variableNames;
   QStringList variableValues;
 
-  QMap< QString, QString >::const_iterator it = variables.constBegin();
+  QVariantMap::const_iterator it = variables.constBegin();
   for ( ; it != variables.constEnd(); ++it )
   {
     variableNames << it.key();
-    variableValues << it.value();
+    variableValues << it.value().toString();
   }
 
   writeEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableNames" ), variableNames );

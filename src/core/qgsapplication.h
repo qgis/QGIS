@@ -424,7 +424,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \see QgsExpressionContextUtils::globalVariables().
      * \note Added in QGIS 3.0
      */
-    static QgsStringMap customVariables();
+    static QVariantMap customVariables();
 
     /**
      * Custom expression variables for this application.
@@ -433,7 +433,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \see QgsExpressionContextUtils::globalVariables().
      * \note Added in QGIS 3.0
      */
-    static void setCustomVariables( const QgsStringMap& customVariables );
+    static void setCustomVariables( const QVariantMap& customVariables );
 
 
     /**
@@ -441,7 +441,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      *
      * \note Added in QGIS 3.0
      */
-    static void setCustomVariable( const QString& name, const QString& value );
+    static void setCustomVariable( const QString& name, const QVariant& value );
 
   signals:
     //! @note not available in python bindings

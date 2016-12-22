@@ -1258,12 +1258,12 @@ void QgsApplication::copyPath( const QString& src, const QString& dst )
   }
 }
 
-QgsStringMap QgsApplication::customVariables()
+QVariantMap QgsApplication::customVariables()
 {
   //read values from QSettings
   QSettings settings;
 
-  QgsStringMap variables;
+  QVariantMap variables;
 
   //check if settings contains any variables
   if ( settings.contains( QStringLiteral( "/variables/values" ) ) )
@@ -1282,7 +1282,7 @@ QgsStringMap QgsApplication::customVariables()
       QVariant value = ( *it );
       QString name = customVariableNames.at( variableIndex ).toString();
 
-      variables.insert( name, value.toString() );
+      variables.insert( name, value );
       variableIndex++;
     }
   }
@@ -1290,27 +1290,27 @@ QgsStringMap QgsApplication::customVariables()
   return variables;
 }
 
-void QgsApplication::setCustomVariables( const QgsStringMap& variables )
+void QgsApplication::setCustomVariables( const QVariantMap& variables )
 {
   QSettings settings;
 
-  QList< QVariant > customVariableVariants;
+  QList< QVariant > customVariableValues;
   QList< QVariant > customVariableNames;
 
-  QMap< QString, QString >::const_iterator it = variables.constBegin();
+  QVariantMap::const_iterator it = variables.constBegin();
   for ( ; it != variables.constEnd(); ++it )
   {
     customVariableNames << it.key();
-    customVariableVariants << it.value();
+    customVariableValues << it.value();
   }
 
   settings.setValue( QStringLiteral( "/variables/names" ), customVariableNames );
-  settings.setValue( QStringLiteral( "/variables/values" ), customVariableVariants );
+  settings.setValue( QStringLiteral( "/variables/values" ), customVariableValues );
 
   emit instance()->customVariablesChanged();
 }
 
-void QgsApplication::setCustomVariable( const QString& name, const QString& value )
+void QgsApplication::setCustomVariable( const QString& name, const QVariant& value )
 {
   // save variable to settings
   QSettings settings;

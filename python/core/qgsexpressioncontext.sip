@@ -482,46 +482,11 @@ class QgsExpressionContextUtils
      * @see setGlobalVariable()
      */
     static QgsExpressionContextScope* globalScope() /Factory/;
-
-    /** Sets a global context variable. This variable will be contained within scopes retrieved via
-     * globalScope().
-     * @param name variable name
-     * @param value variable value
-     * @see setGlobalVariable()
-     * @see globalScope()
-     */
     static void setGlobalVariable( const QString& name, const QVariant& value );
-
-    /** Sets all global context variables. Existing global variables will be removed and replaced
-     * with the variables specified.
-     * @param variables new set of global variables
-     * @see setGlobalVariable()
-     * @see globalScope()
-     */
-    static void setGlobalVariables( const QgsStringMap& variables );
-
-    /** Creates a new scope which contains variables and functions relating to the current QGIS project.
-     * For instance, project path and title, and variables specified through the project properties.
-     * @see setProjectVariable()
-     */
+    static void setGlobalVariables( const QVariantMap& variables );
     static QgsExpressionContextScope* projectScope() /Factory/;
-
-    /** Sets a project context variable. This variable will be contained within scopes retrieved via
-     * projectScope().
-     * @param name variable name
-     * @param value variable value
-     * @see setProjectVariables()
-     * @see projectScope()
-     */
     static void setProjectVariable( const QString& name, const QVariant& value );
-
-    /** Sets all project context variables. Existing project variables will be removed and replaced
-     * with the variables specified.
-     * @param variables new set of project variables
-     * @see setProjectVariable()
-     * @see projectScope()
-     */
-    static void setProjectVariables( const QgsStringMap& variables );
+    static void setProjectVariables( const QVariantMap& variables );
 
     /** Creates a new scope which contains variables and functions relating to a QgsMapLayer.
      * For instance, layer name, id and fields.
@@ -537,15 +502,7 @@ class QgsExpressionContextUtils
      * @see layerScope()
      */
     static void setLayerVariable( QgsMapLayer* layer, const QString& name, const QVariant& value );
-
-    /** Sets all layer context variables. Existing layer variables will be removed and replaced
-     * with the variables specified.
-     * @param layer map layer
-     * @param variables new set of layer variables
-     * @see setLayerVariable()
-     * @see layerScope()
-     */
-    static void setLayerVariables( QgsMapLayer* layer, const QgsStringMap& variables );
+    static void setLayerVariables( QgsMapLayer* layer, const QVariantMap& variables );
 
     /** Creates a new scope which contains variables and functions relating to a QgsMapSettings object.
      * For instance, map scale and rotation.
@@ -575,26 +532,8 @@ class QgsExpressionContextUtils
      * @see compositionScope()
      */
     static void setCompositionVariable( QgsComposition* composition, const QString& name, const QVariant& value );
-
-    /** Sets all composition context variables. Existing composition variables will be removed and replaced
-     * with the variables specified.
-     * @param composition target composition
-     * @param variables new set of layer variables
-     * @see setCompositionVariable()
-     * @see compositionScope()
-     */
-    static void setCompositionVariables( QgsComposition* composition, const QgsStringMap& variables );
-
-    /** Creates a new scope which contains variables and functions relating to a QgsAtlasComposition.
-     * For instance, current page name and number.
-     * @param atlas source atlas. If null, a set of default atlas variables will be added to the scope.
-     */
+    static void setCompositionVariables( QgsComposition* composition, const QVariantMap& variables );
     static QgsExpressionContextScope* atlasScope( const QgsAtlasComposition* atlas ) /Factory/;
-
-    /** Creates a new scope which contains variables and functions relating to a QgsComposerItem.
-     * For instance, item size and position.
-     * @param composerItem source composer item
-     */
     static QgsExpressionContextScope* composerItemScope( const QgsComposerItem *composerItem ) /Factory/;
 
     /** Sets a composer item context variable. This variable will be contained within scopes retrieved via
@@ -606,20 +545,7 @@ class QgsExpressionContextUtils
      * @see composerItemScope()
      */
     static void setComposerItemVariable( QgsComposerItem* composerItem, const QString& name, const QVariant& value );
-
-    /** Sets all composition context variables. Existing compositoin variables will be removed and replaced
-     * with the variables specified.
-     * @param composerItem target composer item
-     * @param variables new set of layer variables
-     * @see setComposerItemVariable()
-     * @see composerItemScope()
-     */
-    static void setComposerItemVariables( QgsComposerItem* composerItem, const QgsStringMap& variables );
-
-    /** Helper function for creating an expression context which contains just a feature and fields
-     * collection. Generally this method should not be used as the created context does not include
-     * standard scopes such as the global and project scopes.
-     */
+    static void setComposerItemVariables( QgsComposerItem* composerItem, const QVariantMap& variables );
     static QgsExpressionContext createFeatureBasedContext( const QgsFeature& feature, const QgsFields& fields );
 
     /** Registers all known core functions provided by QgsExpressionContextScope objects.

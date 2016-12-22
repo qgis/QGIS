@@ -132,9 +132,9 @@ QgsExpressionContextScope* QgsVariableEditorWidget::editableScope() const
   return mContext->scope( mEditableScopeIndex );
 }
 
-QgsStringMap QgsVariableEditorWidget::variablesInActiveScope() const
+QVariantMap QgsVariableEditorWidget::variablesInActiveScope() const
 {
-  QgsStringMap variables;
+  QVariantMap variables;
   if ( !mContext || mEditableScopeIndex < 0 || mEditableScopeIndex >= mContext->scopeCount() )
   {
     return variables;
@@ -146,7 +146,7 @@ QgsStringMap QgsVariableEditorWidget::variablesInActiveScope() const
     if ( scope->isReadOnly( variable ) )
       continue;
 
-    variables.insert( variable, scope->variable( variable ).toString() );
+    variables.insert( variable, scope->variable( variable ) );
   }
 
   return variables;

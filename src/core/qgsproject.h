@@ -504,13 +504,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * To get all available variables including generated ones
      * use QgsExpressionContextUtils::projectScope() instead.
      */
-    QgsStringMap customVariables() const;
+    QVariantMap customVariables() const;
 
     /**
      * A map of custom project variables.
      * Be careful not to set generated variables.
      */
-    void setCustomVariables( const QgsStringMap& customVariables );
+    void setCustomVariables( const QVariantMap& customVariables );
 
     //
     // Functionality from QgsMapLayerRegistry
@@ -994,7 +994,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QScopedPointer<QgsMapThemeCollection> mMapThemeCollection;
 
-    QgsStringMap mCustomVariables;
+    QVariantMap mCustomVariables;
 
     QFile mFile;                 // current physical project file
     mutable QgsPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
