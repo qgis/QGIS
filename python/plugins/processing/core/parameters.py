@@ -229,7 +229,9 @@ class ParameterBoolean(Parameter):
         isOptional, name, definition = _splitParameterOptions(line)
         if definition.startswith("boolean"):
             descName = _createDescriptiveName(name)
-            default = definition.strip()[len('boolean') + 1:]
+            default = definition.strip()[len('boolean') + 1:] or None
+            if default == 'None':
+                default = None
             if default:
                 param = ParameterBoolean(name, descName, default)
             else:
@@ -292,6 +294,8 @@ class ParameterCrs(Parameter):
         if definition.startswith("crs"):
             descName = _createDescriptiveName(name)
             default = definition.strip()[len('crs') + 1:]
+            if default == 'None':
+                default = None
             if default:
                 return ParameterCrs(name, descName, default, isOptional)
             else:
@@ -574,7 +578,7 @@ class ParameterFixedTable(Parameter):
         if definition.startswith("fixedtable"):
             descName = _createDescriptiveName(name)
             default = definition.strip()[len('fixedtable') + 1:] or None
-            return ParameterFixedTable(name, descName, default, isOptional)
+            return ParameterFixedTable(name, descName, optional=isOptional)
 
 
 class ParameterMultipleInput(ParameterDataObject):
@@ -1186,15 +1190,19 @@ class ParameterString(Parameter):
         param_type = ''
         if self.optional:
             param_type += 'optional '
-        param_type += 'string'
-        return '##' + self.name + '=' + param_type + self.default
+        param_type += 'string '
+        return '##' + self.name + '=' + param_type + repr(self.default)
 
     @classmethod
     def fromScriptCode(self, line):
         isOptional, name, definition = _splitParameterOptions(line)
         descName = _createDescriptiveName(name)
         if definition.lower().strip().startswith('string'):
-            default = definition.strip()[len('string') + 1:]
+            default = definition.strip()[len('string') + 1:] or None
+            if default == 'None':
+                default = None
+            elif default.startswith('"') or default.startswith('\''):
+                default = eval(default)
             if default:
                 return ParameterString(name, descName, default, optional=isOptional)
             else:
@@ -1255,15 +1263,17 @@ class ParameterExpression(Parameter):
         param_type = ''
         if self.optional:
             param_type += 'optional '
-        param_type += 'expression'
-        return '##' + self.name + '=' + param_type + self.default
+        param_type += 'expression '
+        return '##' + self.name + '=' + param_type + str(self.default)
 
     @classmethod
     def fromScriptCode(self, line):
         isOptional, name, definition = _splitParameterOptions(line)
         if definition.lower().strip().startswith('expression'):
             descName = _createDescriptiveName(name)
-            default = definition.strip()[len('expression') + 1:]
+            default = definition.strip()[len('expression') + 1:] or None
+            if default == 'None':
+                default = None
             if default:
                 return ParameterExpression(name, descName, default, optional=isOptional)
             else:
@@ -1413,7 +1423,7 @@ class ParameterTableField(Parameter):
         if self.optional:
             param_type += 'optional '
         param_type += 'field'
-        return '##' + self.name + '=' + param_type + self.parent
+        return '##' + self.name + '=' + param_type + str(self.parent)
 
     @classmethod
     def fromScriptCode(self, line):
