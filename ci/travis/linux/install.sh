@@ -20,6 +20,7 @@ ln -s ${HOME}/osgeo4travis/bin/ccache ${HOME}/osgeo4travis/bin/clang++-${LLVM_VE
 ln -s ${HOME}/osgeo4travis/bin/ccache ${HOME}/osgeo4travis/bin/clang-${LLVM_VERSION}
 
 ccache -s
+ccache -z
 
 export CXX="clang++-${LLVM_VERSION}"
 export CC="clang-${LLVM_VERSION}"
