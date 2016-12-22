@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    IdwInterpolationAttribute.py
+    IdwInterpolation.py
     ---------------------
     Date                 : October 2016
     Copyright            : (C) 2016 by Alexander Bruy
@@ -33,25 +33,24 @@ from qgis.core import QgsRectangle
 from qgis.analysis import (QgsInterpolator,
                            QgsIDWInterpolator,
                            QgsGridFileWriter
-                           )
+                          )
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterExtent
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.core.parameters import (Parameter,
+                                        ParameterNumber,
+                                        ParameterExtent,
+                                        _splitParameterOptions
+                                       )
 from processing.core.outputs import OutputRaster
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class IdwInterpolationAttribute(GeoAlgorithm):
+class IdwInterpolation(GeoAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
-    ATTRIBUTE = 'ATTRIBUTE'
-    LAYER_TYPE = 'LAYER_TYPE'
+    INTERPOLATION_DATA = 'INTERPOLATION_DATA'
     DISTANCE_COEFFICIENT = 'DISTANCE_COEFFICIENT'
     COLUMNS = 'COLUMNS'
     ROWS = 'ROWS'
@@ -64,24 +63,61 @@ class IdwInterpolationAttribute(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'interpolation.png'))
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('IDW interpolation (using attribute)')
+        self.name, self.i18n_name = self.trAlgorithm('IDW interpolation')
         self.group, self.i18n_group = self.trAlgorithm('Interpolation')
 
-        self.TYPES = [self.tr('Points'),
-                      self.tr('Structure lines'),
-                      self.tr('Break lines')
-                      ]
+        class ParameterInterpolationData(Parameter):
+            default_metadata = {
+                'widget_wrapper': 'processing.algs.qgis.ui.InterpolationDataWidget.InterpolationDataWidgetWrapper'
+            }
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Vector layer')))
-        self.addParameter(ParameterTableField(self.ATTRIBUTE,
-                                              self.tr('Interpolation attribute'),
-                                              self.INPUT_LAYER,
-                                              ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterSelection(self.LAYER_TYPE,
-                                             self.tr('Type'),
-                                             self.TYPES,
-                                             0))
+            def __init__(self, name='', description=''):
+                Parameter.__init__(self, name, description)
+
+            def setValue(self, value):
+                if value is None:
+                    if not self.optional:
+                        return False
+                    self.value = None
+                    return True
+
+                if value == '':
+                   if not self.optional:
+                       return False
+
+                if isinstance(value, str):
+                    self.value = value if value != '' else None
+                else:
+                    self.value = ParameterInterpolationData.dataToString(value)
+                return True
+
+            def getValueAsCommandLineParameter(self):
+                return '"{}"'.format(self.value)
+
+            def getAsScriptCode(self):
+                param_type = ''
+                param_type += 'interpolation data '
+                return '##' + self.name + '=' + param_type
+
+            @classmethod
+            def fromScriptCode(self, line):
+                isOptional, name, definition = _splitParameterOptions(line)
+                descName = _createDescriptiveName(name)
+                parent =  definition.lower().strip()[len('interpolation data') + 1:]
+                return ParameterInterpolationData(name, description, parent)
+
+            @staticmethod
+            def dataToString(data):
+                s = ''
+                for d in data:
+                    s += '{}, {}, {:d}, {:d};'.format(c[0],
+                                                      c[1],
+                                                      c[2],
+                                                      c[3])
+                return s[:-1]
+
+        self.addParameter(ParameterInterpolationData(self.INTERPOLATION_DATA,
+                                                     self.tr('Input layer(s)')))
         self.addParameter(ParameterNumber(self.DISTANCE_COEFFICIENT,
                                           self.tr('Distance coefficient P'),
                                           0.0, 99.99, 2.0))
@@ -103,10 +139,7 @@ class IdwInterpolationAttribute(GeoAlgorithm):
                                     self.tr('Interpolated')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
-        fieldName = self.getParameterValue(self.ATTRIBUTE)
-        layerType = self.getParameterValue(self.LAYER_TYPE)
+        interpolationData = self.getParameterValue(self.INTERPOLATION_DATA)
         coefficient = self.getParameterValue(self.DISTANCE_COEFFICIENT)
         columns = self.getParameterValue(self.COLUMNS)
         rows = self.getParameterValue(self.ROWS)
@@ -115,25 +148,32 @@ class IdwInterpolationAttribute(GeoAlgorithm):
         extent = self.getParameterValue(self.EXTENT).split(',')
         output = self.getOutputValue(self.OUTPUT_LAYER)
 
+        if interpolationData is None:
+            raise GeoAlgorithmExecutionException(
+                self.tr('You need to specify at least one input layer.'))
+
         xMin = float(extent[0])
         xMax = float(extent[1])
         yMin = float(extent[2])
         yMax = float(extent[3])
         bbox = QgsRectangle(xMin, yMin, xMax, yMax)
 
-        layerData = QgsInterpolator.LayerData()
-        layerData.vectorLayer = layer
-        layerData.zCoordInterpolation = False
-        layerData.interpolationAttribute = layer.dataProvider().fieldNameIndex(fieldName)
+        layerData = []
+        for row in interpolationData.split(';'):
+            v = row.split(',')
+            data = QgsInterpolator.LayerData()
+            data.vectorLayer = dataobjects.getObjectFromUri(v[0])
+            data.zCoordInterpolation = bool(v[1])
+            data.interpolationAttribute = int(v[2])
+            if v[3] == '0':
+                data.mInputType = QgsInterpolator.POINTS
+            elif v[3] == '1':
+                data.mInputType = QgsInterpolator.STRUCTURE_LINES
+            else:
+                data.mInputType = QgsInterpolator.BREAK_LINES
+            layerData.append(data)
 
-        if layerType == 0:
-            layerData.mInputType = QgsInterpolator.POINTS
-        elif layerType == 1:
-            layerData.mInputType = QgsInterpolator.STRUCTURE_LINES
-        else:
-            layerData.mInputType = QgsInterpolator.BREAK_LINES
-
-        interpolator = QgsIDWInterpolator([layerData])
+        interpolator = QgsIDWInterpolator(layerData)
         interpolator.setDistanceCoefficient(coefficient)
 
         writer = QgsGridFileWriter(interpolator,

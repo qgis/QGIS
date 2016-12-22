@@ -142,6 +142,14 @@ class AlgorithmsTest(object):
                 return [self.load_param(p) for p in param['params']]
             elif param['type'] == 'file':
                 return self.filepath_from_param(param)
+            elif param['type'] == 'interpolation':
+                prefix = processingTestDataPath()
+                tmp = ''
+                for r in param['name'].split(';'):
+                    v = r.split(',')
+                    tmp += '{},{},{},{};'.format(os.path.join(prefix, v[0]),
+                                                 v[1], v[2], v[3])
+                return tmp[:-1]
         except TypeError:
             # No type specified, use whatever is there
             return param

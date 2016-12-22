@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    TinInterpolationZValue.py
+    TinInterpolation.py
     ---------------------
     Date                 : October 2016
     Copyright            : (C) 2016 by Alexander Bruy
@@ -29,28 +29,31 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsRectangle, QgsWkbTypes
+from qgis.core import QgsRectangle
 from qgis.analysis import (QgsInterpolator,
                            QgsTINInterpolator,
                            QgsGridFileWriter
-                           )
+                          )
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterExtent
-from processing.core.outputs import OutputRaster
-from processing.core.outputs import OutputVector
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.core.parameters import (Parameter,
+                                        ParameterNumber,
+                                        ParameterExtent,
+                                        ParameterSelection,
+                                        _splitParameterOptions
+                                       )
+from processing.core.outputs import (OutputRaster,
+                                     OutputVector
+                                    )
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class TinInterpolationZValue(GeoAlgorithm):
+class TinInterpolation(GeoAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
-    LAYER_TYPE = 'LAYER_TYPE'
+    INTERPOLATION_DATA = 'INTERPOLATION_DATA'
     METHOD = 'METHOD'
     COLUMNS = 'COLUMNS'
     ROWS = 'ROWS'
@@ -64,23 +67,65 @@ class TinInterpolationZValue(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'interpolation.png'))
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('TIN interpolation (using Z-values)')
+        self.name, self.i18n_name = self.trAlgorithm('TIN interpolation')
         self.group, self.i18n_group = self.trAlgorithm('Interpolation')
 
-        self.TYPES = [self.tr('Points'),
-                      self.tr('Structure lines'),
-                      self.tr('Break lines')
-                      ]
         self.METHODS = [self.tr('Linear'),
                         self.tr('Clough-Toucher (cubic)')
                         ]
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Vector layer')))
-        self.addParameter(ParameterSelection(self.LAYER_TYPE,
-                                             self.tr('Type'),
-                                             self.TYPES,
-                                             0))
+        class ParameterInterpolationData(Parameter):
+            default_metadata = {
+                'widget_wrapper': 'processing.algs.qgis.ui.InterpolationDataWidget.InterpolationDataWidgetWrapper'
+            }
+
+            def __init__(self, name='', description=''):
+                Parameter.__init__(self, name, description)
+
+            def setValue(self, value):
+                if value is None:
+                    if not self.optional:
+                        return False
+                    self.value = None
+                    return True
+
+                if value == '':
+                   if not self.optional:
+                       return False
+
+                if isinstance(value, str):
+                    self.value = value if value != '' else None
+                else:
+                    self.value = ParameterInterpolationData.dataToString(value)
+                return True
+
+            def getValueAsCommandLineParameter(self):
+                return '"{}"'.format(self.value)
+
+            def getAsScriptCode(self):
+                param_type = ''
+                param_type += 'interpolation data '
+                return '##' + self.name + '=' + param_type
+
+            @classmethod
+            def fromScriptCode(self, line):
+                isOptional, name, definition = _splitParameterOptions(line)
+                descName = _createDescriptiveName(name)
+                parent =  definition.lower().strip()[len('interpolation data') + 1:]
+                return ParameterInterpolationData(name, description, parent)
+
+            @staticmethod
+            def dataToString(data):
+                s = ''
+                for d in data:
+                    s += '{}, {}, {:d}, {:d};'.format(c[0],
+                                                      c[1],
+                                                      c[2],
+                                                      c[3])
+                return s[:-1]
+
+        self.addParameter(ParameterInterpolationData(self.INTERPOLATION_DATA,
+                                                     self.tr('Input layer(s)')))
         self.addParameter(ParameterSelection(self.METHOD,
                                              self.tr('Interpolation method'),
                                              self.METHODS,
@@ -106,9 +151,7 @@ class TinInterpolationZValue(GeoAlgorithm):
                                     ))  # datatype=dataobjects.TYPE_VECTOR_LINE))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
-        layerType = self.getParameterValue(self.LAYER_TYPE)
+        interpolationData = self.getParameterValue(self.INTERPOLATION_DATA)
         method = self.getParameterValue(self.METHOD)
         columns = self.getParameterValue(self.COLUMNS)
         rows = self.getParameterValue(self.ROWS)
@@ -118,9 +161,9 @@ class TinInterpolationZValue(GeoAlgorithm):
         output = self.getOutputValue(self.OUTPUT_LAYER)
         triangulation = self.getOutputValue(self.TRIANULATION_FILE)
 
-        if not QgsWkbTypes.hasZ(layer.wkbType()):
+        if interpolationData is None:
             raise GeoAlgorithmExecutionException(
-                self.tr('Geometries in input layer does not have Z coordinates.'))
+                self.tr('You need to specify at least one input layer.'))
 
         xMin = float(extent[0])
         xMax = float(extent[1])
@@ -128,24 +171,27 @@ class TinInterpolationZValue(GeoAlgorithm):
         yMax = float(extent[3])
         bbox = QgsRectangle(xMin, yMin, xMax, yMax)
 
-        layerData = QgsInterpolator.LayerData()
-        layerData.vectorLayer = layer
-        layerData.zCoordInterpolation = True
-        layerData.interpolationAttribute = -1
-
-        if layerType == 0:
-            layerData.mInputType = QgsInterpolator.POINTS
-        elif layerType == 1:
-            layerData.mInputType = QgsInterpolator.STRUCTURE_LINES
-        else:
-            layerData.mInputType = QgsInterpolator.BREAK_LINES
+        layerData = []
+        for row in interpolationData.split(';'):
+            v = row.split(',')
+            data = QgsInterpolator.LayerData()
+            data.vectorLayer = dataobjects.getObjectFromUri(v[0])
+            data.zCoordInterpolation = bool(v[1])
+            data.interpolationAttribute = int(v[2])
+            if v[3] == '0':
+                data.mInputType = QgsInterpolator.POINTS
+            elif v[3] == '1':
+                data.mInputType = QgsInterpolator.STRUCTURE_LINES
+            else:
+                data.mInputType = QgsInterpolator.BREAK_LINES
+            layerData.append(data)
 
         if method == 0:
             interpolationMethod = QgsTINInterpolator.Linear
         else:
             interpolationMethod = QgsTINInterpolator.CloughTocher
 
-        interpolator = QgsTINInterpolator([layerData], interpolationMethod)
+        interpolator = QgsTINInterpolator(layerData, interpolationMethod)
         interpolator.setExportTriangulationToFile(True)
         interpolator.setTriangulationFilePath(triangulation)
 
