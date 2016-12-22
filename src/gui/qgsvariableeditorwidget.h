@@ -99,7 +99,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * returned. This method can be used to retrieve the variables edited an added by
      * users via the widget.
      */
-    QgsStringMap variablesInActiveScope() const;
+    QVariantMap variablesInActiveScope() const;
 
   public slots:
 

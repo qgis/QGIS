@@ -420,25 +420,8 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @note Added in QGIS 3.0
      */
     void setAvoidIntersectionsList( const QStringList& avoidIntersectionsList );
-
-    /**
-     * A map of custom project variables.
-     * To get all available variables including generated ones
-     * use QgsExpressionContextUtils::projectScope() instead.
-     */
-    QgsStringMap customVariables() const;
-
-    /**
-     * A map of custom project variables.
-     * Be careful not to set generated variables.
-     */
-    void setCustomVariables( const QgsStringMap& customVariables );
-
-    //
-    // Functionality from QgsMapLayerRegistry
-    //
-
-    //! Returns the number of registered layers.
+    QVariantMap customVariables() const;
+    void setCustomVariables( const QVariantMap& customVariables );
     int count() const;
 
     /** Retrieve a pointer to a registered layer by layer ID.

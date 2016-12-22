@@ -516,7 +516,7 @@ void TestQgsExpressionContext::globalScope()
   QCOMPARE( expPlatform.evaluate( &context ).toString(), QgsApplication::platform() );
 
   //test setGlobalVariables
-  QgsStringMap vars;
+  QVariantMap vars;
   vars.insert( QStringLiteral( "newvar1" ), QStringLiteral( "val1" ) );
   vars.insert( QStringLiteral( "newvar2" ), QStringLiteral( "val2" ) );
   QgsExpressionContextUtils::setGlobalVariables( vars );
@@ -561,7 +561,7 @@ void TestQgsExpressionContext::projectScope()
   delete projectScope;
 
   //test setProjectVariables
-  QgsStringMap vars;
+  QVariantMap vars;
   vars.insert( QStringLiteral( "newvar1" ), QStringLiteral( "val1" ) );
   vars.insert( QStringLiteral( "newvar2" ), QStringLiteral( "val2" ) );
   QgsExpressionContextUtils::setProjectVariables( vars );
@@ -624,7 +624,7 @@ void TestQgsExpressionContext::layerScope()
   layerScope = QgsExpressionContextUtils::layerScope( vectorLayer.data() );
   QCOMPARE( layerScope->variable( "testvar" ).toString(), QString( "testval" ) );
 
-  QgsStringMap variables;
+  QVariantMap variables;
   variables.insert( QStringLiteral( "var1" ), QStringLiteral( "val1" ) );
   variables.insert( QStringLiteral( "var2" ), QStringLiteral( "val2" ) );
   QgsExpressionContextUtils::setLayerVariables( vectorLayer.data(), variables );

@@ -70,12 +70,7 @@ class QgsVariableEditorWidget : QWidget
      * @see setSettingGroup()
      */
     QString settingGroup() const;
-
-    /** Returns a map variables set within the editable scope. Read only variables are not
-     * returned. This method can be used to retrieve the variables edited an added by
-     * users via the widget.
-     */
-    QgsStringMap variablesInActiveScope() const;
+    QVariantMap variablesInActiveScope() const;
 
   signals:
 

@@ -406,9 +406,9 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static QgsFieldFormatterRegistry* fieldFormatterRegistry();
     static QString nullRepresentation();
     static void setNullRepresentation( const QString& nullRepresentation );
-    static QgsStringMap customVariables();
-    static void setCustomVariables(const QgsStringMap& customVariables);
-    static void setCustomVariable(const QString& name, const QString& value);
+    static QVariantMap customVariables();
+    static void setCustomVariables( const QVariantMap& customVariables );
+    static void setCustomVariable( const QString& name, const QVariant& value );
   signals:
     //! @note not available in python bindings
     // void preNotify( QObject * receiver, QEvent * event, bool * done );
