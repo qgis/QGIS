@@ -545,14 +545,14 @@ tests:
         hash: aba5167b8a2e97a93b22d406e0363f91c151fd353c0fc56ce24ac5fc
         type: rasterhash
 
-  - algorithm: gdalogr:polygonize
-    name: standard polygonize by gdal
-    params:
-      FIELD: DN
-      INPUT:
-        name: dem.tif
-        type: raster
-    results:
-      OUTPUT:
-        name: expected/polygonyze.gml
-        type: vector
+  # - algorithm: gdalogr:polygonize
+  #   name: standard polygonize by gdal
+  #   params:
+  #     FIELD: DN
+  #     INPUT:
+  #       name: dem.tif
+  #       type: raster
+  #   results:
+  #     OUTPUT:
+  #       name: expected/polygonyze.gml
+  #       type: vector
