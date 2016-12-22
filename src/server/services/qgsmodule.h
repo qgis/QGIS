@@ -21,6 +21,7 @@
 #include "qgsservicemodule.h"
 #include "qgsserviceregistry.h"
 #include "qgsservice.h"
+#include "qgsserverinterface.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 

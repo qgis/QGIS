@@ -35,6 +35,8 @@ class SERVER_EXPORT QgsServerRequest
 {
   public:
 
+    typedef QMap<QString, QString> Parameters;
+
     enum Method
     {
       HeadMethod, PutMethod, GetMethod, PostMethod, DeleteMethod
@@ -73,7 +75,7 @@ class SERVER_EXPORT QgsServerRequest
      * Return a map of query parameters with keys converted
      * to uppercase
      */
-    QMap<QString, QString> parameters() const;
+    Parameters parameters() const;
 
     /**
      * Return post/put data
