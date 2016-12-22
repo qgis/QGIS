@@ -82,6 +82,11 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     void deleteTempRubberBand();
 
+    /**
+     * Return defalut Z value 
+     */
+    double getDefaultZValue() {return mDefaultZValue;};
+
   private slots:
     void validationFinished();
     void currentLayerChanged( QgsMapLayer *layer );
@@ -212,6 +217,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     QgsVertexMarker* mSnappingMarker;
 
+    double mDefaultZValue;
 #ifdef Q_OS_WIN
     int mSkipNextContextMenuEvent;
 #endif

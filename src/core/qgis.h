@@ -113,6 +113,11 @@ class CORE_EXPORT Qgis
      * @note added in 2.15*/
     static double SCALE_PRECISION;
 
+    /**
+     *
+     *  @note added in 3.0 */
+    static double DEFAULT_Z_COORDINATE;
+
   private:
     // String representation of unit types (set in qgis.cpp)
     static const char *qgisUnitTypes[];

@@ -147,14 +147,20 @@ QgsWkbTypes::Type QgsNewVectorLayerDialog::selectedType() const
 {
   if ( mPointRadioButton->isChecked() )
   {
+    if (mGeometryWithZCheckBox->isChecked())
+      return QgsWkbTypes::Point25D;
     return QgsWkbTypes::Point;
   }
   else if ( mLineRadioButton->isChecked() )
   {
+    if (mGeometryWithZCheckBox->isChecked())
+      return QgsWkbTypes::LineString25D;
     return QgsWkbTypes::LineString;
   }
   else if ( mPolygonRadioButton->isChecked() )
   {
+    if (mGeometryWithZCheckBox->isChecked())
+      return QgsWkbTypes::Polygon25D;
     return QgsWkbTypes::Polygon;
   }
   return QgsWkbTypes::Unknown;

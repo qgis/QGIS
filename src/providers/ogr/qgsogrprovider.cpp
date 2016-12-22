@@ -2671,20 +2671,38 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     case QgsWkbTypes::Point:
       OGRvectortype = wkbPoint;
       break;
+    case QgsWkbTypes::Point25D:
+      OGRvectortype = wkbPoint25D;
+      break;
     case QgsWkbTypes::LineString:
       OGRvectortype = wkbLineString;
+      break;
+    case QgsWkbTypes::LineString25D:
+      OGRvectortype = wkbLineString25D;
       break;
     case QgsWkbTypes::Polygon:
       OGRvectortype = wkbPolygon;
       break;
+    case QgsWkbTypes::Polygon25D:
+      OGRvectortype = wkbPolygon25D;
+      break;
     case QgsWkbTypes::MultiPoint:
       OGRvectortype = wkbMultiPoint;
+      break;
+    case QgsWkbTypes::MultiPoint25D:
+      OGRvectortype = wkbMultiPoint25D;
       break;
     case QgsWkbTypes::MultiLineString:
       OGRvectortype = wkbMultiLineString;
       break;
+    case QgsWkbTypes::MultiLineString25D:
+      OGRvectortype = wkbMultiLineString25D;
+      break;
     case QgsWkbTypes::MultiPolygon:
       OGRvectortype = wkbMultiPolygon;
+      break;
+    case QgsWkbTypes::MultiPolygon25D:
+      OGRvectortype = wkbMultiPolygon25D;
       break;
     default:
     {

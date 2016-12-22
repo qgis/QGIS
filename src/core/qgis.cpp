@@ -87,6 +87,7 @@ double Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM = 1.0;
 
 double Qgis::SCALE_PRECISION = 0.9999999999;
 
+double Qgis::DEFAULT_Z_COORDINATE = 0.0;
 
 double qgsPermissiveToDouble( QString string, bool &ok )
 {
