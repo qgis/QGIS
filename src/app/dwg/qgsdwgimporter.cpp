@@ -2270,8 +2270,10 @@ void QgsDwgImporter::addText( const DRW_Text &data )
 
   setPoint( dfn, f, "ext", data.extPoint );
 
-  QgsPointV2 p( QgsWkbTypes::PointZ, data.secPoint.x, data.secPoint.y, data.secPoint.z );
-
+  QgsPointV2 p( QgsWkbTypes::PointZ,
+                ( data.alignH > 0 || data.alignV > 0 ) ? data.secPoint.x : data.basePoint.x,
+                ( data.alignH > 0 || data.alignV > 0 ) ? data.secPoint.y : data.basePoint.y,
+                ( data.alignH > 0 || data.alignV > 0 ) ? data.secPoint.z : data.basePoint.z );
 
   if ( !createFeature( layer, f, p ) )
   {
