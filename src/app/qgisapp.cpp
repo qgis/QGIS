@@ -1902,8 +1902,10 @@ void QgisApp::createMenus()
    */
 
   // Layer menu
-#ifndef SUPPORT_GEOPACKAGE
+#if !defined(GDAL_COMPUTE_VERSION) || GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,0,0)
   mProjectMenu->removeAction( mActionDwgImport );
+#endif
+#ifndef SUPPORT_GEOPACKAGE
   mNewLayerMenu->removeAction( mActionNewGeoPackageLayer );
 #endif
 

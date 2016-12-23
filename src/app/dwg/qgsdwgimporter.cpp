@@ -623,7 +623,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   if ( fi.suffix().toLower() == "dxf" )
   {
     //loads dxf
-    QSharedPointer<dxfRW> dxf( new dxfRW( drawing.toUtf8() ) );
+    QScopedPointer<dxfRW> dxf( new dxfRW( drawing.toUtf8() ) );
     if ( !dxf->read( this, false ) )
     {
       result = DRW::BAD_UNKNOWN;
@@ -632,7 +632,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   else if ( fi.suffix().toLower() == "dwg" )
   {
     //loads dwg
-    QSharedPointer<dwgR> dwg( new dwgR( drawing.toUtf8() ) );
+    QScopedPointer<dwgR> dwg( new dwgR( drawing.toUtf8() ) );
     if ( !dwg->read( this, false ) )
     {
       result = dwg->getError();
@@ -2209,7 +2209,10 @@ void QgsDwgImporter::addText( const DRW_Text &data )
 
   setPoint( dfn, f, "ext", data.extPoint );
 
-  QgsPointV2 p( QgsWKBTypes::PointZ, data.secPoint.x, data.secPoint.y, data.secPoint.z );
+  QgsPointV2 p( QgsWKBTypes::PointZ,
+                ( data.alignH > 0 || data.alignV > 0 ) ? data.secPoint.x : data.basePoint.x,
+                ( data.alignH > 0 || data.alignV > 0 ) ? data.secPoint.y : data.basePoint.y,
+                ( data.alignH > 0 || data.alignV > 0 ) ? data.secPoint.z : data.basePoint.z );
 
   if ( !createFeature( layer, f, p ) )
   {
