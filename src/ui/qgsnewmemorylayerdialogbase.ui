@@ -79,6 +79,13 @@
        </layout>
       </item>
       <item>
+       <widget class="QCheckBox" name="mGeometryWithZCheckBox">
+        <property name="text">
+         <string>Geometries with Z coordinate</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>

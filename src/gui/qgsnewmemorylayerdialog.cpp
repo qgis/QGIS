@@ -40,33 +40,9 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
 
   QgsWkbTypes::Type geometrytype = dialog.selectedType();
 
-  QString geomType;
-  switch ( geometrytype )
-  {
-    case QgsWkbTypes::Point:
-      geomType = QStringLiteral( "point" );
-      break;
-    case QgsWkbTypes::LineString:
-      geomType = QStringLiteral( "linestring" );
-      break;
-    case QgsWkbTypes::Polygon:
-      geomType = QStringLiteral( "polygon" );
-      break;
-    case QgsWkbTypes::MultiPoint:
-      geomType = QStringLiteral( "multipoint" );
-      break;
-    case QgsWkbTypes::MultiLineString:
-      geomType = QStringLiteral( "multilinestring" );
-      break;
-    case QgsWkbTypes::MultiPolygon:
-      geomType = QStringLiteral( "multipolygon" );
-      break;
-    case QgsWkbTypes::NoGeometry:
-      geomType = QStringLiteral( "none" );
-      break;
-    default:
-      geomType = QStringLiteral( "point" );
-  }
+  QString geomType = QgsWkbTypes::displayString(geometrytype);
+  if ( geomType.isNull())
+    geomType = "none";
 
   QString layerProperties = QStringLiteral( "%1?" ).arg( geomType );
   if ( QgsWkbTypes::NoGeometry != geometrytype )
@@ -103,35 +79,40 @@ QgsNewMemoryLayerDialog::~QgsNewMemoryLayerDialog()
 
 QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
 {
+  QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
   if ( !buttonGroupGeometry->isChecked() )
   {
-    return QgsWkbTypes::NoGeometry;
+    wkbType = QgsWkbTypes::NoGeometry;
   }
   else if ( mPointRadioButton->isChecked() )
   {
-    return QgsWkbTypes::Point;
+    wkbType = QgsWkbTypes::Point;
   }
   else if ( mLineRadioButton->isChecked() )
   {
-    return QgsWkbTypes::LineString;
+    wkbType = QgsWkbTypes::LineString;
   }
   else if ( mPolygonRadioButton->isChecked() )
   {
-    return QgsWkbTypes::Polygon;
+    wkbType = QgsWkbTypes::Polygon;
   }
   else if ( mMultiPointRadioButton->isChecked() )
   {
-    return QgsWkbTypes::MultiPoint;
+    wkbType = QgsWkbTypes::MultiPoint;
   }
   else if ( mMultiLineRadioButton->isChecked() )
   {
-    return QgsWkbTypes::MultiLineString;
+    wkbType = QgsWkbTypes::MultiLineString;
   }
   else if ( mMultiPolygonRadioButton->isChecked() )
   {
-    return QgsWkbTypes::MultiPolygon;
+    wkbType = QgsWkbTypes::MultiPolygon;
   }
-  return QgsWkbTypes::Unknown;
+
+  if (mGeometryWithZCheckBox->isChecked() && wkbType != QgsWkbTypes::Unknown && wkbType != QgsWkbTypes::NoGeometry)
+    wkbType = QgsWkbTypes::to25D(wkbType);
+
+  return wkbType;
 }
 
 QgsCoordinateReferenceSystem QgsNewMemoryLayerDialog::crs() const
