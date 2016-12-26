@@ -383,13 +383,7 @@
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mIconExpressionEditorOpen.svg</normaloff>:/images/themes/default/mIconExpressionEditorOpen.svg</iconset>
-                      </property>
-                      <property name="iconSize">
-                       <size>
-                        <width>24</width>
-                        <height>16</height>
-                       </size>
+                        <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
                       </property>
                      </widget>
                     </item>
@@ -544,9 +538,9 @@
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-11</y>
-                   <width>614</width>
-                   <height>420</height>
+                   <y>0</y>
+                   <width>348</width>
+                   <height>518</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -856,7 +850,7 @@
                            <number>9</number>
                           </property>
                           <item row="0" column="0">
-                           <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true"/>
+                           <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget"/>
                           </item>
                          </layout>
                         </widget>
@@ -943,8 +937,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>630</width>
-                   <height>409</height>
+                   <width>478</width>
+                   <height>303</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
@@ -1078,7 +1072,7 @@
                         </widget>
                        </item>
                        <item row="0" column="1" rowspan="2" colspan="4">
-                        <widget class="QgsFieldExpressionWidget" name="mSizeFieldExpressionWidget" native="true">
+                        <widget class="QgsFieldExpressionWidget" name="mSizeFieldExpressionWidget">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                            <horstretch>0</horstretch>
@@ -1259,8 +1253,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>630</width>
-                   <height>409</height>
+                   <width>296</width>
+                   <height>303</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12">
@@ -1621,8 +1615,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>630</width>
-                   <height>409</height>
+                   <width>106</width>
+                   <height>161</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -1840,8 +1834,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>630</width>
-                   <height>409</height>
+                   <width>341</width>
+                   <height>115</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1919,9 +1913,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsfieldexpressionwidget.h</header>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -1936,10 +1930,15 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsUnitSelectionWidget</class>
+   <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
-   <header>qgsunitselectionwidget.h</header>
+   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleRangeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalerangewidget.h</header>
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
@@ -1947,15 +1946,10 @@
    <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScaleRangeWidget</class>
+   <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
-   <header>qgsscalerangewidget.h</header>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
