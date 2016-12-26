@@ -32,7 +32,7 @@ class SampleService: public QgsService
     }
 
     void executeRequest( const QgsServerRequest& request, QgsServerResponse& response,
-                         QgsProject* project )
+                         const QgsProject* project )
     {
       Q_UNUSED( project );
       Q_UNUSED( request );

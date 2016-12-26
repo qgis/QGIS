@@ -24,18 +24,19 @@
 namespace QgsWms
 {
 
-  void writeGetContext( QgsServerInterface* serverIface, const QString& version,
-                        const QgsServerRequest& request, QgsServerResponse& response )
+  void writeGetContext( QgsServerInterface* serverIface, const QgsProject* project,
+                        const QString& version, const QgsServerRequest& request,
+                        QgsServerResponse& response )
   {
-    QDomDocument doc = getContext( serverIface, version, request );
+    QDomDocument doc = getContext( serverIface, project, version, request );
 
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( doc.toByteArray() );
   }
 
 
-  QDomDocument getContext( QgsServerInterface* serverIface, const QString& version,
-                           const QgsServerRequest& request )
+  QDomDocument getContext( QgsServerInterface* serverIface, const QgsProject* project,
+                           const QString& version, const QgsServerRequest& request )
   {
     Q_UNUSED( version );
 
@@ -63,7 +64,7 @@ namespace QgsWms
     owsContextElem.setAttribute( QStringLiteral( "version" ), QStringLiteral( "0.3.1" ) );
     doc.appendChild( owsContextElem );
 
-    QString hrefString = serviceUrl( request, configParser ).toString( QUrl::FullyDecoded );
+    QString hrefString = serviceUrl( request, project ).toString( QUrl::FullyDecoded );
     configParser->owsGeneralAndResourceList( owsContextElem, doc, hrefString );
 
     return doc;

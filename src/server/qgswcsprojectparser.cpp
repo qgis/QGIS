@@ -51,32 +51,6 @@ void QgsWCSProjectParser::serviceCapabilities( QDomElement& parentElement, QDomD
   mProjectParser->serviceCapabilities( parentElement, doc, QStringLiteral( "WCS" ) );
 }
 
-QString QgsWCSProjectParser::wcsServiceUrl() const
-{
-  QString url;
-
-  if ( !mProjectParser->xmlDocument() )
-  {
-    return url;
-  }
-
-  QDomElement propertiesElem = mProjectParser->propertiesElem();
-  if ( !propertiesElem.isNull() )
-  {
-    QDomElement wcsUrlElem = propertiesElem.firstChildElement( QStringLiteral( "WCSUrl" ) );
-    if ( !wcsUrlElem.isNull() )
-    {
-      url = wcsUrlElem.text();
-    }
-  }
-  return url;
-}
-
-QString QgsWCSProjectParser::serviceUrl() const
-{
-  return mProjectParser->serviceUrl();
-}
-
 void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDocument& doc ) const
 {
   const QList<QDomElement>& projectLayerElements = mProjectParser->projectLayerElements();

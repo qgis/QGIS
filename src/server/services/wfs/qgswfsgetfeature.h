@@ -27,8 +27,9 @@ namespace QgsWfs
 
   /** Output WFS  GetFeature response
    */
-  void writeGetFeature( QgsServerInterface* serverIface, const QString& version,
-                        const QgsServerRequest& request, QgsServerResponse& response );
+  void writeGetFeature( QgsServerInterface* serverIface, const QgsProject* project,
+                        const QString& version, const QgsServerRequest& request,
+                        QgsServerResponse& response );
 
 } // samespace QgsWfs
 

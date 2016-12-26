@@ -47,16 +47,6 @@ void QgsWfsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomD
   mProjectParser->serviceCapabilities( parentElement, doc, QStringLiteral( "WFS" ) );
 }
 
-QString QgsWfsProjectParser::serviceUrl() const
-{
-  return mProjectParser->serviceUrl();
-}
-
-QString QgsWfsProjectParser::wfsServiceUrl() const
-{
-  return mProjectParser->wfsServiceUrl();
-}
-
 void QgsWfsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const
 {
   const QList<QDomElement>& projectLayerElements = mProjectParser->projectLayerElements();

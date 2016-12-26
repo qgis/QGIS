@@ -733,7 +733,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   Q_CHECK_PTR( mapLayer );
 
   // have the layer restore state that is stored in Dom node
-  if ( mapLayer->readLayerXml( layerElem ) && mapLayer->isValid() )
+  if ( mapLayer->readLayerXml( layerElem, this ) && mapLayer->isValid() )
   {
     // postpone readMapLayer signal for vector layers with joins
     QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );

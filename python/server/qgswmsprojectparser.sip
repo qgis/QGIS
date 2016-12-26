@@ -28,11 +28,9 @@ class QgsWmsProjectParser : public QgsWmsConfigParser
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
-    void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const  /*override*/ ;
+    void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, const QString& serviceUrl, bool fullProjectSettings = false ) const  /*override*/ ;
 
     QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache = true ) const  /*override*/ ;
-
-    QString serviceUrl() const  /*override*/ ;
 
     QStringList wfsLayerNames() const  /*override*/ ;
 
@@ -49,8 +47,6 @@ class QgsWmsProjectParser : public QgsWmsConfigParser
     QFont legendLayerFont() const  /*override*/ ;
     QFont legendItemFont() const  /*override*/ ;
 
-    double maxWidth() const  /*override*/ ;
-    double maxHeight() const  /*override*/ ;
     double imageQuality() const  /*override*/ ;
     int wmsPrecision() const  /*override*/ ;
 
@@ -75,7 +71,7 @@ class QgsWmsProjectParser : public QgsWmsConfigParser
     QDomDocument getStyles( QStringList& layerList ) const  /*override*/ ;
 
     /** Returns the xml fragment of layers styles description*/
-    QDomDocument describeLayer( QStringList& layerList, const QString& hrefString ) const  /*override*/ ;
+    QDomDocument describeLayer( QStringList& layerList, const QString& wfsHrefString, const QString& wcsHrefString ) const  /*override*/ ;
 
     /** Returns if output are MM or PIXEL*/
     QgsUnitTypes::RenderUnit outputUnits() const  /*override*/ ;

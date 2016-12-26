@@ -39,6 +39,7 @@
 #include "qgsbufferserverresponse.h"
 #include "qgsfilterresponsedecorator.h"
 #include "qgsservice.h"
+#include "qgsserverprojectutils.h"
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>
@@ -351,6 +352,24 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
       //Config file path
       QString configFilePath = configPath( *sConfigFilePath, parameterMap );
 
+      // load the project if needed and not empty
+      auto projectIt = mProjectStore.find( configFilePath );
+      if ( projectIt == mProjectStore.constEnd() )
+      {
+        // load the project
+        QgsProject* project = new QgsProject();
+        project->setFileName( configFilePath );
+        if ( project->read() )
+        {
+          projectIt = mProjectStore.insert( configFilePath, project );
+        }
+        else
+        {
+          throw QgsServerException( QStringLiteral( "Project file error" ) );
+          // theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ), QStringLiteral( "Error reading the project file" ) ) );
+        }
+      }
+
       sServerInterface->setConfigFilePath( configFilePath );
 
       //Service parameter
@@ -379,7 +398,7 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
       QgsService* service = sServiceRegistry.getService( serviceString, versionString );
       if ( service )
       {
-        service->executeRequest( request, theResponse );
+        service->executeRequest( request, theResponse, projectIt.value() );
       }
       else
       {

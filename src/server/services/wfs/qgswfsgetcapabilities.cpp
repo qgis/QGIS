@@ -27,17 +27,17 @@ namespace QgsWfs
   /**
    * Output WFS  GetCapabilities response
    */
-  void writeGetCapabilities( QgsServerInterface* serverIface, const QString& version,
+  void writeGetCapabilities( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
                              const QgsServerRequest& request, QgsServerResponse& response )
   {
-    QDomDocument doc = createGetCapabilitiesDocument( serverIface, version, request );
+    QDomDocument doc = createGetCapabilitiesDocument( serverIface, project, version, request );
 
     response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
     response.write( doc.toByteArray() );
   }
 
 
-  QDomDocument createGetCapabilitiesDocument( QgsServerInterface* serverIface, const QString& version,
+  QDomDocument createGetCapabilitiesDocument( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
       const QgsServerRequest& request )
   {
     Q_UNUSED( version );
@@ -78,7 +78,7 @@ namespace QgsWfs
     dcpTypeElement.appendChild( httpElement );
 
     //Prepare url
-    QString hrefString = serviceUrl( request, configParser );
+    QString hrefString = serviceUrl( request, project );
 
     //only Get supported for the moment
     QDomElement getElement = doc.createElement( QStringLiteral( "Get" )/*wfs:Get*/ );

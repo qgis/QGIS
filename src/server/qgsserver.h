@@ -43,6 +43,7 @@
 
 class QgsServerRequest;
 class QgsServerResponse;
+class QgsProject;
 
 /** \ingroup server
  * The QgsServer class provides OGC web services.
@@ -130,6 +131,9 @@ class SERVER_EXPORT QgsServer
     static QgsServiceRegistry sServiceRegistry;
 
     static QgsServerSettings sSettings;
+
+    // map of QgsProject
+    QMap<QString, const QgsProject*> mProjectStore;
 };
 #endif // QGSSERVER_H
 

@@ -21,6 +21,7 @@
 
 #include "qgswfsutils.h"
 #include "qgsconfigcache.h"
+#include "qgsserverprojectutils.h"
 
 namespace QgsWfs
 {
@@ -44,16 +45,12 @@ namespace QgsWfs
     return parser;
   }
 
-  QString serviceUrl( const QgsServerRequest& request, QgsWfsProjectParser* parser )
+  QString serviceUrl( const QgsServerRequest& request, const QgsProject* project )
   {
     QString href;
-    if ( parser )
+    if ( project )
     {
-      href = parser->wfsServiceUrl();
-      if ( href.isEmpty() )
-      {
-        href = parser->serviceUrl();
-      }
+      href = QgsServerProjectUtils::wfsServiceUrl( *project );
     }
 
     // Build default url
@@ -69,7 +66,6 @@ namespace QgsWfs
 
       url.setQuery( q );
       href = url.toString( QUrl::FullyDecoded );
-
     }
 
     return  href;
