@@ -46,7 +46,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, QgsAdvancedDigitizin
 #ifdef Q_OS_WIN
     , mSkipNextContextMenuEvent( 0 )
 #endif
-    , mDefaultZValue(Qgis::DEFAULT_Z_COORDINATE)
+    , mDefaultZValue( Qgis::DEFAULT_Z_COORDINATE )
 {
   mCaptureMode = mode;
 

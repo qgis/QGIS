@@ -83,7 +83,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void deleteTempRubberBand();
 
     /**
-     * Return defalut Z value 
+     * Return defalut Z value
      */
     double getDefaultZValue() {return mDefaultZValue;};
 

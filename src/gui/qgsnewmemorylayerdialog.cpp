@@ -40,8 +40,8 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
 
   QgsWkbTypes::Type geometrytype = dialog.selectedType();
 
-  QString geomType = QgsWkbTypes::displayString(geometrytype);
-  if ( geomType.isNull())
+  QString geomType = QgsWkbTypes::displayString( geometrytype );
+  if ( geomType.isNull() )
     geomType = "none";
 
   QString layerProperties = QStringLiteral( "%1?" ).arg( geomType );
@@ -109,8 +109,8 @@ QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
     wkbType = QgsWkbTypes::MultiPolygon;
   }
 
-  if (mGeometryWithZCheckBox->isChecked() && wkbType != QgsWkbTypes::Unknown && wkbType != QgsWkbTypes::NoGeometry)
-    wkbType = QgsWkbTypes::to25D(wkbType);
+  if ( mGeometryWithZCheckBox->isChecked() && wkbType != QgsWkbTypes::Unknown && wkbType != QgsWkbTypes::NoGeometry )
+    wkbType = QgsWkbTypes::to25D( wkbType );
 
   return wkbType;
 }

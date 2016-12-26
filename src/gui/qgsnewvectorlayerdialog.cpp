@@ -159,8 +159,8 @@ QgsWkbTypes::Type QgsNewVectorLayerDialog::selectedType() const
     wkbType = QgsWkbTypes::Polygon;
   }
 
-  if (mGeometryWithZCheckBox->isChecked() && wkbType != QgsWkbTypes::Unknown)
-    wkbType = QgsWkbTypes::to25D(wkbType);
+  if ( mGeometryWithZCheckBox->isChecked() && wkbType != QgsWkbTypes::Unknown )
+    wkbType = QgsWkbTypes::to25D( wkbType );
 
   return wkbType;
 }
