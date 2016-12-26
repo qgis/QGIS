@@ -215,7 +215,7 @@ class ServiceAreaFromPoint(GeoAlgorithm):
             upperBoundary.append(graph.vertex(graph.edge(tree[i]).inVertex()).point())
             lowerBoundary.append(graph.vertex(graph.edge(tree[i]).outVertex()).point())
 
-        progress.setInfo(self.tr('Writting results...'))
+        progress.setInfo(self.tr('Writing results...'))
 
         fields = QgsFields()
         fields.append(QgsField('type', QVariant.String, '', 254, 0))

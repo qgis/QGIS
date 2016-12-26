@@ -1,6 +1,6 @@
 #!/bin/bash
 ###########################################################################
-#    chkspelling.sh
+#    chkspelling_ag.sh
 #    ---------------------
 #    Date                 : December 2016
 #    Copyright            : (C) 2016 by Denis Rouzaud
