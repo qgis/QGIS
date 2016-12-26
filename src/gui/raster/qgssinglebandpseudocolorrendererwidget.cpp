@@ -86,11 +86,8 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   mMinMaxContainerWidget->setLayout( layout );
   layout->addWidget( mMinMaxWidget );
 
-  connect( mMinMaxWidget, &QgsRasterMinMaxWidget::widgetChanged,
-           this, &QgsSingleBandPseudoColorRendererWidget::widgetChanged );
-
-  connect( mMinMaxWidget, &QgsRasterMinMaxWidget::load,
-           this, &QgsSingleBandPseudoColorRendererWidget::loadMinMax );
+  connect( mMinMaxWidget, &QgsRasterMinMaxWidget::widgetChanged, this, &QgsSingleBandPseudoColorRendererWidget::widgetChanged );
+  connect( mMinMaxWidget, &QgsRasterMinMaxWidget::load, this, &QgsSingleBandPseudoColorRendererWidget::loadMinMax );
 
   //fill available bands into combo box
   int nBands = provider->bandCount();
@@ -775,6 +772,7 @@ void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int theBandNo, double t
     mMaxLineEdit->setText( QString::number( theMax ) );
   }
   mDisableMinMaxWidgetRefresh = false;
+  classify();
 }
 
 void QgsSingleBandPseudoColorRendererWidget::setLineEditValue( QLineEdit * theLineEdit, double theValue )

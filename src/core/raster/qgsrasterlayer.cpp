@@ -1057,8 +1057,30 @@ void QgsRasterLayer::refreshRendererIfNeeded( QgsRasterRenderer* rasterRenderer,
                    SAMPLE_SIZE, min, max );
     sbpcr->setClassificationMin( min );
     sbpcr->setClassificationMax( max );
+
+    if ( sbpcr->shader() )
+    {
+      QgsColorRampShader* colorRampShader = dynamic_cast<QgsColorRampShader*>( sbpcr->shader()->rasterShaderFunction() );
+      if ( colorRampShader )
+      {
+        colorRampShader->classifyColorRamp( sbpcr->band(), theExtent, rasterRenderer->input() );
+      }
+    }
+
+    QgsSingleBandPseudoColorRenderer* r = dynamic_cast<QgsSingleBandPseudoColorRenderer*>( renderer() );
     dynamic_cast<QgsSingleBandPseudoColorRenderer*>( renderer() )->setClassificationMin( min );
     dynamic_cast<QgsSingleBandPseudoColorRenderer*>( renderer() )->setClassificationMax( max );
+
+    if ( r->shader() )
+    {
+      QgsColorRampShader* colorRampShader = dynamic_cast<QgsColorRampShader*>( r->shader()->rasterShaderFunction() );
+      if ( colorRampShader )
+      {
+        colorRampShader->classifyColorRamp( sbpcr->band(), theExtent, rasterRenderer->input() );
+      }
+    }
+
+    emit repaintRequested();
     emit styleChanged();
     emit rendererChanged();
     return;
