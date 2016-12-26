@@ -202,8 +202,9 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics( bool selectedOnly
   int row = 0;
   Q_FOREACH ( QgsStatisticalSummary::Statistic stat, statsToDisplay )
   {
+    double val = stats.statistic( stat );
     addRow( row, QgsStatisticalSummary::displayName( stat ),
-            QString::number( stats.statistic( stat ) ),
+            qIsNaN( val ) ? QString() : QString::number( val ),
             stats.count() != 0 );
     row++;
   }

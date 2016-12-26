@@ -135,7 +135,8 @@ class CORE_EXPORT QgsStatisticalSummary
 
     /** Returns the value of a specified statistic
      * @param stat statistic to return
-     * @returns calculated value of statistic
+     * @returns calculated value of statistic. A NaN value may be returned for invalid
+     * statistics.
      */
     double statistic( Statistic stat ) const;
 
@@ -152,35 +153,42 @@ class CORE_EXPORT QgsStatisticalSummary
      */
     double sum() const { return mSum; }
 
-    /** Returns calculated mean of values
+    /** Returns calculated mean of values. A NaN value may be returned if the mean cannot
+     * be calculated.
      */
     double mean() const { return mMean; }
 
     /** Returns calculated median of values. This is only calculated if Statistic::Median has
-     * been specified in the constructor or via setStatistics.
+     * been specified in the constructor or via setStatistics. A NaN value may be returned if the median cannot
+     * be calculated.
      */
     double median() const { return mMedian; }
 
-    /** Returns calculated minimum from values.
+    /** Returns calculated minimum from values. A NaN value may be returned if the minimum cannot
+     * be calculated.
      */
     double min() const { return mMin; }
 
-    /** Returns calculated maximum from values.
+    /** Returns calculated maximum from values. A NaN value may be returned if the maximum cannot
+     * be calculated.
      */
     double max() const { return mMax; }
 
-    /** Returns calculated range (difference between maximum and minimum values).
+    /** Returns calculated range (difference between maximum and minimum values). A NaN value may be returned if the range cannot
+     * be calculated.
      */
-    double range() const { return mMax - mMin; }
+    double range() const { return qIsNaN( mMax ) || qIsNaN( mMin ) ? std::numeric_limits<double>::quiet_NaN() : mMax - mMin; }
 
     /** Returns population standard deviation. This is only calculated if Statistic::StDev has
-     * been specified in the constructor or via setStatistics.
+     * been specified in the constructor or via setStatistics. A NaN value may be returned if the standard deviation cannot
+     * be calculated.
      * @see sampleStDev
      */
     double stDev() const { return mStdev; }
 
     /** Returns sample standard deviation. This is only calculated if Statistic::StDev has
-     * been specified in the constructor or via setStatistics.
+     * been specified in the constructor or via setStatistics. A NaN value may be returned if the standard deviation cannot
+     * be calculated.
      * @see stDev
      */
     double sampleStDev() const { return mSampleStdev; }
@@ -193,38 +201,43 @@ class CORE_EXPORT QgsStatisticalSummary
 
     /** Returns minority of values. The minority is the value with least occurances in the list
      * This is only calculated if Statistic::Minority has been specified in the constructor
-     * or via setStatistics.
+     * or via setStatistics. A NaN value may be returned if the minority cannot
+     * be calculated.
      * @see majority
      */
     double minority() const { return mMinority; }
 
     /** Returns majority of values. The majority is the value with most occurances in the list
      * This is only calculated if Statistic::Majority has been specified in the constructor
-     * or via setStatistics.
+     * or via setStatistics. A NaN value may be returned if the majority cannot
+     * be calculated.
      * @see minority
      */
     double majority() const { return mMajority; }
 
     /** Returns the first quartile of the values. The quartile is calculated using the
-     * "Tukey's hinges" method.
+     * "Tukey's hinges" method. A NaN value may be returned if the first quartile cannot
+     * be calculated.
      * @see thirdQuartile
      * @see interQuartileRange
      */
     double firstQuartile() const { return mFirstQuartile; }
 
     /** Returns the third quartile of the values. The quartile is calculated using the
-     * "Tukey's hinges" method.
+     * "Tukey's hinges" method. A NaN value may be returned if the third quartile cannot
+     * be calculated.
      * @see firstQuartile
      * @see interQuartileRange
      */
     double thirdQuartile() const { return mThirdQuartile; }
 
     /** Returns the inter quartile range of the values. The quartiles are calculated using the
-     * "Tukey's hinges" method.
+     * "Tukey's hinges" method. A NaN value may be returned if the IQR cannot
+     * be calculated.
      * @see firstQuartile
      * @see thirdQuartile
      */
-    double interQuartileRange() const { return mThirdQuartile - mFirstQuartile; }
+    double interQuartileRange() const { return qIsNaN( mThirdQuartile ) || qIsNaN( mFirstQuartile ) ? std::numeric_limits<double>::quiet_NaN() : mThirdQuartile - mFirstQuartile; }
 
     /** Returns the friendly display name for a statistic
      * @param statistic statistic to return name for
