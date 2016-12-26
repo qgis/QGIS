@@ -381,6 +381,18 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertTrue(ok)
         self.assertEqual(val, 0)
 
+        # min
+        agg = QgsAggregateCalculator(layer)
+        val, ok = agg.calculate(QgsAggregateCalculator.Min, 'fldint * 2')
+        self.assertTrue(ok)
+        self.assertEqual(val, None)
+
+        # max
+        agg = QgsAggregateCalculator(layer)
+        val, ok = agg.calculate(QgsAggregateCalculator.Max, 'fldint * 2')
+        self.assertTrue(ok)
+        self.assertEqual(val, None)
+
     def testStringToAggregate(self):
         """ test converting strings to aggregate types """
 

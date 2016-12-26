@@ -362,7 +362,8 @@ QVariant QgsMergeAttributesDialog::calcStatistic( int col, QgsStatisticalSummary
 
   summary.calculate( values );
 
-  return QVariant::fromValue( summary.statistic( stat ) );
+  double val = summary.statistic( stat );
+  return qIsNaN( val ) ? QVariant( QVariant::Double ) : val;
 }
 
 QVariant QgsMergeAttributesDialog::concatenationAttribute( int col )

@@ -107,7 +107,19 @@ void QgsStatisticalSummary::addVariant( const QVariant& value )
 void QgsStatisticalSummary::finalize()
 {
   if ( mCount == 0 )
+  {
+    mMin = std::numeric_limits<double>::quiet_NaN();
+    mMax = std::numeric_limits<double>::quiet_NaN();
+    mMean = std::numeric_limits<double>::quiet_NaN();
+    mMedian = std::numeric_limits<double>::quiet_NaN();
+    mStdev = std::numeric_limits<double>::quiet_NaN();
+    mSampleStdev = std::numeric_limits<double>::quiet_NaN();
+    mMinority = std::numeric_limits<double>::quiet_NaN();
+    mMajority = std::numeric_limits<double>::quiet_NaN();
+    mFirstQuartile = std::numeric_limits<double>::quiet_NaN();
+    mThirdQuartile = std::numeric_limits<double>::quiet_NaN();
     return;
+  }
 
   mMean = mSum / mCount;
 

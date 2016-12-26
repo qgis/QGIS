@@ -402,7 +402,8 @@ QVariant QgsAggregateCalculator::calculateNumericAggregate( QgsFeatureIterator& 
     }
   }
   s.finalize();
-  return s.statistic( stat );
+  double val = s.statistic( stat );
+  return qIsNaN( val ) ? QVariant() : val;
 }
 
 QVariant QgsAggregateCalculator::calculateStringAggregate( QgsFeatureIterator& fit, int attr, QgsExpression* expression,
