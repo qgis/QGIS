@@ -4690,6 +4690,10 @@ QString QgsExpression::formatPreviewString( const QVariant& value )
     else
       return tr( "<i>&lt;geometry: %1&gt;</i>" ).arg( QgsWKBTypes::displayString( geom.geometry()->wkbType() ) );
   }
+  else if ( !value.isValid() )
+  {
+    return tr( "<i>NULL</i>" );
+  }
   else if ( value.canConvert< QgsFeature >() )
   {
     //result is a feature
