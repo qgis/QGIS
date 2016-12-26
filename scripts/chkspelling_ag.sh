@@ -40,7 +40,7 @@ if [[ !  -z  $OUTPUT  ]]; then
   # < ---------- get files + error ---------------------------------------------------------------------->
   ag --smart-case --only-matching --nogroup --nonumbers --all-text --word-regexp -p $AGIGNORE "$RE" $FILES | \
   #                                     <-- generate sed command .... <------------------------------ get correction word ---------------------------------->    <------------------------------- match case ------------------------------------------->   <-----replace : by / and add word boundary------> ...finalize sed command>
-  sed -e 's/\(\S*\):\([[:alnum:]]*\)$/  echo "sed -i \x27s\/"$( echo "\2:$(ag --nonumbers --ignore-case --word-regexp \2 scripts\/spelling.dat | cut -d: -f2)" | sed -r \x27s\/([A-Z]+):(.*)\/\\1:\\U\\2\/; s\/([A-Z][a-z]+):([a-z])\/\\1:\\U\\2\\L\/\x27  | sed -r \x27s\/(\\S\*):\/\\\\b\\1\\\\b\\\/\/\x27)"\/g\x27 \1" /e' | \
+  sed -e 's/\(\S*\):\([[:alnum:]]*\)$/  echo "sed -i \x27s\/\/"$( echo "\2:$(ag --nonumbers --ignore-case --word-regexp \2 scripts\/spelling.dat | cut -d: -f2)" | sed -r \x27s\/([A-Z]+):(.*)\/\\1:\\U\\2\/; s\/([A-Z][a-z]+):([a-z])\/\\1:\\U\\2\\L\/\x27  | sed -r \x27s\/(\\S\*):\/\\\\b\\1\\\\b\\\/\/\x27)"\/g\x27 \1" /e' | \
   # remove duplicate line
   sort -u
   echo "****"

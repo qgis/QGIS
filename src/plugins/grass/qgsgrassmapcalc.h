@@ -87,7 +87,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     //! Grow canvas and move items
     void growCanvas( int left, int right, int top, int bottom );
 
-    //! Grow automaticaly if an item is near border
+    //! Grow automatically if an item is near border
     void autoGrow();
 
     void resizeCanvas( int width, int height );

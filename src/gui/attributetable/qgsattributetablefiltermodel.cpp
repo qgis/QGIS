@@ -409,7 +409,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
     if ( renderer && renderer->capabilities() & QgsFeatureRenderer::ScaleDependent )
     {
       // setup scale
-      // mapRenderer()->renderContext()->scale is not automaticaly updated when
+      // mapRenderer()->renderContext()->scale is not automatically updated when
       // render extent changes (because it's scale is used to identify if changed
       // since last render) -> use local context
       renderContext.setExtent( ms.visibleExtent() );

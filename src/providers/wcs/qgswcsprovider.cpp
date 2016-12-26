@@ -282,7 +282,7 @@ QgsWcsProvider::QgsWcsProvider( const QString& uri )
     QgsDebugMsg( QString( "myGdalDataType[%1] = %2" ).arg( i - 1 ).arg( myGdalDataType ) );
     mSrcGdalDataType.append( myGdalDataType );
 
-    // UMN Mapserver does not automaticaly set null value, METADATA wcs_rangeset_nullvalue must be used
+    // UMN Mapserver does not automatically set null value, METADATA wcs_rangeset_nullvalue must be used
     // http://lists.osgeo.org/pipermail/mapserver-users/2010-April/065328.html
 
     // TODO: This could be shared with GDAL provider

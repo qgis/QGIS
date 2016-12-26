@@ -201,7 +201,7 @@ QgsWebView *QgsIdentifyResultsWebView::createWindow( QWebPage::WebWindowType typ
 //    loaded and contentsSizeChanged () is emitted.
 //
 // 3) If QgsIdentifyResultsWebView is resized (on page load) after it was inserted into
-//    QTreeWidget, the row does not reflect that change automaticaly and
+//    QTreeWidget, the row does not reflect that change automatically and
 //    consecutive resize of QTreeWidget will cause to shrink QgsIdentifyResultsWebView to the
 //    original row height.  That is expected, Qt: "setItemWidget() should only
 //    be used to display static content...  => we must not change QgsIdentifyResultsWebView
