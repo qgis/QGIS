@@ -245,6 +245,11 @@ class ServiceAreaFromPoint(GeoAlgorithm):
 
         del writer
 
+        upperBoundary.append(startPoint)
+        lowerBoundary.append(startPoint)
+        geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
+        geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
+
         writer = self.getOutputFromName(
             self.OUTPUT_POLYGON).getVectorWriter(
                 fields,
