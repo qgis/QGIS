@@ -33,7 +33,7 @@ from qgis.core import QgsRectangle
 from qgis.analysis import (QgsInterpolator,
                            QgsTINInterpolator,
                            QgsGridFileWriter
-                          )
+                           )
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -42,10 +42,10 @@ from processing.core.parameters import (Parameter,
                                         ParameterExtent,
                                         ParameterSelection,
                                         _splitParameterOptions
-                                       )
+                                        )
 from processing.core.outputs import (OutputRaster,
                                      OutputVector
-                                    )
+                                     )
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -90,8 +90,8 @@ class TinInterpolation(GeoAlgorithm):
                     return True
 
                 if value == '':
-                   if not self.optional:
-                       return False
+                    if not self.optional:
+                        return False
 
                 if isinstance(value, str):
                     self.value = value if value != '' else None
@@ -111,7 +111,7 @@ class TinInterpolation(GeoAlgorithm):
             def fromScriptCode(self, line):
                 isOptional, name, definition = _splitParameterOptions(line)
                 descName = _createDescriptiveName(name)
-                parent =  definition.lower().strip()[len('interpolation data') + 1:]
+                parent = definition.lower().strip()[len('interpolation data') + 1:]
                 return ParameterInterpolationData(name, description, parent)
 
             @staticmethod

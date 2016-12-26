@@ -34,12 +34,12 @@ from qgis.PyQt.QtGui import (QIcon,
                              QColor)
 from qgis.PyQt.QtWidgets import (QTreeWidgetItem,
                                  QComboBox
-                                )
+                                 )
 from qgis.core import (QgsApplication,
                        QgsMapLayer,
                        QgsMapLayerProxyModel,
                        QgsWkbTypes
-                      )
+                       )
 from qgis.gui import QgsFieldProxyModel
 from qgis.analysis import QgsInterpolator
 
@@ -103,7 +103,7 @@ class InterpolationDataWidget(BASE, WIDGET):
 
     def addLayerData(self, layerName, attribute):
         item = QTreeWidgetItem()
-        item.setText(0, layerName);
+        item.setText(0, layerName)
         item.setText(1, attribute)
         self.layersTree.addTopLevelItem(item)
 
@@ -111,7 +111,7 @@ class InterpolationDataWidget(BASE, WIDGET):
         comboBox.addItem(self.tr('Points'))
         comboBox.addItem(self.tr('Structure lines'))
         comboBox.addItem(self.tr('Break lines'))
-        comboBox.setCurrentIndex( 0 )
+        comboBox.setCurrentIndex(0)
         self.layersTree.setItemWidget(item, 2, comboBox)
 
     def setValue(self, value):
@@ -156,9 +156,9 @@ class InterpolationDataWidget(BASE, WIDGET):
                     inputType = QgsInterpolator.BREAK_LINES
 
             layers += '{},{},{:d},{:d};'.format(layer.source(),
-                                               zCoord,
-                                               fieldIndex,
-                                               inputType)
+                                                zCoord,
+                                                fieldIndex,
+                                                inputType)
         return layers[:-1]
 
 

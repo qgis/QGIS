@@ -33,7 +33,7 @@ from qgis.core import QgsRectangle
 from qgis.analysis import (QgsInterpolator,
                            QgsIDWInterpolator,
                            QgsGridFileWriter
-                          )
+                           )
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -41,7 +41,7 @@ from processing.core.parameters import (Parameter,
                                         ParameterNumber,
                                         ParameterExtent,
                                         _splitParameterOptions
-                                       )
+                                        )
 from processing.core.outputs import OutputRaster
 from processing.tools import dataobjects
 
@@ -82,8 +82,8 @@ class IdwInterpolation(GeoAlgorithm):
                     return True
 
                 if value == '':
-                   if not self.optional:
-                       return False
+                    if not self.optional:
+                        return False
 
                 if isinstance(value, str):
                     self.value = value if value != '' else None
@@ -103,7 +103,7 @@ class IdwInterpolation(GeoAlgorithm):
             def fromScriptCode(self, line):
                 isOptional, name, definition = _splitParameterOptions(line)
                 descName = _createDescriptiveName(name)
-                parent =  definition.lower().strip()[len('interpolation data') + 1:]
+                parent = definition.lower().strip()[len('interpolation data') + 1:]
                 return ParameterInterpolationData(name, description, parent)
 
             @staticmethod

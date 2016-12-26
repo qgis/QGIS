@@ -424,7 +424,7 @@ bool RScodec::encode( unsigned char *data, unsigned char *parity )
    symbols will be okay and that if we are in luck, the errors are in the
    parity part of the transmitted codeword).  Of course, these insoluble cases
    can be returned as error flags to the calling routine if desired.   */
-/** Return value: number of corrected errors or -1 if can't correct it */
+//! Return value: number of corrected errors or -1 if can't correct it
 int RScodec::decode( unsigned char *data )
 {
   if ( !isOk ) return -1;
