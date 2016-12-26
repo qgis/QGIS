@@ -60,6 +60,11 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     void deleteTempRubberBand();
 
+    /**
+     * Return defalut Z value 
+     */
+    double getDefaultZValue();
+
   private slots:
     void validationFinished();
     void currentLayerChanged( QgsMapLayer *layer );
