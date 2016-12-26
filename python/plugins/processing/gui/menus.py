@@ -70,7 +70,7 @@ defaultMenuEntries.update({'qgis:definecurrentprojection': managementToolsMenu,
                            'qgis:splitvectorlayer': managementToolsMenu,
                            'qgis:mergevectorlayers': managementToolsMenu,
                            'qgis:createspatialindex': managementToolsMenu})
-"""
+
 rasterMenu = Processing.tr('&Raster')
 projectionsMenu = rasterMenu + "/" + Processing.tr('Projections')
 defaultMenuEntries.update({'gdalogr:warpreproject':projectionsMenu,
@@ -88,7 +88,8 @@ defaultMenuEntries.update({'gdalogr:contour':extractionMenu,
                            'gdalogr:cliprasterbyextent':extractionMenu,
                            'gdalogr:cliprasterbymasklayer':extractionMenu})
 analysisMenu = rasterMenu + "/" + Processing.tr('Analysis')
-defaultMenuEntries.update({'gdalogr:sieve':analysisMenu, 'gdalogr:nearblack':analysisMenu,
+defaultMenuEntries.update({'gdalogr:sieve':analysisMenu,
+                           'gdalogr:nearblack':analysisMenu,
                            'gdalogr:fillnodata':analysisMenu,
                            'gdalogr:proximity':analysisMenu,
                            'gdalogr:griddatametrics':analysisMenu,
@@ -107,7 +108,6 @@ defaultMenuEntries.update({'gdalogr:buildvirtualraster':miscMenu,
                            'gdalogr:rasterinfo':miscMenu,
                            'gdalogr:overviews':miscMenu,
                            'gdalogr:tileindex':miscMenu})
-"""
 
 
 def initializeMenus():
