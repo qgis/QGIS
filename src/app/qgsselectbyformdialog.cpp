@@ -103,8 +103,7 @@ void QgsSelectByFormDialog::zoomToFeatures( const QString& filter )
     if ( mMessageBar )
     {
       mMessageBar->pushMessage( QString(),
-                                tr( "Zoomed to %1 matching %2" ).arg( featureCount )
-                                .arg( featureCount == 1 ? tr( "feature" ) : tr( "features" ) ),
+                                tr( "Zoomed to %n matching feature(s)", "number of matching features", featureCount ),
                                 QgsMessageBar::INFO,
                                 timeout );
     }
