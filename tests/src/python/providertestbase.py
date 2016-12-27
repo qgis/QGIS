@@ -802,3 +802,51 @@ class ProviderTestCase(object):
             # expect fail
             self.assertFalse(l.dataProvider().changeGeometryValues(changes),
                              'Provider reported no ChangeGeometries capability, but returned true to changeGeometryValues')
+
+    def testChangeFeatures(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        features = [f for f in l.dataProvider().getFeatures()]
+
+        # find 2 features to change attributes for
+        features = [f for f in l.dataProvider().getFeatures()]
+        # need to keep order here
+        to_change = [f for f in features if f.attributes()[0] == 1]
+        to_change.extend([f for f in features if f.attributes()[0] == 2])
+        # changes by feature id, for changeAttributeValues call
+        attribute_changes = {to_change[0].id(): {1: 501, 3: 'new string'}, to_change[1].id(): {1: 502, 4: 'NEW'}}
+        # changes by pk, for testing after retrieving changed features
+        new_attr_map = {1: {1: 501, 3: 'new string'}, 2: {1: 502, 4: 'NEW'}}
+
+        # find 2 features to change geometries for
+        to_change = [f for f in features if f.attributes()[0] == 1]
+        to_change.extend([f for f in features if f.attributes()[0] == 3])
+        # changes by feature id, for changeGeometryValues call
+        geometry_changes = {to_change[0].id(): QgsGeometry.fromWkt('Point (10 20)'), to_change[1].id(): QgsGeometry()}
+        # changes by pk, for testing after retrieving changed features
+        new_geom_map = {1: QgsGeometry.fromWkt('Point ( 10 20 )'), 3: QgsGeometry()}
+
+        if l.dataProvider().capabilities() & QgsVectorDataProvider.ChangeGeometries and l.dataProvider().capabilities() & QgsVectorDataProvider.ChangeAttributeValues:
+            # expect success
+            result = l.dataProvider().changeFeatures(attribute_changes, geometry_changes)
+            self.assertTrue(result,
+                            'Provider reported ChangeGeometries and ChangeAttributeValues capability, but returned False to changeFeatures')
+
+            # check result
+            self.testGetFeatures(l.dataProvider(), changed_attributes=new_attr_map, changed_geometries=new_geom_map)
+
+            # change empty list, should return true for consistency
+            self.assertTrue(l.dataProvider().changeFeatures({}, {}))
+
+        elif not l.dataProvider().capabilities() & QgsVectorDataProvider.ChangeGeometries:
+            # expect fail
+            self.assertFalse(l.dataProvider().changeFeatures(attribute_changes, geometry_changes),
+                             'Provider reported no ChangeGeometries capability, but returned true to changeFeatures')
+        elif not l.dataProvider().capabilities() & QgsVectorDataProvider.ChangeAttributeValues:
+            # expect fail
+            self.assertFalse(l.dataProvider().changeFeatures(attribute_changes, geometry_changes),
+                             'Provider reported no ChangeAttributeValues capability, but returned true to changeFeatures')

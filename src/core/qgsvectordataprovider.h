@@ -274,14 +274,18 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual bool renameAttributes( const QgsFieldNameMap& renamedAttributes );
 
     /**
-     * Changes attribute values of existing features.
+     * Changes attribute values of existing features. This should
+     * succeed if the provider reports the ChangeAttributeValues capability.
      * @param attr_map a map containing changed attributes
      * @return true in case of success and false in case of failure
      */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map );
 
     /**
-     * Changes attribute values and geometries of existing features.
+     * Changes attribute values and geometries of existing features. This should
+     * succeed if the provider reports both the ChangeAttributeValues and
+     * ChangeGeometries capabilities. Providers which report the ChangeFeatures
+     * capability implement an optimised version of this method.
      * @param attr_map a map containing changed attributes
      * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
      *                       that will have their geometries changed.

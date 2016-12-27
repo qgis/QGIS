@@ -128,9 +128,13 @@ bool QgsVectorDataProvider::changeGeometryValues( const QgsGeometryMap &geometry
 bool QgsVectorDataProvider::changeFeatures( const QgsChangedAttributesMap &attr_map,
     const QgsGeometryMap &geometry_map )
 {
-  Q_UNUSED( attr_map );
-  Q_UNUSED( geometry_map );
-  return false;
+  if ( !( capabilities() & ChangeAttributeValues ) || !( capabilities() & ChangeGeometries ) )
+    return false;
+
+  bool result = true;
+  result = result && changeAttributeValues( attr_map );
+  result = result && changeGeometryValues( geometry_map );
+  return result;
 }
 
 bool QgsVectorDataProvider::createSpatialIndex()
