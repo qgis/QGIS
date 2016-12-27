@@ -475,6 +475,7 @@ QgsColorRampShader        {#qgis_api_break_3_0_QgsColorRampShader}
 ------------------
 
 - maximumColorCacheSize() and setMaximumColorCacheSize() were no longer used and are removed.
+- ColorRamp_TYPE enum was renamed to Type, and its value names decapitalized
 
 
 QgsComposerArrow        {#qgis_api_break_3_0_QgsComposerArrow}
@@ -1465,6 +1466,7 @@ QgsSingleSymbolRendererWidget        {#qgis_api_break_3_0_QgsSingleSymbolRendere
 -----------------------------
 
 - sizeScaleFieldChanged() and scaleMethodChanged() were removed. These settings are no longer exposed in the widget's GUI.
+- The Mode enum was removed.
 
 
 QgsSnapper        {#qgis_api_break_3_0_QgsSnapper}

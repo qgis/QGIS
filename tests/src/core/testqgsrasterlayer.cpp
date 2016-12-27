@@ -101,7 +101,7 @@ class TestQgsRasterLayer : public QObject
                                   QgsColorRamp* colorRamp,
                                   int numberOfEntries );
     bool testColorRamp( const QString& name, QgsColorRamp* colorRamp,
-                        QgsColorRampShader::ColorRamp_TYPE type, int numberOfEntries );
+                        QgsColorRampShader::Type type, int numberOfEntries );
     QString mTestDataDir;
     QgsRasterLayer * mpRasterLayer;
     QgsRasterLayer * mpLandsatRasterLayer;
@@ -222,7 +222,7 @@ void TestQgsRasterLayer::pseudoColor()
 {
   QgsRasterShader* rasterShader = new QgsRasterShader();
   QgsColorRampShader* colorRampShader = new QgsColorRampShader();
-  colorRampShader->setColorRampType( QgsColorRampShader::INTERPOLATED );
+  colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
 
   //items to imitate old pseudo color renderer
   QList<QgsColorRampShader::ColorRampItem> colorRampItems;
@@ -297,7 +297,7 @@ void TestQgsRasterLayer::populateColorRampShader( QgsColorRampShader* colorRampS
 }
 
 bool TestQgsRasterLayer::testColorRamp( const QString& name, QgsColorRamp* colorRamp,
-                                        QgsColorRampShader::ColorRamp_TYPE type, int numberOfEntries )
+                                        QgsColorRampShader::Type type, int numberOfEntries )
 {
   QgsRasterShader* rasterShader = new QgsRasterShader();
   QgsColorRampShader* colorRampShader = new QgsColorRampShader();
@@ -320,8 +320,8 @@ void TestQgsRasterLayer::colorRamp1()
   stops.append( QgsGradientStop( 0.5, QColor( Qt::white ) ) );
   colorRamp->setStops( stops );
 
-  // QVERIFY( testColorRamp( "raster_colorRamp1", colorRamp, QgsColorRampShader::INTERPOLATED, 5 ) );
-  QVERIFY( testColorRamp( "raster_colorRamp1", colorRamp, QgsColorRampShader::DISCRETE, 10 ) );
+  // QVERIFY( testColorRamp( "raster_colorRamp1", colorRamp, QgsColorRampShader::Interpolated, 5 ) );
+  QVERIFY( testColorRamp( "raster_colorRamp1", colorRamp, QgsColorRampShader::Discrete, 10 ) );
   delete colorRamp;
 }
 
@@ -331,7 +331,7 @@ void TestQgsRasterLayer::colorRamp2()
   // ColorBrewer ramp
   QVERIFY( testColorRamp( "raster_colorRamp2",
                           &ramp,
-                          QgsColorRampShader::DISCRETE, 10 ) );
+                          QgsColorRampShader::Discrete, 10 ) );
 }
 
 void TestQgsRasterLayer::colorRamp3()
@@ -341,7 +341,7 @@ void TestQgsRasterLayer::colorRamp3()
   QgsCptCityColorRamp ramp( QStringLiteral( "cb/div/BrBG" ), QStringLiteral( "_10" ) );
   QVERIFY( testColorRamp( "raster_colorRamp3",
                           &ramp,
-                          QgsColorRampShader::DISCRETE, 10 ) );
+                          QgsColorRampShader::Discrete, 10 ) );
   QgsCptCityArchive::clearArchives();
 }
 
@@ -351,7 +351,7 @@ void TestQgsRasterLayer::colorRamp4()
   QgsCptCityColorRamp ramp( QStringLiteral( "grass/elevation" ), QLatin1String( "" ) );
   QVERIFY( testColorRamp( "raster_colorRamp4",
                           &ramp,
-                          QgsColorRampShader::DISCRETE, 10 ) );
+                          QgsColorRampShader::Discrete, 10 ) );
 }
 
 void TestQgsRasterLayer::landsatBasic()
