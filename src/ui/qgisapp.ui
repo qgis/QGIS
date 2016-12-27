@@ -114,6 +114,11 @@
     <addaction name="mActionShowBookmarks"/>
     <addaction name="mActionDraw"/>
     <addaction name="separator"/>
+    <addaction name="mActionShowAllLayers"/>
+    <addaction name="mActionHideAllLayers"/>
+    <addaction name="mActionShowSelectedLayers"/>
+    <addaction name="mActionHideSelectedLayers"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="mLayerMenu">
     <property name="title">
@@ -175,11 +180,6 @@
     <addaction name="mActionAddToOverview"/>
     <addaction name="mActionAddAllToOverview"/>
     <addaction name="mActionRemoveAllFromOverview"/>
-    <addaction name="separator"/>
-    <addaction name="mActionShowAllLayers"/>
-    <addaction name="mActionHideAllLayers"/>
-    <addaction name="mActionShowSelectedLayers"/>
-    <addaction name="mActionHideSelectedLayers"/>
    </widget>
    <widget class="QMenu" name="mPluginMenu">
     <property name="title">
