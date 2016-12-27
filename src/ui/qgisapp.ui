@@ -72,8 +72,8 @@
      <addaction name="mActionSelectPolygon"/>
      <addaction name="mActionSelectFreehand"/>
      <addaction name="mActionSelectRadius"/>
-     <addaction name="mActionSelectByExpression"/>
      <addaction name="mActionSelectByForm"/>
+     <addaction name="mActionSelectByExpression"/>
      <addaction name="mActionDeselectAll"/>
      <addaction name="mActionSelectAll"/>
      <addaction name="mActionInvertSelection"/>
