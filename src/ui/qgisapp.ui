@@ -2243,7 +2243,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mIconExpressionSelect.svg</normaloff>:/images/themes/default/mIconExpressionSelect.svg</iconset>
    </property>
    <property name="text">
-    <string>Select By Expression...</string>
+    <string>Select Features by Expression...</string>
    </property>
    <property name="toolTip">
     <string>Select features using an expression</string>
