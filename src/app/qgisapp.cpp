@@ -1707,6 +1707,7 @@ void QgisApp::createActions()
   connect( mActionHideAllLayers, SIGNAL( triggered() ), this, SLOT( hideAllLayers() ) );
   connect( mActionShowSelectedLayers, SIGNAL( triggered() ), this, SLOT( showSelectedLayers() ) );
   connect( mActionHideSelectedLayers, SIGNAL( triggered() ), this, SLOT( hideSelectedLayers() ) );
+  connect( mActionHideDeselectedLayers, &QAction::triggered, this, &QgisApp::hideDeselectedLayers );
 
   // Plugin Menu Items
 
@@ -5783,6 +5784,17 @@ void QgisApp::hideSelectedLayers()
   }
 }
 
+void QgisApp::hideDeselectedLayers()
+{
+  QList<QgsLayerTreeLayer*> selectedLayerNodes = mLayerTreeView->selectedLayerNodes();
+
+  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
+  {
+    if ( selectedLayerNodes.contains( nodeLayer ) )
+      continue;
+    nodeLayer->setVisible( Qt::Unchecked );
+  }
+}
 
 // reimplements method from base (gui) class
 void QgisApp::showSelectedLayers()

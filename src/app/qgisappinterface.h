@@ -445,6 +445,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QAction *actionHideAllLayers() override;
     virtual QAction *actionShowAllLayers() override;
     virtual QAction *actionHideSelectedLayers() override;
+    virtual QAction *actionHideDeselectedLayers() override;
     virtual QAction *actionShowSelectedLayers() override;
 
     //! Plugin menu actions

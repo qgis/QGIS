@@ -118,6 +118,7 @@
     <addaction name="mActionHideAllLayers"/>
     <addaction name="mActionShowSelectedLayers"/>
     <addaction name="mActionHideSelectedLayers"/>
+    <addaction name="mActionHideDeselectedLayers"/>
     <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="mLayerMenu">
@@ -2423,6 +2424,15 @@ Acts on currently active editable layer</string>
    </property>
    <property name="text">
     <string>Hide Selected Layers</string>
+   </property>
+  </action>
+  <action name="mActionHideDeselectedLayers">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHideSelectedLayers.png</normaloff>:/images/themes/default/mActionHideSelectedLayers.png</iconset>
+   </property>
+   <property name="text">
+    <string>Hide Deselected Layers</string>
    </property>
   </action>
   <action name="mActionNewMemoryLayer">
