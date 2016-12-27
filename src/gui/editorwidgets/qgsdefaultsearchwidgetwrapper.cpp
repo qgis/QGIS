@@ -100,10 +100,6 @@ QgsSearchWidgetWrapper::FilterFlags QgsDefaultSearchWidgetWrapper::supportedFlag
     case QVariant::Double:
     case QVariant::LongLong:
     case QVariant::ULongLong:
-      //numeric
-      flags |= GreaterThan | LessThan | GreaterThanOrEqualTo | LessThanOrEqualTo;
-      break;
-
     case QVariant::Date:
     case QVariant::DateTime:
     case QVariant::Time:
