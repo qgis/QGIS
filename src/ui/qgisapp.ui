@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1018</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -64,20 +64,6 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="menuSelect">
-     <property name="title">
-      <string>Select</string>
-     </property>
-     <addaction name="mActionSelectFeatures"/>
-     <addaction name="mActionSelectPolygon"/>
-     <addaction name="mActionSelectFreehand"/>
-     <addaction name="mActionSelectRadius"/>
-     <addaction name="mActionSelectByForm"/>
-     <addaction name="mActionSelectByExpression"/>
-     <addaction name="mActionDeselectAll"/>
-     <addaction name="mActionSelectAll"/>
-     <addaction name="mActionInvertSelection"/>
-    </widget>
     <widget class="QMenu" name="menuMeasure">
      <property name="title">
       <string>Measure</string>
@@ -110,7 +96,6 @@
     <addaction name="mActionZoomIn"/>
     <addaction name="mActionZoomOut"/>
     <addaction name="separator"/>
-    <addaction name="menuSelect"/>
     <addaction name="mActionIdentify"/>
     <addaction name="menuMeasure"/>
     <addaction name="mActionStatisticalSummary"/>
@@ -257,6 +242,20 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <widget class="QMenu" name="menuSelect">
+     <property name="title">
+      <string>Select</string>
+     </property>
+     <addaction name="mActionSelectFeatures"/>
+     <addaction name="mActionSelectPolygon"/>
+     <addaction name="mActionSelectFreehand"/>
+     <addaction name="mActionSelectRadius"/>
+     <addaction name="mActionSelectByForm"/>
+     <addaction name="mActionSelectByExpression"/>
+     <addaction name="mActionDeselectAll"/>
+     <addaction name="mActionSelectAll"/>
+     <addaction name="mActionInvertSelection"/>
+    </widget>
     <widget class="QMenu" name="mMenuPasteAs">
      <property name="title">
       <string>Paste Features as</string>
@@ -271,6 +270,7 @@
     <addaction name="mActionCopyFeatures"/>
     <addaction name="mActionPasteFeatures"/>
     <addaction name="mMenuPasteAs"/>
+    <addaction name="menuSelect"/>
     <addaction name="separator"/>
     <addaction name="mActionAddFeature"/>
     <addaction name="mActionCircularStringCurvePoint"/>
