@@ -532,7 +532,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   if (( mTableBased || mViewBased ) &&  !mReadOnly )
   {
     // enabling editing only for Tables [excluding Views and VirtualShapes]
-    mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::Truncate;
+    mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::FastTruncate;
     if ( !mGeometryColumn.isEmpty() )
       mEnabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
     mEnabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;

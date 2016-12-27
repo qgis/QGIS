@@ -1135,7 +1135,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
       if ( testAccess.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
       {
         // DELETE
-        mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::Truncate;
+        mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::FastTruncate;
       }
 
       if ( testAccess.PQgetvalue( 0, 1 ) == QLatin1String( "t" ) )
