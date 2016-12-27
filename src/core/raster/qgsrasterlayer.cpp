@@ -910,12 +910,16 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
   QgsRasterMinMaxOrigin myMinMaxOrigin;
   QgsRasterRenderer* myRasterRenderer = nullptr;
   QgsSingleBandGrayRenderer* myGrayRenderer = nullptr;
+  QgsSingleBandPseudoColorRenderer* myPseudoColorRenderer = nullptr;
   QgsMultiBandColorRenderer* myMultiBandRenderer = nullptr;
   QString rendererType  = rasterRenderer->type();
   if ( rendererType == QLatin1String( "singlebandgray" ) )
   {
     myGrayRenderer = dynamic_cast<QgsSingleBandGrayRenderer*>( rasterRenderer );
-    if ( !myGrayRenderer ) return;
+    if ( !myGrayRenderer )
+    {
+      return;
+    }
     myBands << myGrayRenderer->grayBand();
     myRasterRenderer = myGrayRenderer;
     myMinMaxOrigin = myGrayRenderer->minMaxOrigin();
@@ -923,10 +927,24 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
   else if ( rendererType == QLatin1String( "multibandcolor" ) )
   {
     myMultiBandRenderer = dynamic_cast<QgsMultiBandColorRenderer*>( rasterRenderer );
-    if ( !myMultiBandRenderer ) return;
+    if ( !myMultiBandRenderer )
+    {
+      return;
+    }
     myBands << myMultiBandRenderer->redBand() << myMultiBandRenderer->greenBand() << myMultiBandRenderer->blueBand();
     myRasterRenderer = myMultiBandRenderer;
     myMinMaxOrigin = myMultiBandRenderer->minMaxOrigin();
+  }
+  else if ( rendererType == QLatin1String( "singlebandpseudocolor" ) )
+  {
+    myPseudoColorRenderer = dynamic_cast<QgsSingleBandPseudoColorRenderer*>( rasterRenderer );
+    if ( !myPseudoColorRenderer )
+    {
+      return;
+    }
+    myBands << myPseudoColorRenderer->band();
+    myRasterRenderer = myPseudoColorRenderer;
+    myMinMaxOrigin = myPseudoColorRenderer->minMaxOrigin();
   }
 
   Q_FOREACH ( int myBand, myBands )
@@ -941,9 +959,25 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
       double max;
       computeMinMax( myBand, myMinMaxOrigin, theLimits, theExtent, theSampleSize, min, max );
 
-      myEnhancement->setMinimumValue( min );
-      myEnhancement->setMaximumValue( max );
-      myEnhancements.append( myEnhancement );
+      if ( rendererType == QLatin1String( "singlebandpseudocolor" ) )
+      {
+        myPseudoColorRenderer->setClassificationMin( min );
+        myPseudoColorRenderer->setClassificationMax( max );
+        if ( myPseudoColorRenderer->shader() )
+        {
+          QgsColorRampShader* colorRampShader = dynamic_cast<QgsColorRampShader*>( myPseudoColorRenderer->shader()->rasterShaderFunction() );
+          if ( colorRampShader )
+          {
+            colorRampShader->classifyColorRamp( myPseudoColorRenderer->band(), theExtent, myPseudoColorRenderer->input() );
+          }
+        }
+      }
+      else
+      {
+        myEnhancement->setMinimumValue( min );
+        myEnhancement->setMaximumValue( max );
+        myEnhancements.append( myEnhancement );
+      }
     }
     else
     {
@@ -1068,8 +1102,8 @@ void QgsRasterLayer::refreshRendererIfNeeded( QgsRasterRenderer* rasterRenderer,
     }
 
     QgsSingleBandPseudoColorRenderer* r = dynamic_cast<QgsSingleBandPseudoColorRenderer*>( renderer() );
-    dynamic_cast<QgsSingleBandPseudoColorRenderer*>( renderer() )->setClassificationMin( min );
-    dynamic_cast<QgsSingleBandPseudoColorRenderer*>( renderer() )->setClassificationMax( max );
+    r->setClassificationMin( min );
+    r->setClassificationMax( max );
 
     if ( r->shader() )
     {
