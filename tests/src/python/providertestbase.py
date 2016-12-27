@@ -737,6 +737,28 @@ class ProviderTestCase(object):
             self.assertFalse(l.dataProvider().deleteFeatures(to_delete),
                              'Provider reported no DeleteFeatures capability, but returned true to deleteFeatures')
 
+    def testTruncate(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        features = [f['pk'] for f in l.dataProvider().getFeatures()]
+
+        if l.dataProvider().capabilities() & QgsVectorDataProvider.FastTruncate or l.dataProvider().capabilities() & QgsVectorDataProvider.DeleteFeatures:
+            # expect success
+            result = l.dataProvider().truncate()
+            self.assertTrue(result, 'Provider reported FastTruncate or DeleteFeatures capability, but returned False to truncate()')
+
+            # check result
+            features = [f['pk'] for f in l.dataProvider().getFeatures()]
+            self.assertEqual(len(features), 0)
+        else:
+            # expect fail
+            self.assertFalse(l.dataProvider().truncate(),
+                             'Provider reported no FastTruncate or DeleteFeatures capability, but returned true to truncate()')
+
     def testChangeAttributes(self):
         if not getattr(self, 'getEditableLayer', None):
             return

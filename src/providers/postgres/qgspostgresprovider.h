@@ -126,9 +126,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void setExtent( QgsRectangle& newExtent );
 
     virtual QgsRectangle extent() const override;
-
-    /** Update the extent
-     */
     virtual void updateExtents() override;
 
     /**
@@ -145,13 +142,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void determinePrimaryKeyFromUriKeyColumn();
 
     QgsFields fields() const override;
-
-    /**
-     * Return a short comment for the data that this provider is
-     * providing access to (e.g. the comment for postgres table).
-     */
     QString dataComment() const override;
-
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
@@ -165,42 +156,14 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString defaultValueClause( int fieldId ) const override;
     QVariant defaultValue( int fieldId ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant& value = QVariant() ) const override;
-
-    /** Adds a list of features
-      @return true in case of success and false in case of failure*/
     bool addFeatures( QgsFeatureList & flist ) override;
-
-    /** Deletes a list of features
-      @param id list of feature ids
-      @return true in case of success and false in case of failure*/
     bool deleteFeatures( const QgsFeatureIds & id ) override;
-
+    bool truncate() override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool deleteAttributes( const QgsAttributeIds &name ) override;
     virtual bool renameAttributes( const QgsFieldNameMap& renamedAttributes ) override;
-
-    /** Changes attribute values of existing features
-      @param attr_map a map containing the new attributes. The integer is the feature id,
-      the first QString is the attribute name and the second one is the new attribute value
-      @return true in case of success and false in case of failure*/
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
-
-    /**
-       Changes geometries of existing features
-       @param geometry_map   A QMap containing the feature IDs to change the geometries of.
-                             the second map parameter being the new geometries themselves
-       @return               true in case of success and false in case of failure
-     */
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
-
-    /**
-     * Changes attribute values and geometries of existing features.
-     * @param attr_map a map containing changed attributes
-     * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
-     *                       that will have their geometries changed.
-     *                       The second map parameter being the new geometries themselves
-     * @return true in case of success and false in case of failure
-     */
     bool changeFeatures( const QgsChangedAttributesMap &attr_map, const QgsGeometryMap &geometry_map ) override;
 
     //! Get the postgres connection
@@ -559,6 +522,7 @@ class QgsPostgresSharedData
     QVariantList removeFid( QgsFeatureId fid );
     void insertFid( QgsFeatureId fid, const QVariantList& k );
     QVariantList lookupKey( QgsFeatureId featureId );
+    void clear();
 
   protected:
     QMutex mMutex; //!< Access to all data members is guarded by the mutex

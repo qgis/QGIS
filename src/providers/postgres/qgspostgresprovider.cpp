@@ -1135,7 +1135,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
       if ( testAccess.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
       {
         // DELETE
-        mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures;
+        mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::Truncate;
       }
 
       if ( testAccess.PQgetvalue( 0, 1 ) == QLatin1String( "t" ) )
@@ -2252,6 +2252,63 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
   catch ( PGException &e )
   {
     pushError( tr( "PostGIS error while deleting features: %1" ).arg( e.errorMessage() ) );
+    conn->rollback();
+    returnvalue = false;
+  }
+
+  conn->unlock();
+  return returnvalue;
+}
+
+bool QgsPostgresProvider::truncate()
+{
+  bool returnvalue = true;
+
+  if ( mIsQuery )
+  {
+    QgsDebugMsg( "Cannot truncate (is a query)" );
+    return false;
+  }
+
+  QgsPostgresConn* conn = connectionRW();
+  if ( !conn )
+  {
+    return false;
+  }
+  conn->lock();
+
+  try
+  {
+    conn->begin();
+
+    QString sql = QStringLiteral( "TRUNCATE %1" ).arg( mQuery );
+    QgsDebugMsg( "truncate sql: " + sql );
+
+    //send truncate statement and do error handling
+    QgsPostgresResult result( conn->PQexec( sql ) );
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
+      throw PGException( result );
+
+    returnvalue &= conn->commit();
+
+    if ( returnvalue )
+    {
+      if ( mSpatialColType == sctTopoGeometry )
+      {
+        // NOTE: in presence of multiple TopoGeometry objects
+        //       for the same table or when deleting a Geometry
+        //       layer _also_ having a TopoGeometry component,
+        //       orphans would still be left.
+        // TODO: decouple layer from table and signal table when
+        //       records are added or removed
+        dropOrphanedTopoGeoms();
+      }
+      mShared->clear();
+    }
+  }
+  catch ( PGException &e )
+  {
+    pushError( tr( "PostGIS error while truncating: %1" ).arg( e.errorMessage() ) );
     conn->rollback();
     returnvalue = false;
   }
@@ -4705,4 +4762,13 @@ QVariantList QgsPostgresSharedData::lookupKey( QgsFeatureId featureId )
   if ( it != mFidToKey.constEnd() )
     return it.value();
   return QVariantList();
+}
+
+void QgsPostgresSharedData::clear()
+{
+  QMutexLocker locker( &mMutex );
+  mFidToKey.clear();
+  mKeyToFid.clear();
+  mFeaturesCounted = -1;
+  mFidCounter = 0;
 }

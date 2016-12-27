@@ -141,10 +141,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       @return true in case of success and false in case of failure*/
     bool addFeatures( QgsFeatureList & flist ) override;
 
-    /** Deletes a list of features
-      @param id list of feature ids
-      @return true in case of success and false in case of failure*/
     bool deleteFeatures( const QgsFeatureIds & id ) override;
+    bool truncate() override;
 
     /** Adds new attributes
       @param name map with attribute name as key and type as value

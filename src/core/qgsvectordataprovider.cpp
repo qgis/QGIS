@@ -69,6 +69,20 @@ bool QgsVectorDataProvider::deleteFeatures( const QgsFeatureIds &ids )
   return false;
 }
 
+bool QgsVectorDataProvider::truncate()
+{
+  if ( !( capabilities() & DeleteFeatures ) )
+    return false;
+
+  QgsFeatureIds toDelete;
+  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+    toDelete << f.id();
+
+  return deleteFeatures( toDelete );
+}
+
 bool QgsVectorDataProvider::addAttributes( const QList<QgsField> &attributes )
 {
   Q_UNUSED( attributes );

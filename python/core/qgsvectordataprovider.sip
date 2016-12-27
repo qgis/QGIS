@@ -49,6 +49,8 @@ class QgsVectorDataProvider : QgsDataProvider
       ChangeFeatures,
       /** Supports renaming attributes (fields). Added in QGIS 2.16 */
       RenameAttributes,
+      //! Supports fast truncation of the layer (removing all features). Added in QGIS 3.0
+      FastTruncate,
     };
     typedef QFlags<QgsVectorDataProvider::Capability> Capabilities;
 
@@ -191,11 +193,21 @@ class QgsVectorDataProvider : QgsDataProvider
     virtual bool addFeatures( QList<QgsFeature> &flist /In,Out/ );
 
     /**
-     * Deletes one or more features
+     * Deletes one or more features from the provider. This requires the DeleteFeatures capability.
      * @param id list containing feature ids to delete
      * @return true in case of success and false in case of failure
+     * @see truncate()
      */
-    virtual bool deleteFeatures( const QSet<qint64> &id );
+    virtual bool deleteFeatures( const QgsFeatureIds &id );
+
+    /**
+     * Removes all features from the layer. This requires either the FastTruncate or DeleteFeatures capability.
+     * Providers with the FastTruncate capability will use an optimised method to truncate the layer.
+     * @returns true in case of success and false in case of failure.
+     * @note added in QGIS 3.0
+     * @see deleteFeatures()
+     */
+    virtual bool truncate();
 
     /**
      * Adds new attributes

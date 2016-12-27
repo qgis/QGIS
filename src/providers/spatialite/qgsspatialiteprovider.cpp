@@ -532,7 +532,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   if (( mTableBased || mViewBased ) &&  !mReadOnly )
   {
     // enabling editing only for Tables [excluding Views and VirtualShapes]
-    mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures;
+    mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::Truncate;
     if ( !mGeometryColumn.isEmpty() )
       mEnabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
     mEnabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
@@ -4108,6 +4108,36 @@ bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds &id )
     }
   }
   sqlite3_finalize( stmt );
+
+  ret = sqlite3_exec( mSqliteHandle, "COMMIT", nullptr, nullptr, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    handleError( sql, errMsg, true );
+    return false;
+  }
+
+  return true;
+}
+
+bool QgsSpatiaLiteProvider::truncate()
+{
+  char *errMsg = nullptr;
+  QString sql;
+
+  int ret = sqlite3_exec( mSqliteHandle, "BEGIN", nullptr, nullptr, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    handleError( sql, errMsg );
+    return false;
+  }
+
+  sql = QStringLiteral( "DELETE FROM %1" ).arg( quotedIdentifier( mTableName ) );
+  ret = sqlite3_exec( mSqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    handleError( sql, errMsg, true );
+    return false;
+  }
 
   ret = sqlite3_exec( mSqliteHandle, "COMMIT", nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
