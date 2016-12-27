@@ -2492,7 +2492,7 @@ Acts on currently active editable layer</string>
   <action name="mActionDiagramProperties">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDiagramProperties.svg</normaloff>:/images/themes/default/mActionDiagramProperties.svg</iconset>
+     <normaloff>:/images/themes/default/propertyicons/diagram.svg</normaloff>:/images/themes/default/propertyicons/diagram.svg</iconset>
    </property>
    <property name="text">
     <string>Diagram Options</string>
