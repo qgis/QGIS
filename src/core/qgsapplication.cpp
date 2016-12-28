@@ -113,6 +113,20 @@ const char* QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
 */
 QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath, const QString& platformName )
     : QApplication( argc, argv, GUIenabled )
+    , mActionScopeRegistry( nullptr )
+    , mProfiler( nullptr )
+    , mTaskManager( nullptr )
+    , mFieldFormatterRegistry( nullptr )
+    , mColorSchemeRegistry( nullptr )
+    , mPaintEffectRegistry( nullptr )
+    , mRendererRegistry( nullptr )
+    , mSvgCache( nullptr )
+    , mSymbolLayerRegistry( nullptr )
+    , mRasterRendererRegistry( nullptr )
+    , mGpsConnectionRegistry( nullptr )
+    , mDataItemProviderRegistry( nullptr )
+    , mPluginLayerRegistry( nullptr )
+    , mMessageLog( nullptr )
 {
   sPlatformName = platformName;
 
