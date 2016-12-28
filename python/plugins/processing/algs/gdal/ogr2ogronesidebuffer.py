@@ -113,12 +113,12 @@ class Ogr2OgrOneSideBuffer(GdalAlgorithm):
             if operation == 0:
                 sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})), * FROM '{}'".format(geometry, distance, leftright, layername)
             else:
-                sql = "SELECT ST_Union(ST_OffsetCurve({}, {}, {})) * FROM '{}'".format(geometry, distance, leftright, layername)
+                sql = "SELECT ST_Union(ST_OffsetCurve({}, {})) * FROM '{}'".format(geometry, distance, layername)
         else:
             if operation == 0:
                 sql = "SELECT ST_SingleSidedBuffer({},{},{}), * FROM '{}'".format(geometry, distance, leftright, layername)
             else:
-                sql = "SELECT ST_OffsetCurve({}, {}, {}), * FROM '{}'".format(geometry, distance, leftright, layername)
+                sql = "SELECT ST_OffsetCurve({}, {}), * FROM '{}'".format(geometry, distance, layername)
 
         if field is not None:
             sql = '"{} GROUP BY {}"'.format(sql, field)
