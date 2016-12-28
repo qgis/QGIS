@@ -811,7 +811,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
 )
 
-REMOVE_DEFINITIONS("-DGUI_EXPORT=${DLLIMPORT}")
+ADD_DEFINITIONS("\"-UGUI_EXPORT\"")
 ADD_DEFINITIONS("\"-DGUI_EXPORT=${DLLEXPORT}\"")
 
 # disable deprecation warnings for classes re-exporting deprecated methods
