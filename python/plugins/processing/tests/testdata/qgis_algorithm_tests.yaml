@@ -993,3 +993,93 @@ tests:
       OUTPUT_LAYER:
         name: expected/smoothed_lines_max_angle.gml
         type: vector
+  
+  - algorithm: qgis:creategridpolygon
+    name: Cread grid polygon (rectangle, without overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 0.0
+      HSPACING: 5.0
+      TYPE: '0'
+      VOVERLAY: 0.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/gridpolygon_no_overlay_rectangle.gml
+        type: vector
+  
+  - algorithm: qgis:creategridpolygon
+    name: Cread grid polygon (diamond, without overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 0.0
+      HSPACING: 5.0
+      TYPE: '1'
+      VOVERLAY: 0.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/gridpolygon_no_overlay_diamond.gml
+        type: vector
+  
+  - algorithm: qgis:creategridpolygon
+    name: Cread grid polygon (hexagon, without overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 0.0
+      HSPACING: 5.0
+      TYPE: '2'
+      VOVERLAY: 0.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/gridpolygon_no_overlay_hexagon.gml
+        type: vector
+        
+  - algorithm: qgis:creategridpolygon
+    name: Cread grid polygon (rectangle, with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 1.0
+      HSPACING: 5.0
+      TYPE: '0'
+      VOVERLAY: 1.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/gridpolygon_overlay_rectangle.gml
+        type: vector
+  
+  - algorithm: qgis:creategridpolygon
+    name: Cread grid polygon (diamond, with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 1.0
+      HSPACING: 5.0
+      TYPE: '1'
+      VOVERLAY: 1.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/gridpolygon_overlay_diamond.gml
+        type: vector
+  
+  - algorithm: qgis:creategridpolygon
+    name: Cread grid polygon (hexagon, with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 1.0
+      HSPACING: 5.0
+      TYPE: '2'
+      VOVERLAY: 1.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/gridpolygon_overlay_hexagon.gml
+        type: vector

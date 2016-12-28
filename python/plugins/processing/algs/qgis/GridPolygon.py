@@ -103,7 +103,7 @@ class GridPolygon(GeoAlgorithm):
                 
         if hSpacing <= hOverlay or vSpacing <= vOverlay:
             raise GeoAlgorithmExecutionException(
-                self.tr('Invalid overaly: %s/%s' % (hOverlay, vOverlay)))
+                self.tr('Invalid overlay: %s/%s' % (hOverlay, vOverlay)))
 
         if width < hSpacing:
             raise GeoAlgorithmExecutionException(
@@ -123,7 +123,7 @@ class GridPolygon(GeoAlgorithm):
                                                                      QgsWkbTypes.Polygon, crs)
 
         if idx == 0:
-            self._rectangleGrid(
+            self._rectangleGridPoly(
                 writer, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay)
         elif idx == 1:
             self._diamondGrid(
@@ -144,6 +144,7 @@ class GridPolygon(GeoAlgorithm):
         for col in range(0, columns):
             x1 = originX + (col * hSpacing - col * hOverlay)
             x2 = x1 + hSpacing
+
             for row in range(0, rows):
                 y1 = originY + (row * vSpacing - row * vOverlay)
                 y2 = y1 + vSpacing
@@ -156,7 +157,7 @@ class GridPolygon(GeoAlgorithm):
                 polyline.append(QgsPoint(x1, y1))
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
-                ft.setAttributes([x1, y1, x2, y2])
+                ft.setAttributes([x1, y2, x2, y1])
                 writer.addFeature(ft)
 
     def _diamond(self, xc, yc, h, w):
@@ -178,8 +179,8 @@ class GridPolygon(GeoAlgorithm):
         ho = halfHSpacing - hOverlay/2.0
         vo = halfVSpacing - vOverlay/2.0
 
-        columns = int(math.ceil(float(width) / ho))
-        rows = int(math.ceil(float(height) / vo))
+        columns = int(math.ceil(float(width + (halfVSpacing-vOverlay)) / vo))
+        rows = int(math.ceil(float(height + (halfHSpacing-hOverlay)) / ho))
 
         xc = originX
         yc = originY
@@ -187,18 +188,20 @@ class GridPolygon(GeoAlgorithm):
         for col in range(0, columns):
             if col % 2 == 0:
                 yc = originY
+                rowsrange = rows
             else:
                 yc = originY + vo
+                rowsrange = rows-1
             
-            for row in range(0, rows):
-                if row % 2 == 0:
-                    diamond = self._diamond(xc, yc, halfVSpacing, halfHSpacing)
+            for row in range(0, rowsrange):
+                if row % 2 == 0:                    
+                    diamond = self._diamond(xc, yc, halfHSpacing, halfVSpacing)
                     ft.setGeometry(QgsGeometry.fromPolygon([diamond]))
-                    
+                    ft.setAttributes([diamond[0].x(), diamond[1].y(),
+                                      diamond[2].x(), diamond[3].y()])
+                    writer.addFeature(ft)
                 yc += vo
-                ft.setAttributes([diamond[0].x(), diamond[3].y(),
-                                  diamond[2].x(), diamond[1].y()])
-                writer.addFeature(ft)
+
             xc += ho
 
             
@@ -228,8 +231,10 @@ class GridPolygon(GeoAlgorithm):
         vo = (xVertexHi + 0.211324865405215 * vSpacing) - vOverlay
         ho = halfHSpacing - hOverlay / 2.0
         
-        columns = int(math.ceil(float(width) / vo))
-        rows = int(math.ceil(float(height) / ho))
+        #columns = int(math.ceil(float(width) / vo))
+        #rows = int(math.ceil(float(height) / ho))
+        columns = int(math.ceil(float(width + (halfVSpacing-vOverlay)) / vo))
+        rows = int(math.ceil(float(height + (halfHSpacing-hOverlay)) / ho))
         
         xc = originX
         yc = originY
@@ -237,15 +242,17 @@ class GridPolygon(GeoAlgorithm):
         for col in range(0, columns):
             if col % 2 == 0:
                 yc = originY
+                rowsrange = rows
             else:
                 yc = originY + ho
+                rowsrange = rows-1
             
-            for row in range(0, rows):
+            for row in range(0, rowsrange):
                 if row % 2 == 0:
                     hexagon = self._hexagon(xc, yc, xVertexLo, xVertexHi, halfHSpacing, halfVSpacing)
                     ft.setGeometry(QgsGeometry.fromPolygon([hexagon]))
+                    ft.setAttributes([hexagon[0].x(), hexagon[1].y(), hexagon[3].x(), hexagon[4].y()])
+                    writer.addFeature(ft)
                     
                 yc += ho
-                ft.setAttributes([hexagon[0].x(), hexagon[4].y(), hexagon[3].x(), hexagon[1].y()])
-                writer.addFeature(ft)
             xc += vo
