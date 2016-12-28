@@ -24,7 +24,9 @@ class QgsMessageLogConsole;
 
 QgsMessageLog::QgsMessageLog()
     : QObject()
-{}
+{
+  qRegisterMetaType< QgsMessageLog::MessageLevel >( "QgsMessageLog::MessageLevel" );
+}
 
 void QgsMessageLog::logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level )
 {

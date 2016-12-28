@@ -34,6 +34,7 @@
 class CORE_EXPORT QgsMessageLog : public QObject
 {
     Q_OBJECT
+    Q_ENUMS( MessageLevel )
 
   public:
 
@@ -61,7 +62,6 @@ class CORE_EXPORT QgsMessageLog : public QObject
     void emitMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level );
 
 };
-
 
 /** \ingroup core
 \brief Default implementation of message logging interface

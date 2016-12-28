@@ -14,8 +14,10 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.testing import unittest
+from qgis.testing import start_app, unittest
 from qgis.core import QgsColorSchemeRegistry, QgsRecentColorScheme, QgsApplication
+
+start_app()
 
 
 class TestQgsColorSchemeRegistry(unittest.TestCase):
