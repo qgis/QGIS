@@ -54,14 +54,16 @@ class CORE_EXPORT QgsPluginLayerType
 //=============================================================================
 
 /** \ingroup core
-    a registry of plugin layers types
+ * A registry of plugin layers types.
+ *
+ * QgsPluginLayerRegistry is not usually directly created, but rather accessed through
+ * QgsApplication::pluginLayerRegistry().
 */
 class CORE_EXPORT QgsPluginLayerRegistry
 {
   public:
 
-    //! Means of accessing canonical single instance
-    static QgsPluginLayerRegistry* instance();
+    QgsPluginLayerRegistry();
 
     ~QgsPluginLayerRegistry();
 
@@ -87,13 +89,8 @@ class CORE_EXPORT QgsPluginLayerRegistry
 
     typedef QMap<QString, QgsPluginLayerType*> PluginLayerTypes;
 
-    //! Private since instance() creates it
-    QgsPluginLayerRegistry();
     QgsPluginLayerRegistry( const QgsPluginLayerRegistry& rh );
     QgsPluginLayerRegistry& operator=( const QgsPluginLayerRegistry& rh );
-
-    //! Pointer to canonical Singleton object
-    static QgsPluginLayerRegistry* _instance;
 
     PluginLayerTypes mPluginLayerTypes;
 };

@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsapplication.h"
 
 #include <QEventLoop>
 #include <QNetworkCacheMetaData>

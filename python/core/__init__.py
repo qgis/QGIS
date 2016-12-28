@@ -246,7 +246,7 @@ def fromFunction(description, function, *args, on_finished=None, flags=QgsTask.A
 
     task = QgsTask.fromFunction('my task', calculate,
             on_finished=calculation_finished)
-    QgsTaskManager.instance().addTask(task)
+    QgsApplication.taskManager().addTask(task)
 
     """
 

@@ -441,7 +441,7 @@ void QgsGPSInformationWidget::connected( QgsGPSConnection *conn )
   mGPSPlainTextEdit->appendPlainText( tr( "Connected!" ) );
   mConnectButton->setText( tr( "Dis&connect" ) );
   //insert connection into registry such that it can also be used by other dialogs or plugins
-  QgsGPSConnectionRegistry::instance()->registerConnection( mNmea );
+  QgsApplication::gpsConnectionRegistry()->registerConnection( mNmea );
   showStatusBarMessage( tr( "Connected to GPS device." ) );
 
   if ( mLogFileGroupBox->isChecked() && ! mTxtLogFile->text().isEmpty() )
@@ -481,7 +481,7 @@ void QgsGPSInformationWidget::disconnectGps()
     mLogFile = nullptr;
   }
 
-  QgsGPSConnectionRegistry::instance()->unregisterConnection( mNmea );
+  QgsApplication::gpsConnectionRegistry()->unregisterConnection( mNmea );
   delete mNmea;
   mNmea = nullptr;
   if ( mpMapMarker )  // marker should not be shown on GPS disconnected - not current position

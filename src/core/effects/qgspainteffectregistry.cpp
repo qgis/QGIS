@@ -56,12 +56,6 @@ QgsPaintEffectRegistry::~QgsPaintEffectRegistry()
   qDeleteAll( mMetadata );
 }
 
-QgsPaintEffectRegistry* QgsPaintEffectRegistry::instance()
-{
-  static QgsPaintEffectRegistry sInstance;
-  return &sInstance;
-}
-
 QgsPaintEffectAbstractMetadata *QgsPaintEffectRegistry::effectMetadata( const QString &name ) const
 {
   if ( mMetadata.contains( name ) )
@@ -97,7 +91,7 @@ QgsPaintEffect *QgsPaintEffectRegistry::createEffect( const QDomElement &element
 
   QString type = element.attribute( QStringLiteral( "type" ) );
 
-  QgsPaintEffect* effect = instance()->createEffect( type );
+  QgsPaintEffect* effect = QgsApplication::paintEffectRegistry()->createEffect( type );
   if ( !effect )
     return nullptr;
 

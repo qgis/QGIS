@@ -1751,7 +1751,7 @@ QgsSymbolLayer* QgsSvgMarkerSymbolLayer::create( const QgsStringMap& props )
     double outlineWidth;
     bool hasFillParam = false, hasFillOpacityParam = false, hasOutlineParam = false, hasOutlineWidthParam = false, hasOutlineOpacityParam = false;
     bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false, hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
-    QgsSvgCache::instance()->containsParams( name, hasFillParam, hasDefaultFillColor, fillColor,
+    QgsApplication::svgCache()->containsParams( name, hasFillParam, hasDefaultFillColor, fillColor,
         hasFillOpacityParam, hasDefaultFillOpacity, fillOpacity,
         hasOutlineParam, hasDefaultOutlineColor, outlineColor,
         hasOutlineWidthParam, hasDefaultOutlineWidth, outlineWidth,
@@ -1861,7 +1861,7 @@ void QgsSvgMarkerSymbolLayer::setPath( const QString& path )
   double outlineWidth, fillOpacity, outlineOpacity;
   bool hasFillParam = false, hasFillOpacityParam = false, hasOutlineParam = false, hasOutlineWidthParam = false, hasOutlineOpacityParam = false;
   bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false, hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
-  QgsSvgCache::instance()->containsParams( path, hasFillParam, hasDefaultFillColor, defaultFillColor,
+  QgsApplication::svgCache()->containsParams( path, hasFillParam, hasDefaultFillColor, defaultFillColor,
       hasFillOpacityParam, hasDefaultFillOpacity, fillOpacity,
       hasOutlineParam, hasDefaultOutlineColor, defaultOutlineColor,
       hasOutlineWidthParam, hasDefaultOutlineWidth, outlineWidth,
@@ -1983,7 +1983,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   if ( !context.renderContext().forceVectorOutput() && !rotated )
   {
     usePict = false;
-    const QImage& img = QgsSvgCache::instance()->svgAsImage( path, size, fillColor, outlineColor, outlineWidth,
+    const QImage& img = QgsApplication::svgCache()->svgAsImage( path, size, fillColor, outlineColor, outlineWidth,
                         context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor(), fitsInCache );
     if ( fitsInCache && img.width() > 1 )
     {
@@ -2006,7 +2006,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   if ( usePict || !fitsInCache )
   {
     p->setOpacity( context.alpha() );
-    const QPicture& pct = QgsSvgCache::instance()->svgAsPicture( path, size, fillColor, outlineColor, outlineWidth,
+    const QPicture& pct = QgsApplication::svgCache()->svgAsPicture( path, size, fillColor, outlineColor, outlineWidth,
                           context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor(), context.renderContext().forceVectorOutput() );
 
     if ( pct.width() > 1 )
@@ -2358,7 +2358,7 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
       outlineColor = QgsSymbolLayerUtils::decodeColor( colorString );
   }
 
-  const QByteArray &svgContent = QgsSvgCache::instance()->svgContent( path, size, fillColor, outlineColor, outlineWidth,
+  const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, size, fillColor, outlineColor, outlineWidth,
                                  context.renderContext().scaleFactor(),
                                  context.renderContext().rasterScaleFactor() );
 
@@ -2441,7 +2441,7 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext& c
       outlineColor = QgsSymbolLayerUtils::decodeColor( colorString );
   }
 
-  QSizeF svgViewbox = QgsSvgCache::instance()->svgViewboxSize( path, scaledSize, fillColor, outlineColor, outlineWidth,
+  QSizeF svgViewbox = QgsApplication::svgCache()->svgViewboxSize( path, scaledSize, fillColor, outlineColor, outlineWidth,
                       context.renderContext().scaleFactor(),
                       context.renderContext().rasterScaleFactor() );
 

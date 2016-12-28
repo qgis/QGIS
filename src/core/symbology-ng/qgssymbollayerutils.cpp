@@ -888,7 +888,7 @@ QgsSymbolLayer* QgsSymbolLayerUtils::loadSymbolLayer( QDomElement& element )
   QgsStringMap props = parseProperties( element );
 
   QgsSymbolLayer* layer;
-  layer = QgsSymbolLayerRegistry::instance()->createSymbolLayer( layerClass, props );
+  layer = QgsApplication::symbolLayerRegistry()->createSymbolLayer( layerClass, props );
   if ( layer )
   {
     layer->setLocked( locked );
@@ -899,7 +899,7 @@ QgsSymbolLayer* QgsSymbolLayerUtils::loadSymbolLayer( QDomElement& element )
     QDomElement effectElem = element.firstChildElement( QStringLiteral( "effect" ) );
     if ( !effectElem.isNull() )
     {
-      layer->setPaintEffect( QgsPaintEffectRegistry::instance()->createEffect( effectElem ) );
+      layer->setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
     }
     return layer;
   }
@@ -997,7 +997,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement& element,
       {
         case QgsWkbTypes::PolygonGeometry:
           // polygon layer and point symbolizer: draw poligon centroid
-          l = QgsSymbolLayerRegistry::instance()->createSymbolLayerFromSld( QStringLiteral( "CentroidFill" ), element );
+          l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "CentroidFill" ), element );
           if ( l )
             layers.append( l );
 
@@ -1013,7 +1013,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement& element,
 
         case QgsWkbTypes::LineGeometry:
           // line layer and point symbolizer: draw central point
-          l = QgsSymbolLayerRegistry::instance()->createSymbolLayerFromSld( QStringLiteral( "SimpleMarker" ), element );
+          l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "SimpleMarker" ), element );
           if ( l )
             layers.append( l );
 
@@ -1049,7 +1049,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement& element,
 
         case QgsWkbTypes::PointGeometry:
           // point layer and line symbolizer: draw a little line marker
-          l = QgsSymbolLayerRegistry::instance()->createSymbolLayerFromSld( QStringLiteral( "MarkerLine" ), element );
+          l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "MarkerLine" ), element );
           if ( l )
             layers.append( l );
 
@@ -1132,13 +1132,13 @@ QgsSymbolLayer* QgsSymbolLayerUtils::createFillLayerFromSld( QDomElement &elemen
   QgsSymbolLayer *l = nullptr;
 
   if ( needLinePatternFill( element ) )
-    l = QgsSymbolLayerRegistry::instance()->createSymbolLayerFromSld( QStringLiteral( "LinePatternFill" ), element );
+    l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "LinePatternFill" ), element );
   else if ( needPointPatternFill( element ) )
-    l = QgsSymbolLayerRegistry::instance()->createSymbolLayerFromSld( QStringLiteral( "PointPatternFill" ), element );
+    l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "PointPatternFill" ), element );
   else if ( needSvgFill( element ) )
-    l = QgsSymbolLayerRegistry::instance()->createSymbolLayerFromSld( QStringLiteral( "SVGFill" ), element );
+    l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "SVGFill" ), element );
   else
-    l = QgsSymbolLayerRegistry::instance()->createSymbolLayerFromSld( QStringLiteral( "SimpleFill" ), element );
+    l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "SimpleFill" ), element );
 
   return l;
 }
@@ -1155,9 +1155,9 @@ QgsSymbolLayer* QgsSymbolLayerUtils::createLineLayerFromSld( QDomElement &elemen
   QgsSymbolLayer *l = nullptr;
 
   if ( needMarkerLine( element ) )
-    l = QgsSymbolLayerRegistry::instance()->createSymbolLayerFromSld( QStringLiteral( "MarkerLine" ), element );
+    l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "MarkerLine" ), element );
   else
-    l = QgsSymbolLayerRegistry::instance()->createSymbolLayerFromSld( QStringLiteral( "SimpleLine" ), element );
+    l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "SimpleLine" ), element );
 
   return l;
 }
@@ -1174,13 +1174,13 @@ QgsSymbolLayer* QgsSymbolLayerUtils::createMarkerLayerFromSld( QDomElement &elem
   QgsSymbolLayer *l = nullptr;
 
   if ( needFontMarker( element ) )
-    l = QgsSymbolLayerRegistry::instance()->createSymbolLayerFromSld( QStringLiteral( "FontMarker" ), element );
+    l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "FontMarker" ), element );
   else if ( needSvgMarker( element ) )
-    l = QgsSymbolLayerRegistry::instance()->createSymbolLayerFromSld( QStringLiteral( "SvgMarker" ), element );
+    l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "SvgMarker" ), element );
   else if ( needEllipseMarker( element ) )
-    l = QgsSymbolLayerRegistry::instance()->createSymbolLayerFromSld( QStringLiteral( "EllipseMarker" ), element );
+    l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "EllipseMarker" ), element );
   else
-    l = QgsSymbolLayerRegistry::instance()->createSymbolLayerFromSld( QStringLiteral( "SimpleMarker" ), element );
+    l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "SimpleMarker" ), element );
 
   return l;
 }
@@ -1426,7 +1426,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
       map[QStringLiteral( "size" )] = QString::number( 6 );
       map[QStringLiteral( "angle" )] = QString::number( 0 );
       map[QStringLiteral( "offset" )] = encodePoint( QPointF( 0, 0 ) );
-      layers.append( QgsSymbolLayerRegistry::instance()->createSymbolLayer( QStringLiteral( "SimpleMarker" ), map ) );
+      layers.append( QgsApplication::symbolLayerRegistry()->createSymbolLayer( QStringLiteral( "SimpleMarker" ), map ) );
     }
   }
 
@@ -1607,7 +1607,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
           map[QStringLiteral( "angle" )] = QString::number( angle );
         if ( !offset.isNull() )
           map[QStringLiteral( "offset" )] = encodePoint( offset );
-        layers.append( QgsSymbolLayerRegistry::instance()->createSymbolLayer( QStringLiteral( "SvgMarker" ), map ) );
+        layers.append( QgsApplication::symbolLayerRegistry()->createSymbolLayer( QStringLiteral( "SvgMarker" ), map ) );
       }
       else if ( format == QLatin1String( "ttf" ) )
       {
@@ -1621,7 +1621,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
           map[QStringLiteral( "angle" )] = QString::number( angle );
         if ( !offset.isNull() )
           map[QStringLiteral( "offset" )] = encodePoint( offset );
-        layers.append( QgsSymbolLayerRegistry::instance()->createSymbolLayer( QStringLiteral( "FontMarker" ), map ) );
+        layers.append( QgsApplication::symbolLayerRegistry()->createSymbolLayer( QStringLiteral( "FontMarker" ), map ) );
       }
     }
   }

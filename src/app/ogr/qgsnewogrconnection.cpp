@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
 #include "qgsogrhelperfunctions.h"
+#include "qgsapplication.h"
 #include <ogr_api.h>
 #include <cpl_error.h>
 

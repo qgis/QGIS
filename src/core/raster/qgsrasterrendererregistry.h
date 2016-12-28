@@ -48,12 +48,17 @@ struct CORE_EXPORT QgsRasterRendererRegistryEntry
 
 /** \ingroup core
   * Registry for raster renderers.
+  *
+  * QgsRasterRendererRegistry is not usually directly created, but rather accessed through
+  * QgsApplication::rasterRendererRegistry().
+  *
   * \note not available in Python bindings
   */
 class CORE_EXPORT QgsRasterRendererRegistry
 {
   public:
-    static QgsRasterRendererRegistry* instance();
+
+    QgsRasterRendererRegistry();
 
     void insert( const QgsRasterRendererRegistryEntry& entry );
     void insertWidgetFunction( const QString& rendererName, QgsRasterRendererWidgetCreateFunc func );
@@ -65,11 +70,7 @@ class CORE_EXPORT QgsRasterRendererRegistry
         Caller takes ownership*/
     QgsRasterRenderer* defaultRendererForDrawingStyle( QgsRaster::DrawingStyle theDrawingStyle, QgsRasterDataProvider* provider ) const;
 
-  protected:
-    QgsRasterRendererRegistry();
-
   private:
-    static QgsRasterRendererRegistry* mInstance;
     QHash< QString, QgsRasterRendererRegistryEntry > mEntries;
     QStringList mSortedEntries;
 

@@ -823,7 +823,7 @@ QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document, bo
     else if ( type == QLatin1String( "plugin" ) )
     {
       QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
-      layer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
+      layer = QgsApplication::pluginLayerRegistry()->createLayer( typeName );
     }
 
     if ( !layer )

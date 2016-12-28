@@ -289,9 +289,9 @@ void QgsGrassPlugin::initGui()
   qGisInterface->addDockWidget( Qt::RightDockWidgetArea, mTools );
 
   // add edit renderer immediately so that if project was saved during editing, the layer can be loaded
-  if ( !QgsRendererRegistry::instance()->renderersList().contains( QStringLiteral( "grassEdit" ) ) )
+  if ( !QgsApplication::rendererRegistry()->renderersList().contains( QStringLiteral( "grassEdit" ) ) )
   {
-    QgsRendererRegistry::instance()->addRenderer( new QgsRendererMetadata( QStringLiteral( "grassEdit" ),
+    QgsApplication::rendererRegistry()->addRenderer( new QgsRendererMetadata( QStringLiteral( "grassEdit" ),
         QObject::tr( "GRASS edit" ),
         QgsGrassEditRenderer::create,
         QIcon( QgsApplication::defaultThemePath() + "rendererGrassSymbol.svg" ),

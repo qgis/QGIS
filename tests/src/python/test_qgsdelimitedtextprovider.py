@@ -43,7 +43,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsFeatureRequest,
     QgsRectangle,
-    QgsMessageLog,
+    QgsApplication,
     QgsFeature,
     QgsFeatureIterator
 )
@@ -118,11 +118,11 @@ class MessageLogger(QObject):
         self.tag = tag
 
     def __enter__(self):
-        QgsMessageLog.instance().messageReceived.connect(self.logMessage)
+        QgsApplication.messageLog().messageReceived.connect(self.logMessage)
         return self
 
     def __exit__(self, type, value, traceback):
-        QgsMessageLog.instance().messageReceived.disconnect(self.logMessage)
+        QgsApplication.messageLog().messageReceived.disconnect(self.logMessage)
 
     def logMessage(self, msg, tag, level):
         if tag == self.tag or not self.tag:

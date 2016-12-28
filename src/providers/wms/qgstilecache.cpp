@@ -16,7 +16,7 @@
 #include "qgstilecache.h"
 
 #include "qgsnetworkaccessmanager.h"
-
+#include "qgsapplication.h"
 #include <QAbstractNetworkCache>
 #include <QImage>
 

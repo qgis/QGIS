@@ -838,7 +838,7 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren()
       }
     }
 
-    Q_FOREACH ( QgsDataItemProvider* provider, QgsDataItemProviderRegistry::instance()->providers() )
+    Q_FOREACH ( QgsDataItemProvider* provider, QgsApplication::dataItemProviderRegistry()->providers() )
     {
       int capabilities = provider->capabilities();
 
@@ -1171,7 +1171,7 @@ QVector<QgsDataItem*> QgsFavoritesItem::createChildren( const QString& favDir )
 {
   QVector<QgsDataItem*> children;
   QString pathName = pathComponent( favDir );
-  Q_FOREACH ( QgsDataItemProvider* provider, QgsDataItemProviderRegistry::instance()->providers() )
+  Q_FOREACH ( QgsDataItemProvider* provider, QgsApplication::dataItemProviderRegistry()->providers() )
   {
     int capabilities = provider->capabilities();
 

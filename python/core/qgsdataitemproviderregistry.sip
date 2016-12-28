@@ -11,8 +11,7 @@ class QgsDataItemProviderRegistry
 #include <qgsdataitemproviderregistry.h>
 %End
   public:
-    static QgsDataItemProviderRegistry * instance();
-
+    QgsDataItemProviderRegistry();
     ~QgsDataItemProviderRegistry();
 
     //! Get list of available providers
@@ -25,7 +24,7 @@ class QgsDataItemProviderRegistry
     void removeProvider( QgsDataItemProvider* provider );
 
   private:
-    QgsDataItemProviderRegistry();
+
     QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry& rh );
 
 };

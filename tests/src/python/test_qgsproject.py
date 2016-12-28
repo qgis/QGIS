@@ -16,7 +16,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsProject, QgsMessageLog, QgsUnitTypes, QgsCoordinateReferenceSystem
+from qgis.core import QgsProject, QgsApplication, QgsUnitTypes, QgsCoordinateReferenceSystem
 
 from qgis.testing import start_app, unittest
 
@@ -90,7 +90,7 @@ class TestQgsProject(unittest.TestCase):
         for c in validInlineChars:
             validTokens.append(validBase[:4] + c + validBase[4:])
 
-        logger = QgsMessageLog.instance()
+        logger = QgsApplication.messageLog()
         logger.messageReceived.connect(self.catchMessage)
         prj = QgsProject.instance()
 

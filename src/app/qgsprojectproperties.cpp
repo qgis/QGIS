@@ -674,7 +674,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   connect( mButtonExportColors, SIGNAL( clicked( bool ) ), mTreeProjectColors, SLOT( showExportColorsDialog() ) );
 
   QList<QgsProjectColorScheme *> projectSchemes;
-  QgsColorSchemeRegistry::instance()->schemes( projectSchemes );
+  QgsApplication::colorSchemeRegistry()->schemes( projectSchemes );
   if ( projectSchemes.length() > 0 )
   {
     mTreeProjectColors->setScheme( projectSchemes.at( 0 ) );

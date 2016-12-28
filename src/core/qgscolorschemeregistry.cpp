@@ -21,28 +21,6 @@
 #include <QDir>
 #include <QFileInfoList>
 
-//
-// Static calls to enforce singleton behaviour
-//
-QgsColorSchemeRegistry *QgsColorSchemeRegistry::mInstance = nullptr;
-QgsColorSchemeRegistry *QgsColorSchemeRegistry::instance()
-{
-  if ( !mInstance )
-  {
-    mInstance = new QgsColorSchemeRegistry();
-
-    //add default color schemes
-    mInstance->addDefaultSchemes();
-    //add user schemes
-    mInstance->addUserSchemes();
-  }
-
-  return mInstance;
-}
-
-//
-// Main class begins now...
-//
 
 QgsColorSchemeRegistry::QgsColorSchemeRegistry()
 {
@@ -57,7 +35,7 @@ QgsColorSchemeRegistry::~QgsColorSchemeRegistry()
 void QgsColorSchemeRegistry::populateFromInstance()
 {
   //get schemes from global instance
-  QList< QgsColorScheme* > schemeList = QgsColorSchemeRegistry::instance()->schemes();
+  QList< QgsColorScheme* > schemeList = QgsApplication::colorSchemeRegistry()->schemes();
 
   //add to this scheme registry
   QList< QgsColorScheme* >::iterator it = schemeList.begin();

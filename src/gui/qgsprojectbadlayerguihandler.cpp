@@ -25,6 +25,7 @@
 #include "qgisgui.h"
 #include "qgsproviderregistry.h"
 #include "qgsproject.h"
+#include "qgsapplication.h"
 
 QgsProjectBadLayerGuiHandler::QgsProjectBadLayerGuiHandler()
 {

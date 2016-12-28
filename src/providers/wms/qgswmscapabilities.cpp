@@ -28,6 +28,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsunittypes.h"
 #include "qgscsexception.h"
+#include "qgsapplication.h"
 
 // %%% copied from qgswmsprovider.cpp
 static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );

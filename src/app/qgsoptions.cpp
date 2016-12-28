@@ -753,7 +753,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
 
   //find custom color scheme from registry
   QList<QgsCustomColorScheme *> customSchemes;
-  QgsColorSchemeRegistry::instance()->schemes( customSchemes );
+  QgsApplication::colorSchemeRegistry()->schemes( customSchemes );
   if ( customSchemes.length() > 0 )
   {
     mTreeCustomColors->setScheme( customSchemes.at( 0 ) );

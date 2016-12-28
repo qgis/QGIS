@@ -231,7 +231,7 @@ QgsFeatureRenderer* QgsGrassEditRenderer::create( QDomElement& element )
     {
       QString rendererType = elem.attribute( QStringLiteral( "type" ) );
       QgsDebugMsg( "childElem.tagName() = " + childElem.tagName() + " rendererType = " + rendererType );
-      QgsRendererAbstractMetadata* meta = QgsRendererRegistry::instance()->rendererMetadata( rendererType );
+      QgsRendererAbstractMetadata* meta = QgsApplication::rendererRegistry()->rendererMetadata( rendererType );
       if ( meta )
       {
         QgsFeatureRenderer* subRenderer = meta->createRenderer( elem );

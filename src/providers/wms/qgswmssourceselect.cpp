@@ -36,6 +36,7 @@
 #include "qgswmtsdimensions.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgswmscapabilities.h"
+#include "qgsapplication.h"
 
 #include <QButtonGroup>
 #include <QFileDialog>

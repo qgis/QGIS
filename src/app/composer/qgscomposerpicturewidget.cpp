@@ -417,7 +417,7 @@ QIcon QgsComposerPictureWidget::svgToIcon( const QString& filePath ) const
   bool fillParam, fillOpacityParam, outlineParam, outlineWidthParam, outlineOpacityParam;
   bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false,
                              hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
-  QgsSvgCache::instance()->containsParams( filePath, fillParam, hasDefaultFillColor, fill,
+  QgsApplication::svgCache()->containsParams( filePath, fillParam, hasDefaultFillColor, fill,
       fillOpacityParam, hasDefaultFillOpacity, fillOpacity,
       outlineParam, hasDefaultOutlineColor, outline,
       outlineWidthParam, hasDefaultOutlineWidth, outlineWidth,
@@ -434,7 +434,7 @@ QIcon QgsComposerPictureWidget::svgToIcon( const QString& filePath ) const
     outlineWidth = 0.6;
 
   bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-  const QImage& img = QgsSvgCache::instance()->svgAsImage( filePath, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
+  const QImage& img = QgsApplication::svgCache()->svgAsImage( filePath, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
 
   return QIcon( QPixmap::fromImage( img ) );
 }
@@ -458,7 +458,7 @@ void QgsComposerPictureWidget::updateSvgParamGui( bool resetValues )
   QColor defaultFill, defaultOutline;
   double defaultOutlineWidth, defaultFillOpacity, defaultOutlineOpacity;
   bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultOutlineColor, hasDefaultOutlineWidth, hasDefaultOutlineOpacity;
-  QgsSvgCache::instance()->containsParams( picturePath, hasFillParam, hasDefaultFillColor, defaultFill,
+  QgsApplication::svgCache()->containsParams( picturePath, hasFillParam, hasDefaultFillColor, defaultFill,
       hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
       hasOutlineParam, hasDefaultOutlineColor, defaultOutline,
       hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth,

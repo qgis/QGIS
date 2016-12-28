@@ -175,15 +175,17 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
  * \class QgsRendererRegistry
  * \brief Registry of renderers.
  *
- * This is a singleton, renderers can be added / removed at any time
+ * QgsRendererRegistry is not usually directly created, but rather accessed through
+ * QgsApplication::rendererRegistry().
+ *
  */
 
 class CORE_EXPORT QgsRendererRegistry
 {
   public:
 
-    //! Returns a pointer to the QgsRendererRegistry singleton
-    static QgsRendererRegistry* instance();
+    QgsRendererRegistry();
+    ~QgsRendererRegistry();
 
     //! Adds a renderer to the registry. Takes ownership of the metadata object.
     //! @param metadata renderer metadata
@@ -210,20 +212,15 @@ class CORE_EXPORT QgsRendererRegistry
     //! @note added in QGIS 2.16
     QStringList renderersList( const QgsVectorLayer* layer ) const;
 
-  protected:
-    //! protected constructor
-    QgsRendererRegistry();
-    ~QgsRendererRegistry();
+  private:
+    QgsRendererRegistry( const QgsRendererRegistry& rh );
+    QgsRendererRegistry& operator=( const QgsRendererRegistry& rh );
 
     //! Map of name to renderer
     QMap<QString, QgsRendererAbstractMetadata*> mRenderers;
 
     //! List of renderers, maintained in the order that they have been added
     QStringList mRenderersOrder;
-
-  private:
-    QgsRendererRegistry( const QgsRendererRegistry& rh );
-    QgsRendererRegistry& operator=( const QgsRendererRegistry& rh );
 };
 
 #endif // QGSRENDERERV2REGISTRY_H
