@@ -42,6 +42,7 @@ QgsMapThemes::QgsMapThemes()
   mMenu->addAction( QgisApp::instance()->actionHideAllLayers() );
   mMenu->addAction( QgisApp::instance()->actionShowSelectedLayers() );
   mMenu->addAction( QgisApp::instance()->actionHideSelectedLayers() );
+  mMenu->addAction( QgisApp::instance()->actionHideDeselectedLayers() );
   mMenu->addSeparator();
 
   mReplaceMenu = new QMenu( tr( "Replace Theme" ) );
