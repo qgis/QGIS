@@ -7492,6 +7492,8 @@ void QgisApp::selectByExpression()
   }
 
   QgsExpressionSelectionDialog* dlg = new QgsExpressionSelectionDialog( vlayer, QString(), this );
+  dlg->setMessageBar( messageBar() );
+  dlg->setMapCanvas( mapCanvas() );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
   dlg->show();
 }
