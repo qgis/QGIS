@@ -1,0 +1,35 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>gridpolygon_overlay_diamond</Name>
+    <ElementPath>gridpolygon_overlay_diamond</ElementPath>
+    <!--POLYGON-->
+    <GeometryType>3</GeometryType>
+    <DatasetSpecificInfo>
+      <FeatureCount>18</FeatureCount>
+      <ExtentXMin>-2.50000</ExtentXMin>
+      <ExtentXMax>12.50000</ExtentXMax>
+      <ExtentYMin>-2.50000</ExtentYMin>
+      <ExtentYMax>12.50000</ExtentYMax>
+    </DatasetSpecificInfo>
+    <PropertyDefn>
+      <Name>left</Name>
+      <ElementPath>left</ElementPath>
+      <Type>Real</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>bottom</Name>
+      <ElementPath>bottom</ElementPath>
+      <Type>Real</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>right</Name>
+      <ElementPath>right</ElementPath>
+      <Type>Real</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>top</Name>
+      <ElementPath>top</ElementPath>
+      <Type>Real</Type>
+    </PropertyDefn>
+  </GMLFeatureClass>
+</GMLFeatureClassList>
