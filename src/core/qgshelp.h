@@ -19,7 +19,8 @@
 #include <QObject>
 
 /** \ingroup core
- * @brief The class provides help URI for the given key.
+ * \class QgsHelp
+ * @brief Helper class for showing help topic URI for the given key.
  *
  * Help can be stored online, on the local directory or on the intranet
  * server. Location of the QGIS help can be configured in QGIS options.
@@ -33,32 +34,39 @@
  * If no help found, default error page with information how to setup
  * help system will be shown.
  *
+ * This class can be created directly, or accessed via
+ * QgsApplication::helpViewer().
+ *
  * @note added in QGIS 3.0
  */
 class CORE_EXPORT QgsHelp : public QObject
 {
     Q_OBJECT
+
   public:
+
+    /** Constructor for QgsHelp.
+     * @param parent parent QObject
+     */
+    QgsHelp( QObject* parent = nullptr );
+
+    virtual ~QgsHelp();
+
     /** Opens help topic for the given help key using default system
      * web browser. If help topic not found, builtin error page shown.
      * @param key key which identified help topic
      * @note added in QGIS 3.0
      */
-    static void openHelp( const QString& key );
+    void openHelp( const QString& key ) const;
 
     /** Returns URI of the help topic for the given key. If help topic
      * not found, URI of the builtin error page returned.
      * @param key key which identified help topic
      * @note added in QGIS 3.0
      */
-    static QUrl helpUrl( const QString& key );
+    QUrl helpUrl( const QString& key ) const;
 
   private:
-    //! Constructor
-    QgsHelp();
-
-    //! Destructor
-    ~QgsHelp();
 
     /** Check if given URL accessible by issuing HTTP HEAD request.
      * Returns true if URL accessible, false otherwise.
@@ -66,8 +74,6 @@ class CORE_EXPORT QgsHelp : public QObject
      * @note added in QGIS 3.0
      */
     bool urlExists( const QString& url ) const;
-
-    static QgsHelp* sHelp;
 };
 
 #endif // QGSHELP_H

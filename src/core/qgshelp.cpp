@@ -25,29 +25,26 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 
-QgsHelp *QgsHelp::sHelp = nullptr; // Singleton instance
-
-void QgsHelp::openHelp( const QString& key )
+QgsHelp::QgsHelp( QObject* parent )
+    : QObject( parent )
 {
-  if ( !sHelp )
-  {
-    sHelp = new QgsHelp();
-  }
-
-  QDesktopServices::openUrl( sHelp->helpUrl( key ) );
 }
 
-QUrl QgsHelp::helpUrl( const QString& key )
+QgsHelp::~QgsHelp()
 {
-  if ( !sHelp )
-  {
-    sHelp = new QgsHelp();
-  }
+}
 
-  QSettings settings;
+void QgsHelp::openHelp( const QString& key ) const
+{
+  QDesktopServices::openUrl( helpUrl( key ) );
+}
+
+QUrl QgsHelp::helpUrl( const QString& key ) const
+{
   QUrl helpNotFound = QUrl::fromLocalFile( QgsApplication::pkgDataPath() + "/doc/nohelp.html" );
 
-  QString paths = settings.value( QStringLiteral( "help/helpSearchPath" ), "" ).toString();
+  QSettings settings;
+  QStringList paths = settings.value( QStringLiteral( "help/helpSearchPath" ) ).toStringList();
   if ( paths.isEmpty() )
   {
     return helpNotFound;
@@ -57,7 +54,7 @@ QUrl QgsHelp::helpUrl( const QString& key )
   bool overrideLocale = settings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
   if ( overrideLocale )
   {
-    qgisLocale = settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString();
+    qgisLocale = settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString();
   }
   else
   {
@@ -77,60 +74,50 @@ QUrl QgsHelp::helpUrl( const QString& key )
 
   QString suffix = QStringLiteral( "%1/%2/docs/user_manual/%3" ).arg( qgisVersion ).arg( qgisLocale ).arg( key );
 
-  QUrl myUrl;
+  QUrl helpUrl;
   QString helpPath;
   bool helpFound = false;
 
-  QStringList pathList = paths.split( '|' );
-  QStringList::const_iterator pathIt = pathList.constBegin();
-  for ( ; pathIt != pathList.constEnd(); ++pathIt )
+  Q_FOREACH ( const QString& path, paths )
   {
-    helpPath = QStringLiteral( "%1/%2" ).arg( *pathIt ).arg( suffix );
+    helpPath = QStringLiteral( "%1/%2" ).arg( path ).arg( suffix );
 
-    if (( *pathIt ).startsWith( QStringLiteral( "http://" ) ) )
+    if ( path.startsWith( QStringLiteral( "http://" ) ) )
     {
-      if ( !sHelp->urlExists( helpPath ) )
+      if ( !urlExists( helpPath ) )
       {
         continue;
       }
-      myUrl = QUrl( helpPath );
+      helpUrl = QUrl( helpPath );
     }
     else
     {
-      if ( !QFileInfo( helpPath.mid( 0, helpPath.lastIndexOf( "#" ) ) ).exists() )
+      QString filePath = helpPath.mid( 0, helpPath.lastIndexOf( "#" ) );
+      if ( !QFileInfo::exists( filePath ) )
       {
         continue;
       }
-      myUrl = QUrl::fromLocalFile( helpPath );
-      myUrl.setFragment( helpPath.mid( helpPath.lastIndexOf( "#" ), -1 ) );
+      helpUrl = QUrl::fromLocalFile( filePath );
+      helpUrl.setFragment( helpPath.mid( helpPath.lastIndexOf( "#" ) + 1, -1 ) );
     }
 
     helpFound = true;
     break;
   }
 
-  return helpFound ? myUrl : helpNotFound;
-}
-
-
-QgsHelp::QgsHelp()
-{
-}
-
-QgsHelp::~QgsHelp()
-{
+  return helpFound ? helpUrl : helpNotFound;
 }
 
 bool QgsHelp::urlExists( const QString& url ) const
 {
-  QUrl myUrl( url );
+  QUrl helpUrl( url );
   QTcpSocket socket;
 
-  socket.connectToHost( myUrl.host(), 80 );
+  socket.connectToHost( helpUrl.host(), 80 );
   if ( socket.waitForConnected() )
   {
-    socket.write( "HEAD " + myUrl.path().toUtf8() + " HTTP/1.1\r\n"
-                  "Host: " + myUrl.host().toUtf8() + "\r\n\r\n" );
+    socket.write( "HEAD " + helpUrl.path().toUtf8() + " HTTP/1.1\r\n"
+                  "Host: " + helpUrl.host().toUtf8() + "\r\n\r\n" );
     if ( socket.waitForReadyRead() )
     {
       QByteArray bytes = socket.readAll();
