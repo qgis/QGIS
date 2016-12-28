@@ -266,18 +266,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   }
 
   //locations of the QGIS help
-  myPaths = mSettings->value( QStringLiteral( "help/helpSearchPath" ), "" ).toString();
-  if ( !myPaths.isEmpty() )
+  QStringList helpPathList = mSettings->value( QStringLiteral( "help/helpSearchPath" ) ).toStringList();
+  Q_FOREACH ( const QString& path, helpPathList )
   {
-    QStringList myPathList = myPaths.split( '|' );
-    QStringList::const_iterator pathIt = myPathList.constBegin();
-    for ( ; pathIt != myPathList.constEnd(); ++pathIt )
-    {
-      QTreeWidgetItem* item = new QTreeWidgetItem();
-      item->setText( 0, *pathIt );
-      item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
-      mHelpPathTreeWidget->addTopLevelItem( item );
-    }
+    QTreeWidgetItem* item = new QTreeWidgetItem();
+    item->setText( 0, path );
+    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
+    mHelpPathTreeWidget->addTopLevelItem( item );
   }
 
   //Network timeout
@@ -1112,20 +1107,15 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/browser/hiddenPaths" ), pathsList );
 
   //QGIS help locations
-  myPaths.clear();
+  QStringList helpPaths;
   for ( int i = 0; i < mHelpPathTreeWidget->topLevelItemCount(); ++i )
   {
-    QTreeWidgetItem* item = mHelpPathTreeWidget->topLevelItem( i );
-    if ( item )
+    if ( QTreeWidgetItem* item = mHelpPathTreeWidget->topLevelItem( i ) )
     {
-      if ( i != 0 )
-      {
-        myPaths += '|';
-      }
-      myPaths += item->text( 0 );
+      helpPaths << item->text( 0 );
     }
   }
-  mSettings->setValue( QStringLiteral( "help/helpSearchPath" ), myPaths );
+  mSettings->setValue( QStringLiteral( "help/helpSearchPath" ), helpPaths );
 
   //Network timeout
   mSettings->setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), mNetworkTimeoutSpinBox->value() );
@@ -1747,7 +1737,7 @@ void QgsOptions::on_mBtnRemovePluginPath_clicked()
 void QgsOptions::on_mBtnAddHelpPath_clicked()
 {
   QTreeWidgetItem* item = new QTreeWidgetItem();
-  item->setText( 0, QLatin1String( "" ) );
+  item->setText( 0, QString() );
   item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
   mHelpPathTreeWidget->addTopLevelItem( item );
 }
