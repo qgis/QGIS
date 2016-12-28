@@ -14,8 +14,11 @@
  ***************************************************************************/
 
 #include "qgsexpressionselectiondialog.h"
+
 #include "qgsapplication.h"
 #include "qgsexpression.h"
+#include "qgsgeometry.h"
+#include "qgsmessagebar.h"
 #include "qgsvectorlayer.h"
 
 #include <QSettings>
@@ -23,6 +26,8 @@
 QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* layer, const QString& startText, QWidget* parent )
     : QDialog( parent )
     , mLayer( layer )
+    , mMessageBar( nullptr )
+    , mMapCanvas( nullptr )
 {
   setupUi( this );
 
@@ -50,6 +55,9 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* laye
   << QgsExpressionContextUtils::layerScope( mLayer );
   mExpressionBuilder->setExpressionContext( context );
 
+  // by default, zoom to features is hidden, shown only if canvas is set
+  mButtonZoomToFeatures->setVisible( false );
+
   QSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/ExpressionSelectionDialog/geometry" ) ).toByteArray() );
 }
@@ -73,6 +81,17 @@ void QgsExpressionSelectionDialog::setGeomCalculator( const QgsDistanceArea & da
 {
   // Store in child widget only.
   mExpressionBuilder->setGeomCalculator( da );
+}
+
+void QgsExpressionSelectionDialog::setMessageBar( QgsMessageBar* messageBar )
+{
+  mMessageBar = messageBar;
+}
+
+void QgsExpressionSelectionDialog::setMapCanvas( QgsMapCanvas* canvas )
+{
+  mMapCanvas = canvas;
+  mButtonZoomToFeatures->setVisible( true );
 }
 
 void QgsExpressionSelectionDialog::on_mActionSelect_triggered()
@@ -100,6 +119,63 @@ void QgsExpressionSelectionDialog::on_mActionRemoveFromSelection_triggered()
 {
   mLayer->selectByExpression( mExpressionBuilder->expressionText(),
                               QgsVectorLayer::RemoveFromSelection );
+  saveRecent();
+}
+
+void QgsExpressionSelectionDialog::on_mButtonZoomToFeatures_clicked()
+{
+  if ( mExpressionBuilder->expressionText().isEmpty() || !mMapCanvas )
+    return;
+
+  QgsFeatureIds ids;
+
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+
+  QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( mExpressionBuilder->expressionText() )
+                              .setExpressionContext( context )
+                              .setSubsetOfAttributes( QgsAttributeList() );
+
+  QgsFeatureIterator features = mLayer->getFeatures( request );
+
+  QgsRectangle bbox;
+  bbox.setMinimal();
+  QgsFeature feat;
+  int featureCount = 0;
+  while ( features.nextFeature( feat ) )
+  {
+    QgsGeometry geom = feat.geometry();
+    if ( geom.isEmpty() || geom.geometry()->isEmpty() )
+      continue;
+
+    QgsRectangle r = mMapCanvas->mapSettings().layerExtentToOutputExtent( mLayer, geom.boundingBox() );
+    bbox.combineExtentWith( r );
+    featureCount++;
+  }
+  features.close();
+
+  QSettings settings;
+  int timeout = settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
+  if ( featureCount > 0 )
+  {
+    mMapCanvas->zoomToFeatureExtent( bbox );
+    if ( mMessageBar )
+    {
+      mMessageBar->pushMessage( QString(),
+                                tr( "Zoomed to %n matching feature(s)", "number of matching features", featureCount ),
+                                QgsMessageBar::INFO,
+                                timeout );
+    }
+  }
+  else if ( mMessageBar )
+  {
+    mMessageBar->pushMessage( QString(),
+                              tr( "No matching features found" ),
+                              QgsMessageBar::INFO,
+                              timeout );
+  }
   saveRecent();
 }
 

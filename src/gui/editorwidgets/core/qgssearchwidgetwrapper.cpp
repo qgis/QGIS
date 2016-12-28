@@ -50,7 +50,7 @@ QString QgsSearchWidgetWrapper::toString( QgsSearchWidgetWrapper::FilterFlag fla
     case EqualTo:
       return QObject::tr( "Equal to (=)" );
     case NotEqualTo:
-      return QObject::tr( "Not equal to" );
+      return QObject::tr( "Not equal to (!=)" );
     case GreaterThan:
       return QObject::tr( "Greater than (>)" );
     case LessThan:

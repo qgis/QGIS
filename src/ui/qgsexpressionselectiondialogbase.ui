@@ -30,14 +30,14 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="2">
+   <item row="1" column="3">
     <widget class="QPushButton" name="mPbnClose">
      <property name="text">
       <string>Close</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="1" column="2">
     <widget class="QToolButton" name="mButtonSelect">
      <property name="minimumSize">
       <size>
@@ -56,28 +56,35 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="1">
+    <widget class="QToolButton" name="mButtonZoomToFeatures">
+     <property name="text">
+      <string>Zoom to features</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0" colspan="4">
     <widget class="QgsExpressionBuilderWidget" name="mExpressionBuilder" native="true"/>
    </item>
   </layout>
   <action name="mActionSelect">
    <property name="text">
-    <string>Select</string>
+    <string>Select features</string>
    </property>
   </action>
   <action name="mActionAddToSelection">
    <property name="text">
-    <string>Add to selection</string>
+    <string>Add to current selection</string>
    </property>
   </action>
   <action name="mActionRemoveFromSelection">
    <property name="text">
-    <string>Remove from selection</string>
+    <string>Remove from current selection</string>
    </property>
   </action>
   <action name="mActionSelectIntersect">
    <property name="text">
-    <string>Select within selection</string>
+    <string>Filter current selection</string>
    </property>
   </action>
  </widget>
