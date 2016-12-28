@@ -420,7 +420,7 @@ QString QgsApplication::activeThemePath()
 
 QString QgsApplication::appIconPath()
 {
-  return iconsPath() + ( QDate::currentDate().month() == 12 ? tr( "qgis-icon-60x60_xmas.png", "December application icon" ) : QStringLiteral( "qgis-icon-60x60.png" ) );
+  return iconsPath() + QStringLiteral( "qgis-icon-60x60.png" );
 }
 
 QString QgsApplication::iconPath( const QString& iconFile )
