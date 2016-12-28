@@ -2028,7 +2028,11 @@ void QgisApp::createMenus()
   // keep plugins from hijacking About and Preferences application menus
   // these duplicate actions will be moved to application menus by Qt
   mProjectMenu->addAction( mActionAbout );
-  mProjectMenu->addAction( mActionOptions );
+  QAction* actionPrefs = new QAction( tr( "Preferences..." ), this );
+  actionPrefs->setMenuRole( QAction::PreferencesRole );
+  actionPrefs->setIcon( mActionOptions->icon() );
+  connect( actionPrefs, SIGNAL( triggered() ), this, SLOT( options() ) );
+  mProjectMenu->addAction( actionPrefs );
 
   // Window Menu
 

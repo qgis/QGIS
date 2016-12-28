@@ -96,6 +96,8 @@ class ProcessingPlugin(object):
             QIcon(os.path.join(cmd_folder, 'images', 'config.png')),
             self.tr('&Options...'), self.iface.mainWindow())
         self.configAction.setObjectName('configAction')
+        self.configAction.setMenuRole(QAction.NoRole)
+
         self.configAction.triggered.connect(self.openConfig)
         self.iface.registerMainWindowAction(self.configAction, 'Ctrl+Alt+C')
         self.menu.addAction(self.configAction)

@@ -1583,7 +1583,7 @@
     <string>&amp;Options...</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::PreferencesRole</enum>
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="mActionCustomProjection">
