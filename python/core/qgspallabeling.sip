@@ -408,7 +408,7 @@ class QgsPalLayerSettings
     bool centroidInside; // whether centroid-point calculated must be inside polygon
 
     /** Ordered list of predefined label positions for points. Positions earlier
-     * in the list will be prioritised over later positions. Only used when the placement
+     * in the list will be prioritized over later positions. Only used when the placement
      * is set to QgsPalLayerSettings::OrderedPositionsAroundPoint.
      * @note not available in Python bindings
      */

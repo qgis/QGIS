@@ -143,7 +143,7 @@ namespace pal
        */
       int createCandidatesOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
 
-      /** Generates candidates following a prioritised list of predefined positions around a point.
+      /** Generates candidates following a prioritized list of predefined positions around a point.
        * @param x x coordinate of the point
        * @param y y coordinate of the point
        * @param lPos pointer to an array of candidates, will be filled by generated candidate

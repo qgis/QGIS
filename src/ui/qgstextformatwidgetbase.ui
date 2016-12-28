@@ -3868,7 +3868,7 @@ font-style: italic;</string>
                              <item row="0" column="0">
                               <widget class="QRadioButton" name="radPredefinedOrder">
                                <property name="toolTip">
-                                <string>Uses cartographically 'ideal' placements, prioritising label placement with best visual relationship with the point feature</string>
+                                <string>Uses 'ideal' cartographic placements, prioritizing label placement with best visual relationship with the point feature</string>
                                </property>
                                <property name="text">
                                 <string>Cartographic</string>
