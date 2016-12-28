@@ -2031,7 +2031,7 @@ void QgisApp::createMenus()
   QAction* actionPrefs = new QAction( tr( "Preferences..." ), this );
   actionPrefs->setMenuRole( QAction::PreferencesRole );
   actionPrefs->setIcon( mActionOptions->icon() );
-  connect( actionPrefs, SIGNAL( triggered() ), this, SLOT( options() ) );
+  connect( actionPrefs, &QAction::triggered, this, &QgisApp::options );
   mProjectMenu->addAction( actionPrefs );
 
   // Window Menu
