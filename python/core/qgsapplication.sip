@@ -437,6 +437,13 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static QgsMessageLog* messageLog();
 
+    /**
+     * Returns the application's help viewer, used for displaying
+     * help topic for the given key
+     * @note added in QGIS 3.0
+     */
+    static QgsHelp* helpViewer();
+
 %If(ANDROID)
     //dummy method to workaround sip generation issue issue
     bool x11EventFilter ( XEvent * event );
