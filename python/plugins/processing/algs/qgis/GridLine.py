@@ -92,9 +92,9 @@ class GridLine(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Invalid grid spacing: %s/%s' % (hSpacing, vSpacing)))
                 
-        if hSpacing <= hOverlay or vSpacing <= vOverlay:
+        if hSpacing <= hOverlay or vSpacing <= vOverlay or hOverlay < 0 or vOverlay < 0:
             raise GeoAlgorithmExecutionException(
-                self.tr('Invalid overaly: %s/%s' % (hOverlay, vOverlay)))
+                self.tr('Invalid overlay: %s/%s' % (hOverlay, vOverlay)))
 
         if width < hSpacing:
             raise GeoAlgorithmExecutionException(
@@ -120,78 +120,64 @@ class GridLine(GeoAlgorithm):
                            hSpacing, vSpacing, hOverlay, vOverlay):
         ft = QgsFeature()
 
+        ho = hSpacing - hOverlay
+        vo = vSpacing - vOverlay
+
         columns = int(math.ceil(float(width) / hSpacing))
         rows = int(math.ceil(float(height) / vSpacing))
-        
+
+        if ((float(width) % hSpacing) != columns) or (float(width) % hSpacing == 0.0):
+            columns += 1
+        if ((float(height) % vSpacing) != rows) or (float(height) % vSpacing == 0.0):
+            rows += 1
+
+        if hOverlay > 0:
+            columns *= 2
+            columns -= 1
+            hSpace = [ho, hOverlay]
+        else:
+            hSpace = [hSpacing, hSpacing]
+
+        if vOverlay > 0:
+            rows *= 2
+            rows -= 1
+            vSpace = [vo, vOverlay]
+        else:
+            vSpace = [vSpacing, vSpacing]
+
+        long_polyline = []
         # Longitude lines
         x = originX
-        if vOverlay != 0:
-            _rows = rows * 2
-            _cols = columns * 2
-            start = 0
-        else:
-            _cols = columns
-            _rows = rows
-            start = 1
-        for col in range(start, _cols + 1):
+        y = originY
+
+        for col in range(0, columns):
             polyline = []
-            y = originY
-            
-            for row in range(start, _rows+1):
-                polyline.append(QgsPoint(x, y))
-                if vOverlay != 0:
-                    if row % 2 == 0:
-                        y += vSpacing - vOverlay
-                    else:
-                        y += vOverlay
-                else:
-                    y = originY + (row * vSpacing)
-            
-            if hOverlay != 0:
-                if col % 2 == 0:
-                    x += hSpacing - hOverlay
-                else:
-                    x += hOverlay
-            else:
-                x = originX + (col * hSpacing)
-                                
-            ft.setGeometry(QgsGeometry.fromPolyline(polyline))
-            ft.setAttributes([x, originY, x, originY + (row * vSpacing)])
-            writer.addFeature(ft)
+            polyline.append(QgsPoint(x,y))
+            polyline.append(QgsPoint(x,y))
+
+            long_polyline.append(polyline)
+            x += hSpace[col % 2]
+
 
         # Latitude lines
+        x1 = originX
+        x2 = x - hSpace[col % 2]
         y = originY
-        if hOverlay != 0:
-            _rows = int(math.ceil(float(height) / vSpacing)) * 2
-            _cols = int(math.ceil(float(width) / hSpacing)) * 2
-            start = 0
-        else:
-            _cols = columns
-            _rows = rows
-            start = 1
-        for row in range(start, _rows + 1):
-            polyline = []
-            x = originX
-                
-            for col in range(start, _cols+1):
-                polyline.append(QgsPoint(x, y))
-                if vOverlay != 0:
-                    if col % 2 == 0:
-                        x += hSpacing - hOverlay
-                    else:
-                        x += hOverlay
-                else:
-                    x = originX + (col * hSpacing) 
 
-            if vOverlay != 0:
-                if row % 2 == 0:
-                    y += vSpacing - vOverlay
-                else:
-                    y += vOverlay
-            else:
-                y = originY + (row * vSpacing)
-                            
+        for row in range(0, rows):
+            polyline = []
+            polyline.append(QgsPoint(x1,y))
+            polyline.append(QgsPoint(x2,y))
+
             ft.setGeometry(QgsGeometry.fromPolyline(polyline))
-            ft.setAttributes([originX, y, originX + (col * hSpacing), y])
+            ft.setAttributes([x1, y, x2, y])
             writer.addFeature(ft)
 
+            y += vSpace[row % 2]
+
+        y2 = y - vSpace[row % 2]
+        for l in long_polyline:
+            l[1].setY(y2)
+            ft.setGeometry(QgsGeometry.fromPolyline(l))
+            ft.setAttributes([l[0][0], l[1][1], l[1][0], l[0][1]])
+            writer.addFeature(ft)

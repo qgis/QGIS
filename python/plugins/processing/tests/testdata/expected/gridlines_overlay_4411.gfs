@@ -1,0 +1,36 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>gridlines_overlay_4411</Name>
+    <ElementPath>gridlines_overlay_4411</ElementPath>
+    <!--LINESTRING-->
+    <GeometryType>2</GeometryType>
+    <SRSName>EPSG:4326</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>14</FeatureCount>
+      <ExtentXMin>0.00000</ExtentXMin>
+      <ExtentXMax>12.00000</ExtentXMax>
+      <ExtentYMin>0.00000</ExtentYMin>
+      <ExtentYMax>12.00000</ExtentYMax>
+    </DatasetSpecificInfo>
+    <PropertyDefn>
+      <Name>left</Name>
+      <ElementPath>left</ElementPath>
+      <Type>Real</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>top</Name>
+      <ElementPath>top</ElementPath>
+      <Type>Real</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>right</Name>
+      <ElementPath>right</ElementPath>
+      <Type>Real</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>bottom</Name>
+      <ElementPath>bottom</ElementPath>
+      <Type>Real</Type>
+    </PropertyDefn>
+  </GMLFeatureClass>
+</GMLFeatureClassList>
