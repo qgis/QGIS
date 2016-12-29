@@ -65,7 +65,7 @@ class GridMetrics(FusionAlgorithm):
         self.addParameter(ParameterNumber(
             self.HEIGHT, self.tr('Height break')))
         self.addParameter(ParameterNumber(
-            self.CELLSIZE, self.tr('Cellsize')))
+            self.CELLSIZE, self.tr('Cell Size')))
 
         self.addOutput(OutputFile(
             self.OUTPUT_CSV_ELEVATION, self.tr('Output table with grid metrics')))

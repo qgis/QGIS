@@ -129,9 +129,9 @@
  * Caveats
  * =======
  *
- * There are two different flavours of WKT: one is defined by OGC, the other is the standard
+ * There are two different flavors of WKT: one is defined by OGC, the other is the standard
  * used by ESRI. They look very similar, but they are not the same. QGIS is able to consume
- * both flavours.
+ * both flavors.
  *
  * \see QgsCoordinateTransform
  */

@@ -89,7 +89,7 @@ class BaseTableModel(QAbstractTableModel):
             # too much data to display, elide the string
             val = val[:300]
         try:
-            return str(val)  # convert to unicode
+            return str(val)  # convert to Unicode
         except UnicodeDecodeError:
             return str(val, 'utf-8', 'replace')  # convert from utf8 and replace errors (if any)
 

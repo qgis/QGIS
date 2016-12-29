@@ -137,10 +137,10 @@ class TinInterpolation(GeoAlgorithm):
                                           self.tr('Number of rows'),
                                           0, 10000000, 300))
         self.addParameter(ParameterNumber(self.CELLSIZE_X,
-                                          self.tr('Cellsize X'),
+                                          self.tr('Cell size X'),
                                           0.0, 999999.000000, 0.0))
         self.addParameter(ParameterNumber(self.CELLSIZE_Y,
-                                          self.tr('Cellsize Y'),
+                                          self.tr('Cell size Y'),
                                           0.0, 999999.000000, 0.0))
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Extent')))

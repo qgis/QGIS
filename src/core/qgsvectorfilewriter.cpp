@@ -1535,7 +1535,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          ) );
 
   layerOptions.insert( QStringLiteral( "FORMAT" ), new SetOption(
-                         QObject::tr( "Controls the format used for the geometry column. Defaults to WKB."
+                         QObject::tr( "Controls the format used for the geometry column. Defaults to WKB. "
                                       "This is generally more space and processing efficient, but harder "
                                       "to inspect or use in simple applications than WKT (Well Known Text)." ),
                          QStringList()
@@ -1569,7 +1569,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                                       "for databases that have big string blobs. However, use with care, since "
                                       "the value of such columns will be seen as compressed binary content with "
                                       "other SQLite utilities (or previous OGR versions). With OGR, when inserting, "
-                                      "modifying or queryings compressed columns, compression/decompression is "
+                                      "modifying or querying compressed columns, compression/decompression is "
                                       "done transparently. However, such columns cannot be (easily) queried with "
                                       "an attribute filter or WHERE clause. Note: in table definition, such columns "
                                       "have the 'VARCHAR_deflate' declaration type." ),
@@ -1621,14 +1621,14 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                        ) );
 
   layerOptions.insert( QStringLiteral( "SPATIAL_INDEX" ), new BoolOption(
-                         QObject::tr( "If the database is of the SpatiaLite flavour, and if OGR is linked "
+                         QObject::tr( "If the database is of the SpatiaLite flavor, and if OGR is linked "
                                       "against libspatialite, this option can be used to control if a spatial "
                                       "index must be created." ),
                          true  // Default value
                        ) );
 
   layerOptions.insert( QStringLiteral( "COMPRESS_GEOM" ), new BoolOption(
-                         QObject::tr( "If the format of the geometry BLOB is of the SpatiaLite flavour, "
+                         QObject::tr( "If the format of the geometry BLOB is of the SpatiaLite flavor, "
                                       "this option can be used to control if the compressed format for "
                                       "geometries (LINESTRINGs, POLYGONs) must be used" ),
                          false  // Default value

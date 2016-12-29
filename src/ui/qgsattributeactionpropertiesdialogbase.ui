@@ -17,7 +17,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="textLabel1">
      <property name="whatsThis">
-      <string>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</string>
+      <string>Enter the name of an action here. The name should be unique (QGIS will make it unique if necessary).</string>
      </property>
      <property name="text">
       <string>Description</string>
@@ -243,7 +243,7 @@
       <string>Enter the action name here</string>
      </property>
      <property name="whatsThis">
-      <string>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</string>
+      <string>Enter the name of an action here. The name should be unique (QGIS will make it unique if necessary).</string>
      </property>
      <property name="placeholderText">
       <string>Mandatory description</string>

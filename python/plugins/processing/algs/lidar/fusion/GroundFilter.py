@@ -50,7 +50,7 @@ class GroundFilter(FusionAlgorithm):
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterNumber(self.CELLSIZE,
-                                          self.tr('Cellsize for intermediate surfaces'), 0, None, 10))
+                                          self.tr('Cell size for intermediate surfaces'), 0, None, 10))
         self.addOutput(OutputFile(
             self.OUTPUT, self.tr('Output ground LAS file')))
         self.addParameter(ParameterBoolean(

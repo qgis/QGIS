@@ -23,7 +23,7 @@ and recognizes all major notations, prefixes (ver. and version), delimiters
 
 Usage: compareVersions(version1, version2)
 
-The function accepts arguments of any type convertable to unicode string
+The function accepts arguments of any type convertable to Unicode string
 and returns integer value:
 0 - the versions are equal
 1 - version 1 is higher
@@ -31,7 +31,7 @@ and returns integer value:
 
 -----------------------------------------------------------------------------
 HOW DOES IT WORK...
-First, both arguments are converted to uppercase unicode and stripped of
+First, both arguments are converted to uppercase Unicode and stripped of
 'VERSION' or 'VER.' prefix. Then they are chopped into a list of particular
 numeric and alphabetic elements. The dots, dashes and underlines are recognized
 as delimiters. Also numbers and non numbers are separated. See example below:

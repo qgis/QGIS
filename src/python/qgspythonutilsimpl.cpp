@@ -546,7 +546,7 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
   }
 
   // it's some other type of object:
-  // convert object to unicode string (equivalent to calling unicode(obj) )
+  // convert object to Unicode string (equivalent to calling unicode(obj) )
   PyObject* obj_uni = PyObject_Unicode( obj ); // obj_uni is new reference
   if ( obj_uni )
   {
@@ -564,7 +564,7 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
   }
 #endif
 
-  // if conversion to unicode failed, try to convert it to classic string, i.e. str(obj)
+  // if conversion to Unicode failed, try to convert it to classic string, i.e. str(obj)
   PyObject* obj_str = PyObject_Str( obj ); // new reference
   if ( obj_str )
   {
@@ -573,7 +573,7 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
     return result;
   }
 
-  // some problem with conversion to unicode string
+  // some problem with conversion to Unicode string
   QgsDebugMsg( "unable to convert PyObject to a QString!" );
   return QStringLiteral( "(qgis error)" );
 }

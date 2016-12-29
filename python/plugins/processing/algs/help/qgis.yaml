@@ -93,7 +93,7 @@ qgis:createattributeindex: >
   Creates an index to speed up queries made against a field in a table. Support for index creation is dependent on the layer's data provider and the field type.
 
 qgis:createconstantrasterlayer: >
-  Given an input raster layer an a value, this algorithm generates a new layer with the same extent and cellsize as the input one, and all cells with the specified value.
+  Given an input raster layer an a value, this algorithm generates a new layer with the same extent and cell size as the input one, and all cells with the specified value.
 
 qgis:creategridlines:
   This algorithm creates a line vector layer with a grid covering a given extent.
@@ -568,9 +568,9 @@ qgis:rastercalculator: >
     
     - sin(), cos(), tan(), atan2(), ln(), log10()
     
-    The extent and cellsize can be defined by the user. If the extent is not specified, the minimum extent that covers the input layers will be used. If the cellsize is not specified, the minimum cellsize of all input layers will be used.
+    The extent and cellsize can be defined by the user. If the extent is not specified, the minimum extent that covers the input layers will be used. If the cell size is not specified, the minimum cell size of all input layers will be used.
     
-    The cellsize is assumed to be the same in both X and Y axes.
+    The cell size is assumed to be the same in both X and Y axes.
     
     Layers are refered by their name as displayed in the layer list and the number of the band to use (based on 1), using the pattern 'layer_name@band number'. For instance, the first band from a layer named DEM will be referred as DEM@1.
     
