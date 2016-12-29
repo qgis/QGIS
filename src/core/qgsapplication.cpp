@@ -729,16 +729,11 @@ QStringList QgsApplication::svgPaths()
   //local directories to search when looking for an SVG with a given basename
   //defined by user in options dialog
   QSettings settings;
-  QStringList myPathList;
-  QString myPaths = settings.value( QStringLiteral( "svg/searchPathsForSVG" ), QString() ).toString();
-  if ( !myPaths.isEmpty() )
-  {
-    myPathList = myPaths.split( '|' );
-  }
+  QStringList pathList = settings.value( QStringLiteral( "svg/searchPathsForSVG" ) ).toStringList();
 
   // maintain user set order while stripping duplicates
   QStringList paths;
-  Q_FOREACH ( const QString& path, myPathList )
+  Q_FOREACH ( const QString& path, pathList )
   {
     if ( !paths.contains( path ) )
       paths.append( path );
@@ -760,14 +755,9 @@ QStringList QgsApplication::composerTemplatePaths()
   //local directories to search when looking for an SVG with a given basename
   //defined by user in options dialog
   QSettings settings;
-  QStringList myPathList;
-  QString myPaths = settings.value( QStringLiteral( "composer/searchPathsForTemplates" ), QString() ).toString();
-  if ( !myPaths.isEmpty() )
-  {
-    myPathList = myPaths.split( '|' );
-  }
+  QStringList pathList = settings.value( QStringLiteral( "composer/searchPathsForTemplates" ) ).toStringList();
 
-  return myPathList;
+  return pathList;
 }
 
 QString QgsApplication::userStylePath()
