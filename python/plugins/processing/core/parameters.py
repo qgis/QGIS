@@ -1569,5 +1569,5 @@ def getParameterFromString(s):
                 param = paramClass.fromScriptCode(s)
                 if param is not None:
                     return param
-            except AttributeError:
+            except:
                 pass
