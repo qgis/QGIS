@@ -1512,7 +1512,7 @@ void QgsVectorLayer::setDataSource( const QString& dataSource, const QString& ba
   QgsWkbTypes::GeometryType geomType = mValid && mDataProvider ? geometryType() : QgsWkbTypes::UnknownGeometry;
 
   mDataSource = dataSource;
-  mLayerName = capitaliseLayerName( baseName );
+  mLayerName = capitalizeLayerName( baseName );
   setName( mLayerName );
   setDataProvider( provider );
 

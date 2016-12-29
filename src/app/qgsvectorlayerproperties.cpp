@@ -693,7 +693,7 @@ QString QgsVectorLayerProperties::metadata()
 
 void QgsVectorLayerProperties::on_mLayerOrigNameLineEdit_textEdited( const QString& text )
 {
-  txtDisplayName->setText( mLayer->capitaliseLayerName( text ) );
+  txtDisplayName->setText( mLayer->capitalizeLayerName( text ) );
 }
 
 void QgsVectorLayerProperties::on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem& crs )

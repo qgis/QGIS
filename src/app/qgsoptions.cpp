@@ -693,7 +693,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   pbnMeasureColor->setContext( QStringLiteral( "gui" ) );
   pbnMeasureColor->setDefaultColor( QColor( 222, 155, 67 ) );
 
-  capitaliseCheckBox->setChecked( mSettings->value( QStringLiteral( "/qgis/capitaliseLayerName" ), QVariant( false ) ).toBool() );
+  capitalizeCheckBox->setChecked( mSettings->value( QStringLiteral( "/qgis/capitalizeLayerName" ), QVariant( false ) ).toBool() );
 
   int projOpen = mSettings->value( QStringLiteral( "/qgis/projOpenAtLaunch" ), 0 ).toInt();
   mProjectOnLaunchCmbBx->setCurrentIndex( projOpen );
@@ -1185,8 +1185,8 @@ void QgsOptions::saveOptions()
 
   mSettings->setValue( QStringLiteral( "/qgis/map_update_interval" ), spinMapUpdateInterval->value() );
   mSettings->setValue( QStringLiteral( "/qgis/legendDoubleClickAction" ), cmbLegendDoubleClickAction->currentIndex() );
-  bool legendLayersCapitalise = mSettings->value( QStringLiteral( "/qgis/capitaliseLayerName" ), false ).toBool();
-  mSettings->setValue( QStringLiteral( "/qgis/capitaliseLayerName" ), capitaliseCheckBox->isChecked() );
+  bool legendLayersCapitalize = mSettings->value( QStringLiteral( "/qgis/capitalizeLayerName" ), false ).toBool();
+  mSettings->setValue( QStringLiteral( "/qgis/capitalizeLayerName" ), capitalizeCheckBox->isChecked() );
 
   // Default simplify drawing configuration
   QgsVectorSimplifyMethod::SimplifyHints simplifyHints = QgsVectorSimplifyMethod::NoSimplification;
@@ -1440,7 +1440,7 @@ void QgsOptions::saveOptions()
   // refresh legend if any legend item's state is to be changed
   if ( legendLayersBold != mLegendLayersBoldChkBx->isChecked()
        || legendGroupsBold != mLegendGroupsBoldChkBx->isChecked()
-       || legendLayersCapitalise != capitaliseCheckBox->isChecked() )
+       || legendLayersCapitalize != capitalizeCheckBox->isChecked() )
   {
     // TODO[MD] QgisApp::instance()->legend()->updateLegendItemStyles();
   }

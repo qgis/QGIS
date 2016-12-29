@@ -9118,7 +9118,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
   QSettings mySettings;
   QString oldScales = mySettings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
 
-  bool oldCapitalise = mySettings.value( QStringLiteral( "/qgis/capitaliseLayerName" ), QVariant( false ) ).toBool();
+  bool oldCapitalize = mySettings.value( QStringLiteral( "/qgis/capitalizeLayerName" ), QVariant( false ) ).toBool();
 
   QgsOptions *optionsDialog = new QgsOptions( parent );
   if ( !currentPage.isEmpty() )
@@ -9143,7 +9143,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
 
     mMapCanvas->setMapUpdateInterval( mySettings.value( QStringLiteral( "/qgis/map_update_interval" ), 250 ).toInt() );
 
-    if ( oldCapitalise != mySettings.value( QStringLiteral( "/qgis/capitaliseLayerName" ), QVariant( false ) ).toBool() )
+    if ( oldCapitalize != mySettings.value( QStringLiteral( "/qgis/capitalizeLayerName" ), QVariant( false ) ).toBool() )
     {
       // if the layer capitalization has changed, we need to update all layer names
       Q_FOREACH ( QgsMapLayer* layer, QgsProject::instance()->mapLayers() )

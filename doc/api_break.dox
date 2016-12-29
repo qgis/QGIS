@@ -202,6 +202,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsApplication<td>userStyleV2Path<td>userStylePath
 <tr><td>QgsComposerShape<td>setUseSymbolV2<td>setUseSymbol
 <tr><td>QgsIFeatureSelectionManager<td>selectedFeaturesIds<td>selectedFeatureIds
+<tr><td>QgsMapLayer<td>capitaliseLayerName<td>capitalizeLayerName
 <tr><td>QgsSymbolLayerUtils<td>createSymbolLayerV2ListFromSld<td>createSymbolLayerListFromSld
 <tr><td>QgsVectorLayer<td>editorWidgetV2Config<td>editorWidgetConfig
 <tr><td>QgsVectorLayer<td>editorWidgetV2Text<td>editorWidgetText
@@ -309,7 +310,7 @@ Data Providers        {#qgis_api_break_3_0_DataProviders}
 Qgis        {#qgis_api_break_3_0_Qgis}
 ----
 
-- The QGis class was renamed to Qgis for capitalisation consistency with other class names
+- The QGis class was renamed to Qgis for capitalization consistency with other class names
 - permissiveToDouble() and permissiveToInt() where moved out of the QGis class and renamed to qgsPermissiveToDouble() and
 qgsPermissiveToInt()
 - The constants DEFAULT_IDENTIFY_RADIUS and MINIMUM_POINT_SIZE were removed
@@ -1130,6 +1131,7 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 - drawLabels() method was removed. It used old deprecated labeling. Replaced by labeling based on PAL library, see QgsLabelingEngine.
 - readLayerXML() was renamed to readLayerXml()
 - writeLayerXML() was renamed to writeLayerXml()
+- capitaliseLayerName() was renamed to capitalizeLayerName()
 
 
 QgsMapLayerRegistry        {#qgis_api_break_3_0_QgsMapLayerRegistry}

@@ -63,7 +63,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
     , mStyleManager( new QgsMapLayerStyleManager( this ) )
 {
   // Set the display name = internal name
-  mLayerName = capitaliseLayerName( mLayerOrigName );
+  mLayerName = capitalizeLayerName( mLayerOrigName );
 
   mShortName = QLatin1String( "" );
   //mShortName.replace( QRegExp( "[\\W]" ), "_" );
@@ -106,7 +106,7 @@ QString QgsMapLayer::id() const
 
 void QgsMapLayer::setName( const QString& name )
 {
-  QString newName = capitaliseLayerName( name );
+  QString newName = capitalizeLayerName( name );
   if ( name == mLayerOrigName && newName == mLayerName )
     return;
 
@@ -994,16 +994,16 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSign
     emit crsChanged();
 }
 
-QString QgsMapLayer::capitaliseLayerName( const QString& name )
+QString QgsMapLayer::capitalizeLayerName( const QString& name )
 {
-  // Capitalise the first letter of the layer name if requested
+  // Capitalize the first letter of the layer name if requested
   QSettings settings;
-  bool capitaliseLayerName =
-    settings.value( QStringLiteral( "/qgis/capitaliseLayerName" ), QVariant( false ) ).toBool();
+  bool capitalizeLayerName =
+    settings.value( QStringLiteral( "/qgis/capitalizeLayerName" ), QVariant( false ) ).toBool();
 
   QString layerName( name );
 
-  if ( capitaliseLayerName && !layerName.isEmpty() )
+  if ( capitalizeLayerName && !layerName.isEmpty() )
     layerName = layerName.at( 0 ).toUpper() + layerName.mid( 1 );
 
   return layerName;
