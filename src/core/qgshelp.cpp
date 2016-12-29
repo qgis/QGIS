@@ -25,21 +25,12 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 
-QgsHelp::QgsHelp( QObject* parent )
-    : QObject( parent )
+void QgsHelp::openHelp( const QString& key )
 {
+  QDesktopServices::openUrl( QgsHelp::helpUrl( key ) );
 }
 
-QgsHelp::~QgsHelp()
-{
-}
-
-void QgsHelp::openHelp( const QString& key ) const
-{
-  QDesktopServices::openUrl( helpUrl( key ) );
-}
-
-QUrl QgsHelp::helpUrl( const QString& key ) const
+QUrl QgsHelp::helpUrl( const QString& key )
 {
   QUrl helpNotFound = QUrl::fromLocalFile( QgsApplication::pkgDataPath() + "/doc/nohelp.html" );
 
@@ -84,7 +75,7 @@ QUrl QgsHelp::helpUrl( const QString& key ) const
 
     if ( path.startsWith( QStringLiteral( "http://" ) ) )
     {
-      if ( !urlExists( helpPath ) )
+      if ( !QgsHelp::urlExists( helpPath ) )
       {
         continue;
       }
@@ -108,7 +99,7 @@ QUrl QgsHelp::helpUrl( const QString& key ) const
   return helpFound ? helpUrl : helpNotFound;
 }
 
-bool QgsHelp::urlExists( const QString& url ) const
+bool QgsHelp::urlExists( const QString& url )
 {
   QUrl helpUrl( url );
   QTcpSocket socket;

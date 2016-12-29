@@ -37,7 +37,6 @@ class QgsGPSConnectionRegistry;
 class QgsDataItemProviderRegistry;
 class QgsPluginLayerRegistry;
 class QgsMessageLog;
-class QgsHelp;
 
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
@@ -450,15 +449,6 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QgsMessageLog* messageLog();
 
-    /**
-     * Returns the application's help viewer, used for displaying
-     * help topic for the given key
-     * @note added in QGIS 3.0
-     */
-    static QgsHelp* helpViewer();
-
-
-
 #ifdef ANDROID
     //dummy method to workaround sip generation issue issue
     bool x11EventFilter( XEvent * event )
@@ -592,7 +582,6 @@ class CORE_EXPORT QgsApplication : public QApplication
     QgsActionScopeRegistry* mActionScopeRegistry;
     QgsRuntimeProfiler* mProfiler;
     QgsTaskManager* mTaskManager;
-    QgsHelp* mHelpViewer;
     QgsFieldFormatterRegistry* mFieldFormatterRegistry;
     QgsColorSchemeRegistry* mColorSchemeRegistry;
     QgsPaintEffectRegistry* mPaintEffectRegistry;

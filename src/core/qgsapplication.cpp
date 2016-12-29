@@ -36,7 +36,6 @@
 #include "gps/qgsgpsconnectionregistry.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsmessagelog.h"
-#include "qgshelp.h"
 
 #include <QDir>
 #include <QFile>
@@ -147,7 +146,6 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const
   mRasterRendererRegistry = new QgsRasterRendererRegistry();
   mGpsConnectionRegistry = new QgsGPSConnectionRegistry();
   mPluginLayerRegistry = new QgsPluginLayerRegistry();
-  mHelpViewer = new QgsHelp();
 
   init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
 }
@@ -293,7 +291,6 @@ QgsApplication::~QgsApplication()
   delete mDataItemProviderRegistry;
   delete mProfiler;
   delete mMessageLog;
-  delete mHelpViewer;
 }
 
 QgsApplication* QgsApplication::instance()
@@ -1599,9 +1596,4 @@ QgsMessageLog* QgsApplication::messageLog()
 QgsFieldFormatterRegistry* QgsApplication::fieldFormatterRegistry()
 {
   return instance()->mFieldFormatterRegistry;
-}
-
-QgsHelp* QgsApplication::helpViewer()
-{
-  return instance()->mHelpViewer;
 }

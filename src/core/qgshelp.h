@@ -16,7 +16,7 @@
 #ifndef QGSHELP_H
 #define QGSHELP_H
 
-#include <QObject>
+#include <QtCore>
 
 /** \ingroup core
  * \class QgsHelp
@@ -34,37 +34,25 @@
  * If no help found, default error page with information how to setup
  * help system will be shown.
  *
- * This class can be created directly, or accessed via
- * QgsApplication::helpViewer().
- *
  * @note added in QGIS 3.0
  */
-class CORE_EXPORT QgsHelp : public QObject
+class CORE_EXPORT QgsHelp
 {
-    Q_OBJECT
-
   public:
-
-    /** Constructor for QgsHelp.
-     * @param parent parent QObject
-     */
-    QgsHelp( QObject* parent = nullptr );
-
-    virtual ~QgsHelp();
 
     /** Opens help topic for the given help key using default system
      * web browser. If help topic not found, builtin error page shown.
      * @param key key which identified help topic
      * @note added in QGIS 3.0
      */
-    void openHelp( const QString& key ) const;
+    static void openHelp( const QString& key );
 
     /** Returns URI of the help topic for the given key. If help topic
      * not found, URI of the builtin error page returned.
      * @param key key which identified help topic
      * @note added in QGIS 3.0
      */
-    QUrl helpUrl( const QString& key ) const;
+    static QUrl helpUrl( const QString& key );
 
   private:
 
@@ -73,7 +61,7 @@ class CORE_EXPORT QgsHelp : public QObject
      * @param url URL to check
      * @note added in QGIS 3.0
      */
-    bool urlExists( const QString& url ) const;
+    static bool urlExists( const QString& url );
 };
 
 #endif // QGSHELP_H
