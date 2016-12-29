@@ -50,7 +50,7 @@ class information(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-info.png'))
 
     def commandLineName(self):
-        return "gdalorg:rasterinfo"
+        return "gdal:gdalinfo"
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Information')

@@ -74,7 +74,7 @@ class rasterize(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
 
     def commandLineName(self):
-        return "gdalogr:rasterize"
+        return "gdal:rasterize"
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Rasterize (vector to raster)')
