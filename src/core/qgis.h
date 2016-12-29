@@ -113,8 +113,8 @@ class CORE_EXPORT Qgis
      * @note added in 2.15*/
     static double SCALE_PRECISION;
 
-    /**
-     *
+    /** Default Z coordinate value for 2.5d geometry
+     *  This value have to be assigned to the Z coordinate for the new 2.5d geometry vertex.
      *  @note added in 3.0 */
     static double DEFAULT_Z_COORDINATE;
 

@@ -146,7 +146,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       }
       else if ( layerWKBType == QgsWkbTypes::Point25D )
       {
-        g = QgsGeometry( new QgsPointV2( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), getDefaultZValue() ) );
+        g = QgsGeometry( new QgsPointV2( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
       }
       else if ( layerWKBType == QgsWkbTypes::MultiPoint )
       {
@@ -155,7 +155,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       else if ( layerWKBType == QgsWkbTypes::MultiPoint25D )
       {
         QgsMultiPointV2* mp = new QgsMultiPointV2();
-        mp->addGeometry( new QgsPointV2( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), getDefaultZValue() ) );
+        mp->addGeometry( new QgsPointV2( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
         g = QgsGeometry( mp );
       }
       else

@@ -46,7 +46,6 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, QgsAdvancedDigitizin
 #ifdef Q_OS_WIN
     , mSkipNextContextMenuEvent( 0 )
 #endif
-    , mDefaultZValue( Qgis::DEFAULT_Z_COORDINATE )
 {
   mCaptureMode = mode;
 
@@ -85,8 +84,6 @@ void QgsMapToolCapture::activate()
     mTempRubberBand->show();
 
   QgsMapToolAdvancedDigitizing::activate();
-
-  mDefaultZValue = QSettings().value( QStringLiteral( "/qgis/digitizing/default_z_value" ), Qgis::DEFAULT_Z_COORDINATE ).toDouble();
 }
 
 void QgsMapToolCapture::deactivate()
@@ -335,7 +332,7 @@ int QgsMapToolCapture::nextPoint( const QgsPointV2& mapPoint, QgsPointV2& layerP
     QgsPoint mapP( mapPoint.x(), mapPoint.y() );
     layerPoint = QgsPointV2( toLayerCoordinates( vlayer, mapP ) ); //transform snapped point back to layer crs
     if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) )
-      layerPoint.addZValue( getDefaultZValue() );
+      layerPoint.addZValue( defaultZValue() );
     if ( QgsWkbTypes::hasM( vlayer->wkbType() ) )
       layerPoint.addMValue( 0.0 );
   }
@@ -612,6 +609,11 @@ void QgsMapToolCapture::deleteTempRubberBand()
     delete mTempRubberBand;
     mTempRubberBand = nullptr;
   }
+}
+
+double QgsMapToolCapture::defaultZValue()
+{
+  QSettings().value( QStringLiteral( "/qgis/digitizing/default_z_value" ), Qgis::DEFAULT_Z_COORDINATE ).toDouble();
 }
 
 void QgsMapToolCapture::closePolygon()

@@ -83,9 +83,10 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void deleteTempRubberBand();
 
     /**
-     * Return defalut Z value
+     * Return default Z value
+     * Use for set Z coordinate to new vertex for 2.5d geometries
      */
-    double getDefaultZValue() {return mDefaultZValue;};
+    double defaultZValue();
 
   private slots:
     void validationFinished();
@@ -217,7 +218,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     QgsVertexMarker* mSnappingMarker;
 
-    double mDefaultZValue;
 #ifdef Q_OS_WIN
     int mSkipNextContextMenuEvent;
 #endif

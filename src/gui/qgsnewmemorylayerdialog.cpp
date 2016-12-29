@@ -110,7 +110,7 @@ QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
   }
 
   if ( mGeometryWithZCheckBox->isChecked() && wkbType != QgsWkbTypes::Unknown && wkbType != QgsWkbTypes::NoGeometry )
-    wkbType = QgsWkbTypes::to25D( wkbType );
+    wkbType = QgsWkbTypes::zmType( wkbType, true, false );
 
   return wkbType;
 }

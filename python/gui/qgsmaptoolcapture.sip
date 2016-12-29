@@ -63,7 +63,7 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * Return defalut Z value
      */
-    double getDefaultZValue();
+    double defaultZValue();
 
   private slots:
     void validationFinished();
