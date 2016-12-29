@@ -86,7 +86,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def _loadAlgorithms(self):
         self.algs = []
-        version = SagaUtils.getSagaInstalledVersion(True)
+        version = SagaUtils.getInstalledVersion(True)
         if version is None:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                    self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'))
@@ -121,8 +121,8 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                                    self.tr('Could not open SAGA algorithm: %s\n%s' % (descriptionFile, str(e))))
 
     def getDescription(self):
-        version = SagaUtils.getSagaInstalledVersion()
-        return 'SAGA (%s)' % version if version is not None else 'SAGA'
+        version = SagaUtils.getInstalledVersion()
+        return 'SAGA ({})'.format(version) if version is not None else 'SAGA'
 
     def getName(self):
         return 'saga'

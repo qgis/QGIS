@@ -86,7 +86,7 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
-class GdalOgrAlgorithmProvider(AlgorithmProvider):
+class GdalAlgorithmProvider(AlgorithmProvider):
 
     """This provider incorporates GDAL-based algorithms into the
     Processing framework.
@@ -100,10 +100,11 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
         self.createAlgsList()
 
     def getDescription(self):
-        return self.tr('GDAL/OGR')
+        version = GdalUtils.readableVersion()
+        return 'GDAL ({})'.format(version)
 
     def getName(self):
-        return 'gdalogr'
+        return 'gdal'
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdal.svg'))

@@ -35,6 +35,7 @@ from qgis.core import QgsApplication
 from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
+from processing.core.SilentProgress import SilentProgress
 from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir
 from processing.tests.TestData import points
 
@@ -56,6 +57,8 @@ class Grass7Utils(object):
 
     isGrass7Installed = False
 
+    version = None
+
     @staticmethod
     def grassBatchJobFilename():
         '''This is used in Linux. This is the batch job that we assign to
@@ -74,11 +77,41 @@ class Grass7Utils(object):
         filename = os.path.join(userFolder(), filename)
         return filename
 
+    #~ @staticmethod
+    #~ def installedVersion():
+        #~ out = Grass7Utils.executeGrass7("grass -v")
+        #~ # FIXME: I do not know if this should be removed or let the user enter it
+        #~ # or something like that... This is just a temporary thing
+        #~ return '7.0.0'
+
+
     @staticmethod
-    def getGrassVersion():
-        # FIXME: I do not know if this should be removed or let the user enter it
-        # or something like that... This is just a temporary thing
-        return '7.0.0'
+    def installedVersion(run=False):
+        if Grass7Utils.isGrass7Installed and not run:
+            return Grass7Utils.version
+
+        if Grass7Utils.grassPath() is None:
+            return None
+        commands = ["grass70 -v"]
+        with subprocess.Popen(
+            commands,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stdin=subprocess.DEVNULL,
+            stderr=subprocess.STDOUT,
+            universal_newlines=True,
+        ) as proc:
+            try:
+                lines = proc.stdout.readlines()
+                for line in lines:
+                    if "GRASS GIS " in line:
+                        Grass7Utils.version = line.split(" ")[-1].strip()
+                        break
+            except:
+                pass
+
+        return Grass7Utils.version
+
 
     @staticmethod
     def grassPath():
@@ -140,7 +173,7 @@ class Grass7Utils(object):
             output.write('if "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n')
             output.write('if not "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%GRASS_ADDON_PATH%;%PATH%\n')
             output.write('\n')
-            output.write('set GRASS_VERSION=' + Grass7Utils.getGrassVersion() + '\n')
+            output.write('set GRASS_VERSION=' + Grass7Utils.installedVersion() + '\n')
             output.write('if not "%LANG%"=="" goto langset\n')
             output.write('FOR /F "usebackq delims==" %%i IN (`"%WINGISBASE%\\etc\\winlocale"`) DO @set LANG=%%i\n')
             output.write(':langset\n')

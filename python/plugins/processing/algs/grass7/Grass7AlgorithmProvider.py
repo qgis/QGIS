@@ -92,10 +92,11 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
         self.algs = self.preloadedAlgs
 
     def getDescription(self):
-        return self.tr('GRASS GIS 7 commands')
+        version = Grass7Utils.installedVersion()
+        return 'GRASS GIS ({})'.format(version) if version is not None else "GRASS GIS"
 
     def getName(self):
-        return 'grass70'
+        return 'grass7'
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
