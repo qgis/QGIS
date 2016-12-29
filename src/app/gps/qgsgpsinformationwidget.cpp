@@ -703,7 +703,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
       QgsRectangle myExtentLimit( mpCanvas->extent() );
       myExtentLimit.scale( mSpinMapExtentMultiplier->value() * 0.01 );
 
-      // only change the extents if the point is beyond the current extents to minimise repaints
+      // only change the extents if the point is beyond the current extents to minimize repaints
       if ( radRecenterMap->isChecked() ||
            ( radRecenterWhenNeeded->isChecked() && !myExtentLimit.contains( myPoint ) ) )
       {

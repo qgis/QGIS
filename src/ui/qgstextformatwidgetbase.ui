@@ -6274,7 +6274,7 @@ font-style: italic;</string>
                             <item>
                              <widget class="QLabel" name="label_14">
                               <property name="text">
-                               <string>Minimise placing labels</string>
+                               <string>Minimize placing labels</string>
                               </property>
                              </widget>
                             </item>
