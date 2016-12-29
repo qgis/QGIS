@@ -359,14 +359,14 @@ signals:
    * <li>2 - Set session title to @p newTitle</li>
    * <li>11 - Set the session's default background color to @p newTitle,
    *         where @p newTitle can be an HTML-style string ("#RRGGBB") or a named
-   *         color (eg 'red', 'blue').
+   *         color (e.g., 'red', 'blue').
    *         See http://doc.trolltech.com/4.2/qcolor.html#setNamedColor for more
    *         details.
    * </li>
    * <li>31 - Supposedly treats @p newTitle as a URL and opens it (NOT IMPLEMENTED)</li>
    * <li>32 - Sets the icon associated with the session.  @p newTitle is the name
    *    of the icon to use, which can be the name of any icon in the current KDE icon
-   *    theme (eg: 'konsole', 'kate', 'folder_home')</li>
+   *    theme (e.g., 'konsole', 'kate', 'folder_home')</li>
    * </ul>
    * @param newTitle Specifies the new title
    */

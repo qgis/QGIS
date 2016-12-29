@@ -466,7 +466,7 @@ class QgsExpressionContext
 /** \ingroup core
  * \class QgsExpressionContextUtils
  * \brief Contains utilities for working with QgsExpressionContext objects, including methods
- * for creating scopes for specific uses (eg project scopes, layer scopes).
+ * for creating scopes for specific uses (e.g., project scopes, layer scopes).
  * \note added in QGIS 2.12
  */
 

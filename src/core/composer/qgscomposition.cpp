@@ -2830,7 +2830,7 @@ void QgsComposition::georeferenceOutput( const QString& file, QgsComposerMap* ma
   {
     GDALSetGeoTransform( outputDS, t );
 #if 0
-    //TODO - metadata can be set here, eg:
+    //TODO - metadata can be set here, e.g.:
     GDALSetMetadataItem( outputDS, "AUTHOR", "me", nullptr );
 #endif
     GDALSetProjection( outputDS, mMapSettings.destinationCrs().toWkt().toLocal8Bit().constData() );

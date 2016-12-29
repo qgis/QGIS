@@ -218,7 +218,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
     const int layerIdx = mCurrentExportLayer - ( hasBackground() ? 1 : 0 );
     if ( layerIdx >= 0 && layerIdx < layers.length() )
     {
-      // exporting with separate layers (eg, to svg layers), so we only want to render a single map layer
+      // exporting with separate layers (e.g., to svg layers), so we only want to render a single map layer
       QgsMapLayer* ml = layers[ layers.length() - layerIdx - 1 ];
       layers.clear();
       layers << ml;

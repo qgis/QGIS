@@ -63,7 +63,7 @@ void TestQgsApplication::accountName()
   //test cached return works correctly
   QCOMPARE( loginName, QgsApplication::userLoginName() );
 
-  //can't test contents, as it can be validly empty (eg on Travis). Just testing that we don't crash
+  //can't test contents, as it can be validly empty (e.g., on Travis). Just testing that we don't crash
   QString fullName = QgsApplication::userFullName();
   qDebug() << QStringLiteral( "Got full name: '%1'" ).arg( fullName );
   //test cached return works correctly

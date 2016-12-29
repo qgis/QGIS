@@ -218,7 +218,7 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
      */
     void setBorderColor( const QColor& color );
 
-    /** Returns the marker's outline style (eg solid, dashed, etc)
+    /** Returns the marker's outline style (e.g., solid, dashed, etc)
      * @note added in 2.4
      * @see setOutlineStyle()
      * @see borderColor()
@@ -226,7 +226,7 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
     */
     Qt::PenStyle outlineStyle() const;
 
-    /** Sets the marker's outline style (eg solid, dashed, etc)
+    /** Sets the marker's outline style (e.g., solid, dashed, etc)
      * @param outlineStyle style
      * @note added in 2.4
      * @see outlineStyle()
@@ -235,7 +235,7 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
     */
     void setOutlineStyle( Qt::PenStyle outlineStyle );
 
-    /** Returns the marker's outline join style (eg miter, bevel, etc).
+    /** Returns the marker's outline join style (e.g., miter, bevel, etc).
      * @note added in 2.16
      * @see setPenJoinStyle()
      * @see borderColor()
@@ -243,7 +243,7 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
     */
     Qt::PenJoinStyle penJoinStyle() const;
 
-    /** Sets the marker's outline join style (eg miter, bevel, etc).
+    /** Sets the marker's outline join style (e.g., miter, bevel, etc).
      * @param style join style
      * @note added in 2.16
      * @see penJoinStyle()

@@ -348,7 +348,7 @@ void QgsMeasureDialog::updateUi()
              QgsUnitTypes::unitType( mAreaUnits ) == QgsUnitTypes::Standard )
         {
           // only shown if both conditions are true:
-          // - the display unit is a standard distance measurement (eg square feet)
+          // - the display unit is a standard distance measurement (e.g., square feet)
           // - either the canvas units is also a standard distance OR we are using an ellipsoid (in which case the
           //   value will be in square meters)
           toolTip += "<br> * " + tr( "The value is converted from %1 to %2." ).arg( QgsUnitTypes::toString( resultUnit ),
@@ -422,7 +422,7 @@ void QgsMeasureDialog::updateUi()
              QgsUnitTypes::unitType( mDistanceUnits ) == QgsUnitTypes::Standard )
         {
           // only shown if both conditions are true:
-          // - the display unit is a standard distance measurement (eg feet)
+          // - the display unit is a standard distance measurement (e.g., feet)
           // - either the canvas units is also a standard distance OR we are using an ellipsoid (in which case the
           //   value will be in meters)
           toolTip += "<br> * " + tr( "The value is converted from %1 to %2." ).arg( QgsUnitTypes::toString( resultUnit ),

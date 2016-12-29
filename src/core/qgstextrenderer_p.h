@@ -260,7 +260,7 @@ class CORE_EXPORT QgsTextSettingsPrivate : public QSharedData
     QString textNamedStyle;
     QgsUnitTypes::RenderUnit fontSizeUnits;
     QgsMapUnitScale fontSizeMapUnitScale;
-    double fontSize; //may differ from size in textFont due to units (eg size in map units)
+    double fontSize; //may differ from size in textFont due to units (e.g., size in map units)
     QColor textColor;
     double opacity;
     QPainter::CompositionMode blendMode;

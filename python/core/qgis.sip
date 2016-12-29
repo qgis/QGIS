@@ -104,7 +104,7 @@ class Qgis
     static double SCALE_PRECISION;
 };
 
-/** Converts a string to a double in a permissive way, eg allowing for incorrect
+/** Converts a string to a double in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * @param string string to convert
  * @param ok will be set to true if conversion was successful
@@ -114,7 +114,7 @@ class Qgis
  */
 double qgsPermissiveToDouble( QString string, bool& ok );
 
-/** Converts a string to an integer in a permissive way, eg allowing for incorrect
+/** Converts a string to an integer in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * @param string string to convert
  * @param ok will be set to true if conversion was successful

@@ -23,7 +23,7 @@ class QgsComposerMap;
 
 /** \ingroup core
  *  \class QgsComposerMapItem
- *  \brief An item which is drawn inside a QgsComposerMap, eg a grid or map overview.
+ *  \brief An item which is drawn inside a QgsComposerMap, e.g., a grid or map overview.
  */
 class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
 {

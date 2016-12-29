@@ -15,14 +15,14 @@ class QgsRendererWidget : QgsPanelWidget
     //! show a dialog with renderer's symbol level settings
     void showSymbolLevelsDialog( QgsFeatureRenderer* r );
 
-    /** Sets the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+    /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @param context symbol widget context
      * @see context()
      * @note added in QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext& context );
 
-    /** Returns the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @see setContext()
      * @note added in QGIS 3.0
      */
@@ -98,14 +98,14 @@ class QgsDataDefinedValueDialog : QDialog
     QgsDataDefinedValueDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer, const QString & label );
     virtual ~QgsDataDefinedValueDialog();
 
-    /** Sets the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+    /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @param context symbol widget context
      * @see context()
      * @note added in QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext& context );
 
-    /** Returns the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @see setContext()
      * @note added in QGIS 3.0
      */

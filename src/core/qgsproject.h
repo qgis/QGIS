@@ -146,7 +146,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setCrs( const QgsCoordinateReferenceSystem& crs );
 
     /**
-     * Returns a proj string representing the project's ellipsoid setting, eg "WGS84".
+     * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
      * @see setEllipsoid()
      * @see crs()
      * @note added in QGIS 2.18
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString ellipsoid() const;
 
     /**
-     * Sets the project's ellipsoid from a proj string representation, eg "WGS84".
+     * Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
      * @see ellipsoid()
      * @see setCrs()
      * @note added in QGIS 2.18

@@ -75,14 +75,14 @@ class QgsWkbTypes
       NullGeometry
     };
 
-    /** Returns the single type for a WKB type. Eg, for MultiPolygon WKB types the single type would be Polygon.
+    /** Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.
      * @see isSingleType()
      * @see multiType()
      * @see flatType()
      */
     static Type singleType( Type type );
 
-    /** Returns the multi type for a WKB type. Eg, for Polygon WKB types the multi type would be MultiPolygon.
+    /** Returns the multi type for a WKB type. For example, for Polygon WKB types the multi type would be MultiPolygon.
      * @see isMultiType()
      * @see singleType()
      * @see flatType()
@@ -90,7 +90,7 @@ class QgsWkbTypes
     static Type multiType( Type type );
 
     /** Returns the flat type for a WKB type. This is the WKB type minus any Z or M dimensions.
-     * Eg, for PolygonZM WKB types the single type would be Polygon.
+     * For example, for PolygonZM WKB types the single type would be Polygon.
      * @see singleType()
      * @see multiType()
      */
@@ -137,12 +137,12 @@ class QgsWkbTypes
      */
     static int coordDimensions( Type type );
 
-    /** Returns the geometry type for a WKB type, eg both MultiPolygon and CurvePolygon would have a
+    /** Returns the geometry type for a WKB type, e.g., both MultiPolygon and CurvePolygon would have a
      * PolygonGeometry geometry type.
      */
     static GeometryType geometryType( Type type );
 
-    /** Returns a display string type for a WKB type, eg the geometry name used in WKT geometry representations.
+    /** Returns a display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
      */
     static QString displayString( Type type );
 

@@ -398,7 +398,7 @@ class QgsAbstractGeometry
      */
     virtual QgsRectangle calculateBoundingBox() const;
 
-    /** Clears any cached parameters associated with the geometry, eg bounding boxes
+    /** Clears any cached parameters associated with the geometry, e.g., bounding boxes
      */
     virtual void clearCache() const;
 };

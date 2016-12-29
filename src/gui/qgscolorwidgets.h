@@ -27,9 +27,9 @@ class QToolButton;
 /** \ingroup gui
  * \class QgsColorWidget
  * A base class for interactive color widgets. Widgets can either allow setting a single component of
- * a color (eg the red or green components), or an entire color. The QgsColorWidget also keeps track of
+ * a color (e.g., the red or green components), or an entire color. The QgsColorWidget also keeps track of
  * any explicitly set hue for the color, so that this information is not lost when the widget is
- * set to a color with an ambiguous hue (eg black or white shades).
+ * set to a color with an ambiguous hue (e.g., black or white shades).
  * \note Added in version 2.5
  */
 
@@ -129,7 +129,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
 
     ColorComponent mComponent;
 
-    /** QColor wipes the hue information when it is ambiguous (eg, for saturation = 0). So
+    /** QColor wipes the hue information when it is ambiguous (e.g., for saturation = 0). So
      * the hue is stored in mExplicit hue to keep it around, as it is useful when modifying colors
      */
     int mExplicitHue;
@@ -145,7 +145,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     int componentRange( const ColorComponent component ) const;
 
     /** Returns the value of a component of the widget's current color. This method correctly
-     * handles hue values when the color has an ambiguous hue (eg black or white shades)
+     * handles hue values when the color has an ambiguous hue (e.g., black or white shades)
      * @param component color component to return
      * @returns value of color component, or -1 if widget has an invalid color set
      * @see hue
@@ -153,7 +153,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     int componentValue( const ColorComponent component ) const;
 
     /** Returns the hue for the widget. This may differ from the hue for the QColor returned by color(),
-     * as QColor returns a hue of -1 if the color's hue is ambiguous (eg, if the saturation is zero).
+     * as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the saturation is zero).
      * @returns explicitly set hue for widget
      */
     int hue() const;
@@ -432,7 +432,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
 /** \ingroup gui
  * \class QgsColorRampWidget
  * A color ramp widget. This widget consists of an interactive box filled with a color which varies along
- * its length by a single color component (eg, varying saturation from 0 to 100%).
+ * its length by a single color component (e.g., varying saturation from 0 to 100%).
  * \note Added in version 2.5
  */
 

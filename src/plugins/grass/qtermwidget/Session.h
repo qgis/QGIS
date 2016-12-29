@@ -162,9 +162,9 @@ public:
      * Sets the format used by this session for tab titles.
      *
      * @param context The context whoose format should be set.
-     * @param format The tab title format.  This may be a mixture
+     * @param format The tab title format. This may be a mixture
      * of plain text and dynamic elements denoted by a '%' character
-     * followed by a letter.  (eg. %d for directory).  The dynamic
+     * followed by a letter (e.g., %d for directory). The dynamic
      * elements available depend on the @p context
      */
     void setTabTitleFormat(TabTitleContext context , const QString & format);

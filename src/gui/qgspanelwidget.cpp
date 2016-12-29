@@ -57,7 +57,7 @@ QgsPanelWidget*QgsPanelWidget::findParentPanel( QWidget* widget )
 
     if ( p->window() == p )
     {
-      // break on encountering a window - eg a dialog opened from a panel should not inline
+      // break on encountering a window - e.g., a dialog opened from a panel should not inline
       // widgets inside the parent panel
       return nullptr;
     }

@@ -72,13 +72,13 @@ class CORE_EXPORT QgsStatisticalSummary
     virtual ~QgsStatisticalSummary();
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (eg sum, min and max).
+     * are always calculated (e.g., sum, min and max).
      * @see setStatistics
      */
     Statistics statistics() const { return mStatistics; }
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (eg sum, min and max).
+     * are always calculated (e.g., sum, min and max).
      * @param stats flags for statistics to calculate
      * @see statistics
      */

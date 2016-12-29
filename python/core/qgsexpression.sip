@@ -140,21 +140,21 @@ class QgsExpression
      */
     void setGeomCalculator( const QgsDistanceArea* calc );
 
-    /** Returns the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
+    /** Returns the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
      * @note distances are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see setDistanceUnits()
      */
     QgsUnitTypes::DistanceUnit distanceUnits() const;
 
-    /** Sets the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
+    /** Sets the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
      * @note distances are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see distanceUnits()
      */
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 
-    /** Returns the desired areal units for calculations involving geomCalculator(), eg "$area".
+    /** Returns the desired areal units for calculations involving geomCalculator(), e.g., "$area".
      * @note areas are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see setAreaUnits()
@@ -162,7 +162,7 @@ class QgsExpression
      */
     QgsUnitTypes::AreaUnit areaUnits() const;
 
-    /** Sets the desired areal units for calculations involving geomCalculator(), eg "$area".
+    /** Sets the desired areal units for calculations involving geomCalculator(), e.g., "$area".
      * @note areas are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see areaUnits()
@@ -362,7 +362,7 @@ class QgsExpression
         virtual bool usesGeometry( const QgsExpression::NodeFunction* node ) const;
 
         /** Returns a list of possible aliases for the function. These include
-         * other permissible names for the function, eg deprecated names.
+         * other permissible names for the function, e.g., deprecated names.
          * @return list of known aliases
          * @note added in QGIS 2.9
          */
@@ -835,7 +835,7 @@ class QgsExpression
     static QString group( const QString& group );
 
     /** Formats an expression result for friendly display to the user. Truncates the result to a sensible
-     * length, and presents text representations of non numeric/text types (eg geometries and features).
+     * length, and presents text representations of non numeric/text types (e.g., geometries and features).
      * @param value expression result to format
      * @returns formatted string, may contain HTML formatting characters
      * @note added in QGIS 2.14

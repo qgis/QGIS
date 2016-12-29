@@ -14,7 +14,7 @@ are sometimes limited (e.g. for shape files) or behave diffently.
 <tr>
   <td>OGR</td>
   <td>where clauses depending on the
-    <a href="http://www.gdal.org/ogr_formats.html">format</a> (eg.
+    <a href="http://www.gdal.org/ogr_formats.html">format</a> (e.g.,
     <a href="http://www.gdal.org/ogr_sql.html">OGR SQL</a>
     for shape files)
   </td>

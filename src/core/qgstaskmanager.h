@@ -213,7 +213,7 @@ class CORE_EXPORT QgsTask : public QObject
 
     /**
      * Will be emitted by task if it has terminated for any reason
-     * other then completion (eg when a task has been cancelled or encountered
+     * other then completion (e.g., when a task has been cancelled or encountered
      * an internal error).
      * @note derived classes should not emit this signal directly, it will automatically
      * be emitted

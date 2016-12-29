@@ -87,7 +87,7 @@ source directory.
   2. Overview
   ===========
 
-QGIS, like a number of major projects (eg. KDE 4.0), uses CMake
+QGIS, like a number of major projects (e.g., KDE 4.0), uses CMake
 (http://www.cmake.org) for building from source.
 
 Following a summary of the required dependencies for building:
@@ -125,7 +125,7 @@ Optional dependencies:
 
 Indirect dependencies:
 
-Some proprietary formats (eg. ECW and MrSid) supported by GDAL require
+Some proprietary formats (e.g., ECW and MrSid) supported by GDAL require
 proprietary third party libraries.  QGIS doesn't need any of those itself to
 build, but will only support those formats if GDAL is built accordingly.  Refer
 to http://gdal.org/formats_list.html ff. for instructions how to include

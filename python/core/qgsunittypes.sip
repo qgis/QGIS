@@ -30,7 +30,7 @@ class QgsUnitTypes
     enum DistanceUnitType
     {
       Standard, /*!< unit is a standard measurement unit */
-      Geographic,   /*!< unit is a geographic (eg degree based) unit */
+      Geographic,   /*!< unit is a geographic (e.g., degree based) unit */
       UnknownType,  /*!< unknown unit type */
     };
 
@@ -67,8 +67,8 @@ class QgsUnitTypes
       RenderMillimeters, //!< millimeters
       RenderMapUnits, //!< map units
       RenderPixels, //!< pixels
-      RenderPercentage, //!< percentage of another measurement (eg canvas size, feature size)
-      RenderPoints, //! points (eg for font sizes)
+      RenderPercentage, //!< percentage of another measurement (e.g., canvas size, feature size)
+      RenderPoints, //! points (e.g., for font sizes)
       RenderUnknownUnit, //!< mixed or unknown units
     };
 
@@ -153,7 +153,7 @@ class QgsUnitTypes
      */
     static double fromUnitToUnitFactor( AreaUnit fromUnit, AreaUnit toUnit );
 
-    /** Converts a distance unit to its corresponding area unit, eg meters to square meters
+    /** Converts a distance unit to its corresponding area unit, e.g., meters to square meters
      * @param distanceUnit distance unit to convert
      * @return matching areal unit
      */

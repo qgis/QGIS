@@ -173,7 +173,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   bool success = declareCursor( whereClause, limitAtProvider ? mRequest.limit() : -1, false, orderByParts.join( QStringLiteral( "," ) ) );
   if ( !success && useFallbackWhereClause )
   {
-    //try with the fallback where clause, eg for cases when using compiled expression failed to prepare
+    //try with the fallback where clause, e.g., for cases when using compiled expression failed to prepare
     success = declareCursor( fallbackWhereClause, -1, false, orderByParts.join( QStringLiteral( "," ) ) );
     if ( success )
       mExpressionCompiled = false;

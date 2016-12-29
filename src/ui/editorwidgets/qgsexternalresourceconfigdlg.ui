@@ -139,7 +139,7 @@
              <item>
               <widget class="QRadioButton" name="mRelativeProject">
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If possible, this option makes the storage of the filenames with relative paths from the current QGIS project path.&lt;/p&gt;&lt;p&gt;Eg: if your QGIS project is in &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/my_project.qgs&amp;quot;&lt;/span&gt; and your filename is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/files/test.pdf&amp;quot;&lt;/span&gt;, the attribute will only store &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;data/files/test.pdf&amp;quot;&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If possible, this option makes the storage of the filenames with relative paths from the current QGIS project path.&lt;/p&gt;&lt;p&gt;For example, if your QGIS project is in &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/my_project.qgs&amp;quot;&lt;/span&gt; and your filename is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/files/test.pdf&amp;quot;&lt;/span&gt;, the attribute will only store &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;data/files/test.pdf&amp;quot;&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>Relative to project path</string>
@@ -158,7 +158,7 @@
                 <bool>false</bool>
                </property>
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If possible, this option makes the storage of the filenames with relative paths from the default path set just above.&lt;/p&gt;&lt;p&gt;Eg: if your default path is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/&amp;quot;&lt;/span&gt; and your filename is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/files/test.pdf&amp;quot;&lt;/span&gt;, the attribute will only store &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;files/test.pdf&amp;quot;&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If possible, this option makes the storage of the filenames with relative paths from the default path set just above.&lt;/p&gt;&lt;p&gt;For example, if your default path is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/&amp;quot;&lt;/span&gt; and your filename is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/files/test.pdf&amp;quot;&lt;/span&gt;, the attribute will only store &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;files/test.pdf&amp;quot;&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>Relative to default path</string>

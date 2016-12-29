@@ -221,7 +221,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     double estimateMaxBleed() const override;
 
-    //! Type of gradient, eg linear or radial
+    //! Type of gradient, e.g., linear or radial
     GradientType gradientType() const { return mGradientType; }
     void setGradientType( GradientType gradientType ) { mGradientType = gradientType; }
 

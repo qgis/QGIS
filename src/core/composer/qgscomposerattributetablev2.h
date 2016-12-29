@@ -101,7 +101,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      */
     ContentSource source() const { return mSource; }
 
-    /** Returns the source layer for the table, considering the table source mode. Eg,
+    /** Returns the source layer for the table, considering the table source mode. For example,
      * if the table is set to atlas feature mode, then the source layer will be the
      * atlas coverage layer. If the table is set to layer attributes mode, then
      * the source layer will be the user specified vector layer.

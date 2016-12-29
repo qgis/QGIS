@@ -42,13 +42,13 @@ class QgsStringStatisticalSummary
     QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats = All );
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (eg count).
+     * are always calculated (e.g., count).
      * @see setStatistics
      */
     Statistics statistics() const;
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (eg count).
+     * are always calculated (e.g., count).
      * @param stats flags for statistics to calculate
      * @see statistics
      */

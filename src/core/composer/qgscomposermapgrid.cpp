@@ -1426,7 +1426,7 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
   if ( geographic && coord == QgsComposerMapGrid::Longitude &&
        ( mGridAnnotationFormat == QgsComposerMapGrid::Decimal || mGridAnnotationFormat == QgsComposerMapGrid::DecimalWithSuffix ) )
   {
-    // wrap around longitudes > 180 or < -180 degrees, so that eg "190E" -> "170W"
+    // wrap around longitudes > 180 or < -180 degrees, so that, e.g., "190E" -> "170W"
     double wrappedX = fmod( value, 360.0 );
     if ( wrappedX > 180.0 )
     {
@@ -1449,7 +1449,7 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
     double coordRounded = qRound( value * pow( 10.0, mGridAnnotationPrecision ) ) / pow( 10.0, mGridAnnotationPrecision );
     if ( coord == QgsComposerMapGrid::Longitude )
     {
-      //don't use E/W suffixes if ambiguous (eg 180 degrees)
+      //don't use E/W suffixes if ambiguous (e.g., 180 degrees)
       if ( !geographic || ( coordRounded != 180.0 && coordRounded != 0.0 ) )
       {
         hemisphere = value < 0 ? QObject::tr( "W" ) : QObject::tr( "E" );
@@ -1457,7 +1457,7 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
     }
     else
     {
-      //don't use N/S suffixes if ambiguous (eg 0 degrees)
+      //don't use N/S suffixes if ambiguous (e.g., 0 degrees)
       if ( !geographic || coordRounded != 0.0 )
       {
         hemisphere = value < 0 ? QObject::tr( "S" ) : QObject::tr( "N" );

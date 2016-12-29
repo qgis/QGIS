@@ -106,7 +106,7 @@ class QgsRendererRegistry
     //! Adds a renderer to the registry. Takes ownership of the metadata object.
     //! @param metadata renderer metadata
     //! @returns true if renderer was added successfully, or false if renderer could not
-    //! be added (eg a renderer with a duplicate name already exists)
+    //! be added (e.g., a renderer with a duplicate name already exists)
     bool addRenderer( QgsRendererAbstractMetadata* metadata /Transfer/ );
 
     //! Removes a renderer from registry.

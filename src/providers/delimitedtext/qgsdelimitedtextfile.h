@@ -68,8 +68,8 @@ class QTextStream;
 */
 
 // Note: this has been implemented as a single class rather than a set of classes based
-// on an abstract base class in order to facilitate changing the type of the parser easily
-// eg in the provider dialog
+// on an abstract base class in order to facilitate changing the type of the parser easily,
+// e.g., in the provider dialog
 
 class QgsDelimitedTextFile : public QObject
 {
@@ -287,14 +287,14 @@ class QgsDelimitedTextFile : public QObject
     bool isValid();
 
     /** Encode characters - used to convert delimiter/quote/escape characters to
-     *  encoded form (eg replace tab with \t)
+     *  encoded form (e.g., replace tab with \t)
      *  @param string  The unencoded string
      *  @return encstring  The encoded string
      */
     static QString encodeChars( QString string );
 
     /** Encode characters - used to encoded character strings to
-     *  decoded form (eg replace \t with tab)
+     *  decoded form (e.g., replace \t with tab)
      *  @param string  The unencoded string
      *  @return decstring  The decoded string
      */
@@ -330,7 +330,7 @@ class QgsDelimitedTextFile : public QObject
      */
     void close();
 
-    /** Reset the status if the definition is changing (eg clear
+    /** Reset the status if the definition is changing (e.g., clear
      *  existing field names, etc...
      */
     void resetDefinition();

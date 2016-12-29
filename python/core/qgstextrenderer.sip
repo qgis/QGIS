@@ -215,12 +215,12 @@ class QgsTextBackgroundSettings
      */
     void setEnabled( bool enabled );
 
-    /** Returns the type of background shape (eg square, ellipse, SVG).
+    /** Returns the type of background shape (e.g., square, ellipse, SVG).
      * @see setType()
      */
     ShapeType type() const;
 
-    /** Sets the type of background shape to draw (eg square, ellipse, SVG).
+    /** Sets the type of background shape to draw (e.g., square, ellipse, SVG).
      * @param type shape type
      * @see type()
      */
@@ -238,14 +238,14 @@ class QgsTextBackgroundSettings
      */
     void setSvgFile( const QString& file );
 
-    /** Returns the method used to determine the size of the background shape (eg fixed size or buffer
+    /** Returns the method used to determine the size of the background shape (e.g., fixed size or buffer
      * around text).
      * @see setSizeType()
      * @see size()
      */
     SizeType sizeType() const;
 
-    /** Sets the method used to determine the size of the background shape (eg fixed size or buffer
+    /** Sets the method used to determine the size of the background shape (e.g., fixed size or buffer
      * around text).
      * @param type size method
      * @see sizeType()
@@ -253,8 +253,8 @@ class QgsTextBackgroundSettings
      */
     void setSizeType( SizeType type );
 
-    /** Returns the size of the background shape. The meaning of the size depends on the current sizeType()
-     * eg, for size types of QgsTextBackgroundSettings::SizeFixed the size will represent the actual width and
+    /** Returns the size of the background shape. The meaning of the size depends on the current sizeType(),
+     * e.g., for size types of QgsTextBackgroundSettings::SizeFixed the size will represent the actual width and
      * height of the shape, for QgsTextBackgroundSettings::SizeBuffer the size will represent the horizontal
      * and vertical margins to add to the text when calculating the size of the shape.
      * @see setSize()
@@ -262,8 +262,8 @@ class QgsTextBackgroundSettings
      */
     QSizeF size() const;
 
-    /** Sets the size of the background shape. The meaning of the size depends on the current sizeType()
-     * eg, for size types of QgsTextBackgroundSettings::SizeFixed the size will represent the actual width and
+    /** Sets the size of the background shape. The meaning of the size depends on the current sizeType(),
+     * e.g., for size types of QgsTextBackgroundSettings::SizeFixed the size will represent the actual width and
      * height of the shape, for QgsTextBackgroundSettings::SizeBuffer the size will represent the horizontal
      * and vertical margins to add to the text when calculating the size of the shape.
      * @param size QSizeF representing horizontal and vertical size components for shape
@@ -589,14 +589,14 @@ class QgsTextShadowSettings
     void setEnabled( bool enabled );
 
     /** Returns the placement for the drop shadow. The placement determines
-     * both the z-order stacking position for the shadow and the what shape (eg text,
+     * both the z-order stacking position for the shadow and the what shape (e.g., text,
      * background shape) is used for casting the shadow.
      * @see setShadowPlacement()
      */
     QgsTextShadowSettings::ShadowPlacement shadowPlacement() const;
 
     /** Sets the placement for the drop shadow. The placement determines
-     * both the z-order stacking position for the shadow and the what shape (eg text,
+     * both the z-order stacking position for the shadow and the what shape (e.g., text,
      * background shape) is used for casting the shadow.
      * @param placement shadow placement
      * @see shadowPlacement()
@@ -874,14 +874,14 @@ class QgsTextFormat
      */
     void setFont( const QFont& font );
 
-    /** Returns the named style for the font used for rendering text (eg "bold").
+    /** Returns the named style for the font used for rendering text (e.g., "bold").
      * @see setNamedStyle()
      * @see font()
      */
     QString namedStyle() const;
 
     /** Sets the named style for the font used for rendering text.
-     * @param style named style, eg "bold"
+     * @param style named style, e.g., "bold"
      * @see namedStyle()
      * @see setFont()
      */
@@ -1115,7 +1115,7 @@ class QgsTextRenderer
      * @param context render context
      * @param format text format
      * @param part component of text to draw. Note that Shadow parts cannot be drawn
-     * individually and instead are drawn with their associated part (eg drawn together
+     * individually and instead are drawn with their associated part (e.g., drawn together
      * with the text or background parts)
      * @param drawAsOutlines set to false to render text as text. This allows outputs to
      * formats like SVG to maintain text as text objects, but at the cost of degraded

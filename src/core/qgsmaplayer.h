@@ -883,7 +883,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Unique ID of this layer - used to refer to this layer in map layer registry
     QString mID;
 
-    //! Type of the layer (eg. vector, raster)
+    //! Type of the layer (e.g., vector, raster)
     QgsMapLayer::LayerType mLayerType;
 
     //! Blend mode for the layer

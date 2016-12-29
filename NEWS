@@ -94,7 +94,7 @@ This release has following new features:
 - Map Composer: Parameterized svg support for composer svg images
 - Map Composer: Easier use of HTML in labels
 - Map Composer: Relative links in composer labels
-- Map Composer: Georeference outputs (eg PDF) from composer
+- Map Composer: Georeference outputs (e.g., PDF) from composer
 - Map Composer: Composer maps now auto-update with presets
 - Analysis tools: Named parameters in expressions
 - Analysis tools: More distance units
@@ -814,7 +814,7 @@ changed so we will just provide a bullet list of key new features here.
 
  - Optionally re-use entered attribute values for next digitized feature.
  - Allow merging/assigning attribute values to a set of features.-
- - Allow OGR 'save as' without attributes (for eg. DGN/DXF).
+ - Allow OGR 'save as' without attributes (e.g., DGN/DXF).
 
 
   14.7. Api and Developer Centric

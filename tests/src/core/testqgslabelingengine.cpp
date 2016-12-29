@@ -324,7 +324,7 @@ void TestQgsLabelingEngine::zOrder()
   engine.removeProvider( provider1 );
 
   // since labels are all from same layer and have same z-index then smaller labels should be stacked on top of larger
-  // labels. Eg: B52 > Biplane > Jet
+  // labels. For example: B52 > Biplane > Jet
   QVERIFY( imageCheck( "label_order_size", img, 20 ) );
   img = job.renderedImage();
 
