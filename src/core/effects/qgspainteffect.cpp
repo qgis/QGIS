@@ -281,7 +281,7 @@ void QgsDrawSourceEffect::draw( QgsRenderContext &context )
   }
   else
   {
-    //rasterise source and apply modifications
+    //rasterize source and apply modifications
     QImage image = sourceAsImage( context )->copy();
     QgsImageOperation::multiplyOpacity( image, 1.0 - mTransparency );
     painter->save();
