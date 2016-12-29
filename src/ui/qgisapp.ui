@@ -212,10 +212,12 @@
      <string>&amp;Settings</string>
     </property>
     <addaction name="mActionProjectProperties"/>
+    <addaction name="mActionStyleManager"/>
     <addaction name="mActionCustomProjection"/>
-    <addaction name="mActionStyleManagerV2"/>
+    <addaction name="separator"/>
     <addaction name="mActionConfigureShortcuts"/>
     <addaction name="mActionCustomization"/>
+    <addaction name="separator"/>
     <addaction name="mActionOptions"/>
    </widget>
    <widget class="QMenu" name="mRasterMenu">
@@ -1593,16 +1595,16 @@
      <normaloff>:/images/themes/default/mActionCustomProjection.svg</normaloff>:/images/themes/default/mActionCustomProjection.svg</iconset>
    </property>
    <property name="text">
-    <string>Custom CRS...</string>
+    <string>Custom Projections...</string>
    </property>
   </action>
   <action name="mActionConfigureShortcuts">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
+     <normaloff>:/images/themes/default/mActionKeyboardShortcuts.svg</normaloff>:/images/themes/default/mActionKeyboardShortcuts.svg</iconset>
    </property>
    <property name="text">
-    <string>Configure Shortcuts...</string>
+    <string>Keyboard Shortcuts...</string>
    </property>
    <property name="menuRole">
     <enum>QAction::NoRole</enum>
@@ -1725,7 +1727,7 @@ Ctrl (Cmd) increments by 15 deg.</string>
     <string>Change Label</string>
    </property>
   </action>
-  <action name="mActionStyleManagerV2">
+  <action name="mActionStyleManager">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/propertyicons/symbology.svg</normaloff>:/images/themes/default/propertyicons/symbology.svg</iconset>
@@ -1775,10 +1777,10 @@ Ctrl (Cmd) increments by 15 deg.</string>
   <action name="mActionCustomization">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
+     <normaloff>:/images/themes/default/mActionInterfaceCustomization.svg</normaloff>:/images/themes/default/mActionInterfaceCustomization.svg</iconset>
    </property>
    <property name="text">
-    <string>Customization...</string>
+    <string>Interface Customization...</string>
    </property>
   </action>
   <action name="actionActionCatchForCustomization">
