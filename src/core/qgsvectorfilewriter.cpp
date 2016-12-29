@@ -1621,14 +1621,14 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                        ) );
 
   layerOptions.insert( QStringLiteral( "SPATIAL_INDEX" ), new BoolOption(
-                         QObject::tr( "If the database is of the SpatiaLite flavour, and if OGR is linked "
+                         QObject::tr( "If the database is of the SpatiaLite flavor, and if OGR is linked "
                                       "against libspatialite, this option can be used to control if a spatial "
                                       "index must be created." ),
                          true  // Default value
                        ) );
 
   layerOptions.insert( QStringLiteral( "COMPRESS_GEOM" ), new BoolOption(
-                         QObject::tr( "If the format of the geometry BLOB is of the SpatiaLite flavour, "
+                         QObject::tr( "If the format of the geometry BLOB is of the SpatiaLite flavor, "
                                       "this option can be used to control if the compressed format for "
                                       "geometries (LINESTRINGs, POLYGONs) must be used" ),
                          false  // Default value
