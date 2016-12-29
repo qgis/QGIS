@@ -109,6 +109,7 @@
         <file>themes/default/mActionEditNodesItem.svg</file>
         <file>themes/default/mActionEditHelpContent.svg</file>
         <file>themes/default/mActionIncreaseFont.svg</file>
+        <file>themes/default/mActionInterfaceCustomization.svg</file>
         <file>themes/default/mActionDecreaseFont.svg</file>
         <file>themes/default/mActionAddNodesItem.svg</file>
         <file>themes/default/mActionAddPolygon.svg</file>
@@ -210,6 +211,7 @@
         <file>themes/default/mActionIncreaseContrast.svg</file>
         <file>themes/default/mActionInOverview.svg</file>
         <file>themes/default/mActionInvertSelection.svg</file>
+        <file>themes/default/mActionKeyboardShortcuts.svg</file>
         <file>themes/default/mActionLabel.svg</file>
         <file>themes/default/mActionLabeling.svg</file>
         <file>themes/default/mActionLocalCumulativeCutStretch.svg</file>
