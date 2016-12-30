@@ -30,10 +30,6 @@ QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest&
 {
 }
 
-QgsAbstractFeatureIterator::~QgsAbstractFeatureIterator()
-{
-}
-
 bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
 {
   bool dataOk = false;

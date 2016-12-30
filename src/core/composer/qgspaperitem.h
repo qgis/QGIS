@@ -28,7 +28,6 @@ class CORE_EXPORT QgsPaperGrid: public QGraphicsRectItem
 {
   public:
     QgsPaperGrid( double x, double y, double width, double height, QgsComposition* composition );
-    ~QgsPaperGrid();
 
     //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;

@@ -40,11 +40,6 @@ QgsVectorLayerEditBuffer::QgsVectorLayerEditBuffer( QgsVectorLayer* layer )
   connect( L->undoStack(), &QUndoStack::indexChanged, this, &QgsVectorLayerEditBuffer::undoIndexChanged ); // TODO[MD]: queued?
 }
 
-QgsVectorLayerEditBuffer::~QgsVectorLayerEditBuffer()
-{
-}
-
-
 bool QgsVectorLayerEditBuffer::isModified() const
 {
   return !L->undoStack()->isClean();

@@ -417,11 +417,6 @@ QgsRandomColorRamp::QgsRandomColorRamp()
 {
 }
 
-QgsRandomColorRamp::~QgsRandomColorRamp()
-{
-
-}
-
 int QgsRandomColorRamp::count() const
 {
   return -1;

@@ -106,7 +106,6 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
 
     QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem* parent,
                         const QString& name, const QString& path );
-    virtual ~QgsCptCityDataItem();
 
     bool hasChildren();
 
@@ -258,7 +257,6 @@ class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
   public:
     QgsCptCityDirectoryItem( QgsCptCityDataItem* parent,
                              const QString& name, const QString& path );
-    ~QgsCptCityDirectoryItem();
 
     QVector<QgsCptCityDataItem*> createChildren() override;
 
@@ -282,7 +280,6 @@ class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
     Q_OBJECT
   public:
     QgsCptCitySelectionItem( QgsCptCityDataItem* parent, const QString& name, const QString& path );
-    ~QgsCptCitySelectionItem();
 
     QVector<QgsCptCityDataItem*> createChildren() override;
 
@@ -303,7 +300,6 @@ class CORE_EXPORT QgsCptCityAllRampsItem : public QgsCptCityCollectionItem
   public:
     QgsCptCityAllRampsItem( QgsCptCityDataItem* parent, const QString& name,
                             const QVector<QgsCptCityDataItem*>& items );
-    ~QgsCptCityAllRampsItem();
 
     QVector<QgsCptCityDataItem*> createChildren() override;
 

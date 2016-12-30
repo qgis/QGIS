@@ -22,11 +22,6 @@ QgsSqlExpressionCompiler::QgsSqlExpressionCompiler( const QgsFields& fields, Fla
 {
 }
 
-QgsSqlExpressionCompiler::~QgsSqlExpressionCompiler()
-{
-
-}
-
 QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compile( const QgsExpression* exp )
 {
   if ( exp->rootNode() )

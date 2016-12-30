@@ -32,7 +32,7 @@ class CORE_EXPORT QgsPluginLayerType
   public:
 
     QgsPluginLayerType( const QString& name );
-    virtual ~QgsPluginLayerType();
+    virtual ~QgsPluginLayerType() = default;
 
     QString name();
 

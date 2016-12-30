@@ -18,6 +18,7 @@
 #define QGSCOMPOSERPOLYLINE_H
 
 #include "qgscomposernodesitem.h"
+#include "qgssymbol.h"
 #include <QBrush>
 #include <QPen>
 
@@ -43,9 +44,6 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
      * @param c parent composition
      */
     QgsComposerPolyline( const QPolygonF &polyline, QgsComposition* c );
-
-
-    ~QgsComposerPolyline();
 
     //! Overridden to return shape name
     virtual QString displayName() const override;

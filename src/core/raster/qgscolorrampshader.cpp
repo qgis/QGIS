@@ -70,10 +70,6 @@ QgsColorRampShader & QgsColorRampShader::operator=( const QgsColorRampShader & o
   return *this;
 }
 
-QgsColorRampShader::~QgsColorRampShader()
-{
-}
-
 QString QgsColorRampShader::colorRampTypeAsQString()
 {
   switch ( mColorRampType )

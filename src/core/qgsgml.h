@@ -335,8 +335,6 @@ class CORE_EXPORT QgsGml : public QObject
       const QString& geometryAttribute,
       const QgsFields & fields );
 
-    ~QgsGml();
-
     /** Does the Http GET request to the wfs server
      *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
      *  @param uri GML URL

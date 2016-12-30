@@ -36,11 +36,6 @@ QgsBlurEffect::QgsBlurEffect()
 
 }
 
-QgsBlurEffect::~QgsBlurEffect()
-{
-
-}
-
 void QgsBlurEffect::draw( QgsRenderContext &context )
 {
   if ( !source() || !enabled() || !context.painter() )

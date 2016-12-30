@@ -36,10 +36,6 @@ QgsComposerPolygon::QgsComposerPolygon( const QPolygonF& polygon, QgsComposition
   createDefaultPolygonStyleSymbol();
 }
 
-QgsComposerPolygon::~QgsComposerPolygon()
-{
-}
-
 bool QgsComposerPolygon::_addNode( const int indexPoint,
                                    QPointF newPoint,
                                    const double radius )

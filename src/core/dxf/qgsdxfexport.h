@@ -52,7 +52,6 @@ class CORE_EXPORT QgsDxfExport
 
     QgsDxfExport();
     QgsDxfExport( const QgsDxfExport &dxfExport );
-    ~QgsDxfExport();
     QgsDxfExport &operator=( const QgsDxfExport &dxfExport );
 
     /**

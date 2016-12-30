@@ -46,10 +46,6 @@ QgsComposerFrame::QgsComposerFrame()
   setBackgroundEnabled( false );
 }
 
-QgsComposerFrame::~QgsComposerFrame()
-{
-}
-
 bool QgsComposerFrame::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement frameElem = doc.createElement( QStringLiteral( "ComposerFrame" ) );

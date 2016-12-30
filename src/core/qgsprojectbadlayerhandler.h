@@ -38,7 +38,7 @@ class CORE_EXPORT QgsProjectBadLayerHandler
      * @see QgsProjectBadLayerGuiHandler
      */
     virtual void handleBadLayers( const QList<QDomNode>& layers );
-    virtual ~QgsProjectBadLayerHandler();
+    virtual ~QgsProjectBadLayerHandler() = default;
 
 
   protected:

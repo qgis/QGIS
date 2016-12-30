@@ -314,11 +314,6 @@ QgsComposerMapOverviewStack::QgsComposerMapOverviewStack( QgsComposerMap *map )
 
 }
 
-QgsComposerMapOverviewStack::~QgsComposerMapOverviewStack()
-{
-
-}
-
 void QgsComposerMapOverviewStack::addOverview( QgsComposerMapOverview *overview )
 {
   QgsComposerMapItemStack::addItem( overview );

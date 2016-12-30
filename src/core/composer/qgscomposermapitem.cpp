@@ -29,11 +29,6 @@ QgsComposerMapItem::QgsComposerMapItem( const QString &name, QgsComposerMap *map
 
 }
 
-QgsComposerMapItem::~QgsComposerMapItem()
-{
-
-}
-
 bool QgsComposerMapItem::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   Q_UNUSED( doc );

@@ -45,7 +45,6 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     Q_OBJECT
   public:
     QgsAtlasComposition( QgsComposition* composition );
-    ~QgsAtlasComposition();
 
     /** Returns whether the atlas generation is enabled
      * @returns true if atlas is enabled

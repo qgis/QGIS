@@ -19,10 +19,6 @@
 #include "qgsvectorlayer.h"
 
 
-QgsAbstractVectorLayerLabeling::~QgsAbstractVectorLayerLabeling()
-{
-}
-
 QgsAbstractVectorLayerLabeling* QgsAbstractVectorLayerLabeling::create( const QDomElement& element )
 {
   if ( element.attribute( QStringLiteral( "type" ) ) == QLatin1String( "rule-based" ) )

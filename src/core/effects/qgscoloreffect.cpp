@@ -41,11 +41,6 @@ QgsColorEffect::QgsColorEffect()
 
 }
 
-QgsColorEffect::~QgsColorEffect()
-{
-
-}
-
 void QgsColorEffect::draw( QgsRenderContext &context )
 {
   if ( !source() || !enabled() || !context.painter() )

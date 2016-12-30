@@ -28,10 +28,6 @@ QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand(): QUndoCommand( QLat
 {
 }
 
-QgsComposerMultiFrameCommand::~QgsComposerMultiFrameCommand()
-{
-}
-
 void QgsComposerMultiFrameCommand::undo()
 {
   restoreState( mPreviousState );
@@ -95,11 +91,6 @@ bool QgsComposerMultiFrameCommand::containsChange() const
 QgsComposerMultiFrameMergeCommand::QgsComposerMultiFrameMergeCommand( QgsComposerMultiFrameMergeCommand::Context c, QgsComposerMultiFrame *multiFrame, const QString &text )
     : QgsComposerMultiFrameCommand( multiFrame, text )
     , mContext( c )
-{
-
-}
-
-QgsComposerMultiFrameMergeCommand::~QgsComposerMultiFrameMergeCommand()
 {
 
 }

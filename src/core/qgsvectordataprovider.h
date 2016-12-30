@@ -117,8 +117,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     QgsVectorDataProvider( const QString& uri = QString() );
 
-    virtual ~QgsVectorDataProvider();
-
     /**
      * Return feature source object that can be used for querying provider's data. The returned feature source
      * is independent from provider - any changes to provider's state (e.g. change of subset string) will not be

@@ -95,10 +95,6 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* compos
   refreshAttributes();
 }
 
-QgsComposerAttributeTableV2::~QgsComposerAttributeTableV2()
-{
-}
-
 QString QgsComposerAttributeTableV2::displayName() const
 {
   return tr( "<attribute table>" );

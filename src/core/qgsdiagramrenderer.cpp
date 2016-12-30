@@ -541,10 +541,6 @@ QgsSingleCategoryDiagramRenderer::QgsSingleCategoryDiagramRenderer(): QgsDiagram
 {
 }
 
-QgsSingleCategoryDiagramRenderer::~QgsSingleCategoryDiagramRenderer()
-{
-}
-
 QgsSingleCategoryDiagramRenderer* QgsSingleCategoryDiagramRenderer::clone() const
 {
   return new QgsSingleCategoryDiagramRenderer( *this );
@@ -593,10 +589,6 @@ void QgsSingleCategoryDiagramRenderer::writeXml( QDomElement& layerElem, QDomDoc
 QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer(): QgsDiagramRenderer()
 {
   mInterpolationSettings.classificationAttributeIsExpression = false;
-}
-
-QgsLinearlyInterpolatedDiagramRenderer::~QgsLinearlyInterpolatedDiagramRenderer()
-{
 }
 
 QgsLinearlyInterpolatedDiagramRenderer* QgsLinearlyInterpolatedDiagramRenderer::clone() const

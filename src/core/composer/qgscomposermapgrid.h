@@ -51,8 +51,6 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
      */
     QgsComposerMapGridStack( QgsComposerMap* map );
 
-    virtual ~QgsComposerMapGridStack();
-
     /** Adds a new map grid to the stack and takes ownership of the grid.
      * The grid will be added to the end of the stack, and rendered
      * above any existing map grids already present in the stack.

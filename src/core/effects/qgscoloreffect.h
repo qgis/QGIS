@@ -42,7 +42,6 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
     static QgsPaintEffect* create( const QgsStringMap& map );
 
     QgsColorEffect();
-    virtual ~QgsColorEffect();
 
     virtual QString type() const override { return QStringLiteral( "color" ); }
     virtual QgsStringMap properties() const override;

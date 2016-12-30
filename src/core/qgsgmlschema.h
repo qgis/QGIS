@@ -78,8 +78,6 @@ class CORE_EXPORT QgsGmlSchema : public QObject
   public:
     QgsGmlSchema();
 
-    ~QgsGmlSchema();
-
     //! Get fields info from XSD
     bool parseXSD( const QByteArray &xml );
 

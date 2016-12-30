@@ -61,7 +61,6 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     };
 
     QgsComposerPicture( QgsComposition *composition );
-    ~QgsComposerPicture();
 
     //! Return correct graphics item type.
     virtual int type() const override { return ComposerPicture; }

@@ -29,11 +29,6 @@ QgsTicksScaleBarStyle::QgsTicksScaleBarStyle(): QgsScaleBarStyle( nullptr )
   mTickPosition = TicksMiddle;
 }
 
-QgsTicksScaleBarStyle::~QgsTicksScaleBarStyle()
-{
-
-}
-
 QString QgsTicksScaleBarStyle::name() const
 {
   switch ( mTickPosition )

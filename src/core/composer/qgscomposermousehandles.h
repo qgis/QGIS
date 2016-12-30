@@ -70,7 +70,6 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     };
 
     QgsComposerMouseHandles( QgsComposition *composition );
-    virtual ~QgsComposerMouseHandles();
 
     void setComposition( QgsComposition* c ) { mComposition = c; }
     QgsComposition* composition() { return mComposition; }

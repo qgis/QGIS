@@ -124,8 +124,6 @@ class CORE_EXPORT QgsSnappingConfig
      */
     explicit QgsSnappingConfig( QgsProject* project = nullptr );
 
-    ~QgsSnappingConfig();
-
     bool operator==( const QgsSnappingConfig& other ) const;
 
     //! reset to default values

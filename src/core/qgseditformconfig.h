@@ -93,12 +93,11 @@ class CORE_EXPORT QgsEditFormConfig
      * @note Added in QGIS 3.0
      */
     QgsEditFormConfig( const QgsEditFormConfig& o );
+    ~QgsEditFormConfig();
 
     QgsEditFormConfig& operator=( const QgsEditFormConfig& o );
 
     bool operator==( const QgsEditFormConfig& o );
-
-    ~QgsEditFormConfig();
 
     /**
      * Adds a new element to the invisible root container in the layout.

@@ -35,10 +35,6 @@ QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nod
 {
 }
 
-QgsLayerTreeModelLegendNode::~QgsLayerTreeModelLegendNode()
-{
-}
-
 QgsLayerTreeModel* QgsLayerTreeModelLegendNode::model() const
 {
   return qobject_cast<QgsLayerTreeModel*>( parent() );
@@ -142,10 +138,6 @@ QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const Qg
 
   if ( mItem.symbol() )
     mSymbolUsesMapUnits = ( mItem.symbol()->outputUnit() != QgsUnitTypes::RenderMillimeters );
-}
-
-QgsSymbolLegendNode::~QgsSymbolLegendNode()
-{
 }
 
 Qt::ItemFlags QgsSymbolLegendNode::flags() const

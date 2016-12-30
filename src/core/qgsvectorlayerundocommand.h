@@ -122,7 +122,6 @@ class CORE_EXPORT QgsVectorLayerUndoCommandChangeGeometry : public QgsVectorLaye
      * @param newGeom new geometry for feature
      */
     QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, const QgsGeometry &newGeom );
-    ~QgsVectorLayerUndoCommandChangeGeometry();
 
     virtual void undo() override;
     virtual void redo() override;

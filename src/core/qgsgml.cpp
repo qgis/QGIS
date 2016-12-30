@@ -55,10 +55,6 @@ QgsGml::QgsGml(
   }
 }
 
-QgsGml::~QgsGml()
-{
-}
-
 int QgsGml::getFeatures( const QString& uri, QgsWkbTypes::Type* wkbType, QgsRectangle* extent, const QString& userName, const QString& password , const QString& authcfg )
 {
   //start with empty extent

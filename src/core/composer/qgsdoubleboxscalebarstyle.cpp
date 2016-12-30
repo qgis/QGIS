@@ -30,11 +30,6 @@ QgsDoubleBoxScaleBarStyle::QgsDoubleBoxScaleBarStyle(): QgsScaleBarStyle( nullpt
 
 }
 
-QgsDoubleBoxScaleBarStyle::~QgsDoubleBoxScaleBarStyle()
-{
-
-}
-
 QString QgsDoubleBoxScaleBarStyle::name() const
 {
   return QStringLiteral( "Double Box" );

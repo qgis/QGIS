@@ -31,8 +31,6 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
   public:
     QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height );
 
-    ~QgsComposerFrame();
-
     /** Sets the visible part of the multiframe's content which is visible within
      * this frame (relative to the total multiframe extent in mm).
      * @param section visible portion of content

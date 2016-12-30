@@ -31,11 +31,6 @@ QgsStatisticalSummary::QgsStatisticalSummary( Statistics stats )
   reset();
 }
 
-QgsStatisticalSummary::~QgsStatisticalSummary()
-{
-
-}
-
 void QgsStatisticalSummary::reset()
 {
   mCount = 0;

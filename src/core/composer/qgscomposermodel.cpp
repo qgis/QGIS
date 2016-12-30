@@ -36,10 +36,6 @@ QgsComposerModel::QgsComposerModel( QgsComposition* composition, QObject *parent
 
 }
 
-QgsComposerModel::~QgsComposerModel()
-{
-}
-
 QgsComposerItem* QgsComposerModel::itemFromIndex( const QModelIndex &index ) const
 {
   //try to return the QgsComposerItem corresponding to a QModelIndex

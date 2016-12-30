@@ -30,7 +30,6 @@ class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
 
   public:
     QgsComposerEffect();
-    ~QgsComposerEffect();
 
     void setCompositionMode( QPainter::CompositionMode compositionMode );
 

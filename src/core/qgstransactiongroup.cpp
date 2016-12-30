@@ -30,10 +30,6 @@ QgsTransactionGroup::QgsTransactionGroup( QObject *parent )
 
 }
 
-QgsTransactionGroup::~QgsTransactionGroup()
-{
-}
-
 bool QgsTransactionGroup::addLayer( QgsVectorLayer* layer )
 {
   if ( !QgsTransaction::supportsTransaction( layer ) )

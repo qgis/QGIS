@@ -37,8 +37,6 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
      */
     QgsComposerMapItem( const QString& name, QgsComposerMap* map );
 
-    virtual ~QgsComposerMapItem();
-
     /** Draws the item on to a painter
      * @param painter destination QPainter
      */

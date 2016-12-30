@@ -44,7 +44,6 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 {
     Q_OBJECT
   public:
-    ~QgsLayerTreeModelLegendNode();
 
     enum LegendNodeRoles
     {
@@ -148,7 +147,6 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
   public:
     QgsSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItem& item, QObject* parent = nullptr );
-    ~QgsSymbolLegendNode();
 
     virtual Qt::ItemFlags flags() const override;
     virtual QVariant data( int role ) const override;

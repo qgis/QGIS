@@ -25,14 +25,6 @@ QgsProperty::QgsProperty()
 {
 }
 
-QgsProperty::~QgsProperty()
-{
-}
-
-QgsPropertyValue::~QgsPropertyValue()
-{
-}
-
 void QgsPropertyValue::dump( int tabs ) const
 {
   QString tabString;

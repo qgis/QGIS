@@ -51,10 +51,6 @@ QgsEllipseSymbolLayer::QgsEllipseSymbolLayer()
   mAngle = 0;
 }
 
-QgsEllipseSymbolLayer::~QgsEllipseSymbolLayer()
-{
-}
-
 QgsSymbolLayer* QgsEllipseSymbolLayer::create( const QgsStringMap& properties )
 {
   QgsEllipseSymbolLayer* layer = new QgsEllipseSymbolLayer();

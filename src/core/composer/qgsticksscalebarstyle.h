@@ -33,7 +33,6 @@ class CORE_EXPORT QgsTicksScaleBarStyle: public QgsScaleBarStyle
     };
 
     QgsTicksScaleBarStyle( const QgsComposerScaleBar* bar );
-    ~QgsTicksScaleBarStyle();
 
     QString name() const override;
 

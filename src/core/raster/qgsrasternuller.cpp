@@ -23,10 +23,6 @@ QgsRasterNuller::QgsRasterNuller( QgsRasterInterface* input )
 {
 }
 
-QgsRasterNuller::~QgsRasterNuller()
-{
-}
-
 QgsRasterNuller* QgsRasterNuller::clone() const
 {
   QgsDebugMsgLevel( "Entered", 4 );

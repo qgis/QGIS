@@ -42,10 +42,6 @@ QgsComposerMapGridStack::QgsComposerMapGridStack( QgsComposerMap* map )
 
 }
 
-QgsComposerMapGridStack::~QgsComposerMapGridStack()
-{
-}
-
 void QgsComposerMapGridStack::addGrid( QgsComposerMapGrid* grid )
 {
   QgsComposerMapItemStack::addItem( grid );

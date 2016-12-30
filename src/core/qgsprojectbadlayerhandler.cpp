@@ -28,10 +28,6 @@ void QgsProjectBadLayerHandler::handleBadLayers( const QList<QDomNode>& layers )
   }
 }
 
-QgsProjectBadLayerHandler::~QgsProjectBadLayerHandler()
-{
-}
-
 QgsProjectBadLayerHandler::DataType QgsProjectBadLayerHandler::dataType( const QDomNode& layerNode )
 {
   QString type = layerNode.toElement().attribute( QStringLiteral( "type" ) );

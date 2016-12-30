@@ -42,6 +42,3 @@ QgsRasterIdentifyResult::QgsRasterIdentifyResult( const QgsError& theError )
 {
 }
 
-QgsRasterIdentifyResult::~QgsRasterIdentifyResult()
-{
-}

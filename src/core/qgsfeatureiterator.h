@@ -51,7 +51,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     QgsAbstractFeatureIterator( const QgsFeatureRequest& request );
 
     //! destructor makes sure that the iterator is closed properly
-    virtual ~QgsAbstractFeatureIterator();
+    virtual ~QgsAbstractFeatureIterator() = default;
 
     //! fetch next feature, return true on success
     virtual bool nextFeature( QgsFeature& f );

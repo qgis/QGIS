@@ -46,8 +46,6 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
      */
     QgsInvertedPolygonRenderer( QgsFeatureRenderer* embeddedRenderer = nullptr );
 
-    virtual ~QgsInvertedPolygonRenderer();
-
     virtual QgsInvertedPolygonRenderer* clone() const override;
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
 

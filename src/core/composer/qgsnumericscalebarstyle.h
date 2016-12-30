@@ -26,7 +26,6 @@ class CORE_EXPORT QgsNumericScaleBarStyle: public QgsScaleBarStyle
 {
   public:
     QgsNumericScaleBarStyle( QgsComposerScaleBar* bar );
-    ~QgsNumericScaleBarStyle();
 
     QString name() const override;
 

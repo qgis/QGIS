@@ -29,7 +29,6 @@ class CORE_EXPORT QgsDbFilterProxyModel: public QSortFilterProxyModel
 
   public:
     QgsDbFilterProxyModel( QObject* parent = nullptr );
-    ~QgsDbFilterProxyModel();
     //! Calls QSortFilterProxyModel::setFilterWildcard and triggers update
     void _setFilterWildcard( const QString& pattern );
     //! Calls QSortFilterProxyModel::setFilterRegExp and triggers update

@@ -46,10 +46,6 @@ QgsRasterProjector* QgsRasterProjector::clone() const
   return projector;
 }
 
-QgsRasterProjector::~QgsRasterProjector()
-{
-}
-
 int QgsRasterProjector::bandCount() const
 {
   if ( mInput ) return mInput->bandCount();

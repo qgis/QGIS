@@ -35,10 +35,6 @@ QgsHueSaturationFilter::QgsHueSaturationFilter( QgsRasterInterface* input )
 {
 }
 
-QgsHueSaturationFilter::~QgsHueSaturationFilter()
-{
-}
-
 QgsHueSaturationFilter* QgsHueSaturationFilter::clone() const
 {
   QgsDebugMsgLevel( "Entered hue/saturation filter", 4 );

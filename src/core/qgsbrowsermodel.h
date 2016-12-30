@@ -34,7 +34,6 @@ class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem
 
   public:
     QgsBrowserWatcher( QgsDataItem * item );
-    ~QgsBrowserWatcher();
 
     QgsDataItem* item() const { return mItem; }
 

@@ -60,10 +60,6 @@ QgsVectorFileWriter::FieldValueConverter::FieldValueConverter()
 {
 }
 
-QgsVectorFileWriter::FieldValueConverter::~FieldValueConverter()
-{
-}
-
 QgsField QgsVectorFileWriter::FieldValueConverter::fieldDefinition( const QgsField& field )
 {
   return field;
@@ -2293,10 +2289,6 @@ QgsVectorFileWriter::SaveVectorOptions::SaveVectorOptions()
     , forceMulti( false )
     , includeZ( false )
     , fieldValueConverter( nullptr )
-{
-}
-
-QgsVectorFileWriter::SaveVectorOptions::~SaveVectorOptions()
 {
 }
 

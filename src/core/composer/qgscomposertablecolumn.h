@@ -38,8 +38,6 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      */
     QgsComposerTableColumn( const QString& heading = QString() );
 
-    virtual ~QgsComposerTableColumn();
-
     /** Writes the column's properties to xml for storage.
      * @param columnElem an existing QDomElement in which to store the column's properties.
      * @param doc QDomDocument for the destination xml.

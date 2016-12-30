@@ -111,10 +111,6 @@ QgsSnappingConfig::QgsSnappingConfig( QgsProject* project )
     reset();
 }
 
-QgsSnappingConfig::~QgsSnappingConfig()
-{
-}
-
 bool QgsSnappingConfig::operator==( const QgsSnappingConfig& other ) const
 {
   return mEnabled == other.mEnabled

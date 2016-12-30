@@ -26,7 +26,6 @@ class CORE_EXPORT QgsDoubleBoxScaleBarStyle: public QgsScaleBarStyle
 {
   public:
     QgsDoubleBoxScaleBarStyle( const QgsComposerScaleBar* bar );
-    ~QgsDoubleBoxScaleBarStyle();
 
     QString name() const override;
 

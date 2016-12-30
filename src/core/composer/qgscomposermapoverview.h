@@ -45,8 +45,6 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      */
     QgsComposerMapOverviewStack( QgsComposerMap* map );
 
-    virtual ~QgsComposerMapOverviewStack();
-
     /** Adds a new map overview to the stack and takes ownership of the overview.
      * The overview will be added to the end of the stack, and rendered
      * above any existing map overviews already present in the stack.

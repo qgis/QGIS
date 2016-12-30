@@ -230,11 +230,6 @@ QgsOuterGlowEffect::QgsOuterGlowEffect()
 
 }
 
-QgsOuterGlowEffect::~QgsOuterGlowEffect()
-{
-
-}
-
 QgsPaintEffect *QgsOuterGlowEffect::create( const QgsStringMap &map )
 {
   QgsOuterGlowEffect* effect = new QgsOuterGlowEffect();
@@ -255,11 +250,6 @@ QgsOuterGlowEffect* QgsOuterGlowEffect::clone() const
 
 QgsInnerGlowEffect::QgsInnerGlowEffect()
     : QgsGlowEffect()
-{
-
-}
-
-QgsInnerGlowEffect::~QgsInnerGlowEffect()
 {
 
 }

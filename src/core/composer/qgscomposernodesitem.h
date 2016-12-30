@@ -45,9 +45,6 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
      */
     QgsComposerNodesItem( const QString &mTagName, const QPolygonF &polygon, QgsComposition* c );
 
-
-    ~QgsComposerNodesItem();
-
     /** Add a node in current shape.
      * @param pt is the location of the new node
      * @param checkArea is a flag to indicate if there's a space constraint.

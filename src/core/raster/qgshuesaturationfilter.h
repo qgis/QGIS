@@ -39,7 +39,6 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
     };
 
     QgsHueSaturationFilter( QgsRasterInterface *input = nullptr );
-    ~QgsHueSaturationFilter();
 
     QgsHueSaturationFilter * clone() const override;
 

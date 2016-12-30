@@ -69,7 +69,6 @@ class CORE_EXPORT QgsConditionalStyle
     QgsConditionalStyle();
     QgsConditionalStyle( const QgsConditionalStyle& other );
     QgsConditionalStyle( const QString& rule );
-    ~QgsConditionalStyle();
 
     QgsConditionalStyle& operator=( const QgsConditionalStyle& other );
 

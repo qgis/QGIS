@@ -35,7 +35,6 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
   public:
 
     QgsShadowEffect();
-    virtual ~QgsShadowEffect();
 
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap& props ) override;
@@ -198,7 +197,6 @@ class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect
     static QgsPaintEffect* create( const QgsStringMap& map );
 
     QgsDropShadowEffect();
-    virtual ~QgsDropShadowEffect();
 
     virtual QString type() const override { return QStringLiteral( "dropShadow" ); }
     virtual QgsDropShadowEffect* clone() const override;
@@ -228,7 +226,6 @@ class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect
     static QgsPaintEffect* create( const QgsStringMap& map );
 
     QgsInnerShadowEffect();
-    virtual ~QgsInnerShadowEffect();
 
     virtual QString type() const override { return QStringLiteral( "innerShadow" ); }
     virtual QgsInnerShadowEffect* clone() const override;

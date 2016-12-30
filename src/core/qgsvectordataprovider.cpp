@@ -42,11 +42,6 @@ QgsVectorDataProvider::QgsVectorDataProvider( const QString& uri )
   setEncoding( settings.value( QStringLiteral( "/UI/encoding" ), "System" ).toString() );
 }
 
-
-QgsVectorDataProvider::~QgsVectorDataProvider()
-{
-}
-
 QString QgsVectorDataProvider::storageType() const
 {
   return QStringLiteral( "Generic vector file" );

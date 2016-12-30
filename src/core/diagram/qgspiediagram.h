@@ -35,7 +35,6 @@ class CORE_EXPORT QgsPieDiagram: public QgsDiagram
 {
   public:
     QgsPieDiagram();
-    ~QgsPieDiagram();
 
     virtual QgsPieDiagram* clone() const override;
 

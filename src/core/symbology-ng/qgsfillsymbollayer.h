@@ -587,7 +587,6 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
   public:
 
     QgsImageFillSymbolLayer();
-    virtual ~QgsImageFillSymbolLayer();
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
 
     virtual QgsSymbol* subSymbol() override { return mOutline; }
@@ -653,7 +652,6 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     };
 
     QgsRasterFillSymbolLayer( const QString& imageFilePath = QString() );
-    ~QgsRasterFillSymbolLayer();
 
     static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
 

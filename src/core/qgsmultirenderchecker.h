@@ -53,6 +53,8 @@ class CORE_EXPORT QgsMultiRenderChecker
   public:
     QgsMultiRenderChecker();
 
+    virtual ~QgsMultiRenderChecker() = default;
+
     /**
      * Base directory name for the control image (with control image path
      * suffixed) the path to the image will be constructed like this:
@@ -139,7 +141,6 @@ class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
 {
   public:
     QgsCompositionChecker( const QString& testName, QgsComposition* composition );
-    ~QgsCompositionChecker();
 
     void setSize( QSize size ) { mSize = size; }
 

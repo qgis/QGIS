@@ -36,7 +36,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     Q_OBJECT
   public:
     QgsVectorLayerEditBuffer( QgsVectorLayer* layer );
-    ~QgsVectorLayerEditBuffer();
 
     //! Returns true if the provider has been modified since the last commit
     virtual bool isModified() const;

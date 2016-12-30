@@ -31,7 +31,6 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 {
   public:
     QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent = nullptr );
-    virtual ~QgsComposerItemCommand();
 
     //! Reverses the command
     void undo() override;
@@ -157,7 +156,6 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
     };
 
     QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text );
-    ~QgsComposerMergeCommand();
 
     bool mergeWith( const QUndoCommand * command ) override;
     int id() const override { return static_cast< int >( mContext ); }

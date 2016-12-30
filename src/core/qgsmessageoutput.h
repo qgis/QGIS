@@ -42,7 +42,7 @@ class CORE_EXPORT QgsMessageOutput
     //! message can be in plain text or in html format
     enum MessageType { MessageText, MessageHtml };
 
-    virtual ~QgsMessageOutput();
+    virtual ~QgsMessageOutput() = default;
 
     //! set message, it won't be displayed until
     virtual void setMessage( const QString& message, MessageType msgType ) = 0;

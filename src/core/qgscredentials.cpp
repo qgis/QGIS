@@ -42,10 +42,6 @@ QgsCredentials::QgsCredentials()
 {
 }
 
-QgsCredentials::~QgsCredentials()
-{
-}
-
 bool QgsCredentials::get( const QString& realm, QString &username, QString &password, const QString& message )
 {
   if ( mCredentialCache.contains( realm ) )

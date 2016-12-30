@@ -52,9 +52,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
     QgsNetworkAccessManager( QObject *parent = nullptr );
 
-
-    ~QgsNetworkAccessManager();
-
     //! insert a factory into the proxy factories list
     void insertProxyFactory( QNetworkProxyFactory *factory );
 

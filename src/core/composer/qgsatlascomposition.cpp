@@ -48,10 +48,6 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition )
   connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
 }
 
-QgsAtlasComposition::~QgsAtlasComposition()
-{
-}
-
 void QgsAtlasComposition::setEnabled( bool enabled )
 {
   if ( enabled == mEnabled )

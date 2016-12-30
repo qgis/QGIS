@@ -539,7 +539,6 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 {
   public:
     QgsSingleCategoryDiagramRenderer();
-    ~QgsSingleCategoryDiagramRenderer();
 
     QgsSingleCategoryDiagramRenderer* clone() const override;
 
@@ -572,7 +571,6 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 {
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
-    ~QgsLinearlyInterpolatedDiagramRenderer();
 
     QgsLinearlyInterpolatedDiagramRenderer* clone() const override;
 

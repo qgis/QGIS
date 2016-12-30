@@ -182,8 +182,7 @@ class CORE_EXPORT QgsVectorFileWriter
         //! Constructor
         FieldValueConverter();
 
-
-        virtual ~FieldValueConverter();
+        virtual ~FieldValueConverter() = default;
 
         /** Return a possibly modified field definition. Default implementation will return provided field unmodified.
          * @param field original field definition
@@ -337,8 +336,7 @@ class CORE_EXPORT QgsVectorFileWriter
         //! Constructor
         SaveVectorOptions();
 
-
-        virtual ~SaveVectorOptions();
+        virtual ~SaveVectorOptions() = default;
 
         //! OGR driver to use
         QString driverName;

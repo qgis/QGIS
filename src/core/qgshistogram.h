@@ -36,7 +36,7 @@ class CORE_EXPORT QgsHistogram
 
     QgsHistogram();
 
-    virtual ~QgsHistogram();
+    virtual ~QgsHistogram() = default;
 
     /** Assigns numeric source values for the histogram.
      * @param values list of doubles

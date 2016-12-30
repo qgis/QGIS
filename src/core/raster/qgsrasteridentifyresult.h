@@ -41,7 +41,7 @@ class CORE_EXPORT QgsRasterIdentifyResult
      */
     QgsRasterIdentifyResult( const QgsError& theError );
 
-    virtual ~QgsRasterIdentifyResult();
+    virtual ~QgsRasterIdentifyResult() = default;
 
     //! \brief Returns true if valid
     bool isValid() const { return mValid; }

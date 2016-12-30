@@ -92,11 +92,6 @@ QgsOwsConnection::QgsOwsConnection( const QString & theService, const QString & 
   QgsDebugMsg( QString( "encoded uri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
 }
 
-QgsOwsConnection::~QgsOwsConnection()
-{
-
-}
-
 QgsDataSourceUri QgsOwsConnection::uri() const
 {
   return mUri;

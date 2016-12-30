@@ -59,7 +59,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      * @param flags flags which control how expression is compiled
      */
     explicit QgsSqlExpressionCompiler( const QgsFields& fields, QgsSqlExpressionCompiler::Flags flags = Flags() );
-    virtual ~QgsSqlExpressionCompiler();
+    virtual ~QgsSqlExpressionCompiler() = default;
 
     /** Compiles an expression and returns the result of the compilation.
      */

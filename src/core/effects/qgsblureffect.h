@@ -48,7 +48,6 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     static QgsPaintEffect* create( const QgsStringMap& map );
 
     QgsBlurEffect();
-    virtual ~QgsBlurEffect();
 
     virtual QString type() const override { return QStringLiteral( "blur" ); }
     virtual QgsStringMap properties() const override;

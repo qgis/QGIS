@@ -20,10 +20,6 @@ QgsAbstractCacheIndex::QgsAbstractCacheIndex()
 {
 }
 
-QgsAbstractCacheIndex::~QgsAbstractCacheIndex()
-{
-}
-
 void QgsAbstractCacheIndex::requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids )
 {
   Q_UNUSED( featureRequest )

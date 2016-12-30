@@ -121,10 +121,6 @@ QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
   setProxyFactory( new QgsNetworkProxyFactory() );
 }
 
-QgsNetworkAccessManager::~QgsNetworkAccessManager()
-{
-}
-
 void QgsNetworkAccessManager::insertProxyFactory( QNetworkProxyFactory *factory )
 {
   mProxyFactories.insert( 0, factory );

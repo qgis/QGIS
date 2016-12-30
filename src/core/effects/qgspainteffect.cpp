@@ -255,11 +255,6 @@ QgsDrawSourceEffect::QgsDrawSourceEffect()
 
 }
 
-QgsDrawSourceEffect::~QgsDrawSourceEffect()
-{
-
-}
-
 QgsPaintEffect *QgsDrawSourceEffect::create( const QgsStringMap &map )
 {
   QgsDrawSourceEffect* effect = new QgsDrawSourceEffect();

@@ -27,10 +27,6 @@ QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxf
 {
 }
 
-QgsDxfPaintEngine::~QgsDxfPaintEngine()
-{
-}
-
 bool QgsDxfPaintEngine::begin( QPaintDevice* pdev )
 {
   Q_UNUSED( pdev );

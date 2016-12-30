@@ -34,10 +34,6 @@ QgsPaperGrid::QgsPaperGrid( double x, double y, double width, double height, Qgs
   setPos( x, y );
 }
 
-QgsPaperGrid::~QgsPaperGrid()
-{
-}
-
 void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
   Q_UNUSED( itemStyle );

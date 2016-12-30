@@ -33,11 +33,6 @@ QgsShadowEffect::QgsShadowEffect()
 
 }
 
-QgsShadowEffect::~QgsShadowEffect()
-{
-
-}
-
 void QgsShadowEffect::draw( QgsRenderContext &context )
 {
   if ( !source() || !enabled() || !context.painter() )
@@ -174,11 +169,6 @@ QgsDropShadowEffect::QgsDropShadowEffect()
 
 }
 
-QgsDropShadowEffect::~QgsDropShadowEffect()
-{
-
-}
-
 QgsDropShadowEffect* QgsDropShadowEffect::clone() const
 {
   return new QgsDropShadowEffect( *this );
@@ -198,11 +188,6 @@ QgsPaintEffect *QgsInnerShadowEffect::create( const QgsStringMap &map )
 
 QgsInnerShadowEffect::QgsInnerShadowEffect()
     : QgsShadowEffect()
-{
-
-}
-
-QgsInnerShadowEffect::~QgsInnerShadowEffect()
 {
 
 }

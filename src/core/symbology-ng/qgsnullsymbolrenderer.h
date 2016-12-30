@@ -32,8 +32,6 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
 
     QgsNullSymbolRenderer();
 
-    virtual ~QgsNullSymbolRenderer();
-
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
     virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 

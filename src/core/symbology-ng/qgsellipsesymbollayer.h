@@ -28,7 +28,6 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
 {
   public:
     QgsEllipseSymbolLayer();
-    ~QgsEllipseSymbolLayer();
 
     static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
     static QgsSymbolLayer* createFromSld( QDomElement &element );

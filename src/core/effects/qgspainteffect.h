@@ -258,7 +258,6 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
   public:
 
     QgsDrawSourceEffect();
-    virtual ~QgsDrawSourceEffect();
 
     /** Creates a new QgsDrawSource effect from a properties string map.
      * @param map encoded properties string map

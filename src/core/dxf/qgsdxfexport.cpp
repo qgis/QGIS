@@ -396,10 +396,6 @@ QgsDxfExport& QgsDxfExport::operator=( const QgsDxfExport & dxfExport )
   return *this;
 }
 
-QgsDxfExport::~QgsDxfExport()
-{
-}
-
 void QgsDxfExport::addLayers( const QList< QPair< QgsVectorLayer *, int > > &layers )
 {
   mLayers = layers;

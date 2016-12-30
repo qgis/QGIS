@@ -25,10 +25,6 @@ QgsNullSymbolRenderer::QgsNullSymbolRenderer()
 {
 }
 
-QgsNullSymbolRenderer::~QgsNullSymbolRenderer()
-{
-}
-
 QgsSymbol* QgsNullSymbolRenderer::symbolForFeature( QgsFeature& , QgsRenderContext& )
 {
   return nullptr;

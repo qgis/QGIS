@@ -69,7 +69,7 @@ class CORE_EXPORT QgsStatisticalSummary
      */
     QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = All );
 
-    virtual ~QgsStatisticalSummary();
+    virtual ~QgsStatisticalSummary() = default;
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
      * are always calculated (e.g., sum, min and max).

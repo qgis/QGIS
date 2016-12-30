@@ -39,10 +39,6 @@ QgsComposerItemCommand::QgsComposerItemCommand( QgsComposerItem* item, const QSt
   }
 }
 
-QgsComposerItemCommand::~QgsComposerItemCommand()
-{
-}
-
 void QgsComposerItemCommand::undo()
 {
   restoreState( mPreviousState );
@@ -128,10 +124,6 @@ void QgsComposerItemCommand::restoreState( QDomDocument& stateDoc ) const
 QgsComposerMergeCommand::QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text )
     : QgsComposerItemCommand( item, text )
     , mContext( c )
-{
-}
-
-QgsComposerMergeCommand::~QgsComposerMergeCommand()
 {
 }
 

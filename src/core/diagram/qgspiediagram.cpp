@@ -26,10 +26,6 @@ QgsPieDiagram::QgsPieDiagram()
   mPen.setStyle( Qt::SolidLine );
 }
 
-QgsPieDiagram::~QgsPieDiagram()
-{
-}
-
 QgsPieDiagram* QgsPieDiagram::clone() const
 {
   return new QgsPieDiagram( *this );

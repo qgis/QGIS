@@ -29,7 +29,7 @@ class QgsRectangle;
 class CORE_EXPORT QgsAbstractGeometrySimplifier
 {
   public:
-    virtual ~QgsAbstractGeometrySimplifier();
+    virtual ~QgsAbstractGeometrySimplifier() = default;
 
     //! Returns a simplified version the specified geometry
     virtual QgsGeometry simplify( const QgsGeometry& geometry ) const = 0;
@@ -54,7 +54,6 @@ class CORE_EXPORT QgsTopologyPreservingSimplifier : public QgsAbstractGeometrySi
 {
   public:
     QgsTopologyPreservingSimplifier( double tolerance );
-    virtual ~QgsTopologyPreservingSimplifier();
 
     //! Returns a simplified version the specified geometry
     virtual QgsGeometry simplify( const QgsGeometry& geometry ) const override;

@@ -18,9 +18,9 @@
 
 #include <QObject>
 #include <QSet>
+#include "qgstransaction.h"
 
 class QgsVectorLayer;
-class QgsTransaction;
 
 /** \ingroup core
  * \class QgsTransactionGroup
@@ -30,8 +30,6 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     Q_OBJECT
   public:
     explicit QgsTransactionGroup( QObject *parent = 0 );
-
-    ~QgsTransactionGroup();
 
     /**
      * Add a layer to this transaction group.

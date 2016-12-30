@@ -48,7 +48,7 @@ class CORE_EXPORT QgsProperty
 {
   public:
     QgsProperty();
-    virtual ~QgsProperty();
+    virtual ~QgsProperty() = default;
 
     /** Dumps out the keys and values
      *
@@ -120,8 +120,6 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
     QgsPropertyValue( const QVariant &value )
         : value_( value )
     {}
-
-    virtual ~QgsPropertyValue();
 
     //! Returns true if is a QgsPropertyKey
     virtual bool isKey() const override { return false; }

@@ -166,10 +166,6 @@ QgsConditionalStyle& QgsConditionalStyle::operator=( const QgsConditionalStyle &
   return ( *this );
 }
 
-QgsConditionalStyle::~QgsConditionalStyle()
-{
-}
-
 QString QgsConditionalStyle::displayText() const
 {
   if ( name().isEmpty() )

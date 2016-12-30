@@ -48,7 +48,6 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     };
 
     QgsOfflineEditing();
-    ~QgsOfflineEditing();
 
     /** Convert current project for offline editing
      * @param offlineDataPath Path to offline db file

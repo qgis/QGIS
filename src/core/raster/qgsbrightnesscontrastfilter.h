@@ -29,7 +29,6 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
 {
   public:
     QgsBrightnessContrastFilter( QgsRasterInterface *input = nullptr );
-    ~QgsBrightnessContrastFilter();
 
     QgsBrightnessContrastFilter* clone() const override;
 

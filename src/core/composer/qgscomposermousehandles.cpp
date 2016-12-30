@@ -52,11 +52,6 @@ QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition )
   setAcceptHoverEvents( true );
 }
 
-QgsComposerMouseHandles::~QgsComposerMouseHandles()
-{
-
-}
-
 QGraphicsView* QgsComposerMouseHandles::graphicsView()
 {
   //have we already found the current view?

@@ -29,11 +29,6 @@ QgsHistogram::QgsHistogram()
 
 }
 
-QgsHistogram::~QgsHistogram()
-{
-
-}
-
 void QgsHistogram::prepareValues()
 {
   qSort( mValues.begin(), mValues.end() );

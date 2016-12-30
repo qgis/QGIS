@@ -27,10 +27,6 @@ QgsTextDiagram::QgsTextDiagram(): mOrientation( Vertical ), mShape( Circle )
   mBrush.setStyle( Qt::SolidPattern );
 }
 
-QgsTextDiagram::~QgsTextDiagram()
-{
-}
-
 QgsTextDiagram* QgsTextDiagram::clone() const
 {
   return new QgsTextDiagram( *this );

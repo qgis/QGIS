@@ -26,10 +26,6 @@ QgsHistogramDiagram::QgsHistogramDiagram()
   mScaleFactor = 0;
 }
 
-QgsHistogramDiagram::~QgsHistogramDiagram()
-{
-}
-
 QgsHistogramDiagram* QgsHistogramDiagram::clone() const
 {
   return new QgsHistogramDiagram( *this );

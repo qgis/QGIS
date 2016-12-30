@@ -30,7 +30,7 @@ class CORE_EXPORT QgsAbstractCacheIndex
 {
   public:
     QgsAbstractCacheIndex();
-    virtual ~QgsAbstractCacheIndex();
+    virtual ~QgsAbstractCacheIndex() = default;
 
     /**
      * Is called, whenever a feature is removed from the cache. You should update your indexes, so

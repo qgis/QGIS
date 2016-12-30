@@ -34,7 +34,6 @@ class QgsNetworkDiskCache : public QNetworkDiskCache
     Q_OBJECT
 
   public:
-    ~QgsNetworkDiskCache();
 
     //! @see QNetworkDiskCache::cacheDirectory
     QString cacheDirectory() const;

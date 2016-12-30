@@ -29,10 +29,6 @@ QgsBrightnessContrastFilter::QgsBrightnessContrastFilter( QgsRasterInterface* in
 {
 }
 
-QgsBrightnessContrastFilter::~QgsBrightnessContrastFilter()
-{
-}
-
 QgsBrightnessContrastFilter* QgsBrightnessContrastFilter::clone() const
 {
   QgsDebugMsgLevel( "Entered", 4 );

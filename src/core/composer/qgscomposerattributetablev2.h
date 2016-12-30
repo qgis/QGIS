@@ -67,7 +67,6 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     };
 
     QgsComposerAttributeTableV2( QgsComposition* composition, bool createUndoCommands );
-    ~QgsComposerAttributeTableV2();
 
     virtual QString displayName() const override;
 

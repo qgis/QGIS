@@ -94,7 +94,7 @@ class CORE_EXPORT QgsRasterInterface
 
     QgsRasterInterface( QgsRasterInterface * input = nullptr );
 
-    virtual ~QgsRasterInterface();
+    virtual ~QgsRasterInterface() = default;
 
     //! Clone itself, create deep copy
     virtual QgsRasterInterface *clone() const = 0;

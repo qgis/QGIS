@@ -36,7 +36,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
 {
   public:
 
-    virtual ~QgsAbstractVectorLayerLabeling();
+    virtual ~QgsAbstractVectorLayerLabeling() = default;
 
     //! Unique type string of the labeling configuration implementation
     virtual QString type() const = 0;

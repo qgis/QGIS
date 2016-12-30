@@ -1581,10 +1581,6 @@ QgsImageFillSymbolLayer::QgsImageFillSymbolLayer()
   setSubSymbol( new QgsLineSymbol() );
 }
 
-QgsImageFillSymbolLayer::~QgsImageFillSymbolLayer()
-{
-}
-
 void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
 {
   QPainter* p = context.renderContext().painter();
@@ -3657,11 +3653,6 @@ QgsRasterFillSymbolLayer::QgsRasterFillSymbolLayer( const QString &imageFilePath
     , mWidthUnit( QgsUnitTypes::RenderPixels )
 {
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //disable sub symbol
-}
-
-QgsRasterFillSymbolLayer::~QgsRasterFillSymbolLayer()
-{
-
 }
 
 QgsSymbolLayer *QgsRasterFillSymbolLayer::create( const QgsStringMap &properties )

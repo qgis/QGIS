@@ -38,7 +38,7 @@ class CORE_EXPORT QgsCredentials
 {
   public:
 
-    virtual ~QgsCredentials();
+    virtual ~QgsCredentials() = default;
 
     bool get( const QString& realm, QString &username, QString &password, const QString& message = QString::null );
     void put( const QString& realm, const QString& username, const QString& password );

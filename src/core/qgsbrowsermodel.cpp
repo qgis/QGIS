@@ -37,10 +37,6 @@ QgsBrowserWatcher::QgsBrowserWatcher( QgsDataItem *item )
 {
 }
 
-QgsBrowserWatcher::~QgsBrowserWatcher()
-{
-}
-
 // sort function for QList<QgsDataItem*>, e.g. sorted/grouped provider listings
 static bool cmpByDataItemName_( QgsDataItem* a, QgsDataItem* b )
 {

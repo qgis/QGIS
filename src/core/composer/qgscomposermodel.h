@@ -65,8 +65,6 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      */
     explicit QgsComposerModel( QgsComposition* composition, QObject* parent = nullptr );
 
-    ~QgsComposerModel();
-
     //reimplemented QAbstractItemModel methods
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &index ) const override;
