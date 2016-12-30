@@ -58,7 +58,7 @@ namespace QgsWms
     elem.appendChild( messageText );
     root.appendChild( elem );
 
-    response.setHeader( QStringLiteral("Content-Type"), QStringLiteral("text/xml; charset=utf-8") );
+    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( doc.toByteArray() );
   }
 
@@ -94,7 +94,8 @@ namespace QgsWms
   }
 
   //forward declaration
-  namespace {
+  namespace
+  {
     void medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage );
   }
 
@@ -150,7 +151,7 @@ namespace QgsWms
     if ( outputFormat != UNKN )
     {
       response.setHeader( "Content-Type", contentType );
-      result.save( response.io(), qPrintable(saveFormat), imageQuality );
+      result.save( response.io(), qPrintable( saveFormat ), imageQuality );
     }
     else
     {

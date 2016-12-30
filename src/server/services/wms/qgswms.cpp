@@ -71,8 +71,8 @@ namespace QgsWms
           return;
         }
 
-        if ( (QSTR_COMPARE( mVersion, "1.1.1" ) && QSTR_COMPARE( req, "capabilities" ))
-             || QSTR_COMPARE( req, "GetCapabilites" ) )
+        if (( QSTR_COMPARE( mVersion, "1.1.1" ) && QSTR_COMPARE( req, "capabilities" ) )
+            || QSTR_COMPARE( req, "GetCapabilites" ) )
         {
           //TODO GetCapabilities
           writeGetCapabilities( mServerIface, mVersion, request, response, false );

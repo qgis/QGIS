@@ -39,7 +39,7 @@ class QgsOWSServerFilterRestorer
     {
       restoreLayerFilters( mOriginalLayerFilters );
     }
-    
+
     void restoreLayerFilters( const QHash<QgsMapLayer*, QString>& filterMap );
 
     /** Returns a reference to the object's hash of layers to original subsetString filters.

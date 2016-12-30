@@ -40,7 +40,7 @@ namespace QgsWms
       QScopedPointer<QImage> result( server.getLegendGraphics() );
       if ( !result.isNull() )
       {
-        QString format = params.value( QStringLiteral("FORMAT"), QStringLiteral("PNG") );
+        QString format = params.value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
         writeImage( response, *result,  format, server.getImageQuality() );
       }
       else

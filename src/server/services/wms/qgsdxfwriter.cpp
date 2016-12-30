@@ -46,7 +46,7 @@ namespace QgsWms
       return options;
     }
 
-    void readDxfLayerSettings( QgsWmsServer& server, QgsWmsConfigParser* configParser, 
+    void readDxfLayerSettings( QgsWmsServer& server, QgsWmsConfigParser* configParser,
                                QList< QPair<QgsVectorLayer *, int > >& layers,
                                const QMap<QString, QString>& options )
     {

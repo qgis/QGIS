@@ -146,8 +146,8 @@ namespace QgsWms
     }
     else //unsupported format, set exception
     {
-      writeError( response,  QStringLiteral( "InvalidFormat" ), 
-                  QString("Feature info format '%1' is not supported. Possibilities are 'text/plain', 'text/html' or 'text/xml'." ).arg(infoFormat) );
+      writeError( response,  QStringLiteral( "InvalidFormat" ),
+                  QString( "Feature info format '%1' is not supported. Possibilities are 'text/plain', 'text/html' or 'text/xml'." ).arg( infoFormat ) );
       return;
     }
 

@@ -53,7 +53,7 @@ namespace QgsWms
         contentType = "image/svg+xml";
       }
       else if ( format.compare( QStringLiteral( "application/pdf" ), Qt::CaseInsensitive ) == 0 ||
-                  format.compare( QStringLiteral( "pdf" ), Qt::CaseInsensitive ) == 0 )
+                format.compare( QStringLiteral( "pdf" ), Qt::CaseInsensitive ) == 0 )
       {
         format = "pdf";
         contentType = "application/pdf";

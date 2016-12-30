@@ -41,12 +41,12 @@ namespace QgsWms
       QScopedPointer<QImage> result( server.getMap() );
       if ( !result.isNull() )
       {
-        QString format = params.value( QStringLiteral("FORMAT"), QStringLiteral("PNG") );
+        QString format = params.value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
         writeImage( response, *result, format, server.getImageQuality() );
       }
       else
       {
-        writeError( response, QStringLiteral( "UnknownError" ), 
+        writeError( response, QStringLiteral( "UnknownError" ),
                     QStringLiteral( "Failed to compute GetMap image" ) );
       }
     }

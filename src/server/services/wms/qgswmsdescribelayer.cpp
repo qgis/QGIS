@@ -28,7 +28,7 @@ namespace QgsWms
   void writeDescribeLayer( QgsServerInterface* serverIface, const QString& version,
                            const QgsServerRequest& request, QgsServerResponse& response )
   {
-    Q_UNUSED(version);
+    Q_UNUSED( version );
     QgsServerRequest::Parameters params = request.parameters();
     try
     {

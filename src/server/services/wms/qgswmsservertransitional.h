@@ -257,7 +257,7 @@ namespace QgsWms
       //! Cleanup temporary objects (e.g. SLD parser objects or temporary files) after request
       void cleanupAfterRequest();
 
-    private: 
+    private:
 
       QMap<QString, QString> mParameters;
       bool mOwnsConfigParser; //delete config parser after request (e.g. sent SLD)
@@ -266,7 +266,7 @@ namespace QgsWms
       bool mDrawLegendLayerLabel;
       bool mDrawLegendItemLabel;
 
-       //! Map containing the WMS parameters
+      //! Map containing the WMS parameters
       QgsWmsConfigParser*    mConfigParser;
       QString                mConfigFilePath;
       //! The access control helper
