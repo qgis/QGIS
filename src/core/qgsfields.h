@@ -18,6 +18,8 @@
 
 #include "qgsfield.h"
 
+class QgsFieldsPrivate;
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfields.cpp.
@@ -80,7 +82,7 @@ class CORE_EXPORT QgsFields
      */
     QgsFields& operator =( const QgsFields& other );
 
-    virtual ~QgsFields() = default;
+    virtual ~QgsFields();
 
     //! Remove all fields
     void clear();

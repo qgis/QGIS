@@ -20,12 +20,9 @@
 #include <QVariant>
 #include <QVector>
 #include <QSharedDataPointer>
+#include "qgsfield_p.h"
 
 typedef QList<int> QgsAttributeList;
-
-class QgsExpression;
-class QgsFieldPrivate;
-class QgsFieldsPrivate;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
