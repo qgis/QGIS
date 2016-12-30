@@ -60,19 +60,12 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
 
     ~QgsSpatiaLiteFeatureIterator();
-
-    //! reset the iterator to the starting position
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
   protected:
 
-    //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
-
-    //! fetch next feature filter expression
     bool nextFeatureFilterExpression( QgsFeature& f ) override;
 
     QString whereClauseRect();

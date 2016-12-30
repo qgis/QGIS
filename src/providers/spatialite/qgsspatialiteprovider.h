@@ -73,39 +73,15 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     explicit QgsSpatiaLiteProvider( QString const &uri = "" );
 
-    //! Destructor
     virtual ~ QgsSpatiaLiteProvider();
 
     virtual QgsAbstractFeatureSource* featureSource() const override;
-
-    //! Returns the permanent storage type for this layer as a friendly name.
     virtual QString storageType() const override;
-
-    /** Get the QgsCoordinateReferenceSystem for this layer
-     * @note Must be reimplemented by each provider.
-     * If the provider isn't capable of returning
-     * its projection an empty srs will be return, ti will return 0
-     */
     virtual QgsCoordinateReferenceSystem crs() const override;
-
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
-
     virtual QString subsetString() const override;
-
-    //! Mutator for sql where clause used to limit dataset size
     virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
-
     virtual bool supportsSubsetString() const override { return true; }
-
-    /** Get the feature type. This corresponds to
-     * WKBPoint,
-     * WKBLineString,
-     * WKBPolygon,
-     * WKBMultiPoint,
-     * WKBMultiLineString or
-     * WKBMultiPolygon
-     * as defined in qgis.h
-     */
     QgsWkbTypes::Type wkbType() const override;
 
     /** Return the number of layers for the current data source
@@ -114,60 +90,26 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     size_t layerCount() const;
 
-    /**
-     * Get the number of features in the layer
-     */
     long featureCount() const override;
-
     virtual QgsRectangle extent() const override;
-
-    /** Update the extent for this data layer
-     */
     virtual void updateExtents() override;
-
     QgsFields fields() const override;
-
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
     virtual void uniqueValues( int index, QList < QVariant > &uniqueValues, int limit = -1 ) const override;
-
     virtual QStringList uniqueStringsMatching( int index, const QString& substring, int limit = -1,
         QgsFeedback* feedback = nullptr ) const override;
 
     bool isValid() const override;
     virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
-
-    /** Adds a list of features
-      @return true in case of success and false in case of failure*/
     bool addFeatures( QgsFeatureList & flist ) override;
-
     bool deleteFeatures( const QgsFeatureIds & id ) override;
     bool truncate() override;
-
-    /** Adds new attributes
-      @param name map with attribute name as key and type as value
-      @return true in case of success and false in case of failure*/
     bool addAttributes( const QList<QgsField> &attributes ) override;
-
-    /** Changes attribute values of existing features
-      @param attr_map a map containing the new attributes. The integer is the feature id,
-      the first QString is the attribute name and the second one is the new attribute value
-      @return true in case of success and false in case of failure*/
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
-
-    /**
-       Changes geometries of existing features
-       @param geometry_map   A map containing the feature IDs to change the geometries of.
-                             the second map parameter being the new geometries themselves
-       @return               true in case of success and false in case of failure
-     */
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
-
-    //! Returns a bitmask containing the supported capabilities
     QgsVectorDataProvider::Capabilities capabilities() const override;
-
     QVariant defaultValue( int fieldId ) const override;
-
     bool createAttributeIndex( int field ) override;
 
     /** The SpatiaLite provider does its own transforms so we return
@@ -182,38 +124,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       return false;
     }
 
-    /** Return a provider name
-     *
-     * Essentially just returns the provider key.  Should be used to build file
-     * dialogs so that providers can be shown with their supported types. Thus
-     * if more than one provider supports a given format, the user is able to
-     * select a specific provider to open that file.
-     *
-     * @note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
-     */
     QString name() const override;
-
-    /** Return description
-     *
-     * Return a terse string describing what the provider is.
-     *
-     * @note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
-     */
     QString description() const override;
     QgsAttributeList pkAttributeIndexes() const override;
-
     void invalidateConnections( const QString& connection ) override;
-
     QList<QgsRelation> discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const override;
 
     // static functions

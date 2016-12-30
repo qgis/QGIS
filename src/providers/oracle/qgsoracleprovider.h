@@ -84,28 +84,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
     virtual ~QgsOracleProvider();
 
     virtual QgsAbstractFeatureSource *featureSource() const override;
-
-    /**
-      * Returns the permanent storage type for this layer as a friendly name.
-      */
     virtual QString storageType() const override;
-
-    /** Get the QgsCoordinateReferenceSystem for this layer
-     * @note Must be reimplemented by each provider.
-     * If the provider isn't capable of returning
-     * its projection an empty srs will be returned
-     */
     virtual QgsCoordinateReferenceSystem crs() const override;
-
-    /** Get the feature type. This corresponds to
-     * WKBPoint,
-     * WKBLineString,
-     * WKBPolygon,
-     * WKBMultiPoint,
-     * WKBMultiLineString or
-     * WKBMultiPolygon
-     * as defined in qgis.h
-     */
     QgsWkbTypes::Type wkbType() const override;
 
     /** Return the number of layers for the current data source
@@ -113,9 +93,6 @@ class QgsOracleProvider : public QgsVectorDataProvider
      */
     size_t layerCount() const;
 
-    /**
-     * Get the number of features in the layer
-     */
     long featureCount() const override;
 
     /**
@@ -134,154 +111,49 @@ class QgsOracleProvider : public QgsVectorDataProvider
      */
     void setExtent( QgsRectangle& newExtent );
 
-    /** Return the extent for this data layer
-     */
     virtual QgsRectangle extent() const override;
-
-    /** Update the extent
-     */
     virtual void updateExtents() override;
 
     /** Determine the fields making up the primary key
      */
     bool determinePrimaryKey();
 
-    /**
-     * Get the field information for the layer
-     * @return vector of QgsField objects
-     */
     QgsFields fields() const override;
-
-    /**
-     * Return a short comment for the data that this provider is
-     * providing access to (e.g. the comment for oracle table).
-     */
     QString dataComment() const override;
 
     /** Reset the layer
      */
     void rewind();
 
-    /** Returns the minimum value of an attribute
-     *  @param index the index of the attribute */
     QVariant minimumValue( int index ) const override;
-
-    /** Returns the maximum value of an attribute
-     *  @param index the index of the attribute */
     QVariant maximumValue( int index ) const override;
-
-    /** Return the unique values of an attribute
-     *  @param index the index of the attribute
-     *  @param values reference to the list of unique values */
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
-
-    /** Returns true if layer is valid
-     */
     bool isValid() const override;
-
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
-
-    //! Returns the default value for field specified by @c fieldName
     QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
-
-    //! Returns the default value for field specified by @c fieldId
     QVariant defaultValue( int fieldId ) const override;
-
-    /** Adds a list of features
-      @return true in case of success and false in case of failure*/
     bool addFeatures( QgsFeatureList &flist ) override;
-
-    /** Deletes a list of features
-      @param id list of feature ids
-      @return true in case of success and false in case of failure*/
     bool deleteFeatures( const QgsFeatureIds & id ) override;
-
-    /** Adds new attributes
-      @param name map with attribute name as key and type as value
-      @return true in case of success and false in case of failure*/
     bool addAttributes( const QList<QgsField> &attributes ) override;
-
-    /** Deletes existing attributes
-      @param ids ids of attributes to delete
-      @return true in case of success and false in case of failure*/
     bool deleteAttributes( const QgsAttributeIds &ids ) override;
-
-    /** Renames existing attributes
-      @param renamedAttributes attributes to rename
-      @return true in case of success and false in case of failure*/
     bool renameAttributes( const QgsFieldNameMap& renamedAttributes ) override;
-
-    /** Changes attribute values of existing features
-      @param attr_map a map containing the new attributes. The integer is the feature id,
-      the first QString is the attribute name and the second one is the new attribute value
-      @return true in case of success and false in case of failure*/
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
-
-    /**
-       Changes geometries of existing features
-       @param geometry_map   A QMap containing the feature IDs to change the geometries of.
-                             the second map parameter being the new geometries themselves
-       @return               true in case of success and false in case of failure
-     */
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
-
-    /** Tries to create an spatial index file for faster access if only a subset of the features is required
-     @return true in case of success*/
     bool createSpatialIndex() override;
 
     //! Get the table name associated with this provider instance
     QString getTableName();
 
-    //! Accessor for sql where clause used to limit dataset
     QString subsetString() const override;
-
-    //! Mutator for sql where clause used to limit dataset size
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
-
     virtual bool supportsSubsetString() const override { return true; }
-
-    //! Returns a bitmask containing the supported capabilities
     QgsVectorDataProvider::Capabilities capabilities() const override;
-
-    /** Return a provider name
-     *
-     * Essentially just returns the provider key.  Should be used to build file
-     * dialogs so that providers can be shown with their supported types. Thus
-     * if more than one provider supports a given format, the user is able to
-     * select a specific provider to open that file.
-     *
-     * @note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
-     */
     QString name() const override;
-
-    /** Return description
-     *
-     * Return a terse string describing what the provider is.
-     *
-     * @note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
-     */
     QString description() const override;
-
-    /**
-     * Query the provider for features specified in request.
-     */
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
     static bool exec( QSqlQuery &qry, QString sql );
 
-    /**
-     * It returns true. Saving style to db is supported by this provider
-     */
     virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
 
     /**

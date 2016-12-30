@@ -78,25 +78,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     virtual ~QgsPostgresProvider();
 
     virtual QgsAbstractFeatureSource* featureSource() const override;
-
-    /**
-      *   Returns the permanent storage type for this layer as a friendly name.
-      */
     virtual QString storageType() const override;
-
     virtual QgsCoordinateReferenceSystem crs() const override;
-
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
-
-    /** Get the feature type. This corresponds to
-     * WKBPoint,
-     * WKBLineString,
-     * WKBPolygon,
-     * WKBMultiPoint,
-     * WKBMultiLineString or
-     * WKBMultiPolygon
-     * as defined in qgis.h
-     */
     QgsWkbTypes::Type wkbType() const override;
 
     /** Return the number of layers for the current data source
@@ -104,9 +88,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     size_t layerCount() const;
 
-    /**
-     * Get the number of features in the layer
-     */
     long featureCount() const override;
 
     /**
@@ -173,13 +154,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString getTableName();
 
     QString subsetString() const override;
-
-    //! Mutator for sql where clause used to limit dataset size
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
-
     virtual bool supportsSubsetString() const override { return true; }
-
-    //! Returns a bitmask containing the supported capabilities
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /** The Postgres provider does its own transforms so we return
@@ -191,39 +167,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     //     it appears there are problems with some of the projection definitions
     bool supportsNativeTransform() {return false;}
 
-
-    /** Return a provider name
-     *
-     * Essentially just returns the provider key.  Should be used to build file
-     * dialogs so that providers can be shown with their supported types. Thus
-     * if more than one provider supports a given format, the user is able to
-     * select a specific provider to open that file.
-     *
-     * @note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
-     */
     QString name() const override;
-
-    /** Return description
-     *
-     * Return a terse string describing what the provider is.
-     *
-     * @note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
-     */
     QString description() const override;
-
-    /**
-     * Returns the transaction this data provider is included in, if any.
-     */
     virtual QgsTransaction* transaction() const override;
 
     /**
@@ -236,10 +181,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString& value );
 
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const override;
-
-    /**
-     * Return list of indexes to names for QgsPalLabeling fix
-     */
     virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
 
   signals:

@@ -75,13 +75,8 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
 
     ~QgsGrassFeatureIterator();
 
-    //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
-
-    //! reset the iterator to the starting position
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
     // create QgsFeatureId from GRASS geometry object id, cat and layer number (editing)

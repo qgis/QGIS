@@ -138,9 +138,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     virtual void setLayerOrder( QStringList const & layers ) override;
 
-    /**
-     * Set the visibility of the given sublayer name
-     */
     virtual void setSubLayerVisibility( const QString &name, bool vis ) override;
 
     /**
@@ -148,21 +145,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     void setConnectionName( QString const & connName );
 
-    // TODO: Document this better.
-
-    /** \brief   Renders the layer as an image
-     *
-     *  \return  A QImage - if the attempt to retrieve data for the draw was unsuccessful, returns 0
-     *           and more information can be found in lastError() and lastErrorTitle()
-     *
-     *  \todo    Add pixel depth parameter (intended to match the display or printer device)
-     *
-     *  \note    Ownership of the returned QImage remains with this provider and its lifetime
-     *           is guaranteed only until the next call to draw() or destruction of this provider.
-     *
-     *  \warning A pointer to an QImage is used, as a plain QImage seems to have difficulty being
-     *           shared across library boundaries
-     */
     QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight ) override;
 
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;
@@ -179,18 +161,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
     virtual bool hasTiles() const;
 #endif
 
-    //! Returns the GetMap url
     virtual QString getMapUrl() const;
-
-    //! Returns the GetFeatureInfo url
     virtual QString getFeatureInfoUrl() const;
-
-    //! Return the GetTile url
     virtual QString getTileUrl() const;
-
-    /** Return the GetLegendGraphic url
-     * @added in 2.1
-     */
     virtual QString getLegendGraphicUrl() const;
 
     //! get WMS version string
@@ -215,122 +188,26 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QStringList subLayerStyles() const override;
 
-    //! \brief Returns whether the provider supplies a legend graphic
     bool supportsLegendGraphic() const override { return true; }
 
-
-    /**
-     * \brief Get GetLegendGraphic if service is available otherwise QImage()
-     * \note the first call needs to specify a scale parameter otherwise it always return QImage()
-     * \todo some services don't expose GetLegendGraphic in capabilities, but add a LegendURL in
-     * the layer element inside capabilities. Parsing for this is not implemented => getLegendGraphic is
-     * only called if GetCapabilities expose it. Other drawback is that SLD_VERSION
-     * is inside LegendURL, so at this moment it is fixed to 1.1.0 waiting a correct parsing of LegendURL
-     * in getCapability
-     * \param scale Optional parameter that is the Scale of the wms layer
-     * \param forceRefresh Optional bool parameter to force refresh getLegendGraphic call
-     * \param visibleExtent Visible extent for providers supporting contextual legends
-     *
-     * \note visibleExtent parameter added in 2.8
-     */
     QImage getLegendGraphic( double scale = 0.0, bool forceRefresh = false, const QgsRectangle * visibleExtent = nullptr ) override;
-
-    /**
-     * \class Get an image downloader for the raster legend
-     *
-     * \param mapSettings map settings for legend providers supporting
-     *                    contextual legends.
-     *
-     * \return a download handler or null if the provider does not support
-     *         legend at all. Ownership of the returned object is transferred
-     *         to caller.
-     *
-     * \note added in 2.8
-     *
-     */
     virtual QgsImageFetcher* getLegendGraphicFetcher( const QgsMapSettings* mapSettings ) override;
 
     // TODO: Get the WMS connection
 
     // TODO: Get the table name associated with this provider instance
 
-    /** Returns a bitmask containing the supported capabilities
-        Note, some capabilities may change depending on which
-        sublayers are visible on this provider, so it may
-        be prudent to check this value per intended operation.
-      */
     int capabilities() const override;
-
     Qgis::DataType dataType( int bandNo ) const override;
     Qgis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;
-
-    /**
-     * Get metadata in a format suitable for feeding directly
-     * into a subset of the GUI raster properties "Metadata" tab.
-     */
     QString metadata() override;
-
     QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 ) override;
-
-    /**
-     * \brief   Returns the caption error text for the last error in this provider
-     *
-     * If an operation returns 0 (e.g. draw()), this function
-     * returns the text of the error associated with the failure.
-     * Interactive users of this provider can then, for example,
-     * call a QMessageBox to display the contents.
-     */
     QString lastErrorTitle() override;
-
-    /**
-     * \brief   Returns the verbose error text for the last error in this provider
-     *
-     * If an operation returns 0 (e.g. draw()), this function
-     * returns the text of the error associated with the failure.
-     * Interactive users of this provider can then, for example,
-     * call a QMessageBox to display the contents.
-     */
     QString lastError() override;
-
-    /**
-     * \brief   Returns the format of the error message (text or html)
-     */
     QString lastErrorFormat() override;
-
-    /** Return a provider name
-     *
-     * Essentially just returns the provider key.  Should be used to build file
-     * dialogs so that providers can be shown with their supported types. Thus
-     * if more than one provider supports a given format, the user is able to
-     * select a specific provider to open that file.
-     *
-     * @note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
-     */
     QString name() const override;
-
-
-    /** Return description
-     *
-     * Return a terse string describing what the provider is.
-     *
-     * @note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
-     */
     QString description() const override;
-
-    /** Reloads the data from the source. Needs to be implemented by providers with data caches to
-     * synchronize with changes in the data source
-     */
     virtual void reloadData() override;
 
     static QVector<QgsWmsSupportedFormat> supportedFormats();
