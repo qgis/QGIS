@@ -84,9 +84,6 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* th
   pbtnLoadPredefinedQueries->setToolTip( tr( "Open File" ) );
 }
 
-/**
-* Destructor
-*/
 eVisDatabaseConnectionGui::~eVisDatabaseConnectionGui()
 {
   QSettings settings;

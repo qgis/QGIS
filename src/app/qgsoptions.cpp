@@ -929,7 +929,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   restoreOptionsBaseUi();
 }
 
-//! Destructor
+
 QgsOptions::~QgsOptions()
 {
   delete mSettings;

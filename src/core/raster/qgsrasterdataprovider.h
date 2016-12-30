@@ -56,7 +56,7 @@ class CORE_EXPORT QgsImageFetcher : public QObject
   public:
     //! Constructor
     QgsImageFetcher( QObject* parent = 0 ) : QObject( parent ) {}
-    //! Destructor
+
     virtual ~QgsImageFetcher() {}
 
     /** Starts the image download

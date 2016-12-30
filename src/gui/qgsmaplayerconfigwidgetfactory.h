@@ -37,7 +37,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
     //! Constructor
     QgsMapLayerConfigWidgetFactory( const QString &title, const QIcon &icon );
 
-    //! Destructor
+
     virtual ~QgsMapLayerConfigWidgetFactory();
 
     /**

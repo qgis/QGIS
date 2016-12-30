@@ -40,7 +40,7 @@ class CORE_EXPORT QgsFeatureFilterProvider
     //! Constructor
     QgsFeatureFilterProvider() {}
 
-    //! Destructor
+
     virtual ~QgsFeatureFilterProvider() {}
 
     /** Add additional filters to the feature request to further restrict the features returned by the request.

@@ -56,7 +56,7 @@ class CORE_EXPORT QgsAttributeEditorElement
         , mShowLabel( true )
     {}
 
-    //! Destructor
+
     virtual ~QgsAttributeEditorElement() {}
 
     /**
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
         , mColumnCount( 1 )
     {}
 
-    //! Destructor
+
     virtual ~QgsAttributeEditorContainer();
 
     /**
@@ -269,7 +269,7 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
         , mIdx( idx )
     {}
 
-    //! Destructor
+
     virtual ~QgsAttributeEditorField() {}
 
     /**
@@ -322,7 +322,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
         , mShowUnlinkButton( true )
     {}
 
-    //! Destructor
+
     virtual ~QgsAttributeEditorRelation() {}
 
     /**

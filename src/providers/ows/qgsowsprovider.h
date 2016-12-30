@@ -48,7 +48,7 @@ class QgsOwsProvider : public QgsDataProvider
      */
     explicit QgsOwsProvider( const QString & uri = QString() );
 
-    //! Destructor
+
     ~QgsOwsProvider();
 
     /* Pure virtuals */

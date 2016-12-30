@@ -43,7 +43,7 @@ class CORE_EXPORT QgsOwsConnection : public QObject
      */
     QgsOwsConnection( const QString & theService, const QString & theConnName );
 
-    //! Destructor
+
     ~QgsOwsConnection();
 
     //! Returns the list of connections for the specified service

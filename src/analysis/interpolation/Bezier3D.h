@@ -31,7 +31,7 @@ class ANALYSIS_EXPORT Bezier3D: public ParametricLine
     Bezier3D();
     //! Constructor, par is a pointer to the parent, controlpoly a controlpolygon
     Bezier3D( ParametricLine* par, QVector<Point3D*>* controlpoly );
-    //! Destructor
+
     virtual ~Bezier3D();
     //! Do not use this method, since a Bezier curve does not consist of other curves
     virtual void add( ParametricLine *pl ) override;

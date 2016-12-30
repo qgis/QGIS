@@ -117,9 +117,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     QgsVectorDataProvider( const QString& uri = QString() );
 
-    /**
-     * Destructor
-     */
     virtual ~QgsVectorDataProvider();
 
     /**

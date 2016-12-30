@@ -45,7 +45,7 @@ class CORE_EXPORT QgsContextHelp : public QObject
   private:
     //! Constructor
     QgsContextHelp();
-    //! Destructor
+
     ~QgsContextHelp();
 
     QProcess *start();

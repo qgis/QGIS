@@ -59,7 +59,7 @@ class QgsGrassModuleCheckBox : public QCheckBox
      */
     QgsGrassModuleCheckBox( const QString & text, QWidget * parent = 0 );
 
-    //! Destructor
+
     virtual ~QgsGrassModuleCheckBox();
 
     void resizeEvent( QResizeEvent * event ) override;
@@ -93,7 +93,7 @@ class QgsGrassModuleParam
     QgsGrassModuleParam( QgsGrassModule *module, QString key,
                          QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct );
 
-    //! Destructor
+
     virtual ~QgsGrassModuleParam();
 
     //! Is the item hidden
@@ -184,7 +184,7 @@ class QgsGrassModuleGroupBoxItem : public QGroupBox, public QgsGrassModuleParam
                                 QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                                 bool direct, QWidget * parent = 0 );
 
-    //! Destructor
+
     virtual ~QgsGrassModuleGroupBoxItem();
 
     void resizeEvent( QResizeEvent * event ) override;
@@ -250,7 +250,7 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
                           QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                           bool direct, QWidget * parent = 0 );
 
-    //! Destructor
+
     ~QgsGrassModuleOption();
 
     //! Control option
@@ -356,7 +356,7 @@ class QgsGrassModuleFlag : public QgsGrassModuleCheckBox, public QgsGrassModuleP
                         QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                         bool direct, QWidget * parent = 0 );
 
-    //! Destructor
+
     ~QgsGrassModuleFlag();
 
     //! Retruns list of options which will be passed to module
@@ -384,7 +384,7 @@ class QgsGrassModuleGdalInput : public QgsGrassModuleGroupBoxItem
                              QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                              bool direct, QWidget * parent = 0 );
 
-    //! Destructor
+
     ~QgsGrassModuleGdalInput();
 
     //! Reimplemented
@@ -446,7 +446,7 @@ class QgsGrassModuleField : public QgsGrassModuleOption
                          QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                          bool direct, QWidget * parent = 0 );
 
-    //! Destructor
+
     ~QgsGrassModuleField();
 };
 
@@ -471,7 +471,7 @@ class QgsGrassModuleVectorField : public QgsGrassModuleMultiParam
                                QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                                bool direct, QWidget * parent = 0 );
 
-    //! Destructor
+
     ~QgsGrassModuleVectorField();
 
     //! Retruns list of options which will be passed to module
@@ -536,7 +536,7 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
                              QDomNode &gnode,
                              bool direct, QWidget * parent = 0 );
 
-    //! Destructor
+
     ~QgsGrassModuleSelection();
 
     //! Retruns list of options which will be passed to module
@@ -602,7 +602,7 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
                         QDomNode &gnode,
                         bool direct, QWidget *parent = 0 );
 
-    //! Destructor
+
     ~QgsGrassModuleFile();
 
     //! File type

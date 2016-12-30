@@ -55,8 +55,6 @@ class GUI_EXPORT QgsMapTip : public QWidget
      */
     QgsMapTip();
 
-    /** Destructor
-     */
     virtual ~QgsMapTip();
 
     /** Show a maptip at a given point on the map canvas

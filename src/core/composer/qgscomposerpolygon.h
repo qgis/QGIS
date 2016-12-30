@@ -45,7 +45,7 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
      */
     QgsComposerPolygon( const QPolygonF &polygon, QgsComposition* c );
 
-    //! Destructor
+
     ~QgsComposerPolygon();
 
     //! Overridden to return shape name

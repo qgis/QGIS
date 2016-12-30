@@ -54,7 +54,7 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
   public:
     //! Constructor
     QgsWCSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
-    //! Destructor
+
     ~QgsWCSSourceSelect();
 
   public slots:

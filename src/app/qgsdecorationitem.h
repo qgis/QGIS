@@ -41,7 +41,7 @@ class APP_EXPORT QgsDecorationItem: public QObject
 
     //! Constructor
     QgsDecorationItem( QObject* parent = nullptr );
-    //! Destructor
+
     virtual ~ QgsDecorationItem();
 
     void setEnabled( bool enabled ) { mEnabled = enabled; }

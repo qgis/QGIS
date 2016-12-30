@@ -41,7 +41,7 @@ class CORE_EXPORT QgsDistanceArea
     //! Constructor
     QgsDistanceArea();
 
-    //! Destructor
+
     ~QgsDistanceArea();
 
     //! Copy constructor

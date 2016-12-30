@@ -64,7 +64,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
   public:
     //! Constructor
     QgsPgSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
-    //! Destructor
+
     ~QgsPgSourceSelect();
     //! Populate the connection list combo box
     void populateConnectionList();

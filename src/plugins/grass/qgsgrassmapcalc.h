@@ -43,7 +43,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
       QgisInterface *iface,
       QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
-    //! Destructor
+
     ~QgsGrassMapcalc();
 
     // Current tool

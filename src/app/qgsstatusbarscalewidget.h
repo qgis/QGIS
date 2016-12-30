@@ -39,7 +39,7 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
   public:
     explicit QgsStatusBarScaleWidget( QgsMapCanvas* canvas, QWidget *parent = 0 );
 
-    //! Destructor
+
     virtual ~QgsStatusBarScaleWidget();
 
     /**

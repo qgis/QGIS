@@ -32,7 +32,7 @@ QgsAccessControlFilter::QgsAccessControlFilter( const QgsServerInterface* server
 {
 }
 
-//! Destructor
+
 QgsAccessControlFilter::~QgsAccessControlFilter()
 {
 }

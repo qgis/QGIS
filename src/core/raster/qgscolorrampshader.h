@@ -63,8 +63,6 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      */
     QgsColorRampShader( double theMinimumValue = 0.0, double theMaximumValue = 255.0, QgsColorRamp* theColorRamp = nullptr, Type theType = Interpolated, ClassificationMode theClassificationMode = Continuous );
 
-    /** Destructor
-     */
     virtual ~QgsColorRampShader();
 
     /** Copy constructor

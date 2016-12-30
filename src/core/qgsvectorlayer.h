@@ -454,7 +454,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsVectorLayer( const QString& path = QString::null, const QString& baseName = QString::null,
                     const QString& providerLib = QString::null, bool loadDefaultStyleFlag = true );
 
-    //! Destructor
+
     virtual ~QgsVectorLayer();
 
     //! Returns the permanent storage type for this layer as a friendly name.

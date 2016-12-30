@@ -123,9 +123,6 @@ class TopolError
      */
     TopolError( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs );
 
-    /**
-     * Destructor
-     */
     virtual ~TopolError() {}
 
     /**

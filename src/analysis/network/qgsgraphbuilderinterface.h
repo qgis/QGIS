@@ -50,7 +50,6 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
       mDa.setEllipsoidalMode( ctfEnabled );
     }
 
-    //! Destructor
     virtual ~QgsGraphBuilderInterface()
     { }
 

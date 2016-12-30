@@ -40,7 +40,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! constructor
     QgsMapToolCapture( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget, CaptureMode mode = CaptureNone );
 
-    //! destructor
+
     virtual ~QgsMapToolCapture();
 
     //! active the tool

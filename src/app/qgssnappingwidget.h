@@ -55,7 +55,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
      */
     QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas, QWidget* parent = nullptr );
 
-    //! Destructor
+
     virtual ~QgsSnappingWidget();
 
     /**

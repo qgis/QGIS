@@ -81,7 +81,6 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     CloughTocherInterpolator();
     //! Constructor with a pointer to the triangulation as argument
     CloughTocherInterpolator( NormVecDecorator* tin );
-    //! Destructor
     virtual ~CloughTocherInterpolator();
     //! Calculates the normal vector and assigns it to vec (not implemented at the moment)
     virtual bool calcNormVec( double x, double y, Vector3D* result ) override;

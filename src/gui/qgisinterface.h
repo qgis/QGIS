@@ -72,7 +72,6 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Constructor
     QgisInterface();
 
-    //! Virtual destructor
     virtual ~QgisInterface();
 
     virtual QgsPluginManagerInterface* pluginManagerInterface() = 0;

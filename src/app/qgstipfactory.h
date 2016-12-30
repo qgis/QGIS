@@ -33,7 +33,7 @@ class APP_EXPORT QgsTipFactory : public QObject
   public:
     //! Constructor
     QgsTipFactory();
-    //! Destructor
+
     ~QgsTipFactory();
 
     /** Get a random tip (generic or gui-centric)

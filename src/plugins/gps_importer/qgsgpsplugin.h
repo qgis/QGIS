@@ -41,7 +41,7 @@ class QgsGPSPlugin: public QObject, public QgisPlugin
      */
     explicit QgsGPSPlugin( QgisInterface * );
 
-    //! Destructor
+
     virtual ~QgsGPSPlugin();
 
   public slots:

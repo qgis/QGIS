@@ -41,7 +41,6 @@ class ANALYSIS_EXPORT ParametricLine
     /** Constructor, par is a pointer to the parent object, controlpoly the controlpolygon
       */
     ParametricLine( ParametricLine* par, QVector<Point3D*>* controlpoly );
-    //! Destructor
     virtual ~ParametricLine();
     virtual void add( ParametricLine* pl ) = 0;
     virtual void calcFirstDer( float t, Vector3D* v ) = 0;

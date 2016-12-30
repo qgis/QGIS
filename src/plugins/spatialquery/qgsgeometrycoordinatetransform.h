@@ -36,9 +36,6 @@ class QgsGeometryCoordinateTransform
      */
     QgsGeometryCoordinateTransform();
 
-    /**
-     * \brief Destructor
-     */
     ~QgsGeometryCoordinateTransform();
 
     /**

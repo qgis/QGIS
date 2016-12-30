@@ -56,7 +56,6 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
     QgsRasterProjector();
 
-    //! \brief The destructor
     ~QgsRasterProjector();
 
     QgsRasterProjector *clone() const override;

@@ -47,7 +47,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
       mPluginsAccessControls = new QgsAccessControlFilterMap( *copy.mPluginsAccessControls );
     }
 
-    //! Destructor
+
     ~QgsAccessControl()
     {
       delete mPluginsAccessControls;

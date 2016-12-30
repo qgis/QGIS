@@ -151,7 +151,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgisApp( QSplashScreen *splash, bool restorePlugins = true, bool skipVersionCheck = false, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
     //! Constructor for unit tests
     QgisApp();
-    //! Destructor
+
     ~QgisApp();
 
     /**

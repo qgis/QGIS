@@ -37,9 +37,6 @@ class QgsRubberSelectId
      */
     explicit QgsRubberSelectId( QgsMapCanvas* mapCanvas );
 
-    /**
-     * \brief Destructor
-     */
     ~QgsRubberSelectId();
 
     /**

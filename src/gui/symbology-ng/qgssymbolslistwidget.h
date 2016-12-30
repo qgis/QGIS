@@ -37,7 +37,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
   public:
     QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer = nullptr );
 
-    //! Destructor
+
     virtual ~QgsSymbolsListWidget();
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.

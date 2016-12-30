@@ -52,9 +52,6 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      */
     explicit QgsFeatureListView( QWidget* parent = nullptr );
 
-    /**
-     * Destructor
-     */
     virtual ~QgsFeatureListView() {}
 
     /**

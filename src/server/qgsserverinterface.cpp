@@ -24,7 +24,7 @@ QgsServerInterface::QgsServerInterface():
 {
 }
 
-//! Destructor
+
 QgsServerInterface::~QgsServerInterface()
 {
 }

@@ -36,7 +36,7 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
 
     //! Constructor
     QgsDecorationCopyright( QObject* parent = nullptr );
-    //! Destructor
+
     virtual ~QgsDecorationCopyright();
 
   public slots:

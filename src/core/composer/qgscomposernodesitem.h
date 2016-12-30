@@ -45,7 +45,7 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
      */
     QgsComposerNodesItem( const QString &mTagName, const QPolygonF &polygon, QgsComposition* c );
 
-    //! Destructor
+
     ~QgsComposerNodesItem();
 
     /** Add a node in current shape.

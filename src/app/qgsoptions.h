@@ -46,7 +46,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      * @param modal true for modal dialog
      */
     QgsOptions( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
-    //! Destructor
+
     ~QgsOptions();
 
     /** Sets the page with the specified widget name as the current page

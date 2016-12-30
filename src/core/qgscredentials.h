@@ -37,7 +37,7 @@
 class CORE_EXPORT QgsCredentials
 {
   public:
-    //! virtual destructor
+
     virtual ~QgsCredentials();
 
     bool get( const QString& realm, QString &username, QString &password, const QString& message = QString::null );

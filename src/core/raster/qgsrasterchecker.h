@@ -31,7 +31,7 @@ class CORE_EXPORT QgsRasterChecker
 
     QgsRasterChecker();
 
-    //! Destructor
+
     ~QgsRasterChecker() {}
 
     QString report() { return mReport; }

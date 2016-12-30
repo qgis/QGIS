@@ -116,7 +116,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     explicit QgsWcsProvider( const QString& uri = QString() );
 
-    //! Destructor
+
     virtual ~QgsWcsProvider();
 
     QgsWcsProvider * clone() const override;

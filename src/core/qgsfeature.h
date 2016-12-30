@@ -172,7 +172,7 @@ class CORE_EXPORT QgsFeature
     bool operator!=( const QgsFeature& other ) const;
 
 
-    //! Destructor
+
     virtual ~QgsFeature();
 
     /** Get the feature ID for this feature.

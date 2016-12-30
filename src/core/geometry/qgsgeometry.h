@@ -95,7 +95,7 @@ class CORE_EXPORT QgsGeometry
      */
     explicit QgsGeometry( QgsAbstractGeometry* geom );
 
-    //! Destructor
+
     ~QgsGeometry();
 
     /** Returns the underlying geometry store.

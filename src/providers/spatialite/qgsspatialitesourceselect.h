@@ -51,7 +51,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
 
     //! Constructor
     QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool embedded = false );
-    //! Destructor
+
     ~QgsSpatiaLiteSourceSelect();
     //! Populate the connection list combo box
     void populateConnectionList();

@@ -64,7 +64,6 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
                             const Direction defaultDirection
                           );
 
-    //! Destructor
     virtual ~QgsVectorLayerDirector();
 
     /*

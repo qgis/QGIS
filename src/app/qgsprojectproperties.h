@@ -43,7 +43,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Constructor
     QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
-    //! Destructor
+
     ~QgsProjectProperties();
 
     /** Gets the currently select map units

@@ -51,7 +51,7 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
                     bool direct, QWidget *parent = 0, Qt::WindowFlags f = 0 );
 
-    //! Destructor
+
     ~QgsGrassModule();
 
     QString translate( QString string );

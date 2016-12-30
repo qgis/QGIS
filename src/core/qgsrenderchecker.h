@@ -39,7 +39,7 @@ class CORE_EXPORT QgsRenderChecker
 
     QgsRenderChecker();
 
-    //! Destructor
+
     ~QgsRenderChecker() {}
 
     QString controlImagePath() const;

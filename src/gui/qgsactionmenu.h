@@ -76,9 +76,6 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      */
     explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString& actionScope, QWidget *parent = nullptr );
 
-    /**
-     * Destructor
-     */
     ~QgsActionMenu();
 
     /**

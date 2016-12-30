@@ -71,9 +71,6 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
      */
     QgsVectorLayer* layer();
 
-    /**
-     * Destructor
-     */
     virtual ~QgsEditorConfigWidget() {}
 
   signals:

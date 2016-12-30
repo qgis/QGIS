@@ -40,7 +40,7 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
     void buildMessage( const QString& ) const;
 
   public:
-    //! Destructor
+
     virtual ~QgsGraphDirector() { }
 
     /**

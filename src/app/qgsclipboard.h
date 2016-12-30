@@ -67,7 +67,6 @@ class APP_EXPORT QgsClipboard : public QObject
      */
     QgsClipboard();
 
-    //! Destructor
     virtual ~QgsClipboard();
 
     /**

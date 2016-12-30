@@ -50,7 +50,7 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
     QgsGrassRegion( QgisInterface *iface,
                     QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
-    //! Destructor
+
     ~QgsGrassRegion();
 
   public slots:

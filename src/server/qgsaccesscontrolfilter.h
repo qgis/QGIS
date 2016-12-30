@@ -54,7 +54,7 @@ class SERVER_EXPORT QgsAccessControlFilter
      * and must be passed to QgsAccessControlFilter instances.
      */
     QgsAccessControlFilter( const QgsServerInterface* serverInterface );
-    //! Destructor
+
     virtual ~QgsAccessControlFilter();
 
     //! Describe the layer permission

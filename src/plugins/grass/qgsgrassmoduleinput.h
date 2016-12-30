@@ -243,7 +243,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
                          QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                          bool direct, QWidget * parent = 0 );
 
-    //! Destructor
+
     ~QgsGrassModuleInput();
 
     //! Retruns list of options which will be passed to module

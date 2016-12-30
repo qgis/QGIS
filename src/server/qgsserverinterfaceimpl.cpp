@@ -36,7 +36,7 @@ QString QgsServerInterfaceImpl::getEnv( const QString& name ) const
 }
 
 
-//! Destructor
+
 QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
 {
   delete mAccessControls;

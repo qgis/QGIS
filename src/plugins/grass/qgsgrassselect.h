@@ -29,7 +29,7 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
     //! Constructor
     //QgsGrassSelect(QWidget *parent = 0, int type = VECTOR );
     QgsGrassSelect( QWidget *parent, int type = VECTOR );
-    //! Destructor
+
     ~QgsGrassSelect();
 
     enum TYPE

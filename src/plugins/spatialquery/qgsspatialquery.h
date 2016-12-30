@@ -59,9 +59,6 @@ class QgsSpatialQuery
      */
     explicit QgsSpatialQuery( MngProgressBar *pb );
 
-    /**
-     * \brief Destructor
-     */
     ~QgsSpatialQuery();
 
     /**

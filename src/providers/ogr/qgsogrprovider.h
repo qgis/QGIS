@@ -70,9 +70,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     explicit QgsOgrProvider( QString const & uri = "" );
 
-    /**
-     * Destructor
-     */
     virtual ~QgsOgrProvider();
 
     virtual QgsAbstractFeatureSource* featureSource() const override;

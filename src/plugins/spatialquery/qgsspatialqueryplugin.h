@@ -52,7 +52,7 @@ class QgsSpatialQueryPlugin: public QObject, public QgisPlugin
      * \param iface Pointer to the QgisInterface object.
      */
     explicit QgsSpatialQueryPlugin( QgisInterface* iface );
-    //! Destructor
+
     ~QgsSpatialQueryPlugin();
 
   public slots:

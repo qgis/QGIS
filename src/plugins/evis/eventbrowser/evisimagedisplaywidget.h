@@ -51,7 +51,6 @@ class eVisImageDisplayWidget : public QWidget
     //! \brief Constructor
     eVisImageDisplayWidget( QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
 
-    //! \brief Destructor
     ~eVisImageDisplayWidget();
 
     //! \brief Load an image from disk and display

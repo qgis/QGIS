@@ -99,7 +99,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      */
     explicit QgsGrassRasterProvider( QString const & uri = 0 );
 
-    //! Destructor
+
     ~QgsGrassRasterProvider();
 
     QgsRasterInterface * clone() const override;
