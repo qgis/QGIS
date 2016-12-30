@@ -342,7 +342,7 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
        mComposition->plotStyle() == QgsComposition::Postscript )
   {
     //exporting composition, so force an attribute refresh
-    //we do this in case vector layer has changed via an external source (eg, another database user)
+    //we do this in case vector layer has changed via an external source (e.g., another database user)
     refreshAttributes();
   }
 

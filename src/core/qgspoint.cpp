@@ -180,7 +180,7 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
 {
   //first, limit longitude to -360 to 360 degree range
   double myWrappedX = fmod( m_x, 360.0 );
-  //next, wrap around longitudes > 180 or < -180 degrees, so that eg "190E" -> "170W"
+  //next, wrap around longitudes > 180 or < -180 degrees, so that, e.g., "190E" -> "170W"
   if ( myWrappedX > 180.0 )
   {
     myWrappedX = myWrappedX - 360.0;
@@ -192,7 +192,7 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
 
   //first, limit latitude to -180 to 180 degree range
   double myWrappedY = fmod( m_y, 180.0 );
-  //next, wrap around latitudes > 90 or < -90 degrees, so that eg "110S" -> "70N"
+  //next, wrap around latitudes > 90 or < -90 degrees, so that, e.g., "110S" -> "70N"
   if ( myWrappedY > 90.0 )
   {
     myWrappedY = myWrappedY - 180.0;
@@ -294,7 +294,7 @@ QString QgsPoint::toDegreesMinutes( int thePrecision, const bool useSuffix, cons
 {
   //first, limit longitude to -360 to 360 degree range
   double myWrappedX = fmod( m_x, 360.0 );
-  //next, wrap around longitudes > 180 or < -180 degrees, so that eg "190E" -> "170W"
+  //next, wrap around longitudes > 180 or < -180 degrees, so that, e.g., "190E" -> "170W"
   if ( myWrappedX > 180.0 )
   {
     myWrappedX = myWrappedX - 360.0;

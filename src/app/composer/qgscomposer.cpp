@@ -1128,7 +1128,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
   bool previewEnabled = mComposition->setAtlasMode( checked ? QgsComposition::PreviewAtlas : QgsComposition::AtlasOff );
   if ( !previewEnabled )
   {
-    //something went wrong, eg, no matching features
+    //something went wrong, e.g., no matching features
     QMessageBox::warning( nullptr, tr( "Enable atlas preview" ),
                           tr( "No matching atlas features found!" ),
                           QMessageBox::Ok,

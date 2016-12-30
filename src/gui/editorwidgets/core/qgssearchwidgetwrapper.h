@@ -61,13 +61,13 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     };
     Q_DECLARE_FLAGS( FilterFlags, FilterFlag )
 
-    /** Returns a list of exclusive filter flags, which cannot be combined with other flags (eg EqualTo/NotEqualTo)
+    /** Returns a list of exclusive filter flags, which cannot be combined with other flags (e.g., EqualTo/NotEqualTo)
      * @note added in QGIS 2.16
      * @see nonExclusiveFilterFlags()
      */
     static QList< FilterFlag > exclusiveFilterFlags();
 
-    /** Returns a list of non-exclusive filter flags, which can be combined with other flags (eg CaseInsensitive)
+    /** Returns a list of non-exclusive filter flags, which can be combined with other flags (e.g., CaseInsensitive)
      * @note added in QGIS 2.16
      * @see exclusiveFilterFlags()
      */

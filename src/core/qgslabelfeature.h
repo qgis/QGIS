@@ -92,7 +92,7 @@ class CORE_EXPORT QgsLabelFeature
     GEOSGeometry* geometry() const { return mGeometry; }
 
     /** Sets the label's obstacle geometry, if different to the feature geometry.
-     * This can be used to override the shape of the feature for obstacle detection, eg to
+     * This can be used to override the shape of the feature for obstacle detection, e.g., to
      * buffer around a point geometry to prevent labels being placed too close to the
      * point itself. It not set, the feature's geometry is used for obstacle detection.
      * Ownership of obstacle geometry is transferred.

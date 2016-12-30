@@ -236,7 +236,7 @@ class CORE_EXPORT QgsDataSourceUri
     QString mKeyColumn;
     //! Use estimated metadata flag
     bool mUseEstimatedMetadata;
-    //! Disable SelectAtId capability (eg. to trigger the attribute table memory model for expensive views)
+    //! Disable SelectAtId capability (e.g., to trigger the attribute table memory model for expensive views)
     bool mSelectAtIdDisabled;
     //! geometry type (or QgsWkbTypes::Unknown if not specified)
     QgsWkbTypes::Type mWkbType;

@@ -193,12 +193,12 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
      */
     QgsGradientStopsList stops() const { return mStops; }
 
-    /** Returns any additional info attached to the gradient ramp (eg authorship notes)
+    /** Returns any additional info attached to the gradient ramp (e.g., authorship notes)
      * @see setInfo()
      */
     QgsStringMap info() const { return mInfo; }
 
-    /** Sets additional info to attach to the gradient ramp (eg authorship notes)
+    /** Sets additional info to attach to the gradient ramp (e.g., authorship notes)
      * @param info map of string info to attach
      * @see info()
      */

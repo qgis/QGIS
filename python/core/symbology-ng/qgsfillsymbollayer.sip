@@ -174,7 +174,7 @@ class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
 
     double estimateMaxBleed() const;
 
-    /** Type of gradient, eg linear or radial*/
+    /** Type of gradient, e.g., linear or radial*/
     GradientType gradientType() const;
     void setGradientType( GradientType gradientType );
 

@@ -79,7 +79,7 @@ class QgsExpressionItem : public QStandardItem
       */
     void setHelpText( const QString& helpText ) { mHelpText = helpText; }
 
-    /** Get the type of expression item eg header, field, ExpressionNode.
+    /** Get the type of expression item, e.g., header, field, ExpressionNode.
       *
       * @return The QgsExpressionItem::ItemType
       */

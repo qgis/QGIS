@@ -460,7 +460,7 @@ namespace pal
     ASSERT( MINNODES > 0 );
 
 
-    // We only support machine word size simple data type eg. integer index or object pointer.
+    // We only support machine word size simple data type, e.g., integer index or object pointer.
     // Since we are storing as union with non data branch
     ASSERT( sizeof( DATATYPE ) == sizeof( void* ) || sizeof( DATATYPE ) == sizeof( int ) );
 

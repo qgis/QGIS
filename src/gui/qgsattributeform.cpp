@@ -291,7 +291,7 @@ bool QgsAttributeForm::saveEdits()
 
         // need to check dstVar.isNull() != srcVar.isNull()
         // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
-        // be careful- sometimes two null qvariants will be reported as not equal!! (eg different types)
+        // be careful- sometimes two null qvariants will be reported as not equal!! (e.g., different types)
         bool changed = ( dstVar != srcVar && !dstVar.isNull() && !srcVar.isNull() )
                        || ( dstVar.isNull() != srcVar.isNull() );
         if ( changed && srcVar.isValid()
@@ -708,7 +708,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
     // if the layer is NOT being edited then we only check layer based constraints, and not
     // any constraints enforced by the provider. Because:
     // 1. we want to keep browsing features nice and responsive. It's nice to give feedback as to whether
-    // the value checks out, but not if it's too slow to do so. Some constraints (eg unique) can be
+    // the value checks out, but not if it's too slow to do so. Some constraints (e.g., unique) can be
     // expensive to test. A user can freely remove a layer-based constraint if it proves to be too slow
     // to test, but they are unlikely to have any control over provider-side constraints
     // 2. the provider has already accepted the value, so presumably it doesn't violate the constraint

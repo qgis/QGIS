@@ -24,7 +24,7 @@
 
 /** \ingroup core
  * \class QgsColorEffect
- * \brief A paint effect which alters the colors (eg brightness, contrast) in a
+ * \brief A paint effect which alters the colors (e.g., brightness, contrast) in a
  * source picture.
  *
  * \note Added in version 2.9

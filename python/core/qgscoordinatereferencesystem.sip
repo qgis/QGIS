@@ -186,7 +186,7 @@ class QgsCoordinateReferenceSystem
     // static creators
 
     /** Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
-     * @param ogcCrs OGR compliant CRS definition, eg "EPSG:4326"
+     * @param ogcCrs OGR compliant CRS definition, e.g., "EPSG:4326"
      * @returns matching CRS, or an invalid CRS if string could not be matched
      * @note added in QGIS 3.0
      * @see createFromOgcWmsCrs()
@@ -416,9 +416,9 @@ class QgsCoordinateReferenceSystem
 
     /** Returns the authority identifier for the CRS.
      *
-     * The identifier includes both the authority (eg EPSG) and the CRS number (eg 4326).
+     * The identifier includes both the authority (e.g., EPSG) and the CRS number (e.g., 4326).
      * This is the best method to use when showing a very short CRS identifier to a user,
-     * eg "EPSG:4326".
+     * e.g., "EPSG:4326".
      *
      * If CRS object is a custom CRS (not found in database), the method will return
      * internal QGIS CRS ID with "QGIS" authority, for example "QGIS:100005"
@@ -427,7 +427,7 @@ class QgsCoordinateReferenceSystem
      */
     QString authid() const;
 
-    /** Returns the descriptive name of the CRS, eg "WGS 84" or "GDA 94 / Vicgrid94". In most
+    /** Returns the descriptive name of the CRS, e.g., "WGS 84" or "GDA 94 / Vicgrid94". In most
      * cases this is the best method to use when showing a friendly identifier for the CRS to a
      * user.
      * @returns descriptive name of the CRS
@@ -472,7 +472,7 @@ class QgsCoordinateReferenceSystem
      */
     bool isGeographic() const;
 
-    /** Returns whether axis is inverted (eg. for WMS 1.3) for the CRS.
+    /** Returns whether axis is inverted (e.g., for WMS 1.3) for the CRS.
      * @returns true if CRS axis is inverted
      */
     bool hasAxisInverted() const;

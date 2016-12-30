@@ -65,7 +65,7 @@ class ProviderTestCase(object):
             # split off the first 5 attributes only - some provider test datasets will include
             # additional attributes which we ignore
             attrs = f.attributes()[0:5]
-            # force the num_char attribute to be text - some providers (eg delimited text) will
+            # force the num_char attribute to be text - some providers (e.g., delimited text) will
             # automatically detect that this attribute contains numbers and set it as a numeric
             # field
             attrs[4] = str(attrs[4])

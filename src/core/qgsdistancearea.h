@@ -245,7 +245,7 @@ class CORE_EXPORT QgsDistanceArea
      * @param distance distance to format
      * @param decimals number of decimal places to show
      * @param unit unit of distance
-     * @param keepBaseUnit set to false to allow conversion of large distances to more suitable units, eg meters to
+     * @param keepBaseUnit set to false to allow conversion of large distances to more suitable units, e.g., meters to
      * kilometers
      * @returns formatted distance string
      * @note added in QGIS 2.16
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsDistanceArea
      * @param area area to format
      * @param decimals number of decimal places to show
      * @param unit unit of area
-     * @param keepBaseUnit set to false to allow conversion of large areas to more suitable units, eg square meters to
+     * @param keepBaseUnit set to false to allow conversion of large areas to more suitable units, e.g., square meters to
      * square kilometers
      * @returns formatted area string
      * @note added in QGIS 2.14

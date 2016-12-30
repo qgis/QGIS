@@ -56,7 +56,7 @@ class QgsVariableEditorWidget : QWidget
     QgsExpressionContextScope* editableScope() const;
 
     /** Sets the setting group for the widget. QgsVariableEditorWidget widgets with
-     * the same setting group will synchronise their settings, eg the size
+     * the same setting group will synchronise their settings, e.g., the size
      * of columns in the tree widget.
      * @param group setting group
      * @see settingGroup()
@@ -64,7 +64,7 @@ class QgsVariableEditorWidget : QWidget
     void setSettingGroup( const QString &group );
 
     /** Returns the setting group for the widget. QgsVariableEditorWidget widgets with
-     * the same setting group will synchronise their settings, eg the size
+     * the same setting group will synchronise their settings, e.g., the size
      * of columns in the tree widget.
      * @returns setting group name
      * @see setSettingGroup()

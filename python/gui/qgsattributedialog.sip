@@ -48,7 +48,7 @@ class QgsAttributeDialog : QDialog
 
     /**
      * Toggles the form mode.
-     * @param mode form mode. Eg if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
+     * @param mode form mode. For example, if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
      * will add a new feature when the form is accepted.
      */
     void setMode( QgsAttributeForm::Mode mode );

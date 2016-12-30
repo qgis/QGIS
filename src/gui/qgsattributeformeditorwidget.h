@@ -72,7 +72,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
                                      const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
     /** Sets the current mode for the widget. The widget will adapt its state and visible widgets to
-     * reflect the updated mode. Eg, showing multi edit tool buttons if the mode is set to MultiEditMode.
+     * reflect the updated mode. For example, showing multi edit tool buttons if the mode is set to MultiEditMode.
      * @param mode widget mode
      * @see mode()
      */

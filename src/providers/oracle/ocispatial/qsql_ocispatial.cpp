@@ -3734,8 +3734,8 @@ QSqlRecord QOCISpatialDriver::record( const QString& tablename ) const
     return fil;
 
   QSqlQuery t( createResult() );
-  // using two separate queries for this is A LOT faster than using
-  // eg. a sub-query on the sys.synonyms table
+  // using two separate queries for this is A LOT faster than using,
+  // e.g., a sub-query on the sys.synonyms table
   QString stmt( QLatin1String( "select column_name, data_type, data_length, "
                                "data_precision, data_scale, nullable, data_default%1"
                                "from all_tab_columns a "

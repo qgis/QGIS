@@ -158,7 +158,7 @@ void QgsTextEditWrapper::showIndeterminateState()
   {
     mLineEdit->blockSignals( true );
     // for interdeminate state we need to clear the placeholder text - we want an empty line edit, not
-    // one showing the default value (eg "NULL")
+    // one showing the default value (e.g., "NULL")
     mLineEdit->setPlaceholderText( QString() );
   }
 

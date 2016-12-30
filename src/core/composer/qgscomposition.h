@@ -798,7 +798,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Calculates the bounds of all non-gui items in the composition. Ignores snap lines and mouse handles.
      * @param ignorePages set to true to ignore page items
-     * @param margin optional marginal (in percent, eg 0.05 = 5% ) to add around items
+     * @param margin optional marginal (in percent, e.g., 0.05 = 5% ) to add around items
      */
     QRectF compositionBounds( bool ignorePages = false, double margin = 0.0 ) const;
 
@@ -940,7 +940,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Loads default composer settings
     void loadDefaults();
 
-    //! Loads composer settings which may change, eg grid color
+    //! Loads composer settings which may change, e.g., grid color
     void loadSettings();
 
     //! Calculates the item minimum position from an xml string

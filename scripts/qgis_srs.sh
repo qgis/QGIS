@@ -55,7 +55,7 @@
 # DETAILS:
 #
 # The script creates an SQL plain text dump that can be imported into
-# SQlite db eg. using SQLite Database Browser's "Import > Database from
+# SQlite db e.g.,. using SQLite Database Browser's "Import > Database from
 # SQL file" tool.
 #
 # The ellipsoids (tbl_ellipsoid) and projections (tbl_projection) tables

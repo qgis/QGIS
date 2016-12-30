@@ -115,9 +115,9 @@ class QgsFontUtils
      * @param font QFont to convert
      * @param pointToPixelMultiplier scaling factor to apply to convert point sizes to pixel font sizes.
      * The CSS returned by this function will always use pixels for font sizes, so this parameter
-     * should be set to a suitable value to convert point sizes to pixels (eg taking into account
+     * should be set to a suitable value to convert point sizes to pixels (e.g., taking into account
      * desination DPI)
-     * @returns partial CSS string, eg "font-family: Comic Sans; font-size: 12px;"
+     * @returns partial CSS string, e.g., "font-family: Comic Sans; font-size: 12px;"
      * @note added in QGIS 2.16
      */
     static QString asCSS( const QFont& font, double pointToPixelMultiplier = 1.0 );

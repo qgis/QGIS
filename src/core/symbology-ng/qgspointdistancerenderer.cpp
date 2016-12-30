@@ -62,7 +62,7 @@ bool QgsPointDistanceRenderer::renderFeature( QgsFeature& feature, QgsRenderCont
 
   QgsMarkerSymbol* symbol = firstSymbolForFeature( feature, context );
 
-  //if the feature has no symbol (eg, no matching rule in a rule-based renderer), skip it
+  //if the feature has no symbol (e.g., no matching rule in a rule-based renderer), skip it
   if ( !symbol )
     return false;
 
@@ -432,7 +432,7 @@ QgsExpressionContextScope* QgsPointDistanceRenderer::createGroupScope( const Clu
   QgsExpressionContextScope* clusterScope = new QgsExpressionContextScope();
   if ( group.size() > 1 )
   {
-    //scan through symbols to check color, eg if all clustered symbols are same color
+    //scan through symbols to check color, e.g., if all clustered symbols are same color
     QColor groupColor;
     ClusteredGroup::const_iterator groupIt = group.constBegin();
     for ( ; groupIt != group.constEnd(); ++groupIt )

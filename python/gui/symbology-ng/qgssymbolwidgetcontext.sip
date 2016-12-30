@@ -1,7 +1,7 @@
 
 /** \ingroup gui
  * \class QgsSymbolWidgetContext
- * Contains settings which reflect the context in which a symbol (or renderer) widget is shown, eg the
+ * Contains settings which reflect the context in which a symbol (or renderer) widget is shown, e.g., the
  * map canvas and relevant expression contexts.
  *
  * \note added in QGIS 3.0

@@ -224,7 +224,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QString osName();
 
-    /** Returns the QGIS platform name, eg "desktop" or "server".
+    /** Returns the QGIS platform name, e.g., "desktop" or "server".
      * @note added in QGIS 2.14
      * @see osName()
      */

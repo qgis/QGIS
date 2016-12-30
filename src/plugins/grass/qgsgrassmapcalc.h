@@ -238,7 +238,7 @@ class QgsGrassMapcalcFunction
     /* Number of inputs */
     int mInputCount;
 
-    /* Identification name, eg. 'if(x,a,b)' */
+    /* Identification name, e.g., 'if(x,a,b)' */
     //QString mName;
 
     /* Label used in combobox and objects */

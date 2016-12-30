@@ -1355,7 +1355,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         """Tests access control with a subset string already applied to a layer in a project
            'Hello_Project_SubsetString' layer has a subsetString of "pkuid in (7,8)"
            This test checks for a features which should be filtered out by project subsetStrings.
-           Eg pkuid 6 passes the access control checks, but should not be shown because of project layer subsetString
+           For example, pkuid 6 passes the access control checks, but should not be shown because of project layer subsetString
         """
         data = """<?xml version="1.0" encoding="UTF-8"?>
             <wfs:GetFeature {xml_ns}>

@@ -393,9 +393,9 @@ bool LabelPosition::pruneCallback( LabelPosition *candidatePosition, void *ctx )
   FeaturePart *obstaclePart = ( reinterpret_cast< PruneCtx* >( ctx ) )->obstacle;
 
   // test whether we should ignore this obstacle for the candidate. We do this if:
-  // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (eg
+  // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (e.g.,
   // features aren't obstacles for their own labels)
-  // 2. it IS a hole, and the hole belongs to a different label feature to the candidate (eg, holes
+  // 2. it IS a hole, and the hole belongs to a different label feature to the candidate (e.g., holes
   // are ONLY obstacles for the labels of the feature they belong to)
   if (( !obstaclePart->getHoleOf() && candidatePosition->feature->hasSameLabelFeatureAs( obstaclePart ) )
       || ( obstaclePart->getHoleOf() && !candidatePosition->feature->hasSameLabelFeatureAs( dynamic_cast< FeaturePart* >( obstaclePart->getHoleOf() ) ) ) )

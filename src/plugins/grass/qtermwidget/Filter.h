@@ -98,8 +98,8 @@ public:
        /** Returns the column on endLine() where the hotspot area ends */
        int endColumn() const;
        /**
-        * Returns the type of the hotspot.  This is usually used as a hint for views on how to represent
-        * the hotspot graphically.  eg.  Link hotspots are typically underlined when the user mouses over them
+        * Returns the type of the hotspot. This is usually used as a hint for views on how to represent
+        * the hotspot graphically. For example, Link hotspots are typically underlined when the user mouses over them
         */
        Type type() const;
        /**

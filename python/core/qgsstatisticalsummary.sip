@@ -49,13 +49,13 @@ class QgsStatisticalSummary
     virtual ~QgsStatisticalSummary();
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (eg sum, min and max).
+     * are always calculated (e.g., sum, min and max).
      * @see setStatistics
      */
     QgsStatisticalSummary::Statistics statistics() const;
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (eg sum, min and max).
+     * are always calculated (e.g., sum, min and max).
      * @param stats flags for statistics to calculate
      * @see statistics
      */

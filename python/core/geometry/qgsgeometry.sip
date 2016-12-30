@@ -551,7 +551,7 @@ class QgsGeometry
 
     /**
      * Returns a point guaranteed to lie on the surface of a geometry. While the centroid()
-     * of a geometry may be located outside of the geometry itself (eg for concave shapes),
+     * of a geometry may be located outside of the geometry itself (e.g., for concave shapes),
      * the point on surface will always be inside the geometry.
      * @see centroid()
      * @see poleOfInaccessibility()
@@ -892,7 +892,7 @@ class QgsGeometry
      * @param iterations number of smoothing iterations to run. More iterations results
      * in a smoother geometry
      * @param offset fraction of line to create new vertices along, between 0 and 1.0
-     * eg the default value of 0.25 will create new vertices 25% and 75% along each line segment
+     * For example, the default value of 0.25 will create new vertices 25% and 75% along each line segment
      * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
      * @param minimumDistance minimum segment length to apply smoothing to
      * @param maxAngle maximum angle at node (0-180) at which smoothing will be applied

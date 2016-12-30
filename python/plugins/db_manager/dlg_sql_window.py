@@ -333,7 +333,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         QApplication.restoreOverrideCursor()
 
     def setColumnCombos(self, cols, quotedCols):
-        # get sensible default columns. do this before sorting in case there's hints in the column order (eg, id is more likely to be first)
+        # get sensible default columns. do this before sorting in case there's hints in the column order (e.g., id is more likely to be first)
         try:
             defaultGeomCol = next(col for col in cols if col in ['geom', 'geometry', 'the_geom', 'way'])
         except:

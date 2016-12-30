@@ -795,7 +795,7 @@ changed so we will just provide a bullet list of key new features here.
     
  - Optionally re-use entered attribute values for next digitized feature.
  - Allow merging/assigning attribute values to a set of features.-
- - Allow OGR 'save as' without attributes (for eg. DGN/DXF).
+ - Allow OGR 'save as' without attributes (e.g., DGN/DXF).
  -
 - 
 
