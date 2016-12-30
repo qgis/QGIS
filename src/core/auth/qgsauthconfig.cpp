@@ -357,18 +357,10 @@ QgsAuthConfigSslServer::QgsAuthConfigSslServer()
     , mVersion( 1 )
 {
   // TODO: figure out if Qt 5 has changed yet again, e.g. TLS-only
-#if QT_VERSION >= 0x040800
   mQtVersion = 480;
   // Qt 4.8 defaults to SecureProtocols, i.e. TlsV1SslV3
   // http://qt-project.org/doc/qt-4.8/qssl.html#SslProtocol-enum
   mSslProtocol = QSsl::SecureProtocols;
-#else
-  mQtVersion = 470;
-  // older Qt 4.7 defaults to now-vulnerable SSLv3
-  // http://qt-project.org/doc/qt-4.7/qssl.html
-  // Default this to TlsV1 instead
-  mSslProtocol = QSsl::TlsV1;
-#endif
 }
 
 const QList<QSslError> QgsAuthConfigSslServer::sslIgnoredErrors() const
