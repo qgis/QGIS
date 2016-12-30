@@ -21,19 +21,69 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
                                       const QString& provider = "gdal" );
     ~QgsRasterFormatSaveOptionsWidget();
 
+    /**
+     * Set output raster format, it is used to determine list
+     * of available options
+     */
     void setFormat( const QString& format );
+
+    /**
+     * Set provider key, , it is used to determine list
+     * of available options
+     */
     void setProvider( const QString& provider );
+
+    /**
+     * Set output raster layer
+     */
     void setRasterLayer( QgsRasterLayer* rasterLayer );
+
+    /**
+     * Set output raster file name
+     */
     void setRasterFileName( const QString& file );
+
+    /**
+     * Returns list of selected options
+     * @see setOptions()
+     */
     QStringList options() const;
+
+    /**
+     * Populate widget with user-defined options
+     * @see options()
+     * @note added in QGIS 3.0
+     */
+    void setOptions( const QString& options);
+
+    /**
+     * Set widget look and feel
+     */
     void setType( QgsRasterFormatSaveOptionsWidget::Type type = Default );
+
+    /**
+     * Set pyramids format to use
+     */
     void setPyramidsFormat( QgsRaster::RasterPyramidsFormat format );
 
   public slots:
 
     void apply();
+
+    /**
+     * Opens window with options desctiption for given provider
+     * and output format
+     */
     void helpOptions();
+
+    /**
+     * Validates options correctness
+     */
     QString validateOptions( bool gui = true, bool reportOk = true );
+
+    /**
+     * Reloads profiles list from QGIS settings
+     */
     void updateProfiles();
 
   private slots:
