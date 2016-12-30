@@ -135,8 +135,8 @@ Now on with the build:
 make -jX
 ```
 
-where X is the number of available cores. Without the -j option
-it may take a little while to build depending on your platform.
+where X is the number of available cores. Depending on your platform,
+this can speed up the build time considerably.
 
 Then you can directly run from the build directory:
 
@@ -164,6 +164,33 @@ execute this command in your shell.
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/apps/lib/
 ```
 
+Optionally, if you already know what aspects you want in your custom build
+then you can skip the interactive ccmake .. part by using the cmake -D
+option for each aspect, e.g.:
+
+```
+cmake -D CMAKE_BUILD_TYPE=Debug -D CMAKE_INSTALL_PREFIX=${HOME}/apps ..
+```
+
+Also, if you want to speed your build times, you can easily do it with ninja,
+an alternative to make with similar build options.
+
+For example, to configure your build you can do either one of:
+
+```
+ccmake -G Ninja ..
+```
+
+```
+cmake -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_INSTALL_PREFIX=${HOME}/apps ..
+```
+
+Build and install with ninja:
+
+```
+ninja (uses all cores by default; also supports the above described -jX option)
+ninja install
+```
 
 == Building Debian packages ==
 
