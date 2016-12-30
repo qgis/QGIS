@@ -455,6 +455,7 @@ void QgsFieldCalculator::populateFields()
     font.setItalic( true );
     mExistingFieldComboBox->setItemData( mExistingFieldComboBox->count() - 1, font, Qt::FontRole );
   }
+  mExistingFieldComboBox->setCurrentIndex( -1 );
 }
 
 void QgsFieldCalculator::setOkButtonState()
