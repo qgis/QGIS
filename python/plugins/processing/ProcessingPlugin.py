@@ -31,6 +31,7 @@ import inspect
 import os
 import sys
 
+from qgis.core import QgsApplication
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir
 from qgis.PyQt.QtWidgets import QMenu, QAction
 from qgis.PyQt.QtGui import QIcon
@@ -92,16 +93,6 @@ class ProcessingPlugin(object):
         self.iface.registerMainWindowAction(self.historyAction, 'Ctrl+Alt+H')
         self.menu.addAction(self.historyAction)
 
-        self.configAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'config.png')),
-            self.tr('&Options...'), self.iface.mainWindow())
-        self.configAction.setObjectName('configAction')
-        self.configAction.setMenuRole(QAction.NoRole)
-
-        self.configAction.triggered.connect(self.openConfig)
-        self.iface.registerMainWindowAction(self.configAction, 'Ctrl+Alt+C')
-        self.menu.addAction(self.configAction)
-
         self.resultsAction = QAction(
             QIcon(os.path.join(cmd_folder, 'images', 'results.png')),
             self.tr('&Results Viewer...'), self.iface.mainWindow())
@@ -122,6 +113,18 @@ class ProcessingPlugin(object):
         self.menu.addAction(self.commanderAction)
         self.iface.registerMainWindowAction(self.commanderAction,
                                             self.tr('Ctrl+Alt+D'))
+
+        self.menu.addSeparator()
+
+        self.configAction = QAction(
+            QIcon(QgsApplication.getThemeIcon('mActionOptions.svg')),
+            self.tr('&Options...'), self.iface.mainWindow())
+        self.configAction.setObjectName('configAction')
+        self.configAction.setMenuRole(QAction.NoRole)
+
+        self.configAction.triggered.connect(self.openConfig)
+        self.iface.registerMainWindowAction(self.configAction, 'Ctrl+Alt+C')
+        self.menu.addAction(self.configAction)
 
         initializeMenus()
         createMenus()
