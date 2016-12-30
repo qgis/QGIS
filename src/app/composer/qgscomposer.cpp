@@ -878,7 +878,7 @@ void QgsComposer::changeEvent( QEvent* event )
 #endif
     case QEvent::WindowStateChange:
     {
-      /* Listen out for window un-minimisation and restore composer map states.
+      /* Listen out for window un-minimization and restore composer map states.
        * We can't use showEvent to detect this due to QT Bug 36675 (see #6085).
        */
       QWindowStateChangeEvent* changeEv = static_cast< QWindowStateChangeEvent* >( event );
@@ -3471,7 +3471,7 @@ void QgsComposer::writeXml( QDomNode& parentNode, QDomDocument& doc )
   QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
   composerElem.setAttribute( QStringLiteral( "title" ), mTitle );
 
-  //change preview mode of minimised / hidden maps before saving XML (show contents only on demand)
+  //change preview mode of minimized / hidden maps before saving XML (show contents only on demand)
   QMap< QgsComposerMap*, int >::const_iterator mapIt = mMapsToRestore.constBegin();
   for ( ; mapIt != mMapsToRestore.constEnd(); ++mapIt )
   {

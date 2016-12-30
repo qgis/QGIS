@@ -419,8 +419,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Sets layer's spatial reference system
     void setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal = true );
 
-    //! A convenience function to (un)capitalise the layer name
-    static QString capitaliseLayerName( const QString& name );
+    //! A convenience function to (un)capitalize the layer name
+    static QString capitalizeLayerName( const QString& name );
 
     /** Retrieve the style URI for this layer
      * (either as a .qml file on disk or as a

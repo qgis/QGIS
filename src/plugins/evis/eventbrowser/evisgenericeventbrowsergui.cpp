@@ -548,7 +548,7 @@ void eVisGenericEventBrowserGui::displayImage()
       //keep the extent the same just center the map canvas in the display so our feature is in the middle
       QgsRectangle myRect( myPoint.x() - ( mCanvas->extent().width() / 2 ), myPoint.y() - ( mCanvas->extent().height() / 2 ), myPoint.x() + ( mCanvas->extent().width() / 2 ), myPoint.y() + ( mCanvas->extent().height() / 2 ) );
 
-      // only change the extents if the point is beyond the current extents to minimise repaints
+      // only change the extents if the point is beyond the current extents to minimize repaints
       if ( !mCanvas->extent().contains( myPoint ) )
       {
         mCanvas->setExtent( myRect );

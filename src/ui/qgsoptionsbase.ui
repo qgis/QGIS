@@ -2902,7 +2902,7 @@
                      </spacer>
                     </item>
                     <item row="1" column="1">
-                     <widget class="QCheckBox" name="capitaliseCheckBox">
+                     <widget class="QCheckBox" name="capitalizeCheckBox">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -2910,7 +2910,7 @@
                        </sizepolicy>
                       </property>
                       <property name="text">
-                       <string>Capitalise layer names</string>
+                       <string>Capitalize layer names</string>
                       </property>
                      </widget>
                     </item>
@@ -5457,7 +5457,7 @@
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cmbLegendDoubleClickAction</tabstop>
-  <tabstop>capitaliseCheckBox</tabstop>
+  <tabstop>capitalizeCheckBox</tabstop>
   <tabstop>mLegendLayersBoldChkBx</tabstop>
   <tabstop>mLegendGroupsBoldChkBx</tabstop>
   <tabstop>cbxLegendClassifiers</tabstop>

@@ -1007,7 +1007,7 @@ void QgsRasterLayerProperties::apply()
 
 void QgsRasterLayerProperties::on_mLayerOrigNameLineEd_textEdited( const QString& text )
 {
-  leDisplayName->setText( mRasterLayer->capitaliseLayerName( text ) );
+  leDisplayName->setText( mRasterLayer->capitalizeLayerName( text ) );
 }
 
 void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()

@@ -393,7 +393,7 @@ QList<QColor> QgsLimitedRandomColorRamp::randomColors( int count,
   for ( int i = 0; i < count; ++i )
   {
     //increment hue by golden ratio (approx 137.507 degrees)
-    //as this minimises hue nearness as count increases
+    //as this minimizes hue nearness as count increases
     //see http://basecase.org/env/on-rainbows for more details
     currentHueAngle += 137.50776;
     //scale hue to between hueMax and hueMin
