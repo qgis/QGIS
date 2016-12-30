@@ -32,8 +32,6 @@ class CORE_EXPORT QgsCoordinateTransformCache
   public:
     static QgsCoordinateTransformCache* instance();
 
-    ~QgsCoordinateTransformCache();
-
     /** Returns coordinate transformation. Cache keeps ownership
         @param srcAuthId auth id string of source crs
         @param destAuthId auth id string of dest crs

@@ -87,8 +87,6 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     QgsMapRendererJob( const QgsMapSettings& settings );
 
-    virtual ~QgsMapRendererJob() {}
-
     //! Start the rendering job and immediately return.
     //! Does nothing if the rendering is already in progress.
     virtual void start() = 0;

@@ -71,7 +71,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Create invalid provider with error
     QgsGdalProvider( QString const & uri, QgsError error );
 
-    //! Destructor
+
     ~QgsGdalProvider();
 
     QgsGdalProvider * clone() const override;

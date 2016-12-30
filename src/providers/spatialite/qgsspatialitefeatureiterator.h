@@ -31,7 +31,6 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider* p );
-    ~QgsSpatiaLiteFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 

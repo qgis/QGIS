@@ -39,8 +39,6 @@ class CORE_EXPORT QgsRendererCategory
     //! copy constructor
     QgsRendererCategory( const QgsRendererCategory& cat );
 
-    ~QgsRendererCategory() {}
-
     QgsRendererCategory& operator=( QgsRendererCategory cat );
 
     QVariant value() const;

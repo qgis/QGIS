@@ -53,7 +53,7 @@ class CORE_EXPORT QgsAbstractGeometry
     };
 
     QgsAbstractGeometry();
-    virtual ~QgsAbstractGeometry();
+    virtual ~QgsAbstractGeometry() = default;
     QgsAbstractGeometry( const QgsAbstractGeometry& geom );
     virtual QgsAbstractGeometry& operator=( const QgsAbstractGeometry& geom );
 

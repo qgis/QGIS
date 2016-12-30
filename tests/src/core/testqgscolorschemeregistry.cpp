@@ -28,8 +28,6 @@ class DummyColorScheme : public QgsColorScheme
 
     DummyColorScheme() {}
 
-    virtual ~DummyColorScheme() {}
-
     virtual QString schemeName() const override { return QStringLiteral( "Dummy scheme" ); }
 
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),

@@ -39,7 +39,6 @@ class CORE_EXPORT QgsProjectFileTransform
   public:
     //Default constructor
     //QgsProjectfiletransform() {}
-    ~QgsProjectFileTransform() {}
 
     /** Create an instance from a Dom and a supplied version
      * @param domDocument The Dom document to use as content

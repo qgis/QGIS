@@ -66,8 +66,6 @@ class CORE_EXPORT QgsTextBufferSettingsPrivate : public QSharedData
     {
     }
 
-    ~QgsTextBufferSettingsPrivate() {}
-
     bool enabled;
     double size;
     QgsUnitTypes::RenderUnit sizeUnit;
@@ -133,8 +131,6 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
         , joinStyle( other.joinStyle )
     {
     }
-
-    ~QgsTextBackgroundSettingsPrivate() {}
 
     bool enabled;
     QgsTextBackgroundSettings::ShapeType type;
@@ -205,8 +201,6 @@ class CORE_EXPORT QgsTextShadowSettingsPrivate : public QSharedData
     {
     }
 
-    ~QgsTextShadowSettingsPrivate() {}
-
     bool enabled;
     QgsTextShadowSettings::ShadowPlacement shadowUnder;
     int offsetAngle;
@@ -253,8 +247,6 @@ class CORE_EXPORT QgsTextSettingsPrivate : public QSharedData
         , multilineHeight( other.multilineHeight )
     {
     }
-
-    ~QgsTextSettingsPrivate() {}
 
     QFont textFont;
     QString textNamedStyle;

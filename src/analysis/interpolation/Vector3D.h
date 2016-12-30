@@ -43,7 +43,6 @@ class ANALYSIS_EXPORT Vector3D
     //! Copy constructor
     Vector3D( const Vector3D& v );
 
-    ~Vector3D();
     Vector3D& operator=( const Vector3D& v );
     bool operator==( const Vector3D& v ) const;
     bool operator!=( const Vector3D& v ) const;
@@ -79,11 +78,6 @@ inline Vector3D::Vector3D()
     : mX( 0 )
     , mY( 0 )
     , mZ( 0 )//using a list
-{
-
-}
-
-inline Vector3D::~Vector3D()
 {
 
 }

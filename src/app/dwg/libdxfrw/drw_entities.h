@@ -1237,8 +1237,6 @@ class DRW_Dimension : public DRW_Entity
     {
     }
 
-    virtual ~DRW_Dimension() {}
-
     virtual void applyExtrusion() {}
 
   protected:

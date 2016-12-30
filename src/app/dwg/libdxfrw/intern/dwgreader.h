@@ -69,7 +69,7 @@ class dwgPageInfo
         , uSize( 0 )
     {
     }
-    ~dwgPageInfo() {}
+
     duint64 Id;
     duint64 address; //in file stream, for rd18, rd21
     duint64 size; //in file stream, for rd18, rd21
@@ -101,7 +101,7 @@ class dwgSectionInfo
         , address( 0 )
     {
     }
-    ~dwgSectionInfo() {}
+
     dint32 Id; //section Id, 2000-   rd15 rd18
     std::string name; //section name rd18
     duint32 compressed;//is compressed? 1=no, 2=yes rd18, rd21(encoding)

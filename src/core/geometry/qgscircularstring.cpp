@@ -31,11 +31,6 @@ QgsCircularString::QgsCircularString(): QgsCurve()
   mWkbType = QgsWkbTypes::CircularString;
 }
 
-QgsCircularString::~QgsCircularString()
-{
-
-}
-
 bool QgsCircularString::operator==( const QgsCurve& other ) const
 {
   const QgsCircularString* otherLine = dynamic_cast< const QgsCircularString* >( &other );

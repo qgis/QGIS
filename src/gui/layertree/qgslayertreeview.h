@@ -142,7 +142,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 class GUI_EXPORT QgsLayerTreeViewMenuProvider
 {
   public:
-    virtual ~QgsLayerTreeViewMenuProvider() {}
+    virtual ~QgsLayerTreeViewMenuProvider() = default;
 
     //! Return a newly created menu instance (or null pointer on error)
     virtual QMenu* createContextMenu() = 0;

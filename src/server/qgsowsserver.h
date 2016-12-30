@@ -45,7 +45,7 @@ class QgsOWSServer
         , mAccessControl( ac )
 #endif
     {}
-    virtual ~QgsOWSServer() {}
+    virtual ~QgsOWSServer() = default;
 
     virtual void executeRequest() = 0;
 

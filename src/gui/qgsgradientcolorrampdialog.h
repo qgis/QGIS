@@ -121,8 +121,6 @@ class GUI_EXPORT QgsGradientPlotEventFilter: public QObject
 
     QgsGradientPlotEventFilter( QwtPlot *plot );
 
-    virtual ~QgsGradientPlotEventFilter() {}
-
     virtual bool eventFilter( QObject* object, QEvent* event ) override;
 
   signals:

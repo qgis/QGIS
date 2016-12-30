@@ -604,10 +604,6 @@ QgsSpatiaLiteFeatureSource::QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvi
 {
 }
 
-QgsSpatiaLiteFeatureSource::~QgsSpatiaLiteFeatureSource()
-{
-}
-
 QgsFeatureIterator QgsSpatiaLiteFeatureSource::getFeatures( const QgsFeatureRequest& request )
 {
   return QgsFeatureIterator( new QgsSpatiaLiteFeatureIterator( this, false, request ) );

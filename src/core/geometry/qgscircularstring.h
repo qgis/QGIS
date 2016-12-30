@@ -31,7 +31,6 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 {
   public:
     QgsCircularString();
-    ~QgsCircularString();
 
     virtual bool operator==( const QgsCurve& other ) const override;
     virtual bool operator!=( const QgsCurve& other ) const override;

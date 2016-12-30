@@ -25,7 +25,7 @@
 class ANALYSIS_EXPORT TriangleInterpolator
 {
   public:
-    virtual ~TriangleInterpolator() {}
+    virtual ~TriangleInterpolator() = default;
     //! Calculates the normal vector and assigns it to vec
     virtual bool calcNormVec( double x, double y, Vector3D* result ) = 0;
     //! Performs a linear interpolation in a triangle and assigns the x-,y- and z-coordinates to point

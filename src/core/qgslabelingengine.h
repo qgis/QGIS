@@ -44,7 +44,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! Construct the provider with default values
     QgsAbstractLabelProvider( const QString& layerId = QString(), const QString& providerId = QString() );
 
-    virtual ~QgsAbstractLabelProvider() {}
+    virtual ~QgsAbstractLabelProvider() = default;
 
     //! Associate provider with a labeling engine (should be only called internally from QgsLabelingEngine)
     void setEngine( const QgsLabelingEngine* engine ) { mEngine = engine; }

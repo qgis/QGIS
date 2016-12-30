@@ -33,7 +33,7 @@ class print_none
     virtual void printHL( int c, int s, int h ) {( void )c;( void )s;( void )h;}
     virtual void printPT( double x, double y, double z ) {( void )x;( void )y;( void )z;}
     print_none() {}
-    virtual ~print_none() {}
+    virtual ~print_none() = default;
 };
 
 class print_debug : public print_none

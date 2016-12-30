@@ -80,7 +80,7 @@ class CORE_EXPORT QgsFields
      */
     QgsFields& operator =( const QgsFields& other );
 
-    virtual ~QgsFields();
+    virtual ~QgsFields() = default;
 
     //! Remove all fields
     void clear();

@@ -57,7 +57,7 @@ class CORE_EXPORT QgsAttributeEditorElement
     {}
 
 
-    virtual ~QgsAttributeEditorElement() {}
+    virtual ~QgsAttributeEditorElement() = default;
 
     /**
      * Return the name of this element
@@ -269,9 +269,6 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
         , mIdx( idx )
     {}
 
-
-    virtual ~QgsAttributeEditorField() {}
-
     /**
      * Return the index of the field
      * @return
@@ -321,9 +318,6 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
         , mShowLinkButton( true )
         , mShowUnlinkButton( true )
     {}
-
-
-    virtual ~QgsAttributeEditorRelation() {}
 
     /**
      * Get the id of the relation which shall be embedded

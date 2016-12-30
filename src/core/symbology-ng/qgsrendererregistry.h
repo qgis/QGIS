@@ -53,7 +53,7 @@ class CORE_EXPORT QgsRendererAbstractMetadata
         , mVisibleName( visibleName )
         , mIcon( icon )
     {}
-    virtual ~QgsRendererAbstractMetadata() {}
+    virtual ~QgsRendererAbstractMetadata() = default;
 
     QString name() const { return mName; }
     QString visibleName() const { return mVisibleName; }

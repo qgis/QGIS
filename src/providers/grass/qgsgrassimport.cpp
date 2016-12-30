@@ -759,10 +759,6 @@ QgsGrassCopy::QgsGrassCopy( const QgsGrassObject& srcObject, const QgsGrassObjec
 {
 }
 
-QgsGrassCopy::~QgsGrassCopy()
-{
-}
-
 bool QgsGrassCopy::import()
 {
 
@@ -789,10 +785,6 @@ QString QgsGrassCopy::srcDescription() const
 QgsGrassExternal::QgsGrassExternal( const QString& gdalSource, const QgsGrassObject& destObject )
     : QgsGrassImport( destObject )
     , mSource( gdalSource )
-{
-}
-
-QgsGrassExternal::~QgsGrassExternal()
 {
 }
 

@@ -47,8 +47,6 @@ class CORE_EXPORT QgsFeedback : public QObject
         , mCancelled( false )
     {}
 
-    virtual ~QgsFeedback() {}
-
     //! Tells the internal routines that the current operation should be cancelled. This should be run by the main thread
     void cancel()
     {

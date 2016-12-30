@@ -124,7 +124,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QgsWmsProvider( const QString& uri = QString(), const QgsWmsCapabilities* capabilities = 0 );
 
-    //! Destructor
+
     virtual ~QgsWmsProvider();
 
     QgsWmsProvider * clone() const override;

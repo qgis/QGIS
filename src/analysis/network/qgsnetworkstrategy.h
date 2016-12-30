@@ -39,7 +39,7 @@ class ANALYSIS_EXPORT QgsNetworkStrategy
      */
     QgsNetworkStrategy() {}
 
-    virtual ~QgsNetworkStrategy() {}
+    virtual ~QgsNetworkStrategy() = default;
 
     /**
      * Returns list of the source layer attributes needed for cost calculation.

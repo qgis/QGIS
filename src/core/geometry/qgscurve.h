@@ -33,7 +33,6 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 {
   public:
     QgsCurve();
-    virtual ~QgsCurve();
 
     virtual bool operator==( const QgsCurve& other ) const = 0;
     virtual bool operator!=( const QgsCurve& other ) const = 0;

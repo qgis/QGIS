@@ -25,7 +25,7 @@ class dwgBasicStream
   protected:
     dwgBasicStream() {}
   public:
-    virtual ~dwgBasicStream() {}
+    virtual ~dwgBasicStream() = default;
     virtual bool read( duint8* s, duint64 n ) = 0;
     virtual duint64 size() = 0;
     virtual duint64 getPos() = 0;
@@ -44,7 +44,6 @@ class dwgFileStream: public dwgBasicStream
       sz = stream->tellg();
       stream->seekg( 0, std::ios_base::beg );
     }
-    virtual ~dwgFileStream() {}
     virtual bool read( duint8* s, duint64 n );
     virtual duint64 size() {return sz;}
     virtual duint64 getPos() {return stream->tellg();}
@@ -66,7 +65,6 @@ class dwgCharStream: public dwgBasicStream
       pos = 0;
       isOk = true;
     }
-    virtual ~dwgCharStream() {}
     virtual bool read( duint8* s, duint64 n );
     virtual duint64 size() {return sz;}
     virtual duint64 getPos() {return pos;}

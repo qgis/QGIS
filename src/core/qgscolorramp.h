@@ -30,7 +30,7 @@ class CORE_EXPORT QgsColorRamp
 {
   public:
 
-    virtual ~QgsColorRamp() {}
+    virtual ~QgsColorRamp() = default;
 
     /** Returns number of defined colors, or -1 if undefined
      */

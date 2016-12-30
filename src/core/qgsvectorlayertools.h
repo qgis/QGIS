@@ -40,8 +40,6 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
   public:
     QgsVectorLayerTools();
 
-    virtual ~QgsVectorLayerTools();
-
     /**
      * This method should/will be called, whenever a new feature will be added to the layer
      *

@@ -40,9 +40,6 @@ QgsLineString::QgsLineString(): QgsCurve()
   mWkbType = QgsWkbTypes::LineString;
 }
 
-QgsLineString::~QgsLineString()
-{}
-
 bool QgsLineString::operator==( const QgsCurve& other ) const
 {
   const QgsLineString* otherLine = dynamic_cast< const QgsLineString* >( &other );

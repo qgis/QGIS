@@ -299,8 +299,6 @@ class CORE_EXPORT QgsAuthConfigSslServer
     //! Construct a default SSL server configuration
     QgsAuthConfigSslServer();
 
-    ~QgsAuthConfigSslServer() {}
-
     //! Server certificate object
     const QSslCertificate sslCertificate() const { return mSslCert; }
     //! Set server certificate object

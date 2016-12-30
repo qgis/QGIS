@@ -32,7 +32,7 @@ class QgsMapLayer;
 class GUI_EXPORT QgsLayerTreeEmbeddedWidgetProvider
 {
   public:
-    virtual ~QgsLayerTreeEmbeddedWidgetProvider() {}
+    virtual ~QgsLayerTreeEmbeddedWidgetProvider() = default;
 
     //! Unique name of the provider (among other providers)
     virtual QString id() const = 0;

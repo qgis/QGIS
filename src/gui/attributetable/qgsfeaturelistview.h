@@ -52,8 +52,6 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      */
     explicit QgsFeatureListView( QWidget* parent = nullptr );
 
-    virtual ~QgsFeatureListView() {}
-
     /**
      * Returns the layer cache
      * @return the layer cache used as backend

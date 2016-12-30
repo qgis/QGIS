@@ -31,9 +31,6 @@ class CORE_EXPORT QgsRasterChecker
 
     QgsRasterChecker();
 
-
-    ~QgsRasterChecker() {}
-
     QString report() { return mReport; }
 
     /**

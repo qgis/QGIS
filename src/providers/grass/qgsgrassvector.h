@@ -32,8 +32,6 @@ class GRASS_LIB_EXPORT QgsGrassVectorLayer : public QObject
 
     QgsGrassVectorLayer( const QgsGrassObject &grassObject, int number, struct field_info *fieldInfo, QObject * parent = 0 );
 
-    ~QgsGrassVectorLayer();
-
     QgsGrassObject grassObject() const { return mGrassObject; }
 
     //! Layer number (field)

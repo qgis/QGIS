@@ -146,8 +146,6 @@ namespace pal
 
           Iterator()                                    { Init(); }
 
-          ~Iterator()                                   { }
-
           /// Is iterator invalid
           bool IsNull() const                           { return ( m_tos <= 0 ); }
 

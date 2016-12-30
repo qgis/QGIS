@@ -34,7 +34,6 @@ class QgsMssqlRootItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsMssqlRootItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsMssqlRootItem();
 
     QVector<QgsDataItem*> createChildren() override;
 
@@ -101,7 +100,6 @@ class QgsMssqlSchemaItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsMssqlSchemaItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsMssqlSchemaItem();
 
     QVector<QgsDataItem*> createChildren() override;
 
@@ -118,7 +116,6 @@ class QgsMssqlLayerItem : public QgsLayerItem
 
   public:
     QgsMssqlLayerItem( QgsDataItem* parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsMssqlLayerProperty layerProperties );
-    ~QgsMssqlLayerItem();
 
     QString createUri();
 

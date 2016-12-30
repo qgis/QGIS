@@ -29,9 +29,6 @@ QgsCoordinateTransformCache::QgsCoordinateTransformCache()
 {
 }
 
-QgsCoordinateTransformCache::~QgsCoordinateTransformCache()
-{}
-
 QgsCoordinateTransform QgsCoordinateTransformCache::transform( const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform, int destDatumTransform )
 {
   QList< QgsCoordinateTransform > values =

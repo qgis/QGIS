@@ -534,7 +534,7 @@ class CORE_EXPORT QgsExpression
             , mIsContextual( isContextual )
         {}
 
-        virtual ~Function() {}
+        virtual ~Function() = default;
 
         //! The name of the function.
         QString name() const { return mName; }
@@ -723,8 +723,6 @@ class CORE_EXPORT QgsExpression
             , mReferencedColumns( referencedColumns )
         {}
 
-        virtual ~StaticFunction() {}
-
         /** Returns result of evaluating the function.
          * @param values list of values passed to the function
          * @param context context expression is being evaluated against
@@ -842,7 +840,7 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT Node
     {
       public:
-        virtual ~Node() {}
+        virtual ~Node() = default;
 
         /**
          * Abstract virtual that returns the type of this node.

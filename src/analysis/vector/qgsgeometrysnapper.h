@@ -122,7 +122,7 @@ class QgsSnapIndex
     class SnapItem
     {
       public:
-        virtual ~SnapItem() {}
+        virtual ~SnapItem() = default;
         SnapType type;
         virtual QgsPointV2 getSnapPoint( const QgsPointV2& p ) const = 0;
 

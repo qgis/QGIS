@@ -74,7 +74,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     explicit QgsPostgresProvider( QString const &uri = "" );
 
-    //! Destructor
+
     virtual ~QgsPostgresProvider();
 
     virtual QgsAbstractFeatureSource* featureSource() const override;

@@ -49,8 +49,6 @@ class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttrib
     QgsAttributeActionDialog( const QgsActionManager& actions,
                               QWidget* parent = nullptr );
 
-    ~QgsAttributeActionDialog() {}
-
     void init( const QgsActionManager& action , const QgsAttributeTableConfig& attributeTableConfig );
 
     QList<QgsAction> actions() const;

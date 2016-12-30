@@ -44,8 +44,6 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
   public:
     QgsRendererWidget( QgsVectorLayer* layer, QgsStyle* style );
 
-    virtual ~QgsRendererWidget() {}
-
     //! return pointer to the renderer (no transfer of ownership)
     virtual QgsFeatureRenderer* renderer() = 0;
 
@@ -155,7 +153,6 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
      * @param label value label
      */
     QgsDataDefinedValueDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer, const QString & label );
-    virtual ~QgsDataDefinedValueDialog() {}
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @param context symbol widget context

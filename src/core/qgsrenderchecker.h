@@ -39,9 +39,6 @@ class CORE_EXPORT QgsRenderChecker
 
     QgsRenderChecker();
 
-
-    ~QgsRenderChecker() {}
-
     QString controlImagePath() const;
 
     QString report() { return mReport; }

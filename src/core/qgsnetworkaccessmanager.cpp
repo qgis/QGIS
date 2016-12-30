@@ -46,7 +46,6 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {
   public:
     QgsNetworkProxyFactory() {}
-    virtual ~QgsNetworkProxyFactory() {}
 
     virtual QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery & query = QNetworkProxyQuery() ) override
     {

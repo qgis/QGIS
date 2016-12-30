@@ -29,11 +29,6 @@ QgsIDWInterpolator::QgsIDWInterpolator(): QgsInterpolator( QList<LayerData>() ),
 
 }
 
-QgsIDWInterpolator::~QgsIDWInterpolator()
-{
-
-}
-
 int QgsIDWInterpolator::interpolatePoint( double x, double y, double& result )
 {
   if ( !mDataIsCached )

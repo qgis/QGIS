@@ -37,8 +37,6 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
     //! Constructor
     QgsDecorationCopyright( QObject* parent = nullptr );
 
-    virtual ~QgsDecorationCopyright();
-
   public slots:
     //! set values on the gui when a project is read or the gui first loaded
     void projectRead() override;

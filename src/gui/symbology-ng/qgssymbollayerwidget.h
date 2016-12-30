@@ -39,7 +39,6 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
         , mVectorLayer( vl )
         , mMapCanvas( nullptr )
     {}
-    virtual ~QgsSymbolLayerWidget() {}
 
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) = 0;
     virtual QgsSymbolLayer* symbolLayer() = 0;

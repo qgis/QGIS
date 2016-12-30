@@ -26,7 +26,6 @@ class ANALYSIS_EXPORT QgsAspectFilter: public QgsDerivativeFilter
 {
   public:
     QgsAspectFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat );
-    ~QgsAspectFilter();
 
     /** Calculates output value from nine input values. The input values and the output value can be equal to the
       nodata value if not present or outside of the border. Must be implemented by subclasses*/

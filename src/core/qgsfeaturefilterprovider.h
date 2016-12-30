@@ -40,8 +40,7 @@ class CORE_EXPORT QgsFeatureFilterProvider
     //! Constructor
     QgsFeatureFilterProvider() {}
 
-
-    virtual ~QgsFeatureFilterProvider() {}
+    virtual ~QgsFeatureFilterProvider() = default;
 
     /** Add additional filters to the feature request to further restrict the features returned by the request.
      * Derived classes must implement this method.

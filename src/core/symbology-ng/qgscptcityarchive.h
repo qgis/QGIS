@@ -210,7 +210,6 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
                              const QString& name, const QString& path,
                              const QStringList& variantList,
                              bool initialize = false );
-    ~QgsCptCityColorRampItem() {}
 
     // --- reimplemented from QgsCptCityDataItem ---
 

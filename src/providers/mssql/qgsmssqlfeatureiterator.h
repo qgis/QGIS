@@ -31,7 +31,6 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsMssqlFeatureSource( const QgsMssqlProvider* p );
-    ~QgsMssqlFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 

@@ -65,7 +65,6 @@ class QgsPointLocator_Stream : public IDataStream
         : mDataList( dataList )
         , mIt( mDataList )
     { }
-    ~QgsPointLocator_Stream() { }
 
     virtual IData* getNext() override { return mIt.next(); }
     virtual bool hasNext() override { return mIt.hasNext(); }
@@ -192,8 +191,6 @@ class QgsPointLocator_VisitorArea : public IVisitor
         , mList( list )
         , mGeomPt( QgsGeometry::fromPoint( origPt ) )
     {}
-
-    ~QgsPointLocator_VisitorArea() {}
 
     void visitNode( const INode& n ) override { Q_UNUSED( n ); }
     void visitData( std::vector<const IData*>& v ) override { Q_UNUSED( v ); }

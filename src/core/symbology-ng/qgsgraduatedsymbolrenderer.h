@@ -31,8 +31,6 @@ class CORE_EXPORT QgsRendererRange
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol* symbol, const QString& label, bool render = true );
     QgsRendererRange( const QgsRendererRange& range );
 
-    ~QgsRendererRange() {}
-
     // default dtor is ok
     QgsRendererRange& operator=( QgsRendererRange range );
 

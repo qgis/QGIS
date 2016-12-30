@@ -36,7 +36,6 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 {
   public:
     QgsLineString();
-    ~QgsLineString();
 
     bool operator==( const QgsCurve& other ) const override;
     bool operator!=( const QgsCurve& other ) const override;

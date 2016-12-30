@@ -28,7 +28,6 @@ class DummyPaintEffect : public QgsPaintEffect
 {
   public:
     DummyPaintEffect() {}
-    virtual ~DummyPaintEffect() {}
     virtual QString type() const override { return QStringLiteral( "Dummy" ); }
     virtual QgsPaintEffect* clone() const override { return new DummyPaintEffect(); }
     static QgsPaintEffect* create( const QgsStringMap& ) { return new DummyPaintEffect(); }

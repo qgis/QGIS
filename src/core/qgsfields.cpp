@@ -41,11 +41,6 @@ QgsFields& QgsFields::operator =( const QgsFields & other )
   return *this;
 }
 
-QgsFields::~QgsFields()
-{
-
-}
-
 void QgsFields::clear()
 {
   d->fields.clear();

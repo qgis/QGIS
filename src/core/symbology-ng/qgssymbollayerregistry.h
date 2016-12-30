@@ -36,7 +36,7 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
         , mType( type )
     {}
 
-    virtual ~QgsSymbolLayerAbstractMetadata() {}
+    virtual ~QgsSymbolLayerAbstractMetadata() = default;
 
     QString name() const { return mName; }
     QString visibleName() const { return mVisibleName; }

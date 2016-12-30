@@ -62,10 +62,6 @@ QgsGrassVectorLayer::QgsGrassVectorLayer( const QgsGrassObject &grassObject, int
   }
 }
 
-QgsGrassVectorLayer::~QgsGrassVectorLayer()
-{
-}
-
 int QgsGrassVectorLayer::typeCount( int type ) const
 {
   int count = 0;

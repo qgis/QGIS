@@ -68,10 +68,6 @@ QgsField &QgsField::operator =( const QgsField & other )
   return *this;
 }
 
-QgsField::~QgsField()
-{
-}
-
 bool QgsField::operator==( const QgsField& other ) const
 {
   return *( other.d ) == *d;

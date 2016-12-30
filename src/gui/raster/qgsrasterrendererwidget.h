@@ -43,8 +43,6 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
         , mCanvas( nullptr )
     {}
 
-    virtual ~QgsRasterRendererWidget() {}
-
     virtual QgsRasterRenderer* renderer() = 0;
 
     void setRasterLayer( QgsRasterLayer* layer ) { mRasterLayer = layer; }

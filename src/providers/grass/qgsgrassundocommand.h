@@ -21,7 +21,7 @@ class QgsGrassProvider;
 class GRASS_LIB_EXPORT QgsGrassUndoCommand
 {
   public:
-    virtual ~QgsGrassUndoCommand() {}
+    virtual ~QgsGrassUndoCommand() = default;
     virtual void undo() {}
 };
 
@@ -31,7 +31,6 @@ class GRASS_LIB_EXPORT QgsGrassUndoCommandChangeAttribute : public QgsGrassUndoC
 {
   public:
     QgsGrassUndoCommandChangeAttribute( QgsGrassProvider * provider, int fid, int lid, int field, int cat, bool deleteCat, bool deleteRecord );
-    ~QgsGrassUndoCommandChangeAttribute() {}
     void undo() override;
   private:
     QgsGrassProvider *mProvider;

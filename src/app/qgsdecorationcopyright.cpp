@@ -54,9 +54,6 @@ QgsDecorationCopyright::QgsDecorationCopyright( QObject* parent )
   projectRead();
 }
 
-QgsDecorationCopyright::~QgsDecorationCopyright()
-{}
-
 void QgsDecorationCopyright::projectRead()
 {
   QgsDecorationItem::projectRead();

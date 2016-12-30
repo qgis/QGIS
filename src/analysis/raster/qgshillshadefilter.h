@@ -28,7 +28,6 @@ class ANALYSIS_EXPORT QgsHillshadeFilter: public QgsDerivativeFilter
   public:
     QgsHillshadeFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat, double lightAzimuth = 300,
                         double lightAngle = 40 );
-    ~QgsHillshadeFilter();
 
     /** Calculates output value from nine input values. The input values and the output value can be equal to the
     nodata value if not present or outside of the border. Must be implemented by subclasses*/

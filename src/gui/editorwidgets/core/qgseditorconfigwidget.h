@@ -71,8 +71,6 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
      */
     QgsVectorLayer* layer();
 
-    virtual ~QgsEditorConfigWidget() {}
-
   signals:
 
     /** Emitted when the configuration of the widget is changed.

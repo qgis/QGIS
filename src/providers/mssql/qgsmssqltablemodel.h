@@ -44,7 +44,6 @@ class QgsMssqlTableModel : public QStandardItemModel
     Q_OBJECT
   public:
     QgsMssqlTableModel();
-    ~QgsMssqlTableModel();
 
     //! Adds entry for one database table to the model
     void addTableEntry( const QgsMssqlLayerProperty &property );

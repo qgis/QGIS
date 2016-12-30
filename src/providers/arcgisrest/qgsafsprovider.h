@@ -34,7 +34,6 @@ class QgsAfsProvider : public QgsVectorDataProvider
   public:
 
     QgsAfsProvider( const QString& uri );
-    ~QgsAfsProvider() {}
 
     bool getFeature( QgsFeatureId id, QgsFeature& f, bool fetchGeometry, const QList<int> &fetchAttributes, const QgsRectangle &filterRect = QgsRectangle() );
 

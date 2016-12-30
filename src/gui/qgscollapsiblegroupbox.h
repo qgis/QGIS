@@ -41,8 +41,6 @@ class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
         , mShiftDown( false )
     {}
 
-    ~QgsGroupBoxCollapseButton() {}
-
     bool altDown() const { return mAltDown; }
     void setAltDown( bool updown ) { mAltDown = updown; }
 

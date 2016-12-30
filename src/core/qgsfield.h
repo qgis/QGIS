@@ -89,8 +89,7 @@ class CORE_EXPORT QgsField
      */
     QgsField& operator =( const QgsField &other );
 
-
-    virtual ~QgsField();
+    virtual ~QgsField() = default;
 
     bool operator==( const QgsField& other ) const;
     bool operator!=( const QgsField& other ) const;

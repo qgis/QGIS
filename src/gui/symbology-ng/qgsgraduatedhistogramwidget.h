@@ -96,8 +96,6 @@ class GUI_EXPORT QgsGraduatedHistogramEventFilter: public QObject
 
     QgsGraduatedHistogramEventFilter( QwtPlot *plot );
 
-    virtual ~QgsGraduatedHistogramEventFilter() {}
-
     virtual bool eventFilter( QObject* object, QEvent* event ) override;
 
   signals:

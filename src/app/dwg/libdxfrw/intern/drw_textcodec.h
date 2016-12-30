@@ -36,7 +36,7 @@ class DRW_Converter
       table = t;
       cpLenght = l;
     }
-    virtual ~DRW_Converter() {}
+    virtual ~DRW_Converter() = default;
     virtual std::string fromUtf8( std::string *s ) {return *s;}
     virtual std::string toUtf8( std::string *s );
     std::string encodeText( std::string stmp );

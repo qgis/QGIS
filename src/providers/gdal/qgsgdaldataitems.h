@@ -29,7 +29,6 @@ class QgsGdalLayerItem : public QgsLayerItem
     QgsGdalLayerItem( QgsDataItem* parent,
                       QString name, QString path, QString uri,
                       QStringList *theSublayers = nullptr );
-    ~QgsGdalLayerItem();
 
     bool setCrs( const QgsCoordinateReferenceSystem& crs ) override;
 

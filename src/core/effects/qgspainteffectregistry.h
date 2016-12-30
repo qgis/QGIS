@@ -43,7 +43,7 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
      */
     QgsPaintEffectAbstractMetadata( const QString& name, const QString& visibleName );
 
-    virtual ~QgsPaintEffectAbstractMetadata() {}
+    virtual ~QgsPaintEffectAbstractMetadata() = default;
 
     /** Returns the unique string representing the paint effect class
      * @returns unique string

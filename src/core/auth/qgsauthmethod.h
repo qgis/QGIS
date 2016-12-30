@@ -53,8 +53,6 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     };
     Q_DECLARE_FLAGS( Expansions, Expansion )
 
-    virtual ~QgsAuthMethod() {}
-
     //! A non-translated short name representing the auth method
     virtual QString key() const = 0;
 

@@ -75,7 +75,6 @@ class QgsGeometryCheck : public QObject
         : mCheckType( checkType )
         , mFeaturePool( featurePool )
     {}
-    virtual ~QgsGeometryCheck() {}
     virtual void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const = 0;
     virtual void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const = 0;
     virtual const QStringList& getResolutionMethods() const = 0;

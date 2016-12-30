@@ -32,7 +32,6 @@ class GRASS_LIB_EXPORT QgsGrassImportIcon : public QgsAnimatedIcon
   public:
     static QgsGrassImportIcon *instance();
     QgsGrassImportIcon();
-    virtual ~QgsGrassImportIcon() {}
 };
 
 // QgsGrassImport items live on the main thread but mProcess, when importInThread() is used, lives on another
@@ -153,7 +152,6 @@ class GRASS_LIB_EXPORT QgsGrassCopy : public QgsGrassImport
   public:
     // takes provider ownership
     QgsGrassCopy( const QgsGrassObject& srcObject, const QgsGrassObject& destObject );
-    ~QgsGrassCopy();
     bool import() override;
     QString srcDescription() const override;
 
@@ -169,7 +167,6 @@ class GRASS_LIB_EXPORT QgsGrassExternal : public QgsGrassImport
   public:
     // takes provider ownership
     QgsGrassExternal( const QString& gdalSource, const QgsGrassObject& destObject );
-    ~QgsGrassExternal();
     bool import() override;
     QString srcDescription() const override;
 

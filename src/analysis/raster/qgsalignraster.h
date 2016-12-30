@@ -147,7 +147,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
       //! @return false if the execution should be cancelled, true otherwise
       virtual bool progress( double complete ) = 0;
 
-      virtual ~ProgressHandler() {}
+      virtual ~ProgressHandler() = default;
     };
 
     //! Assign a progress handler instance. Does not take ownership. nullptr can be passed.
