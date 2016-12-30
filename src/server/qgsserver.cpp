@@ -284,12 +284,15 @@ bool QgsServer::init( )
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
 
+#if !defined(Q_OS_WIN)
+  // Set the QGIS_PREFIX_PATH environnemnt instead of calling directly
+  // setPrefixPath: this will allow running server from build directory
+  // and get the paths accordingly
+  setenv( "QGIS_PREFIX_PATH", CMAKE_INSTALL_PREFIX, 1 );
+#endif
+
   //Default prefix path may be altered by environment variable
   QgsApplication::init();
-#if !defined(Q_OS_WIN)
-  // init QGIS's paths - true means that all path will be inited from prefix
-  QgsApplication::setPrefixPath( CMAKE_INSTALL_PREFIX, true );
-#endif
 
 #if defined(SERVER_SKIP_ECW)
   QgsMessageLog::logMessage( "Skipping GDAL ECW drivers in server.", "Server", QgsMessageLog::INFO );
