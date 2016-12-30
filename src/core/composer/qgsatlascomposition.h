@@ -19,6 +19,7 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
+#include "qgsexpression.h"
 
 #include <memory>
 #include <QString>
