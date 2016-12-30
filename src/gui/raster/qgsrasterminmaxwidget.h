@@ -61,7 +61,7 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
      */
     QgsMapCanvas* mapCanvas();
 
-    void setBands( const QList<int> & theBands ) { mBands = theBands; }
+    void setBands( const QList<int> & theBands );
 
     /** Return the extent selected by the user.
      * Either an empty extent for 'full' or the current visible extent.
@@ -125,6 +125,8 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
     bool mLastRectangleValid;
     QgsRectangle mLastRectangle;
     QgsRasterMinMaxOrigin mLastMinMaxOrigin;
+
+    bool mBandsChanged;
 };
 
 #endif // QGSRASTERMINMAXWIDGET_H

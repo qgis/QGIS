@@ -34,6 +34,7 @@ QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget 
     , mLayer( theLayer )
     , mCanvas( nullptr )
     , mLastRectangleValid( false )
+    , mBandsChanged( false )
 {
   QgsDebugMsg( "Entered." );
   setupUi( this );
@@ -54,6 +55,12 @@ void QgsRasterMinMaxWidget::setMapCanvas( QgsMapCanvas* canvas )
 QgsMapCanvas* QgsRasterMinMaxWidget::mapCanvas()
 {
   return mCanvas;
+}
+
+void QgsRasterMinMaxWidget::setBands( const QList<int> & theBands )
+{
+  mBandsChanged = theBands != mBands;
+  mBands = theBands;
 }
 
 QgsRectangle QgsRasterMinMaxWidget::extent()
@@ -178,7 +185,8 @@ void QgsRasterMinMaxWidget::doComputations()
 
   QgsRasterMinMaxOrigin newMinMaxOrigin = minMaxOrigin();
   if ( mLastRectangleValid && mLastRectangle == myExtent &&
-       mLastMinMaxOrigin == newMinMaxOrigin )
+       mLastMinMaxOrigin == newMinMaxOrigin &&
+       !mBandsChanged )
   {
     QgsDebugMsg( "Does not need to redo statistics computations" );
     return;
@@ -187,6 +195,7 @@ void QgsRasterMinMaxWidget::doComputations()
   mLastRectangleValid = true;
   mLastRectangle = myExtent;
   mLastMinMaxOrigin = newMinMaxOrigin;
+  mBandsChanged = false;
 
   Q_FOREACH ( int myBand, mBands )
   {
