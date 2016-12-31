@@ -74,6 +74,10 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem, public QgsAnnotatio
     virtual QPointF relativePosition() const override;
     virtual double scaleFactor() const override;
     virtual bool showItem() const override { return isVisible(); }
+
+    /**
+     * Sets the CRS of the map position.
+     */
     virtual void setMapPositionCrs( const QgsCoordinateReferenceSystem& crs );
     QgsCoordinateReferenceSystem mapPositionCrs() const override { return mMapPositionCrs; }
 
