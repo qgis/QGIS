@@ -35,7 +35,7 @@ namespace
   }
 
 // Compare two version strings:
-// The strings are splitted into dot separated segment
+// The strings are split into dot separated segment
 // Each segment are compared up to the shortest number of segment of the
 // lists. Remaining segments are dropped.
 // If both segments can be intepreted as numbers the are compared as numbers, otherwise
