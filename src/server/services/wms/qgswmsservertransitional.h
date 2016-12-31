@@ -119,11 +119,13 @@ namespace QgsWms
       QDomDocument getSchemaExtension();
 
     private:
+
       //! Don't use the default constructor
       QgsWmsServer();
 
       // Render these public (Transitional)
     public:
+
       /** Initializes WMS layers and configures rendering.
        * @param layersList out: list with WMS layer names
        * @param stylesList out: list with WMS style names
