@@ -52,7 +52,7 @@ from processing.algs.help import shortHelp
 class GeoAlgorithm(object):
 
     def __init__(self):
-        self._icon = QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+        self._icon = QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
         # Parameters needed by the algorithm
         self.parameters = list()
 

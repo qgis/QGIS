@@ -54,7 +54,7 @@ class PreconfiguredAlgorithmProvider(AlgorithmProvider):
                     self.algs.append(alg)
 
     def getIcon(self):
-        return QIcon(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'images', 'alg.png'))
+        return QIcon(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'images', 'alg.svg'))
 
     def getName(self):
         return 'preconfigured'

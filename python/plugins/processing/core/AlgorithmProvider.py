@@ -101,7 +101,7 @@ class AlgorithmProvider(object):
         return self.tr('Generic algorithm provider')
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+        return QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
 
     def getSupportedOutputRasterLayerExtensions(self):
         return ['tif']

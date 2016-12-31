@@ -41,7 +41,7 @@ class CreateNewModelAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'model.svg'))
 
     def execute(self):
         dlg = ModelerDialog()

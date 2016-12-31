@@ -72,13 +72,13 @@ class ProcessingPlugin(object):
         self.toolboxAction = self.toolbox.toggleViewAction()
         self.toolboxAction.setObjectName('toolboxAction')
         self.toolboxAction.setIcon(
-            QIcon(os.path.join(cmd_folder, 'images', 'alg.png')))
+            QIcon(os.path.join(cmd_folder, 'images', 'alg.svg')))
         self.toolboxAction.setText(self.tr('&Toolbox'))
         self.iface.registerMainWindowAction(self.toolboxAction, 'Ctrl+Alt+T')
         self.menu.addAction(self.toolboxAction)
 
         self.modelerAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'model.png')),
+            QIcon(os.path.join(cmd_folder, 'images', 'model.svg')),
             self.tr('Graphical &Modeler...'), self.iface.mainWindow())
         self.modelerAction.setObjectName('modelerAction')
         self.modelerAction.triggered.connect(self.openModeler)
@@ -86,7 +86,7 @@ class ProcessingPlugin(object):
         self.menu.addAction(self.modelerAction)
 
         self.historyAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'history.gif')),
+            QIcon(os.path.join(cmd_folder, 'images', 'history.svg')),
             self.tr('&History...'), self.iface.mainWindow())
         self.historyAction.setObjectName('historyAction')
         self.historyAction.triggered.connect(self.openHistory)
@@ -94,7 +94,7 @@ class ProcessingPlugin(object):
         self.menu.addAction(self.historyAction)
 
         self.resultsAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'results.png')),
+            QIcon(os.path.join(cmd_folder, 'images', 'results.svg')),
             self.tr('&Results Viewer...'), self.iface.mainWindow())
         self.resultsAction.setObjectName('resultsAction')
         self.resultsAction.triggered.connect(self.openResults)
@@ -106,7 +106,7 @@ class ProcessingPlugin(object):
             self.iface.firstRightStandardMenu().menuAction(), self.menu)
 
         self.commanderAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'commander.png')),
+            QIcon(os.path.join(cmd_folder, 'images', 'commander.svg')),
             self.tr('&Commander'), self.iface.mainWindow())
         self.commanderAction.setObjectName('commanderAction')
         self.commanderAction.triggered.connect(self.openCommander)
