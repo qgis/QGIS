@@ -437,7 +437,7 @@ class ModelerDialog(BASE, WIDGET):
         return QPointF(newX, MARGIN + BOX_HEIGHT / 2)
 
     def fillInputsTree(self):
-        icon = QIcon(os.path.join(pluginPath, 'images', 'input.png'))
+        icon = QIcon(os.path.join(pluginPath, 'images', 'input.svg'))
         parametersItem = QTreeWidgetItem()
         parametersItem.setText(0, self.tr('Parameters'))
         for paramType in ModelerParameterDefinitionDialog.paramTypes:

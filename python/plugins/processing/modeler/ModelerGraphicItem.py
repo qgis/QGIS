@@ -47,13 +47,13 @@ class ModelerGraphicItem(QGraphicsItem):
         self.model = model
         self.element = element
         if isinstance(element, ModelerParameter):
-            icon = QIcon(os.path.join(pluginPath, 'images', 'input.png'))
-            self.pixmap = icon.pixmap(20, 20, state=QIcon.On)
+            icon = QIcon(os.path.join(pluginPath, 'images', 'input.svg'))
+            self.pixmap = icon.pixmap(16, 16, state=QIcon.On)
             self.text = element.param.description
         elif isinstance(element, ModelerOutput):
             # Output name
-            icon = QIcon(os.path.join(pluginPath, 'images', 'output.png'))
-            self.pixmap = icon.pixmap(20, 20, state=QIcon.On)
+            icon = QIcon(os.path.join(pluginPath, 'images', 'output.svg'))
+            self.pixmap = icon.pixmap(16, 16, state=QIcon.On)
             self.text = element.description
         else:
             self.text = element.description
@@ -384,8 +384,8 @@ class FoldButtonGraphicItem(FlatButtonGraphicItem):
     HEIGHT = 11
 
     def __init__(self, position, action, folded):
-        self.icons = {True: QIcon(os.path.join(pluginPath, 'images', 'plus.png')),
-                      False: QIcon(os.path.join(pluginPath, 'images', 'minus.png'))}
+        self.icons = {True: QIcon(os.path.join(pluginPath, 'images', 'plus.svg')),
+                      False: QIcon(os.path.join(pluginPath, 'images', 'minus.svg'))}
 
         self.folded = folded
         icon = self.icons[self.folded]
