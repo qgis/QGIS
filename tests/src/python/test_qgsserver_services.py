@@ -2,9 +2,7 @@
 """
 from qgis.PyQt.QtCore import QBuffer, QIODevice, QTextStream
 from qgis.testing import unittest
-from qgis.core import QgsApplication
-from qgis.server import (QgsServer,
-                         QgsServiceRegistry, 
+from qgis.server import (QgsServiceRegistry, 
                          QgsService,
                          QgsServerRequest,
                          QgsServerResponse)
@@ -124,18 +122,6 @@ class TestServices(unittest.TestCase):
          # Check that there is no more services available
         service = reg.getService("STUFF")
         self.assertIsNone(service)
-       
-    def test_2_server_initialization(self):
-
-        qgisapp = QgsApplication([], False)
-        server  = QgsServer()
-
-        # Check that our 'SampleService is registered
-        iface   = server.serverInterface()
-        service = iface.serviceRegistry().getService('SampleService')
-        
-        self.assertIsNotNone(service)
-
 
 
 if __name__ == '__main__':

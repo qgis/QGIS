@@ -19,6 +19,7 @@
 
 #include <QLibrary>
 #include <QDir>
+#include <QDebug>
 
 #include "qgsservicenativeloader.h"
 #include "qgsserviceregistry.h"
@@ -67,7 +68,8 @@ void QgsServiceNativeLoader::loadModules( const QString& modulePath, QgsServiceR
   moduleDir.setNameFilters( QStringList( "*.so" ) );
 #endif
 
-  QgsDebugMsg( QString( "Checking %1 for native services modules" ).arg( moduleDir.path() ) );
+  qDebug() << QString( "Checking %1 for native services modules" ).arg( moduleDir.path() ); 
+  //QgsDebugMsg( QString( "Checking %1 for native services modules" ).arg( moduleDir.path() ) );
 
   Q_FOREACH ( const QFileInfo& fi, moduleDir.entryInfoList() )
   {
@@ -92,9 +94,11 @@ QgsServiceModule* QgsServiceNativeLoader::loadNativeModule( const QString& locat
   }
 
   QLibrary lib( location );
-  QgsDebugMsg( QString( "Loading native module %1" ).arg( location ) );
+  //QgsDebugMsg( QString( "Loading native module %1" ).arg( location ) );
+  qDebug() << QString( "Loading native module %1" ).arg( location );
   if ( !lib.load() )
   {
+    qDebug() <<  QString( "Failed to load library %1: %2" ).arg( lib.fileName(), lib.errorString());
     QgsMessageLog::logMessage( QString( "Failed to load library %1: %2" ).arg( lib.fileName(), lib.errorString() ) );
     return nullptr;
   }

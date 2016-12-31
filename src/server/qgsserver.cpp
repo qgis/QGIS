@@ -349,8 +349,10 @@ bool QgsServer::init( )
 
   sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache, &sServiceRegistry );
 
-  // Load service modules
-  sServiceRegistry.init( QgsApplication::libexecPath() + "/server", sServerInterface );
+  // Load service module
+  QString modulePath =  QgsApplication::libexecPath() + "server";
+  qDebug() << "Initializing server modules from " << modulePath << endl;
+  sServiceRegistry.init( modulePath,  sServerInterface );
 
   sInitialised = true;
   QgsMessageLog::logMessage( QStringLiteral( "Server initialized" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
