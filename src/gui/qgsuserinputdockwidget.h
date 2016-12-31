@@ -44,7 +44,7 @@ class GUI_EXPORT QgsUserInputDockWidget : public QgsDockWidget
     void addUserInputWidget( QWidget* widget );
 
   protected:
-    //! will not display the dock if it contains no widget
+    // will not display the dock if it contains no widget
     void paintEvent( QPaintEvent *event ) override;
 
   private slots:

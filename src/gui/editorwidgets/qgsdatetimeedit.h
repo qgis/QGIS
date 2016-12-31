@@ -32,7 +32,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
   public:
     explicit QgsDateTimeEdit( QWidget *parent = nullptr );
 
-    //! determines if the widget allows setting null date/time.
+    //! Determines if the widget allows setting null date/time.
     void setAllowNull( bool allowNull );
     bool allowNull() const {return mAllowNull;}
 
@@ -48,8 +48,10 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
      */
     QDateTime dateTime() const;
 
-    //! Set the current date as NULL
-    //! @note if the widget is not configured to accept NULL dates, this will have no effect
+    /**
+     * Set the current date as NULL
+     * @note if the widget is not configured to accept NULL dates, this will have no effect
+     */
     virtual void clear() override;
 
     /** Resets the widget to show no value (ie, an "unknown" state).

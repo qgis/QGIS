@@ -93,18 +93,10 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     virtual ~QgsMapToolIdentify();
 
     virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
-
-    //! Overridden mouse move event
     virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
-
-    //! Overridden mouse press event
     virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
-
-    //! Overridden mouse release event
     virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
-
     virtual void activate() override;
-
     virtual void deactivate() override;
 
     /** Performs the identification.

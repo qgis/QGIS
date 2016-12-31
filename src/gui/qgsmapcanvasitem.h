@@ -39,7 +39,6 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! function to be implemented by derived classes
     virtual void paint( QPainter * painter ) = 0;
 
-    //! paint function called by map canvas
     virtual void paint( QPainter * painter,
                         const QStyleOptionGraphicsItem * option,
                         QWidget * widget = nullptr ) override;
@@ -58,7 +57,6 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! called on changed extent or resize event to update position of the item
     virtual void updatePosition();
 
-    //! default implementation for canvas items
     virtual QRectF boundingRect() const override;
 
     //! returns canvas item rectangle in map units

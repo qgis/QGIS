@@ -259,7 +259,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     QgsMapMouseEvent::SnappingMode snappingMode() { return mSnappingMode; }
 
-    //! key press event on the dock
     void keyPressEvent( QKeyEvent* e ) override;
 
     //! determines if CAD tools are enabled or if map tools behaves "nomally"

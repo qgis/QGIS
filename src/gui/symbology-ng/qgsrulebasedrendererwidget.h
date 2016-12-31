@@ -55,9 +55,7 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
                                  int role = Qt::DisplayRole ) const override;
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     virtual int columnCount( const QModelIndex & = QModelIndex() ) const override;
-    //! provide model index for parent's child item
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    //! provide parent model index
     virtual QModelIndex parent( const QModelIndex &index ) const override;
 
     // editing support

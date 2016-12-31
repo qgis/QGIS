@@ -60,7 +60,6 @@ class CORE_EXPORT QgsTopologyPreservingSimplifier : public QgsAbstractGeometrySi
      */
     QgsTopologyPreservingSimplifier( double tolerance );
 
-    //! Returns a simplified version the specified geometry
     virtual QgsGeometry simplify( const QgsGeometry& geometry ) const override;
 
   protected:

@@ -274,7 +274,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     QgsSymbol* symbol();
 
   protected:
-    //! Reimplements dialog keyPress event so we can ignore it
+    // Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * e ) override;
 
     void loadSymbol();

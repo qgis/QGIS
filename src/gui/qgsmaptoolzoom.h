@@ -32,20 +32,12 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
   public:
     //! constructor
     QgsMapToolZoom( QgsMapCanvas* canvas, bool zoomOut );
-
     ~QgsMapToolZoom();
 
     virtual Flags flags() const override { return QgsMapTool::Transient; }
-
-    //! Overridden mouse move event
     virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
-
-    //! Overridden mouse press event
     virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
-
-    //! Overridden mouse release event
     virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
-
     virtual void deactivate() override;
 
   protected:

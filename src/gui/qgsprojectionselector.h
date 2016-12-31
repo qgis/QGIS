@@ -108,10 +108,10 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     void pushProjectionToFront();
 
   protected:
-    //! Used to ensure the projection list view is actually populated
+    // Used to ensure the projection list view is actually populated
     void showEvent( QShowEvent * theEvent ) override;
 
-    //! Used to manage column sizes
+    // Used to manage column sizes
     void resizeEvent( QResizeEvent * theEvent ) override;
 
   private:

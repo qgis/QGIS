@@ -205,7 +205,6 @@ class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
     QgsAuthSslConfigWidget *sslCustomConfigWidget() { return mSslConfigWdgt; }
 
   public slots:
-    //! Overridden base dialog accept slot
     void accept() override;
 
   private slots:

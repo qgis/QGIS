@@ -65,7 +65,7 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
     void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
 
   protected:
-    //! Overridden show event of base widget
+
     void showEvent( QShowEvent *e ) override;
 
   private:

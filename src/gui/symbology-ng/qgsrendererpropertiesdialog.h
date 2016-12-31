@@ -132,7 +132,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      */
     void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
 
-    //! Reimplements dialog keyPress event so we can ignore it
+    // Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * event ) override;
 
     QgsVectorLayer* mLayer;
