@@ -52,7 +52,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         """
 
         GeoAlgorithm.__init__(self)
-        self._icon = QIcon(os.path.join(pluginPath, 'images', 'script.png'))
+        self._icon = QIcon(os.path.join(pluginPath, 'images', 'script.svg'))
 
         self.script = script
         self.allowEdit = True

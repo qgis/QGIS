@@ -263,7 +263,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         GeoAlgorithm.__init__(self)
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'model.svg'))
 
     def defineCharacteristics(self):
         classes = [ParameterRaster, ParameterVector, ParameterTable, ParameterTableField,

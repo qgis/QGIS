@@ -70,7 +70,7 @@ class ProcessingConfig(object):
 
     @staticmethod
     def initialize():
-        icon = QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+        icon = QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
         ProcessingConfig.settingIcons['General'] = icon
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
@@ -167,11 +167,11 @@ class ProcessingConfig(object):
     @staticmethod
     def getGroupIcon(group):
         if group == ProcessingConfig.tr('General'):
-            return QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+            return QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
         if group in ProcessingConfig.settingIcons:
             return ProcessingConfig.settingIcons[group]
         else:
-            return QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+            return QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
 
     @staticmethod
     def addSetting(setting):

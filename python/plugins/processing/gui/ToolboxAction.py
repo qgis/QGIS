@@ -37,7 +37,7 @@ class ToolboxAction(object):
         self.toolbox = toolbox
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+        return QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
 
     def tr(self, string, context=''):
         if context == '':
