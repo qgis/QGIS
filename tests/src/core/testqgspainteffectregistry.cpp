@@ -95,7 +95,7 @@ void TestQgsPaintEffectRegistry::metadata()
 
 void TestQgsPaintEffectRegistry::createInstance()
 {
-  QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
+  QgsPaintEffectRegistry* registry = QgsApplication::paintEffectRegistry();
   QVERIFY( registry );
 }
 
@@ -103,14 +103,14 @@ void TestQgsPaintEffectRegistry::instanceHasDefaultEffects()
 {
   //check that effect instance is initially populated with some effects
   //(assumes that there is some default effects)
-  QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
+  QgsPaintEffectRegistry* registry = QgsApplication::paintEffectRegistry();
   QVERIFY( registry->effects().length() > 0 );
 }
 
 void TestQgsPaintEffectRegistry::addEffect()
 {
   //create an empty registry
-  QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
+  QgsPaintEffectRegistry* registry = QgsApplication::paintEffectRegistry();
   int previousCount = registry->effects().length();
 
   registry->addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy effect" ), DummyPaintEffect::create ) );
@@ -126,7 +126,7 @@ void TestQgsPaintEffectRegistry::addEffect()
 
 void TestQgsPaintEffectRegistry::fetchEffects()
 {
-  QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
+  QgsPaintEffectRegistry* registry = QgsApplication::paintEffectRegistry();
   QStringList effects = registry->effects();
 
   QVERIFY( effects.contains( "Dummy" ) );
@@ -141,7 +141,7 @@ void TestQgsPaintEffectRegistry::fetchEffects()
 
 void TestQgsPaintEffectRegistry::createEffect()
 {
-  QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
+  QgsPaintEffectRegistry* registry = QgsApplication::paintEffectRegistry();
   QgsPaintEffect* effect = registry->createEffect( QStringLiteral( "Dummy" ) );
 
   QVERIFY( effect );
@@ -156,7 +156,7 @@ void TestQgsPaintEffectRegistry::createEffect()
 
 void TestQgsPaintEffectRegistry::defaultStack()
 {
-  QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
+  QgsPaintEffectRegistry* registry = QgsApplication::paintEffectRegistry();
   QgsEffectStack* effect = static_cast<QgsEffectStack*>( registry->defaultStack() );
   QVERIFY( registry->isDefaultStack( effect ) );
   effect->effect( 1 )->setEnabled( true );

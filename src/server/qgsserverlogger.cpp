@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsserverlogger.h"
+#include "qgsapplication.h"
 #include <QCoreApplication>
 #include <QFile>
 #include <QTextStream>
@@ -56,7 +57,7 @@ QgsServerLogger::QgsServerLogger()
     mLogLevel = static_cast<QgsMessageLog::MessageLevel>( atoi( logLevelChar ) );
   }
 
-  connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ), this,
+  connect( QgsApplication::messageLog(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ), this,
            SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
 }
 

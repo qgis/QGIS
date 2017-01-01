@@ -61,7 +61,7 @@ class EffectItem : public QStandardItem
     {
       if ( role == Qt::DisplayRole || role == Qt::EditRole )
       {
-        return QgsPaintEffectRegistry::instance()->effectMetadata( mEffect->type() )->visibleName();
+        return QgsApplication::paintEffectRegistry()->effectMetadata( mEffect->type() )->visibleName();
       }
       if ( role == Qt::CheckStateRole )
       {

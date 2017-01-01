@@ -719,7 +719,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   else if ( type == QLatin1String( "plugin" ) )
   {
     QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
-    mapLayer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
+    mapLayer = QgsApplication::pluginLayerRegistry()->createLayer( typeName );
   }
 
   if ( !mapLayer )

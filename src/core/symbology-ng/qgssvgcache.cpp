@@ -94,12 +94,6 @@ int QgsSvgCacheEntry::dataSize() const
   return size;
 }
 
-QgsSvgCache* QgsSvgCache::instance()
-{
-  static QgsSvgCache mInstance;
-  return &mInstance;
-}
-
 QgsSvgCache::QgsSvgCache( QObject *parent )
     : QObject( parent )
     , mTotalSize( 0 )

@@ -62,13 +62,13 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer* la
   blockAllSignals( true );
 
   //insert possible renderer types
-  QStringList rendererList = QgsRendererRegistry::instance()->renderersList( QgsRendererAbstractMetadata::PointLayer );
+  QStringList rendererList = QgsApplication::rendererRegistry()->renderersList( QgsRendererAbstractMetadata::PointLayer );
   QStringList::const_iterator it = rendererList.constBegin();
   for ( ; it != rendererList.constEnd(); ++it )
   {
     if ( *it != QLatin1String( "pointDisplacement" ) && *it != QLatin1String( "pointCluster" ) && *it != QLatin1String( "heatmapRenderer" ) )
     {
-      QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( *it );
+      QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), *it );
     }
   }
@@ -114,7 +114,7 @@ void QgsPointClusterRendererWidget::setContext( const QgsSymbolWidgetContext& co
 void QgsPointClusterRendererWidget::on_mRendererComboBox_currentIndexChanged( int index )
 {
   QString rendererId = mRendererComboBox->itemData( index ).toString();
-  QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( rendererId );
+  QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
   if ( m )
   {
     // unfortunately renderer conversion is only available through the creation of a widget...
@@ -130,7 +130,7 @@ void QgsPointClusterRendererWidget::on_mRendererSettingsButton_clicked()
   if ( !mRenderer )
     return;
 
-  QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( mRenderer->embeddedRenderer()->type() );
+  QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( mRenderer->embeddedRenderer()->type() );
   if ( m )
   {
     QgsRendererWidget* w = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );

@@ -241,7 +241,7 @@ void QgsLayerStylingWidget::apply()
     {
       widget->apply();
       QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mCurrentLayer );
-      QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( layer->renderer()->type() );
+      QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( layer->renderer()->type() );
       undoName = QStringLiteral( "Style Change - %1" ).arg( m->visibleName() );
       styleWasChanged = true;
     }

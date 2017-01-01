@@ -100,8 +100,8 @@ class QgsRendererRegistry
 
   public:
 
-    //! Returns a pointer to the QgsRendererRegistry singleton
-    static QgsRendererRegistry* instance();
+    QgsRendererRegistry();
+    ~QgsRendererRegistry();
 
     //! Adds a renderer to the registry. Takes ownership of the metadata object.
     //! @param metadata renderer metadata
@@ -127,11 +127,6 @@ class QgsRendererRegistry
     //! @param layer vector layer
     //! @note added in QGIS 2.16
     QStringList renderersList( const QgsVectorLayer* layer ) const;
-
-  protected:
-    //! protected constructor
-    QgsRendererRegistry();
-    ~QgsRendererRegistry();
 
   private:
     QgsRendererRegistry( const QgsRendererRegistry& rh );

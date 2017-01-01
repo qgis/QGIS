@@ -94,13 +94,6 @@ QgsRendererRegistry::~QgsRendererRegistry()
   qDeleteAll( mRenderers );
 }
 
-QgsRendererRegistry* QgsRendererRegistry::instance()
-{
-  static QgsRendererRegistry mInstance;
-  return &mInstance;
-}
-
-
 bool QgsRendererRegistry::addRenderer( QgsRendererAbstractMetadata* metadata )
 {
   if ( !metadata || mRenderers.contains( metadata->name() ) )

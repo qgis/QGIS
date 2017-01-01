@@ -183,7 +183,7 @@ bool QgsEffectStack::readProperties( const QDomElement &element )
   for ( int i = 0; i < childNodes.size(); ++i )
   {
     QDomElement childElement = childNodes.at( i ).toElement();
-    QgsPaintEffect* effect = QgsPaintEffectRegistry::instance()->createEffect( childElement );
+    QgsPaintEffect* effect = QgsApplication::paintEffectRegistry()->createEffect( childElement );
     if ( effect )
       mEffectList << effect;
   }

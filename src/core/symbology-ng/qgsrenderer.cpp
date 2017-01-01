@@ -125,7 +125,7 @@ QgsFeatureRenderer* QgsFeatureRenderer::load( QDomElement& element )
   // load renderer
   QString rendererType = element.attribute( QStringLiteral( "type" ) );
 
-  QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( rendererType );
+  QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( rendererType );
   if ( !m )
     return nullptr;
 
@@ -139,7 +139,7 @@ QgsFeatureRenderer* QgsFeatureRenderer::load( QDomElement& element )
     QDomElement effectElem = element.firstChildElement( QStringLiteral( "effect" ) );
     if ( !effectElem.isNull() )
     {
-      r->setPaintEffect( QgsPaintEffectRegistry::instance()->createEffect( effectElem ) );
+      r->setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
     }
 
     // restore order by
@@ -247,7 +247,7 @@ QgsFeatureRenderer* QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
   QgsDebugMsg( QString( "Instantiating a '%1' renderer..." ).arg( rendererType ) );
 
   // create the renderer and return it
-  QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( rendererType );
+  QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( rendererType );
   if ( !m )
   {
     errorMessage = QStringLiteral( "Error: Unable to get metadata for '%1' renderer." ).arg( rendererType );

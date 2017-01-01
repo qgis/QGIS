@@ -41,7 +41,7 @@
 
 static bool _initRenderer( const QString& name, QgsRendererWidgetFunc f, const QString& iconName = QString() )
 {
-  QgsRendererRegistry* reg = QgsRendererRegistry::instance();
+  QgsRendererRegistry* reg = QgsApplication::rendererRegistry();
   QgsRendererAbstractMetadata* am = reg->rendererMetadata( name );
   if ( !am )
     return false;
@@ -103,7 +103,7 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer* layer,
   // initialize registry's widget functions
   _initRendererWidgetFunctions();
 
-  QgsRendererRegistry* reg = QgsRendererRegistry::instance();
+  QgsRendererRegistry* reg = QgsApplication::rendererRegistry();
   QStringList renderers = reg->renderersList( mLayer );
   Q_FOREACH ( const QString& name, renderers )
   {
@@ -238,7 +238,7 @@ void QgsRendererPropertiesDialog::rendererChanged()
   }
 
   QgsRendererWidget* w = nullptr;
-  QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( rendererName );
+  QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( rendererName );
   if ( m )
     w = m->createRendererWidget( mLayer, mStyle, oldRenderer );
   delete oldRenderer;

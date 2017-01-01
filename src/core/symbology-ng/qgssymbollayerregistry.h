@@ -111,15 +111,17 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
 
 
 /** \ingroup core
- Registry of available symbol layer classes.
- Implemented as a singleton.
+ * Registry of available symbol layer classes.
+ *
+ * QgsSymbolLayerRegistry is not usually directly created, but rather accessed through
+ * QgsApplication::symbolLayerRegistry().
  */
 class CORE_EXPORT QgsSymbolLayerRegistry
 {
   public:
 
-    //! return the single instance of this class (instantiate it if not exists)
-    static QgsSymbolLayerRegistry* instance();
+    QgsSymbolLayerRegistry();
+    ~QgsSymbolLayerRegistry();
 
     //! return metadata for specified symbol layer. Returns NULL if not found
     QgsSymbolLayerAbstractMetadata* symbolLayerMetadata( const QString& name ) const;
@@ -139,15 +141,11 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     //! create a new instance of symbol layer for specified symbol type with default settings
     static QgsSymbolLayer* defaultSymbolLayer( QgsSymbol::SymbolType type );
 
-  protected:
-    QgsSymbolLayerRegistry();
-    ~QgsSymbolLayerRegistry();
-
-    QMap<QString, QgsSymbolLayerAbstractMetadata*> mMetadata;
-
   private:
     QgsSymbolLayerRegistry( const QgsSymbolLayerRegistry& rh );
     QgsSymbolLayerRegistry& operator=( const QgsSymbolLayerRegistry& rh );
+
+    QMap<QString, QgsSymbolLayerAbstractMetadata*> mMetadata;
 };
 
 #endif

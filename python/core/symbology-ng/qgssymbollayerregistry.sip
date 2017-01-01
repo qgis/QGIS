@@ -54,8 +54,8 @@ class QgsSymbolLayerRegistry
 
   public:
 
-    //! return the single instance of this class (instantiate it if not exists)
-    static QgsSymbolLayerRegistry* instance();
+    QgsSymbolLayerRegistry();
+    ~QgsSymbolLayerRegistry();
 
     //! return metadata for specified symbol layer. Returns NULL if not found
     QgsSymbolLayerAbstractMetadata* symbolLayerMetadata( const QString& name ) const;
@@ -74,10 +74,6 @@ class QgsSymbolLayerRegistry
 
     //! create a new instance of symbol layer for specified symbol type with default settings
     static QgsSymbolLayer* defaultSymbolLayer( QgsSymbol::SymbolType type ) /Factory/;
-
-  protected:
-    QgsSymbolLayerRegistry();
-    ~QgsSymbolLayerRegistry();
 
   private:
     QgsSymbolLayerRegistry( const QgsSymbolLayerRegistry& rh );

@@ -147,7 +147,10 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
 
 /** \ingroup core
  * \class QgsPaintEffectRegistry
- * \brief Singleton registry of available paint effects
+ * \brief Registry of available paint effects.
+ *
+ * QgsPaintEffectRegistry is not usually directly created, but rather accessed through
+ * QgsApplication::paintEffectRegistry().
  *
  * \note Added in version 2.9
  */
@@ -155,9 +158,8 @@ class CORE_EXPORT QgsPaintEffectRegistry
 {
   public:
 
-    /** Returns a reference to the singleton instance of the paint effect registry.
-     */
-    static QgsPaintEffectRegistry* instance();
+    QgsPaintEffectRegistry();
+    ~QgsPaintEffectRegistry();
 
     /** Returns the metadata for a specific effect.
      * @param name unique string name for paint effect class
@@ -208,16 +210,12 @@ class CORE_EXPORT QgsPaintEffectRegistry
      */
     static bool isDefaultStack( QgsPaintEffect* effect );
 
-  protected:
-    QgsPaintEffectRegistry();
-    ~QgsPaintEffectRegistry();
-
-    QMap<QString, QgsPaintEffectAbstractMetadata*> mMetadata;
-
   private:
 
     QgsPaintEffectRegistry( const QgsPaintEffectRegistry& rh );
     QgsPaintEffectRegistry& operator=( const QgsPaintEffectRegistry& rh );
+
+    QMap<QString, QgsPaintEffectAbstractMetadata*> mMetadata;
 };
 
 #endif //QGSPAINTEFFECTREGISTRY_H

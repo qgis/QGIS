@@ -48,19 +48,9 @@ bool QgsPluginLayerType::showLayerProperties( QgsPluginLayer *layer )
   return false;
 }
 
-//=============================================================================
-
-//! Static calls to enforce singleton behaviour
-QgsPluginLayerRegistry* QgsPluginLayerRegistry::_instance = nullptr;
-QgsPluginLayerRegistry* QgsPluginLayerRegistry::instance()
-{
-  if ( !_instance )
-  {
-    _instance = new QgsPluginLayerRegistry();
-  }
-  return _instance;
-}
-
+//
+// QgsPluginLayerRegistry
+//
 
 QgsPluginLayerRegistry::QgsPluginLayerRegistry()
 {

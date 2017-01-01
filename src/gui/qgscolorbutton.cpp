@@ -55,7 +55,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString& cdt, QgsColorSch
 
 {
   //if a color scheme registry was specified, use it, otherwise use the global instance
-  mColorSchemeRegistry = registry ? registry : QgsColorSchemeRegistry::instance();
+  mColorSchemeRegistry = registry ? registry : QgsApplication::colorSchemeRegistry();
 
   setAcceptDrops( true );
   setMinimumSize( QSize( 24, 16 ) );

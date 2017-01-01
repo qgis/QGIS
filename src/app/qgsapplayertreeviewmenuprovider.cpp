@@ -169,7 +169,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
             //add recent colors action
             QList<QgsRecentColorScheme *> recentSchemes;
-            QgsColorSchemeRegistry::instance()->schemes( recentSchemes );
+            QgsApplication::colorSchemeRegistry()->schemes( recentSchemes );
             if ( !recentSchemes.isEmpty() )
             {
               QgsColorSwatchGridAction* recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menuStyleManager, QStringLiteral( "symbology" ), menuStyleManager );
@@ -306,7 +306,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         //add recent colors action
         QList<QgsRecentColorScheme *> recentSchemes;
-        QgsColorSchemeRegistry::instance()->schemes( recentSchemes );
+        QgsApplication::colorSchemeRegistry()->schemes( recentSchemes );
         if ( !recentSchemes.isEmpty() )
         {
           QgsColorSwatchGridAction* recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menu, QStringLiteral( "symbology" ), menu );

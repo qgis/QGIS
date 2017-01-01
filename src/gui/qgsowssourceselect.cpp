@@ -36,6 +36,7 @@
 #include "qgsdataprovider.h"
 #include "qgsowssourceselect.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsapplication.h"
 
 #include <QButtonGroup>
 #include <QFileDialog>

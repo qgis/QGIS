@@ -49,12 +49,6 @@ QIcon QgsRasterRendererRegistryEntry::icon()
   return QgsApplication::getThemeIcon( QString( "styleicons/%1.svg" ).arg( name ) );
 }
 
-QgsRasterRendererRegistry* QgsRasterRendererRegistry::instance()
-{
-  static QgsRasterRendererRegistry mInstance;
-  return &mInstance;
-}
-
 QgsRasterRendererRegistry::QgsRasterRendererRegistry()
 {
   // insert items in a particular order, which is returned in renderersList()

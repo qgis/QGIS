@@ -60,7 +60,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
 
   //get schemes with ShowInColorDialog set
   refreshSchemeComboBox();
-  QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
+  QList<QgsColorScheme *> schemeList = QgsApplication::colorSchemeRegistry()->schemes( QgsColorScheme::ShowInColorDialog );
 
   //choose a reasonable starting scheme
   int activeScheme = settings.value( QStringLiteral( "/Windows/ColorDialog/activeScheme" ), 0 ).toInt();
@@ -270,7 +270,7 @@ void QgsCompoundColorWidget::refreshSchemeComboBox()
 {
   mSchemeComboBox->blockSignals( true );
   mSchemeComboBox->clear();
-  QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
+  QList<QgsColorScheme *> schemeList = QgsApplication::colorSchemeRegistry()->schemes( QgsColorScheme::ShowInColorDialog );
   QList<QgsColorScheme *>::const_iterator schemeIt = schemeList.constBegin();
   for ( ; schemeIt != schemeList.constEnd(); ++schemeIt )
   {
@@ -323,7 +323,7 @@ void QgsCompoundColorWidget::importPalette()
   importedScheme->setName( paletteName );
   importedScheme->setColors( importedColors );
 
-  QgsColorSchemeRegistry::instance()->addColorScheme( importedScheme );
+  QgsApplication::colorSchemeRegistry()->addColorScheme( importedScheme );
 
   //refresh combobox
   refreshSchemeComboBox();
@@ -333,7 +333,7 @@ void QgsCompoundColorWidget::importPalette()
 void QgsCompoundColorWidget::removePalette()
 {
   //get current scheme
-  QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
+  QList<QgsColorScheme *> schemeList = QgsApplication::colorSchemeRegistry()->schemes( QgsColorScheme::ShowInColorDialog );
   int prevIndex = mSchemeComboBox->currentIndex();
   if ( prevIndex >= schemeList.length() )
   {
@@ -363,7 +363,7 @@ void QgsCompoundColorWidget::removePalette()
   }
 
   //remove scheme from registry
-  QgsColorSchemeRegistry::instance()->removeColorScheme( userScheme );
+  QgsApplication::colorSchemeRegistry()->removeColorScheme( userScheme );
   refreshSchemeComboBox();
   prevIndex = qMax( qMin( prevIndex, mSchemeComboBox->count() - 1 ), 0 );
   mSchemeComboBox->setCurrentIndex( prevIndex );
@@ -401,7 +401,7 @@ void QgsCompoundColorWidget::newPalette()
   QgsUserColorScheme* newScheme = new QgsUserColorScheme( destFileInfo.fileName() );
   newScheme->setName( name );
 
-  QgsColorSchemeRegistry::instance()->addColorScheme( newScheme );
+  QgsApplication::colorSchemeRegistry()->addColorScheme( newScheme );
 
   //refresh combobox and set new scheme as active
   refreshSchemeComboBox();
@@ -430,7 +430,7 @@ void QgsCompoundColorWidget::schemeIndexChanged( int index )
   }
 
   //get schemes with ShowInColorDialog set
-  QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
+  QList<QgsColorScheme *> schemeList = QgsApplication::colorSchemeRegistry()->schemes( QgsColorScheme::ShowInColorDialog );
   if ( index >= schemeList.length() )
   {
     return;

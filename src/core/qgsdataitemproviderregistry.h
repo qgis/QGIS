@@ -21,15 +21,19 @@
 class QgsDataItemProvider;
 
 /** \ingroup core
- * This singleton class keeps a list of data item providers that may add items to the browser tree.
+ * This class keeps a list of data item providers that may add items to the browser tree.
  * When created, it automatically adds providers from provider plugins (e.g. PostGIS, WMS, ...)
+ *
+ * QgsDataItemProviderRegistry is not usually directly created, but rather accessed through
+ * QgsApplication::dataItemProviderRegistry().
  *
  * @note added in 2.10
  */
 class CORE_EXPORT QgsDataItemProviderRegistry
 {
   public:
-    static QgsDataItemProviderRegistry* instance();
+
+    QgsDataItemProviderRegistry();
 
     ~QgsDataItemProviderRegistry();
 
@@ -43,7 +47,6 @@ class CORE_EXPORT QgsDataItemProviderRegistry
     void removeProvider( QgsDataItemProvider* provider );
 
   private:
-    QgsDataItemProviderRegistry();
 
     //! available providers. this class owns the pointers
     QList<QgsDataItemProvider*> mProviders;

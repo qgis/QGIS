@@ -27,6 +27,15 @@
 #include "qgsruntimeprofiler.h"
 #include "qgstaskmanager.h"
 #include "qgsfieldformatterregistry.h"
+#include "qgssvgcache.h"
+#include "qgscolorschemeregistry.h"
+#include "qgspainteffectregistry.h"
+#include "qgsrasterrendererregistry.h"
+#include "qgsrendererregistry.h"
+#include "qgssymbollayerregistry.h"
+#include "gps/qgsgpsconnectionregistry.h"
+#include "qgspluginlayerregistry.h"
+#include "qgsmessagelog.h"
 
 #include <QDir>
 #include <QFile>
@@ -104,15 +113,39 @@ const char* QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
 */
 QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath, const QString& platformName )
     : QApplication( argc, argv, GUIenabled )
+    , mActionScopeRegistry( nullptr )
+    , mProfiler( nullptr )
+    , mTaskManager( nullptr )
+    , mFieldFormatterRegistry( nullptr )
+    , mColorSchemeRegistry( nullptr )
+    , mPaintEffectRegistry( nullptr )
+    , mRendererRegistry( nullptr )
+    , mSvgCache( nullptr )
+    , mSymbolLayerRegistry( nullptr )
+    , mRasterRendererRegistry( nullptr )
+    , mGpsConnectionRegistry( nullptr )
+    , mDataItemProviderRegistry( nullptr )
+    , mPluginLayerRegistry( nullptr )
+    , mMessageLog( nullptr )
 {
   sPlatformName = platformName;
 
   // don't use initializer lists or scoped pointers - as more objects are added here we
   // will need to be careful with the order of creation/destruction
-  mTaskManager = new QgsTaskManager();
+  mMessageLog = new QgsMessageLog();
   mProfiler = new QgsRuntimeProfiler();
+  mTaskManager = new QgsTaskManager();
   mActionScopeRegistry = new QgsActionScopeRegistry();
   mFieldFormatterRegistry = new QgsFieldFormatterRegistry();
+  mSvgCache = new QgsSvgCache();
+  mColorSchemeRegistry = new QgsColorSchemeRegistry();
+  mColorSchemeRegistry->addDefaultSchemes();
+  mPaintEffectRegistry = new QgsPaintEffectRegistry();
+  mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
+  mRendererRegistry = new QgsRendererRegistry();
+  mRasterRendererRegistry = new QgsRasterRendererRegistry();
+  mGpsConnectionRegistry = new QgsGPSConnectionRegistry();
+  mPluginLayerRegistry = new QgsPluginLayerRegistry();
 
   init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
 }
@@ -246,8 +279,18 @@ QgsApplication::~QgsApplication()
 {
   delete mActionScopeRegistry;
   delete mTaskManager;
-  delete mProfiler;
   delete mFieldFormatterRegistry;
+  delete mRasterRendererRegistry;
+  delete mRendererRegistry;
+  delete mSymbolLayerRegistry;
+  delete mPaintEffectRegistry;
+  delete mColorSchemeRegistry;
+  delete mSvgCache;
+  delete mGpsConnectionRegistry;
+  delete mPluginLayerRegistry;
+  delete mDataItemProviderRegistry;
+  delete mProfiler;
+  delete mMessageLog;
 }
 
 QgsApplication* QgsApplication::instance()
@@ -894,6 +937,8 @@ void QgsApplication::initQgis()
   // set the provider plugin path (this creates provider registry)
   QgsProviderRegistry::instance( pluginPath() );
 
+  instance()->mDataItemProviderRegistry = new QgsDataItemProviderRegistry();
+
   // create project instance if doesn't exist
   QgsProject::instance();
 
@@ -1496,6 +1541,56 @@ void QgsApplication::setMaxThreads( int maxThreads )
 QgsTaskManager* QgsApplication::taskManager()
 {
   return instance()->mTaskManager;
+}
+
+QgsColorSchemeRegistry* QgsApplication::colorSchemeRegistry()
+{
+  return instance()->mColorSchemeRegistry;
+}
+
+QgsPaintEffectRegistry* QgsApplication::paintEffectRegistry()
+{
+  return instance()->mPaintEffectRegistry;
+}
+
+QgsRendererRegistry*QgsApplication::rendererRegistry()
+{
+  return instance()->mRendererRegistry;
+}
+
+QgsRasterRendererRegistry* QgsApplication::rasterRendererRegistry()
+{
+  return instance()->mRasterRendererRegistry;
+}
+
+QgsDataItemProviderRegistry*QgsApplication::dataItemProviderRegistry()
+{
+  return instance()->mDataItemProviderRegistry;
+}
+
+QgsSvgCache* QgsApplication::svgCache()
+{
+  return instance()->mSvgCache;
+}
+
+QgsSymbolLayerRegistry* QgsApplication::symbolLayerRegistry()
+{
+  return instance()->mSymbolLayerRegistry;
+}
+
+QgsGPSConnectionRegistry* QgsApplication::gpsConnectionRegistry()
+{
+  return instance()->mGpsConnectionRegistry;
+}
+
+QgsPluginLayerRegistry*QgsApplication::pluginLayerRegistry()
+{
+  return instance()->mPluginLayerRegistry;
+}
+
+QgsMessageLog* QgsApplication::messageLog()
+{
+  return instance()->mMessageLog;
 }
 
 QgsFieldFormatterRegistry* QgsApplication::fieldFormatterRegistry()

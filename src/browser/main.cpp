@@ -114,8 +114,6 @@ int main( int argc, char ** argv )
     }
   }
 
-  QgsNetworkAccessManager::instance();
-
   QgsBrowser w;
 
   a.connect( &a, SIGNAL( aboutToQuit() ), &w, SLOT( saveWindowState() ) );

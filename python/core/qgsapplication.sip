@@ -381,6 +381,62 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static QgsTaskManager* taskManager();
 
+    /**
+     * Returns the application's color scheme registry, used for managing color schemes.
+     * @note added in QGIS 3.0
+     */
+    static QgsColorSchemeRegistry* colorSchemeRegistry();
+
+    /**
+     * Returns the application's paint effect registry, used for managing paint effects.
+     * @note added in QGIS 3.0
+     */
+    static QgsPaintEffectRegistry* paintEffectRegistry();
+
+    /**
+     * Returns the application's renderer registry, used for managing vector layer renderers.
+     * @note added in QGIS 3.0
+     */
+    static QgsRendererRegistry* rendererRegistry();
+
+    /**
+     * Returns the application's data item provider registry, which keeps a list of data item
+     * providers that may add items to the browser tree.
+     * @note added in QGIS 3.0
+     */
+    static QgsDataItemProviderRegistry* dataItemProviderRegistry();
+
+    /**
+     * Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
+     * within SVG files.
+     * @note added in QGIS 3.0
+     */
+    static QgsSvgCache* svgCache();
+
+    /**
+     * Returns the application's symbol layer registry, used for managing symbol layers.
+     * @note added in QGIS 3.0
+     */
+    static QgsSymbolLayerRegistry* symbolLayerRegistry();
+
+    /**
+     * Returns the application's GPS connection registry, used for managing GPS connections.
+     * @note added in QGIS 3.0
+     */
+    static QgsGPSConnectionRegistry* gpsConnectionRegistry();
+
+    /**
+     * Returns the application's plugin layer registry, used for managing plugin layer types.
+     * @note added in QGIS 3.0
+     */
+    static QgsPluginLayerRegistry* pluginLayerRegistry();
+
+    /**
+     * Returns the application's message log.
+     * @note added in QGIS 3.0
+     */
+    static QgsMessageLog* messageLog();
+
 %If(ANDROID)
     //dummy method to workaround sip generation issue issue
     bool x11EventFilter ( XEvent * event );

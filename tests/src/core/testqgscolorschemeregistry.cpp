@@ -100,7 +100,7 @@ void TestQgsColorSchemeRegistry::cleanup()
 
 void TestQgsColorSchemeRegistry::createInstance()
 {
-  QgsColorSchemeRegistry* registry = QgsColorSchemeRegistry::instance();
+  QgsColorSchemeRegistry* registry = QgsApplication::colorSchemeRegistry();
   QVERIFY( registry );
 }
 
@@ -108,7 +108,7 @@ void TestQgsColorSchemeRegistry::instanceHasDefaultSchemes()
 {
   //check that scheme instance is initially populated with some schemes
   //(assumes that there is some default schemes)
-  QgsColorSchemeRegistry* registry = QgsColorSchemeRegistry::instance();
+  QgsColorSchemeRegistry* registry = QgsApplication::colorSchemeRegistry();
   QVERIFY( registry->schemes().length() > 0 );
 }
 
@@ -146,7 +146,7 @@ void TestQgsColorSchemeRegistry::populateFromInstance()
   QVERIFY( registry->schemes().length() == 0 );
   //add schemes from instance
   registry->populateFromInstance();
-  QCOMPARE( registry->schemes().length(), QgsColorSchemeRegistry::instance()->schemes().length() );
+  QCOMPARE( registry->schemes().length(), QgsApplication::colorSchemeRegistry()->schemes().length() );
 }
 
 void TestQgsColorSchemeRegistry::removeScheme()
