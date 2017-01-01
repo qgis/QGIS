@@ -39,7 +39,7 @@ class SERVER_EXPORT QgsWmsConfigParser
   public:
 
     QgsWmsConfigParser();
-    virtual ~QgsWmsConfigParser();
+    virtual ~QgsWmsConfigParser() = default;
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/

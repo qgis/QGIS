@@ -40,11 +40,6 @@ QgsRemoteOWSBuilder::QgsRemoteOWSBuilder()
 
 }
 
-QgsRemoteOWSBuilder::~QgsRemoteOWSBuilder()
-{
-
-}
-
 QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer(
   const QDomElement& elem,
   const QString& layerName,

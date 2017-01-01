@@ -33,7 +33,6 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
     Q_OBJECT
   public:
     QgsCredentialDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
-    ~QgsCredentialDialog();
 
   signals:
 

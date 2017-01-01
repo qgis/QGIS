@@ -47,7 +47,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      */
     QgsEditorWidgetFactory( const QString& name );
 
-    virtual ~QgsEditorWidgetFactory();
+    virtual ~QgsEditorWidgetFactory() = default;
 
     /**
      * Override this in your implementation.

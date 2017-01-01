@@ -29,7 +29,6 @@ class GUI_EXPORT QgsLUDialog: public QDialog, private Ui::QgsLUDialogBase
     Q_OBJECT
   public:
     QgsLUDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
-    ~QgsLUDialog();
     QString lowerValue() const;
     void setLowerValue( const QString& val );
     QString upperValue() const;

@@ -36,8 +36,6 @@ class GUI_EXPORT QgsMapToolIdentifyFeature : public QgsMapToolIdentify
      */
     QgsMapToolIdentifyFeature( QgsMapCanvas* canvas, QgsVectorLayer* vl = nullptr );
 
-    ~QgsMapToolIdentifyFeature();
-
     //! change the layer used by the map tool to identify
     void setLayer( QgsVectorLayer* vl ) { mLayer = vl; }
 

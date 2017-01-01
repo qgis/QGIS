@@ -26,14 +26,6 @@ email                : even.rouault at spatialys.com
 
 #include <Qsci/qscilexer.h>
 
-QgsSQLComposerDialog::TableSelectedCallback::~TableSelectedCallback()
-{
-}
-
-QgsSQLComposerDialog::SQLValidatorCallback::~SQLValidatorCallback()
-{
-}
-
 QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget * parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mTableSelectedCallback( nullptr )

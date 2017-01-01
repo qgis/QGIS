@@ -93,10 +93,6 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
   populateErrorsList();
 }
 
-QgsAuthSslErrorsDialog::~QgsAuthSslErrorsDialog()
-{
-}
-
 void QgsAuthSslErrorsDialog::loadUnloadCertificate( bool load )
 {
   grpbxSslErrors->setCollapsed( load );

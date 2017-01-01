@@ -31,7 +31,6 @@ class GUI_EXPORT QgsCodeEditorHTML : public QgsCodeEditor
 
   public:
     QgsCodeEditorHTML( QWidget *parent = nullptr );
-    ~QgsCodeEditorHTML();
 
   private:
     void setSciLexerHTML();

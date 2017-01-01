@@ -74,10 +74,6 @@ QgsWCSServer::QgsWCSServer()
 {
 }
 
-QgsWCSServer::~QgsWCSServer()
-{
-}
-
 void QgsWCSServer::executeRequest()
 {
   //request type

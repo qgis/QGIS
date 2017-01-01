@@ -32,11 +32,6 @@ QgsServerFilter::QgsServerFilter( QgsServerInterface *serverInterface ):
 {
 }
 
-QgsServerFilter::~QgsServerFilter()
-{
-}
-
-
 void QgsServerFilter::requestReady()
 {
   QgsDebugMsg( "QgsServerFilter plugin default requestReady called" );

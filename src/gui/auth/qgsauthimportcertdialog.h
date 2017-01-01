@@ -56,7 +56,6 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
     explicit QgsAuthImportCertDialog( QWidget *parent = nullptr,
                                       QgsAuthImportCertDialog::CertFilter filter = NoFilter,
                                       QgsAuthImportCertDialog::CertInput input = AllInputs );
-    ~QgsAuthImportCertDialog();
 
     //! Get list of certificate objects to import
     const QList<QSslCertificate> certificatesToImport();

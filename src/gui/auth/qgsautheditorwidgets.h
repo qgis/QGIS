@@ -36,8 +36,6 @@ class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMetho
      */
     explicit QgsAuthMethodPlugins( QWidget *parent = nullptr );
 
-    ~QgsAuthMethodPlugins();
-
   private slots:
     void populateTable();
 
@@ -63,8 +61,6 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
      * @param parent Parent widget
      */
     explicit QgsAuthEditorWidgets( QWidget *parent = nullptr );
-
-    ~QgsAuthEditorWidgets();
 
   private slots:
     void on_btnCertManager_clicked();

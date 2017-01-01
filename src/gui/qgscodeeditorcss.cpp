@@ -34,10 +34,6 @@ QgsCodeEditorCSS::QgsCodeEditorCSS( QWidget *parent )
   setSciLexerCSS();
 }
 
-QgsCodeEditorCSS::~QgsCodeEditorCSS()
-{
-}
-
 void QgsCodeEditorCSS::setSciLexerCSS()
 {
   QsciLexerCSS* lexer = new QsciLexerCSS( this );

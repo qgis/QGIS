@@ -30,10 +30,6 @@ QgsBlendModeComboBox::QgsBlendModeComboBox( QWidget* parent ) : QComboBox( paren
   updateModes();
 }
 
-QgsBlendModeComboBox::~QgsBlendModeComboBox()
-{
-}
-
 /* Returns a QStringList of the translated blend modes
 * "-" is used to indicate the position of a separator in the list
 * This list is designed to emulate GIMP's layer modes, where

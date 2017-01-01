@@ -98,9 +98,6 @@ QgsWfsServer::QgsWfsServer()
 {
 }
 
-QgsWfsServer::~QgsWfsServer()
-{
-}
 
 void QgsWfsServer::executeRequest()
 {

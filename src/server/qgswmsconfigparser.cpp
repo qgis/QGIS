@@ -41,11 +41,6 @@ QgsWmsConfigParser::QgsWmsConfigParser()
 
 }
 
-QgsWmsConfigParser::~QgsWmsConfigParser()
-{
-
-}
-
 QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
 {
   QList<QgsComposerMap*> composerMaps;

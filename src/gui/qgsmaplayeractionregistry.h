@@ -111,8 +111,6 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
     //! Returns the instance pointer, creating the object on the first call
     static QgsMapLayerActionRegistry * instance();
 
-    ~QgsMapLayerActionRegistry();
-
     //! Adds a map layer action to the registry
     void addMapLayerAction( QgsMapLayerAction * action );
 

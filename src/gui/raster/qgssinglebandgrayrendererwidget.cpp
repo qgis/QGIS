@@ -77,10 +77,6 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
   }
 }
 
-QgsSingleBandGrayRendererWidget::~QgsSingleBandGrayRendererWidget()
-{
-}
-
 QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
 {
   if ( !mRasterLayer )

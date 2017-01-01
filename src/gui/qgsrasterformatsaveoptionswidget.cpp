@@ -105,10 +105,6 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* par
   QgsDebugMsg( "done" );
 }
 
-QgsRasterFormatSaveOptionsWidget::~QgsRasterFormatSaveOptionsWidget()
-{
-}
-
 void QgsRasterFormatSaveOptionsWidget::setFormat( const QString& format )
 {
   mFormat = format;

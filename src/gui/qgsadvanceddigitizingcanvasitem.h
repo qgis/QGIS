@@ -29,7 +29,6 @@ class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
 {
   public:
     explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget );
-    ~QgsAdvancedDigitizingCanvasItem();
 
     void paint( QPainter *painter ) override;
 

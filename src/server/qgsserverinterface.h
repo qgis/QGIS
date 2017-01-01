@@ -48,7 +48,6 @@ class SERVER_EXPORT QgsServerInterface
     //! Constructor
     QgsServerInterface();
 
-
     virtual ~QgsServerInterface() = 0;
 
     /**

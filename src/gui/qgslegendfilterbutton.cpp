@@ -46,10 +46,6 @@ QgsLegendFilterButton::QgsLegendFilterButton( QWidget* parent )
   connect( this, SIGNAL( toggled( bool ) ), this, SLOT( onToggle( bool ) ) );
 }
 
-QgsLegendFilterButton::~QgsLegendFilterButton()
-{
-}
-
 void QgsLegendFilterButton::onToggle( bool checked )
 {
   if ( checked && expressionText().isEmpty() )

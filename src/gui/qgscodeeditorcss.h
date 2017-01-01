@@ -30,7 +30,6 @@ class GUI_EXPORT QgsCodeEditorCSS : public QgsCodeEditor
 
   public:
     QgsCodeEditorCSS( QWidget *parent = nullptr );
-    ~QgsCodeEditorCSS();
 
   private:
     void setSciLexerCSS();

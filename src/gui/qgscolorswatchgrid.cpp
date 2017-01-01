@@ -52,11 +52,6 @@ QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme* scheme, const QString& c
   refreshColors();
 }
 
-QgsColorSwatchGrid::~QgsColorSwatchGrid()
-{
-
-}
-
 QSize QgsColorSwatchGrid::minimumSizeHint() const
 {
   return QSize( mWidth, calculateHeight() );
@@ -374,11 +369,6 @@ QgsColorSwatchGridAction::QgsColorSwatchGridAction( QgsColorScheme* scheme, QMen
 
   //hide the action if no colors to be shown
   setVisible( !mColorSwatchGrid->colors()->isEmpty() );
-}
-
-QgsColorSwatchGridAction::~QgsColorSwatchGridAction()
-{
-
 }
 
 void QgsColorSwatchGridAction::setBaseColor( const QColor &baseColor )

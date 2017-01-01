@@ -55,8 +55,6 @@ class GUI_EXPORT QgsMapTip : public QWidget
      */
     QgsMapTip();
 
-    virtual ~QgsMapTip();
-
     /** Show a maptip at a given point on the map canvas
      * @param thepLayer a qgis vector map layer pointer that will
      *        be used to provide the attribute data for the map tip.

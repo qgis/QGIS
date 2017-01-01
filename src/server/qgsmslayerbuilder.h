@@ -32,7 +32,7 @@ class QgsMSLayerBuilder
 {
   public:
     QgsMSLayerBuilder();
-    virtual ~QgsMSLayerBuilder();
+    virtual ~QgsMSLayerBuilder() = default;
 
     /** Creates a maplayer from xml tag
        @param elem xml element containing description of datasource

@@ -39,7 +39,6 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
      * @param parent Parent widget
      */
     explicit QgsAuthIdentitiesEditor( QWidget *parent = nullptr );
-    ~QgsAuthIdentitiesEditor();
 
   private slots:
     void populateIdentitiesView();

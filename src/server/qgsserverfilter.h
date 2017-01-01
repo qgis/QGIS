@@ -47,7 +47,8 @@ class SERVER_EXPORT QgsServerFilter
      */
     QgsServerFilter( QgsServerInterface* serverInterface );
 
-    virtual ~QgsServerFilter();
+    virtual ~QgsServerFilter() = default;
+
     //! Return the QgsServerInterface instance
     QgsServerInterface* serverInterface() { return mServerInterface; }
 

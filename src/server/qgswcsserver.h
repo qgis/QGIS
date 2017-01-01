@@ -45,7 +45,6 @@ class QgsWCSServer: public QgsOWSServer
       , const QgsAccessControl* accessControl
 #endif
     );
-    ~QgsWCSServer();
 
     void executeRequest() override;
 

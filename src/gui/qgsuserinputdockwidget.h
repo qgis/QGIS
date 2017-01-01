@@ -36,7 +36,6 @@ class GUI_EXPORT QgsUserInputDockWidget : public QgsDockWidget
     Q_OBJECT
   public:
     QgsUserInputDockWidget( QWidget* parent = nullptr );
-    ~QgsUserInputDockWidget();
 
     /** Add a widget to be displayed in the dock.
      * @param widget widget to add. Ownership is not transferred.

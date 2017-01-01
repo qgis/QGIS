@@ -90,11 +90,6 @@ QgsServerProjectParser::QgsServerProjectParser()
 {
 }
 
-QgsServerProjectParser::~QgsServerProjectParser()
-{
-
-}
-
 void QgsServerProjectParser::projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const
 {
   layerMap.clear();

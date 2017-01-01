@@ -62,10 +62,6 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
   }
 }
 
-QgsRasterTransparencyWidget::~QgsRasterTransparencyWidget()
-{
-}
-
 void QgsRasterTransparencyWidget::syncToLayer()
 {
   QgsRasterDataProvider* provider = mRasterLayer->dataProvider();

@@ -121,10 +121,6 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp&
 
 }
 
-QgsCptCityColorRampDialog::~QgsCptCityColorRampDialog()
-{
-}
-
 void QgsCptCityColorRampDialog::setRamp( const QgsCptCityColorRamp& ramp )
 {
   mRamp = ramp;

@@ -43,11 +43,6 @@ QgsMapTip::QgsMapTip()
   mMapTipVisible = false;
 }
 
-QgsMapTip::~QgsMapTip()
-{
-
-}
-
 void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
                             QgsPoint & mapPosition,
                             QPoint & thePixelPosition,

@@ -41,8 +41,6 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
      */
     QgsHillshadeRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
 
-    ~QgsHillshadeRendererWidget();
-
     /**
       * Factory method to create the renderer for this type.
       */

@@ -42,7 +42,6 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
      */
     explicit QgsAuthTrustedCAsDialog( QWidget *parent = nullptr,
                                       const QList<QSslCertificate>& trustedCAs = QList<QSslCertificate>() );
-    ~QgsAuthTrustedCAsDialog();
 
   private slots:
     void populateCaCertsView();

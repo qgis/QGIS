@@ -39,7 +39,6 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
      * @param dataprovider The key of the calling layer provider, if applicable
      */
     explicit QgsAuthConfigSelect( QWidget *parent = nullptr, const QString &dataprovider = QString() );
-    ~QgsAuthConfigSelect();
 
     //! Set the authentication config id for the resource
     void setConfigId( const QString& authcfg );
@@ -117,7 +116,6 @@ class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfi
     explicit QgsAuthConfigUriEdit( QWidget *parent = nullptr,
                                    const QString &datauri = QString(),
                                    const QString &dataprovider = QString() );
-    ~QgsAuthConfigUriEdit();
 
     //! Set the data source URI to parse
     void setDataSourceUri( const QString &datauri );

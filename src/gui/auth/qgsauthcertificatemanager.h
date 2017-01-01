@@ -38,7 +38,6 @@ class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertMan
      */
     explicit QgsAuthCertEditors( QWidget *parent = nullptr );
 
-    ~QgsAuthCertEditors();
 };
 
 
@@ -58,8 +57,6 @@ class GUI_EXPORT QgsAuthCertManager : public QDialog
      * @param parent Parent widget
      */
     explicit QgsAuthCertManager( QWidget *parent = nullptr );
-
-    ~QgsAuthCertManager();
 
     //! Get access to embedded editors widget
     QgsAuthCertEditors *certEditorsWidget() { return mCertEditors; }

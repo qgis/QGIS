@@ -27,7 +27,7 @@
 class GUI_EXPORT QgsCustomDropHandler
 {
   public:
-    virtual ~QgsCustomDropHandler();
+    virtual ~QgsCustomDropHandler() = default;
 
     //! Type of custom URI recognized by the handler
     virtual QString key() const = 0;

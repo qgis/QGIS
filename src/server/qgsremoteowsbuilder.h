@@ -29,7 +29,6 @@ class QgsRemoteOWSBuilder: public QgsMSLayerBuilder
 {
   public:
     explicit QgsRemoteOWSBuilder( const QMap<QString, QString>& parameterMap );
-    ~QgsRemoteOWSBuilder();
 
     QgsMapLayer* createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const override;
 

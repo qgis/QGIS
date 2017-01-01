@@ -38,7 +38,6 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
      * @param parent Parent Widget
      */
     explicit QgsAuthServersEditor( QWidget *parent = nullptr );
-    ~QgsAuthServersEditor();
 
   private slots:
     void populateSslConfigsView();

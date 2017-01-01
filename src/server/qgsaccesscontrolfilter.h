@@ -55,7 +55,7 @@ class SERVER_EXPORT QgsAccessControlFilter
      */
     QgsAccessControlFilter( const QgsServerInterface* serverInterface );
 
-    virtual ~QgsAccessControlFilter();
+    virtual ~QgsAccessControlFilter() = default;
 
     //! Describe the layer permission
     struct LayerPermissions

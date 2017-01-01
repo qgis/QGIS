@@ -38,7 +38,6 @@ class GUI_EXPORT QgsDialog : public QDialog
     QgsDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
                QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close,
                Qt::Orientation orientation = Qt::Horizontal );
-    ~QgsDialog();
 
     //! Returns the central layout. Widgets added to it must have this dialog as parent.
     QVBoxLayout *layout() { return mLayout; }

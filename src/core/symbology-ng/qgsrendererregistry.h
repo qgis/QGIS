@@ -137,7 +137,7 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
         , mLayerTypes( layerTypes )
     {}
 
-    virtual ~QgsRendererMetadata();
+    virtual ~QgsRendererMetadata() = default;
 
     virtual QgsFeatureRenderer* createRenderer( QDomElement& elem ) override { return mCreateFunc ? mCreateFunc( elem ) : nullptr; }
     virtual QgsRendererWidget* createRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) override

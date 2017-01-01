@@ -38,11 +38,6 @@ QgsInterpolationLayerBuilder::QgsInterpolationLayerBuilder(): mVectorLayer( null
 
 }
 
-QgsInterpolationLayerBuilder::~QgsInterpolationLayerBuilder()
-{
-
-}
-
 QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &elem,
     const QString &layerName,
     QList<QTemporaryFile*> &filesToRemove,

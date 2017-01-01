@@ -27,7 +27,7 @@ class GUI_EXPORT QgsAttributeFormInterface
   public:
     explicit QgsAttributeFormInterface( QgsAttributeForm* form );
 
-    virtual ~QgsAttributeFormInterface();
+    virtual ~QgsAttributeFormInterface() = default;
 
     virtual bool acceptChanges( const QgsFeature& feature );
 

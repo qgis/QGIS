@@ -58,10 +58,6 @@ QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &datapr
   }
 }
 
-QgsAuthConfigSelect::~QgsAuthConfigSelect()
-{
-}
-
 void QgsAuthConfigSelect::setConfigId( const QString& authcfg )
 {
   if ( mDisabled && mAuthNotify )
@@ -286,10 +282,6 @@ QgsAuthConfigUriEdit::QgsAuthConfigUriEdit( QWidget *parent, const QString &data
     wdgtAuthSelect->setDataProviderKey( dataprovider );
     setDataSourceUri( datauri );
   }
-}
-
-QgsAuthConfigUriEdit::~QgsAuthConfigUriEdit()
-{
 }
 
 void QgsAuthConfigUriEdit::setDataSourceUri( const QString &datauri )

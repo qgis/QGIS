@@ -120,8 +120,6 @@ QgsRendererAbstractMetadata* QgsRendererRegistry::rendererMetadata( const QStrin
   return mRenderers.value( rendererName );
 }
 
-QgsRendererMetadata::~QgsRendererMetadata() {}
-
 QStringList QgsRendererRegistry::renderersList( QgsRendererAbstractMetadata::LayerTypes layerTypes ) const
 {
   QStringList renderers;

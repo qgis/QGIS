@@ -51,8 +51,6 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget );
 
-    ~QgsMapToolAdvancedDigitizing();
-
     //! Catch the mouse press event, filters it, transforms it to map coordinates and send it to virtual method
     virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
     //! Catch the mouse release event, filters it, transforms it to map coordinates and send it to virtual method

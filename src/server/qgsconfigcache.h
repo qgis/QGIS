@@ -38,7 +38,6 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     Q_OBJECT
   public:
     static QgsConfigCache* instance();
-    ~QgsConfigCache();
 
     QgsServerProjectParser* serverConfiguration( const QString& filePath );
     QgsWCSProjectParser* wcsConfiguration(

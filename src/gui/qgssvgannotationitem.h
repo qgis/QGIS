@@ -29,7 +29,6 @@ class GUI_EXPORT QgsSvgAnnotationItem: public QgsAnnotationItem
   public:
 
     QgsSvgAnnotationItem( QgsMapCanvas* canvas );
-    ~QgsSvgAnnotationItem();
 
     void writeXml( QDomDocument& doc ) const override;
     void readXml( const QDomDocument& doc, const QDomElement& itemElem ) override;

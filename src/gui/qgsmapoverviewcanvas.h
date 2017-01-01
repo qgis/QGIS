@@ -43,8 +43,6 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
   public:
     QgsMapOverviewCanvas( QWidget * parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
 
-    ~QgsMapOverviewCanvas();
-
     //! renders overview and updates panning widget
     void refresh();
 

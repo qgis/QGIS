@@ -53,10 +53,6 @@ QgsRubberBand::QgsRubberBand()
 {
 }
 
-QgsRubberBand::~QgsRubberBand()
-{
-}
-
 /*!
   Set the outline and fill color.
   */

@@ -43,7 +43,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @param qgis Pointer to the QgisApp object
      */
     QgisAppInterface( QgisApp *qgisapp );
-    ~QgisAppInterface();
 
     QgisAppInterface( QgisAppInterface const & ) = delete;
     QgisAppInterface & operator=( QgisAppInterface const & ) = delete;

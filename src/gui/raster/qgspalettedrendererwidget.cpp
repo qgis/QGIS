@@ -59,11 +59,6 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer* layer, con
   }
 }
 
-QgsPalettedRendererWidget::~QgsPalettedRendererWidget()
-{
-
-}
-
 QgsRasterRenderer* QgsPalettedRendererWidget::renderer()
 {
   int nColors = mTreeWidget->topLevelItemCount();

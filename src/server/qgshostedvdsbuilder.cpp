@@ -27,11 +27,6 @@ QgsHostedVDSBuilder::QgsHostedVDSBuilder(): QgsMSLayerBuilder()
 
 }
 
-QgsHostedVDSBuilder::~QgsHostedVDSBuilder()
-{
-
-}
-
 QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem,
     const QString& layerName,
     QList<QTemporaryFile*> &filesToRemove,

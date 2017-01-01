@@ -39,7 +39,6 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
       QWidget *parent = nullptr,
       QgsAuthCertUtils::CertTrustPolicy policy = QgsAuthCertUtils::DefaultTrust,
       QgsAuthCertUtils::CertTrustPolicy defaultpolicy =  QgsAuthCertUtils::DefaultTrust );
-    ~QgsAuthCertTrustPolicyComboBox();
 
     //! Get currently set trust policy
     QgsAuthCertUtils::CertTrustPolicy trustPolicy();

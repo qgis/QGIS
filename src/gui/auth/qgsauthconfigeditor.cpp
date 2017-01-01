@@ -126,10 +126,6 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
   }
 }
 
-QgsAuthConfigEditor::~QgsAuthConfigEditor()
-{
-}
-
 void QgsAuthConfigEditor::setMasterPassword()
 {
   QgsAuthGuiUtils::setMasterPassword( messageBar(), messageTimeout() );

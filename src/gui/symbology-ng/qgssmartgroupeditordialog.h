@@ -71,7 +71,6 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
 
   public:
     QgsSmartGroupEditorDialog( QgsStyle* style, QWidget* parent = nullptr );
-    ~QgsSmartGroupEditorDialog();
 
     //! returns the value from mNameLineEdit
     QString smartgroupName();

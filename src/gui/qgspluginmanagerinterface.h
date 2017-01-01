@@ -34,8 +34,6 @@ class GUI_EXPORT QgsPluginManagerInterface : public QObject
     //! Constructor
     QgsPluginManagerInterface();
 
-    virtual ~QgsPluginManagerInterface();
-
     //! remove python plugins from the metadata registry (c++ plugins stay)
     virtual void clearPythonPluginMetadata() = 0;
 

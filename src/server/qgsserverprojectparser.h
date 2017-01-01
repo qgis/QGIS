@@ -38,7 +38,6 @@ class SERVER_EXPORT QgsServerProjectParser
   public:
 
     QgsServerProjectParser( QDomDocument* xmlDoc, const QString& filePath );
-    ~QgsServerProjectParser();
 
     QString projectPath() const { return mProjectPath; }
 

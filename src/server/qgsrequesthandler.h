@@ -54,7 +54,7 @@ class QgsRequestHandler
         : mHeadersSent( false )
         , mException( nullptr )
     {}
-    virtual ~QgsRequestHandler() {}
+    virtual ~QgsRequestHandler() = default;
 
     /** Parses the input and creates a request neutral Parameter/Value map
      * @note not available in Python bindings

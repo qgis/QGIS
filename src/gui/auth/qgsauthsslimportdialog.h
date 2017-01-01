@@ -86,7 +86,6 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
      * @param parent
      */
     QgsAuthSslImportDialog( QWidget *parent = nullptr );
-    ~QgsAuthSslImportDialog();
 
   public slots:
     void accept() override;

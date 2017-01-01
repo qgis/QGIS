@@ -82,12 +82,6 @@ QgsServer::QgsServer( bool captureOutput )
   init();
 }
 
-
-QgsServer::~QgsServer()
-{
-}
-
-
 QString& QgsServer::serverName()
 {
   static QString* name = new QString( QStringLiteral( "qgis_server" ) );

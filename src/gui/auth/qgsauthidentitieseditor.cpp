@@ -75,10 +75,6 @@ QgsAuthIdentitiesEditor::QgsAuthIdentitiesEditor( QWidget *parent )
   }
 }
 
-QgsAuthIdentitiesEditor::~QgsAuthIdentitiesEditor()
-{
-}
-
 static void setItemBold_( QTreeWidgetItem* item )
 {
   item->setFirstColumnSpanned( true );

@@ -91,10 +91,6 @@ QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyle* style, QWidget* 
   connect( mAddConditionBtn, SIGNAL( clicked() ), this, SLOT( addCondition() ) );
 }
 
-QgsSmartGroupEditorDialog::~QgsSmartGroupEditorDialog()
-{
-}
-
 QString QgsSmartGroupEditorDialog::smartgroupName()
 {
   return mNameLineEdit->text();

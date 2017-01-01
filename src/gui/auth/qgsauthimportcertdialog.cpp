@@ -85,10 +85,6 @@ QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent ,
   }
 }
 
-QgsAuthImportCertDialog::~QgsAuthImportCertDialog()
-{
-}
-
 const QList<QSslCertificate> QgsAuthImportCertDialog::certificatesToImport()
 {
   if ( mDisabled )

@@ -68,11 +68,6 @@ QgsGraduatedHistogramWidget::QgsGraduatedHistogramWidget( QWidget *parent )
 #endif
 }
 
-
-QgsGraduatedHistogramWidget::~QgsGraduatedHistogramWidget()
-{
-}
-
 void QgsGraduatedHistogramWidget::setRenderer( QgsGraduatedSymbolRenderer *renderer )
 {
   mRenderer = renderer;

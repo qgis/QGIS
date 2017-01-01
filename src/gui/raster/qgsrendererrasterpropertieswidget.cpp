@@ -109,11 +109,6 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
   connect( mRasterLayer, SIGNAL( styleChanged() ), this, SLOT( refreshAfterSyleChanged() ) );
 }
 
-QgsRendererRasterPropertiesWidget::~QgsRendererRasterPropertiesWidget()
-{
-
-}
-
 void QgsRendererRasterPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;

@@ -50,7 +50,6 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
                                      const QSslCertificate &cert = QSslCertificate(),
                                      const QString &hostport = QString(),
                                      const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
-    ~QgsAuthSslConfigWidget();
 
     //! Access to the certificate's group box widget
     QGroupBox *certificateGroupBox();
@@ -199,7 +198,6 @@ class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
     explicit QgsAuthSslConfigDialog( QWidget *parent = nullptr,
                                      const QSslCertificate& cert = QSslCertificate(),
                                      const QString &hostport = QString() );
-    ~QgsAuthSslConfigDialog();
 
     //! Access the embedded SSL server configuration widget
     QgsAuthSslConfigWidget *sslCustomConfigWidget() { return mSslConfigWdgt; }

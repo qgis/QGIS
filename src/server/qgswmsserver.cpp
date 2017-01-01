@@ -113,10 +113,6 @@ QgsWmsServer::QgsWmsServer()
 {
 }
 
-QgsWmsServer::~QgsWmsServer()
-{
-}
-
 void QgsWmsServer::cleanupAfterRequest()
 {
   if ( mOwnsConfigParser )

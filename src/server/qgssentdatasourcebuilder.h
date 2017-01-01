@@ -28,7 +28,6 @@ class QgsSentDataSourceBuilder: public QgsMSLayerBuilder
 {
   public:
     QgsSentDataSourceBuilder();
-    ~QgsSentDataSourceBuilder();
 
     /** Creates a maplayer from xml tag
        @param elem xml element containing description of datasource

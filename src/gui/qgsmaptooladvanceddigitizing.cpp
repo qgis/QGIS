@@ -29,10 +29,6 @@ QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas
 {
 }
 
-QgsMapToolAdvancedDigitizing::~QgsMapToolAdvancedDigitizing()
-{
-}
-
 void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent* e )
 {
   snap( e );

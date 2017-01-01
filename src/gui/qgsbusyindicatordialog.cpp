@@ -44,10 +44,6 @@ QgsBusyIndicatorDialog::QgsBusyIndicatorDialog( const QString& message, QWidget*
   }
 }
 
-QgsBusyIndicatorDialog::~QgsBusyIndicatorDialog()
-{
-}
-
 void QgsBusyIndicatorDialog::setMessage( const QString& message )
 {
   if ( !message.isEmpty() )

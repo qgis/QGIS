@@ -72,10 +72,6 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   setLayout( layout );
 }
 
-QgsFileWidget::~QgsFileWidget()
-{
-}
-
 QString QgsFileWidget::filePath()
 {
   return mFilePath;

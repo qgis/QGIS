@@ -59,8 +59,6 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      */
     QgsColorWidget( QWidget* parent = nullptr, const ColorComponent component = Multiple );
 
-    virtual ~QgsColorWidget();
-
     /** Returns the current color for the widget
      * @returns current widget color
      * @see setColor
@@ -202,8 +200,6 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
      * @param parent parent widget
      */
     QgsColorWidgetAction( QgsColorWidget* colorWidget, QMenu* menu = nullptr, QWidget *parent = nullptr );
-
-    virtual ~QgsColorWidgetAction();
 
     /** Returns the color widget contained in the widget action.
      */
@@ -459,8 +455,6 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
                         const ColorComponent component = QgsColorWidget::Red,
                         const Orientation orientation = QgsColorRampWidget::Horizontal );
 
-    virtual ~QgsColorRampWidget();
-
     virtual QSize sizeHint() const override;
     void paintEvent( QPaintEvent* event ) override;
 
@@ -562,8 +556,6 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
      */
     QgsColorSliderWidget( QWidget* parent = nullptr, const ColorComponent component = QgsColorWidget::Red );
 
-    virtual ~QgsColorSliderWidget();
-
     virtual void setComponent( const ColorComponent component ) override;
     virtual void setComponentValue( const int value ) override;
     virtual void setColor( const QColor &color, const bool emitSignals = false ) override;
@@ -626,8 +618,6 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
      */
     QgsColorTextWidget( QWidget* parent = nullptr );
 
-    virtual ~QgsColorTextWidget();
-
     virtual void setColor( const QColor &color, const bool emitSignals = false ) override;
 
   protected:
@@ -685,8 +675,6 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
      * @param parent parent QWidget for the widget
      */
     QgsColorPreviewWidget( QWidget* parent = nullptr );
-
-    virtual ~QgsColorPreviewWidget();
 
     void paintEvent( QPaintEvent* event ) override;
     virtual QSize sizeHint() const override;

@@ -44,11 +44,6 @@ QgsColorWidget::QgsColorWidget( QWidget* parent, const ColorComponent component 
   setAcceptDrops( true );
 }
 
-QgsColorWidget::~QgsColorWidget()
-{
-
-}
-
 int QgsColorWidget::componentValue() const
 {
   return componentValue( mComponent );
@@ -993,11 +988,6 @@ QgsColorRampWidget::QgsColorRampWidget( QWidget *parent,
   setMarkerSize( 5 );
 }
 
-QgsColorRampWidget::~QgsColorRampWidget()
-{
-
-}
-
 QSize QgsColorRampWidget::sizeHint() const
 {
   if ( mOrientation == QgsColorRampWidget::Horizontal )
@@ -1316,10 +1306,6 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
   connect( mSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( spinChanged( int ) ) );
 }
 
-QgsColorSliderWidget::~QgsColorSliderWidget()
-{
-}
-
 void QgsColorSliderWidget::setComponent( const QgsColorWidget::ColorComponent component )
 {
   QgsColorWidget::setComponent( component );
@@ -1447,11 +1433,6 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
   updateText();
 }
 
-QgsColorTextWidget::~QgsColorTextWidget()
-{
-
-}
-
 void QgsColorTextWidget::setColor( const QColor &color, const bool emitSignals )
 {
   QgsColorWidget::setColor( color, emitSignals );
@@ -1559,11 +1540,6 @@ void QgsColorTextWidget::showMenu()
 QgsColorPreviewWidget::QgsColorPreviewWidget( QWidget *parent )
     : QgsColorWidget( parent )
     , mColor2( QColor() )
-{
-
-}
-
-QgsColorPreviewWidget::~QgsColorPreviewWidget()
 {
 
 }
@@ -1723,11 +1699,6 @@ QgsColorWidgetAction::QgsColorWidgetAction( QgsColorWidget* colorWidget, QMenu* 
 
   connect( this, SIGNAL( hovered() ), this, SLOT( onHover() ) );
   connect( mColorWidget, SIGNAL( hovered() ), this, SLOT( onHover() ) );
-}
-
-QgsColorWidgetAction::~QgsColorWidgetAction()
-{
-
 }
 
 void QgsColorWidgetAction::onHover()

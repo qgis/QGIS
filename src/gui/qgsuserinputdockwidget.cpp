@@ -33,10 +33,6 @@ QgsUserInputDockWidget::QgsUserInputDockWidget( QWidget *parent )
   hide();
 }
 
-QgsUserInputDockWidget::~QgsUserInputDockWidget()
-{
-}
-
 void QgsUserInputDockWidget::addUserInputWidget( QWidget *widget )
 {
   QFrame* line = nullptr;

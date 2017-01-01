@@ -64,11 +64,6 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer* layer,
   populateFields();
 }
 
-QgsSearchQueryBuilder::~QgsSearchQueryBuilder()
-{
-}
-
-
 void QgsSearchQueryBuilder::populateFields()
 {
   if ( !mLayer )

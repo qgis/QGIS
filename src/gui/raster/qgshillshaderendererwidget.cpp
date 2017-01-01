@@ -68,11 +68,6 @@ QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer *layer, c
   connect( mMultiDirection, SIGNAL( toggled( bool ) ), this, SIGNAL( widgetChanged() ) );
 }
 
-QgsHillshadeRendererWidget::~QgsHillshadeRendererWidget()
-{
-
-}
-
 QgsRasterRenderer *QgsHillshadeRendererWidget::renderer()
 {
   if ( !mRasterLayer )

@@ -42,7 +42,6 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
      * @param parent Parent widget
      */
     explicit QgsAuthAuthoritiesEditor( QWidget *parent = nullptr );
-    ~QgsAuthAuthoritiesEditor();
 
   private slots:
     void populateCaCertsView();

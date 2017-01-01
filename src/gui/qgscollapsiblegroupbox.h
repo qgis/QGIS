@@ -95,7 +95,6 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
   public:
     QgsCollapsibleGroupBoxBasic( QWidget *parent = nullptr );
     QgsCollapsibleGroupBoxBasic( const QString &title, QWidget *parent = nullptr );
-    ~QgsCollapsibleGroupBoxBasic();
 
     /**
      * Returns the current collapsed state of this group box

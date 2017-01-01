@@ -61,7 +61,6 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
      */
     explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
                                           QWidget *parent = nullptr );
-    ~QgsAuthImportIdentityDialog();
 
     //! Get identity type
     QgsAuthImportIdentityDialog::IdentityType identityType();

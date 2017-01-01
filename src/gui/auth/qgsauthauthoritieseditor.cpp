@@ -99,10 +99,6 @@ QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
   }
 }
 
-QgsAuthAuthoritiesEditor::~QgsAuthAuthoritiesEditor()
-{
-}
-
 static void setItemBold_( QTreeWidgetItem* item )
 {
   item->setFirstColumnSpanned( true );

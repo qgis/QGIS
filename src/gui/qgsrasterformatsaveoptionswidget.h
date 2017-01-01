@@ -45,7 +45,6 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
     QgsRasterFormatSaveOptionsWidget( QWidget* parent = nullptr, const QString& format = "GTiff",
                                       QgsRasterFormatSaveOptionsWidget::Type type = Default,
                                       const QString& provider = "gdal" );
-    ~QgsRasterFormatSaveOptionsWidget();
 
     void setFormat( const QString& format );
     void setProvider( const QString& provider );

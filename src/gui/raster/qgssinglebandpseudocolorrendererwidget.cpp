@@ -134,10 +134,6 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   connect( mClipCheckBox, SIGNAL( toggled( bool ) ), this, SIGNAL( widgetChanged() ) );
 }
 
-QgsSingleBandPseudoColorRendererWidget::~QgsSingleBandPseudoColorRendererWidget()
-{
-}
-
 QgsRasterRenderer* QgsSingleBandPseudoColorRendererWidget::renderer()
 {
   QgsRasterShader* rasterShader = new QgsRasterShader();

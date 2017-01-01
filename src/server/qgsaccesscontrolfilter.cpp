@@ -32,11 +32,6 @@ QgsAccessControlFilter::QgsAccessControlFilter( const QgsServerInterface* server
 {
 }
 
-
-QgsAccessControlFilter::~QgsAccessControlFilter()
-{
-}
-
 //! Return an additional layer expression filter
 QString QgsAccessControlFilter::layerFilterExpression( const QgsVectorLayer* layer ) const
 {

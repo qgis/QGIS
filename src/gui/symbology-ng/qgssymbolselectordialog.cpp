@@ -273,10 +273,6 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyle* s
   setPanelTitle( tr( "Symbol selector" ) );
 }
 
-QgsSymbolSelectorWidget::~QgsSymbolSelectorWidget()
-{
-}
-
 QMenu* QgsSymbolSelectorWidget::advancedMenu()
 {
   if ( !mAdvancedMenu )

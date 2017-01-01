@@ -72,8 +72,6 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Constructor
     QgisInterface();
 
-    virtual ~QgisInterface();
-
     virtual QgsPluginManagerInterface* pluginManagerInterface() = 0;
 
     virtual QgsLayerTreeView* layerTreeView() = 0;

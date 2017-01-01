@@ -44,10 +44,6 @@ QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
   }
 }
 
-QgsMasterPasswordResetDialog::~QgsMasterPasswordResetDialog()
-{
-}
-
 bool QgsMasterPasswordResetDialog::requestMasterPasswordReset( QString *newpass, QString *oldpass, bool *keepbackup )
 {
   if ( !QgsAuthManager::instance()->isDisabled() )

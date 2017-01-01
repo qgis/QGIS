@@ -66,7 +66,6 @@ class QgsWfsServer: public QgsOWSServer
       , const QgsAccessControl* accessControl
 #endif
     );
-    ~QgsWfsServer();
 
     void executeRequest() override;
 

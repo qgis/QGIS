@@ -27,11 +27,6 @@ QgsPreviewEffect::QgsPreviewEffect( QObject* parent )
   setEnabled( false );
 }
 
-QgsPreviewEffect::~QgsPreviewEffect()
-{
-
-}
-
 void QgsPreviewEffect::setMode( QgsPreviewEffect::PreviewMode mode )
 {
   mMode = mode;

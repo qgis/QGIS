@@ -41,8 +41,6 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     QgsSearchQueryBuilder( QgsVectorLayer* layer, QWidget *parent = nullptr,
                            Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
-    ~QgsSearchQueryBuilder();
-
     //! returns newly created search string
     QString searchString();
 

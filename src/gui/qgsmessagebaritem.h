@@ -44,8 +44,6 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     //! make out a widget containing a widget to be displayed on the bar
     QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent = nullptr );
 
-    ~QgsMessageBarItem();
-
     QgsMessageBarItem *setText( const QString& text );
 
     QgsMessageBarItem *setTitle( const QString& title );

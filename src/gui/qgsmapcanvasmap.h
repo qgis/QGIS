@@ -35,8 +35,6 @@ class QgsMapCanvasMap : public QgsMapCanvasItem
     //! constructor
     QgsMapCanvasMap( QgsMapCanvas* canvas );
 
-    ~QgsMapCanvasMap();
-
     //! @note added in 2.4
     void setContent( const QImage& image, const QgsRectangle& rect );
 

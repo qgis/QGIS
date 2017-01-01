@@ -38,8 +38,6 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
   public:
     explicit QgsScaleWidget( QWidget *parent = nullptr );
 
-    virtual ~QgsScaleWidget();
-
     //! shows a button to set the scale to the current scale of the map canvas next to the combobox
     //! @note the map canvas must be defined to show the button
     void setShowCurrentScaleButton( bool showCurrentScaleButton );

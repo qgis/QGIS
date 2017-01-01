@@ -184,10 +184,6 @@ QgsNewHttpConnection::QgsNewHttpConnection(
   on_txtName_textChanged( connName );
 }
 
-QgsNewHttpConnection::~QgsNewHttpConnection()
-{
-}
-
 void QgsNewHttpConnection::on_txtName_textChanged( const QString &text )
 {
   Q_UNUSED( text );

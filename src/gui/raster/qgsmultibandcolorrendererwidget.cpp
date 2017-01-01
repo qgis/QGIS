@@ -84,10 +84,6 @@ QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer
   }
 }
 
-QgsMultiBandColorRendererWidget::~QgsMultiBandColorRendererWidget()
-{
-}
-
 QgsRasterRenderer* QgsMultiBandColorRendererWidget::renderer()
 {
   if ( !mRasterLayer )

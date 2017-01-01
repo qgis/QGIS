@@ -42,7 +42,6 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
                               bool manageCertTrust = false,
                               QWidget *parent = nullptr,
                               const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
-    ~QgsAuthCertInfo();
 
     bool trustCacheRebuilt() { return mTrustCacheRebuilt; }
 
@@ -154,7 +153,6 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
                                     bool manageCertTrust,
                                     QWidget *parent = nullptr,
                                     const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
-    ~QgsAuthCertInfoDialog();
 
     //! Get access to embedded info widget
     QgsAuthCertInfo *certInfoWidget() { return mCertInfoWdgt; }

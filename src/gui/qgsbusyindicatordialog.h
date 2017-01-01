@@ -40,7 +40,6 @@ class GUI_EXPORT QgsBusyIndicatorDialog : public QDialog
      * @param fl widget flags
      */
     QgsBusyIndicatorDialog( const QString& message = "", QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
-    ~QgsBusyIndicatorDialog();
 
     QString message() const { return mMessage; }
     void setMessage( const QString& message );

@@ -71,10 +71,6 @@ QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
            this, SIGNAL( layerSavedAs( QgsMapLayer*, QString ) ) );
 }
 
-QgisAppInterface::~QgisAppInterface()
-{
-}
-
 QgsPluginManagerInterface* QgisAppInterface::pluginManagerInterface()
 {
   return &pluginManagerIface;

@@ -88,10 +88,6 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
   }
 }
 
-QgsAuthSslConfigWidget::~QgsAuthSslConfigWidget()
-{
-}
-
 QGroupBox *QgsAuthSslConfigWidget::certificateGroupBox()
 {
   if ( mDisabled )
@@ -619,10 +615,6 @@ QgsAuthSslConfigDialog::QgsAuthSslConfigDialog( QWidget *parent , const QSslCert
 
   setLayout( layout );
   mSaveButton->setEnabled( mSslConfigWdgt->readyToSave() );
-}
-
-QgsAuthSslConfigDialog::~QgsAuthSslConfigDialog()
-{
 }
 
 void QgsAuthSslConfigDialog::accept()

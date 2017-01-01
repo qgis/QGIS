@@ -50,10 +50,6 @@ QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget *parent )
   }
 }
 
-QgsAuthMethodPlugins::~QgsAuthMethodPlugins()
-{
-}
-
 void QgsAuthMethodPlugins::setupTable()
 {
   tblAuthPlugins->setColumnCount( 3 );
@@ -123,10 +119,6 @@ QgsAuthEditorWidgets::QgsAuthEditorWidgets( QWidget *parent )
   {
     grpbxManagers->setEnabled( false );
   }
-}
-
-QgsAuthEditorWidgets::~QgsAuthEditorWidgets()
-{
 }
 
 void QgsAuthEditorWidgets::on_btnCertManager_clicked()

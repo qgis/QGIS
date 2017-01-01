@@ -66,8 +66,6 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      */
     explicit QgsFileWidget( QWidget *parent = 0 );
 
-    ~QgsFileWidget();
-
     //! Returns the current file path
     QString filePath();
 

@@ -44,8 +44,6 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
     QgsColorDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
                     const QColor& color = QColor() );
 
-    ~QgsColorDialog();
-
     /** Returns the current color for the dialog
      * @returns dialog color
      */

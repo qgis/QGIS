@@ -41,11 +41,6 @@ QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget* parent,
   updateUi();
 }
 
-QgsRasterPyramidsOptionsWidget::~QgsRasterPyramidsOptionsWidget()
-{
-}
-
-
 void QgsRasterPyramidsOptionsWidget::updateUi()
 {
   QSettings mySettings;

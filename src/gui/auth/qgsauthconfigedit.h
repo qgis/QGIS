@@ -50,7 +50,6 @@ class GUI_EXPORT QgsAuthConfigEdit : public QDialog, private Ui::QgsAuthConfigEd
      */
     explicit QgsAuthConfigEdit( QWidget *parent = nullptr, const QString& authcfg = QString(),
                                 const QString &dataprovider = QString() );
-    ~QgsAuthConfigEdit();
 
     //! Authentication config id, updated with generated id when a new config is saved to auth database
     const QString configId() const { return mAuthCfg; }

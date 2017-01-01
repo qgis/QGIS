@@ -43,10 +43,6 @@ QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget 
   setFromMinMaxOrigin( defaultMinMaxOrigin );
 }
 
-QgsRasterMinMaxWidget::~QgsRasterMinMaxWidget()
-{
-}
-
 void QgsRasterMinMaxWidget::setMapCanvas( QgsMapCanvas* canvas )
 {
   mCanvas = canvas;

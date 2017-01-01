@@ -31,7 +31,6 @@ class SERVER_EXPORT QgsCapabilitiesCache : public QObject
     Q_OBJECT
   public:
     QgsCapabilitiesCache();
-    ~QgsCapabilitiesCache();
 
     /** Returns cached capabilities document (or 0 if document for configuration file not in cache)
      * @param configFilePath the progect file path

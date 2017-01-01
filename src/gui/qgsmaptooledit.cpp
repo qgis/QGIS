@@ -29,11 +29,6 @@ QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas* canvas )
 {
 }
 
-QgsMapToolEdit::~QgsMapToolEdit()
-{
-}
-
-
 QgsRubberBand* QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand )
 {
   QSettings settings;

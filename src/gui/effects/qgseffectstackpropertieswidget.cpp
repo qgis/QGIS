@@ -371,11 +371,6 @@ QgsEffectStackPropertiesDialog::QgsEffectStackPropertiesDialog( QgsEffectStack *
   layout()->addWidget( mPropertiesWidget );
 }
 
-QgsEffectStackPropertiesDialog::~QgsEffectStackPropertiesDialog()
-{
-
-}
-
 QgsEffectStack* QgsEffectStackPropertiesDialog::stack()
 {
   return mPropertiesWidget->stack();

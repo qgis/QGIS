@@ -37,10 +37,6 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVecto
   }
 }
 
-QgsVectorFieldSymbolLayerWidget::~QgsVectorFieldSymbolLayerWidget()
-{
-}
-
 void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 {
   if ( layer->layerType() != QLatin1String( "VectorField" ) )

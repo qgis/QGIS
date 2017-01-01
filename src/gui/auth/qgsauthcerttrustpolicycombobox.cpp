@@ -58,10 +58,6 @@ QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
   setDefaultTrustPolicy( defaultpolicy );
 }
 
-QgsAuthCertTrustPolicyComboBox::~QgsAuthCertTrustPolicyComboBox()
-{
-}
-
 QgsAuthCertUtils::CertTrustPolicy QgsAuthCertTrustPolicyComboBox::trustPolicy()
 {
   return ( QgsAuthCertUtils::CertTrustPolicy )itemData( currentIndex() ).toInt();

@@ -36,7 +36,6 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
     Q_OBJECT
   public:
     QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget *parent = nullptr );
-    ~QgsRasterMinMaxWidget();
 
     /** Sets the extent to use for minimum and maximum value calculation.
      * @param theExtent extent in raster layer's CRS

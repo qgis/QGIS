@@ -68,10 +68,6 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString& cdt, QgsColorSch
   setPopupMode( QToolButton::MenuButtonPopup );
 }
 
-QgsColorButton::~QgsColorButton()
-{
-}
-
 QSize QgsColorButton::sizeHint() const
 {
   //make sure height of button looks good under different platforms

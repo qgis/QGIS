@@ -36,7 +36,6 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
 
   public:
     QgsAttributeTypeLoadDialog( QgsVectorLayer *vl );
-    ~QgsAttributeTypeLoadDialog();
 
     /**
      * Overloaded accept method which will write the feature field

@@ -67,10 +67,6 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   connect( mMaximumScaleWidget, SIGNAL( scaleChanged( double ) ), this, SLOT( emitRangeChanged() ) );
 }
 
-QgsScaleRangeWidget::~QgsScaleRangeWidget()
-{
-}
-
 void QgsScaleRangeWidget::reloadProjectScales()
 {
   bool projectScales = QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) );

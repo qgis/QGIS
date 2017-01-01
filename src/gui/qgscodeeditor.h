@@ -45,7 +45,6 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * @note added in 2.6
      */
     QgsCodeEditor( QWidget *parent = nullptr, const QString& title = "", bool folding = false, bool margin = false );
-    ~QgsCodeEditor();
 
     /** Set the widget title
      * @param title widget title

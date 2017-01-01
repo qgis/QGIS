@@ -34,10 +34,6 @@ QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
   setSciLexerHTML();
 }
 
-QgsCodeEditorHTML::~QgsCodeEditorHTML()
-{
-}
-
 void QgsCodeEditorHTML::setSciLexerHTML()
 {
   QsciLexerHTML* lexer = new QsciLexerHTML( this );
