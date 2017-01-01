@@ -45,6 +45,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgisAppInterface( QgisApp *qgisapp );
     ~QgisAppInterface();
 
+    QgisAppInterface( QgisAppInterface const & ) = delete;
+    QgisAppInterface & operator=( QgisAppInterface const & ) = delete;
+
     QgsPluginManagerInterface* pluginManagerInterface() override;
 
     QgsLayerTreeView* layerTreeView() override;
@@ -523,12 +526,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void cacheloadForm( const QString& uifile );
 
   private:
-
-    /// QgisInterface aren't copied
-    QgisAppInterface( QgisAppInterface const & );
-
-    /// QgisInterface aren't copied
-    QgisAppInterface & operator=( QgisAppInterface const & );
 
     //! Pointer to the QgisApp object
     QgisApp *qgis;

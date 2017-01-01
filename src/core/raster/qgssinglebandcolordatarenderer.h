@@ -30,6 +30,9 @@ class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
   public:
     QgsSingleBandColorDataRenderer( QgsRasterInterface* input, int band );
 
+    QgsSingleBandColorDataRenderer( const QgsSingleBandColorDataRenderer& ) = delete;
+    const QgsSingleBandColorDataRenderer& operator=( const QgsSingleBandColorDataRenderer& ) = delete;
+
     QgsSingleBandColorDataRenderer * clone() const override;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
@@ -45,8 +48,6 @@ class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
   private:
     int mBand;
 
-    QgsSingleBandColorDataRenderer( const QgsSingleBandColorDataRenderer& );
-    const QgsSingleBandColorDataRenderer& operator=( const QgsSingleBandColorDataRenderer& );
 };
 
 #endif // QGSSINGLEBANDCOLORDATARENDERER_H

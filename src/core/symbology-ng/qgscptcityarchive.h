@@ -41,6 +41,9 @@ class CORE_EXPORT QgsCptCityArchive
                        const QString& baseDir = QString() );
     ~QgsCptCityArchive();
 
+    QgsCptCityArchive( const QgsCptCityArchive& rh ) = delete;
+    QgsCptCityArchive& operator=( const QgsCptCityArchive& rh ) = delete;
+
     // basic dir info
     QString baseDir() const;
     static QString baseDir( QString archiveName );
@@ -82,10 +85,6 @@ class CORE_EXPORT QgsCptCityArchive
     // mapping of copyinginfo, key is fileName
     static QMap< QString, QMap< QString, QString > > mCopyingInfoMap;
 
-  private:
-
-    QgsCptCityArchive( const QgsCptCityArchive& rh );
-    QgsCptCityArchive& operator=( const QgsCptCityArchive& rh );
 };
 
 /** Base class for all items in the model

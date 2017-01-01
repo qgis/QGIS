@@ -64,8 +64,10 @@ class CORE_EXPORT QgsPluginLayerRegistry
   public:
 
     QgsPluginLayerRegistry();
-
     ~QgsPluginLayerRegistry();
+
+    QgsPluginLayerRegistry( const QgsPluginLayerRegistry& rh ) = delete;
+    QgsPluginLayerRegistry& operator=( const QgsPluginLayerRegistry& rh ) = delete;
 
     /** List all known layer types
      *  \note added in v2.1 */
@@ -88,9 +90,6 @@ class CORE_EXPORT QgsPluginLayerRegistry
   private:
 
     typedef QMap<QString, QgsPluginLayerType*> PluginLayerTypes;
-
-    QgsPluginLayerRegistry( const QgsPluginLayerRegistry& rh );
-    QgsPluginLayerRegistry& operator=( const QgsPluginLayerRegistry& rh );
 
     PluginLayerTypes mPluginLayerTypes;
 };

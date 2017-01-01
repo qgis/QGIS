@@ -55,6 +55,8 @@ class CORE_EXPORT QgsContrastEnhancement
     QgsContrastEnhancement( const QgsContrastEnhancement& ce );
     ~QgsContrastEnhancement();
 
+    const QgsContrastEnhancement& operator=( const QgsContrastEnhancement& ) = delete;
+
     /*
      *
      * Static methods
@@ -146,7 +148,6 @@ class CORE_EXPORT QgsContrastEnhancement
     //! \brief Method to calculate the actual enhanceContrasted value(s)
     int calculateContrastEnhancementValue( double );
 
-    const QgsContrastEnhancement& operator=( const QgsContrastEnhancement& );
 };
 
 #endif

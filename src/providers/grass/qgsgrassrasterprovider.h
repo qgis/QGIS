@@ -57,14 +57,15 @@ class GRASS_LIB_EXPORT QgsGrassRasterValue
     QgsGrassRasterValue();
     ~QgsGrassRasterValue();
 
+    QgsGrassRasterValue( const QgsGrassRasterValue& other ) = delete;
+    QgsGrassRasterValue& operator=( const QgsGrassRasterValue& other ) = delete;
+
     void set( const QString & gisdbase, const QString & location, const QString & mapset, const QString & map );
     void stop();
     // returns raster value, NaN for no data
     // ok is set to true if ok or false on error
     double value( double x, double y, bool *ok );
   private:
-    QgsGrassRasterValue( const QgsGrassRasterValue& other );
-    QgsGrassRasterValue& operator=( const QgsGrassRasterValue& other );
 
     void start();
     QString mGisdbase;      // map gisdabase

@@ -112,6 +112,9 @@ namespace pal
 
       ~Problem();
 
+      Problem( const Problem& other ) = delete;
+      Problem& operator=( const Problem& other ) = delete;
+
       /** Adds a candidate label position to the problem.
        * @param position label candidate position. Ownership is transferred to Problem.
        * @note added in QGIS 2.12
@@ -177,9 +180,6 @@ namespace pal
       static bool compareLabelArea( pal::LabelPosition* l1, pal::LabelPosition* l2 );
 
     private:
-
-      Problem( const Problem& other );
-      Problem& operator=( const Problem& other );
 
       /**
        * How many layers are labelled ?

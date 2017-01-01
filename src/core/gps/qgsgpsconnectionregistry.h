@@ -34,8 +34,10 @@ class CORE_EXPORT QgsGPSConnectionRegistry
 {
   public:
     QgsGPSConnectionRegistry();
-
     ~QgsGPSConnectionRegistry();
+
+    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry& rh ) = delete;
+    QgsGPSConnectionRegistry& operator=( const QgsGPSConnectionRegistry& rh ) = delete;
 
     //! Inserts a connection into the registry. The connection is owned by the registry class until it is unregistered again
     void registerConnection( QgsGPSConnection* c );
@@ -44,11 +46,7 @@ class CORE_EXPORT QgsGPSConnectionRegistry
 
     QList< QgsGPSConnection *> connectionList() const;
 
-
   private:
-
-    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry& rh );
-    QgsGPSConnectionRegistry& operator=( const QgsGPSConnectionRegistry& rh );
 
     QSet<QgsGPSConnection*> mConnections;
 };

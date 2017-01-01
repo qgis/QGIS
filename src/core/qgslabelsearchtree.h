@@ -36,6 +36,9 @@ class CORE_EXPORT QgsLabelSearchTree
     QgsLabelSearchTree();
     ~QgsLabelSearchTree();
 
+    QgsLabelSearchTree( const QgsLabelSearchTree& rh ) = delete;
+    QgsLabelSearchTree& operator=( const QgsLabelSearchTree& rh ) = delete;
+
     //! Removes and deletes all the entries
     void clear();
 
@@ -62,8 +65,6 @@ class CORE_EXPORT QgsLabelSearchTree
     mutable pal::RTree<QgsLabelPosition*, double, 2, double> mSpatialIndex;
     QList< QgsLabelPosition* > mOwnedPositions;
 
-    QgsLabelSearchTree( const QgsLabelSearchTree& rh );
-    QgsLabelSearchTree& operator=( const QgsLabelSearchTree& rh );
 };
 
 #endif // QGSLABELTREE_H

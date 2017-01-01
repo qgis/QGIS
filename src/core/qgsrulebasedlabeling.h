@@ -57,6 +57,9 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         Rule( QgsPalLayerSettings* settings, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString& filterExp = QString(), const QString& description = QString(), bool elseRule = false );
         ~Rule();
 
+        Rule( const Rule& rh ) = delete;
+        Rule& operator=( const Rule& rh ) = delete;
+
         //! The result of registering a rule
         enum RegisterResult
         {
@@ -298,10 +301,6 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         // temporary
         QgsExpression* mFilter;
 
-      private:
-
-        Rule( const Rule& rh );
-        Rule& operator=( const Rule& rh );
     };
 
 

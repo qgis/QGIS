@@ -36,6 +36,10 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray, int nColors, const QVector<QString>& labels = QVector<QString>() );
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors, const QVector<QString>& labels = QVector<QString>() );
     ~QgsPalettedRasterRenderer();
+
+    QgsPalettedRasterRenderer( const QgsPalettedRasterRenderer& ) = delete;
+    const QgsPalettedRasterRenderer& operator=( const QgsPalettedRasterRenderer& ) = delete;
+
     QgsPalettedRasterRenderer * clone() const override;
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
@@ -74,8 +78,6 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     //! Optional category labels, size of vector may be < mNColors
     QVector<QString> mLabels;
 
-    QgsPalettedRasterRenderer( const QgsPalettedRasterRenderer& );
-    const QgsPalettedRasterRenderer& operator=( const QgsPalettedRasterRenderer& );
 };
 
 #endif // QGSPALETTEDRASTERRENDERER_H

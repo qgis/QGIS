@@ -94,10 +94,10 @@ namespace pal
        */
       Pal();
 
-      /**
-       * \brief delete an instance
-       */
       ~Pal();
+
+      Pal( const Pal& other ) = delete;
+      Pal& operator=( const Pal& other ) = delete;
 
       /**
        * \brief add a new layer
@@ -323,11 +323,6 @@ namespace pal
        * @return maximum # of iteration
        */
       int getMaxIt();
-
-    private:
-
-      Pal( const Pal& other );
-      Pal& operator=( const Pal& other );
 
   };
 

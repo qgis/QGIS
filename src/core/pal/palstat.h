@@ -49,11 +49,10 @@ namespace pal
 
     public:
 
-      /**
-       * \brief delete stats
-       */
       ~PalStat();
 
+      PalStat( const PalStat& other ) = delete;
+      PalStat& operator=( const PalStat& other ) = delete;
 
       /**
        * \brief the number of object in problem
@@ -96,8 +95,7 @@ namespace pal
       int *layersNbLabelledObjects; // [nbLayers]
 
       PalStat();
-      PalStat( const PalStat& other );
-      PalStat& operator=( const PalStat& other );
+
   };
 
 } // end namespace pal

@@ -99,6 +99,9 @@ class CORE_EXPORT QgsVectorLayerImport
                           QProgressDialog *progress = nullptr
                         );
 
+    QgsVectorLayerImport( const QgsVectorLayerImport& rh ) = delete;
+    QgsVectorLayerImport& operator=( const QgsVectorLayerImport& rh ) = delete;
+
     //! Checks whether there were any errors
     ImportError hasError();
 
@@ -135,10 +138,6 @@ class CORE_EXPORT QgsVectorLayerImport
     QgsFeatureList mFeatureBuffer;
     QProgressDialog *mProgress;
 
-  private:
-
-    QgsVectorLayerImport( const QgsVectorLayerImport& rh );
-    QgsVectorLayerImport& operator=( const QgsVectorLayerImport& rh );
 };
 
 #endif

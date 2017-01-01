@@ -419,6 +419,9 @@ class CORE_EXPORT QgsVectorFileWriter
                          SymbologyExport symbologyExport = NoSymbology
                        );
 
+    QgsVectorFileWriter( const QgsVectorFileWriter& rh ) = delete;
+    QgsVectorFileWriter& operator=( const QgsVectorFileWriter& rh ) = delete;
+
     //! Returns map with format filter string as key and OGR format key as value
     static QMap< QString, QString> supportedFiltersAndFormats();
 
@@ -606,9 +609,6 @@ class CORE_EXPORT QgsVectorFileWriter
     //! Adds attributes needed for classification
     void addRendererAttributes( QgsVectorLayer* vl, QgsAttributeList& attList );
     static QMap<QString, MetaData> sDriverMetadata;
-
-    QgsVectorFileWriter( const QgsVectorFileWriter& rh );
-    QgsVectorFileWriter& operator=( const QgsVectorFileWriter& rh );
 
     //! Concatenates a list of options using their default values
     static QStringList concatenateOptions( const QMap<QString, Option*>& options );

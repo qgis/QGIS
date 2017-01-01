@@ -37,6 +37,9 @@ class SERVER_EXPORT QgsWfsProjectParser
     );
     ~QgsWfsProjectParser();
 
+    QgsWfsProjectParser( const QgsWfsProjectParser& rh ) = delete;
+    QgsWfsProjectParser& operator=( const QgsWfsProjectParser& rh ) = delete;
+
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
     QString serviceUrl() const;
     QString wfsServiceUrl() const;
@@ -60,8 +63,6 @@ class SERVER_EXPORT QgsWfsProjectParser
     const QgsAccessControl* mAccessControl;
 #endif
 
-    QgsWfsProjectParser( const QgsWfsProjectParser& rh );
-    QgsWfsProjectParser& operator=( const QgsWfsProjectParser& rh );
 };
 
 #endif // QGSWFSPROJECTPARSER_H

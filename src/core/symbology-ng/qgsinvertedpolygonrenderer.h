@@ -46,6 +46,11 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
      */
     QgsInvertedPolygonRenderer( QgsFeatureRenderer* embeddedRenderer = nullptr );
 
+    //! Direct copies are forbidden. Use clone() instead.
+    QgsInvertedPolygonRenderer( const QgsInvertedPolygonRenderer& ) = delete;
+    //! Direct copies are forbidden. Use clone() instead.
+    QgsInvertedPolygonRenderer& operator=( const QgsInvertedPolygonRenderer& ) = delete;
+
     virtual QgsInvertedPolygonRenderer* clone() const override;
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
 
@@ -136,10 +141,6 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     static QgsInvertedPolygonRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer );
 
   private:
-    //! Private copy constructor. @see clone()
-    QgsInvertedPolygonRenderer( const QgsInvertedPolygonRenderer& );
-    //! Private assignment operator. @see clone()
-    QgsInvertedPolygonRenderer& operator=( const QgsInvertedPolygonRenderer& );
 
     //! Embedded renderer
     QScopedPointer<QgsFeatureRenderer> mSubRenderer;

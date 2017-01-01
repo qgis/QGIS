@@ -106,6 +106,9 @@ class QgsGeometryCheckError
                            const QVariant& value = QVariant(),
                            ValueType valueType = ValueOther );
     virtual ~QgsGeometryCheckError();
+
+    const QgsGeometryCheckError& operator=( const QgsGeometryCheckError& ) = delete;
+
     const QgsGeometryCheck* check() const { return mCheck; }
     QgsFeatureId featureId() const { return mFeatureId; }
     virtual QgsAbstractGeometry* geometry();
@@ -159,8 +162,6 @@ class QgsGeometryCheckError
     Status mStatus;
     QString mResolutionMessage;
 
-  private:
-    const QgsGeometryCheckError& operator=( const QgsGeometryCheckError& );
 };
 
 Q_DECLARE_METATYPE( QgsGeometryCheckError* )

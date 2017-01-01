@@ -457,6 +457,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     virtual ~QgsVectorLayer();
 
+    QgsVectorLayer( const QgsVectorLayer & rhs ) = delete;
+    QgsVectorLayer & operator=( QgsVectorLayer const & rhs ) = delete;
+
     //! Returns the permanent storage type for this layer as a friendly name.
     QString storageType() const;
 
@@ -1945,13 +1948,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns true if the provider is in read-only mode
      */
     virtual bool isReadOnly() const override;
-
-    //! Vector layers are not copyable
-    QgsVectorLayer( const QgsVectorLayer & rhs );
-
-    //! Vector layers are not copyable
-    QgsVectorLayer & operator=( QgsVectorLayer const & rhs );
-
 
     /** Bind layer to a specific data provider
      * @param provider should be "postgres", "ogr", or ??

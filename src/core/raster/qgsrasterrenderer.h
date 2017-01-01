@@ -43,6 +43,9 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     QgsRasterRenderer( QgsRasterInterface* input = nullptr, const QString& type = "" );
     virtual ~QgsRasterRenderer();
 
+    QgsRasterRenderer( const QgsRasterRenderer& ) = delete;
+    const QgsRasterRenderer& operator=( const QgsRasterRenderer& ) = delete;
+
     QgsRasterRenderer * clone() const override = 0;
 
     virtual int bandCount() const override;
@@ -105,10 +108,6 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     //! Origin of min/max values
     QgsRasterMinMaxOrigin mMinMaxOrigin;
 
-  private:
-
-    QgsRasterRenderer( const QgsRasterRenderer& );
-    const QgsRasterRenderer& operator=( const QgsRasterRenderer& );
 };
 
 #endif // QGSRASTERRENDERER_H

@@ -37,6 +37,10 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand );
     ~QgsSingleBandGrayRenderer();
+
+    QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer& ) = delete;
+    const QgsSingleBandGrayRenderer& operator=( const QgsSingleBandGrayRenderer& ) = delete;
+
     QgsSingleBandGrayRenderer * clone() const override;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
@@ -63,8 +67,6 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     Gradient mGradient;
     QgsContrastEnhancement* mContrastEnhancement;
 
-    QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer& );
-    const QgsSingleBandGrayRenderer& operator=( const QgsSingleBandGrayRenderer& );
 };
 
 #endif // QGSSINGLEBANDGRAYRENDERER_H

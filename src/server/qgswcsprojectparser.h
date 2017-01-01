@@ -35,6 +35,9 @@ class SERVER_EXPORT QgsWCSProjectParser
     );
     ~QgsWCSProjectParser();
 
+    QgsWCSProjectParser( const QgsWCSProjectParser& rh ) = delete;
+    QgsWCSProjectParser& operator=( const QgsWCSProjectParser& rh ) = delete;
+
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
     QString wcsServiceUrl() const;
     QString serviceUrl() const;
@@ -49,8 +52,6 @@ class SERVER_EXPORT QgsWCSProjectParser
     const QgsAccessControl* mAccessControl;
 #endif
 
-    QgsWCSProjectParser( const QgsWCSProjectParser& rh );
-    QgsWCSProjectParser& operator=( const QgsWCSProjectParser& rh );
 };
 
 #endif // QGSWCSPROJECTPARSER_H

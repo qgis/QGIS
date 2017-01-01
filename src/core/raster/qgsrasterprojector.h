@@ -121,6 +121,9 @@ class ProjectorData
     ProjectorData( const QgsRectangle &extent, int width, int height, QgsRasterInterface *input, const QgsCoordinateTransform &inverseCt, QgsRasterProjector::Precision precision );
     ~ProjectorData();
 
+    ProjectorData( const ProjectorData& other ) = delete;
+    ProjectorData& operator=( const ProjectorData& other ) = delete;
+
     /** \brief Get source row and column indexes for current source extent and resolution
         If source pixel is outside source extent theSrcRow and theSrcCol are left unchanged.
         @return true if inside source
@@ -132,8 +135,6 @@ class ProjectorData
     int srcCols() const { return mSrcCols; }
 
   private:
-    ProjectorData( const ProjectorData& other );
-    ProjectorData& operator=( const ProjectorData& other );
 
     //! \brief get destination point for _current_ destination position
     void destPointOnCPMatrix( int theRow, int theCol, double *theX, double *theY );

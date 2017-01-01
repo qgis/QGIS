@@ -1187,13 +1187,13 @@ class CORE_EXPORT QgsExpression
         {}
         ~WhenThen() { delete mWhenExp; delete mThenExp; }
 
+        WhenThen( const WhenThen& rh ) = delete;
+        WhenThen& operator=( const WhenThen& rh ) = delete;
+
         // protected:
         Node* mWhenExp;
         Node* mThenExp;
 
-      private:
-        WhenThen( const WhenThen& rh );
-        WhenThen& operator=( const WhenThen& rh );
     };
     typedef QList<WhenThen*> WhenThenList;
 

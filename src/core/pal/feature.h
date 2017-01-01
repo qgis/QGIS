@@ -66,15 +66,15 @@ namespace pal
       }
       ~LabelInfo() { delete [] char_info; }
 
+      LabelInfo( const LabelInfo& rh ) = delete;
+      LabelInfo& operator=( const LabelInfo& rh ) = delete;
+
       double max_char_angle_inside;
       double max_char_angle_outside;
       double label_height;
       int char_num;
       CharacterInfo* char_info;
-    private:
 
-      LabelInfo( const LabelInfo& rh );
-      LabelInfo& operator=( const LabelInfo& rh );
   };
 
   class LabelPosition;

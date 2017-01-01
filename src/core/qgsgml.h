@@ -88,6 +88,9 @@ class CORE_EXPORT QgsGmlStreamingParser
                            bool invertAxisOrientation = false );
     ~QgsGmlStreamingParser();
 
+    QgsGmlStreamingParser( const QgsGmlStreamingParser& other ) = delete;
+    QgsGmlStreamingParser& operator=( const QgsGmlStreamingParser& other ) = delete;
+
     /** Process a new chunk of data. atEnd must be set to true when this is
         the last chunk of data. */
     bool processData( const QByteArray& data, bool atEnd, QString& errorMsg );
@@ -130,9 +133,6 @@ class CORE_EXPORT QgsGmlStreamingParser
     bool isTruncatedResponse() const { return mTruncatedResponse; }
 
   private:
-
-    QgsGmlStreamingParser( const QgsGmlStreamingParser& other );
-    QgsGmlStreamingParser& operator=( const QgsGmlStreamingParser& other );
 
     enum ParseMode
     {

@@ -58,6 +58,9 @@ namespace pal
       PriorityQueue( int n, int maxId, bool min );
       ~PriorityQueue();
 
+      PriorityQueue( const PriorityQueue & ) = delete;
+      PriorityQueue &operator=( const PriorityQueue & ) = delete;
+
       void print();
 
       int getSize();
@@ -81,8 +84,6 @@ namespace pal
 
       int getId( int key );
     private:
-      PriorityQueue( const PriorityQueue & );
-      PriorityQueue &operator=( const PriorityQueue & );
 
       int size;
       int maxsize;

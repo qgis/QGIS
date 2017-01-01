@@ -45,6 +45,9 @@ class ANALYSIS_EXPORT QgsRelief
     QgsRelief( const QString& inputFile, const QString& outputFile, const QString& outputFormat );
     ~QgsRelief();
 
+    QgsRelief( const QgsRelief& rh ) = delete;
+    QgsRelief& operator=( const QgsRelief& rh ) = delete;
+
     /** Starts the calculation, reads from mInputFile and stores the result in mOutputFile
       @param p progress dialog that receives update and that is checked for abort. 0 if no progress bar is needed.
       @return 0 in case of success*/
@@ -122,8 +125,6 @@ class ANALYSIS_EXPORT QgsRelief
      */
     bool calculateRegression( const QList< QPair < int, double > >& input, double& a, double& b );
 
-    QgsRelief( const QgsRelief& rh );
-    QgsRelief& operator=( const QgsRelief& rh );
 };
 
 #endif // QGSRELIEF_H

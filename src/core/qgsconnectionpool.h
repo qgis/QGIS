@@ -78,6 +78,9 @@ class QgsConnectionPoolGroup
       }
     }
 
+    QgsConnectionPoolGroup( const QgsConnectionPoolGroup& other ) = delete;
+    QgsConnectionPoolGroup& operator=( const QgsConnectionPoolGroup& other ) = delete;
+
     T acquire()
     {
       // we are going to acquire a resource - if no resource is available, we will block here
@@ -213,11 +216,6 @@ class QgsConnectionPoolGroup
     QMutex connMutex;
     QSemaphore sem;
     QTimer* expirationTimer;
-
-  private:
-
-    QgsConnectionPoolGroup( const QgsConnectionPoolGroup& other );
-    QgsConnectionPoolGroup& operator=( const QgsConnectionPoolGroup& other );
 
 };
 

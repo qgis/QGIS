@@ -61,6 +61,9 @@ class QgsSpatialQuery
 
     ~QgsSpatialQuery();
 
+    QgsSpatialQuery( const QgsSpatialQuery& rh ) = delete;
+    QgsSpatialQuery& operator=( const QgsSpatialQuery& rh ) = delete;
+
     /**
      * \brief Sets if using selected features in Target layer
      * \param useSelected true if use selected.
@@ -156,8 +159,6 @@ class QgsSpatialQuery
     QgsVectorLayer * mLayerReference;
     QgsSpatialIndex  mIndexReference;
 
-    QgsSpatialQuery( const QgsSpatialQuery& rh );
-    QgsSpatialQuery& operator=( const QgsSpatialQuery& rh );
 };
 
 #endif // SPATIALQUERY_H

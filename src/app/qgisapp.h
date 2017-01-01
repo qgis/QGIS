@@ -154,6 +154,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     ~QgisApp();
 
+    QgisApp( QgisApp const & ) = delete;
+    QgisApp & operator=( QgisApp const & ) = delete;
+
     /**
      * Add a vector layer to the canvas, returns pointer to it
      */
@@ -1508,11 +1511,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Configure layer tree view according to the user options from QSettings
     void setupLayerTreeViewFromSettings();
-
-    /// QgisApp aren't copyable
-    QgisApp( QgisApp const & );
-    /// QgisApp aren't copyable
-    QgisApp & operator=( QgisApp const & );
 
     void readSettings();
     void writeSettings();

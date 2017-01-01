@@ -76,6 +76,9 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QgsRasterCalcNode( const QString& rasterName );
     ~QgsRasterCalcNode();
 
+    QgsRasterCalcNode( const QgsRasterCalcNode& rh ) = delete;
+    QgsRasterCalcNode& operator=( const QgsRasterCalcNode& rh ) = delete;
+
     Type type() const { return mType; }
 
     //set left node
@@ -103,8 +106,6 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QgsRasterMatrix* mMatrix;
     Operator mOperator;
 
-    QgsRasterCalcNode( const QgsRasterCalcNode& rh );
-    QgsRasterCalcNode& operator=( const QgsRasterCalcNode& rh );
 };
 
 

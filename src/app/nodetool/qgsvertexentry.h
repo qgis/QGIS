@@ -43,6 +43,9 @@ class QgsVertexEntry
                     int penWidth = 2 );
     ~QgsVertexEntry();
 
+    QgsVertexEntry( const QgsVertexEntry& rh ) = delete;
+    QgsVertexEntry& operator=( const QgsVertexEntry& rh ) = delete;
+
     const QgsPointV2& point() const { return mPoint; }
     QgsPoint pointV1() const { return QgsPoint( mPoint.x(), mPoint.y() ); }
     QgsVertexId vertexId() const { return mVertexId; }
@@ -52,10 +55,6 @@ class QgsVertexEntry
 
     void setSelected( bool selected = true );
 
-  private:
-
-    QgsVertexEntry( const QgsVertexEntry& rh );
-    QgsVertexEntry& operator=( const QgsVertexEntry& rh );
 };
 
 #endif

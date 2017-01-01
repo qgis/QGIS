@@ -52,6 +52,9 @@ class CORE_EXPORT QgsSvgCacheEntry
     QgsSvgCacheEntry( const QString& file, double size, double outlineWidth, double widthScaleFactor, double rasterScaleFactor, const QColor& fill, const QColor& outline, const QString& lookupKey = QString() );
     ~QgsSvgCacheEntry();
 
+    QgsSvgCacheEntry( const QgsSvgCacheEntry& rh ) = delete;
+    QgsSvgCacheEntry& operator=( const QgsSvgCacheEntry& rh ) = delete;
+
     //! Absolute path to SVG file
     QString file;
     //! Lookup key used by QgsSvgCache's hashtable (relative or absolute path). Needed for removal from the hashtable
@@ -82,10 +85,6 @@ class CORE_EXPORT QgsSvgCacheEntry
     //! Return memory usage in bytes
     int dataSize() const;
 
-  private:
-
-    QgsSvgCacheEntry( const QgsSvgCacheEntry& rh );
-    QgsSvgCacheEntry& operator=( const QgsSvgCacheEntry& rh );
 };
 
 /** \ingroup core

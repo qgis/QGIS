@@ -61,6 +61,8 @@ class CORE_EXPORT QgsRasterPipe
 
     ~QgsRasterPipe();
 
+    QgsRasterPipe& operator=( const QgsRasterPipe& rh ) = delete;
+
     /** Try to insert interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
     bool insert( int idx, QgsRasterInterface* theInterface );
@@ -128,7 +130,6 @@ class CORE_EXPORT QgsRasterPipe
         Returns true if connected or false if connection failed */
     bool connect( QVector<QgsRasterInterface*> theInterfaces );
 
-    QgsRasterPipe& operator=( const QgsRasterPipe& rh );
 };
 
 #endif

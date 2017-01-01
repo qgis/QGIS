@@ -49,6 +49,9 @@ class ANALYSIS_EXPORT QgsAlignRaster
       RasterInfo( const QString& layerpath );
       ~RasterInfo();
 
+      RasterInfo( const RasterInfo& rh ) = delete;
+      RasterInfo& operator=( const RasterInfo& rh ) = delete;
+
       //! Check whether the given path is a valid raster
       bool isValid() const { return nullptr != mDataset; }
 
@@ -86,9 +89,6 @@ class ANALYSIS_EXPORT QgsAlignRaster
       int mBandCnt;
 
     private:
-
-      RasterInfo( const RasterInfo& rh );
-      RasterInfo& operator=( const RasterInfo& rh );
 
       friend class QgsAlignRaster;
     };

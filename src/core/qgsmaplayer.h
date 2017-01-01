@@ -71,6 +71,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     virtual ~QgsMapLayer();
 
+    QgsMapLayer( QgsMapLayer const & ) = delete;
+    QgsMapLayer & operator=( QgsMapLayer const & ) = delete;
+
     /** Returns the type of the layer.
      */
     QgsMapLayer::LayerType type() const;
@@ -873,12 +876,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Layer's spatial reference system.
         private to make sure setCrs must be used and crsChanged() is emitted */
     QgsCoordinateReferenceSystem mCRS;
-
-    //! Private copy constructor - QgsMapLayer not copyable
-    QgsMapLayer( QgsMapLayer const & );
-
-    //! Private assign operator - QgsMapLayer not copyable
-    QgsMapLayer & operator=( QgsMapLayer const & );
 
     //! Unique ID of this layer - used to refer to this layer in map layer registry
     QString mID;

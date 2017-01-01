@@ -31,10 +31,8 @@ class CORE_EXPORT QgsLocaleNumC
     QgsLocaleNumC();
     ~QgsLocaleNumC();
 
-  private:
-
-    QgsLocaleNumC( const QgsLocaleNumC& rh );
-    QgsLocaleNumC& operator=( const QgsLocaleNumC& rh );
+    QgsLocaleNumC( const QgsLocaleNumC& rh ) = delete;
+    QgsLocaleNumC& operator=( const QgsLocaleNumC& rh ) = delete;
 
 };
 

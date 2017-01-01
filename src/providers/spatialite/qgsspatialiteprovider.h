@@ -156,6 +156,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
           sqlite3_free( errMsg );
       }
 
+      SLException& operator=( const SLException& other ) = delete;
+
       QString errorMessage() const
       {
         return errMsg ? QString::fromUtf8( errMsg ) : QStringLiteral( "unknown cause" );
@@ -164,7 +166,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     private:
       char *errMsg;
 
-      SLException& operator=( const SLException& other );
     };
 
     /**

@@ -161,6 +161,9 @@ class CORE_EXPORT QgsPaintEffectRegistry
     QgsPaintEffectRegistry();
     ~QgsPaintEffectRegistry();
 
+    QgsPaintEffectRegistry( const QgsPaintEffectRegistry& rh ) = delete;
+    QgsPaintEffectRegistry& operator=( const QgsPaintEffectRegistry& rh ) = delete;
+
     /** Returns the metadata for a specific effect.
      * @param name unique string name for paint effect class
      * @returns paint effect metadata if found, otherwise nullptr
@@ -211,9 +214,6 @@ class CORE_EXPORT QgsPaintEffectRegistry
     static bool isDefaultStack( QgsPaintEffect* effect );
 
   private:
-
-    QgsPaintEffectRegistry( const QgsPaintEffectRegistry& rh );
-    QgsPaintEffectRegistry& operator=( const QgsPaintEffectRegistry& rh );
 
     QMap<QString, QgsPaintEffectAbstractMetadata*> mMetadata;
 };

@@ -34,6 +34,9 @@ class CORE_EXPORT QgsRasterShader
     QgsRasterShader( double theMinimumValue = 0.0, double theMaximumValue = 255.0 );
     ~QgsRasterShader();
 
+    QgsRasterShader( const QgsRasterShader& rh ) = delete;
+    QgsRasterShader& operator=( const QgsRasterShader& rh ) = delete;
+
     /*
      *
      * Non-Static Inline methods
@@ -83,7 +86,5 @@ class CORE_EXPORT QgsRasterShader
     //! \brief Pointer to the shader function
     QgsRasterShaderFunction* mRasterShaderFunction;
 
-    QgsRasterShader( const QgsRasterShader& rh );
-    QgsRasterShader& operator=( const QgsRasterShader& rh );
 };
 #endif

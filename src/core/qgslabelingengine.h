@@ -165,6 +165,9 @@ class CORE_EXPORT QgsLabelingEngine
     //! Clean up everything (especially the registered providers)
     ~QgsLabelingEngine();
 
+    QgsLabelingEngine( const QgsLabelingEngine& rh ) = delete;
+    QgsLabelingEngine& operator=( const QgsLabelingEngine& rh ) = delete;
+
     enum Flag
     {
       UseAllLabels          = 1 << 1,  //!< Whether to draw all labels even if there would be collisions
@@ -238,10 +241,6 @@ class CORE_EXPORT QgsLabelingEngine
     //! Resulting labeling layout
     QgsLabelingResults* mResults;
 
-  private:
-
-    QgsLabelingEngine( const QgsLabelingEngine& rh );
-    QgsLabelingEngine& operator=( const QgsLabelingEngine& rh );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabelingEngine::Flags )

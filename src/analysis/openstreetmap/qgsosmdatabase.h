@@ -49,6 +49,9 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     explicit QgsOSMDatabase( const QString& dbFileName = QString() );
     ~QgsOSMDatabase();
 
+    QgsOSMDatabase( const QgsOSMDatabase& rh ) = delete;
+    QgsOSMDatabase& operator=( const QgsOSMDatabase& rh ) = delete;
+
     void setFileName( const QString& dbFileName ) { mDbFileName = dbFileName; }
     QString filename() const { return mDbFileName; }
     bool isOpen() const;
@@ -120,8 +123,6 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     sqlite3_stmt* mStmtWayNodePoints;
     sqlite3_stmt* mStmtWayTags;
 
-    QgsOSMDatabase( const QgsOSMDatabase& rh );
-    QgsOSMDatabase& operator=( const QgsOSMDatabase& rh );
 };
 
 

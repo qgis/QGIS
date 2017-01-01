@@ -51,6 +51,10 @@ class CORE_EXPORT QgsTransaction : public QObject
     Q_OBJECT
 
   public:
+
+    QgsTransaction( const QgsTransaction& other ) = delete;
+    const QgsTransaction& operator=( const QgsTransaction& other ) = delete;
+
     //! Creates a transaction for the specified connection string and provider
     static QgsTransaction* create( const QString& connString, const QString& providerKey );
 
@@ -106,8 +110,6 @@ class CORE_EXPORT QgsTransaction : public QObject
     QString mConnString;
 
   private:
-    QgsTransaction( const QgsTransaction& other );
-    const QgsTransaction& operator=( const QgsTransaction& other );
 
     bool mTransactionActive;
     QSet<QgsVectorLayer*> mLayers;

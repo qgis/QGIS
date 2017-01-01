@@ -123,6 +123,9 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     QgsSymbolLayerRegistry();
     ~QgsSymbolLayerRegistry();
 
+    QgsSymbolLayerRegistry( const QgsSymbolLayerRegistry& rh ) = delete;
+    QgsSymbolLayerRegistry& operator=( const QgsSymbolLayerRegistry& rh ) = delete;
+
     //! return metadata for specified symbol layer. Returns NULL if not found
     QgsSymbolLayerAbstractMetadata* symbolLayerMetadata( const QString& name ) const;
 
@@ -142,8 +145,6 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     static QgsSymbolLayer* defaultSymbolLayer( QgsSymbol::SymbolType type );
 
   private:
-    QgsSymbolLayerRegistry( const QgsSymbolLayerRegistry& rh );
-    QgsSymbolLayerRegistry& operator=( const QgsSymbolLayerRegistry& rh );
 
     QMap<QString, QgsSymbolLayerAbstractMetadata*> mMetadata;
 };

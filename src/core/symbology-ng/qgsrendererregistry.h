@@ -187,6 +187,9 @@ class CORE_EXPORT QgsRendererRegistry
     QgsRendererRegistry();
     ~QgsRendererRegistry();
 
+    QgsRendererRegistry( const QgsRendererRegistry& rh ) = delete;
+    QgsRendererRegistry& operator=( const QgsRendererRegistry& rh ) = delete;
+
     //! Adds a renderer to the registry. Takes ownership of the metadata object.
     //! @param metadata renderer metadata
     //! @returns true if renderer was added successfully, or false if renderer could not
@@ -213,8 +216,6 @@ class CORE_EXPORT QgsRendererRegistry
     QStringList renderersList( const QgsVectorLayer* layer ) const;
 
   private:
-    QgsRendererRegistry( const QgsRendererRegistry& rh );
-    QgsRendererRegistry& operator=( const QgsRendererRegistry& rh );
 
     //! Map of name to renderer
     QMap<QString, QgsRendererAbstractMetadata*> mRenderers;

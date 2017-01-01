@@ -123,6 +123,9 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
               const QString& label = QString(), const QString& description = QString(), bool elseRule = false );
         ~Rule();
 
+        Rule( const Rule& rh ) = delete;
+        Rule& operator=( const Rule& rh ) = delete;
+
         /**
          * Dump for debug purpose
          * @param indent How many characters to indent. Will increase by two with every of the recursive calls
@@ -388,9 +391,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         RuleList mActiveChildren;
 
       private:
-
-        Rule( const Rule& rh );
-        Rule& operator=( const Rule& rh );
 
         /**
          * Check which child rules are else rules and update the internal list of else rules
