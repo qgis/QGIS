@@ -137,7 +137,7 @@ IF (UNIX)
   IF (GRASS_FIND_VERSION EQUAL 6)
     LIST(APPEND GRASS_PATHS /usr/lib64/grass64 /usr/lib/grass64)
   ELSEIF (GRASS_FIND_VERSION EQUAL 7)
-    LIST(APPEND GRASS_PATHS /usr/lib64/grass70 /usr/lib/grass70 /usr/lib64/grass71 /usr/lib/grass71)
+    LIST(APPEND GRASS_PATHS /usr/lib64/grass70 /usr/lib/grass70 /usr/lib64/grass71 /usr/lib/grass71 /usr/lib64/grass72 /usr/lib/grass72)
   ENDIF ()
 ENDIF (UNIX)
 
@@ -151,6 +151,7 @@ IF (APPLE)
     LIST(APPEND GRASS_PATHS
       /Applications/GRASS-7.0.app/Contents/MacOS
       /Applications/GRASS-7.1.app/Contents/MacOS
+      /Applications/GRASS-7.2.app/Contents/MacOS
     )
   ENDIF ()
   LIST(APPEND GRASS_PATHS /Applications/GRASS.app/Contents/Resources)
