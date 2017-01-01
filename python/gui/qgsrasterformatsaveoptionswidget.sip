@@ -54,7 +54,7 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
      * @see options()
      * @note added in QGIS 3.0
      */
-    void setOptions( const QString& options);
+    void setOptions( const QString& options );
 
     /**
      * Set widget look and feel

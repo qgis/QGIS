@@ -631,7 +631,7 @@ void QgsRasterFormatSaveOptionsWidget::showEvent( QShowEvent * event )
   QgsDebugMsg( "done" );
 }
 
-void QgsRasterFormatSaveOptionsWidget::setOptions( const QString& options)
+void QgsRasterFormatSaveOptionsWidget::setOptions( const QString& options )
 {
   mOptionsTable->blockSignals( true );
   mOptionsTable->clearContents();
