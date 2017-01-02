@@ -31,6 +31,7 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings()
     , showColumn( -1 )
     , mRenderer( nullptr )
 {
+  init();
 }
 
 QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh )
@@ -46,7 +47,9 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings&
     , mDistance( rh.mDistance )
     , mRenderer( rh.mRenderer ? rh.mRenderer->clone() : nullptr )
     , mShowAll( rh.mShowAll )
+    , mProperties( rh.mProperties )
 {
+  init();
 }
 
 QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings & rh )
@@ -63,6 +66,7 @@ QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLaye
   yPosColumn = rh.yPosColumn;
   showColumn = rh.showColumn;
   mShowAll = rh.mShowAll;
+  mProperties = rh.mProperties;
   return *this;
 }
 
@@ -89,6 +93,16 @@ void QgsDiagramLayerSettings::readXml( const QDomElement& elem, const QgsVectorL
 {
   Q_UNUSED( layer )
 
+  QDomNodeList propertyElems = elem.elementsByTagName( "properties" );
+  if ( !propertyElems.isEmpty() )
+  {
+    ( void )mProperties.readXML( propertyElems.at( 0 ).toElement(), elem.ownerDocument(), sPropertyNameMap );
+  }
+  else
+  {
+    mProperties.clear();
+  }
+
   mPlacement = static_cast< Placement >( elem.attribute( QStringLiteral( "placement" ) ).toInt() );
   mPlacementFlags = static_cast< LinePlacementFlag >( elem.attribute( QStringLiteral( "linePlacementFlags" ) ).toInt() );
   mPriority = elem.attribute( QStringLiteral( "priority" ) ).toInt();
@@ -106,6 +120,9 @@ void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& do
   Q_UNUSED( layer )
 
   QDomElement diagramLayerElem = doc.createElement( QStringLiteral( "DiagramLayerSettings" ) );
+  QDomElement propertiesElem = doc.createElement( "properties" );
+  ( void )mProperties.writeXML( propertiesElem, doc, sPropertyNameMap );
+  diagramLayerElem.appendChild( propertiesElem );
   diagramLayerElem.setAttribute( QStringLiteral( "placement" ), mPlacement );
   diagramLayerElem.setAttribute( QStringLiteral( "linePlacementFlags" ), mPlacementFlags );
   diagramLayerElem.setAttribute( QStringLiteral( "priority" ), mPriority );
@@ -119,11 +136,26 @@ void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& do
   layerElem.appendChild( diagramLayerElem );
 }
 
+void QgsDiagramLayerSettings::init()
+{
+  if ( sPropertyNameMap.isEmpty() )
+  {
+    sPropertyNameMap.insert( Size, "diagramSize" );
+    sPropertyNameMap.insert( BackgroundColor, "backgroundColor" );
+    sPropertyNameMap.insert( OutlineColor, "outlineColor" );
+    sPropertyNameMap.insert( OutlineWidth, "outlineWidth" );
+    sPropertyNameMap.insert( Opacity, "opacity" );
+  }
+}
+
 QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionContext &context, const QgsFields& fieldsParameter ) const
 {
   QSet< QString > referenced;
   if ( mRenderer )
     referenced = mRenderer->referencedFields( context );
+
+  //add the ones needed for data defined settings
+  referenced.unite( mProperties.referencedFields( context ) );
 
   //and the ones needed for data defined diagram positions
   if ( xPosColumn >= 0 && xPosColumn < fieldsParameter.count() )
@@ -397,7 +429,7 @@ QgsDiagramRenderer &QgsDiagramRenderer::operator=( const QgsDiagramRenderer & ot
   return *this;
 }
 
-void QgsDiagramRenderer::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos ) const
+void QgsDiagramRenderer::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos, const QgsPropertyCollection &properties ) const
 {
   if ( !mDiagram )
   {
@@ -408,6 +440,14 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature& feature, QgsRenderCont
   if ( !diagramSettings( feature, c, s ) )
   {
     return;
+  }
+
+  if ( properties.hasActiveProperties() )
+  {
+    s.transparency = properties.valueAsInt( QgsDiagramLayerSettings::Opacity, c.expressionContext(), s.transparency );
+    s.backgroundColor = properties.valueAsColor( QgsDiagramLayerSettings::BackgroundColor, c.expressionContext(), s.backgroundColor );
+    s.penColor = properties.valueAsColor( QgsDiagramLayerSettings::OutlineColor, c.expressionContext(), s.penColor );
+    s.penWidth = properties.valueAsDouble( QgsDiagramLayerSettings::OutlineWidth, c.expressionContext(), s.penWidth );
   }
 
   mDiagram->renderDiagram( feature, c, s, pos );

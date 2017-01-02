@@ -27,6 +27,8 @@
 #include "qgsfields.h"
 #include "qgscoordinatetransform.h"
 #include "qgssymbol.h"
+#include "qgsproperty.h"
+
 
 class QgsDiagram;
 class QgsDiagramRenderer;
@@ -72,6 +74,18 @@ class CORE_EXPORT QgsDiagramLayerSettings
       MapOrientation = 1 << 4,
     };
     Q_DECLARE_FLAGS( LinePlacementFlags, LinePlacementFlag )
+
+    /** Data definable properties.
+     * @note added in QGIS 3.0
+     */
+    enum Properties
+    {
+      Size, //!< Overall diagram size
+      BackgroundColor, //!< Diagram background color
+      OutlineColor, //!< Outline color
+      OutlineWidth, //!< Outline width
+      Opacity, //!< Diagram opacity
+    };
 
     QgsDiagramLayerSettings();
 
@@ -237,6 +251,16 @@ class CORE_EXPORT QgsDiagramLayerSettings
     //TODO QGIS 3.0 - remove need for fields parameter
     QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const;
 
+    /** Returns a reference to the diagram's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     */
+    QgsPropertyCollection& properties() { return mProperties; }
+
+    /** Returns a reference to the diagram's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     */
+    const QgsPropertyCollection& properties() const { return mProperties; }
+
   private:
 
     //! Associated coordinate transform, or invalid transform for no transformation
@@ -267,6 +291,13 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     //! Whether to show all diagrams, including overlapping diagrams
     bool mShowAll = true;
+
+    //! Property collection for data defined diagram settings
+    QgsPropertyCollection mProperties;
+
+    static QMap< int, QString > sPropertyNameMap;
+
+    void init();
 };
 
 /** \ingroup core
@@ -418,7 +449,7 @@ class CORE_EXPORT QgsDiagramRenderer
      */
     virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
-    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos ) const;
+    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos, const QgsPropertyCollection& properties = QgsPropertyCollection() ) const;
 
     void setDiagram( QgsDiagram* d );
     QgsDiagram* diagram() const { return mDiagram; }

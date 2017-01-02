@@ -132,6 +132,8 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::L
   feature.setId( label->getFeaturePart()->featureId() );
   feature.setAttributes( dlf->attributes() );
 
+  context.expressionContext().setFeature( feature );
+
   //calculate top-left point for diagram
   //first, calculate the centroid of the label (accounts for PAL creating
   //rotated labels when we do not want to draw the diagrams rotated)
@@ -147,7 +149,7 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::L
   QgsPoint centerPt = xform.transform( outPt.x() - label->getWidth() / 2,
                                        outPt.y() - label->getHeight() / 2 );
 
-  mSettings.renderer()->renderDiagram( feature, context, centerPt.toQPointF() );
+  mSettings.renderer()->renderDiagram( feature, context, centerPt.toQPointF(), mSettings.properties() );
 
   //insert into label search tree to manipulate position interactively
   mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, QString(), QFont(), true, false );

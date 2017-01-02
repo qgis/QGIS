@@ -34,6 +34,18 @@ class QgsDiagramLayerSettings
     };
     typedef QFlags<QgsDiagramLayerSettings::LinePlacementFlag> LinePlacementFlags;
 
+    /** Data definable properties.
+     * @note added in QGIS 2.16
+     */
+    enum Properties
+    {
+      Size, /*!< Overall diagram size*/
+      BackgroundColor, /*!< Diagram background color*/
+      OutlineColor, /*!< Outline color */
+      OutlineWidth, /*!< Outline width */
+      Opacity, /*!< Diagram opacity */
+    };
+
     QgsDiagramLayerSettings();
 
     //! Copy constructor
@@ -191,6 +203,16 @@ class QgsDiagramLayerSettings
     //TODO QGIS 3.0 - remove need for fields parameter
     QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const;
 
+    /** Returns a reference to the diagram's property collection, used for data defined overrides.
+     * @note added in QGIS 2.16
+     */
+    QgsPropertyCollection& properties();
+
+    /** Returns a reference to the diagram's property collection, used for data defined overrides.
+     * @note added in QGIS 2.16
+     */
+    //const QgsPropertyCollection& properties() const;
+
 };
 
 /** \ingroup core
@@ -332,7 +354,7 @@ class QgsDiagramRenderer
      */
     virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
-    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos );
+    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos, const QgsPropertyCollection& properties = QgsPropertyCollection() );
 
     void setDiagram( QgsDiagram* d /Transfer/ );
     QgsDiagram* diagram() const;
