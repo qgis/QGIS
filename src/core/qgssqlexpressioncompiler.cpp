@@ -215,7 +215,8 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
           break;
 
         case QgsExpression::boDiv:
-          return Fail;  // handle cast to real
+          op = QStringLiteral( "/" );
+          break;
 
         case QgsExpression::boMod:
           op = QStringLiteral( "%" );
@@ -226,7 +227,8 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
           break;
 
         case QgsExpression::boIntDiv:
-          return Fail;  // handle cast to int
+          op = QStringLiteral( "/" );
+          break;
 
         case QgsExpression::boPow:
           op = QStringLiteral( "^" );
@@ -249,7 +251,27 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       if ( failOnPartialNode && ( lr == Partial || rr == Partial ) )
         return Fail;
 
+      if ( n->op() == QgsExpression::boDiv && mFlags.testFlag( IntegerDivisionResultsInInteger ) )
+      {
+        right = castToReal( right );
+        if ( right.isEmpty() )
+        {
+          // not supported
+          return Fail;
+        }
+      }
+
       result = '(' + left + ' ' + op + ' ' + right + ')';
+      if ( n->op() == QgsExpression::boIntDiv )
+      {
+        result = castToInt( result );
+        if ( result.isEmpty() )
+        {
+          // not supported
+          return Fail;
+        }
+      }
+
       if ( lr == Complete && rr == Complete )
         return ( partialCompilation ? Partial : Complete );
       else if (( lr == Partial && rr == Complete ) || ( lr == Complete && rr == Partial ) || ( lr == Partial && rr == Partial ) )
@@ -371,6 +393,18 @@ QStringList QgsSqlExpressionCompiler::sqlArgumentsFromFunctionName( const QStrin
 {
   Q_UNUSED( fnName );
   return QStringList( fnArgs );
+}
+
+QString QgsSqlExpressionCompiler::castToReal( const QString& value ) const
+{
+  Q_UNUSED( value );
+  return QString();
+}
+
+QString QgsSqlExpressionCompiler::castToInt( const QString& value ) const
+{
+  Q_UNUSED( value );
+  return QString();
 }
 
 bool QgsSqlExpressionCompiler::nodeIsNullLiteral( const QgsExpression::Node* node ) const

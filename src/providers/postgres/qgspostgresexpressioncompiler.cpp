@@ -17,7 +17,7 @@
 #include "qgssqlexpressioncompiler.h"
 
 QgsPostgresExpressionCompiler::QgsPostgresExpressionCompiler( QgsPostgresFeatureSource* source )
-    : QgsSqlExpressionCompiler( source->mFields )
+    : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
     , mGeometryColumn( source->mGeometryColumn )
     , mSpatialColType( source->mSpatialColType )
     , mDetectedGeomType( source->mDetectedGeomType )
@@ -88,15 +88,19 @@ static const QMap<QString, QString>& functionNamesSqlFunctionsMap()
       { "buffer", "ST_Buffer" },
       { "centroid", "ST_Centroid" },
       { "point_on_surface", "ST_PointOnSurface" },
-      //{ "reverse", "ST_Reverse" },
-      //{ "is_closed", "ST_IsClosed" },
-      //{ "convex_hull", "ST_ConvexHull" },
-      //{ "difference", "ST_Difference" },
+#if 0
+      { "reverse", "ST_Reverse" },
+      { "is_closed", "ST_IsClosed" },
+      { "convex_hull", "ST_ConvexHull" },
+      { "difference", "ST_Difference" },
+#endif
       { "distance", "ST_Distance" },
-      //{ "intersection", "ST_Intersection" },
-      //{ "sym_difference", "ST_SymDifference" },
-      //{ "combine", "ST_Union" },
-      //{ "union", "ST_Union" },
+#if 0
+      { "intersection", "ST_Intersection" },
+      { "sym_difference", "ST_SymDifference" },
+      { "combine", "ST_Union" },
+      { "union", "ST_Union" },
+#endif
       { "geom_from_wkt", "ST_GeomFromText" },
       { "geom_from_gml", "ST_GeomFromGML" }
     };
@@ -132,6 +136,16 @@ QStringList QgsPostgresExpressionCompiler::sqlArgumentsFromFunctionName( const Q
   return args;
 }
 
+QString QgsPostgresExpressionCompiler::castToReal( const QString& value ) const
+{
+  return QStringLiteral( "((%1)::real)" ).arg( value );
+}
+
+QString QgsPostgresExpressionCompiler::castToInt( const QString& value ) const
+{
+  return QStringLiteral( "((%1)::int)" ).arg( value );
+}
+
 QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( const QgsExpression::Node* node, QString& result )
 {
   switch ( node->nodeType() )
@@ -146,11 +160,13 @@ QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( con
         result = quotedIdentifier( mGeometryColumn );
         return Complete;
       }
+#if 0
       /*
        * These methods are tricky
        * QGIS expression versions of these return ellipsoidal measurements
        * based on the project settings, and also convert the result to the
        * units specified in project properties.
+       */
       else if ( fd->name() == "$area" )
       {
         result = QStringLiteral( "ST_Area(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
@@ -176,7 +192,7 @@ QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( con
         result = QStringLiteral( "ST_Y(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
         return Complete;
       }
-      */
+#endif
     }
 
     default:
