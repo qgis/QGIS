@@ -314,16 +314,63 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       if ( rn != Complete && rn != Partial )
         return rn;
 
-      result = QStringLiteral( "%1 %2IN(%3)" ).arg( nd, n->isNotIn() ? "NOT " : "", list.join( QStringLiteral( "," ) ) );
+      result = QStringLiteral( "%1 %2IN (%3)" ).arg( nd, n->isNotIn() ? "NOT " : "", list.join( QStringLiteral( "," ) ) );
       return ( inResult == Partial || rn == Partial ) ? Partial : Complete;
     }
 
     case QgsExpression::ntFunction:
+    {
+      const QgsExpression::NodeFunction* n = static_cast<const QgsExpression::NodeFunction*>( node );
+      QgsExpression::Function* fd = QgsExpression::Functions()[n->fnIndex()];
+
+      // get sql function to compile node expression
+      QString nd = sqlFunctionFromFunctionName( fd->name() );
+      // if no sql function the node can't be compiled
+      if ( nd.isEmpty() )
+        return Fail;
+
+      // compile arguments
+      QStringList args;
+      Result inResult = Complete;
+      Q_FOREACH ( const QgsExpression::Node* ln, n->args()->list() )
+      {
+        QString s;
+        Result r = compileNode( ln, s );
+        if ( r == Complete || r == Partial )
+        {
+          args << s;
+          if ( r == Partial )
+            inResult = Partial;
+        }
+        else
+          return r;
+      }
+
+      // update arguments to be adapted to SQL function
+      args = sqlArgumentsFromFunctionName( fd->name(), args );
+
+      // build result
+      result = QStringLiteral( "%1(%2)" ).arg( nd, args.join( ',' ) );
+      return inResult == Partial ? Partial : Complete;
+    }
+
     case QgsExpression::ntCondition:
       break;
   }
 
   return Fail;
+}
+
+QString QgsSqlExpressionCompiler::sqlFunctionFromFunctionName( const QString& fnName ) const
+{
+  Q_UNUSED( fnName );
+  return QString();
+}
+
+QStringList QgsSqlExpressionCompiler::sqlArgumentsFromFunctionName( const QString& fnName, const QStringList& fnArgs ) const
+{
+  Q_UNUSED( fnName );
+  return QStringList( fnArgs );
 }
 
 bool QgsSqlExpressionCompiler::nodeIsNullLiteral( const QgsExpression::Node* node ) const
