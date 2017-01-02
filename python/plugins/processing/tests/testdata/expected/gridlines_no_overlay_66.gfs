@@ -6,11 +6,11 @@
     <GeometryType>2</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
-      <FeatureCount>3</FeatureCount>
+      <FeatureCount>6</FeatureCount>
       <ExtentXMin>0.00000</ExtentXMin>
-      <ExtentXMax>0.00000</ExtentXMax>
+      <ExtentXMax>12.00000</ExtentXMax>
       <ExtentYMin>0.00000</ExtentYMin>
-      <ExtentYMax>0.00000</ExtentYMax>
+      <ExtentYMax>12.00000</ExtentYMax>
     </DatasetSpecificInfo>
     <PropertyDefn>
       <Name>left</Name>

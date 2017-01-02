@@ -32,5 +32,10 @@
       <ElementPath>bottom</ElementPath>
       <Type>Real</Type>
     </PropertyDefn>
+    <PropertyDefn>
+      <Name>id</Name>
+      <ElementPath>id</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
   </GMLFeatureClass>
 </GMLFeatureClassList>
