@@ -214,7 +214,7 @@ class GeoAlgorithm:
             lines.append(traceback.format_exc())
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
             raise GeoAlgorithmExecutionException(
-                unicode(e) + self.tr('\nSee log for more details'))
+                unicode(e.message, errors='ignore') + self.tr(u'\nSee log for more details'))
 
     def _checkParameterValuesBeforeExecuting(self):
         for param in self.parameters:
