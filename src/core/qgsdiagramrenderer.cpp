@@ -444,9 +444,13 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature& feature, QgsRenderCont
 
   if ( properties.hasActiveProperties() )
   {
+    c.expressionContext().setOriginalValueVariable( s.transparency );
     s.transparency = properties.valueAsInt( QgsDiagramLayerSettings::Opacity, c.expressionContext(), s.transparency );
+    c.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( s.backgroundColor ) );
     s.backgroundColor = properties.valueAsColor( QgsDiagramLayerSettings::BackgroundColor, c.expressionContext(), s.backgroundColor );
+    c.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( s.penColor ) );
     s.penColor = properties.valueAsColor( QgsDiagramLayerSettings::OutlineColor, c.expressionContext(), s.penColor );
+    c.expressionContext().setOriginalValueVariable( s.penWidth );
     s.penWidth = properties.valueAsDouble( QgsDiagramLayerSettings::OutlineWidth, c.expressionContext(), s.penWidth );
   }
 
