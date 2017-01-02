@@ -94,12 +94,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         QSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
-        return set([
-            'round(cnt / 66.67) <= 2',
-            'floor(cnt / 66.67) <= 2',
-            'ceil(cnt / 66.67) <= 2',
-            'pk < pi() / 2'
-        ])
+        return set([])
 
     def partiallyCompiledFilters(self):
         return set([])
@@ -669,12 +664,7 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
         QSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
-        return set([
-            'round(cnt / 66.67) <= 2',
-            'floor(cnt / 66.67) <= 2',
-            'ceil(cnt / 66.67) <= 2',
-            'pk < pi() / 2'
-        ])
+        return set([])
 
     def partiallyCompiledFilters(self):
         return set([])
