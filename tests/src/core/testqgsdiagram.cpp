@@ -288,6 +288,223 @@ class TestQgsDiagram : public QObject
       QVERIFY( imageCheck( "piediagram_datadefined_outline" ) );
     }
 
+    void testDataDefinedStartAngle()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.maxScaleDenominator = -1;
+      ds.minScaleDenominator = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 15, 15 );
+      ds.angleOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+
+      //setup data defined start angle
+      dls.properties().setProperty( QgsDiagramLayerSettings::StartAngle, new QgsExpressionBasedProperty( "\"Importance\"/20.0 * 360.0", true ) );
+
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_datadefined_startangle" ) );
+    }
+
+    void testDataDefinedDistance()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.maxScaleDenominator = -1;
+      ds.minScaleDenominator = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 15, 15 );
+      ds.angleOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::AroundPoint );
+      dls.setShowAllDiagrams( true );
+
+      //setup data defined distance
+      dls.properties().setProperty( QgsDiagramLayerSettings::Distance, new QgsExpressionBasedProperty( "\"Staff\"*2", true ) );
+
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_datadefined_distance" ) );
+    }
+
+    void testDataDefinedShow()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.maxScaleDenominator = -1;
+      ds.minScaleDenominator = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 15, 15 );
+      ds.angleOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+
+      //setup data defined show
+      dls.properties().setProperty( QgsDiagramLayerSettings::Show, new QgsExpressionBasedProperty( "\"Pilots\"=1", true ) );
+
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_datadefined_show" ) );
+    }
+
+    void testDataDefinedPriority()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.maxScaleDenominator = -1;
+      ds.minScaleDenominator = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 50, 50 );
+      ds.angleOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( false );
+
+      //setup data defined priority
+      dls.properties().setProperty( QgsDiagramLayerSettings::Priority, new QgsExpressionBasedProperty( "\"importance\"/2", true ) );
+
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_datadefined_priority" ) );
+    }
+
+    void testDataDefinedZIndex()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.maxScaleDenominator = -1;
+      ds.minScaleDenominator = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 50, 50 );
+      ds.angleOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+
+      //setup data defined z index
+      dls.properties().setProperty( QgsDiagramLayerSettings::ZIndex, new QgsExpressionBasedProperty( "\"importance\"/2", true ) );
+
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_datadefined_zindex" ) );
+    }
+
+    void testDataDefinedAlwaysShow()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.maxScaleDenominator = -1;
+      ds.minScaleDenominator = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.size = QSizeF( 50, 50 );
+      ds.angleOffset = 0;
+
+      QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( false );
+
+      //setup data defined priority (required to only show certain diagrams)
+      dls.properties().setProperty( QgsDiagramLayerSettings::Priority, new QgsExpressionBasedProperty( "\"importance\"/2", true ) );
+      //setup data defined "always show"
+      dls.properties().setProperty( QgsDiagramLayerSettings::AlwaysShow, new QgsExpressionBasedProperty( "\"Staff\">=6", true ) );
+
+
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_datadefined_alwaysshow" ) );
+    }
+
 
     void testDataDefinedBackgroundColor()
     {

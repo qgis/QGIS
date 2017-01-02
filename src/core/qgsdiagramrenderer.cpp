@@ -145,6 +145,13 @@ void QgsDiagramLayerSettings::init()
     sPropertyNameMap.insert( OutlineWidth, "outlineWidth" );
     sPropertyNameMap.insert( PositionX, "positionX" );
     sPropertyNameMap.insert( PositionY, "positionY" );
+    sPropertyNameMap.insert( Distance, "distance" );
+    sPropertyNameMap.insert( Priority, "priority" );
+    sPropertyNameMap.insert( ZIndex, "zIndex" );
+    sPropertyNameMap.insert( IsObstacle, "isObstacle" );
+    sPropertyNameMap.insert( Show, "show" );
+    sPropertyNameMap.insert( AlwaysShow, "alwaysShow" );
+    sPropertyNameMap.insert( StartAngle, "startAngle" );
   }
 }
 
@@ -450,6 +457,8 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature& feature, QgsRenderCont
     s.penColor = properties.valueAsColor( QgsDiagramLayerSettings::OutlineColor, c.expressionContext(), s.penColor );
     c.expressionContext().setOriginalValueVariable( s.penWidth );
     s.penWidth = properties.valueAsDouble( QgsDiagramLayerSettings::OutlineWidth, c.expressionContext(), s.penWidth );
+    c.expressionContext().setOriginalValueVariable( s.angleOffset / 16.0 );
+    s.angleOffset = 16.0 * properties.valueAsDouble( QgsDiagramLayerSettings::StartAngle, c.expressionContext(), s.angleOffset / 16.0 );
   }
 
   mDiagram->renderDiagram( feature, c, s, pos );
