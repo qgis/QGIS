@@ -270,6 +270,19 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
 
   //  feature to the layer
   bool alwaysShow = mSettings.showAllDiagrams();
+
+  int ddColShow = mSettings.showColumn;
+  if ( ddColShow >= 0 && ! feat.attribute( ddColShow ).isNull() )
+  {
+    bool showOk;
+    bool ddShow = feat.attribute( ddColShow ).toDouble( &showOk );
+
+    if ( showOk && ! ddShow )
+      return nullptr;
+  }
+
+  // old style data defined position
+  // TODO - remove when xPosColumn and yPosColumn are removed from QgsDiagramLayerSettings
   int ddColX = mSettings.xPosColumn;
   int ddColY = mSettings.yPosColumn;
   double ddPosX = 0.0;
@@ -284,31 +297,32 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     {
       ddPos = false;
     }
-    else
-    {
-      QgsCoordinateTransform ct = mSettings.coordinateTransform();
-      if ( ct.isValid() && !ct.isShortCircuited() )
-      {
-        double z = 0;
-        ct.transformInPlace( ddPosX, ddPosY, z );
-      }
-      //data defined diagram position is always centered
-      ddPosX -= diagramWidth / 2.0;
-      ddPosY -= diagramHeight / 2.0;
-    }
   }
-  else
-    ddPos = false;
 
-  int ddColShow = mSettings.showColumn;
-  if ( ddColShow >= 0 && ! feat.attribute( ddColShow ).isNull() )
+  // new style data defined position
+  if ( mSettings.properties().hasProperty( QgsDiagramLayerSettings::PositionX )
+       && mSettings.properties().property( QgsDiagramLayerSettings::PositionX )->isActive()
+       && mSettings.properties().hasProperty( QgsDiagramLayerSettings::PositionY )
+       && mSettings.properties().property( QgsDiagramLayerSettings::PositionY )->isActive() )
   {
-    bool showOk;
-    bool ddShow = feat.attribute( ddColShow ).toDouble( &showOk );
-
-    if ( showOk && ! ddShow )
-      return nullptr;
+    ddPosX = mSettings.properties().valueAsDouble( QgsDiagramLayerSettings::PositionX, context.expressionContext(), ddPosX );
+    ddPosY = mSettings.properties().valueAsDouble( QgsDiagramLayerSettings::PositionY, context.expressionContext(), ddPosY );
+    ddPos = true;
   }
+
+  if ( ddPos )
+  {
+    QgsCoordinateTransform ct = mSettings.coordinateTransform();
+    if ( ct.isValid() && !ct.isShortCircuited() )
+    {
+      double z = 0;
+      ct.transformInPlace( ddPosX, ddPosY, z );
+    }
+    //data defined diagram position is always centered
+    ddPosX -= diagramWidth / 2.0;
+    ddPosY -= diagramHeight / 2.0;
+  }
+
 
   QgsDiagramLabelFeature* lf = new QgsDiagramLabelFeature( feat.id(), geomCopy, QSizeF( diagramWidth, diagramHeight ) );
   lf->setHasFixedPosition( ddPos );

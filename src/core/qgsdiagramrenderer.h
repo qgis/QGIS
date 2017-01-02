@@ -78,13 +78,13 @@ class CORE_EXPORT QgsDiagramLayerSettings
     /** Data definable properties.
      * @note added in QGIS 3.0
      */
-    enum Properties
+    enum Property
     {
-      Size, //!< Overall diagram size
       BackgroundColor, //!< Diagram background color
       OutlineColor, //!< Outline color
       OutlineWidth, //!< Outline width
-      Opacity, //!< Diagram opacity
+      PositionX, //! x-coordinate data defined diagram position
+      PositionY, //! y-coordinate data defined diagram position
     };
 
     QgsDiagramLayerSettings();

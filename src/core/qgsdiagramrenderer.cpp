@@ -140,11 +140,11 @@ void QgsDiagramLayerSettings::init()
 {
   if ( sPropertyNameMap.isEmpty() )
   {
-    sPropertyNameMap.insert( Size, "diagramSize" );
     sPropertyNameMap.insert( BackgroundColor, "backgroundColor" );
     sPropertyNameMap.insert( OutlineColor, "outlineColor" );
     sPropertyNameMap.insert( OutlineWidth, "outlineWidth" );
-    sPropertyNameMap.insert( Opacity, "opacity" );
+    sPropertyNameMap.insert( PositionX, "positionX" );
+    sPropertyNameMap.insert( PositionY, "positionY" );
   }
 }
 
@@ -444,8 +444,6 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature& feature, QgsRenderCont
 
   if ( properties.hasActiveProperties() )
   {
-    c.expressionContext().setOriginalValueVariable( s.transparency );
-    s.transparency = properties.valueAsInt( QgsDiagramLayerSettings::Opacity, c.expressionContext(), s.transparency );
     c.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( s.backgroundColor ) );
     s.backgroundColor = properties.valueAsColor( QgsDiagramLayerSettings::BackgroundColor, c.expressionContext(), s.backgroundColor );
     c.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( s.penColor ) );
