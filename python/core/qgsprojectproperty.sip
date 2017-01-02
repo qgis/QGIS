@@ -34,7 +34,7 @@ class QgsProjectProperty
      *
      *  Used for restoring properties from project file
      */
-    virtual bool readXml( QDomNode & keyNode ) = 0;
+    virtual bool readXml( const QDomNode& keyNode ) = 0;
 
     /**
      * adds property hierarchy to given Dom element
@@ -91,18 +91,11 @@ class QgsProjectPropertyValue : QgsProjectProperty
 
     void dump( int tabs = 0 ) const;
 
-    bool readXml( QDomNode & keyNode );
+    bool readXml( const QDomNode& keyNode );
 
     bool writeXml( const QString & nodeName,
                    QDomElement   & element,
                    QDomDocument  & document );
-
-    int count() const;
-
-    /** Return keys that do not contain other keys
-     * Since QgsPropertyValue isn't a key, don't do anything.
-     */
-    void entryList( QStringList & keyName, QStringList & entries ) const;
 
 };
 
@@ -155,7 +148,7 @@ class QgsProjectPropertyKey : QgsProjectProperty
 
     void dump( int tabs = 0 ) const;
 
-    bool readXml( QDomNode & keyNode );
+    bool readXml( const QDomNode& keyNode );
 
     bool writeXml( const QString &nodeName, QDomElement & element, QDomDocument & document );
 

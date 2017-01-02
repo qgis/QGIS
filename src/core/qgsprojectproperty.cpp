@@ -43,10 +43,9 @@ void QgsProjectPropertyValue::dump( int tabs ) const
   {
     QgsDebugMsg( QString( "%1%2" ).arg( tabString, mValue.toString() ) );
   }
-} // QgsPropertyValue::dump()
+}
 
-
-bool QgsProjectPropertyValue::readXml( QDomNode & keyNode )
+bool QgsProjectPropertyValue::readXml( const QDomNode& keyNode )
 {
   // this *should* be a Dom element node
   QDomElement subkeyElement = keyNode.toElement();
@@ -203,30 +202,26 @@ bool QgsProjectPropertyValue::readXml( QDomNode & keyNode )
       QgsDebugMsg( "no support for QVariant::Pen" );
       return false;
 
-      //
-      // QGIS DIES NOT SUPPORT THESE VARIANT TYPES IN VERSION 3.1 DISABLING FOR NOW
-      //
-      /*
-        case QVariant::LongLong :
-        value_ = QVariant(subkeyElement.text()).toLongLong();
-        break;
+#if 0 // Currently unsupported variant types
+    case QVariant::LongLong :
+      value_ = QVariant( subkeyElement.text() ).toLongLong();
+      break;
 
-        case QVariant::ULongLong :
-        value_ = QVariant(subkeyElement.text()).toULongLong();
-        break;
-      */
+    case QVariant::ULongLong :
+      value_ = QVariant( subkeyElement.text() ).toULongLong();
+      break;
+#endif
+
     default :
       QgsDebugMsg( QString( "unsupported value type %1 .. not propertly translated to QVariant" ).arg( typeString ) );
   }
 
   return true;
 
-} // QgsPropertyValue::readXml
+}
 
 
-/**
-   keyElement created by parent QgsProjectPropertyKey
-*/
+// keyElement is created by parent QgsProjectPropertyKey
 bool QgsProjectPropertyValue::writeXml( QString const & nodeName,
                                         QDomElement   & keyElement,
                                         QDomDocument  & document )
@@ -265,7 +260,7 @@ bool QgsProjectPropertyValue::writeXml( QString const & nodeName,
   keyElement.appendChild( valueElement );
 
   return true;
-} // QgsPropertyValue::writeXml
+}
 
 
 QgsProjectPropertyKey::QgsProjectPropertyKey( const QString &name )
@@ -288,7 +283,7 @@ QVariant QgsProjectPropertyKey::value() const
   }
 
   return foundQgsProperty->value();
-} // QVariant QgsPropertyKey::value()
+}
 
 
 void QgsProjectPropertyKey::dump( int tabs ) const
@@ -346,11 +341,11 @@ void QgsProjectPropertyKey::dump( int tabs ) const
     }
   }
 
-} // QgsPropertyKey::dump
+}
 
 
 
-bool QgsProjectPropertyKey::readXml( QDomNode & keyNode )
+bool QgsProjectPropertyKey::readXml( const QDomNode& keyNode )
 {
   int i = 0;
   QDomNodeList subkeys = keyNode.childNodes();
@@ -390,10 +385,10 @@ bool QgsProjectPropertyKey::readXml( QDomNode & keyNode )
   }
 
   return true;
-} // QgsPropertyKey::readXml(QDomNode & keyNode)
+}
 
 
-/**
+/*
   Property keys will always create a Dom element for itself and then
   recursively call writeXml for any constituent properties.
 */
@@ -420,12 +415,8 @@ bool QgsProjectPropertyKey::writeXml( QString const &nodeName, QDomElement & ele
   element.appendChild( keyElement );
 
   return true;
-} // QgsPropertyKey::writeXml
+}
 
-
-
-/** Return keys that do not contain other keys
- */
 void QgsProjectPropertyKey::entryList( QStringList & entries ) const
 {
   // now add any leaf nodes to the entries list
@@ -438,9 +429,7 @@ void QgsProjectPropertyKey::entryList( QStringList & entries ) const
       entries.append( i.key() );
     }
   }
-} // QgsPropertyKey::entryList
-
-
+}
 
 void QgsProjectPropertyKey::subkeyList( QStringList & entries ) const
 {
@@ -454,7 +443,7 @@ void QgsProjectPropertyKey::subkeyList( QStringList & entries ) const
       entries.append( i.key() );
     }
   }
-} // QgsPropertyKey::subkeyList
+}
 
 
 bool QgsProjectPropertyKey::isLeaf() const
@@ -479,4 +468,4 @@ bool QgsProjectPropertyKey::isLeaf() const
 void QgsProjectPropertyKey::setName( const QString& name )
 {
   mName = name;
-} // QgsPropertyKey::isLeaf
+}

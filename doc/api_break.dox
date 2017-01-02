@@ -1363,6 +1363,10 @@ QgsProject        {#qgis_api_break_3_0_QgsProject}
 - dirty( bool b ) was removed. Use setDirty() instead.
 - clearProperties() was removed. Use clear() instead.
 
+QgsProjectPropertyValue        {#qgis_api_break_3_0_QgsProjectPropertyValue}
+-----------------------
+
+- The unused count() and entryList() methods were removed.
 
 QgsRaster        {#qgis_api_break_3_0_QgsRaster}
 ---------
