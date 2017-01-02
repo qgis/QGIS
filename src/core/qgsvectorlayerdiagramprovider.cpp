@@ -179,7 +179,7 @@ bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext& context, QS
   s2.setRenderer( mDiagRenderer );
 
   //add attributes needed by the diagram renderer
-  attributeNames.unite( s2.referencedFields( context.expressionContext(), mFields ) );
+  attributeNames.unite( s2.referencedFields( context.expressionContext() ) );
 
   return true;
 }
@@ -294,59 +294,33 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     alwaysShow = mSettings.properties().valueAsInt( QgsDiagramLayerSettings::AlwaysShow, context.expressionContext(), alwaysShow );
   }
 
-  // old style show
-  int ddColShow = mSettings.showColumn;
-  if ( ddColShow >= 0 && ! feat.attribute( ddColShow ).isNull() )
-  {
-    bool showOk;
-    bool ddShow = feat.attribute( ddColShow ).toDouble( &showOk );
-
-    if ( showOk && ! ddShow )
-      return nullptr;
-  }
-
-  // old style data defined position
-  // TODO - remove when xPosColumn and yPosColumn are removed from QgsDiagramLayerSettings
-  int ddColX = mSettings.xPosColumn;
-  int ddColY = mSettings.yPosColumn;
+  // new style data defined position
+  bool ddPos = false;
   double ddPosX = 0.0;
   double ddPosY = 0.0;
-  bool ddPos = ( ddColX >= 0 && ddColY >= 0 );
-  if ( ddPos && ! feat.attribute( ddColX ).isNull() && ! feat.attribute( ddColY ).isNull() )
-  {
-    bool posXOk, posYOk;
-    ddPosX = feat.attribute( ddColX ).toDouble( &posXOk );
-    ddPosY = feat.attribute( ddColY ).toDouble( &posYOk );
-    if ( !posXOk || !posYOk )
-    {
-      ddPos = false;
-    }
-  }
-
-  // new style data defined position
   if ( mSettings.properties().hasProperty( QgsDiagramLayerSettings::PositionX )
        && mSettings.properties().property( QgsDiagramLayerSettings::PositionX )->isActive()
        && mSettings.properties().hasProperty( QgsDiagramLayerSettings::PositionY )
        && mSettings.properties().property( QgsDiagramLayerSettings::PositionY )->isActive() )
   {
-    ddPosX = mSettings.properties().valueAsDouble( QgsDiagramLayerSettings::PositionX, context.expressionContext(), ddPosX );
-    ddPosY = mSettings.properties().valueAsDouble( QgsDiagramLayerSettings::PositionY, context.expressionContext(), ddPosY );
-    ddPos = true;
-  }
+    ddPosX = mSettings.properties().valueAsDouble( QgsDiagramLayerSettings::PositionX, context.expressionContext(), std::numeric_limits<double>::quiet_NaN() );
+    ddPosY = mSettings.properties().valueAsDouble( QgsDiagramLayerSettings::PositionY, context.expressionContext(), std::numeric_limits<double>::quiet_NaN() );
 
-  if ( ddPos )
-  {
-    QgsCoordinateTransform ct = mSettings.coordinateTransform();
-    if ( ct.isValid() && !ct.isShortCircuited() )
+    ddPos = !qIsNaN( ddPosX ) && !qIsNaN( ddPosY );
+
+    if ( ddPos )
     {
-      double z = 0;
-      ct.transformInPlace( ddPosX, ddPosY, z );
+      QgsCoordinateTransform ct = mSettings.coordinateTransform();
+      if ( ct.isValid() && !ct.isShortCircuited() )
+      {
+        double z = 0;
+        ct.transformInPlace( ddPosX, ddPosY, z );
+      }
+      //data defined diagram position is always centered
+      ddPosX -= diagramWidth / 2.0;
+      ddPosY -= diagramHeight / 2.0;
     }
-    //data defined diagram position is always centered
-    ddPosX -= diagramWidth / 2.0;
-    ddPosY -= diagramHeight / 2.0;
   }
-
 
   QgsDiagramLabelFeature* lf = new QgsDiagramLabelFeature( feat.id(), geomCopy, QSizeF( diagramWidth, diagramHeight ) );
   lf->setHasFixedPosition( ddPos );
@@ -371,7 +345,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
        && mSettings.properties().property( QgsDiagramLayerSettings::Priority )->isActive() )
   {
     context.expressionContext().setOriginalValueVariable( mSettings.priority() );
-    double priorityD = mSettings.properties().valueAsDouble( QgsDiagramLayerSettings::Priority, context.expressionContext(), mSettings.getPriority() );
+    double priorityD = mSettings.properties().valueAsDouble( QgsDiagramLayerSettings::Priority, context.expressionContext(), mSettings.priority() );
     priorityD = qBound( 0.0, priorityD, 10.0 );
     priorityD = 1 - priorityD / 10.0; // convert 0..10 --> 1..0
     lf->setPriority( priorityD );

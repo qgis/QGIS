@@ -148,7 +148,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
      */
     void setPriority( int value ) { mPriority = value; }
 
-
     /** Returns the diagram z-index. Diagrams (or labels) with a higher z-index are drawn over diagrams
      * with a lower z-index.
      * @note z-index ordering is shared with labeling, so diagrams with a high z-index may be drawn over labels
@@ -225,15 +224,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
      */
     void setCoordinateTransform( const QgsCoordinateTransform& transform );
 
-    //! Attribute index for x coordinate (or -1 if position not data defined)
-    int xPosColumn;
-
-    //! Attribute index for y coordinate (or -1 if position not data defined)
-    int yPosColumn;
-
-    //! Attribute index for visibility (or -1 if visibility not data defined)
-    int showColumn;
-
     /** Returns whether the layer should show all diagrams, including overlapping diagrams
      * @see setShowAllDiagrams()
      * @note added in QGIS 2.16
@@ -252,11 +242,9 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     /** Returns the set of any fields referenced by the layer's diagrams.
      * @param context expression context the diagrams will be drawn using
-     * @param fields layer fields
      * @note added in QGIS 2.16
      */
-    //TODO QGIS 3.0 - remove need for fields parameter
-    QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const;
+    QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
     /** Returns a reference to the diagram's property collection, used for data defined overrides.
      * @note added in QGIS 3.0
@@ -465,6 +453,9 @@ class CORE_EXPORT QgsDiagramRenderer
      */
     virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
+    /**
+     * Renders the diagram for a specified feature at a specific position in the passed render context.
+     */
     void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos, const QgsPropertyCollection& properties = QgsPropertyCollection() ) const;
 
     void setDiagram( QgsDiagram* d );
@@ -473,7 +464,18 @@ class CORE_EXPORT QgsDiagramRenderer
     //! Returns list with all diagram settings in the renderer
     virtual QList<QgsDiagramSettings> diagramSettings() const = 0;
 
+    /**
+     * Reads diagram state from a DOM element. Subclasses should ensure that _readXml() is called
+     * by their readXml implementation to restore the general QgsDiagramRenderer settings.
+     * @see writeXml()
+     */
     virtual void readXml( const QDomElement& elem, const QgsVectorLayer* layer ) = 0;
+
+    /**
+     * Writes diagram state to a DOM element. Subclasses should ensure that _writeXml() is called
+     * by their writeXml implementation to save the general QgsDiagramRenderer settings.
+     * @see readXml()
+     */
     virtual void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const = 0;
 
     /** Returns list of legend nodes for the diagram
@@ -550,7 +552,17 @@ class CORE_EXPORT QgsDiagramRenderer
     static int dpiPaintDevice( const QPainter* );
 
     //read / write diagram
+
+    /**
+     * Reads internal QgsDiagramRenderer state from a DOM element.
+     * @see _writeXml()
+     */
     void _readXml( const QDomElement& elem, const QgsVectorLayer* layer );
+
+    /**
+     * Writes internal QgsDiagramRenderer diagram state to a DOM element.
+     * @see _readXml()
+     */
     void _writeXml( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 
     //! Reference to the object that does the real diagram rendering

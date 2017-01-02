@@ -25,20 +25,15 @@
 #include <QDomElement>
 #include <QPainter>
 
+QMap< int, QString > QgsDiagramLayerSettings::sPropertyNameMap;
+
 QgsDiagramLayerSettings::QgsDiagramLayerSettings()
-    : xPosColumn( -1 )
-    , yPosColumn( -1 )
-    , showColumn( -1 )
-    , mRenderer( nullptr )
 {
   init();
 }
 
 QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh )
-    : xPosColumn( rh.xPosColumn )
-    , yPosColumn( rh.yPosColumn )
-    , showColumn( rh.showColumn )
-    , mCt( rh.mCt )
+    : mCt( rh.mCt )
     , mPlacement( rh.mPlacement )
     , mPlacementFlags( rh.mPlacementFlags )
     , mPriority( rh.mPriority )
@@ -62,9 +57,6 @@ QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLaye
   mDistance = rh.mDistance;
   mRenderer = rh.mRenderer ? rh.mRenderer->clone() : nullptr;
   mCt = rh.mCt;
-  xPosColumn = rh.xPosColumn;
-  yPosColumn = rh.yPosColumn;
-  showColumn = rh.showColumn;
   mShowAll = rh.mShowAll;
   mProperties = rh.mProperties;
   return *this;
@@ -109,9 +101,27 @@ void QgsDiagramLayerSettings::readXml( const QDomElement& elem, const QgsVectorL
   mZIndex = elem.attribute( QStringLiteral( "zIndex" ) ).toDouble();
   mObstacle = elem.attribute( QStringLiteral( "obstacle" ) ).toInt();
   mDistance = elem.attribute( QStringLiteral( "dist" ) ).toDouble();
-  xPosColumn = elem.attribute( QStringLiteral( "xPosColumn" ) ).toInt();
-  yPosColumn = elem.attribute( QStringLiteral( "yPosColumn" ) ).toInt();
-  showColumn = elem.attribute( QStringLiteral( "showColumn" ) ).toInt();
+  if ( elem.hasAttribute( QStringLiteral( "xPosColumn" ) ) )
+  {
+    // upgrade old project
+    int xPosColumn = elem.attribute( QStringLiteral( "xPosColumn" ) ).toInt();
+    if ( xPosColumn >= 0 && xPosColumn < layer->fields().count() )
+      mProperties.setProperty( PositionX, new QgsFieldBasedProperty( layer->fields().at( xPosColumn ).name(), true ) );
+  }
+  if ( elem.hasAttribute( QStringLiteral( "yPosColumn" ) ) )
+  {
+    // upgrade old project
+    int yPosColumn = elem.attribute( QStringLiteral( "yPosColumn" ) ).toInt();
+    if ( yPosColumn >= 0 && yPosColumn < layer->fields().count() )
+      mProperties.setProperty( PositionY, new QgsFieldBasedProperty( layer->fields().at( yPosColumn ).name(), true ) );
+  }
+  if ( elem.hasAttribute( QStringLiteral( "showColumn" ) ) )
+  {
+    // upgrade old project
+    int showColumn = elem.attribute( QStringLiteral( "showColumn" ) ).toInt();
+    if ( showColumn >= 0 && showColumn < layer->fields().count() )
+      mProperties.setProperty( Show, new QgsFieldBasedProperty( layer->fields().at( showColumn ).name(), true ) );
+  }
   mShowAll = ( elem.attribute( QStringLiteral( "showAll" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
 }
 
@@ -129,9 +139,6 @@ void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& do
   diagramLayerElem.setAttribute( QStringLiteral( "zIndex" ), mZIndex );
   diagramLayerElem.setAttribute( QStringLiteral( "obstacle" ), mObstacle );
   diagramLayerElem.setAttribute( QStringLiteral( "dist" ), QString::number( mDistance ) );
-  diagramLayerElem.setAttribute( QStringLiteral( "xPosColumn" ), xPosColumn );
-  diagramLayerElem.setAttribute( QStringLiteral( "yPosColumn" ), yPosColumn );
-  diagramLayerElem.setAttribute( QStringLiteral( "showColumn" ), showColumn );
   diagramLayerElem.setAttribute( QStringLiteral( "showAll" ), mShowAll );
   layerElem.appendChild( diagramLayerElem );
 }
@@ -163,16 +170,6 @@ QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionCont
 
   //add the ones needed for data defined settings
   referenced.unite( mProperties.referencedFields( context ) );
-
-  //and the ones needed for data defined diagram positions
-  if ( xPosColumn >= 0 && xPosColumn < fieldsParameter.count() )
-    referenced << fieldsParameter.at( xPosColumn ).name();
-  if ( yPosColumn >= 0 && yPosColumn < fieldsParameter.count() )
-    referenced << fieldsParameter.at( yPosColumn ).name();
-
-  // and the ones needed for data defined diagram visibility
-  if ( showColumn >= 0 && showColumn < fieldsParameter.count() )
-    referenced << fieldsParameter.at( showColumn ).name();
 
   return referenced;
 }

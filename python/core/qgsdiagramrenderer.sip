@@ -180,12 +180,6 @@ class QgsDiagramLayerSettings
      */
     void setCoordinateTransform( const QgsCoordinateTransform& transform );
 
-    //! Attribute index for x coordinate (or -1 if position not data defined)
-    int xPosColumn;
-
-    //! Attribute index for y coordinate (or -1 if position not data defined)
-    int yPosColumn;
-
     /** Returns whether the layer should show all diagrams, including overlapping diagrams
      * @see setShowAllDiagrams()
      * @note added in QGIS 2.16
@@ -204,11 +198,9 @@ class QgsDiagramLayerSettings
 
     /** Returns the set of any fields referenced by the layer's diagrams.
      * @param context expression context the diagrams will be drawn using
-     * @param fields layer fields
      * @note added in QGIS 2.16
      */
-    //TODO QGIS 3.0 - remove need for fields parameter
-    QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const;
+    QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
     /** Returns a reference to the diagram's property collection, used for data defined overrides.
      * @note added in QGIS 2.16

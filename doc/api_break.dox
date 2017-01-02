@@ -832,6 +832,17 @@ place of a null pointer.
 - The dist member variable was removed. setDistance() and distance() should be used instead.
 - The renderer member variable was removed, and getRenderer() was renamed to renderer()
 - The showAll member variable was removed. setShowAllDiagrams() and showAllDiagrams() should be used instead.
+- The xPosColumn, yPosColumn and showColumn attributes were removed. Use setProperties() for setting data defined properties instead.
+- The LinePlacementFlags enum was renamed to LinePlacementFlag
+- The placement member variable was removed, and getPlacement() was renamed to placement()
+- The placementFlags member variable was removed
+- The priority member variable was removed, and getPriority() was renamed to priority()
+- The zIndex member variable was removed, and getZIndex() was renamed to zIndex()
+- The obstacle member variable was removed. setIsObstacle() and isObstacle() should be used instead.
+- The dist member variable was removed. setDistance() and distance() should be used instead.
+- The renderer member variable was removed, and getRenderer() was renamed to renderer()
+- The showAll member variable was removed. setShowAllDiagrams() and showAllDiagrams() should be used instead.
+- referencedFields() no longer requires a QgsFields argument.
 
 QgsDiagramSettings        {#qgis_api_break_3_0_QgsDiagramSettings}
 ------------------

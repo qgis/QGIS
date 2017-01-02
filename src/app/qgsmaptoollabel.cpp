@@ -570,11 +570,25 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer* vlayer, int& xCol, int& y
   if ( vlayer && vlayer->diagramsEnabled() )
   {
     const QgsDiagramLayerSettings *dls = vlayer->diagramLayerSettings();
-    if ( dls && dls->xPosColumn >= 0 && dls->yPosColumn >= 0 )
+    if ( dls )
     {
-      xCol = dls->xPosColumn;
-      yCol = dls->yPosColumn;
-      return true;
+      xCol = -1;
+      if ( const QgsFieldBasedProperty* ddX = dynamic_cast< const QgsFieldBasedProperty* >( dls->properties().property( QgsDiagramLayerSettings::PositionX ) ) )
+      {
+        if ( ddX->isActive() )
+        {
+          xCol = vlayer->fields().lookupField( ddX->field() );
+        }
+      }
+      yCol = -1;
+      if ( const QgsFieldBasedProperty* ddY = dynamic_cast< const QgsFieldBasedProperty* >( dls->properties().property( QgsDiagramLayerSettings::PositionY ) ) )
+      {
+        if ( ddY->isActive() )
+        {
+          yCol = vlayer->fields().lookupField( ddY->field() );
+        }
+      }
+      return xCol >= 0 && yCol >= 0;
     }
   }
   return false;
@@ -657,20 +671,23 @@ bool QgsMapToolLabel::isPinned()
 
 bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer* vlayer, int& showCol ) const
 {
-  bool rc = false;
+  showCol = -1;
 
   if ( vlayer && vlayer->isEditable() && vlayer->diagramsEnabled() )
   {
-    const QgsDiagramLayerSettings *dls = vlayer->diagramLayerSettings();
-
-    if ( dls && dls->showColumn >= 0 )
+    if ( const QgsDiagramLayerSettings *dls = vlayer->diagramLayerSettings() )
     {
-      showCol = dls->showColumn;
-      rc = true;
+      if ( const QgsFieldBasedProperty* ddShow = dynamic_cast< const QgsFieldBasedProperty* >( dls->properties().property( QgsDiagramLayerSettings::Show ) ) )
+      {
+        if ( ddShow->isActive() )
+        {
+          showCol = vlayer->fields().lookupField( ddShow->field() );
+        }
+      }
     }
   }
 
-  return rc;
+  return showCol >= 0;
 }
 
 //
