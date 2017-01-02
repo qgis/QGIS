@@ -34,9 +34,9 @@ class QDomDocument;
 /** \ingroup core
  * An Abstract Base Class for QGIS project property hierarchies.
 
-   Each sub-class is either a QgsPropertyKey or QgsPropertyValue.  QgsPropertyKeys can
-   contain either QgsPropertyKeys or QgsPropertyValues, thus describing an
-   hierarchy.  QgsPropertyValues are always graph leaves.
+   Each sub-class is either a QgsProjectPropertyKey or QgsProjectPropertyValue.  QgsProjectPropertyKey can
+   contain either QgsProjectPropertyKey or QgsProjectPropertyValues, thus describing an
+   hierarchy.  QgsProjectPropertyValues are always graph leaves.
 
    @note
 
@@ -44,11 +44,11 @@ class QDomDocument;
    too large and unwieldy, so it's broken out here into separate files.
 
 */
-class CORE_EXPORT QgsProperty
+class CORE_EXPORT QgsProjectProperty
 {
   public:
-    QgsProperty();
-    virtual ~QgsProperty() = default;
+    QgsProjectProperty();
+    virtual ~QgsProjectProperty() = default;
 
     /** Dumps out the keys and values
      *
@@ -56,10 +56,10 @@ class CORE_EXPORT QgsProperty
      */
     virtual void dump( int tabs = 0 ) const = 0;
 
-    //! Returns true if is a QgsPropertyKey
+    //! Returns true if is a QgsProjectPropertyKey
     virtual bool isKey() const = 0;
 
-    //! Returns true if is a QgsPropertyValue
+    //! Returns true if is a QgsProjectPropertyValue
     virtual bool isValue() const = 0;
 
     /** Returns true if a leaf node
@@ -93,41 +93,36 @@ class CORE_EXPORT QgsProperty
 
     /** Return the node's value
      *
-     * For QgsPropertyValue nodes, this is straightforward -- just return the
-     * embedded QVariant, _value.  For QgsPropertyKey, this means returning
-     * the QgsPropertyValue _value that is keyed by its name, if it exists;
-     * i.e., QgsPropertyKey "foo" will return the property value mapped to its
+     * For QgsProjectPropertyValue nodes, this is straightforward -- just return the
+     * embedded QVariant, _value.  For QgsProjectPropertyKey, this means returning
+     * the QgsProjectPropertyValue _value that is keyed by its name, if it exists;
+     * i.e., QgsProjectPropertyKey "foo" will return the property value mapped to its
      * name, "foo", in its QHash of QProperties.
      *
      */
     virtual QVariant value() const = 0;
 
-}; // class QgsProperty
-
-
+};
 
 
 /** \ingroup core
- * QgsPropertyValue node
+ * QgsProjectPropertyValue node
 
-Contains a QgsPropertyKey's value
+Contains a QgsProjectPropertyKey's value
 */
-class CORE_EXPORT QgsPropertyValue : public QgsProperty
+class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
 {
   public:
-    QgsPropertyValue() {}
+    QgsProjectPropertyValue() = default;
 
-    QgsPropertyValue( const QVariant &value )
-        : value_( value )
+    QgsProjectPropertyValue( const QVariant &value )
+        : mValue( value )
     {}
 
-    //! Returns true if is a QgsPropertyKey
     virtual bool isKey() const override { return false; }
-
-    //! Returns true if is a QgsPropertyValue
     virtual bool isValue() const override { return true; }
 
-    QVariant value() const override { return value_; }
+    QVariant value() const override { return mValue; }
 
     /** Returns true if is a leaf node
      *
@@ -147,7 +142,7 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
     int count() const { return 0; }
 
     /** Return keys that do not contain other keys
-     * Since QgsPropertyValue isn't a key, don't do anything.
+     * Since QgsProjectPropertyValue isn't a key, don't do anything.
      */
     void entryList( QStringList & keyName, QStringList & entries ) const
     { Q_UNUSED( keyName ); Q_UNUSED( entries ); /* NOP */ }
@@ -157,38 +152,36 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
     /** We use QVariant as it's very handy to keep multiple types and provides
      * type conversions
      */
-    QVariant value_;
+    QVariant mValue;
 
-}; // class QgsPropertyValue
-
-
+};
 
 
 /** \ingroup core
-   QgsPropertyKey node
+   QgsProjectPropertyKey node
 
-   Can, itself, contain QgsPropertyKeys and QgsPropertyValues.
+   Can, itself, contain QgsProjectPropertyKey and QgsProjectPropertyValues.
 
    The internal QHash, mProperties, maps key names to their respective
-   QgsPropertyValue or next QgsPropertyKey in the key name sequence.  The key with
-   the current name should contain its QgsPropertyValue.
+   QgsProjectPropertyValue or next QgsProjectPropertyKey in the key name sequence.  The key with
+   the current name should contain its QgsProjectPropertyValue.
 
    E.g., given the key sequence "/foo/bar", "foo" will have a corresponding
-   QgsPropertyKey with a name "foo".  It will contain an element in its
-   mProperties that maps to "bar", which is another QgsPropertyKey.  The "bar"
-   QgsPropertyKey will, in turn, have an element that maps to itself, i.e. "bar",
-   that will contain a QgsPropertyValue.
+   QgsProjectPropertyKey with a name "foo".  It will contain an element in its
+   mProperties that maps to "bar", which is another QgsProjectPropertyKey.  The "bar"
+   QgsProjectPropertyKey will, in turn, have an element that maps to itself, i.e. "bar",
+   that will contain a QgsProjectPropertyValue.
 
 */
-class CORE_EXPORT QgsPropertyKey : public QgsProperty
+class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
 {
   public:
 
     /**
-     * Create a new QgsPropertyKey with the specified identifier.
+     * Create a new QgsProjectPropertyKey with the specified identifier.
      */
-    QgsPropertyKey( const QString& name = QString() );
-    virtual ~QgsPropertyKey();
+    QgsProjectPropertyKey( const QString& name = QString() );
+    virtual ~QgsProjectPropertyKey();
 
     /**
      * The name of the property is used as identifier.
@@ -210,12 +203,12 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
 
 
     /// add the given property key
-    QgsPropertyKey *addKey( const QString & keyName )
+    QgsProjectPropertyKey *addKey( const QString & keyName )
     {
       delete mProperties.take( keyName );
-      mProperties.insert( keyName, new QgsPropertyKey( keyName ) );
+      mProperties.insert( keyName, new QgsProjectPropertyKey( keyName ) );
 
-      return dynamic_cast<QgsPropertyKey*>( mProperties.value( keyName ) );
+      return dynamic_cast<QgsProjectPropertyKey*>( mProperties.value( keyName ) );
     }
 
 
@@ -230,12 +223,12 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
      * @param value is the value to set
      * @return pointer to property value
      */
-    QgsPropertyValue * setValue( const QString & name, const QVariant & value )
+    QgsProjectPropertyValue * setValue( const QString & name, const QVariant & value )
     {
       delete mProperties.take( name );
-      mProperties.insert( name, new QgsPropertyValue( value ) );
+      mProperties.insert( name, new QgsProjectPropertyValue( value ) );
 
-      return dynamic_cast<QgsPropertyValue*>( mProperties.value( name ) );
+      return dynamic_cast<QgsProjectPropertyValue*>( mProperties.value( name ) );
     }
 
     /** Set the value associated with this key
@@ -243,7 +236,7 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
      * @note that the single value node associated with each key is always
      * stored keyed by the current key name
      */
-    QgsPropertyValue * setValue( const QVariant & value )
+    QgsProjectPropertyValue * setValue( const QVariant & value )
     {
       return setValue( name(), value );
     }
@@ -260,10 +253,7 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
     /// Does this property not have any subkeys or values?
     /* virtual */ bool isEmpty() const { return mProperties.isEmpty(); }
 
-    //! Returns true if is a QgsPropertyKey
     virtual bool isKey() const override { return true; }
-
-    //! Returns true if is a QgsPropertyValue
     virtual bool isValue() const override { return false; }
 
     /// return keys that do not contain other keys
@@ -292,7 +282,7 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
       mProperties.clear();
     }
 
-    QgsProperty * find( QString & propertyName )
+    QgsProjectProperty * find( QString & propertyName )
     {
       return mProperties.value( propertyName );
     }
@@ -303,8 +293,8 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
     QString mName;
 
     /// sub-keys
-    QHash < QString, QgsProperty* > mProperties;
+    QHash < QString, QgsProjectProperty* > mProperties;
 
-}; // class QgsPropertyKey
+};
 
 #endif

@@ -404,7 +404,7 @@ void QgsProjectFileTransform::transform1100to1200()
   for ( int i = 0; i < tolList.childNodes().count(); i++ )
     units << QStringLiteral( "0" );
 
-  QgsPropertyValue value( units );
+  QgsProjectPropertyValue value( units );
   value.writeXml( QStringLiteral( "LayerSnappingToleranceUnitList" ), digitizing, mDom );
 }
 

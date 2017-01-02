@@ -1,12 +1,12 @@
-class QgsProperty
+class QgsProjectProperty
 {
 %TypeHeaderCode
 #include <qgsprojectproperty.h>
 %End
 
   public:
-    QgsProperty();
-    virtual ~QgsProperty();
+    QgsProjectProperty();
+    virtual ~QgsProjectProperty();
 
     /** Dumps out the keys and values
      *
@@ -63,16 +63,16 @@ class QgsProperty
 }; // class QgsProperty
 
 
-class QgsPropertyValue : QgsProperty
+class QgsProjectPropertyValue : QgsProjectProperty
 {
 %TypeHeaderCode
 #include <qgsprojectproperty.h>
 %End
 
   public:
-    QgsPropertyValue();
-    QgsPropertyValue( const QVariant &value );
-    virtual ~QgsPropertyValue();
+    QgsProjectPropertyValue();
+    QgsProjectPropertyValue( const QVariant &value );
+    virtual ~QgsProjectPropertyValue();
 
     /** Returns true if is a QgsPropertyKey */
     virtual bool isKey() const;
@@ -106,15 +106,15 @@ class QgsPropertyValue : QgsProperty
 
 };
 
-class QgsPropertyKey : QgsProperty
+class QgsProjectPropertyKey : QgsProjectProperty
 {
 %TypeHeaderCode
 #include <qgsprojectproperty.h>
 %End
 
   public:
-    QgsPropertyKey( const QString& name = QString() );
-    virtual ~QgsPropertyKey();
+    QgsProjectPropertyKey( const QString& name = QString() );
+    virtual ~QgsProjectPropertyKey();
 
     /**
      * The name of the property is used as identifier.
@@ -133,7 +133,7 @@ class QgsPropertyKey : QgsProperty
 
 
     /// add the given property key
-    QgsPropertyKey * addKey( const QString & keyName );
+    QgsProjectPropertyKey * addKey( const QString & keyName );
 
     /// remove the given key
     void removeKey( const QString & keyName );
@@ -143,14 +143,14 @@ class QgsPropertyKey : QgsProperty
      * @param value is the value to set
      * @return pointer to property value
      */
-    QgsPropertyValue * setValue( const QString & name, const QVariant & value );
+    QgsProjectPropertyValue * setValue( const QString & name, const QVariant & value );
 
     /** Set the value associated with this key
      *
      * @note that the single value node associated with each key is always
      * stored keyed by the current key name
      */
-    QgsPropertyValue * setValue( const QVariant & value );
+    QgsProjectPropertyValue * setValue( const QVariant & value );
 
 
     void dump( int tabs = 0 ) const;
@@ -189,5 +189,5 @@ class QgsPropertyKey : QgsProperty
     /// delete any sub-nodes
     virtual void clearKeys();
 
-    QgsProperty * find( QString & propertyName );
+    QgsProjectProperty * find( QString & propertyName );
 }; // class QgsPropertyKey
