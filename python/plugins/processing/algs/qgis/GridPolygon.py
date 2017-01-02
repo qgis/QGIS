@@ -48,6 +48,8 @@ class GridPolygon(GeoAlgorithm):
     EXTENT = 'EXTENT'
     HSPACING = 'HSPACING'
     VSPACING = 'VSPACING'
+    HOVERLAY = 'HOVERLAY'
+    VOVERLAY = 'VOVERLAY'
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
@@ -71,6 +73,10 @@ class GridPolygon(GeoAlgorithm):
                                           self.tr('Horizontal spacing'), 0.0, 1000000000.0, 0.0001))
         self.addParameter(ParameterNumber(self.VSPACING,
                                           self.tr('Vertical spacing'), 0.0, 1000000000.0, 0.0001))
+        self.addParameter(ParameterNumber(self.HOVERLAY,
+                                          self.tr('Horizontal overlay'), 0.0, 1000000000.0, 0.0))
+        self.addParameter(ParameterNumber(self.VOVERLAY,
+                                          self.tr('Vertical overlay'), 0.0, 1000000000.0, 0.0))
         self.addParameter(ParameterCrs(self.CRS, 'Grid CRS', 'EPSG:4326'))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
@@ -80,6 +86,8 @@ class GridPolygon(GeoAlgorithm):
         extent = self.getParameterValue(self.EXTENT).split(',')
         hSpacing = self.getParameterValue(self.HSPACING)
         vSpacing = self.getParameterValue(self.VSPACING)
+        hOverlay = self.getParameterValue(self.HOVERLAY)
+        vOverlay = self.getParameterValue(self.VOVERLAY)
         crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.CRS))
 
         bbox = QgsRectangle(float(extent[0]), float(extent[2]),
@@ -88,7 +96,7 @@ class GridPolygon(GeoAlgorithm):
         width = bbox.width()
         height = bbox.height()
         originX = bbox.xMinimum()
-        originY = bbox.yMaximum()
+        originY = bbox.yMinimum()
 
         if hSpacing <= 0 or vSpacing <= 0:
             raise GeoAlgorithmExecutionException(
@@ -97,6 +105,10 @@ class GridPolygon(GeoAlgorithm):
         if width < hSpacing:
             raise GeoAlgorithmExecutionException(
                 self.tr('Horizontal spacing is too small for the covered area'))
+
+        if hSpacing <= hOverlay or vSpacing <= vOverlay:
+            raise GeoAlgorithmExecutionException(
+                self.tr('Invalid overlay: %s/%s' % (hOverlay, vOverlay)))
 
         if height < vSpacing:
             raise GeoAlgorithmExecutionException(
@@ -114,22 +126,23 @@ class GridPolygon(GeoAlgorithm):
 
         if idx == 0:
             self._rectangleGrid(
-                writer, width, height, originX, originY, hSpacing, vSpacing, progress)
+                writer, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, progress)
         elif idx == 1:
             self._diamondGrid(
-                writer, width, height, originX, originY, hSpacing, vSpacing, progress)
+                writer, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, progress)
         elif idx == 2:
             self._hexagonGrid(
-                writer, width, height, originX, originY, hSpacing, vSpacing, progress)
+                writer, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, progress)
 
         del writer
 
     def _rectangleGrid(self, writer, width, height, originX, originY,
-                       hSpacing, vSpacing, progress):
+                       hSpacing, vSpacing, hOverlay, vOverlay, progress):
         ft = QgsFeature()
 
-        columns = int(math.ceil(float(width) / hSpacing))
-        rows = int(math.ceil(float(height) / vSpacing))
+        columns = int(math.ceil(float(width) / (hSpacing-hOverlay)))
+        rows = int(math.ceil(float(height) / (vSpacing-vOverlay)))
+
         cells = rows * columns
         count_update = cells * 0.05
 
@@ -137,14 +150,12 @@ class GridPolygon(GeoAlgorithm):
         count = 0
 
         for col in range(columns):
-            # (column + 1) and (row + 1) calculation is used to maintain
-            # topology between adjacent shapes and avoid overlaps/holes
-            # due to rounding errors
-            x1 = originX + (col * hSpacing)
-            x2 = originX + ((col + 1) * hSpacing)
+            x1 = originX + (col * hSpacing - col * hOverlay)
+            x2 = x1 + hSpacing
+
             for row in range(rows):
-                y1 = originY - (row * vSpacing)
-                y2 = originY - ((row + 1) * vSpacing)
+                y1 = originY + (row * vSpacing - row * vOverlay)
+                y2 = y1 + vSpacing
 
                 polyline = []
                 polyline.append(QgsPoint(x1, y1))
@@ -154,61 +165,85 @@ class GridPolygon(GeoAlgorithm):
                 polyline.append(QgsPoint(x1, y1))
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
-                ft.setAttributes([x1, y1, x2, y2, id])
+                ft.setAttributes([x1, y2, x2, y1, id])
                 writer.addFeature(ft)
+
                 id += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:
                     progress.setPercentage(int(count / cells * 100))
 
+
+    def _diamond(self, xc, yc, h, w):
+        x0 = xc - w
+        x1 = xc
+        x2 = xc + w
+        y0 = yc - h
+        y1 = yc
+        y2 = yc + h
+        return [QgsPoint(x0, y1), QgsPoint(x1, y2),
+                QgsPoint(x2, y1), QgsPoint(x1, y0)]
+
+
     def _diamondGrid(self, writer, width, height, originX, originY,
-                     hSpacing, vSpacing, progress):
+                     hSpacing, vSpacing, hOverlay, vOverlay, progress):
         ft = QgsFeature()
 
-        halfHSpacing = hSpacing / 2
-        halfVSpacing = vSpacing / 2
+        halfHSpacing = hSpacing / 2.0
+        halfVSpacing = vSpacing / 2.0
+        ho = halfHSpacing - hOverlay/2.0
+        vo = halfVSpacing - vOverlay/2.0
 
-        columns = int(math.ceil(float(width) / halfHSpacing))
-        rows = int(math.ceil(float(height) / vSpacing))
+        columns = int(math.ceil(float(width + (halfVSpacing-vOverlay)) / vo))
+        rows = int(math.ceil(float(height + (halfHSpacing-hOverlay)) / ho))
 
         cells = rows * columns
         count_update = cells * 0.05
+
+        xc = originX
+        yc = originY
 
         id = 1
         count = 0
 
         for col in range(columns):
-            x1 = originX + ((col + 0) * halfHSpacing)
-            x2 = originX + ((col + 1) * halfHSpacing)
-            x3 = originX + ((col + 2) * halfHSpacing)
+            if col % 2 == 0:
+                yc = originY
+                rowsrange = rows
+            else:
+                yc = originY + vo
+                rowsrange = rows-1
 
             for row in range(rows):
-                if (col % 2) == 0:
-                    y1 = originY - (((row * 2) + 0) * halfVSpacing)
-                    y2 = originY - (((row * 2) + 1) * halfVSpacing)
-                    y3 = originY - (((row * 2) + 2) * halfVSpacing)
-                else:
-                    y1 = originY - (((row * 2) + 1) * halfVSpacing)
-                    y2 = originY - (((row * 2) + 2) * halfVSpacing)
-                    y3 = originY - (((row * 2) + 3) * halfVSpacing)
+                if row % 2 == 0:
+                    diamond = self._diamond(xc, yc, halfHSpacing, halfVSpacing)
+                    ft.setGeometry(QgsGeometry.fromPolygon([diamond]))
+                    ft.setAttributes([diamond[0].x(), diamond[1].y(),
+                                      diamond[2].x(), diamond[3].y(),
+                                      id])
+                    writer.addFeature(ft)
+                    id += 1
+                    count += 1
+                    if int(math.fmod(count, count_update)) == 0:
+                        progress.setPercentage(int(count / cells * 100))
+                yc += vo
 
-                polyline = []
-                polyline.append(QgsPoint(x1, y2))
-                polyline.append(QgsPoint(x2, y1))
-                polyline.append(QgsPoint(x3, y2))
-                polyline.append(QgsPoint(x2, y3))
-                polyline.append(QgsPoint(x1, y2))
+            xc += ho
 
-                ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
-                ft.setAttributes([x1, y1, x3, y3, id])
-                writer.addFeature(ft)
-                id += 1
-                count += 1
-                if int(math.fmod(count, count_update)) == 0:
-                    progress.setPercentage(int(count / cells * 100))
+
+    def _hexagon(self, xc, yc, xVLo, xVHi, h, w):
+        x0 = xc - w
+        x1 = xc + (xVLo - xVHi)
+        x3 = xc + w
+        x2 = xc - (xVLo - xVHi)
+        y0 = yc - h
+        y1 = yc
+        y2 = yc + h
+        return [QgsPoint(x0, y1), QgsPoint(x1, y2), QgsPoint(x2, y2),
+                QgsPoint(x3, y1), QgsPoint(x2, y0), QgsPoint(x1, y0)]
 
     def _hexagonGrid(self, writer, width, height, originX, originY,
-                     hSpacing, vSpacing, progress):
+                     hSpacing, vSpacing, hOverlay, vOverlay, progress):
         ft = QgsFeature()
 
         # To preserve symmetry, hspacing is fixed relative to vspacing
@@ -216,10 +251,17 @@ class GridPolygon(GeoAlgorithm):
         xVertexHi = 0.577350269189626 * vSpacing
         hSpacing = xVertexLo + xVertexHi
 
-        halfVSpacing = vSpacing / 2
+        halfHSpacing = hSpacing / 2.0
+        halfVSpacing = vSpacing / 2.0
 
-        columns = int(math.ceil(float(width) / hSpacing))
-        rows = int(math.ceil(float(height) / vSpacing))
+        vo = (xVertexHi + 0.211324865405215 * vSpacing) - vOverlay
+        ho = halfHSpacing - hOverlay / 2.0
+
+        columns = int(math.ceil(float(width + (halfVSpacing-vOverlay)) / vo))
+        rows = int(math.ceil(float(height + (halfHSpacing-hOverlay)) / ho))
+
+        xc = originX
+        yc = originY
 
         cells = rows * columns
         count_update = cells * 0.05
@@ -228,37 +270,26 @@ class GridPolygon(GeoAlgorithm):
         count = 0
 
         for col in range(columns):
-            # (column + 1) and (row + 1) calculation is used to maintain
-            # topology between adjacent shapes and avoid overlaps/holes
-            # due to rounding errors
-            x1 = originX + (col * hSpacing)         # far left
-            x2 = x1 + (xVertexHi - xVertexLo)       # left
-            x3 = originX + ((col + 1) * hSpacing)   # right
-            x4 = x3 + (xVertexHi - xVertexLo)       # far right
+            if col % 2 == 0:
+                yc = originY
+                rowsrange = rows
+            else:
+                yc = originY + ho
+                rowsrange = rows-1
 
-            for row in range(rows):
-                if (col % 2) == 0:
-                    y1 = originY - (((row * 2) + 0) * halfVSpacing)  # hi
-                    y2 = originY - (((row * 2) + 1) * halfVSpacing)  # mid
-                    y3 = originY - (((row * 2) + 2) * halfVSpacing)  # lo
-                else:
-                    y1 = originY - (((row * 2) + 1) * halfVSpacing)  # hi
-                    y2 = originY - (((row * 2) + 2) * halfVSpacing)  # mid
-                    y3 = originY - (((row * 2) + 3) * halfVSpacing)  # lo
+            for row in range(rowsrange):
+                if row % 2 == 0:
+                    hexagon = self._hexagon(xc, yc, xVertexLo, xVertexHi, halfHSpacing, halfVSpacing)
+                    ft.setGeometry(QgsGeometry.fromPolygon([hexagon]))
+                    ft.setAttributes([hexagon[0].x(), hexagon[1].y(),
+                                      hexagon[3].x(), hexagon[4].y(),
+                                      id])
+                    writer.addFeature(ft)
 
-                polyline = []
-                polyline.append(QgsPoint(x1, y2))
-                polyline.append(QgsPoint(x2, y1))
-                polyline.append(QgsPoint(x3, y1))
-                polyline.append(QgsPoint(x4, y2))
-                polyline.append(QgsPoint(x3, y3))
-                polyline.append(QgsPoint(x2, y3))
-                polyline.append(QgsPoint(x1, y2))
+                    id += 1
+                    count += 1
+                    if int(math.fmod(count, count_update)) == 0:
+                        progress.setPercentage(int(count / cells * 100))
 
-                ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
-                ft.setAttributes([x1, y1, x4, y3, id])
-                writer.addFeature(ft)
-                id += 1
-                count += 1
-                if int(math.fmod(count, count_update)) == 0:
-                    progress.setPercentage(int(count / cells * 100))
+                yc += ho
+            xc += vo

@@ -1700,64 +1700,365 @@ tests:
         name: expected/dropped_geometry.csv
         type: vector
 
+
   - algorithm: qgis:creategridlines
-    name: Create grid (lines)
+    name: Create grid lines (without overlay h = 1 v = 1)
     params:
       CRS: EPSG:4326
-      EXTENT: -1,11.2,-4,6.5
-      HSPACING: 5.0
-      VSPACING: 3.0
+      EXTENT: 0,10,0,10
+      HOVERLAY: 0.0
+      HSPACING: 1.0
+      VOVERLAY: 0.0
+      VSPACING: 1.0
     results:
       OUTPUT:
-        name: expected/grid_lines.gml
+        name: expected/gridlines_no_overlay_11.gml
         type: vector
         compare:
           geometry:
             precision: 7
-
-  - algorithm: qgis:creategridpolygon
-    name: Create grid (rectangles)
+        
+  - algorithm: qgis:creategridlines
+    name: Create grid lines (without overlay h = 2 v = 2)
     params:
       CRS: EPSG:4326
-      EXTENT: -1,11.2,-4,6.5
-      HSPACING: 5.0
-      TYPE: '0'
-      VSPACING: 3.0
+      EXTENT: 0,10,0,10
+      HOVERLAY: 0.0
+      HSPACING: 2.0
+      VOVERLAY: 0.0
+      VSPACING: 2.0
     results:
       OUTPUT:
-        name: expected/grid_rectangles.gml
+        name: expected/gridlines_no_overlay_22.gml
         type: vector
         compare:
           geometry:
             precision: 7
-
-  - algorithm: qgis:creategridpolygon
-    name: Create grid (diamond)
+        
+  - algorithm: qgis:creategridlines
+    name: Create grid lines (without overlay h = 3 v = 3)
     params:
       CRS: EPSG:4326
-      EXTENT: -1,11.2,-4,6.5
-      HSPACING: 5.0
-      TYPE: '1'
+      EXTENT: 0,10,0,10
+      HOVERLAY: 0.0
+      HSPACING: 3.0
+      VOVERLAY: 0.0
       VSPACING: 3.0
     results:
       OUTPUT:
-        name: expected/grid_diamond.gml
+        name: expected/gridlines_no_overlay_33.gml
         type: vector
         compare:
           geometry:
             precision: 7
-
-  - algorithm: qgis:creategridpolygon
-    name: Create grid (hexagon)
+        
+  - algorithm: qgis:creategridlines
+    name: Create grid lines (without overlay h = 4 v = 4)
     params:
       CRS: EPSG:4326
-      EXTENT: -1,11.2,-4,6.5
+      EXTENT: 0,10,0,10
+      HOVERLAY: 0.0
+      HSPACING: 4.0
+      VOVERLAY: 0.0
+      VSPACING: 4.0
+    results:
+      OUTPUT:
+        name: expected/gridlines_no_overlay_44.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+        
+  - algorithm: qgis:creategridlines
+    name: Create grid lines (without overlay h = 5 v = 5)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 0.0
       HSPACING: 5.0
-      TYPE: '2'
+      VOVERLAY: 0.0
       VSPACING: 5.0
     results:
       OUTPUT:
-        name: expected/grid_hexagon.gml
+        name: expected/gridlines_no_overlay_55.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+        
+  - algorithm: qgis:creategridlines
+    name: Create grid lines (without overlay h = 6 v = 6)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 0.0
+      HSPACING: 6.0
+      VOVERLAY: 0.0
+      VSPACING: 6.0
+    results:
+      OUTPUT:
+        name: expected/gridlines_no_overlay_66.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:creategridlines
+    name: Create grid lines (with overlay h = 2 v = 2, ho = 1 vo = 1)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 1.0
+      HSPACING: 2.0
+      VOVERLAY: 1.0
+      VSPACING: 2.0
+    results:
+      OUTPUT:
+        name: expected/gridlines_overlay_2211.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:creategridlines
+    name: Create grid lines (with overlay h = 3 v = 3, ho = 1 vo = 1)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 1.0
+      HSPACING: 3.0
+      VOVERLAY: 1.0
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/gridlines_overlay_3311.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+        
+  - algorithm: qgis:creategridlines
+    name: Create grid lines (with overlay h = 4 v = 4, ho = 1 vo = 1)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 1.0
+      HSPACING: 4.0
+      VOVERLAY: 1.0
+      VSPACING: 4.0
+    results:
+      OUTPUT:
+        name: expected/gridlines_overlay_4411.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+        
+  - algorithm: qgis:creategridlines
+    name: Create grid lines (with overlay h = 5 v = 5, ho = 1 vo = 1)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 1.0
+      HSPACING: 5.0
+      VOVERLAY: 1.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/gridlines_overlay_5511.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+        
+  - algorithm: qgis:creategridlines
+    name: Create grid lines (with overlay h = 6 v = 6, ho = 1 vo = 1)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 1.0
+      HSPACING: 6.0
+      VOVERLAY: 1.0
+      VSPACING: 6.0
+    results:
+      OUTPUT:
+        name: expected/gridlines_overlay_6611.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:creategridlines
+    name: Create grid lines (with overlay h = 3 v = 3, ho = 2 vo = 2)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 2.0
+      HSPACING: 3.0
+      VOVERLAY: 2.0
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/gridlines_overlay_3322.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+        
+  - algorithm: qgis:creategridlines
+    name: Create grid lines (with overlay h = 4 v = 4, ho = 2 vo = 2)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 2.0
+      HSPACING: 4.0
+      VOVERLAY: 2.0
+      VSPACING: 4.0
+    results:
+      OUTPUT:
+        name: expected/gridlines_overlay_4422.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+        
+  - algorithm: qgis:creategridlines
+    name: Create grid lines (with overlay h = 5 v = 4, ho = 2.3 vo = 1.7)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 2.3
+      HSPACING: 5.0
+      VOVERLAY: 1.7
+      VSPACING: 4.0
+    results:
+      OUTPUT:
+        name: expected/gridlines_overlay_542_31_7.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+        
+  - algorithm: qgis:creategridlines
+    name: Create grid lines (with overlay h = 6 v = 5, ho = 1.7 vo = 2.3)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 1.7
+      HSPACING: 6.0
+      VOVERLAY: 2.3
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/gridlines_overlay_651_72_3.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+ 
+  - algorithm: qgis:creategridpolygon
+    name: Create grid polygon (rectangle, without overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 0.0
+      HSPACING: 5.0
+      TYPE: '0'
+      VOVERLAY: 0.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/gridpolygon_no_overlay_rectangle.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+  
+  - algorithm: qgis:creategridpolygon
+    name: Create grid polygon (diamond, without overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 0.0
+      HSPACING: 5.0
+      TYPE: '1'
+      VOVERLAY: 0.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/gridpolygon_no_overlay_diamond.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+  
+  - algorithm: qgis:creategridpolygon
+    name: Create grid polygon (hexagon, without overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 0.0
+      HSPACING: 5.0
+      TYPE: '2'
+      VOVERLAY: 0.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/gridpolygon_no_overlay_hexagon.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+        
+  - algorithm: qgis:creategridpolygon
+    name: Create grid polygon (rectangle, with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 1.0
+      HSPACING: 5.0
+      TYPE: '0'
+      VOVERLAY: 1.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/gridpolygon_overlay_rectangle.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+  
+  - algorithm: qgis:creategridpolygon
+    name: Create grid polygon (diamond, with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 1.0
+      HSPACING: 5.0
+      TYPE: '1'
+      VOVERLAY: 1.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/gridpolygon_overlay_diamond.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+  
+  - algorithm: qgis:creategridpolygon
+    name: Create grid polygon (hexagon, with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: 0,10,0,10
+      HOVERLAY: 1.0
+      HSPACING: 5.0
+      TYPE: '2'
+      VOVERLAY: 1.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/gridpolygon_overlay_hexagon.gml
         type: vector
         compare:
           geometry:
