@@ -45,8 +45,9 @@ class ModelerGraphicItem(QGraphicsItem):
     BOX_HEIGHT = 30
     BOX_WIDTH = 200
 
-    def __init__(self, element, model):
+    def __init__(self, element, model, controls):
         super(ModelerGraphicItem, self).__init__(None)
+        self.controls = controls
         self.model = model
         self.element = element
         if isinstance(element, ModelerParameter):
@@ -73,7 +74,7 @@ class ModelerGraphicItem(QGraphicsItem):
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
         self.setZValue(1000)
 
-        if not isinstance(element, ModelerOutput):
+        if not isinstance(element, ModelerOutput) and controls:
             svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'edit.svg'))
             picture = QPicture()
             painter = QPainter(picture)
@@ -101,13 +102,15 @@ class ModelerGraphicItem(QGraphicsItem):
             if alg.parameters:
                 pt = self.getLinkPointForParameter(-1)
                 pt = QPointF(0, pt.y())
-                self.inButton = FoldButtonGraphicItem(pt, self.foldInput, self.element.paramsFolded)
-                self.inButton.setParentItem(self)
+                if controls:
+                    self.inButton = FoldButtonGraphicItem(pt, self.foldInput, self.element.paramsFolded)
+                    self.inButton.setParentItem(self)
             if alg.outputs:
                 pt = self.getLinkPointForOutput(-1)
                 pt = QPointF(0, pt.y())
-                self.outButton = FoldButtonGraphicItem(pt, self.foldOutput, self.element.outputsFolded)
-                self.outButton.setParentItem(self)
+                if controls:
+                    self.outButton = FoldButtonGraphicItem(pt, self.foldOutput, self.element.outputsFolded)
+                    self.outButton.setParentItem(self)
 
     def foldInput(self, folded):
         self.element.paramsFolded = folded
@@ -237,12 +240,15 @@ class ModelerGraphicItem(QGraphicsItem):
                       ModelerGraphicItem.BOX_HEIGHT + 2)
         color = QColor(172, 196, 114)
         outline = QColor(90, 140, 90)
+        selected = QColor(90, 140, 90)
         if isinstance(self.element, ModelerParameter):
             color = QColor(238, 242, 131)
             outline = QColor(234, 226, 118)
+            selected = QColor(151, 153, 83)
         elif isinstance(self.element, Algorithm):
             color = Qt.white
             outline = Qt.gray
+            selected = Qt.gray
         painter.setPen(QPen(outline, 1))
         painter.setBrush(QBrush(color, Qt.SolidPattern))
         painter.drawRect(rect)
@@ -255,7 +261,7 @@ class ModelerGraphicItem(QGraphicsItem):
             painter.setPen(QPen(Qt.gray))
             text = text + "\n(deactivated)"
         elif self.isSelected():
-            painter.setPen(QPen(outline))
+            painter.setPen(QPen(selected))
         fm = QFontMetricsF(font)
         text = self.getAdjustedText(self.text)
         h = fm.ascent()
@@ -379,7 +385,7 @@ class FlatButtonGraphicItem(QGraphicsItem):
         rect = QRectF(pt.x(), pt.y(), self.WIDTH, self.HEIGHT)
         if self.isIn:
             painter.setPen(QPen(Qt.transparent, 1))
-            painter.setBrush(QBrush(Qt.lightGray,
+            painter.setBrush(QBrush(QColor(55, 55, 55, 33),
                                     Qt.SolidPattern))
         else:
             painter.setPen(QPen(Qt.transparent, 1))

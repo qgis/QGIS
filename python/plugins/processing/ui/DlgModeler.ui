@@ -310,6 +310,8 @@
    <addaction name="mActionSaveAs"/>
    <addaction name="separator"/>
    <addaction name="mActionExportImage"/>
+   <addaction name="mActionExportPdf"/>
+   <addaction name="mActionExportSvg"/>
    <addaction name="mActionExportPython"/>
    <addaction name="separator"/>
    <addaction name="mActionEditHelp"/>
@@ -371,6 +373,30 @@
    </property>
    <property name="toolTip">
     <string>Export as image</string>
+   </property>
+  </action>
+  <action name="mActionExportPdf">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export as PDF...</string>
+   </property>
+   <property name="toolTip">
+    <string>Export as PDF</string>
+   </property>
+  </action>
+  <action name="mActionExportSvg">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsSVG.svg</normaloff>:/images/themes/default/mActionSaveAsSVG.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export as SVG...</string>
+   </property>
+   <property name="toolTip">
+    <string>Export as SVG</string>
    </property>
   </action>
   <action name="mActionExportPython">

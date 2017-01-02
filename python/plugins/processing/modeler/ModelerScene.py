@@ -78,11 +78,11 @@ class ModelerScene(QGraphicsScene):
             items.append((self.algItems[value.alg], i))
         return items
 
-    def paintModel(self, model):
+    def paintModel(self, model, controls=True):
         self.model = model
         # Inputs
         for inp in list(model.inputs.values()):
-            item = ModelerGraphicItem(inp, model)
+            item = ModelerGraphicItem(inp, model, controls)
             item.setFlag(QGraphicsItem.ItemIsMovable, True)
             item.setFlag(QGraphicsItem.ItemIsSelectable, True)
             self.addItem(item)
@@ -91,7 +91,7 @@ class ModelerScene(QGraphicsScene):
 
         # We add the algs
         for alg in list(model.algs.values()):
-            item = ModelerGraphicItem(alg, model)
+            item = ModelerGraphicItem(alg, model, controls)
             item.setFlag(QGraphicsItem.ItemIsMovable, True)
             item.setFlag(QGraphicsItem.ItemIsSelectable, True)
             self.addItem(item)
@@ -131,7 +131,7 @@ class ModelerScene(QGraphicsScene):
             for key in outputs:
                 out = outputs[key]
                 if out is not None:
-                    item = ModelerGraphicItem(out, model)
+                    item = ModelerGraphicItem(out, model, controls)
                     item.setFlag(QGraphicsItem.ItemIsMovable, True)
                     item.setFlag(QGraphicsItem.ItemIsSelectable, True)
                     self.addItem(item)
