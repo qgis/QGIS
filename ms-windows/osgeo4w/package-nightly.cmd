@@ -90,10 +90,10 @@ set CMAKE_OPT=^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
 
 :devenv
-for /f "usebackq tokens=1" %%a in (`%OSGEO4W_ROOT%\bin\grass70 --config path`) do set GRASS70_PATH=%%a
-for %%i in ("%GRASS70_PATH%") do set GRASS70_VERSION=%%~nxi
-set GRASS70_VERSION=%GRASS70_VERSION:grass-=%
-set GRASS_VERSIONS=%GRASS6_VERSION% %GRASS70_VERSION%
+for /f "usebackq tokens=1" %%a in (`%OSGEO4W_ROOT%\bin\grass72 --config path`) do set GRASS72_PATH=%%a
+for %%i in ("%GRASS72_PATH%") do set GRASS72_VERSION=%%~nxi
+set GRASS72_VERSION=%GRASS72_VERSION:grass-=%
+set GRASS_VERSIONS=%GRASS6_VERSION% %GRASS72_VERSION%
 
 set PYTHONPATH=
 path %PF86%\CMake\bin;%PATH%;c:\cygwin\bin
@@ -164,7 +164,7 @@ cmake %CMAKE_OPT% ^
 	-D WITH_GRASS6=TRUE ^
 	-D WITH_GRASS7=TRUE ^
 	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS6_VERSION% ^
-	-D GRASS_PREFIX7=%GRASS70_PATH:\=/% ^
+	-D GRASS_PREFIX7=%GRASS72_PATH:\=/% ^
 	-D WITH_GLOBE=TRUE ^
 	-D WITH_TOUCH=TRUE ^
 	-D WITH_ORACLE=TRUE ^
