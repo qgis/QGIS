@@ -100,12 +100,12 @@ class ModelerGraphicItem(QGraphicsItem):
             alg = element.algorithm
             if alg.parameters:
                 pt = self.getLinkPointForParameter(-1)
-                pt = QPointF(0, pt.y() + 2)
+                pt = QPointF(0, pt.y())
                 self.inButton = FoldButtonGraphicItem(pt, self.foldInput, self.element.paramsFolded)
                 self.inButton.setParentItem(self)
             if alg.outputs:
                 pt = self.getLinkPointForOutput(-1)
-                pt = QPointF(0, pt.y() + 2)
+                pt = QPointF(0, pt.y())
                 self.outButton = FoldButtonGraphicItem(pt, self.foldOutput, self.element.outputsFolded)
                 self.outButton.setParentItem(self)
 
@@ -132,6 +132,7 @@ class ModelerGraphicItem(QGraphicsItem):
 
     def boundingRect(self):
         font = QFont('Verdana', 8)
+        font.setPixelSize(12)
         fm = QFontMetricsF(font)
         unfolded = isinstance(self.element, Algorithm) and not self.element.paramsFolded
         numParams = len(self.element.algorithm.parameters) if unfolded else 0
@@ -216,6 +217,7 @@ class ModelerGraphicItem(QGraphicsItem):
 
     def getAdjustedText(self, text):
         font = QFont('Verdana', 8)
+        font.setPixelSize(12)
         fm = QFontMetricsF(font)
         w = fm.width(text)
         if w < self.BOX_WIDTH - 25 - FlatButtonGraphicItem.WIDTH:
@@ -233,15 +235,19 @@ class ModelerGraphicItem(QGraphicsItem):
                       -(ModelerGraphicItem.BOX_HEIGHT + 2) / 2.0,
                       ModelerGraphicItem.BOX_WIDTH + 2,
                       ModelerGraphicItem.BOX_HEIGHT + 2)
-        painter.setPen(QPen(Qt.gray, 1))
-        color = QColor(125, 232, 232)
+        color = QColor(172, 196, 114)
+        outline = QColor(90, 140, 90)
         if isinstance(self.element, ModelerParameter):
-            color = QColor(179, 179, 255)
+            color = QColor(238, 242, 131)
+            outline = QColor(234, 226, 118)
         elif isinstance(self.element, Algorithm):
             color = Qt.white
+            outline = Qt.gray
+        painter.setPen(QPen(outline, 1))
         painter.setBrush(QBrush(color, Qt.SolidPattern))
         painter.drawRect(rect)
         font = QFont('Verdana', 8)
+        font.setPixelSize(12)
         painter.setFont(font)
         painter.setPen(QPen(Qt.black))
         text = self.getAdjustedText(self.text)
@@ -249,11 +255,11 @@ class ModelerGraphicItem(QGraphicsItem):
             painter.setPen(QPen(Qt.gray))
             text = text + "\n(deactivated)"
         elif self.isSelected():
-            painter.setPen(QPen(Qt.blue))
+            painter.setPen(QPen(outline))
         fm = QFontMetricsF(font)
         text = self.getAdjustedText(self.text)
-        h = fm.height()
-        pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 25, h / 2.0)
+        h = fm.ascent()
+        pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 25, ModelerGraphicItem.BOX_HEIGHT / 2.0 - h + 1)
         painter.drawText(pt, text)
         painter.setPen(QPen(Qt.black))
         if isinstance(self.element, Algorithm):
@@ -272,7 +278,7 @@ class ModelerGraphicItem(QGraphicsItem):
                                      + 33, h)
                         painter.drawText(pt, text)
                         i += 1
-            h = fm.height() * 1.2
+            h = fm.height() * 1.1
             h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
             pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 25, h)
             painter.drawText(pt, 'Out')
@@ -297,6 +303,7 @@ class ModelerGraphicItem(QGraphicsItem):
             paramIndex = -1
             offsetX = 17
         font = QFont('Verdana', 8)
+        font.setPixelSize(12)
         fm = QFontMetricsF(font)
         if isinstance(self.element, Algorithm):
             h = -(fm.height() * 1.2) * (paramIndex + 2) - fm.height() / 2.0 + 8
@@ -310,6 +317,7 @@ class ModelerGraphicItem(QGraphicsItem):
             outputIndex = (outputIndex if not self.element.outputsFolded else -1)
             text = self.getAdjustedText(self.element.algorithm.outputs[outputIndex].description)
             font = QFont('Verdana', 8)
+            font.setPixelSize(12)
             fm = QFontMetricsF(font)
             w = fm.width(text)
             h = fm.height() * 1.2 * (outputIndex + 1) + fm.height() / 2.0
@@ -330,6 +338,7 @@ class ModelerGraphicItem(QGraphicsItem):
 
     def polygon(self):
         font = QFont('Verdana', 8)
+        font.setPixelSize(12)
         fm = QFontMetricsF(font)
         hUp = fm.height() * 1.2 * (len(self.element.parameters) + 2)
         hDown = fm.height() * 1.2 * (len(self.element.outputs) + 2)
