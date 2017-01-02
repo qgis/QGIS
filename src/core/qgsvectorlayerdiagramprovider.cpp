@@ -61,8 +61,8 @@ QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer* la
 void QgsVectorLayerDiagramProvider::init()
 {
   mName = mLayerId;
-  mPriority = 1 - mSettings.getPriority() / 10.0; // convert 0..10 --> 1..0
-  mPlacement = QgsPalLayerSettings::Placement( mSettings.getPlacement() );
+  mPriority = 1 - mSettings.priority() / 10.0; // convert 0..10 --> 1..0
+  mPlacement = QgsPalLayerSettings::Placement( mSettings.placement() );
   mLinePlacementFlags = mSettings.linePlacementFlags();
 }
 
@@ -147,7 +147,7 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::L
   QgsPoint centerPt = xform.transform( outPt.x() - label->getWidth() / 2,
                                        outPt.y() - label->getHeight() / 2 );
 
-  mSettings.getRenderer()->renderDiagram( feature, context, centerPt.toQPointF() );
+  mSettings.renderer()->renderDiagram( feature, context, centerPt.toQPointF() );
 
   //insert into label search tree to manipulate position interactively
   mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, QString(), QFont(), true, false );
@@ -195,7 +195,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
 {
   const QgsMapSettings& mapSettings = mEngine->mapSettings();
 
-  const QgsDiagramRenderer* dr = mSettings.getRenderer();
+  const QgsDiagramRenderer* dr = mSettings.renderer();
   if ( dr )
   {
     QList<QgsDiagramSettings> settingList = dr->diagramSettings();
@@ -315,7 +315,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   lf->setFixedAngle( 0 );
   lf->setAlwaysShow( alwaysShow );
   lf->setIsObstacle( mSettings.isObstacle() );
-  lf->setZIndex( mSettings.getZIndex() );
+  lf->setZIndex( mSettings.zIndex() );
   if ( geosObstacleGeomClone )
   {
     lf->setObstacleGeometry( geosObstacleGeomClone );

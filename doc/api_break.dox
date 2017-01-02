@@ -772,11 +772,15 @@ Use renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiag
 - The deprecated  diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) method has been removed.
 Use diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) instead.
 
+QgsDiagramInterpolationSettings        {#qgis_api_break_3_0_QgsDiagramInterpolationSettings}
+-------------------------------
+- The classificationAttribute member variable was removed, and has been replaced by the classificationField variable which stores the string name.
+
 
 QgsDiagramRenderer        {#qgis_api_break_3_0_QgsDiagramRenderer}
 ------------------
-
 - xform, fields were no longer required and are removed.
+- referencedFields() no longer takes a QgsFields argument.
 
 
 QgsDiagramLayerSettings        {#qgis_api_break_3_0_QgsDiagramLayerSettings}
@@ -787,7 +791,15 @@ be returned in place of a null pointer.
 - setCoordinateTransform() now takes a QgsCoordinateTransform object, not a pointer. Use an invalid QgsCoordinateTransform in
 place of a null pointer.
 - The ct member has been removed. Use coordinateTransform() and setCoordinateTransform() instead.
-
+- The LinePlacementFlags enum was renamed to LinePlacementFlag
+- The placement member variable was removed, and getPlacement() was renamed to placement()
+- The placementFlags member variable was removed
+- The priority member variable was removed, and getPriority() was renamed to priority()
+- The zIndex member variable was removed, and getZIndex() was renamed to zIndex()
+- The obstacle member variable was removed. setIsObstacle() and isObstacle() should be used instead.
+- The dist member variable was removed. setDistance() and distance() should be used instead.
+- The renderer member variable was removed, and getRenderer() was renamed to renderer()
+- The showAll member variable was removed. setShowAllDiagrams() and showAllDiagrams() should be used instead.
 
 QgsDiagramSettings        {#qgis_api_break_3_0_QgsDiagramSettings}
 ------------------
@@ -1102,6 +1114,13 @@ QgsLimitedRandomColorRampDialog        {#qgis_api_break_3_0_QgsLimitedRandomRamp
 and the new ramp can be retrieved after executing the dialog by calling ramp().
 - Some internal methods which were previously public or protected were made private.
 
+
+QgsLinearlyInterpolatedDiagramRenderer        {#qgis_api_break_3_0_QgsLinearlyInterpolatedDiagramRenderer}
+--------------------------------------
+
+- The classificationAttribute() and setClassificationAttribute() methods were replace by 
+classificationField() and setClassificationField() which use the field names instead of field
+indexes.
 
 QgsMapCanvas        {#qgis_api_break_3_0_QgsMapCanvas}
 ------------

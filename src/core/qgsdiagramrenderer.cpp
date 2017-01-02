@@ -25,74 +25,59 @@
 #include <QDomElement>
 #include <QPainter>
 
-Q_NOWARN_DEPRECATED_PUSH // because of deprecated xform member
 QgsDiagramLayerSettings::QgsDiagramLayerSettings()
-    : placement( AroundPoint )
-    , placementFlags( OnLine )
-    , priority( 5 )
-    , zIndex( 0.0 )
-    , obstacle( false )
-    , dist( 0.0 )
-    , renderer( nullptr )
-    , xPosColumn( -1 )
+    : xPosColumn( -1 )
     , yPosColumn( -1 )
     , showColumn( -1 )
-    , showAll( true )
+    , mRenderer( nullptr )
 {
 }
-Q_NOWARN_DEPRECATED_POP
 
-Q_NOWARN_DEPRECATED_PUSH // because of deprecated xform member
 QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh )
-    : placement( rh.placement )
-    , placementFlags( rh.placementFlags )
-    , priority( rh.priority )
-    , zIndex( rh.zIndex )
-    , obstacle( rh.obstacle )
-    , dist( rh.dist )
-    , renderer( rh.renderer ? rh.renderer->clone() : nullptr )
-    , xPosColumn( rh.xPosColumn )
+    : xPosColumn( rh.xPosColumn )
     , yPosColumn( rh.yPosColumn )
     , showColumn( rh.showColumn )
-    , showAll( rh.showAll )
     , mCt( rh.mCt )
+    , mPlacement( rh.mPlacement )
+    , mPlacementFlags( rh.mPlacementFlags )
+    , mPriority( rh.mPriority )
+    , mZIndex( rh.mZIndex )
+    , mObstacle( rh.mObstacle )
+    , mDistance( rh.mDistance )
+    , mRenderer( rh.mRenderer ? rh.mRenderer->clone() : nullptr )
+    , mShowAll( rh.mShowAll )
 {
 }
-Q_NOWARN_DEPRECATED_POP
 
-Q_NOWARN_DEPRECATED_PUSH // because of deprecated xform member
 QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings & rh )
 {
-  placement = rh.placement;
-  placementFlags = rh.placementFlags;
-  priority = rh.priority;
-  zIndex = rh.zIndex;
-  obstacle = rh.obstacle;
-  dist = rh.dist;
-  renderer = rh.renderer ? rh.renderer->clone() : nullptr;
+  mPlacement = rh.mPlacement;
+  mPlacementFlags = rh.mPlacementFlags;
+  mPriority = rh.mPriority;
+  mZIndex = rh.mZIndex;
+  mObstacle = rh.mObstacle;
+  mDistance = rh.mDistance;
+  mRenderer = rh.mRenderer ? rh.mRenderer->clone() : nullptr;
   mCt = rh.mCt;
   xPosColumn = rh.xPosColumn;
   yPosColumn = rh.yPosColumn;
   showColumn = rh.showColumn;
-  showAll = rh.showAll;
+  mShowAll = rh.mShowAll;
   return *this;
 }
-Q_NOWARN_DEPRECATED_POP
 
-Q_NOWARN_DEPRECATED_PUSH // because of deprecated fields member
 QgsDiagramLayerSettings::~QgsDiagramLayerSettings()
 {
-  delete renderer;
+  delete mRenderer;
 }
-Q_NOWARN_DEPRECATED_POP
 
 void QgsDiagramLayerSettings::setRenderer( QgsDiagramRenderer *diagramRenderer )
 {
-  if ( diagramRenderer == renderer )
+  if ( diagramRenderer == mRenderer )
     return;
 
-  delete renderer;
-  renderer = diagramRenderer;
+  delete mRenderer;
+  mRenderer = diagramRenderer;
 }
 
 void QgsDiagramLayerSettings::setCoordinateTransform( const QgsCoordinateTransform& transform )
@@ -104,16 +89,16 @@ void QgsDiagramLayerSettings::readXml( const QDomElement& elem, const QgsVectorL
 {
   Q_UNUSED( layer )
 
-  placement = static_cast< Placement >( elem.attribute( QStringLiteral( "placement" ) ).toInt() );
-  placementFlags = static_cast< LinePlacementFlags >( elem.attribute( QStringLiteral( "linePlacementFlags" ) ).toInt() );
-  priority = elem.attribute( QStringLiteral( "priority" ) ).toInt();
-  zIndex = elem.attribute( QStringLiteral( "zIndex" ) ).toDouble();
-  obstacle = elem.attribute( QStringLiteral( "obstacle" ) ).toInt();
-  dist = elem.attribute( QStringLiteral( "dist" ) ).toDouble();
+  mPlacement = static_cast< Placement >( elem.attribute( QStringLiteral( "placement" ) ).toInt() );
+  mPlacementFlags = static_cast< LinePlacementFlag >( elem.attribute( QStringLiteral( "linePlacementFlags" ) ).toInt() );
+  mPriority = elem.attribute( QStringLiteral( "priority" ) ).toInt();
+  mZIndex = elem.attribute( QStringLiteral( "zIndex" ) ).toDouble();
+  mObstacle = elem.attribute( QStringLiteral( "obstacle" ) ).toInt();
+  mDistance = elem.attribute( QStringLiteral( "dist" ) ).toDouble();
   xPosColumn = elem.attribute( QStringLiteral( "xPosColumn" ) ).toInt();
   yPosColumn = elem.attribute( QStringLiteral( "yPosColumn" ) ).toInt();
   showColumn = elem.attribute( QStringLiteral( "showColumn" ) ).toInt();
-  showAll = ( elem.attribute( QStringLiteral( "showAll" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
+  mShowAll = ( elem.attribute( QStringLiteral( "showAll" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
 }
 
 void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
@@ -121,24 +106,24 @@ void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& do
   Q_UNUSED( layer )
 
   QDomElement diagramLayerElem = doc.createElement( QStringLiteral( "DiagramLayerSettings" ) );
-  diagramLayerElem.setAttribute( QStringLiteral( "placement" ), placement );
-  diagramLayerElem.setAttribute( QStringLiteral( "linePlacementFlags" ), placementFlags );
-  diagramLayerElem.setAttribute( QStringLiteral( "priority" ), priority );
-  diagramLayerElem.setAttribute( QStringLiteral( "zIndex" ), zIndex );
-  diagramLayerElem.setAttribute( QStringLiteral( "obstacle" ), obstacle );
-  diagramLayerElem.setAttribute( QStringLiteral( "dist" ), QString::number( dist ) );
+  diagramLayerElem.setAttribute( QStringLiteral( "placement" ), mPlacement );
+  diagramLayerElem.setAttribute( QStringLiteral( "linePlacementFlags" ), mPlacementFlags );
+  diagramLayerElem.setAttribute( QStringLiteral( "priority" ), mPriority );
+  diagramLayerElem.setAttribute( QStringLiteral( "zIndex" ), mZIndex );
+  diagramLayerElem.setAttribute( QStringLiteral( "obstacle" ), mObstacle );
+  diagramLayerElem.setAttribute( QStringLiteral( "dist" ), QString::number( mDistance ) );
   diagramLayerElem.setAttribute( QStringLiteral( "xPosColumn" ), xPosColumn );
   diagramLayerElem.setAttribute( QStringLiteral( "yPosColumn" ), yPosColumn );
   diagramLayerElem.setAttribute( QStringLiteral( "showColumn" ), showColumn );
-  diagramLayerElem.setAttribute( QStringLiteral( "showAll" ), showAll );
+  diagramLayerElem.setAttribute( QStringLiteral( "showAll" ), mShowAll );
   layerElem.appendChild( diagramLayerElem );
 }
 
 QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionContext &context, const QgsFields& fieldsParameter ) const
 {
   QSet< QString > referenced;
-  if ( renderer )
-    referenced = renderer->referencedFields( context, fieldsParameter );
+  if ( mRenderer )
+    referenced = mRenderer->referencedFields( context );
 
   //and the ones needed for data defined diagram positions
   if ( xPosColumn >= 0 && xPosColumn < fieldsParameter.count() )
@@ -446,10 +431,8 @@ QSizeF QgsDiagramRenderer::sizeMapUnits( const QgsFeature& feature, const QgsRen
   return size;
 }
 
-QSet<QString> QgsDiagramRenderer::referencedFields( const QgsExpressionContext &context, const QgsFields &fields ) const
+QSet<QString> QgsDiagramRenderer::referencedFields( const QgsExpressionContext &context ) const
 {
-  Q_UNUSED( fields );
-
   QSet< QString > referenced;
 
   if ( !mDiagram )
@@ -615,9 +598,9 @@ QList<QString> QgsLinearlyInterpolatedDiagramRenderer::diagramAttributes() const
   return mSettings.categoryAttributes;
 }
 
-QSet<QString> QgsLinearlyInterpolatedDiagramRenderer::referencedFields( const QgsExpressionContext &context, const QgsFields& fields ) const
+QSet<QString> QgsLinearlyInterpolatedDiagramRenderer::referencedFields( const QgsExpressionContext &context ) const
 {
-  QSet< QString > referenced = QgsDiagramRenderer::referencedFields( context, fields );
+  QSet< QString > referenced = QgsDiagramRenderer::referencedFields( context );
   if ( mInterpolationSettings.classificationAttributeIsExpression )
   {
     QgsExpression* expression = mDiagram->getExpression( mInterpolationSettings.classificationAttributeExpression, context );
@@ -628,7 +611,7 @@ QSet<QString> QgsLinearlyInterpolatedDiagramRenderer::referencedFields( const Qg
   }
   else
   {
-    referenced << fields.at( mInterpolationSettings.classificationAttribute ).name();
+    referenced << mInterpolationSettings.classificationField;
   }
   return referenced;
 }
@@ -653,7 +636,14 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement& elem, c
   }
   else
   {
-    mInterpolationSettings.classificationAttribute = elem.attribute( QStringLiteral( "classificationAttribute" ) ).toInt();
+    if ( elem.hasAttribute( QStringLiteral( "classificationAttribute" ) ) )
+    {
+      int idx = elem.attribute( QStringLiteral( "classificationAttribute" ) ).toInt();
+      if ( idx >= 0 && idx < layer->fields().count() )
+        mInterpolationSettings.classificationField = layer->fields().at( idx ).name();
+    }
+    else
+      mInterpolationSettings.classificationField = elem.attribute( QStringLiteral( "classificationField " ) );
   }
   QDomElement settingsElem = elem.firstChildElement( QStringLiteral( "DiagramCategory" ) );
   if ( !settingsElem.isNull() )
@@ -678,7 +668,7 @@ void QgsLinearlyInterpolatedDiagramRenderer::writeXml( QDomElement& layerElem, Q
   }
   else
   {
-    rendererElem.setAttribute( QStringLiteral( "classificationAttribute" ), mInterpolationSettings.classificationAttribute );
+    rendererElem.setAttribute( QStringLiteral( "classificationField" ), mInterpolationSettings.classificationField );
   }
   mSettings.writeXml( rendererElem, doc, layer );
   _writeXml( rendererElem, doc, layer );
