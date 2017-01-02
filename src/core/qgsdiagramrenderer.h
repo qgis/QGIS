@@ -63,13 +63,14 @@ class CORE_EXPORT QgsDiagramLayerSettings
     };
 
     //! Line placement flags for controlling line based placements
-    enum LinePlacementFlags
+    enum LinePlacementFlag
     {
       OnLine    = 1,
-      AboveLine = 2,
-      BelowLine = 4,
-      MapOrientation = 8
+      AboveLine = 1 << 1,
+      BelowLine = 1 << 2,
+      MapOrientation = 1 << 4,
     };
+    Q_DECLARE_FLAGS( LinePlacementFlags, LinePlacementFlag )
 
     QgsDiagramLayerSettings();
 
@@ -80,30 +81,26 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     ~QgsDiagramLayerSettings();
 
-    /** Returns the diagram placement.
+    /**
+     * Returns the diagram placement.
      * @see setPlacement()
      * @note added in QGIS 2.16
      */
-    //TODO QGIS 3.0 - rename getter to placement()
-    Placement getPlacement() const { return placement; }
+    Placement placement() const { return mPlacement; }
 
     /** Sets the diagram placement.
      * @param value placement value
-     * @see getPlacement()
+     * @see placement()
      * @note added in QGIS 2.16
      */
-    void setPlacement( Placement value ) { placement = value; }
-
-    //! Diagram placement
-    //TODO QGIS 3.0 - make private, rename to mPlacement
-    Placement placement;
+    void setPlacement( Placement value ) { mPlacement = value; }
 
     /** Returns the diagram placement flags. These are only used if the diagram placement
      * is set to a line type.
      * @see setLinePlacementFlags()
      * @note added in QGIS 2.16
      */
-    unsigned int linePlacementFlags() const { return placementFlags; }
+    LinePlacementFlags linePlacementFlags() const { return mPlacementFlags; }
 
     /** Sets the the diagram placement flags. These are only used if the diagram placement
      * is set to a line type.
@@ -111,11 +108,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * @see getPlacement()
      * @note added in QGIS 2.16
      */
-    void setLinePlacementFlags( unsigned int flags ) { placementFlags = flags; }
-
-    //! Diagram placement flags
-    // TODO QGIS 3.0 - make private, rename to mPlacementFlags, use QFlags
-    unsigned int placementFlags;
+    void setLinePlacementFlags( LinePlacementFlags flags ) { mPlacementFlags = flags; }
 
     /** Returns the diagram priority.
      * @returns diagram priority, where 0 = low and 10 = high
@@ -124,21 +117,15 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * @see setPriority()
      * @note added in QGIS 2.16
      */
-    //TODO QGIS 3.0 - rename getter to priority()
-    int getPriority() const { return priority; }
+    int priority() const { return mPriority; }
 
     /** Sets the diagram priority.
      * @param value priority, where 0 = low and 10 = high
-     * @see getPriority()
+     * @see priority()
      * @note added in QGIS 2.16
      */
-    void setPriority( int value ) { priority = value; }
+    void setPriority( int value ) { mPriority = value; }
 
-    //! Placement priority, where 0 = low and 10 = high
-    //! @note placement priority is shared with labeling, so diagrams with a high priority may displace labels
-    //! and vice-versa
-    // TODO QGIS 3.0 - make private, rename to mPriority
-    int priority;
 
     /** Returns the diagram z-index. Diagrams (or labels) with a higher z-index are drawn over diagrams
      * with a lower z-index.
@@ -147,80 +134,60 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * @see setZIndex()
      * @note added in QGIS 2.16
      */
-    //TODO QGIS 3.0 - rename getter to zIndex()
-    double getZIndex() const { return zIndex; }
+    double zIndex() const { return mZIndex; }
 
     /** Sets the diagram z-index. Diagrams (or labels) with a higher z-index are drawn over diagrams
      * with a lower z-index.
      * @param index diagram z-index
-     * @see getZIndex()
+     * @see zIndex()
      * @note added in QGIS 2.16
      */
-    void setZIndex( double index ) { zIndex = index; }
-
-    //! Z-index of diagrams, where diagrams with a higher z-index are drawn on top of diagrams with a lower z-index
-    // TODO QGIS 3.0 - rename to mZIndex, make private
-    double zIndex;
-
+    void setZIndex( double index ) { mZIndex = index; }
 
     /** Returns whether the feature associated with a diagram acts as an obstacle for other labels or diagrams.
      * @see setIsObstacle()
      * @note added in QGIS 2.16
      */
-    bool isObstacle() const { return obstacle; }
+    bool isObstacle() const { return mObstacle; }
 
     /** Sets whether the feature associated with a diagram acts as an obstacle for other labels or diagrams.
      * @param isObstacle set to true for feature to act as obstacle
      * @see isObstacle()
      * @note added in QGIS 2.16
      */
-    void setIsObstacle( bool isObstacle ) { obstacle = isObstacle; }
-
-    //! Whether associated feature acts as an obstacle for other labels or diagrams
-    // TODO QGIS 3.0 - rename to mObstacle, make private
-    bool obstacle;
+    void setIsObstacle( bool isObstacle ) { mObstacle = isObstacle; }
 
     /** Returns the distance between the diagram and the feature (in mm).
      * @see setDistance()
      * @note added in QGIS 2.16
      */
-    double distance() const { return dist; }
+    double distance() const { return mDistance; }
 
     /** Sets the distance between the diagram and the feature.
      * @param distance distance in mm
      * @see distance()
      * @note added in QGIS 2.16
      */
-    void setDistance( double distance ) { dist = distance; }
-
-    //! Distance between diagram and the feature (in mm)
-    // TODO QGIS 3.0 - make private, rename to mDistance
-    double dist;
+    void setDistance( double distance ) { mDistance = distance; }
 
     /** Returns the diagram renderer associated with the layer.
      * @see setRenderer()
      * @note added in QGIS 2.16
      */
-    // TODO QGIS 3.0 - rename to renderer()
-    QgsDiagramRenderer* getRenderer() { return renderer; }
+    QgsDiagramRenderer* renderer() { return mRenderer; }
 
     /** Returns the diagram renderer associated with the layer.
      * @see setRenderer()
      * @note added in QGIS 2.16
      */
-    // TODO QGIS 3.0 - rename to renderer()
-    const QgsDiagramRenderer* getRenderer() const { return renderer; }
+    const QgsDiagramRenderer* renderer() const { return mRenderer; }
 
     /** Sets the diagram renderer associated with the layer.
      * @param diagramRenderer diagram renderer. Ownership is transferred to the object.
-     * @see getRenderer()
+     * @see renderer()
      * @note added in QGIS 2.16
      */
     void setRenderer( QgsDiagramRenderer* diagramRenderer );
-
-    //! Associated diagram renderer. Owned by this object.
-    // TODO QGIS 3.0 - make private, rename to mRenderer
-    QgsDiagramRenderer* renderer;
 
     /** Returns the coordinate transform associated with the layer, or an
      * invalid transform if no transformation is required.
@@ -249,18 +216,14 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * @see setShowAllDiagrams()
      * @note added in QGIS 2.16
      */
-    bool showAllDiagrams() const { return showAll; }
+    bool showAllDiagrams() const { return mShowAll; }
 
     /** Sets whether the layer should show all diagrams, including overlapping diagrams
      * @param showAllDiagrams set to true to show all diagrams
      * @see showAllDiagrams()
      * @note added in QGIS 2.16
      */
-    void setShowAllDiagrams( bool showAllDiagrams ) { showAll = showAllDiagrams; }
-
-    //! Whether to show all diagrams, including overlapping diagrams
-    // TODO QGIS 3.0 - make private, rename to mShowAll
-    bool showAll;
+    void setShowAllDiagrams( bool showAllDiagrams ) { mShowAll = showAllDiagrams; }
 
     void readXml( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
@@ -277,6 +240,32 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     //! Associated coordinate transform, or invalid transform for no transformation
     QgsCoordinateTransform mCt;
+
+    //! Diagram placement
+    Placement mPlacement = AroundPoint;
+
+    //! Diagram placement flags
+    LinePlacementFlags mPlacementFlags = OnLine;
+
+    //! Placement priority, where 0 = low and 10 = high
+    //! @note placement priority is shared with labeling, so diagrams with a high priority may displace labels
+    //! and vice-versa
+    int mPriority = 5;
+
+    //! Z-index of diagrams, where diagrams with a higher z-index are drawn on top of diagrams with a lower z-index
+    double mZIndex = 0.0;
+
+    //! Whether associated feature acts as an obstacle for other labels or diagrams
+    bool mObstacle = false;
+
+    //! Distance between diagram and the feature (in mm)
+    double mDistance = 0.0;
+
+    //! Associated diagram renderer. Owned by this object.
+    QgsDiagramRenderer* mRenderer = nullptr;
+
+    //! Whether to show all diagrams, including overlapping diagrams
+    bool mShowAll = true;
 };
 
 /** \ingroup core
@@ -390,9 +379,8 @@ class CORE_EXPORT QgsDiagramInterpolationSettings
     double lowerValue;
     double upperValue;
 
-    //! Index of the classification attribute
-    //TODO QGIS 3.0 - don't store index, store field name
-    int classificationAttribute;
+    //! Name of the field for classification
+    QString classificationField;
 
     QString classificationAttributeExpression;
     bool classificationAttributeIsExpression;
@@ -425,11 +413,9 @@ class CORE_EXPORT QgsDiagramRenderer
 
     /** Returns the set of any fields required for diagram rendering
      * @param context expression context the diagrams will be drawn using
-     * @param fields layer fields
      * @note added in QGIS 2.16
      */
-    //TODO QGIS 3.0 - remove need for fields parameter
-    virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const;
+    virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
     void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos ) const;
 
@@ -581,7 +567,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     QList<QString> diagramAttributes() const override;
 
-    virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const override;
+    virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
 
     QString rendererName() const override { return QStringLiteral( "LinearlyInterpolated" ); }
 
@@ -597,8 +583,19 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     void setUpperSize( QSizeF s ) { mInterpolationSettings.upperSize = s; }
     QSizeF upperSize() const { return mInterpolationSettings.upperSize; }
 
-    int classificationAttribute() const { return mInterpolationSettings.classificationAttribute; }
-    void setClassificationAttribute( int index ) { mInterpolationSettings.classificationAttribute = index; }
+    /**
+     * Returns the field name used for interpolating the diagram size.
+     * @see setClassificationField()
+     * @note added in QGIS 3.0
+     */
+    QString classificationField() const { return mInterpolationSettings.classificationField; }
+
+    /**
+     * Sets the field name used for interpolating the diagram size.
+     * @see classificationField()
+     * @note added in QGIS 3.0
+     */
+    void setClassificationField( const QString& field ) { mInterpolationSettings.classificationField = field; }
 
     QString classificationAttributeExpression() const { return mInterpolationSettings.classificationAttributeExpression; }
     void setClassificationAttributeExpression( const QString& expression ) { mInterpolationSettings.classificationAttributeExpression = expression; }
