@@ -151,7 +151,7 @@ class GridLine(GeoAlgorithm):
 
         if vOverlay > 0:
             rows *= 2
-            rows *= 1
+            rows -= 1
             vSpace = [vo, vOverlay]
         else:
             vSpace = [vSpacing, vSpacing]

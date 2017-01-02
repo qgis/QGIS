@@ -7,7 +7,7 @@
   <gml:boundedBy>
     <gml:Box>
       <gml:coord><gml:X>0</gml:X><gml:Y>0</gml:Y></gml:coord>
-      <gml:coord><gml:X>10</gml:X><gml:Y>14</gml:Y></gml:coord>
+      <gml:coord><gml:X>10</gml:X><gml:Y>10</gml:Y></gml:coord>
     </gml:Box>
   </gml:boundedBy>
                                                                                                                                                               
@@ -68,67 +68,56 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:gridlines_overlay_5511 fid="gridlines_overlay_5511.5">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>0,14 10,14</gml:coordinates></gml:LineString></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>0,0 0,10</gml:coordinates></gml:LineString></ogr:geometryProperty>
       <ogr:left>0.0000000000000000</ogr:left>
-      <ogr:top>14.0000000000000000</ogr:top>
-      <ogr:right>10.0000000000000000</ogr:right>
-      <ogr:bottom>14.0000000000000000</ogr:bottom>
-      <ogr:id>6</ogr:id>
-      <ogr:coord>14.000000000000000</ogr:coord>
-    </ogr:gridlines_overlay_5511>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:gridlines_overlay_5511 fid="gridlines_overlay_5511.6">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>0,0 0,14</gml:coordinates></gml:LineString></ogr:geometryProperty>
-      <ogr:left>0.0000000000000000</ogr:left>
-      <ogr:top>14.0000000000000000</ogr:top>
+      <ogr:top>10.0000000000000000</ogr:top>
       <ogr:right>0.0000000000000000</ogr:right>
       <ogr:bottom>0.0000000000000000</ogr:bottom>
-      <ogr:id>7</ogr:id>
+      <ogr:id>6</ogr:id>
       <ogr:coord>0.000000000000000</ogr:coord>
     </ogr:gridlines_overlay_5511>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:gridlines_overlay_5511 fid="gridlines_overlay_5511.7">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>4,0 4,14</gml:coordinates></gml:LineString></ogr:geometryProperty>
+    <ogr:gridlines_overlay_5511 fid="gridlines_overlay_5511.6">
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>4,0 4,10</gml:coordinates></gml:LineString></ogr:geometryProperty>
       <ogr:left>4.0000000000000000</ogr:left>
-      <ogr:top>14.0000000000000000</ogr:top>
+      <ogr:top>10.0000000000000000</ogr:top>
       <ogr:right>4.0000000000000000</ogr:right>
       <ogr:bottom>0.0000000000000000</ogr:bottom>
-      <ogr:id>7</ogr:id>
+      <ogr:id>6</ogr:id>
       <ogr:coord>4.000000000000000</ogr:coord>
     </ogr:gridlines_overlay_5511>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:gridlines_overlay_5511 fid="gridlines_overlay_5511.8">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>5,0 5,14</gml:coordinates></gml:LineString></ogr:geometryProperty>
+    <ogr:gridlines_overlay_5511 fid="gridlines_overlay_5511.7">
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>5,0 5,10</gml:coordinates></gml:LineString></ogr:geometryProperty>
       <ogr:left>5.0000000000000000</ogr:left>
-      <ogr:top>14.0000000000000000</ogr:top>
+      <ogr:top>10.0000000000000000</ogr:top>
       <ogr:right>5.0000000000000000</ogr:right>
       <ogr:bottom>0.0000000000000000</ogr:bottom>
-      <ogr:id>7</ogr:id>
+      <ogr:id>6</ogr:id>
       <ogr:coord>5.000000000000000</ogr:coord>
     </ogr:gridlines_overlay_5511>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:gridlines_overlay_5511 fid="gridlines_overlay_5511.9">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>9,0 9,14</gml:coordinates></gml:LineString></ogr:geometryProperty>
+    <ogr:gridlines_overlay_5511 fid="gridlines_overlay_5511.8">
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>9,0 9,10</gml:coordinates></gml:LineString></ogr:geometryProperty>
       <ogr:left>9.0000000000000000</ogr:left>
-      <ogr:top>14.0000000000000000</ogr:top>
+      <ogr:top>10.0000000000000000</ogr:top>
       <ogr:right>9.0000000000000000</ogr:right>
       <ogr:bottom>0.0000000000000000</ogr:bottom>
-      <ogr:id>7</ogr:id>
+      <ogr:id>6</ogr:id>
       <ogr:coord>9.000000000000000</ogr:coord>
     </ogr:gridlines_overlay_5511>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:gridlines_overlay_5511 fid="gridlines_overlay_5511.10">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>10,0 10,14</gml:coordinates></gml:LineString></ogr:geometryProperty>
+    <ogr:gridlines_overlay_5511 fid="gridlines_overlay_5511.9">
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>10,0 10,10</gml:coordinates></gml:LineString></ogr:geometryProperty>
       <ogr:left>10.0000000000000000</ogr:left>
-      <ogr:top>14.0000000000000000</ogr:top>
+      <ogr:top>10.0000000000000000</ogr:top>
       <ogr:right>10.0000000000000000</ogr:right>
       <ogr:bottom>0.0000000000000000</ogr:bottom>
-      <ogr:id>7</ogr:id>
+      <ogr:id>6</ogr:id>
       <ogr:coord>10.000000000000000</ogr:coord>
     </ogr:gridlines_overlay_5511>
   </gml:featureMember>
