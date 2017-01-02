@@ -205,13 +205,22 @@ class QgsDiagramLayerSettings
 
     /** Returns a reference to the diagram's property collection, used for data defined overrides.
      * @note added in QGIS 2.16
+     * @see setProperties()
      */
     QgsPropertyCollection& properties();
 
     /** Returns a reference to the diagram's property collection, used for data defined overrides.
      * @note added in QGIS 2.16
+     * @see setProperties()
      */
     //const QgsPropertyCollection& properties() const;
+
+    /** Sets the diagram's property collection, used for data defined overrides.
+     * @param collection property collection. Existing properties will be replaced.
+     * @note adde in QGIS 2.16
+     * @see properties()
+     */
+    void setProperties( const QgsPropertyCollection& collection );
 
 };
 

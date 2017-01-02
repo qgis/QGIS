@@ -253,13 +253,22 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     /** Returns a reference to the diagram's property collection, used for data defined overrides.
      * @note added in QGIS 3.0
+     * @see setProperties()
      */
     QgsPropertyCollection& properties() { return mProperties; }
 
     /** Returns a reference to the diagram's property collection, used for data defined overrides.
      * @note added in QGIS 3.0
+     * @see setProperties()
      */
     const QgsPropertyCollection& properties() const { return mProperties; }
+
+    /** Sets the diagram's property collection, used for data defined overrides.
+     * @param collection property collection. Existing properties will be replaced.
+     * @note added in QGIS 3.0
+     * @see properties()
+     */
+    void setProperties( const QgsPropertyCollection& collection ) { mProperties = collection; }
 
   private:
 
