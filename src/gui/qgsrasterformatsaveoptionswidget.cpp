@@ -644,10 +644,13 @@ void QgsRasterFormatSaveOptionsWidget::setOptions( const QString& options )
     mOptionsTable->insertRow( rowCount );
 
     values = opt.split( '=' );
-    QTableWidgetItem* nameItem = new QTableWidgetItem( values.at( 0 ) );
-    mOptionsTable->setItem( rowCount, 0, nameItem );
-    QTableWidgetItem* valueItem = new QTableWidgetItem( values.at( 1 ) );
-    mOptionsTable->setItem( rowCount, 0, valueItem );
+    if ( values.count() == 2 )
+    {
+      QTableWidgetItem* nameItem = new QTableWidgetItem( values.at( 0 ) );
+      mOptionsTable->setItem( rowCount, 0, nameItem );
+      QTableWidgetItem* valueItem = new QTableWidgetItem( values.at( 1 ) );
+      mOptionsTable->setItem( rowCount, 0, valueItem );
+    }
   }
 
   mOptionsMap[ currentProfileKey()] = options.trimmed();
