@@ -800,7 +800,7 @@ int main( int argc, char *argv[] )
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
 
-  myApp.setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
+  myApp.setWindowIcon( QIcon::fromTheme( "qgis", QIcon( QgsApplication::appIconPath() ) ) );
 
   //
   // Set up the QSettings environment must be done after qapp is created
