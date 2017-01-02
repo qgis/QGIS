@@ -27,9 +27,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import math
+
 from qgis.PyQt.QtCore import Qt, QPointF, QRectF
-from qgis.PyQt.QtGui import QIcon, QFont, QFontMetricsF, QPen, QBrush, QColor, QPolygonF
+from qgis.PyQt.QtGui import QIcon, QFont, QFontMetricsF, QPen, QBrush, QColor, QPolygonF, QPicture, QPainter
 from qgis.PyQt.QtWidgets import QGraphicsItem, QMessageBox, QMenu
+from qgis.PyQt.QtSvg import QSvgRenderer
 from processing.modeler.ModelerAlgorithm import ModelerParameter, Algorithm, ModelerOutput
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
@@ -47,13 +50,19 @@ class ModelerGraphicItem(QGraphicsItem):
         self.model = model
         self.element = element
         if isinstance(element, ModelerParameter):
-            icon = QIcon(os.path.join(pluginPath, 'images', 'input.svg'))
-            self.pixmap = icon.pixmap(16, 16, state=QIcon.On)
+            svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'input.svg'))
+            self.picture = QPicture()
+            painter = QPainter(self.picture)
+            svg.render(painter)
+            self.pixmap = None
             self.text = element.param.description
         elif isinstance(element, ModelerOutput):
             # Output name
-            icon = QIcon(os.path.join(pluginPath, 'images', 'output.svg'))
-            self.pixmap = icon.pixmap(16, 16, state=QIcon.On)
+            svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'output.svg'))
+            self.picture = QPicture()
+            painter = QPainter(self.picture)
+            svg.render(painter)
+            self.pixmap = None
             self.text = element.description
         else:
             self.text = element.description
@@ -65,19 +74,25 @@ class ModelerGraphicItem(QGraphicsItem):
         self.setZValue(1000)
 
         if not isinstance(element, ModelerOutput):
-            icon = QIcon(os.path.join(pluginPath, 'images', 'edit.png'))
+            svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'edit.svg'))
+            picture = QPicture()
+            painter = QPainter(picture)
+            svg.render(painter)
             pt = QPointF(ModelerGraphicItem.BOX_WIDTH / 2
                          - FlatButtonGraphicItem.WIDTH / 2,
                          ModelerGraphicItem.BOX_HEIGHT / 2
-                         - FlatButtonGraphicItem.HEIGHT / 2 + 1)
-            self.editButton = FlatButtonGraphicItem(icon, pt, self.editElement)
+                         - FlatButtonGraphicItem.HEIGHT / 2)
+            self.editButton = FlatButtonGraphicItem(picture, pt, self.editElement)
             self.editButton.setParentItem(self)
-            icon = QIcon(os.path.join(pluginPath, 'images', 'delete.png'))
+            svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'delete.svg'))
+            picture = QPicture()
+            painter = QPainter(picture)
+            svg.render(painter)
             pt = QPointF(ModelerGraphicItem.BOX_WIDTH / 2
                          - FlatButtonGraphicItem.WIDTH / 2,
                          - ModelerGraphicItem.BOX_HEIGHT / 2
-                         + FlatButtonGraphicItem.HEIGHT / 2 + 1)
-            self.deleteButton = FlatButtonGraphicItem(icon, pt,
+                         + FlatButtonGraphicItem.HEIGHT / 2)
+            self.deleteButton = FlatButtonGraphicItem(picture, pt,
                                                       self.removeElement)
             self.deleteButton.setParentItem(self)
 
@@ -272,6 +287,9 @@ class ModelerGraphicItem(QGraphicsItem):
         if self.pixmap:
             painter.drawPixmap(-(ModelerGraphicItem.BOX_WIDTH / 2.0) + 3, -8,
                                self.pixmap)
+        elif self.picture:
+            painter.drawPicture(-(ModelerGraphicItem.BOX_WIDTH / 2.0) + 3, -8,
+                                self.picture)
 
     def getLinkPointForParameter(self, paramIndex):
         offsetX = 25
@@ -335,12 +353,11 @@ class FlatButtonGraphicItem(QGraphicsItem):
     WIDTH = 16
     HEIGHT = 16
 
-    def __init__(self, icon, position, action):
+    def __init__(self, picture, position, action):
         super(FlatButtonGraphicItem, self).__init__(None)
         self.setAcceptHoverEvents(True)
         self.setFlag(QGraphicsItem.ItemIsMovable, False)
-        self.pixmap = icon.pixmap(self.WIDTH, self.HEIGHT,
-                                  state=QIcon.On)
+        self.picture = picture
         self.position = position
         self.isIn = False
         self.action = action
@@ -349,7 +366,7 @@ class FlatButtonGraphicItem(QGraphicsItem):
         self.action()
 
     def paint(self, painter, option, widget=None):
-        pt = QPointF(-self.WIDTH / 2, -self.HEIGHT / 2) + self.position
+        pt = QPointF(-math.floor(self.WIDTH / 2), -math.floor(self.HEIGHT / 2)) + self.position
         rect = QRectF(pt.x(), pt.y(), self.WIDTH, self.HEIGHT)
         if self.isIn:
             painter.setPen(QPen(Qt.transparent, 1))
@@ -360,11 +377,11 @@ class FlatButtonGraphicItem(QGraphicsItem):
             painter.setBrush(QBrush(Qt.transparent,
                                     Qt.SolidPattern))
         painter.drawRect(rect)
-        painter.drawPixmap(pt.x(), pt.y(), self.pixmap)
+        painter.drawPicture(pt.x(), pt.y(), self.picture)
 
     def boundingRect(self):
-        rect = QRectF(self.position.x() - self.WIDTH / 2,
-                      self.position.y() - self.HEIGHT / 2,
+        rect = QRectF(self.position.x() - math.floor(self.WIDTH / 2),
+                      self.position.y() - math.floor(self.HEIGHT / 2),
                       self.WIDTH,
                       self.HEIGHT)
         return rect
@@ -384,16 +401,24 @@ class FoldButtonGraphicItem(FlatButtonGraphicItem):
     HEIGHT = 11
 
     def __init__(self, position, action, folded):
-        self.icons = {True: QIcon(os.path.join(pluginPath, 'images', 'plus.svg')),
-                      False: QIcon(os.path.join(pluginPath, 'images', 'minus.svg'))}
+        plus = QPicture()
+        minus = QPicture()
+
+        svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'plus.svg'))
+        painter = QPainter(plus)
+        svg.render(painter)
+        svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'minus.svg'))
+        painter = QPainter(minus)
+        svg.render(painter)
+
+        self.pictures = {True: plus,
+                         False: minus}
 
         self.folded = folded
-        icon = self.icons[self.folded]
-        super(FoldButtonGraphicItem, self).__init__(icon, position, action)
+        picture = self.pictures[self.folded]
+        super(FoldButtonGraphicItem, self).__init__(picture, position, action)
 
     def mousePressEvent(self, event):
         self.folded = not self.folded
-        icon = self.icons[self.folded]
-        self.pixmap = icon.pixmap(self.WIDTH, self.HEIGHT,
-                                  state=QIcon.On)
+        self.picture = self.pictures[self.folded]
         self.action(self.folded)
