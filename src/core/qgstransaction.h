@@ -52,7 +52,9 @@ class CORE_EXPORT QgsTransaction : public QObject
 
   public:
 
+    //! QgsTransaction cannot be copied.
     QgsTransaction( const QgsTransaction& other ) = delete;
+    //! QgsTransaction cannot be copied.
     const QgsTransaction& operator=( const QgsTransaction& other ) = delete;
 
     //! Creates a transaction for the specified connection string and provider

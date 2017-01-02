@@ -58,7 +58,9 @@ namespace pal
       PriorityQueue( int n, int maxId, bool min );
       ~PriorityQueue();
 
+      //! PriorityQueue cannot be copied.
       PriorityQueue( const PriorityQueue & ) = delete;
+      //! PriorityQueue cannot be copied.
       PriorityQueue &operator=( const PriorityQueue & ) = delete;
 
       void print();

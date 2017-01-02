@@ -66,7 +66,9 @@ class CORE_EXPORT QgsPluginLayerRegistry
     QgsPluginLayerRegistry();
     ~QgsPluginLayerRegistry();
 
+    //! QgsPluginLayerRegistry cannot be copied.
     QgsPluginLayerRegistry( const QgsPluginLayerRegistry& rh ) = delete;
+    //! QgsPluginLayerRegistry cannot be copied.
     QgsPluginLayerRegistry& operator=( const QgsPluginLayerRegistry& rh ) = delete;
 
     /** List all known layer types

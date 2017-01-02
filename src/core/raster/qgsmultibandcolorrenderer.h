@@ -34,7 +34,9 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
                                QgsContrastEnhancement* blueEnhancement = nullptr );
     ~QgsMultiBandColorRenderer();
 
+    //! QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
     QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer& ) = delete;
+    //! QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
     const QgsMultiBandColorRenderer& operator=( const QgsMultiBandColorRenderer& ) = delete;
 
     QgsMultiBandColorRenderer * clone() const override;

@@ -37,7 +37,9 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors, const QVector<QString>& labels = QVector<QString>() );
     ~QgsPalettedRasterRenderer();
 
+    //! QgsPalettedRasterRenderer cannot be copied. Use clone() instead.
     QgsPalettedRasterRenderer( const QgsPalettedRasterRenderer& ) = delete;
+    //! QgsPalettedRasterRenderer cannot be copied. Use clone() instead.
     const QgsPalettedRasterRenderer& operator=( const QgsPalettedRasterRenderer& ) = delete;
 
     QgsPalettedRasterRenderer * clone() const override;

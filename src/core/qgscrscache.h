@@ -32,7 +32,9 @@ class CORE_EXPORT QgsCoordinateTransformCache
   public:
     static QgsCoordinateTransformCache* instance();
 
+    //! QgsCoordinateTransformCache cannot be copied
     QgsCoordinateTransformCache( const QgsCoordinateTransformCache& rh ) = delete;
+    //! QgsCoordinateTransformCache cannot be copied
     QgsCoordinateTransformCache& operator=( const QgsCoordinateTransformCache& rh ) = delete;
 
     /** Returns coordinate transformation. Cache keeps ownership

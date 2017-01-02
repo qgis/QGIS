@@ -78,7 +78,9 @@ class QgsConnectionPoolGroup
       }
     }
 
+    //! QgsConnectionPoolGroup cannot be copied
     QgsConnectionPoolGroup( const QgsConnectionPoolGroup& other ) = delete;
+    //! QgsConnectionPoolGroup cannot be copied
     QgsConnectionPoolGroup& operator=( const QgsConnectionPoolGroup& other ) = delete;
 
     T acquire()

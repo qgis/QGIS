@@ -1187,7 +1187,9 @@ class CORE_EXPORT QgsExpression
         {}
         ~WhenThen() { delete mWhenExp; delete mThenExp; }
 
+        //! WhenThen nodes cannot be copied.
         WhenThen( const WhenThen& rh ) = delete;
+        //! WhenThen nodes cannot be copied.
         WhenThen& operator=( const WhenThen& rh ) = delete;
 
         // protected:

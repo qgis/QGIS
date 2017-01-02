@@ -30,7 +30,9 @@ class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
   public:
     QgsSingleBandColorDataRenderer( QgsRasterInterface* input, int band );
 
+    //! QgsSingleBandColorDataRenderer cannot be copied. Use clone() instead.
     QgsSingleBandColorDataRenderer( const QgsSingleBandColorDataRenderer& ) = delete;
+    //! QgsSingleBandColorDataRenderer cannot be copied. Use clone() instead.
     const QgsSingleBandColorDataRenderer& operator=( const QgsSingleBandColorDataRenderer& ) = delete;
 
     QgsSingleBandColorDataRenderer * clone() const override;

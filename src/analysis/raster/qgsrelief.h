@@ -45,7 +45,9 @@ class ANALYSIS_EXPORT QgsRelief
     QgsRelief( const QString& inputFile, const QString& outputFile, const QString& outputFormat );
     ~QgsRelief();
 
+    //! QgsRelief cannot be copied
     QgsRelief( const QgsRelief& rh ) = delete;
+    //! QgsRelief cannot be copied
     QgsRelief& operator=( const QgsRelief& rh ) = delete;
 
     /** Starts the calculation, reads from mInputFile and stores the result in mOutputFile

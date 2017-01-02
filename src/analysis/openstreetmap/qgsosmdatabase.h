@@ -49,7 +49,9 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     explicit QgsOSMDatabase( const QString& dbFileName = QString() );
     ~QgsOSMDatabase();
 
+    //! QgsOSMDatabase cannot be copied.
     QgsOSMDatabase( const QgsOSMDatabase& rh ) = delete;
+    //! QgsOSMDatabase cannot be copied.
     QgsOSMDatabase& operator=( const QgsOSMDatabase& rh ) = delete;
 
     void setFileName( const QString& dbFileName ) { mDbFileName = dbFileName; }

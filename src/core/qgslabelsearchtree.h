@@ -36,7 +36,9 @@ class CORE_EXPORT QgsLabelSearchTree
     QgsLabelSearchTree();
     ~QgsLabelSearchTree();
 
+    //! QgsLabelSearchTree cannot be copied.
     QgsLabelSearchTree( const QgsLabelSearchTree& rh ) = delete;
+    //! QgsLabelSearchTree cannot be copied.
     QgsLabelSearchTree& operator=( const QgsLabelSearchTree& rh ) = delete;
 
     //! Removes and deletes all the entries

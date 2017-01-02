@@ -71,7 +71,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     virtual ~QgsMapLayer();
 
+    //! QgsMapLayer cannot be copied
     QgsMapLayer( QgsMapLayer const & ) = delete;
+    //! QgsMapLayer cannot be copied
     QgsMapLayer & operator=( QgsMapLayer const & ) = delete;
 
     /** Returns the type of the layer.

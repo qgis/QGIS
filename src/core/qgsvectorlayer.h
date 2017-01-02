@@ -457,7 +457,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     virtual ~QgsVectorLayer();
 
+    //! QgsVectorLayer cannot be copied.
     QgsVectorLayer( const QgsVectorLayer & rhs ) = delete;
+    //! QgsVectorLayer cannot be copied.
     QgsVectorLayer & operator=( QgsVectorLayer const & rhs ) = delete;
 
     //! Returns the permanent storage type for this layer as a friendly name.

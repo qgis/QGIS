@@ -123,7 +123,9 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     QgsSymbolLayerRegistry();
     ~QgsSymbolLayerRegistry();
 
+    //! QgsSymbolLayerRegistry cannot be copied.
     QgsSymbolLayerRegistry( const QgsSymbolLayerRegistry& rh ) = delete;
+    //! QgsSymbolLayerRegistry cannot be copied.
     QgsSymbolLayerRegistry& operator=( const QgsSymbolLayerRegistry& rh ) = delete;
 
     //! return metadata for specified symbol layer. Returns NULL if not found

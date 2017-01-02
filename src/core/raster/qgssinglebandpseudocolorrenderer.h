@@ -38,7 +38,9 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band = -1, QgsRasterShader* shader = nullptr );
     ~QgsSingleBandPseudoColorRenderer();
 
+    //! QgsSingleBandPseudoColorRenderer cannot be copied. Use clone() instead.
     QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer& ) = delete;
+    //! QgsSingleBandPseudoColorRenderer cannot be copied. Use clone() instead.
     const QgsSingleBandPseudoColorRenderer& operator=( const QgsSingleBandPseudoColorRenderer& ) = delete;
 
     QgsSingleBandPseudoColorRenderer * clone() const override;

@@ -419,7 +419,9 @@ class CORE_EXPORT QgsVectorFileWriter
                          SymbologyExport symbologyExport = NoSymbology
                        );
 
+    //! QgsVectorFileWriter cannot be copied.
     QgsVectorFileWriter( const QgsVectorFileWriter& rh ) = delete;
+    //! QgsVectorFileWriter cannot be copied.
     QgsVectorFileWriter& operator=( const QgsVectorFileWriter& rh ) = delete;
 
     //! Returns map with format filter string as key and OGR format key as value

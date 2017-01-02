@@ -67,7 +67,9 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
 
     ~QgsLayerTreeEmbeddedWidgetRegistry();
 
+    //! QgsLayerTreeEmbeddedWidgetRegistry cannot be copied.
     QgsLayerTreeEmbeddedWidgetRegistry( const QgsLayerTreeEmbeddedWidgetRegistry& other ) = delete;
+    //! QgsLayerTreeEmbeddedWidgetRegistry cannot be copied.
     QgsLayerTreeEmbeddedWidgetRegistry& operator=( const QgsLayerTreeEmbeddedWidgetRegistry& other ) = delete;
 
     //! Return list of all registered providers

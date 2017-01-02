@@ -38,7 +38,9 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand );
     ~QgsSingleBandGrayRenderer();
 
+    //! QgsSingleBandGrayRenderer cannot be copied. Use clone() instead.
     QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer& ) = delete;
+    //! QgsSingleBandGrayRenderer cannot be copied. Use clone() instead.
     const QgsSingleBandGrayRenderer& operator=( const QgsSingleBandGrayRenderer& ) = delete;
 
     QgsSingleBandGrayRenderer * clone() const override;

@@ -161,7 +161,9 @@ class CORE_EXPORT QgsPaintEffectRegistry
     QgsPaintEffectRegistry();
     ~QgsPaintEffectRegistry();
 
+    //! QgsPaintEffectRegistry cannot be copied.
     QgsPaintEffectRegistry( const QgsPaintEffectRegistry& rh ) = delete;
+    //! QgsPaintEffectRegistry cannot be copied.
     QgsPaintEffectRegistry& operator=( const QgsPaintEffectRegistry& rh ) = delete;
 
     /** Returns the metadata for a specific effect.

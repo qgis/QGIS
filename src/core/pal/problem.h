@@ -112,7 +112,9 @@ namespace pal
 
       ~Problem();
 
+      //! Problem cannot be copied
       Problem( const Problem& other ) = delete;
+      //! Problem cannot be copied
       Problem& operator=( const Problem& other ) = delete;
 
       /** Adds a candidate label position to the problem.

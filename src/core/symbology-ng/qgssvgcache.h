@@ -52,7 +52,9 @@ class CORE_EXPORT QgsSvgCacheEntry
     QgsSvgCacheEntry( const QString& file, double size, double outlineWidth, double widthScaleFactor, double rasterScaleFactor, const QColor& fill, const QColor& outline, const QString& lookupKey = QString() );
     ~QgsSvgCacheEntry();
 
+    //! QgsSvgCacheEntry cannot be copied.
     QgsSvgCacheEntry( const QgsSvgCacheEntry& rh ) = delete;
+    //! QgsSvgCacheEntry cannot be copied.
     QgsSvgCacheEntry& operator=( const QgsSvgCacheEntry& rh ) = delete;
 
     //! Absolute path to SVG file

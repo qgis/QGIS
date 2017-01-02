@@ -165,7 +165,9 @@ class CORE_EXPORT QgsLabelingEngine
     //! Clean up everything (especially the registered providers)
     ~QgsLabelingEngine();
 
+    //! QgsLabelingEngine cannot be copied.
     QgsLabelingEngine( const QgsLabelingEngine& rh ) = delete;
+    //! QgsLabelingEngine cannot be copied.
     QgsLabelingEngine& operator=( const QgsLabelingEngine& rh ) = delete;
 
     enum Flag

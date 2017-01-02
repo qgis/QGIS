@@ -42,7 +42,9 @@ class GUI_EXPORT QgsMapCanvasSnapper
 
     ~QgsMapCanvasSnapper();
 
+    //! QgsMapCanvasSnapper cannot be copied
     QgsMapCanvasSnapper( const QgsMapCanvasSnapper& rh ) = delete;
+    //! QgsMapCanvasSnapper cannot be copied
     QgsMapCanvasSnapper& operator=( const QgsMapCanvasSnapper& rh ) = delete;
 
     /** Does a snap to the current layer. Uses snap mode

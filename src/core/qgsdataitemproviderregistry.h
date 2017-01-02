@@ -37,7 +37,9 @@ class CORE_EXPORT QgsDataItemProviderRegistry
 
     ~QgsDataItemProviderRegistry();
 
+    //! QgsDataItemProviderRegistry cannot be copied.
     QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry& rh ) = delete;
+    //! QgsDataItemProviderRegistry cannot be copied.
     QgsDataItemProviderRegistry& operator=( const QgsDataItemProviderRegistry& rh ) = delete;
 
     //! Get list of available providers

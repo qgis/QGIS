@@ -88,7 +88,9 @@ class CORE_EXPORT QgsGmlStreamingParser
                            bool invertAxisOrientation = false );
     ~QgsGmlStreamingParser();
 
+    //! QgsGmlStreamingParser cannot be copied.
     QgsGmlStreamingParser( const QgsGmlStreamingParser& other ) = delete;
+    //! QgsGmlStreamingParser cannot be copied.
     QgsGmlStreamingParser& operator=( const QgsGmlStreamingParser& other ) = delete;
 
     /** Process a new chunk of data. atEnd must be set to true when this is

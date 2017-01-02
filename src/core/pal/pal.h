@@ -96,7 +96,9 @@ namespace pal
 
       ~Pal();
 
+      //! Pal cannot be copied.
       Pal( const Pal& other ) = delete;
+      //! Pal cannot be copied.
       Pal& operator=( const Pal& other ) = delete;
 
       /**

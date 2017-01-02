@@ -99,7 +99,9 @@ class CORE_EXPORT QgsVectorLayerImport
                           QProgressDialog *progress = nullptr
                         );
 
+    //! QgsVectorLayerImport cannot be copied
     QgsVectorLayerImport( const QgsVectorLayerImport& rh ) = delete;
+    //! QgsVectorLayerImport cannot be copied
     QgsVectorLayerImport& operator=( const QgsVectorLayerImport& rh ) = delete;
 
     //! Checks whether there were any errors

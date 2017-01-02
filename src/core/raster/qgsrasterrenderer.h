@@ -43,7 +43,9 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     QgsRasterRenderer( QgsRasterInterface* input = nullptr, const QString& type = "" );
     virtual ~QgsRasterRenderer();
 
+    //! QgsRasterRenderer cannot be copied. Use clone() instead.
     QgsRasterRenderer( const QgsRasterRenderer& ) = delete;
+    //! QgsRasterRenderer cannot be copied. Use clone() instead.
     const QgsRasterRenderer& operator=( const QgsRasterRenderer& ) = delete;
 
     QgsRasterRenderer * clone() const override = 0;

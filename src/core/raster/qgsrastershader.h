@@ -34,7 +34,9 @@ class CORE_EXPORT QgsRasterShader
     QgsRasterShader( double theMinimumValue = 0.0, double theMaximumValue = 255.0 );
     ~QgsRasterShader();
 
+    //! QgsRasterShader cannot be copied
     QgsRasterShader( const QgsRasterShader& rh ) = delete;
+    //! QgsRasterShader cannot be copied
     QgsRasterShader& operator=( const QgsRasterShader& rh ) = delete;
 
     /*
@@ -72,8 +74,14 @@ class CORE_EXPORT QgsRasterShader
     //! \brief Return the minimum value
     void setMinimumValue( double );
 
+    /**
+     * Writes shader state to an XML element.
+     */
     void writeXml( QDomDocument& doc, QDomElement& parent ) const;
 
+    /**
+     * Reads shader state from an XML element.
+     */
     void readXml( const QDomElement& elem );
 
   private:

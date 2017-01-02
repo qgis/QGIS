@@ -66,7 +66,9 @@ namespace pal
       }
       ~LabelInfo() { delete [] char_info; }
 
+      //! LabelInfo cannot be copied
       LabelInfo( const LabelInfo& rh ) = delete;
+      //! LabelInfo cannot be copied
       LabelInfo& operator=( const LabelInfo& rh ) = delete;
 
       double max_char_angle_inside;

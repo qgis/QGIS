@@ -57,7 +57,9 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         Rule( QgsPalLayerSettings* settings, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString& filterExp = QString(), const QString& description = QString(), bool elseRule = false );
         ~Rule();
 
+        //! Rules cannot be copied.
         Rule( const Rule& rh ) = delete;
+        //! Rules cannot be copied.
         Rule& operator=( const Rule& rh ) = delete;
 
         //! The result of registering a rule

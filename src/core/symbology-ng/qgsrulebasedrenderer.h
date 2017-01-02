@@ -123,7 +123,9 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
               const QString& label = QString(), const QString& description = QString(), bool elseRule = false );
         ~Rule();
 
+        //! Rules cannot be copied
         Rule( const Rule& rh ) = delete;
+        //! Rules cannot be copied
         Rule& operator=( const Rule& rh ) = delete;
 
         /**

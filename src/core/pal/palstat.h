@@ -51,7 +51,9 @@ namespace pal
 
       ~PalStat();
 
+      //! PalStat cannot be copied
       PalStat( const PalStat& other ) = delete;
+      //! PalStat cannot be copied
       PalStat& operator=( const PalStat& other ) = delete;
 
       /**
