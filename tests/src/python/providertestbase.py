@@ -243,6 +243,7 @@ class ProviderTestCase(object):
         self.assert_query(provider, 'log(3, pk) <= 1', [1, 2, 3])
         self.assert_query(provider, 'log10(pk) < 0.5', [1, 2, 3])
         self.assert_query(provider, 'round(3.14) <= pk', [3, 4, 5])
+        self.assert_query(provider, 'round(0.314,1) * 10 = pk', [3])
         self.assert_query(provider, 'floor(3.14) <= pk', [3, 4, 5])
         self.assert_query(provider, 'ceil(3.14) <= pk', [4, 5])
         self.assert_query(provider, 'pk < pi()', [1, 2, 3])

@@ -44,6 +44,7 @@ class CORE_EXPORT QgsSQLiteExpressionCompiler : public QgsSqlExpressionCompiler
     virtual Result compileNode( const QgsExpression::Node* node, QString& str ) override;
     virtual QString quotedIdentifier( const QString& identifier ) override;
     virtual QString quotedValue( const QVariant& value, bool& ok ) override;
+    virtual QString sqlFunctionFromFunctionName( const QString& fnName ) const override;
     virtual QString castToReal( const QString& value ) const override;
     virtual QString castToInt( const QString& value ) const override;
 

@@ -147,6 +147,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
                        'log(3, pk) <= 1',
                        'log10(pk) < 0.5',
                        'round(3.14) <= pk',
+                       'round(0.314,1) * 10 = pk',
                        'floor(3.14) <= pk',
                        'ceil(3.14) <= pk',
                        'pk < pi()',
