@@ -997,7 +997,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QVariantMap mCustomVariables;
 
     QFile mFile;                 // current physical project file
-    mutable QgsPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
+    mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
     QString mTitle;              // project title
     bool mAutoTransaction;       // transaction grouped editing
     bool mEvaluateDefaultValues; // evaluate default values immediately
