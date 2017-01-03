@@ -252,6 +252,11 @@ class ProviderTestCase(object):
         self.assert_query(provider, 'floor(cnt / 66.67) <= 2', [1, 2, 5])
         self.assert_query(provider, 'ceil(cnt / 66.67) <= 2', [1, 5])
         self.assert_query(provider, 'pk < pi() / 2', [1])
+        self.assert_query(provider, 'pk = char(51)', [3])
+        self.assert_query(provider, 'pk = coalesce(NULL,3,4)', [3])
+        self.assert_query(provider, 'lower(name) = \'apple\'', [2])
+        self.assert_query(provider, 'upper(name) = \'APPLE\'', [2])
+        self.assert_query(provider, 'name = trim(\'   Apple   \')', [2])
 
         # geometry
         # azimuth and touches tests are deactivated because they do not pass for WFS provider

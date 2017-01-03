@@ -102,7 +102,12 @@ static const QMap<QString, QString>& functionNamesSqlFunctionsMap()
       { "union", "ST_Union" },
 #endif
       { "geom_from_wkt", "ST_GeomFromText" },
-      { "geom_from_gml", "ST_GeomFromGML" }
+      { "geom_from_gml", "ST_GeomFromGML" },
+      { "char", "chr" },
+      { "coalesce", "coalesce" },
+      { "lower", "lower" },
+      { "trim", "trim" },
+      { "upper", "upper" },
     };
   }
   return fnNames;

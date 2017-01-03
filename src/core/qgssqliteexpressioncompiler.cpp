@@ -92,7 +92,12 @@ static const QMap<QString, QString>& functionNamesSqlFunctionsMap()
     fnNames =
     {
       { "abs", "abs" },
-      { "round", "round" }
+      { "char", "char" },
+      { "coalesce", "coalesce" },
+      { "lower", "lower" },
+      { "round", "round" },
+      { "trim", "trim" },
+      { "upper", "upper" },
     };
   }
   return fnNames;
