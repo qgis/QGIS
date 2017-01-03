@@ -394,7 +394,11 @@ bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value
       return false;
 
     bool checked = static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked;
-    if ( testFlag( ActionHierarchical ) )
+    if ( checked &&  node->children().isEmpty() )
+    {
+      node->setItemVisibilityCheckedParentRecursive( checked );
+    }
+    else if ( testFlag( ActionHierarchical ) )
     {
       if ( node->children().isEmpty() )
         node->setItemVisibilityCheckedParentRecursive( checked );

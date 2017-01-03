@@ -148,7 +148,7 @@ QAction* QgsLayerTreeViewDefaultActions::actionCheckAndAllParents( QObject* pare
   QgsLayerTreeNode* node = mView->currentNode();
   if ( !node || !QgsLayerTree::isLayer( node ) || node->isVisible() )
     return nullptr;
-  QAction* a = new QAction( tr( "Check and all its parents (Ctrl-click)" ), parent );
+  QAction* a = new QAction( tr( "Check and all its parents" ), parent );
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::checkAndAllParents );
   return a;
 }
