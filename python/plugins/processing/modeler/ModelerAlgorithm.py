@@ -507,6 +507,15 @@ class ModelerAlgorithm(GeoAlgorithm):
                             t0 = time.time()
                             alg.algorithm.execute(progress, self)
                             dt = time.time() - t0
+
+                            # copy algorithm output value(s) back to model in case the algorithm modified those
+                            for out in alg.algorithm.outputs:
+                                if not out.hidden:
+                                    if out.name in alg.outputs:
+                                        modelOut = self.getOutputFromName(self.getSafeNameForOutput(alg.name, out.name))
+                                        if modelOut:
+                                            modelOut.value = out.value
+
                             executed.append(alg.name)
                             progress.setDebugInfo(
                                 self.tr('OK. Execution took %0.3f ms (%i outputs).', 'ModelerAlgorithm') % (dt, len(alg.algorithm.outputs)))
