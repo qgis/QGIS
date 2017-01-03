@@ -289,16 +289,15 @@ class Setting(object):
         self.validator(value)
         self.value = value
 
-    def read(self):
-        qsettings = QSettings()
+    def read(self, qsettings=QSettings()):
         value = qsettings.value(self.qname, None)
         if value is not None:
             if isinstance(self.value, bool):
                 value = str(value).lower() == str(True).lower()
             self.value = value
 
-    def save(self):
-        QSettings().setValue(self.qname, self.value)
+    def save(self, qsettings=QSettings()):
+        qsettings.setValue(self.qname, self.value)
 
     def __str__(self):
         return self.name + '=' + str(self.value)
