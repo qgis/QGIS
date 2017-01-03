@@ -1994,19 +1994,19 @@ QImage* QgsWMSServer::createImage( int width, int height, bool useBbox ) const
 
   //Adapt width / height if the aspect ratio does not correspond with the BBOX.
   //Required by WMS spec. 1.3.
-  QString version = mParameters.value( QStringLiteral( "VERSION" ), QStringLiteral( "1.3.0" ) );
-  if ( useBbox && version != QLatin1String( "1.1.1" ) )
+  QString version = mParameters.value( "VERSION", "1.3.0" );
+  if ( useBbox && version != "1.1.1" )
   {
     bool bboxOk;
     QgsRectangle mapExtent = _parseBBOX( mParameters.value( "BBOX" ), bboxOk );
-    QString crs = mParameters.value( QStringLiteral( "CRS" ), mParameters.value( QStringLiteral( "SRS" ) ) );
+    QString crs = mParameters.value( "CRS", mParameters.value( "SRS" ) );
     if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
     {
       crs = QString( "EPSG:4326" );
       mapExtent.invert();
     }
-    QgsCoordinateReferenceSystem outputCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
-    if ( outputCRS.hasAxisInverted() )
+    QgsCoordinateReferenceSystem outputCRS = QgsCRSCache::instance()->crsByAuthId( crs );
+    if ( outputCRS.axisInverted() )
     {
       mapExtent.invert();
     }
