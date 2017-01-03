@@ -238,18 +238,23 @@ class ModelerGraphicItem(QGraphicsItem):
                       -(ModelerGraphicItem.BOX_HEIGHT + 2) / 2.0,
                       ModelerGraphicItem.BOX_WIDTH + 2,
                       ModelerGraphicItem.BOX_HEIGHT + 2)
-        color = QColor(172, 196, 114)
-        outline = QColor(90, 140, 90)
-        selected = QColor(90, 140, 90)
+
         if isinstance(self.element, ModelerParameter):
             color = QColor(238, 242, 131)
             outline = QColor(234, 226, 118)
-            selected = QColor(151, 153, 83)
+            selected = QColor(116, 113, 68)
         elif isinstance(self.element, Algorithm):
-            color = Qt.white
+            color = QColor(255, 255, 255)
             outline = Qt.gray
-            selected = Qt.gray
-        painter.setPen(QPen(outline, 1))
+            selected = QColor(50, 50, 50)
+        else:
+            color = QColor(172, 196, 114)
+            outline = QColor(90, 140, 90)
+            selected = QColor(42, 65, 42)
+        if self.isSelected():
+            outline = selected
+            color = color.darker(110)
+        painter.setPen(QPen(outline, 0)) # 0 width "cosmetic" pen
         painter.setBrush(QBrush(color, Qt.SolidPattern))
         painter.drawRect(rect)
         font = QFont('Verdana', 8)
@@ -260,8 +265,6 @@ class ModelerGraphicItem(QGraphicsItem):
         if isinstance(self.element, Algorithm) and not self.element.active:
             painter.setPen(QPen(Qt.gray))
             text = text + "\n(deactivated)"
-        elif self.isSelected():
-            painter.setPen(QPen(selected))
         fm = QFontMetricsF(font)
         text = self.getAdjustedText(self.text)
         h = fm.ascent()
