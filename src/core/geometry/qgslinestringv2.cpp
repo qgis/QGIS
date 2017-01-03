@@ -837,9 +837,6 @@ QgsPointV2 QgsLineStringV2::centroid() const
 void QgsLineStringV2::sumUpArea( double& sum ) const
 {
   int maxIndex = numPoints() - 1;
-  if ( maxIndex == 1 )
-    return; //no area, just a single line
-
   for ( int i = 0; i < maxIndex; ++i )
   {
     sum += 0.5 * ( mX.at( i ) * mY.at( i + 1 ) - mY.at( i ) * mX.at( i + 1 ) );
