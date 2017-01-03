@@ -84,6 +84,25 @@ QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant& value, bool& o
   }
 }
 
+static const QMap<QString, QString>& functionNamesSqlFunctionsMap()
+{
+  static QMap<QString, QString> fnNames;
+  if ( fnNames.isEmpty() )
+  {
+    fnNames =
+    {
+      { "abs", "abs" },
+      { "round", "round" }
+    };
+  }
+  return fnNames;
+}
+
+QString QgsSQLiteExpressionCompiler::sqlFunctionFromFunctionName( const QString& fnName ) const
+{
+  return functionNamesSqlFunctionsMap().value( fnName, QString() );
+}
+
 QString QgsSQLiteExpressionCompiler::castToReal( const QString& value ) const
 {
   return QStringLiteral( "CAST((%1) AS REAL)" ).arg( value );
