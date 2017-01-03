@@ -20,6 +20,8 @@
 
 #include <QList>
 
+#include "qgis_core.h"
+
 class QgsVectorLayer;
 
 

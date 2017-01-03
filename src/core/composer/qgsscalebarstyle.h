@@ -20,6 +20,8 @@
 #include <QIcon>
 #include <QRectF>
 
+#include "qgis_core.h"
+
 class QgsComposerScaleBar;
 class QPainter;
 

@@ -20,6 +20,8 @@
 
 #include <QMutex>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  */
 class CORE_EXPORT QgsLocaleNumC

@@ -23,6 +23,8 @@
 #include <QMap>
 #include <QMutex>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Interface for requesting credentials in QGIS in GUI independent way.
  * This class provides abstraction of a dialog for requesting credentials to the user.

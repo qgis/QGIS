@@ -22,6 +22,8 @@
 #include <QColor>
 #include <QtCore/qmath.h>
 
+#include "qgis_core.h"
+
 class QgsColorRamp;
 
 /** \ingroup core

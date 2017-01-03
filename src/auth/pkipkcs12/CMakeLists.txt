@@ -19,6 +19,7 @@ INCLUDE_DIRECTORIES (
   ../../core
   ../../core/auth
   ../../core/geometry
+  ${CMAKE_BINARY_DIR}/src/core
 )
 INCLUDE_DIRECTORIES (SYSTEM
   ${QCA_INCLUDE_DIR}

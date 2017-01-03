@@ -162,6 +162,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/geometry
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/raster
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/symbology-ng
+  ${CMAKE_BINARY_DIR}/src/core
   interpolation
   network
 )

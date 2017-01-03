@@ -23,6 +23,8 @@
 class QgsGeometry;
 class QgsRectangle;
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Abstract base class for simplify geometries using a specific algorithm
  */

@@ -26,6 +26,8 @@
 #include <QVariant>
 #include <QStringList>
 
+#include "qgis_core.h"
+
 class QDomNode;
 class QDomElement;
 class QDomDocument;

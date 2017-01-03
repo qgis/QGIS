@@ -30,6 +30,7 @@
 #include <QDomDocument>
 #include "qgsprojectversion.h"
 
+
 class QgsRasterLayer;
 
 /** \ingroup core

@@ -42,6 +42,7 @@ INCLUDE_DIRECTORIES(
   ../../core
   ../../core/geometry
   ../../gui
+  ${CMAKE_BINARY_DIR}/src/core
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}

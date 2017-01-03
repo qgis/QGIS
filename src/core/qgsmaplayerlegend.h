@@ -24,6 +24,8 @@ class QgsPluginLayer;
 class QgsRasterLayer;
 class QgsVectorLayer;
 
+#include "qgis_core.h"
+
 
 /** \ingroup core
  * The QgsMapLayerLegend class is abstract interface for implementations

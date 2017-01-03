@@ -20,6 +20,8 @@
 #include <QGraphicsRectItem>
 #include <QObject>
 
+#include "qgis_core.h"
+
 class QgsComposition;
 class QgsComposerItem;
 class QGraphicsView;

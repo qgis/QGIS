@@ -24,6 +24,8 @@
 #include <QList>
 #include <QSet>
 
+#include "qgis_core.h"
+
 /** \ingroup core
 Class for parsing SQL statements.
 * @note Added in QGIS 2.16

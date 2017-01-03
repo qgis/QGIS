@@ -18,6 +18,8 @@
 
 #include <QObject>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Base class for feedback objects to be used for cancellation of something running in a worker thread.
  * The class may be used as is or it may be subclassed for extended functionality

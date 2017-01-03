@@ -194,6 +194,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QCA_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
+  ${CMAKE_BINARY_DIR}/src/core
   ../core
   ../core/auth
   ../core/dxf

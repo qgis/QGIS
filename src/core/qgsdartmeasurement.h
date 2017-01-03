@@ -18,6 +18,8 @@
 
 #include <QString>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * \class QgsDartMeasurement
  */

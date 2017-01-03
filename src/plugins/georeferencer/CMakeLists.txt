@@ -75,20 +75,21 @@ QT5_ADD_RESOURCES(GEOREF_RCC_SRCS ${GEOREF_RCCS})
 ADD_LIBRARY (georefplugin MODULE ${GEOREF_SRCS} ${GEOREF_MOC_SRCS} ${GEOREF_RCC_SRCS} ${GEOREF_UIS_H})
 
 INCLUDE_DIRECTORIES(
-     ${CMAKE_CURRENT_SOURCE_DIR}
-     ${CMAKE_CURRENT_BINARY_DIR}
-     ${CMAKE_CURRENT_BINARY_DIR}/../../ui
-     ../../core ../../core/geometry ../../core/raster ../../core/composer
-     ../../gui  ../../gui/editorwidgets ../../gui/layertree
-     ..
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+  ../../core ../../core/geometry ../../core/raster ../../core/composer
+  ../../gui  ../../gui/editorwidgets ../../gui/layertree
+  ..
+  ${CMAKE_BINARY_DIR}/src/core
 )
 INCLUDE_DIRECTORIES(SYSTEM
-     ${GSL_INCLUDE_DIR}
-     ${QGIS_INCLUDE_DIR}
-     ${GDAL_INCLUDE_DIR}
-     ${GEOS_INCLUDE_DIR}
-     ${QT_QTXML_INCLUDE_DIR}
-     ${QWT_INCLUDE_DIR}
+  ${GSL_INCLUDE_DIR}
+  ${QGIS_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
+  ${QT_QTXML_INCLUDE_DIR}
+  ${QWT_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(georefplugin

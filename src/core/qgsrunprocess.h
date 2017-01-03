@@ -24,6 +24,8 @@
 #include <QObject>
 #include <QProcess>
 
+#include "qgis_core.h"
+
 class QgsMessageOutput;
 
 /** \ingroup core

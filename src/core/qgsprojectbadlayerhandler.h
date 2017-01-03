@@ -18,6 +18,8 @@
 
 #include <QDomNode>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Interface for classes that handle missing layer files when reading project file.
  */

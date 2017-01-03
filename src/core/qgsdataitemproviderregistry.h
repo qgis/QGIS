@@ -18,6 +18,8 @@
 
 #include <QList>
 
+#include "qgis_core.h"
+
 class QgsDataItemProvider;
 
 /** \ingroup core

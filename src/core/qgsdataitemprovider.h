@@ -16,6 +16,8 @@
 #ifndef QGSDATAITEMPROVIDER_H
 #define QGSDATAITEMPROVIDER_H
 
+#include "qgis_core.h"
+
 class QgsDataItem;
 
 class QString;

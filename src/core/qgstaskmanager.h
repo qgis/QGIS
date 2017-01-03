@@ -23,6 +23,8 @@
 #include <QFuture>
 #include <QReadWriteLock>
 
+#include "qgis_core.h"
+
 class QgsTask;
 class QgsTaskRunnableWrapper;
 

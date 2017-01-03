@@ -20,6 +20,8 @@
 #include <QString>
 #include <QList>
 
+#include "qgis_core.h"
+
 // Macro to create Error message including info about where it was created.
 #define QGS_ERROR_MESSAGE(message, tag) QgsErrorMessage(QString(message),QString(tag), QString(__FILE__), QString(__FUNCTION__), __LINE__)
 

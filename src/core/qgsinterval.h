@@ -23,6 +23,9 @@
  ****************************************************************************/
 
 #include <QVariant>
+
+#include "qgis_core.h"
+
 class QString;
 
 /** \ingroup core

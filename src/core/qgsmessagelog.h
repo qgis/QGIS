@@ -19,6 +19,8 @@
 #include <QString>
 #include <QObject>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Interface for logging messages from QGIS in GUI independent way.
  * This class provides abstraction of a tabbed window for showing messages to the user.

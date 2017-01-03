@@ -18,6 +18,8 @@
 
 #include <QStringList>
 
+#include "qgis_core.h"
+
 class QgsFeedback;
 
 /** \ingroup core

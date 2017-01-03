@@ -24,6 +24,8 @@
 #include <QDomElement>
 #include <QDomDocument>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Composer legend components style
  */

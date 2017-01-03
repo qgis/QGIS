@@ -21,6 +21,7 @@
 #include <QVector>
 #include <QSharedDataPointer>
 #include "qgsfield_p.h"
+#include "qgis_core.h"
 
 typedef QList<int> QgsAttributeList;
 

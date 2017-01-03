@@ -22,6 +22,7 @@
 #include <QList>
 #include <QPair>
 
+#include "qgis_core.h"
 #include "qextserialport.h"
 
 class QgsGPSConnection;

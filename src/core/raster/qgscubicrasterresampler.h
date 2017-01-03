@@ -21,6 +21,8 @@
 #include "qgsrasterresampler.h"
 #include <QColor>
 
+#include "qgis_core.h"
+
 /** \ingroup core
     Cubic Raster Resampler
 */

@@ -57,17 +57,18 @@ QT5_ADD_RESOURCES(GLOBE_PLUGIN_RCC_SRCS ${GLOBE_PLUGIN_RCCS})
 ADD_LIBRARY (globeplugin SHARED ${GLOBE_PLUGIN_SRCS} ${GLOBE_PLUGIN_MOC_SRCS} ${GLOBE_PLUGIN_RCC_SRCS} ${GLOBE_PLUGIN_UIS_H} ${GLOBE_PLUGIN_HDRS})
 
 INCLUDE_DIRECTORIES(
-     ${CMAKE_CURRENT_BINARY_DIR}
-     ${OSGEARTH_INCLUDE_DIR}
-     ${OSG_INCLUDE_DIR}
-     ${GEOS_INCLUDE_DIR}
-     ${SIP_INCLUDE_DIR}
-     ../../core
-     ../../core/geometry
-     ../../core/raster
-     ../../core/symbology-ng
-     ../../gui
-     ..
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${OSGEARTH_INCLUDE_DIR}
+  ${OSG_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
+  ${SIP_INCLUDE_DIR}
+  ../../core
+  ../../core/geometry
+  ../../core/raster
+  ../../core/symbology-ng
+  ../../gui
+  ..
+  ${CMAKE_BINARY_DIR}/src/core
 )
 
 TARGET_LINK_LIBRARIES(globeplugin

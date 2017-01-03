@@ -21,6 +21,8 @@
 #include <QUndoCommand>
 #include <QDomDocument>
 
+#include "qgis_core.h"
+
 class QgsComposerItem;
 class QgsComposerMultiFrame;
 
