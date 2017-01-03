@@ -18,7 +18,7 @@
 
 #include <QtCore>
 
-/** \ingroup core
+/** \ingroup gui
  * \class QgsHelp
  * @brief Helper class for showing help topic URI for the given key.
  *
@@ -36,7 +36,7 @@
  *
  * @note added in QGIS 3.0
  */
-class CORE_EXPORT QgsHelp
+class GUI_EXPORT QgsHelp
 {
   public:
 

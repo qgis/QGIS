@@ -135,7 +135,6 @@ SET(QGIS_CORE_SRCS
   qgsgeometryvalidator.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
-  qgshelp.cpp
   qgshistogram.cpp
   qgsinterval.cpp
   qgsjsonutils.cpp
@@ -674,7 +673,6 @@ SET(QGIS_CORE_HDRS
   qgsfields.h
   qgsfontutils.h
   qgsgeometrycache.h
-  qgshelp.h
   qgshistogram.h
   qgsindexedfeature.h
   qgsinterval.h

@@ -65,7 +65,6 @@
 %Include qgsgeometryvalidator.sip
 %Include qgsgml.sip
 %Include qgsgmlschema.sip
-%Include qgshelp.sip
 %Include qgshistogram.sip
 %Include qgsinterval.sip
 %Include qgsjsonutils.sip

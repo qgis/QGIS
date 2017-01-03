@@ -1,4 +1,4 @@
-/** \ingroup core
+/** \ingroup gui
  * \class QgsHelp
  * @brief Helper class for showing help topic URI for the given key.
  *
