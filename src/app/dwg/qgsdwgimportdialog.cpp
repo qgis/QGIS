@@ -69,11 +69,6 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   cbMergeLayers->setChecked( s.value( "/DwgImport/lastMergeLayers", false ).toBool() );
   cbUseCurves->setChecked( s.value( "/DwgImport/lastUseCurves", true ).toBool() );
 
-#if !defined(GDAL_COMPUTE_VERSION) || GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,0,0)
-  cbUseCurves->setChecked( false );
-  cbUseCurves->setHidden( true );
-#endif
-
   leDrawing->setReadOnly( true );
   pbImportDrawing->setHidden( true );
   lblMessage->setHidden( true );

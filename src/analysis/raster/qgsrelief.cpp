@@ -28,11 +28,7 @@
 #include <QFile>
 #include <QTextStream>
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8F(x) (x).toUtf8().constData()
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#endif
 
 QgsRelief::QgsRelief( const QString& inputFile, const QString& outputFile, const QString& outputFormat )
     : mInputFile( inputFile )

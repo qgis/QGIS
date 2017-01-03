@@ -140,7 +140,6 @@ void QgsDwgImporter::startTransaction()
 {
   Q_ASSERT( mDs );
 
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
   mInTransaction = GDALDatasetStartTransaction( mDs, 0 ) == OGRERR_NONE;
   if ( !mInTransaction )
   {
@@ -148,14 +147,12 @@ void QgsDwgImporter::startTransaction()
          .arg( mDatabase )
          .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
-#endif
 }
 
 void QgsDwgImporter::commitTransaction()
 {
   Q_ASSERT( mDs != nullptr );
 
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
   if ( mInTransaction && GDALDatasetCommitTransaction( mDs ) != OGRERR_NONE )
   {
     LOG( QObject::tr( "Could not commit transaction\nDatabase:%1\nError:%2" )
@@ -163,7 +160,6 @@ void QgsDwgImporter::commitTransaction()
          .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
   mInTransaction = false;
-#endif
 }
 
 QgsDwgImporter::~QgsDwgImporter()
@@ -186,13 +182,8 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   OGRwkbGeometryType lineGeomType, hatchGeomType;
   if ( useCurves )
   {
-#if !defined(GDAL_COMPUTE_VERSION) || GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,0,0)
-    error = QObject::tr( "Curves only supported with GDAL2" );
-    return false;
-#else
     lineGeomType = wkbCompoundCurveZ;
     hatchGeomType = wkbCurvePolygonZ;
-#endif
   }
   else
   {

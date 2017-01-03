@@ -50,11 +50,7 @@
 #include <cpl_conv.h>
 #include <gdal.h>
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8F(x)  (x).toUtf8().constData()
-#else
-#define TO8F(x)  QFile::encodeName( x ).constData()
-#endif
 
 QgsVectorFileWriter::FieldValueConverter::FieldValueConverter()
 {
@@ -208,23 +204,6 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     {
       vectorFileName += QLatin1String( ".dbf" );
     }
-
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM < 1700
-    // check for unique fieldnames
-    QSet<QString> fieldNames;
-    for ( int i = 0; i < fields.count(); ++i )
-    {
-      QString name = fields[i].name().left( 10 );
-      if ( fieldNames.contains( name ) )
-      {
-        mErrorMessage = QObject::tr( "trimming attribute name '%1' to ten significant characters produces duplicate column name." )
-                        .arg( fields[i].name() );
-        mError = ErrAttributeCreationFailed;
-        return;
-      }
-      fieldNames << name;
-    }
-#endif
 
     if ( action == CreateOrOverwriteFile || action == CreateOrOverwriteLayer )
       deleteShapeFile( vectorFileName );
@@ -491,13 +470,6 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
     switch ( attrField.type() )
     {
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM < 2000000
-      case QVariant::LongLong:
-        ogrType = OFTString;
-        ogrWidth = ogrWidth > 0 && ogrWidth <= 21 ? ogrWidth : 21;
-        ogrPrecision = -1;
-        break;
-#else
       case QVariant::LongLong:
       {
         const char* pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, NULL );
@@ -509,7 +481,6 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         ogrPrecision = 0;
         break;
       }
-#endif
       case QVariant::String:
         ogrType = OFTString;
         if ( ogrWidth <= 0 || ogrWidth > 255 )
@@ -620,25 +591,8 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     QgsDebugMsg( QString( "returned field index for %1: %2" ).arg( name ).arg( ogrIdx ) );
     if ( ogrIdx < 0 || existingIdxs.contains( ogrIdx ) )
     {
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM < 1700
-      // if we didn't find our new column, assume it's name was truncated and
-      // it was the last one added (like for shape files)
-      int fieldCount = OGR_FD_GetFieldCount( defn );
-
-      OGRFieldDefnH fdefn = OGR_FD_GetFieldDefn( defn, fieldCount - 1 );
-      if ( fdefn )
-      {
-        const char *fieldName = OGR_Fld_GetNameRef( fdefn );
-
-        if ( attrField.name().left( strlen( fieldName ) ) == fieldName )
-        {
-          ogrIdx = fieldCount - 1;
-        }
-      }
-#else
       // GDAL 1.7 not just truncates, but launders more aggressivly.
       ogrIdx = OGR_FD_GetFieldCount( defn ) - 1;
-#endif
 
       if ( ogrIdx < 0 )
       {
@@ -1154,12 +1108,10 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          QStringLiteral( "geometry" )  // Default value
                        ) );
 
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
   layerOptions.insert( "SPATIAL_INDEX", new BoolOption(
                          QObject::tr( "If a spatial index must be created." ),
                          true  // Default value
                        ) );
-#endif
 
   driverMetadata.insert( QStringLiteral( "GPKG" ),
                          MetaData(
@@ -1977,7 +1929,6 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature& feature )
 
     switch ( attrValue.type() )
     {
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
       case QVariant::Int:
       case QVariant::UInt:
         OGR_F_SetFieldInteger( poFeature, ogrField, attrValue.toInt() );
@@ -1989,17 +1940,6 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature& feature )
       case QVariant::String:
         OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
         break;
-#else
-      case QVariant::Int:
-        OGR_F_SetFieldInteger( poFeature, ogrField, attrValue.toInt() );
-        break;
-      case QVariant::String:
-      case QVariant::LongLong:
-      case QVariant::UInt:
-      case QVariant::ULongLong:
-        OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
-        break;
-#endif
       case QVariant::Double:
         OGR_F_SetFieldDouble( poFeature, ogrField, attrValue.toDouble() );
         break;
@@ -2761,7 +2701,6 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
     mapUnits = ct.destinationCrs().mapUnits();
   }
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1700
   mSymbolLayerTable.clear();
   OGRStyleTableH ogrStyleTable = OGR_STBL_Create();
   OGRStyleMgrH styleManager = OGR_SM_Create( ogrStyleTable );
@@ -2785,7 +2724,6 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
     }
   }
   OGR_DS_SetStyleTableDirectly( ds, ogrStyleTable );
-#endif
 }
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit,

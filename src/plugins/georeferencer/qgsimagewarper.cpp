@@ -29,11 +29,7 @@
 #include "qgsgeoreftransform.h"
 #include "qgslogger.h"
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8F(x) (x).toUtf8().constData()
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#endif
 
 bool QgsImageWarper::mWarpCanceled = false;
 

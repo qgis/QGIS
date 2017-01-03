@@ -902,8 +902,6 @@ int QgsGdalProvider::ySize() const { return mHeight; }
 
 QString QgsGdalProvider::generateBandName( int theBandNumber ) const
 {
-#ifdef GDAL_COMPUTE_VERSION /* only available in GDAL 1.10 or later */
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,10,0)
   if ( strcmp( GDALGetDriverShortName( GDALGetDatasetDriver( mGdalDataset ) ), "netCDF" ) == 0 )
   {
     char ** GDALmetadata = GDALGetMetadata( mGdalDataset, nullptr );
@@ -966,8 +964,6 @@ QString QgsGdalProvider::generateBandName( int theBandNumber ) const
       }
     }
   }
-#endif
-#endif
 
   return QgsRasterDataProvider::generateBandName( theBandNumber );
 }
@@ -1019,27 +1015,6 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, Qg
   int c = 0;
   int width = 1;
   int height = 1;
-
-  // GDAL ECW driver in GDAL <  1.9.2 read whole row if single pixel (nYSize == 1)
-  // was requested which made identify very slow -> use 2x2 matrix
-  // but other drivers may be optimised for 1x1 -> conditional
-#if !defined(GDAL_VERSION_NUM) || GDAL_VERSION_NUM < 1920
-  if ( strcmp( GDALGetDriverShortName( GDALGetDatasetDriver( mGdalDataset ) ), "ECW" ) == 0 )
-  {
-    width = 2;
-    height = 2;
-    if ( col == mWidth - 1 && mWidth > 1 )
-    {
-      col--;
-      c++;
-    }
-    if ( row == mHeight - 1 && mHeight > 1 )
-    {
-      row--;
-      r++;
-    }
-  }
-#endif
 
   double xMin = myExtent.xMinimum() + col * xres;
   double xMax = xMin + xres * width;
@@ -1146,7 +1121,6 @@ Qgis::DataType QgsGdalProvider::dataType( int bandNo ) const
 
 double QgsGdalProvider::bandScale( int bandNo ) const
 {
-#if GDAL_VERSION_NUM >= 1800
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
   int bGotScale;
   double myScale = GDALGetRasterScale( myGdalBand, &bGotScale );
@@ -1154,15 +1128,10 @@ double QgsGdalProvider::bandScale( int bandNo ) const
     return myScale;
   else
     return 1.0;
-#else
-  Q_UNUSED( bandNo );
-  return 1.0;
-#endif
 }
 
 double QgsGdalProvider::bandOffset( int bandNo ) const
 {
-#if GDAL_VERSION_NUM >= 1800
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
   int bGotOffset;
   double myOffset = GDALGetRasterOffset( myGdalBand, &bGotOffset );
@@ -1170,10 +1139,6 @@ double QgsGdalProvider::bandOffset( int bandNo ) const
     return myOffset;
   else
     return 0.0;
-#else
-  Q_UNUSED( bandNo );
-  return 0.0;
-#endif
 }
 
 int QgsGdalProvider::bandCount() const
@@ -1294,20 +1259,10 @@ bool QgsGdalProvider::hasHistogram( int theBandNo,
   double myMinVal, myMaxVal;
   int myBinCount;
 
-#if GDAL_VERSION_MAJOR >= 2
   GUIntBig* myHistogramArray = 0;
   CPLErr myError = GDALGetDefaultHistogramEx( myGdalBand, &myMinVal, &myMaxVal,
                    &myBinCount, &myHistogramArray, false,
                    nullptr, nullptr );
-#else
-  int* myHistogramArray = nullptr;
-
-  // TODO: GDALGetDefaultHistogram has no bIncludeOutOfRange and bApproxOK,
-  //       consider consequences
-  CPLErr myError = GDALGetDefaultHistogram( myGdalBand, &myMinVal, &myMaxVal,
-                   &myBinCount, &myHistogramArray, false,
-                   nullptr, nullptr );
-#endif
 
   if ( myHistogramArray )
     VSIFree( myHistogramArray ); // use VSIFree because allocated by GDAL
@@ -1456,19 +1411,11 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
   }
 #endif
 
-#if GDAL_VERSION_MAJOR >= 2
   GUIntBig* myHistogramArray = new GUIntBig[myHistogram.binCount];
   CPLErr myError = GDALGetRasterHistogramEx( myGdalBand, myMinVal, myMaxVal,
                    myHistogram.binCount, myHistogramArray,
                    theIncludeOutOfRange, bApproxOK, progressCallback,
                    &myProg ); //this is the arg for our custom gdal progress callback
-#else
-  int* myHistogramArray = new int[myHistogram.binCount];
-  CPLErr myError = GDALGetRasterHistogram( myGdalBand, myMinVal, myMaxVal,
-                   myHistogram.binCount, myHistogramArray,
-                   theIncludeOutOfRange, bApproxOK, progressCallback,
-                   &myProg ); //this is the arg for our custom gdal progress callback
-#endif
 
   if ( myError != CE_None )
   {
@@ -1481,19 +1428,9 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
 
   for ( int myBin = 0; myBin < myHistogram.binCount; myBin++ )
   {
-#if GDAL_VERSION_MAJOR < 2
-    if ( myHistogramArray[myBin] < 0 ) //can't have less than 0 pixels of any value
-    {
-      myHistogram.histogramVector.push_back( 0 );
-      // QgsDebugMsg( "Added 0 to histogram vector as freq was negative!" );
-    }
-    else
-#endif
-    {
-      myHistogram.histogramVector.push_back( myHistogramArray[myBin] );
-      myHistogram.nonNullCount += myHistogramArray[myBin];
-      // QgsDebugMsg( "Added " + QString::number( myHistogramArray[myBin] ) + " to histogram vector" );
-    }
+    myHistogram.histogramVector.push_back( myHistogramArray[myBin] );
+    myHistogram.nonNullCount += myHistogramArray[myBin];
+    // QgsDebugMsg( "Added " + QString::number( myHistogramArray[myBin] ) + " to histogram vector" );
   }
 
   myHistogram.valid = true;
@@ -1727,11 +1664,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
   // is called next time, it crashes somewhere in GDAL:
   // https://trac.osgeo.org/gdal/ticket/4831
   // Crash can be avoided if dataset is reopened, fixed in GDAL 1.9.2
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1920
   if ( theFormat == QgsRaster::PyramidsInternal )
-#else
-  if ( true ) // GDAL #4831 fix
-#endif
   {
     QgsDebugMsg( "Reopening dataset ..." );
     //close the gdal dataset and reopen it in read only mode
@@ -2034,12 +1967,8 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
 
     // in GDAL 2.0 vector and mixed drivers are returned by GDALGetDriver, so filter out non-raster drivers
     // TODO also make sure drivers are not loaded unnecessarily (as GDALAllRegister() and OGRRegisterAll load all drivers)
-#ifdef GDAL_COMPUTE_VERSION
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
     if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) != "YES" )
       continue;
-#endif
-#endif
 
     // now we need to see if the driver is for something currently
     // supported; if not, we give it a miss for the next driver
@@ -2193,14 +2122,12 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
   theFileFiltersString = filters.join( QStringLiteral( ";;" ) ) + ";;";
 
   // VSIFileHandler (see qgsogrprovider.cpp) - second
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
   QSettings settings;
   if ( settings.value( QStringLiteral( "/qgis/scanZipInBrowser2" ), "basic" ).toString() != QLatin1String( "no" ) )
   {
     theFileFiltersString.prepend( createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), QStringLiteral( "*.zip *.gz *.tar *.tar.gz *.tgz" ) ) );
     theExtensions << QStringLiteral( "zip" ) << QStringLiteral( "gz" ) << QStringLiteral( "tar" ) << QStringLiteral( "tar.gz" ) << QStringLiteral( "tgz" );
   }
-#endif
 
   // can't forget the default case - first
   theFileFiltersString.prepend( QObject::tr( "All files" ) + " (*);;" );
@@ -3045,10 +2972,8 @@ QGISEXTERN QList<QPair<QString, QString> > *pyramidResamplingMethods()
     methods.append( QPair<QString, QString>( QStringLiteral( "AVERAGE" ), QObject::tr( "Average" ) ) );
     methods.append( QPair<QString, QString>( QStringLiteral( "GAUSS" ), QObject::tr( "Gauss" ) ) );
     methods.append( QPair<QString, QString>( QStringLiteral( "CUBIC" ), QObject::tr( "Cubic" ) ) );
-#if GDAL_VERSION_MAJOR >= 2
     methods.append( QPair<QString, QString>( "CUBICSPLINE", QObject::tr( "Cubic Spline" ) ) );
     methods.append( QPair<QString, QString>( "LANCZOS", QObject::tr( "Lanczos" ) ) );
-#endif
     methods.append( QPair<QString, QString>( QStringLiteral( "MODE" ), QObject::tr( "Mode" ) ) );
     methods.append( QPair<QString, QString>( QStringLiteral( "NONE" ), QObject::tr( "None" ) ) );
   }

@@ -29,15 +29,9 @@
 #include "qgsapplication.h"
 #include "qgspointv2.h"
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8(x)   (x).toUtf8().constData()
 #define TO8F(x)  (x).toUtf8().constData()
 #define FROM8(x) QString::fromUtf8(x)
-#else
-#define TO8(x)   (x).toLocal8Bit().constData()
-#define TO8F(x)  QFile::encodeName( x ).constData()
-#define FROM8(x) QString::fromLocal8Bit(x)
-#endif
 
 class TestQgsOgrUtils: public QObject
 {

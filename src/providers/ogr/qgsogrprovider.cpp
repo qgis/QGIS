@@ -104,13 +104,8 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
   switch ( field.type() )
   {
     case QVariant::LongLong:
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
       ogrType = OFTInteger64;
       ogrPrecision = 0;
-#else
-      ogrType = OFTString;
-      ogrPrecision = -1;
-#endif
       ogrWidth = ogrWidth > 0 && ogrWidth <= 21 ? ogrWidth : 21;
       break;
 
@@ -406,9 +401,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   QList<NativeType> nativeTypes;
   nativeTypes
   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, 11 )
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64 bit)" ), "integer64", QVariant::LongLong, 0, 21 )
-#endif
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double" ), QVariant::Double, 0, 20, 0, 15 )
   << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String, 0, 65535 )
   << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, 8, 8 );
@@ -571,7 +564,6 @@ QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
     case wkbGeometryCollection:
       geom = QStringLiteral( "GeometryCollection" );
       break;
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
     case wkbCircularString:
       geom = QStringLiteral( "CircularString" );
       break;
@@ -602,7 +594,6 @@ QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
     case wkbMultiSurfaceZ:
       geom = QStringLiteral( "MultiSurfaceZ" );
       break;
-#endif
     case wkbNone:
       geom = QStringLiteral( "None" );
       break;
@@ -730,7 +721,6 @@ QStringList QgsOgrProvider::subLayers() const
         fCount[wkbUnknown] = 0;
       }
 
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
       // When there are CurvePolygons, promote Polygons
       if ( fCount.contains( wkbPolygon ) && fCount.contains( wkbCurvePolygon ) )
       {
@@ -748,21 +738,12 @@ QStringList QgsOgrProvider::subLayers() const
         fCount[wkbCompoundCurve] += fCount.value( wkbCircularString );
         fCount.remove( wkbCircularString );
       }
-#endif
 
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
       bool bIs25D = ( wkbHasZ( layerGeomType ) != 0 );
-#else
-      bool bIs25D = (( layerGeomType & wkb25DBit ) != 0 );
-#endif
       QMap<OGRwkbGeometryType, int>::const_iterator countIt = fCount.constBegin();
       for ( ; countIt != fCount.constEnd(); ++countIt )
       {
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
         QString geom = ogrWkbGeometryTypeName(( bIs25D ) ? wkbSetZ( countIt.key() ) : countIt.key() );
-#else
-        QString geom = ogrWkbGeometryTypeName(( bIs25D ) ? ( OGRwkbGeometryType )( countIt.key() | wkb25DBit ) : countIt.key() );
-#endif
 
         QString sl = QStringLiteral( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( fCount.value( countIt.key() ) ).arg( geom );
         QgsDebugMsg( "sub layer: " + sl );
@@ -881,15 +862,12 @@ void QgsOgrProvider::loadFields()
         case OFTInteger:
           varType = QVariant::Int;
           break;
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
         case OFTInteger64:
           varType = QVariant::LongLong;
           break;
-#endif
         case OFTReal:
           varType = QVariant::Double;
           break;
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1400
         case OFTDate:
           varType = QVariant::Date;
           break;
@@ -900,7 +878,6 @@ void QgsOgrProvider::loadFields()
           varType = QVariant::DateTime;
           break;
         case OFTString:
-#endif
         default:
           varType = QVariant::String; // other unsupported, leave it as a string
       }
@@ -940,7 +917,6 @@ void QgsOgrProvider::loadFields()
                             width, prec
                           );
 
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
       // check if field is nullable
       bool nullable = OGR_Fld_IsNullable( fldDef );
       if ( !nullable )
@@ -956,7 +932,6 @@ void QgsOgrProvider::loadFields()
       {
         mDefaultValues.insert( i + ( mFirstFieldIsFid ? 1 : 0 ), defaultValue );
       }
-#endif
 
       mAttributeFields.append( newField );
     }
@@ -979,7 +954,6 @@ void QgsOgrProvider::setRelevantFields( OGRLayerH ogrLayer, bool fetchGeometry, 
 
 void QgsOgrProviderUtils::setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes, bool firstAttrIsFid )
 {
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
   if ( OGR_L_TestCapability( ogrLayer, OLCIgnoreFields ) )
   {
     QVector<const char*> ignoredFields;
@@ -1000,11 +974,6 @@ void QgsOgrProviderUtils::setRelevantFields( OGRLayerH ogrLayer, int fieldCount,
 
     OGR_L_SetIgnoredFields( ogrLayer, ignoredFields.data() );
   }
-#else
-  Q_UNUSED( ogrLayer );
-  Q_UNUSED( fetchGeometry );
-  Q_UNUSED( fetchAttributes );
-#endif
 }
 
 QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest& request ) const
@@ -1192,11 +1161,8 @@ OGRGeometryH QgsOgrProvider::ConvertGeometryIfNecessary( OGRGeometryH hGeom )
   {
     return OGR_G_ForceToMultiLineString( hGeom );
   }
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
+
   return OGR_G_ForceTo( hGeom, layerGeomType, nullptr );
-#else
-  return hGeom;
-#endif
 }
 
 bool QgsOgrProvider::addFeature( QgsFeature& f )
@@ -1239,11 +1205,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
       qlonglong id = attrFid.toLongLong( &ok );
       if ( ok )
       {
-#if GDAL_VERSION_MAJOR >= 2
         OGR_F_SetFID( feature, static_cast<GIntBig>( id ) );
-#else
-        OGR_F_SetFID( feature, static_cast<long>( id ) );
-#endif
       }
     }
   }
@@ -1275,11 +1237,9 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
           break;
 
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
         case OFTInteger64:
           OGR_F_SetFieldInteger64( feature, ogrAttId, attrVal.toLongLong() );
           break;
-#endif
 
         case OFTReal:
           OGR_F_SetFieldDouble( feature, ogrAttId, attrVal.toDouble() );
@@ -1409,7 +1369,6 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
       case QVariant::Int:
         type = OFTInteger;
         break;
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
       case QVariant::LongLong:
       {
         const char* pszDataTypes = GDALGetMetadataItem( ogrDriver, GDAL_DMD_CREATIONFIELDDATATYPES, NULL );
@@ -1421,7 +1380,6 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
         }
         break;
       }
-#endif
       case QVariant::Double:
         type = OFTReal;
         break;
@@ -1486,7 +1444,6 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
   if ( !doInitialActionsForEdition() )
     return false;
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1900
   bool res = true;
   QList<int> attrsLst = attributes.toList();
   // sort in descending order
@@ -1514,11 +1471,6 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
   }
   loadFields();
   return res;
-#else
-  Q_UNUSED( attributes );
-  pushError( tr( "Deleting fields is not supported prior to GDAL 1.9.0" ) );
-  return false;
-#endif
 }
 
 bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap& renamedAttributes )
@@ -1526,7 +1478,6 @@ bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap& renamedAttributes 
   if ( !doInitialActionsForEdition() )
     return false;
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1900
   QgsFieldNameMap::const_iterator renameIt = renamedAttributes.constBegin();
   bool result = true;
   for ( ; renameIt != renamedAttributes.constEnd(); ++renameIt )
@@ -1568,11 +1519,6 @@ bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap& renamedAttributes 
   }
   loadFields();
   return result;
-#else
-  Q_UNUSED( attributes );
-  pushError( tr( "Renaming fields is not supported prior to GDAL 1.9.0" ) );
-  return false;
-#endif
 }
 
 
@@ -1651,11 +1597,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
           case OFTInteger:
             OGR_F_SetFieldInteger( of, f, it2->toInt() );
             break;
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
           case OFTInteger64:
             OGR_F_SetFieldInteger64( of, f, it2->toLongLong() );
             break;
-#endif
           case OFTReal:
             OGR_F_SetFieldDouble( of, f, it2->toDouble() );
             break;
@@ -2444,7 +2388,6 @@ QString createFilters( const QString& type )
     //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
     // Requires GDAL>=1.6.0 with libz support, let's assume we have it.
     // This does not work for some file types, see VSIFileHandler doc.
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
     QSettings settings;
     if ( settings.value( QStringLiteral( "/qgis/scanZipInBrowser2" ), "basic" ).toString() != QLatin1String( "no" ) )
     {
@@ -2452,7 +2395,6 @@ QString createFilters( const QString& type )
       myExtensions << QStringLiteral( "zip" ) << QStringLiteral( "gz" ) << QStringLiteral( "tar" ) << QStringLiteral( "tar.gz" ) << QStringLiteral( "tgz" );
 
     }
-#endif
 
     // can't forget the default case - first
     myFileFilters.prepend( QObject::tr( "All files" ) + " (*);;" );
@@ -2812,12 +2754,10 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   }
 
   QgsDebugMsg( QString( "GDAL Version number %1" ).arg( GDAL_VERSION_NUM ) );
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1310
   if ( reference )
   {
     OSRRelease( reference );
   }
-#endif //GDAL_VERSION_NUM
   return true;
 }
 
@@ -2889,10 +2829,6 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
     return; //not a provider field
   }
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM < 1910
-  // avoid GDAL #4509
-  return QgsVectorDataProvider::uniqueValues( index, uniqueValues, limit );
-#else
   QByteArray sql = "SELECT DISTINCT " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
   sql += " FROM " + quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
@@ -2922,7 +2858,6 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   }
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
-#endif
 }
 
 QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString& substring, int limit, QgsFeedback* feedback ) const
@@ -2938,10 +2873,6 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString& sub
     return results; //not a provider field
   }
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM < 1910
-  // avoid GDAL #4509
-  return QgsVectorDataProvider::uniqueStringsMatching( index, substring, limit, feedback );
-#else
   QByteArray sql = "SELECT DISTINCT " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
   sql += " FROM " + quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
@@ -2975,7 +2906,6 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString& sub
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
   return results;
-#endif
 }
 
 QVariant QgsOgrProvider::minimumValue( int index ) const
@@ -3075,20 +3005,7 @@ OGRDataSourceH QgsOgrProviderUtils::OGROpenWrapper( const char* pszPath, bool bU
     *phDriver = hDriver;
   if ( !hDS )
     return nullptr;
-  // GDAL < 1.11.5 has a crashing bug with GeoPackage databases with curve geometry
-  // types (https://trac.osgeo.org/gdal/ticket/6558)
-#if GDAL_VERSION_MAJOR == 1 && GDAL_VERSION_MINOR == 11 && GDAL_VERSION_MACRO < 5
-  const char* pszLastErrorMsg = CPLGetLastErrorMsg();
-  if ( hDriver == OGRGetDriverByName( "GPKG" ) &&
-       strstr( pszLastErrorMsg, "geometry column" ) &&
-       strstr( pszLastErrorMsg, "of type" ) &&
-       strstr( pszLastErrorMsg, "ignored" ) )
-  {
-    QgsDebugMsg( QString( "Ignoring %1 that is a GeoPackage DB with curve geometries" ).arg( pszPath ) );
-    OGR_DS_Destroy( hDS );
-    hDS = nullptr;
-  }
-#endif
+
   return hDS;
 }
 
@@ -3371,12 +3288,10 @@ OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type 
       return wkbLineString;
     case wkbMultiPolygon:
       return wkbPolygon;
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
     case wkbMultiCurve:
       return wkbCompoundCurve;
     case wkbMultiSurface:
       return wkbCurvePolygon;
-#endif
     default:
       return type;
   }
@@ -3824,9 +3739,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
     }
     {
       OGRFieldDefnH fld = OGR_Fld_Create( "useAsDefault", OFTInteger );
-#if GDAL_VERSION_MAJOR >= 2
       OGR_Fld_SetSubType( fld, OFSTBoolean );
-#endif
       ok &= OGR_L_CreateField( hLayer, fld, true ) == OGRERR_NONE;
       OGR_Fld_Destroy( fld );
     }
@@ -3849,9 +3762,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
     }
     {
       OGRFieldDefnH fld = OGR_Fld_Create( "update_time", OFTDateTime );
-#if GDAL_VERSION_MAJOR >= 2
       OGR_Fld_SetDefault( fld, "CURRENT_TIMESTAMP" );
-#endif
       ok &= OGR_L_CreateField( hLayer, fld, true ) == OGRERR_NONE;
       OGR_Fld_Destroy( fld );
     }

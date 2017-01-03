@@ -266,9 +266,7 @@
 #include <gdal_version.h>
 #include <proj_api.h>
 
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
 #define SUPPORT_GEOPACKAGE
-#endif
 
 //
 // Other includes

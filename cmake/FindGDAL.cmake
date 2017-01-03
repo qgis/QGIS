@@ -61,13 +61,9 @@ ELSE(WIN32)
           ENDIF (NOT GDAL_VERSION)
           STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\1" GDAL_VERSION_MAJOR "${GDAL_VERSION}")
           STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\2" GDAL_VERSION_MINOR "${GDAL_VERSION}")
-          IF (GDAL_VERSION_MAJOR LESS 1 OR (GDAL_VERSION EQUAL 1 AND GDAL_VERSION_MINOR LESS 4))
-            MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 1.4.0 or higher.")
-          ENDIF (GDAL_VERSION_MAJOR LESS 1 OR (GDAL_VERSION EQUAL 1 AND GDAL_VERSION_MINOR LESS 4))
-
-          IF (GDAL_VERSION_MAJOR LESS 1 OR (GDAL_VERSION_MAJOR EQUAL 1 AND GDAL_VERSION_MINOR LESS 11))
-            MESSAGE (WARNING "GDAL version is too old (${GDAL_VERSION}) to support GeoPackage. 1.11.0 or higher is recommended.")
-          ENDIF (GDAL_VERSION_MAJOR LESS 1 OR (GDAL_VERSION_MAJOR EQUAL 1 AND GDAL_VERSION_MINOR LESS 11))
+          IF (GDAL_VERSION_MAJOR LESS 2)
+            MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 2.0 or higher.")
+          ENDIF (GDAL_VERSION_MAJOR LESS 2)
 
         ENDIF (GDAL_LIBRARY)
         SET (CMAKE_FIND_FRAMEWORK ${CMAKE_FIND_FRAMEWORK_save} CACHE STRING "" FORCE)
@@ -105,14 +101,10 @@ ELSE(WIN32)
   
         # check for gdal version
         # version 1.2.5 is known NOT to be supported (missing CPL_STDCALL macro)
-        # According to INSTALL, 1.4.0+ is required
-        IF (GDAL_VERSION_MAJOR LESS 1 OR (GDAL_VERSION_MAJOR EQUAL 1 AND GDAL_VERSION_MINOR LESS 4))
-          MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 1.4.0 or higher.")
-        ENDIF (GDAL_VERSION_MAJOR LESS 1 OR (GDAL_VERSION_MAJOR EQUAL 1 AND GDAL_VERSION_MINOR LESS 4))
-
-        IF (GDAL_VERSION_MAJOR LESS 1 OR (GDAL_VERSION_MAJOR EQUAL 1 AND GDAL_VERSION_MINOR LESS 11))
-          MESSAGE (WARNING "GDAL version is too old (${GDAL_VERSION}) to support GeoPackage. 1.11.0 or higher is recommended.")
-        ENDIF (GDAL_VERSION_MAJOR LESS 1 OR (GDAL_VERSION_MAJOR EQUAL 1 AND GDAL_VERSION_MINOR LESS 11))
+        # According to INSTALL, 2.0+ is required
+        IF (GDAL_VERSION_MAJOR LESS 2)
+          MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 2.0 or higher.")
+        ENDIF (GDAL_VERSION_MAJOR LESS 2)
 
         # set INCLUDE_DIR to prefix+include
         EXEC_PROGRAM(${GDAL_CONFIG}

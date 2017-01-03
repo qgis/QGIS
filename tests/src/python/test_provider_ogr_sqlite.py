@@ -130,7 +130,6 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         got = [(f.attribute('fid'), f.attribute('intfield')) for f in vl.dataProvider().getFeatures(QgsFeatureRequest().setFilterExpression("fid = 12"))]
         self.assertEqual(got, [(12, 123)])
 
-    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
     def testNotNullConstraint(self):
         """ test detection of not null constraint on OGR layer """
 
@@ -161,7 +160,6 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         self.assertTrue(fields.at(2).constraints().constraints() & QgsFieldConstraints.ConstraintNotNull)
         self.assertEqual(fields.at(2).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull), QgsFieldConstraints.ConstraintOriginProvider)
 
-    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
     def testDefaultValues(self):
         """ test detection of defaults on OGR layer """
 

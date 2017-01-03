@@ -23,11 +23,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8F(x) (x).toUtf8().constData()
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#endif
 
 QgsKernelDensityEstimation::QgsKernelDensityEstimation( const QgsKernelDensityEstimation::Parameters& parameters, const QString& outputFile, const QString& outputFormat )
     : mInputLayer( parameters.vectorLayer )

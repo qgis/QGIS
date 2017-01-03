@@ -42,14 +42,12 @@
 #include <cpl_error.h>
 #include <cpl_string.h>
 
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
 #define SUPPORT_GEOMETRY_LESS
 #define SUPPORT_CURVE_GEOMETRIES
 #define SUPPORT_INTEGER64
 #define SUPPORT_SPATIAL_INDEX
 #define SUPPORT_IDENTIFIER_DESCRIPTION
 #define SUPPORT_FIELD_WIDTH
-#endif
 
 QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )

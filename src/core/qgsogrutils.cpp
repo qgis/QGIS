@@ -21,15 +21,9 @@
 #include <QTextCodec>
 #include <QUuid>
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8(x)   (x).toUtf8().constData()
 #define TO8F(x)  (x).toUtf8().constData()
 #define FROM8(x) QString::fromUtf8(x)
-#else
-#define TO8(x)   (x).toLocal8Bit().constData()
-#define TO8F(x)  QFile::encodeName( x ).constData()
-#define FROM8(x) QString::fromLocal8Bit(x)
-#endif
 
 QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields& fields, QTextCodec* encoding )
 {
@@ -80,15 +74,12 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec* encoding )
       case OFTInteger:
         varType = QVariant::Int;
         break;
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
       case OFTInteger64:
         varType = QVariant::LongLong;
         break;
-#endif
       case OFTReal:
         varType = QVariant::Double;
         break;
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1400
       case OFTDate:
         varType = QVariant::Date;
         break;
@@ -99,7 +90,6 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec* encoding )
         varType = QVariant::DateTime;
         break;
       case OFTString:
-#endif
       default:
         varType = QVariant::String; // other unsupported, leave it as a string
     }
@@ -148,11 +138,9 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
       case QVariant::Int:
         value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attIndex ) );
         break;
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
       case QVariant::LongLong:
         value = QVariant( OGR_F_GetFieldAsInteger64( ogrFet, attIndex ) );
         break;
-#endif
       case QVariant::Double:
         value = QVariant( OGR_F_GetFieldAsDouble( ogrFet, attIndex ) );
         break;

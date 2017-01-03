@@ -262,21 +262,7 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
 
 GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess eAccess )
 {
-  // See http://hub.qgis.org/issues/8356 and http://trac.osgeo.org/gdal/ticket/5170
-#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
-  char* pszOldVal = CPLStrdup( CPLGetConfigOption( "VSI_CACHE", "FALSE" ) );
-  CPLSetThreadLocalConfigOption( "VSI_CACHE", "FALSE" );
-  QgsDebugMsg( "Disabled VSI_CACHE" );
-#endif
-
   GDALDatasetH hDS = GDALOpen( pszFilename, eAccess );
-
-#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
-  CPLSetThreadLocalConfigOption( "VSI_CACHE", pszOldVal );
-  CPLFree( pszOldVal );
-  QgsDebugMsg( "Reset VSI_CACHE" );
-#endif
-
   return hDS;
 }
 
@@ -292,14 +278,6 @@ int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char *pszM
 
 CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void * pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace, QgsRasterBlockFeedback* feedback )
 {
-  // See http://hub.qgis.org/issues/8356 and http://trac.osgeo.org/gdal/ticket/5170
-#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
-  char* pszOldVal = CPLStrdup( CPLGetConfigOption( "VSI_CACHE", "FALSE" ) );
-  CPLSetThreadLocalConfigOption( "VSI_CACHE", "FALSE" );
-  QgsDebugMsg( "Disabled VSI_CACHE" );
-#endif
-
-#if GDAL_VERSION_MAJOR >= 2
   GDALRasterIOExtraArg extra;
   INIT_RASTERIO_EXTRA_ARG( extra );
   if ( 0 && feedback )  // disabled!
@@ -313,36 +291,12 @@ CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWF
     extra.pProgressData = ( void* ) feedback;
   }
   CPLErr err = GDALRasterIOEx( hBand, eRWFlag, nXOff, nYOff, nXSize, nYSize, pData, nBufXSize, nBufYSize, eBufType, nPixelSpace, nLineSpace, &extra );
-#else
-  Q_UNUSED( feedback );
-  CPLErr err = GDALRasterIO( hBand, eRWFlag, nXOff, nYOff, nXSize, nYSize, pData, nBufXSize, nBufYSize, eBufType, nPixelSpace, nLineSpace );
-#endif
-
-#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
-  CPLSetThreadLocalConfigOption( "VSI_CACHE", pszOldVal );
-  CPLFree( pszOldVal );
-  QgsDebugMsg( "Reset VSI_CACHE" );
-#endif
 
   return err;
 }
 
 int QgsGdalProviderBase::gdalGetOverviewCount( GDALRasterBandH hBand )
 {
-  // See http://hub.qgis.org/issues/8356 and http://trac.osgeo.org/gdal/ticket/5170
-#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
-  char* pszOldVal = CPLStrdup( CPLGetConfigOption( "VSI_CACHE", "FALSE" ) );
-  CPLSetThreadLocalConfigOption( "VSI_CACHE", "FALSE" );
-  QgsDebugMsg( "Disabled VSI_CACHE" );
-#endif
-
   int count = GDALGetOverviewCount( hBand );
-
-#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
-  CPLSetThreadLocalConfigOption( "VSI_CACHE", pszOldVal );
-  CPLFree( pszOldVal );
-  QgsDebugMsg( "Reset VSI_CACHE" );
-#endif
-
   return count;
 }
