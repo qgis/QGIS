@@ -180,7 +180,7 @@
         <ymax>0.0022</ymax>
       </extent>
       <id>shapefile_Autos_any20161212175224004</id>
-      <datasource>./shapefile|layername=Autos</datasource>
+      <datasource>./shapefile/Autos.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -456,7 +456,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>6</ymax>
       </extent>
       <id>shapefile_BasicPolygons_any20161212175223962</id>
-      <datasource>./shapefile|layername=BasicPolygons</datasource>
+      <datasource>./shapefile/BasicPolygons.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -720,7 +720,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>0.0007</ymax>
       </extent>
       <id>shapefile_Bridges_any20161212175224135</id>
-      <datasource>./shapefile|layername=Bridges</datasource>
+      <datasource>./shapefile/Bridges.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -993,7 +993,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>0.0009</ymax>
       </extent>
       <id>shapefile_BuildingCenters_any20161212175224065</id>
-      <datasource>./shapefile|layername=BuildingCenters</datasource>
+      <datasource>./shapefile/BuildingCenters.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -1266,7 +1266,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>0.001</ymax>
       </extent>
       <id>shapefile_Buildings_any20161212175224108</id>
-      <datasource>./shapefile|layername=Buildings</datasource>
+      <datasource>./shapefile/Buildings.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -1533,7 +1533,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>0.0024</ymax>
       </extent>
       <id>shapefile_DividedRoutes_any20161212175224115</id>
-      <datasource>./shapefile|layername=DividedRoutes</datasource>
+      <datasource>./shapefile/DividedRoutes.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -1807,7 +1807,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>0.0018</ymax>
       </extent>
       <id>shapefile_Forests_any20161212175224149</id>
-      <datasource>./shapefile|layername=Forests</datasource>
+      <datasource>./shapefile/Forests.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -2074,7 +2074,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>-0.0001</ymax>
       </extent>
       <id>shapefile_Lakes_any20161212175224157</id>
-      <datasource>./shapefile|layername=Lakes</datasource>
+      <datasource>./shapefile/Lakes.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -2341,7 +2341,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>0.0024</ymax>
       </extent>
       <id>shapefile_MapNeatline_any20161212175224085</id>
-      <datasource>./shapefile|layername=MapNeatline</datasource>
+      <datasource>./shapefile/MapNeatline.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -2609,7 +2609,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>0.0024</ymax>
       </extent>
       <id>shapefile_NamedPlaces_any20161212175224102</id>
-      <datasource>./shapefile|layername=NamedPlaces</datasource>
+      <datasource>./shapefile/NamedPlaces.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -2876,7 +2876,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>0.002</ymax>
       </extent>
       <id>shapefile_Ponds_any20161212175224054</id>
-      <datasource>./shapefile|layername=Ponds</datasource>
+      <datasource>./shapefile/Ponds.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -3146,7 +3146,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>0.0024</ymax>
       </extent>
       <id>shapefile_RoadSegments_any20161212175224127</id>
-      <datasource>./shapefile|layername=RoadSegments</datasource>
+      <datasource>./shapefile/RoadSegments.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -3417,7 +3417,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>0.0024</ymax>
       </extent>
       <id>shapefile_Streams_any20161212175223969</id>
-      <datasource>./shapefile|layername=Streams</datasource>
+      <datasource>./shapefile/Streams.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -3688,7 +3688,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>-0.0001</ymax>
       </extent>
       <id>shapefile_lakesWithElevation_any20161212175224039</id>
-      <datasource>./shapefile|layername=lakesWithElevation</datasource>
+      <datasource>./shapefile/lakesWithElevation.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
