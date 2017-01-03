@@ -309,6 +309,11 @@
    <addaction name="mActionSave"/>
    <addaction name="mActionSaveAs"/>
    <addaction name="separator"/>
+   <addaction name="mActionZoomIn"/>
+   <addaction name="mActionZoomOut"/>
+   <addaction name="mActionZoomActual"/>
+   <addaction name="mActionZoomToItems"/>
+   <addaction name="separator"/>
    <addaction name="mActionExportImage"/>
    <addaction name="mActionExportPdf"/>
    <addaction name="mActionExportSvg"/>
@@ -363,6 +368,51 @@
     <string>Ctrl+Shift+S</string>
    </property>
   </action>
+  <action name="mActionZoomActual">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomActual.svg</normaloff>:/images/themes/default/mActionZoomActual.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom to &amp;100%</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom to &amp;100%</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
+   </property>
+  </action>
+  <action name="mActionZoomIn">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomIn.svg</normaloff>:/images/themes/default/mActionZoomIn.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom in</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom in</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl++</string>
+   </property>
+  </action>
+  <action name="mActionZoomOut">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomOut.svg</normaloff>:/images/themes/default/mActionZoomOut.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom out</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom out</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
+   </property>
+  </action>
   <action name="mActionExportImage">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -373,6 +423,21 @@
    </property>
    <property name="toolTip">
     <string>Export as image</string>
+   </property>
+  </action>
+  <action name="mActionZoomToItems">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomFullExtent.svg</normaloff>:/images/themes/default/mActionZoomFullExtent.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom full</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom full</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+0</string>
    </property>
   </action>
   <action name="mActionExportPdf">
