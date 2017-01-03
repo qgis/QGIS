@@ -20,6 +20,8 @@
 #include <QHash>
 #include <QObject>
 
+#include "qgis_core.h"
+
 /**
  * \class QgsFieldConstraints
  * \ingroup core

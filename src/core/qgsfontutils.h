@@ -20,6 +20,8 @@
 #include <QString>
 #include <QDomElement>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * \class QgsFontUtils
  */

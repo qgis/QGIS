@@ -20,6 +20,7 @@
 
 #include <QMap>
 #include <QVariant>
+#include "qgis_core.h"
 
 class QDomDocument;
 class QDomNode;

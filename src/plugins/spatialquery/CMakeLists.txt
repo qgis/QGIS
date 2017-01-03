@@ -36,13 +36,14 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 INCLUDE_DIRECTORIES(
-     ${CMAKE_CURRENT_BINARY_DIR}
-     ${CMAKE_CURRENT_BINARY_DIR}/../../ui/
-     ../../core
-     ../../core/geometry
-     ../../core/raster
-     ../../gui
-     ..
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}/../../ui/
+  ../../core
+  ../../core/geometry
+  ../../core/raster
+  ../../gui
+  ..
+  ${CMAKE_BINARY_DIR}/src/core
 )
 
 TARGET_LINK_LIBRARIES(spatialqueryplugin

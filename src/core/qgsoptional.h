@@ -16,6 +16,8 @@
 #ifndef QGSOPTIONAL_H
 #define QGSOPTIONAL_H
 
+#include "qgis_core.h"
+
 
 /**
  * \ingroup core

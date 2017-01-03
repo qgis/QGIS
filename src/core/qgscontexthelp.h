@@ -23,6 +23,8 @@
 #include <QHash>
 #include <QProcess>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Provides a context based help browser for a dialog.
  *

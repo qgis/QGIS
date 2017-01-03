@@ -32,7 +32,8 @@
 #include <cmath>
 #include <qnumeric.h>
 
-#include <qgswkbtypes.h>
+#include "qgswkbtypes.h"
+#include "qgis_core.h"
 
 /** \ingroup core
  * The Qgis class provides global constants for use throughout the application.

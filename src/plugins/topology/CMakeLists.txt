@@ -47,6 +47,7 @@ INCLUDE_DIRECTORIES(
   ../../core ../../core/geometry ../../core/raster
   ../../gui
   ..
+  ${CMAKE_BINARY_DIR}/src/core
 )
 
 TARGET_LINK_LIBRARIES(topolplugin

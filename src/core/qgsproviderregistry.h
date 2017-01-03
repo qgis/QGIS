@@ -25,6 +25,8 @@
 #include <QLibrary>
 #include <QString>
 
+#include "qgis_core.h"
+
 
 class QgsDataProvider;
 class QgsProviderMetadata;

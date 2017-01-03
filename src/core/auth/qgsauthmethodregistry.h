@@ -22,6 +22,8 @@
 #include <QMap>
 #include <QString>
 
+#include "qgis_core.h"
+
 class QgsAuthMethod;
 class QgsAuthMethodMetadata;
 

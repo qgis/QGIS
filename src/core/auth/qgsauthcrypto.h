@@ -20,6 +20,8 @@
 #include <QFile>
 #include <QString>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Funtions for hashing/checking master password and encrypt/decrypting data with password
  * \since 2.8

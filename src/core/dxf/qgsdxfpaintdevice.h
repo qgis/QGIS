@@ -20,6 +20,8 @@
 
 #include <QPaintDevice>
 
+#include "qgis_core.h"
+
 class QgsDxfPaintEngine;
 class QgsDxfExport;
 class QPaintEngine;

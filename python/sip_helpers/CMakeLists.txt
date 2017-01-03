@@ -17,7 +17,8 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_BINARY_DIR}/../core
+  ${CMAKE_BINARY_DIR}/python/core
+  ${CMAKE_BINARY_DIR}/src/core
   ../../src/core
   ../../src/core/auth
   ../../src/core/pal

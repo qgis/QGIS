@@ -20,6 +20,8 @@
 
 #include <QUndoCommand>
 
+#include "qgis_core.h"
+
 class QgsComposerMultiFrame;
 class QgsComposition;
 

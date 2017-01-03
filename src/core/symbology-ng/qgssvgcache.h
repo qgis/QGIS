@@ -27,6 +27,8 @@
 #include <QObject>
 #include <QSizeF>
 
+#include "qgis_core.h"
+
 class QDomElement;
 class QImage;
 class QPicture;

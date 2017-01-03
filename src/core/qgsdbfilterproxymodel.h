@@ -20,6 +20,8 @@
 
 #include <QSortFilterProxyModel>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * A class that implements a custom filter and can be used
  as a proxy for QgsDbTableModel*/

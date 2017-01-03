@@ -24,6 +24,8 @@
 #include <QStringList>
 #include <QUrl>
 
+#include "qgis_core.h"
+
 class QgsAuthMethodConfig;
 
 /** \ingroup core

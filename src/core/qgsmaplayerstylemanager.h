@@ -24,6 +24,8 @@ class QgsMapLayer;
 #include <QStringList>
 #include <QObject>
 
+#include "qgis_core.h"
+
 class QDomElement;
 
 /** \ingroup core

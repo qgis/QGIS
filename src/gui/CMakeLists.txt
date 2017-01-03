@@ -788,6 +788,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets/core
   ${CMAKE_CURRENT_SOURCE_DIR}/layertree
   ${CMAKE_CURRENT_SOURCE_DIR}/effects
+  ${CMAKE_BINARY_DIR}/src/core
   ../core
   ../core/auth
   ../core/composer

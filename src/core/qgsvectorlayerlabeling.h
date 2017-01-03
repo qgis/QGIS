@@ -18,6 +18,8 @@
 #include <QString>
 #include <QStringList>
 
+#include "qgis_core.h"
+
 class QDomDocument;
 class QDomElement;
 

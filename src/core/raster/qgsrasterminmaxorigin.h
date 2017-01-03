@@ -21,6 +21,8 @@
 #include <QDomDocument>
 #include <QDomElement>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * This class describes the origin of min/max values. It does not store by
  * itself the min/max values.

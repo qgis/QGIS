@@ -20,6 +20,8 @@
 #include <QString>
 #include <QObject>
 
+#include "qgis_core.h"
+
 class QgsMessageOutput;
 typedef QgsMessageOutput*( *MESSAGE_OUTPUT_CREATOR )();
 

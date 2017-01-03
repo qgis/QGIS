@@ -23,6 +23,8 @@
 #include <QDomElement>
 #include <QColor>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Stores properties of a column in a QgsComposerTable. Some properties of a QgsComposerTableColumn
 are applicable only in certain contexts. For instance, the attribute and setAttribute methods only

@@ -21,6 +21,8 @@
 #include <QList>
 #include <QSet>
 
+#include "qgis_core.h"
+
 class QgsGPSConnection;
 
 /** \ingroup core

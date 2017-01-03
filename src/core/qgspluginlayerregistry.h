@@ -22,6 +22,8 @@
 #include <QMap>
 #include <QDomNode>
 
+#include "qgis_core.h"
+
 class QgsPluginLayer;
 
 /** \ingroup core
