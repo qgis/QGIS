@@ -2006,7 +2006,7 @@ QImage* QgsWMSServer::createImage( int width, int height, bool useBbox ) const
   {
     bool bboxOk;
     QgsRectangle mapExtent = _parseBBOX( mParameters.value( "BBOX" ), bboxOk );
-    QString crs = mParameters.value( QStringLiteral( "CRS" ), mParameters.value( QStringLiteral( "SRS" ) ) );
+    QString crs = mParameters.value( "CRS", mParameters.value( "SRS" ) );
     if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
     {
       crs = QString( "EPSG:4326" );
