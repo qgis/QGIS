@@ -15,6 +15,7 @@
 #ifndef QGSPROPERTY_H
 #define QGSPROPERTY_H
 
+#include "qgis_core.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include <QVariant>
@@ -148,17 +149,17 @@ class CORE_EXPORT QgsAbstractProperty
      * Writes the current state of the property into an XML element
      * @param propertyElem destination element for the property's state
      * @param doc DOM document
-     * @see readXML()
+     * @see readXml()
     */
-    virtual bool writeXML( QDomElement& propertyElem, QDomDocument& doc ) const;
+    virtual bool writeXml( QDomElement& propertyElem, QDomDocument& doc ) const;
 
     /**
      * Reads property state from an XML element.
      * @param propertyElem source DOM element for property's state
      * @param doc DOM document
-     * @see writeXML()
+     * @see writeXml()
     */
-    virtual bool readXML( const QDomElement& propertyElem, const QDomDocument& doc );
+    virtual bool readXml( const QDomElement& propertyElem, const QDomDocument& doc );
 
     /**
      * Sets an optional transformer to use for manipulating the calculated values for the property.
@@ -230,8 +231,8 @@ class CORE_EXPORT QgsStaticProperty : public QgsAbstractProperty
      */
     QVariant staticValue() const { return mValue; }
 
-    bool writeXML( QDomElement& propertyElem, QDomDocument& doc ) const override;
-    bool readXML( const QDomElement& propertyElem, const QDomDocument& doc ) override;
+    bool writeXml( QDomElement& propertyElem, QDomDocument& doc ) const override;
+    bool readXml( const QDomElement& propertyElem, const QDomDocument& doc ) override;
 
   protected:
 
@@ -279,8 +280,8 @@ class CORE_EXPORT QgsFieldBasedProperty : public QgsAbstractProperty
     QString field() const { return mField; }
 
     virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
-    bool writeXML( QDomElement& propertyElem, QDomDocument& doc ) const override;
-    bool readXML( const QDomElement& propertyElem, const QDomDocument& doc ) override;
+    bool writeXml( QDomElement& propertyElem, QDomDocument& doc ) const override;
+    bool readXml( const QDomElement& propertyElem, const QDomDocument& doc ) override;
 
   protected:
 
@@ -328,8 +329,8 @@ class CORE_EXPORT QgsExpressionBasedProperty : public QgsAbstractProperty
     QString expressionString() const { return mExpressionString; }
 
     virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
-    bool writeXML( QDomElement& propertyElem, QDomDocument& doc ) const override;
-    bool readXML( const QDomElement& propertyElem, const QDomDocument& doc ) override;
+    bool writeXml( QDomElement& propertyElem, QDomDocument& doc ) const override;
+    bool readXml( const QDomElement& propertyElem, const QDomDocument& doc ) override;
 
   protected:
 
@@ -395,17 +396,17 @@ class CORE_EXPORT QgsPropertyTransformer
      * Reads transformer's state from an XML element.
      * @param transformerElem source DOM element for transformer's state
      * @param doc DOM document
-     * @see writeXML()
+     * @see writeXml()
     */
-    virtual bool readXML( const QDomElement& transformerElem, const QDomDocument& doc );
+    virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc );
 
     /**
      * Writes the current state of the transformer into an XML element
      * @param transformerElem destination element for the transformer's state
      * @param doc DOM document
-     * @see readXML()
+     * @see readXml()
     */
-    virtual bool writeXML( QDomElement& transformerElem, QDomDocument& doc ) const;
+    virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const;
 
     /**
      * Returns the minimum value expected by the transformer.
@@ -497,8 +498,8 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
 
     virtual Type transformerType() const override { return SizeScaleTransformer; }
     virtual QgsSizeScaleTransformer* clone() override;
-    virtual bool writeXML( QDomElement& transformerElem, QDomDocument& doc ) const override;
-    virtual bool readXML( const QDomElement& transformerElem, const QDomDocument& doc ) override;
+    virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const override;
+    virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc ) override;
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const override;
 
     /**
@@ -619,8 +620,8 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
 
     virtual Type transformerType() const override { return ColorRampTransformer; }
     virtual QgsColorRampTransformer* clone() override;
-    virtual bool writeXML( QDomElement& transformerElem, QDomDocument& doc ) const override;
-    virtual bool readXML( const QDomElement& transformerElem, const QDomDocument& doc ) override;
+    virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const override;
+    virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc ) override;
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const override;
 
     /**
@@ -661,345 +662,6 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
 
     QScopedPointer< QgsColorRamp > mGradientRamp;
     QColor mNullColor;
-
-};
-
-
-/**
- * \ingroup core
- * \class QgsPropertyCollection
- * \brief A grouped map of multiple QgsAbstractProperty objects, each referenced by a integer key value.
- *
- * Properties within a collection are referenced by an integer key. This is done to avoid the cost of
- * string creation and comparisons which would be required by a string key. The intended use case is that
- * a context specific enum is cast to int and used for the key value.
- * \note Added in version 3.0
- */
-
-class CORE_EXPORT QgsPropertyCollection
-{
-  public:
-
-    /**
-     * Constructor for QgsPropertyCollection
-     * @param name collection name
-     */
-    QgsPropertyCollection( const QString& name = QString() );
-
-    ~QgsPropertyCollection();
-
-    //! Copy constructor
-    QgsPropertyCollection( const QgsPropertyCollection& other );
-
-    QgsPropertyCollection& operator=( const QgsPropertyCollection& other );
-
-    /**
-     * Returns the name of the property collection.
-     */
-    QString name() const { return mName; }
-
-    /**
-     * Returns the number of properties contained within the collection.
-     */
-    int count() const;
-
-    /**
-     * Returns a list of property keys contained within the collection.
-     */
-    QList<int> propertyKeys() const;
-
-    /**
-     * Removes all properties from the collection.
-     */
-    void clear();
-
-    /**
-     * Adds a property to the collection and takes ownership of it.
-     * @param key integer key for property. Any existing property with the same key will be deleted
-     * and replaced by this property. The intended use case is that a context specific enum is cast to
-     * int and used for the key value.
-     * @param property property to add. Ownership is transferred to the collection. Setting a property
-     * to null will remove the property from the collection.
-     */
-    void setProperty( int key, QgsAbstractProperty* property );
-
-    /**
-     * Convience method, creates a QgsStaticProperty and stores it within the collection.
-     * @param key integer key for property. Any existing property with the same key will be deleted
-     * and replaced by this property. The intended use case is that a context specific enum is cast to
-     * int and used for the key value.
-     * @param value static value for property
-     */
-    void setProperty( int key, const QVariant& value );
-
-    /**
-     * Returns true if the collection contains a property with the specified key.
-     * @param key integer key for property. The intended use case is that a context specific enum is cast to
-     * int and used for the key value.
-     * @see property()
-     */
-    bool hasProperty( int key ) const;
-
-    /**
-     * Returns a matching property from the collection, if one exists.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
-     * int and used for the key value.
-     * @returns matching property, or null if no matching, active property found.
-     * @see hasProperty()
-     */
-    QgsAbstractProperty* property( int key );
-
-    /**
-     * Returns a matching property from the collection, if one exists.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
-     * int and used for the key value.
-     * @returns matching property, or null if no matching, active property found.
-     * @see hasProperty()
-     */
-    const QgsAbstractProperty* property( int key ) const;
-
-    /**
-     * Returns the calculated value of the property with the specified key from within the collection.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
-     * int and used for the key value.
-     * @param context expression context to evaluate property against
-     * @param defaultValue default value to return if no matching, active property found or if the property value
-     * cannot be calculated
-     * @returns calculated property value, or default value if property could not be evaluated
-     * @see valueAsColor()
-     * @see valueAsDouble()
-     * @see valueAsInt()
-     */
-    QVariant value( int key, const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const;
-
-    /**
-     * Calculates the current value of the property with the specified key and interprets it as a color.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
-     * int and used for the key value.
-     * @param context QgsExpressionContext to evaluate the property for.
-     * @param defaultColor default color to return if the property cannot be calculated as a color
-     * @returns value parsed to color
-     * @see value()
-     * @see valueAsDouble()
-     * @see valueAsInteger()
-     */
-    QColor valueAsColor( int key, const QgsExpressionContext& context, const QColor& defaultColor = QColor() ) const;
-
-    /**
-     * Calculates the current value of the property with the specified key and interprets it as a double.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
-     * int and used for the key value.
-     * @param context QgsExpressionContext to evaluate the property for.
-     * @param defaultValue default double to return if the property cannot be calculated as a double
-     * @returns value parsed to double
-     * @see value()
-     * @see valueAsInteger()
-     * @see valueAsColor()
-     */
-    double valueAsDouble( int key, const QgsExpressionContext& context, double defaultValue = 0.0 ) const;
-
-    /**
-     * Calculates the current value of the property with the specified key and interprets it as an integer.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
-     * int and used for the key value.
-     * @param context QgsExpressionContext to evaluate the property for.
-     * @param defaultValue default integer to return if the property cannot be calculated as a integer
-     * @returns value parsed to integer
-     * @see value()
-     * @see valueAsDouble()
-     * @see valueAsColor()
-     */
-    int valueAsInt( int key, const QgsExpressionContext& context, int defaultValue = 0 ) const;
-
-    /**
-     * Returns the set of any fields referenced by the active properties from the collection.
-     * @param context expression context the properties will be evaluated against.
-     */
-    QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
-
-    /**
-     * Returns true if the collection contains an active property with the specified key.
-     * @param key integer key for property to test. The intended use case is that a context specific enum is cast to
-     * int and used for the key value.
-     */
-    bool isActive( int key ) const;
-
-    /**
-     * Returns true if the collection has any active properties, or false if all properties
-     * within the collection are deactived.
-     * @see hasActiveDynamicProperties()
-     */
-    bool hasActiveProperties() const;
-
-    /**
-     * Returns true if the collection has any active, non-static properties, or false if either all non-static properties
-     * within the collection are deactived or if the collection only contains static properties.
-     * @see hasActiveProperties()
-     */
-    bool hasActiveDynamicProperties() const;
-
-    /**
-     * Writes the current state of the property collection into an XML element
-     * @param collectionElem destination element for the property collection's state
-     * @param doc DOM document
-     * @param propertyNameMap map of key integers to string to use for property name in XML elements. This map is used
-     * to avoid writing the raw integer key values to XML, for readability and future-proofness.
-     * @see readXML()
-    */
-    bool writeXML( QDomElement& collectionElem, QDomDocument& doc, const QMap< int, QString >& propertyNameMap ) const;
-
-    /**
-     * Reads property collection state from an XML element.
-     * @param collectionElem source DOM element for property collection's state
-     * @param doc DOM document
-     * @param propertyNameMap map of key integers to string to use for property name in XML elements. This map must match
-     * the propertyNameMap specified when writeXML() was called.
-     * @see writeXML()
-    */
-    bool readXML( const QDomElement& collectionElem, const QDomDocument& doc, const QMap<int, QString> &propertyNameMap );
-
-  private:
-
-    QString mName;
-
-    QHash<int, QgsAbstractProperty*> mProperties;
-
-    mutable bool mDirty;
-    mutable bool mHasActiveProperties;
-    mutable bool mHasActiveDynamicProperties;
-
-    //! Scans through properties and updates cached values
-    void rescan() const;
-};
-
-
-/**
- * \ingroup core
- * \class QgsPropertyCollectionStack
- * \brief An ordered stack of QgsPropertyCollection containers, where collections added later to the stack will take
- * priority over earlier collections.
- * \note Added in version 3.0
- */
-
-class CORE_EXPORT QgsPropertyCollectionStack
-{
-  public:
-
-    QgsPropertyCollectionStack();
-
-    ~QgsPropertyCollectionStack();
-
-    //! Copy constructor
-    QgsPropertyCollectionStack( const QgsPropertyCollectionStack& other );
-
-    QgsPropertyCollectionStack& operator=( const QgsPropertyCollectionStack& other );
-
-    /**
-     * Returns the number of collections contained within the stack.
-     */
-    int count() const;
-
-    /**
-     * Removes all collections from the stack.
-     */
-    void clear();
-
-    /**
-     * Appends a collection to the end of the stack, and transfers ownership of the collection to the stack. Properties
-     * from the newly added collection will take priority over any existing properties with the same name.
-     * @param collection collection to append. Ownership is transferred to the stack.
-     */
-    void appendCollection( QgsPropertyCollection* collection );
-
-    /**
-     * Returns the collection at the corresponding index from the stack.
-     * @param index position of collection, 0 based
-     * @returns collection if one exists at the specified index
-     */
-    QgsPropertyCollection* at( int index );
-
-    /**
-     * Returns the collection at the corresponding index from the stack.
-     * @param index position of collection, 0 based
-     * @returns collection if one exists at the specified index
-     */
-    const QgsPropertyCollection* at( int index ) const;
-
-    /**
-     * Returns the first collection with a matching name from the stack.
-     * @param name name of collection to find
-     * @returns collection if one exists with the specified name
-     */
-    QgsPropertyCollection* collection( const QString& name );
-
-    /**
-     * Returns true if the collection has any active properties, or false if all properties
-     * within the collection are deactived.
-     * @see hasActiveProperty()
-     * @see hasActiveDynamicProperties()
-     */
-    bool hasActiveProperties() const;
-
-    /**
-     * Returns true if the collection has any active, non-static properties, or false if either all non-static properties
-     * within the collection are deactived or if the collection only contains static properties.
-     * @see hasActiveProperties()
-     */
-    bool hasActiveDynamicProperties() const;
-
-    /**
-     * Returns true if the stack contains an active property with the specified key.
-     * @param key integer key for property to test. The intended use case is that a context specific enum is cast to
-     * int and used for the key value.
-     * @see hasActiveProperties()
-     */
-    bool hasActiveProperty( int key ) const;
-
-    /**
-     * Returns the highest priority property with a matching key from within the stack.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
-     * int and used for the key value.
-     * @returns matching property, or null if no matching, active property found.
-     * @see hasActiveProperty()
-     */
-    const QgsAbstractProperty* property( int key ) const;
-
-    /**
-     * Returns the highest priority property with a matching key from within the stack.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
-     * int and used for the key value.
-     * @returns matching property, or null if no matching, active property found.
-     * @see hasActiveProperty()
-     */
-    QgsAbstractProperty* property( int key );
-
-    /**
-     * Returns the calculated value of the highest priority property with the specified key from within the stack.
-     * @param key integer key for property to calculate. The intended use case is that a context specific enum is cast to
-     * int and used for the key value.
-     * @param context expression context to evaluate property against
-     * @param defaultValue default value to return if no matching, active property found or if the property value
-     * cannot be calculated
-     * @returns calculated property value, or default value if property could not be evaluated
-     */
-    QVariant value( int key, const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const;
-
-    /**
-     * Returns the set of any fields referenced by the active properties from the stack.
-     * @param context expression context the properties will be evaluated against.
-     */
-    QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
-
-  private:
-
-    QList< QgsPropertyCollection* > mStack;
-
-    mutable bool mDirty;
-    mutable bool mHasActiveProperties;
-    mutable bool mHasActiveDynamicProperties;
-
-    //! Scans through properties and updates cached values
-    void rescan() const;
 
 };
 

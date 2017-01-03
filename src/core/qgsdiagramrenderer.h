@@ -28,6 +28,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgssymbol.h"
 #include "qgsproperty.h"
+#include "qgspropertycollection.h"
 
 
 class QgsDiagram;

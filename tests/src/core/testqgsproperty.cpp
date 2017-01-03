@@ -17,6 +17,7 @@
 
 #include "qgstest.h"
 #include "qgsproperty.h"
+#include "qgspropertycollection.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include "qgscolorramp.h"
@@ -222,35 +223,35 @@ void TestQgsProperty::staticProperty()
   p1.setTransformer( new TestTransformer( 10, 20 ) );
 
   QDomElement element = doc.createElement( "prop" );
-  p1.writeXML( element, doc );
+  p1.writeXml( element, doc );
 
   QgsStaticProperty r1;
-  r1.readXML( element, doc );
+  r1.readXml( element, doc );
   QVERIFY( r1.isActive() );
   QVERIFY( r1.transformer() );
   QCOMPARE( r1.staticValue(), QVariant( "test" ) );
 
   p1.setActive( false );
-  p1.writeXML( element, doc );
-  r1.readXML( element, doc );
+  p1.writeXml( element, doc );
+  r1.readXml( element, doc );
   QVERIFY( !r1.isActive() );
 
   //saving/restoring different types
   p1.setStaticValue( QVariant( 5 ) ); //int
-  p1.writeXML( element, doc );
-  r1.readXML( element, doc );
+  p1.writeXml( element, doc );
+  r1.readXml( element, doc );
   QCOMPARE( r1.staticValue(), p1.staticValue() );
   p1.setStaticValue( QVariant( 5.7 ) ); //double
-  p1.writeXML( element, doc );
-  r1.readXML( element, doc );
+  p1.writeXml( element, doc );
+  r1.readXml( element, doc );
   QCOMPARE( r1.staticValue(), p1.staticValue() );
   p1.setStaticValue( QVariant( true ) ); //bool
-  p1.writeXML( element, doc );
-  r1.readXML( element, doc );
+  p1.writeXml( element, doc );
+  r1.readXml( element, doc );
   QCOMPARE( r1.staticValue(), p1.staticValue() );
   p1.setStaticValue( QVariant( 5LL ) ); //longlong
-  p1.writeXML( element, doc );
-  r1.readXML( element, doc );
+  p1.writeXml( element, doc );
+  r1.readXml( element, doc );
   QCOMPARE( r1.staticValue(), p1.staticValue() );
 
   // test cloning a static property
@@ -333,19 +334,19 @@ void TestQgsProperty::fieldBasedProperty()
   QDomElement element = doc.createElement( "prop" );
   QgsFieldBasedProperty r1;
   //try reading from an empty element
-  r1.readXML( element, doc );
+  r1.readXml( element, doc );
   QVERIFY( !r1.isActive() );
   QVERIFY( r1.field().isEmpty() );
 
   // now populate element and re-read
-  p1.writeXML( element, doc );
-  r1.readXML( element, doc );
+  p1.writeXml( element, doc );
+  r1.readXml( element, doc );
   QVERIFY( r1.isActive() );
   QCOMPARE( r1.field(), QString( "test_field" ) );
 
   p1.setActive( false );
-  p1.writeXML( element, doc );
-  r1.readXML( element, doc );
+  p1.writeXml( element, doc );
+  r1.readXml( element, doc );
   QVERIFY( !r1.isActive() );
 
   // test cloning a field based property
@@ -426,21 +427,21 @@ void TestQgsProperty::expressionBasedProperty()
   QDomElement element = doc.createElement( "prop" );
   QgsExpressionBasedProperty r1;
   //try reading from an empty element
-  r1.readXML( element, doc );
+  r1.readXml( element, doc );
   QVERIFY( !r1.isActive() );
   QVERIFY( r1.expressionString().isEmpty() );
   QCOMPARE( r1.value( context, -1 ).toInt(), -1 );
 
   // now populate element and re-read
-  p1.writeXML( element, doc );
-  r1.readXML( element, doc );
+  p1.writeXml( element, doc );
+  r1.readXml( element, doc );
   QVERIFY( r1.isActive() );
   QCOMPARE( r1.expressionString(), QString( "4+5" ) );
   QCOMPARE( r1.value( context, -1 ).toInt(), 9 );
 
   p1.setActive( false );
-  p1.writeXML( element, doc );
-  r1.readXML( element, doc );
+  p1.writeXml( element, doc );
+  r1.readXml( element, doc );
   QVERIFY( !r1.isActive() );
   QCOMPARE( r1.value( context, -1 ).toInt(), -1 );
 
@@ -485,8 +486,8 @@ void TestQgsProperty::propertyTransformer()
   TestTransformer t1( -5, 6 );
   QDomElement element = doc.createElement( "transform" );
   TestTransformer r1( -99, -98 );
-  QVERIFY( t1.writeXML( element, doc ) );
-  QVERIFY( r1.readXML( element, doc ) );
+  QVERIFY( t1.writeXml( element, doc ) );
+  QVERIFY( r1.readXml( element, doc ) );
   QCOMPARE( r1.minValue(), -5.0 );
   QCOMPARE( r1.maxValue(), 6.0 );
 
@@ -504,8 +505,8 @@ void TestQgsProperty::propertyTransformer()
   QDomElement propElement = doc.createElement( "property" );
   QgsStaticProperty p2;
   QVERIFY( !p2.transformer() );
-  QVERIFY( p1.writeXML( propElement, doc ) );
-  QVERIFY( p2.readXML( propElement, doc ) );
+  QVERIFY( p1.writeXml( propElement, doc ) );
+  QVERIFY( p2.readXml( propElement, doc ) );
   QVERIFY( p2.transformer() );
   QCOMPARE( p2.transformer()->minValue(), 10.0 );
   QCOMPARE( p2.transformer()->maxValue(), 20.0 );
@@ -575,9 +576,9 @@ void TestQgsProperty::sizeScaleTransformer()
                               99 );
 
   QDomElement element = doc.createElement( "xform" );
-  QVERIFY( t1.writeXML( element, doc ) );
+  QVERIFY( t1.writeXml( element, doc ) );
   QgsSizeScaleTransformer r1;
-  QVERIFY( r1.readXML( element, doc ) );
+  QVERIFY( r1.readXml( element, doc ) );
   QCOMPARE( r1.minValue(), 15.0 );
   QCOMPARE( r1.maxValue(), 25.0 );
   QCOMPARE( r1.minSize(), 150.0 );
@@ -682,9 +683,9 @@ void TestQgsProperty::colorRampTransformer()
                               QColor( 100, 150, 200 ) );
 
   QDomElement element = doc.createElement( "xform" );
-  QVERIFY( t1.writeXML( element, doc ) );
+  QVERIFY( t1.writeXml( element, doc ) );
   QgsColorRampTransformer r1;
-  QVERIFY( r1.readXML( element, doc ) );
+  QVERIFY( r1.readXml( element, doc ) );
   QCOMPARE( r1.minValue(), 15.0 );
   QCOMPARE( r1.maxValue(), 25.0 );
   QCOMPARE( r1.nullColor(), QColor( 100, 150, 200 ) );
@@ -760,7 +761,7 @@ void TestQgsProperty::propertyCollection()
   QVERIFY( !collection.hasProperty( Property1 ) );
   QVERIFY( collection.referencedFields( context ).isEmpty() );
   QCOMPARE( collection.count(), 0 );
-  QCOMPARE( collection.propertyKeys(), QList< int >() );
+  QCOMPARE( collection.propertyKeys(), QSet< int >() );
   QVERIFY( !collection.hasActiveDynamicProperties() );
   QVERIFY( !collection.hasActiveProperties() );
 
@@ -768,7 +769,7 @@ void TestQgsProperty::propertyCollection()
   collection.setProperty( Property1, property );
   QVERIFY( collection.hasProperty( Property1 ) );
   QCOMPARE( collection.count(), 1 );
-  QCOMPARE( collection.propertyKeys(), QList< int >() << Property1 );
+  QCOMPARE( collection.propertyKeys(), QSet< int >() << Property1 );
   QCOMPARE( collection.property( Property1 )->value( context ), property->value( context ) );
   QCOMPARE( collection.value( Property1, context ), property->value( context ) );
   QVERIFY( collection.isActive( Property1 ) );
@@ -785,7 +786,7 @@ void TestQgsProperty::propertyCollection()
   QgsStaticProperty* property2 = new QgsStaticProperty( "value2", true );
   collection.setProperty( Property1, property2 );
   QCOMPARE( collection.count(), 1 );
-  QCOMPARE( collection.propertyKeys(), QList< int >() << Property1 );
+  QCOMPARE( collection.propertyKeys(), QSet< int >() << Property1 );
   QCOMPARE( collection.property( Property1 )->value( context ), property2->value( context ) );
   QVERIFY( collection.hasActiveProperties() );
   QVERIFY( !collection.hasActiveDynamicProperties() );
@@ -795,18 +796,18 @@ void TestQgsProperty::propertyCollection()
   QCOMPARE( collection.property( Property3 )->value( context ).toInt(), 5 );
   QVERIFY( collection.property( Property3 )->isActive() );
   QCOMPARE( collection.count(), 2 );
-  QCOMPARE( collection.propertyKeys().toSet(), QSet<int>() << Property1 << Property3 );
+  QCOMPARE( collection.propertyKeys(), QSet<int>() << Property1 << Property3 );
 
   //test removing a property
   collection.setProperty( Property1, nullptr );
   QVERIFY( !collection.property( Property1 ) );
   QVERIFY( !collection.hasProperty( Property1 ) );
-  QCOMPARE( collection.propertyKeys(), QList<int>() << Property3 );
+  QCOMPARE( collection.propertyKeys(), QSet<int>() << Property3 );
 
   //clear
   collection.clear();
   QCOMPARE( collection.count(), 0 );
-  QCOMPARE( collection.propertyKeys(), QList<int>() );
+  QCOMPARE( collection.propertyKeys(), QSet<int>() );
   QVERIFY( !collection.hasActiveProperties() );
   QVERIFY( !collection.hasActiveDynamicProperties() );
 
@@ -828,10 +829,10 @@ void TestQgsProperty::propertyCollection()
       "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
   QDomDocument doc( documentType );
   QDomElement element = doc.createElement( "collection" );
-  collection.writeXML( element, doc, mPropertyNameMap );
+  collection.writeXml( element, doc, mPropertyNameMap );
 
   QgsPropertyCollection restoredCollection;
-  restoredCollection.readXML( element, doc, mPropertyNameMap );
+  restoredCollection.readXml( element, doc, mPropertyNameMap );
   QCOMPARE( restoredCollection.name(), QString( "collection" ) );
   QCOMPARE( restoredCollection.count(), 4 );
   QCOMPARE( restoredCollection.property( Property1 )->propertyType(), QgsAbstractProperty::StaticProperty );
@@ -941,7 +942,7 @@ void TestQgsProperty::collectionStack()
   QVERIFY( !stack.collection( "nothing" ) );
   QVERIFY( !stack.value( Property1, context ).isValid() );
   QCOMPARE( stack.value( Property1, context, "default" ).toString(), QString( "default" ) );
-  QVERIFY( !stack.hasActiveProperty( Property1 ) );
+  QVERIFY( !stack.isActive( Property1 ) );
   QVERIFY( stack.referencedFields( context ).isEmpty() );
   QCOMPARE( stack.count(), 0 );
   QVERIFY( !stack.hasActiveDynamicProperties() );
@@ -958,7 +959,7 @@ void TestQgsProperty::collectionStack()
   QVERIFY( !stack.property( Property1 ) );
   QVERIFY( !stack.value( Property1, context ).isValid() );
   QCOMPARE( stack.value( Property1, context, "default" ).toString(), QString( "default" ) );
-  QVERIFY( !stack.hasActiveProperty( Property1 ) );
+  QVERIFY( !stack.isActive( Property1 ) );
   QVERIFY( !stack.hasActiveDynamicProperties() );
   QVERIFY( !stack.hasActiveProperties() );
   QVERIFY( stack.referencedFields( context ).isEmpty() );
@@ -966,14 +967,14 @@ void TestQgsProperty::collectionStack()
   //now add a property to the collection
   QgsStaticProperty* property = new QgsStaticProperty( "value", true );
   collection->setProperty( Property1, property );
-  QVERIFY( stack.hasActiveProperty( Property1 ) );
+  QVERIFY( stack.isActive( Property1 ) );
   QCOMPARE( stack.property( Property1 )->value( context ), property->value( context ) );
   QCOMPARE( stack.value( Property1, context ), property->value( context ) );
   QVERIFY( !stack.hasActiveDynamicProperties() );
   QVERIFY( stack.hasActiveProperties() );
-  QVERIFY( !stack.hasActiveProperty( Property2 ) );
+  QVERIFY( !stack.isActive( Property2 ) );
   collection->setProperty( Property2, new QgsStaticProperty( "value1", true ) );
-  QVERIFY( stack.hasActiveProperty( Property2 ) );
+  QVERIFY( stack.isActive( Property2 ) );
   QVERIFY( !stack.hasActiveDynamicProperties() );
   QVERIFY( stack.hasActiveProperties() );
 
@@ -988,7 +989,7 @@ void TestQgsProperty::collectionStack()
   QVERIFY( stack.hasActiveProperties() );
   QgsStaticProperty* property2 = new QgsStaticProperty( "value2", true );
   collection2->setProperty( Property2, property2 );
-  QVERIFY( stack.hasActiveProperty( Property2 ) );
+  QVERIFY( stack.isActive( Property2 ) );
   QCOMPARE( stack.property( Property2 )->value( context ), property2->value( context ) );
   QCOMPARE( stack.value( Property2, context ), property2->value( context ) );
   QVERIFY( !stack.hasActiveDynamicProperties() );
@@ -997,7 +998,7 @@ void TestQgsProperty::collectionStack()
   //test adding active property later in the stack
   QgsStaticProperty* property3 = new QgsStaticProperty( "value3", true );
   collection2->setProperty( Property1, property3 );
-  QVERIFY( stack.hasActiveProperty( Property1 ) );
+  QVERIFY( stack.isActive( Property1 ) );
   QCOMPARE( stack.property( Property1 )->value( context, "default" ), property3->value( context ) );
   QCOMPARE( stack.value( Property1, context ), property3->value( context ) );
   property3->setActive( false );
@@ -1006,7 +1007,7 @@ void TestQgsProperty::collectionStack()
   //test overriding a property
   QgsStaticProperty* property4 = new QgsStaticProperty( "value4", true );
   collection2->setProperty( Property2, property4 );
-  QVERIFY( stack.hasActiveProperty( Property2 ) );
+  QVERIFY( stack.isActive( Property2 ) );
   QCOMPARE( stack.property( Property2 )->value( context ), property4->value( context ) );
   QCOMPARE( stack.value( Property2, context ), property4->value( context ) );
   property4->setActive( false );

@@ -88,7 +88,7 @@ void QgsDiagramLayerSettings::readXml( const QDomElement& elem, const QgsVectorL
   QDomNodeList propertyElems = elem.elementsByTagName( "properties" );
   if ( !propertyElems.isEmpty() )
   {
-    ( void )mProperties.readXML( propertyElems.at( 0 ).toElement(), elem.ownerDocument(), sPropertyNameMap );
+    ( void )mProperties.readXml( propertyElems.at( 0 ).toElement(), elem.ownerDocument(), sPropertyNameMap );
   }
   else
   {
@@ -131,7 +131,7 @@ void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& do
 
   QDomElement diagramLayerElem = doc.createElement( QStringLiteral( "DiagramLayerSettings" ) );
   QDomElement propertiesElem = doc.createElement( "properties" );
-  ( void )mProperties.writeXML( propertiesElem, doc, sPropertyNameMap );
+  ( void )mProperties.writeXml( propertiesElem, doc, sPropertyNameMap );
   diagramLayerElem.appendChild( propertiesElem );
   diagramLayerElem.setAttribute( QStringLiteral( "placement" ), mPlacement );
   diagramLayerElem.setAttribute( QStringLiteral( "linePlacementFlags" ), mPlacementFlags );
@@ -162,7 +162,7 @@ void QgsDiagramLayerSettings::init()
   }
 }
 
-QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionContext &context, const QgsFields& fieldsParameter ) const
+QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionContext &context ) const
 {
   QSet< QString > referenced;
   if ( mRenderer )

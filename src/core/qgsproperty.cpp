@@ -140,7 +140,7 @@ int QgsAbstractProperty::valueAsInt( const QgsExpressionContext &context, int de
     return integer;
 }
 
-bool QgsAbstractProperty::writeXML( QDomElement &propertyElem, QDomDocument &doc ) const
+bool QgsAbstractProperty::writeXml( QDomElement &propertyElem, QDomDocument &doc ) const
 {
   Q_UNUSED( doc );
   propertyElem.setAttribute( "active", mActive ? "1" : "0" );
@@ -149,14 +149,14 @@ bool QgsAbstractProperty::writeXML( QDomElement &propertyElem, QDomDocument &doc
   {
     QDomElement transformerElem = doc.createElement( "transformer" );
     transformerElem.setAttribute( "t", static_cast< int >( mTransformer->transformerType() ) );
-    if ( mTransformer->writeXML( transformerElem, doc ) )
+    if ( mTransformer->writeXml( transformerElem, doc ) )
       propertyElem.appendChild( transformerElem );
   }
 
   return true;
 }
 
-bool QgsAbstractProperty::readXML( const QDomElement &propertyElem, const QDomDocument &doc )
+bool QgsAbstractProperty::readXml( const QDomElement &propertyElem, const QDomDocument &doc )
 {
   mActive = static_cast< bool >( propertyElem.attribute( "active", "1" ).toInt() );
 
@@ -170,7 +170,7 @@ bool QgsAbstractProperty::readXML( const QDomElement &propertyElem, const QDomDo
     QScopedPointer< QgsPropertyTransformer > transformer( QgsPropertyTransformer::create( type ) );
     if ( transformer )
     {
-      if ( transformer->readXML( transformerElem, doc ) )
+      if ( transformer->readXml( transformerElem, doc ) )
         mTransformer.reset( transformer.take() );
     }
   }
@@ -206,9 +206,9 @@ QVariant QgsStaticProperty::propertyValue( const QgsExpressionContext& context, 
   return mActive ? mValue : defaultValue;
 }
 
-bool QgsStaticProperty::writeXML( QDomElement &propertyElem, QDomDocument &doc ) const
+bool QgsStaticProperty::writeXml( QDomElement &propertyElem, QDomDocument &doc ) const
 {
-  if ( !QgsAbstractProperty::writeXML( propertyElem, doc ) )
+  if ( !QgsAbstractProperty::writeXml( propertyElem, doc ) )
     return false;
 
   propertyElem.setAttribute( "type", mValue.typeName() );
@@ -216,9 +216,9 @@ bool QgsStaticProperty::writeXML( QDomElement &propertyElem, QDomDocument &doc )
   return true;
 }
 
-bool QgsStaticProperty::readXML( const QDomElement &propertyElem, const QDomDocument &doc )
+bool QgsStaticProperty::readXml( const QDomElement &propertyElem, const QDomDocument &doc )
 {
-  if ( !QgsAbstractProperty::readXML( propertyElem, doc ) )
+  if ( !QgsAbstractProperty::readXml( propertyElem, doc ) )
     return false;
 
   mValue =  QVariant( propertyElem.attribute( "val", "1" ) );
@@ -267,18 +267,18 @@ QSet< QString > QgsFieldBasedProperty::referencedFields( const QgsExpressionCont
   return fields;
 }
 
-bool QgsFieldBasedProperty::writeXML( QDomElement& propertyElem, QDomDocument& doc ) const
+bool QgsFieldBasedProperty::writeXml( QDomElement& propertyElem, QDomDocument& doc ) const
 {
-  if ( !QgsAbstractProperty::writeXML( propertyElem, doc ) )
+  if ( !QgsAbstractProperty::writeXml( propertyElem, doc ) )
     return false;
 
   propertyElem.setAttribute( "field", mField );
   return true;
 }
 
-bool QgsFieldBasedProperty::readXML( const QDomElement& propertyElem, const QDomDocument& doc )
+bool QgsFieldBasedProperty::readXml( const QDomElement& propertyElem, const QDomDocument& doc )
 {
-  if ( !QgsAbstractProperty::readXML( propertyElem, doc ) )
+  if ( !QgsAbstractProperty::readXml( propertyElem, doc ) )
     return false;
 
   mField = propertyElem.attribute( "field" );
@@ -345,18 +345,18 @@ QSet< QString > QgsExpressionBasedProperty::referencedFields( const QgsExpressio
   return mReferencedCols;
 }
 
-bool QgsExpressionBasedProperty::writeXML( QDomElement& propertyElem, QDomDocument& doc ) const
+bool QgsExpressionBasedProperty::writeXml( QDomElement& propertyElem, QDomDocument& doc ) const
 {
-  if ( !QgsAbstractProperty::writeXML( propertyElem, doc ) )
+  if ( !QgsAbstractProperty::writeXml( propertyElem, doc ) )
     return false;
 
   propertyElem.setAttribute( "expression", mExpressionString );
   return true;
 }
 
-bool QgsExpressionBasedProperty::readXML( const QDomElement& propertyElem, const QDomDocument& doc )
+bool QgsExpressionBasedProperty::readXml( const QDomElement& propertyElem, const QDomDocument& doc )
 {
-  if ( !QgsAbstractProperty::readXML( propertyElem, doc ) )
+  if ( !QgsAbstractProperty::readXml( propertyElem, doc ) )
     return false;
 
   mExpressionString = propertyElem.attribute( "expression" );
@@ -407,7 +407,7 @@ QgsPropertyTransformer::QgsPropertyTransformer( double minValue, double maxValue
     , mMaxValue( maxValue )
 {}
 
-bool QgsPropertyTransformer::writeXML( QDomElement& transformerElem, QDomDocument& doc ) const
+bool QgsPropertyTransformer::writeXml( QDomElement& transformerElem, QDomDocument& doc ) const
 {
   Q_UNUSED( doc );
   transformerElem.setAttribute( "minValue", QString::number( mMinValue ) );
@@ -415,7 +415,7 @@ bool QgsPropertyTransformer::writeXML( QDomElement& transformerElem, QDomDocumen
   return true;
 }
 
-bool QgsPropertyTransformer::readXML( const QDomElement &transformerElem, const QDomDocument &doc )
+bool QgsPropertyTransformer::readXml( const QDomElement &transformerElem, const QDomDocument &doc )
 {
   Q_UNUSED( doc );
   mMinValue = transformerElem.attribute( "minValue", "0.0" ).toDouble();
@@ -448,9 +448,9 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::clone()
                                       mExponent );
 }
 
-bool QgsSizeScaleTransformer::writeXML( QDomElement &transformerElem, QDomDocument &doc ) const
+bool QgsSizeScaleTransformer::writeXml( QDomElement &transformerElem, QDomDocument &doc ) const
 {
-  if ( !QgsPropertyTransformer::writeXML( transformerElem, doc ) )
+  if ( !QgsPropertyTransformer::writeXml( transformerElem, doc ) )
     return false;
 
   transformerElem.setAttribute( "scaleType", QString::number( static_cast< int >( mType ) ) );
@@ -462,9 +462,9 @@ bool QgsSizeScaleTransformer::writeXML( QDomElement &transformerElem, QDomDocume
   return true;
 }
 
-bool QgsSizeScaleTransformer::readXML( const QDomElement &transformerElem, const QDomDocument &doc )
+bool QgsSizeScaleTransformer::readXml( const QDomElement &transformerElem, const QDomDocument &doc )
 {
-  if ( !QgsPropertyTransformer::readXML( transformerElem, doc ) )
+  if ( !QgsPropertyTransformer::readXml( transformerElem, doc ) )
     return false;
 
   mType = static_cast< ScaleType >( transformerElem.attribute( "scaleType", "0" ).toInt() );
@@ -571,9 +571,9 @@ QgsColorRampTransformer* QgsColorRampTransformer::clone()
                                       mNullColor );
 }
 
-bool QgsColorRampTransformer::writeXML( QDomElement &transformerElem, QDomDocument &doc ) const
+bool QgsColorRampTransformer::writeXml( QDomElement &transformerElem, QDomDocument &doc ) const
 {
-  if ( !QgsPropertyTransformer::writeXML( transformerElem, doc ) )
+  if ( !QgsPropertyTransformer::writeXml( transformerElem, doc ) )
     return false;
 
   if ( mGradientRamp )
@@ -586,9 +586,9 @@ bool QgsColorRampTransformer::writeXML( QDomElement &transformerElem, QDomDocume
   return true;
 }
 
-bool QgsColorRampTransformer::readXML( const QDomElement &transformerElem, const QDomDocument &doc )
+bool QgsColorRampTransformer::readXml( const QDomElement &transformerElem, const QDomDocument &doc )
 {
-  if ( !QgsPropertyTransformer::readXML( transformerElem, doc ) )
+  if ( !QgsPropertyTransformer::readXml( transformerElem, doc ) )
     return false;
 
   mGradientRamp.reset( nullptr );
@@ -641,429 +641,5 @@ QgsColorRamp *QgsColorRampTransformer::colorRamp() const
 void QgsColorRampTransformer::setColorRamp( QgsColorRamp* ramp )
 {
   mGradientRamp.reset( ramp );
-}
-
-
-
-//
-// QgsPropertyCollection
-//
-
-QgsPropertyCollection::QgsPropertyCollection( const QString& name )
-    : mName( name )
-    , mDirty( false )
-    , mHasActiveProperties( false )
-    , mHasActiveDynamicProperties( false )
-{
-
-}
-
-QgsPropertyCollection::~QgsPropertyCollection()
-{
-  clear();
-}
-
-QgsPropertyCollection::QgsPropertyCollection( const QgsPropertyCollection &other )
-    : mName( other.mName )
-    , mDirty( false )
-    , mHasActiveProperties( false )
-    , mHasActiveDynamicProperties( false )
-{
-  QHash< int, QgsAbstractProperty* >::const_iterator it = other.mProperties.constBegin();
-  for ( ; it != other.mProperties.constEnd(); ++it )
-  {
-    mProperties.insert( it.key(), it.value()->clone() );
-    if ( it.value()->isActive() )
-    {
-      mHasActiveProperties = true;
-      if ( it.value()->propertyType() != QgsAbstractProperty::StaticProperty )
-        mHasActiveDynamicProperties = true;
-    }
-  }
-}
-
-QgsPropertyCollection &QgsPropertyCollection::operator=( const QgsPropertyCollection & other )
-{
-  mName = other.mName;
-  clear();
-  QHash< int, QgsAbstractProperty* >::const_iterator it = other.mProperties.constBegin();
-  for ( ; it != other.mProperties.constEnd(); ++it )
-  {
-    mProperties.insert( it.key(), it.value()->clone() );
-    if ( it.value()->isActive() )
-    {
-      mHasActiveProperties = true;
-      if ( it.value()->propertyType() != QgsAbstractProperty::StaticProperty )
-        mHasActiveDynamicProperties = true;
-    }
-  }
-  return *this;
-}
-
-int QgsPropertyCollection::count() const
-{
-  return mProperties.size();
-}
-
-QList<int> QgsPropertyCollection::propertyKeys() const
-{
-  return mProperties.keys();
-}
-
-void QgsPropertyCollection::clear()
-{
-  qDeleteAll( mProperties );
-  mProperties.clear();
-  mDirty = false;
-  mHasActiveProperties = false;
-  mHasActiveDynamicProperties = false;
-}
-
-void QgsPropertyCollection::setProperty( int key, QgsAbstractProperty* property )
-{
-  if ( hasProperty( key ) )
-    delete mProperties.take( key );
-
-  if ( property )
-    mProperties.insert( key, property );
-
-  mDirty = true;
-}
-
-void QgsPropertyCollection::setProperty( int key, const QVariant& value )
-{
-  QgsStaticProperty* property = new QgsStaticProperty( value );
-  setProperty( key, property );
-}
-
-bool QgsPropertyCollection::hasProperty( int key ) const
-{
-  return mProperties.contains( key );
-}
-
-QgsAbstractProperty* QgsPropertyCollection::property( int key )
-{
-  mDirty = true;
-  return mProperties.value( key, nullptr );
-}
-
-const QgsAbstractProperty *QgsPropertyCollection::property( int key ) const
-{
-  return mProperties.value( key, nullptr );
-}
-
-QVariant QgsPropertyCollection::value( int key, const QgsExpressionContext& context, const QVariant& defaultValue ) const
-{
-  QgsAbstractProperty* prop = mProperties.value( key, nullptr );
-  if ( !prop || !prop->isActive() )
-    return defaultValue;
-
-  return prop->value( context, defaultValue );
-}
-
-QColor QgsPropertyCollection::valueAsColor( int key, const QgsExpressionContext &context, const QColor &defaultColor ) const
-{
-  QgsAbstractProperty* prop = mProperties.value( key, nullptr );
-  if ( !prop || !prop->isActive() )
-    return defaultColor;
-
-  return prop->valueAsColor( context, defaultColor );
-}
-
-double QgsPropertyCollection::valueAsDouble( int key, const QgsExpressionContext &context, double defaultValue ) const
-{
-  QgsAbstractProperty* prop = mProperties.value( key, nullptr );
-  if ( !prop || !prop->isActive() )
-    return defaultValue;
-
-  return prop->valueAsDouble( context, defaultValue );
-}
-
-int QgsPropertyCollection::valueAsInt( int key, const QgsExpressionContext &context, int defaultValue ) const
-{
-  QgsAbstractProperty* prop = mProperties.value( key, nullptr );
-  if ( !prop || !prop->isActive() )
-    return defaultValue;
-
-  return prop->valueAsInt( context, defaultValue );
-}
-
-QSet< QString > QgsPropertyCollection::referencedFields( const QgsExpressionContext &context ) const
-{
-  QSet< QString > cols;
-  QHash<int, QgsAbstractProperty*>::const_iterator it = mProperties.constBegin();
-  for ( ; it != mProperties.constEnd(); ++it )
-  {
-    if ( !it.value()->isActive() )
-      continue;
-
-    cols.unite( it.value()->referencedFields( context ) );
-  }
-  return cols;
-}
-
-bool QgsPropertyCollection::isActive( int key ) const
-{
-  QgsAbstractProperty* prop = mProperties.value( key, nullptr );
-  return prop && prop->isActive();
-}
-
-void QgsPropertyCollection::rescan() const
-{
-  mHasActiveProperties = false;
-  mHasActiveDynamicProperties = false;
-  QHash<int, QgsAbstractProperty*>::const_iterator it = mProperties.constBegin();
-  for ( ; it != mProperties.constEnd(); ++it )
-  {
-    if ( it.value()->isActive() )
-    {
-      mHasActiveProperties = true;
-      if ( it.value()->propertyType() != QgsAbstractProperty::StaticProperty )
-      {
-        mHasActiveDynamicProperties = true;
-        break;
-      }
-    }
-  }
-  mDirty = false;
-}
-
-bool QgsPropertyCollection::hasActiveProperties() const
-{
-  if ( mDirty )
-    rescan();
-
-  return mHasActiveProperties;
-}
-
-bool QgsPropertyCollection::hasActiveDynamicProperties() const
-{
-  if ( mDirty )
-    rescan();
-
-  return mHasActiveDynamicProperties;
-}
-
-bool QgsPropertyCollection::writeXML( QDomElement &collectionElem, QDomDocument &doc, const QMap<int, QString> &propertyNameMap ) const
-{
-  collectionElem.setAttribute( "name", mName );
-  QHash<int, QgsAbstractProperty*>::const_iterator it = mProperties.constBegin();
-  for ( ; it != mProperties.constEnd(); ++it )
-  {
-    QDomElement propertyElement = doc.createElement( "p" );
-    int key = it.key();
-    QString propName = propertyNameMap.value( key );
-    propertyElement.setAttribute( "n", propName );
-    propertyElement.setAttribute( "t", static_cast< int >( it.value()->propertyType() ) );
-    it.value()->writeXML( propertyElement, doc );
-    collectionElem.appendChild( propertyElement );
-  }
-  return true;
-}
-
-bool QgsPropertyCollection::readXML( const QDomElement &collectionElem, const QDomDocument &doc, const QMap<int, QString> &propertyNameMap )
-{
-  clear();
-
-  mName = collectionElem.attribute( "name" );
-
-  QDomNodeList propertyNodeList = collectionElem.elementsByTagName( "p" );
-  for ( int i = 0; i < propertyNodeList.size(); ++i )
-  {
-    QDomElement propertyElem = propertyNodeList.at( i ).toElement();
-    QString propName = propertyElem.attribute( "n" );
-    if ( propName.isEmpty() )
-      continue;
-
-    // match name to int key
-    int key = propertyNameMap.key( propName, -1 );
-    if ( key < 0 )
-      continue;
-
-    QgsAbstractProperty::Type type = static_cast< QgsAbstractProperty::Type >( propertyElem.attribute( "t", "0" ).toInt() );
-    QgsAbstractProperty* prop = QgsAbstractProperty::create( type );
-    if ( !prop )
-      continue;
-    prop->readXML( propertyElem, doc );
-    mProperties.insert( key, prop );
-  }
-  return true;
-}
-
-//
-// QgsPropertyCollectionStack
-//
-
-QgsPropertyCollectionStack::QgsPropertyCollectionStack()
-    : mDirty( false )
-    , mHasActiveProperties( false )
-    , mHasActiveDynamicProperties( false )
-{
-
-}
-
-QgsPropertyCollectionStack::~QgsPropertyCollectionStack()
-{
-  clear();
-}
-
-QgsPropertyCollectionStack::QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other )
-    : mDirty( false )
-    , mHasActiveProperties( false )
-    , mHasActiveDynamicProperties( false )
-{
-  clear();
-
-  Q_FOREACH ( QgsPropertyCollection* collection, other.mStack )
-  {
-    mStack << new QgsPropertyCollection( *collection );
-    mHasActiveProperties |= collection->hasActiveProperties();
-    mHasActiveDynamicProperties |= collection->hasActiveDynamicProperties();
-  }
-}
-
-QgsPropertyCollectionStack &QgsPropertyCollectionStack::operator=( const QgsPropertyCollectionStack & other )
-{
-  clear();
-
-  Q_FOREACH ( QgsPropertyCollection* collection, other.mStack )
-  {
-    mStack << new QgsPropertyCollection( *collection );
-    mHasActiveProperties |= collection->hasActiveProperties();
-    mHasActiveDynamicProperties |= collection->hasActiveDynamicProperties();
-  }
-
-  return *this;
-}
-
-int QgsPropertyCollectionStack::count() const
-{
-  return mStack.size();
-}
-
-void QgsPropertyCollectionStack::clear()
-{
-  qDeleteAll( mStack );
-  mStack.clear();
-  mHasActiveProperties = false;
-  mHasActiveDynamicProperties = false;
-  mDirty = false;
-}
-
-void QgsPropertyCollectionStack::appendCollection( QgsPropertyCollection *collection )
-{
-  mStack.append( collection );
-  mDirty = true;
-}
-
-QgsPropertyCollection* QgsPropertyCollectionStack::at( int index )
-{
-  mDirty = true;
-  return mStack.value( index );
-}
-
-const QgsPropertyCollection* QgsPropertyCollectionStack::at( int index ) const
-{
-  return mStack.value( index );
-}
-
-QgsPropertyCollection* QgsPropertyCollectionStack::collection( const QString &name )
-{
-  mDirty = true;
-  Q_FOREACH ( QgsPropertyCollection* collection, mStack )
-  {
-    if ( collection->name() == name )
-      return collection;
-  }
-  return nullptr;
-}
-
-bool QgsPropertyCollectionStack::hasActiveProperties() const
-{
-  if ( mDirty )
-    rescan();
-
-  return mHasActiveProperties;
-}
-
-bool QgsPropertyCollectionStack::hasActiveDynamicProperties() const
-{
-  if ( mDirty )
-    rescan();
-
-  return mHasActiveDynamicProperties;
-}
-
-bool QgsPropertyCollectionStack::hasActiveProperty( int key ) const
-{
-  const QgsAbstractProperty* p = property( key );
-  return static_cast< bool >( p );
-}
-
-const QgsAbstractProperty* QgsPropertyCollectionStack::property( int key ) const
-{
-  //loop through stack looking for last active matching property
-  for ( int i = mStack.size() - 1; i >= 0; --i )
-  {
-    const QgsPropertyCollection* collection = mStack.at( i );
-    const QgsAbstractProperty* property = collection->property( key );
-    if ( property && property->isActive() )
-    {
-      return property;
-    }
-  }
-  //not found
-  return nullptr;
-}
-
-QgsAbstractProperty*QgsPropertyCollectionStack::property( int key )
-{
-  //loop through stack looking for last active matching property
-  for ( int i = mStack.size() - 1; i >= 0; --i )
-  {
-    QgsPropertyCollection* collection = mStack.at( i );
-    QgsAbstractProperty* property = collection->property( key );
-    if ( property && property->isActive() )
-    {
-      mDirty = true;
-      return property;
-    }
-  }
-  //not found
-  return nullptr;
-}
-
-QVariant QgsPropertyCollectionStack::value( int key, const QgsExpressionContext& context, const QVariant& defaultValue ) const
-{
-  const QgsAbstractProperty* p = property( key );
-  if ( !p )
-  {
-    return defaultValue;
-  }
-  return p->value( context, defaultValue );
-}
-
-QSet< QString > QgsPropertyCollectionStack::referencedFields( const QgsExpressionContext &context ) const
-{
-  QSet< QString > cols;
-  Q_FOREACH ( QgsPropertyCollection* collection, mStack )
-  {
-    cols.unite( collection->referencedFields( context ) );
-  }
-  return cols;
-}
-
-void QgsPropertyCollectionStack::rescan() const
-{
-  mHasActiveProperties = false;
-  mHasActiveDynamicProperties = false;
-  Q_FOREACH ( const QgsPropertyCollection* collection, mStack )
-  {
-    mHasActiveProperties |= collection->hasActiveProperties();
-    mHasActiveDynamicProperties |= collection->hasActiveDynamicProperties();
-    if ( mHasActiveProperties && mHasActiveDynamicProperties )
-      break;
-  }
-  mDirty = false;
 }
 
