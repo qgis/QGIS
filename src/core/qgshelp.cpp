@@ -73,7 +73,7 @@ QUrl QgsHelp::helpUrl( const QString& key )
   {
     helpPath = QStringLiteral( "%1/%2" ).arg( path ).arg( suffix );
 
-    if ( path.startsWith( QStringLiteral( "http://" ) ) )
+    if ( path.startsWith( QStringLiteral( "http" ) ) )
     {
       if ( !QgsHelp::urlExists( helpPath ) )
       {
