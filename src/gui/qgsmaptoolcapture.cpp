@@ -611,11 +611,6 @@ void QgsMapToolCapture::deleteTempRubberBand()
   }
 }
 
-double QgsMapToolCapture::defaultZValue()
-{
-  QSettings().value( QStringLiteral( "/qgis/digitizing/default_z_value" ), Qgis::DEFAULT_Z_COORDINATE ).toDouble();
-}
-
 void QgsMapToolCapture::closePolygon()
 {
   mCaptureCurve.close();

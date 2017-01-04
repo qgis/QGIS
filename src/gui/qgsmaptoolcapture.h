@@ -82,12 +82,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     void deleteTempRubberBand();
 
-    /**
-     * Return default Z value
-     * Use for set Z coordinate to new vertex for 2.5d geometries
-     */
-    double defaultZValue();
-
   private slots:
     void validationFinished();
     void currentLayerChanged( QgsMapLayer *layer );

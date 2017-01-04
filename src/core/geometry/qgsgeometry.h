@@ -268,6 +268,19 @@ class CORE_EXPORT QgsGeometry
      */
     bool insertVertex( double x, double y, int beforeVertex );
 
+    /** Insert a new vertex before the given vertex index,
+     *  ring and item (first number is index 0)
+     *  If the requested vertex number (beforeVertex.back()) is greater
+     *  than the last actual vertex on the requested ring and item,
+     *  it is assumed that the vertex is to be appended instead of inserted.
+     *  Returns false if atVertex does not correspond to a valid vertex
+     *  on this geometry (including if this geometry is a Point).
+     *  It is up to the caller to distinguish between
+     *  these error conditions.  (Or maybe we add another method to this
+     *  object to help make the distinction?)
+     */
+    bool insertVertex( QgsPointV2& p, int beforeVertex );
+
     /** Moves the vertex at the given position number
      *  and item (first number is index 0)
      *  to the given coordinates.

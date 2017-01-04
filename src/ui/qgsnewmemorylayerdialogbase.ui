@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>444</width>
-    <height>293</height>
+    <height>304</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -81,7 +81,7 @@
       <item>
        <widget class="QCheckBox" name="mGeometryWithZCheckBox">
         <property name="text">
-         <string>Geometries with Z coordinate</string>
+         <string>Geometries with Z/M coordinate</string>
         </property>
        </widget>
       </item>
