@@ -18,6 +18,7 @@
 #ifndef QGSRASTERINTERFACE_H
 #define QGSRASTERINTERFACE_H
 
+#include "qgis_core.h"
 #include <limits>
 
 #include <QCoreApplication> // for tr()

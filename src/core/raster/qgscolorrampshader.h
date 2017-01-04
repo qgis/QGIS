@@ -21,6 +21,7 @@ originally part of the larger QgsRasterLayer class
 #ifndef QGSCOLORRAMPSHADER_H
 #define QGSCOLORRAMPSHADER_H
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QVector>
 

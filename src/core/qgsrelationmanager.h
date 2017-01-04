@@ -16,6 +16,7 @@
 #ifndef QGSRELATIONMANAGER_H
 #define QGSRELATIONMANAGER_H
 
+#include "qgis_core.h"
 #include <QObject>
 #include <QPair>
 #include <QDomNode>

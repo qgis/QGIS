@@ -17,6 +17,7 @@
 #ifndef QGSNUMERICSCALEBARSTYLE_H
 #define QGSNUMERICSCALEBARSTYLE_H
 
+#include "qgis_core.h"
 #include "qgsscalebarstyle.h"
 
 /** \ingroup core

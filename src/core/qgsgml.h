@@ -15,6 +15,7 @@
 #ifndef QGSGML_H
 #define QGSGML_H
 
+#include "qgis_core.h"
 #include <expat.h>
 #include "qgis.h"
 #include "qgsfields.h"

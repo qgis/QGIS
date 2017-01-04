@@ -18,6 +18,7 @@
 #ifndef QGSMAPUNITSCALE_H
 #define QGSMAPUNITSCALE_H
 
+#include "qgis_core.h"
 #include <QtCore>
 #include "qgsrendercontext.h"
 

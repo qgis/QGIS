@@ -15,6 +15,7 @@
 #ifndef QGSVECTORLAYEREDITBUFFER_H
 #define QGSVECTORLAYEREDITBUFFER_H
 
+#include "qgis_core.h"
 #include <QList>
 #include <QSet>
 

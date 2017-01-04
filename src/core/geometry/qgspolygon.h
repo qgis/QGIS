@@ -18,6 +18,7 @@
 #ifndef QGSPOLYGONV2_H
 #define QGSPOLYGONV2_H
 
+#include "qgis_core.h"
 #include "qgscurvepolygon.h"
 
 /** \ingroup core

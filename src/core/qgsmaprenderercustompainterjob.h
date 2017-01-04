@@ -16,6 +16,7 @@
 #ifndef QGSMAPRENDERERCUSTOMPAINTERJOB_H
 #define QGSMAPRENDERERCUSTOMPAINTERJOB_H
 
+#include "qgis_core.h"
 #include "qgsmaprendererjob.h"
 
 #include <QEventLoop>

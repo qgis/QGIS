@@ -16,6 +16,7 @@
 #ifndef QGSTRANSACTIONGROUP_H
 #define QGSTRANSACTIONGROUP_H
 
+#include "qgis_core.h"
 #include <QObject>
 #include <QSet>
 #include "qgstransaction.h"

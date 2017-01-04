@@ -15,6 +15,7 @@
 #ifndef QGSFEATUREITERATOR_H
 #define QGSFEATUREITERATOR_H
 
+#include "qgis_core.h"
 #include "qgsfeaturerequest.h"
 #include "qgsindexedfeature.h"
 

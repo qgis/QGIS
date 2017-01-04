@@ -30,6 +30,7 @@
 #ifndef LABELPOSITION_H
 #define LABELPOSITION_H
 
+#include "qgis_core.h"
 #include "pointset.h"
 #include "rtree.hpp"
 #include <fstream>

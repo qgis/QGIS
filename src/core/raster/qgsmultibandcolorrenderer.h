@@ -18,6 +18,7 @@
 #ifndef QGSMULTIBANDCOLORRENDERER_H
 #define QGSMULTIBANDCOLORRENDERER_H
 
+#include "qgis_core.h"
 #include "qgsrasterrenderer.h"
 
 class QgsContrastEnhancement;

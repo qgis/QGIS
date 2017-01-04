@@ -23,6 +23,7 @@
 #define DEG2RAD(x)    ((x)*M_PI/180)
 #define DEFAULT_SCALE_METHOD              QgsSymbol::ScaleDiameter
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QMap>
 #include <QPointF>

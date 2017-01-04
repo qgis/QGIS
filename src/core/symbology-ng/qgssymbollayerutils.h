@@ -17,6 +17,7 @@
 #ifndef QGSSYMBOLLAYERUTILS_H
 #define QGSSYMBOLLAYERUTILS_H
 
+#include "qgis_core.h"
 #include <QMap>
 #include <Qt>
 #include <QtCore>

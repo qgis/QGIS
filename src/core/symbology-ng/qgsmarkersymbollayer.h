@@ -16,6 +16,7 @@
 #ifndef QGSMARKERSYMBOLLAYERV2_H
 #define QGSMARKERSYMBOLLAYERV2_H
 
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 
 #define DEFAULT_SIMPLEMARKER_NAME         "circle"

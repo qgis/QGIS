@@ -17,6 +17,7 @@
 #ifndef QGSCOMPOSERNODESITEM_H
 #define QGSCOMPOSERNODESITEM_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include <QBrush>
 #include <QPen>

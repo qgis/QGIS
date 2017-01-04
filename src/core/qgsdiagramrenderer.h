@@ -15,6 +15,7 @@
 #ifndef QGSDIAGRAMRENDERERV2_H
 #define QGSDIAGRAMRENDERERV2_H
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QFont>
 #include <QList>

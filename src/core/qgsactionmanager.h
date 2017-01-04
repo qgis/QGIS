@@ -24,6 +24,7 @@
 #ifndef QGSACTIONMANAGER_H
 #define QGSACTIONMANAGER_H
 
+#include "qgis_core.h"
 #include <QString>
 #include <QIcon>
 

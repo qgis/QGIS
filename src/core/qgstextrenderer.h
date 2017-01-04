@@ -17,6 +17,7 @@
 #ifndef QGSTEXTRENDERER_H
 #define QGSTEXTRENDERER_H
 
+#include "qgis_core.h"
 #include "qgsmapunitscale.h"
 #include "qgsunittypes.h"
 #include <QSharedData>

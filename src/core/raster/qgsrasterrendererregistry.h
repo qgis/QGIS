@@ -18,6 +18,7 @@
 #ifndef QGSRASTERRENDERERREGISTRY_H
 #define QGSRASTERRENDERERREGISTRY_H
 
+#include "qgis_core.h"
 #include "qgsrasterlayer.h" //for DrawingStyle enum
 #include <QHash>
 #include <QString>

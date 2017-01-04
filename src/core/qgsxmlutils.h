@@ -20,6 +20,7 @@ class QDomElement;
 
 class QgsRectangle;
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsunittypes.h"
 

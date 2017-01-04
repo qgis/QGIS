@@ -16,6 +16,7 @@
 #ifndef QGSSYMBOL_H
 #define QGSSYMBOL_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include <QList>
 #include <QMap>

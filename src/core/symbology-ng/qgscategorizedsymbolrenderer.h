@@ -15,6 +15,7 @@
 #ifndef QGSCATEGORIZEDSYMBOLRENDERERV2_H
 #define QGSCATEGORIZEDSYMBOLRENDERERV2_H
 
+#include "qgis_core.h"
 #include "qgssymbol.h"
 #include "qgsrenderer.h"
 #include "qgsexpression.h"

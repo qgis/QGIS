@@ -17,6 +17,7 @@
 #ifndef QGSCPTCITYARCHIVE_H
 #define QGSCPTCITYARCHIVE_H
 
+#include "qgis_core.h"
 #include "qgscolorramp.h"
 
 #include <QAbstractItemModel>

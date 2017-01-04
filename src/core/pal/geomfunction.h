@@ -30,6 +30,7 @@
 #ifndef PAL_GEOM_FUNCTION
 #define PAL_GEOM_FUNCTION
 
+#include "qgis_core.h"
 #include "math.h"
 #include "qgsgeos.h"
 

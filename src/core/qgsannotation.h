@@ -18,6 +18,7 @@
 #ifndef QGSANNOTATION_H
 #define QGSANNOTATION_H
 
+#include "qgis_core.h"
 #include "qgspoint.h"
 #include "qgscoordinatereferencesystem.h"
 

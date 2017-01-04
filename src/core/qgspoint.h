@@ -18,6 +18,7 @@
 #ifndef QGSPOINT_H
 #define QGSPOINT_H
 
+#include "qgis_core.h"
 #include <qgis.h>
 
 #include <iostream>

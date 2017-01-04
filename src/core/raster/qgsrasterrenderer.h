@@ -18,6 +18,7 @@
 #ifndef QGSRASTERRENDERER_H
 #define QGSRASTERRENDERER_H
 
+#include "qgis_core.h"
 #include <QPair>
 
 #include "qgsrasterinterface.h"

@@ -18,6 +18,7 @@
 #ifndef QGSRASTER_H
 #define QGSRASTER_H
 
+#include "qgis_core.h"
 #include <QString>
 
 #include "qgis.h"

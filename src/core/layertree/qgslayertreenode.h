@@ -16,6 +16,7 @@
 #ifndef QGSLAYERTREENODE_H
 #define QGSLAYERTREENODE_H
 
+#include "qgis_core.h"
 #include <QObject>
 
 #include "qgsobjectcustomproperties.h"

@@ -16,6 +16,7 @@
 #define QGSLAYERDEFINITION_H
 
 
+#include "qgis_core.h"
 #include <QString>
 
 class QgsLayerTreeGroup;

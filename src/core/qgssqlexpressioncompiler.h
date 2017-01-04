@@ -16,6 +16,7 @@
 #ifndef QGSSQLEXPRESSIONCOMPILER_H
 #define QGSSQLEXPRESSIONCOMPILER_H
 
+#include "qgis_core.h"
 #include "qgsexpression.h"
 #include "qgsfields.h"
 

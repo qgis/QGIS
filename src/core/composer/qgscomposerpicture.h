@@ -17,6 +17,7 @@
 #ifndef QGSCOMPOSERPICTURE_H
 #define QGSCOMPOSERPICTURE_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include <QFile>
 #include <QImage>

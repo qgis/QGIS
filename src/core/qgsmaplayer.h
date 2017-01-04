@@ -18,6 +18,7 @@
 #ifndef QGSMAPLAYER_H
 #define QGSMAPLAYER_H
 
+#include "qgis_core.h"
 #include <QDateTime>
 #include <QDomNode>
 #include <QImage>

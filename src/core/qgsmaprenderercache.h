@@ -16,6 +16,7 @@
 #ifndef QGSMAPRENDERERCACHE_H
 #define QGSMAPRENDERERCACHE_H
 
+#include "qgis_core.h"
 #include <QMap>
 #include <QImage>
 #include <QMutex>

@@ -19,6 +19,7 @@
 #ifndef QGSVECTORLAYER_H
 #define QGSVECTORLAYER_H
 
+#include "qgis_core.h"
 #include <QMap>
 #include <QSet>
 #include <QList>

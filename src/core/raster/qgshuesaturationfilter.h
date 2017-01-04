@@ -18,6 +18,7 @@
 #ifndef QGSHUESATURATIONFILTER_H
 #define QGSHUESATURATIONFILTER_H
 
+#include "qgis_core.h"
 #include "qgsrasterinterface.h"
 
 class QDomElement;

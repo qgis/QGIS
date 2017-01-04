@@ -18,6 +18,7 @@
 #ifndef QGSCRSCACHE_H
 #define QGSCRSCACHE_H
 
+#include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 #include <QHash>
 #include <QReadWriteLock>

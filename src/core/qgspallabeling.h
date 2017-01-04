@@ -21,6 +21,7 @@
 #ifndef QGSPALLABELING_H
 #define QGSPALLABELING_H
 
+#include "qgis_core.h"
 #include <QString>
 #include <QFont>
 #include <QFontDatabase>

@@ -16,6 +16,7 @@
 #ifndef QGSCOMPOSITION_H
 #define QGSCOMPOSITION_H
 
+#include "qgis_core.h"
 #include <memory>
 
 #include <QDomDocument>

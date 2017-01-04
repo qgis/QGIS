@@ -19,6 +19,7 @@
 #define QGSHILLSHADERENDERER_H
 
 
+#include "qgis_core.h"
 #include "qgsrasterrenderer.h"
 
 class QgsRasterBlock;

@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERMODEL_H
 #define QGSCOMPOSERMODEL_H
 
+#include "qgis_core.h"
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
 #include <QStringList>

@@ -16,6 +16,7 @@
 #ifndef QGSMAPTHEMECOLLECTION_H
 #define QGSMAPTHEMECOLLECTION_H
 
+#include "qgis_core.h"
 #include <QMap>
 #include <QObject>
 #include <QPointer>

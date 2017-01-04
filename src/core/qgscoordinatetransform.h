@@ -17,6 +17,7 @@
 #ifndef QGSCOORDINATETRANSFORM_H
 #define QGSCOORDINATETRANSFORM_H
 
+#include "qgis_core.h"
 #include <QExplicitlySharedDataPointer>
 #include "qgscoordinatereferencesystem.h"
 

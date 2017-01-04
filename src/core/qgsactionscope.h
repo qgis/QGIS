@@ -16,6 +16,7 @@
 #ifndef QGSACTIONSCOPE_H
 #define QGSACTIONSCOPE_H
 
+#include "qgis_core.h"
 #include <QString>
 #include "qgsexpressioncontext.h"
 

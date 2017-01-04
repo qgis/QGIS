@@ -16,6 +16,7 @@
 #ifndef QGSCOMPOSERMULTIFRAME_H
 #define QGSCOMPOSERMULTIFRAME_H
 
+#include "qgis_core.h"
 #include "qgscomposerobject.h"
 #include <QObject>
 #include <QSizeF>

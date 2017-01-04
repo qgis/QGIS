@@ -21,6 +21,7 @@
 #ifndef QGSPROJECT_H
 #define QGSPROJECT_H
 
+#include "qgis_core.h"
 #include <memory>
 #include <QHash>
 #include <QList>

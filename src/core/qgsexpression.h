@@ -16,6 +16,7 @@
 #ifndef QGSEXPRESSION_H
 #define QGSEXPRESSION_H
 
+#include "qgis_core.h"
 #include <QMetaType>
 #include <QStringList>
 #include <QVariant>

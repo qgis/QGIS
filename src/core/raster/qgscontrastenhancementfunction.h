@@ -19,6 +19,7 @@ email                : ersts@amnh.org
 #ifndef QGSCONTRASTENHANCEMENTFUNCTION_H
 #define QGSCONTRASTENHANCEMENTFUNCTION_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 
 /** \ingroup core

@@ -17,6 +17,7 @@
 #ifndef QGSEFFECTSTACK_H
 #define QGSEFFECTSTACK_H
 
+#include "qgis_core.h"
 #include "qgspainteffect.h"
 
 /** \ingroup core

@@ -16,6 +16,7 @@
 #ifndef QGSVALUERELATIONFIELDKIT_H
 #define QGSVALUERELATIONFIELDKIT_H
 
+#include "qgis_core.h"
 #include "qgsfieldformatter.h"
 
 #include <QVector>

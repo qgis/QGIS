@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSMULTICURVEV2_H
 #define QGSMULTICURVEV2_H
 
+#include "qgis_core.h"
 #include "qgsgeometrycollection.h"
 
 /** \ingroup core

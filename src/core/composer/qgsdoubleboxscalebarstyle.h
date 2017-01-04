@@ -17,6 +17,7 @@
 #ifndef QGSDOUBLEBOXSCALEBARSTYLE_H
 #define QGSDOUBLEBOXSCALEBARSTYLE_H
 
+#include "qgis_core.h"
 #include "qgsscalebarstyle.h"
 
 /** \ingroup core

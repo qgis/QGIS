@@ -16,6 +16,7 @@ email                : jef at norbit dot de
 #ifndef QGSGEOMETRYVALIDATOR_H
 #define QGSGEOMETRYVALIDATOR_H
 
+#include "qgis_core.h"
 #include <QThread>
 #include "qgsgeometry.h"
 

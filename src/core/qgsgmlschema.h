@@ -15,6 +15,7 @@
 #ifndef QGSGMLSCHEMA_H
 #define QGSGMLSCHEMA_H
 
+#include "qgis_core.h"
 #include <expat.h>
 #include "qgis.h"
 #include "qgserror.h"

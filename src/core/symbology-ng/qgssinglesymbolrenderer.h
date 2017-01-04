@@ -15,6 +15,7 @@
 #ifndef QGSSINGLESYMBOLRENDERERV2_H
 #define QGSSINGLESYMBOLRENDERERV2_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsrenderer.h"
 #include "qgssymbol.h"

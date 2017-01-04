@@ -18,6 +18,7 @@
 #ifndef QGSGROUPUNGROUPITEMSCOMMAND_H
 #define QGSGROUPUNGROUPITEMSCOMMAND_H
 
+#include "qgis_core.h"
 #include <QUndoCommand>
 #include "qgscomposeritem.h"
 

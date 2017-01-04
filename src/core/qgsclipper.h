@@ -19,6 +19,7 @@
 #ifndef QGSCLIPPER_H
 #define QGSCLIPPER_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"

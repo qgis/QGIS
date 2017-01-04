@@ -21,6 +21,7 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #ifndef QGSCONTRASTENHANCEMENT_H
 #define QGSCONTRASTENHANCEMENT_H
 
+#include "qgis_core.h"
 #include <limits>
 
 #include "qgis.h"

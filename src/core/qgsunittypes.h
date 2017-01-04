@@ -18,6 +18,7 @@
 #ifndef QGSUNITTYPES_H
 #define QGSUNITTYPES_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 
 /***************************************************************************

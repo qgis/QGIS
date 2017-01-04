@@ -15,6 +15,7 @@
 #ifndef QGSRENDERERV2REGISTRY_H
 #define QGSRENDERERV2REGISTRY_H
 
+#include "qgis_core.h"
 #include <QIcon>
 #include <QMap>
 #include <QStringList>

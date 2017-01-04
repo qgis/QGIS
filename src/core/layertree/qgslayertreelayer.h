@@ -16,6 +16,7 @@
 #ifndef QGSLAYERTREELAYER_H
 #define QGSLAYERTREELAYER_H
 
+#include "qgis_core.h"
 #include "qgslayertreenode.h"
 
 class QgsMapLayer;

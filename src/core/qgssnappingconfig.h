@@ -16,6 +16,7 @@
 #ifndef QGSPROJECTSNAPPINGSETTINGS_H
 #define QGSPROJECTSNAPPINGSETTINGS_H
 
+#include "qgis_core.h"
 #include "qgstolerance.h"
 
 class QDomDocument;

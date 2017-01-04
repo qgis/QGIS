@@ -18,6 +18,7 @@
 #ifndef QGSPAPERITEM_H
 #define QGSPAPERITEM_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include <QGraphicsRectItem>
 

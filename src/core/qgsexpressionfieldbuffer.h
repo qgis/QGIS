@@ -18,6 +18,7 @@
 #ifndef QGSEXPRESSIONFIELDBUFFER_H
 #define QGSEXPRESSIONFIELDBUFFER_H
 
+#include "qgis_core.h"
 #include <QString>
 #include <QList>
 #include <QDomNode>

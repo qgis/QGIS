@@ -17,6 +17,7 @@
 #define QGSSNAPPINGUTILS_H
 
 
+#include "qgis_core.h"
 #include "qgsmapsettings.h"
 #include "qgstolerance.h"
 #include "qgspointlocator.h"

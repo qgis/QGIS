@@ -18,6 +18,7 @@
 #ifndef QGSDXFPAINTENGINE_H
 #define QGSDXFPAINTENGINE_H
 
+#include "qgis_core.h"
 #include <QPaintEngine>
 #include "qgsabstractgeometry.h"
 #include "qgspointv2.h"

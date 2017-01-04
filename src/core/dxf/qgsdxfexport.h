@@ -18,6 +18,7 @@
 #ifndef QGSDXFEXPORT_H
 #define QGSDXFEXPORT_H
 
+#include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgssymbol.h" // for OutputUnit enum
 #include "qgsmapsettings.h"

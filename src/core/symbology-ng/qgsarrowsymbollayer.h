@@ -16,6 +16,7 @@
 #ifndef QGSARROWSYMBOLLAYERV2_H
 #define QGSARROWSYMBOLLAYERV2_H
 
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 
 

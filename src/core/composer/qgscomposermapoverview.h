@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERMAPOVERVIEW_H
 #define QGSCOMPOSERMAPOVERVIEW_H
 
+#include "qgis_core.h"
 #include "qgscomposermapitem.h"
 #include <QString>
 #include <QObject>

@@ -15,6 +15,7 @@
 #ifndef QGSRULEBASEDLABELING_H
 #define QGSRULEBASEDLABELING_H
 
+#include "qgis_core.h"
 #include <QStringList>
 #include <QMap>
 

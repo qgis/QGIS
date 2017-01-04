@@ -16,6 +16,7 @@
 #ifndef QGSRENDERERV2_H
 #define QGSRENDERERV2_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"

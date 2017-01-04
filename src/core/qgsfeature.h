@@ -16,6 +16,7 @@ email                : sherman at mrcc.com
 #ifndef QGSFEATURE_H
 #define QGSFEATURE_H
 
+#include "qgis_core.h"
 #include <QMap>
 #include <QString>
 #include <QVariant>

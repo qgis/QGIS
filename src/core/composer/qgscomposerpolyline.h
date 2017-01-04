@@ -17,6 +17,7 @@
 #ifndef QGSCOMPOSERPOLYLINE_H
 #define QGSCOMPOSERPOLYLINE_H
 
+#include "qgis_core.h"
 #include "qgscomposernodesitem.h"
 #include "qgssymbol.h"
 #include <QBrush>

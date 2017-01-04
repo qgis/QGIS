@@ -18,6 +18,7 @@
 #ifndef QGSQTLOCATIONCONNECTION_H
 #define QGSQTLOCATIONCONNECTION_H
 
+#include "qgis_core.h"
 #include "qgsgpsconnection.h"
 
 #include <QtCore/QPointer>

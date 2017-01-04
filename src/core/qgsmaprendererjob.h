@@ -16,6 +16,7 @@
 #ifndef QGSMAPRENDERERJOB_H
 #define QGSMAPRENDERERJOB_H
 
+#include "qgis_core.h"
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QImage>

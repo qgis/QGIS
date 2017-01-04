@@ -16,6 +16,7 @@
 #ifndef QGSLISTFIELDKIT_H
 #define QGSLISTFIELDKIT_H
 
+#include "qgis_core.h"
 #include "qgsfieldformatter.h"
 
 class CORE_EXPORT QgsListFieldFormatter : public QgsFieldFormatter

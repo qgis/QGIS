@@ -15,6 +15,7 @@
 #ifndef QGSWKBPTR_H
 #define QGSWKBPTR_H
 
+#include "qgis_core.h"
 #include "qgswkbtypes.h"
 #include "qgsapplication.h"
 #include "qgis.h"

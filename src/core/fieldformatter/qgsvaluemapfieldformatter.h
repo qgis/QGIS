@@ -16,6 +16,7 @@
 #ifndef QGSVALUEMAPFIELDKIT_H
 #define QGSVALUEMAPFIELDKIT_H
 
+#include "qgis_core.h"
 #include "qgsfieldformatter.h"
 
 class CORE_EXPORT QgsValueMapFieldFormatter : public QgsFieldFormatter

@@ -30,6 +30,7 @@
 #ifndef PAL_PROBLEM_H
 #define PAL_PROBLEM_H
 
+#include "qgis_core.h"
 #include <list>
 #include <QList>
 #include "rtree.hpp"

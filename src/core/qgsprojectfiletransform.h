@@ -26,6 +26,7 @@
 #ifndef QGSPROJECTFILETRANSFORM_H
 #define QGSPROJECTFILETRANSFORM_H
 
+#include "qgis_core.h"
 #include <QString>
 #include <QDomDocument>
 #include "qgsprojectversion.h"

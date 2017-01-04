@@ -15,6 +15,7 @@
 #ifndef QGSVECTORLAYEREDITPASSTHROUGH_H
 #define QGSVECTORLAYEREDITPASSTHROUGH_H
 
+#include "qgis_core.h"
 #include "qgsvectorlayereditbuffer.h"
 
 class QgsVectorLayer;

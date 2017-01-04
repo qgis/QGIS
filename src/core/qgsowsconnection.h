@@ -22,6 +22,7 @@
 #ifndef QGSOWSCONNECTION_H
 #define QGSOWSCONNECTION_H
 
+#include "qgis_core.h"
 #include "qgsdatasourceuri.h"
 
 #include <QStringList>

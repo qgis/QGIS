@@ -23,6 +23,7 @@
 #ifndef QGSRASTERDATAPROVIDER_H
 #define QGSRASTERDATAPROVIDER_H
 
+#include "qgis_core.h"
 #include <cmath>
 
 #include <QDateTime>

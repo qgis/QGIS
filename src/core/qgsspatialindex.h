@@ -34,6 +34,7 @@ class QgsFeature;
 class QgsRectangle;
 class QgsPoint;
 
+#include "qgis_core.h"
 #include <QList>
 #include <QSharedDataPointer>
 

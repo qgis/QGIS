@@ -16,6 +16,7 @@
 #ifndef QGSLEGENDRENDERER_H
 #define QGSLEGENDRENDERER_H
 
+#include "qgis_core.h"
 #include <QPointF>
 
 class QRectF;

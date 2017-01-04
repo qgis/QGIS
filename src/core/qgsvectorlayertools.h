@@ -16,6 +16,7 @@
 #ifndef QGSVECTORLAYERTOOLS_H
 #define QGSVECTORLAYERTOOLS_H
 
+#include "qgis_core.h"
 #include <QObject>
 
 #include "qgsfeature.h"

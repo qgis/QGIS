@@ -19,6 +19,7 @@
 #ifndef QGSLABELSEARCHTREE_H
 #define QGSLABELSEARCHTREE_H
 
+#include "qgis_core.h"
 #include <QList>
 #include <QVector>
 #include <pointset.h>

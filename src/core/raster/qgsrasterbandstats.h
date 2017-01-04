@@ -18,6 +18,7 @@
 #ifndef QGSRASTERBANDSTATS
 #define QGSRASTERBANDSTATS
 
+#include "qgis_core.h"
 #include <QString>
 #include <QVector>
 

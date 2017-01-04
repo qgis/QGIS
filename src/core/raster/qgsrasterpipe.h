@@ -18,6 +18,7 @@
 #ifndef QGSRASTERPIPE_H
 #define QGSRASTERPIPE_H
 
+#include "qgis_core.h"
 #include <QImage>
 #include <QMap>
 #include <QObject>

@@ -16,6 +16,7 @@
 #ifndef QGSRELATIONREFERENCEFIELDKIT_H
 #define QGSRELATIONREFERENCEFIELDKIT_H
 
+#include "qgis_core.h"
 #include "qgsfieldformatter.h"
 
 class CORE_EXPORT QgsRelationReferenceFieldFormatter : public QgsFieldFormatter

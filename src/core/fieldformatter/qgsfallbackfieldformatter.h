@@ -16,6 +16,7 @@
 #ifndef QGSFALLBACKFIELDKIT_H
 #define QGSFALLBACKFIELDKIT_H
 
+#include "qgis_core.h"
 #include "qgsfieldformatter.h"
 
 class CORE_EXPORT QgsFallbackFieldFormatter : public QgsFieldFormatter

@@ -16,6 +16,7 @@
 #ifndef QGSSTYLEV2_H
 #define QGSSTYLEV2_H
 
+#include "qgis_core.h"
 #include <QMap>
 #include <QMultiMap>
 #include <QString>

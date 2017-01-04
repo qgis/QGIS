@@ -18,6 +18,7 @@
 #ifndef QGSBRIGHTNESSCONTRASTFILTER_H
 #define QGSBRIGHTNESSCONTRASTFILTER_H
 
+#include "qgis_core.h"
 #include "qgsrasterinterface.h"
 
 class QDomElement;

@@ -17,6 +17,7 @@
 #ifndef QGSPAINTEFFECT_H
 #define QGSPAINTEFFECT_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include <QPainter>
 #include <QDomDocument>

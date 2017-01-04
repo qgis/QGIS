@@ -15,6 +15,7 @@
 #ifndef QGSRASTERITERATOR_H
 #define QGSRASTERITERATOR_H
 
+#include "qgis_core.h"
 #include "qgsrectangle.h"
 #include <QMap>
 

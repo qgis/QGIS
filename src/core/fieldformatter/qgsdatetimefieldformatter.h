@@ -16,6 +16,7 @@
 #ifndef QGSDATETIMEFIELDKIT_H
 #define QGSDATETIMEFIELDKIT_H
 
+#include "qgis_core.h"
 #include "qgsfieldformatter.h"
 
 class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter

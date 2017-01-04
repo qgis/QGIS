@@ -15,6 +15,7 @@
 #ifndef QGSMAPHITTEST_H
 #define QGSMAPHITTEST_H
 
+#include "qgis_core.h"
 #include "qgsmapsettings.h"
 #include "qgsgeometry.h"
 

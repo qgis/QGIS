@@ -1,6 +1,7 @@
 #ifndef QGSLABELFEATURE_H
 #define QGSLABELFEATURE_H
 
+#include "qgis_core.h"
 #include "qgspallabeling.h"
 #include "geos_c.h"
 

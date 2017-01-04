@@ -16,6 +16,7 @@
 #ifndef QGSRELATION_H
 #define QGSRELATION_H
 
+#include "qgis_core.h"
 #include <QList>
 #include <QDomNode>
 #include <QPair>

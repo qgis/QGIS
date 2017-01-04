@@ -16,6 +16,7 @@
 #ifndef QGSCOLORRAMP_H
 #define QGSCOLORRAMP_H
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QGradient>
 #include "qgis.h"

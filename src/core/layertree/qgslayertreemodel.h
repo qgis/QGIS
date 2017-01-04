@@ -16,6 +16,7 @@
 #ifndef QGSLAYERTREEMODEL_H
 #define QGSLAYERTREEMODEL_H
 
+#include "qgis_core.h"
 #include <QAbstractItemModel>
 #include <QFont>
 #include <QIcon>

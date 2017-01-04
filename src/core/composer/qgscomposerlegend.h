@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERLEGEND_H
 #define QGSCOMPOSERLEGEND_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"

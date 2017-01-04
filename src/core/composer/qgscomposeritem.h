@@ -17,6 +17,7 @@
 #ifndef QGSCOMPOSERITEM_H
 #define QGSCOMPOSERITEM_H
 
+#include "qgis_core.h"
 #include "qgscomposeritemcommand.h"
 #include "qgscomposerobject.h"
 #include <QGraphicsRectItem>

@@ -18,6 +18,7 @@
 #ifndef QGSVECTORFIELDSYMBOLLAYER_H
 #define QGSVECTORFIELDSYMBOLLAYER_H
 
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 
 /** \ingroup core

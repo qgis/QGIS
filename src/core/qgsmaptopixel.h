@@ -17,6 +17,7 @@
 #ifndef QGSMAPTOPIXEL
 #define QGSMAPTOPIXEL
 
+#include "qgis_core.h"
 #include <QTransform>
 #include <vector>
 #include "qgsunittypes.h"

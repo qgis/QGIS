@@ -23,6 +23,7 @@
 #ifndef QGSRASTERPROJECTOR_H
 #define QGSRASTERPROJECTOR_H
 
+#include "qgis_core.h"
 #include <QVector>
 #include <QList>
 

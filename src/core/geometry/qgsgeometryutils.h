@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOMETRYUTILS_H
 #define QGSGEOMETRYUTILS_H
 
+#include "qgis_core.h"
 #include "qgspointv2.h"
 #include <limits>
 

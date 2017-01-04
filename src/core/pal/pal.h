@@ -30,6 +30,7 @@
 #ifndef PAL_H
 #define PAL_H
 
+#include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgspallabeling.h"
 #include <QList>

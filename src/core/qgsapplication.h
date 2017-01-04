@@ -15,6 +15,7 @@
 #ifndef QGSAPPLICATION_H
 #define QGSAPPLICATION_H
 
+#include "qgis_core.h"
 #include <QApplication>
 #include <QEvent>
 #include <QStringList>

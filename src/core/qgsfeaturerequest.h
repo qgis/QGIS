@@ -15,6 +15,7 @@
 #ifndef QGSFEATUREREQUEST_H
 #define QGSFEATUREREQUEST_H
 
+#include "qgis_core.h"
 #include <QFlags>
 #include <QList>
 

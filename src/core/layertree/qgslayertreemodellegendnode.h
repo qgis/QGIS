@@ -19,6 +19,7 @@
 #ifndef QGSLAYERTREEMODELLEGENDNODE_H
 #define QGSLAYERTREEMODELLEGENDNODE_H
 
+#include "qgis_core.h"
 #include <QIcon>
 #include <QObject>
 

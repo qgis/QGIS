@@ -16,6 +16,7 @@
 #ifndef QGSSYMBOLLAYERREGISTRY_H
 #define QGSSYMBOLLAYERREGISTRY_H
 
+#include "qgis_core.h"
 #include "qgssymbol.h"
 
 class QgsVectorLayer;

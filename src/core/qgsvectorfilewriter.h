@@ -19,6 +19,7 @@
 #ifndef QGSVECTORFILEWRITER_H
 #define QGSVECTORFILEWRITER_H
 
+#include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgssymbol.h"
 #include <ogr_api.h>

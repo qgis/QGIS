@@ -30,6 +30,7 @@
 #ifndef PAL_LAYER_H_
 #define PAL_LAYER_H_
 
+#include "qgis_core.h"
 #include "pal.h" // for LineArrangementFlags enum
 #include "rtree.hpp"
 #include <QMutex>

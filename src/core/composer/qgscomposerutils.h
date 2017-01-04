@@ -17,6 +17,7 @@
 #ifndef QGSCOMPOSERUTILS_H
 #define QGSCOMPOSERUTILS_H
 
+#include "qgis_core.h"
 #include "qgscomposition.h" //for page size and orientation enums
 #include <QPointF>
 #include <QRectF>

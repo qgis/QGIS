@@ -18,6 +18,7 @@
 #ifndef QGSSURFACEV2_H
 #define QGSSURFACEV2_H
 
+#include "qgis_core.h"
 #include "qgsabstractgeometry.h"
 #include "qgsrectangle.h"
 

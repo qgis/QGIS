@@ -21,6 +21,7 @@
 #ifndef QGSRASTERLAYER_H
 #define QGSRASTERLAYER_H
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QDateTime>
 #include <QList>

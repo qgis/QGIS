@@ -18,6 +18,7 @@
 #ifndef QGSEDITFORMCONFIG_H
 #define QGSEDITFORMCONFIG_H
 
+#include "qgis_core.h"
 #include <QMap>
 #include <QDomElement>
 #include <QDomDocument>

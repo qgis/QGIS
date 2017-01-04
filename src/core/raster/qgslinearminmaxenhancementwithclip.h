@@ -19,6 +19,7 @@ email                : ersts@amnh.org
 #ifndef QGSLINEARMINMAXENHANCEMENTWITHCLIP_H
 #define QGSLINEARMINMAXENHANCEMENTWITHCLIP_H
 
+#include "qgis_core.h"
 #include "qgscontrastenhancementfunction.h"
 
 /** \ingroup core

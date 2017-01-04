@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERARROW_H
 #define QGSCOMPOSERARROW_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include <QBrush>
 #include <QPen>

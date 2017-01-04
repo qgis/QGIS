@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERMAPGRID_H
 #define QGSCOMPOSERMAPGRID_H
 
+#include "qgis_core.h"
 #include "qgscomposermapitem.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"

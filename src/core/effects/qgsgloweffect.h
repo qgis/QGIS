@@ -17,6 +17,7 @@
 #ifndef QGSGLOWEFFECT_H
 #define QGSGLOWEFFECT_H
 
+#include "qgis_core.h"
 #include "qgspainteffect.h"
 #include "qgssymbol.h"
 #include <QPainter>

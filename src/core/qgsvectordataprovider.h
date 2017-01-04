@@ -17,6 +17,7 @@
 
 class QTextCodec;
 
+#include "qgis_core.h"
 #include <QList>
 #include <QSet>
 #include <QMap>

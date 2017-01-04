@@ -18,6 +18,7 @@
 
 ///@cond PRIVATE
 
+#include "qgis_core.h"
 #include "qgssqlexpressioncompiler.h"
 
 /** \ingroup core

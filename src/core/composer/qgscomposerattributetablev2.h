@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERATTRIBUTETABLEV2_H
 #define QGSCOMPOSERATTRIBUTETABLEV2_H
 
+#include "qgis_core.h"
 #include "qgscomposertablev2.h"
 
 class QgsComposerMap;

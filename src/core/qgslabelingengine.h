@@ -16,6 +16,7 @@
 #ifndef QGSLABELINGENGINEV2_H
 #define QGSLABELINGENGINEV2_H
 
+#include "qgis_core.h"
 #include "qgsmapsettings.h"
 
 #include "qgspallabeling.h"

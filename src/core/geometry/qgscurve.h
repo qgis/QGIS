@@ -18,6 +18,7 @@
 #ifndef QGSCURVEV2_H
 #define QGSCURVEV2_H
 
+#include "qgis_core.h"
 #include "qgsabstractgeometry.h"
 #include "qgsrectangle.h"
 

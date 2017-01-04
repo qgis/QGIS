@@ -17,6 +17,7 @@
 #ifndef QGSAUTHCONFIG_H
 #define QGSAUTHCONFIG_H
 
+#include "qgis_core.h"
 #include <QHash>
 #include <QString>
 
