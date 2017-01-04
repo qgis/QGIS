@@ -167,7 +167,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void clear();
 
     /** Reads given project file from the given file.
-     * @param file name of project file to read
+     * @param filename name of project file to read
      * @returns true if project file has been read successfully
      */
     bool read( const QString& filename );
