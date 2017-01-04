@@ -21,6 +21,7 @@
 #include "qgsunittypes.h"
 #include "qgspallabeling.h"
 #include "qgsdatumtransformstore.h"
+#include "qgis_server.h"
 
 class QPainter;
 class QDomDocument;

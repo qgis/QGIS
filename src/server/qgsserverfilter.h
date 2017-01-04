@@ -21,6 +21,7 @@
 #define QGSSERVERFILTER_H
 
 #include <QMultiMap>
+#include "qgis_server.h"
 
 class QgsServerInterface;
 

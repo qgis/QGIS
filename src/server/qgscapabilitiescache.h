@@ -22,6 +22,7 @@
 #include <QFileSystemWatcher>
 #include <QHash>
 #include <QObject>
+#include "qgis_server.h"
 
 /** \ingroup server
  * A cache for capabilities xml documents (by configuration file path)

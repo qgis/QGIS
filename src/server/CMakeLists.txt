@@ -101,10 +101,6 @@ SET(qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
 )
 ENDIF (WITH_SERVER_PLUGINS)
 
-REMOVE_DEFINITIONS("-DSERVER_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("\"-DSERVER_EXPORT=${DLLEXPORT}\"")
-
-
 QT5_WRAP_CPP(qgis_mapserv_MOC_SRCS ${qgis_mapserv_MOC_HDRS})
 
 IF(MSVC)
@@ -198,6 +194,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/analysis
+  ${CMAKE_BINARY_DIR}/src/server
   ../core
   ../core/auth
   ../core/dxf
@@ -224,6 +221,14 @@ TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
   ${GDAL_LIBRARY}
   ${QCA_LIBRARY}
 )
+
+GENERATE_EXPORT_HEADER(
+   qgis_server
+   BASE_NAME SERVER
+   EXPORT_FILE_NAME qgis_server.h
+ )
+
+SET(QGIS_SERVER_HDRS ${QGIS_SERVER_HDRS} ${PROJECT_BINARY_DIR}/qgis_server.h)
 
 ########################################################
 # Install

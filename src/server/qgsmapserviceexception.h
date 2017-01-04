@@ -21,6 +21,7 @@
 #include <QString>
 
 #include "qgsexception.h"
+#include "qgis_server.h"
 
 /** \ingroup server
  * \class  QgsMapServiceException
