@@ -19,6 +19,7 @@
 #define QGSWCSPROJECTPARSER_H
 
 #include "qgsserverprojectparser.h"
+#include "qgis_server.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 class QgsAccessControl;

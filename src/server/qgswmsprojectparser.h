@@ -21,6 +21,7 @@
 #include "qgswmsconfigparser.h"
 #include "qgsserverprojectparser.h"
 #include "qgslayertreegroup.h"
+#include "qgis_server.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 class QgsAccessControl;

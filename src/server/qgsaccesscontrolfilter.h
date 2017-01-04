@@ -23,6 +23,7 @@
 #include <QMultiMap>
 #include <QList>
 #include <QString>
+#include "qgis_server.h"
 
 class QgsServerInterface;
 class QgsMapLayer;

@@ -26,6 +26,7 @@
 #include "qgsserverfilter.h"
 #include "qgsaccesscontrolfilter.h"
 #include "qgsaccesscontrol.h"
+#include "qgis_server.h"
 
 /**
  * \ingroup server

@@ -39,6 +39,7 @@
 #include "qgsserverplugins.h"
 #include "qgsserverfilter.h"
 #include "qgsserverinterfaceimpl.h"
+#include "qgis_server.h"
 #endif
 
 
