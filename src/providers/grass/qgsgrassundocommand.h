@@ -16,6 +16,8 @@
 #ifndef QGSGRASSUNDOCOMMAND_H
 #define QGSGRASSUNDOCOMMAND_H
 
+#include "qgis_grass_lib.h"
+
 class QgsGrassProvider;
 
 class GRASS_LIB_EXPORT QgsGrassUndoCommand

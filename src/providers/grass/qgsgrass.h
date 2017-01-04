@@ -43,6 +43,7 @@ extern "C"
 #include <QHash>
 #include <QRegExp>
 #include <QTemporaryFile>
+#include "qgis_grass_lib.h"
 class QgsCoordinateReferenceSystem;
 class QgsRectangle;
 

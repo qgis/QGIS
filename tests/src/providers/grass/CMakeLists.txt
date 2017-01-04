@@ -16,6 +16,10 @@ MACRO (ADD_QGIS_GRASS_TEST grass_build_version testname testsrc)
   ADD_CUSTOM_TARGET(qgis_${testname}${grass_build_version}moc ALL DEPENDS ${qgis_${testname}${grass_build_version}_MOC_SRCS})
   ADD_EXECUTABLE(qgis_${testname}${grass_build_version} ${qgis_${testname}${grass_build_version}_SRCS})
 
+  INCLUDE_DIRECTORIES(
+    ${CMAKE_BINARY_DIR}/src/providers/grass/${grass_build_version}
+  )
+
   SET_TARGET_PROPERTIES(qgis_${testname}${grass_build_version} PROPERTIES
     AUTOMOC TRUE
     COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX${grass_build_version}}\\\" \"-DGRASS_BUILD_VERSION=${grass_build_version}\""
