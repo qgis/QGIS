@@ -27,6 +27,7 @@
 
 //qgis includes...
 #include <qgsapplication.h>
+#include "qgscompoundcurve.h"
 #include <qgsgeometry.h>
 #include "qgsgeometryutils.h"
 #include <qgspoint.h>
@@ -69,6 +70,7 @@ class TestQgsGeometry : public QObject
     void point(); //test QgsPointV2
     void lineString(); //test QgsLineString
     void polygon(); //test QgsPolygonV2
+    void compoundCurve(); //test QgsCompoundCurve
     void multiPoint();
     void multiLineString();
     void multiPolygon();
@@ -3090,6 +3092,31 @@ void TestQgsGeometry::polygon()
   removeRings1.removeInteriorRings();
   QCOMPARE( removeRings1.numInteriorRings(), 0 );
 
+}
+
+void TestQgsGeometry::compoundCurve()
+{
+  //test that area of a compound curve ring is equal to a closed linestring with the same vertices
+  QgsCompoundCurve cc;
+  QgsLineString* l1 = new QgsLineString();
+  l1->setPoints( QgsPointSequence() << QgsPointV2( 1, 1 ) << QgsPointV2( 0, 2 ) );
+  cc.addCurve( l1 );
+  QgsLineString* l2 = new QgsLineString();
+  l2->setPoints( QgsPointSequence() << QgsPointV2( 0, 2 ) << QgsPointV2( -1, 0 ) << QgsPointV2( 0, -1 ) );
+  cc.addCurve( l2 );
+  QgsLineString* l3 = new QgsLineString();
+  l3->setPoints( QgsPointSequence() << QgsPointV2( 0, -1 ) << QgsPointV2( 1, 1 ) );
+  cc.addCurve( l3 );
+
+  double ccArea = 0.0;
+  cc.sumUpArea( ccArea );
+
+  QgsLineString ls;
+  ls.setPoints( QgsPointSequence() << QgsPointV2( 1, 1 ) << QgsPointV2( 0, 2 ) <<  QgsPointV2( -1, 0 ) << QgsPointV2( 0, -1 )
+                << QgsPointV2( 1, 1 ) );
+  double lsArea = 0.0;
+  ls.sumUpArea( lsArea );
+  QVERIFY( qgsDoubleNear( ccArea, lsArea ) );
 }
 
 void TestQgsGeometry::multiPoint()
