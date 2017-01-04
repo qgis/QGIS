@@ -24,6 +24,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrectangle.h"
 #include "qgscolorrampshader.h"
+#include "qgis_grass_lib.h"
 
 extern "C"
 {

@@ -17,6 +17,8 @@
 #ifndef QGSGRASSWIN_H
 #define QGSGRASSWIN_H
 
+#include "qgis_grass_lib.h"
+
 // Windows utils
 class GRASS_LIB_EXPORT QgsGrassWin
 {

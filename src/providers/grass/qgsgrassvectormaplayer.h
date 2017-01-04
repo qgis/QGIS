@@ -24,6 +24,7 @@
 
 #include "qgsfields.h"
 #include "qgsfeature.h"
+#include "qgis_grass_lib.h"
 
 extern "C"
 {
