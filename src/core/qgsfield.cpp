@@ -18,6 +18,7 @@
 #include "qgsfield_p.h"
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgsgeometry.h"
 
 #include <QSettings>
 #include <QDataStream>
@@ -206,8 +207,14 @@ QString QgsField::displayString( const QVariant& v ) const
 {
   if ( v.isNull() )
   {
-    QSettings settings;
     return QgsApplication::nullRepresentation();
+  }
+
+  if ( v.userType() == QMetaType::type( "QgsGeometry" ) )
+  {
+    QgsGeometry g = qvariant_cast<QgsGeometry>( v );
+    return g.isEmpty() ? QgsApplication::nullRepresentation()
+           : QgsWkbTypes::displayString( g.wkbType() );
   }
 
   if ( d->type == QVariant::Double && d->precision > 0 )
