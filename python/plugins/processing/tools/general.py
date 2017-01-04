@@ -50,6 +50,7 @@ def alglist(text=None):
                 s += alg.name.ljust(50, '-') + '--->' + alg.commandLineName() \
                     + '\n'
     print(s)
+    return s
 
 
 def algoptions(name):
