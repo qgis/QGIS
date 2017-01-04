@@ -779,8 +779,15 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
     return;
 
   const QgsField fld = mSource->mFields.at( idx );
-  QVariant v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ) );
-  feature.setAttribute( idx, v );
+
+  if ( fld.type() == static_cast< QVariant::Type >( QMetaType::type( "QgsGeometry" ) ) )
+  {
+    feature.setAttribute( idx, QVariant::fromValue( getGeometry( queryResult, row, col ) ) );
+  }
+  else
+  {
+    feature.setAttribute( idx, QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ) ) );
+  }
 
   col++;
 }

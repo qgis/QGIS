@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspostgresconn.h"
+#include "qgspostgresprovider.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
@@ -39,7 +40,6 @@
 #else
 #include <netinet/in.h>
 #endif
-
 
 QgsPostgresResult::~QgsPostgresResult()
 {
@@ -1343,9 +1343,10 @@ QString QgsPostgresConn::fieldExpression( const QgsField &fld, QString expr )
   }
   else if ( type == QLatin1String( "geometry" ) )
   {
-    return QStringLiteral( "%1(%2)" )
-           .arg( majorVersion() < 2 ? "asewkt" : "st_asewkt",
-                 expr );
+    return QStringLiteral( "%1(%2,'%3')" )
+           .arg( mPostgisVersionMajor < 2 ? "asbinary" : "st_asbinary",
+                 expr,
+                 QgsPostgresProvider::endianString() );
   }
   else if ( type == QLatin1String( "geography" ) )
   {
