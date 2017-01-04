@@ -21,6 +21,7 @@
 #include "qgsrectangle.h"
 #include <QString>
 #include <QTextStream>
+#include "qgis_analysis.h"
 
 class QgsInterpolator;
 

@@ -23,6 +23,7 @@
 #include <QPair>
 #include <QString>
 #include "gdal.h"
+#include "qgis_analysis.h"
 
 class QgsAspectFilter;
 class QgsSlopeFilter;

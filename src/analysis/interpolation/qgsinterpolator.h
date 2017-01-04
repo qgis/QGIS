@@ -19,6 +19,7 @@
 #define QGSINTERPOLATOR_H
 
 #include <QVector>
+#include "qgis_analysis.h"
 
 class QgsVectorLayer;
 class QgsGeometry;

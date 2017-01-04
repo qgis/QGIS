@@ -19,6 +19,7 @@
 #define QGSDERIVATIVEFILTER_H
 
 #include "qgsninecellfilter.h"
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * Adds the ability to calculate derivatives in x- and y-directions. Needs to be subclassed (e.g. for slope and aspect)*/

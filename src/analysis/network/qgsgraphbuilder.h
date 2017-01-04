@@ -19,6 +19,7 @@
 #include "qgsgraphbuilderinterface.h"
 
 #include <qgsspatialindex.h>
+#include "qgis_analysis.h"
 
 class QgsDistanceArea;
 class QgsCoordinateTransform;

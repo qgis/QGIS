@@ -163,6 +163,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/raster
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/symbology-ng
   ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/analysis
   interpolation
   network
 )
@@ -172,9 +173,6 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
 )
-
-REMOVE_DEFINITIONS("-DANALYSIS_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("\"-DANALYSIS_EXPORT=${DLLEXPORT}\"")
 
 #############################################################
 # qgis_analysis library
@@ -207,6 +205,14 @@ IF (NOT ANDROID)
 ENDIF (NOT ANDROID)
 
 TARGET_LINK_LIBRARIES(qgis_analysis qgis_core)
+
+GENERATE_EXPORT_HEADER(
+   qgis_analysis
+   BASE_NAME ANALYSIS
+   EXPORT_FILE_NAME qgis_analysis.h
+ )
+
+SET(QGIS_ANALYSIS_HDRS ${QGIS_ANALYSIS_HDRS} ${PROJECT_BINARY_DIR}/qgis_analysis.h)
 
 
 # install

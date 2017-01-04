@@ -30,6 +30,7 @@
 #include <QVariant>
 
 #include "qgspoint.h"
+#include "qgis_analysis.h"
 
 class QgsGraphVertex;
 

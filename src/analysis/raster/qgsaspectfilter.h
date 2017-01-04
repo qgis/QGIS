@@ -19,6 +19,7 @@
 #define QGSASPECTFILTER_H
 
 #include "qgsderivativefilter.h"
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * Calculates aspect values in a window of 3x3 cells based on first order derivatives in x- and y- directions. Direction is clockwise starting from north*/

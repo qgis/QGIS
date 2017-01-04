@@ -18,6 +18,7 @@
 #define NODE_H
 
 #include "Point3D.h"
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * Node is a class used by Line3D. It represents a node in the single directed linked list. Associated Point3D objects are deleted when the node is deleted.*/

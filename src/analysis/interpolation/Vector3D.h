@@ -18,6 +18,7 @@
 #define VECTOR3D_H
 
 #include <cmath>
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * Class Vector3D represents a 3D-Vector, capable to store x-,y- and

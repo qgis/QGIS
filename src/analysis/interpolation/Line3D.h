@@ -18,6 +18,7 @@
 #define LINE3D_H
 
 #include "Node.h"
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * This class represents a line. It is implemented as a single directed linked list of nodes (with related Point3D objects). Attention: the points inserted in a line are not deleted from Line3D*/

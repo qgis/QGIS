@@ -31,6 +31,7 @@
 #include <QStringList>
 #include <QProgressDialog>
 #include <QCursor>
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure*/

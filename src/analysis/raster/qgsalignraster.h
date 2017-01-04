@@ -21,6 +21,7 @@
 #include <QSizeF>
 #include <QString>
 #include <gdal_version.h>
+#include "qgis_analysis.h"
 
 class QgsRectangle;
 
