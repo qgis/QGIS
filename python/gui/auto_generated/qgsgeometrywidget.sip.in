@@ -1,0 +1,236 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsgeometrywidget.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+// adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+%MappedType QList<QgsWkbTypes::Type>
+{
+%TypeHeaderCode
+#include <QList>
+%End
+
+%ConvertFromTypeCode
+  PyObject *l = PyList_New( sipCpp->size() );
+
+  if ( !l )
+    return 0;
+
+  for ( int i = 0; i < sipCpp->size(); ++i )
+  {
+    PyObject *eobj = sipConvertFromEnum( sipCpp->at( i ),
+                                         sipType_QgsWkbTypes_Type );
+
+    if ( !eobj )
+    {
+      Py_DECREF( l );
+
+      return 0;
+    }
+
+    PyList_SetItem( l, i, eobj );
+  }
+
+  return l;
+%End
+
+%ConvertToTypeCode
+  PyObject *iter = PyObject_GetIter( sipPy );
+
+  if ( !sipIsErr )
+  {
+    PyErr_Clear();
+    Py_XDECREF( iter );
+
+    return ( iter
+#if PY_MAJOR_VERSION < 3
+             && !PyString_Check( sipPy )
+#endif
+             && !PyUnicode_Check( sipPy ) );
+  }
+
+  if ( !iter )
+  {
+    *sipIsErr = 1;
+
+    return 0;
+  }
+
+  QList<QgsWkbTypes::Type> *ql = new QList<QgsWkbTypes::Type>;
+
+  for ( Py_ssize_t i = 0; ; ++i )
+  {
+    PyErr_Clear();
+    PyObject *itm = PyIter_Next( iter );
+
+    if ( !itm )
+    {
+      if ( PyErr_Occurred() )
+      {
+        delete ql;
+        Py_DECREF( iter );
+        *sipIsErr = 1;
+
+        return 0;
+      }
+
+      break;
+    }
+
+    int v = sipConvertToEnum( itm, sipType_QgsWkbTypes_Type );
+
+    if ( PyErr_Occurred() )
+    {
+      PyErr_Format( PyExc_TypeError,
+                    "index %zd has type '%s' but 'QgsWkbTypes.Type' is expected",
+                    i, sipPyTypeName( Py_TYPE( itm ) ) );
+
+      Py_DECREF( itm );
+      delete ql;
+      Py_DECREF( iter );
+      *sipIsErr = 1;
+
+      return 0;
+    }
+
+    ql->append( static_cast<QgsWkbTypes::Type>( v ) );
+
+    Py_DECREF( itm );
+  }
+
+  Py_DECREF( iter );
+
+  *sipCppPtr = ql;
+
+  return sipGetState( sipTransferObj );
+%End
+};
+
+
+class QgsGeometryWidget : QWidget
+{
+%Docstring(signature="appended")
+A widget for storing and interacting with a :py:class:`QgsGeometry` object.
+
+This widget can be used in places where an dialog needs to expose a geometry
+value to users, and allow them to safely interact with it (such as changing
+the stored geometry value).
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsgeometrywidget.h"
+%End
+  public:
+
+    explicit QgsGeometryWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsGeometryWidget, with the specified ``parent`` widget.
+%End
+
+    void setGeometryValue( const QgsReferencedGeometry &geometry );
+%Docstring
+Sets the current ``geometry`` value for the widget.
+
+.. warning::
+
+   This should not be confused with QWidget.setGeometry(), which
+   modifies the placement and size of the widget itself.
+
+.. seealso:: :py:func:`geometryValue`
+
+.. seealso:: :py:func:`geometryValueChanged`
+%End
+
+    QgsReferencedGeometry geometryValue() const;
+%Docstring
+Returns the current geometry value for the widget.
+
+.. warning::
+
+   This should not be confused with QWidget.geometry(), which
+   returns the placement and size of the widget itself.
+
+.. seealso:: :py:func:`setGeometryValue`
+
+.. seealso:: :py:func:`geometryValueChanged`
+%End
+
+    void setAcceptedWkbTypes( const QList<QgsWkbTypes::Type> &types );
+%Docstring
+Sets the list of WKB geometry ``types`` which are permitted for the widget.
+
+.. seealso:: :py:func:`acceptedWkbTypes`
+%End
+
+    QList<QgsWkbTypes::Type> acceptedWkbTypes() const;
+%Docstring
+Returns the list of WKB geometry types which are permitted for the widget.
+
+.. seealso:: :py:func:`setAcceptedWkbTypes`
+%End
+
+    bool isReadOnly() const;
+%Docstring
+Returns whether the widget is in a read-only state.
+
+.. seealso:: :py:func:`setReadOnly`
+%End
+
+  public slots:
+
+    void setReadOnly( bool readOnly );
+%Docstring
+Sets whether the widget should be in a read-only state.
+
+.. seealso:: :py:func:`isReadOnly`
+%End
+
+    void clearGeometry();
+%Docstring
+Clears the current geometry value stored in the widget.
+%End
+
+    void copyAsWkt();
+%Docstring
+Copies the current geometry value to the clipboard, as a WKT string.
+
+.. seealso:: :py:func:`copyAsGeoJson`
+%End
+
+    void copyAsGeoJson();
+%Docstring
+Copies the current geometry value to the clipboard, as a GeoJSON string.
+
+.. seealso:: :py:func:`copyAsWkt`
+%End
+
+  signals:
+
+    void geometryValueChanged( const QgsReferencedGeometry &value );
+%Docstring
+Emitted whenever the geometry value of the widget is changed.
+
+.. seealso:: :py:func:`geometryValue`
+
+.. seealso:: :py:func:`setGeometryValue`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsgeometrywidget.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

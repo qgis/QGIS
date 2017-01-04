@@ -1,0 +1,238 @@
+/***************************************************************************
+   qgsgeometrywidget.cpp
+    --------------------------------------
+   Date                 : March 2015
+   Copyright            : (C) 2015 Nyall Dawson
+   Email                : nyall.dawson@gmail.com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************/
+
+#include "qgsgeometrywidget.h"
+#include "qgsapplication.h"
+#include "qgsgeometry.h"
+#include "qgsjsonutils.h"
+#include <QLineEdit>
+#include <QHBoxLayout>
+#include <QToolButton>
+#include <QMenu>
+#include <QAction>
+#include <QClipboard>
+
+QgsGeometryWidget::QgsGeometryWidget( QWidget *parent )
+  : QWidget( parent )
+{
+  QHBoxLayout *layout = new QHBoxLayout( this );
+  layout->setContentsMargins( 0, 0, 0, 0 );
+  layout->setSpacing( 0 );
+
+  mLineEdit = new QLineEdit( this );
+  mLineEdit->setReadOnly( true );
+  mLineEdit->setStyleSheet( QStringLiteral( "font-style: italic; color: grey;" ) );
+  mLineEdit->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
+  int width = mLineEdit->minimumSizeHint().width();
+  mLineEdit->setMinimumWidth( width );
+
+  mButton = new QToolButton( this );
+  mButton->setFixedSize( 30, 26 );
+  mButton->setStyleSheet( QStringLiteral( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }" ) );
+  mButton->setIconSize( QSize( 24, 24 ) );
+  mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOffsetCurve.svg" ) ) );
+
+  layout->addWidget( mLineEdit );
+  layout->addWidget( mButton );
+
+  setFocusProxy( mLineEdit );
+
+  mMenu = new QMenu( this );
+
+  mCopyWktAction = new QAction( mMenu );
+  mCopyWktAction->setText( tr( "Copy as WKT" ) );
+  connect( mCopyWktAction, &QAction::triggered, this, &QgsGeometryWidget::copyAsWkt );
+
+  mCopyGeoJsonAction = new QAction( mMenu );
+  mCopyGeoJsonAction->setText( tr( "Copy as GeoJSON" ) );
+  connect( mCopyGeoJsonAction, &QAction::triggered, this, &QgsGeometryWidget::copyAsGeoJson );
+
+  mPasteAction = new QAction( mMenu );
+  mPasteAction->setText( tr( "Paste Geometry" ) );
+  connect( mPasteAction, &QAction::triggered, this, &QgsGeometryWidget::pasteTriggered );
+
+  mClearAction = new QAction( mMenu );
+  mClearAction->setText( tr( "Clear" ) );
+  connect( mClearAction, &QAction::triggered, this, &QgsGeometryWidget::clearGeometry );
+
+  mMenu->addAction( mCopyWktAction );
+  mMenu->addAction( mCopyGeoJsonAction );
+  mMenu->addSeparator();
+  mMenu->addAction( mPasteAction );
+  mMenu->addAction( mClearAction );
+  connect( mMenu, &QMenu::aboutToShow, this, &QgsGeometryWidget::prepareMenu );
+
+  mButton->setMenu( mMenu );
+  mButton->setPopupMode( QToolButton::InstantPopup );
+
+  updateLineEdit();
+}
+
+void QgsGeometryWidget::setGeometryValue( const QgsReferencedGeometry &geometry )
+{
+  if ( geometry == mGeometry )
+    return;
+
+  if ( !typeIsAcceptable( geometry.wkbType() ) )
+  {
+    return;
+  }
+
+  mGeometry = geometry;
+  updateLineEdit();
+  emit geometryValueChanged( mGeometry );
+}
+
+QgsReferencedGeometry QgsGeometryWidget::geometryValue() const
+{
+  return mGeometry;
+}
+
+void QgsGeometryWidget::setAcceptedWkbTypes( const QList<QgsWkbTypes::Type> &types )
+{
+  mAcceptedTypes = types;
+}
+
+QList<QgsWkbTypes::Type> QgsGeometryWidget::acceptedWkbTypes() const
+{
+  return mAcceptedTypes;
+}
+
+bool QgsGeometryWidget::isReadOnly() const
+{
+  return mReadOnly;
+}
+
+void QgsGeometryWidget::setReadOnly( bool readOnly )
+{
+  mReadOnly = readOnly;
+}
+
+void QgsGeometryWidget::clearGeometry()
+{
+  if ( mGeometry.isNull() )
+    return;
+
+  setGeometryValue( QgsReferencedGeometry() );
+}
+
+void QgsGeometryWidget::copyAsWkt()
+{
+  if ( mGeometry.isNull() )
+    return;
+
+  QApplication::clipboard()->setText( mGeometry.asWkt() );
+}
+
+void QgsGeometryWidget::copyAsGeoJson()
+{
+  if ( mGeometry.isNull() )
+    return;
+
+  QApplication::clipboard()->setText( mGeometry.asJson() );
+}
+
+void QgsGeometryWidget::pasteTriggered()
+{
+  if ( !mPastedGeom.isNull() )
+  {
+    setGeometryValue( mPastedGeom );
+    mPastedGeom = QgsReferencedGeometry();
+  }
+}
+
+void QgsGeometryWidget::fetchGeomFromClipboard()
+{
+  mPastedGeom = QgsReferencedGeometry();
+  if ( mReadOnly )
+    return;
+
+  const QString text = QApplication::clipboard()->text();
+  if ( text.isEmpty() )
+    return;
+
+  //try reading as a single wkt string
+  mPastedGeom = QgsReferencedGeometry( QgsGeometry::fromWkt( text ), QgsCoordinateReferenceSystem() );
+  if ( !mPastedGeom.isNull() && typeIsAcceptable( mPastedGeom.wkbType() ) )
+  {
+    return;
+  }
+  mPastedGeom = QgsReferencedGeometry();
+
+  //try reading as a list
+  const QStringList lines = text.split( "\n", Qt::SkipEmptyParts );
+  if ( !lines.isEmpty() )
+  {
+    for ( const QString &line : lines )
+    {
+      const QgsGeometry geometry = QgsGeometry::fromWkt( line );
+      if ( !geometry.isNull() && typeIsAcceptable( geometry.wkbType() ) )
+      {
+        mPastedGeom = QgsReferencedGeometry( geometry, QgsCoordinateReferenceSystem() );
+        return;
+      }
+    }
+  }
+
+  // try reading a GeoJSON
+  const QgsFeatureList features = QgsJsonUtils::stringToFeatureList( text );
+  if ( !features.isEmpty() && features.at( 0 ).hasGeometry() )
+  {
+    mPastedGeom = QgsReferencedGeometry( features.at( 0 ).geometry(), QgsCoordinateReferenceSystem() );
+    return;
+  }
+}
+
+bool QgsGeometryWidget::typeIsAcceptable( QgsWkbTypes::Type type ) const
+{
+  if ( mAcceptedTypes.isEmpty() )
+  {
+    return true;
+  }
+
+  return mAcceptedTypes.contains( type );
+}
+
+void QgsGeometryWidget::prepareMenu()
+{
+  fetchGeomFromClipboard();
+
+  mCopyGeoJsonAction->setEnabled( !mGeometry.isNull() );
+  mCopyWktAction->setEnabled( !mGeometry.isNull() );
+  mClearAction->setEnabled( !mGeometry.isNull() && !mReadOnly );
+  mPasteAction->setEnabled( !mPastedGeom.isNull() && !mReadOnly );
+}
+
+void QgsGeometryWidget::updateLineEdit()
+{
+  if ( mGeometry.isNull() )
+  {
+    mLineEdit->setText( QgsApplication::nullRepresentation() );
+  }
+  else
+  {
+    const QString geomTypeString = QgsWkbTypes::displayString( mGeometry.wkbType() );
+    if ( mGeometry.crs().isValid() )
+    {
+      mLineEdit->setText( QStringLiteral( "%1 [%2]" ).arg( geomTypeString,
+                          mGeometry.crs().userFriendlyIdentifier( ) ) );
+    }
+    else
+    {
+      mLineEdit->setText( geomTypeString );
+    }
+  }
+}
