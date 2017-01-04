@@ -37,8 +37,7 @@ class TestQgsLayerTree : public QObject
     void cleanupTestCase();
     void testGroupNameChanged();
     void testLayerNameChanged();
-    void testCheckStateParentToChild();
-    void testCheckStateChildToParent();
+    void testCheckStateHiearchical();
     void testCheckStateMutuallyExclusive();
     void testCheckStateMutuallyExclusiveEdgeCases();
     void testShowHideAllSymbolNodes();
@@ -53,13 +52,19 @@ class TestQgsLayerTree : public QObject
 
     void testRendererLegend( QgsFeatureRenderer* renderer );
 
-    Qt::CheckState childState( int childIndex )
+    bool childVisiblity( int childIndex ) const
     {
-      return QgsLayerTree::toGroup( mRoot->children().at( childIndex ) )->isVisible();
+      return mRoot->children().at( childIndex )->isVisible();
     }
-    void setChildState( int childIndex, Qt::CheckState state )
+
+    bool visibilityChecked( int childIndex ) const
     {
-      QgsLayerTree::toGroup( mRoot->children().at( childIndex ) )->setVisible( state );
+      return mRoot->children().at( childIndex )->itemVisibilityChecked();
+    }
+
+    void setVisibilityChecked( int childIndex, bool state )
+    {
+      mRoot->children().at( childIndex )->setItemVisibilityChecked( state );
     }
 };
 
@@ -142,39 +147,27 @@ void TestQgsLayerTree::testLayerNameChanged()
   mRoot->removeChildNode( n );
 }
 
-void TestQgsLayerTree::testCheckStateParentToChild()
+void TestQgsLayerTree::testCheckStateHiearchical()
 {
-  mRoot->setVisible( Qt::Unchecked );
+  mRoot->setItemVisibilityCheckedRecursive( false );
+  QCOMPARE( mRoot->isItemVisibilityCheckedRecursive(), false );
+  QCOMPARE( mRoot->isItemVisibilityUncheckedRecursive(), true );
+  QCOMPARE( visibilityChecked( 0 ), false );
+  QCOMPARE( visibilityChecked( 1 ), false );
+  QCOMPARE( visibilityChecked( 2 ), false );
 
-  // all children unchecked
-  QCOMPARE( childState( 0 ), Qt::Unchecked );
-  QCOMPARE( childState( 1 ), Qt::Unchecked );
-  QCOMPARE( childState( 2 ), Qt::Unchecked );
+  mRoot->children().at( 0 )->setItemVisibilityCheckedParentRecursive( true );
+  QCOMPARE( mRoot->itemVisibilityChecked(), true );
 
-  mRoot->setVisible( Qt::Checked );
+  QCOMPARE( mRoot->isItemVisibilityCheckedRecursive(), false );
+  QCOMPARE( mRoot->isItemVisibilityUncheckedRecursive(), false );
 
-  // all children checked
-  QCOMPARE( childState( 0 ), Qt::Checked );
-  QCOMPARE( childState( 1 ), Qt::Checked );
-  QCOMPARE( childState( 2 ), Qt::Checked );
-}
-
-void TestQgsLayerTree::testCheckStateChildToParent()
-{
-  QCOMPARE( mRoot->isVisible(), Qt::Checked );
-
-  // uncheck a child - parent should be partial
-  setChildState( 0, Qt::Unchecked );
-  QCOMPARE( mRoot->isVisible(), Qt::PartiallyChecked );
-  setChildState( 1, Qt::Unchecked );
-  QCOMPARE( mRoot->isVisible(), Qt::PartiallyChecked );
-
-  // uncheck last child - parent should be unchecked
-  setChildState( 2, Qt::Unchecked );
-  QCOMPARE( mRoot->isVisible(), Qt::Unchecked );
-
-  // go back to original state
-  mRoot->setVisible( Qt::Checked );
+  mRoot->setItemVisibilityCheckedRecursive( true );
+  QCOMPARE( mRoot->isItemVisibilityCheckedRecursive(), true );
+  QCOMPARE( mRoot->isItemVisibilityUncheckedRecursive(), false );
+  QCOMPARE( visibilityChecked( 0 ), true );
+  QCOMPARE( visibilityChecked( 1 ), true );
+  QCOMPARE( visibilityChecked( 2 ), true );
 }
 
 void TestQgsLayerTree::testCheckStateMutuallyExclusive()
@@ -182,84 +175,83 @@ void TestQgsLayerTree::testCheckStateMutuallyExclusive()
   mRoot->setIsMutuallyExclusive( true );
 
   // only first should be enabled
-  QCOMPARE( childState( 0 ), Qt::Checked );
-  QCOMPARE( childState( 1 ), Qt::Unchecked );
-  QCOMPARE( childState( 2 ), Qt::Unchecked );
-  QCOMPARE( mRoot->isVisible(), Qt::Checked ); // fully checked, not just partial
+  QCOMPARE( childVisiblity( 0 ), true );
+  QCOMPARE( childVisiblity( 1 ), false );
+  QCOMPARE( childVisiblity( 2 ), false );
+  QCOMPARE( mRoot->isVisible(), true ); // fully checked, not just partial
 
   // switch to some other child
-  setChildState( 2, Qt::Checked );
-  QCOMPARE( childState( 0 ), Qt::Unchecked );
-  QCOMPARE( childState( 1 ), Qt::Unchecked );
-  QCOMPARE( childState( 2 ), Qt::Checked );
-  QCOMPARE( mRoot->isVisible(), Qt::Checked );
+  setVisibilityChecked( 2, true );
+  QCOMPARE( childVisiblity( 0 ), false );
+  QCOMPARE( childVisiblity( 1 ), false );
+  QCOMPARE( childVisiblity( 2 ), true );
+  QCOMPARE( mRoot->isVisible(), true );
 
   // now uncheck the root
-  mRoot->setVisible( Qt::Unchecked );
-  QCOMPARE( childState( 0 ), Qt::Unchecked );
-  QCOMPARE( childState( 1 ), Qt::Unchecked );
-  QCOMPARE( childState( 2 ), Qt::Unchecked );
-  QCOMPARE( mRoot->isVisible(), Qt::Unchecked );
+  mRoot->setItemVisibilityChecked( false );
+  QCOMPARE( mRoot->itemVisibilityChecked(), false );
 
-  // check one of the children - should also check the root
-  setChildState( 2, Qt::Checked );
-  QCOMPARE( childState( 0 ), Qt::Unchecked );
-  QCOMPARE( childState( 1 ), Qt::Unchecked );
-  QCOMPARE( childState( 2 ), Qt::Checked );
-  QCOMPARE( mRoot->isVisible(), Qt::Checked );
+  QCOMPARE( childVisiblity( 0 ), false );
+  QCOMPARE( childVisiblity( 1 ), false );
+  QCOMPARE( visibilityChecked( 2 ), true );
+  QCOMPARE( childVisiblity( 2 ), false );
+  QCOMPARE( mRoot->isVisible(), false );
 
-  // uncheck the child - should also uncheck the root
-  setChildState( 2, Qt::Unchecked );
-  QCOMPARE( childState( 0 ), Qt::Unchecked );
-  QCOMPARE( childState( 1 ), Qt::Unchecked );
-  QCOMPARE( childState( 2 ), Qt::Unchecked );
-  QCOMPARE( mRoot->isVisible(), Qt::Unchecked );
+  // check one of the children - should not modify the root
+  setVisibilityChecked( 2, true );
+  QCOMPARE( childVisiblity( 0 ), false );
+  QCOMPARE( childVisiblity( 1 ), false );
+  QCOMPARE( childVisiblity( 2 ), false );
+  QCOMPARE( mRoot->itemVisibilityChecked(), false );
+  QCOMPARE( mRoot->isVisible(), false );
 
-  // check the root back - should have the same node
-  mRoot->setVisible( Qt::Checked );
-  QCOMPARE( childState( 0 ), Qt::Unchecked );
-  QCOMPARE( childState( 1 ), Qt::Unchecked );
-  QCOMPARE( childState( 2 ), Qt::Checked );
-  QCOMPARE( mRoot->isVisible(), Qt::Checked );
+  // uncheck the child - should not modify the root
+  setVisibilityChecked( 2, false );
+  QCOMPARE( childVisiblity( 0 ), false );
+  QCOMPARE( childVisiblity( 1 ), false );
+  QCOMPARE( childVisiblity( 2 ), false );
+  QCOMPARE( mRoot->itemVisibilityChecked(), false );
+  QCOMPARE( mRoot->isVisible(), false );
+
+  // check the root back
+  mRoot->setItemVisibilityChecked( true );
+  setVisibilityChecked( 2, true );
+  QCOMPARE( childVisiblity( 0 ), false );
+  QCOMPARE( childVisiblity( 1 ), false );
+  QCOMPARE( childVisiblity( 2 ), true );
+  QCOMPARE( mRoot->isVisible(), true );
 
   // remove a child
   mRoot->removeChildNode( mRoot->children().at( 0 ) );
-  QCOMPARE( childState( 0 ), Qt::Unchecked );
-  QCOMPARE( childState( 1 ), Qt::Checked );
-  QCOMPARE( mRoot->isVisible(), Qt::Checked );
+  QCOMPARE( childVisiblity( 0 ), false );
+  QCOMPARE( childVisiblity( 1 ), true );
+  QCOMPARE( mRoot->isVisible(), true );
 
   // add the group back - will not be checked
   mRoot->insertGroup( 0, QStringLiteral( "grp1" ) );
-  QCOMPARE( childState( 0 ), Qt::Unchecked );
-  QCOMPARE( childState( 1 ), Qt::Unchecked );
-  QCOMPARE( childState( 2 ), Qt::Checked );
-  QCOMPARE( mRoot->isVisible(), Qt::Checked );
+  QCOMPARE( childVisiblity( 0 ), false );
+  QCOMPARE( childVisiblity( 1 ), false );
+  QCOMPARE( childVisiblity( 2 ), true );
+  QCOMPARE( mRoot->isVisible(), true );
 
   // remove a child that is checked
   mRoot->removeChildNode( mRoot->children().at( 2 ) );
-  QCOMPARE( childState( 0 ), Qt::Unchecked );
-  QCOMPARE( childState( 1 ), Qt::Unchecked );
-  QCOMPARE( mRoot->isVisible(), Qt::Unchecked );
-
-  // check the root again - first item should be checked
-  mRoot->setVisible( Qt::Checked );
-  QCOMPARE( childState( 0 ), Qt::Checked );
-  QCOMPARE( childState( 1 ), Qt::Unchecked );
-  QCOMPARE( mRoot->isVisible(), Qt::Checked );
+  QCOMPARE( childVisiblity( 0 ), false );
+  QCOMPARE( childVisiblity( 1 ), false );
+  QCOMPARE( mRoot->isVisible(), true );
 
   // add the item back
+  setVisibilityChecked( 0, true );
   mRoot->addGroup( QStringLiteral( "grp3" ) );
-  QCOMPARE( childState( 0 ), Qt::Checked );
-  QCOMPARE( childState( 1 ), Qt::Unchecked );
-  QCOMPARE( childState( 2 ), Qt::Unchecked );
-  QCOMPARE( mRoot->isVisible(), Qt::Checked );
+  QCOMPARE( childVisiblity( 0 ), true );
+  QCOMPARE( childVisiblity( 1 ), false );
+  QCOMPARE( childVisiblity( 2 ), false );
+  QCOMPARE( mRoot->isVisible(), true );
 
   mRoot->setIsMutuallyExclusive( false );
 
-  QCOMPARE( mRoot->isVisible(), Qt::PartiallyChecked );
-
   // go back to original state
-  mRoot->setVisible( Qt::Checked );
+  mRoot->setItemVisibilityChecked( true );
 }
 
 void TestQgsLayerTree::testCheckStateMutuallyExclusiveEdgeCases()
@@ -268,23 +260,23 @@ void TestQgsLayerTree::testCheckStateMutuallyExclusiveEdgeCases()
   QgsLayerTreeGroup* root2 = new QgsLayerTreeGroup();
   root2->setIsMutuallyExclusive( true );
   root2->addGroup( QStringLiteral( "1" ) );
-  QCOMPARE( QgsLayerTree::toGroup( root2->children().at( 0 ) )->isVisible(), Qt::Checked );
+  QCOMPARE( QgsLayerTree::toGroup( root2->children().at( 0 ) )->isVisible(), true );
   root2->addGroup( QStringLiteral( "2" ) );
-  QCOMPARE( QgsLayerTree::toGroup( root2->children().at( 0 ) )->isVisible(), Qt::Checked );
-  QCOMPARE( QgsLayerTree::toGroup( root2->children().at( 1 ) )->isVisible(), Qt::Unchecked );
+  QCOMPARE( QgsLayerTree::toGroup( root2->children().at( 0 ) )->isVisible(), true );
+  QCOMPARE( QgsLayerTree::toGroup( root2->children().at( 1 ) )->isVisible(), false );
   delete root2;
 
   // check-uncheck the only child
   QgsLayerTreeGroup* root3 = new QgsLayerTreeGroup();
   root3->setIsMutuallyExclusive( true );
   root3->addGroup( QStringLiteral( "1" ) );
-  QCOMPARE( QgsLayerTree::toGroup( root3->children().at( 0 ) )->isVisible(), Qt::Checked );
-  QgsLayerTree::toGroup( root3->children().at( 0 ) )->setVisible( Qt::Unchecked );
-  QCOMPARE( QgsLayerTree::toGroup( root3->children().at( 0 ) )->isVisible(), Qt::Unchecked );
-  QCOMPARE( root3->isVisible(), Qt::Unchecked );
-  QgsLayerTree::toGroup( root3->children().at( 0 ) )->setVisible( Qt::Checked );
-  QCOMPARE( QgsLayerTree::toGroup( root3->children().at( 0 ) )->isVisible(), Qt::Checked );
-  QCOMPARE( root3->isVisible(), Qt::Checked );
+  QCOMPARE( QgsLayerTree::toGroup( root3->children().at( 0 ) )->isVisible(), true );
+  QgsLayerTree::toGroup( root3->children().at( 0 ) )->setItemVisibilityChecked( false );
+  QCOMPARE( QgsLayerTree::toGroup( root3->children().at( 0 ) )->isVisible(), false );
+  QCOMPARE( root3->isVisible(), true );
+  QgsLayerTree::toGroup( root3->children().at( 0 ) )->setItemVisibilityChecked( true );
+  QCOMPARE( QgsLayerTree::toGroup( root3->children().at( 0 ) )->isVisible(), true );
+  QCOMPARE( root3->isVisible(), true );
   delete root3;
 }
 

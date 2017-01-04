@@ -20,6 +20,15 @@ class QgsLayerTreeViewDefaultActions : QObject
     QAction* actionRenameGroupOrLayer( QObject* parent = 0 ) /Factory/;
     QAction* actionShowFeatureCount( QObject* parent = 0 ) /Factory/;
 
+    //! Action to check a group and all its children
+    QAction* actionCheckAndAllChildren( QObject* parent = nullptr );
+
+    //! Action to uncheck a group and all its children
+    QAction* actionUncheckAndAllChildren( QObject* parent = nullptr );
+
+    //! Action to check a group and all its parents
+    QAction* actionCheckAndAllParents( QObject* parent = nullptr );
+
     QAction* actionZoomToLayer( QgsMapCanvas* canvas, QObject* parent = 0 ) /Factory/;
     QAction* actionZoomToGroup( QgsMapCanvas* canvas, QObject* parent = 0 ) /Factory/;
     // TODO: zoom to selected

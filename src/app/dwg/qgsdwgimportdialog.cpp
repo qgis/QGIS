@@ -422,7 +422,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
   if ( !layerGroup->children().isEmpty() )
   {
     layerGroup->setExpanded( false );
-    layerGroup->setVisible( visible ? Qt::Checked : Qt::Unchecked );
+    layerGroup->setItemVisibilityChecked( visible );
   }
   else
   {

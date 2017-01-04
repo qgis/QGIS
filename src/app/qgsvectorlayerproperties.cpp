@@ -309,7 +309,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // use visibility as selection
   mLayersDependenciesTreeModel->setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
 
-  mLayersDependenciesTreeGroup->setVisible( Qt::Unchecked );
+  mLayersDependenciesTreeGroup->setItemVisibilityChecked( false );
 
   QSet<QString> dependencySources;
   Q_FOREACH ( const QgsMapLayerDependency& dep, mLayer->dependencies() )
@@ -318,7 +318,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   }
   Q_FOREACH ( QgsLayerTreeLayer* layer, mLayersDependenciesTreeGroup->findLayers() )
   {
-    layer->setVisible( dependencySources.contains( layer->layerId() ) ? Qt::Checked : Qt::Unchecked );
+    layer->setItemVisibilityChecked( dependencySources.contains( layer->layerId() ) );
   }
 
   mLayersDependenciesTreeView->setModel( mLayersDependenciesTreeModel.data() );

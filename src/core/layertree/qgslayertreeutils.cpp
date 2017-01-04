@@ -112,7 +112,7 @@ static QDomElement _writeOldLegendLayer( QDomDocument& doc, QgsLayerTreeLayer* n
   QDomElement layerElem = doc.createElement( QStringLiteral( "legendlayer" ) );
   layerElem.setAttribute( QStringLiteral( "drawingOrder" ), drawingOrder );
   layerElem.setAttribute( QStringLiteral( "open" ), nodeLayer->isExpanded() ? "true" : "false" );
-  layerElem.setAttribute( QStringLiteral( "checked" ), QgsLayerTreeUtils::checkStateToXml( nodeLayer->isVisible() ) );
+  layerElem.setAttribute( QStringLiteral( "checked" ), QgsLayerTreeUtils::checkStateToXml( nodeLayer->itemVisibilityChecked() ? Qt::Checked : Qt::Unchecked ) );
   layerElem.setAttribute( QStringLiteral( "name" ), nodeLayer->name() );
   layerElem.setAttribute( QStringLiteral( "showFeatureCount" ), nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ) ).toInt() );
 
@@ -123,7 +123,7 @@ static QDomElement _writeOldLegendLayer( QDomDocument& doc, QgsLayerTreeLayer* n
   QDomElement layerFileElem = doc.createElement( QStringLiteral( "legendlayerfile" ) );
   layerFileElem.setAttribute( QStringLiteral( "isInOverview" ), nodeLayer->customProperty( QStringLiteral( "overview" ) ).toInt() );
   layerFileElem.setAttribute( QStringLiteral( "layerid" ), nodeLayer->layerId() );
-  layerFileElem.setAttribute( QStringLiteral( "visible" ), nodeLayer->isVisible() == Qt::Checked ? 1 : 0 );
+  layerFileElem.setAttribute( QStringLiteral( "visible" ), nodeLayer->isVisible() ? 1 : 0 );
 
   layerElem.appendChild( fileGroupElem );
   fileGroupElem.appendChild( layerFileElem );
@@ -138,7 +138,7 @@ static QDomElement _writeOldLegendGroup( QDomDocument& doc, QgsLayerTreeGroup* n
   QDomElement groupElem = doc.createElement( QStringLiteral( "legendgroup" ) );
   groupElem.setAttribute( QStringLiteral( "open" ), nodeGroup->isExpanded() ? "true" : "false" );
   groupElem.setAttribute( QStringLiteral( "name" ), nodeGroup->name() );
-  groupElem.setAttribute( QStringLiteral( "checked" ), QgsLayerTreeUtils::checkStateToXml( nodeGroup->isVisible() ) );
+  groupElem.setAttribute( QStringLiteral( "checked" ), QgsLayerTreeUtils::checkStateToXml( nodeGroup->itemVisibilityChecked() ? Qt::Checked : Qt::Unchecked ) );
 
   if ( nodeGroup->customProperty( QStringLiteral( "embedded" ) ).toInt() )
   {
@@ -210,7 +210,7 @@ static void _readOldLegendGroup( const QDomElement& groupElem, QgsLayerTreeGroup
 
   QgsLayerTreeGroup* groupNode = new QgsLayerTreeGroup( groupElem.attribute( QStringLiteral( "name" ) ) );
 
-  groupNode->setVisible( QgsLayerTreeUtils::checkStateFromXml( groupElem.attribute( QStringLiteral( "checked" ) ) ) );
+  groupNode->setItemVisibilityChecked( QgsLayerTreeUtils::checkStateFromXml( groupElem.attribute( QStringLiteral( "checked" ) ) ) != Qt::Unchecked );
   groupNode->setExpanded( groupElem.attribute( QStringLiteral( "open" ) ) == QLatin1String( "true" ) );
 
   if ( groupElem.attribute( QStringLiteral( "embedded" ) ) == QLatin1String( "1" ) )
@@ -241,7 +241,7 @@ static void _readOldLegendLayer( const QDomElement& layerElem, QgsLayerTreeGroup
   QString layerId = layerFileElem.attribute( QStringLiteral( "layerid" ) );
   QgsLayerTreeLayer* layerNode = new QgsLayerTreeLayer( layerId, layerElem.attribute( QStringLiteral( "name" ) ) );
 
-  layerNode->setVisible( QgsLayerTreeUtils::checkStateFromXml( layerElem.attribute( QStringLiteral( "checked" ) ) ) );
+  layerNode->setItemVisibilityChecked( QgsLayerTreeUtils::checkStateFromXml( layerElem.attribute( QStringLiteral( "checked" ) ) ) != Qt::Unchecked );
   layerNode->setExpanded( layerElem.attribute( QStringLiteral( "open" ) ) == QLatin1String( "true" ) );
 
   if ( layerFileElem.attribute( QStringLiteral( "isInOverview" ) ) == QLatin1String( "1" ) )

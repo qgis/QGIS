@@ -111,6 +111,9 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     QgsMapLayer* layerForIndex( const QModelIndex& index ) const;
 
+    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
+
   protected slots:
 
     void modelRowsInserted( const QModelIndex& index, int start, int end );
