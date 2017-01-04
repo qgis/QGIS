@@ -262,6 +262,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsMapLayerRegistry. Its functionality has been moved to QgsProject.
 - QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.
 - QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.
+- QgsProjectBadLayerGuiHandler was removed. It was unused in QGIS code and barely useful. Implement your own QgsProjectBadLayerHandler subclass if needed.
 - QgsRendererV2DataDefinedMenus was removed. Use QgsDataDefinedButton instead.
 - QgsLegacyHelpers.
 - QgsProviderCountCalcEvent and QgsProviderExtentCalcEvent. These classes were unused in QGIS core and unmaintained.
@@ -1381,6 +1382,10 @@ QgsProject        {#qgis_api_break_3_0_QgsProject}
 - title( const QString & title ) was removed. Use setTitle() instead.
 - dirty( bool b ) was removed. Use setDirty() instead.
 - clearProperties() was removed. Use clear() instead.
+- read( QDomNode& layerNode ) was renamed to readLayer( const QDomNode& layerNode ).
+- read( const QFileInfo& file ) was replaced by read( const QString& filename ).
+- write( const QFileInfo& file ) was replaced by write( const QString& filename ).
+
 
 QgsProjectPropertyValue        {#qgis_api_break_3_0_QgsProjectPropertyValue}
 -----------------------

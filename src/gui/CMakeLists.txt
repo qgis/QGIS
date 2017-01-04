@@ -287,7 +287,6 @@ SET(QGIS_GUI_SRCS
   qgspluginmanagerinterface.cpp
   qgspresetcolorrampdialog.cpp
   qgsprevieweffect.cpp
-  qgsprojectbadlayerguihandler.cpp
   qgsprojectionselectionwidget.cpp
   qgsprojectionselector.cpp
   qgsquerybuilder.cpp
@@ -450,7 +449,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgspluginmanagerinterface.h
   qgspresetcolorrampdialog.h
   qgsprevieweffect.h
-  qgsprojectbadlayerguihandler.h
   qgsprojectionselectionwidget.h
   qgsprojectionselector.h
   qgsquerybuilder.h

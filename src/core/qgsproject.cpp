@@ -757,9 +757,9 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   }
 }
 
-bool QgsProject::read( const QFileInfo& file )
+bool QgsProject::read( const QString& filename )
 {
-  mFile.setFileName( file.filePath() );
+  mFile.setFileName( filename );
 
   return read();
 }
@@ -1123,7 +1123,7 @@ void QgsProject::cleanTransactionGroups( bool force )
     emit transactionGroupsChanged();
 }
 
-bool QgsProject::read( QDomNode &layerNode )
+bool QgsProject::readLayer( const QDomNode& layerNode )
 {
   QList<QDomNode> brokenNodes;
   QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
@@ -1150,13 +1150,6 @@ bool QgsProject::read( QDomNode &layerNode )
 bool QgsProject::write( const QString& filename )
 {
   mFile.setFileName( filename );
-
-  return write();
-}
-
-bool QgsProject::write( QFileInfo const &file )
-{
-  mFile.setFileName( file.filePath() );
 
   return write();
 }

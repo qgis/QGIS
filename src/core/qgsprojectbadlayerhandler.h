@@ -35,7 +35,6 @@ class CORE_EXPORT QgsProjectBadLayerHandler
      * log.
      *
      * @note Added in QGIS 3.0
-     * @see QgsProjectBadLayerGuiHandler
      */
     virtual void handleBadLayers( const QList<QDomNode>& layers );
     virtual ~QgsProjectBadLayerHandler() = default;
