@@ -533,6 +533,7 @@ set(QGIS_GUI_SRCS
   qgsformannotation.cpp
   qgsgeocoderlocatorfilter.cpp
   qgsgeometryrubberband.cpp
+  qgsgeometrywidget.cpp
   qgsgradientcolorrampdialog.cpp
   qgsgradientstopeditor.cpp
   qgsgraphicsviewmousehandles.cpp
@@ -802,6 +803,7 @@ set(QGIS_GUI_HDRS
   qgsformlabelformatwidget.h
   qgsgeocoderlocatorfilter.h
   qgsgeometryrubberband.h
+  qgsgeometrywidget.h
   qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
   qgsgraphicsviewmousehandles.h
