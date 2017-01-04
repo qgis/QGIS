@@ -564,21 +564,11 @@ IF(COMMAND cmake_policy)
 ENDIF(COMMAND cmake_policy)
 
 IF (WIN32)
-  SET(DLLIMPORT "__declspec(dllimport)")
-  SET(DLLEXPORT "__declspec(dllexport)")
-ELSE (WIN32)
-  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    SET(DLLEXPORT "__attribute__ ((visibility (\\\"default\\\")))")
-  ELSE()
-    SET(DLLEXPORT "")
-  ENDIF()
-
   IF(PEDANTIC AND NOT APPLE)
     SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
     SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
   ENDIF(PEDANTIC AND NOT APPLE)
-
 ENDIF(WIN32)
 
 SET(CMAKE_CXX_VISIBILITY_PRESET hidden)
