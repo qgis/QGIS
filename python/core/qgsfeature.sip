@@ -4,7 +4,7 @@ typedef QMap<int, QVariant> QgsAttributeMap;
 typedef QVector<QVariant> QgsAttributes;
 
 // QgsAttributes is implemented as a Python list of Python objects.
-%MappedType QgsAttributes /DocType="list-of-attributes"/
+%MappedType QgsAttributes
 {
 %TypeHeaderCode
 #include <qgsfeature.h>

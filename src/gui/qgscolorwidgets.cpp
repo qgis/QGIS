@@ -17,7 +17,7 @@
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
 #include <QResizeEvent>
-#include <QStyleOptionFrameV3>
+#include <QStyleOptionFrame>
 #include <QPainter>
 #include <QHBoxLayout>
 #include <QSpinBox>

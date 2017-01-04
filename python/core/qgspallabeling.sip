@@ -1,5 +1,5 @@
 // QMap<QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined*> is implemented as a Python dictionary.
-%MappedType QMap<QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined*> /DocType="dict-of-QgsPalLayerSettings.DataDefinedProperties-QgsDataDefined*"/
+%MappedType QMap<QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined*>
 {
 %TypeHeaderCode
 #include <qmap.h>
