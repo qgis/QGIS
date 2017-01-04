@@ -20,6 +20,7 @@
 #include <QObject>
 
 #include "qgsosmbase.h"
+#include "qgis_analysis.h"
 
 class QXmlStreamReader;
 

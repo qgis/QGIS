@@ -19,6 +19,7 @@
 
 #include "TriangleInterpolator.h"
 #include "DualEdgeTriangulation.h"
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * LinTriangleInterpolator is a class which interpolates linearly on a triangulation*/

@@ -22,6 +22,7 @@
 
 #include <qgspoint.h>
 #include "qgsnetworkstrategy.h"
+#include "qgis_analysis.h"
 
 class QgsGraphBuilderInterface;
 

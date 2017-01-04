@@ -19,6 +19,7 @@
 #define QGSHILLSHADEFILTER_H
 
 #include "qgsderivativefilter.h"
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * \class QgsHillshadeFilter

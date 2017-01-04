@@ -21,6 +21,7 @@
 #include <TriangleInterpolator.h>
 #include <MathUtils.h>
 #include "qgslogger.h"
+#include "qgis_analysis.h"
 
 class QProgressDialog;
 

@@ -22,6 +22,7 @@
 #include <QMap>
 #include <limits>
 #include <cfloat>
+#include "qgis_analysis.h"
 
 class QgsGeometry;
 class QgsVectorLayer;

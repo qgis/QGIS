@@ -121,6 +121,7 @@ INCLUDE_DIRECTORIES(
 
   ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
   ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/analysis
 )
 
 IF(NOT ANDROID)

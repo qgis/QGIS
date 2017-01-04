@@ -20,6 +20,7 @@
 #include <QObject>
 #include <QFile>
 #include <QNetworkReply>
+#include "qgis_analysis.h"
 
 class QgsRectangle;
 

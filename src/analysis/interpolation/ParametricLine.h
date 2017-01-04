@@ -19,6 +19,7 @@
 
 #include "Point3D.h"
 #include <QVector>
+#include "qgis_analysis.h"
 
 class Vector3D;
 

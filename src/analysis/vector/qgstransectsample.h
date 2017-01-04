@@ -18,6 +18,7 @@
 #include "qgsfeature.h"
 #include <QMap>
 #include <QString>
+#include "qgis_analysis.h"
 
 class QgsDistanceArea;
 class QgsGeometry;

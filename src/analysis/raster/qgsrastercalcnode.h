@@ -21,6 +21,7 @@
 
 #include <QMap>
 #include <QString>
+#include "qgis_analysis.h"
 
 class QgsRasterBlock;
 class QgsRasterMatrix;

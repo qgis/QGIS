@@ -17,6 +17,8 @@
 #ifndef HALFEDGE_H
 #define HALFEDGE_H
 
+#include "qgis_analysis.h"
+
 /** \ingroup analysis
  * \class HalfEdge
  */

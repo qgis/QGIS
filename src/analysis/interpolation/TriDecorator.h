@@ -18,6 +18,7 @@
 #define TRIDECORATOR_H
 
 #include "Triangulation.h"
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
