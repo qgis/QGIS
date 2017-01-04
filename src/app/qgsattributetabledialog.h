@@ -26,6 +26,7 @@
 #include "ui_qgsattributetabledialog.h"
 #include "qgssearchwidgetwrapper.h"
 #include "qgsdockwidget.h"
+#include "qgis_app.h"
 
 class QDialogButtonBox;
 class QPushButton;

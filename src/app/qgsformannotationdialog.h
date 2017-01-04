@@ -16,6 +16,7 @@
 #define QGSFORMANNOTATIONDIALOG_H
 
 #include "ui_qgsformannotationdialogbase.h"
+#include "qgis_app.h"
 
 class QgsAnnotationWidget;
 class QgsFormAnnotationItem;

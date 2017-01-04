@@ -18,6 +18,7 @@
 
 #include <QDialog>
 #include "qgsattributeeditorcontext.h"
+#include "qgis_app.h"
 
 class QgsAttributeForm;
 class QgsMessageBar;

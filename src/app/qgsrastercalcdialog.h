@@ -20,6 +20,7 @@
 
 #include "ui_qgsrastercalcdialogbase.h"
 #include "qgsrastercalculator.h"
+#include "qgis_app.h"
 
 //! A dialog to enter a raster calculation expression
 class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcDialogBase

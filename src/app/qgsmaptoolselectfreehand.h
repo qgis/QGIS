@@ -17,6 +17,7 @@
 #define QGSMAPTOOLSELECTFREEHAND_H
 
 #include "qgsmaptool.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsRubberBand;

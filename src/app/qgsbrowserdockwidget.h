@@ -24,6 +24,7 @@
 #include "qgsbrowsertreeview.h"
 #include "qgsdockwidget.h"
 #include <QSortFilterProxyModel>
+#include "qgis_app.h"
 
 class QgsBrowserModel;
 class QModelIndex;

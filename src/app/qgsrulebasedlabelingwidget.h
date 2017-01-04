@@ -22,6 +22,7 @@
 #include <ui_qgsrulebasedlabelingwidget.h>
 
 #include "qgsrulebasedlabeling.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsVectorLayer;

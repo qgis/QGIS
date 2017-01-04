@@ -17,6 +17,7 @@
 #define QGSMAPTOOLSELECT_H
 
 #include "qgsmaptool.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QMouseEvent;

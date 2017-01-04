@@ -19,6 +19,7 @@
 #define QgsJoinDIALOG_H
 
 #include "ui_qgsjoindialogbase.h"
+#include "qgis_app.h"
 
 class QgsVectorLayer;
 struct QgsVectorJoinInfo;

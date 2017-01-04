@@ -28,6 +28,7 @@ class QgsScaleComboBox;
 
 
 #include <QWidget>
+#include "qgis_app.h"
 
 /**
   * Widget to define scale of the map canvas.

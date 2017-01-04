@@ -17,6 +17,7 @@
 #define QGSMAPTOOLROTATEPOINTSYMBOLS_H
 
 #include "qgsmaptoolpointsymbol.h"
+#include "qgis_app.h"
 
 class QgsPointRotationItem;
 class QgsMarkerSymbol;

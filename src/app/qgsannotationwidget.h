@@ -19,6 +19,7 @@
 #define QGSANNOTATIONWIDGET_H
 
 #include "ui_qgsannotationwidgetbase.h"
+#include "qgis_app.h"
 
 class QgsAnnotationItem;
 class QgsMarkerSymbol;

@@ -23,6 +23,7 @@
 #include "qgsfeature.h"
 #include "qgsstatisticalsummary.h"
 #include "qgsfields.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsRubberBand;

@@ -25,6 +25,7 @@
 #include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgis_app.h"
 
 /**
   \brief QGIS internal clipboard for features.

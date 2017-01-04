@@ -17,6 +17,7 @@
 
 #include <QDialog>
 #include "ui_qgsrelationadddlgbase.h"
+#include "qgis_app.h"
 
 class QgsVectorLayer;
 

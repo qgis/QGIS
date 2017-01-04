@@ -24,6 +24,7 @@
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgis_app.h"
 
 class QgsPoint;
 class QgsMapLayer;

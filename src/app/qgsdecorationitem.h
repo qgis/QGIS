@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include "qgsunittypes.h"
+#include "qgis_app.h"
 
 class QPainter;
 

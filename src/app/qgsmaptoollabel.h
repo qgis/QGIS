@@ -20,6 +20,7 @@
 
 #include "qgsmaptool.h"
 #include "qgspallabeling.h"
+#include "qgis_app.h"
 
 class QgsRubberBand;
 

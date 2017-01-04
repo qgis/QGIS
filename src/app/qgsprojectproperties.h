@@ -23,6 +23,7 @@
 #include "qgsunittypes.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsRelationManagerDialog;

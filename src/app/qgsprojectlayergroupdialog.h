@@ -17,6 +17,7 @@
 
 #include "QDialog"
 #include "ui_qgsprojectlayergroupdialogbase.h"
+#include "qgis_app.h"
 
 class QDomElement;
 

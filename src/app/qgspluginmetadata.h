@@ -19,6 +19,7 @@
 #ifndef QGSPLUGINMETADATA_H
 #define QGSPLUGINMETADATA_H
 #include <QString>
+#include "qgis_app.h"
 class QgisPlugin;
 
 /**

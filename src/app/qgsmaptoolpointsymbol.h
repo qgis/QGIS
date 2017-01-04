@@ -18,6 +18,7 @@
 
 #include "qgsmaptooledit.h"
 #include "qgsfeature.h"
+#include "qgis_app.h"
 
 class QgsMarkerSymbol;
 

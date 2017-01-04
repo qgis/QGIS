@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolcapture.h"
+#include "qgis_app.h"
 
 //! A tool to cut holes into polygons and multipolygon features
 class APP_EXPORT QgsMapToolAddRing: public QgsMapToolCapture
