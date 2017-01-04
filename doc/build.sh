@@ -14,8 +14,8 @@
 #                                                                         #
 ###########################################################################
 
-txt2tags -o ../INSTALL -t txt INSTALL.t2t 
-txt2tags -o INSTALL.html -t html INSTALL.t2t
-txt2tags -o INSTALL.tex -t tex INSTALL.t2t
+txt2tags --encoding=utf-8 -o ../INSTALL -t txt INSTALL.t2t
+txt2tags --encoding=utf-8 -o INSTALL.html -t html INSTALL.t2t
+txt2tags --encoding=utf-8 -o INSTALL.tex -t tex INSTALL.t2t
 pdflatex INSTALL.tex
 mv INSTALL.pdf ..
