@@ -17,6 +17,7 @@
 
 #include "ui_qgsheatmaprendererwidgetbase.h"
 #include "qgsrendererwidget.h"
+#include "qgis_gui.h"
 
 class QMenu;
 class QgsHeatmapRenderer;

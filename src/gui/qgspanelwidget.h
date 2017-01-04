@@ -18,6 +18,7 @@
 #include <QWidget>
 #include <QKeyEvent>
 #include <QStack>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * @brief Base class for any widget that can be shown as a inline panel

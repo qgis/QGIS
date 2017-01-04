@@ -17,6 +17,7 @@
 #define QGSPAINTEFFECTPROPERTIESWIDGET_H
 
 #include "ui_qgseffectpropertieswidget.h"
+#include "qgis_gui.h"
 
 class QgsPaintEffect;
 

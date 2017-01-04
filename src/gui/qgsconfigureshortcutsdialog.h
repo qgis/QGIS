@@ -19,6 +19,7 @@
 #include <QDialog>
 
 #include "ui_qgsconfigureshortcutsdialog.h"
+#include "qgis_gui.h"
 
 class QShortcut;
 class QgsShortcutsManager;

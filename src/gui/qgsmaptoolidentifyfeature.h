@@ -17,6 +17,7 @@
 #define QGSMAPTOOLIDENTIFYFEATURE_H
 
 #include "qgsmaptoolidentify.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * @brief The QgsMapToolIdentifyFeature class is a map tool to identify a feature on a chosen layer.

@@ -24,6 +24,7 @@
 #include <QLineEdit>
 #include <QHBoxLayout>
 #include <QStandardItemModel>
+#include "qgis_gui.h"
 
 class QgsAttributeForm;
 class QgsVectorLayerTools;

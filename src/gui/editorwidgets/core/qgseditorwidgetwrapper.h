@@ -24,6 +24,7 @@ class QgsVectorLayer;
 class QgsField;
 
 #include "qgswidgetwrapper.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Manages an editor widget

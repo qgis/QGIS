@@ -22,6 +22,7 @@
 #include <qgspanelwidget.h>
 
 #include "ui_qgseffectstackpropertieswidgetbase.h"
+#include "qgis_gui.h"
 
 class EffectItem;
 class QgsPaintEffect;

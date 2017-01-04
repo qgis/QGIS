@@ -31,6 +31,7 @@ INCLUDE_DIRECTORIES(
   ../../core
   ../../core/geometry
   ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}

@@ -21,6 +21,7 @@
 #include <QDialog>
 #include <QSslError>
 #include "ui_qgsauthsslerrorsdialog.h"
+#include "qgis_gui.h"
 
 class QNetworkReply;
 class QPushButton;

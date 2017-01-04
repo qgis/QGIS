@@ -21,6 +21,7 @@
 
 #include <QWidget>
 #include <QDialog>
+#include "qgis_gui.h"
 
 
 /** \ingroup gui

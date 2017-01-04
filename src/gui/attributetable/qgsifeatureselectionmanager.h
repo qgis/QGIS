@@ -19,6 +19,7 @@
 #include <QObject>
 
 #include "qgsfeature.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Is an interface class to abstract feature selection handling.

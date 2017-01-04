@@ -20,6 +20,7 @@
 
 #include <QList>
 #include "qgssnapper.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QPoint;

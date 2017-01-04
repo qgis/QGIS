@@ -17,6 +17,7 @@
 
 #include "qgscomposeritem.h"
 #include <QWidget>
+#include "qgis_gui.h"
 class QgsComposition;
 class QGraphicsLineItem;
 

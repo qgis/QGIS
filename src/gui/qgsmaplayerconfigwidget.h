@@ -19,6 +19,7 @@
 #include <QIcon>
 
 #include "qgspanelwidget.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsMapLayer;

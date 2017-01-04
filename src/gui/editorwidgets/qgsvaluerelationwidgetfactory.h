@@ -19,6 +19,7 @@
 #include "qgseditorwidgetfactory.h"
 
 #include <QMap>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsValueRelationWidgetFactory

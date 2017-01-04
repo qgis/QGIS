@@ -22,6 +22,7 @@
 #include <qgsdistancearea.h>
 #include <qgsvectorlayer.h>
 #include <qgsvectorlayertools.h>
+#include "qgis_gui.h"
 
 
 /** \ingroup gui

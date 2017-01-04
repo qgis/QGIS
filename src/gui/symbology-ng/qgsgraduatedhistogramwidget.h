@@ -18,6 +18,7 @@
 #define QGSGRADUATEDHISTOGRAMWIDGET_H
 
 #include "qgshistogramwidget.h"
+#include "qgis_gui.h"
 
 class QwtPlotPicker;
 class QgsGraduatedHistogramEventFilter;

@@ -23,6 +23,7 @@
 #include <QComboBox>
 
 #include "qgscoordinatereferencesystem.h"
+#include "qgis_gui.h"
 
 class QgsGenericProjectionSelector;
 

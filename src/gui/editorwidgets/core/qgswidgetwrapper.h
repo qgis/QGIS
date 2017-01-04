@@ -23,6 +23,7 @@
 class QgsVectorLayer;
 
 #include "qgsattributeeditorcontext.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Manages an editor widget

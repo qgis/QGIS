@@ -21,6 +21,7 @@
 
 
 #include "qgsscalecombobox.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 

@@ -29,6 +29,7 @@
 #include <QWidget>
 #include "ui_qgsauthcertificateinfo.h"
 #include "qgsauthcertutils.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Widget for viewing detailed info on a certificate and its hierarchical trust chain

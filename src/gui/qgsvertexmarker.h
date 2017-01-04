@@ -18,6 +18,7 @@
 
 #include "qgsmapcanvasitem.h"
 #include "qgspoint.h"
+#include "qgis_gui.h"
 
 class QPainter;
 

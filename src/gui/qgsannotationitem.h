@@ -21,6 +21,7 @@
 #include "qgsmapcanvasitem.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsannotation.h"
+#include "qgis_gui.h"
 
 class QDomDocument;
 class QDomElement;

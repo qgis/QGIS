@@ -31,6 +31,7 @@ class SymbolLayerItem;
 
 #include <QMap>
 #include <QStandardItemModel>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsLayerPropertiesWidget

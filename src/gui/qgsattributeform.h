@@ -23,6 +23,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QDialogButtonBox>
+#include "qgis_gui.h"
 
 
 class QgsAttributeFormInterface;

@@ -27,6 +27,7 @@
 #include <QStandardItemModel>
 #include <QScopedPointer>
 #include <QDialogButtonBox>
+#include "qgis_gui.h"
 
 class QgsStyle;
 class QgsSymbol;

@@ -24,6 +24,7 @@
 #include "qgsraster.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsRasterLayer;

@@ -22,6 +22,7 @@
 #include "qgsmessagebar.h"
 
 #include <QDialog>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * This class offers a dialog to change feature selections.

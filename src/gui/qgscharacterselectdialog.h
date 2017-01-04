@@ -21,6 +21,7 @@
 #include <QChar>
 #include "qgisgui.h"
 #include "ui_qgscharacterselectdialogbase.h"
+#include "qgis_gui.h"
 
 class CharacterWidget;
 

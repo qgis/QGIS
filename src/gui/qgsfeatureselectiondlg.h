@@ -19,6 +19,7 @@
 class QgsGenericFeatureSelectionManager;
 
 #include "ui_qgsfeatureselectiondlg.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsFeatureSelectionDlg

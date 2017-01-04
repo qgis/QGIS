@@ -16,6 +16,7 @@
 #define QGSSYMBOLWIDGETCONTEXT_H
 
 #include "qgsexpressioncontext.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 

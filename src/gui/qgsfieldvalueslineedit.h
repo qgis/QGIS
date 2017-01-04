@@ -24,6 +24,7 @@
 #include <QHeaderView>
 #include <QTimer>
 #include <QThread>
+#include "qgis_gui.h"
 
 class QgsFloatingWidget;
 

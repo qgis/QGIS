@@ -32,6 +32,7 @@ class QgsRectangle;
 
 class QgsMapRendererQImageJob;
 #include "qgsmapsettings.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A widget that displays an overview map.

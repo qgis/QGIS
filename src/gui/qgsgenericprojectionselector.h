@@ -23,6 +23,7 @@
 #include <QSet>
 
 #include "qgscontexthelp.h"
+#include "qgis_gui.h"
 
 /**
  * \ingroup gui

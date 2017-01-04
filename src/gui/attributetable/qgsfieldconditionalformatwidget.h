@@ -24,6 +24,7 @@
 
 #include "ui_qgsfieldconditionalformatwidget.h"
 #include "qgsconditionalstyle.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsFieldConditionalFormatWidget

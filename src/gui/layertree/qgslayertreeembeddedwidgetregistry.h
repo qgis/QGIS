@@ -18,6 +18,7 @@
 
 #include <QMap>
 #include <QWidget>
+#include "qgis_gui.h"
 
 
 class QgsMapLayer;

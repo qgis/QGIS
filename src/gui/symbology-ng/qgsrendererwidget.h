@@ -137,6 +137,7 @@ class QgsFields;
 
 #include "ui_widget_set_dd_value.h"
 #include "qgssizescalewidget.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
 Utility classes for "en masse" size definition

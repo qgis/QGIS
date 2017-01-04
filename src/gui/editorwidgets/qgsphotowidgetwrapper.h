@@ -24,6 +24,7 @@
 
 #ifdef WITH_QTWEBKIT
 #include <QWebView>
+#include "qgis_gui.h"
 #endif
 
 class QgsPixmapLabel;

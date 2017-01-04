@@ -18,6 +18,7 @@
 
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetfactory.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsMessageBar;

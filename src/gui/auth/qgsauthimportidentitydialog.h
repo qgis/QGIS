@@ -24,6 +24,7 @@
 #include <QSslKey>
 
 #include "qgsauthconfig.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Widget for importing an identity certificate/key bundle into the authentication database

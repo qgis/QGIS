@@ -20,6 +20,7 @@
 
 #include "ui_qgsludialogbase.h"
 #include "qgisgui.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsLUDialog

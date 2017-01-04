@@ -82,6 +82,7 @@ INCLUDE_DIRECTORIES(
   ../../gui  ../../gui/editorwidgets ../../gui/layertree
   ..
   ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${GSL_INCLUDE_DIR}

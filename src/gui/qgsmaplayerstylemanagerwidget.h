@@ -20,6 +20,7 @@
 #include <QStandardItemModel>
 
 #include "qgsmaplayerconfigwidget.h"
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 class QgsMapCanvas;

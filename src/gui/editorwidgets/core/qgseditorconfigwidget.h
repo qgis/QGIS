@@ -17,6 +17,7 @@
 #define QGSEDITORCONFIGWIDGET_H
 
 #include <QWidget>
+#include "qgis_gui.h"
 
 
 class QgsVectorLayer;

@@ -20,6 +20,7 @@
 #include <QWidget>
 #include <QTreeWidget>
 #include <QItemDelegate>
+#include "qgis_gui.h"
 
 class QTableWidget;
 class QgsExpressionContextScope;

@@ -19,6 +19,7 @@
 #include "ui_qgssourceselectdialogbase.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgis_gui.h"
 
 class QStandardItemModel;
 class QSortFilterProxyModel;

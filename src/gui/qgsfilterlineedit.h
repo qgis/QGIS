@@ -19,6 +19,7 @@
 #define QGSFILTERLINEEDIT_H
 
 #include <QLineEdit>
+#include "qgis_gui.h"
 
 class QToolButton;
 

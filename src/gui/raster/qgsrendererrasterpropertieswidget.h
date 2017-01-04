@@ -21,6 +21,7 @@
 #include "ui_qgsrendererrasterpropswidgetbase.h"
 
 #include "qgsmaplayerconfigwidget.h"
+#include "qgis_gui.h"
 
 
 class QgsRasterLayer;

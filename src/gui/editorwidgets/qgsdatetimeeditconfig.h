@@ -18,6 +18,7 @@
 
 #include "qgseditorconfigwidget.h"
 #include "ui_qgsdatetimeeditconfig.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsDateTimeEditConfig

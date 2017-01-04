@@ -18,6 +18,7 @@
 
 #include "editorwidgets/core/qgssearchwidgetwrapper.h"
 #include <QToolButton>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsSearchWidgetToolButton

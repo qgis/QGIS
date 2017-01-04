@@ -18,6 +18,7 @@
 #define QGSAUTHGUIUTILS_H
 
 #include <QColor>
+#include "qgis_gui.h"
 
 class QWidget;
 class QgsMessageBar;

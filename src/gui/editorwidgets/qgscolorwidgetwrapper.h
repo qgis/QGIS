@@ -17,6 +17,7 @@
 #define QGSCOLORWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgis_gui.h"
 
 class QgsColorButton;
 

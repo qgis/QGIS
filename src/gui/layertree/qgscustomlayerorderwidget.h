@@ -18,6 +18,7 @@
 
 #include <QWidget>
 #include <QAbstractListModel>
+#include "qgis_gui.h"
 
 class CustomLayerOrderModel;
 class QgsLayerTreeMapCanvasBridge;

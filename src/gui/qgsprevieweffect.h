@@ -19,6 +19,7 @@
 #define QGSPREVIEWEFFECT_H
 
 #include <QGraphicsEffect>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A graphics effect which can be applied to a widget to simulate various printing and

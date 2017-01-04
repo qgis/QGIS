@@ -21,6 +21,7 @@
 #include <QHash>
 #include <QTextCharFormat>
 #include <QStringList>
+#include "qgis_gui.h"
 
 class QTextDocument;
 

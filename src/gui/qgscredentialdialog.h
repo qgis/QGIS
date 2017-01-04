@@ -22,6 +22,7 @@
 #include "qgscredentials.h"
 
 #include <QString>
+#include "qgis_gui.h"
 
 class QPushButton;
 

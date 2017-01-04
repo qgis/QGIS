@@ -24,6 +24,7 @@
 #include <QIcon>
 #include <QColor>
 #include <QList>
+#include "qgis_gui.h"
 
 class QWidget;
 class QGridLayout;

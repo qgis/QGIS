@@ -22,6 +22,7 @@ class QLabel;
 class QLineEdit;
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgis_gui.h"
 
 
 

@@ -21,6 +21,7 @@
 #include <QDialog>
 
 #include "ui_qgsauthconfigedit.h"
+#include "qgis_gui.h"
 
 class QgsAuthMethodEdit;
 

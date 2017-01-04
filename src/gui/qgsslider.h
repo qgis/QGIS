@@ -17,6 +17,7 @@
 
 #include <QSlider>
 #include <QVariant>
+#include "qgis_gui.h"
 
 class QPaintEvent;
 

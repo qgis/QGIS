@@ -17,6 +17,7 @@
 #define QGSDOUBLESPINBOX_H
 
 #include <QDoubleSpinBox>
+#include "qgis_gui.h"
 
 class QgsSpinBoxLineEdit;
 

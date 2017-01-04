@@ -19,6 +19,7 @@
 #include <QDateTimeEdit>
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgis_gui.h"
 
 class QgsDateTimeEdit;
 

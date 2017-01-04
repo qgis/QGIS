@@ -172,6 +172,7 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
 #include <QDialog>
 
 #include "ui_qgsrendererrulepropsdialogbase.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsRendererRulePropsWidget

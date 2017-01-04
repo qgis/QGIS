@@ -20,6 +20,7 @@
 #include <QAction>
 
 #include "qgsfeature.h" // For QgsFeatureIds
+#include "qgis_gui.h"
 
 class QgsAttributeTableDelegate;
 class QgsAttributeTableFilterModel;

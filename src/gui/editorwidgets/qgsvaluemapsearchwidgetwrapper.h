@@ -18,6 +18,7 @@
 
 #include "qgssearchwidgetwrapper.h"
 #include <QComboBox>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Wraps a value map search widget. This widget will offer a combobox with values from another layer

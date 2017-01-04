@@ -19,6 +19,7 @@
 
 #include <QColorDialog>
 #include "ui_qgscolordialog.h"
+#include "qgis_gui.h"
 
 class QColor;
 

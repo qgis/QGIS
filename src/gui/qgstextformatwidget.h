@@ -22,6 +22,7 @@
 #include "qgsstringutils.h"
 #include "qgisgui.h"
 #include <QFontDatabase>
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsCharacterSelectorDialog;

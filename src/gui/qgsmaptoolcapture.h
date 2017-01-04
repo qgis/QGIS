@@ -23,6 +23,7 @@
 
 #include <QPoint>
 #include <QList>
+#include "qgis_gui.h"
 
 class QgsRubberBand;
 class QgsVertexMarker;

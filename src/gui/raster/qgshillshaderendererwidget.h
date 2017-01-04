@@ -23,6 +23,7 @@
 #include <QDoubleSpinBox>
 
 #include "qgsrasterrendererwidget.h"
+#include "qgis_gui.h"
 
 /**
  * @brief Renderer widget for the hill shade renderer.

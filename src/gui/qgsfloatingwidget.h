@@ -16,6 +16,7 @@
 #define QGSFLOATINGWIDGET_H
 
 #include <QWidget>
+#include "qgis_gui.h"
 
 class QgsFloatingWidgetEventFilter;
 

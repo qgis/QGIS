@@ -17,6 +17,7 @@
 #define QGSPAINTEFFECTWIDGET_H
 
 #include <QWidget>
+#include "qgis_gui.h"
 
 class QgsPaintEffect;
 class QgsShadowEffect;

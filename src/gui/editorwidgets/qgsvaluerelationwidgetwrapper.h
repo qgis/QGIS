@@ -22,6 +22,7 @@
 #include <QComboBox>
 #include <QListWidget>
 #include <QLineEdit>
+#include "qgis_gui.h"
 
 class QgsValueRelationWidgetFactory;
 

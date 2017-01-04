@@ -18,6 +18,7 @@
 
 #include <QComboBox>
 #include "qgscomposeritem.h"
+#include "qgis_gui.h"
 
 class QgsComposerProxyModel;
 

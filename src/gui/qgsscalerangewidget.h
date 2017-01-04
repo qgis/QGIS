@@ -18,6 +18,7 @@
 
 #include <QGridLayout>
 #include <QLabel>
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsScaleWidget;

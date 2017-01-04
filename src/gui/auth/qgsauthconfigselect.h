@@ -21,6 +21,7 @@
 
 #include "ui_qgsauthconfigselect.h"
 #include "qgsauthconfig.h"
+#include "qgis_gui.h"
 
 
 /** \ingroup gui

@@ -20,6 +20,7 @@
 #include <QWidget>
 #include "ui_qgsautheditorwidgets.h"
 #include "ui_qgsauthmethodplugins.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Dialog for viewing available authentication method plugins

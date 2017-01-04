@@ -22,6 +22,7 @@
 #include <QToolButton>
 #include <QScopedPointer>
 #include "qgsexpressioncontextgenerator.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QgsDataDefined;

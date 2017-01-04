@@ -17,6 +17,7 @@
 #define QGSMAPTOOLEMITPOINT_H
 
 #include "qgsmaptool.h"
+#include "qgis_gui.h"
 class QgsMapCanvas;
 
 
