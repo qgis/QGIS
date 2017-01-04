@@ -19,6 +19,7 @@
 
 #include <QRect>
 #include "qgsmaptool.h"
+#include "qgis_app.h"
 
 class QPoint;
 class QMouseEvent;

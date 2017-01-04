@@ -21,6 +21,7 @@
 
 #include "ui_qgsaddtaborgroupbase.h"
 #include "qgisgui.h"
+#include "qgis_app.h"
 
 class QTreeWidgetItem;
 class QgsVectorLayer;

@@ -31,6 +31,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QUrl>
+#include "qgis_app.h"
 
 class QCloseEvent;
 class QTreeWidgetItem;

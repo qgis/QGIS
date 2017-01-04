@@ -99,6 +99,7 @@ typedef SInt32 SRefCon;
 #include "qgsdxfexport.h"
 #include "qgsmapthemes.h"
 #include "qgsvectorlayer.h"
+#include "qgis_app.h"
 
 /** Print usage text
  */

@@ -17,6 +17,7 @@ email                : jpalmer at linz dot govt dot nz
 #define QGSMAPTOOLSELECTPOLYGON_H
 
 #include "qgsmaptool.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsRubberBand;

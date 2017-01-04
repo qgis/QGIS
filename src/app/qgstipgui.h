@@ -18,6 +18,7 @@
 #define QGSTIPGUI_H
 
 #include "ui_qgstipguibase.h"
+#include "qgis_app.h"
 class QgsTip;
 
 class APP_EXPORT QgsTipGui : public QDialog, private Ui::QgsTipGuiBase

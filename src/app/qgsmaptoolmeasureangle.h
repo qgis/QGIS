@@ -19,6 +19,7 @@
 #include "qgsmaptool.h"
 #include "qgspoint.h"
 #include "qgsdistancearea.h"
+#include "qgis_app.h"
 
 class QgsDisplayAngle;
 class QgsRubberBand;

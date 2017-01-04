@@ -128,6 +128,7 @@ class QgsDiagramProperties;
 #include "qgsrasterminmaxorigin.h"
 
 #include "ui_qgisapp.h"
+#include "qgis_app.h"
 
 #ifdef HAVE_TOUCH
 #include <QGestureEvent>

@@ -19,6 +19,7 @@ email                : jpalmer at linz dot govt dot nz
 
 #include "qgsmaptool.h"
 #include "qgspoint.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsRubberBand;

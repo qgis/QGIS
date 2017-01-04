@@ -19,6 +19,7 @@
 #include <QWidget>
 
 #include "qgsmaptooledit.h"
+#include "qgis_app.h"
 
 class QgsDoubleSpinBox;
 class QHBoxLayout;

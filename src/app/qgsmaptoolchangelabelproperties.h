@@ -19,6 +19,7 @@
 #define QGSMAPTOOLCHANGELABELPROPERTIES_H
 
 #include "qgsmaptoollabel.h"
+#include "qgis_app.h"
 
 class APP_EXPORT QgsMapToolChangeLabelProperties: public QgsMapToolLabel
 {

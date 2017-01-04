@@ -17,6 +17,7 @@
 #define QGSMAPTOOLDELETEPART_H
 
 #include "qgsmaptooledit.h"
+#include "qgis_app.h"
 
 class QgsVertexMarker;
 

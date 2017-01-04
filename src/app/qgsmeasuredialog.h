@@ -22,6 +22,7 @@
 #include "qgspoint.h"
 #include "qgsdistancearea.h"
 #include "qgscontexthelp.h"
+#include "qgis_app.h"
 
 class QCloseEvent;
 class QgsMeasureTool;

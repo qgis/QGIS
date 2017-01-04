@@ -18,6 +18,7 @@
 
 #include "qgsmaptooledit.h"
 #include "qgsgeometry.h"
+#include "qgis_app.h"
 
 class QgsVertexMarker;
 class QgsDoubleSpinBox;

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolcapture.h"
+#include "qgis_app.h"
 
 //! This tool adds new point/line/polygon features to already existing vector layers
 class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolCapture

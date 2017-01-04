@@ -18,6 +18,7 @@
 
 #include "qgstip.h"
 #include <QList>
+#include "qgis_app.h"
 
 /** \ingroup app
 * \brief A factory class to serve up tips to the user.

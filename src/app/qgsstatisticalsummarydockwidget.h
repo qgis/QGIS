@@ -22,6 +22,7 @@
 #include "qgsstringstatisticalsummary.h"
 #include "qgsdatetimestatisticalsummary.h"
 #include "qgsdockwidget.h"
+#include "qgis_app.h"
 
 class QgsBrowserModel;
 class QModelIndex;

@@ -20,6 +20,7 @@
 
 #include "qgisinterface.h"
 #include "qgsapppluginmanagerinterface.h"
+#include "qgis_app.h"
 
 class QgisApp;
 

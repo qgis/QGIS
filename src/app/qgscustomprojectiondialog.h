@@ -21,6 +21,7 @@
 #include "ui_qgscustomprojectiondialogbase.h"
 #include "qgscontexthelp.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgis_app.h"
 
 class QDir;
 

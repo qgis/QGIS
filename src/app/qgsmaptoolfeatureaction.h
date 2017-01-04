@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QPointer>
+#include "qgis_app.h"
 
 class QgsVectorLayer;
 

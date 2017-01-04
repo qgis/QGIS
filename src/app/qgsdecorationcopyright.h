@@ -24,6 +24,7 @@
 #include <QColor>
 #include <QFont>
 #include <QObject>
+#include "qgis_app.h"
 class QAction;
 class QPainter;
 

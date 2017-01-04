@@ -22,6 +22,7 @@
 #include <QVector>
 #include "qgsfeature.h"
 #include "qgstolerance.h"
+#include "qgis_app.h"
 
 class QgsRubberBand;
 class QgsMapToolSimplify;

@@ -19,6 +19,7 @@
 #define QGSTEXTANNOTATIONDIALOG_H
 
 #include "ui_qgstextannotationdialogbase.h"
+#include "qgis_app.h"
 
 class QgsAnnotationWidget;
 class QgsTextAnnotationItem;

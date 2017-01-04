@@ -27,6 +27,7 @@
 #include <qgscoordinatereferencesystem.h>
 
 #include <QList>
+#include "qgis_app.h"
 
 class QgsExpressionContext;
 
