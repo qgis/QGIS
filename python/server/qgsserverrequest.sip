@@ -37,6 +37,11 @@ class QgsServerRequest
 
     /**
      * Constructor
+     */
+    QgsServerRequest();
+
+    /**
+     * Constructor
      *
      * @param url the url string
      * @param method the request method
@@ -80,6 +85,16 @@ class QgsServerRequest
      * is available.
      */
     virtual QByteArray data() const;
+
+    /**
+     * Set the request url
+     */
+    void setUrl( const QUrl& url );
+
+    /**
+     * Set the request method
+     */
+    void setMethod( Method method );
 
 };
 

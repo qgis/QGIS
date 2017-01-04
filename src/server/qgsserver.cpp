@@ -26,8 +26,7 @@
 #include "qgsauthmanager.h"
 #include "qgscapabilitiescache.h"
 #include "qgsfontutils.h"
-#include "qgsgetrequesthandler.h"
-#include "qgspostrequesthandler.h"
+#include "qgshttprequesthandler.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
@@ -40,6 +39,8 @@
 #include "qgsserverlogger.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsaccesscontrolfilter.h"
+#include "qgsserverrequest.h"
+#include "qgsbufferserverresponse.h"
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>
@@ -62,11 +63,10 @@ QgsCapabilitiesCache* QgsServer::sCapabilitiesCache = nullptr;
 QgsServerInterfaceImpl* QgsServer::sServerInterface = nullptr;
 // Initialization must run once for all servers
 bool QgsServer::sInitialised =  false;
-bool QgsServer::sCaptureOutput = true;
 
 QgsServiceRegistry QgsServer::sServiceRegistry;
 
-QgsServer::QgsServer( bool captureOutput )
+QgsServer::QgsServer( )
 {
   // QgsApplication must exist
   if ( qobject_cast<QgsApplication*>( qApp ) == nullptr )
@@ -74,7 +74,6 @@ QgsServer::QgsServer( bool captureOutput )
     qFatal( "A QgsApplication must exist before a QgsServer instance can be created." );
     abort();
   }
-  sCaptureOutput = captureOutput;
   init();
 }
 
@@ -110,33 +109,6 @@ void QgsServer::setupNetworkAccessManager()
   QgsMessageLog::logMessage( QStringLiteral( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   QgsMessageLog::logMessage( QStringLiteral( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   nam->setCache( cache );
-}
-
-/**
- * @brief QgsServer::createRequestHandler factory, creates a request instance
- * @param captureOutput
- * @return request instance
- */
-QgsRequestHandler* QgsServer::createRequestHandler( const bool captureOutput )
-{
-  QgsRequestHandler* requestHandler = nullptr;
-  char* requestMethod = getenv( "REQUEST_METHOD" );
-  if ( requestMethod )
-  {
-    if ( strcmp( requestMethod, "POST" ) == 0 )
-    {
-      requestHandler = new QgsPostRequestHandler( captureOutput );
-    }
-    else
-    {
-      requestHandler = new QgsGetRequestHandler( captureOutput );
-    }
-  }
-  else
-  {
-    requestHandler = new QgsGetRequestHandler( captureOutput );
-  }
-  return requestHandler;
 }
 
 /**
@@ -375,14 +347,10 @@ void QgsServer::putenv( const QString &var, const QString &val )
  * @param queryString
  * @return response headers and body
  */
-QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryString )
+
+void QgsServer::handleRequest( const QgsServerRequest& request, QgsServerResponse& response )
 {
-  /*
-   * This is mainly for python bindings, passing QUERY_STRING
-   * to handleRequest without using os.environment
-   */
-  if ( ! queryString.isEmpty() )
-    putenv( QStringLiteral( "QUERY_STRING" ), queryString );
+  Q_UNUSED( response );
 
   QgsMessageLog::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
@@ -397,22 +365,22 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   }
 
   //Request handler
-  QScopedPointer<QgsRequestHandler> theRequestHandler( createRequestHandler( sCaptureOutput ) );
+  QgsHttpRequestHandler theRequestHandler( request, response );
 
   try
   {
     // TODO: split parse input into plain parse and processing from specific services
-    theRequestHandler->parseInput();
+    theRequestHandler.parseInput();
   }
   catch ( QgsMapServiceException& e )
   {
     QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
-    theRequestHandler->setServiceException( e );
+    theRequestHandler.setServiceException( e );
   }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   // Set the request handler into the interface for plugins to manipulate it
-  sServerInterface->setRequestHandler( theRequestHandler.data() );
+  sServerInterface->setRequestHandler( &theRequestHandler );
   // Iterate filters and call their requestReady() method
   QgsServerFiltersMap::const_iterator filtersIterator;
   QgsServerFiltersMap filters = sServerInterface->filters();
@@ -424,11 +392,11 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   //Pass the filters to the requestHandler, this is needed for the following reasons:
   // 1. allow core services to access plugin filters and implement thir own plugin hooks
   // 2. allow requestHandler to call sendResponse plugin hook
-  theRequestHandler->setPluginFilters( sServerInterface->filters() );
+  theRequestHandler.setPluginFilters( sServerInterface->filters() );
 #endif
 
   // Copy the parameters map
-  QMap<QString, QString> parameterMap( theRequestHandler->parameterMap() );
+  QMap<QString, QString> parameterMap( theRequestHandler.parameterMap() );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   const QgsAccessControl* accessControl = nullptr;
   accessControl = sServerInterface->accessControls();
@@ -442,12 +410,12 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   sServerInterface->setConfigFilePath( configFilePath );
 #endif
   //Service parameter
-  QString serviceString = theRequestHandler->parameter( QStringLiteral( "SERVICE" ) );
+  QString serviceString = theRequestHandler.parameter( QStringLiteral( "SERVICE" ) );
 
   if ( serviceString.isEmpty() )
   {
     // SERVICE not mandatory for WMS 1.3.0 GetMap & GetFeatureInfo
-    QString requestString = theRequestHandler->parameter( QStringLiteral( "REQUEST" ) );
+    QString requestString = theRequestHandler.parameter( QStringLiteral( "REQUEST" ) );
     if ( requestString == QLatin1String( "GetMap" ) || requestString == QLatin1String( "GetFeatureInfo" ) )
     {
       serviceString = QStringLiteral( "WMS" );
@@ -455,15 +423,14 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   }
 
   //possibility for client to suggest a download filename
-  QString outputFileName = theRequestHandler->parameter( QStringLiteral( "FILE_NAME" ) );
+  QString outputFileName = theRequestHandler.parameter( QStringLiteral( "FILE_NAME" ) );
   if ( !outputFileName.isEmpty() )
   {
-    theRequestHandler->setDefaultHeaders();
-    theRequestHandler->setHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
+    theRequestHandler.setHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
   }
 
   // Enter core services main switch
-  if ( !theRequestHandler->exceptionRaised() )
+  if ( !theRequestHandler.exceptionRaised() )
   {
     if ( serviceString == QLatin1String( "WCS" ) )
     {
@@ -475,7 +442,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
                                );
       if ( !p )
       {
-        theRequestHandler->setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ), QStringLiteral( "Error reading the project file" ) ) );
+        theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ), QStringLiteral( "Error reading the project file" ) ) );
       }
       else
       {
@@ -483,7 +450,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
           configFilePath
           , parameterMap
           , p
-          , theRequestHandler.data()
+          , &theRequestHandler
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
           , accessControl
 #endif
@@ -501,7 +468,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
                                );
       if ( !p )
       {
-        theRequestHandler->setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ), QStringLiteral( "Error reading the project file" ) ) );
+        theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ), QStringLiteral( "Error reading the project file" ) ) );
       }
       else
       {
@@ -509,7 +476,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
           configFilePath
           , parameterMap
           , p
-          , theRequestHandler.data()
+          , &theRequestHandler
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
           , accessControl
 #endif
@@ -527,7 +494,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
                               );
       if ( !p )
       {
-        theRequestHandler->setServiceException( QgsMapServiceException( QStringLiteral( "WMS configuration error" ), QStringLiteral( "There was an error reading the project file or the SLD configuration" ) ) );
+        theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "WMS configuration error" ), QStringLiteral( "There was an error reading the project file or the SLD configuration" ) ) );
       }
       else
       {
@@ -535,7 +502,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
           configFilePath
           , parameterMap
           , p
-          , theRequestHandler.data()
+          , &theRequestHandler
           , sCapabilitiesCache
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
           , accessControl
@@ -546,7 +513,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
     }
     else
     {
-      theRequestHandler->setServiceException( QgsMapServiceException( QStringLiteral( "Service configuration error" ), QStringLiteral( "Service unknown or unsupported" ) ) );
+      theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Service configuration error" ), QStringLiteral( "Service unknown or unsupported" ) ) );
     } // end switch
   } // end if not exception raised
 
@@ -562,14 +529,74 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   sServerInterface->clearRequestHandler();
 #endif
 
-  theRequestHandler->sendResponse();
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  filters = sServerInterface->filters();
+  for ( filtersIterator = filters.constBegin(); filtersIterator != filters.constEnd(); ++filtersIterator )
+  {
+    filtersIterator.value()->sendResponse();
+  }
+#endif
+  response.finish();
 
   if ( logLevel == QgsMessageLog::INFO )
   {
     QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
-  // Returns the header and response bytestreams (to be used in Python bindings)
-  return theRequestHandler->getResponse();
+}
+
+QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryString )
+{
+  /*
+   * This is mainly for python bindings, passing QUERY_STRING
+   * to handleRequest without using os.environment
+   *
+   * XXX To be removed because query string is now handled in QgsServerRequest
+   *
+   */
+  if ( ! queryString.isEmpty() )
+    putenv( QStringLiteral( "QUERY_STRING" ), queryString );
+
+  QgsServerRequest::Method method = QgsServerRequest::GetMethod;
+  QByteArray ba;
+
+  // XXX This is mainly used in tests
+  char* requestMethod = getenv( "REQUEST_METHOD" );
+  if ( requestMethod && strcmp( requestMethod, "POST" ) == 0 )
+  {
+    method = QgsServerRequest::PostMethod;
+    const char* data = getenv( "REQUEST_BODY" );
+    if ( data )
+    {
+      ba.append( data );
+    }
+  }
+
+  QUrl url;
+  url.setQuery( queryString );
+
+  QgsBufferServerRequest request( url, method, &ba );
+  QgsBufferServerResponse response;
+
+  handleRequest( request, response );
+
+  /*
+   * XXX For compatibility only:
+   * We should return a (moved) QgsBufferServerResponse instead
+   */
+  QByteArray headerBuffer;
+  QMap<QString, QString>::const_iterator it;
+  for ( it = response.headers().constBegin(); it != response.headers().constEnd(); ++it )
+  {
+    headerBuffer.append( it.key().toUtf8() );
+    headerBuffer.append( ": " );
+    headerBuffer.append( it.value().toUtf8() );
+    headerBuffer.append( "\n" );
+  }
+  headerBuffer.append( "\n" );
+
+  // TODO: check that this is not an evil bug!
+  return QPair<QByteArray, QByteArray>( headerBuffer, response.body() );
+
 }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS

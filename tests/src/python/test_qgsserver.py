@@ -105,13 +105,13 @@ class TestQgsServer(unittest.TestCase):
         """Segfaults?"""
         for i in range(10):
             locals()["s%s" % i] = QgsServer()
-            locals()["s%s" % i].handleRequest()
+            locals()["s%s" % i].handleRequest("")
 
     def test_api(self):
         """Using an empty query string (returns an XML exception)
         we are going to test if headers and body are returned correctly"""
         # Test as a whole
-        header, body = [_v for _v in self.server.handleRequest()]
+        header, body = [_v for _v in self.server.handleRequest("")]
         response = self.strip_version_xmlns(header + body)
         expected = self.strip_version_xmlns(b'Content-Length: 206\nContent-Type: text/xml; charset=utf-8\n\n<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="Service configuration error">Service unknown or unsupported</ServiceException>\n</ServiceExceptionReport>\n')
         self.assertEqual(response, expected)
@@ -142,9 +142,8 @@ class TestQgsServer(unittest.TestCase):
                 params = request.parameterMap()
                 QgsMessageLog.logMessage("SimpleHelloFilter.responseComplete")
                 if params.get('SERVICE', '').upper() == 'SIMPLE':
-                    request.clearHeaders()
+                    request.clear()
                     request.setHeader('Content-type', 'text/plain')
-                    request.clearBody()
                     request.appendBody('Hello from SimpleServer!'.encode('utf-8'))
 
         serverIface = self.server.serverInterface()
@@ -180,7 +179,7 @@ class TestQgsServer(unittest.TestCase):
         self.assertEqual(filter2, serverIface.filters()[200][0])
         header, body = [_v for _v in self.server.handleRequest('service=simple')]
         response = header + body
-        expected = b'Content-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
+        expected = b'Content-Length: 62\nContent-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
         self.assertEqual(response, expected)
 
         # Test that the bindings for complex type QgsServerFiltersMap are working
@@ -192,7 +191,7 @@ class TestQgsServer(unittest.TestCase):
         self.assertEqual(filter2, serverIface.filters()[200][0])
         header, body = [_v for _v in self.server.handleRequest('service=simple')]
         response = header + body
-        expected = b'Content-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
+        expected = b'Content-Length: 62\nContent-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
         self.assertEqual(response, expected)
 
     # WMS tests

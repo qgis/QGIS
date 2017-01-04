@@ -21,6 +21,7 @@
 
 #include <QUrl>
 #include <QMap>
+#include "qgis_server.h"
 
 /**
  * \ingroup server
@@ -42,13 +43,19 @@ class SERVER_EXPORT QgsServerRequest
       HeadMethod, PutMethod, GetMethod, PostMethod, DeleteMethod
     };
 
+
+    /**
+     * Constructor
+     */
+    QgsServerRequest();
+
     /**
      * Constructor
      *
      * @param url the url string
      * @param method the request method
      */
-    QgsServerRequest( const QString& url, Method method );
+    QgsServerRequest( const QString& url, Method method = GetMethod );
 
     /**
      * Constructor
@@ -78,6 +85,21 @@ class SERVER_EXPORT QgsServerRequest
     Parameters parameters() const;
 
     /**
+     * Set a parameter
+     */
+    void setParameter( const QString& key, const QString& value );
+
+    /**
+     * Get a parameter value
+     */
+    QString getParameter( const QString& key ) const;
+
+    /**
+     * Remove a parameter
+     */
+    void removeParameter( const QString& key );
+
+    /**
      * Return post/put data
      * Check for QByteArray::isNull() to check if data
      * is available.
@@ -89,6 +111,16 @@ class SERVER_EXPORT QgsServerRequest
      */
     virtual QString getHeader( const QString& name ) const;
 
+    /**
+     * Set the request url
+     */
+    void setUrl( const QUrl& url );
+
+    /**
+     * Set the request method
+     */
+    void setMethod( Method method );
+
   private:
     QUrl       mUrl;
     Method     mMethod;
@@ -96,6 +128,7 @@ class SERVER_EXPORT QgsServerRequest
     // to support lazy initialization
     // Use QMap here because it will be faster for small
     // number of elements
+    mutable bool mDecoded;
     mutable QMap<QString, QString> mParams;
 };
 

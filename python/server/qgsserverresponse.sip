@@ -42,6 +42,13 @@ class QgsServerResponse
      */
     virtual void setHeader( const QString& key, const QString& value ) = 0;
 
+    /**
+     * Clear header
+     * Undo a previous 'set_header' call
+     */
+    virtual void clearHeader( const QString& key ) = 0;
+
+
     /** Set the http return code
      * @param code HTTP return code value
      */
@@ -75,6 +82,24 @@ class QgsServerResponse
      * Return the underlying QIODevice
      */
     virtual QIODevice* io() = 0;
+
+    /**
+     * End the transaction
+     */
+    virtual void finish() = 0;
+
+    /**
+     * Flushes the current output buffer to the network
+     *
+     * 'flush()' may be called multiple times. For HTTP transactions
+     * headers will be written on the first call to 'flush()'.
+     */
+    virtual void flush() = 0;
+
+    /**
+     * Reset all headers and content for this response
+     */
+    virtual void clear() = 0;
 
 };
 

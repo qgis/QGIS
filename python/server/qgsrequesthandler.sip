@@ -66,31 +66,20 @@ class QgsRequestHandler
     //! @note not available in Python bindings
     virtual void setGetCoverageResponse( QByteArray* ba ) = 0;
 
-    virtual void setDefaultHeaders();
-
     /** Set an HTTP header*/
     virtual void setHeader( const QString &name, const QString &value ) = 0;
 
     /** Remove an HTTP header*/
-    virtual int removeHeader( const QString &name ) = 0;
+    virtual void removeHeader( const QString &name ) = 0;
 
     /** Delete all HTTP headers*/
-    virtual void clearHeaders() = 0;
+    virtual void clear() = 0;
 
     /** Append the bytestream to response body*/
     virtual void appendBody( const QByteArray &body ) = 0;
 
-    /** Clears the response body*/
-    virtual void clearBody() = 0;
-
-    /** Return the response body*/
-    virtual QByteArray body();
-
     /** Set the info format string such as "text/xml"*/
     virtual void setInfoFormat( const QString &format ) = 0;
-
-    /** Check whether there is any header set or the body is not empty*/
-    virtual bool responseReady() const = 0;
 
     /** Send out HTTP headers and flush output buffer*/
     virtual void sendResponse() = 0;

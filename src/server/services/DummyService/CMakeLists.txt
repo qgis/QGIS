@@ -13,6 +13,11 @@ ADD_LIBRARY (dummy MODULE ${dummy_SRCS})
 
 
 INCLUDE_DIRECTORIES(
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/python
+  ${CMAKE_BINARY_DIR}/src/analysis
+  ${CMAKE_BINARY_DIR}/src/server
   ${CMAKE_CURRENT_BINARY_DIR}
   ../../../core ../../../core/geometry ../../../core/raster
   ../..

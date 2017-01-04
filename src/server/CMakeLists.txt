@@ -24,9 +24,6 @@ SET ( qgis_mapserv_SRCS
   qgscapabilitiescache.cpp
   qgsconfigcache.cpp
   qgshttprequesthandler.cpp
-#  qgshttptransaction.cpp
-  qgsgetrequesthandler.cpp
-  qgspostrequesthandler.cpp
   qgsowsserver.cpp
   qgswmsserver.cpp
   qgswfsserver.cpp
@@ -57,6 +54,8 @@ SET ( qgis_mapserv_SRCS
   qgsserviceregistry.cpp
   qgsserverrequest.cpp
   qgsserverresponse.cpp
+  qgsfcgiserverresponse.cpp
+  qgsbufferserverresponse.cpp
 #----------------------------
 )
 IF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")

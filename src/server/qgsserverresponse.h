@@ -19,6 +19,8 @@
 #ifndef QGSSERVERRESPONSE_H
 #define QGSSERVERRESPONSE_H
 
+#include "qgis_server.h"
+
 #include <QString>
 #include <QIODevice>
 
@@ -42,11 +44,19 @@ class SERVER_EXPORT QgsServerResponse
     //! destructor
     virtual ~QgsServerResponse();
 
-    /** Set Header entry
+    /**
+     *  Set Header entry
      *  Add Header entry to the response
      *  Note that it is usually an error to set Header after writing data
      */
     virtual void setHeader( const QString& key, const QString& value ) = 0;
+
+    /**
+     * Clear header
+     * Undo a previous 'set_header' call
+     */
+    virtual void clearHeader( const QString& key ) = 0;
+
 
     /** Set the http return code
      * @param code HTTP return code value
@@ -106,6 +116,23 @@ class SERVER_EXPORT QgsServerResponse
      */
     virtual QIODevice* io() = 0;
 
+    /**
+     * Finish the response,  ending the transaction
+     */
+    virtual void finish() = 0;
+
+    /**
+     * Flushes the current output buffer to the network
+     *
+     * 'flush()' may be called multiple times. For HTTP transactions
+     * headers will be written on the first call to 'flush()'.
+     */
+    virtual void flush() = 0;
+
+    /**
+     * Reset all headers and content for this response
+     */
+    virtual void clear() = 0;
 };
 
 #endif

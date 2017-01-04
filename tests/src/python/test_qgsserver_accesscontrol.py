@@ -165,7 +165,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         """Run before all tests"""
         cls._app = QgsApplication([], False)
         cls._server = QgsServer()
-        cls._server.handleRequest()
+        cls._server.handleRequest("")
         cls._server_iface = cls._server.serverInterface()
         cls._accesscontrol = RestrictedAccessControl(cls._server_iface)
         cls._server_iface.registerAccessControl(cls._accesscontrol, 100)

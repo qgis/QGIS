@@ -35,14 +35,13 @@
 #include "qgsmapsettings.h"
 #include "qgsmessagelog.h"
 #include "qgsserviceregistry.h"
-
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsserverplugins.h"
 #include "qgsserverfilter.h"
-#include "qgis_server.h"
-#endif
-
 #include "qgsserverinterfaceimpl.h"
+#include "qgis_server.h"
+
+class QgsServerRequest;
+class QgsServerResponse;
 
 /** \ingroup server
  * The QgsServer class provides OGC web services.
@@ -54,7 +53,7 @@ class SERVER_EXPORT QgsServer
     /** Creates the server instance
      * @param captureOutput set to false for stdout output (FCGI)
      */
-    QgsServer( bool captureOutput = true );
+    QgsServer();
 
     /** Set environment variable
      * @param var environment variable name
@@ -63,18 +62,29 @@ class SERVER_EXPORT QgsServer
      */
     void putenv( const QString &var, const QString &val );
 
-    /** Handles the request. The output is normally printed trough FCGI printf
-     * by the request handler or, in case the server has been invoked from python
-     * bindings, a flag is set that captures all the output headers and body, instead
-     * of printing it returns the output as a QPair of QByteArray.
+    /** Handles the request.
      * The query string is normally read from environment
      * but can be also passed in args and in this case overrides the environment
      * variable
      *
-     * @param queryString optional QString containing the query string
-     * @return the response headers and body QPair of QByteArray if called from python bindings, empty otherwise
+     * @param request a QgsServerRequest holding request parameters
+     * @param response a QgsServerResponse for handling response I/O)
      */
-    QPair<QByteArray, QByteArray> handleRequest( const QString& queryString = QString() );
+    void handleRequest( const QgsServerRequest& request, QgsServerResponse& response );
+
+    /** Handles the request from query strinf
+     * The query string is normally read from environment
+     * but can be also passed in args and in this case overrides the environment
+     * variable.
+     *
+     * @param queryString QString containing the query string
+     * @return the response headers and body QPair of QByteArray
+     */
+    QPair<QByteArray, QByteArray> handleRequest( const QString& queryString );
+
+
+
+
 
     //! Returns a pointer to the server interface
     QgsServerInterfaceImpl* serverInterface() { return sServerInterface; }
@@ -112,7 +122,7 @@ class SERVER_EXPORT QgsServer
     static QFileInfo defaultAdminSLD();
     static void setupNetworkAccessManager();
     //! Create and return a request handler instance
-    static QgsRequestHandler* createRequestHandler( const bool captureOutput = false );
+    static QgsRequestHandler* createRequestHandler( const QgsServerRequest& request, QgsServerResponse& response );
 
     // Return the server name
     static QString &serverName();

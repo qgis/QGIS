@@ -21,6 +21,8 @@
 #ifndef QGSSERVICEMODULE_H
 #define QGSSERVICEMODULE_H
 
+#include "qgis_server.h"
+
 class QgsServiceRegistry;
 class QgsServerInterface;
 

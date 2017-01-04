@@ -165,7 +165,7 @@ class QgsServer
     /** Creates the server instance
      * @param captureOutput set to false for stdout output (FCGI)
      */
-    QgsServer(  bool captureOutput = true );
+    QgsServer();
     ~QgsServer();
 
     /** Set environment variable
@@ -175,22 +175,25 @@ class QgsServer
      */
     void putenv( const QString &var, const QString &val );
 
-    /** Handles the request. The output is normally printed trough FCGI printf
-     * by the request handler or, in case the server has been invoked from python
-     * bindings, a flag is set that captures all the output headers and body, instead
-     * of printing it returns the output as a QPair of QByteArray.
+   /** Handles the request.
      * The query string is normally read from environment
      * but can be also passed in args and in this case overrides the environment
      * variable
      *
-     * @param queryString optional QString containing the query string
-     * @return the response headers and body QPair of QByteArray if called from python bindings, empty otherwise
+     * @param request a QgsServerRequest holding request parameters
+     * @param response a QgsServerResponse for handling response I/O)
      */
-    QPair<QByteArray, QByteArray> handleRequest( const QString& queryString = QString() );
-    /*
-    // The following code was used to test type conversion in python bindings
-    QPair<QByteArray, QByteArray> testQPair( QPair<QByteArray, QByteArray> pair );
-    */
+    void handleRequest( const QgsServerRequest& request, QgsServerResponse& response );
+
+    /** Handles the request from query strinf
+     * The query string is normally read from environment
+     * but can be also passed in args and in this case overrides the environment
+     * variable.
+     *
+     * @param queryString QString containing the query string
+     * @return the response headers and body QPair of QByteArray
+     */
+    QPair<QByteArray, QByteArray> handleRequest( const QString& queryString );
 
     /** Returns a pointer to the server interface */
     QgsServerInterface* serverInterface();

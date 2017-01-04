@@ -19,7 +19,7 @@
 
 #include "qgsserverresponse.h"
 #include "qgsmessagelog.h"
-#include <QTextStream>
+//#include <QTextStream>
 
 //! constructor
 QgsServerResponse::QgsServerResponse()
@@ -39,8 +39,9 @@ void QgsServerResponse::write( const QString& data )
   QIODevice* iodev = io();
   if ( iodev )
   {
-    QTextStream stream( iodev );
-    stream << data;
+    //QTextStream stream( iodev );
+    //stream << data;
+    iodev->write( data.toUtf8() );
   }
   else
   {

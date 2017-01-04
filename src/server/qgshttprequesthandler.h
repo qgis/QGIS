@@ -25,6 +25,9 @@
 #include <QPair>
 #include <QHash>
 
+class QgsServerRequest;
+class QgsServerResponse;
+
 typedef QList< QPair<QRgb, int> > QgsColorBox; //Color / number of pixels
 typedef QMultiMap< int, QgsColorBox > QgsColorBoxMap; // sum of pixels / color box
 
@@ -33,7 +36,8 @@ It provides a method to set data to the client*/
 class QgsHttpRequestHandler: public QgsRequestHandler
 {
   public:
-    explicit QgsHttpRequestHandler( const bool captureOutput );
+    // QgsServerRequest and QgsServerResponse MUST live in the same scope
+    explicit QgsHttpRequestHandler( const QgsServerRequest& request, QgsServerResponse& response );
     ~QgsHttpRequestHandler();
 
     virtual void setGetMapResponse( const QString& service, QImage* img, int imageQuality ) override;
@@ -49,14 +53,11 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     virtual void setGetCoverageResponse( QByteArray* ba ) override;
     //! Send out HTTP headers and flush output buffer
     virtual void sendResponse() override;
-    virtual void setDefaultHeaders() override;
     virtual void setHeader( const QString &name, const QString &value ) override;
-    virtual int removeHeader( const QString &name ) override;
-    virtual void clearHeaders() override;
+    virtual void removeHeader( const QString &name ) override;
+    virtual void clear() override;
     virtual void appendBody( const QByteArray &body ) override;
-    virtual void clearBody() override;
     virtual void setInfoFormat( const QString &format ) override;
-    virtual bool responseReady() const override;
     virtual bool exceptionRaised() const override;
     virtual void setParameter( const QString &key, const QString &value ) override;
     virtual QString parameter( const QString &key ) const override;
@@ -64,21 +65,17 @@ class QgsHttpRequestHandler: public QgsRequestHandler
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     virtual void setPluginFilters( const QgsServerFiltersMap &pluginFilters ) override;
 #endif
-    //! Return the response if capture output is activated
-    QPair<QByteArray, QByteArray> getResponse() override;
+
+    virtual void parseInput() override;
 
   protected:
-    virtual void sendHeaders() override;
-    virtual void sendBody() override;
     void setHttpResponse( QByteArray *ba, const QString &format );
 
     /** Converts format to official mimetype (e.g. 'jpg' to 'image/jpeg')
       @return mime string (or the entered string if not found)*/
     QString formatToMimeType( const QString& format ) const;
 
-    void requestStringToParameterMap( const QString& request, QMap<QString, QString>& parameters );
-    //! Read CONTENT_LENGTH characters from stdin
-    QString readPostBody() const;
+    void requestStringToParameterMap( QMap<QString, QString>& parameters );
 
   private:
     static void medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage );
@@ -93,11 +90,10 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     //! Calculates a representative color for a box (pixel weighted average)
     static QRgb boxColor( const QgsColorBox& box, int boxPixels );
     // TODO: if HAVE_SERVER_PYTHON
-    QByteArray mResponseHeader;
-    QByteArray mResponseBody;
-    bool mCaptureOutput;
-    void addToResponseHeader( const char * response );
-    void addToResponseBody( const char * response );
+
+    const QgsServerRequest& mRequest;
+    QgsServerResponse&      mResponse;
+
 };
 
 #endif

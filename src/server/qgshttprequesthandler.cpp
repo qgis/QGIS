@@ -25,6 +25,8 @@
 #endif
 #include "qgsmessagelog.h"
 #include "qgsmapserviceexception.h"
+#include "qgsserverrequest.h"
+#include "qgsserverresponse.h"
 #include <QBuffer>
 #include <QByteArray>
 #include <QDomDocument>
@@ -33,21 +35,25 @@
 #include <QTextStream>
 #include <QStringList>
 #include <QUrl>
-#include <fcgi_stdio.h>
+#include <QUrlQuery>
 
-
-QgsHttpRequestHandler::QgsHttpRequestHandler( const bool captureOutput )
+QgsHttpRequestHandler::QgsHttpRequestHandler( const QgsServerRequest& request, QgsServerResponse& response )
     : QgsRequestHandler()
+    , mRequest( request )
+    , mResponse( response )
 {
-  mException = nullptr;
-  mHeadersSent = false;
-  mCaptureOutput = captureOutput;
+  mException    = nullptr;
+  mHeadersSent  = false;
+
+  mParameterMap = mRequest.parameters();
 }
 
 QgsHttpRequestHandler::~QgsHttpRequestHandler()
 {
   delete mException;
 }
+
+
 
 void QgsHttpRequestHandler::setHttpResponse( QByteArray *ba, const QString &format )
 {
@@ -63,12 +69,7 @@ void QgsHttpRequestHandler::setHttpResponse( QByteArray *ba, const QString &form
   }
   QgsMessageLog::logMessage( QStringLiteral( "Byte array looks good, setting response..." ) );
   appendBody( *ba );
-  mInfoFormat = format;
-}
-
-bool QgsHttpRequestHandler::responseReady() const
-{
-  return !mHeaders.isEmpty() || !mBody.isEmpty();
+  setInfoFormat( format );
 }
 
 bool QgsHttpRequestHandler::exceptionRaised() const
@@ -76,118 +77,40 @@ bool QgsHttpRequestHandler::exceptionRaised() const
   return mException;
 }
 
-void QgsHttpRequestHandler::setDefaultHeaders()
-{
-  //format
-  QString format = mInfoFormat;
-  if ( mInfoFormat.startsWith( QLatin1String( "text/" ) ) || mInfoFormat.startsWith( QLatin1String( "application/vnd.ogc.gml" ) ) )
-  {
-    format.append( "; charset=utf-8" );
-  }
-  setHeader( QStringLiteral( "Content-Type" ), format );
-
-  //length
-  int contentLength = mBody.size();
-  if ( contentLength > 0 ) // size is not known when streaming
-  {
-    setHeader( QStringLiteral( "Content-Length" ), QString::number( contentLength ) );
-  }
-}
-
 void QgsHttpRequestHandler::setHeader( const QString &name, const QString &value )
 {
-  mHeaders.insert( name, value );
+  mResponse.setHeader( name, value );
 }
 
-
-void QgsHttpRequestHandler::clearHeaders()
+void QgsHttpRequestHandler::clear()
 {
-  mHeaders.clear();
+  mResponse.clear();
 }
 
-int QgsHttpRequestHandler::removeHeader( const QString &name )
+void QgsHttpRequestHandler::removeHeader( const QString &name )
 {
-  return mHeaders.remove( name );
+  mResponse.clearHeader( name );
 }
 
 void QgsHttpRequestHandler::appendBody( const QByteArray &body )
 {
-  mBody.append( body );
+  mResponse.write( body );
 }
-
-void QgsHttpRequestHandler::clearBody()
-{
-  mBody.clear();
-}
-
 
 void QgsHttpRequestHandler::setInfoFormat( const QString &format )
 {
   mInfoFormat = format;
+
+  // Update header
+  QString fmt = mInfoFormat;
+  if ( mInfoFormat.startsWith( QLatin1String( "text/" ) ) || mInfoFormat.startsWith( QLatin1String( "application/vnd.ogc.gml" ) ) )
+  {
+    fmt.append( "; charset=utf-8" );
+  }
+  setHeader( QStringLiteral( "Content-Type" ), fmt );
+
 }
 
-void QgsHttpRequestHandler::addToResponseHeader( const char * response )
-{
-  if ( mCaptureOutput )
-  {
-    mResponseHeader.append( response );
-  }
-  else
-  {
-    fputs( response, FCGI_stdout );
-  }
-}
-
-void QgsHttpRequestHandler::addToResponseBody( const char * response )
-{
-  if ( mCaptureOutput )
-  {
-    mResponseBody.append( response );
-  }
-  else
-  {
-    fputs( response, FCGI_stdout );
-  }
-}
-
-void QgsHttpRequestHandler::sendHeaders()
-{
-  // Send default headers if they've not been set in a previous stage
-  if ( mHeaders.empty() )
-  {
-    setDefaultHeaders();
-  }
-
-  QMap<QString, QString>::const_iterator it;
-  for ( it = mHeaders.constBegin(); it != mHeaders.constEnd(); ++it )
-  {
-    addToResponseHeader( it.key().toUtf8() );
-    addToResponseHeader( ": " );
-    addToResponseHeader( it.value().toUtf8() );
-    addToResponseHeader( "\n" );
-  }
-  addToResponseHeader( "\n" );
-  mHeaders.clear();
-  mHeadersSent = true;
-}
-
-void QgsHttpRequestHandler::sendBody()
-{
-  if ( mCaptureOutput )
-  {
-    mResponseBody.append( mBody );
-  }
-  else
-  {
-    // Cannot use addToResponse because it uses printf
-    size_t result = fwrite(( void* )mBody.data(), mBody.size(), 1, FCGI_stdout );
-#ifdef QGISDEBUG
-    QgsMessageLog::logMessage( QStringLiteral( "Sent %1 blocks of %2 bytes" ).arg( result ).arg( mBody.size() ) );
-#else
-    Q_UNUSED( result );
-#endif
-  }
-}
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 void QgsHttpRequestHandler::setPluginFilters( const QgsServerFiltersMap& pluginFilters )
@@ -198,12 +121,6 @@ void QgsHttpRequestHandler::setPluginFilters( const QgsServerFiltersMap& pluginF
 
 void QgsHttpRequestHandler::sendResponse()
 {
-  QgsMessageLog::logMessage( QStringLiteral( "Sending HTTP response" ) );
-  if ( ! responseReady() )
-  {
-    QgsMessageLog::logMessage( QStringLiteral( "Trying to send out an invalid response" ) );
-    return;
-  }
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   // Plugin hook
   // Iterate filters and call their sendResponse() method
@@ -213,21 +130,15 @@ void QgsHttpRequestHandler::sendResponse()
     filtersIterator.value()->sendResponse();
   }
 #endif
-  if ( ! headersSent() )
-  {
-    sendHeaders();
-  }
-  sendBody();
-  //Clear the body to allow for streaming content to stdout
-  clearBody();
+
+  // Send data to output
+  mResponse.flush();
+  // XXX for compatibility only
+  // Headers are always sent first
+  mHeadersSent = true;
 }
 
-QPair<QByteArray, QByteArray> QgsHttpRequestHandler::getResponse()
-{
-  // TODO: check that this is not an evil bug!
-  QPair<QByteArray, QByteArray> response( mResponseHeader, mResponseBody );
-  return response;
-}
+
 
 QString QgsHttpRequestHandler::formatToMimeType( const QString& format ) const
 {
@@ -472,8 +383,7 @@ void QgsHttpRequestHandler::setServiceException( const QgsMapServiceException& e
   QByteArray ba = exceptionDoc.toByteArray();
   // Clear response headers and body and set new exception
   // TODO: check for headersSent()
-  clearHeaders();
-  clearBody();
+  clear();
   setHttpResponse( &ba, QStringLiteral( "text/xml" ) );
 }
 
@@ -502,7 +412,6 @@ bool QgsHttpRequestHandler::startGetFeatureResponse( QByteArray* ba, const QStri
     format = QStringLiteral( "text/xml" );
 
   setInfoFormat( format );
-  sendHeaders();
   appendBody( *ba );
   // Streaming
   sendResponse();
@@ -532,8 +441,8 @@ void QgsHttpRequestHandler::endGetFeatureResponse( QByteArray* ba )
     return;
   }
   appendBody( *ba );
-  // Streaming
-  sendResponse();
+  // do NOT call sendResponse()
+  // finish will be called at the end of the transaction
 }
 
 void QgsHttpRequestHandler::setGetCoverageResponse( QByteArray* ba )
@@ -541,67 +450,50 @@ void QgsHttpRequestHandler::setGetCoverageResponse( QByteArray* ba )
   setHttpResponse( ba, QStringLiteral( "image/tiff" ) );
 }
 
-void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request, QMap<QString, QString>& parameters )
+void QgsHttpRequestHandler::requestStringToParameterMap( QMap<QString, QString>& parameters )
 {
-  parameters.clear();
-
-
-  //insert key and value into the map (parameters are separated by &)
-  Q_FOREACH ( const QString& element, request.split( "&" ) )
+  // SLD
+  QString value = parameters.value( QStringLiteral( "SLD" ) );
+  if ( !value.isEmpty() )
   {
-    int sepidx = element.indexOf( QLatin1String( "=" ), 0, Qt::CaseSensitive );
-    if ( sepidx == -1 )
-    {
-      continue;
-    }
-
-    QString key = element.left( sepidx );
-    key = QUrl::fromPercentEncoding( key.toUtf8() ); //replace encoded special characters and utf-8 encodings
-
-    QString value = element.mid( sepidx + 1 );
-    value.replace( QLatin1String( "+" ), QLatin1String( " " ) );
-    value = QUrl::fromPercentEncoding( value.toUtf8() ); //replace encoded special characters and utf-8 encodings
-
-    if ( key.compare( QLatin1String( "SLD_BODY" ), Qt::CaseInsensitive ) == 0 )
-    {
-      key = QStringLiteral( "SLD" );
-    }
-    else if ( key.compare( QLatin1String( "SLD" ), Qt::CaseInsensitive ) == 0 )
-    {
+    // XXX Why keeping this ????
 #if QT_VERSION < 0x050000
-      QByteArray fileContents;
-      if ( value.startsWith( "http", Qt::CaseInsensitive ) )
+    QByteArray fileContents;
+    if ( value.startsWith( "http", Qt::CaseInsensitive ) )
+    {
+      QgsHttpTransaction http( value );
+      if ( !http.getSynchronously( fileContents ) )
       {
-        QgsHttpTransaction http( value );
-        if ( !http.getSynchronously( fileContents ) )
-        {
-          continue;
-        }
+        fileContents.clear();
       }
-      else if ( value.startsWith( "ftp", Qt::CaseInsensitive ) )
+    }
+    else if ( value.startsWith( "ftp", Qt::CaseInsensitive ) )
+    {
+      Q_NOWARN_DEPRECATED_PUSH;
+      QgsFtpTransaction ftp;
+      if ( !ftp.get( value, fileContents ) )
       {
-        Q_NOWARN_DEPRECATED_PUSH;
-        QgsFtpTransaction ftp;
-        if ( !ftp.get( value, fileContents ) )
-        {
-          continue;
-        }
-        value = QUrl::fromPercentEncoding( fileContents );
-        Q_NOWARN_DEPRECATED_POP;
-      }
-      else
-      {
-        continue; //only http and ftp supported at the moment
+        fileContents.clear();
       }
       value = QUrl::fromPercentEncoding( fileContents );
+      Q_NOWARN_DEPRECATED_POP;
+    }
+
+    if fileContents.size() > 0 )
+    {
+      parameters.insert( QStringLiteral( "SLD" ),  QUrl::fromPercentEncoding( fileContents ) );
+    }
 #else
-      QgsMessageLog::logMessage( QStringLiteral( "http and ftp methods not supported with Qt5." ) );
-      continue;
+    QgsMessageLog::logMessage( QStringLiteral( "http and ftp methods not supported with Qt5." ) );
 #endif
 
-    }
-    parameters.insert( key.toUpper(), value );
-    QgsMessageLog::logMessage( "inserting pair " + key.toUpper() + " // " + value + " into the parameter map" );
+  }
+
+  // SLD_BODY
+  value = parameters.value( QStringLiteral( "SLD_BODY" ) );
+  if ( ! value.isEmpty() )
+  {
+    parameters.insert( QStringLiteral( "SLD" ), value );
   }
 
   //feature info format?
@@ -643,52 +535,58 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
 
 }
 
-QString QgsHttpRequestHandler::readPostBody() const
+void QgsHttpRequestHandler::parseInput()
 {
-  QgsMessageLog::logMessage( QStringLiteral( "QgsHttpRequestHandler::readPostBody" ) );
-  char* lengthString = nullptr;
-  int length = 0;
-  char* input = nullptr;
-  QString inputString;
-  QString lengthQString;
-
-  lengthString = getenv( "CONTENT_LENGTH" );
-  if ( lengthString )
+  if ( mRequest.method() == QgsServerRequest::PostMethod )
   {
-    bool conversionSuccess = false;
-    lengthQString = QString( lengthString );
-    length = lengthQString.toInt( &conversionSuccess );
-    QgsMessageLog::logMessage( "length is: " + lengthQString );
-    if ( conversionSuccess )
+    QString inputString( mRequest.data() );
+
+    QDomDocument doc;
+    QString errorMsg;
+    int line;
+    int column;
+    if ( !doc.setContent( inputString, true, &errorMsg, &line, &column ) )
     {
-      input = new char[length + 1];
-      memset( input, 0, length + 1 );
-      for ( int i = 0; i < length; ++i )
+      // XXX Output error but continue processing request ?
+      QgsMessageLog::logMessage( QStringLiteral( "Error parsing post data: at line %1, column %2: %3." )
+                                 .arg( line ).arg( column ).arg( errorMsg ) );
+
+      // Process input string as a simple query text
+
+      typedef QPair<QString, QString> pair_t;
+      QUrlQuery query( inputString );
+      QList<pair_t> items = query.queryItems();
+      Q_FOREACH ( const pair_t& pair, items )
       {
-        input[i] = getchar();
+        mParameterMap.insert( pair.first.toUpper(), pair.second );
       }
-      //fgets(input, length+1, stdin);
-      if ( input )
-      {
-        inputString = QString::fromLocal8Bit( input );
-      }
-      else
-      {
-        QgsMessageLog::logMessage( QStringLiteral( "input is NULL " ) );
-      }
-      delete [] input;
+      requestStringToParameterMap( mParameterMap );
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "could not convert CONTENT_LENGTH to int" ) );
+      // we have an XML document
+
+      requestStringToParameterMap( mParameterMap );
+
+      QDomElement docElem = doc.documentElement();
+      if ( docElem.hasAttribute( QStringLiteral( "version" ) ) )
+      {
+        mParameterMap.insert( QStringLiteral( "VERSION" ), docElem.attribute( QStringLiteral( "version" ) ) );
+      }
+      if ( docElem.hasAttribute( QStringLiteral( "service" ) ) )
+      {
+        mParameterMap.insert( QStringLiteral( "SERVICE" ), docElem.attribute( QStringLiteral( "service" ) ) );
+      }
+      mParameterMap.insert( QStringLiteral( "REQUEST" ), docElem.tagName() );
+      mParameterMap.insert( QStringLiteral( "REQUEST_BODY" ), inputString );
+
     }
   }
-  // Used by the tests
-  else if ( getenv( "REQUEST_BODY" ) )
+  else
   {
-    inputString = getenv( "REQUEST_BODY" );
+    requestStringToParameterMap( mParameterMap );
   }
-  return inputString;
+
 }
 
 void QgsHttpRequestHandler::setParameter( const QString &key, const QString &value )

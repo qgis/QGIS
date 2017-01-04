@@ -24,6 +24,8 @@ class QgsServiceRegistry;
 class QgsServiceNativeModuleEntry;
 class QgsServerInterface;
 
+#include "qgis_server.h"
+
 #include <QHash>
 #include <memory>
 
