@@ -17,6 +17,7 @@
 #define QGSCLASSIFICATIONWIDGETWRAPPERFACTORY_H
 
 #include "qgseditorwidgetfactory.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsClassificationWidgetWrapperFactory

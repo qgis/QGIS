@@ -20,6 +20,7 @@
 
 #include "ui_qgspointdisplacementrendererwidgetbase.h"
 #include "qgsrendererwidget.h"
+#include "qgis_gui.h"
 
 class QgsPointDisplacementRenderer;
 

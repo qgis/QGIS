@@ -20,6 +20,7 @@
 #include <QAbstractItemModel>
 #include <QItemDelegate>
 #include <QFile>
+#include "qgis_gui.h"
 
 class QMimeData;
 class QgsPanelWidget;

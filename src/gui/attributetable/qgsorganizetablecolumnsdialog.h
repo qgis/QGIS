@@ -22,6 +22,7 @@
 #include "ui_qgsorganizetablecolumnsdialog.h"
 
 #include "qgsattributetableconfig.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 

@@ -21,6 +21,7 @@
 #include <QWebView>
 #include <QLineEdit>
 #include <QPushButton>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Wraps a web view widget. Will show the content available at the URL of the value in a web browser.

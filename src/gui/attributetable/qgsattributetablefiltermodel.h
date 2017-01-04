@@ -22,6 +22,7 @@
 
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturemodel.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayerCache;
 class QgsMapCanvas;

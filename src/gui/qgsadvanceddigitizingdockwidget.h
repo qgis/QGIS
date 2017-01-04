@@ -21,6 +21,7 @@
 #include "qgsmessagebaritem.h"
 
 #include <ui_qgsadvanceddigitizingdockwidgetbase.h>
+#include "qgis_gui.h"
 
 
 class QgsAdvancedDigitizingCanvasItem;

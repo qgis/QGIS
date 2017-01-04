@@ -21,6 +21,7 @@
 #include "qgsstyle.h"
 
 #include <QToolButton>
+#include "qgis_gui.h"
 
 class QgsPanelWidget;
 

@@ -18,6 +18,7 @@
 #include <QItemSelectionModel>
 
 #include "qgsfeature.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QgsFeatureModel;

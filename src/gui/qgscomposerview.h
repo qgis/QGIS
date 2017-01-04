@@ -20,6 +20,7 @@
 #include <QGraphicsView>
 #include "qgsprevieweffect.h" // for QgsPreviewEffect::PreviewMode
 #include <QGraphicsPolygonItem>
+#include "qgis_gui.h"
 
 class QDomDocument;
 class QDomElement;

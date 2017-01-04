@@ -17,6 +17,7 @@
 #define QGSLISTWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgis_gui.h"
 
 class QgsListWidget;
 

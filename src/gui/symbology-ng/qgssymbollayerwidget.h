@@ -714,6 +714,7 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerWidget : public QgsSymbolLayerWidget,
 
 
 #include "ui_qgsgeometrygeneratorwidgetbase.h"
+#include "qgis_gui.h"
 
 class QgsGeometryGeneratorSymbolLayer;
 

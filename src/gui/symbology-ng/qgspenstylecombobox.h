@@ -17,6 +17,7 @@
 #define QGSPENSTYLECOMBOBOX_H
 
 #include <QComboBox>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsPenStyleComboBox

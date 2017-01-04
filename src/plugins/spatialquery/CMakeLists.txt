@@ -44,6 +44,7 @@ INCLUDE_DIRECTORIES(
   ../../gui
   ..
   ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 
 TARGET_LINK_LIBRARIES(spatialqueryplugin

@@ -20,6 +20,7 @@
 
 #include "qgsrasterrendererwidget.h"
 #include "ui_qgsmultibandcolorrendererwidgetbase.h"
+#include "qgis_gui.h"
 
 class QgsContrastEnhancement;
 class QgsMultiBandColorRenderer;

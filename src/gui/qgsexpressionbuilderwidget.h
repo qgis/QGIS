@@ -26,6 +26,7 @@
 #include "QStandardItem"
 #include "QSortFilterProxyModel"
 #include "QStringListModel"
+#include "qgis_gui.h"
 
 class QgsFields;
 class QgsExpressionHighlighter;

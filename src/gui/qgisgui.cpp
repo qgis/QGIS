@@ -20,6 +20,7 @@
 #include "qgslogger.h"
 
 #include <QFontDialog>
+#include "qgis_gui.h"
 
 
 namespace QgisGui

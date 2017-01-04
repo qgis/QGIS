@@ -19,6 +19,7 @@
 #include <QHash>
 #include <QList>
 #include <QAction>
+#include "qgis_gui.h"
 
 class QShortcut;
 

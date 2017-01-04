@@ -27,6 +27,7 @@
 #include <QStringList>
 #include <QPushButton>
 #include <QNetworkRequest>
+#include "qgis_gui.h"
 
 class QgsDataProvider;
 class QButtonGroup;

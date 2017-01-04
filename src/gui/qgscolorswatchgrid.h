@@ -18,6 +18,7 @@
 #include "qgscolorscheme.h"
 #include <QWidget>
 #include <QWidgetAction>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsColorSwatchGrid

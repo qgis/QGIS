@@ -21,6 +21,7 @@
 #include "qgstaskmanager.h"
 #include <QStyledItemDelegate>
 #include <QToolButton>
+#include "qgis_gui.h"
 
 class QgsTaskManager;
 class QgsTask;

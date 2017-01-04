@@ -18,6 +18,7 @@
 #include "ui_qgsinvertedpolygonrendererwidgetbase.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgsrendererwidget.h"
+#include "qgis_gui.h"
 
 class QMenu;
 

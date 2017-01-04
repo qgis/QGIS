@@ -20,6 +20,7 @@
 #include "ui_qgsauthconfigidedit.h"
 
 #include <QWidget>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \brief Custom widget for editing an authentication configuration ID

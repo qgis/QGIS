@@ -789,6 +789,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/layertree
   ${CMAKE_CURRENT_SOURCE_DIR}/effects
   ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
   ../core
   ../core/auth
   ../core/composer
@@ -809,9 +810,6 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
 )
-
-REMOVE_DEFINITIONS("-DGUI_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("\"-DGUI_EXPORT=${DLLEXPORT}\"")
 
 # disable deprecation warnings for classes re-exporting deprecated methods
 IF(MSVC)
@@ -868,6 +866,14 @@ TARGET_LINK_LIBRARIES(qgis_gui
   ${QWT_LIBRARY}
   ${QSCINTILLA_LIBRARY}
 )
+
+GENERATE_EXPORT_HEADER(
+   qgis_gui
+   BASE_NAME GUI
+   EXPORT_FILE_NAME qgis_gui.h
+)
+
+SET(QGIS_GUI_HDRS ${QGIS_GUI_HDRS} ${PROJECT_BINARY_DIR}/qgis_gui.h)
 
 IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)

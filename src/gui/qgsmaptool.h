@@ -27,6 +27,7 @@
 
 #ifdef HAVE_TOUCH
 #include <QGestureEvent>
+#include "qgis_gui.h"
 #endif
 
 class QgsMapLayer;

@@ -18,6 +18,7 @@
 #define QGSMAPTOOLADVANCEDDIGITIZE_H
 
 #include "qgsmaptooledit.h"
+#include "qgis_gui.h"
 
 class QgsMapMouseEvent;
 class QgsAdvancedDigitizingDockWidget;

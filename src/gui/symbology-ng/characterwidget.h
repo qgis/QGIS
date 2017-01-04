@@ -52,6 +52,7 @@
 #include <QSize>
 #include <QString>
 #include <QWidget>
+#include "qgis_gui.h"
 
 QT_BEGIN_NAMESPACE
 class QMouseEvent;

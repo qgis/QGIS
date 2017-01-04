@@ -49,6 +49,7 @@ class QgsVectorLayerTools;
 
 #include "qgis.h"
 #include "qgsmaplayer.h"
+#include "qgis_gui.h"
 
 
 /** \ingroup gui

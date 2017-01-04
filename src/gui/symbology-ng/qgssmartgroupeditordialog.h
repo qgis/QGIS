@@ -17,6 +17,7 @@
 #define QGSSMARTGROUPEDITORDIALOG_H
 
 #include "ui_qgssmartgroupconditionwidget.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsSmartGroupCondition

@@ -195,6 +195,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
   ../core
   ../core/auth
   ../core/dxf

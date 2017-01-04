@@ -22,6 +22,7 @@
 #include "ui_qgserrordialogbase.h"
 #include "qgisgui.h"
 #include "qgserror.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsErrorDialog

@@ -22,6 +22,7 @@
 
 #include <QDialog>
 #include <QLabel>
+#include "qgis_gui.h"
 
 
 /** \ingroup gui

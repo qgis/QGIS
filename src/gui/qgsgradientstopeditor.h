@@ -18,6 +18,7 @@
 
 #include "qgscolorramp.h"
 #include <QWidget>
+#include "qgis_gui.h"
 
 
 /** \ingroup gui

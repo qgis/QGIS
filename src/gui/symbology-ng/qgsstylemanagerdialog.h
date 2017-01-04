@@ -23,6 +23,7 @@
 
 #include "ui_qgsstylemanagerdialogbase.h"
 #include "qgscontexthelp.h"
+#include "qgis_gui.h"
 
 class QgsStyle;
 

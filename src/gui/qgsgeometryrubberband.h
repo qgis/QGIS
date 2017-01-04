@@ -21,6 +21,7 @@
 #include "qgsmapcanvasitem.h"
 #include <QBrush>
 #include <QPen>
+#include "qgis_gui.h"
 
 
 class QgsAbstractGeometry;

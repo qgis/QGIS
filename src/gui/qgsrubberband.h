@@ -21,6 +21,7 @@
 #include <QList>
 #include <QPen>
 #include <QPolygon>
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QPaintEvent;

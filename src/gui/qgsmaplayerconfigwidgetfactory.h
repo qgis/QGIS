@@ -17,6 +17,7 @@
 #define QGSMAPLAYERCONFIGWIDGETFACTORY_H
 
 #include <QListWidgetItem>
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 class QgsMapLayerConfigWidget;

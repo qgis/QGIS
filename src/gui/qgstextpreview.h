@@ -18,6 +18,7 @@
 #include "qgstextrenderer.h"
 
 #include <QLabel>
+#include "qgis_gui.h"
 
 /** \class QgsTextPreview
  * \ingroup gui

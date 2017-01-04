@@ -23,6 +23,7 @@
 #include <limits>
 #include <QValidator>
 #include <QLocale>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsLongLongValidator

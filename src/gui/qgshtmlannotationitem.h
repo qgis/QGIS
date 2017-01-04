@@ -22,6 +22,7 @@
 #include "qgsfeature.h"
 
 #include <QObject>
+#include "qgis_gui.h"
 
 class QGraphicsProxyWidget;
 class QgsWebView;

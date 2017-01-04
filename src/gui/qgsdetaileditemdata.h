@@ -21,6 +21,7 @@
 #include <QMetaType>
 #include <QString>
 #include <QPixmap>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * This class is the data only representation of a

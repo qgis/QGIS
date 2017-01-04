@@ -26,6 +26,7 @@ class QgsWebView;
 #include <QWidget>
 #include <QUrl>
 #include "qgsfeature.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A maptip is a class to display a tip on a map canvas

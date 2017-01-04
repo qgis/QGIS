@@ -19,6 +19,7 @@
 #include <QPen>
 
 #include "qgsmapcanvasitem.h"
+#include "qgis_gui.h"
 
 class QgsAdvancedDigitizingDockWidget;
 

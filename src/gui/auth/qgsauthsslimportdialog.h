@@ -67,6 +67,7 @@
 #include <QDialog>
 #include <QAbstractSocket>
 #include <QSslSocket>
+#include "qgis_gui.h"
 
 class QPushButton;
 class QSslSocket;

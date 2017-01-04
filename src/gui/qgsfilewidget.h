@@ -24,6 +24,7 @@ class QVariant;
 class QgsFilterLineEdit;
 
 #include <QWidget>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * @brief The QgsFileWidget class creates a widget for selecting a file or a folder.

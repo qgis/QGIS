@@ -19,6 +19,7 @@
 #include <QPair>
 #include <QWidget>
 #include <QStringList>
+#include "qgis_gui.h"
 
 class QFont;
 

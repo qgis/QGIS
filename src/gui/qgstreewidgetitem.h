@@ -21,6 +21,7 @@
 
 #include <QTreeWidgetItem>
 #include <QObject>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsTreeWidgetItem

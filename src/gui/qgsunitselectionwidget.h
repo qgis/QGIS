@@ -24,6 +24,7 @@
 #include "qgssymbol.h"
 #include "ui_qgsunitselectionwidget.h"
 #include "ui_qgsmapunitscalewidgetbase.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 

@@ -21,6 +21,7 @@
 #include "ui_qgsauthimportcertdialog.h"
 
 #include <QSslCertificate>
+#include "qgis_gui.h"
 
 class QPushButton;
 

@@ -20,6 +20,7 @@
 #include <QItemSelectionModel>
 #include <QComboBox>
 #include "qgsfields.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 

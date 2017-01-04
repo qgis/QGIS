@@ -23,6 +23,7 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QLayout>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A generic dialog with layout and button box

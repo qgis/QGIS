@@ -19,6 +19,7 @@
 #include "qgsmaptool.h"
 #include <QGestureEvent>
 #include <QPinchGesture>
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 

@@ -17,6 +17,7 @@
 #define QGSTEXTEDITSEARCHWIDGETWRAPPER_H
 
 #include "qgsdefaultsearchwidgetwrapper.h"
+#include "qgis_gui.h"
 
 class QgsTextEditWidgetFactory;
 

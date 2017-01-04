@@ -18,6 +18,7 @@
 
 #include "qgsfields.h"
 #include <QToolButton>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsMultiEditToolButton

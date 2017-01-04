@@ -16,6 +16,8 @@
 #ifndef QGSATTRIBUTEFORMINTERFACE_H
 #define QGSATTRIBUTEFORMINTERFACE_H
 
+#include "qgis_gui.h"
+
 class QgsAttributeForm;
 class QgsFeature;
 

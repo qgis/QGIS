@@ -19,6 +19,7 @@
 #define QGSDATUMTRANSFORMDIALOG_H
 
 #include "ui_qgsdatumtransformdialogbase.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsDatumTransformDialog

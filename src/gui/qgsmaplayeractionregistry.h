@@ -22,6 +22,7 @@
 #include <QAction>
 
 #include "qgsmaplayer.h"
+#include "qgis_gui.h"
 
 class QgsFeature;
 

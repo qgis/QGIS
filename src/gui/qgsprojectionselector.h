@@ -17,6 +17,7 @@
 #include <QStringList>
 
 #include "qgis.h"
+#include "qgis_gui.h"
 
 class QResizeEvent;
 

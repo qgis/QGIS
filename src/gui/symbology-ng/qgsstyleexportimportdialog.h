@@ -26,6 +26,7 @@
 #include <QStandardItem>
 
 #include "ui_qgsstyleexportimportdialogbase.h"
+#include "qgis_gui.h"
 
 class QgsStyle;
 class QgsStyleGroupSelectionDialog;

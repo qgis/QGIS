@@ -20,6 +20,7 @@
 #include <QMap>
 #include <QString>
 #include <QVariant>
+#include "qgis_gui.h"
 
 class QgsEditorConfigWidget;
 class QgsEditorWidgetWrapper;

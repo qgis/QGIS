@@ -27,6 +27,7 @@ email                : even.rouault at spatialys.com
 #include <QPair>
 #include <QStringList>
 #include <QSet>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * SQL composer dialog

@@ -21,6 +21,7 @@
 #include "qgsrectangle.h"
 
 #include <QWidget>
+#include "qgis_gui.h"
 
 class QgsRasterLayer;
 class QgsRasterRenderer;

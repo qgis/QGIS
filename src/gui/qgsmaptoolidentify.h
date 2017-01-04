@@ -24,6 +24,7 @@
 
 #include <QObject>
 #include <QPointer>
+#include "qgis_gui.h"
 
 class QgsRasterLayer;
 class QgsVectorLayer;

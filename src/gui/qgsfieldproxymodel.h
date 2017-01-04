@@ -17,6 +17,7 @@
 #define QGSFIELDPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
+#include "qgis_gui.h"
 
 class QgsFieldModel;
 

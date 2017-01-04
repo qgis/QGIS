@@ -24,6 +24,7 @@
 #include <QDialog>
 #include <QMenuBar>
 #include <QGridLayout>
+#include "qgis_gui.h"
 
 class QgsDistanceArea;
 class QgsHighlight;

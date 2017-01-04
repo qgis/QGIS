@@ -17,6 +17,7 @@
 #define QGSENCODINGFILEDIALOG_H
 
 #include <QFileDialog>
+#include "qgis_gui.h"
 class QComboBox;
 class QPushButton;
 

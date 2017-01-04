@@ -17,6 +17,7 @@
 #define QGSDATETIMEEDIT_H
 
 #include <QDateTimeEdit>
+#include "qgis_gui.h"
 
 class QToolButton;
 class QLineEdit;

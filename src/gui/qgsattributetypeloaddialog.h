@@ -20,6 +20,7 @@
 #include "ui_qgsattributeloadfrommap.h"
 
 #include <vector>
+#include "qgis_gui.h"
 
 class QDialog;
 class QLayout;

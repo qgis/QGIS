@@ -20,6 +20,7 @@
 #include <QVariant>
 #include "qgsattributeeditorcontext.h"
 #include "qgssearchwidgetwrapper.h"
+#include "qgis_gui.h"
 
 class QgsAttributeForm;
 class QgsEditorWidgetWrapper;

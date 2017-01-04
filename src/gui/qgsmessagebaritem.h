@@ -24,6 +24,7 @@
 #include <QIcon>
 #include <QTextEdit>
 #include <QHBoxLayout>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsMessageBarItem

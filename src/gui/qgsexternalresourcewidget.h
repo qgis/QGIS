@@ -24,6 +24,7 @@ class QgsPixmapLabel;
 #include <QVariant>
 
 #include "qgsfilewidget.h"
+#include "qgis_gui.h"
 
 
 

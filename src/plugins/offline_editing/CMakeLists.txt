@@ -59,6 +59,7 @@ INCLUDE_DIRECTORIES(
   ../../gui/layertree
   ..
   ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 
 ########################################################

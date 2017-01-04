@@ -17,6 +17,7 @@
 #define QGSFOCUSWATCHER_H
 
 #include <QObject>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsFocusWatcher

@@ -22,6 +22,7 @@
 #include "ui_qgsrendererv2propsdialogbase.h"
 
 #include "qgsfeaturerequest.h"
+#include "qgis_gui.h"
 
 class QKeyEvent;
 

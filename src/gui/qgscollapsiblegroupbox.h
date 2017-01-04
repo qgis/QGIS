@@ -23,6 +23,7 @@
 #include <QPointer>
 #include <QToolButton>
 #include <QMouseEvent>
+#include "qgis_gui.h"
 
 class QToolButton;
 class QScrollArea;

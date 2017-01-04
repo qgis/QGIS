@@ -22,6 +22,7 @@
 #include "ui_widget_size_scale.h"
 #include <QStandardItemModel>
 #include <QItemDelegate>
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QgsSymbol;
