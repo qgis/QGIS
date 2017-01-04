@@ -2079,13 +2079,13 @@ void TestQgsGeometry::lineStringV2()
   QCOMPARE( area, 1.0 );
   l36.setPoints( QgsPointSequenceV2() << QgsPointV2( 5, 10 ) << QgsPointV2( 10, 10 ) );
   l36.sumUpArea( area );
-  QCOMPARE( area, 1.0 );
+  QVERIFY( qgsDoubleNear( area, -24 ) );
   l36.setPoints( QgsPointSequenceV2() << QgsPointV2( 0, 0 ) << QgsPointV2( 2, 0 ) << QgsPointV2( 2, 2 ) );
   l36.sumUpArea( area );
-  QVERIFY( qgsDoubleNear( area, 3.0 ) );
+  QVERIFY( qgsDoubleNear( area, -22 ) );
   l36.setPoints( QgsPointSequenceV2() << QgsPointV2( 0, 0 ) << QgsPointV2( 2, 0 ) << QgsPointV2( 2, 2 ) << QgsPointV2( 0, 2 ) );
   l36.sumUpArea( area );
-  QVERIFY( qgsDoubleNear( area, 7.0 ) );
+  QVERIFY( qgsDoubleNear( area, -18 ) );
 
   //boundingBox - test that bounding box is updated after every modification to the line string
   QgsLineStringV2 l37;
@@ -2204,27 +2204,27 @@ void TestQgsGeometry::lineStringV2()
 
 void TestQgsGeometry::compoundCurveV2()
 {
-    //test that area of a compound curve ring is equal to a closed linestring with the same vertices
-    QgsCompoundCurveV2 cc;
-    QgsLineStringV2* l1 = new QgsLineStringV2();
-    l1->setPoints( QgsPointSequenceV2() << QgsPointV2( 1, 1 ) << QgsPointV2( 0, 2 ) );
-    cc.addCurve( l1 );
-    QgsLineStringV2* l2 = new QgsLineStringV2();
-    l2->setPoints( QgsPointSequenceV2() << QgsPointV2( 0, 2 ) << QgsPointV2( -1, 0 ) << QgsPointV2( 0, -1 ) );
-    cc.addCurve( l2 );
-    QgsLineStringV2* l3 = new QgsLineStringV2();
-    l3->setPoints( QgsPointSequenceV2() << QgsPointV2( 0, -1 ) << QgsPointV2( 1, 1 ) );
-    cc.addCurve( l3 );
+  //test that area of a compound curve ring is equal to a closed linestring with the same vertices
+  QgsCompoundCurveV2 cc;
+  QgsLineStringV2* l1 = new QgsLineStringV2();
+  l1->setPoints( QgsPointSequenceV2() << QgsPointV2( 1, 1 ) << QgsPointV2( 0, 2 ) );
+  cc.addCurve( l1 );
+  QgsLineStringV2* l2 = new QgsLineStringV2();
+  l2->setPoints( QgsPointSequenceV2() << QgsPointV2( 0, 2 ) << QgsPointV2( -1, 0 ) << QgsPointV2( 0, -1 ) );
+  cc.addCurve( l2 );
+  QgsLineStringV2* l3 = new QgsLineStringV2();
+  l3->setPoints( QgsPointSequenceV2() << QgsPointV2( 0, -1 ) << QgsPointV2( 1, 1 ) );
+  cc.addCurve( l3 );
 
-    double ccArea = 0.0;
-    cc.sumUpArea( ccArea );
+  double ccArea = 0.0;
+  cc.sumUpArea( ccArea );
 
-    QgsLineStringV2 ls;
-    ls.setPoints( QgsPointSequenceV2() << QgsPointV2( 1, 1 ) << QgsPointV2( 0, 2 ) <<  QgsPointV2( -1, 0 ) << QgsPointV2( 0, -1 )
-                  << QgsPointV2( 1, 1 ) );
-    double lsArea = 0.0;
-    ls.sumUpArea( lsArea );
-    QVERIFY( qgsDoubleNear( ccArea, lsArea ) );
+  QgsLineStringV2 ls;
+  ls.setPoints( QgsPointSequenceV2() << QgsPointV2( 1, 1 ) << QgsPointV2( 0, 2 ) <<  QgsPointV2( -1, 0 ) << QgsPointV2( 0, -1 )
+                << QgsPointV2( 1, 1 ) );
+  double lsArea = 0.0;
+  ls.sumUpArea( lsArea );
+  QVERIFY( qgsDoubleNear( ccArea, lsArea ) );
 }
 
 void TestQgsGeometry::polygonV2()
