@@ -23,6 +23,7 @@
 #else
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 #include <QtUiPlugin/QDesignerExportWidget>
+#include "qgis_customwidgets.h"
 #endif
 
 
