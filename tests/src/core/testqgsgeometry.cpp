@@ -27,6 +27,7 @@
 
 //qgis includes...
 #include <qgsapplication.h>
+#include "qgscompoundcurvev2.h"
 #include <qgsgeometry.h>
 #include "qgsgeometryutils.h"
 #include <qgspoint.h>
@@ -67,6 +68,7 @@ class TestQgsGeometry : public QObject
     // geometry types
     void pointV2(); //test QgsPointV2
     void lineStringV2(); //test QgsLineStringV2
+    void compoundCurveV2(); //test QgsCompoundCurveV2
     void polygonV2(); //test QgsPolygonV2
     void multiPoint();
     void multiLineString();
@@ -2198,6 +2200,31 @@ void TestQgsGeometry::lineStringV2()
   QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
   QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
   QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->z(), 20.0 );
+}
+
+void TestQgsGeometry::compoundCurveV2()
+{
+    //test that area of a compound curve ring is equal to a closed linestring with the same vertices
+    QgsCompoundCurveV2 cc;
+    QgsLineStringV2* l1 = new QgsLineStringV2();
+    l1->setPoints( QgsPointSequenceV2() << QgsPointV2( 1, 1 ) << QgsPointV2( 0, 2 ) );
+    cc.addCurve( l1 );
+    QgsLineStringV2* l2 = new QgsLineStringV2();
+    l2->setPoints( QgsPointSequenceV2() << QgsPointV2( 0, 2 ) << QgsPointV2( -1, 0 ) << QgsPointV2( 0, -1 ) );
+    cc.addCurve( l2 );
+    QgsLineStringV2* l3 = new QgsLineStringV2();
+    l3->setPoints( QgsPointSequenceV2() << QgsPointV2( 0, -1 ) << QgsPointV2( 1, 1 ) );
+    cc.addCurve( l3 );
+
+    double ccArea = 0.0;
+    cc.sumUpArea( ccArea );
+
+    QgsLineStringV2 ls;
+    ls.setPoints( QgsPointSequenceV2() << QgsPointV2( 1, 1 ) << QgsPointV2( 0, 2 ) <<  QgsPointV2( -1, 0 ) << QgsPointV2( 0, -1 )
+                  << QgsPointV2( 1, 1 ) );
+    double lsArea = 0.0;
+    ls.sumUpArea( lsArea );
+    QVERIFY( qgsDoubleNear( ccArea, lsArea ) );
 }
 
 void TestQgsGeometry::polygonV2()
