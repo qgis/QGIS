@@ -72,7 +72,7 @@ def findSagaFolder():
 
 def sagaPath():
     folder = ProcessingConfig.getSetting(SAGA_FOLDER)
-    if not os.path.isdir(folder):
+    if folder and not os.path.isdir(folder):
         folder = None
         ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
                                'Specified SAGA folder does not exist. Will try to find built-in binaries.')
