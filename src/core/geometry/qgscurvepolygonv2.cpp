@@ -365,7 +365,7 @@ double QgsCurvePolygonV2::area() const
 
   double totalArea = 0.0;
 
-  if ( mExteriorRing->isClosed() )
+  if ( mExteriorRing->isRing() )
   {
     double area = 0.0;
     mExteriorRing->sumUpArea( area );
@@ -376,7 +376,7 @@ double QgsCurvePolygonV2::area() const
   for ( ; ringIt != mInteriorRings.constEnd(); ++ringIt )
   {
     double area = 0.0;
-    if (( *ringIt )->isClosed() )
+    if (( *ringIt )->isRing() )
     {
       ( *ringIt )->sumUpArea( area );
       totalArea -= qAbs( area );
