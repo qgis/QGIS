@@ -112,6 +112,12 @@ ENDIF(MSVC)
 
 ADD_LIBRARY(qgis_server SHARED ${qgis_mapserv_SRCS} ${qgis_mapserv_MOC_SRCS} ${qgis_mapserv_HDRS} ${qgis_mapserv_MOC_HDRS})
 
+GENERATE_EXPORT_HEADER(
+   qgis_server
+   BASE_NAME SERVER
+   EXPORT_FILE_NAME qgis_server.h
+ )
+
 #generate unversioned libs for android
 IF (NOT ANDROID)
   SET_TARGET_PROPERTIES(qgis_server PROPERTIES
@@ -222,13 +228,6 @@ TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
   ${QCA_LIBRARY}
 )
 
-GENERATE_EXPORT_HEADER(
-   qgis_server
-   BASE_NAME SERVER
-   EXPORT_FILE_NAME qgis_server.h
- )
-
-SET(QGIS_SERVER_HDRS ${QGIS_SERVER_HDRS} ${PROJECT_BINARY_DIR}/qgis_server.h)
 
 ########################################################
 # Install
@@ -244,4 +243,3 @@ INSTALL(FILES
   schemaExtension.xsd
   DESTINATION ${QGIS_CGIBIN_DIR}
   )
-
