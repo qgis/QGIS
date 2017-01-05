@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import QgsVectorDataProvider, QgsFields
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 
@@ -45,8 +45,8 @@ class CreateAttributeIndex(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Create attribute index')
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input Layer')))
+        self.addParameter(ParameterTable(self.INPUT,
+                                         self.tr('Input Layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Attribute to index'), self.INPUT))
         self.addOutput(OutputVector(self.OUTPUT,
