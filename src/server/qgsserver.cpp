@@ -348,7 +348,7 @@ void QgsServer::putenv( const QString &var, const QString &val )
  * @return response headers and body
  */
 
-void QgsServer::handleRequest( const QgsServerRequest& request, QgsServerResponse& response )
+void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& response )
 {
   Q_UNUSED( response );
 
@@ -395,8 +395,8 @@ void QgsServer::handleRequest( const QgsServerRequest& request, QgsServerRespons
   theRequestHandler.setPluginFilters( sServerInterface->filters() );
 #endif
 
-  // Copy the parameters map
-  QMap<QString, QString> parameterMap( theRequestHandler.parameterMap() );
+  QMap<QString, QString> parameterMap = theRequestHandler.parameterMap();
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   const QgsAccessControl* accessControl = nullptr;
   accessControl = sServerInterface->accessControls();

@@ -183,7 +183,7 @@ class QgsServer
      * @param request a QgsServerRequest holding request parameters
      * @param response a QgsServerResponse for handling response I/O)
      */
-    void handleRequest( const QgsServerRequest& request, QgsServerResponse& response );
+    void handleRequest( QgsServerRequest& request, QgsServerResponse& response );
 
     /** Handles the request from query strinf
      * The query string is normally read from environment
@@ -202,3 +202,4 @@ class QgsServer
     QgsServer( const QgsServer& );
     QgsServer & operator=( const QgsServer& );
 };
+

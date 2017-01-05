@@ -48,7 +48,21 @@ class QgsServerResponse
      */
     virtual void clearHeader( const QString& key ) = 0;
 
+    /**
+     * Return the header value
+     */
+    virtual QString getHeader( const QString& key ) const = 0;
 
+    /**
+     * Return the list of all header keys
+     */
+    virtual QList<QString> headerKeys() const = 0;
+
+    /**
+     * Return true if the headers have alredy beeing written
+     */
+    virtual bool headersWritten() const = 0;
+ 
     /** Set the http return code
      * @param code HTTP return code value
      */

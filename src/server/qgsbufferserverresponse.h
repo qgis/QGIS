@@ -42,6 +42,12 @@ class QgsBufferServerResponse: public QgsServerResponse
 
     virtual void clearHeader( const QString& key ) override;
 
+    virtual QString getHeader( const QString& key ) const override;
+
+    virtual QList<QString> headerKeys() const override;
+
+    virtual bool headersWritten() const override;
+
     virtual void setReturnCode( int code ) override;
 
     virtual void sendError( int code,  const QString& message ) override;

@@ -70,7 +70,7 @@ class SERVER_EXPORT QgsServer
      * @param request a QgsServerRequest holding request parameters
      * @param response a QgsServerResponse for handling response I/O)
      */
-    void handleRequest( const QgsServerRequest& request, QgsServerResponse& response );
+    void handleRequest( QgsServerRequest& request, QgsServerResponse& response );
 
     /** Handles the request from query strinf
      * The query string is normally read from environment
@@ -81,10 +81,6 @@ class SERVER_EXPORT QgsServer
      * @return the response headers and body QPair of QByteArray
      */
     QPair<QByteArray, QByteArray> handleRequest( const QString& queryString );
-
-
-
-
 
     //! Returns a pointer to the server interface
     QgsServerInterfaceImpl* serverInterface() { return sServerInterface; }

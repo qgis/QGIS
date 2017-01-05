@@ -57,6 +57,21 @@ void QgsBufferServerResponse::setReturnCode( int code )
   mReturnCode = code;
 }
 
+QString QgsBufferServerResponse::getHeader( const QString& key ) const
+{
+  return mHeaders.value( key );
+}
+
+QList<QString> QgsBufferServerResponse::headerKeys() const
+{
+  return mHeaders.keys();
+}
+
+bool QgsBufferServerResponse::headersWritten() const
+{
+  return mHeadersWritten;
+}
+
 void QgsBufferServerResponse::sendError( int code,  const QString& message )
 {
   if ( mHeadersWritten )
@@ -112,9 +127,7 @@ void QgsBufferServerResponse::flush()
 
 void QgsBufferServerResponse::clear()
 {
-  if ( !mHeadersWritten )
-    mHeaders.clear();
-
+  mHeaders.clear();
   mBuffer.seek( 0 );
   mBuffer.buffer().clear();
 }

@@ -52,6 +52,21 @@ void QgsFcgiServerResponse::setHeader( const QString& key, const QString& value 
   mHeaders.insert( key, value );
 }
 
+QString QgsFcgiServerResponse::getHeader( const QString& key ) const
+{
+  return mHeaders.value( key );
+}
+
+QList<QString> QgsFcgiServerResponse::headerKeys() const
+{
+  return mHeaders.keys();
+}
+
+bool QgsFcgiServerResponse::headersWritten() const
+{
+  return mHeadersWritten;
+}
+
 void QgsFcgiServerResponse::setReturnCode( int code )
 {
   // fcgi applications must return HTTP status in header

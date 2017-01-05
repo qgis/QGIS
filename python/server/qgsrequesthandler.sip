@@ -69,7 +69,13 @@ class QgsRequestHandler  /Abstract/
     /** Set an HTTP header*/
     void setHeader( const QString &name, const QString &value );
 
-    /** Remove an HTTP header*/
+    //! Retrieve header value
+    QString getHeader( const QString& name ) const;
+
+    //! Return the list of all header keys
+    QList<QString> headerKeys() const;
+
+   /** Remove an HTTP header*/
     void removeHeader( const QString &name );
 
     /** Delete all HTTP headers*/
@@ -91,13 +97,13 @@ class QgsRequestHandler  /Abstract/
      * a parameter setParameter( const QString &key, const QString &value)
      * and removeParameter(const QString &key) must be used
      */
-    QMap<QString, QString> parameterMap();
+    QMap<QString, QString> parameterMap() const;
 
     /** Set a request parameter*/
     void setParameter( const QString &key, const QString &value );
 
     /** Remove a request parameter*/
-    int removeParameter( const QString &key );
+    void removeParameter( const QString &key );
 
     /** Return a request parameter*/
     QString parameter( const QString &key ) const;
@@ -109,7 +115,7 @@ class QgsRequestHandler  /Abstract/
     QString infoFormat() const;
 
     /** Return true if the HTTP headers were already sent to the client*/
-    bool headersSent();
+    bool headersSent() const;
 
 
     //! @note not available in Python bindings

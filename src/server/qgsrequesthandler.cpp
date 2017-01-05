@@ -37,21 +37,21 @@
 #include <QUrl>
 #include <QUrlQuery>
 
-QgsRequestHandler::QgsRequestHandler( const QgsServerRequest& request, QgsServerResponse& response )
-    : mHeadersSent(false)
-    , mException(nullptr)
+QgsRequestHandler::QgsRequestHandler( QgsServerRequest& request, QgsServerResponse& response )
+    : mException( nullptr )
     , mRequest( request )
     , mResponse( response )
 {
-  mException    = nullptr;
-  mHeadersSent  = false;
-
-  mParameterMap = mRequest.parameters();
 }
 
 QgsRequestHandler::~QgsRequestHandler()
 {
   delete mException;
+}
+
+QMap<QString, QString> QgsRequestHandler::parameterMap() const
+{
+  return mRequest.parameters();
 }
 
 void QgsRequestHandler::setHttpResponse( const QByteArray& ba, const QString &format )
@@ -87,6 +87,22 @@ void QgsRequestHandler::removeHeader( const QString &name )
 {
   mResponse.clearHeader( name );
 }
+
+QString QgsRequestHandler::getHeader( const QString& name ) const
+{
+  return mResponse.getHeader( name );
+}
+
+QList<QString> QgsRequestHandler::headerKeys() const
+{
+  return mResponse.headerKeys();
+}
+
+bool QgsRequestHandler::headersSent() const
+{
+  return mResponse.headersWritten();
+}
+
 
 void QgsRequestHandler::appendBody( const QByteArray &body )
 {
@@ -129,9 +145,6 @@ void QgsRequestHandler::sendResponse()
 
   // Send data to output
   mResponse.flush();
-  // XXX for compatibility only
-  // Headers are always sent first
-  mHeadersSent = true;
 }
 
 
@@ -385,7 +398,7 @@ void QgsRequestHandler::setServiceException( const QgsMapServiceException& ex )
 
 void QgsRequestHandler::setGetPrintResponse( QByteArray* ba )
 {
-  if(ba)
+  if ( ba )
   {
     setHttpResponse( *ba, formatToMimeType( mFormat ) );
   }
@@ -446,15 +459,18 @@ void QgsRequestHandler::endGetFeatureResponse( QByteArray* ba )
 
 void QgsRequestHandler::setGetCoverageResponse( QByteArray* ba )
 {
-  if(ba)
+  if ( ba )
   {
     setHttpResponse( *ba, QStringLiteral( "image/tiff" ) );
   }
 }
 
-void QgsRequestHandler::requestStringToParameterMap( QMap<QString, QString>& parameters )
+void QgsRequestHandler::setupParameters()
 {
+  const QgsServerRequest::Parameters parameters = mRequest.parameters();
+
   // SLD
+
   QString value = parameters.value( QStringLiteral( "SLD" ) );
   if ( !value.isEmpty() )
   {
@@ -483,7 +499,7 @@ void QgsRequestHandler::requestStringToParameterMap( QMap<QString, QString>& par
 
     if fileContents.size() > 0 )
     {
-      parameters.insert( QStringLiteral( "SLD" ),  QUrl::fromPercentEncoding( fileContents ) );
+      mRequest.setParameter( QStringLiteral( "SLD" ),  QUrl::fromPercentEncoding( fileContents ) );
     }
 #else
     QgsMessageLog::logMessage( QStringLiteral( "http and ftp methods not supported with Qt5." ) );
@@ -495,7 +511,7 @@ void QgsRequestHandler::requestStringToParameterMap( QMap<QString, QString>& par
   value = parameters.value( QStringLiteral( "SLD_BODY" ) );
   if ( ! value.isEmpty() )
   {
-    parameters.insert( QStringLiteral( "SLD" ), value );
+    mRequest.setParameter( QStringLiteral( "SLD" ), value );
   }
 
   //feature info format?
@@ -560,33 +576,32 @@ void QgsRequestHandler::parseInput()
       QList<pair_t> items = query.queryItems();
       Q_FOREACH ( const pair_t& pair, items )
       {
-        mParameterMap.insert( pair.first.toUpper(), pair.second );
+        mRequest.setParameter( pair.first.toUpper(), pair.second );
       }
-      requestStringToParameterMap( mParameterMap );
+      setupParameters();
     }
     else
     {
       // we have an XML document
 
-      requestStringToParameterMap( mParameterMap );
+      setupParameters();
 
       QDomElement docElem = doc.documentElement();
       if ( docElem.hasAttribute( QStringLiteral( "version" ) ) )
       {
-        mParameterMap.insert( QStringLiteral( "VERSION" ), docElem.attribute( QStringLiteral( "version" ) ) );
+        mRequest.setParameter( QStringLiteral( "VERSION" ), docElem.attribute( QStringLiteral( "version" ) ) );
       }
       if ( docElem.hasAttribute( QStringLiteral( "service" ) ) )
       {
-        mParameterMap.insert( QStringLiteral( "SERVICE" ), docElem.attribute( QStringLiteral( "service" ) ) );
+        mRequest.setParameter( QStringLiteral( "SERVICE" ), docElem.attribute( QStringLiteral( "service" ) ) );
       }
-      mParameterMap.insert( QStringLiteral( "REQUEST" ), docElem.tagName() );
-      mParameterMap.insert( QStringLiteral( "REQUEST_BODY" ), inputString );
-
+      mRequest.setParameter( QStringLiteral( "REQUEST" ), docElem.tagName() );
+      mRequest.setParameter( QStringLiteral( "REQUEST_BODY" ), inputString );
     }
   }
   else
   {
-    requestStringToParameterMap( mParameterMap );
+    setupParameters();
   }
 
 }
@@ -595,19 +610,19 @@ void QgsRequestHandler::setParameter( const QString &key, const QString &value )
 {
   if ( !( key.isEmpty() || value.isEmpty() ) )
   {
-    mParameterMap.insert( key, value );
+    mRequest.setParameter( key, value );
   }
 }
 
 
 QString QgsRequestHandler::parameter( const QString &key ) const
 {
-  return mParameterMap.value( key );
+  return mRequest.getParameter( key );
 }
 
-int QgsRequestHandler::removeParameter( const QString &key )
+void QgsRequestHandler::removeParameter( const QString &key )
 {
-  return mParameterMap.remove( key );
+  mRequest.removeParameter( key );
 }
 
 
@@ -712,7 +727,7 @@ void QgsRequestHandler::imageColors( QHash<QRgb, int>& colors, const QImage& ima
 }
 
 void QgsRequestHandler::splitColorBox( QgsColorBox& colorBox, QgsColorBoxMap& colorBoxMap,
-    QMap<int, QgsColorBox>::iterator colorBoxMapIt )
+                                       QMap<int, QgsColorBox>::iterator colorBoxMapIt )
 {
 
   if ( colorBox.size() < 2 )

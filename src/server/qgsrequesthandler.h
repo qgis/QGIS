@@ -54,14 +54,14 @@ class SERVER_EXPORT QgsRequestHandler
 {
   public:
     // QgsServerRequest and QgsServerResponse MUST live in the same scope
-    explicit QgsRequestHandler( const QgsServerRequest& request, QgsServerResponse& response );
+    explicit QgsRequestHandler( QgsServerRequest& request, QgsServerResponse& response );
     ~QgsRequestHandler();
 
     /** Sends the map image back to the client
      * @note not available in Python bindings
      */
     void setGetMapResponse( const QString& service, QImage* img, int imageQuality );
- 
+
     //! @note not available in Python bindings
     void setGetCapabilitiesResponse( const QDomDocument& doc );
 
@@ -105,6 +105,12 @@ class SERVER_EXPORT QgsRequestHandler
     //! Remove an HTTP header
     void removeHeader( const QString &name );
 
+    //! Retrieve header value
+    QString getHeader( const QString& name ) const;
+
+    //! Return the list of all header keys
+    QList<QString> headerKeys() const;
+
     //! Clears the response body and headers
     void clear();
 
@@ -121,7 +127,7 @@ class SERVER_EXPORT QgsRequestHandler
      * a parameter setParameter( const QString &key, const QString &value)
      * and removeParameter(const QString &key) must be used
      */
-    QMap<QString, QString> parameterMap() { return mParameterMap; }
+    QMap<QString, QString> parameterMap() const;
 
     //! Set a request parameter
     void setParameter( const QString &key, const QString &value );
@@ -130,12 +136,12 @@ class SERVER_EXPORT QgsRequestHandler
     QString parameter( const QString &key ) const;
 
     //! Remove a request parameter
-    int removeParameter( const QString &key );
+    void removeParameter( const QString &key );
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-     /** Allow core services to call plugin hooks through sendResponse()
-     * @note not available in Python bindings
-     */
+    /** Allow core services to call plugin hooks through sendResponse()
+    * @note not available in Python bindings
+    */
     void setPluginFilters( const QgsServerFiltersMap &pluginFilters );
 #endif
 
@@ -151,7 +157,7 @@ class SERVER_EXPORT QgsRequestHandler
     QString infoFormat() const { return mInfoFormat; }
 
     //! Return true if the HTTP headers were already sent to the client
-    bool headersSent() { return mHeadersSent; }
+    bool headersSent() const;
 
   private:
     void setHttpResponse( const QByteArray& ba, const QString &format );
@@ -160,9 +166,10 @@ class SERVER_EXPORT QgsRequestHandler
       @return mime string (or the entered string if not found)*/
     QString formatToMimeType( const QString& format ) const;
 
-    void requestStringToParameterMap( QMap<QString, QString>& parameters );
-
   private:
+
+    void setupParameters();
+
     static void medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage );
     static void imageColors( QHash<QRgb, int>& colors, const QImage& image );
     static void splitColorBox( QgsColorBox& colorBox, QgsColorBoxMap& colorBoxMap,
@@ -182,14 +189,12 @@ class SERVER_EXPORT QgsRequestHandler
     //! This is set by the parseInput methods of the subclasses (parameter FORMAT, e.g. 'FORMAT=PNG')
     QString mFormat;
     QString mFormatString; //format string as it is passed in the request (with base)
-    bool mHeadersSent;
     QString mService;
     QString mInfoFormat;
-    QMap<QString, QString> mParameterMap;
     QgsMapServiceException* mException; // Stores the exception
 
-    const QgsServerRequest& mRequest;
-    QgsServerResponse&      mResponse;
+    QgsServerRequest&   mRequest;
+    QgsServerResponse&  mResponse;
 
 };
 
