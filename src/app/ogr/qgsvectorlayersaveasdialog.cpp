@@ -345,12 +345,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
   bool fieldsAsDisplayedValues = false;
 
   const QString sFormat( format() );
-  if ( sFormat == QLatin1String( "KML" ) )
-  {
-    mAttributesSelection->setEnabled( true );
-    selectAllFields = false;
-  }
-  else if ( sFormat == QLatin1String( "DXF" ) )
+  if ( sFormat == QLatin1String( "DXF" ) )
   {
     mAttributesSelection->setEnabled( false );
     selectAllFields = false;
