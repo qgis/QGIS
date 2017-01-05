@@ -21,6 +21,8 @@
 #include <QFileInfo>
 #include <QTcpSocket>
 #include <QDesktopServices>
+#include <QNetworkProxy>
+#include <QNetworkProxyFactory>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -103,6 +105,50 @@ bool QgsHelp::urlExists( const QString& url )
 {
   QUrl helpUrl( url );
   QTcpSocket socket;
+
+  QSettings settings;
+  bool proxyEnabled = settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool();
+  if ( proxyEnabled )
+  {
+    QNetworkProxy proxy;
+    QString proxyHost = settings.value( QStringLiteral( "proxy/proxyHost" ), QString() ).toString();
+    int proxyPort = settings.value( QStringLiteral( "proxy/proxyPort" ), QString() ).toString().toInt();
+    QString proxyUser = settings.value( QStringLiteral( "proxy/proxyUser" ), QString() ).toString();
+    QString proxyPassword = settings.value( QStringLiteral( "proxy/proxyPassword" ), QString() ).toString();
+
+    QString proxyTypeString = settings.value( QStringLiteral( "proxy/proxyType" ), QString() ).toString();
+
+    if ( proxyTypeString == QLatin1String( "DefaultProxy" ) )
+    {
+      QList<QNetworkProxy> proxies = QNetworkProxyFactory::systemProxyForQuery();
+      if ( !proxies.isEmpty() )
+      {
+        proxy = proxies.first();
+      }
+    }
+    else
+    {
+      QNetworkProxy::ProxyType proxyType = QNetworkProxy::DefaultProxy;
+      if ( proxyTypeString == QLatin1String( "Socks5Proxy" ) )
+      {
+        proxyType = QNetworkProxy::Socks5Proxy;
+      }
+      else if ( proxyTypeString == QLatin1String( "HttpProxy" ) )
+      {
+        proxyType = QNetworkProxy::HttpProxy;
+      }
+      else if ( proxyTypeString == QLatin1String( "HttpCachingProxy" ) )
+      {
+        proxyType = QNetworkProxy::HttpCachingProxy;
+      }
+      else if ( proxyTypeString == QLatin1String( "FtpCachingProxy" ) )
+      {
+        proxyType = QNetworkProxy::FtpCachingProxy;
+      }
+      proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
+    }
+    socket.setProxy( proxy );
+  }
 
   socket.connectToHost( helpUrl.host(), 80 );
   if ( socket.waitForConnected() )
