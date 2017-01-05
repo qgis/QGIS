@@ -887,6 +887,12 @@ QgsExpression::Function       {#qgis_api_break_3_0_QgsExpression_Function}
 - `QgsExpression::Function::helptext()` has been renamed to `helpText()`
 
 
+QgsExpressionContextUtils       {#qgis_api_break_3_0_QgsExpressionContextUtils}
+-------------------------
+
+- projectScope(), setProjectVariable() and setProjectVariables() require pointer to QgsProject as the first argument.
+
+
 QgsFeature        {#qgis_api_break_3_0_QgsFeature}
 ----------
 

@@ -17,6 +17,7 @@
 #include "qgssymbol.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapsettings.h"
+#include "qgsproject.h"
 #include <QPainter>
 #include <cmath>
 
@@ -31,7 +32,7 @@ QgsRenderContext QgsPointMarkerItem::renderContext( QPainter* painter )
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
   << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
   {

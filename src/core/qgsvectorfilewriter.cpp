@@ -2794,10 +2794,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   if ( !layer )
     return ErrInvalidLayer;
 
-  mRenderContext.expressionContext() = QgsExpressionContext();
-  mRenderContext.expressionContext() << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( layer );
+  mRenderContext.expressionContext() = QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
 
   QgsFeatureRenderer *renderer = layer->renderer();
   if ( !renderer )

@@ -21,6 +21,7 @@
 #include "qgscomposerutils.h"
 #include "qgscomposerobject.h"
 #include "qgsdatadefined.h"
+#include "qgsproject.h"
 
 QgsComposerObject::QgsComposerObject( QgsComposition* composition )
     : QObject( nullptr )
@@ -197,6 +198,6 @@ QgsExpressionContext QgsComposerObject::createExpressionContext() const
   {
     return QgsExpressionContext()
            << QgsExpressionContextUtils::globalScope()
-           << QgsExpressionContextUtils::projectScope();
+           << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
   }
 }

@@ -20,6 +20,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsmapcanvas.h"
 #include "qgspanelwidget.h"
+#include "qgsproject.h"
 #include "qgsdatadefined.h"
 
 #include <QMessageBox>
@@ -309,7 +310,7 @@ QgsExpressionContext QgsDataDefinedValueDialog::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
   << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mContext.mapCanvas() )
   {

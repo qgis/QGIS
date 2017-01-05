@@ -239,10 +239,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer* layer, const QgsG
   if ( !evalContext )
   {
     // no context passed, so we create a default one
-    tempContext.reset( new QgsExpressionContext() );
-    tempContext->appendScope( QgsExpressionContextUtils::globalScope() );
-    tempContext->appendScope( QgsExpressionContextUtils::projectScope() );
-    tempContext->appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+    tempContext.reset( new QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) ) );
     evalContext = tempContext.data();
   }
 

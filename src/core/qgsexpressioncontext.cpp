@@ -209,6 +209,11 @@ void QgsExpressionContextScope::setFields( const QgsFields &fields )
 // QgsExpressionContext
 //
 
+QgsExpressionContext::QgsExpressionContext( const QList<QgsExpressionContextScope*>& scopes )
+    : mStack( scopes )
+{
+}
+
 QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext& other )
 {
   Q_FOREACH ( const QgsExpressionContextScope* scope, other.mStack )
@@ -423,6 +428,11 @@ void QgsExpressionContext::appendScope( QgsExpressionContextScope* scope )
   mStack.append( scope );
 }
 
+void QgsExpressionContext::appendScopes( const QList<QgsExpressionContextScope*>& scopes )
+{
+  mStack.append( scopes );
+}
+
 QgsExpressionContextScope* QgsExpressionContext::popScope()
 {
   if ( !mStack.isEmpty() )
@@ -583,13 +593,14 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
 
 ///@endcond
 
-QgsExpressionContextScope* QgsExpressionContextUtils::projectScope()
+QgsExpressionContextScope* QgsExpressionContextUtils::projectScope( const QgsProject* project )
 {
-  QgsProject* project = QgsProject::instance();
-
   QgsExpressionContextScope* scope = new QgsExpressionContextScope( QObject::tr( "Project" ) );
 
-  const QVariantMap vars = QgsProject::instance()->customVariables();
+  if ( !project )
+    return scope;
+
+  const QVariantMap vars = project->customVariables();
 
   QVariantMap::const_iterator it = vars.constBegin();
 
@@ -611,9 +622,10 @@ QgsExpressionContextScope* QgsExpressionContextUtils::projectScope()
   return scope;
 }
 
-void QgsExpressionContextUtils::setProjectVariable( const QString& name, const QVariant& value )
+void QgsExpressionContextUtils::setProjectVariable( QgsProject* project, const QString& name, const QVariant& value )
 {
-  QgsProject* project = QgsProject::instance();
+  if ( !project )
+    return;
 
   QVariantMap vars = project->customVariables();
 
@@ -622,9 +634,12 @@ void QgsExpressionContextUtils::setProjectVariable( const QString& name, const Q
   project->setCustomVariables( vars );
 }
 
-void QgsExpressionContextUtils::setProjectVariables( const QVariantMap& variables )
+void QgsExpressionContextUtils::setProjectVariables( QgsProject* project, const QVariantMap& variables )
 {
-  QgsProject::instance()->setCustomVariables( variables );
+  if ( !project )
+    return;
+
+  project->setCustomVariables( variables );
 }
 
 QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( const QgsMapLayer* layer )
@@ -666,6 +681,15 @@ QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( const QgsMapLa
   //field summary stats
 
   return scope;
+}
+
+QList<QgsExpressionContextScope*> QgsExpressionContextUtils::globalProjectLayerScopes( const QgsMapLayer* layer )
+{
+  QList<QgsExpressionContextScope*> scopes;
+  scopes << globalScope()
+  << projectScope( QgsProject::instance() )  // TODO: use project associated with layer
+  << layerScope( layer );
+  return scopes;
 }
 
 void QgsExpressionContextUtils::setLayerVariable( QgsMapLayer* layer, const QString& name, const QVariant& value )

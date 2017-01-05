@@ -299,10 +299,7 @@ void QgsDualView::toggleSearchMode( bool enabled )
 void QgsDualView::previewExpressionBuilder()
 {
   // Show expression builder
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayerCache->layer() );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayerCache->layer() ) );
 
   QgsExpressionBuilderDialog dlg( mLayerCache->layer(), mFeatureList->displayExpression(), this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Expression based preview" ) );
@@ -550,10 +547,7 @@ void QgsDualView::modifySort()
   sortingGroupBox->setLayout( new QGridLayout() );
 
   QgsExpressionBuilderWidget* expressionBuilder = new QgsExpressionBuilderWidget();
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( layer );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   expressionBuilder->setExpressionContext( context );
   expressionBuilder->setLayer( layer );
   expressionBuilder->loadFieldNames();

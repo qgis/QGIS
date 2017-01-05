@@ -20,6 +20,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgscodeeditorsql.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -45,7 +46,7 @@ QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
 
   mExpressionContext = QgsExpressionContext();
   mExpressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 }
 
 void QgsExpressionLineEdit::setExpressionDialogTitle( const QString& title )

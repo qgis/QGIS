@@ -309,10 +309,7 @@ void QgsVectorLayer::selectByExpression( const QString& expression, QgsVectorLay
 {
   QgsFeatureIds newSelection;
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( this );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
 
   if ( behaviour == SetSelection || behaviour == AddToSelection )
   {
@@ -737,9 +734,7 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   // Renderer (rule based) may depend on context scale, with scale is ignored if 0
   QgsRenderContext renderContext;
   renderContext.setRendererScale( 0 );
-  renderContext.expressionContext() << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( this );
+  renderContext.expressionContext().appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
 
   mRenderer->startRender( renderContext, fields() );
 
@@ -3109,10 +3104,7 @@ QVariant QgsVectorLayer::defaultValue( int index, const QgsFeature& feature, Qgs
   if ( !evalContext )
   {
     // no context passed, so we create a default one
-    tempContext.reset( new QgsExpressionContext() );
-    tempContext->appendScope( QgsExpressionContextUtils::globalScope() );
-    tempContext->appendScope( QgsExpressionContextUtils::projectScope() );
-    tempContext->appendScope( QgsExpressionContextUtils::layerScope( this ) );
+    tempContext.reset( new QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( this ) ) );
     evalContext = tempContext.data();
   }
 
@@ -3599,9 +3591,7 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
   {
     // try to use expression
     expression.reset( new QgsExpression( fieldOrExpression ) );
-    context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::layerScope( this );
+    context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
 
     if ( expression->hasParserError() || !expression->prepare( &context ) )
     {
@@ -3993,12 +3983,7 @@ void QgsVectorLayer::setAttributeTableConfig( const QgsAttributeTableConfig& att
 
 QgsExpressionContext QgsVectorLayer::createExpressionContext() const
 {
-  QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( this );
-
-  return expContext;
+  return QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
 }
 
 void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings& s )

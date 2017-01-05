@@ -718,7 +718,7 @@ QgsExpressionContext QgsAtlasComposition::createExpressionContext()
 {
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
   if ( mComposition )
     expressionContext << QgsExpressionContextUtils::compositionScope( mComposition );
 

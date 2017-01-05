@@ -56,22 +56,7 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
   if ( mContext.expressionContext() )
     return *mContext.expressionContext();
 
-  QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
-
-  if ( mContext.mapCanvas() )
-  {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
-  }
-  else
-  {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
-  }
-
-  expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
+  QgsExpressionContext expContext( mContext.globalProjectAtlasMapLayerScopes( vectorLayer() ) );
 
   QgsExpressionContextScope* symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
   if ( const QgsSymbolLayer* symbolLayer = const_cast< QgsSymbolLayerWidget* >( this )->symbolLayer() )

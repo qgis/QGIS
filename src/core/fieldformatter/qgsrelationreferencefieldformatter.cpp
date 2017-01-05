@@ -74,10 +74,7 @@ QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer* laye
     return value.toString();
 
   QgsExpression expr( referencedLayer->displayExpression() );
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( referencedLayer );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( referencedLayer ) );
   context.setFeature( feature );
   QString title = expr.evaluate( &context ).toString();
   if ( expr.hasEvalError() )

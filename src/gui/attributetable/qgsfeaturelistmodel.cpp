@@ -91,10 +91,7 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
 
     mFilterModel->layerCache()->featureAtId( idxToFid( index ), feat );
 
-    QgsExpressionContext context;
-    context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::layerScope( mFilterModel->layer() );
+    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mFilterModel->layer() ) );
     context.setFeature( feat );
     return mExpression->evaluate( &context );
   }
@@ -175,10 +172,7 @@ bool QgsFeatureListModel::setDisplayExpression( const QString& expression )
 {
   QgsExpression* exp = new QgsExpression( expression );
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mFilterModel->layer() );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mFilterModel->layer() ) );
 
   exp->prepare( &context );
 
