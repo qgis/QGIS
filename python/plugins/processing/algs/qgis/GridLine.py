@@ -36,7 +36,7 @@ from qgis.core import (QgsRectangle,
                        QgsField,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointV2,
                        QgsLineString,
                        QgsWkbTypes)
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -122,111 +122,68 @@ class GridLine(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                                                                      QgsWkbTypes.LineString, crs)
 
+        if hOverlay > 0:
+            hSpace = [hSpacing - hOverlay, hOverlay]
+        else:
+            hSpace = [hSpacing, hSpacing]
+
+        if vOverlay > 0:
+            vSpace = [vSpacing - vOverlay, vOverlay]
+        else:
+            vSpace = [vSpacing, vSpacing]
+
         feat = QgsFeature()
         feat.initAttributes(len(fields))
 
         count = 0
         id = 1
 
-        originX = bbox.xMinimum()
-        originY = bbox.yMinimum()
-
-        ho = hSpacing - hOverlay
-        vo = vSpacing - vOverlay
-
-        columns = int(math.ceil(float(width) / hSpacing))
-        rows = int(math.ceil(float(height) / vSpacing))
-
-        if ((float(width) % hSpacing) != columns) or (float(width) % hSpacing == 0.0):
-            columns += 1
-        if ((float(height) % vSpacing) != rows) or (float(height) % vSpacing == 0.0):
-            rows += 1
-
-        if hOverlay > 0:
-            columns *= 2
-            columns -= 1
-            hSpace = [ho, hOverlay]
-        else:
-            hSpace = [hSpacing, hSpacing]
-
-        if vOverlay > 0:
-            rows *= 2
-            rows -= 1
-            vSpace = [vo, vOverlay]
-        else:
-            vSpace = [vSpacing, vSpacing]
-
-        long_polyline = []
-
-        x = originX
-        y = originY
-        count_max = columns + rows
-        #longitude lines
-        #create longitude lines (will be extended after)
-        count_update = columns * 0.10
-        for col in range(columns):
-            polyline = []
-            polyline.append(QgsPoint(x, y))
-            polyline.append(QgsPoint(x, y))
-
-            long_polyline.append(polyline)
-            x += hSpace[col % 2]
-
-            count += 1
-            if int(math.fmod(count, count_update)) == 0:
-                progress.setPercentage(int(count / count_max * 25))
-
-        progress.setPercentage(25)
-
-
         # latitude lines
-        x1 = originX
-        x2 = x - hSpace[col % 2]
-        y = originY
-
-        count = 0
-        count_update = rows * 0.10
-
-        for row in range(rows):
-            polyline = []
-            polyline.append(QgsPoint(x1, y))
-            polyline.append(QgsPoint(x2, y))
-
-            feat.setGeometry(QgsGeometry.fromPolyline(polyline))
-            feat.setAttributes([x1,
+        count_max = height / vSpacing
+        count_update = count_max * 0.10
+        y = bbox.yMaximum()
+        while y >= bbox.yMinimum():
+            pt1 = QgsPointV2(bbox.xMinimum(), y)
+            pt2 = QgsPointV2(bbox.xMaximum(), y)
+            line = QgsLineString()
+            line.setPoints([pt1, pt2])
+            feat.setGeometry(QgsGeometry(line))
+            feat.setAttributes([bbox.xMinimum(),
                                 y,
-                                x2,
+                                bbox.xMaximum(),
                                 y,
                                 id,
                                 y])
             writer.addFeature(feat)
-
-            y += vSpace[row % 2]
-
+            y = y - vSpace[count % 2]
             id += 1
             count += 1
             if int(math.fmod(count, count_update)) == 0:
-                progress.setPercentage(50 + int(count / count_max * 50))
+                progress.setPercentage(int(count / count_max * 50))
 
-        progress.setPercentage(75)
+        progress.setPercentage(50)
 
-        #extend longitude lines since we know y maximum
-        y2 = y - vSpace[row % 2]
-
+        # longitude lines
+        # counters for progressbar - update every 5%
         count = 0
-        count_update = columns * 0.10
-
-        for line in long_polyline:
-            line[1].setY(y2)
-            feat.setGeometry(QgsGeometry.fromPolyline(line))
-            feat.setAttributes([line[0][0],
-                                line[1][1],
-                                line[1][0],
-                                line[0][1],
+        count_max = width / hSpacing
+        count_update = count_max * 0.10
+        x = bbox.xMinimum()
+        while x <= bbox.xMaximum():
+            pt1 = QgsPointV2(x, bbox.yMaximum())
+            pt2 = QgsPointV2(x, bbox.yMinimum())
+            line = QgsLineString()
+            line.setPoints([pt1, pt2])
+            feat.setGeometry(QgsGeometry(line))
+            feat.setAttributes([x,
+                                bbox.yMaximum(),
+                                x,
+                                bbox.yMinimum(),
                                 id,
-                                line[0][0]])
+                                x])
             writer.addFeature(feat)
-
+            x = x + hSpace[count % 2]
+            id += 1
             count += 1
             if int(math.fmod(count, count_update)) == 0:
                 progress.setPercentage(50 + int(count / count_max * 50))

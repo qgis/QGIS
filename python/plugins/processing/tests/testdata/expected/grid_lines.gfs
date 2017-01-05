@@ -1,16 +1,16 @@
 <GMLFeatureClassList>
   <GMLFeatureClass>
-    <Name>gridpolygon_no_overlay_hexagon</Name>
-    <ElementPath>gridpolygon_no_overlay_hexagon</ElementPath>
-    <!--POLYGON-->
-    <GeometryType>3</GeometryType>
+    <Name>grid_lines</Name>
+    <ElementPath>grid_lines</ElementPath>
+    <!--LINESTRING-->
+    <GeometryType>2</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
-      <FeatureCount>12</FeatureCount>
-      <ExtentXMin>-2.50000</ExtentXMin>
-      <ExtentXMax>14.33013</ExtentXMax>
-      <ExtentYMin>-2.16506</ExtentYMin>
-      <ExtentYMax>12.99038</ExtentYMax>
+      <FeatureCount>7</FeatureCount>
+      <ExtentXMin>-1.00000</ExtentXMin>
+      <ExtentXMax>11.20000</ExtentXMax>
+      <ExtentYMin>-4.00000</ExtentYMin>
+      <ExtentYMax>6.50000</ExtentYMax>
     </DatasetSpecificInfo>
     <PropertyDefn>
       <Name>left</Name>
@@ -36,6 +36,11 @@
       <Name>id</Name>
       <ElementPath>id</ElementPath>
       <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>coord</Name>
+      <ElementPath>coord</ElementPath>
+      <Type>Real</Type>
     </PropertyDefn>
   </GMLFeatureClass>
 </GMLFeatureClassList>

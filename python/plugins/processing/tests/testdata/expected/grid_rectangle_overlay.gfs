@@ -1,16 +1,16 @@
 <GMLFeatureClassList>
   <GMLFeatureClass>
-    <Name>gridlines_overlay_4411</Name>
-    <ElementPath>gridlines_overlay_4411</ElementPath>
-    <!--LINESTRING-->
-    <GeometryType>2</GeometryType>
+    <Name>grid_rectangle_overlay</Name>
+    <ElementPath>grid_rectangle_overlay</ElementPath>
+    <!--POLYGON-->
+    <GeometryType>3</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
-      <FeatureCount>14</FeatureCount>
-      <ExtentXMin>0.00000</ExtentXMin>
-      <ExtentXMax>12.00000</ExtentXMax>
-      <ExtentYMin>0.00000</ExtentYMin>
-      <ExtentYMax>12.00000</ExtentYMax>
+      <FeatureCount>30</FeatureCount>
+      <ExtentXMin>-1.00000</ExtentXMin>
+      <ExtentXMax>16.00000</ExtentXMax>
+      <ExtentYMin>-6.50000</ExtentYMin>
+      <ExtentYMax>6.50000</ExtentYMax>
     </DatasetSpecificInfo>
     <PropertyDefn>
       <Name>left</Name>
@@ -36,11 +36,6 @@
       <Name>id</Name>
       <ElementPath>id</ElementPath>
       <Type>Integer</Type>
-    </PropertyDefn>
-    <PropertyDefn>
-      <Name>coord</Name>
-      <ElementPath>coord</ElementPath>
-      <Type>Real</Type>
     </PropertyDefn>
   </GMLFeatureClass>
 </GMLFeatureClassList>
