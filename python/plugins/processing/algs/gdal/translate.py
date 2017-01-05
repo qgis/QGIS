@@ -73,7 +73,7 @@ class translate(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'translate.png'))
 
     def commandLineName(self):
-        return "gdalogr:translate"
+        return "gdal:translate"
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Translate (convert format)')

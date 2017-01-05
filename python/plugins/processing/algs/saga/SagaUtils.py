@@ -112,7 +112,7 @@ _installedVersion = None
 _installedVersionFound = False
 
 
-def getSagaInstalledVersion(runSaga=False):
+def getInstalledVersion(runSaga=False):
     global _installedVersion
     global _installedVersionFound
 

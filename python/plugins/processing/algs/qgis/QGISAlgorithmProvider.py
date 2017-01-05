@@ -300,7 +300,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
         return 'qgis'
 
     def getDescription(self):
-        return self.tr('QGIS geoalgorithms')
+        return 'QGIS'
 
     def getIcon(self):
         return self._icon

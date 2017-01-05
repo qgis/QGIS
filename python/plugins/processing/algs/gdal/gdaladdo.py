@@ -67,7 +67,7 @@ class gdaladdo(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-overview.png'))
 
     def commandLineName(self):
-        return "gdalogr:overviews"
+        return "gdal:overviews"
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Build overviews (pyramids)')

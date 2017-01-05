@@ -52,7 +52,7 @@ class rasterize_over(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
 
     def commandLineName(self):
-        return "gdalogr:rasterize_over"
+        return "gdal:rasterize_over"
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Rasterize (write over existing raster)')

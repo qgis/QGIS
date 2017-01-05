@@ -186,3 +186,7 @@ class GdalUtils(object):
     @staticmethod
     def version():
         return int(gdal.VersionInfo('VERSION_NUM'))
+
+    @staticmethod
+    def readableVersion():
+        return gdal.VersionInfo('RELEASE_NAME')

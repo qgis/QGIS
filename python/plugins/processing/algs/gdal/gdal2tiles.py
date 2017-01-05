@@ -61,7 +61,7 @@ class gdal2tiles(GdalAlgorithm):
     WEBVIEWERS = ['all', 'google', 'openlayers', 'leaflet', 'none']
 
     def commandLineName(self):
-        return "gdalogr:gdal2tiles"
+        return "gdal:gdal2tiles"
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('gdal2tiles')

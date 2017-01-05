@@ -48,7 +48,8 @@ class OTBAlgorithmProvider(AlgorithmProvider):
         self.activate = True
 
     def getDescription(self):
-        return self.tr("Orfeo Toolbox (Image analysis)")
+        version = OTBUtils.getInstalledVersion()
+        return "Orfeo ToolBox ({})".format(version) if version is not None else "Orfeo ToolBox"
 
     def getName(self):
         return "otb"
