@@ -65,11 +65,14 @@ class polygonize(GdalAlgorithm):
         arguments = []
         arguments.append(self.getParameterValue(polygonize.INPUT))
         arguments.append('-f')
-        arguments.append('ESRI Shapefile')
         output = self.getOutputValue(polygonize.OUTPUT)
+        driver = GdalUtils.getVectorDriverFromFileName(output)
+        arguments.append(driver)
         arguments.append(output)
         arguments.append(QFileInfo(output).baseName())
         arguments.append(self.getParameterValue(polygonize.FIELD))
+
+
 
         commands = []
         if isWindows():

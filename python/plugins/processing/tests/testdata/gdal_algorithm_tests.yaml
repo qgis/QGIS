@@ -177,3 +177,382 @@ tests:
         compare:
           geometry:
             precision: 7
+  - algorithm: gdalogr:aspect
+    name: aspect with standard parameters
+    params:
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      TRIG_ANGLE: false
+      ZERO_FLAT: false
+      ZEVENBERGEN: false
+    results:
+      OUTPUT:
+        hash: 8436df662a44a00762aa29768e5d6ecfaf2d42e9a4da02d8afc6e3f6
+        type: rasterhash
+
+  - algorithm: gdalogr:aspect
+    name: aspect without NULL (-9999) values (0 instead)
+    params:
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      TRIG_ANGLE: false
+      ZERO_FLAT: true
+      ZEVENBERGEN: false
+    results:
+      OUTPUT:
+        hash: 43cccb440c7febb0095103eee3509b740e9f1bf2b3ad3b8a4c25622e
+        type: rasterhash
+
+  - algorithm: gdalogr:aspect
+    name: aspect with trigonometric angle
+    params:
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      TRIG_ANGLE: true
+      ZERO_FLAT: false
+      ZEVENBERGEN: false
+    results:
+      OUTPUT:
+        hash: a95e8a09a613b551d3f33dfb4975c430f599dc55f761063ae9529124
+        type: rasterhash
+
+  - algorithm: gdalogr:aspect
+    name: aspect zevenbergen
+    params:
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      TRIG_ANGLE: false
+      ZERO_FLAT: false
+      ZEVENBERGEN: true
+    results:
+      OUTPUT:
+        hash: 2cd5868b21efbd286f4977795143c89df77ac8976f8bc2a2c4e310d8
+        type: rasterhash
+
+
+  - algorithm: gdalogr:aspect
+    name: aspect with edges
+    params:
+      BAND: 1
+      COMPUTE_EDGES: true
+      INPUT:
+        name: dem.tif
+        type: raster
+      TRIG_ANGLE: false
+      ZERO_FLAT: false
+      ZEVENBERGEN: false
+    results:
+      OUTPUT:
+        hash: d3a354c6e5f207779bb58f9bd23fd89a9f90a77d81aafc661d0ae077
+        type: rasterhash
+
+  - algorithm: gdalogr:cliprasterbyextent
+    name: standard clip raster by extent
+    params:
+      BIGTIFF: '0'
+      COMPRESS: '4'
+      INPUT:
+        name: dem.tif
+        type: raster
+      JPEGCOMPRESSION: 75
+      PREDICTOR: 1
+      PROJWIN: 18.67551824296977,18.697800756150787,45.78984181545589,45.804309302274866
+      RTYPE: '5'
+      TFW: false
+      TILED: false
+      ZLEVEL: 6
+    results:
+      OUTPUT:
+        hash: 9913a7c0e1ced2c2ce1cd8f0e8103475bc2b0dd4d1d0adafe4920f93
+        type: rasterhash
+
+  - algorithm: gdalogr:cliprasterbyextent
+    name: clip by extent and change no data values
+    params:
+      BIGTIFF: '0'
+      COMPRESS: '4'
+      INPUT:
+        name: dem.tif
+        type: raster
+      JPEGCOMPRESSION: 75
+      NO_DATA: '-9999'
+      PREDICTOR: 1
+      PROJWIN: 18.67460436727692,18.698371162148714,45.78995019401027,45.804344168369234
+      RTYPE: '5'
+      TFW: false
+      TILED: false
+      ZLEVEL: 6
+    results:
+      OUTPUT:
+        hash: df5de501bcec0c10f738d77f3b48d5545b48f0a22e0e028a8b1ccbe7
+        type: rasterhash
+
+
+  - algorithm: gdalogr:cliprasterbymasklayer
+    name: clip by extent standard (with crop to cutline)
+    params:
+      ALPHA_BAND: false
+      BIGTIFF: '0'
+      COMPRESS: '4'
+      CROP_TO_CUTLINE: true
+      INPUT:
+        name: dem.tif
+        type: raster
+      JPEGCOMPRESSION: 75
+      KEEP_RESOLUTION: false
+      MASK:
+        name: custom/polygon_mask.gml
+        type: vector
+      PREDICTOR: 1
+      RTYPE: '5'
+      TFW: false
+      TILED: false
+      ZLEVEL: 6
+    results:
+      OUTPUT:
+        hash: 4f4720e4efe59a7f238f622659917bbeb5262369d15d5e2917dbcf8b
+        type: rasterhash
+
+  - algorithm: gdalogr:cliprasterbymasklayer
+    name: clip by extent and change no data value
+    params:
+      ALPHA_BAND: false
+      BIGTIFF: '0'
+      COMPRESS: '4'
+      CROP_TO_CUTLINE: true
+      INPUT:
+        name: dem.tif
+        type: raster
+      JPEGCOMPRESSION: 75
+      KEEP_RESOLUTION: false
+      MASK:
+        name: custom/polygon_mask.gml
+        type: vector
+      NO_DATA: '-9999'
+      PREDICTOR: 1
+      RTYPE: '5'
+      TFW: false
+      TILED: false
+      ZLEVEL: 6
+    results:
+      OUTPUT:
+        hash: 1e0252e63c65dcf4ed1f2b17d2490d3e0331aeb59d8f59b59554f442
+        type: rasterhash
+
+  - algorithm: gdalogr:cliprasterbymasklayer
+    name: clip by extent and add alpha band
+    params:
+      ALPHA_BAND: true
+      BIGTIFF: '0'
+      COMPRESS: '4'
+      CROP_TO_CUTLINE: true
+      INPUT:
+        name: dem.tif
+        type: raster
+      JPEGCOMPRESSION: 75
+      KEEP_RESOLUTION: false
+      MASK:
+        name: custom/polygon_mask.gml
+        type: vector
+      PREDICTOR: 1
+      RTYPE: '5'
+      TFW: false
+      TILED: false
+      ZLEVEL: 6
+    results:
+      OUTPUT:
+        hash: 8f69431c6ff7db5174c1ca8e879ae39582fd4ce86f9b53edae0f38ce
+        type: rasterhash
+
+  - algorithm: gdalogr:cliprasterbymasklayer
+    name: clip by extent without cropping to cutline
+    params:
+      ALPHA_BAND: false
+      BIGTIFF: '0'
+      COMPRESS: '4'
+      CROP_TO_CUTLINE: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      JPEGCOMPRESSION: 75
+      KEEP_RESOLUTION: false
+      MASK:
+        name: custom/polygon_mask.gml
+        type: vector
+      PREDICTOR: 1
+      RTYPE: '5'
+      TFW: false
+      TILED: false
+      ZLEVEL: 6
+    results:
+      OUTPUT:
+        hash: 638165612b8cf59c631533438633c6c5b0fd5d3698d6ce75b359eef3
+        type: rasterhash
+
+  - algorithm: gdalogr:hillshade
+    name: hillshade standard
+    params:
+      ALTITUDE: 45.0
+      AZIMUTH: 315.0
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+      ZEVENBERGEN: false
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT:
+        hash: e5cf91b875b918682e456463165eddc4af4ae8855b143068e198ce2a
+        type: rasterhash
+
+  - algorithm: gdalogr:hillshade
+    name: hillshade with edges calculation
+    params:
+      ALTITUDE: 45.0
+      AZIMUTH: 315.0
+      BAND: 1
+      COMPUTE_EDGES: true
+      INPUT:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+      ZEVENBERGEN: false
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT:
+        hash: 570671408b020c9cc817e876f0e8081e0b11920c7d297abfe1cb3368
+        type: rasterhash
+
+  - algorithm: gdalogr:hillshade
+    name: hillshade with zevenbergen formula
+    params:
+      ALTITUDE: 45.0
+      AZIMUTH: 315.0
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+      ZEVENBERGEN: true
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT:
+        hash: ce2174ab155023367d38785fb867456c6a1ae3535ea0ec5ad7a694d5
+        type: rasterhash
+
+  - algorithm: gdalogr:slope
+    name: slope with standard parameters
+    params:
+      AS_PERCENT: false
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+      ZEVENBERGEN: false
+    results:
+      OUTPUT:
+        hash: 319c470de3315f440371d5df8a6e478a8ecaf1cf904a013dbf1b3a6a
+        type: rasterhash
+
+  - algorithm: gdalogr:slope
+    name: slope with edges
+    params:
+      AS_PERCENT: false
+      BAND: 1
+      COMPUTE_EDGES: true
+      INPUT:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+      ZEVENBERGEN: false
+    results:
+      OUTPUT:
+        hash: f7f8df8b6517fd8660304f7f2fbd6ade2ae68035f4dd9a224c80b465
+        type: rasterhash
+
+  - algorithm: gdalogr:slope
+    name: slope with zevenbergen formula
+    params:
+      AS_PERCENT: false
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+      ZEVENBERGEN: true
+    results:
+      OUTPUT:
+        hash: 90e42b1bc7be9cf7b4a729c6db44dde0bba39dd33012ade6bc8080e7
+        type: rasterhash
+
+  - algorithm: gdalogr:slope
+    name: slope with percent instead of degree
+    params:
+      AS_PERCENT: true
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+      ZEVENBERGEN: false
+    results:
+      OUTPUT:
+        hash: c9dc888254a571e7fbf66691fb72b35f030f87decf59ce67e32ad89d
+        type: rasterhash
+
+  - algorithm: gdalogr:roughness
+    name: standard roughness
+    params:
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: ee2b317e022da1001378fac60c9b613a74d3566b9870f9d121e6e322
+        type: rasterhash
+
+  - algorithm: gdalogr:roughness
+    name: roughness with edges
+    params:
+      BAND: 1
+      COMPUTE_EDGES: true
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: aba5167b8a2e97a93b22d406e0363f91c151fd353c0fc56ce24ac5fc
+        type: rasterhash
+
+  # - algorithm: gdalogr:polygonize
+  #   name: standard polygonize by gdal
+  #   params:
+  #     FIELD: DN
+  #     INPUT:
+  #       name: dem.tif
+  #       type: raster
+  #   results:
+  #     OUTPUT:
+  #       name: expected/polygonyze.gml
+  #       type: vector
