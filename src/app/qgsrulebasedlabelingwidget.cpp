@@ -19,6 +19,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgslabelinggui.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
 #include "qgsrulebasedlabeling.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
@@ -26,6 +27,27 @@
 
 #include <QClipboard>
 #include <QMessageBox>
+
+
+static QList<QgsExpressionContextScope*> _globalProjectAtlasMapLayerScopes( QgsMapCanvas* mapCanvas, const QgsMapLayer* layer )
+{
+  QList<QgsExpressionContextScope*> scopes;
+  scopes << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+  << QgsExpressionContextUtils::atlasScope( nullptr );
+  if ( mapCanvas )
+  {
+    scopes << QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() )
+    << new QgsExpressionContextScope( mapCanvas->expressionContextScope() );
+  }
+  else
+  {
+    scopes << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+  scopes << QgsExpressionContextUtils::layerScope( layer );
+  return scopes;
+}
+
 
 QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent )
     : QgsPanelWidget( parent )
@@ -643,20 +665,7 @@ void QgsLabelingRulePropsWidget::testFilter()
     return;
   }
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
-  if ( mMapCanvas )
-  {
-    context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-    << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
-  }
-  else
-  {
-    context << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
-  }
-  context << QgsExpressionContextUtils::layerScope( mLayer );
+  QgsExpressionContext context( _globalProjectAtlasMapLayerScopes( mMapCanvas, mLayer ) );
 
   if ( !filter.prepare( &context ) )
   {
@@ -686,22 +695,10 @@ void QgsLabelingRulePropsWidget::testFilter()
   QMessageBox::information( this, tr( "Filter" ), tr( "Filter returned %n feature(s)", "number of filtered features", count ) );
 }
 
+
 void QgsLabelingRulePropsWidget::buildExpression()
 {
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
-  if ( mMapCanvas )
-  {
-    context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-    << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
-  }
-  else
-  {
-    context << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
-  }
-  context << QgsExpressionContextUtils::layerScope( mLayer );
+  QgsExpressionContext context( _globalProjectAtlasMapLayerScopes( mMapCanvas, mLayer ) );
 
   QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, QStringLiteral( "generic" ), context );
 

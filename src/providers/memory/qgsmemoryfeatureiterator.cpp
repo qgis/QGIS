@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgsspatialindex.h"
 #include "qgsmessagelog.h"
+#include "qgsproject.h"
 
 
 
@@ -216,7 +217,7 @@ QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider* p )
     , mSubsetString( p->mSubsetString )
 {
   mExpressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
   mExpressionContext.setFields( mFields );
 }
 

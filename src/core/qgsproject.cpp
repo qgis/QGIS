@@ -1039,7 +1039,7 @@ QgsExpressionContext QgsProject::createExpressionContext() const
   QgsExpressionContext context;
 
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope( this );
 
   return context;
 }

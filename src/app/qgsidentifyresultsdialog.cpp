@@ -587,10 +587,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   if ( !featureLabeled )
   {
     featItem->setText( 0, tr( "Title" ) );
-    QgsExpressionContext context;
-    context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::layerScope( vlayer );
+    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
     context.setFeature( f );
 
     QString value = QgsExpression( vlayer->displayExpression() ).evaluate( &context ).toString();

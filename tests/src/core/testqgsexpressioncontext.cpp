@@ -531,11 +531,12 @@ void TestQgsExpressionContext::globalScope()
 
 void TestQgsExpressionContext::projectScope()
 {
-  QgsExpressionContextUtils::setProjectVariable( QStringLiteral( "test" ), "testval" );
-  QgsExpressionContextUtils::setProjectVariable( QStringLiteral( "testdouble" ), 5.2 );
+  QgsProject* project = QgsProject::instance();
+  QgsExpressionContextUtils::setProjectVariable( project, QStringLiteral( "test" ), "testval" );
+  QgsExpressionContextUtils::setProjectVariable( project, QStringLiteral( "testdouble" ), 5.2 );
 
   QgsExpressionContext context;
-  QgsExpressionContextScope* scope = QgsExpressionContextUtils::projectScope();
+  QgsExpressionContextScope* scope = QgsExpressionContextUtils::projectScope( project );
   context << scope;
   QCOMPARE( scope->name(), tr( "Project" ) );
 
@@ -546,17 +547,17 @@ void TestQgsExpressionContext::projectScope()
   QCOMPARE( expProject.evaluate( &context ).toString(), QString( "testval" ) );
 
   //test clearing project variables
-  QgsExpressionContextScope* projectScope = QgsExpressionContextUtils::projectScope();
+  QgsExpressionContextScope* projectScope = QgsExpressionContextUtils::projectScope( project );
   QVERIFY( projectScope->hasVariable( "test" ) );
   QgsProject::instance()->clear();
   delete projectScope;
-  projectScope = QgsExpressionContextUtils::projectScope();
+  projectScope = QgsExpressionContextUtils::projectScope( project );
   QVERIFY( !projectScope->hasVariable( "test" ) );
 
   //test a preset project variable
   QgsProject::instance()->setTitle( QStringLiteral( "test project" ) );
   delete projectScope;
-  projectScope = QgsExpressionContextUtils::projectScope();
+  projectScope = QgsExpressionContextUtils::projectScope( project );
   QCOMPARE( projectScope->variable( "project_title" ).toString(), QString( "test project" ) );
   delete projectScope;
 
@@ -564,8 +565,8 @@ void TestQgsExpressionContext::projectScope()
   QVariantMap vars;
   vars.insert( QStringLiteral( "newvar1" ), QStringLiteral( "val1" ) );
   vars.insert( QStringLiteral( "newvar2" ), QStringLiteral( "val2" ) );
-  QgsExpressionContextUtils::setProjectVariables( vars );
-  projectScope = QgsExpressionContextUtils::projectScope();
+  QgsExpressionContextUtils::setProjectVariables( project, vars );
+  projectScope = QgsExpressionContextUtils::projectScope( project );
 
   QVERIFY( !projectScope->hasVariable( "test" ) );
   QCOMPARE( projectScope->variable( "newvar1" ).toString(), QString( "val1" ) );
@@ -582,7 +583,7 @@ void TestQgsExpressionContext::projectScope()
   colorList << qMakePair( QColor( 30, 60, 20 ), QStringLiteral( "murky depths of hades" ) );
   s.setColors( colorList );
   QgsExpressionContext contextColors;
-  contextColors << QgsExpressionContextUtils::projectScope();
+  contextColors << QgsExpressionContextUtils::projectScope( project );
 
   QgsExpression expProjectColor( QStringLiteral( "project_color('murky depths of hades')" ) );
   QCOMPARE( expProjectColor.evaluate( &contextColors ).toString(), QString( "30,60,20" ) );

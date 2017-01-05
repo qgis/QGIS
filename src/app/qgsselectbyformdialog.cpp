@@ -68,10 +68,7 @@ void QgsSelectByFormDialog::zoomToFeatures( const QString& filter )
 {
   QgsFeatureIds ids;
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter )
                               .setExpressionContext( context )

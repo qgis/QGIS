@@ -205,7 +205,7 @@ void QgsCompositionWidget::updateVariables()
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
   << QgsExpressionContextUtils::compositionScope( mComposition );
   mVariableEditor->setContext( &context );
   mVariableEditor->setEditableScopeIndex( 2 );

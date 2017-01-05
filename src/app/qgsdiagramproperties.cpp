@@ -47,7 +47,7 @@ QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
   << QgsExpressionContextUtils::atlasScope( nullptr )
   << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );
@@ -571,7 +571,7 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
     QgsExpression exp( sizeFieldNameOrExp );
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
     << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
     << QgsExpressionContextUtils::layerScope( mLayer );
 
@@ -859,7 +859,7 @@ QString QgsDiagramProperties::showExpressionBuilder( const QString& initialExpre
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
   << QgsExpressionContextUtils::atlasScope( nullptr )
   << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );
