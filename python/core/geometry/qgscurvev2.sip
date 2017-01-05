@@ -54,8 +54,7 @@ class QgsCurveV2: public QgsAbstractGeometryV2
      */
     virtual int numPoints() const = 0;
 
-    /** Calculates the area of the curve. Derived classes should override this
-     * to return the correct area of the curve.
+    /** Sums up the area of the curve by iterating over the vertices (shoelace formula).
      */
     virtual void sumUpArea( double& sum ) const = 0;
 
