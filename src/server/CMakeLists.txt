@@ -23,7 +23,7 @@ SET ( qgis_mapserv_SRCS
   qgis_map_serv.cpp
   qgscapabilitiescache.cpp
   qgsconfigcache.cpp
-  qgshttprequesthandler.cpp
+  qgsrequesthandler.cpp
   qgsowsserver.cpp
   qgswmsserver.cpp
   qgswfsserver.cpp

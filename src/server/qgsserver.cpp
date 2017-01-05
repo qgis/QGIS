@@ -26,7 +26,7 @@
 #include "qgsauthmanager.h"
 #include "qgscapabilitiescache.h"
 #include "qgsfontutils.h"
-#include "qgshttprequesthandler.h"
+#include "qgsrequesthandler.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
@@ -365,7 +365,7 @@ void QgsServer::handleRequest( const QgsServerRequest& request, QgsServerRespons
   }
 
   //Request handler
-  QgsHttpRequestHandler theRequestHandler( request, response );
+  QgsRequestHandler theRequestHandler( request, response );
 
   try
   {

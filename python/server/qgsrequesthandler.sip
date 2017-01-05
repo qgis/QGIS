@@ -17,7 +17,7 @@
  * Examples of possible mechanisms are cgi Get, cgi Post, SOAP or the usage
  * as a standalone command line executable
  */
-class QgsRequestHandler
+class QgsRequestHandler  /Abstract/
 {
 %TypeHeaderCode
 #include "qgsmapserviceexception.h"
@@ -43,7 +43,7 @@ class QgsRequestHandler
     // virtual void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) = 0;
 
     /** Allow plugins to return a QgsMapServiceException*/
-    virtual void setServiceException( const QgsMapServiceException& ex /Transfer/ ) = 0;
+    void setServiceException( const QgsMapServiceException& ex /Transfer/ );
 
     //! @note not available in Python bindings
     // virtual void setXmlResponse( const QDomDocument& doc ) = 0;
@@ -61,31 +61,31 @@ class QgsRequestHandler
     // virtual void setGetFeatureResponse( QByteArray* ba ) = 0;
 
     //! @note not available in Python bindings
-    virtual void endGetFeatureResponse( QByteArray* ba ) = 0;
+    void endGetFeatureResponse( QByteArray* ba );
 
     //! @note not available in Python bindings
-    virtual void setGetCoverageResponse( QByteArray* ba ) = 0;
+    void setGetCoverageResponse( QByteArray* ba );
 
     /** Set an HTTP header*/
-    virtual void setHeader( const QString &name, const QString &value ) = 0;
+    void setHeader( const QString &name, const QString &value );
 
     /** Remove an HTTP header*/
-    virtual void removeHeader( const QString &name ) = 0;
+    void removeHeader( const QString &name );
 
     /** Delete all HTTP headers*/
-    virtual void clear() = 0;
+    void clear();
 
     /** Append the bytestream to response body*/
-    virtual void appendBody( const QByteArray &body ) = 0;
+    void appendBody( const QByteArray &body );
 
     /** Set the info format string such as "text/xml"*/
-    virtual void setInfoFormat( const QString &format ) = 0;
+    void setInfoFormat( const QString &format );
 
     /** Send out HTTP headers and flush output buffer*/
-    virtual void sendResponse() = 0;
+    void sendResponse();
 
     /** Pointer to last raised exception*/
-    virtual bool exceptionRaised() const = 0;
+    bool exceptionRaised() const;
 
     /** Return a copy of the parsed parameters as a key-value pair, to modify
      * a parameter setParameter( const QString &key, const QString &value)
@@ -94,13 +94,13 @@ class QgsRequestHandler
     QMap<QString, QString> parameterMap();
 
     /** Set a request parameter*/
-    virtual void setParameter( const QString &key, const QString &value ) = 0;
+    void setParameter( const QString &key, const QString &value );
 
     /** Remove a request parameter*/
-    virtual int removeParameter( const QString &key ) = 0;
+    int removeParameter( const QString &key );
 
     /** Return a request parameter*/
-    virtual QString parameter( const QString &key ) const = 0;
+    QString parameter( const QString &key ) const;
 
     /** Return the requested format string*/
     QString format() const;
@@ -117,5 +117,5 @@ class QgsRequestHandler
 
 private:
     /** Parses the input and creates a request neutral Parameter/Value map*/
-    virtual void parseInput() = 0;
+    void parseInput();
 };
