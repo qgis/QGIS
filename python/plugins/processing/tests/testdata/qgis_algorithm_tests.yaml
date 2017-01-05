@@ -2090,3 +2090,17 @@ tests:
   #    OUTPUT_POLYGON:
   #      name: expected/servicearea_bounds.gml
   #      type: vector
+
+  - algorithm: qgis:createattributeindex
+    name: Create attribute index
+    params:
+      FIELD: id
+      INPUT:
+        name: custom/points.shp
+        type: vector
+        in_place: true
+    results:
+      INPUT:
+        name: expected/create_attr_index_points.shp
+        type: vector
+        in_place_result: true
