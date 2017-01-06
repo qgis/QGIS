@@ -17,6 +17,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
 
@@ -108,7 +109,7 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
             QHash<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures;
             ignoreFeatures.insert( vlayer, vlayer->allFeatureIds() );
 
-            if ( geom.avoidIntersections( ignoreFeatures ) != 0 )
+            if ( geom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers(), ignoreFeatures ) != 0 )
             {
               emit messageEmitted( tr( "An error was reported during intersection removal" ), QgsMessageBar::CRITICAL );
               vlayer->destroyEditCommand();

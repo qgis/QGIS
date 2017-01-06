@@ -144,7 +144,7 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject* project, QObje
     , mLayerTreeModel( nullptr )
 {
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
-  connect( project, &QgsProject::avoidIntersectionsListChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
+  connect( project, &QgsProject::avoidIntersectionsLayersChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
 }
 
 QgsSnappingLayerTreeModel::~QgsSnappingLayerTreeModel()
@@ -494,7 +494,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex& idx, int role ) con
     {
       if ( role == Qt::CheckStateRole && vl->geometryType() == QgsWkbTypes::PolygonGeometry )
       {
-        if ( mProject->avoidIntersectionsList().contains( vl->id() ) )
+        if ( mProject->avoidIntersectionsLayers().contains( vl ) )
         {
           return Qt::Checked;
         }
@@ -620,14 +620,14 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex& index, const QVarian
       if ( !mIndividualLayerSettings.contains( vl ) )
         return false;
 
-      QStringList avoidIntersectionsList = mProject->avoidIntersectionsList();
+      QList<QgsVectorLayer*> avoidIntersectionsList = mProject->avoidIntersectionsLayers();
 
-      if ( value.toInt() == Qt::Checked && !avoidIntersectionsList.contains( vl->id() ) )
-        avoidIntersectionsList.append( vl->id() );
+      if ( value.toInt() == Qt::Checked && !avoidIntersectionsList.contains( vl ) )
+        avoidIntersectionsList.append( vl );
       else
-        avoidIntersectionsList.removeAll( vl->id() );
+        avoidIntersectionsList.removeAll( vl );
 
-      mProject->setAvoidIntersectionsList( avoidIntersectionsList );
+      mProject->setAvoidIntersectionsLayers( avoidIntersectionsList );
       return true;
     }
   }
