@@ -128,7 +128,7 @@ void TestQgsComposerTableV2::cleanupTestCase()
 void TestQgsComposerTableV2::init()
 {
   //create composition with composer map
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 portrait
 
   mComposerAttributeTable = new QgsComposerAttributeTableV2( mComposition, false );

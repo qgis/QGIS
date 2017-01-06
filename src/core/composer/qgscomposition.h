@@ -105,7 +105,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
       Landscape
     };
 
-    explicit QgsComposition( const QgsMapSettings& mapSettings );
+    //! Construct a composition, using given map settings and project
+    explicit QgsComposition( const QgsMapSettings& mapSettings, QgsProject* project );
 
     //! Composition atlas modes
     enum AtlasMode
@@ -116,6 +117,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     };
 
     ~QgsComposition();
+
+    /**
+     * The project associated with the composition. Used to get access to layers, map themes,
+     * relations and various other bits. It is never null.
+     *
+     * \note Added in QGIS 3.0
+     */
+    QgsProject* project() const;
 
     /** Changes size of paper item.
      * @param width page width in mm
@@ -852,6 +861,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
   private:
     //! Reference to map settings of QGIS main map
     const QgsMapSettings& mMapSettings;
+
+    //! Pointer to associated project (not null)
+    QgsProject* mProject;
 
     QgsComposition::PlotStyle mPlotStyle;
     double mPageWidth;

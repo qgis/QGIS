@@ -22,7 +22,8 @@ from qgis.core import (QgsComposerPolyline,
                        QgsComposerItem,
                        QgsComposition,
                        QgsMapSettings,
-                       QgsLineSymbol
+                       QgsLineSymbol,
+                       QgsProject
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -43,7 +44,7 @@ class TestQgsComposerPolyline(unittest.TestCase):
         self.mapSettings = QgsMapSettings()
 
         # create composition
-        self.mComposition = QgsComposition(self.mapSettings)
+        self.mComposition = QgsComposition(self.mapSettings, QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
 
         # create

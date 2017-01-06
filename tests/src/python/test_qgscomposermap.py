@@ -57,7 +57,7 @@ class TestQgsComposerMap(unittest.TestCase):
         self.mMapSettings = QgsMapSettings()
         self.mMapSettings.setLayers([mRasterLayer])
         self.mMapSettings.setCrsTransformEnabled(False)
-        self.mComposition = QgsComposition(self.mMapSettings)
+        self.mComposition = QgsComposition(self.mMapSettings, QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
         self.mComposerMap = QgsComposerMap(self.mComposition, 20, 20, 200, 100)
         self.mComposerMap.setFrameEnabled(True)

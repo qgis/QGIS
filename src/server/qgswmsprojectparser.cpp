@@ -483,7 +483,7 @@ QgsComposition* QgsWmsProjectParser::initComposition( const QString& composerTem
     return nullptr;
   }
 
-  QgsComposition* composition = new QgsComposition( mapSettings ); //set resolution, paper size from composer element attributes
+  QgsComposition* composition = new QgsComposition( mapSettings, QgsProject::instance() ); //set resolution, paper size from composer element attributes
   if ( !composition->readXml( compositionElem, *( mProjectParser->xmlDocument() ) ) )
   {
     delete composition;
