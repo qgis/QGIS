@@ -686,9 +686,14 @@ QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( const QgsMapLa
 QList<QgsExpressionContextScope*> QgsExpressionContextUtils::globalProjectLayerScopes( const QgsMapLayer* layer )
 {
   QList<QgsExpressionContextScope*> scopes;
-  scopes << globalScope()
-  << projectScope( QgsProject::instance() )  // TODO: use project associated with layer
-  << layerScope( layer );
+  scopes << globalScope();
+
+  QgsProject* project = QgsProject::instance();  // TODO: use project associated with layer
+  if ( project )
+    scopes << projectScope( project );
+
+  if ( layer )
+    scopes << layerScope( layer );
   return scopes;
 }
 

@@ -93,6 +93,7 @@ QList<QgsExpressionContextScope *> QgsSymbolWidgetContext::globalProjectAtlasMap
   {
     scopes << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
-  scopes << QgsExpressionContextUtils::layerScope( layer );
+  if ( layer )
+    scopes << QgsExpressionContextUtils::layerScope( layer );
   return scopes;
 }
