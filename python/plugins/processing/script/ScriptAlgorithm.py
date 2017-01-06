@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 import re
 import json
-from qgis.core import QgsExpressionContextUtils, QgsExpressionContext
+from qgis.core import QgsExpressionContextUtils, QgsExpressionContext, QgsProject
 from qgis.PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import getHtmlFromHelpFile
@@ -166,7 +166,7 @@ class ScriptAlgorithm(GeoAlgorithm):
 
         context = QgsExpressionContext()
         context.appendScope(QgsExpressionContextUtils.globalScope())
-        context.appendScope(QgsExpressionContextUtils.projectScope())
+        context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
         for var in variables:
             varname = var[1:]
             if context.hasVariable(varname):

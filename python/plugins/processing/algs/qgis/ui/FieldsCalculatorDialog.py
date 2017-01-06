@@ -95,9 +95,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
     def initContext(self):
         exp_context = self.builder.expressionContext()
-        exp_context.appendScope(QgsExpressionContextUtils.globalScope())
-        exp_context.appendScope(QgsExpressionContextUtils.projectScope())
-        exp_context.appendScope(QgsExpressionContextUtils.layerScope(self.layer))
+        exp_context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(self.layer))
         exp_context.lastScope().setVariable("row_number", 1)
         exp_context.setHighlightedVariables(["row_number"])
         self.builder.setExpressionContext(exp_context)
