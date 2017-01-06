@@ -51,7 +51,6 @@ QUrl QgsHelp::helpUrl( const QString& key )
 
   Q_FOREACH ( const QString& path, paths )
   {
-    qDebug() << "PATH " << path;
     fullPath = path;
     Q_FOREACH ( const QString& var, scope->variableNames() )
     {
@@ -59,7 +58,6 @@ QUrl QgsHelp::helpUrl( const QString& key )
     }
 
     helpPath = QStringLiteral( "%1/%2" ).arg( fullPath ).arg( key );
-    qDebug() << "HELP " << helpPath;
 
     if ( helpPath.startsWith( QStringLiteral( "http" ) ) )
     {
