@@ -76,17 +76,13 @@ QgsWmsServer::QgsWmsServer(
   , QgsWmsConfigParser* cp
   , QgsRequestHandler* rh
   , QgsCapabilitiesCache* capCache
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* accessControl
-#endif
 )
     : QgsOWSServer(
       configFilePath
       , parameters
       , rh
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , accessControl
-#endif
     )
     , mCapabilitiesCache( capCache )
     , mConfigParser( cp )
@@ -101,9 +97,7 @@ QgsWmsServer::QgsWmsServer()
       QString()
       , QMap<QString, QString>()
       , nullptr
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , nullptr
-#endif
     )
     , mCapabilitiesCache()
     , mConfigParser( nullptr )
@@ -523,18 +517,6 @@ QDomDocument QgsWmsServer::getCapabilities( const QString& version, bool fullPro
   olResourceElement.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
   olResourceElement.setAttribute( QStringLiteral( "xlink:href" ), hrefString );
   getElement.appendChild( olResourceElement );
-
-#if 0
-  // POST already used by SOAP
-  QDomElement postElement = doc.createElement( "post"/*wms:SOAP*/ );
-  httpElement.appendChild( postElement );
-  QDomElement postResourceElement = doc.createElement( "OnlineResource"/*wms:OnlineResource*/ );
-  postResourceElement.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
-  postResourceElement.setAttribute( "xlink:type", "simple" );
-  postResourceElement.setAttribute( "xlink:href", "http://" + QString( getenv( "SERVER_NAME" ) ) + QString( getenv( "REQUEST_URI" ) ) );
-  postElement.appendChild( postResourceElement );
-  dcpTypeElement.appendChild( postElement );
-#endif
 
   //wms:GetMap
   elem = doc.createElement( QStringLiteral( "GetMap" )/*wms:GetMap*/ );

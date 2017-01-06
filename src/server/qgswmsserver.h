@@ -68,9 +68,7 @@ class QgsWmsServer: public QgsOWSServer
       , QgsWmsConfigParser* cp
       , QgsRequestHandler* rh
       , QgsCapabilitiesCache* capCache
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , const QgsAccessControl* accessControl
-#endif
     );
 
     void executeRequest() override;

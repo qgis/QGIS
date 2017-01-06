@@ -123,26 +123,8 @@ void QgsRequestHandler::setInfoFormat( const QString &format )
 
 }
 
-
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-void QgsRequestHandler::setPluginFilters( const QgsServerFiltersMap& pluginFilters )
-{
-  mPluginFilters = pluginFilters;
-}
-#endif
-
 void QgsRequestHandler::sendResponse()
 {
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-  // Plugin hook
-  // Iterate filters and call their sendResponse() method
-  QgsServerFiltersMap::const_iterator filtersIterator;
-  for ( filtersIterator = mPluginFilters.constBegin(); filtersIterator != mPluginFilters.constEnd(); ++filtersIterator )
-  {
-    filtersIterator.value()->sendResponse();
-  }
-#endif
-
   // Send data to output
   mResponse.flush();
 }

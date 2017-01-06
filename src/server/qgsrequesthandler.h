@@ -20,12 +20,6 @@
 #ifndef QGSREQUESTHANDLER_H
 #define QGSREQUESTHANDLER_H
 
-//Needed for HAVE_SERVER_PYTHON_PLUGINS
-#include "qgsconfig.h"
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-#include "qgsserverfilter.h"
-#endif
-
 #include <QMap>
 #include <QString>
 #include <QStringList>
@@ -138,13 +132,6 @@ class SERVER_EXPORT QgsRequestHandler
     //! Remove a request parameter
     void removeParameter( const QString &key );
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    /** Allow core services to call plugin hooks through sendResponse()
-    * @note not available in Python bindings
-    */
-    void setPluginFilters( const QgsServerFiltersMap &pluginFilters );
-#endif
-
     /** Parses the input and creates a request neutral Parameter/Value map
      * @note not available in Python bindings
      */
@@ -183,9 +170,6 @@ class SERVER_EXPORT QgsRequestHandler
     static QRgb boxColor( const QgsColorBox& box, int boxPixels );
     // TODO: if HAVE_SERVER_PYTHON
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsServerFiltersMap mPluginFilters;
-#endif
     //! This is set by the parseInput methods of the subclasses (parameter FORMAT, e.g. 'FORMAT=PNG')
     QString mFormat;
     QString mFormatString; //format string as it is passed in the request (with base)

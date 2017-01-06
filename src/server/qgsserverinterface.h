@@ -21,13 +21,21 @@
 #ifndef QGSSERVERINTERFACE_H
 #define QGSSERVERINTERFACE_H
 
+#include "qgsconfig.h"
 #include "qgscapabilitiescache.h"
 #include "qgsrequesthandler.h"
 #include "qgsserverfilter.h"
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrolfilter.h"
 #include "qgsaccesscontrol.h"
-#include "qgis_server.h"
+#else
+class QgsAccessControl;
+class QgsAccessControlFilter;
+#endif
 #include "qgsserviceregistry.h"
+#include "qgis_server.h"
+
+
 
 /**
  * \ingroup server
@@ -44,7 +52,6 @@
  */
 class SERVER_EXPORT QgsServerInterface
 {
-
   public:
 
     //! Constructor

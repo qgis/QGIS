@@ -27,15 +27,17 @@ QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache, 
     , mServiceRegistry( srvRegistry )
 {
   mRequestHandler = nullptr;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
   mAccessControls = new QgsAccessControl();
+#else
+  mAccessControls = nullptr
+#endif
 }
-
 
 QString QgsServerInterfaceImpl::getEnv( const QString& name ) const
 {
   return getenv( name.toLocal8Bit() );
 }
-
 
 
 QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
@@ -72,7 +74,10 @@ void QgsServerInterfaceImpl::setFilters( QgsServerFiltersMap* filters )
 //! Register a new access control filter
 void QgsServerInterfaceImpl::registerAccessControl( QgsAccessControlFilter* accessControl, int priority )
 {
-  mAccessControls->registerAccessControl( accessControl, priority );
+  if(mAccessControls)
+  {
+    mAccessControls->registerAccessControl( accessControl, priority );
+  }
 }
 
 

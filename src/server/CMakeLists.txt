@@ -56,6 +56,7 @@ SET ( qgis_mapserv_SRCS
   qgsserverresponse.cpp
   qgsfcgiserverresponse.cpp
   qgsbufferserverresponse.cpp
+  qgsfilterresponsedecorator.cpp
 #----------------------------
 )
 IF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")

@@ -41,9 +41,7 @@ class QgsWCSServer: public QgsOWSServer
       , QMap<QString, QString>& parameters
       , QgsWCSProjectParser* pp
       , QgsRequestHandler* rh
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , const QgsAccessControl* accessControl
-#endif
     );
 
     void executeRequest() override;
