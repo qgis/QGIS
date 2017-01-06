@@ -881,7 +881,7 @@ void TestQgsPaintEffect::composer()
   ms.setLayers( QList<QgsMapLayer*>() << lineLayer );
   ms.setCrsTransformEnabled( false );
 
-  QgsComposition* composition = new QgsComposition( ms );
+  QgsComposition* composition = new QgsComposition( ms, QgsProject::instance() );
   composition->setPaperSize( 50, 50 );
   QgsComposerMap* composerMap = new QgsComposerMap( composition, 1, 1, 48, 48 );
   composerMap->setFrameEnabled( true );

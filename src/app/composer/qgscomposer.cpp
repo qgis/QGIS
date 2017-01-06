@@ -547,7 +547,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   connect( mActionShowRulers, SIGNAL( triggered( bool ) ), this, SLOT( toggleRulers( bool ) ) );
 
   //init undo/redo buttons
-  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings() );
+  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings(), QgsProject::instance() );
 
   mActionUndo->setEnabled( false );
   mActionRedo->setEnabled( false );
@@ -3543,7 +3543,7 @@ void QgsComposer::readXml( const QDomElement& composerElem, const QDomDocument& 
   createComposerView();
 
   //read composition settings
-  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings() );
+  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings(), QgsProject::instance() );
   QDomNodeList compositionNodeList = composerElem.elementsByTagName( QStringLiteral( "Composition" ) );
   if ( compositionNodeList.size() > 0 )
   {

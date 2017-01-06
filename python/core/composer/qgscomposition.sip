@@ -40,7 +40,7 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
       Landscape
     };
 
-    explicit QgsComposition( const QgsMapSettings& mapSettings );
+    explicit QgsComposition( const QgsMapSettings& mapSettings, QgsProject* project );
 
     /** Composition atlas modes*/
     enum AtlasMode
@@ -51,6 +51,14 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
     };
 
     ~QgsComposition();
+
+    /**
+     * The project associated with the composition. Used to get access to layers, map themes,
+     * relations and various other bits. It is never null.
+     *
+     * \note Added in QGIS 3.0
+     */
+    QgsProject* project() const;
 
     /** Changes size of paper item.
      * @param width page width in mm

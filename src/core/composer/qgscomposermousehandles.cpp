@@ -624,7 +624,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
       subcommand->saveAfterState();
     }
     mComposition->undoStack()->push( parentCommand );
-    QgsProject::instance()->setDirty( true );
+    mComposition->project()->setDirty( true );
   }
   else if ( mCurrentMouseMoveAction != QgsComposerMouseHandles::NoAction )
   {
@@ -664,7 +664,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
       subcommand->saveAfterState();
     }
     mComposition->undoStack()->push( parentCommand );
-    QgsProject::instance()->setDirty( true );
+    mComposition->project()->setDirty( true );
   }
 
   deleteAlignItems();

@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include "qgsmultirenderchecker.h"
 #include "qgscomposershape.h"
+#include "qgsproject.h"
 #include "qgssymbol.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsfillsymbollayer.h"
@@ -65,7 +66,7 @@ void TestQgsComposerPaper::initTestCase()
 
   //create empty composition
   mMapSettings = new QgsMapSettings();
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = QStringLiteral( "<h1>Composer Paper Tests</h1>\n" );

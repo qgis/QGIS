@@ -615,6 +615,7 @@ QgsComposerTableV2        {#qgis_api_break_3_0_QgsComposerTableV2}
 QgsComposition        {#qgis_api_break_3_0_QgsComposition}
 --------------
 
+- constructor requires QgsProject instance as the second argument
 - addItemsFromXML() has been renamed to addItemsFromXml()
 - Constructor with QgsMapRenderer parameter has been removed. Use the variant with QgsMapSettings parameter.
 - mapRenderer() has been removed. Use mapSettings() instead.

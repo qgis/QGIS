@@ -744,7 +744,7 @@ bool QgsComposerPicture::writeXml( QDomElement& elem, QDomDocument & doc ) const
     return false;
   }
   QDomElement composerPictureElem = doc.createElement( QStringLiteral( "ComposerPicture" ) );
-  composerPictureElem.setAttribute( QStringLiteral( "file" ), QgsProject::instance()->writePath( mSourcePath ) );
+  composerPictureElem.setAttribute( QStringLiteral( "file" ), mComposition->project()->writePath( mSourcePath ) );
   composerPictureElem.setAttribute( QStringLiteral( "pictureWidth" ), QString::number( mPictureWidth ) );
   composerPictureElem.setAttribute( QStringLiteral( "pictureHeight" ), QString::number( mPictureHeight ) );
   composerPictureElem.setAttribute( QStringLiteral( "resizeMode" ), QString::number( static_cast< int >( mResizeMode ) ) );
@@ -822,7 +822,7 @@ bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocumen
     setDataDefinedProperty( QgsComposerObject::PictureSource, expressionActive, true, sourceExpression, QString() );
   }
 
-  mSourcePath = QgsProject::instance()->readPath( itemElem.attribute( QStringLiteral( "file" ) ) );
+  mSourcePath = mComposition->project()->readPath( itemElem.attribute( QStringLiteral( "file" ) ) );
 
   //picture rotation
   if ( !qgsDoubleNear( itemElem.attribute( QStringLiteral( "pictureRotation" ), QStringLiteral( "0" ) ).toDouble(), 0.0 ) )

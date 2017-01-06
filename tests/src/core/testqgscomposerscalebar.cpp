@@ -95,7 +95,7 @@ void TestQgsComposerScaleBar::initTestCase()
   mMapSettings->setDestinationCrs( destCRS );
   mMapSettings->setCrsTransformEnabled( true );
 
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 150, 150 );
   mComposerMap->setFrameEnabled( true );

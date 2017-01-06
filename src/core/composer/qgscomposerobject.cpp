@@ -196,8 +196,6 @@ QgsExpressionContext QgsComposerObject::createExpressionContext() const
   }
   else
   {
-    return QgsExpressionContext()
-           << QgsExpressionContextUtils::globalScope()
-           << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+    return QgsExpressionContext() << QgsExpressionContextUtils::globalScope();
   }
 }
