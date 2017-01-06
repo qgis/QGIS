@@ -105,6 +105,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
       Landscape
     };
 
+    //! Construct a composition, using given map settings and project
     explicit QgsComposition( const QgsMapSettings& mapSettings, QgsProject* project );
 
     //! Composition atlas modes
