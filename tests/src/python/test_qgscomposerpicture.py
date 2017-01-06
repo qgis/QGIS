@@ -25,7 +25,8 @@ from qgis.core import (QgsComposerPicture,
                        QgsMapSettings,
                        QgsComposerMap,
                        QgsRectangle,
-                       QgsCoordinateReferenceSystem
+                       QgsCoordinateReferenceSystem,
+                       QgsProject
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -94,7 +95,7 @@ class TestQgsComposerPicture(unittest.TestCase):
         """Test syncing picture to grid north"""
 
         mapSettings = QgsMapSettings()
-        composition = QgsComposition(mapSettings)
+        composition = QgsComposition(mapSettings, QgsProject.instance())
 
         composerMap = QgsComposerMap(composition)
         composerMap.setNewExtent(QgsRectangle(0, -256, 256, 0))
@@ -119,7 +120,7 @@ class TestQgsComposerPicture(unittest.TestCase):
 
         mapSettings = QgsMapSettings()
         mapSettings.setDestinationCrs(QgsCoordinateReferenceSystem.fromEpsgId(3575))
-        composition = QgsComposition(mapSettings)
+        composition = QgsComposition(mapSettings, QgsProject.instance())
 
         composerMap = QgsComposerMap(composition)
         composerMap.setNewExtent(QgsRectangle(-2126029.962, -2200807.749, -119078.102, -757031.156))

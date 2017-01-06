@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsComposition.
+"""QGIS Unit tests for QgsRectangle.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

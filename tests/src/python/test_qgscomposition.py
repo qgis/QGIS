@@ -57,7 +57,7 @@ class TestQgsComposition(unittest.TestCase):
         myText = 'Latitude: %s, Longitude: %s' % (myLatitude, myLongitude)
 
         # Load the composition with the substitutions
-        myComposition = QgsComposition(self.iface.mapCanvas().mapSettings())
+        myComposition = QgsComposition(self.iface.mapCanvas().mapSettings(), QgsProject.instance())
         mySubstitutionMap = {'replace-me': myText}
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         with open(myFile) as f:
@@ -73,7 +73,7 @@ class TestQgsComposition(unittest.TestCase):
 
     def testNoSubstitutionMap(self):
         """Test that we can get a map if we use no text substitutions."""
-        myComposition = QgsComposition(self.iface.mapCanvas().mapSettings())
+        myComposition = QgsComposition(self.iface.mapCanvas().mapSettings(), QgsProject.instance())
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         with open(myFile) as f:
             myTemplateContent = f.read()
@@ -105,7 +105,7 @@ class TestQgsComposition(unittest.TestCase):
         myMapSettings.setLayers([myRasterLayer])
         myMapSettings.setCrsTransformEnabled(False)
 
-        myComposition = QgsComposition(myMapSettings)
+        myComposition = QgsComposition(myMapSettings, QgsProject.instance())
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         with open(myFile) as f:
             myTemplateContent = f.read()
