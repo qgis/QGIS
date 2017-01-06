@@ -193,7 +193,9 @@ class TestQgsTaskManager : public QObject
     void task();
     void taskResult();
     void taskFinished();
+#if 0 //flaky
     void subTask();
+#endif
     void addTask();
     void taskTerminationBeforeDelete();
     void taskId();
@@ -430,6 +432,7 @@ void TestQgsTaskManager::taskFinished()
   QCOMPARE( *resultObtained, false );
 }
 
+#if 0 //flaky
 void TestQgsTaskManager::subTask()
 {
   QgsTaskManager manager;
@@ -587,7 +590,6 @@ void TestQgsTaskManager::subTask()
   QVERIFY( subFinished.count() > 0 );
   QVERIFY( subsubFinished.count() > 0 );
 
-#if 0 // flaky
   // another test
   parent = new ProgressReportingTask();
   subTask = new ProgressReportingTask();
@@ -628,9 +630,8 @@ void TestQgsTaskManager::subTask()
   }
   flushEvents();
   QVERIFY( parentFinished2.count() > 0 );
-#endif
 }
-
+#endif
 
 void TestQgsTaskManager::taskId()
 {
