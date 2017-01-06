@@ -173,13 +173,47 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
 {
   mHasError  = false;
 
+  // Rebuild the full URL
+
   // Get the REQUEST_URI from the environment
   QUrl url;
-  const char* uri = getenv( "REQUEST_URI" );
-  if ( uri )
+  QString uri = getenv( "REQUEST_URI" );
+  if ( uri.isEmpty() )
   {
-    url.setUrl( uri );
+    uri = getenv( "SCRIPT_NAME");
   }
+
+  url.setUrl( uri );
+
+  // Check if host is defined
+  if( url.host().isEmpty() )
+  {
+      url.setHost( getenv( "SERVER_NAME" ) );
+  }
+
+  // Port ?
+  if( url.port(-1) == -1 )
+  {
+      QString portString = getenv( "SERVER_PORT" );
+      if ( !portString.isEmpty() )
+      {
+        bool portOk;
+        int portNumber = portString.toInt( &portOk );
+        if ( portOk && portNumber != 80 )
+        {
+            url.setPort( portNumber );
+        }
+      }
+  }
+
+  // scheme
+  if( url.scheme().isEmpty() )
+  {
+    QString( getenv( "HTTPS" ) ).compare( QLatin1String( "on" ), Qt::CaseInsensitive ) == 0
+        ? url.setScheme( QStringLiteral( "https" ) )
+        : url.setScheme( QStringLiteral( "http" ) );
+  }
+
   // XXX OGC paremetrs are passed with the query string
   // we override the query string url in case it is
   // defined independently of REQUEST_URI
