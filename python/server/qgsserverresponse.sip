@@ -25,9 +25,9 @@
 
 class QgsServerResponse
 {
-%TypeHeaderCode
+% TypeHeaderCode
 #include "qgsserverresponse.h"
-%End
+% End
   public:
 
     //!constructor
@@ -62,7 +62,7 @@ class QgsServerResponse
      * Return true if the headers have alredy beeing written
      */
     virtual bool headersWritten() const = 0;
- 
+
     /** Set the http return code
      * @param code HTTP return code value
      */

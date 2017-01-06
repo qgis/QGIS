@@ -25,7 +25,6 @@
 #include <QStringList>
 #include <QPair>
 #include <QColor>
-#include <QPair>
 #include <QHash>
 
 #include "qgis_server.h"
@@ -47,7 +46,11 @@ typedef QMultiMap< int, QgsColorBox > QgsColorBoxMap; // sum of pixels / color b
 class SERVER_EXPORT QgsRequestHandler
 {
   public:
-    // QgsServerRequest and QgsServerResponse MUST live in the same scope
+
+    /** Constructor
+     *
+     * Note that QgsServerRequest and QgsServerResponse MUST live in the same scope
+     */
     explicit QgsRequestHandler( QgsServerRequest& request, QgsServerResponse& response );
     ~QgsRequestHandler();
 

@@ -65,6 +65,7 @@ class QgsOWSServer
     const QgsAccessControl* mAccessControl;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
+
     /** Apply filter strings from the access control to the layers.
      * @param layer the concerned layer
      * @param originalLayerFilters the original layer filter
