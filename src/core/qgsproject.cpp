@@ -1023,15 +1023,25 @@ void QgsProject::setCustomVariables( const QVariantMap& variables )
   emit customVariablesChanged();
 }
 
-QStringList QgsProject::avoidIntersectionsList() const
+QList<QgsVectorLayer*> QgsProject::avoidIntersectionsLayers() const
 {
-  return readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsList" ), QStringList() );
+  QList<QgsVectorLayer*> layers;
+  QStringList layerIds = readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsList" ), QStringList() );
+  Q_FOREACH ( const QString& layerId, layerIds )
+  {
+    if ( QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mapLayer( layerId ) ) )
+      layers << vlayer;
+  }
+  return layers;
 }
 
-void QgsProject::setAvoidIntersectionsList( const QStringList& avoidIntersectionsList )
+void QgsProject::setAvoidIntersectionsLayers( const QList<QgsVectorLayer*>& layers )
 {
-  writeEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsList" ), avoidIntersectionsList );
-  emit avoidIntersectionsListChanged();
+  QStringList list;
+  Q_FOREACH ( QgsVectorLayer* layer, layers )
+    list << layer->id();
+  writeEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsList" ), list );
+  emit avoidIntersectionsLayersChanged();
 }
 
 QgsExpressionContext QgsProject::createExpressionContext() const

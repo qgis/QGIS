@@ -396,14 +396,14 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      *
      * @note Added in QGIS 3.0
      */
-    QStringList avoidIntersectionsList() const;
+    QList<QgsVectorLayer*> avoidIntersectionsLayers() const;
 
     /**
      * A list of layers with which intersections should be avoided.
      *
      * @note Added in QGIS 3.0
      */
-    void setAvoidIntersectionsList( const QStringList& avoidIntersectionsList );
+    void setAvoidIntersectionsLayers( const QList<QgsVectorLayer*>& layers );
     QVariantMap customVariables() const;
     void setCustomVariables( const QVariantMap& customVariables );
     int count() const;
@@ -646,11 +646,11 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     void topologicalEditingChanged();
 
     /**
-     * Emitted whenever avoidIntersectionsList has changed.
+     * Emitted whenever avoidIntersectionsLayers has changed.
      *
      * @note Added in QGIS 3.0
      */
-    void avoidIntersectionsListChanged();
+    void avoidIntersectionsLayersChanged();
 
     /**
      * Emitted when the map theme collection changes.

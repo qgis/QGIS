@@ -909,7 +909,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
       f->setGeometry( g );
 
       QgsGeometry featGeom = f->geometry();
-      int avoidIntersectionsReturn = featGeom.avoidIntersections();
+      int avoidIntersectionsReturn = featGeom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
       f->setGeometry( featGeom );
       if ( avoidIntersectionsReturn == 1 )
       {

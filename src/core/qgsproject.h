@@ -78,7 +78,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs )
     Q_PROPERTY( QgsMapThemeCollection* mapThemeCollection READ mapThemeCollection NOTIFY mapThemeCollectionChanged )
     Q_PROPERTY( QgsSnappingConfig snappingConfig READ snappingConfig WRITE setSnappingConfig NOTIFY snappingConfigChanged )
-    Q_PROPERTY( QStringList avoidIntersectionsList READ avoidIntersectionsList WRITE setAvoidIntersectionsList NOTIFY avoidIntersectionsListChanged )
+    Q_PROPERTY( QList<QgsVectorLayer*> avoidIntersectionsLayers READ avoidIntersectionsLayers WRITE setAvoidIntersectionsLayers NOTIFY avoidIntersectionsLayersChanged )
 
   public:
     //! Returns the QgsProject singleton instance
@@ -465,14 +465,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * @note Added in QGIS 3.0
      */
-    QStringList avoidIntersectionsList() const;
+    QList<QgsVectorLayer*> avoidIntersectionsLayers() const;
 
     /**
      * A list of layers with which intersections should be avoided.
      *
      * @note Added in QGIS 3.0
      */
-    void setAvoidIntersectionsList( const QStringList& avoidIntersectionsList );
+    void setAvoidIntersectionsLayers( const QList<QgsVectorLayer*>& layers );
 
     /**
      * A map of custom project variables.
@@ -760,11 +760,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void topologicalEditingChanged();
 
     /**
-     * Emitted whenever avoidIntersectionsList has changed.
+     * Emitted whenever avoidIntersectionsLayers has changed.
      *
      * @note Added in QGIS 3.0
      */
-    void avoidIntersectionsListChanged();
+    void avoidIntersectionsLayersChanged();
 
     /**
      * Emitted when the map theme collection changes.

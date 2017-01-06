@@ -149,7 +149,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
         QgsCurvePolygon* cp = new QgsCurvePolygon();
         cp->setExteriorRing( curveToAdd );
         QgsGeometry* geom = new QgsGeometry( cp );
-        geom->avoidIntersections();
+        geom->avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
 
         const QgsCurvePolygon* cpGeom = dynamic_cast<const QgsCurvePolygon*>( geom->geometry() );
         if ( !cpGeom )

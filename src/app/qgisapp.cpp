@@ -7656,7 +7656,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
         geom = newGeometry;
       }
       // avoid intersection if enabled in digitize settings
-      geom.avoidIntersections();
+      geom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
     }
 
     // now create new feature using pasted feature as a template. This automatically handles default

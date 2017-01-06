@@ -273,7 +273,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
         delete g;
 
         QgsGeometry featGeom = f->geometry();
-        int avoidIntersectionsReturn = featGeom.avoidIntersections();
+        int avoidIntersectionsReturn = featGeom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
         f->setGeometry( featGeom );
         if ( avoidIntersectionsReturn == 1 )
         {
@@ -295,17 +295,14 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 
         //use always topological editing for avoidIntersection.
         //Otherwise, no way to guarantee the geometries don't have a small gap in between.
-        QStringList intersectionLayers = QgsProject::instance()->avoidIntersectionsList();
+        QList<QgsVectorLayer*> intersectionLayers = QgsProject::instance()->avoidIntersectionsLayers();
         bool avoidIntersection = !intersectionLayers.isEmpty();
         if ( avoidIntersection ) //try to add topological points also to background layers
         {
-          QStringList::const_iterator lIt = intersectionLayers.constBegin();
-          for ( ; lIt != intersectionLayers.constEnd(); ++lIt )
+          Q_FOREACH ( QgsVectorLayer* vl, intersectionLayers )
           {
-            QgsMapLayer* ml = QgsProject::instance()->mapLayer( *lIt );
-            QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
             //can only add topological points if background layer is editable...
-            if ( vl && vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )
+            if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )
             {
               vl->addTopologicalPoints( f->geometry() );
             }

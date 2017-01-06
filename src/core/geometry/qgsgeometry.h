@@ -795,10 +795,12 @@ class CORE_EXPORT QgsGeometry
      *          1 if geometry is not of polygon type,
      *          2 if avoid intersection would change the geometry type,
      *          3 other error during intersection removal
+     *  @param avoidIntersectionsLayers list of layers to check for intersections
      *  @param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in python bindings)
      *  @note added in 1.5
      */
-    int avoidIntersections( const QHash<QgsVectorLayer*, QSet<QgsFeatureId> >& ignoreFeatures = ( QHash<QgsVectorLayer*, QSet<QgsFeatureId> >() ) );
+    int avoidIntersections( const QList<QgsVectorLayer*>& avoidIntersectionsLayers,
+                            const QHash<QgsVectorLayer*, QSet<QgsFeatureId> >& ignoreFeatures = ( QHash<QgsVectorLayer*, QSet<QgsFeatureId> >() ) );
 
     /** \ingroup core
      */

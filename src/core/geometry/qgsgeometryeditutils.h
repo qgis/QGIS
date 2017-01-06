@@ -59,9 +59,12 @@ class QgsGeometryEditUtils
 
     /** Alters a geometry so that it avoids intersections with features from all open vector layers.
      * @param geom geometry to alter
+     * @param avoidIntersectionsLayers list of layers to check for intersections
      * @param ignoreFeatures map of layer to feature id of features to ignore
      */
-    static QgsAbstractGeometry* avoidIntersections( const QgsAbstractGeometry& geom, QHash<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures = ( QHash<QgsVectorLayer*, QSet<QgsFeatureId> >() ) );
+    static QgsAbstractGeometry* avoidIntersections( const QgsAbstractGeometry& geom,
+        const QList<QgsVectorLayer*>& avoidIntersectionsLayers,
+        QHash<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures = ( QHash<QgsVectorLayer*, QSet<QgsFeatureId> >() ) );
 };
 
 #endif // QGSGEOMETRYEDITUTILS_H
