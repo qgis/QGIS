@@ -193,7 +193,7 @@ class GeoAlgorithm(object):
 
     # =========================================================
 
-    def execute(self, feedback=QgsProcessingFeedback(), model=None):
+    def execute(self, feedback=None, model=None):
         """The method to use to call a processing algorithm.
 
         Although the body of the algorithm is in processAlgorithm(),
@@ -203,6 +203,10 @@ class GeoAlgorithm(object):
         Raises a GeoAlgorithmExecutionException in case anything goes
         wrong.
         """
+
+        if feedback is None:
+            feedback = QgsProcessingFeedback()
+
         self.model = model
         try:
             self.setOutputCRS()

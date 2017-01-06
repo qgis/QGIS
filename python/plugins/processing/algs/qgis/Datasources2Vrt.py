@@ -31,7 +31,7 @@ import codecs
 import xml.sax.saxutils
 
 from osgeo import ogr
-
+from qgis.core import QgsProcessingFeedback
 from processing.tools import dataobjects
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -90,6 +90,9 @@ class Datasources2Vrt(GeoAlgorithm):
         @param schema: Schema flag
         @return: vrt in string format
         '''
+        if feedback is None:
+            feedback = QgsProcessingFeedback()
+
         vrt = '<OGRVRTDataSource>'
         if union:
             vrt += '<OGRVRTUnionLayer name="UnionedLayer">'

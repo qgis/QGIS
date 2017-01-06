@@ -48,8 +48,12 @@ def runalg(alg, feedback=None):
     Return true if everything went OK, false if the algorithm
     could not be completed.
     """
+
+    if feedback is None:
+        feedback = QgsProcessingFeedback()
+
     try:
-        alg.execute(feedback or QgsProcessingFeedback())
+        alg.execute(feedback)
         return True
     except GeoAlgorithmExecutionException as e:
         ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)
