@@ -35,7 +35,10 @@ from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QDesktopWidget
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 from qgis.utils import iface
-from qgis.core import QgsNetworkAccessManager, QgsProject
+from qgis.core import (QgsNetworkAccessManager,
+                       QgsProject,
+                       QgsProcessingFeedback)
+
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -44,11 +47,44 @@ WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'DlgAlgorithmBase.ui'))
 
 
+class AlgorithmDialogFeedback(QgsProcessingFeedback):
+    """
+    Directs algorithm feedback to an algorithm dialog
+    """
+
+    def __init__(self, dialog):
+        QgsProcessingFeedback.__init__(self)
+        self.dialog = dialog
+
+    def reportError(self, msg):
+        self.dialog.error(msg)
+
+    def setProgressText(self, text):
+        self.dialog.setText(text)
+
+    def setProgress(self, i):
+        self.dialog.setPercentage(i)
+
+    def pushInfo(self, msg):
+        self.dialog.setInfo(msg)
+
+    def pushCommandInfo(self, msg):
+        self.dialog.setCommand(msg)
+
+    def pushDebugInfo(self, msg):
+        self.dialog.setDebugInfo(msg)
+
+    def pushConsoleInfo(self, msg):
+        self.dialog.setConsoleInfo(msg)
+
+
 class AlgorithmDialogBase(BASE, WIDGET):
 
     def __init__(self, alg):
         super(AlgorithmDialogBase, self).__init__(iface.mainWindow())
         self.setupUi(self)
+
+        self.feedback = AlgorithmDialogFeedback(self)
 
         self.settings = QSettings()
         self.restoreGeometry(self.settings.value("/Processing/dialogBase", QByteArray()))

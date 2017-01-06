@@ -46,7 +46,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Selection')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
@@ -59,5 +59,5 @@ class SaveSelectedFeatures(GeoAlgorithm):
         total = 100.0 / len(features)
         for current, feat in enumerate(features):
             writer.addFeature(feat)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
         del writer

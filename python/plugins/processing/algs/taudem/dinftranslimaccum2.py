@@ -91,7 +91,7 @@ class DinfTransLimAccum2(GeoAlgorithm):
         self.addOutput(OutputRaster(self.OUT_CONCENTR_GRID,
                                     self.tr('Output Concentration Grid')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = []
         commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
@@ -126,4 +126,4 @@ class DinfTransLimAccum2(GeoAlgorithm):
         commands.append('-ctpt')
         commands.append(self.getOutputValue(self.OUT_CONCENTR_GRID))
 
-        TauDEMUtils.executeTauDEM(commands, progress)
+        TauDEMUtils.executeTauDEM(commands, feedback)

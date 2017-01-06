@@ -296,23 +296,23 @@ class Processing(object):
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 overrideCursor = True
 
-        progress = None
-        if kwargs is not None and "progress" in list(kwargs.keys()):
-            progress = kwargs["progress"]
+        feedback = None
+        if kwargs is not None and "feedback" in list(kwargs.keys()):
+            feedback = kwargs["feedback"]
         elif iface is not None:
-            progress = MessageBarProgress(alg.name)
+            feedback = MessageBarProgress(alg.name)
 
-        ret = runalg(alg, progress)
+        ret = runalg(alg, feedback)
         if ret:
             if onFinish is not None:
-                onFinish(alg, progress)
+                onFinish(alg, feedback)
         else:
             QgsMessageLog.logMessage(Processing.tr("There were errors executing the algorithm."), Processing.tr("Processing"))
 
         if overrideCursor:
             QApplication.restoreOverrideCursor()
-        if isinstance(progress, MessageBarProgress):
-            progress.close()
+        if isinstance(feedback, MessageBarProgress):
+            feedback.close()
         return alg
 
     @staticmethod

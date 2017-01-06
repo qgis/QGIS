@@ -67,7 +67,7 @@ class IntensityImage(FusionAlgorithm):
         self.addOutput(OutputFile(self.OUTPUT, 'Output image'))
         self.addAdvancedModifiers()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'IntensityImage.exe')]
         commands.append('/verbose')
         if self.getParameterValue(self.ALLRET):
@@ -87,4 +87,4 @@ class IntensityImage(FusionAlgorithm):
         else:
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
-        FusionUtils.runFusion(commands, progress)
+        FusionUtils.runFusion(commands, feedback)

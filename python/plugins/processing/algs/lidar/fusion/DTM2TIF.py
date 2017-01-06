@@ -48,7 +48,7 @@ class DTM2TIF(FusionAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file name')))
         self.addAdvancedModifiers()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), "DTM2TIF.exe")]
         commands.append("/verbose")
         self.addAdvancedModifiersToCommand(commands)
@@ -61,4 +61,4 @@ class DTM2TIF(FusionAlgorithm):
         outFile = self.getOutputValue(self.OUTPUT)
         commands.append(outFile)
 
-        FusionUtils.runFusion(commands, progress)
+        FusionUtils.runFusion(commands, feedback)

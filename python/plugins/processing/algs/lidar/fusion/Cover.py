@@ -67,7 +67,7 @@ class Cover(FusionAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Cover')))
         self.addAdvancedModifiers()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'Cover.exe')]
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
@@ -90,7 +90,7 @@ class Cover(FusionAlgorithm):
         else:
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
-        FusionUtils.runFusion(commands, progress)
+        FusionUtils.runFusion(commands, feedback)
         commands = [os.path.join(FusionUtils.FusionPath(), 'DTM2ASCII.exe')]
         commands.append(outFile)
         commands.append(self.getOutputValue(self.OUTPUT))

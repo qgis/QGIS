@@ -60,7 +60,7 @@ class ExtractNodes(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Nodes'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
 
@@ -93,6 +93,6 @@ class ExtractNodes(GeoAlgorithm):
                     output_feature.setGeometry(QgsGeometry.fromPoint(point))
                     writer.addFeature(output_feature)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

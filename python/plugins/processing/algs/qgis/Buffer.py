@@ -31,7 +31,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.tools import vector
 
 
-def buffering(progress, writer, distance, field, useField, layer, dissolve,
+def buffering(feedback, writer, distance, field, useField, layer, dissolve,
               segments, endCapStyle=1, joinStyle=1, mitreLimit=2):
 
     if useField:
@@ -58,7 +58,7 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve,
             buffered_geometries.append(inGeom.buffer(float(value), segments, endCapStyle, joinStyle, mitreLimit))
 
             current += 1
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         final_geometry = QgsGeometry.unaryUnion(buffered_geometries)
         outFeat.setGeometry(final_geometry)
@@ -79,6 +79,6 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve,
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
             current += 1
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
     del writer

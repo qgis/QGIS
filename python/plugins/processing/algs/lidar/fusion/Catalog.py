@@ -73,7 +73,7 @@ class Catalog(FusionAlgorithm):
         advanced_modifiers.isAdvanced = True
         self.addParameter(advanced_modifiers)
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'Catalog.exe')]
         commands.append('/verbose')
         intensity = self.getParameterValue(self.INTENSITY)
@@ -95,4 +95,4 @@ class Catalog(FusionAlgorithm):
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
         commands.append(self.getOutputValue(self.OUTPUT))
-        FusionUtils.runFusion(commands, progress)
+        FusionUtils.runFusion(commands, feedback)

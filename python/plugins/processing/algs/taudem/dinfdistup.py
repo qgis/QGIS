@@ -96,7 +96,7 @@ class DinfDistUp(GeoAlgorithm):
         self.addOutput(OutputRaster(self.DIST_UP_GRID,
                                     self.tr('D-Infinity Distance Up')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = []
         commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
@@ -125,4 +125,4 @@ class DinfDistUp(GeoAlgorithm):
         commands.append('-du')
         commands.append(self.getOutputValue(self.DIST_UP_GRID))
 
-        TauDEMUtils.executeTauDEM(commands, progress)
+        TauDEMUtils.executeTauDEM(commands, feedback)

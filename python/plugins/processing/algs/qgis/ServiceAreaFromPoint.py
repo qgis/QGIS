@@ -146,7 +146,7 @@ class ServiceAreaFromPoint(GeoAlgorithm):
                                     self.tr('Service area (convex hull)'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_VECTOR))
         startPoint = self.getParameterValue(self.START_POINT)
@@ -194,10 +194,10 @@ class ServiceAreaFromPoint(GeoAlgorithm):
         builder = QgsGraphBuilder(iface.mapCanvas().mapSettings().destinationCrs(),
                                   iface.mapCanvas().hasCrsTransformEnabled(),
                                   tolerance)
-        progress.setInfo(self.tr('Building graph...'))
+        feedback.pushInfo(self.tr('Building graph...'))
         snappedPoints = director.makeGraph(builder, [startPoint])
 
-        progress.setInfo(self.tr('Calculating service area...'))
+        feedback.pushInfo(self.tr('Calculating service area...'))
         graph = builder.graph()
         idxStart = graph.findVertex(snappedPoints[0])
 
@@ -215,7 +215,7 @@ class ServiceAreaFromPoint(GeoAlgorithm):
             upperBoundary.append(graph.vertex(graph.edge(tree[i]).inVertex()).point())
             lowerBoundary.append(graph.vertex(graph.edge(tree[i]).outVertex()).point())
 
-        progress.setInfo(self.tr('Writing results...'))
+        feedback.pushInfo(self.tr('Writing results...'))
 
         fields = QgsFields()
         fields.append(QgsField('type', QVariant.String, '', 254, 0))

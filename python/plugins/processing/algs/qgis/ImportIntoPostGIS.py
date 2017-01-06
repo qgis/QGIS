@@ -84,7 +84,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         self.addParameter(ParameterBoolean(self.FORCE_SINGLEPART,
                                            self.tr('Create single-part geometries instead of multi-part'), False))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
         db = postgis.GeoDB.from_name(connection)
 

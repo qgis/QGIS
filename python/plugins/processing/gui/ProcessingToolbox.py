@@ -275,10 +275,10 @@ class ProcessingToolbox(BASE, WIDGET):
                     if showRecent:
                         self.addRecentAlgorithms(True)
             else:
-                progress = MessageBarProgress()
-                runalg(alg, progress)
-                handleAlgorithmResults(alg, progress)
-                progress.close()
+                feedback = MessageBarProgress()
+                runalg(alg, feedback)
+                handleAlgorithmResults(alg, feedback)
+                feedback.close()
         if isinstance(item, TreeActionItem):
             action = item.action
             action.setData(self)

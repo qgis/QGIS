@@ -48,7 +48,7 @@ class DropGeometry(GeoAlgorithm):
                                                                    dataobjects.TYPE_VECTOR_POLYGON]))
         self.addOutput(OutputVector(self.OUTPUT_TABLE, self.tr('Dropped geometry')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
         writer = self.getOutputFromName(
@@ -63,6 +63,6 @@ class DropGeometry(GeoAlgorithm):
 
         for current, input_feature in enumerate(features):
             writer.addFeature(input_feature)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

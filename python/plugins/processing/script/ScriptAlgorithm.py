@@ -152,9 +152,9 @@ class ScriptAlgorithm(GeoAlgorithm):
                 self.tr('Could not load script: %s.\n'
                         'Problem with line "%s"', 'ScriptAlgorithm') % (self.descriptionFile or '', line))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         ns = {}
-        ns['progress'] = progress
+        ns['feedback'] = feedback
         ns['scriptDescriptionFile'] = self.descriptionFile
 
         for param in self.parameters:

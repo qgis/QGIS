@@ -483,7 +483,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             v = value
         return param.evaluateForModeler(v, self)
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         executed = []
         toExecute = [alg for alg in list(self.algs.values()) if alg.active]
         while len(executed) < len(toExecute):
@@ -497,15 +497,15 @@ class ModelerAlgorithm(GeoAlgorithm):
                             break
                     if canExecute:
                         try:
-                            progress.setDebugInfo(
+                            feedback.pushDebugInfo(
                                 self.tr('Prepare algorithm: %s', 'ModelerAlgorithm') % alg.name)
                             self.prepareAlgorithm(alg)
-                            progress.setText(
+                            feedback.setProgressText(
                                 self.tr('Running %s [%i/%i]', 'ModelerAlgorithm') % (alg.description, len(executed) + 1, len(toExecute)))
-                            progress.setDebugInfo('Parameters: ' + ', '.join([str(p).strip()
-                                                                              + '=' + str(p.value) for p in alg.algorithm.parameters]))
+                            feedback.pushDebugInfo('Parameters: ' + ', '.join([str(p).strip()
+                                                                               + '=' + str(p.value) for p in alg.algorithm.parameters]))
                             t0 = time.time()
-                            alg.algorithm.execute(progress, self)
+                            alg.algorithm.execute(feedback, self)
                             dt = time.time() - t0
 
                             # copy algorithm output value(s) back to model in case the algorithm modified those
@@ -517,14 +517,14 @@ class ModelerAlgorithm(GeoAlgorithm):
                                             modelOut.value = out.value
 
                             executed.append(alg.name)
-                            progress.setDebugInfo(
+                            feedback.pushDebugInfo(
                                 self.tr('OK. Execution took %0.3f ms (%i outputs).', 'ModelerAlgorithm') % (dt, len(alg.algorithm.outputs)))
                         except GeoAlgorithmExecutionException as e:
-                            progress.setDebugInfo(self.tr('Failed', 'ModelerAlgorithm'))
+                            feedback.pushDebugInfo(self.tr('Failed', 'ModelerAlgorithm'))
                             raise GeoAlgorithmExecutionException(
                                 self.tr('Error executing algorithm %s\n%s', 'ModelerAlgorithm') % (alg.description, e.msg))
 
-        progress.setDebugInfo(
+        feedback.pushDebugInfo(
             self.tr('Model processed ok. Executed %i algorithms total', 'ModelerAlgorithm') % len(executed))
 
     def getAsCommand(self):

@@ -50,7 +50,7 @@ class DeleteHoles(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         min_area = self.getParameterValue(self.MIN_AREA)
@@ -77,6 +77,6 @@ class DeleteHoles(GeoAlgorithm):
                 else:
                     f.setGeometry(f.geometry().removeInteriorRings())
             writer.addFeature(f)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

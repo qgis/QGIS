@@ -54,7 +54,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Oriented_MBBox'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
         byFeature = self.getParameterValue(self.BY_FEATURE)
@@ -76,13 +76,13 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
                                                                      QgsWkbTypes.Polygon, layer.crs())
 
         if byFeature:
-            self.featureOmbb(layer, writer, progress)
+            self.featureOmbb(layer, writer, feedback)
         else:
-            self.layerOmmb(layer, writer, progress)
+            self.layerOmmb(layer, writer, feedback)
 
         del writer
 
-    def layerOmmb(self, layer, writer, progress):
+    def layerOmmb(self, layer, writer, feedback):
         req = QgsFeatureRequest().setSubsetOfAttributes([])
         features = vector.features(layer, req)
         total = 100.0 / len(features)
@@ -94,7 +94,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
                 first = False
             else:
                 newgeometry = newgeometry.combine(inFeat.geometry())
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         geometry, area, angle, width, height = newgeometry.orientedMinimumBoundingBox()
 
@@ -109,7 +109,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
                                    height])
             writer.addFeature(outFeat)
 
-    def featureOmbb(self, layer, writer, progress):
+    def featureOmbb(self, layer, writer, feedback):
         features = vector.features(layer)
         total = 100.0 / len(features)
         outFeat = QgsFeature()
@@ -126,5 +126,5 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
                 outFeat.setAttributes(attrs)
                 writer.addFeature(outFeat)
             else:
-                progress.setInfo(self.tr("Can't calculate an OMBB for feature {0}.").format(inFeat.id()))
-            progress.setPercentage(int(current * total))
+                feedback.pushInfo(self.tr("Can't calculate an OMBB for feature {0}.").format(inFeat.id()))
+            feedback.setProgress(int(current * total))

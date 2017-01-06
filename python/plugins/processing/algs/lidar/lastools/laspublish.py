@@ -80,7 +80,7 @@ class laspublish(LAStoolsAlgorithm):
                                           self.tr("portal description")))
         self.addParametersAdditionalGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laspublish")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
@@ -122,4 +122,4 @@ class laspublish(LAStoolsAlgorithm):
         commands.append("-olaz")
         self.addParametersAdditionalCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

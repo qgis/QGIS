@@ -177,7 +177,7 @@ class OTBAlgorithm(GeoAlgorithm):
                                        self.tr('Could not open OTB algorithm: %s\n%s' % (self.descriptionFile, line)))
                 raise e
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         currentOs = os.name
 
         path = OTBUtils.otbPath()
@@ -304,8 +304,8 @@ class OTBAlgorithm(GeoAlgorithm):
                 "-sizey", str(sizeY)
             ]
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, helperCommands)
-            progress.setCommand(helperCommands)
-            OTBUtils.executeOtb(helperCommands, progress)
+            feedback.pushCommandInfo(helperCommands)
+            OTBUtils.executeOtb(helperCommands, feedback)
 
         if self.roiRasters:
             supportRaster = next(iter(list(self.roiRasters.values())))
@@ -317,14 +317,14 @@ class OTBAlgorithm(GeoAlgorithm):
                     "-io.out", roiFile,
                     "-elev.dem.path", OTBUtils.otbSRTMPath()]
                 ProcessingLog.addToLog(ProcessingLog.LOG_INFO, helperCommands)
-                progress.setCommand(helperCommands)
-                OTBUtils.executeOtb(helperCommands, progress)
+                feedback.pushCommandInfo(helperCommands)
+                OTBUtils.executeOtb(helperCommands, feedback)
 
         loglines = []
         loglines.append(self.tr('OTB execution command'))
         for line in commands:
             loglines.append(line)
-            progress.setCommand(line)
+            feedback.pushCommandInfo(line)
 
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
         import processing.algs.otb.OTBSpecific_XMLLoading
@@ -351,4 +351,4 @@ class OTBAlgorithm(GeoAlgorithm):
         #    frame,filename,line_number,function_name,lines,index = a_frame
         #    ProcessingLog.addToLog(ProcessingLog.LOG_INFO, "%s %s %s %s %s %s" % (frame,filename,line_number,function_name,lines,index))
 
-        OTBUtils.executeOtb(commands, progress)
+        OTBUtils.executeOtb(commands, feedback)

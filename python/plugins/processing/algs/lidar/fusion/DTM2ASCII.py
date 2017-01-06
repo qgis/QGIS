@@ -47,7 +47,7 @@ class DTM2ASCII(FusionAlgorithm):
         self.addParameter(ParameterSelection(
             self.SWITCH, self.tr('Output format'), ['raster (ASCII)', 'csv']))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'DTM2ASCII.exe')]
         commands.append('/verbose')
         if self.getParameterValue(self.SWITCH) == 0:
@@ -60,4 +60,4 @@ class DTM2ASCII(FusionAlgorithm):
         else:
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
-        FusionUtils.runFusion(commands, progress)
+        FusionUtils.runFusion(commands, feedback)

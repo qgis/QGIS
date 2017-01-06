@@ -157,7 +157,7 @@ def getInstalledVersion(runSaga=False):
     return _installedVersion
 
 
-def executeSaga(progress):
+def executeSaga(feedback):
     if isWindows():
         command = ['cmd.exe', '/C ', sagaBatchJobFilename()]
     else:
@@ -179,14 +179,14 @@ def executeSaga(progress):
                 if '%' in line:
                     s = ''.join([x for x in line if x.isdigit()])
                     try:
-                        progress.setPercentage(int(s))
+                        feedback.setProgress(int(s))
                     except:
                         pass
                 else:
                     line = line.strip()
                     if line != '/' and line != '-' and line != '\\' and line != '|':
                         loglines.append(line)
-                        progress.setConsoleInfo(line)
+                        feedback.pushConsoleInfo(line)
         except:
             pass
 

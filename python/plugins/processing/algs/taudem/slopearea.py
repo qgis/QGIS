@@ -73,7 +73,7 @@ class SlopeArea(GeoAlgorithm):
         self.addOutput(OutputRaster(self.SLOPE_AREA_GRID,
                                     self.tr('Slope Area Grid')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = []
         commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
@@ -96,4 +96,4 @@ class SlopeArea(GeoAlgorithm):
         commands.append('-sa')
         commands.append(self.getOutputValue(self.SLOPE_AREA_GRID))
 
-        TauDEMUtils.executeTauDEM(commands, progress)
+        TauDEMUtils.executeTauDEM(commands, feedback)

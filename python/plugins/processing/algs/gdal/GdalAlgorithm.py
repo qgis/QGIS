@@ -56,7 +56,7 @@ class GdalAlgorithm(GeoAlgorithm):
     def getCustomParametersDialog(self):
         return GdalAlgorithmDialog(self)
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = self.getConsoleCommands()
         layers = dataobjects.getVectorLayers()
         supported = dataobjects.getSupportedOutputVectorLayerExtensions()
@@ -73,7 +73,7 @@ class GdalAlgorithm(GeoAlgorithm):
                         c = re.sub('["\']{}["\']'.format(fileName), "'" + exportedFileName + "'", c)
 
             commands[i] = c
-        GdalUtils.runGdal(commands, progress)
+        GdalUtils.runGdal(commands, feedback)
 
     def shortHelp(self):
         helpPath = GdalUtils.gdalHelpPath()

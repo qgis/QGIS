@@ -68,7 +68,7 @@ class CanopyMaxima(FusionAlgorithm):
             self.OUTPUT, self.tr('Output file with maxima')))
         self.addAdvancedModifiers()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'CanopyMaxima.exe')]
         commands.append('/verbose')
         ### begin
@@ -91,4 +91,4 @@ class CanopyMaxima(FusionAlgorithm):
             commands.append(FusionUtils.tempFileListFilepath())
         commands.append(self.getOutputValue(self.OUTPUT))
 
-        FusionUtils.runFusion(commands, progress)
+        FusionUtils.runFusion(commands, feedback)

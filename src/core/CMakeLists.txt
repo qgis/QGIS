@@ -563,6 +563,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgsgroupungroupitemscommand.h
   composer/qgspaperitem.h
 
+  processing/qgsprocessingfeedback.h
   processing/qgsprocessingregistry.h
 
   raster/qgsrasterlayer.h

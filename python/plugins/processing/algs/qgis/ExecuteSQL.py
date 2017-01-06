@@ -88,7 +88,7 @@ class ExecuteSQL(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layers = self.getParameterValue(self.INPUT_DATASOURCES)
         query = self.getParameterValue(self.INPUT_QUERY)
         uid_field = self.getParameterValue(self.INPUT_UID_FIELD)
@@ -143,5 +143,5 @@ class ExecuteSQL(GeoAlgorithm):
             if geometry_type != 1:
                 outFeat.setGeometry(inFeat.geometry())
             writer.addFeature(outFeat)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
         del writer

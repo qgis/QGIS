@@ -66,7 +66,7 @@ class Hillshade(GeoAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Hillshade')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         inputFile = self.getParameterValue(self.INPUT_LAYER)
         zFactor = self.getParameterValue(self.Z_FACTOR)
         azimuth = self.getParameterValue(self.AZIMUTH)

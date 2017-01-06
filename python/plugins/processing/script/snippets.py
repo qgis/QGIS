@@ -2,7 +2,7 @@
 feats = processing.features(layer)
 n = len(feats)
 for i, feat in enumerate(feats):
-    progress.setPercentage(int(100 * i / n))
+    feedback.setProgress(int(100 * i / n))
     #do something with 'feat'
 
 ##Create a new layer from another one, with an extra field

@@ -107,7 +107,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.addOutput(OutputNumber(self.NULLVALUES, self.tr('NULL (missed) values')))
         self.addOutput(OutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
@@ -121,7 +121,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         total = 100.0 / float(count)
         for current, ft in enumerate(features):
             stat.addVariant(ft[fieldName])
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         stat.finalize()
 

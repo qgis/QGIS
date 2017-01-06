@@ -71,7 +71,7 @@ class VectorGridLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         extent = self.getParameterValue(self.EXTENT).split(',')
         xSpace = self.getParameterValue(self.STEP_X)
         ySpace = self.getParameterValue(self.STEP_Y)
@@ -111,9 +111,9 @@ class VectorGridLines(GeoAlgorithm):
             idVar += 1
             count += 1
             if int(math.fmod(count, count_update)) == 0:
-                progress.setPercentage(int(count / count_max * 50))
+                feedback.setProgress(int(count / count_max * 50))
 
-        progress.setPercentage(50)
+        feedback.setProgress(50)
         # counters for progressbar - update every 5%
         count = 0
         count_max = (bbox.xMaximum() - bbox.xMinimum()) / xSpace
@@ -131,6 +131,6 @@ class VectorGridLines(GeoAlgorithm):
             idVar += 1
             count += 1
             if int(math.fmod(count, count_update)) == 0:
-                progress.setPercentage(50 + int(count / count_max * 50))
+                feedback.setProgress(50 + int(count / count_max * 50))
 
         del writer

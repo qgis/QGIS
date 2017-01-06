@@ -71,14 +71,14 @@ def formatShortNameFromFileName(fileName):
     return 'GTiff'
 
 
-def scanraster(layer, progress):
+def scanraster(layer, feedback):
     filename = str(layer.source())
     dataset = gdal.Open(filename, gdal.GA_ReadOnly)
     band = dataset.GetRasterBand(1)
     nodata = band.GetNoDataValue()
     bandtype = gdal.GetDataTypeName(band.DataType)
     for y in range(band.YSize):
-        progress.setPercentage(y / float(band.YSize) * 100)
+        feedback.setProgress(y / float(band.YSize) * 100)
         scanline = band.ReadRaster(0, y, band.XSize, 1, band.XSize, 1,
                                    band.DataType)
         if bandtype == 'Byte':
