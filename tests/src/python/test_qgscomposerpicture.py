@@ -60,7 +60,7 @@ class TestQgsComposerPicture(unittest.TestCase):
 
         # create composition
         self.mapSettings = QgsMapSettings()
-        self.composition = QgsComposition(self.mapSettings)
+        self.composition = QgsComposition(self.mapSettings, QgsProject.instance())
         self.composition.setPaperSize(297, 210)
 
         self.composerPicture = QgsComposerPicture(self.composition)
