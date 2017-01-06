@@ -25,9 +25,9 @@
 
 class QgsServerResponse
 {
-% TypeHeaderCode
+%TypeHeaderCode
 #include "qgsserverresponse.h"
-% End
+%End
   public:
 
     //!constructor
