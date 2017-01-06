@@ -21,8 +21,8 @@
 #include "qgsfilterresponsedecorator.h"
 
 QgsFilterResponseDecorator::QgsFilterResponseDecorator( QgsServerFiltersMap filters, QgsServerResponse& response )
-: mFilters(filters)
-, mResponse(response)
+    : mFilters( filters )
+    , mResponse( response )
 {
 }
 

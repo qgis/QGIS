@@ -351,208 +351,208 @@ void QgsServer::putenv( const QString &var, const QString &val )
 
 void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& response )
 {
-    QgsMessageLog::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
-    QTime time; //used for measuring request time if loglevel < 1
-    QgsProject::instance()->removeAllMapLayers();
+  QgsMessageLog::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
+  QTime time; //used for measuring request time if loglevel < 1
+  QgsProject::instance()->removeAllMapLayers();
 
-    qApp->processEvents();
+  qApp->processEvents();
 
-    if ( logLevel == QgsMessageLog::INFO )
-    {
-        time.start();
-        printRequestInfos();
-    }
+  if ( logLevel == QgsMessageLog::INFO )
+  {
+    time.start();
+    printRequestInfos();
+  }
 
-    //Pass the filters to the requestHandler, this is needed for the following reasons:
-    // Allow server request to call sendResponse plugin hook if enabled
-    QgsFilterResponseDecorator theResponse( sServerInterface->filters(), response );
+  //Pass the filters to the requestHandler, this is needed for the following reasons:
+  // Allow server request to call sendResponse plugin hook if enabled
+  QgsFilterResponseDecorator theResponse( sServerInterface->filters(), response );
 
-    //Request handler
-    QgsRequestHandler theRequestHandler( request, theResponse );
+  //Request handler
+  QgsRequestHandler theRequestHandler( request, theResponse );
 
-    try
-    {
-        // TODO: split parse input into plain parse and processing from specific services
-        theRequestHandler.parseInput();
-    }
-    catch ( QgsMapServiceException& e )
-    {
-        QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
-        theRequestHandler.setServiceException( e );
-    }
+  try
+  {
+    // TODO: split parse input into plain parse and processing from specific services
+    theRequestHandler.parseInput();
+  }
+  catch ( QgsMapServiceException& e )
+  {
+    QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
+    theRequestHandler.setServiceException( e );
+  }
 
-    // Set the request handler into the interface for plugins to manipulate it
-    sServerInterface->setRequestHandler( &theRequestHandler );
+  // Set the request handler into the interface for plugins to manipulate it
+  sServerInterface->setRequestHandler( &theRequestHandler );
 
-    // Call  requestReady() method (if enabled)
-    theResponse.start();
+  // Call  requestReady() method (if enabled)
+  theResponse.start();
 
-    QMap<QString, QString> parameterMap = theRequestHandler.parameterMap();
-    printRequestParameters( parameterMap, logLevel );
+  QMap<QString, QString> parameterMap = theRequestHandler.parameterMap();
+  printRequestParameters( parameterMap, logLevel );
 
-    const QgsAccessControl* accessControl = sServerInterface->accessControls();
+  const QgsAccessControl* accessControl = sServerInterface->accessControls();
 
-    //Config file path
-    QString configFilePath = configPath( *sConfigFilePath, parameterMap );
+  //Config file path
+  QString configFilePath = configPath( *sConfigFilePath, parameterMap );
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    // XXX Why this is enabled only fol plugins ?
-    sServerInterface->setConfigFilePath( configFilePath );
+  // XXX Why this is enabled only fol plugins ?
+  sServerInterface->setConfigFilePath( configFilePath );
 #endif
 
-    //Service parameter
-    QString serviceString = theRequestHandler.parameter( QStringLiteral( "SERVICE" ) );
+  //Service parameter
+  QString serviceString = theRequestHandler.parameter( QStringLiteral( "SERVICE" ) );
 
-    if ( serviceString.isEmpty() )
+  if ( serviceString.isEmpty() )
+  {
+    // SERVICE not mandatory for WMS 1.3.0 GetMap & GetFeatureInfo
+    QString requestString = theRequestHandler.parameter( QStringLiteral( "REQUEST" ) );
+    if ( requestString == QLatin1String( "GetMap" ) || requestString == QLatin1String( "GetFeatureInfo" ) )
     {
-        // SERVICE not mandatory for WMS 1.3.0 GetMap & GetFeatureInfo
-        QString requestString = theRequestHandler.parameter( QStringLiteral( "REQUEST" ) );
-        if ( requestString == QLatin1String( "GetMap" ) || requestString == QLatin1String( "GetFeatureInfo" ) )
-        {
-            serviceString = QStringLiteral( "WMS" );
-        }
+      serviceString = QStringLiteral( "WMS" );
     }
+  }
 
-    //possibility for client to suggest a download filename
-    QString outputFileName = theRequestHandler.parameter( QStringLiteral( "FILE_NAME" ) );
-    if ( !outputFileName.isEmpty() )
+  //possibility for client to suggest a download filename
+  QString outputFileName = theRequestHandler.parameter( QStringLiteral( "FILE_NAME" ) );
+  if ( !outputFileName.isEmpty() )
+  {
+    theRequestHandler.setHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
+  }
+
+  // Enter core services main switch
+  if ( !theRequestHandler.exceptionRaised() )
+  {
+    if ( serviceString == QLatin1String( "WCS" ) )
     {
-        theRequestHandler.setHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
+      QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration(
+                                 configFilePath
+                                 , accessControl
+                               );
+      if ( !p )
+      {
+        theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ), QStringLiteral( "Error reading the project file" ) ) );
+      }
+      else
+      {
+        QgsWCSServer wcsServer(
+          configFilePath
+          , parameterMap
+          , p
+          , &theRequestHandler
+          , accessControl
+        );
+        wcsServer.executeRequest();
+      }
     }
-
-    // Enter core services main switch
-    if ( !theRequestHandler.exceptionRaised() )
+    else if ( serviceString == QLatin1String( "WFS" ) )
     {
-        if ( serviceString == QLatin1String( "WCS" ) )
-        {
-            QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration(
-                    configFilePath
-                    , accessControl
-                    );
-            if ( !p )
-            {
-                theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ), QStringLiteral( "Error reading the project file" ) ) );
-            }
-            else
-            {
-                QgsWCSServer wcsServer(
-                        configFilePath
-                        , parameterMap
-                        , p
-                        , &theRequestHandler
-                        , accessControl
-                        );
-                wcsServer.executeRequest();
-            }
-        }
-        else if ( serviceString == QLatin1String( "WFS" ) )
-        {
-            QgsWfsProjectParser* p = QgsConfigCache::instance()->wfsConfiguration(
-                    configFilePath
-                    , accessControl
-                    );
-            if ( !p )
-            {
-                theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ), QStringLiteral( "Error reading the project file" ) ) );
-            }
-            else
-            {
-                QgsWfsServer wfsServer(
-                        configFilePath
-                        , parameterMap
-                        , p
-                        , &theRequestHandler
-                        , accessControl
-                        );
-                wfsServer.executeRequest();
-            }
-        }
-        else if ( serviceString == QLatin1String( "WMS" ) )
-        {
-            QgsWmsConfigParser* p = QgsConfigCache::instance()->wmsConfiguration(
-                    configFilePath
-                    , accessControl
-                    );
-            if ( !p )
-            {
-                theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "WMS configuration error" ), QStringLiteral( "There was an error reading the project file or the SLD configuration" ) ) );
-            }
-            else
-            {
-                QgsWmsServer wmsServer(
-                        configFilePath
-                        , parameterMap
-                        , p
-                        , &theRequestHandler
-                        , sCapabilitiesCache
-                        , accessControl
-                        );
-                wmsServer.executeRequest();
-            }
-        }
-        else
-        {
-            theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Service configuration error" ), QStringLiteral( "Service unknown or unsupported" ) ) );
-        } // end switch
-    } // end if not exception raised
-
-    // Terminate the response
-    theResponse.finish();
-
-    // We are done using theRequestHandler in plugins, make sure we don't access
-    // to a deleted request handler from Python bindings
-    sServerInterface->clearRequestHandler();
-
-
-    if ( logLevel == QgsMessageLog::INFO )
-    {
-        QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", QStringLiteral( "Server" ), QgsMessageLog::INFO );
+      QgsWfsProjectParser* p = QgsConfigCache::instance()->wfsConfiguration(
+                                 configFilePath
+                                 , accessControl
+                               );
+      if ( !p )
+      {
+        theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ), QStringLiteral( "Error reading the project file" ) ) );
+      }
+      else
+      {
+        QgsWfsServer wfsServer(
+          configFilePath
+          , parameterMap
+          , p
+          , &theRequestHandler
+          , accessControl
+        );
+        wfsServer.executeRequest();
+      }
     }
+    else if ( serviceString == QLatin1String( "WMS" ) )
+    {
+      QgsWmsConfigParser* p = QgsConfigCache::instance()->wmsConfiguration(
+                                configFilePath
+                                , accessControl
+                              );
+      if ( !p )
+      {
+        theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "WMS configuration error" ), QStringLiteral( "There was an error reading the project file or the SLD configuration" ) ) );
+      }
+      else
+      {
+        QgsWmsServer wmsServer(
+          configFilePath
+          , parameterMap
+          , p
+          , &theRequestHandler
+          , sCapabilitiesCache
+          , accessControl
+        );
+        wmsServer.executeRequest();
+      }
+    }
+    else
+    {
+      theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Service configuration error" ), QStringLiteral( "Service unknown or unsupported" ) ) );
+    } // end switch
+  } // end if not exception raised
+
+  // Terminate the response
+  theResponse.finish();
+
+  // We are done using theRequestHandler in plugins, make sure we don't access
+  // to a deleted request handler from Python bindings
+  sServerInterface->clearRequestHandler();
+
+
+  if ( logLevel == QgsMessageLog::INFO )
+  {
+    QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  }
 }
 
 QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryString )
 {
-    /*
-     * This is mainly for python bindings, passing QUERY_STRING
-     * to handleRequest without using os.environment
-     *
-     * XXX To be removed because query string is now handled in QgsServerRequest
-     *
-     */
-    if ( ! queryString.isEmpty() )
-        putenv( QStringLiteral( "QUERY_STRING" ), queryString );
+  /*
+   * This is mainly for python bindings, passing QUERY_STRING
+   * to handleRequest without using os.environment
+   *
+   * XXX To be removed because query string is now handled in QgsServerRequest
+   *
+   */
+  if ( ! queryString.isEmpty() )
+    putenv( QStringLiteral( "QUERY_STRING" ), queryString );
 
-    QgsServerRequest::Method method = QgsServerRequest::GetMethod;
-    QByteArray ba;
+  QgsServerRequest::Method method = QgsServerRequest::GetMethod;
+  QByteArray ba;
 
-    // XXX This is mainly used in tests
-    char* requestMethod = getenv( "REQUEST_METHOD" );
-    if ( requestMethod && strcmp( requestMethod, "POST" ) == 0 )
+  // XXX This is mainly used in tests
+  char* requestMethod = getenv( "REQUEST_METHOD" );
+  if ( requestMethod && strcmp( requestMethod, "POST" ) == 0 )
+  {
+    method = QgsServerRequest::PostMethod;
+    const char* data = getenv( "REQUEST_BODY" );
+    if ( data )
     {
-        method = QgsServerRequest::PostMethod;
-        const char* data = getenv( "REQUEST_BODY" );
-        if ( data )
-        {
-            ba.append( data );
-        }
+      ba.append( data );
     }
+  }
 
-    QUrl url;
-    url.setQuery( queryString );
+  QUrl url;
+  url.setQuery( queryString );
 
-    QgsBufferServerRequest request( url, method, &ba );
-    QgsBufferServerResponse response;
+  QgsBufferServerRequest request( url, method, &ba );
+  QgsBufferServerResponse response;
 
-    handleRequest( request, response );
+  handleRequest( request, response );
 
-    /*
-     * XXX For compatibility only:
-     * We should return a (moved) QgsBufferServerResponse instead
-     */
-    QByteArray headerBuffer;
-    QMap<QString, QString>::const_iterator it;
-    for ( it = response.headers().constBegin(); it != response.headers().constEnd(); ++it )
-    {
+  /*
+   * XXX For compatibility only:
+   * We should return a (moved) QgsBufferServerResponse instead
+   */
+  QByteArray headerBuffer;
+  QMap<QString, QString>::const_iterator it;
+  for ( it = response.headers().constBegin(); it != response.headers().constEnd(); ++it )
+  {
     headerBuffer.append( it.key().toUtf8() );
     headerBuffer.append( ": " );
     headerBuffer.append( it.value().toUtf8() );

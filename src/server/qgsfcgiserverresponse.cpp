@@ -180,38 +180,38 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   QString uri = getenv( "REQUEST_URI" );
   if ( uri.isEmpty() )
   {
-    uri = getenv( "SCRIPT_NAME");
+    uri = getenv( "SCRIPT_NAME" );
   }
 
   url.setUrl( uri );
 
   // Check if host is defined
-  if( url.host().isEmpty() )
+  if ( url.host().isEmpty() )
   {
-      url.setHost( getenv( "SERVER_NAME" ) );
+    url.setHost( getenv( "SERVER_NAME" ) );
   }
 
   // Port ?
-  if( url.port(-1) == -1 )
+  if ( url.port( -1 ) == -1 )
   {
-      QString portString = getenv( "SERVER_PORT" );
-      if ( !portString.isEmpty() )
+    QString portString = getenv( "SERVER_PORT" );
+    if ( !portString.isEmpty() )
+    {
+      bool portOk;
+      int portNumber = portString.toInt( &portOk );
+      if ( portOk && portNumber != 80 )
       {
-        bool portOk;
-        int portNumber = portString.toInt( &portOk );
-        if ( portOk && portNumber != 80 )
-        {
-            url.setPort( portNumber );
-        }
+        url.setPort( portNumber );
       }
+    }
   }
 
   // scheme
-  if( url.scheme().isEmpty() )
+  if ( url.scheme().isEmpty() )
   {
     QString( getenv( "HTTPS" ) ).compare( QLatin1String( "on" ), Qt::CaseInsensitive ) == 0
-        ? url.setScheme( QStringLiteral( "https" ) )
-        : url.setScheme( QStringLiteral( "http" ) );
+    ? url.setScheme( QStringLiteral( "https" ) )
+    : url.setScheme( QStringLiteral( "http" ) );
   }
 
   // XXX OGC paremetrs are passed with the query string

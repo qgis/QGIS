@@ -2558,9 +2558,7 @@ namespace QgsWms
         vectorRenderers.push_back( qMakePair( vl, renderer->clone() ) );
         //modify symbols of current renderer
         QgsRenderContext context;
-        context.expressionContext() << QgsExpressionContextUtils::globalScope()
-        << QgsExpressionContextUtils::projectScope()
-        << QgsExpressionContextUtils::layerScope( vl );
+        context.expressionContext().appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( vl ) );
 
         QgsSymbolList symbolList = renderer->symbols( context );
         QgsSymbolList::iterator symbolIt = symbolList.begin();
@@ -2874,7 +2872,7 @@ namespace QgsWms
 
     QgsExpressionContext expressionContext;
     expressionContext << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope();
+    << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
     if ( layer )
       expressionContext << QgsExpressionContextUtils::layerScope( layer );
     expressionContext.setFeature( *feat );

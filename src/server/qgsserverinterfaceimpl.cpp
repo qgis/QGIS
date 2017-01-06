@@ -74,7 +74,7 @@ void QgsServerInterfaceImpl::setFilters( QgsServerFiltersMap* filters )
 //! Register a new access control filter
 void QgsServerInterfaceImpl::registerAccessControl( QgsAccessControlFilter* accessControl, int priority )
 {
-  if(mAccessControls)
+  if ( mAccessControls )
   {
     mAccessControls->registerAccessControl( accessControl, priority );
   }

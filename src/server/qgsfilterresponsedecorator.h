@@ -41,7 +41,7 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 
     // QgsServerResponse overrides
 
-    void setHeader( const QString& key, const QString& value ) override {  mResponse.setHeader(key, value); }
+    void setHeader( const QString& key, const QString& value ) override {  mResponse.setHeader( key, value ); }
 
     void clearHeader( const QString& key ) override { mResponse.clearHeader( key ); }
 
@@ -51,7 +51,7 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 
     bool headersWritten() const override { return mResponse.headersWritten(); }
 
-    void setReturnCode( int code ) override { mResponse.setReturnCode(  code ); }
+    void setReturnCode( int code ) override { mResponse.setReturnCode( code ); }
 
     void sendError( int code,  const QString& message ) override { mResponse.sendError( code, message ); }
 
@@ -62,8 +62,8 @@ class QgsFilterResponseDecorator: public QgsServerResponse
     void flush() override;
 
     void clear() override { mResponse.clear(); }
- 
-     
+
+
 
   private:
     QgsServerFiltersMap  mFilters;
