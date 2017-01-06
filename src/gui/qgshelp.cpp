@@ -16,7 +16,6 @@
 #include "qgshelp.h"
 
 #include <QSettings>
-#include <QLocale>
 #include <QUrl>
 #include <QFileInfo>
 #include <QTcpSocket>
@@ -26,6 +25,7 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgsexpressioncontext.h"
 
 void QgsHelp::openHelp( const QString& key )
 {
@@ -43,39 +43,25 @@ QUrl QgsHelp::helpUrl( const QString& key )
     return helpNotFound;
   }
 
-  QString qgisLocale;
-  bool overrideLocale = settings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
-  if ( overrideLocale )
-  {
-    qgisLocale = settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString();
-  }
-  else
-  {
-    qgisLocale = QLocale::system().name().left( 2 );
-  }
-
-  QString qgisVersion;
-  if ( Qgis::QGIS_VERSION_INT / 100 % 100 == 99 )
-  {
-    qgisVersion = QStringLiteral( "testing" );
-    qgisLocale = QStringLiteral( "en" );
-  }
-  else
-  {
-    qgisVersion = QStringLiteral( "%1.%2" ).arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 );
-  }
-
-  QString suffix = QStringLiteral( "%1/%2/docs/user_manual/%3" ).arg( qgisVersion ).arg( qgisLocale ).arg( key );
+  QgsExpressionContextScope *scope = QgsExpressionContextUtils::globalScope();
 
   QUrl helpUrl;
-  QString helpPath;
+  QString helpPath, fullPath;
   bool helpFound = false;
 
   Q_FOREACH ( const QString& path, paths )
   {
-    helpPath = QStringLiteral( "%1/%2" ).arg( path ).arg( suffix );
+    qDebug() << "PATH " << path;
+    fullPath = path;
+    Q_FOREACH ( const QString& var, scope->variableNames() )
+    {
+      fullPath.replace( QStringLiteral( "$%1" ).arg( var ), scope->variable( var ).toString() );
+    }
 
-    if ( path.startsWith( QStringLiteral( "http" ) ) )
+    helpPath = QStringLiteral( "%1/%2" ).arg( fullPath ).arg( key );
+    qDebug() << "HELP " << helpPath;
+
+    if ( helpPath.startsWith( QStringLiteral( "http" ) ) )
     {
       if ( !QgsHelp::urlExists( helpPath ) )
       {
