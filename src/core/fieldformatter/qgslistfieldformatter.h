@@ -19,6 +19,14 @@
 #include "qgis_core.h"
 #include "qgsfieldformatter.h"
 
+/**
+ * \ingroup core
+ * Field formatter for a list field.
+ * This represents a list type value.
+ * Values will be represented as a comma-separated list.
+ *
+ * \note Added in QGIS 3.0
+ */
 class CORE_EXPORT QgsListFieldFormatter : public QgsFieldFormatter
 {
   public:
