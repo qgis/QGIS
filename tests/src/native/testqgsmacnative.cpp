@@ -12,12 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 
 //header for class being tested
-#include <qgsmacappkit.h>
+#include "qgsmacnative.h"
 
 class TestQgsMacNative: public QObject
 {
@@ -29,12 +30,10 @@ class TestQgsMacNative: public QObject
 
 void TestQgsMacNative::testGetRunningAppName()
 {
-  QgsNSRunningApplication* nsrapp = new QgsNSRunningApplication();
-  QString nsrapp_name( nsrapp->currentAppLocalizedName() );
-  delete nsrapp;
-
-  QCOMPARE( QString( "qgis_macnativetest" ), nsrapp_name.trimmed() );
+  QgsMacNative* macNative = new QgsMacNative();
+  QCOMPARE( QStringLiteral( "qgis_macnativetest" ), QString( macNative->currentAppLocalizedName() ) );
+  delete macNative;
 }
 
-QTEST_MAIN( TestQgsMacNative )
-#include "moc_testqgsmacnative.cxx"
+QGSTEST_MAIN( TestQgsMacNative )
+#include "testqgsmacnative.moc"

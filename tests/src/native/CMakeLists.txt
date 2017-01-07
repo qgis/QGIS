@@ -5,8 +5,18 @@
 # the UI file won't be wrapped!
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_SOURCE_DIR}/src/test
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/native
+  ${CMAKE_BINARY_DIR}/src/native
+  ${CMAKE_BINARY_DIR}/src/core
+)
+
+
+INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
-  )
+)
 
 IF(APPLE)
   INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/native/mac)
@@ -50,19 +60,25 @@ ENDIF (APPLE)
 MACRO (ADD_QGIS_TEST testname testsrc)
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
   SET(qgis_${testname}_MOC_CPPS ${testsrc})
-  QT4_WRAP_CPP(qgis_${testname}_MOC_SRCS ${qgis_${testname}_MOC_CPPS})
-  ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
-  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  ADD_DEPENDENCIES(qgis_${testname} qgis_${testname}moc)
+  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS} ${IMAGE_RCC_SRCS})
+  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(qgis_${testname}
     ${QT_QTCORE_LIBRARY}
     ${QT_QTTEST_LIBRARY}
     qgis_app
-    qgis_native)
-  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
+    qgis_native
+  )
+  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
+  #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
+  #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
+  #  INSTALL_RPATH_USE_LINK_PATH true )
 ENDMACRO (ADD_QGIS_TEST)
+
+
 
 #############################################################
 # Tests:
 
-ADD_QGIS_TEST(macnativetest testqgsmacnative.cpp)
+IF (APPLE)
+  ADD_QGIS_TEST(macnativetest testqgsmacnative.cpp)
+ENDIF (APPLE)
