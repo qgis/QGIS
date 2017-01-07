@@ -61,8 +61,21 @@ namespace QgsWms
       {
         Q_UNUSED( project );
 
-        // Get the request
         QgsServerRequest::Parameters params = request.parameters();
+        QString versionString = params.value( "VERSION" );
+        if ( versionString.isEmpty() )
+        {
+          //WMTVER needs to be supported by WMS 1.1.1 for backwards compatibility with WMS 1.0.0
+          versionString = params.value( "WMTVER" );
+        }
+
+        // Set the default version
+        if ( versionString.isEmpty() )
+        {
+          versionString = mVersion;
+        }
+
+        // Get the request
         QString req = params.value( QStringLiteral( "REQUEST" ) );
         if ( req.isEmpty() )
         {
@@ -72,66 +85,59 @@ namespace QgsWms
         }
 
         if (( QSTR_COMPARE( mVersion, "1.1.1" ) && QSTR_COMPARE( req, "capabilities" ) )
-            || QSTR_COMPARE( req, "GetCapabilites" ) )
+            || QSTR_COMPARE( req, "GetCapabilities" ) )
         {
-          //TODO GetCapabilities
-          writeGetCapabilities( mServerIface, mVersion, request, response, false );
+          writeGetCapabilities( mServerIface, versionString, request, response, false );
         }
         else if QSTR_COMPARE( req, "GetProjectSettings" )
         {
-          //Ensure that we are supporting 1.3.0
-          if ( mVersion.compare( "1.3.0" ) != 0 )
-          {
-            writeError( response, QStringLiteral( "OperationNotSupported" ),
-                        QStringLiteral( "GetProjectSettings is not supported" ) );
-            return;
-          }
-          writeGetCapabilities( mServerIface, mVersion, request, response, true );
-          // TODO GetProjectSettings
+          //getProjectSettings extends WMS 1.3.0 capabilities
+          versionString = QStringLiteral( "1.3.0" );
+          writeGetCapabilities( mServerIface, versionString, request, response, true );
         }
         else if QSTR_COMPARE( req, "GetMap" )
         {
           QString format = params.value( QStringLiteral( "FORMAT" ) );
           if QSTR_COMPARE( format, "application/dxf" )
           {
-            writeAsDxf( mServerIface, mVersion, request, response );
+            writeAsDxf( mServerIface, versionString, request, response );
           }
           else
           {
-            writeGetMap( mServerIface, mVersion, request, response );
+            writeGetMap( mServerIface, versionString, request, response );
           }
         }
         else if QSTR_COMPARE( req, "GetFeatureInfo" )
         {
-          writeGetFeatureInfo( mServerIface, mVersion, request, response );
+          writeGetFeatureInfo( mServerIface, versionString, request, response );
         }
         else if QSTR_COMPARE( req, "GetContext" )
         {
-          writeGetContext( mServerIface, mVersion, request, response );
+          writeGetContext( mServerIface, versionString, request, response );
         }
         else if QSTR_COMPARE( req, "GetSchemaExtension" )
         {
-          writeGetSchemaExtension( mServerIface, mVersion, request, response );
+          writeGetSchemaExtension( mServerIface, versionString, request, response );
         }
         else if QSTR_COMPARE( req, "GetStyle" )
         {
-          writeGetStyle( mServerIface, mVersion, request, response );
+          writeGetStyle( mServerIface, versionString, request, response );
         }
         else if QSTR_COMPARE( req, "GetStyles" )
         {
-          writeGetStyles( mServerIface, mVersion, request, response );
+          writeGetStyles( mServerIface, versionString, request, response );
         }
         else if QSTR_COMPARE( req, "DescribeLayer" )
         {
-          writeDescribeLayer( mServerIface, mVersion, request, response );
+          writeDescribeLayer( mServerIface, versionString, request, response );
         }
         else if ( QSTR_COMPARE( req, "GetLegendGraphic" ) || QSTR_COMPARE( req, "GetLegendGraphics" ) )
         {
-          writeGetLegendGraphics( mServerIface, mVersion, request, response );
+          writeGetLegendGraphics( mServerIface, versionString, request, response );
         }
         else if QSTR_COMPARE( req, "GetPrint" )
         {
-          writeDescribeLayer( mServerIface, mVersion, request, response );
+          writeGetPrint( mServerIface, versionString, request, response );
         }
         else
         {
@@ -159,7 +165,6 @@ class QgsWmsModule: public QgsServiceModule
     {
       QgsDebugMsg( "WMSModule::registerSelf called" );
       registry.registerService( new  QgsWms::Service( "1.3.0", serverIface ) );
-      registry.registerService( new  QgsWms::Service( "1.1.1", serverIface ) );
     }
 };
 

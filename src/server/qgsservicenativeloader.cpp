@@ -98,7 +98,6 @@ QgsServiceModule* QgsServiceNativeLoader::loadNativeModule( const QString& locat
   qDebug() << QString( "Loading native module %1" ).arg( location );
   if ( !lib.load() )
   {
-    qDebug() <<  QString( "Failed to load library %1: %2" ).arg( lib.fileName(), lib.errorString() );
     QgsMessageLog::logMessage( QString( "Failed to load library %1: %2" ).arg( lib.fileName(), lib.errorString() ) );
     return nullptr;
   }

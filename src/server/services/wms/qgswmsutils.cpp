@@ -38,7 +38,16 @@ namespace QgsWms
   QgsWmsConfigParser* getConfigParser( QgsServerInterface* serverIface )
   {
     QString configFilePath = serverIface->configFilePath();
-    return QgsConfigCache::instance()->wmsConfiguration( configFilePath, serverIface->accessControls() );
+
+    QgsWmsConfigParser* parser  = QgsConfigCache::instance()->wmsConfiguration( configFilePath, serverIface->accessControls() );
+    if ( !parser )
+    {
+      throw QgsMapServiceException(
+        QStringLiteral( "WMS configuration error" ),
+        QStringLiteral( "There was an error reading the project file or the SLD configuration" ) );
+
+    }
+    return parser;
   }
 
   // Output a wms standard error

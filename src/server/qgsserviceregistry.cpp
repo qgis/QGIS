@@ -75,6 +75,9 @@ namespace
     return false;
   }
 
+// Check that two versions are c
+
+
 } // namespace
 
 QgsServiceRegistry::QgsServiceRegistry()
@@ -104,7 +107,9 @@ QgsService* QgsServiceRegistry::getService( const QString& name, const QString& 
     }
     else
     {
-      QgsMessageLog::logMessage( QString( "Service %1 %2 not found" ).arg( name, version ) );
+      // Return the dofault version
+      QgsMessageLog::logMessage( QString( "Service %1 %2 not found, returning default" ).arg( name, version ) );
+      service = mServices[v->second].get();
     }
   }
   else
@@ -131,8 +136,17 @@ void QgsServiceRegistry::registerService( QgsService* service )
   mServices.insert( key, std::shared_ptr<QgsService>( service ) );
 
   // Check the default version
-  // and replace with te new one if it has a higher version
+  // The first inserted service of a given name
+  // is the default one.
+  // this will ensure that native services are always
+  // the defaults.
   VersionTable::const_iterator v = mVersions.constFind( name );
+  if ( v == mVersions.constEnd() )
+  {
+    // Insert the service as the default one
+    mVersions.insert( name, VersionTable::mapped_type( version, key ) );
+  }
+  /*
   if ( v != mVersions.constEnd() )
   {
     if ( isVersionGreater( version, v->first ) )
@@ -145,7 +159,8 @@ void QgsServiceRegistry::registerService( QgsService* service )
   {
     // Insert the service as the default one
     mVersions.insert( name, VersionTable::mapped_type( version, key ) );
-  }
+  }*/
+
 }
 
 int QgsServiceRegistry::unregisterService( const QString& name, const QString& version )

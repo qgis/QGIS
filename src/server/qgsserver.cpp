@@ -30,7 +30,7 @@
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
-#include "qgswmsserver.h"
+//#include "qgswmsserver.h"
 #include "qgswfsserver.h"
 #include "qgswcsserver.h"
 #include "qgsmapserviceexception.h"
@@ -41,6 +41,7 @@
 #include "qgsserverrequest.h"
 #include "qgsbufferserverresponse.h"
 #include "qgsfilterresponsedecorator.h"
+#include "qgsservice.h"
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>
@@ -387,7 +388,7 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
   // Call  requestReady() method (if enabled)
   theResponse.start();
 
-  QMap<QString, QString> parameterMap = theRequestHandler.parameterMap();
+  QMap<QString, QString> parameterMap = request.parameters();
   printRequestParameters( parameterMap, logLevel );
 
   const QgsAccessControl* accessControl = sServerInterface->accessControls();
@@ -401,20 +402,22 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
 #endif
 
   //Service parameter
-  QString serviceString = theRequestHandler.parameter( QStringLiteral( "SERVICE" ) );
+  QString serviceString = parameterMap.value( QStringLiteral( "SERVICE" ) );
 
   if ( serviceString.isEmpty() )
   {
     // SERVICE not mandatory for WMS 1.3.0 GetMap & GetFeatureInfo
-    QString requestString = theRequestHandler.parameter( QStringLiteral( "REQUEST" ) );
+    QString requestString = parameterMap.value( QStringLiteral( "REQUEST" ) );
     if ( requestString == QLatin1String( "GetMap" ) || requestString == QLatin1String( "GetFeatureInfo" ) )
     {
       serviceString = QStringLiteral( "WMS" );
     }
   }
 
+  QString versionString = parameterMap.value( QStringLiteral( "VERSION" ) );
+
   //possibility for client to suggest a download filename
-  QString outputFileName = theRequestHandler.parameter( QStringLiteral( "FILE_NAME" ) );
+  QString outputFileName = parameterMap.value( QStringLiteral( "FILE_NAME" ) );
   if ( !outputFileName.isEmpty() )
   {
     theRequestHandler.setHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
@@ -423,7 +426,14 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
   // Enter core services main switch
   if ( !theRequestHandler.exceptionRaised() )
   {
-    if ( serviceString == QLatin1String( "WCS" ) )
+    // Lookup for service
+
+    QgsService* service = sServiceRegistry.getService( serviceString, versionString );
+    if ( service )
+    {
+      service->executeRequest( request, theResponse );
+    }
+    else if ( serviceString == QLatin1String( "WCS" ) )
     {
       QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration(
                                  configFilePath
@@ -467,6 +477,7 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
         wfsServer.executeRequest();
       }
     }
+    /*
     else if ( serviceString == QLatin1String( "WMS" ) )
     {
       QgsWmsConfigParser* p = QgsConfigCache::instance()->wmsConfiguration(
@@ -490,6 +501,7 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
         wmsServer.executeRequest();
       }
     }
+    */
     else
     {
       theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Service configuration error" ), QStringLiteral( "Service unknown or unsupported" ) ) );

@@ -100,8 +100,8 @@ class TestServices(unittest.TestCase):
     def test_0_version_registration(self):
 
         reg     = QgsServiceRegistry()
-        myserv1 = MyService("TEST", "1.0", "Hello")
-        myserv2 = MyService("TEST", "1.1", "Hello")
+        myserv1 = MyService("TEST", "1.1", "Hello")
+        myserv2 = MyService("TEST", "1.0", "Hello")
    
         reg.registerService( myserv1 )
         reg.registerService( myserv2)
@@ -111,7 +111,13 @@ class TestServices(unittest.TestCase):
         self.assertEqual(service.version(), "1.1")
 
         service = reg.getService("TEST", "2.0")
-        self.assertIsNone(service)
+        self.assertIsNotNone(service)
+        self.assertEqual(service.version(), "1.1")
+
+        service = reg.getService("TEST", "1.0")
+        self.assertIsNotNone(service)
+        self.assertEqual(service.version(), "1.0")
+
 
     def test_1_unregister_services(self):
 
@@ -124,17 +130,17 @@ class TestServices(unittest.TestCase):
         reg.registerService(serv2)
         reg.registerService(serv3)
 
-        # Check we get the highest version
+        # Check we get the default version
         service = reg.getService("TEST")
-        self.assertEqual( service.version(), "1.0c" )
+        self.assertEqual( service.version(), "1.0a" )
         
         # Remove one service
-        removed = reg.unregisterService("TEST", "1.0c")
+        removed = reg.unregisterService("TEST", "1.0a")
         self.assertEqual( removed, 1 )
 
         # Check that we get the highest version
         service = reg.getService("TEST")
-        self.assertEqual( service.version(), "1.0b" )
+        self.assertEqual( service.version(), "1.0c" )
         
          # Remove all services
         removed = reg.unregisterService("TEST")

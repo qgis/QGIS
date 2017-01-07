@@ -130,7 +130,6 @@ class SERVER_EXPORT QgsServer
 #endif
     //! Initialization must run once for all servers
     static bool sInitialised;
-    static bool sCaptureOutput;
 
     //! service registry
     static QgsServiceRegistry sServiceRegistry;

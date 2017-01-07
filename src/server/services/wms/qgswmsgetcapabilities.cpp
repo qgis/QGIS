@@ -76,7 +76,7 @@ namespace QgsWms
       QgsMessageLog::logMessage( QStringLiteral( "Found capabilities document in cache" ) );
     }
 
-    response.setHeader( QStringLiteral( "Contente-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
+    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( capabilitiesDocument->toByteArray() );
   }
 

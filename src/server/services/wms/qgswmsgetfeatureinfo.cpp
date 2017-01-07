@@ -151,7 +151,7 @@ namespace QgsWms
       return;
     }
 
-    response.setHeader( QStringLiteral( "Content-Type" ), infoFormat );
+    response.setHeader( QStringLiteral( "Content-Type" ), infoFormat + QStringLiteral( "; charset=utf-8" ) );
     response.write( ba );
   }
 

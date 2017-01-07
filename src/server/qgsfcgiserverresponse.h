@@ -85,7 +85,7 @@ class QgsFcgiServerRequest: public QgsServerRequest
     virtual QByteArray data() const override;
 
     /**
-     * Return true if an error occured during initialization
+     * Return true if an error occurred during initialization
      */
     bool hasError() const { return mHasError; }
 
