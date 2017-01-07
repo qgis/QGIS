@@ -10639,8 +10639,11 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionPasteFeatures->setEnabled( isEditable && canAddFeatures && !clipboard()->isEmpty() );
 
       mActionAddFeature->setEnabled( isEditable && canAddFeatures );
-      mActionCircularStringCurvePoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) && vlayer->geometryType() != QGis::Point );
-      mActionCircularStringRadius->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) );
+      mActionCircularStringCurvePoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
+          && ( vlayer->geometryType() == QGis::Line || vlayer->geometryType() == QGis::Polygon ) );
+      mActionCircularStringRadius->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
+          && ( vlayer->geometryType() == QGis::Line || vlayer->geometryType() == QGis::Polygon ) );
+
 
       //does provider allow deleting of features?
       mActionDeleteSelected->setEnabled( isEditable && canDeleteFeatures && layerHasSelection );
