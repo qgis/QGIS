@@ -25,20 +25,48 @@ __copyright__ = '(C) 2016, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+from qgis.PyQt.QtWidgets import QLineEdit, QComboBox
 from qgis.gui import QgsRasterFormatSaveOptionsWidget
 
-from processing.gui.wrappers import WidgetWrapper
+from processing.core.parameters import ParameterString
+from processing.core.outputs import OutputString
+from processing.gui.wrappers import WidgetWrapper, DIALOG_MODELER, DIALOG_BATCH
 
 
 class RasterOptionsWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
-        return QgsRasterFormatSaveOptionsWidget()
+        if self.dialogType == DIALOG_MODELER:
+            widget = QComboBox()
+            widget.setEditable(True)
+            strings = self.dialog.getAvailableValuesOfType(ParameterString, OutputString)
+            options = [(self.dialog.resolveValueDescription(s), s) for s in strings]
+            for desc, val in options:
+                widget.addItem(desc, val)
+            widget.setEditText(self.param.default or '')
+            return widget
+        elif self.dialogType == DIALOG_BATCH:
+            widget = QLineEdit()
+            if self.param.default:
+                widget.setText(self.param.default)
+        else:
+            return QgsRasterFormatSaveOptionsWidget()
 
     def setValue(self, value):
         if value is None:
             value = ''
-        self.widget.setValue(value)
+
+        if self.dialogType == DIALOG_MODELER:
+            self.setComboValue(value)
+        elif self.dialogType == DIALOG_BATCH:
+            self.widget.setText(value)
+        else:
+            self.widget.setValue(value)
 
     def value(self):
-        return ' '.join(self.widget.options())
+        if self.dialogType == DIALOG_MODELER:
+            return self.comboValue()
+        elif self.dialogType == DIALOG_BATCH:
+            return self.widget.text()
+        else:
+            return ' '.join(self.widget.options())

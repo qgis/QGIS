@@ -1,7 +1,6 @@
 # See ../README.md for a description of the file format
 
 tests:
-
   - algorithm: gdal:gdalinfo
     name: gdalinfo
     params:
