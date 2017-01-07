@@ -32,7 +32,7 @@
 QgsFcgiServerResponse::QgsFcgiServerResponse( QgsServerRequest::Method method )
 {
   mBuffer.open( QIODevice::ReadWrite );
-  mHeadersWritten = false;
+  mHeadersSent    = false;
   mFinished       = false;
   mMethod         = method;
 }
@@ -62,9 +62,9 @@ QList<QString> QgsFcgiServerResponse::headerKeys() const
   return mHeaders.keys();
 }
 
-bool QgsFcgiServerResponse::headersWritten() const
+bool QgsFcgiServerResponse::headersSent() const
 {
-  return mHeadersWritten;
+  return mHeadersSent;
 }
 
 void QgsFcgiServerResponse::setReturnCode( int code )
@@ -75,7 +75,7 @@ void QgsFcgiServerResponse::setReturnCode( int code )
 
 void QgsFcgiServerResponse::sendError( int code,  const QString& message )
 {
-  if ( mHeadersWritten )
+  if ( mHeadersSent )
   {
     QgsMessageLog::logMessage( "Cannot send error after headers written" );
     return;
@@ -102,7 +102,7 @@ void QgsFcgiServerResponse::finish()
     return;
   }
 
-  if ( !mHeadersWritten )
+  if ( !mHeadersSent )
   {
     if ( ! mHeaders.contains( "Content-Length" ) )
     {
@@ -115,7 +115,7 @@ void QgsFcgiServerResponse::finish()
 
 void QgsFcgiServerResponse::flush()
 {
-  if ( ! mHeadersWritten )
+  if ( ! mHeadersSent )
   {
     // Send all headers
     QMap<QString, QString>::const_iterator it;
@@ -127,7 +127,7 @@ void QgsFcgiServerResponse::flush()
       fputs( "\n" , FCGI_stdout );
     }
     fputs( "\n", FCGI_stdout );
-    mHeadersWritten = true;
+    mHeadersSent = true;
   }
 
   mBuffer.seek( 0 );

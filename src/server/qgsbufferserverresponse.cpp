@@ -30,9 +30,9 @@
 QgsBufferServerResponse::QgsBufferServerResponse()
 {
   mBuffer.open( QIODevice::ReadWrite );
-  mHeadersWritten = false;
-  mFinished       = false;
-  mReturnCode     = 200;
+  mHeadersSent = false;
+  mFinished    = false;
+  mReturnCode  = 200;
 }
 
 QgsBufferServerResponse::~QgsBufferServerResponse()
@@ -42,13 +42,13 @@ QgsBufferServerResponse::~QgsBufferServerResponse()
 
 void QgsBufferServerResponse::clearHeader( const QString& key )
 {
-  if ( !mHeadersWritten )
+  if ( !mHeadersSent )
     mHeaders.remove( key );
 }
 
 void QgsBufferServerResponse::setHeader( const QString& key, const QString& value )
 {
-  if ( ! mHeadersWritten )
+  if ( ! mHeadersSent )
     mHeaders.insert( key, value );
 }
 
@@ -67,16 +67,16 @@ QList<QString> QgsBufferServerResponse::headerKeys() const
   return mHeaders.keys();
 }
 
-bool QgsBufferServerResponse::headersWritten() const
+bool QgsBufferServerResponse::headersSent() const
 {
-  return mHeadersWritten;
+  return mHeadersSent;
 }
 
 void QgsBufferServerResponse::sendError( int code,  const QString& message )
 {
-  if ( mHeadersWritten )
+  if ( mHeadersSent )
   {
-    QgsMessageLog::logMessage( "Cannot send error after headers written" );
+    QgsMessageLog::logMessage( "Cannot send error after headers sent" );
     return;
   }
 
@@ -100,7 +100,7 @@ void QgsBufferServerResponse::finish()
     return;
   }
 
-  if ( !mHeadersWritten )
+  if ( !mHeadersSent )
   {
     if ( ! mHeaders.contains( "Content-Length" ) )
     {
@@ -113,9 +113,9 @@ void QgsBufferServerResponse::finish()
 
 void QgsBufferServerResponse::flush()
 {
-  if ( ! mHeadersWritten )
+  if ( ! mHeadersSent )
   {
-    mHeadersWritten = true;
+    mHeadersSent = true;
   }
 
   mBuffer.seek( 0 );

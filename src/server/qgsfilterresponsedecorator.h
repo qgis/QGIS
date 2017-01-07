@@ -49,7 +49,7 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 
     QList<QString> headerKeys() const override { return mResponse.headerKeys(); }
 
-    bool headersWritten() const override { return mResponse.headersWritten(); }
+    bool headersSent() const override { return mResponse.headersSent(); }
 
     void setReturnCode( int code ) override { mResponse.setReturnCode( code ); }
 

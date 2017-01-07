@@ -100,7 +100,7 @@ QList<QString> QgsRequestHandler::headerKeys() const
 
 bool QgsRequestHandler::headersSent() const
 {
-  return mResponse.headersWritten();
+  return mResponse.headersSent();
 }
 
 

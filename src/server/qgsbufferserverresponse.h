@@ -46,7 +46,7 @@ class QgsBufferServerResponse: public QgsServerResponse
 
     virtual QList<QString> headerKeys() const override;
 
-    virtual bool headersWritten() const override;
+    virtual bool headersSent() const override;
 
     virtual void setReturnCode( int code ) override;
 
@@ -80,7 +80,7 @@ class QgsBufferServerResponse: public QgsServerResponse
     QBuffer                mBuffer;
     QByteArray             mBody;
     bool                   mFinished;
-    bool                   mHeadersWritten;
+    bool                   mHeadersSent;
     int                    mReturnCode;
 };
 

@@ -44,7 +44,7 @@ class QgsFcgiServerResponse: public QgsServerResponse
 
     virtual QList<QString> headerKeys() const override;
 
-    virtual bool headersWritten() const override;
+    virtual bool headersSent() const override;
 
     virtual void setReturnCode( int code ) override;
 
@@ -67,7 +67,7 @@ class QgsFcgiServerResponse: public QgsServerResponse
     QMap<QString, QString> mHeaders;
     QBuffer                mBuffer;
     bool                   mFinished;
-    bool                   mHeadersWritten;
+    bool                   mHeadersSent;
     QgsServerRequest::Method mMethod;
 };
 

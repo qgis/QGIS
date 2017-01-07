@@ -59,9 +59,9 @@ class QgsServerResponse
     virtual QList<QString> headerKeys() const = 0;
 
     /**
-     * Return true if the headers have alredy beeing written
+     * Return true if the headers have alredy been sent
      */
-    virtual bool headersWritten() const = 0;
+    virtual bool headersSent() const = 0;
 
     /** Set the http return code
      * @param code HTTP return code value
