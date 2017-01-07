@@ -30,7 +30,6 @@
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
-//#include "qgswmsserver.h"
 #include "qgswfsserver.h"
 #include "qgswcsserver.h"
 #include "qgsmapserviceexception.h"
