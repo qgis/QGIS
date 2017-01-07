@@ -85,12 +85,7 @@
 //
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
-
-// Virtual interfaces to Cocoa objective-c frameworks/classes/calls
-// cocoainitializer is to handle objective-c garbage collection
-//   see: http://el-tramo.be/blog/mixing-cocoa-and-qt/
-//#include "cocoainitializer.h"
-#include "qgsmacappkit.h"
+#include "qgsmacnative.h"
 
 // check macro breaks QItemDelegate
 #ifdef check
@@ -1129,6 +1124,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 #endif
 
+#ifdef Q_OS_MAC
+  mNative = new QgsMacNative();
+#else
+  mNative = new QgsNative();
+#endif
+
 } // QgisApp ctor
 
 QgisApp::QgisApp()
@@ -1140,7 +1141,7 @@ QgisApp::QgisApp()
     , mMapToolGroup( nullptr )
     , mPreviewGroup( nullptr )
 #ifdef Q_OS_MAC
-    , mWindowMenu( 0 )
+    , mWindowMenu( nullptr )
 #endif
     , mPanelMenu( nullptr )
     , mToolbarMenu( nullptr )
@@ -5725,13 +5726,7 @@ void QgisApp::activate()
 
 void QgisApp::bringAllToFront()
 {
-#ifdef Q_OS_MAC
-  // Bring forward all open windows while maintaining layering order
-  // method valid for Mac OS X >= 10.6
-  QgsNSRunningApplication* nsrapp = new QgsNSRunningApplication();
-  nsrapp->currentAppActivateIgnoringOtherApps();
-  delete nsrapp;
-#endif
+  mNative->currentAppActivateIgnoringOtherApps();
 }
 
 void QgisApp::addWindow( QAction *action )

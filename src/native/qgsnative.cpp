@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgsmacappkit.h - interface to Mac objective-c AppKit.framework
+    qgsnative.cpp - abstracted interface to native system calls
                              -------------------
-    begin                : January 2014
-    copyright            : (C) 2014 by Larry Shaffer
-    email                : larrys at dakotacarto dot com
+    begin                : January 2017
+    copyright            : (C) 2017 by Matthias Kuhn
+    email                : matthias@opengis.ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,23 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMACAPPKIT_H
-#define QGSMACAPPKIT_H
+#include "qgsnative.h"
 
-#include "qgsmacnative.h"
-
-class QgsNSRunningApplication : public QgsMacAppKit
+QgsNative::QgsNative()
 {
-  public:
-    QgsNSRunningApplication();
-    ~QgsNSRunningApplication();
+}
 
-    const char* currentAppLocalizedName();
-    void currentAppActivateIgnoringOtherApps();
-
-  private:
-    class Private;
-    Private* d;
-};
-
-#endif // QGSMACAPPKIT_H
+void QgsNative::currentAppActivateIgnoringOtherApps()
+{
+}

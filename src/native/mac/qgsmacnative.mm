@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmacappkit.mm - interface to Mac objective-c AppKit.framework
+    qgsmacnative.cpp - abstracted interface to native Mac objective-c
                              -------------------
     begin                : January 2014
     copyright            : (C) 2014 by Larry Shaffer
@@ -15,35 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmacappkit.h"
+#include "qgsmacnative.h"
 
 #include <Cocoa/Cocoa.h>
 
-class QgsNSRunningApplication::Private
+QgsMacNative::~QgsMacNative()
 {
-  public:
-//    NSObject *obj;
-};
-
-QgsNSRunningApplication::QgsNSRunningApplication()
-{
-//  d = new Private;
-//  d->obj = [NSObject someFunction];
 }
 
-QgsNSRunningApplication::~QgsNSRunningApplication()
-{
-//  [d->obj release];
-//  delete d;
-//  d = 0;
-}
-
-const char* QgsNSRunningApplication::currentAppLocalizedName()
+const char* QgsMacNative::currentAppLocalizedName()
 {
   return [[[NSRunningApplication currentApplication] localizedName] UTF8String];
 }
 
-void QgsNSRunningApplication::currentAppActivateIgnoringOtherApps()
+void QgsMacNative::currentAppActivateIgnoringOtherApps()
 {
   // valid for Mac OS X >= 10.6
   [[NSRunningApplication currentApplication] activateWithOptions:

@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgsmacnative.cpp - abstracted interface to native Mac objective-c
+    qgsnative.h - abstracted interface to native system calls
                              -------------------
-    begin                : January 2014
-    copyright            : (C) 2014 by Larry Shaffer
-    email                : larrys at dakotacarto dot com
+    begin                : January 2017
+    copyright            : (C) 2017 by Matthias Kuhn
+    email                : matthias@opengis.ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,8 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmacnative.h"
+#ifndef QGSNATIVE_H
+#define QGSNATIVE_H
 
-QgsMacAppKit::~QgsMacAppKit()
+#include "qgis_native.h"
+
+/**
+ * Base class for implementing methods for native system calls that
+ * are implemented in subclasses to provide platform abstraction.
+ */
+class NATIVE_EXPORT QgsNative
 {
-}
+  public:
+    QgsNative();
+
+    /**
+     * Bring QGIS to front. Default implementation does nothing.
+     *
+     * @note Added in QGIS 3.0
+     */
+    virtual void currentAppActivateIgnoringOtherApps();
+};
+
+#endif // QGSNATIVE_H

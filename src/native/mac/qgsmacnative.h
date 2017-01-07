@@ -18,14 +18,15 @@
 #ifndef QGSMACNATIVE_H
 #define QGSMACNATIVE_H
 
-class QgsMacAppKit
+#include "qgsnative.h"
+
+class NATIVE_EXPORT QgsMacNative : public QgsNative
 {
   public:
-    virtual ~QgsMacAppKit();
+    virtual ~QgsMacNative();
 
-    // NSRunningApplication interface
-    virtual const char* currentAppLocalizedName() = 0;
-    virtual void currentAppActivateIgnoringOtherApps() = 0;
+    virtual const char* currentAppLocalizedName();
+    virtual void currentAppActivateIgnoringOtherApps() override;
 };
 
 #endif // QGSMACNATIVE_H

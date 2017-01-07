@@ -130,6 +130,8 @@ class QgsDiagramProperties;
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
 
+#include "qgsnative.h"
+
 #ifdef HAVE_TOUCH
 #include <QGestureEvent>
 #include <QTapAndHoldGesture>
@@ -1859,6 +1861,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsWelcomePage* mWelcomePage;
 
     QStackedWidget* mCentralContainer;
+
+    QgsNative* mNative;
 
     int mProjOpen;
 #ifdef HAVE_TOUCH

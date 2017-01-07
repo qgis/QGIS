@@ -21,6 +21,8 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/app
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/app/pluginmanager
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/test
+  ${CMAKE_SOURCE_DIR}/src/native
+  ${CMAKE_BINARY_DIR}/src/native
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/python
@@ -34,11 +36,6 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QCA_INCLUDE_DIR}
 )
 
-IF(USE_NATIVE_LIB)
-  IF(APPLE)
-    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/native/mac)
-  ENDIF(APPLE)
-ENDIF(USE_NATIVE_LIB)
 
 #############################################################
 # Compiler defines
@@ -104,9 +101,7 @@ MACRO (ADD_QGIS_TEST testname testsrc)
     TARGET_LINK_LIBRARIES(qgis_${testname} ${APP_SERVICES_LIBRARY} )
   ENDIF(APPLE)
   ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
-  IF(USE_NATIVE_LIB)
-    TARGET_LINK_LIBRARIES(qgis_${testname} qgis_native)
-  ENDIF(USE_NATIVE_LIB)
+  TARGET_LINK_LIBRARIES(qgis_${testname} qgis_native)
   ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
   #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
