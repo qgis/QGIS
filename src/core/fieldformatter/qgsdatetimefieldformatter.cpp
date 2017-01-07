@@ -60,7 +60,7 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer* layer, int fi
   return result;
 }
 
-QString QgsDateTimeFieldFormatter::defaultFormat( const QVariant::Type type )
+QString QgsDateTimeFieldFormatter::defaultFormat( QVariant::Type type )
 {
   switch ( type )
   {
