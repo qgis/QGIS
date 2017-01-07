@@ -1629,6 +1629,7 @@ namespace QgsWms
 
     QImage* theImage = nullptr;
 
+    //Define the image background color in case of map settings is not used
     //is format jpeg?
     QString format = mParameters.value( QStringLiteral( "FORMAT" ) );
     bool jpeg = format.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0
@@ -1757,6 +1758,37 @@ namespace QgsWms
     }
 
     mapSettings.setExtent( mapExtent );
+
+    /* Define the background color
+     * Transparent or colored
+     */
+    //is format jpeg?
+    QString format = mParameters.value( QStringLiteral( "FORMAT" ) );
+    bool jpeg = format.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0
+                || format.compare( QLatin1String( "jpeg" ), Qt::CaseInsensitive ) == 0
+                || format.compare( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) == 0;
+
+    //transparent parameter
+    bool transparent = mParameters.value( QStringLiteral( "TRANSPARENT" ) ).compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+
+    //background  color
+    QString bgColorString = mParameters.value( "BGCOLOR" );
+    if ( bgColorString.startsWith( "0x", Qt::CaseInsensitive ) )
+    {
+      bgColorString.replace( 0, 2, "#" );
+    }
+    QColor backgroundColor;
+    backgroundColor.setNamedColor( bgColorString );
+
+    //set background color
+    if ( transparent && !jpeg )
+    {
+      mapSettings.setBackgroundColor( QColor( 0, 0, 0, 0 ) );
+    }
+    else if ( backgroundColor.isValid() )
+    {
+      mapSettings.setBackgroundColor( backgroundColor );
+    }
   }
 
   void QgsWmsServer::readLayersAndStyles( QStringList& layersList, QStringList& stylesList ) const
