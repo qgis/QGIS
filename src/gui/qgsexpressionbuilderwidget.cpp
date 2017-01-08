@@ -104,6 +104,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   expressionTree->setCurrentIndex( firstItem );
 
   lblAutoSave->setText( QLatin1String( "" ) );
+  txtExpressionString->setWrapMode( QsciScintilla::WrapWord );
 }
 
 
