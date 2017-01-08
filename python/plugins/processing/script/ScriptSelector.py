@@ -47,7 +47,7 @@ class ScriptSelector(BASE, WIDGET):
         self.scripts = None
 
         allScripts = defaultdict(list)
-        alglist = algList.getProviderFromName("script").algs
+        alglist = algList.providerById("script").algs
         for script in alglist:
             allScripts[script.group].append(script)
 

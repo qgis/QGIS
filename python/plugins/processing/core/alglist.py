@@ -40,31 +40,31 @@ class AlgorithmList(QObject):
 
     providers = []
 
-    def removeProvider(self, providerName):
+    def removeProvider(self, provider_id):
         for p in self.providers:
-            if p.getName() == providerName:
+            if p.id() == provider_id:
                 self.providers.remove(p)
                 break
-        if providerName in self.algs:
-            del self.algs[providerName]
-        self.providerRemoved.emit(providerName)
+        if provider_id in self.algs:
+            del self.algs[provider_id]
+        self.providerRemoved.emit(provider_id)
 
-    def reloadProvider(self, providerName):
+    def reloadProvider(self, provider_id):
         for p in self.providers:
-            if p.getName() == providerName:
+            if p.id() == provider_id:
                 p.loadAlgorithms()
-                self.algs[p.getName()] = {a.commandLineName(): a for a in p.algs}
-                self.providerUpdated.emit(p.getName())
+                self.algs[p.id()] = {a.commandLineName(): a for a in p.algs}
+                self.providerUpdated.emit(p.id())
                 break
 
     def addProvider(self, provider):
         self.providers.append(provider)
-        self.algs[provider.getName()] = {a.commandLineName(): a for a in provider.algs}
-        self.providerAdded.emit(provider.getName())
+        self.algs[provider.id()] = {a.commandLineName(): a for a in provider.algs}
+        self.providerAdded.emit(provider.id())
 
-    def getProviderFromName(self, name):
+    def providerById(self, id):
         for provider in self.providers:
-            if provider.getName() == name:
+            if provider.id() == id:
                 return provider
 
     def getAlgorithm(self, name):

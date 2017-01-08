@@ -272,7 +272,7 @@ class ModelerDialog(BASE, WIDGET):
     def editHelp(self):
         if self.alg.provider is None:
             # Might happen if model is opened from modeler dialog
-            self.alg.provider = algList.getProviderFromName('model')
+            self.alg.provider = algList.providerById('model')
         alg = self.alg.getCopy()
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
@@ -287,7 +287,7 @@ class ModelerDialog(BASE, WIDGET):
 
         if self.alg.provider is None:
             # Might happen if model is opened from modeler dialog
-            self.alg.provider = algList.getProviderFromName('model')
+            self.alg.provider = algList.providerById('model')
         alg = self.alg.getCopy()
         dlg = AlgorithmDialog(alg)
         dlg.exec_()
@@ -605,12 +605,12 @@ class ModelerDialog(BASE, WIDGET):
         text = str(self.searchBox.text())
         search_strings = text.split(' ')
         allAlgs = algList.algs
-        for providerName in list(allAlgs.keys()):
-            name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
+        for provider_id in list(allAlgs.keys()):
+            name = 'ACTIVATE_' + provider_id.upper().replace(' ', '_')
             if not ProcessingConfig.getSetting(name):
                 continue
             groups = {}
-            algs = list(allAlgs[providerName].values())
+            algs = list(allAlgs[provider_id].values())
 
             # Add algorithms
             for alg in algs:
@@ -640,10 +640,10 @@ class ModelerDialog(BASE, WIDGET):
 
             if len(groups) > 0:
                 providerItem = QTreeWidgetItem()
-                provider = algList.getProviderFromName(providerName)
-                providerItem.setText(0, provider.getDescription())
-                providerItem.setToolTip(0, provider.getDescription())
-                providerItem.setIcon(0, provider.getIcon())
+                provider = algList.providerById(provider_id)
+                providerItem.setText(0, provider.name())
+                providerItem.setToolTip(0, provider.name())
+                providerItem.setIcon(0, provider.icon())
                 for groupItem in list(groups.values()):
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)

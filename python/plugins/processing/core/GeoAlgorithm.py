@@ -479,7 +479,7 @@ class GeoAlgorithm(object):
         return s
 
     def commandLineName(self):
-        name = self.provider.getName().lower() + ':' + self.name.lower()
+        name = self.provider.id().lower() + ':' + self.name.lower()
         validChars = \
             'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
         name = ''.join(c for c in name if c in validChars)

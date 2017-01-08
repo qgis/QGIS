@@ -68,7 +68,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         newone.provider = self.provider
         return newone
 
-    def getIcon(self):
+    def icon(self):
         return self._icon
 
     def defineCharacteristicsFromFile(self):

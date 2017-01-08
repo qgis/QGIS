@@ -54,30 +54,30 @@ pluginPath = os.path.normpath(os.path.join(
 class TauDEMAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
         self.activate = False
 
-    def getDescription(self):
+    def name(self):
         return self.tr('TauDEM (hydrologic analysis)')
 
-    def getName(self):
+    def id(self):
         return 'taudem'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'taudem.svg'))
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
 
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
+        ProcessingConfig.addSetting(Setting(self.name(),
                                             TauDEMUtils.TAUDEM_FOLDER,
                                             self.tr('TauDEM command line tools folder'),
                                             TauDEMUtils.taudemPath(), valuetype=Setting.FOLDER))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
+        ProcessingConfig.addSetting(Setting(self.name(),
                                             TauDEMUtils.MPIEXEC_FOLDER,
                                             self.tr('MPICH2/OpenMPI bin directory'),
                                             TauDEMUtils.mpiexecPath(), valuetype=Setting.FOLDER))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
+        ProcessingConfig.addSetting(Setting(self.name(),
                                             TauDEMUtils.MPI_PROCESSES,
                                             self.tr('Number of MPI parallel processes to use'), 2))
 

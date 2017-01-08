@@ -47,26 +47,26 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class ModelerAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
         self.actions = [CreateNewModelAction(), AddModelFromFileAction(), GetModelsAction()]
         self.contextMenuActions = [EditModelAction(), DeleteModelAction()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
+        ProcessingConfig.addSetting(Setting(self.name(),
                                             ModelerUtils.MODELS_FOLDER, self.tr('Models folder', 'ModelerAlgorithmProvider'),
                                             ModelerUtils.defaultModelsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
 
     def modelsFolder(self):
         return ModelerUtils.modelsFolders()[0]
 
-    def getDescription(self):
+    def name(self):
         return self.tr('Models', 'ModelerAlgorithmProvider')
 
-    def getName(self):
+    def id(self):
         return 'model'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'model.svg'))
 
     def _loadAlgorithms(self):

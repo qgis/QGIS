@@ -97,13 +97,13 @@ class GdalAlgorithmProvider(AlgorithmProvider):
     """
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
         self.createAlgsList()
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         ProcessingConfig.addSetting(Setting(
-            self.getDescription(),
+            self.name(),
             GdalUtils.GDAL_HELP_PATH,
             self.tr('Location of GDAL docs'),
             GdalUtils.gdalHelpPath()))
@@ -112,14 +112,14 @@ class GdalAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.unload(self)
         ProcessingConfig.removeSetting(GdalUtils.GDAL_HELP_PATH)
 
-    def getDescription(self):
+    def name(self):
         version = GdalUtils.readableVersion()
         return 'GDAL ({})'.format(version)
 
-    def getName(self):
+    def id(self):
         return 'gdal'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdal.svg'))
 
     def _loadAlgorithms(self):

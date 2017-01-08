@@ -213,9 +213,9 @@ class ConfigDialog(BASE, WIDGET):
 
         providers = Processing.providers
         for provider in providers:
-            providerDescription = provider.getDescription()
+            providerDescription = provider.name()
             groupItem = QStandardItem(providerDescription)
-            icon = provider.getIcon()
+            icon = provider.icon()
             groupItem.setIcon(icon)
             groupItem.setEditable(False)
 

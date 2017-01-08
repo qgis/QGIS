@@ -43,26 +43,26 @@ pluginPath = os.path.normpath(os.path.join(
 class Grass7AlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
         self.createAlgsList()
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         if isWindows() or isMac():
             ProcessingConfig.addSetting(Setting(
-                self.getDescription(),
+                self.name(),
                 Grass7Utils.GRASS_FOLDER, self.tr('GRASS7 folder'),
                 Grass7Utils.grassPath(), valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(
-            self.getDescription(),
+            self.name(),
             Grass7Utils.GRASS_LOG_COMMANDS,
             self.tr('Log execution commands'), False))
         ProcessingConfig.addSetting(Setting(
-            self.getDescription(),
+            self.name(),
             Grass7Utils.GRASS_LOG_CONSOLE,
             self.tr('Log console output'), False))
         ProcessingConfig.addSetting(Setting(
-            self.getDescription(),
+            self.name(),
             Grass7Utils.GRASS_HELP_PATH,
             self.tr('Location of GRASS docs'),
             Grass7Utils.grassHelpPath()))
@@ -97,14 +97,14 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
 
-    def getDescription(self):
+    def name(self):
         version = Grass7Utils.installedVersion()
         return 'GRASS GIS ({})'.format(version) if version is not None else "GRASS GIS"
 
-    def getName(self):
+    def id(self):
         return 'grass7'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
 
     def getSupportedOutputVectorLayerExtensions(self):

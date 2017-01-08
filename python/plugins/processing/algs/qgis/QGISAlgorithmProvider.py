@@ -196,7 +196,7 @@ pluginPath = os.path.normpath(os.path.join(
 class QGISAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
         self._icon = QIcon(os.path.join(pluginPath, 'images', 'qgis.svg'))
 
         self.alglist = [SumLines(), PointsInPolygon(),
@@ -297,13 +297,13 @@ class QGISAlgorithmProvider(AlgorithmProvider):
     def unload(self):
         AlgorithmProvider.unload(self)
 
-    def getName(self):
+    def id(self):
         return 'qgis'
 
-    def getDescription(self):
+    def name(self):
         return 'QGIS'
 
-    def getIcon(self):
+    def icon(self):
         return self._icon
 
     def _loadAlgorithms(self):

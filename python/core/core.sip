@@ -259,6 +259,8 @@
 %Include layertree/qgslayertreeregistrybridge.sip
 %Include layertree/qgslayertreeutils.sip
 
+%Include processing/qgsprocessingprovider.sip
+
 %Include raster/qgsbilinearrasterresampler.sip
 %Include raster/qgsbrightnesscontrastfilter.sip
 %Include raster/qgscliptominmaxenhancement.sip

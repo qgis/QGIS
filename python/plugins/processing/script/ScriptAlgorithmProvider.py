@@ -45,7 +45,7 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class ScriptAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
         self.actions.extend([CreateNewScriptAction('Create new script',
                                                    CreateNewScriptAction.SCRIPT_PYTHON),
                              AddScriptFromFileAction(),
@@ -57,7 +57,7 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
+        ProcessingConfig.addSetting(Setting(self.name(),
                                             ScriptUtils.SCRIPTS_FOLDER,
                                             self.tr('Scripts folder', 'ScriptAlgorithmProvider'),
                                             ScriptUtils.defaultScriptsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
@@ -66,13 +66,13 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.unload(self)
         ProcessingConfig.addSetting(ScriptUtils.SCRIPTS_FOLDER)
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'script.svg'))
 
-    def getName(self):
+    def id(self):
         return 'script'
 
-    def getDescription(self):
+    def name(self):
         return self.tr('Scripts', 'ScriptAlgorithmProvider')
 
     def _loadAlgorithms(self):
