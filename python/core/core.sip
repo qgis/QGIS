@@ -260,6 +260,7 @@
 %Include layertree/qgslayertreeutils.sip
 
 %Include processing/qgsprocessingprovider.sip
+%Include processing/qgsprocessingregistry.sip
 
 %Include raster/qgsbilinearrasterresampler.sip
 %Include raster/qgsbrightnesscontrastfilter.sip

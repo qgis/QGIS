@@ -272,7 +272,7 @@ class ModelerDialog(BASE, WIDGET):
     def editHelp(self):
         if self.alg.provider is None:
             # Might happen if model is opened from modeler dialog
-            self.alg.provider = algList.providerById('model')
+            self.alg.provider = QgsApplication.processingRegistry().providerById('model')
         alg = self.alg.getCopy()
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
@@ -287,7 +287,7 @@ class ModelerDialog(BASE, WIDGET):
 
         if self.alg.provider is None:
             # Might happen if model is opened from modeler dialog
-            self.alg.provider = algList.providerById('model')
+            self.alg.provider = QgsApplication.processingRegistry().providerById('model')
         alg = self.alg.getCopy()
         dlg = AlgorithmDialog(alg)
         dlg.exec_()
@@ -640,7 +640,7 @@ class ModelerDialog(BASE, WIDGET):
 
             if len(groups) > 0:
                 providerItem = QTreeWidgetItem()
-                provider = algList.providerById(provider_id)
+                provider = QgsApplication.processingRegistry().providerById(provider_id)
                 providerItem.setText(0, provider.name())
                 providerItem.setToolTip(0, provider.name())
                 providerItem.setIcon(0, provider.icon())

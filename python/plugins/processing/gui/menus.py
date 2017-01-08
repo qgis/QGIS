@@ -8,6 +8,7 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
+from qgis.core import QgsApplication
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import runalg
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -111,7 +112,7 @@ defaultMenuEntries.update({'gdal:buildvirtualraster': miscMenu,
 
 
 def initializeMenus():
-    for provider in algList.providers:
+    for provider in QgsApplication.processingRegistry().providers():
         for alg in provider.algs:
             d = defaultMenuEntries.get(alg.commandLineName(), "")
             setting = Setting(menusSettingsGroup, "MENU_" + alg.commandLineName(),

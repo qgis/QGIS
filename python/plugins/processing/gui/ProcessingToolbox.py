@@ -33,6 +33,8 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
 from qgis.utils import iface
+from qgis.core import (QgsApplication,
+                       QgsProcessingRegistry)
 
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.core.Processing import Processing
@@ -82,8 +84,8 @@ class ProcessingToolbox(BASE, WIDGET):
 
         self.fillTree()
 
-        algList.providerRemoved.connect(self.removeProvider)
-        algList.providerAdded.connect(self.addProvider)
+        QgsApplication.processingRegistry().providerRemoved.connect(self.removeProvider)
+        QgsApplication.processingRegistry().providerAdded.connect(self.addProvider)
         algList.providerUpdated.connect(self.updateProvider)
         settingsWatcher.settingsChanged.connect(self.fillTree)
 
@@ -159,7 +161,7 @@ class ProcessingToolbox(BASE, WIDGET):
         self.fillTree()
         self.textChanged()
         self.showDisabled()
-        provider = Processing.providerById(id)
+        provider = QgsApplication.processingRegistry().providerById(id)
         if not provider.canBeActivated():
             QMessageBox.warning(self, "Activate provider",
                                 "The provider has been activated, but it might need additional configuration.")
@@ -376,7 +378,7 @@ class TreeProviderItem(QTreeWidgetItem):
         self.tree = tree
         self.toolbox = toolbox
         self.provider_id = provider_id
-        self.provider = Processing.providerById(provider_id)
+        self.provider = QgsApplication.processingRegistry().providerById(provider_id)
         self.setIcon(0, self.provider.icon())
         self.populate()
 

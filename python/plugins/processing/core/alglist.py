@@ -25,13 +25,13 @@ __copyright__ = '(C) 2016, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import (QgsApplication,
+                       QgsProcessingRegistry)
 from qgis.PyQt.QtCore import QObject, pyqtSignal
 
 
 class AlgorithmList(QObject):
 
-    providerAdded = pyqtSignal(str)
-    providerRemoved = pyqtSignal(str)
     providerUpdated = pyqtSignal(str)
 
     # A dictionary of algorithms. Keys are names of providers
@@ -41,13 +41,10 @@ class AlgorithmList(QObject):
     providers = []
 
     def removeProvider(self, provider_id):
-        for p in self.providers:
-            if p.id() == provider_id:
-                self.providers.remove(p)
-                break
         if provider_id in self.algs:
             del self.algs[provider_id]
-        self.providerRemoved.emit(provider_id)
+
+        QgsApplication.processingRegistry().removeProvider(provider_id)
 
     def reloadProvider(self, provider_id):
         for p in self.providers:
@@ -58,14 +55,8 @@ class AlgorithmList(QObject):
                 break
 
     def addProvider(self, provider):
-        self.providers.append(provider)
-        self.algs[provider.id()] = {a.commandLineName(): a for a in provider.algs}
-        self.providerAdded.emit(provider.id())
-
-    def providerById(self, id):
-        for provider in self.providers:
-            if provider.id() == id:
-                return provider
+        if QgsApplication.processingRegistry().addProvider(provider):
+            self.algs[provider.id()] = {a.commandLineName(): a for a in provider.algs}
 
     def getAlgorithm(self, name):
         for provider in list(self.algs.values()):

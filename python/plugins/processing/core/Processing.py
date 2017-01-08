@@ -38,7 +38,8 @@ from qgis.PyQt.QtWidgets import QApplication
 from qgis.PyQt.QtGui import QCursor
 
 from qgis.utils import iface
-from qgis.core import QgsMessageLog
+from qgis.core import (QgsMessageLog,
+                       QgsApplication)
 
 import processing
 from processing.core.AlgorithmProvider import AlgorithmProvider
@@ -87,7 +88,7 @@ class Processing(object):
         """Use this method to add algorithms from external providers.
         """
 
-        if provider.id() in [p.id() for p in algList.providers]:
+        if provider.id() in [p.id() for p in QgsApplication.processingRegistry().providers()]:
             return
         try:
             provider.initializeSettings()
@@ -129,11 +130,6 @@ class Processing(object):
             pass
 
     @staticmethod
-    def providerById(id):
-        """Returns the provider with the given id."""
-        return algList.providerById(id)
-
-    @staticmethod
     def activateProvider(providerOrName, activate=True):
         provider_id = providerOrName.id() if isinstance(providerOrName, AlgorithmProvider) else providerOrName
         name = 'ACTIVATE_' + provider_id.upper().replace(' ', '_')
@@ -155,7 +151,7 @@ class Processing(object):
     @staticmethod
     def addScripts(folder):
         Processing.initialize()
-        provider = Processing.providerById("qgis")
+        provider = QgsApplication.processingRegistry().providerById("qgis")
         scripts = ScriptUtils.loadFromFolder(folder)
         # fix_print_with_import
         print(scripts)
@@ -168,7 +164,7 @@ class Processing(object):
 
     @staticmethod
     def removeScripts(folder):
-        provider = Processing.providerById("qgis")
+        provider = QgsApplication.processingRegistry().providerById("qgis")
         for alg in provider.externalAlgs[::-1]:
             path = os.path.dirname(alg.descriptionFile)
             if path == folder:

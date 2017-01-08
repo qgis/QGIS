@@ -79,6 +79,7 @@ SET(QGIS_CORE_SRCS
   auth/qgsauthmethodregistry.cpp
 
   processing/qgsprocessingprovider.cpp
+  processing/qgsprocessingregistry.cpp
 
   qgis.cpp
   qgsapplication.cpp
@@ -561,6 +562,8 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposition.h
   composer/qgsgroupungroupitemscommand.h
   composer/qgspaperitem.h
+
+  processing/qgsprocessingregistry.h
 
   raster/qgsrasterlayer.h
   raster/qgsrasterdataprovider.h
