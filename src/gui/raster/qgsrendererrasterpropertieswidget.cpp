@@ -33,6 +33,8 @@
 #include "qgssinglebandgrayrenderer.h"
 
 
+#include "qgsmessagelog.h"
+
 static void _initRendererWidgetFunctions()
 {
   static bool initialized = false;
@@ -319,11 +321,21 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
 {
   QgsDebugMsg( "rendererName = " + rendererName );
   QgsRasterRendererWidget* oldWidget = mRendererWidget;
+  QgsRasterRenderer* oldRenderer = mRasterLayer->renderer();
+
+  int alphaBand = -1;
+  double opacity = 1;
+  if ( oldRenderer )
+  {
+    // Retain alpha band and opacity when switching renderer
+    alphaBand = oldRenderer->alphaBand();
+    opacity = oldRenderer->opacity();
+  }
 
   QgsRasterRendererRegistryEntry rendererEntry;
   if ( QgsApplication::rasterRendererRegistry()->rendererData( rendererName, rendererEntry ) )
   {
-    if ( rendererEntry.widgetCreateFunction ) //single band color data renderer e.g. has no widget
+    if ( rendererEntry.widgetCreateFunction ) // Single band color data renderer e.g. has no widget
     {
       QgsDebugMsg( "renderer has widgetCreateFunction" );
       // Current canvas extent (used to calc min/max) in layer CRS
@@ -341,6 +353,8 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
           whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
         }
       }
+      mRasterLayer->renderer()->setAlphaBand( alphaBand );
+      mRasterLayer->renderer()->setOpacity( opacity );
       mRendererWidget = rendererEntry.widgetCreateFunction( mRasterLayer, myExtent );
       mRendererWidget->setMapCanvas( mMapCanvas );
       connect( mRendererWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
@@ -348,15 +362,17 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
       stackedWidget->setCurrentWidget( mRendererWidget );
       if ( oldWidget )
       {
-        //compare used bands in new and old renderer and reset transparency dialog if different
+        // Compare used bands in new and old renderer and reset transparency dialog if different
         QgsRasterRenderer* oldRenderer = oldWidget->renderer();
         QgsRasterRenderer* newRenderer = mRendererWidget->renderer();
         QList<int> oldBands = oldRenderer->usesBands();
         QList<int> newBands = newRenderer->usesBands();
+
 //        if ( oldBands != newBands )
 //        {
 //          populateTransparencyTable( newRenderer );
 //        }
+
         delete oldRenderer;
         delete newRenderer;
       }
