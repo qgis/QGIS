@@ -20,5 +20,10 @@
 
 QIcon QgsProcessingProvider::icon() const
 {
-  return QgsApplication::getThemeIcon( "/alg.svg" );
+  return QgsApplication::getThemeIcon( "/processingAlgorithm.svg" );
+}
+
+QString QgsProcessingProvider::svgIconPath() const
+{
+  return QgsApplication::iconPath( "processingAlgorithm.svg" );
 }

@@ -20,8 +20,15 @@ class QgsProcessingProvider
 
     /**
      * Returns an icon for the provider.
+     * @see svgIcon()
      */
     virtual QIcon icon() const;
+
+    /**
+     * Returns a path to an SVG version of the provider's icon.
+     * @see icon()
+     */
+    virtual QString svgIconPath() const;
 
     /**
      * Returns the unique provider id, used for identifying the provider. This string
