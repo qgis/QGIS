@@ -409,6 +409,9 @@ bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value
     {
       node->setItemVisibilityChecked( checked );
     }
+
+    recursivelyEmitDataChanged( index );
+
     return true;
   }
   else if ( role == Qt::EditRole )
