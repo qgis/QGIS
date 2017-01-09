@@ -1023,13 +1023,13 @@ bool QgsVectorLayer::insertVertex( double x, double y, QgsFeatureId atFeatureId,
 }
 
 
-bool QgsVectorLayer::insertVertex( QgsPointV2& p, QgsFeatureId atFeatureId, int beforeVertex )
+bool QgsVectorLayer::insertVertex( const QgsPointV2& point, QgsFeatureId atFeatureId, int beforeVertex )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return false;
 
   QgsVectorLayerEditUtils utils( this );
-  bool result = utils.insertVertex( p, atFeatureId, beforeVertex );
+  bool result = utils.insertVertex( point, atFeatureId, beforeVertex );
   if ( result )
     updateExtents();
   return result;

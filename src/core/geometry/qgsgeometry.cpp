@@ -508,7 +508,7 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
   return d->geometry->insertVertex( id, QgsPointV2( x, y ) );
 }
 
-bool QgsGeometry::insertVertex( QgsPointV2& p, int beforeVertex )
+bool QgsGeometry::insertVertex( const QgsPointV2& point, int beforeVertex )
 {
   if ( !d->geometry )
   {
@@ -520,7 +520,7 @@ bool QgsGeometry::insertVertex( QgsPointV2& p, int beforeVertex )
   {
     detach( true );
     //insert geometry instead of point
-    return static_cast< QgsGeometryCollection* >( d->geometry )->insertGeometry( new QgsPointV2( p ), beforeVertex );
+    return static_cast< QgsGeometryCollection* >( d->geometry )->insertGeometry( new QgsPointV2( point ), beforeVertex );
   }
 
   QgsVertexId id;
@@ -531,7 +531,7 @@ bool QgsGeometry::insertVertex( QgsPointV2& p, int beforeVertex )
 
   detach( true );
 
-  return d->geometry->insertVertex( id, p );
+  return d->geometry->insertVertex( id, point );
 }
 
 QgsPoint QgsGeometry::vertexAt( int atVertex ) const

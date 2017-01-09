@@ -279,7 +279,7 @@ class CORE_EXPORT QgsGeometry
      *  these error conditions.  (Or maybe we add another method to this
      *  object to help make the distinction?)
      */
-    bool insertVertex( QgsPointV2& p, int beforeVertex );
+    bool insertVertex( const QgsPointV2& point, int beforeVertex );
 
     /** Moves the vertex at the given position number
      *  and item (first number is index 0)

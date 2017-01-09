@@ -943,7 +943,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  in the given ring, item (first number is index 0), and feature
      *  Not meaningful for Point geometries
      */
-    bool insertVertex( QgsPointV2& p, QgsFeatureId atFeatureId, int beforeVertex );
+    bool insertVertex( const QgsPointV2& point, QgsFeatureId atFeatureId, int beforeVertex );
 
     /** Moves the vertex at the given position number,
      *  ring and item (first number is index 0), and feature

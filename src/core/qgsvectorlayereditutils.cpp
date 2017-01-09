@@ -56,7 +56,7 @@ bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atF
   return true;
 }
 
-bool QgsVectorLayerEditUtils::insertVertex( QgsPointV2& p, QgsFeatureId atFeatureId, int beforeVertex )
+bool QgsVectorLayerEditUtils::insertVertex( const QgsPointV2& point, QgsFeatureId atFeatureId, int beforeVertex )
 {
   if ( !L->hasGeometryType() )
     return false;
@@ -72,7 +72,7 @@ bool QgsVectorLayerEditUtils::insertVertex( QgsPointV2& p, QgsFeatureId atFeatur
     geometry = f.geometry();
   }
 
-  geometry.insertVertex( p, beforeVertex );
+  geometry.insertVertex( point, beforeVertex );
 
   L->editBuffer()->changeGeometry( atFeatureId, geometry );
   return true;
