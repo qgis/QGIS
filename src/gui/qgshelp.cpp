@@ -20,6 +20,7 @@
 #include <QFileInfo>
 #include <QTcpSocket>
 #include <QDesktopServices>
+#include <QRegularExpression>
 #include <QNetworkProxy>
 #include <QNetworkProxyFactory>
 
@@ -54,7 +55,8 @@ QUrl QgsHelp::helpUrl( const QString& key )
     fullPath = path;
     Q_FOREACH ( const QString& var, scope->variableNames() )
     {
-      fullPath.replace( QStringLiteral( "$%1" ).arg( var ), scope->variable( var ).toString() );
+      QRegularExpression rx( QStringLiteral( "(?<!\\$)\\$%1" ).arg( var ) );
+      fullPath.replace( rx, scope->variable( var ).toString() );
     }
 
     helpPath = QStringLiteral( "%1/%2" ).arg( fullPath ).arg( key );
