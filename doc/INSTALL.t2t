@@ -50,14 +50,8 @@ Building QGIS from source - step by step
 %apply vim formatting to the whole document as it screws up some formatting
 %rather apply it selectively to paragraphs where needed.
 
-% To generate the text version of this document:
-% txt2tags -t txt -o INSTALL INSTALL.t2t
-% To generate the mediawiki version of this document:
-% txt2tags -t wiki --no-enum-title -o INSTALL.wiki INSTALL.t2t
-% To generate the html version of this document:
-% txt2tags -t html -o INSTALL.html INSTALL.t2t
-% To generate the LaTeX version of this document:
-% txt2tags -t tex -o INSTALL.tex INSTALL.t2t; pdflatex INSTALL.tex
+% To generate output fies from this document:
+% cmake --build $YOURBUILDDIR --target t2tdoc
 
 % End of comments
 % -------------------

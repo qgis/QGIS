@@ -42,7 +42,7 @@ MACRO(ADD_TXT2TAGS_FILES _sources)
     ADD_CUSTOM_COMMAND(
       OUTPUT ${_out}
       COMMAND ${TXT2TAGS_EXECUTABLE}
-      ARGS -o${_out} -t txt ${_in}
+      ARGS --encoding=utf-8 -o${_out} -t txt ${_in}
       DEPENDS ${_in}
       COMMENT "Building ${_out} from ${_in}"
       )

@@ -1,6 +1,6 @@
 QGIS News
 Change history for the QGIS Project
-Monday November 07, 2016
+Monday January 09, 2017
 
 
 ------------------------------------------------------------------------
@@ -39,12 +39,12 @@ Monday November 07, 2016
 ------------------------------------------------------------------------
 
 
-Last Updated: Monday November 07, 2016
-Last Change : Wednesday July 27, 2016
+Last Updated: Monday January 09, 2017
+Last Change : Sunday January 01, 2017
 
 
   1. What's new in Version 2.16 'Nødebo'?
-  ========================================
+  =======================================
 
 This release has following new features:
 
@@ -94,7 +94,7 @@ This release has following new features:
 - Map Composer: Parameterized svg support for composer svg images
 - Map Composer: Easier use of HTML in labels
 - Map Composer: Relative links in composer labels
-- Map Composer: Georeference outputs (e.g., PDF) from composer
+- Map Composer: Georeference outputs (eg PDF) from composer
 - Map Composer: Composer maps now auto-update with presets
 - Analysis tools: Named parameters in expressions
 - Analysis tools: More distance units
@@ -908,7 +908,7 @@ as' option, you can now specify OGR creation options.
 
 
   15.3. Labeling (New generation only)
-  =====================================
+  ====================================
 
 - Data defined label position in labeling-ng.
 - Line wrapping, data defined font and buffer settings for labeling-ng.
@@ -1055,7 +1055,7 @@ we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x
 release series. In all other cases we recommend that you use this version.
 
 This release includes around 200 bug fixes, nearly 30 new features and has had
-a lot of love and attention poured into it to take our favorite desktop GIS
+a lot of love and attention poured in to it to take our favorite desktop GIS
 application another step on the road to GIS nirvana! So much has happened in
 the 3 months since our last release that it is impossible to document
 everything here. Instead we will just highlight a couple of important new
