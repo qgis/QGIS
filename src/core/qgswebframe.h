@@ -16,8 +16,9 @@
 #ifndef QGSWEBFRAME_H
 #define QGSWEBFRAME_H
 
-#ifdef WITH_QTWEBKIT
 #include "qgis_core.h"
+
+#ifdef WITH_QTWEBKIT
 #include <QWebFrame>
 #else
 
