@@ -165,7 +165,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
   QString gdalUri = dataSourceUri();
 
   CPLErrorReset();
-  mGdalBaseDataset = gdalOpen( TO8F( gdalUri ), mUpdate ? GA_Update : GA_ReadOnly );
+  mGdalBaseDataset = gdalOpen( gdalUri.toUtf8().constData(), mUpdate ? GA_Update : GA_ReadOnly );
 
   if ( !mGdalBaseDataset )
   {
@@ -265,7 +265,7 @@ QString QgsGdalProvider::metadata()
   myMetadata += tr( "Dataset Description" );
   myMetadata += QLatin1String( "</p>\n" );
   myMetadata += QLatin1String( "<p>" );
-  myMetadata += FROM8( GDALGetDescription( mGdalDataset ) );
+  myMetadata += QString::fromUtf8( GDALGetDescription( mGdalDataset ) );
   myMetadata += QLatin1String( "</p>\n" );
 
 
@@ -1513,12 +1513,12 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
       GDALClose( mGdalDataset );
       //mGdalBaseDataset = GDALOpen( QFile::encodeName( dataSourceUri() ).constData(), GA_Update );
 
-      mGdalBaseDataset = gdalOpen( TO8F( dataSourceUri() ), GA_Update );
+      mGdalBaseDataset = gdalOpen( dataSourceUri().toUtf8().constData(), GA_Update );
 
       // if the dataset couldn't be opened in read / write mode, tell the user
       if ( !mGdalBaseDataset )
       {
-        mGdalBaseDataset = gdalOpen( TO8F( dataSourceUri() ), GA_ReadOnly );
+        mGdalBaseDataset = gdalOpen( dataSourceUri().toUtf8().constData(), GA_ReadOnly );
         //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
         mGdalDataset = mGdalBaseDataset;
         return QStringLiteral( "ERROR_WRITE_FORMAT" );
@@ -1618,7 +1618,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
       //something bad happenend
       //QString myString = QString (CPLGetLastError());
       GDALClose( mGdalBaseDataset );
-      mGdalBaseDataset = gdalOpen( TO8F( dataSourceUri() ), mUpdate ? GA_Update : GA_ReadOnly );
+      mGdalBaseDataset = gdalOpen( dataSourceUri().toUtf8().constData(), mUpdate ? GA_Update : GA_ReadOnly );
       //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
       mGdalDataset = mGdalBaseDataset;
 
@@ -1669,7 +1669,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
     QgsDebugMsg( "Reopening dataset ..." );
     //close the gdal dataset and reopen it in read only mode
     GDALClose( mGdalBaseDataset );
-    mGdalBaseDataset = gdalOpen( TO8F( dataSourceUri() ), mUpdate ? GA_Update : GA_ReadOnly );
+    mGdalBaseDataset = gdalOpen( dataSourceUri().toUtf8().constData(), mUpdate ? GA_Update : GA_ReadOnly );
     //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
     mGdalDataset = mGdalBaseDataset;
   }
@@ -2161,7 +2161,7 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
 
   //open the file using gdal making sure we have handled locale properly
   //myDataset = GDALOpen( QFile::encodeName( theFileNameQString ).constData(), GA_ReadOnly );
-  myDataset = QgsGdalProviderBase::gdalOpen( TO8F( fileName ), GA_ReadOnly );
+  myDataset = QgsGdalProviderBase::gdalOpen( fileName.toUtf8().constData(), GA_ReadOnly );
   if ( !myDataset )
   {
     if ( CPLGetLastErrorNo() != CPLE_OpenFailed )
@@ -2718,7 +2718,7 @@ QGISEXTERN QgsGdalProvider * create(
   //create dataset
   CPLErrorReset();
   char **papszOptions = papszFromStringList( createOptions );
-  GDALDatasetH dataset = GDALCreate( driver, TO8F( uri ), width, height, nBands, ( GDALDataType )type, papszOptions );
+  GDALDatasetH dataset = GDALCreate( driver, uri.toUtf8().constData(), width, height, nBands, ( GDALDataType )type, papszOptions );
   CSLDestroy( papszOptions );
   if ( !dataset )
   {
@@ -2779,7 +2779,7 @@ bool QgsGdalProvider::remove()
     mGdalDataset = nullptr;
 
     CPLErrorReset();
-    CPLErr err = GDALDeleteDataset( driver, TO8F( dataSourceUri() ) );
+    CPLErr err = GDALDeleteDataset( driver, dataSourceUri().toUtf8().constData() );
     if ( err != CPLE_None )
     {
       QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );

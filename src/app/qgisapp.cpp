@@ -266,8 +266,6 @@
 #include <gdal_version.h>
 #include <proj_api.h>
 
-#define SUPPORT_GEOPACKAGE
-
 //
 // Other includes
 //
@@ -1962,10 +1960,6 @@ void QgisApp::createMenus()
    */
 
   // Layer menu
-#ifndef SUPPORT_GEOPACKAGE
-  mProjectMenu->removeAction( mActionDwgImport );
-  mNewLayerMenu->removeAction( mActionNewGeoPackageLayer );
-#endif
 
   // Panel and Toolbar Submenus
   mPanelMenu = new QMenu( tr( "Panels" ), this );
@@ -2239,9 +2233,7 @@ void QgisApp::createToolBars()
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionNewVectorLayer );
   bt->addAction( mActionNewSpatiaLiteLayer );
-#ifdef SUPPORT_GEOPACKAGE
   bt->addAction( mActionNewGeoPackageLayer );
-#endif
   bt->addAction( mActionNewMemoryLayer );
 
   QAction* defNewLayerAction = mActionNewVectorLayer;
@@ -2256,11 +2248,9 @@ void QgisApp::createToolBars()
     case 2:
       defNewLayerAction = mActionNewMemoryLayer;
       break;
-#ifdef SUPPORT_GEOPACKAGE
     case 3:
       defNewLayerAction = mActionNewGeoPackageLayer;
       break;
-#endif
   }
   bt->setDefaultAction( defNewLayerAction );
   QAction* newLayerAction = mLayerToolBar->addWidget( bt );

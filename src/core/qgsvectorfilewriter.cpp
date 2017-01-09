@@ -50,8 +50,6 @@
 #include <cpl_conv.h>
 #include <gdal.h>
 
-#define TO8F(x)  (x).toUtf8().constData()
-
 QgsVectorFileWriter::FieldValueConverter::FieldValueConverter()
 {
 }
@@ -275,9 +273,9 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
   // create the data source
   if ( action == CreateOrOverwriteFile )
-    mDS = OGR_Dr_CreateDataSource( poDriver, TO8F( vectorFileName ), options );
+    mDS = OGR_Dr_CreateDataSource( poDriver, vectorFileName.toUtf8().constData(), options );
   else
-    mDS = OGROpen( TO8F( vectorFileName ), TRUE, nullptr );
+    mDS = OGROpen( vectorFileName.toUtf8().constData(), TRUE, nullptr );
 
   if ( options )
   {
@@ -309,7 +307,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     for ( int i = 0; i < layer_count; i++ )
     {
       OGRLayerH hLayer = OGR_DS_GetLayer( mDS, i );
-      if ( EQUAL( OGR_L_GetName( hLayer ), TO8F( layerName ) ) )
+      if ( EQUAL( OGR_L_GetName( hLayer ), layerName.toUtf8().constData() ) )
       {
         if ( OGR_DS_DeleteLayer( mDS, i ) != OGRERR_NONE )
         {
@@ -377,9 +375,9 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   CPLSetConfigOption( "SHAPE_ENCODING", "" );
 
   if ( action == CreateOrOverwriteFile || action == CreateOrOverwriteLayer )
-    mLayer = OGR_DS_CreateLayer( mDS, TO8F( layerName ), mOgrRef, wkbType, options );
+    mLayer = OGR_DS_CreateLayer( mDS, layerName.toUtf8().constData(), mOgrRef, wkbType, options );
   else
-    mLayer = OGR_DS_GetLayerByName( mDS, TO8F( layerName ) );
+    mLayer = OGR_DS_GetLayerByName( mDS, layerName.toUtf8().constData() );
 
   if ( options )
   {
@@ -2609,11 +2607,11 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
           poDriver = OGRGetDriverByName( drvName.toLocal8Bit().constData() );
           if ( poDriver )
           {
-            OGRDataSourceH ds = OGR_Dr_CreateDataSource( poDriver, TO8F( QString( "/vsimem/spatialitetest.sqlite" ) ), options );
+            OGRDataSourceH ds = OGR_Dr_CreateDataSource( poDriver, QString( "/vsimem/spatialitetest.sqlite" ).toUtf8().constData(), options );
             if ( ds )
             {
               writableDrivers << QStringLiteral( "SpatiaLite" );
-              OGR_Dr_DeleteDataSource( poDriver, TO8F( QString( "/vsimem/spatialitetest.sqlite" ) ) );
+              OGR_Dr_DeleteDataSource( poDriver, QString( "/vsimem/spatialitetest.sqlite" ).toUtf8().constData() );
               OGR_DS_Destroy( ds );
             }
           }
@@ -3013,7 +3011,7 @@ QStringList QgsVectorFileWriter::concatenateOptions( const QMap<QString, QgsVect
 QgsVectorFileWriter::EditionCapabilities QgsVectorFileWriter::editionCapabilities( const QString& datasetName )
 {
   OGRSFDriverH hDriver = nullptr;
-  OGRDataSourceH hDS = OGROpen( TO8F( datasetName ), TRUE, &hDriver );
+  OGRDataSourceH hDS = OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver );
   if ( !hDS )
     return 0;
   QString drvName = OGR_Dr_GetName( hDriver );
@@ -3054,7 +3052,7 @@ bool QgsVectorFileWriter::targetLayerExists( const QString& datasetName,
     const QString& layerNameIn )
 {
   OGRSFDriverH hDriver = nullptr;
-  OGRDataSourceH hDS = OGROpen( TO8F( datasetName ), TRUE, &hDriver );
+  OGRDataSourceH hDS = OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver );
   if ( !hDS )
     return false;
 
@@ -3062,7 +3060,7 @@ bool QgsVectorFileWriter::targetLayerExists( const QString& datasetName,
   if ( layerName.isEmpty() )
     layerName = QFileInfo( datasetName ).baseName();
 
-  bool ret = OGR_DS_GetLayerByName( hDS, TO8F( layerName ) );
+  bool ret = OGR_DS_GetLayerByName( hDS, layerName.toUtf8().constData() );
   OGR_DS_Destroy( hDS );
   return ret;
 }
@@ -3074,10 +3072,10 @@ bool QgsVectorFileWriter::areThereNewFieldsToCreate( const QString& datasetName,
     const QgsAttributeList& attributes )
 {
   OGRSFDriverH hDriver = nullptr;
-  OGRDataSourceH hDS = OGROpen( TO8F( datasetName ), TRUE, &hDriver );
+  OGRDataSourceH hDS = OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver );
   if ( !hDS )
     return false;
-  OGRLayerH hLayer = OGR_DS_GetLayerByName( hDS, TO8F( layerName ) );
+  OGRLayerH hLayer = OGR_DS_GetLayerByName( hDS, layerName.toUtf8().constData() );
   if ( !hLayer )
   {
     OGR_DS_Destroy( hDS );
@@ -3088,7 +3086,7 @@ bool QgsVectorFileWriter::areThereNewFieldsToCreate( const QString& datasetName,
   Q_FOREACH ( int idx, attributes )
   {
     QgsField fld = layer->fields().at( idx );
-    if ( OGR_FD_GetFieldIndex( defn, TO8F( fld.name() ) ) < 0 )
+    if ( OGR_FD_GetFieldIndex( defn, fld.name().toUtf8().constData() ) < 0 )
     {
       ret = true;
       break;

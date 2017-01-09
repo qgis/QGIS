@@ -26,9 +26,6 @@
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>
 
-#define TO8F(x) (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-
 /**
   \brief Base clasee for GDAL and WCS providers.
 */

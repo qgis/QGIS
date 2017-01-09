@@ -49,9 +49,6 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-#define TO8F(x) (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-
 #define ERR(message) QGS_ERROR_MESSAGE(message,"WCS provider")
 #define SRVERR(message) QGS_ERROR_MESSAGE(message,"WCS server")
 #define QGS_ERROR(message) QgsError(message,"WCS provider")
@@ -785,7 +782,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   }
 #endif
 
-  mCachedMemFile = VSIFileFromMemBuffer( TO8F( mCachedMemFilename ),
+  mCachedMemFile = VSIFileFromMemBuffer( mCachedMemFilename.toUtf8().constData(),
                                          ( GByte* )mCachedData.data(),
                                          ( vsi_l_offset )mCachedData.size(),
                                          FALSE );
@@ -799,7 +796,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   QgsDebugMsg( "Memory file created" );
 
   CPLErrorReset();
-  mCachedGdalDataset = GDALOpen( TO8F( mCachedMemFilename ), GA_ReadOnly );
+  mCachedGdalDataset = GDALOpen( mCachedMemFilename.toUtf8().constData(), GA_ReadOnly );
   if ( !mCachedGdalDataset )
   {
     QgsMessageLog::logMessage( QString::fromUtf8( CPLGetLastErrorMsg() ), tr( "WCS" ) );

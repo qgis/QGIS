@@ -29,10 +29,6 @@
 #include "qgsapplication.h"
 #include "qgspointv2.h"
 
-#define TO8(x)   (x).toUtf8().constData()
-#define TO8F(x)  (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-
 class TestQgsOgrUtils: public QObject
 {
     Q_OBJECT
@@ -90,7 +86,7 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
   QVERIFY( QgsOgrUtils::ogrGeometryToQgsGeometry( nullptr ).isEmpty() );
 
   // get a geometry from line file, test
-  OGRDataSourceH hDS = OGROpen( TO8F( mTestFile ), false, nullptr );
+  OGRDataSourceH hDS = OGROpen( mTestFile.toUtf8().constData(), false, nullptr );
   QVERIFY( hDS );
   OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS, 0 );
   QVERIFY( ogrLayer );
@@ -119,7 +115,7 @@ void TestQgsOgrUtils::readOgrFeatureGeometry()
 
   //real geometry
   // get a geometry from line file, test
-  OGRDataSourceH hDS = OGROpen( TO8F( mTestFile ), false, nullptr );
+  OGRDataSourceH hDS = OGROpen( mTestFile.toUtf8().constData(), false, nullptr );
   QVERIFY( hDS );
   OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS, 0 );
   QVERIFY( ogrLayer );
@@ -149,7 +145,7 @@ void TestQgsOgrUtils::getOgrFeatureAttribute()
 
   //real feature
   //get a feature from line file, test
-  OGRDataSourceH hDS = OGROpen( TO8F( mTestFile ), false, nullptr );
+  OGRDataSourceH hDS = OGROpen( mTestFile.toUtf8().constData(), false, nullptr );
   QVERIFY( hDS );
   OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS, 0 );
   QVERIFY( ogrLayer );
@@ -216,7 +212,7 @@ void TestQgsOgrUtils::readOgrFeatureAttributes()
 
   //real feature
   //get a feature from line file, test
-  OGRDataSourceH hDS = OGROpen( TO8F( mTestFile ), false, nullptr );
+  OGRDataSourceH hDS = OGROpen( mTestFile.toUtf8().constData(), false, nullptr );
   QVERIFY( hDS );
   OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS, 0 );
   QVERIFY( ogrLayer );
@@ -253,7 +249,7 @@ void TestQgsOgrUtils::readOgrFeature()
 
   //real feature
   //get a feature from line file, test
-  OGRDataSourceH hDS = OGROpen( TO8F( mTestFile ), false, nullptr );
+  OGRDataSourceH hDS = OGROpen( mTestFile.toUtf8().constData(), false, nullptr );
   QVERIFY( hDS );
   OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS, 0 );
   QVERIFY( ogrLayer );
@@ -293,7 +289,7 @@ void TestQgsOgrUtils::readOgrFields()
 
   //real feature
   //get a feature from line file, test
-  OGRDataSourceH hDS = OGROpen( TO8F( mTestFile ), false, nullptr );
+  OGRDataSourceH hDS = OGROpen( mTestFile.toUtf8().constData(), false, nullptr );
   QVERIFY( hDS );
   OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS, 0 );
   QVERIFY( ogrLayer );

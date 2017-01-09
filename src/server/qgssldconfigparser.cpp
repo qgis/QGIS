@@ -49,8 +49,6 @@
 
 #include <QTemporaryFile>
 
-#define TO8(x) (x).toUtf8().constData()
-
 QgsSLDConfigParser::QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, QString>& parameters )
     : QgsWmsConfigParser()
     , mXMLDoc( doc )
@@ -1057,7 +1055,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
 
   int /* b3D = FALSE, */ bNoDataSet = FALSE, bIgnoreNoData = FALSE;
 
-  hSrcDS = GDALOpen( TO8( rasterLayer->source() ), GA_ReadOnly );
+  hSrcDS = GDALOpen( rasterLayer->source().toUtf8().constData(), GA_ReadOnly );
   if ( !hSrcDS )
   {
     delete [] adfFixedLevels;
@@ -1101,7 +1099,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
     throw QgsMapServiceException( QStringLiteral( "LayerNotDefined" ), QStringLiteral( "Operation request is for a file not available on the server." ) );
   }
 
-  hDS = OGR_Dr_CreateDataSource( hDriver, TO8( tmpFileName ), nullptr );
+  hDS = OGR_Dr_CreateDataSource( hDriver, tmpFileName.toUtf8().constData(), nullptr );
   if ( !hDS )
   {
     delete [] adfFixedLevels;
@@ -1124,7 +1122,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
 
   if ( !propertyName.isEmpty() )
   {
-    hFld = OGR_Fld_Create( TO8( propertyName ), OFTReal );
+    hFld = OGR_Fld_Create( propertyName.toUtf8().constData(), OFTReal );
     OGR_Fld_SetWidth( hFld, 12 );
     OGR_Fld_SetPrecision( hFld, 3 );
     OGR_L_CreateField( hLayer, hFld, FALSE );

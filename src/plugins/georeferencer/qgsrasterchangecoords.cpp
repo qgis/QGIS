@@ -20,8 +20,6 @@
 
 #include <QFile>
 
-#define TO8F(x) (x).toUtf8().constData()
-
 QgsRasterChangeCoords::QgsRasterChangeCoords()
     : mHasCrs( false )
     , mUL_X( 0. )
@@ -34,7 +32,7 @@ QgsRasterChangeCoords::QgsRasterChangeCoords()
 void QgsRasterChangeCoords::setRaster( const QString &fileRaster )
 {
   GDALAllRegister();
-  GDALDatasetH hDS = GDALOpen( TO8F( fileRaster ), GA_ReadOnly );
+  GDALDatasetH hDS = GDALOpen( fileRaster.toUtf8().constData(), GA_ReadOnly );
   double adfGeoTransform[6];
   if ( GDALGetProjectionRef( hDS ) && GDALGetGeoTransform( hDS, adfGeoTransform ) == CE_None )
     //if ( false )

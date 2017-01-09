@@ -29,9 +29,6 @@
 #include <cpl_string.h>
 #include <gdalwarper.h>
 
-#define TO8(x)   (x).toUtf8().constData()
-#define TO8F(x)  (x).toUtf8().constData()
-
 QgsRasterCalculator::QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
     const QgsRectangle& outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry>& rasterEntries )
     : mFormulaString( formulaString )
@@ -175,7 +172,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
   if ( p && p->wasCanceled() )
   {
     //delete the dataset without closing (because it is faster)
-    GDALDeleteDataset( outputDriver, TO8F( mOutputFile ) );
+    GDALDeleteDataset( outputDriver, mOutputFile.toUtf8().constData() );
     return static_cast< int >( Cancelled );
   }
   GDALClose( outputDataset );
@@ -214,7 +211,7 @@ GDALDatasetH QgsRasterCalculator::openOutputFile( GDALDriverH outputDriver )
 {
   //open output file
   char **papszOptions = nullptr;
-  GDALDatasetH outputDataset = GDALCreate( outputDriver, TO8F( mOutputFile ), mNumOutputColumns, mNumOutputRows, 1, GDT_Float32, papszOptions );
+  GDALDatasetH outputDataset = GDALCreate( outputDriver, mOutputFile.toUtf8().constData(), mNumOutputColumns, mNumOutputRows, 1, GDT_Float32, papszOptions );
   if ( !outputDataset )
   {
     return outputDataset;

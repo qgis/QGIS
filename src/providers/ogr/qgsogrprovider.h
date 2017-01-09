@@ -32,10 +32,6 @@ class QgsOgrFeatureIterator;
 
 #include <ogr_api.h>
 
-#define TO8(x)   (x).toUtf8().constData()
-#define TO8F(x)  (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-
 /**
   \class QgsOgrProvider
   \brief Data provider for ESRI shapefiles

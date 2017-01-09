@@ -156,7 +156,7 @@ void QgsOgrProvider::repack()
 
   // run REPACK on shape files
   QByteArray sql = QByteArray( "REPACK " ) + layerName;   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
-  QgsDebugMsg( QString( "SQL: %1" ).arg( FROM8( sql ) ) );
+  QgsDebugMsg( QString( "SQL: %1" ).arg( QString::fromUtf8( sql ) ) );
   CPLErrorReset();
   OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), nullptr, nullptr );
   if ( CPLGetLastErrorType() != CE_None )
@@ -174,7 +174,7 @@ void QgsOgrProvider::repack()
       OGR_DS_Destroy( ogrDataSource );
       ogrLayer = ogrOrigLayer = nullptr;
 
-      ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( mFilePath ), true, nullptr );
+      ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( mFilePath.toUtf8().constData(), true, nullptr );
       if ( ogrDataSource )
       {
         if ( mLayerName.isNull() )
@@ -183,7 +183,7 @@ void QgsOgrProvider::repack()
         }
         else
         {
-          ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, TO8( mLayerName ) );
+          ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, mLayerName.toUtf8().constData() );
         }
 
         if ( !ogrOrigLayer )
@@ -663,7 +663,7 @@ QStringList QgsOgrProvider::subLayers() const
   {
     OGRLayerH layer = OGR_DS_GetLayer( ogrDataSource, i );
     OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( layer );
-    QString theLayerName = FROM8( OGR_FD_GetName( fdef ) );
+    QString theLayerName = QString::fromUtf8( OGR_FD_GetName( fdef ) );
     OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( fdef );
 
     // ignore this layer if a sublayer was requested and it is not this one
@@ -1013,7 +1013,7 @@ QgsRectangle QgsOgrProvider::extent() const
       QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
       // works with unquoted layerName
       QByteArray sql = QByteArray( "RECOMPUTE EXTENT ON " ) + layerName;
-      QgsDebugMsg( QString( "SQL: %1" ).arg( FROM8( sql ) ) );
+      QgsDebugMsg( QString( "SQL: %1" ).arg( QString::fromUtf8( sql ) ) );
       OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), nullptr, nullptr );
     }
 #endif
@@ -1747,7 +1747,7 @@ bool QgsOgrProvider::createSpatialIndex()
   if ( ogrDataSource )
   {
     QByteArray sql = "CREATE SPATIAL INDEX ON " + quotedIdentifier( layerName );  // quote the layer name so spaces are handled
-    QgsDebugMsg( QString( "SQL: %1" ).arg( FROM8( sql ) ) );
+    QgsDebugMsg( QString( "SQL: %1" ).arg( QString::fromUtf8( sql ) ) );
     OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), nullptr );
   }
 
@@ -2579,7 +2579,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   }
 
   OGRDataSourceH dataSource;
-  dataSource = OGR_Dr_CreateDataSource( driver, TO8F( uri ), nullptr );
+  dataSource = OGR_Dr_CreateDataSource( driver, uri.toUtf8().constData(), nullptr );
   if ( !dataSource )
   {
     QgsMessageLog::logMessage( QObject::tr( "Creating the data source %1 failed: %2" ).arg( uri, QString::fromUtf8( CPLGetLastErrorMsg() ) ), QObject::tr( "OGR" ) );
@@ -2645,7 +2645,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   }
 
   OGRLayerH layer;
-  layer = OGR_DS_CreateLayer( dataSource, TO8F( QFileInfo( uri ).completeBaseName() ), reference, OGRvectortype, papszOptions );
+  layer = OGR_DS_CreateLayer( dataSource, QFileInfo( uri ).completeBaseName().toUtf8().constData(), reference, OGRvectortype, papszOptions );
   CSLDestroy( papszOptions );
 
   QSettings settings;
@@ -3053,7 +3053,7 @@ void QgsOgrProviderUtils::OGRDestroyWrapper( OGRDataSourceH ogrDataSource )
     return;
   OGRSFDriverH ogrDriver = OGR_DS_GetDriver( ogrDataSource );
   QString ogrDriverName = OGR_Dr_GetName( ogrDriver );
-  QString datasetName( FROM8( OGR_DS_GetName( ogrDataSource ) ) );
+  QString datasetName( QString::fromUtf8( OGR_DS_GetName( ogrDataSource ) ) );
   if ( ogrDriverName == QLatin1String( "GPKG" ) &&
        IsLocalFile( datasetName ) &&
        !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", NULL ) )
@@ -3097,7 +3097,7 @@ void QgsOgrProviderUtils::OGRDestroyWrapper( OGRDataSourceH ogrDataSource )
     {
       QgsDebugMsg( "GPKG: Trying again" );
       CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "DELETE" );
-      ogrDataSource = OGROpen( TO8F( datasetName ), TRUE, NULL );
+      ogrDataSource = OGROpen( datasetName.toUtf8().constData(), TRUE, NULL );
       CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", NULL );
       if ( ogrDataSource )
       {
@@ -3383,7 +3383,7 @@ void QgsOgrProvider::open( OpenMode mode )
       // on network shares
       CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "WAL" );
     }
-    ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( mFilePath ), true, &ogrDriver );
+    ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( mFilePath.toUtf8().constData(), true, &ogrDriver );
     CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", NULL );
   }
 
@@ -3402,7 +3402,7 @@ void QgsOgrProvider::open( OpenMode mode )
     }
 
     // try to open read-only
-    ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( mFilePath ), false, &ogrDriver );
+    ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( mFilePath.toUtf8().constData(), false, &ogrDriver );
   }
 
   if ( ogrDataSource )
@@ -3419,7 +3419,7 @@ void QgsOgrProvider::open( OpenMode mode )
     }
     else
     {
-      ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, TO8( mLayerName ) );
+      ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, mLayerName.toUtf8().constData() );
     }
 
     ogrLayer = ogrOrigLayer;
@@ -3475,7 +3475,7 @@ void QgsOgrProvider::open( OpenMode mode )
     }
 #endif
 
-    ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( mFilePath ), false, &ogrDriver );
+    ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( mFilePath.toUtf8().constData(), false, &ogrDriver );
 
     mWriteAccess = false;
 
@@ -3489,7 +3489,7 @@ void QgsOgrProvider::open( OpenMode mode )
       }
       else
       {
-        ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, TO8( mLayerName ) );
+        ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, mLayerName.toUtf8().constData() );
       }
 
       ogrLayer = ogrOrigLayer;
@@ -3635,7 +3635,7 @@ OGRDataSourceH LoadDataSourceAndLayer( const QString& uri,
                                  subsetString,
                                  ogrGeometryType );
 
-  OGRDataSourceH hDS = QgsOgrProviderUtils::OGROpenWrapper( TO8F( filePath ), true, nullptr );
+  OGRDataSourceH hDS = QgsOgrProviderUtils::OGROpenWrapper( filePath.toUtf8().constData(), true, nullptr );
   if ( !hDS )
   {
     QgsDebugMsg( "Connection to database failed.." );
@@ -3645,7 +3645,7 @@ OGRDataSourceH LoadDataSourceAndLayer( const QString& uri,
 
   if ( !layerName.isEmpty() )
   {
-    hUserLayer = OGR_DS_GetLayerByName( hDS, TO8F( layerName ) );
+    hUserLayer = OGR_DS_GetLayerByName( hDS, layerName.toUtf8().constData() );
     if ( !hUserLayer )
     {
       errCause = QObject::tr( "Cannot find layer %1." ).arg( layerName );
@@ -3786,7 +3786,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                               " AND f_geometry_column=%2" )
                               .arg( QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetName( hUserLayer ) ) ) )
                               .arg( QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetGeometryColumn( hUserLayer ) ) ) );
-    OGR_L_SetAttributeFilter( hLayer, TO8F( oldDefaultQuery ) );
+    OGR_L_SetAttributeFilter( hLayer, oldDefaultQuery.toUtf8().constData() );
     OGRFeatureH hFeature = OGR_L_GetNextFeature( hLayer );
     if ( hFeature )
     {
@@ -3809,7 +3809,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                        .arg( QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetName( hUserLayer ) ) ) )
                        .arg( QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetGeometryColumn( hUserLayer ) ) ) )
                        .arg( QgsOgrProviderUtils::quotedValue( realStyleName ) );
-  OGR_L_SetAttributeFilter( hLayer, TO8F( checkQuery ) );
+  OGR_L_SetAttributeFilter( hLayer, checkQuery.toUtf8().constData() );
   OGR_L_ResetReading( hLayer );
   OGRFeatureH hFeature = OGR_L_GetNextFeature( hLayer );
   bool bNew = true;
@@ -3850,26 +3850,26 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                           OGR_L_GetGeometryColumn( hUserLayer ) );
     OGR_F_SetFieldString( hFeature,
                           OGR_FD_GetFieldIndex( hLayerDefn, "styleName" ),
-                          TO8F( realStyleName ) );
+                          realStyleName.toUtf8().constData() );
     if ( !uiFileContent.isEmpty() )
     {
       OGR_F_SetFieldString( hFeature,
                             OGR_FD_GetFieldIndex( hLayerDefn, "ui" ),
-                            TO8F( uiFileContent ) );
+                            uiFileContent.toUtf8().constData() );
     }
   }
   OGR_F_SetFieldString( hFeature,
                         OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ),
-                        TO8F( qmlStyle ) );
+                        qmlStyle.toUtf8().constData() );
   OGR_F_SetFieldString( hFeature,
                         OGR_FD_GetFieldIndex( hLayerDefn, "styleSLD" ),
-                        TO8F( sldStyle ) );
+                        sldStyle.toUtf8().constData() );
   OGR_F_SetFieldInteger( hFeature,
                          OGR_FD_GetFieldIndex( hLayerDefn, "useAsDefault" ),
                          useAsDefault ? 1 : 0 );
   OGR_F_SetFieldString( hFeature,
                         OGR_FD_GetFieldIndex( hLayerDefn, "description" ),
-                        TO8F( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) );
+                        ( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ).toUtf8().constData() );
   OGR_F_SetFieldString( hFeature,
                         OGR_FD_GetFieldIndex( hLayerDefn, "owner" ),
                         "" );
@@ -3918,7 +3918,7 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
                            ",update_time DESC LIMIT 1" )
                            .arg( QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetName( hUserLayer ) ) ) )
                            .arg( QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetGeometryColumn( hUserLayer ) ) ) );
-  OGR_L_SetAttributeFilter( hLayer, TO8F( selectQmlQuery ) );
+  OGR_L_SetAttributeFilter( hLayer, selectQmlQuery.toUtf8().constData() );
   OGR_L_ResetReading( hLayer );
   OGRFeatureDefnH hLayerDefn = OGR_L_GetLayerDefn( hLayer );
   QString styleQML;
