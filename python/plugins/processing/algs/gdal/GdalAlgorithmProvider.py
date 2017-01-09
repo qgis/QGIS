@@ -29,6 +29,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
+from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from .GdalUtils import GdalUtils
 
 from .nearblack import nearblack
@@ -98,6 +99,18 @@ class GdalAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.createAlgsList()
+
+    def initializeSettings(self):
+        AlgorithmProvider.initializeSettings(self)
+        ProcessingConfig.addSetting(Setting(
+            self.getDescription(),
+            GdalUtils.GDAL_HELP_PATH,
+            self.tr('Location of GDAL docs'),
+            GdalUtils.gdalHelpPath()))
+
+    def unload(self):
+        AlgorithmProvider.unload(self)
+        ProcessingConfig.removeSetting(GdalUtils.GDAL_HELP_PATH)
 
     def getDescription(self):
         version = GdalUtils.readableVersion()
