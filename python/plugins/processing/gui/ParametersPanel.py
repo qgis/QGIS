@@ -123,15 +123,24 @@ class ParametersPanel(BASE, WIDGET):
                 tooltips = self.alg.getParameterDescriptions()
                 widget.setToolTip(tooltips.get(param.name, param.description))
 
-                label = QLabel(desc)
-                # label.setToolTip(tooltip)
-                self.labels[param.name] = label
+                if type(widget) is QCheckBox:
+                    # checkbox widget - so description is embedded in widget rather than a separate
+                    # label
+                    widget.setText(desc)
+                else:
+                    label = QLabel(desc)
+                    # label.setToolTip(tooltip)
+                    self.labels[param.name] = label
+
+                    if param.isAdvanced:
+                        self.layoutAdvanced.addWidget(label)
+                    else:
+                        self.layoutMain.insertWidget(
+                            self.layoutMain.count() - 2, label)
+
                 if param.isAdvanced:
-                    self.layoutAdvanced.addWidget(label)
                     self.layoutAdvanced.addWidget(widget)
                 else:
-                    self.layoutMain.insertWidget(
-                        self.layoutMain.count() - 2, label)
                     self.layoutMain.insertWidget(
                         self.layoutMain.count() - 2, widget)
 
