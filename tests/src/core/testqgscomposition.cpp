@@ -624,6 +624,18 @@ void TestQgsComposition::itemVariablesFunction()
   r = e.evaluate( &c );
   QGSCOMPARENEAR( r.toDouble(), 1.38916e+08, 100 );
 
+  QgsExpression e2( "map_get( item_variables( 'map_id' ), 'map_crs' )" );
+  r = e2.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "EPSG:4326" ) );
+
+  QgsExpression e3( "map_get( item_variables( 'map_id' ), 'map_crs_definition' )" );
+  r = e3.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  QgsExpression e4( "map_get( item_variables( 'map_id' ), 'map_units' )" );
+  r = e4.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "degrees" ) );
+
   delete composition;
 }
 

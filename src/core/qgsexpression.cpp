@@ -5825,6 +5825,9 @@ void QgsExpression::initVariableHelp()
   gVariableHelpTexts.insert( QStringLiteral( "map_extent_center" ), QCoreApplication::translate( "variable_help", "Center of map." ) );
   gVariableHelpTexts.insert( QStringLiteral( "map_extent_width" ), QCoreApplication::translate( "variable_help", "Width of map." ) );
   gVariableHelpTexts.insert( QStringLiteral( "map_extent_height" ), QCoreApplication::translate( "variable_help", "Height of map." ) );
+  gVariableHelpTexts.insert( QStringLiteral( "map_crs" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of map (e.g., 'EPSG:4326')." ) );
+  gVariableHelpTexts.insert( QStringLiteral( "map_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of map (full definition)." ) );
+  gVariableHelpTexts.insert( QStringLiteral( "map_units" ), QCoreApplication::translate( "variable_help", "Units for map measurements." ) );
 
   gVariableHelpTexts.insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) );
   gVariableHelpTexts.insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
