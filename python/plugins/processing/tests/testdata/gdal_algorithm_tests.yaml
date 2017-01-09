@@ -518,3 +518,29 @@ tests:
       OUTPUT:
         hash: aba5167b8a2e97a93b22d406e0363f91c151fd353c0fc56ce24ac5fc
         type: rasterhash
+
+  - algorithm: gdal:triterrainruggednessindex
+    name: standard TRI
+    params:
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: c888764a08fae72a129dfff4947149c3185532373d33d4537ecf409c
+        type: rasterhash
+
+  - algorithm: gdal:triterrainruggednessindex
+    name: TRI with edges
+    params:
+      BAND: 1
+      COMPUTE_EDGES: true
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 07376c74de869323125ceacbb5e34438655ff73f63d4b3ff3e268f7f
+        type: rasterhash
