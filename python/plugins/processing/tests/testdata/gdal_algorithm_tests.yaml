@@ -544,3 +544,16 @@ tests:
       OUTPUT:
         hash: 07376c74de869323125ceacbb5e34438655ff73f63d4b3ff3e268f7f
         type: rasterhash
+
+  - algorithm: gdal:nearblack
+    name: standard near black
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      NEAR: 15
+      WHITE: false
+    results:
+      OUTPUT:
+        hash: fff4a08498e93494f3f2cf1a9074451e6fd68341849aedc9e2c45e6a
+        type: rasterhash
