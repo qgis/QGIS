@@ -36,3 +36,7 @@ def table():
 
 def points():
     return os.path.join(testDataPath, 'points.gml')
+
+
+def invalid_geometries():
+    return os.path.join(testDataPath, 'invalidgeometries.gml')
