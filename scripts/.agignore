@@ -33,7 +33,6 @@ src/server/qgis_wms.xmi
 resources/cpt-city-qgis-min/fme/metres/DESC.xml
 resources/cpt-city-qgis-min/selections/reds.xml
 resources/cpt-city-qgis-min/wkp/schwarzwald/COPYING.xml
-tests/src/python/test_qgsserver_accesscontrol.py
 tests/testdata/qgis_server/ets-wms13/project.qgs
 tests/testdata/qgis_server_accesscontrol/project.qgs
 tests/testdata/qgis_server_accesscontrol/Hello.qml
