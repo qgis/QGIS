@@ -34,6 +34,7 @@
 #include "qgscapabilitiescache.h"
 #include "qgsmapsettings.h"
 #include "qgsmessagelog.h"
+#include "qgsserversettings.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsserverplugins.h"
@@ -125,6 +126,8 @@ class SERVER_EXPORT QgsServer
     //! Initialization must run once for all servers
     static bool sInitialised;
     static bool sCaptureOutput;
+
+    static QgsServerSettings sSettings;
 };
 #endif // QGSSERVER_H
 
