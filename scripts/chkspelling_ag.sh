@@ -19,7 +19,10 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 AGIGNORE=${DIR}/.agignore
 
-RE=$(cut -d: -f1 scripts/spelling.dat |  tr '\n' '\|' | sed -e 's/|$//')
+WHOLEWORDS=$(sed '/\*/d' scripts/spelling.dat | cut -d: -f1 |  tr '\n' '\|' | sed -e 's/|$//')
+INWORDS=$(sed -n -e '/\*/p' scripts/spelling.dat | cut -d: -f1 |  tr '\n' '\|' | sed -e 's/|$//')
+
+
 if [ ! $# -eq 0 ]; then
   EXCLUDE=$(cat $AGIGNORE | sed -e 's/\s*#.*$//' -e '/^\s*$/d' | tr '\n' '|' | sed -e 's/|$//')
   FILES=$(echo $@ | tr -s '[[:blank:]]' '\n' | egrep -iv "$EXCLUDE" | tr '\n' ' ' )
@@ -31,20 +34,18 @@ fi
 
 exec 5>&1
 # "path-to-ignore" option differs on ag version: --path-to-ignore on fedora, --path-to-agignore on ubuntu 16.04: using short option
-OUTPUT=$(unbuffer ag --smart-case --all-text --nopager --numbers --word-regexp -p $AGIGNORE "$RE" $FILES |tee /dev/fd/5)
+OUTPUT=$(unbuffer ag --smart-case --all-text --nopager --numbers --word-regexp -p $AGIGNORE "$WHOLEWORDS"'(?!.*#spellok$)' $FILES | tee /dev/fd/5 ; \
+         unbuffer ag --smart-case --all-text --nopager --numbers               -p $AGIGNORE "$INWORDS"'(?!.*#spellok$)'    $FILES | tee /dev/fd/5)
 
 
 if [[ !  -z  $OUTPUT  ]]; then
   echo "Spelling errors have been found"
   echo "****"
-  # < ---------- get files + error ---------------------------------------------------------------------->
-  ag --smart-case --only-matching --nogroup --nonumbers --all-text --word-regexp -p $AGIGNORE "$RE" $FILES | \
-  #                                     <-- generate sed command .... <------------------------------ get correction word ---------------------------------->    <------------------------------- match case ------------------------------------------->   <-----replace : by / and add word boundary------> ...finalize sed command>
-  sed -e 's/\(\S*\):\([[:alnum:]]*\)$/  echo "sed -i \x27s\/\/"$( echo "\2:$(ag --nonumbers --ignore-case --word-regexp \2 scripts\/spelling.dat | cut -d: -f2)" | sed -r \x27s\/([A-Z]+):(.*)\/\\1:\\U\\2\/; s\/([A-Z][a-z]+):([a-z])\/\\1:\\U\\2\\L\/\x27  | sed -r \x27s\/(\\S\*):\/\\\\b\\1\\\\b\\\/\/\x27)"\/g\x27 \1" /e' | \
-  # remove duplicate line
-  sort -u
+  # < ---------- get files + error --------------------------------------------------------------------------->                                                             <-- generate sed command .... <------------------------------ get correction word ---------------------------------->    <------------------------------- match case ------------------------------------------->   <-----replace : by / and add word boundary------> ...finalize sed command>  remove duplicate line
+  ag --smart-case --only-matching --nogroup --nonumbers --all-text --word-regexp -p $AGIGNORE "$WHOLEWORDS"'(?!.*#spellok$)' $FILES | sed -e 's/\(\S*\):\([[:alnum:]]*\)$/  echo "sed -i \x27s\/"$( echo "\2:$(ag --nonumbers --ignore-case --word-regexp \2 scripts\/spelling.dat | cut -d: -f2)" | sed -r \x27s\/([A-Z]+):(.*)\/\\1:\\U\\2\/; s\/([A-Z][a-z]+):([a-z])\/\\1:\\U\\2\\L\/\x27  | sed -r \x27s\/(\\S\*):\/\\\\b\\1\\\\b\\\/\/\x27)"\/g\x27 \1" /e'  | sort -u
+  ag --smart-case --only-matching --nogroup --nonumbers --all-text -p $AGIGNORE "$INWORDS"'(?!.*#spellok$)' $FILES                  | sed -e 's/\(\S*\):\([[:alnum:]]*\)$/  echo "sed -i \x27s\/"$( echo "\2:$(ag --nonumbers --ignore-case --word-regexp \2 scripts\/spelling.dat | cut -d: -f2)" | sed -r \x27s\/([A-Z]+):(.*)\/\\1:\\U\\2\/; s\/([A-Z][a-z]+):([a-z])\/\\1:\\U\\2\\L\/\x27  | sed -r \x27s\/(\\S\*):\/\\1\\\/\/\x27)"\/g\x27 \1" /e'            | sort -u
   echo "****"
-  echo "Run above commands to fix spelling errors."
+  echo "Run above commands to fix spelling errors or add #spellok at the end of the line to discard spell check on this line."
   exit 1
 else
   exit 0
