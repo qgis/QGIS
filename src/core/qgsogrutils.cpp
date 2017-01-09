@@ -30,7 +30,7 @@ QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields& fie
     return feature;
   }
 
-  feature.setFeatureId( OGR_F_GetFID( ogrFet ) );
+  feature.setId( OGR_F_GetFID( ogrFet ) );
   feature.setValid( true );
 
   if ( !readOgrFeatureGeometry( ogrFet, feature ) )

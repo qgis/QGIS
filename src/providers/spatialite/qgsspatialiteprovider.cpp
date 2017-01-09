@@ -3970,7 +3970,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
         {
           // update feature id
-          feature->setFeatureId( sqlite3_last_insert_rowid( mSqliteHandle ) );
+          feature->setId( sqlite3_last_insert_rowid( mSqliteHandle ) );
           mNumberFeatures++;
         }
         else

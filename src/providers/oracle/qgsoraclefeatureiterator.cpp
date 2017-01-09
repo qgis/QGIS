@@ -361,7 +361,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
         return false;
     }
 
-    feature.setFeatureId( fid );
+    feature.setId( fid );
     QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 5 );
 
     // iterate attributes

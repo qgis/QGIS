@@ -38,7 +38,7 @@ QgsVectorLayerUndoCommandAddFeature::QgsVectorLayerUndoCommandAddFeature( QgsVec
   // Force a feature ID (to keep other functions in QGIS happy,
   // providers will use their own new feature ID when we commit the new feature)
   // and add to the known added features.
-  f.setFeatureId( addedIdLowWaterMark );
+  f.setId( addedIdLowWaterMark );
 
   mFeature = f;
 }

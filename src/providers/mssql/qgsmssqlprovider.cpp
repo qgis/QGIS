@@ -1003,7 +1003,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
         return false;
       }
     }
-    it->setFeatureId( query.value( 0 ).toLongLong() );
+    it->setId( query.value( 0 ).toLongLong() );
   }
 
   return true;

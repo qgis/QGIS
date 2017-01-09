@@ -1146,7 +1146,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
         return false;
       }
     }
-    it->setFeatureId( queryFid.value( 0 ).toLongLong() );
+    it->setId( queryFid.value( 0 ).toLongLong() );
     writeCount++;
 //    QgsDebugMsg( QString( "count: %1; featureId: %2" ).arg( writeCount ).arg( queryFid.value( 0 ).toLongLong() ) );
   }

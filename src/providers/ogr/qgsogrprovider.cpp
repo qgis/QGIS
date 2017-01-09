@@ -1299,7 +1299,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
     QgsFeatureId id = static_cast<QgsFeatureId>( OGR_F_GetFID( feature ) );
     if ( id >= 0 )
     {
-      f.setFeatureId( id );
+      f.setId( id );
 
       if ( mFirstFieldIsFid && attrs.count() > 0 )
       {

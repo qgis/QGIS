@@ -473,7 +473,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
               if ( buildSpatialIndex )
               {
                 QgsFeature f;
-                f.setFeatureId( mFile->recordId() );
+                f.setId( mFile->recordId() );
                 f.setGeometry( geom );
                 mSpatialIndex->insertFeature( f );
               }
@@ -528,7 +528,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
           if ( buildSpatialIndex && qIsFinite( pt.x() ) && qIsFinite( pt.y() ) )
           {
             QgsFeature f;
-            f.setFeatureId( mFile->recordId() );
+            f.setId( mFile->recordId() );
             f.setGeometry( QgsGeometry::fromPoint( pt ) );
             mSpatialIndex->insertFeature( f );
           }

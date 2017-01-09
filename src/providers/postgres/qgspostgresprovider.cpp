@@ -2146,7 +2146,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
       if ( mPrimaryKeyType == pktOid )
       {
-        features->setFeatureId( result.PQoidValue() );
+        features->setId( result.PQoidValue() );
         QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
       }
     }
@@ -2160,11 +2160,11 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
         if ( mPrimaryKeyType == pktUint64 )
         {
-          features->setFeatureId( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) );
+          features->setId( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) );
         }
         else if ( mPrimaryKeyType == pktInt )
         {
-          features->setFeatureId( PKINT2FID( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) ) );
+          features->setId( PKINT2FID( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) ) );
         }
         else
         {
@@ -2175,7 +2175,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
             primaryKeyVals << attrs.at( idx );
           }
 
-          features->setFeatureId( mShared->lookupFid( primaryKeyVals ) );
+          features->setId( mShared->lookupFid( primaryKeyVals ) );
         }
         QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
       }

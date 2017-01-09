@@ -485,7 +485,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
   }
   QgsDebugMsgLevel( QString( "lid = %1 type = %2 cat = %3 featureId = %4" ).arg( lid ).arg( type ).arg( cat ).arg( featureId ), 3 );
 
-  feature.setFeatureId( featureId );
+  feature.setId( featureId );
   //feature.initAttributes( mSource->mFields.count() );
   QgsDebugMsgLevel( QString( "mSource->mFields.size() = %1" ).arg( mSource->mFields.size() ), 3 );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups

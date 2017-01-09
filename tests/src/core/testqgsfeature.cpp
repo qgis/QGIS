@@ -173,7 +173,7 @@ void TestQgsFeature::copy()
   QVERIFY( copy.id() == original.id() );
   QCOMPARE( copy.attributes(), original.attributes() );
 
-  copy.setFeatureId( 1001LL );
+  copy.setId( 1001LL );
   QCOMPARE( original.id(), 1000LL );
   QVERIFY( copy.id() != original.id() );
 }
@@ -187,7 +187,7 @@ void TestQgsFeature::assignment()
   QCOMPARE( copy.id(), original.id() );
   QCOMPARE( copy.attributes(), original.attributes() );
 
-  copy.setFeatureId( 1001LL );
+  copy.setId( 1001LL );
   QCOMPARE( original.id(), 1000LL );
   QVERIFY( copy.id() != original.id() );
   QCOMPARE( copy.attributes(), original.attributes() );
@@ -196,7 +196,7 @@ void TestQgsFeature::assignment()
 void TestQgsFeature::gettersSetters()
 {
   QgsFeature feature;
-  feature.setFeatureId( 1000LL );
+  feature.setId( 1000LL );
   QCOMPARE( feature.id(), 1000LL );
 
   feature.setValid( true );
@@ -289,7 +289,7 @@ void TestQgsFeature::geometry()
   emptyGeomFeature.setGeometry( QgsGeometry() );
   QVERIFY( !emptyGeomFeature.hasGeometry() );
   copy = emptyGeomFeature;
-  copy.setFeatureId( 5 ); //force detach
+  copy.setId( 5 ); //force detach
 
   //setGeometry
   //always start with a copy so that we can test implicit sharing detachment is working

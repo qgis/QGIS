@@ -919,9 +919,9 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
     for ( int i = 0; i < updatedFeatureList.size(); i++ )
     {
       if ( cacheOk )
-        updatedFeatureList[i].first.setFeatureId( featureListToCache[i].id() );
+        updatedFeatureList[i].first.setId( featureListToCache[i].id() );
       else
-        updatedFeatureList[i].first.setFeatureId( mTotalFeaturesAttemptedToBeCached + i + 1 );
+        updatedFeatureList[i].first.setId( mTotalFeaturesAttemptedToBeCached + i + 1 );
     }
 
     {
@@ -1023,7 +1023,7 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
     QgsFeature f;
     f.setGeometry( QgsGeometry::fromRect( mRect ) );
     QgsFeatureId id = mRegions.size();
-    f.setFeatureId( id );
+    f.setId( id );
     f.initAttributes( 1 );
     f.setAttribute( 0, QVariant( bDownloadLimit ) );
     mRegions.push_back( f );

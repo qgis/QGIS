@@ -129,7 +129,7 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::L
   QgsFeature feature;
   feature.setFields( mFields );
   feature.setValid( true );
-  feature.setFeatureId( label->getFeaturePart()->featureId() );
+  feature.setId( label->getFeaturePart()->featureId() );
   feature.setAttributes( dlf->attributes() );
 
   //calculate top-left point for diagram

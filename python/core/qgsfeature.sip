@@ -245,12 +245,6 @@ class QgsFeature
      * @param id feature id
      * @see id
      */
-    void setFeatureId( QgsFeatureId id );
-
-    /** Sets the feature ID for this feature.
-     * @param id feature id
-     * @see id
-     */
     void setId( QgsFeatureId id );
 
     /** Returns the feature's attributes.
