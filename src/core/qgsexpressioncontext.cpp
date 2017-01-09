@@ -545,12 +545,16 @@ void QgsExpressionContextUtils::setGlobalVariables( const QVariantMap &variables
 class GetNamedProjectColor : public QgsScopedExpressionFunction
 {
   public:
-    GetNamedProjectColor()
+    GetNamedProjectColor( const QgsProject* project )
         : QgsScopedExpressionFunction( QStringLiteral( "project_color" ), 1, QStringLiteral( "Color" ) )
+        , mProject( project )
     {
+      if ( !project )
+        return;
+
       //build up color list from project. Do this in advance for speed
-      QStringList colorStrings = QgsProject::instance()->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ) );
-      QStringList colorLabels = QgsProject::instance()->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ) );
+      QStringList colorStrings = project->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ) );
+      QStringList colorLabels = project->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ) );
 
       //generate list from custom colors
       int colorIndex = 0;
@@ -582,11 +586,12 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
 
     QgsScopedExpressionFunction* clone() const override
     {
-      return new GetNamedProjectColor();
+      return new GetNamedProjectColor( mProject );
     }
 
   private:
 
+    const QgsProject* mProject = nullptr;
     QHash< QString, QColor > mColors;
 
 };
@@ -618,7 +623,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::projectScope( const QgsPro
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs" ), projectCrs.authid(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_definition" ), projectCrs.toProj4(), true ) );
 
-  scope->addFunction( QStringLiteral( "project_color" ), new GetNamedProjectColor() );
+  scope->addFunction( QStringLiteral( "project_color" ), new GetNamedProjectColor( project ) );
   return scope;
 }
 
@@ -951,7 +956,7 @@ QgsExpressionContext QgsExpressionContextUtils::createFeatureBasedContext( const
 
 void QgsExpressionContextUtils::registerContextFunctions()
 {
-  QgsExpression::registerFunction( new GetNamedProjectColor() );
+  QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );
 }
 
 bool QgsScopedExpressionFunction::usesGeometry( const QgsExpression::NodeFunction* node ) const
