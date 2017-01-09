@@ -29,7 +29,6 @@ SET ( qgis_mapserv_SRCS
   qgswmsserver.cpp
   qgswfsserver.cpp
   qgswcsserver.cpp
-  qgsserversettings.cpp
   qgsmapserviceexception.cpp
   qgsmslayercache.cpp
   qgsmslayerbuilder.cpp
@@ -68,7 +67,6 @@ SET (qgis_mapserv_MOC_HDRS
 #  qgshttptransaction.h
   qgsmslayercache.h
   qgsserverlogger.h
-  qgsserversettings.h
   qgsserverstreamingdevice.h
 )
 

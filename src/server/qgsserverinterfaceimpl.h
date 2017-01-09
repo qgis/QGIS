@@ -55,7 +55,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     /** Gets the helper over all the registered access control filters
      * @return the access control helper
      */
-    QgsAccessControl* accessControls() const override { return mAccessControls; }
+    const QgsAccessControl* accessControls() const override { return mAccessControls; }
     QString getEnv( const QString& name ) const override;
     QString configFilePath() override { return mConfigFilePath; }
     void setConfigFilePath( const QString& configFilePath ) override;

@@ -54,8 +54,6 @@
 #include "qgsaccesscontrol.h"
 #include "qgsfeaturerequest.h"
 #include "qgsmaprenderercustompainterjob.h"
-#include "qgsmaprendererparalleljob.h"
-#include "qgsserversettings.h"
 
 #include <QImage>
 #include <QPainter>
@@ -72,73 +70,18 @@
 #include <QUrl>
 #include <QPaintEngine>
 
-QgsMapRendererJobProxy::QgsMapRendererJobProxy(
-  bool parallelRendering
-  , int maxThreads
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-  , QgsAccessControl* accessControl
-#endif
-)
-    :
-    mParallelRendering( parallelRendering )
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    , mAccessControl( accessControl )
-#endif
-{
-  if ( mParallelRendering )
-  {
-    QgsApplication::setMaxThreads( maxThreads );
-    QgsMessageLog::logMessage( QStringLiteral( "Parallel rendering activated with %1 threads" ).arg( maxThreads ), QStringLiteral( "server" ), QgsMessageLog::INFO );
-  }
-  else
-  {
-    QgsMessageLog::logMessage( QStringLiteral( "Parallel rendering deactivated" ), QStringLiteral( "server" ), QgsMessageLog::INFO );
-  }
-}
-
-void QgsMapRendererJobProxy::render( const QgsMapSettings& mapSettings, QImage* image )
-{
-  if ( mParallelRendering )
-  {
-    QgsMapRendererParallelJob renderJob( mapSettings );
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    renderJob.setFeatureFilterProvider( mAccessControl );
-#endif
-    renderJob.start();
-    renderJob.waitForFinished();
-    *image = renderJob.renderedImage();
-    mPainter.reset( new QPainter( image ) );
-  }
-  else
-  {
-    mPainter.reset( new QPainter( image ) );
-    QgsMapRendererCustomPainterJob renderJob( mapSettings, mPainter.data() );
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    renderJob.setFeatureFilterProvider( mAccessControl );
-#endif
-    renderJob.renderSynchronously();
-  }
-}
-
-QPainter* QgsMapRendererJobProxy::takePainter()
-{
-  return mPainter.take();
-}
-
 QgsWmsServer::QgsWmsServer(
   const QString& configFilePath
-  , const QgsServerSettings& settings
   , QMap<QString, QString> &parameters
   , QgsWmsConfigParser* cp
   , QgsRequestHandler* rh
   , QgsCapabilitiesCache* capCache
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  , QgsAccessControl* accessControl
+  , const QgsAccessControl* accessControl
 #endif
 )
     : QgsOWSServer(
       configFilePath
-      , settings
       , parameters
       , rh
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -156,7 +99,6 @@ QgsWmsServer::QgsWmsServer(
 QgsWmsServer::QgsWmsServer()
     : QgsOWSServer(
       QString()
-      , QgsServerSettings()
       , QMap<QString, QString>()
       , nullptr
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -1053,9 +995,10 @@ QImage* QgsWmsServer::getLegendGraphics()
 }
 
 
-void QgsWmsServer::runHitTest( const QgsMapSettings& mapSettings, HitTest& hitTest )
+void QgsWmsServer::runHitTest( const QgsMapSettings& mapSettings, QPainter* painter, HitTest& hitTest )
 {
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( painter ); // we are not going to draw anything, but we still need a working painter
 
   Q_FOREACH ( const QString& layerID, mapSettings.layerIds() )
   {
@@ -1466,6 +1409,9 @@ QImage* QgsWmsServer::getMap( QgsMapSettings& mapSettings, HitTest* hitTest )
   QStringList layersList, stylesList, layerIdList;
   QImage* theImage = initializeRendering( layersList, stylesList, layerIdList, mapSettings );
 
+  QPainter thePainter( theImage );
+  thePainter.setRenderHint( QPainter::Antialiasing ); //make it look nicer
+
   QStringList layerSetIds = mapSettings.layerIds();
 
   QStringList highlightLayersId = QgsWmsConfigParser::addHighlightLayers( mParameters, layerSetIds );
@@ -1506,40 +1452,36 @@ QImage* QgsWmsServer::getMap( QgsMapSettings& mapSettings, HitTest* hitTest )
 
   applyOpacities( layersList, bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
 
-  QScopedPointer<QPainter> painter;
   if ( hitTest )
-  {
-    runHitTest( mapSettings, *hitTest );
-    painter.reset( new QPainter() );
-  }
+    runHitTest( mapSettings, &thePainter, *hitTest );
   else
   {
+    QgsMapRendererCustomPainterJob renderJob( mapSettings, &thePainter );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    mAccessControl->resolveFilterFeatures( mapSettings.layers() );
+    renderJob.setFeatureFilterProvider( mAccessControl );
 #endif
-    QgsMapRendererJobProxy renderJob( mSettings.parallelRendering(), mSettings.maxThreads()
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-                                      , mAccessControl
-#endif
-                                    );
-    renderJob.render( mapSettings, theImage );
-    painter.reset( renderJob.takePainter() );
+    renderJob.renderSynchronously();
   }
 
   if ( mConfigParser )
   {
     //draw configuration format specific overlay items
-    mConfigParser->drawOverlays( painter.data(), theImage->dotsPerMeterX() / 1000.0 * 25.4, theImage->width(), theImage->height() );
+    mConfigParser->drawOverlays( &thePainter, theImage->dotsPerMeterX() / 1000.0 * 25.4, theImage->width(), theImage->height() );
   }
 
   restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
   clearFeatureSelections( selectedLayerIdList );
   QgsWmsConfigParser::removeHighlightLayers( highlightLayersId );
 
+  // QgsMessageLog::logMessage( "clearing filters" );
   if ( !hitTest )
     QgsProject::instance()->removeAllMapLayers();
 
-  painter->end();
+  //#ifdef QGISDEBUG
+  //  theImage->save( QDir::tempPath() + QDir::separator() + "lastrender.png" );
+  //#endif
+
+  thePainter.end();
 
   //test if width / height ratio of image is the same as the ratio of WIDTH / HEIGHT parameters. If not, the image has to be scaled (required by WMS spec)
   int widthParam = mParameters.value( "WIDTH", "0" ).toInt();

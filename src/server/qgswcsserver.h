@@ -38,12 +38,11 @@ class QgsWCSServer: public QgsOWSServer
     //! Constructor. Takes parameter map and a pointer to a renderer object (does not take ownership)
     QgsWCSServer(
       const QString& configFilePath
-      , const QgsServerSettings& settings
       , QMap<QString, QString>& parameters
       , QgsWCSProjectParser* pp
       , QgsRequestHandler* rh
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      , QgsAccessControl* accessControl
+      , const QgsAccessControl* accessControl
 #endif
     );
 
