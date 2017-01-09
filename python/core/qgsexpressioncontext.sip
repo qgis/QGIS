@@ -22,6 +22,21 @@ class QgsScopedExpressionFunction : QgsExpression::Function
                                  bool handlesNull = false,
                                  bool isContextual = true );
 
+    /**
+     * Create a new QgsScopedExpressionFunction using named parameters.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QgsScopedExpressionFunction( const QString& fnname,
+                                 const QgsExpression::ParameterList& params,
+                                 const QString& group,
+                                 const QString& helpText = QString(),
+                                 bool usesGeometry = false,
+                                 const QSet<QString>& referencedColumns = QSet<QString>(),
+                                 bool lazyEval = false,
+                                 bool handlesNull = false,
+                                 bool isContextual = true );
+
     virtual ~QgsScopedExpressionFunction();
 
     virtual QVariant func( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) = 0;

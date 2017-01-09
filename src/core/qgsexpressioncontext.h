@@ -63,6 +63,25 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
         , mReferencedColumns( referencedColumns )
     {}
 
+    /**
+     * Create a new QgsScopedExpressionFunction using named parameters.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QgsScopedExpressionFunction( const QString& fnname,
+                                 const QgsExpression::ParameterList& params,
+                                 const QString& group,
+                                 const QString& helpText = QString(),
+                                 bool usesGeometry = false,
+                                 const QSet<QString>& referencedColumns = QSet<QString>(),
+                                 bool lazyEval = false,
+                                 bool handlesNull = false,
+                                 bool isContextual = true )
+        : QgsExpression::Function( fnname, params, group, helpText, lazyEval, handlesNull, isContextual )
+        , mUsesGeometry( usesGeometry )
+        , mReferencedColumns( referencedColumns )
+    {}
+
     virtual QVariant func( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) override = 0;
 
     /** Returns a clone of the function.

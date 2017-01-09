@@ -609,6 +609,41 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
 
 };
 
+class GetComposerItemVariables : public QgsScopedExpressionFunction
+{
+  public:
+    GetComposerItemVariables( const QgsComposition* c )
+        : QgsScopedExpressionFunction( QStringLiteral( "item_variables" ), QgsExpression::ParameterList() << QgsExpression::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "Composition" ) )
+        , mComposition( c )
+    {}
+
+    virtual QVariant func( const QVariantList& values, const QgsExpressionContext*, QgsExpression* ) override
+    {
+      if ( !mComposition )
+        return QVariant();
+
+      QString id = values.at( 0 ).toString().toLower();
+
+      const QgsComposerItem* item = mComposition->getComposerItemById( id );
+      if ( !item )
+        return QVariant();
+
+      QgsExpressionContext c = item->createExpressionContext();
+
+      return c.variablesToMap();
+    }
+
+    QgsScopedExpressionFunction* clone() const override
+    {
+      return new GetComposerItemVariables( mComposition );
+    }
+
+  private:
+
+    const QgsComposition* mComposition;
+
+};
+
 ///@endcond
 
 QgsExpressionContextScope* QgsExpressionContextUtils::projectScope( const QgsProject* project )
@@ -818,6 +853,9 @@ QgsExpressionContextScope *QgsExpressionContextUtils::compositionScope( const Qg
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pagewidth" ), composition->paperWidth(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_dpi" ), composition->printResolution(), true ) );
 
+
+  scope->addFunction( QStringLiteral( "item_variables" ), new GetComposerItemVariables( composition ) );
+
   return scope;
 }
 
@@ -970,6 +1008,7 @@ QgsExpressionContext QgsExpressionContextUtils::createFeatureBasedContext( const
 void QgsExpressionContextUtils::registerContextFunctions()
 {
   QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );
+  QgsExpression::registerFunction( new GetComposerItemVariables( nullptr ) );
 }
 
 bool QgsScopedExpressionFunction::usesGeometry( const QgsExpression::NodeFunction* node ) const
