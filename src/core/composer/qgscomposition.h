@@ -836,7 +836,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * QGraphicsScene::clearSelection, as the latter does not correctly emit signals to allow
      * the composition's model to update.
      * @note added in version 2.5*/
-    void setAllUnselected();
+    void setAllDeselected();
 
     /** Refreshes a data defined property for the composition by reevaluating the property's value
      * and redrawing the composition with this new value.

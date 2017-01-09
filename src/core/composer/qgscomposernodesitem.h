@@ -111,7 +111,7 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
 
     /** Deselect a node.
      */
-    void unselectNode() { mSelectedNode = -1; }
+    void deselectNode() { mSelectedNode = -1; }
 
     /** Stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag

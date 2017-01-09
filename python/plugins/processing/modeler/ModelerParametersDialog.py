@@ -236,7 +236,7 @@ class ModelerParametersDialog(QDialog):
         reply.deleteLater()
         self.txtHelp.setHtml(html)
 
-    def getAvailableDependencies(self):
+    def getAvailableDependencies(self):  #spellok
         if self._algName is None:
             dependent = []
         else:
@@ -248,7 +248,7 @@ class ModelerParametersDialog(QDialog):
         return opts
 
     def getDependenciesPanel(self):
-        return MultipleInputPanel([alg.description for alg in self.getAvailableDependencies()])
+        return MultipleInputPanel([alg.description for alg in self.getAvailableDependencies()])    #spellok
 
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
@@ -318,7 +318,7 @@ class ModelerParametersDialog(QDialog):
                 self.valueItems[name].setText(out.description)
 
             selected = []
-            dependencies = self.getAvailableDependencies()
+            dependencies = self.getAvailableDependencies()    #spellok
             for idx, dependency in enumerate(dependencies):
                 if dependency.name in alg.dependencies:
                     selected.append(idx)
@@ -345,9 +345,9 @@ class ModelerParametersDialog(QDialog):
                     alg.outputs[output.name] = ModelerOutput(name)
 
         selectedOptions = self.dependenciesPanel.selectedoptions
-        availableDependencies = self.getAvailableDependencies()
+        availableDependencies = self.getAvailableDependencies()  #spellok
         for selected in selectedOptions:
-            alg.dependencies.append(availableDependencies[selected].name)
+            alg.dependencies.append(availableDependencies[selected].name)  #spellok
 
         self._alg.processBeforeAddingToModeler(alg, self.model)
         return alg

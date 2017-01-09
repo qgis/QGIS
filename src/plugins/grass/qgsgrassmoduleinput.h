@@ -245,7 +245,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
 
     ~QgsGrassModuleInput();
 
-    //! Retruns list of options which will be passed to module
+    //! Returns list of options which will be passed to module
     virtual QStringList options() override;
 
     // ! Return vector of attribute fields of current vector

@@ -407,7 +407,7 @@ void QgsVectorLayerAndAttributeModel::selectAll()
   emit dataChanged( QModelIndex(), QModelIndex() );
 }
 
-void QgsVectorLayerAndAttributeModel::unSelectAll()
+void QgsVectorLayerAndAttributeModel::deSelectAll()
 {
   mCheckedLeafs.clear();
 
@@ -438,7 +438,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   connect( mFileLineEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( setOkEnabled() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( saveSettings() ) );
   connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
-  connect( mUnSelectAllButton, SIGNAL( clicked() ), this, SLOT( unSelectAll() ) );
+  connect( mDeselectAllButton, SIGNAL( clicked() ), this, SLOT( deSelectAll() ) );
 
   mFileLineEdit->setFocus();
 
@@ -522,11 +522,11 @@ void QgsDxfExportDialog::selectAll()
   model->selectAll();
 }
 
-void QgsDxfExportDialog::unSelectAll()
+void QgsDxfExportDialog::deSelectAll()
 {
   QgsVectorLayerAndAttributeModel *model = dynamic_cast< QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
   Q_ASSERT( model );
-  model->unSelectAll();
+  model->deSelectAll();
 }
 
 

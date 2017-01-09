@@ -67,7 +67,7 @@ class ScriptSelector(BASE, WIDGET):
         self.scriptsTree.expandAll()
 
         self.selectAllLabel.linkActivated.connect(lambda: self.checkScripts(True))
-        self.unselectAllLabel.linkActivated.connect(lambda: self.checkScripts(False))
+        self.deselectAllLabel.linkActivated.connect(lambda: self.checkScripts(False))
 
         self.folderButton.clicked.connect(self.selectFolder)
 

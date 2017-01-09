@@ -74,7 +74,7 @@ class QgsComposerNodesItem: QgsComposerItem
 
     /** Deselect a node.
      */
-    void unselectNode();
+    void deselectNode();
 
     /** Stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag

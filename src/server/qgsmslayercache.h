@@ -88,7 +88,7 @@ class QgsMSLayerCache: public QObject
     //! Removes the cash entry with the lowest 'lastUsedTime'
     void removeLeastUsedEntry();
     //! Frees memory and removes temporary files of an entry
-    void freeEntryRessources( QgsMSLayerCacheEntry& entry );
+    void freeEntryResources( QgsMSLayerCacheEntry& entry );
 
   private:
 

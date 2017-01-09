@@ -58,7 +58,7 @@ class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
 
     QColor mFillColor;
 
-    QColor mBorderColour;
+    QColor mBorderColor;
 };
 
 #endif

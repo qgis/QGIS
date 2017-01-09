@@ -3435,7 +3435,7 @@ void QgsComposer::saveWindowState()
 
 void QgsComposer::restoreWindowState()
 {
-  // restore the toolbar and dock widgets postions using Qt4 settings API
+  // restore the toolbar and dock widgets positions using Qt4 settings API
   QSettings settings;
 
   if ( !restoreState( settings.value( QStringLiteral( "/ComposerUI/state" ), QByteArray::fromRawData(( char * )defaultComposerUIstate, sizeof defaultComposerUIstate ) ).toByteArray() ) )

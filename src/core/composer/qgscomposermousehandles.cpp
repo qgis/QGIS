@@ -638,7 +638,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
     {
       if (( *itemIter )->positionLock() || (( *itemIter )->flags() & QGraphicsItem::ItemIsSelectable ) == 0 )
       {
-        //don't resize locked items or unselectable items (e.g., items which make up an item group)
+        //don't resize locked items or deselectable items (e.g., items which make up an item group)
         continue;
       }
       QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *itemIter, QLatin1String( "" ), parentCommand );

@@ -33,7 +33,7 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
 
   private:
     QColor mFillColor;
-    QColor mBorderColour;
+    QColor mBorderColor;
 };
 
 #endif

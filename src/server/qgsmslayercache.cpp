@@ -134,7 +134,7 @@ void QgsMSLayerCache::removeProjectFileLayers( const QString& project )
     {
       removeEntries.push_back( entryIt.key() );
       removeEntriesValues.push_back( entryIt.value() );
-      freeEntryRessources( entryIt.value() );
+      freeEntryResources( entryIt.value() );
     }
   }
 
@@ -183,11 +183,11 @@ void QgsMSLayerCache::removeLeastUsedEntry()
   }
 
   QgsMessageLog::logMessage( "Removing last accessed layer '" + lowest_it.value().layerPointer->name() + "' project file " + lowest_it.value().configFile + " from cache" , QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  freeEntryRessources( *lowest_it );
+  freeEntryResources( *lowest_it );
   mEntries.erase( lowest_it );
 }
 
-void QgsMSLayerCache::freeEntryRessources( QgsMSLayerCacheEntry& entry )
+void QgsMSLayerCache::freeEntryResources( QgsMSLayerCacheEntry& entry )
 {
   // remove layer from QgsProject before delete it
   if ( QgsProject::instance()->mapLayer( entry.layerPointer->id() ) )

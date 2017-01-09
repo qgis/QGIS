@@ -166,8 +166,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         if not self.is_cursor_on_last_line():
             self.move_cursor_to_end()
         line, pos = self.getCursorPosition()
-        selCmdLenght = len(self.text(line))
-        self.setSelection(line, 4, line, selCmdLenght)
+        selCmdLength = len(self.text(line))
+        self.setSelection(line, 4, line, selCmdLength)
         self.removeSelectedText()
         for cmd in commands:
             self.append(cmd)
@@ -348,8 +348,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def showPrevious(self):
         if self.historyIndex < len(self.history) and self.history:
             line, pos = self.getCursorPosition()
-            selCmdLenght = len(self.text(line))
-            self.setSelection(line, 4, line, selCmdLenght)
+            selCmdLength = len(self.text(line))
+            self.setSelection(line, 4, line, selCmdLength)
             self.removeSelectedText()
             self.historyIndex += 1
             if self.historyIndex == len(self.history):
@@ -363,8 +363,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def showNext(self):
         if self.historyIndex > 0 and self.history:
             line, pos = self.getCursorPosition()
-            selCmdLenght = len(self.text(line))
-            self.setSelection(line, 4, line, selCmdLenght)
+            selCmdLength = len(self.text(line))
+            self.setSelection(line, 4, line, selCmdLength)
             self.removeSelectedText()
             self.historyIndex -= 1
             if self.historyIndex == len(self.history):

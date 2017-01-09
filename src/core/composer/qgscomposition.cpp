@@ -207,7 +207,7 @@ void QgsComposition::refreshItems()
 
 void QgsComposition::setSelectedItem( QgsComposerItem *item )
 {
-  setAllUnselected();
+  setAllDeselected();
   if ( item )
   {
     item->setSelected( true );
@@ -215,10 +215,10 @@ void QgsComposition::setSelectedItem( QgsComposerItem *item )
   }
 }
 
-void QgsComposition::setAllUnselected()
+void QgsComposition::setAllDeselected()
 {
   //we can't use QGraphicsScene::clearSelection, as that emits no signals
-  //and we don't know which items are being unselected
+  //and we don't know which items are being deselected
   //accordingly, we can't inform the composition model of selection changes
   //instead, do the clear selection manually...
   QList<QGraphicsItem *> selectedItemList = selectedItems();
@@ -1145,7 +1145,7 @@ void QgsComposition::addItemsFromXml( const QDomElement& elem, const QDomDocumen
     pasteShiftPos = *pos - minItemPos;
 
     //since we are pasting items, clear the existing selection
-    setAllUnselected();
+    setAllDeselected();
 
     if ( pasteInPlace )
     {
@@ -1604,7 +1604,7 @@ void QgsComposition::selectNextByZOrder( ZValueDirection direction )
   }
 
   //ok, found a good target item
-  setAllUnselected();
+  setAllDeselected();
   selectedItem->setSelected( true );
   emit selectedItemChanged( selectedItem );
 }
@@ -1878,7 +1878,7 @@ void QgsComposition::lockSelectedItems()
     subcommand->saveAfterState();
   }
 
-  setAllUnselected();
+  setAllDeselected();
   mUndoStack->push( parentCommand );
   mProject->setDirty( true );
 }
@@ -1890,7 +1890,7 @@ void QgsComposition::unlockAllItems()
   QUndoCommand* parentCommand = new QUndoCommand( tr( "Items unlocked" ) );
 
   //first, clear the selection
-  setAllUnselected();
+  setAllDeselected();
 
   QList<QGraphicsItem *> itemList = items();
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();

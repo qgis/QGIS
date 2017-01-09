@@ -2169,7 +2169,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QPushButton" name="pbnWFSLayersUnselectAll">
+                   <widget class="QPushButton" name="pbnWFSLayersDeselectAll">
                     <property name="text">
                      <string>Deselect all</string>
                     </property>
@@ -2235,7 +2235,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QPushButton" name="pbnWCSLayersUnselectAll">
+                   <widget class="QPushButton" name="pbnWCSLayersDeselectAll">
                     <property name="text">
                      <string>Deselect all</string>
                     </property>
@@ -2617,11 +2617,11 @@
   <tabstop>mWMSImageQualitySpinBox</tabstop>
   <tabstop>twWFSLayers</tabstop>
   <tabstop>pbnWFSLayersSelectAll</tabstop>
-  <tabstop>pbnWFSLayersUnselectAll</tabstop>
+  <tabstop>pbnWFSLayersDeselectAll</tabstop>
   <tabstop>mWFSUrlLineEdit</tabstop>
   <tabstop>twWCSLayers</tabstop>
   <tabstop>pbnWCSLayersSelectAll</tabstop>
-  <tabstop>pbnWCSLayersUnselectAll</tabstop>
+  <tabstop>pbnWCSLayersDeselectAll</tabstop>
   <tabstop>mWCSUrlLineEdit</tabstop>
   <tabstop>grpPythonMacros</tabstop>
   <tabstop>scrollArea_6</tabstop>

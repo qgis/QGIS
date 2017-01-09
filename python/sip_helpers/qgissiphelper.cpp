@@ -22,7 +22,7 @@
 #include <QVariant>
 #include <Python.h>
 
-bool null_from_qvariant_convertor( const QVariant *varp, PyObject **objp )
+bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
 {
   static bool watchdog = false;
 

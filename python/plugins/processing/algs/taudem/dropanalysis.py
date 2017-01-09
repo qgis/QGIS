@@ -55,9 +55,9 @@ class DropAnalysis(GeoAlgorithm):
     D8_FLOW_DIR_GRID = 'D8_FLOW_DIR_GRID'
     ACCUM_STREAM_SOURCE_GRID = 'ACCUM_STREAM_SOURCE_GRID'
     OUTLETS_SHAPE = 'OUTLETS_SHAPE'
-    MIN_TRESHOLD = 'MIN_TRESHOLD'
+    MIN_THRESHOLD = 'MIN_THRESHOLD'
     MAX_THRESHOLD = 'MAX_THRESHOLD'
-    TRESHOLD_NUM = 'TRESHOLD_NUM'
+    THRESHOLD_NUM = 'THRESHOLD_NUM'
     STEP_TYPE = 'STEP_TYPE'
 
     DROP_ANALYSIS_FILE = 'DROP_ANALYSIS_FILE'
@@ -81,11 +81,11 @@ class DropAnalysis(GeoAlgorithm):
         self.addParameter(ParameterVector(self.OUTLETS_SHAPE,
                                           self.tr('Outlets Shapefile'),
                                           [dataobjects.TYPE_VECTOR_POINT], False))
-        self.addParameter(ParameterNumber(self.MIN_TRESHOLD,
+        self.addParameter(ParameterNumber(self.MIN_THRESHOLD,
                                           self.tr('Minimum Threshold'), 0, None, 5))
         self.addParameter(ParameterNumber(self.MAX_THRESHOLD,
                                           self.tr('Maximum Threshold'), 0, None, 500))
-        self.addParameter(ParameterNumber(self.TRESHOLD_NUM,
+        self.addParameter(ParameterNumber(self.THRESHOLD_NUM,
                                           self.tr('Number of Threshold Values'), 0, None, 10))
         self.addParameter(ParameterBoolean(self.STEP_TYPE,
                                            self.tr('Use logarithmic spacing for threshold values'), True))
@@ -116,9 +116,9 @@ class DropAnalysis(GeoAlgorithm):
         commands.append('-o')
         commands.append(self.getParameterValue(self.OUTLETS_SHAPE))
         commands.append('-par')
-        commands.append(str(self.getParameterValue(self.MIN_TRESHOLD)))
+        commands.append(str(self.getParameterValue(self.MIN_THRESHOLD)))
         commands.append(str(self.getParameterValue(self.MAX_THRESHOLD)))
-        commands.append(str(self.getParameterValue(self.TRESHOLD_NUM)))
+        commands.append(str(self.getParameterValue(self.THRESHOLD_NUM)))
         commands.append(str(self.getParameterValue(self.STEP_TYPE)))
         commands.append('-drp')
         commands.append(self.getOutputValue(self.DROP_ANALYSIS_FILE))

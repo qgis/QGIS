@@ -172,51 +172,51 @@ class QgsComposerPicture: QgsComposerItem
      */
     ItemPositionMode pictureAnchor() const;
 
-    /** Returns the fill color used for parameterized SVG files.
+    /** Returns the fill color used for parametrized SVG files.
      * @see setSvgFillColor()
      * @see svgBorderColor()
      * @note added in QGIS 2.14.1
      */
     QColor svgFillColor() const;
 
-    /** Sets the fill color used for parameterized SVG files.
+    /** Sets the fill color used for parametrized SVG files.
      * @param color fill color.
-     * @note this setting only has an effect on parameterized SVG files, and is ignored for
-     * non-parameterized SVG files.
+     * @note this setting only has an effect on parametrized SVG files, and is ignored for
+     * non-parametrized SVG files.
      * @see svgFillColor()
      * @see setSvgBorderColor()
      * @note added in QGIS 2.14.1
      */
     void setSvgFillColor( const QColor& color );
 
-    /** Returns the border color used for parameterized SVG files.
+    /** Returns the border color used for parametrized SVG files.
      * @see setSvgBorderColor()
      * @see svgFillColor()
      * @note added in QGIS 2.14.1
      */
     QColor svgBorderColor() const;
 
-    /** Sets the border color used for parameterized SVG files.
+    /** Sets the border color used for parametrized SVG files.
      * @param color border color.
-     * @note this setting only has an effect on parameterized SVG files, and is ignored for
-     * non-parameterized SVG files.
+     * @note this setting only has an effect on parametrized SVG files, and is ignored for
+     * non-parametrized SVG files.
      * @see svgBorderlColor()
      * @see setSvgFillColor()
      * @note added in QGIS 2.14.1
      */
     void setSvgBorderColor( const QColor& color );
 
-    /** Returns the border width (in mm) used for parameterized SVG files.
+    /** Returns the border width (in mm) used for parametrized SVG files.
      * @see setSvgBorderWidth()
      * @see svgBorderColor()
      * @note added in QGIS 2.14.1
      */
     double svgBorderWidth() const;
 
-    /** Sets the border width used for parameterized SVG files.
+    /** Sets the border width used for parametrized SVG files.
      * @param width border width in mm
-     * @note this setting only has an effect on parameterized SVG files, and is ignored for
-     * non-parameterized SVG files.
+     * @note this setting only has an effect on parametrized SVG files, and is ignored for
+     * non-parametrized SVG files.
      * @see svgBorderWidth()
      * @see setSvgBorderColor()
      * @note added in QGIS 2.14.1

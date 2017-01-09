@@ -44,7 +44,7 @@ class APP_EXPORT QgsMapToolSelectPolygon : public QgsMapTool
 
     QColor mFillColor;
 
-    QColor mBorderColour;
+    QColor mBorderColor;
 };
 
 #endif
