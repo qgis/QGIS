@@ -13,6 +13,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
   ${CMAKE_SOURCE_DIR}/src/test
@@ -167,6 +168,7 @@ ADD_QGIS_TEST(pallabelingtest testqgspallabeling.cpp)
 ADD_QGIS_TEST(pointlocatortest testqgspointlocator.cpp )
 ADD_QGIS_TEST(pointpatternfillsymboltest testqgspointpatternfillsymbol.cpp )
 ADD_QGIS_TEST(pointtest testqgspoint.cpp)
+ADD_QGIS_TEST(processingtest testqgsprocessing.cpp)
 ADD_QGIS_TEST(projecttest testqgsproject.cpp)
 ADD_QGIS_TEST(qgistest testqgis.cpp)
 ADD_QGIS_TEST(rasterfilewritertest testqgsrasterfilewriter.cpp)
