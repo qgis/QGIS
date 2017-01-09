@@ -99,21 +99,7 @@ class VectorTest(unittest.TestCase):
         features = vector.features(test_layer, QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry))
         self.assertEqual(set([f.id() for f in features]), set([2, 4, 6]))
 
-        #test exception is raised when filtering invalid geoms
-        test_layer_invalid_geoms = QgsVectorLayer(invalid_geometries(), 'test', 'ogr')
-
-        previous_value_invalid_geoms = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
-        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, 2)
-        try:
-            features = vector.features(test_layer_invalid_geoms)
-            features = [f for f in features]
-            self.fail()
-        except GeoAlgorithmExecutionException:
-            pass
-
-        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, previous_value_invalid_geoms)
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
-
 
     def testValues(self):
         ProcessingConfig.initialize()
