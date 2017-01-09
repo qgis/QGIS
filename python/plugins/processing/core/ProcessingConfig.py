@@ -31,7 +31,8 @@ import os
 
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QObject, pyqtSignal
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import NULL
+from qgis.core import (NULL,
+                       QgsApplication)
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 
@@ -72,7 +73,7 @@ class ProcessingConfig(object):
 
     @staticmethod
     def initialize():
-        icon = QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
+        icon = QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         ProcessingConfig.settingIcons['General'] = icon
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
@@ -182,11 +183,11 @@ class ProcessingConfig(object):
     @staticmethod
     def getGroupIcon(group):
         if group == ProcessingConfig.tr('General'):
-            return QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
+            return QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         if group in ProcessingConfig.settingIcons:
             return ProcessingConfig.settingIcons[group]
         else:
-            return QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
+            return QgsApplication.getThemeIcon("/processingAlgorithm.svg")
 
     @staticmethod
     def addSetting(setting):

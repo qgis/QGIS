@@ -30,6 +30,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsApplication
+
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
@@ -64,7 +66,10 @@ class TauDEMAlgorithmProvider(AlgorithmProvider):
         return 'taudem'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'taudem.svg'))
+        return QgsApplication.getThemeIcon("/providerTaudem.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerTaudem.svg")
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)

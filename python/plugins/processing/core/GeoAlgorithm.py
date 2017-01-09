@@ -30,10 +30,9 @@ import traceback
 import subprocess
 import copy
 
-from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication, QSettings
 
-from qgis.core import QgsVectorLayer, QgsRasterLayer
+from qgis.core import QgsApplication
 
 from builtins import str
 from builtins import object
@@ -52,7 +51,7 @@ from processing.algs.help import shortHelp
 class GeoAlgorithm(object):
 
     def __init__(self):
-        self._icon = QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
+        self._icon = QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         # Parameters needed by the algorithm
         self.parameters = list()
 

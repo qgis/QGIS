@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-
+from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.AlgorithmProvider import AlgorithmProvider
@@ -87,7 +87,10 @@ class RAlgorithmProvider(AlgorithmProvider):
             ProcessingConfig.removeSetting(RUtils.R_USE64)
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
+        return QgsApplication.getThemeIcon("/providerR.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerR.svg")
 
     def name(self):
         return 'R scripts'

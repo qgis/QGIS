@@ -550,6 +550,14 @@
         <file>themes/default/mTaskRunning.svg</file>
         <file>themes/default/mTaskTerminated.svg</file>
         <file>themes/default/mTaskCancel.svg</file>
+        <file>themes/default/providerGdal.svg</file>
+        <file>themes/default/providerGrass.svg</file>
+        <file>themes/default/providerQgis.svg</file>
+        <file>themes/default/providerR.svg</file>
+        <file>themes/default/providerTaudem.svg</file>
+        <file>themes/default/processingModel.svg</file>
+        <file>themes/default/processingScript.svg</file>
+        <file>themes/default/processingAlgorithm.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

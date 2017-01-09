@@ -31,7 +31,7 @@ __revision__ = '$Format:%H$'
 import os
 import codecs
 
-from qgis.PyQt.QtGui import QIcon
+from qgis.core import QgsApplication
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -68,7 +68,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
 
     def getIcon(self):
         if self._icon is None:
-            self._icon = QIcon(os.path.join(pluginPath, 'images', 'taudem.svg'))
+            self._icon = QgsApplication.getThemeIcon("/providerTaudem.svg")
         return self._icon
 
     def defineCharacteristicsFromFile(self):

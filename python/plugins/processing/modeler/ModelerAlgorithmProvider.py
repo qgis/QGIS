@@ -29,6 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsApplication
+
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
@@ -67,7 +69,10 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
         return 'model'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'model.svg'))
+        return QgsApplication.getThemeIcon("/processingModel.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("processingModel.svg")
 
     def _loadAlgorithms(self):
         folders = ModelerUtils.modelsFolders()

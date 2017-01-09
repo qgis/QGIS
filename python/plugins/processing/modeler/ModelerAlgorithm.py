@@ -38,7 +38,7 @@ from qgis.PyQt.QtCore import QCoreApplication, QPointF
 from qgis.PyQt.QtGui import QIcon
 from operator import attrgetter
 
-from qgis.core import QgsRasterLayer, QgsVectorLayer
+from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -263,7 +263,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         GeoAlgorithm.__init__(self)
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'model.svg'))
+        return QgsApplication.getThemeIcon("/processingModel.svg")
 
     def defineCharacteristics(self):
         classes = [ParameterRaster, ParameterVector, ParameterTable, ParameterTableField,

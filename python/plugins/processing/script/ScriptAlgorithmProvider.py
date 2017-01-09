@@ -29,6 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsApplication
+
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.gui.EditScriptAction import EditScriptAction
@@ -67,7 +69,10 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.addSetting(ScriptUtils.SCRIPTS_FOLDER)
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'script.svg'))
+        return QgsApplication.getThemeIcon("/processingScript.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("processingScript.svg")
 
     def id(self):
         return 'script'

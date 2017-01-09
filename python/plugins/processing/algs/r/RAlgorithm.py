@@ -33,6 +33,8 @@ import json
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsApplication
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
@@ -88,7 +90,7 @@ class RAlgorithm(GeoAlgorithm):
 
     def getIcon(self):
         if self._icon is None:
-            self._icon = QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
+            self._icon = QgsApplication.getThemeIcon("/providerR.svg")
         return self._icon
 
     def defineCharacteristicsFromScript(self):

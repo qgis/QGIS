@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 from qgis.PyQt.QtGui import QIcon
+from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingLog import ProcessingLog
@@ -105,7 +106,10 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
         return 'grass7'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
+        return QgsApplication.getThemeIcon("/providerGrass.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerGrass.svg")
 
     def getSupportedOutputVectorLayerExtensions(self):
         return ['shp']
