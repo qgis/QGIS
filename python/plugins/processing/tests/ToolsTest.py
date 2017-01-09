@@ -32,6 +32,7 @@ import tempfile
 from qgis.core import (QgsVectorLayer, QgsFeatureRequest)
 from qgis.testing import start_app, unittest
 
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tests.TestData import testDataPath, points, invalid_geometries
 from processing.tools import vector
@@ -112,7 +113,7 @@ class VectorTest(unittest.TestCase):
 
         ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, previous_value_invalid_geoms)
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
-        
+
 
     def testValues(self):
         ProcessingConfig.initialize()
