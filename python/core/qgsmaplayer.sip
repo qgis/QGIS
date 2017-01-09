@@ -743,6 +743,14 @@ class QgsMapLayer : QObject
      */
     void dependenciesChanged();
 
+    /**
+     * Emitted in the destructor when the layer is about to be deleted,
+     * but it is still in a perfectly valid state: the last chance for
+     * other pieces of code for some cleanup if they use the layer.
+     * @note added in QGIS 3.0
+     */
+    void willBeDeleted();
+
   protected:
     /** Set the extent */
     virtual void setExtent( const QgsRectangle &rect );

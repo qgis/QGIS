@@ -24,6 +24,13 @@ QgsPluginLayer::QgsPluginLayer( const QString& layerType, const QString& layerNa
   setLegend( QgsMapLayerLegend::defaultPluginLegend( this ) );
 }
 
+QgsPluginLayer::~QgsPluginLayer()
+{
+  // TODO: shall we move the responsibility of emitting the signal to plugin
+  // layer implementations before they start doing their part of cleanup...?
+  emit willBeDeleted();
+}
+
 QString QgsPluginLayer::pluginLayerType()
 {
   return mPluginLayerType;
