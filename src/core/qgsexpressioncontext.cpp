@@ -274,6 +274,17 @@ QVariant QgsExpressionContext::variable( const QString& name ) const
   return scope ? scope->variable( name ) : QVariant();
 }
 
+QVariantMap QgsExpressionContext::variablesToMap() const
+{
+  QStringList names = variableNames();
+  QVariantMap m;
+  Q_FOREACH ( const QString& name, names )
+  {
+    m.insert( name, variable( name ) );
+  }
+  return m;
+}
+
 bool QgsExpressionContext::isHighlightedVariable( const QString &name ) const
 {
   return mHighlightedVariables.contains( name );

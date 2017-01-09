@@ -247,6 +247,13 @@ class QgsExpressionContext
      */
     QVariant variable( const QString& name ) const;
 
+    /**
+     * Returns a map of variable name to value representing all the expression variables
+     * contained by the context.
+     * @note added in QGIS 3.0
+     */
+    QVariantMap variablesToMap() const;
+
     /** Returns true if the specified variable name is intended to be highlighted to the
      * user. This is used by the expression builder to more prominently display the
      * variable.
