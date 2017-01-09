@@ -126,9 +126,9 @@ def features(layer, request=QgsFeatureRequest()):
                 return True
 
             if invalidFeaturesMethod == self.IGNORE: 
-                self.iter = filter(filterFeature, self.iter, True)
+                self.iter = filter(lambda x: filterFeature(x, True), self.iter)
             elif invalidFeaturesMethod == self.RAISE_EXCEPTION:
-                self.iter = filter(filterFeature, self.iter, False)
+                self.iter = filter(lambda x: filterFeature(x, False), self.iter)
 
         def __iter__(self):
             return self.iter
