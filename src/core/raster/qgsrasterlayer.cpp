@@ -1258,7 +1258,11 @@ QDateTime QgsRasterLayer::timestamp() const
 void QgsRasterLayer::setRenderer( QgsRasterRenderer* theRenderer )
 {
   QgsDebugMsgLevel( "Entered", 4 );
-  if ( !theRenderer ) { return; }
+  if ( !theRenderer )
+  {
+    return;
+  }
+
   mPipe.set( theRenderer );
   emit rendererChanged();
   emit styleChanged();
