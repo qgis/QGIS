@@ -557,3 +557,29 @@ tests:
       OUTPUT:
         hash: fff4a08498e93494f3f2cf1a9074451e6fd68341849aedc9e2c45e6a
         type: rasterhash
+
+  - algorithm: gdal:tpitopographicpositionindex
+    name: standard TPI
+    params:
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: 4af1fe42d2a75c92eb9edcad9d77bd6cae958c0212de11e320fad689
+        type: rasterhash
+
+  - algorithm: gdal:tpitopographicpositionindex
+    name: TPI with edges
+    params:
+      BAND: 1
+      COMPUTE_EDGES: true
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        hash: f468bb08cbede2b606018a7a45a51cc221307a8421a11daefabeac12
+        type: rasterhash
