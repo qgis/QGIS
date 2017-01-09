@@ -755,7 +755,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       return false;
   }
 
-  feature.setFeatureId( fid );
+  feature.setId( fid );
   QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 4 );
 
   // iterate attributes

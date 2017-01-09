@@ -89,7 +89,7 @@ void QgsFeaturePool::addFeature( QgsFeature& feature )
   features.append( feature );
   mLayerMutex.lock();
   mLayer->dataProvider()->addFeatures( features );
-  feature.setFeatureId( features.front().id() );
+  feature.setId( features.front().id() );
   if ( mSelectedOnly )
   {
     QgsFeatureIds selectedFeatureIds = mLayer->selectedFeatureIds();

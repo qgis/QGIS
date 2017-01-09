@@ -907,6 +907,7 @@ None will need to be modified, as the method will return an empty geometry if th
 - The temporary constGeometry() method has been removed. Use geometry() instead.
 - setFields( const QgsFields*, bool ) has been removed, use setFields( const QgsFields&, bool ) instead.
 - fields() no longer returns a pointer, but instead a QgsFields value.
+- The duplicate method setFeatureId() was removed. Use setId() instead.
 
 
 QgsFeatureRendererV2        {#qgis_api_break_3_0_QgsFeatureRendererV2}

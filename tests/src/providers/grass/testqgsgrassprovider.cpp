@@ -928,7 +928,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   // Add point
   command = TestQgsGrassCommand( TestQgsGrassCommand::AddFeature );
   grassFeature = TestQgsGrassFeature( GV_POINT );
-  grassFeature.setFeatureId( 1 );
+  grassFeature.setId( 1 );
   geometry = new QgsGeometry( new QgsPointV2( QgsWkbTypes::Point, 10, 10, 0 ) );
   grassFeature.setGeometry( *geometry );
   delete geometry;
@@ -1018,7 +1018,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   // Add line feature with attributes
   command = TestQgsGrassCommand( TestQgsGrassCommand::AddFeature );
   grassFeature = TestQgsGrassFeature( GV_LINE );
-  grassFeature.setFeatureId( 1 );
+  grassFeature.setId( 1 );
   line = new QgsLineString();
   pointList.clear();
   pointList << QgsPointV2( QgsWkbTypes::Point, 0, 0, 0 );
@@ -1059,7 +1059,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   command = TestQgsGrassCommand( TestQgsGrassCommand::AddFeature );
   command.verify = false;
   grassFeature = TestQgsGrassFeature( GV_BOUNDARY );
-  grassFeature.setFeatureId( 1 );
+  grassFeature.setId( 1 );
   line = new QgsLineString();
   pointList.clear();
   pointList << QgsPointV2( QgsWkbTypes::Point, 0, 0, 0 );

@@ -347,7 +347,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
       }
     }
 //    QgsDebugMsg( QString( "Fid: %1; value: %2" ).arg( mSource->mFidColName ).arg( record.value( mSource->mFidColName ).toLongLong() ) );
-    feature.setFeatureId( mQuery->record().value( mSource->mFidColName ).toLongLong() );
+    feature.setId( mQuery->record().value( mSource->mFidColName ).toLongLong() );
 
     if ( mSource->isSpatial() )
     {

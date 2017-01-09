@@ -1217,7 +1217,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeatur
 
   //id and valid
   dstFeature.setValid( true );
-  dstFeature.setFeatureId( srcFeature.id() );
+  dstFeature.setId( srcFeature.id() );
   dstFeature.setFields( fields ); // allow name-based attribute lookups
 }
 

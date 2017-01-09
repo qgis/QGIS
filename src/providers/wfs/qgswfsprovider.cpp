@@ -872,7 +872,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
     for ( ; idIt != idList.constEnd() && featureIt != flist.end(); ++idIt, ++featureIt )
     {
       if ( map.find( *idIt ) != map.end() )
-        featureIt->setFeatureId( map[*idIt] );
+        featureIt->setId( map[*idIt] );
     }
 
     return true;

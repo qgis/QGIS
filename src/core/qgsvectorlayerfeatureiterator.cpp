@@ -376,7 +376,7 @@ bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature& f )
 
 void QgsVectorLayerFeatureIterator::useAddedFeature( const QgsFeature& src, QgsFeature& f )
 {
-  f.setFeatureId( src.id() );
+  f.setId( src.id() );
   f.setValid( true );
   f.setFields( mSource->mFields );
 
@@ -450,7 +450,7 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedAttributeFeature( QgsFeature
 
 void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry& geom, QgsFeature& f )
 {
-  f.setFeatureId( fid );
+  f.setId( fid );
   f.setValid( true );
   f.setFields( mSource->mFields );
 

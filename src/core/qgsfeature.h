@@ -172,21 +172,13 @@ class CORE_EXPORT QgsFeature
      */
     bool operator!=( const QgsFeature& other ) const;
 
-
-
     virtual ~QgsFeature();
 
     /** Get the feature ID for this feature.
      * @returns feature ID
-     * @see setFeatureId
+     * @see setId()
      */
     QgsFeatureId id() const;
-
-    /** Sets the feature ID for this feature.
-     * @param id feature id
-     * @see id
-     */
-    void setFeatureId( QgsFeatureId id );
 
     /** Sets the feature ID for this feature.
      * @param id feature id

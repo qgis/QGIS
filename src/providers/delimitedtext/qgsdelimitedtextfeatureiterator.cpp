@@ -331,7 +331,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
 
     feature.setValid( true );
     feature.setFields( mSource->mFields ); // allow name-based attribute lookups
-    feature.setFeatureId( fid );
+    feature.setId( fid );
     feature.initAttributes( mSource->mFields.count() );
     feature.setGeometry( geom );
 

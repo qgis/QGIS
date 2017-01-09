@@ -198,12 +198,12 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature& feature )
   if ( mDefinition.uid().isNull() )
   {
     // no id column => autoincrement
-    feature.setFeatureId( mFid++ );
+    feature.setId( mFid++ );
   }
   else
   {
     // first column: uid
-    feature.setFeatureId( mQuery->columnInt64( 0 ) );
+    feature.setId( mQuery->columnInt64( 0 ) );
   }
 
   int n = mQuery->columnCount();

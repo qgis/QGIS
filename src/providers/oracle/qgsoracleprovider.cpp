@@ -1410,7 +1410,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
 
       if ( mPrimaryKeyType == pktRowId )
       {
-        features->setFeatureId( mShared->lookupFid( QList<QVariant>() << QVariant( ins.lastInsertId() ) ) );
+        features->setId( mShared->lookupFid( QList<QVariant>() << QVariant( ins.lastInsertId() ) ) );
         QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
       }
       else if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
@@ -1448,7 +1448,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
 
         if ( mPrimaryKeyType == pktInt )
         {
-          features->setFeatureId( STRING_TO_FID( attributevec[ mPrimaryKeyAttrs[0] ] ) );
+          features->setId( STRING_TO_FID( attributevec[ mPrimaryKeyAttrs[0] ] ) );
         }
         else
         {
@@ -1459,7 +1459,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
             primaryKeyVals << attributevec[ idx ];
           }
 
-          features->setFeatureId( mShared->lookupFid( QVariant( primaryKeyVals ) ) );
+          features->setId( mShared->lookupFid( QVariant( primaryKeyVals ) ) );
         }
         QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
       }
