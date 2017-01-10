@@ -2037,7 +2037,7 @@ template <TYPE>
 
 // Import the Chimera helper registration functions.
 void (*register_from_qvariant_converter)(FromQVariantConverterFn);
-register_from_qvariant_converter = (void (*)(FromQVariantConverterFn))sipImportSymbol("pyqt5_register_from_qvariant_converter");
+register_from_qvariant_converter = (void (*)(FromQVariantConverterFn))sipImportSymbol("pyqt5_register_from_qvariant_convertor");  //#spellok
 register_from_qvariant_converter(null_from_qvariant_converter);
 %End
 %End
