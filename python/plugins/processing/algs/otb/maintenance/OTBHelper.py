@@ -612,8 +612,7 @@ def list_reader(file_name, version):
 
 def get_otb_version():
     #TODO Find a way to retrieve installed otb version, force exception and parse otb-X.XX.X ?
-    # return "3.18"
-    return "5.6"
+    return "5.8"
 
 
 def get_white_list():
