@@ -35,6 +35,7 @@
 #include "qgsmapsettings.h"
 #include "qgsmessagelog.h"
 #include "qgsserviceregistry.h"
+#include "qgsserversettings.h"
 #include "qgsserverplugins.h"
 #include "qgsserverfilter.h"
 #include "qgsserverinterfaceimpl.h"
@@ -134,6 +135,7 @@ class SERVER_EXPORT QgsServer
     //! service registry
     static QgsServiceRegistry sServiceRegistry;
 
+    static QgsServerSettings sSettings;
 };
 #endif // QGSSERVER_H
 

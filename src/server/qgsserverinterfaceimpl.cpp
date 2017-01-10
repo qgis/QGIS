@@ -22,9 +22,10 @@
 #include "qgsmslayercache.h"
 
 //! Constructor
-QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache, QgsServiceRegistry* srvRegistry )
+QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache, QgsServiceRegistry* srvRegistry, QgsServerSettings* settings )
     : mCapabilitiesCache( capCache )
     , mServiceRegistry( srvRegistry )
+    , mServerSettings( settings )
 {
   mRequestHandler = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -100,3 +101,7 @@ QgsServiceRegistry* QgsServerInterfaceImpl::serviceRegistry()
   return mServiceRegistry;
 }
 
+QgsServerSettings* QgsServerInterfaceImpl::serverSettings()
+{
+  return mServerSettings;
+}

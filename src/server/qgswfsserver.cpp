@@ -64,13 +64,15 @@ static const QString QGS_NAMESPACE = QStringLiteral( "http://www.qgis.org/gml" )
 
 QgsWfsServer::QgsWfsServer(
   const QString& configFilePath
+  , const QgsServerSettings& settings
   , QMap<QString, QString> &parameters
   , QgsWfsProjectParser* cp
   , QgsRequestHandler* rh
-  , const QgsAccessControl* accessControl
+  , QgsAccessControl* accessControl
 )
     : QgsOWSServer(
       configFilePath
+      , settings
       , parameters
       , rh
       , accessControl
@@ -83,6 +85,7 @@ QgsWfsServer::QgsWfsServer(
 QgsWfsServer::QgsWfsServer()
     : QgsOWSServer(
       QString()
+      , QgsServerSettings()
       , QMap<QString, QString>()
       , nullptr
       , nullptr

@@ -161,7 +161,8 @@ namespace QgsWms
   {
     Q_UNUSED( version );
     QgsServerRequest::Parameters params = request.parameters();
-    QgsWmsServer server( serverIface->configFilePath(), params,
+    QgsWmsServer server( serverIface->configFilePath(),
+                         *serverIface->serverSettings(), params,
                          getConfigParser( serverIface ),
                          serverIface->accessControls() );
     try

@@ -33,8 +33,8 @@ namespace QgsWms
     QgsServerRequest::Parameters params = request.parameters();
     QgsWmsConfigParser* parser = getConfigParser( serverIface );
 
-    QgsWmsServer server( serverIface->configFilePath(), params, parser,
-                         serverIface->accessControls() );
+    QgsWmsServer server( serverIface->configFilePath(), *serverIface->serverSettings(),
+                         params, parser, serverIface->accessControls() );
     try
     {
       QScopedPointer<QImage> result( server.getLegendGraphics() );

@@ -25,6 +25,7 @@
 #include "qgscapabilitiescache.h"
 #include "qgsrequesthandler.h"
 #include "qgsserverfilter.h"
+#include "qgsserversettings.h"
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrolfilter.h"
 #include "qgsaccesscontrol.h"
@@ -111,7 +112,7 @@ class SERVER_EXPORT QgsServerInterface
     virtual void registerAccessControl( QgsAccessControlFilter* accessControl, int priority = 0 ) = 0;
 
     //! Gets the registred access control filters
-    virtual const QgsAccessControl* accessControls() const = 0;
+    virtual QgsAccessControl* accessControls() const = 0;
 
     //! Return an enrironment variable, used to pass  environment variables to python
     virtual QString getEnv( const QString& name ) const = 0;
@@ -145,6 +146,14 @@ class SERVER_EXPORT QgsServerInterface
      * @return QgsServiceResgistry
      */
     virtual QgsServiceRegistry* serviceRegistry() = 0;
+
+    /**
+     * Return the server settings
+     * @return QgsServerSettings
+     *
+     * @note not available in python bindings
+     */
+    virtual QgsServerSettings* serverSettings() = 0;
 
   private:
     QString mConfigFilePath;
