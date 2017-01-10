@@ -25,7 +25,7 @@
 #include <QDomElement>
 #include <QPainter>
 
-const QMap< int, QString > QgsDiagramLayerSettings::sPropertyNameMap
+const QgsPropertyDefinition QgsDiagramLayerSettings::sPropertyNameMap
 {
   { QgsDiagramLayerSettings::BackgroundColor, "backgroundColor" },
   { QgsDiagramLayerSettings::OutlineColor, "outlineColor" },

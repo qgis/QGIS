@@ -180,6 +180,11 @@ QgsAbstractProperty* QgsDataDefinedButtonV2::toProperty()
   return p;
 }
 
+void QgsDataDefinedButtonV2::registerCheckedWidget( QWidget* widget )
+{
+  //TODO
+}
+
 void QgsDataDefinedButtonV2::mouseReleaseEvent( QMouseEvent *event )
 {
   // Ctrl-click to toggle activated state

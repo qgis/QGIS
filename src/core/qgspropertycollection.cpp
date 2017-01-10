@@ -53,6 +53,15 @@ int QgsAbstractPropertyCollection::valueAsInt( int key, const QgsExpressionConte
   return prop->valueAsInt( context, defaultValue );
 }
 
+bool QgsAbstractPropertyCollection::valueAsBool( int key, const QgsExpressionContext& context, bool defaultValue ) const
+{
+  const QgsAbstractProperty* prop = property( key );
+  if ( !prop || !prop->isActive() )
+    return defaultValue;
+
+  return prop->valueAsBool( context, defaultValue );
+}
+
 
 
 //
@@ -148,22 +157,34 @@ void QgsPropertyCollection::setProperty( int key, const QVariant& value )
 
 bool QgsPropertyCollection::hasProperty( int key ) const
 {
+  if ( mProperties.isEmpty() )
+    return false;
+
   return mProperties.contains( key );
 }
 
 QgsAbstractProperty* QgsPropertyCollection::property( int key )
 {
+  if ( mProperties.isEmpty() )
+    return nullptr;
+
   mDirty = true;
   return mProperties.value( key, nullptr );
 }
 
 const QgsAbstractProperty *QgsPropertyCollection::property( int key ) const
 {
+  if ( mProperties.isEmpty() )
+    return nullptr;
+
   return mProperties.value( key, nullptr );
 }
 
 QVariant QgsPropertyCollection::value( int key, const QgsExpressionContext& context, const QVariant& defaultValue ) const
 {
+  if ( mProperties.isEmpty() )
+    return defaultValue;
+
   QgsAbstractProperty* prop = mProperties.value( key, nullptr );
   if ( !prop || !prop->isActive() )
     return defaultValue;
@@ -201,6 +222,9 @@ QSet< QString > QgsPropertyCollection::referencedFields( const QgsExpressionCont
 
 bool QgsPropertyCollection::isActive( int key ) const
 {
+  if ( mProperties.isEmpty() )
+    return false;
+
   QgsAbstractProperty* prop = mProperties.value( key, nullptr );
   return prop && prop->isActive();
 }

@@ -190,6 +190,44 @@ void TestQgsProperty::conversions()
   i1->setStaticValue( "i am not a int" ); //not a int, should return default value
   QCOMPARE( i1->valueAsInt( context, -11 ), -11 );
   QCOMPARE( collection.valueAsInt( 2, context, -11 ), -11 );
+
+  // test boolean conversions
+  QgsStaticProperty* b1 = new QgsStaticProperty( QVariant(), true );
+  collection.setProperty( 3, b1 );
+  QCOMPARE( b1->valueAsBool( context , false ), false );
+  QCOMPARE( b1->valueAsBool( context , true ), true );
+  QCOMPARE( collection.valueAsBool( 3, context , false ), false );
+  QCOMPARE( collection.valueAsBool( 3, context , true ), true );
+  b1->setStaticValue( true );
+  QCOMPARE( b1->valueAsBool( context , false ), true );
+  QCOMPARE( b1->valueAsBool( context , true ), true );
+  QCOMPARE( collection.valueAsBool( 3, context , false ), true );
+  QCOMPARE( collection.valueAsBool( 3, context , true ), true );
+  b1->setStaticValue( false );
+  QCOMPARE( b1->valueAsBool( context , false ), false );
+  QCOMPARE( b1->valueAsBool( context , true ), false );
+  QCOMPARE( collection.valueAsBool( 3, context , false ), false );
+  QCOMPARE( collection.valueAsBool( 3, context , true ), false );
+  b1->setStaticValue( 1 );
+  QCOMPARE( b1->valueAsBool( context , false ), true );
+  QCOMPARE( b1->valueAsBool( context , true ), true );
+  QCOMPARE( collection.valueAsBool( 3, context , false ), true );
+  QCOMPARE( collection.valueAsBool( 3, context , true ), true );
+  b1->setStaticValue( 0 );
+  QCOMPARE( b1->valueAsBool( context , false ), false );
+  QCOMPARE( b1->valueAsBool( context , true ), false );
+  QCOMPARE( collection.valueAsBool( 3, context , false ), false );
+  QCOMPARE( collection.valueAsBool( 3, context , true ), false );
+  b1->setStaticValue( "true" );
+  QCOMPARE( b1->valueAsBool( context , false ), true );
+  QCOMPARE( b1->valueAsBool( context , true ), true );
+  QCOMPARE( collection.valueAsBool( 3, context , false ), true );
+  QCOMPARE( collection.valueAsBool( 3, context , true ), true );
+  b1->setStaticValue( "" );
+  QCOMPARE( b1->valueAsBool( context , false ), false );
+  QCOMPARE( b1->valueAsBool( context , true ), false );
+  QCOMPARE( collection.valueAsBool( 3, context , false ), false );
+  QCOMPARE( collection.valueAsBool( 3, context , true ), false );
 }
 
 void TestQgsProperty::staticProperty()

@@ -140,6 +140,16 @@ int QgsAbstractProperty::valueAsInt( const QgsExpressionContext &context, int de
     return integer;
 }
 
+bool QgsAbstractProperty::valueAsBool( const QgsExpressionContext& context, bool defaultValue ) const
+{
+  QVariant val = value( context, defaultValue );
+
+  if ( !val.isValid() )
+    return defaultValue;
+
+  return val.toBool();
+}
+
 bool QgsAbstractProperty::writeXml( QDomElement &propertyElem, QDomDocument &doc ) const
 {
   Q_UNUSED( doc );

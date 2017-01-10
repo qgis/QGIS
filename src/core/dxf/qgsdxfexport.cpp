@@ -4259,7 +4259,7 @@ void QgsDxfExport::drawLabel( const QString& layerId, QgsRenderContext& context,
   QgsPalLayerSettings tmpLyr( settings );
 
   // apply any previously applied data defined settings for the label
-  const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues = lf->dataDefinedValues();
+  const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues = lf->dataDefinedValues();
 
   //font
   QFont dFont = lf->definedFont();

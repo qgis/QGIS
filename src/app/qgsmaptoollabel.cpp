@@ -409,23 +409,19 @@ bool QgsMapToolLabel::hasDataDefinedColumn( QgsPalLayerSettings::DataDefinedProp
 }
 #endif
 
-QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::DataDefinedProperties p, const QgsPalLayerSettings& labelSettings ) const
+QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings& labelSettings ) const
 {
-  //QgsDebugMsg( QString( "dataDefinedProperties count:%1" ).arg( labelSettings.dataDefinedProperties.size() ) );
+  if ( !labelSettings.properties().isActive( p ) )
+    return QString();
 
-  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator dIt = labelSettings.dataDefinedProperties.constFind( p );
-  if ( dIt != labelSettings.dataDefinedProperties.constEnd() )
-  {
-    QgsDataDefined* dd = dIt.value();
+  const QgsAbstractProperty* prop = labelSettings.properties().property( p );
+  if ( prop->propertyType() != QgsAbstractProperty::FieldBasedProperty )
+    return QString();
 
-    // can only modify attributes that are data defined with a mapped field
-    if ( dd->isActive() && !dd->useExpression() && !dd->field().isEmpty() )
-      return dd->field();
-  }
-  return QString();
+  return static_cast< const QgsFieldBasedProperty* >( prop )->field();
 }
 
-int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::DataDefinedProperties p, const QgsPalLayerSettings& labelSettings, const QgsVectorLayer* vlayer ) const
+int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::Property p, const QgsPalLayerSettings& labelSettings, const QgsVectorLayer* vlayer ) const
 {
   QString fieldname = dataDefinedColumnName( p, labelSettings );
   if ( !fieldname.isEmpty() )

@@ -810,7 +810,7 @@
                             </widget>
                            </item>
                            <item>
-                            <widget class="QgsDataDefinedButton" name="mFontUnderlineDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mFontUnderlineDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -851,7 +851,7 @@
                             </widget>
                            </item>
                            <item>
-                            <widget class="QgsDataDefinedButton" name="mFontStrikeoutDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mFontStrikeoutDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -905,7 +905,7 @@
                             </widget>
                            </item>
                            <item>
-                            <widget class="QgsDataDefinedButton" name="mFontBoldDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mFontBoldDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -1034,42 +1034,42 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="3" column="2">
-                          <widget class="QgsDataDefinedButton" name="mFontStyleDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mFontStyleDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
                           </widget>
                          </item>
                          <item row="5" column="2">
-                          <widget class="QgsDataDefinedButton" name="mFontSizeDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mFontSizeDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
                           </widget>
                          </item>
                          <item row="13" column="2">
-                          <widget class="QgsDataDefinedButton" name="mFontBlendModeDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mFontBlendModeDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
                           </widget>
                          </item>
                          <item row="4" column="2">
-                          <widget class="QgsDataDefinedButton" name="mFontItalicDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mFontItalicDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
                           </widget>
                          </item>
                          <item row="7" column="2">
-                          <widget class="QgsDataDefinedButton" name="mFontColorDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mFontColorDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
                           </widget>
                          </item>
                          <item row="11" column="2">
-                          <widget class="QgsDataDefinedButton" name="mFontLetterSpacingDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mFontLetterSpacingDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -1083,7 +1083,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="9" column="2">
-                          <widget class="QgsDataDefinedButton" name="mFontCaseDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mFontCaseDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -1097,7 +1097,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="6" column="2">
-                          <widget class="QgsDataDefinedButton" name="mFontUnitsDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mFontUnitsDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -1133,7 +1133,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="1" column="2">
-                          <widget class="QgsDataDefinedButton" name="mFontDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mFontDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -1153,7 +1153,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="8" column="2">
-                          <widget class="QgsDataDefinedButton" name="mFontTranspDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mFontTranspDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -1241,7 +1241,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="12" column="2">
-                          <widget class="QgsDataDefinedButton" name="mFontWordSpacingDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mFontWordSpacingDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -1491,7 +1491,7 @@ font-style: italic;</string>
                             <number>0</number>
                            </property>
                            <item row="0" column="2">
-                            <widget class="QgsDataDefinedButton" name="mWrapCharDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mWrapCharDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -1508,7 +1508,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="1" column="2">
-                            <widget class="QgsDataDefinedButton" name="mFontLineHeightDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mFontLineHeightDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -1613,7 +1613,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="2" column="2">
-                            <widget class="QgsDataDefinedButton" name="mFontMultiLineAlignDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mFontMultiLineAlignDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -1656,7 +1656,7 @@ font-style: italic;</string>
                           </spacer>
                          </item>
                          <item row="0" column="1">
-                          <widget class="QgsDataDefinedButton" name="mDirectSymbDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mDirectSymbDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -1747,14 +1747,14 @@ font-style: italic;</string>
                              </widget>
                             </item>
                             <item row="2" column="2">
-                             <widget class="QgsDataDefinedButton" name="mDirectSymbPlacementDDBtn">
+                             <widget class="QgsDataDefinedButtonV2" name="mDirectSymbPlacementDDBtn">
                               <property name="text">
                                <string>...</string>
                               </property>
                              </widget>
                             </item>
                             <item row="0" column="2">
-                             <widget class="QgsDataDefinedButton" name="mDirectSymbLeftDDBtn">
+                             <widget class="QgsDataDefinedButtonV2" name="mDirectSymbLeftDDBtn">
                               <property name="text">
                                <string>...</string>
                               </property>
@@ -1801,7 +1801,7 @@ font-style: italic;</string>
                              </widget>
                             </item>
                             <item row="1" column="2">
-                             <widget class="QgsDataDefinedButton" name="mDirectSymbRightDDBtn">
+                             <widget class="QgsDataDefinedButtonV2" name="mDirectSymbRightDDBtn">
                               <property name="text">
                                <string>...</string>
                               </property>
@@ -1858,7 +1858,7 @@ font-style: italic;</string>
                              </widget>
                             </item>
                             <item row="3" column="2">
-                             <widget class="QgsDataDefinedButton" name="mDirectSymbRevDDBtn">
+                             <widget class="QgsDataDefinedButtonV2" name="mDirectSymbRevDDBtn">
                               <property name="text">
                                <string>...</string>
                               </property>
@@ -1956,7 +1956,7 @@ font-style: italic;</string>
                          </widget>
                         </item>
                         <item row="0" column="1">
-                         <widget class="QgsDataDefinedButton" name="mFormatNumDDBtn">
+                         <widget class="QgsDataDefinedButtonV2" name="mFormatNumDDBtn">
                           <property name="text">
                            <string>...</string>
                           </property>
@@ -2004,7 +2004,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="0" column="2">
-                            <widget class="QgsDataDefinedButton" name="mFormatNumDecimalsDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mFormatNumDecimalsDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2021,7 +2021,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="1" column="2">
-                            <widget class="QgsDataDefinedButton" name="mFormatNumPlusSignDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mFormatNumPlusSignDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2098,7 +2098,7 @@ font-style: italic;</string>
                       <item>
                        <layout class="QGridLayout" name="gridLayout_36">
                         <item row="1" column="1">
-                         <widget class="QgsDataDefinedButton" name="mBufferDrawDDBtn">
+                         <widget class="QgsDataDefinedButtonV2" name="mBufferDrawDDBtn">
                           <property name="text">
                            <string>...</string>
                           </property>
@@ -2146,14 +2146,14 @@ font-style: italic;</string>
                             <number>0</number>
                            </property>
                            <item row="1" column="2">
-                            <widget class="QgsDataDefinedButton" name="mBufferUnitsDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mBufferUnitsDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="6" column="2">
-                            <widget class="QgsDataDefinedButton" name="mBufferBlendModeDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mBufferBlendModeDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2309,14 +2309,14 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="4" column="2">
-                            <widget class="QgsDataDefinedButton" name="mBufferTranspDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mBufferTranspDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="5" column="2">
-                            <widget class="QgsDataDefinedButton" name="mBufferJoinStyleDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mBufferJoinStyleDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2348,14 +2348,14 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="0" column="2">
-                            <widget class="QgsDataDefinedButton" name="mBufferSizeDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mBufferSizeDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="2" column="2">
-                            <widget class="QgsDataDefinedButton" name="mBufferColorDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mBufferColorDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2510,7 +2510,7 @@ font-style: italic;</string>
                          </widget>
                         </item>
                         <item row="1" column="1">
-                         <widget class="QgsDataDefinedButton" name="mShapeDrawDDBtn">
+                         <widget class="QgsDataDefinedButtonV2" name="mShapeDrawDDBtn">
                           <property name="text">
                            <string>...</string>
                           </property>
@@ -2591,7 +2591,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="17" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeFillColorDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeFillColorDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2620,21 +2620,21 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="5" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeSizeUnitsDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeSizeUnitsDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="19" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeBorderWidthDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeBorderWidthDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="18" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeBorderColorDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeBorderColorDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2660,7 +2660,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="15" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeBlendModeDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeBlendModeDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2713,7 +2713,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="21" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapePenStyleDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapePenStyleDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2772,7 +2772,7 @@ font-style: italic;</string>
                             </layout>
                            </item>
                            <item row="13" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeRadiusUnitsDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeRadiusUnitsDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2789,7 +2789,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="0" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeTypeDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeTypeDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2844,7 +2844,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="11" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeOffsetUnitsDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeOffsetUnitsDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2864,7 +2864,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="4" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeSizeYDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeSizeYDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2907,7 +2907,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="3" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeSizeXDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeSizeXDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2928,7 +2928,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="2" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeSizeTypeDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeSizeTypeDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2989,7 +2989,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="7" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeRotationTypeDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeRotationTypeDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -3021,7 +3021,7 @@ font-style: italic;</string>
                                </widget>
                               </item>
                               <item>
-                               <widget class="QgsDataDefinedButton" name="mShapeSVGPathDDBtn">
+                               <widget class="QgsDataDefinedButtonV2" name="mShapeSVGPathDDBtn">
                                 <property name="text">
                                  <string>...</string>
                                 </property>
@@ -3031,7 +3031,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="14" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeTranspDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeTranspDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -3081,14 +3081,14 @@ font-style: italic;</string>
                             </layout>
                            </item>
                            <item row="20" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeBorderUnitsDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeBorderUnitsDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="8" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeRotationDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeRotationDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -3147,7 +3147,7 @@ font-style: italic;</string>
                             </layout>
                            </item>
                            <item row="12" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeRadiusDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeRadiusDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -3215,7 +3215,7 @@ font-style: italic;</string>
                             </layout>
                            </item>
                            <item row="9" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShapeOffsetDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShapeOffsetDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -3346,7 +3346,7 @@ font-style: italic;</string>
                          </widget>
                         </item>
                         <item row="1" column="1">
-                         <widget class="QgsDataDefinedButton" name="mShadowDrawDDBtn">
+                         <widget class="QgsDataDefinedButtonV2" name="mShadowDrawDDBtn">
                           <property name="text">
                            <string>...</string>
                           </property>
@@ -3651,70 +3651,70 @@ font-style: italic;</string>
                             </layout>
                            </item>
                            <item row="0" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShadowUnderDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShadowUnderDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="1" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShadowOffsetAngleDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShadowOffsetAngleDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="2" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShadowOffsetDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShadowOffsetDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="3" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShadowOffsetUnitsDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShadowOffsetUnitsDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="5" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShadowRadiusDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShadowRadiusDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="6" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShadowRadiusUnitsDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShadowRadiusUnitsDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="8" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShadowTranspDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShadowTranspDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="9" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShadowScaleDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShadowScaleDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="10" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShadowColorDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShadowColorDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
                            <item row="11" column="2">
-                            <widget class="QgsDataDefinedButton" name="mShadowBlendDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mShadowBlendDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -4225,7 +4225,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="0" column="3">
-                          <widget class="QgsDataDefinedButton" name="mCentroidDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mCentroidDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -4301,14 +4301,14 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="0" column="2">
-                          <widget class="QgsDataDefinedButton" name="mLineDistanceDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mLineDistanceDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
                           </widget>
                          </item>
                          <item row="1" column="2">
-                          <widget class="QgsDataDefinedButton" name="mLineDistanceUnitDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mLineDistanceUnitDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -4392,7 +4392,7 @@ font-style: italic;</string>
                           <number>0</number>
                          </property>
                          <item row="0" column="2">
-                          <widget class="QgsDataDefinedButton" name="mPointQuadOffsetDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mPointQuadOffsetDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -4679,7 +4679,7 @@ font-style: italic;</string>
                           <number>0</number>
                          </property>
                          <item row="0" column="2">
-                          <widget class="QgsDataDefinedButton" name="mPointPositionOrderDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mPointPositionOrderDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -4794,14 +4794,14 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="0" column="3">
-                          <widget class="QgsDataDefinedButton" name="mPointOffsetDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mPointOffsetDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
                           </widget>
                          </item>
                          <item row="1" column="3">
-                          <widget class="QgsDataDefinedButton" name="mPointOffsetUnitsDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mPointOffsetUnitsDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -4924,7 +4924,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="0" column="2">
-                          <widget class="QgsDataDefinedButton" name="mPointAngleDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mPointAngleDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -4984,7 +4984,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="0" column="2">
-                          <widget class="QgsDataDefinedButton" name="mRepeatDistanceDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mRepeatDistanceDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -4998,7 +4998,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="1" column="2">
-                          <widget class="QgsDataDefinedButton" name="mRepeatDistanceUnitDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mRepeatDistanceUnitDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -5071,7 +5071,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="1" column="5">
-                          <widget class="QgsDataDefinedButton" name="mMaxCharAngleDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mMaxCharAngleDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -5169,7 +5169,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item>
-                            <widget class="QgsDataDefinedButton" name="mCoordXDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mCoordXDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -5189,7 +5189,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item>
-                            <widget class="QgsDataDefinedButton" name="mCoordYDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mCoordYDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -5234,7 +5234,7 @@ font-style: italic;</string>
                          <item row="2" column="1">
                           <layout class="QHBoxLayout" name="horizontalLayout_25">
                            <item>
-                            <widget class="QgsDataDefinedButton" name="mCoordRotationDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mCoordRotationDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -5287,7 +5287,7 @@ font-style: italic;</string>
                              </widget>
                             </item>
                             <item>
-                             <widget class="QgsDataDefinedButton" name="mCoordAlignmentHDDBtn">
+                             <widget class="QgsDataDefinedButtonV2" name="mCoordAlignmentHDDBtn">
                               <property name="text">
                                <string>...</string>
                               </property>
@@ -5307,7 +5307,7 @@ font-style: italic;</string>
                              </widget>
                             </item>
                             <item>
-                             <widget class="QgsDataDefinedButton" name="mCoordAlignmentVDDBtn">
+                             <widget class="QgsDataDefinedButtonV2" name="mCoordAlignmentVDDBtn">
                               <property name="text">
                                <string>...</string>
                               </property>
@@ -5381,7 +5381,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item>
-                          <widget class="QgsDataDefinedButton" name="mPriorityDDBtn">
+                          <widget class="QgsDataDefinedButtonV2" name="mPriorityDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -5491,7 +5491,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="0" column="1">
-                            <widget class="QgsDataDefinedButton" name="mScaleBasedVisibilityDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mScaleBasedVisibilityDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -5557,7 +5557,7 @@ font-style: italic;</string>
                                </widget>
                               </item>
                               <item row="0" column="1">
-                               <widget class="QgsDataDefinedButton" name="mScaleBasedVisibilityMinDDBtn">
+                               <widget class="QgsDataDefinedButtonV2" name="mScaleBasedVisibilityMinDDBtn">
                                 <property name="text">
                                  <string>...</string>
                                 </property>
@@ -5592,7 +5592,7 @@ font-style: italic;</string>
                                </widget>
                               </item>
                               <item row="1" column="1">
-                               <widget class="QgsDataDefinedButton" name="mScaleBasedVisibilityMaxDDBtn">
+                               <widget class="QgsDataDefinedButtonV2" name="mScaleBasedVisibilityMaxDDBtn">
                                 <property name="text">
                                  <string>...</string>
                                 </property>
@@ -5622,7 +5622,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="0" column="1">
-                            <widget class="QgsDataDefinedButton" name="mFontLimitPixelDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mFontLimitPixelDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -5694,7 +5694,7 @@ font-style: italic;</string>
                                </widget>
                               </item>
                               <item row="0" column="1">
-                               <widget class="QgsDataDefinedButton" name="mFontMinPixelDDBtn">
+                               <widget class="QgsDataDefinedButtonV2" name="mFontMinPixelDDBtn">
                                 <property name="text">
                                  <string>...</string>
                                 </property>
@@ -5732,7 +5732,7 @@ font-style: italic;</string>
                                </widget>
                               </item>
                               <item row="1" column="1">
-                               <widget class="QgsDataDefinedButton" name="mFontMaxPixelDDBtn">
+                               <widget class="QgsDataDefinedButtonV2" name="mFontMaxPixelDDBtn">
                                 <property name="text">
                                  <string>...</string>
                                 </property>
@@ -5773,7 +5773,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item>
-                            <widget class="QgsDataDefinedButton" name="mZIndexDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mZIndexDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -5839,14 +5839,14 @@ font-style: italic;</string>
                              </spacer>
                             </item>
                             <item row="1" column="2">
-                             <widget class="QgsDataDefinedButton" name="mShowLabelDDBtn">
+                             <widget class="QgsDataDefinedButtonV2" name="mShowLabelDDBtn">
                               <property name="text">
                                <string>...</string>
                               </property>
                              </widget>
                             </item>
                             <item row="1" column="5">
-                             <widget class="QgsDataDefinedButton" name="mAlwaysShowDDBtn">
+                             <widget class="QgsDataDefinedButtonV2" name="mAlwaysShowDDBtn">
                               <property name="text">
                                <string>...</string>
                               </property>
@@ -6209,7 +6209,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item>
-                            <widget class="QgsDataDefinedButton" name="mIsObstacleDDBtn">
+                            <widget class="QgsDataDefinedButtonV2" name="mIsObstacleDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -6285,7 +6285,7 @@ font-style: italic;</string>
                              </widget>
                             </item>
                             <item>
-                             <widget class="QgsDataDefinedButton" name="mObstacleFactorDDBtn">
+                             <widget class="QgsDataDefinedButtonV2" name="mObstacleFactorDDBtn">
                               <property name="text">
                                <string>...</string>
                               </property>
@@ -6440,9 +6440,9 @@ font-style: italic;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsDataDefinedButtonV2</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgsdatadefinedbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>

@@ -153,6 +153,17 @@ class CORE_EXPORT QgsAbstractProperty
     int valueAsInt( const QgsExpressionContext& context, int defaultValue = 0 ) const;
 
     /**
+     * Calculates the current value of the property and interprets it as an boolean.
+     * @param context QgsExpressionContext to evaluate the property for.
+     * @param defaultValue default boolean to return if the property cannot be calculated as an boolean
+     * @returns value parsed to boolean
+     * @see value()
+     * @see valueAsDouble()
+     * @see valueAsColor()
+     */
+    bool valueAsBool( const QgsExpressionContext& context, bool defaultValue = false ) const;
+
+    /**
      * Writes the current state of the property into an XML element
      * @param propertyElem destination element for the property's state
      * @param doc DOM document

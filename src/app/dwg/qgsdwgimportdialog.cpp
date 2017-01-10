@@ -42,6 +42,7 @@
 #include "qgsgenericprojectionselector.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
+#include "qgsproperty.h"
 
 
 struct CursorOverride
@@ -358,14 +359,13 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
     pls.drawLabels = true;
     pls.fieldName = "text";
     pls.wrapChar = "\\P";
-    pls.setDataDefinedProperty( QgsPalLayerSettings::Size, true, false, "", "height" );
-    pls.setDataDefinedProperty( QgsPalLayerSettings::Color, true, false, "", "color" );
-    pls.setDataDefinedProperty( QgsPalLayerSettings::MultiLineHeight, true, true, "CASE WHEN interlin<0 THEN 1 ELSE interlin*1.5 END", "" );
-    pls.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
-    pls.setDataDefinedProperty( QgsPalLayerSettings::PositionX, true, true, "$x", "" );
-    pls.setDataDefinedProperty( QgsPalLayerSettings::PositionY, true, true, "$y", "" );
-    pls.setDataDefinedProperty( QgsPalLayerSettings::Hali, true, true, QString(
-                                  "CASE"
+
+    pls.properties().setProperty( QgsPalLayerSettings::Size, new QgsFieldBasedProperty( QStringLiteral( "height" ) ) );
+    pls.properties().setProperty( QgsPalLayerSettings::Color, new QgsFieldBasedProperty( QStringLiteral( "color" ) ) );
+    pls.properties().setProperty( QgsPalLayerSettings::MultiLineHeight, new QgsExpressionBasedProperty( QStringLiteral( "CASE WHEN interlin<0 THEN 1 ELSE interlin*1.5 END" ) ) );
+    pls.properties().setProperty( QgsPalLayerSettings::PositionX, new QgsExpressionBasedProperty( QStringLiteral( "$x" ) ) );
+    pls.properties().setProperty( QgsPalLayerSettings::PositionY, new QgsExpressionBasedProperty( QStringLiteral( "$y" ) ) );
+    pls.properties().setProperty( QgsPalLayerSettings::Hali, new QgsExpressionBasedProperty( QStringLiteral( "CASE"
                                   " WHEN etype=%1 THEN"
                                   " CASE"
                                   " WHEN alignv IN (1,4,7) THEN 'Left'"
@@ -380,10 +380,8 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
                                   " WHEN alignh=3 THEN 'Left'"
                                   " WHEN alignh=4 THEN 'Left'"
                                   " END "
-                                  " END" ).arg( DRW::MTEXT ), "" );
-
-    pls.setDataDefinedProperty( QgsPalLayerSettings::Vali, true, true, QString(
-                                  "CASE"
+                                  " END" ).arg( DRW::MTEXT ) ) );
+    pls.properties().setProperty( QgsPalLayerSettings::Vali, new QgsExpressionBasedProperty( QStringLiteral( "CASE"
                                   " WHEN etype=%1 THEN"
                                   " CASE"
                                   " WHEN alignv < 4 THEN 'Top'"
@@ -397,10 +395,10 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
                                   " WHEN alignv=2 THEN 'Half'"
                                   " WHEN alignv=3 THEN 'Top'"
                                   " END"
-                                  " END" ).arg( DRW::MTEXT ), "" );
+                                  " END" ).arg( DRW::MTEXT ) ) );
+    pls.properties().setProperty( QgsPalLayerSettings::Rotation, new QgsExpressionBasedProperty( QStringLiteral( "angle*180.0/pi()" ) ) );
 
-    pls.setDataDefinedProperty( QgsPalLayerSettings::Rotation, true, true, "angle*180.0/pi()", "" );
-
+    pls.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
     pls.writeToLayer( l );
   }
 

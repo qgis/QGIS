@@ -308,7 +308,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     //! Property collection for data defined diagram settings
     QgsPropertyCollection mProperties;
 
-    static const QMap< int, QString > sPropertyNameMap;
+    static const QgsPropertyDefinition sPropertyNameMap;
 };
 
 /** \ingroup core

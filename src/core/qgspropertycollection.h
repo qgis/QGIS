@@ -25,6 +25,9 @@ class QgsAbstractProperty;
 class QDomElement;
 class QDomDocument;
 
+//! Definition of available properties
+typedef QMap< int, QString > QgsPropertyDefinition;
+
 /**
  * \ingroup core
  * \class QgsAbstractPropertyCollection
@@ -142,6 +145,19 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     int valueAsInt( int key, const QgsExpressionContext& context, int defaultValue = 0 ) const;
 
     /**
+     * Calculates the current value of the property with the specified key and interprets it as an boolean.
+     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
+     * int and used for the key value.
+     * @param context QgsExpressionContext to evaluate the property for.
+     * @param defaultValue default boolean to return if the property cannot be calculated as a boolean
+     * @returns value parsed to bool
+     * @see value()
+     * @see valueAsDouble()
+     * @see valueAsColor()
+     */
+    bool valueAsBool( int key, const QgsExpressionContext& context, bool defaultValue = false ) const;
+
+    /**
      * Prepares the collection against a specified expression context. Calling prepare before evaluating the
      * collection's properties multiple times allows precalculation of expensive setup tasks such as parsing expressions.
      * Returns true if preparation was successful.
@@ -183,7 +199,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * to avoid writing the raw integer key values to XML, for readability and future-proofness.
      * @see readXml()
     */
-    virtual bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QMap< int, QString >& propertyNameMap ) const = 0;
+    virtual bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertyDefinition& propertyNameMap ) const = 0;
 
     /**
      * Reads property collection state from an XML element.
@@ -244,7 +260,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     bool isActive( int key ) const override;
     bool hasActiveProperties() const override;
     bool hasActiveDynamicProperties() const override;
-    bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QMap< int, QString >& propertyNameMap ) const override;
+    bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertyDefinition& propertyNameMap ) const override;
     bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QMap<int, QString> &propertyNameMap ) override;
 
     /**
@@ -399,7 +415,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
 
     QSet<int> propertyKeys() const override;
     bool hasProperty( int key ) const override;
-    bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QMap< int, QString >& propertyNameMap ) const override;
+    bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertyDefinition& propertyNameMap ) const override;
     bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QMap<int, QString> &propertyNameMap ) override;
 
   private:

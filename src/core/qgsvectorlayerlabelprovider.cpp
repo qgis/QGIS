@@ -177,26 +177,9 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QSet
       attributeNames.insert( lyr.fieldName );
     }
 
+    lyr.properties().prepare( context.expressionContext() );
     // add field indices of data defined expression or field
-    QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator dIt = lyr.dataDefinedProperties.constBegin();
-    for ( ; dIt != lyr.dataDefinedProperties.constEnd(); ++dIt )
-    {
-      QgsDataDefined* dd = dIt.value();
-      if ( !dd->isActive() )
-      {
-        continue;
-      }
-
-      // this will return columns for expressions or field name, depending upon what is set to be used
-      // this also prepares any expressions, too
-      QSet<QString> cols = dd->referencedColumns( context.expressionContext() );
-
-      //QgsDebugMsgLevel( QString( "Data defined referenced columns:" ) + cols.join( "," ), 4 );
-      Q_FOREACH ( const QString& name, cols )
-      {
-        attributeNames.insert( name );
-      }
-    }
+    attributeNames.unite( lyr.properties().referencedFields( context.expressionContext() ) );
   }
 
   // NOW INITIALIZE QgsPalLayerSettings
@@ -389,7 +372,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::Lab
   QgsPalLayerSettings tmpLyr( mSettings );
 
   // apply any previously applied data defined settings for the label
-  const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues = lf->dataDefinedValues();
+  const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues = lf->dataDefinedValues();
 
   //font
   QFont dFont = lf->definedFont();

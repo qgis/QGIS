@@ -237,7 +237,8 @@ void TestQgsLabelingEngine::testRuleBased()
   s2.placement = QgsPalLayerSettings::OverPoint;
   s2.quadOffset = QgsPalLayerSettings::QuadrantBelowRight;
   s2.displayAll = true;
-  s2.setDataDefinedProperty( QgsPalLayerSettings::Size, true, true, QStringLiteral( "18" ), QString() );
+
+  s2.properties().setProperty( QgsPalLayerSettings::Size, new QgsStaticProperty( QStringLiteral( "18" ) ) );
 
   root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s2 ), 0, 0, QStringLiteral( "Class = 'Jet'" ) ) );
 
@@ -311,8 +312,8 @@ void TestQgsLabelingEngine::zOrder()
   pls1.setFormat( format );
 
   //use data defined coloring and font size so that stacking order of labels can be determined
-  pls1.setDataDefinedProperty( QgsPalLayerSettings::Color, true, true, QStringLiteral( "case when \"Class\"='Jet' then '#ff5500' when \"Class\"='B52' then '#00ffff' else '#ff00ff' end" ), QString() );
-  pls1.setDataDefinedProperty( QgsPalLayerSettings::Size, true, true, QStringLiteral( "case when \"Class\"='Jet' then 100 when \"Class\"='B52' then 30 else 50 end" ), QString() );
+  pls1.properties().setProperty( QgsPalLayerSettings::Color, new QgsExpressionBasedProperty( QStringLiteral( "case when \"Class\"='Jet' then '#ff5500' when \"Class\"='B52' then '#00ffff' else '#ff00ff' end" ) ) );
+  pls1.properties().setProperty( QgsPalLayerSettings::Size, new QgsExpressionBasedProperty( QStringLiteral( "case when \"Class\"='Jet' then 100 when \"Class\"='B52' then 30 else 50 end" ) ) );
 
   QgsVectorLayerLabelProvider* provider1 = new QgsVectorLayerLabelProvider( vl, QString(), true, &pls1 );
   QgsLabelingEngine engine;
@@ -329,7 +330,7 @@ void TestQgsLabelingEngine::zOrder()
   img = job.renderedImage();
 
   //test data defined z-index
-  pls1.setDataDefinedProperty( QgsPalLayerSettings::ZIndex, true, true, QStringLiteral( "case when \"Class\"='Jet' then 3 when \"Class\"='B52' then 1 else 2 end" ), QString() );
+  pls1.properties().setProperty( QgsPalLayerSettings::ZIndex, new QgsExpressionBasedProperty( QStringLiteral( "case when \"Class\"='Jet' then 3 when \"Class\"='B52' then 1 else 2 end" ) ) );
   provider1 = new QgsVectorLayerLabelProvider( vl, QString(), true, &pls1 );
   engine.addProvider( provider1 );
   p.begin( &img );
@@ -341,7 +342,7 @@ void TestQgsLabelingEngine::zOrder()
   QVERIFY( imageCheck( "label_order_zindex", img, 20 ) );
   img = job.renderedImage();
 
-  pls1.removeAllDataDefinedProperties();
+  pls1.properties().clear();
   format = pls1.format();
   format.setColor( QColor( 255, 50, 100 ) );
   format.setSize( 30 );
@@ -386,7 +387,7 @@ void TestQgsLabelingEngine::zOrder()
 
   //try mixing layer order and z-index
   engine.removeProvider( provider1 );
-  pls1.setDataDefinedProperty( QgsPalLayerSettings::ZIndex, true, true, QStringLiteral( "if(\"Class\"='Jet',3,0)" ), QString() );
+  pls1.properties().setProperty( QgsPalLayerSettings::ZIndex, new QgsExpressionBasedProperty( QStringLiteral( "if(\"Class\"='Jet',3,0)" ) ) );
   provider1 = new QgsVectorLayerLabelProvider( vl, QString(), true, &pls1 );
   engine.addProvider( provider1 );
 

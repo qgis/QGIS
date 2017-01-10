@@ -38,6 +38,7 @@
 #include "qgsmapunitscale.h"
 #include "qgsstringutils.h"
 #include "qgstextrenderer.h"
+#include "qgspropertycollection.h"
 
 namespace pal
 {
@@ -261,7 +262,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     //! Data definable properties.
     // update sPropertyNameMap QMap in constructor when adding/deleting enum value
-    enum DataDefinedProperties
+    enum Property
     {
       // text style
       Size = 0, //!< Label size
@@ -529,61 +530,24 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     QDomElement writeXml( QDomDocument& doc );
 
-    /** Get a data defined property pointer
-     * @note helpful for Python access
+    /** Returns a reference to the label's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setProperties()
      */
-    QgsDataDefined* dataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p );
+    QgsPropertyCollection& properties() { return mProperties; }
 
-    /** Set a property as data defined
-     * @note helpful for Python access
+    /** Returns a reference to the label's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setProperties()
      */
-    void setDataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p,
-                                 bool active, bool useExpr, const QString& expr, const QString& field );
+    const QgsPropertyCollection& properties() const { return mProperties; }
 
-    //! Set a property to static instead data defined
-    void removeDataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p );
-
-    /** Clear all data-defined properties
-     * @note added in QGIS 2.12
+    /** Sets the label's property collection, used for data defined overrides.
+     * @param collection property collection. Existing properties will be replaced.
+     * @note added in QGIS 3.0
+     * @see properties()
      */
-    void removeAllDataDefinedProperties();
-
-    /** Convert old property value to new one as delimited values
-     * @note not available in python bindings; as temporary solution until refactoring of project settings
-     */
-    QString updateDataDefinedString( const QString& value );
-
-    /** Get property value as separate values split into Qmap
-     * @note not available in python bindings
-     */
-    QMap<QString, QString> dataDefinedMap( QgsPalLayerSettings::DataDefinedProperties p ) const;
-
-    /** Get data defined property value from expression string or attribute field name
-     * @returns value inside QVariant
-     * @note not available in python bindings
-     */
-    QVariant dataDefinedValue( QgsPalLayerSettings::DataDefinedProperties p, QgsFeature& f, const QgsFields& fields,
-                               const QgsExpressionContext* context = nullptr ) const;
-
-    /** Get data defined property value from expression string or attribute field name
-     * @returns true/false whether result is null or invalid
-     * @note not available in python bindings
-     */
-    bool dataDefinedEvaluate( QgsPalLayerSettings::DataDefinedProperties p, QVariant& exprVal, QgsExpressionContext* context = nullptr, const QVariant& originalValue = QVariant() ) const;
-
-    /** Whether data definition is active
-     */
-    bool dataDefinedIsActive( QgsPalLayerSettings::DataDefinedProperties p ) const;
-
-    /** Whether data definition is set to use an expression
-     */
-    bool dataDefinedUseExpression( QgsPalLayerSettings::DataDefinedProperties p ) const;
-
-    /** Map of current data defined properties
-     *
-     * Pointers to QgsDataDefined should never be null, the pointers are owned by this class
-     */
-    QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > dataDefinedProperties;
+    void setProperties( const QgsPropertyCollection& collection ) { mProperties = collection; }
 
     /** Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
      * @see setFormat()
@@ -614,16 +578,15 @@ class CORE_EXPORT QgsPalLayerSettings
 
   private:
 
-    void readDataDefinedPropertyMap( QgsVectorLayer* layer, QDomElement* parentElem,
-                                     QMap < QgsPalLayerSettings::DataDefinedProperties,
-                                     QgsDataDefined* > & propertyMap );
-    void writeDataDefinedPropertyMap( QgsVectorLayer* layer, QDomElement* parentElem,
-                                      const QMap < QgsPalLayerSettings::DataDefinedProperties,
-                                      QgsDataDefined* > & propertyMap );
-    void readDataDefinedProperty( QgsVectorLayer* layer,
-                                  QgsPalLayerSettings::DataDefinedProperties p,
-                                  QMap < QgsPalLayerSettings::DataDefinedProperties,
-                                  QgsDataDefined* > & propertyMap );
+    /**
+     * Reads data defined properties from a QGIS 2.x project.
+     */
+    void readOldDataDefinedPropertyMap( QgsVectorLayer* layer, QDomElement* parentElem );
+
+    /**
+     * Reads a data defined property from a QGIS 2.x project.
+     */
+    void readOldDataDefinedProperty( QgsVectorLayer* layer, QgsPalLayerSettings::Property p );
 
     enum DataDefinedValueType
     {
@@ -644,7 +607,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     // convenience data defined evaluation function
     bool dataDefinedValEval( DataDefinedValueType valType,
-                             QgsPalLayerSettings::DataDefinedProperties p,
+                             QgsPalLayerSettings::Property p,
                              QVariant& exprVal, QgsExpressionContext &context, const QVariant& originalValue = QVariant() );
 
     void parseTextStyle( QFont& labelFont,
@@ -667,14 +630,18 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     void registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature** obstacleFeature, QgsGeometry* obstacleGeometry = nullptr );
 
-    QMap<DataDefinedProperties, QVariant> dataDefinedValues;
+    QMap<Property, QVariant> dataDefinedValues;
+
+    //! Property collection for data defined label settings
+    QgsPropertyCollection mProperties;
+
     QgsExpression* expression;
 
     QFontDatabase mFontDB;
 
     QgsTextFormat mFormat;
 
-    static const QMap< int, QString > sPropertyNameMap;
+    static const QgsPropertyDefinition sPropertyNameMap;
     static const QVector< PredefinedPointPosition > DEFAULT_PLACEMENT_ORDER;
 };
 
@@ -821,23 +788,23 @@ class CORE_EXPORT QgsPalLabeling
   protected:
     // update temporary QgsPalLayerSettings with any data defined text style values
     static void dataDefinedTextStyle( QgsPalLayerSettings& tmpLyr,
-                                      const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
+                                      const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
     // update temporary QgsPalLayerSettings with any data defined text formatting values
     static void dataDefinedTextFormatting( QgsPalLayerSettings& tmpLyr,
-                                           const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
+                                           const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
     // update temporary QgsPalLayerSettings with any data defined text buffer values
     static void dataDefinedTextBuffer( QgsPalLayerSettings& tmpLyr,
-                                       const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
+                                       const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
     // update temporary QgsPalLayerSettings with any data defined shape background values
     static void dataDefinedShapeBackground( QgsPalLayerSettings& tmpLyr,
-                                            const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
+                                            const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
     // update temporary QgsPalLayerSettings with any data defined drop shadow values
     static void dataDefinedDropShadow( QgsPalLayerSettings& tmpLyr,
-                                       const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
+                                       const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
     friend class QgsVectorLayerLabelProvider; // to allow calling the static methods above
     friend class QgsDxfExport;                // to allow calling the static methods above

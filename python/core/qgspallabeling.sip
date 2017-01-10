@@ -1,83 +1,3 @@
-// QMap<QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined*> is implemented as a Python dictionary.
-%MappedType QMap<QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined*> /DocType="dict-of-QgsPalLayerSettings.DataDefinedProperties-QgsDataDefined*"/
-{
-%TypeHeaderCode
-#include <qmap.h>
-#include <qgspallabeling.h>
-#include <qgsdatadefined.h>
-%End
-%ConvertFromTypeCode
-    // Create the dictionary.
-    PyObject *d = PyDict_New();
-    if (!d)
-        return NULL;
-    // Set the dictionary elements.
-    QMap<QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined*>::const_iterator i = sipCpp->constBegin();
-    while (i != sipCpp->constEnd())
-    {
-      QgsDataDefined *t = i.value();
-      PyObject *kobj = sipConvertFromEnum(i.key(), sipType_QgsPalLayerSettings_DataDefinedProperties);
-      PyObject *tobj = sipConvertFromType(t, sipType_QgsDataDefined, sipTransferObj);
-      if (kobj == NULL || tobj == NULL || PyDict_SetItem(d, kobj, tobj) < 0)
-      {
-	Py_DECREF(d);
-	if (kobj)
-	{
-	  Py_DECREF(kobj);
-	}
-	if (tobj)
-	{
-	  Py_DECREF(tobj);
-	}
-	else
-	{
-	  delete t;
-	}
-	return NULL;
-      }
-      Py_DECREF(kobj);
-      Py_DECREF(tobj);
-      ++i;
-    }
-    return d;
-%End
-%ConvertToTypeCode
-    PyObject *kobj, *tobj;
-    SIP_SSIZE_T i = 0;
-    // Check the type if that is all that is required.
-    if (sipIsErr == NULL)
-    {
-        if (!PyDict_Check(sipPy))
-            return 0;
-        while (PyDict_Next(sipPy, &i, &kobj, &tobj))
-            if (!sipCanConvertToType(tobj, sipType_QgsDataDefined, SIP_NOT_NONE))
-                return 0;
-        return 1;
-    }
-    QMap<QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined*> *qm = new QMap<QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined*>;
-
-    while (PyDict_Next(sipPy, &i, &kobj, &tobj))
-    {
-        int state, k = SIPLong_AsLong(kobj);
-        QgsDataDefined *t = reinterpret_cast<QgsDataDefined *>(sipConvertToType(tobj, sipType_QgsDataDefined, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-
-        if (*sipIsErr)
-        {
-            sipReleaseType(t, sipType_QgsDataDefined, state);
-            delete qm;
-            return 0;
-        }
-        qm->insert(QgsPalLayerSettings::DataDefinedProperties(k), t);
-        sipReleaseType(t, sipType_QgsDataDefined, state);
-    }
-
-    *sipCppPtr = qm;
-
-    return sipGetState(sipTransferObj);
-%End
-};
-
-
 class QgsLabelPosition
 {
 %TypeHeaderCode
@@ -239,7 +159,7 @@ class QgsPalLayerSettings
     };
 
     // update mDataDefinedNames QMap in constructor when adding/deleting enum value
-    enum DataDefinedProperties
+    enum Property
     {
       // text style
       Size,
@@ -507,67 +427,24 @@ class QgsPalLayerSettings
      */
     QDomElement writeXml( QDomDocument& doc );
 
-    /** Get a data defined property pointer
-     * @note helpful for Python access
+    /** Returns a reference to the label's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setProperties()
      */
-    QgsDataDefined* dataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p );
+    QgsPropertyCollection& properties();
 
-    /** Set a property as data defined
-     * @note helpful for Python access
+    /** Returns a reference to the label's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setProperties()
      */
-    void setDataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p,
-                                 bool active, bool useExpr, const QString& expr, const QString& field );
+    //const QgsPropertyCollection& properties() const { return mProperties; }
 
-    /** Set a property to static instead data defined */
-    void removeDataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p );
-
-    /** Clear all data-defined properties
-     * @note added in QGIS 2.12
+    /** Sets the label's property collection, used for data defined overrides.
+     * @param collection property collection. Existing properties will be replaced.
+     * @note added in QGIS 3.0
+     * @see properties()
      */
-    void removeAllDataDefinedProperties();
-
-    /** Convert old property value to new one as delimited values
-     * @note not available in python bindings; as temporary solution until refactoring of project settings
-     */
-    QString updateDataDefinedString( const QString& value );
-
-    /** Get property value as separate values split into Qmap
-     * @note not available in python bindings
-     */
-    QMap<QString, QString> dataDefinedMap( QgsPalLayerSettings::DataDefinedProperties p ) const;
-
-    /** Get data defined property value from expression string or attribute field name
-     * @returns value inside QVariant
-     * @note not available in python bindings
-     */
-    //QVariant dataDefinedValue( QgsPalLayerSettings::DataDefinedProperties p, QgsFeature& f, const QgsFields& fields,
-    //                           const QgsExpressionContext* context = 0 ) const;
-
-    /** Get data defined property value from expression string or attribute field name
-     * @returns true/false whether result is null or invalid
-     * @note not available in python bindings
-     */
-    //bool dataDefinedEvaluate( QgsPalLayerSettings::DataDefinedProperties p, QVariant& exprVal, const QgsExpressionContext* context = 0 ) const;
-
-    /** Whether data definition is active
-     */
-    bool dataDefinedIsActive( QgsPalLayerSettings::DataDefinedProperties p ) const;
-
-    /** Whether data definition is set to use an expression
-     */
-    bool dataDefinedUseExpression( QgsPalLayerSettings::DataDefinedProperties p ) const;
-
-    /** Map of current data defined properties
-     *
-     * Pointers to QgsDataDefined should never be null, the pointers are owned by this class
-     */
-    QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > dataDefinedProperties;
-
-    /** Map of data defined enum to names and old-style indecies
-     * The QPair contains a new string for layer property key, and a reference to old-style numeric key (< QGIS 2.0)
-     * @note not available in python bindings;
-     */
-    // QMap<QgsPalLayerSettings::DataDefinedProperties, QPair<QString, int> > dataDefinedNames() const;
+    void setProperties( const QgsPropertyCollection& collection );
 
     /** Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
      * @see setFormat()
@@ -737,23 +614,23 @@ class QgsPalLabeling
   protected:
     // update temporary QgsPalLayerSettings with any data defined text style values
     void dataDefinedTextStyle( QgsPalLayerSettings& tmpLyr,
-                               const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
+                               const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
     // update temporary QgsPalLayerSettings with any data defined text formatting values
     void dataDefinedTextFormatting( QgsPalLayerSettings& tmpLyr,
-                                    const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
+                                    const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
     // update temporary QgsPalLayerSettings with any data defined text buffer values
     void dataDefinedTextBuffer( QgsPalLayerSettings& tmpLyr,
-                                const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
+                                const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
     // update temporary QgsPalLayerSettings with any data defined shape background values
     void dataDefinedShapeBackground( QgsPalLayerSettings& tmpLyr,
-                                     const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
+                                     const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
     // update temporary QgsPalLayerSettings with any data defined drop shadow values
     void dataDefinedDropShadow( QgsPalLayerSettings& tmpLyr,
-                                const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
+                                const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
     void deleteTemporaryData();
 

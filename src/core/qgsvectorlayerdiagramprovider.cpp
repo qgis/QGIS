@@ -220,21 +220,11 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   }
 
   // data defined show diagram? check this before doing any other processing
-  if ( mSettings.properties().hasProperty( QgsDiagramLayerSettings::Show )
-       && mSettings.properties().property( QgsDiagramLayerSettings::Show )->isActive() )
-  {
-    bool show = mSettings.properties().valueAsInt( QgsDiagramLayerSettings::Show, context.expressionContext(), true );
-    if ( !show )
-      return nullptr;
-  }
+  if ( !mSettings.properties().valueAsBool( QgsDiagramLayerSettings::Show, context.expressionContext(), true ) )
+    return nullptr;
 
   // data defined obstacle?
-  bool isObstacle = mSettings.isObstacle();
-  if ( mSettings.properties().hasProperty( QgsDiagramLayerSettings::IsObstacle )
-       && mSettings.properties().property( QgsDiagramLayerSettings::IsObstacle )->isActive() )
-  {
-    isObstacle = mSettings.properties().valueAsInt( QgsDiagramLayerSettings::IsObstacle, context.expressionContext(), isObstacle );
-  }
+  bool isObstacle = mSettings.properties().valueAsBool( QgsDiagramLayerSettings::IsObstacle, context.expressionContext(), mSettings.isObstacle() );
 
   //convert geom to geos
   QgsGeometry geom = feat.geometry();
@@ -289,12 +279,8 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
 
   //  feature to the layer
   bool alwaysShow = mSettings.showAllDiagrams();
-  if ( mSettings.properties().hasProperty( QgsDiagramLayerSettings::AlwaysShow )
-       && mSettings.properties().property( QgsDiagramLayerSettings::AlwaysShow )->isActive() )
-  {
-    context.expressionContext().setOriginalValueVariable( alwaysShow );
-    alwaysShow = mSettings.properties().valueAsInt( QgsDiagramLayerSettings::AlwaysShow, context.expressionContext(), alwaysShow );
-  }
+  context.expressionContext().setOriginalValueVariable( alwaysShow );
+  alwaysShow = mSettings.properties().valueAsBool( QgsDiagramLayerSettings::AlwaysShow, context.expressionContext(), alwaysShow );
 
   // new style data defined position
   bool ddPos = false;

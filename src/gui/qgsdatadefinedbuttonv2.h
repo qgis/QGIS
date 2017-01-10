@@ -39,6 +39,7 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
 {
     Q_OBJECT
     Q_PROPERTY( QString usageInfo READ usageInfo WRITE setUsageInfo )
+    Q_PROPERTY( bool active READ isActive WRITE setActive )
 
   public:
 
@@ -83,6 +84,11 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
     QgsAbstractProperty* toProperty();
 
     /**
+     * Returns true if the button has an active property.
+     */
+    bool isActive() const { return mActive; }
+
+    /**
      * The valid data types that will work for the definition (QVariant-coercible to expected type)
      * Compared against the variant type of the QgsField from data source and expression result
      */
@@ -102,6 +108,11 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
      * Set the usage information about this data definition
      */
     void setUsageInfo( const QString& info ) { mUsageInfo = info; updateGui(); }
+
+    /**
+     * Register a sibling widget that get checked when data definition or expression is active
+     */
+    void registerCheckedWidget( QWidget* widget );
 
     //! Callback function for retrieving the expression context for the button
     typedef QgsExpressionContext( *ExpressionContextCallback )( const void* context );
