@@ -88,6 +88,7 @@
 %Include qgsgradientcolorrampdialog.sip
 %Include qgsgradientstopeditor.sip
 %Include qgsgroupwmsdatadialog.sip
+%Include qgshelp.sip
 %Include qgshighlight.sip
 %Include qgshistogramwidget.sip
 %Include qgshtmlannotationitem.sip

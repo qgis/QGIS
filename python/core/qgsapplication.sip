@@ -254,6 +254,11 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static QString platform();
 
+    /** Returns the QGIS locale.
+     * @note added in QGIS 3.0
+     */
+    static QString locale();
+
     //! Returns the path to user's themes folder
     static QString userThemesFolder();
 

@@ -237,6 +237,7 @@ SET(QGIS_GUI_SRCS
   qgsgroupwmsdatadialog.cpp
   qgshighlight.cpp
   qgshistogramwidget.cpp
+  qgshelp.cpp
   qgshtmlannotationitem.cpp
   qgsidentifymenu.cpp
   qgskeyvaluewidget.cpp
@@ -303,7 +304,7 @@ SET(QGIS_GUI_SRCS
   qgsshortcutsmanager.cpp
   qgsslider.cpp
   qgssublayersdialog.cpp
-  qgssubstitutionlistwidget.cpp  
+  qgssubstitutionlistwidget.cpp
   qgssqlcomposerdialog.cpp
   qgssvgannotationitem.cpp
   qgstablewidgetbase.cpp
@@ -503,7 +504,7 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgslayerpropertieswidget.h
   symbology-ng/qgsnullsymbolrendererwidget.h
   symbology-ng/qgspenstylecombobox.h
-  symbology-ng/qgspointclusterrendererwidget.h  
+  symbology-ng/qgspointclusterrendererwidget.h
   symbology-ng/qgspointdisplacementrendererwidget.h
   symbology-ng/qgsrendererpropertiesdialog.h
   symbology-ng/qgsrendererwidget.h
@@ -651,6 +652,7 @@ SET(QGIS_GUI_HDRS
   qgsdetaileditemdata.h
   qgsexpressionbuilderdialog.h
   qgsfiledropedit.h
+  qgshelp.h
   qgshighlight.h
   qgsmapcanvasitem.h
   qgsmapcanvasmap.h
@@ -718,7 +720,7 @@ SET(QGIS_GUI_HDRS
   layertree/qgslayertreeembeddedwidgetregistry.h
 
   raster/qgsrasterrendererwidget.h
-  
+
   symbology-ng/qgssymbolwidgetcontext.h
 )
 

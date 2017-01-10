@@ -265,6 +265,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
     mListHiddenBrowserPaths->addItem( newItem );
   }
 
+  //locations of the QGIS help
+  QStringList helpPathList = mSettings->value( QStringLiteral( "help/helpSearchPath" ) ).toStringList();
+  Q_FOREACH ( const QString& path, helpPathList )
+  {
+    QTreeWidgetItem* item = new QTreeWidgetItem();
+    item->setText( 0, path );
+    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
+    mHelpPathTreeWidget->addTopLevelItem( item );
+  }
+
   //Network timeout
   mNetworkTimeoutSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), "60000" ).toInt() );
   leUserAgent->setText( mSettings->value( QStringLiteral( "/qgis/networkAndProxy/userAgent" ), "Mozilla/5.0" ).toString() );
@@ -1096,6 +1106,17 @@ void QgsOptions::saveOptions()
   }
   mSettings->setValue( QStringLiteral( "/browser/hiddenPaths" ), pathsList );
 
+  //QGIS help locations
+  QStringList helpPaths;
+  for ( int i = 0; i < mHelpPathTreeWidget->topLevelItemCount(); ++i )
+  {
+    if ( QTreeWidgetItem* item = mHelpPathTreeWidget->topLevelItem( i ) )
+    {
+      helpPaths << item->text( 0 );
+    }
+  }
+  mSettings->setValue( QStringLiteral( "help/helpSearchPath" ), helpPaths );
+
   //Network timeout
   mSettings->setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), mNetworkTimeoutSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/networkAndProxy/userAgent" ), leUserAgent->text() );
@@ -1711,6 +1732,59 @@ void QgsOptions::on_mBtnRemovePluginPath_clicked()
   int currentRow = mListPluginPaths->currentRow();
   QListWidgetItem* itemToRemove = mListPluginPaths->takeItem( currentRow );
   delete itemToRemove;
+}
+
+void QgsOptions::on_mBtnAddHelpPath_clicked()
+{
+  QTreeWidgetItem* item = new QTreeWidgetItem();
+  item->setText( 0, QString() );
+  item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
+  mHelpPathTreeWidget->addTopLevelItem( item );
+}
+
+void QgsOptions::on_mBtnRemoveHelpPath_clicked()
+{
+  QList<QTreeWidgetItem*> items = mHelpPathTreeWidget->selectedItems();
+  for ( int i = 0; i < items.size(); ++i )
+  {
+    int idx = mHelpPathTreeWidget->indexOfTopLevelItem( items.at( i ) );
+    if ( idx >= 0 )
+    {
+      delete mHelpPathTreeWidget->takeTopLevelItem( idx );
+    }
+  }
+}
+
+void QgsOptions::on_mBtnMoveHelpUp_clicked()
+{
+  QList<QTreeWidgetItem*> selectedItems = mHelpPathTreeWidget->selectedItems();
+  QList<QTreeWidgetItem*>::iterator itemIt = selectedItems.begin();
+  for ( ; itemIt != selectedItems.end(); ++itemIt )
+  {
+    int currentIndex = mHelpPathTreeWidget->indexOfTopLevelItem( *itemIt );
+    if ( currentIndex > 0 )
+    {
+      mHelpPathTreeWidget->takeTopLevelItem( currentIndex );
+      mHelpPathTreeWidget->insertTopLevelItem( currentIndex - 1, *itemIt );
+      mHelpPathTreeWidget->setCurrentItem( *itemIt );
+    }
+  }
+}
+
+void QgsOptions::on_mBtnMoveHelpDown_clicked()
+{
+  QList<QTreeWidgetItem*> selectedItems = mHelpPathTreeWidget->selectedItems();
+  QList<QTreeWidgetItem*>::iterator itemIt = selectedItems.begin();
+  for ( ; itemIt != selectedItems.end(); ++itemIt )
+  {
+    int currentIndex = mHelpPathTreeWidget->indexOfTopLevelItem( *itemIt );
+    if ( currentIndex <  mHelpPathTreeWidget->topLevelItemCount() - 1 )
+    {
+      mHelpPathTreeWidget->takeTopLevelItem( currentIndex );
+      mHelpPathTreeWidget->insertTopLevelItem( currentIndex + 1, *itemIt );
+      mHelpPathTreeWidget->setCurrentItem( *itemIt );
+    }
+  }
 }
 
 void QgsOptions::on_mBtnAddTemplatePath_clicked()
