@@ -44,7 +44,7 @@ QUrl QgsHelp::helpUrl( const QString& key )
     return helpNotFound;
   }
 
-  QgsExpressionContextScope *scope = QgsExpressionContextUtils::globalScope();
+  QScopedPointer<QgsExpressionContextScope> scope( QgsExpressionContextUtils::globalScope() );
 
   QUrl helpUrl;
   QString helpPath, fullPath;
