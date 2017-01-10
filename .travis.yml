@@ -23,7 +23,7 @@ matrix:
             - llvm-toolchain-precise-3.8
             - ubuntu-toolchain-r-test
             - george-edison55-precise-backports # doxygen 1.8.3
-            # - laurent-boulard-devtools not whitelisted yet https://github.com/travis-ci/apt-source-whitelist/pull/345
+            # - laurent-boulard-devtools (for silver-search, not whitelisted yet https://github.com/travis-ci/apt-source-whitelist/pull/345)
           packages:
             - doxygen
             - bison
@@ -33,6 +33,7 @@ matrix:
             - libfcgi-dev
             - libfftw3-3	    
             - pkg-config
+            - perl  # lookahead regex in spell check script
             - poppler-utils
             - txt2tags
             - xvfb
