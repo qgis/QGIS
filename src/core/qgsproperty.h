@@ -94,6 +94,13 @@ class CORE_EXPORT QgsAbstractProperty
     void setActive( bool active ) { mActive = active; }
 
     /**
+     * Prepares the property against a specified expression context. Calling prepare before evaluating the
+     * property multiple times allows precalculation of expensive setup tasks such as parsing expressions.
+     * Returns true if preparation was successful.
+     */
+    virtual bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const { Q_UNUSED( context ); return true; }
+
+    /**
      * Returns the set of any fields referenced by the property.
      * @param context expression context the property will be evaluated against.
      */
@@ -262,6 +269,13 @@ class CORE_EXPORT QgsFieldBasedProperty : public QgsAbstractProperty
      */
     QgsFieldBasedProperty( const QString& field = QString(), bool isActive = false );
 
+    /**
+     * Copy constructor
+     */
+    QgsFieldBasedProperty( const QgsFieldBasedProperty& other );
+
+    QgsFieldBasedProperty& operator=( const QgsFieldBasedProperty& other );
+
     virtual Type propertyType() const override { return FieldBasedProperty; }
 
     virtual QgsFieldBasedProperty* clone() override;
@@ -279,6 +293,7 @@ class CORE_EXPORT QgsFieldBasedProperty : public QgsAbstractProperty
      */
     QString field() const { return mField; }
 
+    bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
     virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
     bool writeXml( QDomElement& propertyElem, QDomDocument& doc ) const override;
     bool readXml( const QDomElement& propertyElem, const QDomDocument& doc ) override;
@@ -290,6 +305,7 @@ class CORE_EXPORT QgsFieldBasedProperty : public QgsAbstractProperty
   private:
 
     QString mField;
+    mutable int mCachedFieldIdx = -1;
 
 };
 
@@ -328,6 +344,7 @@ class CORE_EXPORT QgsExpressionBasedProperty : public QgsAbstractProperty
      */
     QString expressionString() const { return mExpressionString; }
 
+    bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
     virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
     bool writeXml( QDomElement& propertyElem, QDomDocument& doc ) const override;
     bool readXml( const QDomElement& propertyElem, const QDomDocument& doc ) override;
@@ -339,12 +356,10 @@ class CORE_EXPORT QgsExpressionBasedProperty : public QgsAbstractProperty
   private:
 
     QString mExpressionString;
-    mutable bool mPrepared;
+    mutable bool mPrepared = false;
     mutable QgsExpression mExpression;
     //! Cached set of referenced columns
     mutable QSet< QString > mReferencedCols;
-
-    bool prepare( const QgsExpressionContext& context ) const;
 
 };
 

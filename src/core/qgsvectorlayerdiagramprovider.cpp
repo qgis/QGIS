@@ -178,10 +178,12 @@ bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext& context, QS
 
   s2.setRenderer( mDiagRenderer );
 
+  bool result = s2.prepare( context.expressionContext() );
+
   //add attributes needed by the diagram renderer
   attributeNames.unite( s2.referencedFields( context.expressionContext() ) );
 
-  return true;
+  return result;
 }
 
 

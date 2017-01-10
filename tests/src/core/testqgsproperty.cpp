@@ -318,6 +318,11 @@ void TestQgsProperty::fieldBasedProperty()
   QCOMPARE( defaultProperty.value( context, -1 ).toInt(), -1 );
   QVERIFY( defaultProperty.referencedFields( context ).isEmpty() );
 
+  //test preparation
+  QgsFieldBasedProperty property3( QString( "field1" ), true );
+  QVERIFY( property3.prepare( context ) );
+  QCOMPARE( property3.value( context, -1 ).toInt(), 5 );
+
   //saving and restoring
 
   //create a test dom element
@@ -410,6 +415,13 @@ void TestQgsProperty::expressionBasedProperty()
   defaultProperty.setActive( true );
   QCOMPARE( defaultProperty.value( context, -1 ).toInt(), -1 );
   QVERIFY( defaultProperty.referencedFields( context ).isEmpty() );
+
+  //preparation
+  QgsExpressionBasedProperty property3( QString( "\"field1\" + \"field2\"" ), true );
+  QVERIFY( property3.prepare( context ) );
+  QCOMPARE( property3.value( context, -1 ).toInt(), 12 );
+  QgsExpressionBasedProperty property4( QString( "\"field1\" + " ), true );
+  QVERIFY( !property4.prepare( context ) );
 
   //saving and restoring
 
@@ -776,6 +788,9 @@ void TestQgsProperty::propertyCollection()
   QVERIFY( collection.hasActiveProperties() );
   QVERIFY( !collection.hasActiveDynamicProperties() );
 
+  //preparation
+  QVERIFY( collection.prepare( context ) );
+
   //test bad property
   QVERIFY( !collection.property( Property2 ) );
   QVERIFY( !collection.value( Property2, context ).isValid() );
@@ -994,6 +1009,9 @@ void TestQgsProperty::collectionStack()
   QCOMPARE( stack.value( Property2, context ), property2->value( context ) );
   QVERIFY( !stack.hasActiveDynamicProperties() );
   QVERIFY( stack.hasActiveProperties() );
+
+  //preparation
+  QVERIFY( stack.prepare( context ) );
 
   //test adding active property later in the stack
   QgsStaticProperty* property3 = new QgsStaticProperty( "value3", true );

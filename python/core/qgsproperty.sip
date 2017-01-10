@@ -69,6 +69,13 @@ class QgsAbstractProperty
      */
     void setActive( bool active );
 
+    /**
+     * Prepares the property against a specified expression context. Calling prepare before evaluating the
+     * property multiple times allows precalculation of expensive setup tasks such as parsing expressions.
+     * Returns true if preparation was successful.
+     */
+    virtual bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const;
+
     /** Returns the set of any fields referenced by the property.
      * @param context expression context the property will be evaluated against.
      */
@@ -237,6 +244,7 @@ class QgsFieldBasedProperty : QgsAbstractProperty
      */
     QString field() const;
 
+    bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const;
     virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
     bool writeXml( QDomElement& propertyElem, QDomDocument& doc ) const;
@@ -283,6 +291,7 @@ class QgsExpressionBasedProperty : QgsAbstractProperty
      */
     QString expressionString() const;
 
+    bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const;
     virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
     bool writeXml( QDomElement& propertyElem, QDomDocument& doc ) const;

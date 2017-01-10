@@ -127,6 +127,13 @@ class QgsAbstractPropertyCollection
     int valueAsInt( int key, const QgsExpressionContext& context, int defaultValue = 0 ) const;
 
     /**
+     * Prepares the collection against a specified expression context. Calling prepare before evaluating the
+     * collection's properties multiple times allows precalculation of expensive setup tasks such as parsing expressions.
+     * Returns true if preparation was successful.
+     */
+    virtual bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const = 0;
+
+    /**
      * Returns the set of any fields referenced by the active properties from the collection.
      * @param context expression context the properties will be evaluated against.
      */
@@ -215,6 +222,7 @@ class QgsPropertyCollection : QgsAbstractPropertyCollection
     bool hasProperty( int key ) const;
     QgsAbstractProperty* property( int key );
     QVariant value( int key, const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const;
+    bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const;
     QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
     bool isActive( int key ) const;
     bool hasActiveProperties() const;
@@ -335,6 +343,8 @@ class QgsPropertyCollectionStack : QgsAbstractPropertyCollection
      * @returns calculated property value, or default value if property could not be evaluated
      */
     QVariant value( int key, const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const;
+
+    bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
     /** Returns the set of any fields referenced by the active properties from the stack.
      * @param context expression context the properties will be evaluated against.

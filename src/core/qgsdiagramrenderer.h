@@ -241,6 +241,14 @@ class CORE_EXPORT QgsDiagramLayerSettings
     void readXml( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 
+    /**
+     * Prepares the diagrams for a specified expression context. Calling prepare before rendering
+     * multiple diagrams allows precalculation of expensive setup tasks such as parsing expressions.
+     * Returns true if preparation was successful.
+     * @note added in QGIS 3.0
+     */
+    bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const;
+
     /** Returns the set of any fields referenced by the layer's diagrams.
      * @param context expression context the diagrams will be drawn using
      * @note added in QGIS 2.16

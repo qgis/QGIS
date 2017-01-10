@@ -233,13 +233,37 @@ bool QgsStaticProperty::readXml( const QDomElement &propertyElem, const QDomDocu
 QgsFieldBasedProperty::QgsFieldBasedProperty( const QString& field, bool isActive )
     : QgsAbstractProperty( isActive )
     , mField( field )
-{
+{}
 
+QgsFieldBasedProperty::QgsFieldBasedProperty( const QgsFieldBasedProperty& other )
+    : QgsAbstractProperty( other )
+    , mField( other.mField )
+    // don't copy cached field index!
+{}
+
+QgsFieldBasedProperty& QgsFieldBasedProperty::operator=( const QgsFieldBasedProperty & other )
+{
+  QgsAbstractProperty::operator=( other );
+  mActive = other.mActive;
+  mField = other.mField;
+  mCachedFieldIdx = -1;
+  return *this;
 }
 
 QgsFieldBasedProperty* QgsFieldBasedProperty::clone()
 {
   return new QgsFieldBasedProperty( *this );
+}
+
+bool QgsFieldBasedProperty::prepare( const QgsExpressionContext& context ) const
+{
+  if ( !mActive )
+    return true;
+
+  // cache field index to avoid subsequent lookups
+  QgsFields f = context.fields();
+  mCachedFieldIdx = f.lookupField( mField );
+  return true;
 }
 
 QVariant QgsFieldBasedProperty::propertyValue( const QgsExpressionContext& context, const QVariant& defaultValue ) const
@@ -250,6 +274,10 @@ QVariant QgsFieldBasedProperty::propertyValue( const QgsExpressionContext& conte
   QgsFeature f = context.feature();
   if ( !f.isValid() )
     return defaultValue;
+
+  //shortcut the field lookup
+  if ( mCachedFieldIdx >= 0 )
+    return f.attribute( mCachedFieldIdx );
 
   int fieldIdx = f.fieldNameIndex( mField );
   if ( fieldIdx < 0 )
@@ -296,7 +324,6 @@ bool QgsFieldBasedProperty::readXml( const QDomElement& propertyElem, const QDom
 QgsExpressionBasedProperty::QgsExpressionBasedProperty( const QString& expression, bool isActive )
     : QgsAbstractProperty( isActive )
     , mExpressionString( expression )
-    , mPrepared( false )
     , mExpression( expression )
 {
 

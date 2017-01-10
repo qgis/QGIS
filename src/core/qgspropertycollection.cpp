@@ -171,6 +171,20 @@ QVariant QgsPropertyCollection::value( int key, const QgsExpressionContext& cont
   return prop->value( context, defaultValue );
 }
 
+bool QgsPropertyCollection::prepare( const QgsExpressionContext& context ) const
+{
+  bool result = true;
+  QHash<int, QgsAbstractProperty*>::const_iterator it = mProperties.constBegin();
+  for ( ; it != mProperties.constEnd(); ++it )
+  {
+    if ( !it.value()->isActive() )
+      continue;
+
+    result = result && it.value()->prepare( context );
+  }
+  return result;
+}
+
 QSet< QString > QgsPropertyCollection::referencedFields( const QgsExpressionContext &context ) const
 {
   QSet< QString > cols;
@@ -437,6 +451,16 @@ QSet< QString > QgsPropertyCollectionStack::referencedFields( const QgsExpressio
     cols.unite( collection->referencedFields( context ) );
   }
   return cols;
+}
+
+bool QgsPropertyCollectionStack::prepare( const QgsExpressionContext& context ) const
+{
+  bool result = true;
+  Q_FOREACH ( QgsPropertyCollection* collection, mStack )
+  {
+    result = result && collection->prepare( context );
+  }
+  return result;
 }
 
 QSet<int> QgsPropertyCollectionStack::propertyKeys() const

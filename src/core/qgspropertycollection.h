@@ -38,6 +38,8 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 
     QgsAbstractPropertyCollection( const QString& name = QString() );
 
+    virtual ~QgsAbstractPropertyCollection() = default;
+
     /**
      * Returns the name of the property collection.
      * @see setName()
@@ -100,7 +102,6 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      */
     virtual QVariant value( int key, const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const = 0;
 
-
     /**
      * Calculates the current value of the property with the specified key and interprets it as a color.
      * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
@@ -139,6 +140,13 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * @see valueAsColor()
      */
     int valueAsInt( int key, const QgsExpressionContext& context, int defaultValue = 0 ) const;
+
+    /**
+     * Prepares the collection against a specified expression context. Calling prepare before evaluating the
+     * collection's properties multiple times allows precalculation of expensive setup tasks such as parsing expressions.
+     * Returns true if preparation was successful.
+     */
+    virtual bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const = 0;
 
     /**
      * Returns the set of any fields referenced by the active properties from the collection.
@@ -231,6 +239,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     QgsAbstractProperty* property( int key ) override;
     const QgsAbstractProperty* property( int key ) const override;
     QVariant value( int key, const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const override;
+    virtual bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
     QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
     bool isActive( int key ) const override;
     bool hasActiveProperties() const override;
@@ -386,6 +395,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * @param context expression context the properties will be evaluated against.
      */
     QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
+    virtual bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
 
     QSet<int> propertyKeys() const override;
     bool hasProperty( int key ) const override;

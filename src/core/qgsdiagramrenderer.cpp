@@ -143,6 +143,11 @@ void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& do
   layerElem.appendChild( diagramLayerElem );
 }
 
+bool QgsDiagramLayerSettings::prepare( const QgsExpressionContext& context ) const
+{
+  return mProperties.prepare( context );
+}
+
 void QgsDiagramLayerSettings::init()
 {
   if ( sPropertyNameMap.isEmpty() )
