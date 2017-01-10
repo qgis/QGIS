@@ -114,7 +114,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btnUnselectAll">
+         <widget class="QPushButton" name="btnDeselectAll">
           <property name="text">
            <string>Deselect All</string>
           </property>
@@ -174,7 +174,7 @@
   <tabstop>editLayerName</tabstop>
   <tabstop>btnLoadTags</tabstop>
   <tabstop>btnSelectAll</tabstop>
-  <tabstop>btnUnselectAll</tabstop>
+  <tabstop>btnDeselectAll</tabstop>
   <tabstop>viewTags</tabstop>
   <tabstop>chkLoadWhenFinished</tabstop>
  </tabstops>

@@ -75,7 +75,7 @@ automatizes:automates
 auxilliary:auxiliary
 avaiable:available
 availabel:available
-availabled:available
+availabled:available:*
 availablity:availability
 availale:available
 availavility:availability
@@ -103,7 +103,7 @@ charcter:character
 chnages:changes
 choosen:chosen
 colorfull:colorful
-colour:color:*
+colour:color
 colours:colors
 comand:command
 comit:commit
@@ -272,7 +272,7 @@ libary:library
 libraris:libraries
 licenceing:licencing
 loggging:logging
-loggin:login
+loggin:login:*
 logile:logfile
 machinary:machinery
 maintainance:maintenance
@@ -318,7 +318,7 @@ occured:occurred
 occurence:occurrence
 occuring:occurring
 omitt:omit
-ommitted:omitted
+ommitted:omitted:*
 opps:oops
 optionnal:optional
 optmizations:optimizations
@@ -402,7 +402,7 @@ reenable:re-enable
 reenabled:re-enabled
 reencode:re-encode
 refence:reference
-registerd:registered
+registerd:registered:*
 registraration:registration
 regulamentations:regulations
 remoote:remote
@@ -420,7 +420,7 @@ rigth:right
 runnning:running
 safly:safely
 savable:saveable
-searchs:searches
+searchs:searches:*
 secific:specific
 secund:second
 separatly:separately
@@ -448,8 +448,8 @@ splitted:split
 staically:statically
 standart:standard
 staticly:statically
-statics:statistics
-stoped:stopped
+statics:statistics:*
+stoped:stopped:*
 subdirectoires:subdirectories
 succesful:successful
 succesfully:successfully
@@ -469,7 +469,7 @@ suppported:supported
 supress:suppress
 surpress:suppress
 suspicously:suspiciously
-swaped:swapped
+swaped:swapped:*
 symbo:symbol
 syle:style
 symetrical:symmetrical

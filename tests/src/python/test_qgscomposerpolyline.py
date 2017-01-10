@@ -106,7 +106,7 @@ class TestQgsComposerPolyline(unittest.TestCase):
         assert myTestResult, myMessage
 
     def testSelectedNode(self):
-        """Test selectedNode and unselectNode methods"""
+        """Test selectedNode and deselectNode methods"""
 
         self.mComposerPolyline.setDisplayNodes(True)
 
@@ -117,7 +117,7 @@ class TestQgsComposerPolyline(unittest.TestCase):
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-        self.mComposerPolyline.unselectNode()
+        self.mComposerPolyline.deselectNode()
         self.mComposerPolyline.setDisplayNodes(False)
         checker = QgsCompositionChecker(
             'composerpolyline_defaultstyle', self.mComposition)

@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#define CPL_SUPRESS_CPLUSPLUS
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "cpl_conv.h"
 
 #include "qgsapplication.h"

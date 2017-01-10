@@ -58,7 +58,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Load selected plugin
     void loadPlugin( const QString& id );
 
-    //! Unload unselected plugin
+    //! Unload deselected plugin
     void unloadPlugin( const QString& id );
 
     //! Save plugin enabled/disabled state to QSettings

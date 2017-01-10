@@ -15,7 +15,7 @@ Email                : sherman at mrcc dot com
 #include "qgstest.h"
 #include <QPixmap>
 
-#define CPL_SUPRESS_CPLUSPLUS
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 
 //header for class being tested

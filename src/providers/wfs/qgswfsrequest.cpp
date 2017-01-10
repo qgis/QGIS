@@ -64,7 +64,7 @@ bool QgsWfsRequest::sendGET( const QUrl& url, bool synchronous, bool forceRefres
   QUrl modifiedUrl( url );
   if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
   {
-    // Just for testing with local files instead of http:// ressources
+    // Just for testing with local files instead of http:// resources
     QString modifiedUrlString = modifiedUrl.toString();
     // Qt5 does URL encoding from some reason (of the FILTER parameter for example)
     modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrlString.toUtf8() );

@@ -63,7 +63,7 @@
 #include <sqlite3.h>
 #include "qgslogger.h"
 
-#define CPL_SUPRESS_CPLUSPLUS
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 #include <geos_c.h>
 #include <cpl_conv.h> // for setting gdal options

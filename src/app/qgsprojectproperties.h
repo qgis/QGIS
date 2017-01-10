@@ -114,13 +114,13 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      * Slots to select/deselect all the WFS layers
      */
     void on_pbnWFSLayersSelectAll_clicked();
-    void on_pbnWFSLayersUnselectAll_clicked();
+    void on_pbnWFSLayersDeselectAll_clicked();
 
     /*!
      * Slots to select/deselect all the WCS layers
      */
     void on_pbnWCSLayersSelectAll_clicked();
-    void on_pbnWCSLayersUnselectAll_clicked();
+    void on_pbnWCSLayersDeselectAll_clicked();
 
     /*!
      * Slots to launch OWS test

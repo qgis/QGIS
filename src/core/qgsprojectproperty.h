@@ -36,7 +36,7 @@ class QDomDocument;
 /**
  * \class QgsProjectProperty
  * \ingroup core
- * An Abstract Base Class for QGIS project property hierarchies.
+ * An Abstract Base Class for QGIS project property hierarchys.
  *
  * Each sub-class is either a QgsProjectPropertyKey or QgsProjectPropertyValue.  QgsProjectPropertyKey can
  * contain either QgsProjectPropertyKey or QgsProjectPropertyValues, thus describing an

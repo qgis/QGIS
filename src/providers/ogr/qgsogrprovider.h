@@ -149,7 +149,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! Clean shapefile from features which are marked as deleted
     void repack();
 
-    //! Invalidate extent and optionnaly force its low level recomputation
+    //! Invalidate extent and optionaly force its low level recomputation
     void invalidateCachedExtent( bool bForceRecomputeExtent );
 
     enum OpenMode

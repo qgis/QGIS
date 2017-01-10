@@ -52,7 +52,7 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
   public slots:
     //! Change the selection of layers in the list
     void selectAll();
-    void unSelectAll();
+    void deSelectAll();
 
   private:
     void saveState();

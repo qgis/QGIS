@@ -1,3 +1,4 @@
+
 /***************************************************************************
   qgslabelingengine.cpp
   --------------------------------------
@@ -102,7 +103,7 @@ void QgsLabelingEngine::removeProvider( QgsAbstractLabelProvider* provider )
   }
 }
 
-void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider* provider, QgsRenderContext& context, pal::Pal& p )
+void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider* provider, QgsRenderContext& context, pal::Pal& p ) //#spellok
 {
   QgsAbstractLabelProvider::Flags flags = provider->flags();
 
@@ -170,7 +171,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider* provider, Qgs
   Q_FOREACH ( QgsAbstractLabelProvider* subProvider, provider->subProviders() )
   {
     mSubProviders << subProvider;
-    processProvider( subProvider, context, p );
+    processProvider( subProvider, context, p );  //#spellok
   }
 }
 
@@ -212,7 +213,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
   // for each provider: get labels and register them in PAL
   Q_FOREACH ( QgsAbstractLabelProvider* provider, mProviders )
   {
-    processProvider( provider, context, p );
+    processProvider( provider, context, p );  //#spellok
   }
 
 

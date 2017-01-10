@@ -48,7 +48,7 @@ class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProj
   private:
     void changeProjectFile();
     void removeEmbeddedNodes( QgsLayerTreeGroup* node );
-    void unselectChildren( const QModelIndex& index );
+    void deselectChildren( const QModelIndex& index );
     QString mProjectPath;
     bool mShowEmbeddedContent;
 

@@ -91,7 +91,7 @@ This release has following new features:
 - Layer Legend: New option to zoom to a layer's visible scale range
 - Map Composer: New tools for drawing polygons and polylines
 - Map Composer: Embed atlas features into composer HTML source as GeoJSON
-- Map Composer: Parameterized svg support for composer svg images
+- Map Composer: Parametrized svg support for composer svg images
 - Map Composer: Easier use of HTML in labels
 - Map Composer: Relative links in composer labels
 - Map Composer: Georeference outputs (eg PDF) from composer
