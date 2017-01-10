@@ -1,9 +1,11 @@
 /***************************************************************************
-                              qgspostrequesthandler.h
-                            ------------------------------
-  begin                :  2011
-  copyright            : (C) 2011 by Marco Hugentobler
-  email                : marco dot hugentobler at sourcepole dot ch
+                          qgsservice.cpp
+
+  Class defining the service interface for QGIS server services.
+  -------------------
+  begin                : 2016-12-05
+  copyright            : (C) 2016 by David Marteau
+  email                : david dot marteau at 3liz dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,19 +17,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOSTREQUESTHANDLER_H
-#define QGSPOSTREQUESTHANDLER_H
 
-#include "qgshttprequesthandler.h"
+#include "qgsservice.h"
 
-//! Request handler for HTTP POST
-class QgsPostRequestHandler: public QgsHttpRequestHandler
+//! Constructor
+QgsService::QgsService()
 {
-  public:
-    explicit QgsPostRequestHandler( const bool captureOutput = false );
 
-    //! Parses the input and creates a request neutral Parameter/Value map
-    void parseInput() override;
-};
+}
 
-#endif // QGSPOSTREQUESTHANDLER_H

@@ -67,17 +67,13 @@ QgsWfsServer::QgsWfsServer(
   , QMap<QString, QString> &parameters
   , QgsWfsProjectParser* cp
   , QgsRequestHandler* rh
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* accessControl
-#endif
 )
     : QgsOWSServer(
       configFilePath
       , parameters
       , rh
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , accessControl
-#endif
     )
     , mWithGeom( true )
     , mConfigParser( cp )
@@ -89,9 +85,7 @@ QgsWfsServer::QgsWfsServer()
       QString()
       , QMap<QString, QString>()
       , nullptr
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , nullptr
-#endif
     )
     , mWithGeom( true )
     , mConfigParser( nullptr )

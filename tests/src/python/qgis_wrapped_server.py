@@ -89,10 +89,9 @@ if os.environ.get('QGIS_SERVER_HTTP_BASIC_AUTH') is not None:
                         and password.decode('utf-8') == os.environ.get('QGIS_SERVER_PASSWORD', 'password')):
                     return
             # No auth ...
-            request.clearHeaders()
+            request.clear()
             request.setHeader('Status', '401 Authorization required')
             request.setHeader('WWW-Authenticate', 'Basic realm="QGIS Server"')
-            request.clearBody()
             request.appendBody(b'<h1>Authorization required</h1>')
 
     filter = HTTPBasicFilter(qgs_server.serverInterface())

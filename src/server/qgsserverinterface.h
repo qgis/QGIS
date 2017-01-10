@@ -21,12 +21,21 @@
 #ifndef QGSSERVERINTERFACE_H
 #define QGSSERVERINTERFACE_H
 
+#include "qgsconfig.h"
 #include "qgscapabilitiescache.h"
 #include "qgsrequesthandler.h"
 #include "qgsserverfilter.h"
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrolfilter.h"
 #include "qgsaccesscontrol.h"
+#else
+class QgsAccessControl;
+class QgsAccessControlFilter;
+#endif
+#include "qgsserviceregistry.h"
 #include "qgis_server.h"
+
+
 
 /**
  * \ingroup server
@@ -43,7 +52,6 @@
  */
 class SERVER_EXPORT QgsServerInterface
 {
-
   public:
 
     //! Constructor
@@ -131,6 +139,12 @@ class SERVER_EXPORT QgsServerInterface
      * @param path the path of the project which own the layers to be removed
      */
     virtual void removeProjectLayers( const QString& path ) = 0;
+
+    /**
+     * Return the service registry
+     * @return QgsServiceResgistry
+     */
+    virtual QgsServiceRegistry* serviceRegistry() = 0;
 
   private:
     QString mConfigFilePath;

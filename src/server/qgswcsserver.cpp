@@ -43,17 +43,13 @@ QgsWCSServer::QgsWCSServer(
   , QMap<QString, QString> &parameters
   , QgsWCSProjectParser* pp
   , QgsRequestHandler* rh
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* accessControl
-#endif
 )
     : QgsOWSServer(
       configFilePath
       , parameters
       , rh
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , accessControl
-#endif
     )
     , mConfigParser(
       pp
@@ -66,9 +62,7 @@ QgsWCSServer::QgsWCSServer()
       QString()
       , QMap<QString, QString>()
       , nullptr
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , nullptr
-#endif
     )
     , mConfigParser( nullptr )
 {

@@ -1,10 +1,13 @@
 /***************************************************************************
-                              qgsgetrequesthandler.h
-                 class for reading from/ writing to HTTP GET
-                              -------------------
-  begin                : May 16, 2006
-  copyright            : (C) 2006 by Marco Hugentobler & Ionut Iosifescu
+                              qgswmsgetfeatureinfo.h
+                              -------------------------
+  begin                : December 20 , 2016
+  copyright            : (C) 2007 by Marco Hugentobler  (original code)
+                         (C) 2014 by Alessandro Pasotti (original code)
+                         (C) 2016 by David Marteau
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
+                         a dot pasotti at itopen dot it
+                         david dot marteau at 3liz dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,17 +19,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshttprequesthandler.h"
-
-#ifndef QGSGETPREQUESTHANDLER_H
-#define QGSGETPREQUESTHANDLER_H
-
-
-class QgsGetRequestHandler: public QgsHttpRequestHandler
+namespace QgsWms
 {
-  public:
-    explicit QgsGetRequestHandler( const bool captureOutput = false );
-    void parseInput() override;
-};
 
-#endif
+  /** Output GetFeatureInfo response
+   */
+  void writeGetFeatureInfo( QgsServerInterface* serverIface, const QString& version,
+                            const QgsServerRequest& request, QgsServerResponse& response );
+
+} // samespace QgsWms
+
+
+
+

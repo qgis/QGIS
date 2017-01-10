@@ -19,6 +19,7 @@
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
 #include "qgsserver.h"
+#include "qgsfcgiserverresponse.h"
 
 #include <fcgi_stdio.h>
 #include <stdlib.h>
@@ -38,14 +39,23 @@ int fcgi_accept()
 int main( int argc, char * argv[] )
 {
   QgsApplication app( argc, argv, getenv( "DISPLAY" ), QString(), QStringLiteral( "server" ) );
-  QgsServer server( false );
+  QgsServer server;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   server.initPython();
 #endif
   // Starts FCGI loop
   while ( fcgi_accept() >= 0 )
   {
-    server.handleRequest();
+    QgsFcgiServerRequest  request;
+    QgsFcgiServerResponse response( request.method() );
+    if ( ! request.hasError() )
+    {
+      server.handleRequest( request, response );
+    }
+    else
+    {
+      response.sendError( 400, "Bad request" );
+    }
   }
   app.exitQgis();
   return 0;

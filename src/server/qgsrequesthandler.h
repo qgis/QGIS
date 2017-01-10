@@ -1,10 +1,8 @@
-
 /***************************************************************************
-                              qgsrequesthandler.h
-                 abstraction for reading from/ writing to a request datasource
-                              -------------------
-  begin                : May 16, 2006
-  copyright            : (C) 2006 by Marco Hugentobler
+                              qgshttprequesthandler.h
+                              -----------------------
+  begin                : June 29, 2007
+  copyright            : (C) 2007 by Marco Hugentobler
                          (C) 2014 by Alessandro Pasotti
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
                          a dot pasotti at itopen dot it
@@ -22,126 +20,125 @@
 #ifndef QGSREQUESTHANDLER_H
 #define QGSREQUESTHANDLER_H
 
-//Needed for HAVE_SERVER_PYTHON_PLUGINS
-#include "qgsconfig.h"
-
 #include <QMap>
 #include <QString>
 #include <QStringList>
 #include <QPair>
+#include <QColor>
+#include <QHash>
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-#include "qgsserverfilter.h"
-#endif
+#include "qgis_server.h"
 
 class QDomDocument;
 class QImage;
 class QgsMapServiceException;
+class QgsServerRequest;
+class QgsServerResponse;
+
+typedef QList< QPair<QRgb, int> > QgsColorBox; //Color / number of pixels
+typedef QMultiMap< int, QgsColorBox > QgsColorBoxMap; // sum of pixels / color box
 
 /**
  * \ingroup server
  * This class is an interface hiding the details of reading input and writing
  * output from/to a wms request mechanism.
- * Examples of possible mechanisms are cgi Get, cgi Post, SOAP or the usage
- * as a standalone command line executable
  */
-class QgsRequestHandler
+class SERVER_EXPORT QgsRequestHandler
 {
-
   public:
 
-    QgsRequestHandler()
-        : mHeadersSent( false )
-        , mException( nullptr )
-    {}
-    virtual ~QgsRequestHandler() = default;
-
-    /** Parses the input and creates a request neutral Parameter/Value map
-     * @note not available in Python bindings
+    /** Constructor
+     *
+     * Note that QgsServerRequest and QgsServerResponse MUST live in the same scope
      */
-    virtual void parseInput() = 0;
+    explicit QgsRequestHandler( QgsServerRequest& request, QgsServerResponse& response );
+    ~QgsRequestHandler();
 
     /** Sends the map image back to the client
      * @note not available in Python bindings
      */
-    virtual void setGetMapResponse( const QString& service, QImage* img, int imageQuality ) = 0;
+    void setGetMapResponse( const QString& service, QImage* img, int imageQuality );
 
     //! @note not available in Python bindings
-    virtual void setGetCapabilitiesResponse( const QDomDocument& doc ) = 0;
+    void setGetCapabilitiesResponse( const QDomDocument& doc );
 
     //! @note not available in Python bindings
-    virtual void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) = 0;
+    void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat );
 
     //! Allow plugins to return a QgsMapServiceException
-    virtual void setServiceException( const QgsMapServiceException& ex ) = 0;
+    void setServiceException( const QgsMapServiceException &ex );
 
     //! @note not available in Python bindings
-    virtual void setXmlResponse( const QDomDocument& doc ) = 0;
+    void setXmlResponse( const QDomDocument& doc );
 
     //! @note not available in Python bindings
-    virtual void setXmlResponse( const QDomDocument& doc, const QString& mimeType ) = 0;
+    void setXmlResponse( const QDomDocument& doc, const QString& mimeType );
 
     //! @note not available in Python bindings
-    virtual void setGetPrintResponse( QByteArray* b ) = 0;
+    void setGetPrintResponse( QByteArray* ba );
 
     //! @note not available in Python bindings
-    virtual bool startGetFeatureResponse( QByteArray* ba, const QString& infoFormat ) = 0;
+    bool startGetFeatureResponse( QByteArray* ba, const QString& infoFormat );
 
     //! @note not available in Python bindings
-    virtual void setGetFeatureResponse( QByteArray* ba ) = 0;
+    void setGetFeatureResponse( QByteArray* ba );
 
     //! @note not available in Python bindings
-    virtual void endGetFeatureResponse( QByteArray* ba ) = 0;
+    void endGetFeatureResponse( QByteArray* ba );
 
     //! @note not available in Python bindings
-    virtual void setGetCoverageResponse( QByteArray* ba ) = 0;
+    void setGetCoverageResponse( QByteArray* ba );
 
-    virtual void setDefaultHeaders() {}
+    /** Send out HTTP headers and flush output buffer
+     *
+     *  This method is intended only for streaming
+     *  partial content.
+     */
+    void sendResponse();
 
     //! Set an HTTP header
-    virtual void setHeader( const QString &name, const QString &value ) = 0;
+    void setHeader( const QString &name, const QString &value );
 
     //! Remove an HTTP header
-    virtual int removeHeader( const QString &name ) = 0;
+    void removeHeader( const QString &name );
 
-    //! Delete all HTTP headers
-    virtual void clearHeaders() = 0;
+    //! Retrieve header value
+    QString getHeader( const QString& name ) const;
 
-    //! Append the bytestream to response body
-    virtual void appendBody( const QByteArray &body ) = 0;
+    //! Return the list of all header keys
+    QList<QString> headerKeys() const;
 
-    //! Clears the response body
-    virtual void clearBody() = 0;
-
-    //! Return the response body
-    virtual QByteArray body() { return mBody; }
+    //! Clears the response body and headers
+    void clear();
 
     //! Set the info format string such as "text/xml"
-    virtual void setInfoFormat( const QString &format ) = 0;
+    void appendBody( const QByteArray &body );
 
-    //! Check whether there is any header set or the body is not empty
-    virtual bool responseReady() const = 0;
-
-    //! Send out HTTP headers and flush output buffer
-    virtual void sendResponse() = 0;
+    //! Set the info format string such as "text/xml"
+    void setInfoFormat( const QString &format );
 
     //! Pointer to last raised exception
-    virtual bool exceptionRaised() const = 0;
+    bool exceptionRaised() const;
 
-    /** Return a copy of the parsed parameters as a key-value pair, to modify
+    /** Return the parsed parameters as a key-value pair, to modify
      * a parameter setParameter( const QString &key, const QString &value)
      * and removeParameter(const QString &key) must be used
      */
-    QMap<QString, QString> parameterMap() { return mParameterMap; }
+    QMap<QString, QString> parameterMap() const;
 
     //! Set a request parameter
-    virtual void setParameter( const QString &key, const QString &value ) = 0;
-
-    //! Remove a request parameter
-    virtual int removeParameter( const QString &key ) = 0;
+    void setParameter( const QString &key, const QString &value );
 
     //! Return a request parameter
-    virtual QString parameter( const QString &key ) const = 0;
+    QString parameter( const QString &key ) const;
+
+    //! Remove a request parameter
+    void removeParameter( const QString &key );
+
+    /** Parses the input and creates a request neutral Parameter/Value map
+     * @note not available in Python bindings
+     */
+    void parseInput();
 
     //! Return the requested format string
     QString format() const { return mFormat; }
@@ -150,47 +147,42 @@ class QgsRequestHandler
     QString infoFormat() const { return mInfoFormat; }
 
     //! Return true if the HTTP headers were already sent to the client
-    bool headersSent() { return mHeadersSent; }
+    bool headersSent() const;
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  private:
+    void setHttpResponse( const QByteArray& ba, const QString &format );
 
-    /** Allow core services to call plugin hooks through sendResponse()
-     * @note not available in Python bindings
-     */
-    virtual void setPluginFilters( const QgsServerFiltersMap& pluginFilters ) = 0;
-#endif
+    /** Converts format to official mimetype (e.g. 'jpg' to 'image/jpeg')
+      @return mime string (or the entered string if not found)*/
+    QString formatToMimeType( const QString& format ) const;
 
-    //! @note not available in Python bindings
-    virtual QPair<QByteArray, QByteArray> getResponse() = 0;
+  private:
 
-  protected:
-    //! @note not available in Python bindings
-    virtual void sendHeaders() = 0;
+    void setupParameters();
 
-    //! @note not available in Python bindings
-    virtual void sendBody() = 0;
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsServerFiltersMap mPluginFilters;
-#endif
-    QByteArray mBody; // The response payload
+    static void medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage );
+    static void imageColors( QHash<QRgb, int>& colors, const QImage& image );
+    static void splitColorBox( QgsColorBox& colorBox, QgsColorBoxMap& colorBoxMap,
+                               QMap<int, QgsColorBox>::iterator colorBoxMapIt );
+    static bool minMaxRange( const QgsColorBox& colorBox, int& redRange, int& greenRange, int& blueRange, int& alphaRange );
+    static bool redCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
+    static bool greenCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
+    static bool blueCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
+    static bool alphaCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
+    //! Calculates a representative color for a box (pixel weighted average)
+    static QRgb boxColor( const QgsColorBox& box, int boxPixels );
+    // TODO: if HAVE_SERVER_PYTHON
+
     //! This is set by the parseInput methods of the subclasses (parameter FORMAT, e.g. 'FORMAT=PNG')
     QString mFormat;
     QString mFormatString; //format string as it is passed in the request (with base)
-    bool mHeadersSent;
     QString mService;
     QString mInfoFormat;
     QgsMapServiceException* mException; // Stores the exception
-    QMap<QString, QString> mParameterMap;
 
-    /** Response headers. They can be empty, in this case headers are
-        automatically generated from the content mFormat */
-    QMap<QString, QString> mHeaders;
-    // TODO: if HAVE_SERVER_PYTHON
+    QgsServerRequest&   mRequest;
+    QgsServerResponse&  mResponse;
 
-    /** Response output buffers, used by Python bindings to return
-     * output instead of printing with fcgi printf */
-    // QByteArray mResponseHeader;
-    // QByteArray mResponseBody;
 };
 
 #endif
