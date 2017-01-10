@@ -15,11 +15,11 @@ class QgsAbstractProperty
 %End
 
 %ConvertToSubClassCode
-  if (dynamic_cast<QgsStaticProperty*>(sipCpp) != NULL)
+  if ( sipCpp->propertyType() == QgsAbstractProperty::StaticProperty )
 	sipType = sipType_QgsStaticProperty;
-  else if (dynamic_cast<QgsFieldBasedProperty*>(sipCpp) != NULL)
+  else if ( sipCpp->propertyType() == QgsAbstractProperty::FieldBasedProperty )
 	sipType = sipType_QgsFieldBasedProperty;
-  else if (dynamic_cast<QgsExpressionBasedProperty*>(sipCpp) != NULL)
+  else if ( sipCpp->propertyType() == QgsAbstractProperty::ExpressionBasedProperty )
 	sipType = sipType_QgsExpressionBasedProperty;
   else
 	sipType = sipType_QgsAbstractProperty;

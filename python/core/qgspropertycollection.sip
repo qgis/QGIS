@@ -10,6 +10,16 @@ class QgsAbstractPropertyCollection
 %TypeHeaderCode
 #include <qgspropertycollection.h>
 %End
+
+%ConvertToSubClassCode
+  if ( dynamic_cast<QgsPropertyCollection*>(sipCpp) )
+	sipType = sipType_QgsPropertyCollection;
+  else if ( dynamic_cast<QgsPropertyCollectionStack*>(sipCpp) )
+	sipType = sipType_QgsPropertyCollectionStack;
+  else
+	sipType = sipType_QgsAbstractPropertyCollection;
+%End
+
   public:
 
     QgsAbstractPropertyCollection( const QString& name = QString() );
