@@ -54,16 +54,8 @@ class SERVER_EXPORT QgsRequestHandler
     explicit QgsRequestHandler( QgsServerRequest& request, QgsServerResponse& response );
     ~QgsRequestHandler();
 
-    /** Sends the map image back to the client
-     * @note not available in Python bindings
-     */
-    void setGetMapResponse( const QString& service, QImage* img, int imageQuality );
-
     //! @note not available in Python bindings
     void setGetCapabilitiesResponse( const QDomDocument& doc );
-
-    //! @note not available in Python bindings
-    void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat );
 
     //! Allow plugins to return a QgsMapServiceException
     void setServiceException( const QgsMapServiceException &ex );
@@ -73,9 +65,6 @@ class SERVER_EXPORT QgsRequestHandler
 
     //! @note not available in Python bindings
     void setXmlResponse( const QDomDocument& doc, const QString& mimeType );
-
-    //! @note not available in Python bindings
-    void setGetPrintResponse( QByteArray* ba );
 
     //! @note not available in Python bindings
     bool startGetFeatureResponse( QByteArray* ba, const QString& infoFormat );
@@ -159,19 +148,6 @@ class SERVER_EXPORT QgsRequestHandler
   private:
 
     void setupParameters();
-
-    static void medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage );
-    static void imageColors( QHash<QRgb, int>& colors, const QImage& image );
-    static void splitColorBox( QgsColorBox& colorBox, QgsColorBoxMap& colorBoxMap,
-                               QMap<int, QgsColorBox>::iterator colorBoxMapIt );
-    static bool minMaxRange( const QgsColorBox& colorBox, int& redRange, int& greenRange, int& blueRange, int& alphaRange );
-    static bool redCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
-    static bool greenCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
-    static bool blueCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
-    static bool alphaCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
-    //! Calculates a representative color for a box (pixel weighted average)
-    static QRgb boxColor( const QgsColorBox& box, int boxPixels );
-    // TODO: if HAVE_SERVER_PYTHON
 
     //! This is set by the parseInput methods of the subclasses (parameter FORMAT, e.g. 'FORMAT=PNG')
     QString mFormat;
