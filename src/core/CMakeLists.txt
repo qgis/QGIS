@@ -78,6 +78,9 @@ SET(QGIS_CORE_SRCS
   auth/qgsauthmethodmetadata.cpp
   auth/qgsauthmethodregistry.cpp
 
+  processing/qgsprocessingparameterregistry.cpp
+  processing/qgsprocessingparameters.cpp
+
   qgis.cpp
   qgsapplication.cpp
   qgsaction.cpp
@@ -789,6 +792,9 @@ SET(QGIS_CORE_HDRS
   composer/qgsscalebarstyle.h
   composer/qgssingleboxscalebarstyle.h
   composer/qgsticksscalebarstyle.h
+
+  processing/qgsprocessingparameters.h
+  processing/qgsprocessingparameterregistry.h
 
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h
