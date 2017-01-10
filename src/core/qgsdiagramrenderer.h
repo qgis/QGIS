@@ -95,7 +95,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
       StartAngle, //! Angle offset for pie diagram
     };
 
-    QgsDiagramLayerSettings();
+    QgsDiagramLayerSettings() = default;
 
     //! Copy constructor
     QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh );
@@ -308,9 +308,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     //! Property collection for data defined diagram settings
     QgsPropertyCollection mProperties;
 
-    static QMap< int, QString > sPropertyNameMap;
-
-    void init();
+    static const QMap< int, QString > sPropertyNameMap;
 };
 
 /** \ingroup core

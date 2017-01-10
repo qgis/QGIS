@@ -25,12 +25,21 @@
 #include <QDomElement>
 #include <QPainter>
 
-QMap< int, QString > QgsDiagramLayerSettings::sPropertyNameMap;
-
-QgsDiagramLayerSettings::QgsDiagramLayerSettings()
+const QMap< int, QString > QgsDiagramLayerSettings::sPropertyNameMap
 {
-  init();
-}
+  { QgsDiagramLayerSettings::BackgroundColor, "backgroundColor" },
+  { QgsDiagramLayerSettings::OutlineColor, "outlineColor" },
+  { QgsDiagramLayerSettings::OutlineWidth, "outlineWidth" },
+  { QgsDiagramLayerSettings::PositionX, "positionX" },
+  { QgsDiagramLayerSettings::PositionY, "positionY" },
+  { QgsDiagramLayerSettings::Distance, "distance" },
+  { QgsDiagramLayerSettings::Priority, "priority" },
+  { QgsDiagramLayerSettings::ZIndex, "zIndex" },
+  { QgsDiagramLayerSettings::IsObstacle, "isObstacle" },
+  { QgsDiagramLayerSettings::Show, "show" },
+  { QgsDiagramLayerSettings::AlwaysShow, "alwaysShow" },
+  { QgsDiagramLayerSettings::StartAngle, "startAngle" }
+};
 
 QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh )
     : mCt( rh.mCt )
@@ -43,9 +52,7 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings&
     , mRenderer( rh.mRenderer ? rh.mRenderer->clone() : nullptr )
     , mShowAll( rh.mShowAll )
     , mProperties( rh.mProperties )
-{
-  init();
-}
+{}
 
 QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings & rh )
 {
@@ -146,25 +153,6 @@ void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& do
 bool QgsDiagramLayerSettings::prepare( const QgsExpressionContext& context ) const
 {
   return mProperties.prepare( context );
-}
-
-void QgsDiagramLayerSettings::init()
-{
-  if ( sPropertyNameMap.isEmpty() )
-  {
-    sPropertyNameMap.insert( BackgroundColor, "backgroundColor" );
-    sPropertyNameMap.insert( OutlineColor, "outlineColor" );
-    sPropertyNameMap.insert( OutlineWidth, "outlineWidth" );
-    sPropertyNameMap.insert( PositionX, "positionX" );
-    sPropertyNameMap.insert( PositionY, "positionY" );
-    sPropertyNameMap.insert( Distance, "distance" );
-    sPropertyNameMap.insert( Priority, "priority" );
-    sPropertyNameMap.insert( ZIndex, "zIndex" );
-    sPropertyNameMap.insert( IsObstacle, "isObstacle" );
-    sPropertyNameMap.insert( Show, "show" );
-    sPropertyNameMap.insert( AlwaysShow, "alwaysShow" );
-    sPropertyNameMap.insert( StartAngle, "startAngle" );
-  }
 }
 
 QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionContext &context ) const
