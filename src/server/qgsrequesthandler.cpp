@@ -543,8 +543,8 @@ void QgsRequestHandler::parseInput()
 
     QDomDocument doc;
     QString errorMsg;
-    int line;
-    int column;
+    int line = -1;
+    int column = -1;
     if ( !doc.setContent( inputString, true, &errorMsg, &line, &column ) )
     {
       // XXX Output error but continue processing request ?

@@ -26,10 +26,3 @@ QgsService::QgsService()
 
 }
 
-//! Destructor
-QgsService::~QgsService()
-{
-
-}
-
-

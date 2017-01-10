@@ -29,7 +29,7 @@
  * Class defining request interface passed to services QgsService::executeRequest() method
  */
 
-// Note about design: this intreface must be passed along to python and thus signatures methods must be
+// Note about design: this interface must be passed along to python and thus signatures methods must be
 // compatible with pyQGIS/pyQT api and rules.
 
 class SERVER_EXPORT QgsServerRequest
@@ -66,7 +66,7 @@ class SERVER_EXPORT QgsServerRequest
     QgsServerRequest( const QUrl& url, Method method = GetMethod );
 
     //! destructor
-    virtual ~QgsServerRequest();
+    virtual ~QgsServerRequest() = default;
 
     /**
      * @return  the request url

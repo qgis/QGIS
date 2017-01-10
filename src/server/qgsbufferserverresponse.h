@@ -28,7 +28,7 @@
 
 /**
  * \ingroup server
- * QgsBufferServerResponse
+ * \class QgsBufferServerResponse
  * Class defining buffered response
  */
 class QgsBufferServerResponse: public QgsServerResponse
@@ -79,9 +79,9 @@ class QgsBufferServerResponse: public QgsServerResponse
     QMap<QString, QString> mHeaders;
     QBuffer                mBuffer;
     QByteArray             mBody;
-    bool                   mFinished;
-    bool                   mHeadersSent;
-    int                    mReturnCode;
+    bool                   mFinished = false;
+    bool                   mHeadersSent = false;
+    int                    mReturnCode = 200;
 };
 
 /**

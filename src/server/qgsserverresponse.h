@@ -42,7 +42,7 @@ class SERVER_EXPORT QgsServerResponse
     QgsServerResponse();
 
     //! destructor
-    virtual ~QgsServerResponse();
+    virtual ~QgsServerResponse() = default;
 
     /**
      *  Set Header entry
@@ -53,7 +53,7 @@ class SERVER_EXPORT QgsServerResponse
 
     /**
      * Clear header
-     * Undo a previous 'set_header' call
+     * Undo a previous 'setHeader' call
      */
     virtual void clearHeader( const QString& key ) = 0;
 

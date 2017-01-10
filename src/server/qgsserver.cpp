@@ -476,31 +476,6 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
         wfsServer.executeRequest();
       }
     }
-    /*
-    else if ( serviceString == QLatin1String( "WMS" ) )
-    {
-      QgsWmsConfigParser* p = QgsConfigCache::instance()->wmsConfiguration(
-                                configFilePath
-                                , accessControl
-                              );
-      if ( !p )
-      {
-        theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "WMS configuration error" ), QStringLiteral( "There was an error reading the project file or the SLD configuration" ) ) );
-      }
-      else
-      {
-        QgsWmsServer wmsServer(
-          configFilePath
-          , parameterMap
-          , p
-          , &theRequestHandler
-          , sCapabilitiesCache
-          , accessControl
-        );
-        wmsServer.executeRequest();
-      }
-    }
-    */
     else
     {
       theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Service configuration error" ), QStringLiteral( "Service unknown or unsupported" ) ) );

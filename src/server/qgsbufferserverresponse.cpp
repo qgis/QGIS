@@ -30,9 +30,6 @@
 QgsBufferServerResponse::QgsBufferServerResponse()
 {
   mBuffer.open( QIODevice::ReadWrite );
-  mHeadersSent = false;
-  mFinished    = false;
-  mReturnCode  = 200;
 }
 
 QgsBufferServerResponse::~QgsBufferServerResponse()

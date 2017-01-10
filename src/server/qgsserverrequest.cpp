@@ -44,12 +44,6 @@ QgsServerRequest::QgsServerRequest( const QUrl& url, Method method )
 
 }
 
-//! destructor
-QgsServerRequest::~QgsServerRequest()
-{
-
-}
-
 QString QgsServerRequest::getHeader( const QString& name ) const
 {
   Q_UNUSED( name );

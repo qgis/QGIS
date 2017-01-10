@@ -28,12 +28,6 @@ QgsServerResponse::QgsServerResponse()
 }
 
 
-//! destructor
-QgsServerResponse::~QgsServerResponse()
-{
-
-}
-
 void QgsServerResponse::write( const QString& data )
 {
   QIODevice* iodev = io();

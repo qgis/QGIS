@@ -24,7 +24,7 @@
 
 /**
  * \ingroup server
- * QgsFilterResponseDecorator
+ * \class QgsFilterResponseDecorator
  * Class defining decorator for calling filter's hooks
  */
 class QgsFilterResponseDecorator: public QgsServerResponse
@@ -35,7 +35,7 @@ class QgsFilterResponseDecorator: public QgsServerResponse
     ~QgsFilterResponseDecorator();
 
     /**
-     * Call flter's requestReady() method
+     * Call filters requestReady() method
      */
     void start();
 

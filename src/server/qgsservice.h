@@ -44,7 +44,7 @@ class SERVER_EXPORT QgsService
     QgsService();
 
     //! Destructor
-    virtual ~QgsService();
+    virtual ~QgsService() = default;
 
     /**
      * @return the name of the service
