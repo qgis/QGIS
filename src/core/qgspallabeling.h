@@ -30,6 +30,7 @@
 #include <QList>
 #include <QPainter>
 #include <QRectF>
+#include <QMap>
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsfields.h"
@@ -258,24 +259,25 @@ class CORE_EXPORT QgsPalLayerSettings
       Percent
     };
 
-    // update mDataDefinedNames QMap in constructor when adding/deleting enum value
+    //! Data definable properties.
+    // update sPropertyNameMap QMap in constructor when adding/deleting enum value
     enum DataDefinedProperties
     {
       // text style
-      Size = 0,
-      Bold = 1,
-      Italic = 2,
-      Underline = 3,
-      Color = 4,
-      Strikeout = 5,
-      Family = 6,
-      FontStyle = 21,
-      FontSizeUnit = 22,
-      FontTransp = 18,
-      FontCase = 27,
-      FontLetterSpacing = 28,
-      FontWordSpacing = 29,
-      FontBlendMode = 30,
+      Size = 0, //!< Label size
+      Bold = 1, //!< Use bold style
+      Italic = 2, //!< Use italic style
+      Underline = 3, //!< Use underline
+      Color = 4, //!< Text color
+      Strikeout = 5, //!< Use strikeout
+      Family = 6, //!< Font family
+      FontStyle = 21, //!< Font style name
+      FontSizeUnit = 22, //!< Font size units
+      FontTransp = 18, //!< Text transparency
+      FontCase = 27, //!< Label text case
+      FontLetterSpacing = 28, //!< Letter spacing
+      FontWordSpacing = 29, //!< Word spacing
+      FontBlendMode = 30, //! Text blend mode
 
       // text formatting
       MultiLineWrapChar = 31,
@@ -344,11 +346,11 @@ class CORE_EXPORT QgsPalLayerSettings
       OffsetRotation = 82,
       CurvedCharAngleInOut = 83,
       // (data defined only)
-      PositionX = 9, //x-coordinate data defined label position
-      PositionY = 10, //y-coordinate data defined label position
-      Hali = 11, //horizontal alignment for data defined label position (Left, Center, Right)
-      Vali = 12, //vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
-      Rotation = 14, //data defined rotation
+      PositionX = 9, //!< X-coordinate data defined label position
+      PositionY = 10, //!< Y-coordinate data defined label position
+      Hali = 11, //!< Horizontal alignment for data defined label position (Left, Center, Right)
+      Vali = 12, //!< Vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
+      Rotation = 14, //!< Label rotation
       RepeatDistance = 84,
       RepeatDistanceUnit = 86,
       Priority = 87,
@@ -583,12 +585,6 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > dataDefinedProperties;
 
-    /** Map of data defined enum to names and old-style indecies
-     * The QPair contains a new string for layer property key, and a reference to old-style numeric key (< QGIS 2.0)
-     * @note not available in python bindings;
-     */
-    QMap<QgsPalLayerSettings::DataDefinedProperties, QPair<QString, int> > dataDefinedNames() const { return mDataDefinedNames; }
-
     /** Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
      * @see setFormat()
      * @note added in QGIS 3.0
@@ -673,12 +669,12 @@ class CORE_EXPORT QgsPalLayerSettings
 
     QMap<DataDefinedProperties, QVariant> dataDefinedValues;
     QgsExpression* expression;
-    QMap<QgsPalLayerSettings::DataDefinedProperties, QPair<QString, int> > mDataDefinedNames;
 
     QFontDatabase mFontDB;
 
     QgsTextFormat mFormat;
 
+    static const QMap< int, QString > sPropertyNameMap;
     static const QVector< PredefinedPointPosition > DEFAULT_PLACEMENT_ORDER;
 };
 

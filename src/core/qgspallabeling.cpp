@@ -73,20 +73,115 @@ using namespace pal;
   based on my preferences, and to follow Krygier and Wood's placements more closer. (I'm not going to disagree
   with Denis Wood on anything cartography related...!)
 */
-const QVector< QgsPalLayerSettings::PredefinedPointPosition > QgsPalLayerSettings::DEFAULT_PLACEMENT_ORDER = QVector< QgsPalLayerSettings::PredefinedPointPosition >()
-    << QgsPalLayerSettings::TopRight
-    << QgsPalLayerSettings::TopLeft
-    << QgsPalLayerSettings::BottomRight
-    << QgsPalLayerSettings::BottomLeft
-    << QgsPalLayerSettings::MiddleRight
-    << QgsPalLayerSettings::MiddleLeft
-    << QgsPalLayerSettings::TopSlightlyRight
-    << QgsPalLayerSettings::BottomSlightlyRight;
+const QVector< QgsPalLayerSettings::PredefinedPointPosition > QgsPalLayerSettings::DEFAULT_PLACEMENT_ORDER
+{
+  QgsPalLayerSettings::TopRight,
+  QgsPalLayerSettings::TopLeft,
+  QgsPalLayerSettings::BottomRight,
+  QgsPalLayerSettings::BottomLeft,
+  QgsPalLayerSettings::MiddleRight,
+  QgsPalLayerSettings::MiddleLeft,
+  QgsPalLayerSettings::TopSlightlyRight,
+  QgsPalLayerSettings::BottomSlightlyRight
+};
 //debugging only - don't use these placements by default
 /* << QgsPalLayerSettings::TopSlightlyLeft
 << QgsPalLayerSettings::BottomSlightlyLeft;
 << QgsPalLayerSettings::TopMiddle
 << QgsPalLayerSettings::BottomMiddle;*/
+
+const QMap< int, QString > QgsPalLayerSettings::sPropertyNameMap {{ QgsPalLayerSettings::Size, "Size" },
+  { QgsPalLayerSettings::Bold, "Bold"},
+  { QgsPalLayerSettings::Italic, "Italic"},
+  { QgsPalLayerSettings::Underline, "Underline"},
+  { QgsPalLayerSettings::Color, "Color"},
+  { QgsPalLayerSettings::Strikeout, "Strikeout"},
+  { QgsPalLayerSettings::Family, "Family"},
+  { QgsPalLayerSettings::FontStyle, "FontStyle"},
+  { QgsPalLayerSettings::FontSizeUnit, "FontSizeUnit"},
+  { QgsPalLayerSettings::FontTransp, "FontTransp"},
+  { QgsPalLayerSettings::FontCase, "FontCase"},
+  { QgsPalLayerSettings::FontLetterSpacing, "FontLetterSpacing"},
+  { QgsPalLayerSettings::FontWordSpacing, "FontWordSpacing"},
+  { QgsPalLayerSettings::FontBlendMode, "FontBlendMode"},
+  { QgsPalLayerSettings::MultiLineWrapChar, "MultiLineWrapChar"},
+  { QgsPalLayerSettings::MultiLineHeight, "MultiLineHeight"},
+  { QgsPalLayerSettings::MultiLineAlignment, "MultiLineAlignment"},
+  { QgsPalLayerSettings::DirSymbDraw, "DirSymbDraw"},
+  { QgsPalLayerSettings::DirSymbLeft, "DirSymbLeft"},
+  { QgsPalLayerSettings::DirSymbRight, "DirSymbRight"},
+  { QgsPalLayerSettings::DirSymbPlacement, "DirSymbPlacement"},
+  { QgsPalLayerSettings::DirSymbReverse, "DirSymbReverse"},
+  { QgsPalLayerSettings::NumFormat, "NumFormat"},
+  { QgsPalLayerSettings::NumDecimals, "NumDecimals"},
+  { QgsPalLayerSettings::NumPlusSign, "NumPlusSign"},
+  { QgsPalLayerSettings::BufferDraw, "BufferDraw"},
+  { QgsPalLayerSettings::BufferSize, "BufferSize"},
+  { QgsPalLayerSettings::BufferUnit, "BufferUnit"},
+  { QgsPalLayerSettings::BufferColor, "BufferColor"},
+  { QgsPalLayerSettings::BufferTransp, "BufferTransp"},
+  { QgsPalLayerSettings::BufferJoinStyle, "BufferJoinStyle"},
+  { QgsPalLayerSettings::BufferBlendMode, "BufferBlendMode"},
+  { QgsPalLayerSettings::ShapeDraw, "ShapeDraw"},
+  { QgsPalLayerSettings::ShapeKind, "ShapeKind"},
+  { QgsPalLayerSettings::ShapeSVGFile, "ShapeSVGFile"},
+  { QgsPalLayerSettings::ShapeSizeType, "ShapeSizeType"},
+  { QgsPalLayerSettings::ShapeSizeX, "ShapeSizeX"},
+  { QgsPalLayerSettings::ShapeSizeY, "ShapeSizeY"},
+  { QgsPalLayerSettings::ShapeSizeUnits, "ShapeSizeUnits"},
+  { QgsPalLayerSettings::ShapeRotationType, "ShapeRotationType"},
+  { QgsPalLayerSettings::ShapeRotation, "ShapeRotation"},
+  { QgsPalLayerSettings::ShapeOffset, "ShapeOffset"},
+  { QgsPalLayerSettings::ShapeOffsetUnits, "ShapeOffsetUnits"},
+  { QgsPalLayerSettings::ShapeRadii, "ShapeRadii"},
+  { QgsPalLayerSettings::ShapeRadiiUnits, "ShapeRadiiUnits"},
+  { QgsPalLayerSettings::ShapeTransparency, "ShapeTransparency"},
+  { QgsPalLayerSettings::ShapeBlendMode, "ShapeBlendMode"},
+  { QgsPalLayerSettings::ShapeFillColor, "ShapeFillColor"},
+  { QgsPalLayerSettings::ShapeBorderColor, "ShapeBorderColor"},
+  { QgsPalLayerSettings::ShapeBorderWidth, "ShapeBorderWidth"},
+  { QgsPalLayerSettings::ShapeBorderWidthUnits, "ShapeBorderWidthUnits"},
+  { QgsPalLayerSettings::ShapeJoinStyle, "ShapeJoinStyle"},
+  { QgsPalLayerSettings::ShadowDraw, "ShadowDraw"},
+  { QgsPalLayerSettings::ShadowUnder, "ShadowUnder"},
+  { QgsPalLayerSettings::ShadowOffsetAngle, "ShadowOffsetAngle"},
+  { QgsPalLayerSettings::ShadowOffsetDist, "ShadowOffsetDist"},
+  { QgsPalLayerSettings::ShadowOffsetUnits, "ShadowOffsetUnits"},
+  { QgsPalLayerSettings::ShadowRadius, "ShadowRadius"},
+  { QgsPalLayerSettings::ShadowRadiusUnits, "ShadowRadiusUnits"},
+  { QgsPalLayerSettings::ShadowTransparency, "ShadowTransparency"},
+  { QgsPalLayerSettings::ShadowScale, "ShadowScale"},
+  { QgsPalLayerSettings::ShadowColor, "ShadowColor"},
+  { QgsPalLayerSettings::ShadowBlendMode, "ShadowBlendMode"},
+  { QgsPalLayerSettings::CentroidWhole, "CentroidWhole"},
+  { QgsPalLayerSettings::OffsetQuad, "OffsetQuad"},
+  { QgsPalLayerSettings::OffsetXY, "OffsetXY"},
+  { QgsPalLayerSettings::OffsetUnits, "OffsetUnits"},
+  { QgsPalLayerSettings::LabelDistance, "LabelDistance"},
+  { QgsPalLayerSettings::DistanceUnits, "DistanceUnits"},
+  { QgsPalLayerSettings::OffsetRotation, "OffsetRotation"},
+  { QgsPalLayerSettings::CurvedCharAngleInOut, "CurvedCharAngleInOut"},
+  { QgsPalLayerSettings::RepeatDistance, "RepeatDistance"},
+  { QgsPalLayerSettings::RepeatDistanceUnit, "RepeatDistanceUnit"},
+  { QgsPalLayerSettings::Priority, "Priority"},
+  { QgsPalLayerSettings::IsObstacle, "IsObstacle"},
+  { QgsPalLayerSettings::ObstacleFactor, "ObstacleFactor"},
+  { QgsPalLayerSettings::PredefinedPositionOrder, "PredefinedPositionOrder"},
+  { QgsPalLayerSettings::PositionX, "PositionX"},
+  { QgsPalLayerSettings::PositionY, "PositionY"},
+  { QgsPalLayerSettings::Hali, "Hali"},
+  { QgsPalLayerSettings::Vali, "Vali"},
+  { QgsPalLayerSettings::Rotation, "Rotation"},
+  { QgsPalLayerSettings::ScaleVisibility, "ScaleVisibility"},
+  { QgsPalLayerSettings::MinScale, "MinScale"},
+  { QgsPalLayerSettings::MaxScale, "MaxScale"},
+  { QgsPalLayerSettings::FontLimitPixel, "FontLimitPixel"},
+  { QgsPalLayerSettings::FontMinPixel, "FontMinPixel"},
+  { QgsPalLayerSettings::FontMaxPixel, "FontMaxPixel"},
+  { QgsPalLayerSettings::ZIndex, "ZIndex"},
+  { QgsPalLayerSettings::Show, "Show"},
+  { QgsPalLayerSettings::AlwaysShow, "AlwaysShow"}
+};
 
 QgsPalLayerSettings::QgsPalLayerSettings()
     : upsidedownLabels( Upright )
@@ -159,118 +254,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   obstacleFactor = 1.0;
   obstacleType = PolygonInterior;
   zIndex = 0.0;
-
-  // data defined string and old-style index values
-  // NOTE: in QPair use -1 for second value (other values are for old-style layer properties migration)
-
-  // text style
-  mDataDefinedNames.insert( Size, QPair<QString, int>( QStringLiteral( "Size" ), 0 ) );
-  mDataDefinedNames.insert( Bold, QPair<QString, int>( QStringLiteral( "Bold" ), 1 ) );
-  mDataDefinedNames.insert( Italic, QPair<QString, int>( QStringLiteral( "Italic" ), 2 ) );
-  mDataDefinedNames.insert( Underline, QPair<QString, int>( QStringLiteral( "Underline" ), 3 ) );
-  mDataDefinedNames.insert( Color, QPair<QString, int>( QStringLiteral( "Color" ), 4 ) );
-  mDataDefinedNames.insert( Strikeout, QPair<QString, int>( QStringLiteral( "Strikeout" ), 5 ) );
-  mDataDefinedNames.insert( Family, QPair<QString, int>( QStringLiteral( "Family" ), 6 ) );
-  mDataDefinedNames.insert( FontStyle, QPair<QString, int>( QStringLiteral( "FontStyle" ), -1 ) );
-  mDataDefinedNames.insert( FontSizeUnit, QPair<QString, int>( QStringLiteral( "FontSizeUnit" ), -1 ) );
-  mDataDefinedNames.insert( FontTransp, QPair<QString, int>( QStringLiteral( "FontTransp" ), 18 ) );
-  mDataDefinedNames.insert( FontCase, QPair<QString, int>( QStringLiteral( "FontCase" ), -1 ) );
-  mDataDefinedNames.insert( FontLetterSpacing, QPair<QString, int>( QStringLiteral( "FontLetterSpacing" ), -1 ) );
-  mDataDefinedNames.insert( FontWordSpacing, QPair<QString, int>( QStringLiteral( "FontWordSpacing" ), -1 ) );
-  mDataDefinedNames.insert( FontBlendMode, QPair<QString, int>( QStringLiteral( "FontBlendMode" ), -1 ) );
-
-  // text formatting
-  mDataDefinedNames.insert( MultiLineWrapChar, QPair<QString, int>( QStringLiteral( "MultiLineWrapChar" ), -1 ) );
-  mDataDefinedNames.insert( MultiLineHeight, QPair<QString, int>( QStringLiteral( "MultiLineHeight" ), -1 ) );
-  mDataDefinedNames.insert( MultiLineAlignment, QPair<QString, int>( QStringLiteral( "MultiLineAlignment" ), -1 ) );
-  mDataDefinedNames.insert( DirSymbDraw, QPair<QString, int>( QStringLiteral( "DirSymbDraw" ), -1 ) );
-  mDataDefinedNames.insert( DirSymbLeft, QPair<QString, int>( QStringLiteral( "DirSymbLeft" ), -1 ) );
-  mDataDefinedNames.insert( DirSymbRight, QPair<QString, int>( QStringLiteral( "DirSymbRight" ), -1 ) );
-  mDataDefinedNames.insert( DirSymbPlacement, QPair<QString, int>( QStringLiteral( "DirSymbPlacement" ), -1 ) );
-  mDataDefinedNames.insert( DirSymbReverse, QPair<QString, int>( QStringLiteral( "DirSymbReverse" ), -1 ) );
-  mDataDefinedNames.insert( NumFormat, QPair<QString, int>( QStringLiteral( "NumFormat" ), -1 ) );
-  mDataDefinedNames.insert( NumDecimals, QPair<QString, int>( QStringLiteral( "NumDecimals" ), -1 ) );
-  mDataDefinedNames.insert( NumPlusSign, QPair<QString, int>( QStringLiteral( "NumPlusSign" ), -1 ) );
-
-  // text buffer
-  mDataDefinedNames.insert( BufferDraw, QPair<QString, int>( QStringLiteral( "BufferDraw" ), -1 ) );
-  mDataDefinedNames.insert( BufferSize, QPair<QString, int>( QStringLiteral( "BufferSize" ), 7 ) );
-  mDataDefinedNames.insert( BufferUnit, QPair<QString, int>( QStringLiteral( "BufferUnit" ), -1 ) );
-  mDataDefinedNames.insert( BufferColor, QPair<QString, int>( QStringLiteral( "BufferColor" ), 8 ) );
-  mDataDefinedNames.insert( BufferTransp, QPair<QString, int>( QStringLiteral( "BufferTransp" ), 19 ) );
-  mDataDefinedNames.insert( BufferJoinStyle, QPair<QString, int>( QStringLiteral( "BufferJoinStyle" ), -1 ) );
-  mDataDefinedNames.insert( BufferBlendMode, QPair<QString, int>( QStringLiteral( "BufferBlendMode" ), -1 ) );
-
-  // background
-  mDataDefinedNames.insert( ShapeDraw, QPair<QString, int>( QStringLiteral( "ShapeDraw" ), -1 ) );
-  mDataDefinedNames.insert( ShapeKind, QPair<QString, int>( QStringLiteral( "ShapeKind" ), -1 ) );
-  mDataDefinedNames.insert( ShapeSVGFile, QPair<QString, int>( QStringLiteral( "ShapeSVGFile" ), -1 ) );
-  mDataDefinedNames.insert( ShapeSizeType, QPair<QString, int>( QStringLiteral( "ShapeSizeType" ), -1 ) );
-  mDataDefinedNames.insert( ShapeSizeX, QPair<QString, int>( QStringLiteral( "ShapeSizeX" ), -1 ) );
-  mDataDefinedNames.insert( ShapeSizeY, QPair<QString, int>( QStringLiteral( "ShapeSizeY" ), -1 ) );
-  mDataDefinedNames.insert( ShapeSizeUnits, QPair<QString, int>( QStringLiteral( "ShapeSizeUnits" ), -1 ) );
-  mDataDefinedNames.insert( ShapeRotationType, QPair<QString, int>( QStringLiteral( "ShapeRotationType" ), -1 ) );
-  mDataDefinedNames.insert( ShapeRotation, QPair<QString, int>( QStringLiteral( "ShapeRotation" ), -1 ) );
-  mDataDefinedNames.insert( ShapeOffset, QPair<QString, int>( QStringLiteral( "ShapeOffset" ), -1 ) );
-  mDataDefinedNames.insert( ShapeOffsetUnits, QPair<QString, int>( QStringLiteral( "ShapeOffsetUnits" ), -1 ) );
-  mDataDefinedNames.insert( ShapeRadii, QPair<QString, int>( QStringLiteral( "ShapeRadii" ), -1 ) );
-  mDataDefinedNames.insert( ShapeRadiiUnits, QPair<QString, int>( QStringLiteral( "ShapeRadiiUnits" ), -1 ) );
-  mDataDefinedNames.insert( ShapeTransparency, QPair<QString, int>( QStringLiteral( "ShapeTransparency" ), -1 ) );
-  mDataDefinedNames.insert( ShapeBlendMode, QPair<QString, int>( QStringLiteral( "ShapeBlendMode" ), -1 ) );
-  mDataDefinedNames.insert( ShapeFillColor, QPair<QString, int>( QStringLiteral( "ShapeFillColor" ), -1 ) );
-  mDataDefinedNames.insert( ShapeBorderColor, QPair<QString, int>( QStringLiteral( "ShapeBorderColor" ), -1 ) );
-  mDataDefinedNames.insert( ShapeBorderWidth, QPair<QString, int>( QStringLiteral( "ShapeBorderWidth" ), -1 ) );
-  mDataDefinedNames.insert( ShapeBorderWidthUnits, QPair<QString, int>( QStringLiteral( "ShapeBorderWidthUnits" ), -1 ) );
-  mDataDefinedNames.insert( ShapeJoinStyle, QPair<QString, int>( QStringLiteral( "ShapeJoinStyle" ), -1 ) );
-
-  // drop shadow
-  mDataDefinedNames.insert( ShadowDraw, QPair<QString, int>( QStringLiteral( "ShadowDraw" ), -1 ) );
-  mDataDefinedNames.insert( ShadowUnder, QPair<QString, int>( QStringLiteral( "ShadowUnder" ), -1 ) );
-  mDataDefinedNames.insert( ShadowOffsetAngle, QPair<QString, int>( QStringLiteral( "ShadowOffsetAngle" ), -1 ) );
-  mDataDefinedNames.insert( ShadowOffsetDist, QPair<QString, int>( QStringLiteral( "ShadowOffsetDist" ), -1 ) );
-  mDataDefinedNames.insert( ShadowOffsetUnits, QPair<QString, int>( QStringLiteral( "ShadowOffsetUnits" ), -1 ) );
-  mDataDefinedNames.insert( ShadowRadius, QPair<QString, int>( QStringLiteral( "ShadowRadius" ), -1 ) );
-  mDataDefinedNames.insert( ShadowRadiusUnits, QPair<QString, int>( QStringLiteral( "ShadowRadiusUnits" ), -1 ) );
-  mDataDefinedNames.insert( ShadowTransparency, QPair<QString, int>( QStringLiteral( "ShadowTransparency" ), -1 ) );
-  mDataDefinedNames.insert( ShadowScale, QPair<QString, int>( QStringLiteral( "ShadowScale" ), -1 ) );
-  mDataDefinedNames.insert( ShadowColor, QPair<QString, int>( QStringLiteral( "ShadowColor" ), -1 ) );
-  mDataDefinedNames.insert( ShadowBlendMode, QPair<QString, int>( QStringLiteral( "ShadowBlendMode" ), -1 ) );
-
-  // placement
-  mDataDefinedNames.insert( CentroidWhole, QPair<QString, int>( QStringLiteral( "CentroidWhole" ), -1 ) );
-  mDataDefinedNames.insert( OffsetQuad, QPair<QString, int>( QStringLiteral( "OffsetQuad" ), -1 ) );
-  mDataDefinedNames.insert( OffsetXY, QPair<QString, int>( QStringLiteral( "OffsetXY" ), -1 ) );
-  mDataDefinedNames.insert( OffsetUnits, QPair<QString, int>( QStringLiteral( "OffsetUnits" ), -1 ) );
-  mDataDefinedNames.insert( LabelDistance, QPair<QString, int>( QStringLiteral( "LabelDistance" ), 13 ) );
-  mDataDefinedNames.insert( DistanceUnits, QPair<QString, int>( QStringLiteral( "DistanceUnits" ), -1 ) );
-  mDataDefinedNames.insert( OffsetRotation, QPair<QString, int>( QStringLiteral( "OffsetRotation" ), -1 ) );
-  mDataDefinedNames.insert( CurvedCharAngleInOut, QPair<QString, int>( QStringLiteral( "CurvedCharAngleInOut" ), -1 ) );
-  mDataDefinedNames.insert( RepeatDistance, QPair<QString, int>( QStringLiteral( "RepeatDistance" ), -1 ) );
-  mDataDefinedNames.insert( RepeatDistanceUnit, QPair<QString, int>( QStringLiteral( "RepeatDistanceUnit" ), -1 ) );
-  mDataDefinedNames.insert( Priority, QPair<QString, int>( QStringLiteral( "Priority" ), -1 ) );
-  mDataDefinedNames.insert( IsObstacle, QPair<QString, int>( QStringLiteral( "IsObstacle" ), -1 ) );
-  mDataDefinedNames.insert( ObstacleFactor, QPair<QString, int>( QStringLiteral( "ObstacleFactor" ), -1 ) );
-  mDataDefinedNames.insert( PredefinedPositionOrder, QPair<QString, int>( QStringLiteral( "PredefinedPositionOrder" ), -1 ) );
-
-  // (data defined only)
-  mDataDefinedNames.insert( PositionX, QPair<QString, int>( QStringLiteral( "PositionX" ), 9 ) );
-  mDataDefinedNames.insert( PositionY, QPair<QString, int>( QStringLiteral( "PositionY" ), 10 ) );
-  mDataDefinedNames.insert( Hali, QPair<QString, int>( QStringLiteral( "Hali" ), 11 ) );
-  mDataDefinedNames.insert( Vali, QPair<QString, int>( QStringLiteral( "Vali" ), 12 ) );
-  mDataDefinedNames.insert( Rotation, QPair<QString, int>( QStringLiteral( "Rotation" ), 14 ) );
-
-  //rendering
-  mDataDefinedNames.insert( ScaleVisibility, QPair<QString, int>( QStringLiteral( "ScaleVisibility" ), -1 ) );
-  mDataDefinedNames.insert( MinScale, QPair<QString, int>( QStringLiteral( "MinScale" ), 16 ) );
-  mDataDefinedNames.insert( MaxScale, QPair<QString, int>( QStringLiteral( "MaxScale" ), 17 ) );
-  mDataDefinedNames.insert( FontLimitPixel, QPair<QString, int>( QStringLiteral( "FontLimitPixel" ), -1 ) );
-  mDataDefinedNames.insert( FontMinPixel, QPair<QString, int>( QStringLiteral( "FontMinPixel" ), -1 ) );
-  mDataDefinedNames.insert( FontMaxPixel, QPair<QString, int>( QStringLiteral( "FontMaxPixel" ), -1 ) );
-  mDataDefinedNames.insert( ZIndex, QPair<QString, int>( QStringLiteral( "ZIndex" ), -1 ) );
-  // (data defined only)
-  mDataDefinedNames.insert( Show, QPair<QString, int>( QStringLiteral( "Show" ), 15 ) );
-  mDataDefinedNames.insert( AlwaysShow, QPair<QString, int>( QStringLiteral( "AlwaysShow" ), 20 ) );
-
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
@@ -369,7 +352,6 @@ QgsPalLayerSettings& QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   {
     dataDefinedProperties.insert( it.key(), it.value() ? new QgsDataDefined( *it.value() ) : nullptr );
   }
-  mDataDefinedNames = s.mDataDefinedNames;
 
   return *this;
 }
@@ -428,24 +410,24 @@ void QgsPalLayerSettings::readDataDefinedPropertyMap( QgsVectorLayer* layer, QDo
     return;
   }
 
-  QMapIterator<QgsPalLayerSettings::DataDefinedProperties, QPair<QString, int> > i( mDataDefinedNames );
+  QMapIterator<int, QString > i( sPropertyNameMap );
   while ( i.hasNext() )
   {
     i.next();
     if ( layer )
     {
       // reading from layer's custom properties (old way)
-      readDataDefinedProperty( layer, i.key(), propertyMap );
+      readDataDefinedProperty( layer, static_cast< DataDefinedProperties >( i.key() ), propertyMap );
     }
     else if ( parentElem )
     {
       // reading from XML (new way)
-      QDomElement e = parentElem->firstChildElement( i.value().first );
+      QDomElement e = parentElem->firstChildElement( i.value() );
       if ( !e.isNull() )
       {
         QgsDataDefined* dd = new QgsDataDefined();
         if ( dd->setFromXmlElement( e ) )
-          propertyMap.insert( i.key(), dd );
+          propertyMap.insert( static_cast< DataDefinedProperties >( i.key() ), dd );
         else
           delete dd;
       }
@@ -460,15 +442,14 @@ void QgsPalLayerSettings::writeDataDefinedPropertyMap( QgsVectorLayer* layer, QD
   {
     return;
   }
-
-  QMapIterator<QgsPalLayerSettings::DataDefinedProperties, QPair<QString, int> > i( mDataDefinedNames );
+  QMapIterator< int, QString > i( sPropertyNameMap );
   while ( i.hasNext() )
   {
     i.next();
-    QString newPropertyName = "labeling/dataDefined/" + i.value().first;
+    QString newPropertyName = "labeling/dataDefined/" + i.value();
     QVariant propertyValue = QVariant();
 
-    QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator it = propertyMap.find( i.key() );
+    QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator it = propertyMap.find( static_cast< DataDefinedProperties >( i.key() ) );
     if ( it != propertyMap.constEnd() )
     {
       QgsDataDefined* dd = it.value();
@@ -499,7 +480,7 @@ void QgsPalLayerSettings::writeDataDefinedPropertyMap( QgsVectorLayer* layer, QD
         {
           // writing to XML document (instead of writing to layer)
           QDomDocument doc = parentElem->ownerDocument();
-          QDomElement e = dd->toXmlElement( doc, i.value().first );
+          QDomElement e = dd->toXmlElement( doc, i.value() );
           parentElem->appendChild( e );
         }
       }
@@ -518,12 +499,6 @@ void QgsPalLayerSettings::writeDataDefinedPropertyMap( QgsVectorLayer* layer, QD
         // remove unused properties
         layer->removeCustomProperty( newPropertyName );
       }
-
-      if ( layer->customProperty( newPropertyName, QVariant() ).isValid() && i.value().second > -1 )
-      {
-        // remove old-style field index-based property, if still present
-        layer->removeCustomProperty( QStringLiteral( "labeling/dataDefinedProperty" ) + QString::number( i.value().second ) );
-      }
     }
   }
 }
@@ -532,73 +507,13 @@ void QgsPalLayerSettings::readDataDefinedProperty( QgsVectorLayer* layer,
     QgsPalLayerSettings::DataDefinedProperties p,
     QMap < QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > & propertyMap )
 {
-  QString newPropertyName = "labeling/dataDefined/" + mDataDefinedNames.value( p ).first;
+  QString newPropertyName = "labeling/dataDefined/" + sPropertyNameMap.value( p );
   QVariant newPropertyField = layer->customProperty( newPropertyName, QVariant() );
 
-  QString ddString = QString();
-  if ( newPropertyField.isValid() )
-  {
-    ddString = newPropertyField.toString();
-  }
-  else // maybe working with old-style field index-based property (< QGIS 2.0)
-  {
-    int oldIndx = mDataDefinedNames.value( p ).second;
+  if ( !newPropertyField.isValid() )
+    return;
 
-    if ( oldIndx < 0 ) // something went wrong and we are working with new-style
-    {
-      return;
-    }
-
-    QString oldPropertyName = "labeling/dataDefinedProperty" + QString::number( oldIndx );
-    QVariant oldPropertyField = layer->customProperty( oldPropertyName, QVariant() );
-
-    if ( !oldPropertyField.isValid() )
-    {
-      return;
-    }
-
-    // switch from old-style field index- to name-based properties
-    bool conversionOk;
-    int indx = oldPropertyField.toInt( &conversionOk );
-
-    if ( conversionOk )
-    {
-      // Fix to migrate from old-style vector api, where returned QMap keys possibly
-      //   had 'holes' in sequence of field indices, e.g. 0,2,3
-      // QgsAttrPalIndexNameHash provides a means of access field name in sequences from
-      //   providers that produced holes (e.g. PostGIS skipped geom column), otherwise it is empty
-      QgsAttrPalIndexNameHash oldIndicesToNames = layer->dataProvider()->palAttributeIndexNames();
-
-      if ( !oldIndicesToNames.isEmpty() )
-      {
-        ddString = oldIndicesToNames.value( indx );
-      }
-      else
-      {
-        QgsFields fields = layer->dataProvider()->fields();
-        if ( indx < fields.size() ) // in case field count has changed
-        {
-          ddString = fields.at( indx ).name();
-        }
-      }
-    }
-
-    if ( !ddString.isEmpty() )
-    {
-      //upgrade any existing property to field name-based
-      layer->setCustomProperty( newPropertyName, QVariant( updateDataDefinedString( ddString ) ) );
-
-      // fix for scale visibility limits triggered off of just its data defined values in the past (<2.0)
-      if ( oldIndx == 16 || oldIndx == 17 ) // old minScale and maxScale enums
-      {
-        scaleVisibility = true;
-        layer->setCustomProperty( QStringLiteral( "labeling/scaleVisibility" ), true );
-      }
-    }
-
-    // remove old-style field index-based property
-    layer->removeCustomProperty( oldPropertyName );
-  }
+  QString ddString = newPropertyField.toString();
 
   if ( !ddString.isEmpty() && ddString != QLatin1String( "0~~0~~~~" ) )
   {
@@ -2400,7 +2315,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( DataDefinedValueType valType,
   if ( dataDefinedEvaluate( p, exprVal, &context, originalValue ) )
   {
 #ifdef QGISDEBUG
-    QString dbgStr = QStringLiteral( "exprVal %1:" ).arg( mDataDefinedNames.value( p ).first ) + "%1"; // clazy:exclude=unused-non-trivial-variable
+    QString dbgStr = QStringLiteral( "exprVal %1:" ).arg( sPropertyNameMap.value( p ) ) + "%1"; // clazy:exclude=unused-non-trivial-variable
 #endif
 
     switch ( valType )
