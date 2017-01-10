@@ -55,9 +55,10 @@ QUrl QgsHelp::helpUrl( const QString& key )
     fullPath = path;
     Q_FOREACH ( const QString& var, scope->variableNames() )
     {
-      QRegularExpression rx( QStringLiteral( "(?<!\\$)\\$%1" ).arg( var ) );
+      QRegularExpression rx( QStringLiteral( "(<!\\$\\$)*(\\$%1)" ).arg( var ) );
       fullPath.replace( rx, scope->variable( var ).toString() );
     }
+    fullPath.replace( QRegularExpression( "(\\$\\$)" ), "$" );
 
     helpPath = QStringLiteral( "%1/%2" ).arg( fullPath ).arg( key );
 
