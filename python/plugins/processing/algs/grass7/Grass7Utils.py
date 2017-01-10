@@ -84,7 +84,6 @@ class Grass7Utils(object):
         #~ # or something like that... This is just a temporary thing
         #~ return '7.0.0'
 
-
     @staticmethod
     def installedVersion(run=False):
         if Grass7Utils.isGrass7Installed and not run:
@@ -111,7 +110,6 @@ class Grass7Utils(object):
                 pass
 
         return Grass7Utils.version
-
 
     @staticmethod
     def grassPath():

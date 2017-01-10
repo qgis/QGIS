@@ -98,7 +98,7 @@ def features(layer, request=QgsFeatureRequest()):
     class Features(object):
 
         DO_NOT_CHECK, IGNORE, RAISE_EXCEPTION = range(3)
-        
+
         def __init__(self, layer, request):
             self.layer = layer
             self.selection = False
@@ -108,24 +108,24 @@ def features(layer, request=QgsFeatureRequest()):
                 self.selection = True
             else:
                 self.iter = layer.getFeatures(request)
-            
+
             invalidFeaturesMethod = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
-            
+
             def filterFeature(f, ignoreInvalid):
                 geom = f.geometry()
                 if geom is None:
                     ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                            self.tr('Feature with NULL geometry found.'))
+                                           self.tr('Feature with NULL geometry found.'))
                 elif not geom.isGeosValid():
                     ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                            self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
+                                           self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
                     if ignoreInvalid:
                         return False
                     else:
                         raise GeoAlgorithmExecutionException(self.tr('Features with invalid geometries found. Please fix these geometries or specify the "Ignore invalid input features" flag'))
                 return True
 
-            if invalidFeaturesMethod == self.IGNORE: 
+            if invalidFeaturesMethod == self.IGNORE:
                 self.iter = filter(lambda x: filterFeature(x, True), self.iter)
             elif invalidFeaturesMethod == self.RAISE_EXCEPTION:
                 self.iter = filter(lambda x: filterFeature(x, False), self.iter)
@@ -138,10 +138,9 @@ def features(layer, request=QgsFeatureRequest()):
                 return int(self.layer.selectedFeatureCount())
             else:
                 return int(self.layer.featureCount())
-            
+
         def tr(self, string):
             return QCoreApplication.translate("FeatureIterator", string)
-
 
     return Features(layer, request)
 
