@@ -214,12 +214,10 @@ bool QgsCoordinateReferenceSystem::createFromUserInput( const QString &theDefini
   OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
 
   // make sure towgs84 parameter is loaded if using an ESRI definition and gdal >= 1.9
-#if GDAL_VERSION_NUM >= 1900
   if ( theDefinition.startsWith( QLatin1String( "ESRI::" ) ) )
   {
     setupESRIWktFix();
   }
-#endif
 
   if ( OSRSetFromUserInput( crs, theDefinition.toLocal8Bit().constData() ) == OGRERR_NONE )
   {
@@ -238,7 +236,6 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix()
 {
   // make sure towgs84 parameter is loaded if gdal >= 1.9
   // this requires setting GDAL_FIX_ESRI_WKT=GEOGCS (see qgis bug #5598 and gdal bug #4673)
-#if GDAL_VERSION_NUM >= 1900
   const char* configOld = CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" );
   const char* configNew = "GEOGCS";
   // only set if it was not set, to let user change the value if needed
@@ -254,7 +251,6 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix()
   {
     QgsDebugMsg( QString( "GDAL_FIX_ESRI_WKT was already set : %1" ).arg( configNew ) );
   }
-#endif
 }
 
 bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString& theCrs )

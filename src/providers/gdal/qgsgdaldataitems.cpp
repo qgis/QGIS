@@ -40,7 +40,7 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
     setState( Populated );
 
   GDALAllRegister();
-  GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
+  GDALDatasetH hDS = GDALOpen( mPath.toUtf8().constData(), GA_Update );
 
   if ( hDS )
   {
@@ -51,7 +51,7 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
 
 bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
-  GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
+  GDALDatasetH hDS = GDALOpen( mPath.toUtf8().constData(), GA_Update );
   if ( !hDS )
     return false;
 
@@ -248,7 +248,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       // do not print errors, but write to debug
       CPLPushErrorHandler( CPLQuietErrorHandler );
       CPLErrorReset();
-      if ( ! GDALIdentifyDriver( TO8F( thePath ), nullptr ) )
+      if ( ! GDALIdentifyDriver( thePath.toUtf8().constData(), nullptr ) )
       {
         QgsDebugMsgLevel( "Skipping VRT file because root is not a GDAL VRT", 2 );
         CPLPopErrorHandler();
@@ -269,7 +269,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  GDALDatasetH hDS = GDALOpen( TO8F( thePath ), GA_ReadOnly );
+  GDALDatasetH hDS = GDALOpen( thePath.toUtf8().constData(), GA_ReadOnly );
   CPLPopErrorHandler();
 
   if ( ! hDS )

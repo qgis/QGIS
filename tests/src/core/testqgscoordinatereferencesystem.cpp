@@ -102,13 +102,11 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   qDebug() << "PROJ.4 version:         " << PJ_VERSION;
 
   // if user set GDAL_FIX_ESRI_WKT print a warning
-#if GDAL_VERSION_NUM >= 1900
   if ( strcmp( CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ), "" ) != 0 )
   {
     qDebug() << "Warning! GDAL_FIX_ESRI_WKT =" << CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" )
     << "this might generate errors!";
   }
-#endif
 
 }
 
@@ -361,14 +359,10 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
   myWktStrings << QStringLiteral( "GEOGCS[\"GCS_South_American_1969\",DATUM[\"D_South_American_1969\",SPHEROID[\"GRS_1967_Truncated\",6378160.0,298.25]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]" );
   myFiles << QLatin1String( "" );
   myGdalVersionOK << 1900;
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
+
   //proj definition for EPSG:4618 was updated in GDAL 2.0 - see https://github.com/OSGeo/proj.4/issues/241
   myProj4Strings << "+proj=longlat +ellps=aust_SA +towgs84=-66.87,4.37,-38.52,0,0,0,0 +no_defs";
   myTOWGS84Strings << "+towgs84=-66.87,4.37,-38.52,0,0,0,0";
-#else
-  myProj4Strings << QStringLiteral( "+proj=longlat +ellps=aust_SA +towgs84=-57,1,-41,0,0,0,0 +no_defs" );
-  myTOWGS84Strings << QStringLiteral( "+towgs84=-57,1,-41,0,0,0,0" );
-#endif
   myAuthIdStrings << QStringLiteral( "EPSG:4618" );
 
   // do test with WKT definitions
@@ -637,21 +631,12 @@ void TestQgsCoordinateReferenceSystem::toWkt()
   myCrs.createFromSrid( GEOSRID );
   QString myWkt = myCrs.toWkt();
   debugPrint( myCrs );
-#if GDAL_VERSION_NUM >= 1800
   //Note: this is not the same as GEOWKT as OGR strips off the TOWGS clause...
   QString myStrippedWkt( "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID"
                          "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
                          "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
                          "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY"
                          "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]" );
-#else
-  // for GDAL <1.8
-  QString myStrippedWkt( "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID"
-                         "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
-                         "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
-                         "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY"
-                         "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]" );
-#endif
   qDebug() << "wkt:      " << myWkt;
   qDebug() << "stripped: " << myStrippedWkt;
   QVERIFY( myWkt == myStrippedWkt );

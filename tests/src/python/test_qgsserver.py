@@ -225,10 +225,6 @@ class TestQgsServer(unittest.TestCase):
         response = re.sub(RE_STRIP_UNCHECKABLE, b'*****', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'*****', expected)
 
-        # for older GDAL versions (<2.0), id field will be integer type
-        if int(osgeo.gdal.VersionInfo()[:1]) < 2:
-            expected = expected.replace(b'typeName="Integer64" precision="0" length="10" editType="TextEdit" type="qlonglong"', b'typeName="Integer" precision="0" length="10" editType="TextEdit" type="int"')
-
         self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
 
     def test_project_wms(self):
@@ -316,10 +312,6 @@ class TestQgsServer(unittest.TestCase):
         """
         response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
-
-        # for older GDAL versions (<2.0), id field will be integer type
-        if int(osgeo.gdal.VersionInfo()[:1]) < 2:
-            expected = expected.replace(b'<element type="long" name="id"/>', b'<element type="integer" name="id"/>')
 
         self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
 

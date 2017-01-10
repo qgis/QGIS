@@ -868,11 +868,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
       {
         const int wkbSize = OGR_G_WkbSize( hGeom );
         unsigned char* pabyBuffer = new unsigned char[ wkbSize ];
-#if GDAL_VERSION_MAJOR >= 2
         OGR_G_ExportToIsoWkb( hGeom, wkbNDR, pabyBuffer );
-#else
-        OGR_G_ExportToWkb( hGeom, wkbNDR, pabyBuffer );
-#endif
         QgsGeometry g;
         g.fromWkb( pabyBuffer, wkbSize );
         if ( mInvertAxisOrientation )

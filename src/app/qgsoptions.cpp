@@ -1852,12 +1852,8 @@ void QgsOptions::loadGdalDriverList()
 
     // in GDAL 2.0 vector and mixed drivers are returned by GDALGetDriver, so filter out non-raster drivers
     // TODO add same UI for vector drivers
-#ifdef GDAL_COMPUTE_VERSION
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
     if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) != "YES" )
       continue;
-#endif
-#endif
 
     myGdalDriverDescription = GDALGetDescription( myGdalDriver );
     myDrivers << myGdalDriverDescription;
