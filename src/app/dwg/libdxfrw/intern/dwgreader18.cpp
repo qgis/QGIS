@@ -762,6 +762,7 @@ bool dwgReader18::readDwgClasses()
 
 
 /*********** objects map ************************/
+
 /** Note: object map are split in sections with max size 2035?
  *  heach section are 2 bytes size + data bytes + 2 bytes crc
  *  size value are data bytes + 2 and to calculate crc are used
@@ -796,6 +797,7 @@ bool dwgReader18::readDwgHandles()
 
 
 /*********** objects ************************/
+
 /**
  * Reads all the object referenced in the object map section of the DWG file
  * (using their object file offsets)

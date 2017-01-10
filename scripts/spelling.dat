@@ -67,6 +67,7 @@ attemtps:attempts
 attribut:attribute
 attruibutes:attributes
 authentification:authentication
+automaticaly:automatically
 automaticly:automatically
 automatize:automate
 automatized:automated
@@ -91,6 +92,7 @@ calender:calendar
 cancelation:cancellation
 capabilites:capabilities
 capatibilities:capabilities
+capitalise:capitalize
 cariage:carriage
 centimetre:centimeter
 centimetres:centimeters
@@ -139,6 +141,7 @@ debians:Debian's
 decompres:decompress
 definate:definite
 definately:definitely
+definintion:definition
 deimiter:delimiter
 delemeter:delimiter
 delemiter:delimiter
@@ -193,8 +196,10 @@ extention:extension
 failuer:failure
 familar:familiar
 fatser:faster
-feture:feature
 fetaures:features
+feture:feature
+flavour:flavor
+flavours:flavors
 forse:force
 fortan:fortran
 forwardig:forwarding
@@ -208,9 +213,9 @@ furter:further
 futher:further
 futhermore:furthermore
 generiously:generously
-granulatiry:granularity
 grahical:graphical
 grahpical:graphical
+granulatiry:granularity
 grapic:graphic
 guage:gauge
 halfs:halves
@@ -235,8 +240,8 @@ informatiom:information
 informations:information
 infromation:information
 initalize:initialize
-initialisation:initialization
 initators:initiators
+initialisation:initialization
 initializiation:initialization
 inofficial:unofficial
 instersction:intersection
@@ -244,6 +249,7 @@ integreated:integrated
 integrety:integrity
 integrey:integrity
 intendet:intended
+interactivly:interactively
 interchangable:interchangeable
 intermittant:intermittent
 intersecton:intersection
@@ -254,6 +260,7 @@ jave:java
 kilometre:kilometer
 kilometres:kilometers
 labelling:labeling
+labour:labor
 langage:language
 langauage:language
 langugage:language
@@ -284,6 +291,7 @@ microprocesspr:microprocessor
 millimetre:millimeter
 millimetres:millimeters
 milliseonds:milliseconds
+minimise:minimize
 miscelleneous:miscellaneous
 misformed:malformed
 mispelled:misspelled
@@ -336,6 +344,7 @@ paramter:parameter
 paramters:parameters
 particularily:particularly
 pased:passed
+peference:preference
 peprocessor:preprocessor
 perfoming:performing
 permissons:permissions
@@ -356,6 +365,8 @@ prepaired:prepared
 primative:primitive
 princliple:principle
 priorty:priority
+prioritise:prioritize
+prioritising:prioritizing
 proccesors:processors
 proces:process
 processessing:processing
@@ -378,6 +389,7 @@ protecion:protection
 protocoll:protocol
 psychadelic:psychedelic
 quering:querying
+rasterise:rasterize
 recieve:receive
 recieved:received
 reciever:receiver
@@ -458,6 +470,7 @@ supress:suppress
 surpress:suppress
 suspicously:suspiciously
 swaped:swapped
+symbo:symbol
 syle:style
 symetrical:symmetrical
 synax:syntax
@@ -507,5 +520,6 @@ wich:which
 widht:width
 wierd:weird
 writeable:writable
+writting:writing
 xwindows:X
 yur:your

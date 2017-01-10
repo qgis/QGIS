@@ -17,13 +17,14 @@
 #ifndef QGSCOMPOSERMAPITEM_H
 #define QGSCOMPOSERMAPITEM_H
 
+#include "qgis_core.h"
 #include "qgscomposerobject.h"
 
 class QgsComposerMap;
 
 /** \ingroup core
  *  \class QgsComposerMapItem
- *  \brief An item which is drawn inside a QgsComposerMap, eg a grid or map overview.
+ *  \brief An item which is drawn inside a QgsComposerMap, e.g., a grid or map overview.
  */
 class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
 {
@@ -36,8 +37,6 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
      * @param map QgsComposerMap the item is attached to
      */
     QgsComposerMapItem( const QString& name, QgsComposerMap* map );
-
-    virtual ~QgsComposerMapItem();
 
     /** Draws the item on to a painter
      * @param painter destination QPainter

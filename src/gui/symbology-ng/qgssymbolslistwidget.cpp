@@ -471,22 +471,7 @@ QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
     return QgsExpressionContext( *mContext.expressionContext() );
 
   //otherwise create a default symbol context
-  QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
-
-  if ( mContext.mapCanvas() )
-  {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
-  }
-  else
-  {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
-  }
-
-  expContext << QgsExpressionContextUtils::layerScope( layer() );
+  QgsExpressionContext expContext( mContext.globalProjectAtlasMapLayerScopes( layer() ) );
 
   // additional scopes
   Q_FOREACH ( const QgsExpressionContextScope& scope, mContext.additionalExpressionContextScopes() )

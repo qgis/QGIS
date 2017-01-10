@@ -19,6 +19,8 @@
 
 #include <QString>
 
+#include "qgis_core.h"
+
 /** \ingroup core
   * Defines a qgis exception class.
  */

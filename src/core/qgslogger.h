@@ -22,6 +22,9 @@
 #include <sstream>
 #include <QString>
 #include <QTime>
+
+#include "qgis_core.h"
+
 class QFile;
 
 #ifdef QGISDEBUG

@@ -20,6 +20,7 @@
 #include <QWidget>
 #include "ui_qgsautheditorwidgets.h"
 #include "ui_qgsauthmethodplugins.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Dialog for viewing available authentication method plugins
@@ -35,8 +36,6 @@ class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMetho
      * @param parent Parent widget
      */
     explicit QgsAuthMethodPlugins( QWidget *parent = nullptr );
-
-    ~QgsAuthMethodPlugins();
 
   private slots:
     void populateTable();
@@ -63,8 +62,6 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
      * @param parent Parent widget
      */
     explicit QgsAuthEditorWidgets( QWidget *parent = nullptr );
-
-    ~QgsAuthEditorWidgets();
 
   private slots:
     void on_btnCertManager_clicked();

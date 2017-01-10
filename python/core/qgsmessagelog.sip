@@ -5,7 +5,7 @@ class QgsMessageLog : QObject
 %End
 
   public:
-    static QgsMessageLog *instance();
+    QgsMessageLog();
 
     enum MessageLevel
     {
@@ -20,8 +20,6 @@ class QgsMessageLog : QObject
   signals:
     void messageReceived( const QString& message, const QString& tag, MessageLevel level );
 
-  private:
-    QgsMessageLog();
 };
 
 

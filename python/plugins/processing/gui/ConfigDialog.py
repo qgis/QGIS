@@ -30,8 +30,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import (Qt,
-                              QEvent)
+from qgis.PyQt.QtCore import Qt, QEvent, QSettings
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QDialog,
                                  QStyle,
@@ -160,7 +159,7 @@ class ConfigDialog(BASE, WIDGET):
         Filter 'Providers' items
         """
         providersItem = QStandardItem(self.tr('Providers'))
-        icon = QIcon(os.path.join(pluginPath, 'images', 'alg.png'))
+        icon = QIcon(os.path.join(pluginPath, 'images', 'alg.svg'))
         providersItem.setIcon(icon)
         providersItem.setEditable(False)
         emptyItem = QStandardItem()
@@ -266,6 +265,7 @@ class ConfigDialog(BASE, WIDGET):
 
     def accept(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        qsettings = QSettings()
         for setting in list(self.items.keys()):
             if setting.group != menusSettingsGroup or self.saveMenus:
                 if isinstance(setting.value, bool):
@@ -277,7 +277,7 @@ class ConfigDialog(BASE, WIDGET):
                         QMessageBox.warning(self, self.tr('Wrong value'),
                                             self.tr('Wrong value for parameter "%s":\n\n%s' % (setting.description, str(e))))
                         return
-                setting.save()
+                setting.save(qsettings)
         Processing.updateAlgsList()
         settingsWatcher.settingsChanged.emit()
         QApplication.restoreOverrideCursor()

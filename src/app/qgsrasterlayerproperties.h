@@ -24,6 +24,7 @@
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgis_app.h"
 
 class QgsPoint;
 class QgsMapLayer;
@@ -48,7 +49,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      * @param ml Map layer for which properties will be displayed
      */
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas* theCanvas, QWidget *parent = nullptr, Qt::WindowFlags = QgisGui::ModalDialogFlags );
-    //! \brief Destructor
+
     ~QgsRasterLayerProperties();
 
     //! Synchronize state with associated raster layer

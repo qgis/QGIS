@@ -16,6 +16,7 @@
 #ifndef QGSEDITORWIDGETSETUP_H
 #define QGSEDITORWIDGETSETUP_H
 
+#include "qgis_core.h"
 #include <QVariantMap>
 
 /** \ingroup core

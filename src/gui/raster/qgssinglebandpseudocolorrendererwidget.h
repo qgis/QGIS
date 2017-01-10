@@ -22,6 +22,7 @@
 #include "qgscolorrampshader.h"
 #include "qgsrasterrenderer.h"
 #include "ui_qgssinglebandpseudocolorrendererwidgetbase.h"
+#include "qgis_gui.h"
 
 class QgsRasterMinMaxWidget;
 
@@ -36,15 +37,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 
   public:
 
-    enum Mode
-    {
-      Continuous = 1, // Using breaks from color palette
-      EqualInterval = 2,
-      Quantile = 3
-    };
-
     QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
-    ~QgsSingleBandPseudoColorRendererWidget();
 
     static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsSingleBandPseudoColorRendererWidget( layer, theExtent ); }
     QgsRasterRenderer* renderer() override;

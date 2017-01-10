@@ -41,11 +41,6 @@ QgsScaleWidget::QgsScaleWidget( QWidget *parent )
   connect( mCurrentScaleButton, SIGNAL( clicked() ), this, SLOT( setScaleFromCanvas() ) );
 }
 
-
-QgsScaleWidget::~QgsScaleWidget()
-{
-}
-
 void QgsScaleWidget::setShowCurrentScaleButton( bool showCurrentScaleButton )
 {
   mShowCurrentScaleButton = showCurrentScaleButton;

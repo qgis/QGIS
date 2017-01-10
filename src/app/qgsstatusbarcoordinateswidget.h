@@ -28,6 +28,7 @@ class QgsMapCanvas;
 class QgsPoint;
 
 #include <QWidget>
+#include "qgis_app.h"
 
 class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
 {

@@ -17,6 +17,7 @@
 #define QGSRELATIONWIDGETWRAPPER_H
 
 #include "qgswidgetwrapper.h"
+#include "qgis_gui.h"
 
 class QgsRelationEditorWidget;
 

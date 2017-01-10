@@ -482,10 +482,6 @@ QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem* parent, QString name, QString
   setState( Populated );
 }
 
-QgsMssqlLayerItem::~QgsMssqlLayerItem()
-{
-}
-
 QgsMssqlLayerItem* QgsMssqlLayerItem::createClone()
 {
   return new QgsMssqlLayerItem( mParent, mName, mPath, mLayerType, mLayerProperty );
@@ -523,10 +519,6 @@ QVector<QgsDataItem*> QgsMssqlSchemaItem::createChildren()
 {
   QgsDebugMsg( "Entering." );
   return QVector<QgsDataItem*>();
-}
-
-QgsMssqlSchemaItem::~QgsMssqlSchemaItem()
-{
 }
 
 void QgsMssqlSchemaItem::addLayers( QgsDataItem* newLayers )
@@ -607,10 +599,6 @@ QgsMssqlRootItem::QgsMssqlRootItem( QgsDataItem* parent, QString name, QString p
 {
   mIconName = QStringLiteral( "mIconMssql.svg" );
   populate();
-}
-
-QgsMssqlRootItem::~QgsMssqlRootItem()
-{
 }
 
 QVector<QgsDataItem*> QgsMssqlRootItem::createChildren()

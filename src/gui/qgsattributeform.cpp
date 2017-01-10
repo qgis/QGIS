@@ -291,7 +291,7 @@ bool QgsAttributeForm::saveEdits()
 
         // need to check dstVar.isNull() != srcVar.isNull()
         // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
-        // be careful- sometimes two null qvariants will be reported as not equal!! (eg different types)
+        // be careful- sometimes two null qvariants will be reported as not equal!! (e.g., different types)
         bool changed = ( dstVar != srcVar && !dstVar.isNull() && !srcVar.isNull() )
                        || ( dstVar.isNull() != srcVar.isNull() );
         if ( changed && srcVar.isValid()
@@ -403,6 +403,15 @@ void QgsAttributeForm::filterTriggered()
   emit filterExpressionSet( filter, ReplaceFilter );
   if ( mContext.formMode() == QgsAttributeEditorContext::Embed )
     setMode( SingleEditMode );
+}
+
+void QgsAttributeForm::searchZoomTo()
+{
+  QString filter = createFilterExpression();
+  if ( filter.isEmpty() )
+    return;
+
+  emit zoomToFeatures( filter );
 }
 
 void QgsAttributeForm::filterAndTriggered()
@@ -699,7 +708,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
     // if the layer is NOT being edited then we only check layer based constraints, and not
     // any constraints enforced by the provider. Because:
     // 1. we want to keep browsing features nice and responsive. It's nice to give feedback as to whether
-    // the value checks out, but not if it's too slow to do so. Some constraints (eg unique) can be
+    // the value checks out, but not if it's too slow to do so. Some constraints (e.g., unique) can be
     // expensive to test. A user can freely remove a layer-based constraint if it proves to be too slow
     // to test, but they are unlikely to have any control over provider-side constraints
     // 2. the provider has already accepted the value, so presumably it doesn't violate the constraint
@@ -1310,24 +1319,36 @@ void QgsAttributeForm::init()
     boxLayout->addWidget( clearButton );
     boxLayout->addStretch( 1 );
 
+    QPushButton* zoomButton = new QPushButton();
+    zoomButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+    zoomButton->setText( tr( "&Zoom to features" ) );
+    connect( zoomButton, &QToolButton::clicked, this, &QgsAttributeForm::searchZoomTo );
+    boxLayout->addWidget( zoomButton );
+
     QToolButton* selectButton = new QToolButton();
     selectButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
     selectButton->setText( tr( "&Select features" ) );
+    selectButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFormSelect.svg" ) ) );
     selectButton->setPopupMode( QToolButton::MenuButtonPopup );
+    selectButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     connect( selectButton, &QToolButton::clicked, this, &QgsAttributeForm::searchSetSelection );
     QMenu* selectMenu = new QMenu( selectButton );
     QAction* selectAction = new QAction( tr( "Select features" ), selectMenu );
+    selectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFormSelect.svg" ) ) );
     connect( selectAction, &QAction::triggered, this, &QgsAttributeForm::searchSetSelection );
     selectMenu->addAction( selectAction );
     QAction* addSelectAction = new QAction( tr( "Add to current selection" ), selectMenu );
+    addSelectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectAdd.svg" ) ) );
     connect( addSelectAction, &QAction::triggered, this, &QgsAttributeForm::searchAddToSelection );
     selectMenu->addAction( addSelectAction );
-    QAction* filterSelectAction = new QAction( tr( "Filter current selection" ), selectMenu );
-    connect( filterSelectAction, &QAction::triggered, this, &QgsAttributeForm::searchIntersectSelection );
-    selectMenu->addAction( filterSelectAction );
     QAction* deselectAction = new QAction( tr( "Remove from current selection" ), selectMenu );
+    deselectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectRemove.svg" ) ) );
     connect( deselectAction, &QAction::triggered, this, &QgsAttributeForm::searchRemoveFromSelection );
     selectMenu->addAction( deselectAction );
+    QAction* filterSelectAction = new QAction( tr( "Filter current selection" ), selectMenu );
+    filterSelectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectIntersect.svg" ) ) );
+    connect( filterSelectAction, &QAction::triggered, this, &QgsAttributeForm::searchIntersectSelection );
+    selectMenu->addAction( filterSelectAction );
     selectButton->setMenu( selectMenu );
     boxLayout->addWidget( selectButton );
 

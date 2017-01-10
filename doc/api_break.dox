@@ -115,6 +115,9 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsMultiLineStringV2<td>QgsMultiLineString
 <tr><td>QgsMultiSurfaceV2<td>QgsMultiSurface
 <tr><td>QgsPointSequenceV2<td>QgsPointSequence
+<tr><td>QgsProperty<td>QgsProjectProperty
+<tr><td>QgsPropertyKey<td>QgsProjectPropertyKey
+<tr><td>QgsPropertyValue<td>QgsProjectPropertyValue
 <tr><td>QgsRandomColorsV2<td>QgsRandomColorRamp
 <tr><td>QgsRendererCategoryV2<td>QgsRendererCategory
 <tr><td>QgsRendererRangeV2<td>QgsRendererRange
@@ -202,6 +205,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsApplication<td>userStyleV2Path<td>userStylePath
 <tr><td>QgsComposerShape<td>setUseSymbolV2<td>setUseSymbol
 <tr><td>QgsIFeatureSelectionManager<td>selectedFeaturesIds<td>selectedFeatureIds
+<tr><td>QgsMapLayer<td>capitaliseLayerName<td>capitalizeLayerName
 <tr><td>QgsSymbolLayerUtils<td>createSymbolLayerV2ListFromSld<td>createSymbolLayerListFromSld
 <tr><td>QgsVectorLayer<td>editorWidgetV2Config<td>editorWidgetConfig
 <tr><td>QgsVectorLayer<td>editorWidgetV2Text<td>editorWidgetText
@@ -258,6 +262,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsMapLayerRegistry. Its functionality has been moved to QgsProject.
 - QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.
 - QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.
+- QgsProjectBadLayerGuiHandler was removed. It was unused in QGIS code and barely useful. Implement your own QgsProjectBadLayerHandler subclass if needed.
 - QgsRendererV2DataDefinedMenus was removed. Use QgsDataDefinedButton instead.
 - QgsLegacyHelpers.
 - QgsProviderCountCalcEvent and QgsProviderExtentCalcEvent. These classes were unused in QGIS core and unmaintained.
@@ -309,7 +314,7 @@ Data Providers        {#qgis_api_break_3_0_DataProviders}
 Qgis        {#qgis_api_break_3_0_Qgis}
 ----
 
-- The QGis class was renamed to Qgis for capitalisation consistency with other class names
+- The QGis class was renamed to Qgis for capitalization consistency with other class names
 - permissiveToDouble() and permissiveToInt() where moved out of the QGis class and renamed to qgsPermissiveToDouble() and
 qgsPermissiveToInt()
 - The constants DEFAULT_IDENTIFY_RADIUS and MINIMUM_POINT_SIZE were removed
@@ -475,6 +480,12 @@ QgsColorRampShader        {#qgis_api_break_3_0_QgsColorRampShader}
 ------------------
 
 - maximumColorCacheSize() and setMaximumColorCacheSize() were no longer used and are removed.
+- ColorRamp_TYPE enum was renamed to Type, and its value names decapitalized
+
+QgsColorSchemeRegistry        {#qgis_api_break_3_0_QgsColorSchemeRegistry}
+----------------------
+
+- This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::colorSchemeRegistry() to access an application-wide registry.
 
 
 QgsComposerArrow        {#qgis_api_break_3_0_QgsComposerArrow}
@@ -604,6 +615,7 @@ QgsComposerTableV2        {#qgis_api_break_3_0_QgsComposerTableV2}
 QgsComposition        {#qgis_api_break_3_0_QgsComposition}
 --------------
 
+- constructor requires QgsProject instance as the second argument
 - addItemsFromXML() has been renamed to addItemsFromXml()
 - Constructor with QgsMapRenderer parameter has been removed. Use the variant with QgsMapSettings parameter.
 - mapRenderer() has been removed. Use mapSettings() instead.
@@ -680,6 +692,13 @@ QgsCptCitySelectionItem        {#qgis_api_break_3_0_QgsCptCitySelectionItem}
 
 - parseXML() has been renamed to parseXml()
 
+
+QgsCustomLayerOrderWidget        {#qgis_api_break_3_0_QgsCustomLayerOrderWidget}
+-------------------------
+
+- the signature of the visibilityChanged() signal is changed to visibilityChanged( QgsLayerTreeNode *node )
+
+
 QgsCRSCache        {#qgis_api_break_3_0_QgsCRSCache}
 -----------
 
@@ -726,6 +745,12 @@ QgsDataItem        {#qgis_api_break_3_0_QgsDataItem}
 - emitBeginInsertItems(), emitEndInsertItems(), emitBeginRemoveItems(), emitEndRemoveItems(), emitDataChanged(), emitStateChanged() have been removed.
 - Favourites was renamed to Favorites
 
+QgsDataItemProviderRegistry        {#qgis_api_break_3_0_QgsDataItemProviderRegistry}
+---------------------------
+
+- This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::dataItemProviderRegistry() to access an application-wide registry.
+
+
 QgsDataProvider        {#qgis_api_break_3_0_QgsDataProvider}
 ---------------
 
@@ -756,11 +781,15 @@ Use renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiag
 - The deprecated  diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) method has been removed.
 Use diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) instead.
 
+QgsDiagramInterpolationSettings        {#qgis_api_break_3_0_QgsDiagramInterpolationSettings}
+-------------------------------
+- The classificationAttribute member variable was removed, and has been replaced by the classificationField variable which stores the string name.
+
 
 QgsDiagramRenderer        {#qgis_api_break_3_0_QgsDiagramRenderer}
 ------------------
-
 - xform, fields were no longer required and are removed.
+- referencedFields() no longer takes a QgsFields argument.
 
 
 QgsDiagramLayerSettings        {#qgis_api_break_3_0_QgsDiagramLayerSettings}
@@ -771,7 +800,15 @@ be returned in place of a null pointer.
 - setCoordinateTransform() now takes a QgsCoordinateTransform object, not a pointer. Use an invalid QgsCoordinateTransform in
 place of a null pointer.
 - The ct member has been removed. Use coordinateTransform() and setCoordinateTransform() instead.
-
+- The LinePlacementFlags enum was renamed to LinePlacementFlag
+- The placement member variable was removed, and getPlacement() was renamed to placement()
+- The placementFlags member variable was removed
+- The priority member variable was removed, and getPriority() was renamed to priority()
+- The zIndex member variable was removed, and getZIndex() was renamed to zIndex()
+- The obstacle member variable was removed. setIsObstacle() and isObstacle() should be used instead.
+- The dist member variable was removed. setDistance() and distance() should be used instead.
+- The renderer member variable was removed, and getRenderer() was renamed to renderer()
+- The showAll member variable was removed. setShowAllDiagrams() and showAllDiagrams() should be used instead.
 
 QgsDiagramSettings        {#qgis_api_break_3_0_QgsDiagramSettings}
 ------------------
@@ -851,6 +888,12 @@ QgsExpression::Function       {#qgis_api_break_3_0_QgsExpression_Function}
 - `QgsExpression::Function::helptext()` has been renamed to `helpText()`
 
 
+QgsExpressionContextUtils       {#qgis_api_break_3_0_QgsExpressionContextUtils}
+-------------------------
+
+- projectScope(), setProjectVariable() and setProjectVariables() require pointer to QgsProject as the first argument.
+
+
 QgsFeature        {#qgis_api_break_3_0_QgsFeature}
 ----------
 
@@ -923,6 +966,7 @@ method to determine if a geometry is valid.
 - static bool compare( const QgsPolygon& p1, const QgsPolygon& p2, double epsilon ) has been renamed to comparePolygons
 - static bool compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon ) has been renamed to compareMultiPolygons
 - smoothLine and smoothPolygon are no longer public API (use smooth() instead)
+- avoidIntersections() got an extra argument: list of layers to include in the operation (previously read from active QgsProject)
 
 
 QgsGeometryAnalyzer        {#qgis_api_break_3_0_QgsGeometryAnalyzer}
@@ -985,6 +1029,11 @@ QgsEditorWidgetFactory         {#qgis_api_break_3_0_QgsEditorWidgetFactory}
 - `alignmentFlag` has been removed. Use QgsFieldFormatter::representValue() instead
 - `createCache` has been removed. Use QgsFieldFormatter::representValue() instead
 
+QgsGPSConnectionRegistry        {#qgis_api_break_3_0_QgsGPSConnectionRegistry}
+------------------------
+
+- This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::gpsConnectionRegistry() to access an application-wide registry.
+
 
 QgsGraduatedRenderer        {#qgis_api_break_3_0_QgsGraduatedRenderer}
 --------------------
@@ -1041,12 +1090,16 @@ QgsLayerTreeGroup        {#qgis_api_break_3_0_QgsLayerTreeGroup}
 -----------------
 
 - readChildrenFromXML() has been renamed to readChildrenFromXml()
-
+- isVisible() is moved to QgsLayerTreeNode
+- setVisible() is replaced by QgsLayerTreeNode::setItemVisibilityChecked()
+- protected methods updateVisibilityFromChildren() and updateChildVisibility() removed
 
 QgsLayerTreeLayer        {#qgis_api_break_3_0_QgsLayerTreeLayer}
 -----------------
 
 - setLayerName(), layerName() were renamed to setName(), name()
+- isVisible() is moved to QgsLayerTreeNode
+- setVisible() is replaced by QgsLayerTreeNode::setItemVisibilityChecked()
 
 
 QgsLayerTreeModel        {#qgis_api_break_3_0_QgsLayerTreeMode}
@@ -1072,7 +1125,7 @@ QgsLayerTreeNode        {#qgis_api_break_3_0_QgsLayerTreeNode}
 
 - readCommonXML() has been renamed to readCommonXml()
 - writeCommonXML() has been renamed to writeCommonXml()
-
+- the signature of the visibilityChanged() signal is changed to visibilityChanged( QgsLayerTreeNode *node )
 
 QgsLimitedRandomColorRampDialog        {#qgis_api_break_3_0_QgsLimitedRandomRampDialog}
 -------------------------------
@@ -1081,6 +1134,13 @@ QgsLimitedRandomColorRampDialog        {#qgis_api_break_3_0_QgsLimitedRandomRamp
 and the new ramp can be retrieved after executing the dialog by calling ramp().
 - Some internal methods which were previously public or protected were made private.
 
+
+QgsLinearlyInterpolatedDiagramRenderer        {#qgis_api_break_3_0_QgsLinearlyInterpolatedDiagramRenderer}
+--------------------------------------
+
+- The classificationAttribute() and setClassificationAttribute() methods were replace by 
+classificationField() and setClassificationField() which use the field names instead of field
+indexes.
 
 QgsMapCanvas        {#qgis_api_break_3_0_QgsMapCanvas}
 ------------
@@ -1129,6 +1189,7 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 - drawLabels() method was removed. It used old deprecated labeling. Replaced by labeling based on PAL library, see QgsLabelingEngine.
 - readLayerXML() was renamed to readLayerXml()
 - writeLayerXML() was renamed to writeLayerXml()
+- capitaliseLayerName() was renamed to capitalizeLayerName()
 
 
 QgsMapLayerRegistry        {#qgis_api_break_3_0_QgsMapLayerRegistry}
@@ -1207,6 +1268,12 @@ QgsMarkerSymbolLayer        {#qgis_api_break_3_0_QgsMarkerSymbolLayer}
 - bounds() is now pure virtual and must be implemented in all subclasses.
 
 
+QgsMessageLog        {#qgis_api_break_3_0_QgsMessageLog}
+---------------------------
+
+- This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::messageLog() to access an application-wide log.
+
+
 QgsMimeDataUtils        {#qgis_api_break_3_0_QgsMimeDataUtils}
 ----------------
 
@@ -1257,6 +1324,11 @@ QgsNumericSortTreeWidgetItem        {#qgis_api_break_3_0_QgsNumericSortTreeWidge
 has improved sort capabilities including the ability to set custom sort values for items
 and for forcing certain items to always sort on top.
 
+QgsPaintEffectRegistry        {#qgis_api_break_3_0_QgsPaintEffectRegistry}
+----------------------
+
+- This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::paintEffectRegistry() to access an application-wide registry.
+
 
 QgsPalettedRasterRenderer        {#qgis_api_break_3_0_QgsPalettedRasterRenderer}
 -------------------------
@@ -1299,6 +1371,12 @@ QgsPluginLayer        {#qgis_api_break_3_0_QgsPluginLayer}
 - createMapRenderer(): default implementation (which called plugin's draw() method) has been removed. Plugin layers must implement createMapRenderer().
 
 
+QgsPluginLayerRegistry        {#qgis_api_break_3_0_QgsPluginLayerRegistry}
+----------------------
+
+- This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::pluginLayerRegistry() to access an application-wide registry.
+
+
 QgsPointDisplacementRenderer        {#qgis_api_break_3_0_QgsPointDisplacementRenderer}
 ----------------------------
 
@@ -1323,7 +1401,15 @@ QgsProject        {#qgis_api_break_3_0_QgsProject}
 - title( const QString & title ) was removed. Use setTitle() instead.
 - dirty( bool b ) was removed. Use setDirty() instead.
 - clearProperties() was removed. Use clear() instead.
+- read( QDomNode& layerNode ) was renamed to readLayer( const QDomNode& layerNode ).
+- read( const QFileInfo& file ) was replaced by read( const QString& filename ).
+- write( const QFileInfo& file ) was replaced by write( const QString& filename ).
 
+
+QgsProjectPropertyValue        {#qgis_api_break_3_0_QgsProjectPropertyValue}
+-----------------------
+
+- The unused count() and entryList() methods were removed.
 
 QgsRaster        {#qgis_api_break_3_0_QgsRaster}
 ---------
@@ -1404,6 +1490,12 @@ be returned instead of a null pointer if no transformation is required.
 - setCoordinateTransform() now takes a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should be used instead of a null pointer if no transformation is required.
 
 
+QgsRendererRegistry        {#qgis_api_break_3_0_QgsRendererRegistry}
+----------------------
+
+- This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::rendererRegistry() to access an application-wide registry.
+
+
 QgsRendererWidget        {#qgis_api_break_3_0_QgsRendererWidget}
 -----------------
 
@@ -1465,6 +1557,7 @@ QgsSingleSymbolRendererWidget        {#qgis_api_break_3_0_QgsSingleSymbolRendere
 -----------------------------
 
 - sizeScaleFieldChanged() and scaleMethodChanged() were removed. These settings are no longer exposed in the widget's GUI.
+- The Mode enum was removed.
 
 
 QgsSnapper        {#qgis_api_break_3_0_QgsSnapper}
@@ -1484,6 +1577,7 @@ QgsSublayersDialog        {#qgis_api_break_3_0_QgsSublayersDialog}
 QgsSvgCache        {#qgis_api_break_3_0_QgsSvgCache}
 -----------
 
+- This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::svgCache() to access an application-wide cache.
 - containsParamsV2() was removed. Use containsParamsV3() instead.
 
 QgsStyle (renamed from QgsStyleV2)        {#qgis_api_break_3_0_QgsStyle}
@@ -1516,6 +1610,11 @@ the variant which takes QgsSymbolRenderContext instead.
 - setDataDefinedProperty( const QString& property, const QString& expressionString ) was removed. Use setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined ) instead.
 - evaluateDataDefinedProperty( const QString& property, const QgsFeature* feature ) was removed. Use the variant which takes QgsSymbolRenderContext instead.
 - expression() was removed. Use getDataDefinedProperty or evaluateDataDefinedProperty instead.
+
+QgsSymbolLayerRegistry        {#qgis_api_break_3_0_QgsSymbolLayerRegistry}
+----------------------
+
+- This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::symbolLayerRegistry() to access an application-wide registry.
 
 
 QgsSymbolLayerWidget        {#qgis_api_break_3_0_QgsSymbolLayerWidget}

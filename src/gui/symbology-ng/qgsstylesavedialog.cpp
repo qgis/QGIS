@@ -38,8 +38,6 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget* parent, QgsStyle::StyleEntity t
   }
 }
 
-QgsStyleSaveDialog::~QgsStyleSaveDialog() { }
-
 QString QgsStyleSaveDialog::name() const
 {
   return mName->text();

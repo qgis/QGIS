@@ -21,6 +21,7 @@
 #include <QList>
 #include <QPen>
 #include <QPolygon>
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QPaintEvent;
@@ -74,7 +75,6 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
      */
     QgsRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
-    ~QgsRubberBand();
 
     /**
      * Set the color for the rubberband

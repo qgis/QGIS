@@ -37,7 +37,7 @@ QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
     , mComment( comment )
 {
   // This function used to lower case the field name since some stores
-  // use upper case (eg. shapefiles), but that caused problems with
+  // use upper case (e.g., shapefiles), but that caused problems with
   // attribute actions getting confused between uppercase and
   // lowercase versions of the attribute names, so just leave the
   // names how they are now.
@@ -66,10 +66,6 @@ QgsField &QgsField::operator =( const QgsField & other )
 {
   d = other.d;
   return *this;
-}
-
-QgsField::~QgsField()
-{
 }
 
 bool QgsField::operator==( const QgsField& other ) const

@@ -23,6 +23,7 @@
 #include "qgsunittypes.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsRelationManagerDialog;
@@ -43,7 +44,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Constructor
     QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
-    //! Destructor
+
     ~QgsProjectProperties();
 
     /** Gets the currently select map units

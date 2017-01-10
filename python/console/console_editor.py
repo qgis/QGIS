@@ -531,10 +531,10 @@ class Editor(QsciScintilla):
         try:
             ## set creationflags for running command without shell window
             if sys.platform.startswith('win'):
-                p = subprocess.Popen(['python', filename], shell=False, stdin=subprocess.PIPE,
+                p = subprocess.Popen(['python3', filename], shell=False, stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE, stdout=subprocess.PIPE, creationflags=0x08000000)
             else:
-                p = subprocess.Popen(['python', filename], shell=False, stdin=subprocess.PIPE,
+                p = subprocess.Popen(['python3', filename], shell=False, stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE, stdout=subprocess.PIPE)
             out, _traceback = p.communicate()
 

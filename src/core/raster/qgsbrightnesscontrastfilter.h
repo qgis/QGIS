@@ -18,6 +18,7 @@
 #ifndef QGSBRIGHTNESSCONTRASTFILTER_H
 #define QGSBRIGHTNESSCONTRASTFILTER_H
 
+#include "qgis_core.h"
 #include "qgsrasterinterface.h"
 
 class QDomElement;
@@ -29,7 +30,6 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
 {
   public:
     QgsBrightnessContrastFilter( QgsRasterInterface *input = nullptr );
-    ~QgsBrightnessContrastFilter();
 
     QgsBrightnessContrastFilter* clone() const override;
 

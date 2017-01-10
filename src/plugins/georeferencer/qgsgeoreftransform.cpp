@@ -33,7 +33,6 @@ class QgsLinearGeorefTransform : public QgsGeorefTransformInterface
 {
   public:
     QgsLinearGeorefTransform() : mParameters() {}
-    ~QgsLinearGeorefTransform() {}
 
     bool getOriginScale( QgsPoint &origin, double &scaleX, double &scaleY ) const;
 
@@ -113,7 +112,6 @@ class QgsProjectiveGeorefTransform : public QgsGeorefTransformInterface
 {
   public:
     QgsProjectiveGeorefTransform() : mParameters() {}
-    ~QgsProjectiveGeorefTransform() {}
 
     bool updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords ) override;
     int getMinimumGCPCount() const override;

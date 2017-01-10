@@ -22,6 +22,7 @@
 #include <QProgressDialog>
 #ifndef QT_NO_SSL
 #include <QSslError>
+#include "qgis_gui.h"
 #endif
 
 /** \ingroup gui

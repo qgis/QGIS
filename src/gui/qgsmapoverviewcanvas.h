@@ -32,6 +32,7 @@ class QgsRectangle;
 
 class QgsMapRendererQImageJob;
 #include "qgsmapsettings.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A widget that displays an overview map.
@@ -42,8 +43,6 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 
   public:
     QgsMapOverviewCanvas( QWidget * parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
-
-    ~QgsMapOverviewCanvas();
 
     //! renders overview and updates panning widget
     void refresh();

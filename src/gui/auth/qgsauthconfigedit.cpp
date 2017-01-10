@@ -92,10 +92,6 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent , const QString& authcfg ,
   }
 }
 
-QgsAuthConfigEdit::~QgsAuthConfigEdit()
-{
-}
-
 void QgsAuthConfigEdit::populateAuthMethods()
 {
   QStringList authMethodKeys = QgsAuthManager::instance()->authMethodsKeys( mDataProvider );

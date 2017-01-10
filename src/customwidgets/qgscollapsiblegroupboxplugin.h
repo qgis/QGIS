@@ -24,6 +24,7 @@
 #else
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 #include <QtUiPlugin/QDesignerExportWidget>
+#include "qgis_customwidgets.h"
 #endif
 
 class CUSTOMWIDGETS_EXPORT QgsCollapsibleGroupBoxPlugin : public QObject, public QDesignerCustomWidgetInterface

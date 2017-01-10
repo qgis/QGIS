@@ -45,7 +45,7 @@ class QgsOWSServer
         , mAccessControl( ac )
 #endif
     {}
-    virtual ~QgsOWSServer() {}
+    virtual ~QgsOWSServer() = default;
 
     virtual void executeRequest() = 0;
 
@@ -81,7 +81,10 @@ class QgsOWSServerFilterRestorer
 {
   public:
 
-    QgsOWSServerFilterRestorer()  {}
+    QgsOWSServerFilterRestorer() = default;
+
+    QgsOWSServerFilterRestorer( const QgsOWSServerFilterRestorer& rh ) = delete;
+    QgsOWSServerFilterRestorer& operator=( const QgsOWSServerFilterRestorer& rh ) = delete;
 
     //! Destructor. When object is destroyed all original layer filters will be restored.
     ~QgsOWSServerFilterRestorer()
@@ -97,8 +100,6 @@ class QgsOWSServerFilterRestorer
   private:
     QHash<QgsMapLayer*, QString> mOriginalLayerFilters;
 
-    QgsOWSServerFilterRestorer( const QgsOWSServerFilterRestorer& rh );
-    QgsOWSServerFilterRestorer& operator=( const QgsOWSServerFilterRestorer& rh );
 };
 
 #endif // QGSOWSSERVER_H

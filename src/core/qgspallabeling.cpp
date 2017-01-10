@@ -1830,7 +1830,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     doClip = true;
   }
 
-  // if using fitInPolygonOnly option, generate the permissible zone (must happen before geometry is modified - eg
+  // if using fitInPolygonOnly option, generate the permissible zone (must happen before geometry is modified - e.g.,
   // as a result of using perimeter based labeling and the geometry is converted to a boundary)
   QgsGeometry permissibleZone;
   if ( geom.type() == QgsWkbTypes::PolygonGeometry && fitInPolygonOnly )

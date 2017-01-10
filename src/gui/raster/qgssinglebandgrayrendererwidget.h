@@ -20,6 +20,7 @@
 
 #include "qgsrasterrendererwidget.h"
 #include "ui_qgssinglebandgrayrendererwidgetbase.h"
+#include "qgis_gui.h"
 
 class QgsRasterMinMaxWidget;
 
@@ -31,7 +32,6 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
     Q_OBJECT
   public:
     QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
-    ~QgsSingleBandGrayRendererWidget();
 
     static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsSingleBandGrayRendererWidget( layer, theExtent ); }
 

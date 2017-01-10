@@ -36,10 +36,6 @@ QgsComposerPolyline::QgsComposerPolyline( const QPolygonF& polyline, QgsComposit
   createDefaultPolylineStyleSymbol();
 }
 
-QgsComposerPolyline::~QgsComposerPolyline()
-{
-}
-
 bool QgsComposerPolyline::_addNode( const int indexPoint,
                                     QPointF newPoint,
                                     const double radius )

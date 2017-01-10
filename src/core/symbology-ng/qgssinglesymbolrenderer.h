@@ -15,6 +15,7 @@
 #ifndef QGSSINGLESYMBOLRENDERERV2_H
 #define QGSSINGLESYMBOLRENDERERV2_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsrenderer.h"
 #include "qgssymbol.h"
@@ -29,8 +30,6 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
   public:
 
     QgsSingleSymbolRenderer( QgsSymbol* symbol );
-
-    virtual ~QgsSingleSymbolRenderer();
 
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
     virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;

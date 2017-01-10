@@ -28,6 +28,7 @@
 #include <QWidget>
 #include <QThread>
 #include <QElapsedTimer>
+#include "qgis_gui.h"
 
 class QCheckBox;
 class QLayout;

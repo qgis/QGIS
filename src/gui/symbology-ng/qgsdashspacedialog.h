@@ -17,6 +17,7 @@
 #define QGSDASHSPACEDIALOG_H
 
 #include "ui_qgsdashspacedialogbase.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A dialog to enter a custom dash space pattern for lines
@@ -26,7 +27,6 @@ class GUI_EXPORT QgsDashSpaceDialog: public QDialog, private Ui::QgsDashSpaceDia
     Q_OBJECT
   public:
     QgsDashSpaceDialog( const QVector<qreal>& v, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsDashSpaceDialog();
 
     QVector<qreal> dashDotVector() const;
 

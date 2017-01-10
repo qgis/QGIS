@@ -17,6 +17,7 @@
 #define QGSTABLEWIDGETITEM_H
 
 #include <QTableWidget>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * This can be used like a regular QTableWidgetItem with the difference that a

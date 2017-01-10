@@ -42,9 +42,7 @@ QgsFields& QgsFields::operator =( const QgsFields & other )
 }
 
 QgsFields::~QgsFields()
-{
-
-}
+{}
 
 void QgsFields::clear()
 {

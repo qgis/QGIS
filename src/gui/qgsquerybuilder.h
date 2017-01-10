@@ -22,6 +22,7 @@
 #include "ui_qgsquerybuilderbase.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 

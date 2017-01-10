@@ -25,7 +25,7 @@ class QgsMapSettings;
 class QgsGeometryCheckFactory
 {
   public:
-    virtual ~QgsGeometryCheckFactory() {}
+    virtual ~QgsGeometryCheckFactory() = default;
     virtual void restorePrevious( Ui::QgsGeometryCheckerSetupTab& /*ui*/ ) const = 0;
     virtual bool checkApplicability( Ui::QgsGeometryCheckerSetupTab& /*ui*/, QgsWkbTypes::GeometryType /*geomType*/ ) const = 0;
     virtual QgsGeometryCheck* createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double mapToLayerUnits ) const = 0;

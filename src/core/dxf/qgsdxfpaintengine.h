@@ -18,8 +18,10 @@
 #ifndef QGSDXFPAINTENGINE_H
 #define QGSDXFPAINTENGINE_H
 
+#include "qgis_core.h"
 #include <QPaintEngine>
 #include "qgsabstractgeometry.h"
+#include "qgspointv2.h"
 
 class QgsDxfExport;
 class QgsDxfPaintDevice;
@@ -34,7 +36,6 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
 {
   public:
     QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxfExport* dxf );
-    ~QgsDxfPaintEngine();
 
     bool begin( QPaintDevice* pdev ) override;
     bool end() override;

@@ -35,12 +35,18 @@ class QgsExpressionSelectionDialog : QDialog
      */
     void setGeomCalculator( const QgsDistanceArea & da );
 
-  public slots:
-    void on_mActionSelect_triggered();
-    void on_mActionAddToSelection_triggered();
-    void on_mActionRemoveFromSelection_triggered();
-    void on_mActionSelectIntersect_triggered();
-    void on_mPbnClose_clicked();
+    /** Sets the message bar to display feedback from the dialog. This is used when zooming to
+     * features to display the count of selected features.
+     * @param messageBar target message bar
+     * @note added in QGIS 3.0
+     */
+    void setMessageBar( QgsMessageBar* messageBar );
+
+    /**
+     * Sets a map canvas associated with the dialog.
+     * @note added in QGIS 3.0
+     */
+    void setMapCanvas( QgsMapCanvas* canvas );
 
   protected:
     /**

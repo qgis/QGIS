@@ -22,6 +22,7 @@
 #include <QDialog>
 #include <QPointer>
 #include <QSettings>
+#include "qgis_gui.h"
 
 class QDialogButtonBox;
 class QListWidget;

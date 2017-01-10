@@ -22,6 +22,7 @@
 #include "qgseditorconfigwidget.h"
 #include "qgsfeature.h"
 #include "qgsvectordataprovider.h"
+#include "qgis_app.h"
 
 class QDialog;
 

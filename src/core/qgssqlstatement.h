@@ -24,6 +24,8 @@
 #include <QList>
 #include <QSet>
 
+#include "qgis_core.h"
+
 /** \ingroup core
 Class for parsing SQL statements.
 * @note Added in QGIS 2.16
@@ -196,7 +198,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT Node
     {
       public:
-        virtual ~Node() {}
+        virtual ~Node() = default;
 
         /**
          * Abstract virtual that returns the type of this node.
@@ -693,7 +695,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT Visitor
     {
       public:
-        virtual ~Visitor() {}
+        virtual ~Visitor() = default;
         //! Visit NodeUnaryOperator
         virtual void visit( const NodeUnaryOperator& n ) = 0;
         //! Visit NodeBinaryOperator

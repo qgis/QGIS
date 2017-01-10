@@ -21,6 +21,7 @@
 #include "qgsmultirenderchecker.h"
 #include "qgsdatadefined.h"
 #include "qgsfontutils.h"
+#include "qgsproject.h"
 #include <QObject>
 #include "qgstest.h"
 #include <QMap>
@@ -83,7 +84,7 @@ void TestQgsComposerUtils::initTestCase()
   QgsApplication::initQgis(); //for access to test font
 
   mMapSettings = new QgsMapSettings();
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = QStringLiteral( "<h1>Composer Utils Tests</h1>\n" );

@@ -324,7 +324,6 @@ QWidget *QgsAuthMethodRegistry::editWidget( const QString &authMethodKey, QWidge
   return editFactory( parent );
 }
 
-#if QT_VERSION >= 0x050000
 QFunctionPointer QgsAuthMethodRegistry::function( QString const & authMethodKey,
     QString const & functionName )
 {
@@ -342,25 +341,6 @@ QFunctionPointer QgsAuthMethodRegistry::function( QString const & authMethodKey,
     return 0;
   }
 }
-#else
-void *QgsAuthMethodRegistry::function( QString const & authMethodKey,
-                                       QString const & functionName )
-{
-  QLibrary myLib( library( authMethodKey ) );
-
-  QgsDebugMsg( "Library name is " + myLib.fileName() );
-
-  if ( myLib.load() )
-  {
-    return myLib.resolve( functionName.toLatin1().data() );
-  }
-  else
-  {
-    QgsDebugMsg( "Cannot load library: " + myLib.errorString() );
-    return nullptr;
-  }
-}
-#endif
 
 QLibrary *QgsAuthMethodRegistry::authMethodLibrary( const QString &authMethodKey ) const
 {

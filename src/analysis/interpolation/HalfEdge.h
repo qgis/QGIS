@@ -17,6 +17,8 @@
 #ifndef HALFEDGE_H
 #define HALFEDGE_H
 
+#include "qgis_analysis.h"
+
 /** \ingroup analysis
  * \class HalfEdge
  */
@@ -38,7 +40,7 @@ class ANALYSIS_EXPORT HalfEdge
     //! Default constructor. Values for mDual, mNext, mPoint are set to -10 which means that they are undefined
     HalfEdge();
     HalfEdge( int dual, int next, int point, bool mbreak, bool forced );
-    ~HalfEdge();
+
     //! Returns the number of the dual HalfEdge
     int getDual() const;
     //! Returns the number of the next HalfEdge
@@ -67,11 +69,6 @@ inline HalfEdge::HalfEdge(): mDual( -10 ), mNext( -10 ), mPoint( -10 ), mBreak( 
 }
 
 inline HalfEdge::HalfEdge( int dual, int next, int point, bool mbreak, bool forced ): mDual( dual ), mNext( next ), mPoint( point ), mBreak( mbreak ), mForced( forced )
-{
-
-}
-
-inline HalfEdge::~HalfEdge()
 {
 
 }

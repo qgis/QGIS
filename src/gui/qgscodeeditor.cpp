@@ -40,10 +40,6 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString& title, bool foldin
   setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 }
 
-QgsCodeEditor::~QgsCodeEditor()
-{
-}
-
 // Workaround a bug in QScintilla 2.8.X
 void QgsCodeEditor::focusOutEvent( QFocusEvent *event )
 {

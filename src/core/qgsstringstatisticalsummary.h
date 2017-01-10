@@ -19,6 +19,8 @@
 #include <QSet>
 #include <QVariantList>
 
+#include "qgis_core.h"
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in test_qgsstringstatisticalsummary.py.
@@ -62,13 +64,13 @@ class CORE_EXPORT QgsStringStatisticalSummary
     QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats = All );
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (eg count).
+     * are always calculated (e.g., count).
      * @see setStatistics
      */
     Statistics statistics() const { return mStatistics; }
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (eg count).
+     * are always calculated (e.g., count).
      * @param stats flags for statistics to calculate
      * @see statistics
      */

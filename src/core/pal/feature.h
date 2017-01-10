@@ -30,6 +30,7 @@
 #ifndef FEATURE_H
 #define FEATURE_H
 
+#include "qgis_core.h"
 #include "pointset.h"
 #include "labelposition.h" // for LabelPosition enum
 #include "qgslabelfeature.h"
@@ -66,15 +67,17 @@ namespace pal
       }
       ~LabelInfo() { delete [] char_info; }
 
+      //! LabelInfo cannot be copied
+      LabelInfo( const LabelInfo& rh ) = delete;
+      //! LabelInfo cannot be copied
+      LabelInfo& operator=( const LabelInfo& rh ) = delete;
+
       double max_char_angle_inside;
       double max_char_angle_outside;
       double label_height;
       int char_num;
       CharacterInfo* char_info;
-    private:
 
-      LabelInfo( const LabelInfo& rh );
-      LabelInfo& operator=( const LabelInfo& rh );
   };
 
   class LabelPosition;
@@ -143,7 +146,7 @@ namespace pal
        */
       int createCandidatesOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
 
-      /** Generates candidates following a prioritised list of predefined positions around a point.
+      /** Generates candidates following a prioritized list of predefined positions around a point.
        * @param x x coordinate of the point
        * @param y y coordinate of the point
        * @param lPos pointer to an array of candidates, will be filled by generated candidate

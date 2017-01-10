@@ -322,7 +322,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
   QgsRectangle bBox; //bounding box of the split line
   int returnCode = 0;
   int splitFunctionReturn; //return code of QgsGeometry::splitGeometry
-  int numberOfSplittedFeatures = 0;
+  int numberOfSplitFeatures = 0;
 
   QgsFeatureIterator features;
   const QgsFeatureIds selectedIds = L->selectedFeatureIds();
@@ -405,7 +405,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
           addTopologicalPoints( *topol_it );
         }
       }
-      ++numberOfSplittedFeatures;
+      ++numberOfSplitFeatures;
     }
     else if ( splitFunctionReturn > 1 ) //1 means no split but also no error
     {
@@ -413,7 +413,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
     }
   }
 
-  if ( numberOfSplittedFeatures == 0 && !selectedIds.isEmpty() )
+  if ( numberOfSplitFeatures == 0 && !selectedIds.isEmpty() )
   {
     //There is a selection but no feature has been split.
     //Maybe user forgot that only the selected features are split
@@ -432,7 +432,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
   QgsRectangle bBox; //bounding box of the split line
   int returnCode = 0;
   int splitFunctionReturn; //return code of QgsGeometry::splitGeometry
-  int numberOfSplittedParts = 0;
+  int numberOfSplitParts = 0;
 
   QgsFeatureIterator fit;
 
@@ -540,7 +540,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
           addTopologicalPoints( *topol_it );
         }
       }
-      ++numberOfSplittedParts;
+      ++numberOfSplitParts;
     }
     else if ( splitFunctionReturn > 1 ) //1 means no split but also no error
     {
@@ -548,7 +548,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
     }
   }
 
-  if ( numberOfSplittedParts == 0 && L->selectedFeatureCount() > 0  && returnCode == 0 )
+  if ( numberOfSplitParts == 0 && L->selectedFeatureCount() > 0  && returnCode == 0 )
   {
     //There is a selection but no feature has been split.
     //Maybe user forgot that only the selected features are split

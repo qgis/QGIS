@@ -18,6 +18,7 @@
 #ifndef QGSHUESATURATIONFILTER_H
 #define QGSHUESATURATIONFILTER_H
 
+#include "qgis_core.h"
 #include "qgsrasterinterface.h"
 
 class QDomElement;
@@ -39,7 +40,6 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
     };
 
     QgsHueSaturationFilter( QgsRasterInterface *input = nullptr );
-    ~QgsHueSaturationFilter();
 
     QgsHueSaturationFilter * clone() const override;
 

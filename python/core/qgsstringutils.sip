@@ -152,7 +152,7 @@ class QgsStringUtils
     static int levenshteinDistance( const QString &string1, const QString &string2, bool caseSensitive = false );
 
     /** Returns the longest common substring between two strings. This substring is the longest
-     * string that is a substring of the two input strings. Eg, the longest common substring
+     * string that is a substring of the two input strings. For example, the longest common substring
      * of "ABABC" and "BABCA" is "ABC".
      * @param string1 first string
      * @param string2 second string
@@ -178,7 +178,7 @@ class QgsStringUtils
      */
     static QString soundex( const QString &string );
 
-    /** Returns a string with any URL (eg http(s)/ftp) and mailto: text converted to valid HTML <a ...>
+    /** Returns a string with any URL (e.g., http(s)/ftp) and mailto: text converted to valid HTML <a ...>
      * links.
      * @param string string to insert links into
      * @param foundLinks if specified, will be set to true if any links were inserted into the string

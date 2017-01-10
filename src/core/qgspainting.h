@@ -3,6 +3,8 @@
 
 #include <QPainter>
 
+#include "qgis_core.h"
+
 /**
  * @ingroup core
  * Misc painting enums and functions.

@@ -17,9 +17,10 @@
 #define QGSDEFAULTSEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
-#include <qgsfilterlineedit.h>
+#include "qgsfilterlineedit.h"
 
 #include <QCheckBox>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Wraps a search widget. Default form is just a QgsLineFilterEdit

@@ -19,8 +19,3 @@
 QgsPluginManagerInterface::QgsPluginManagerInterface()
 {
 }
-
-QgsPluginManagerInterface::~QgsPluginManagerInterface()
-{
-}
-

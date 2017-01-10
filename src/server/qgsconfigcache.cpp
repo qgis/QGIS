@@ -42,10 +42,6 @@ QgsConfigCache::QgsConfigCache()
   QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString& ) ), this, SLOT( removeChangedEntry( const QString& ) ) );
 }
 
-QgsConfigCache::~QgsConfigCache()
-{
-}
-
 QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& filePath )
 {
   QgsMessageLog::logMessage(

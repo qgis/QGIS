@@ -15,6 +15,7 @@
 #ifndef QGSGMLSCHEMA_H
 #define QGSGMLSCHEMA_H
 
+#include "qgis_core.h"
 #include <expat.h>
 #include "qgis.h"
 #include "qgserror.h"
@@ -77,8 +78,6 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     Q_OBJECT
   public:
     QgsGmlSchema();
-
-    ~QgsGmlSchema();
 
     //! Get fields info from XSD
     bool parseXSD( const QByteArray &xml );

@@ -17,6 +17,7 @@
 #ifndef QGSCSEXCEPTION_H
 #define QGSCSEXCEPTION_H
 
+#include "qgis_core.h"
 #include "qgsexception.h"
 
 /** \ingroup core

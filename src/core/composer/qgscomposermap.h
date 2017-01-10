@@ -18,6 +18,7 @@
 #define QGSCOMPOSERMAP_H
 
 //#include "ui_qgscomposermapbase.h"
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include "qgsrectangle.h"
 #include <QFont>

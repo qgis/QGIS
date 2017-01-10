@@ -23,7 +23,3 @@ QgisInterface::QgisInterface()
 
 
 }
-
-QgisInterface::~QgisInterface()
-{
-}

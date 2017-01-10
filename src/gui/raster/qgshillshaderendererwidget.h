@@ -23,6 +23,7 @@
 #include <QDoubleSpinBox>
 
 #include "qgsrasterrendererwidget.h"
+#include "qgis_gui.h"
 
 /**
  * @brief Renderer widget for the hill shade renderer.
@@ -40,8 +41,6 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
      * @param extent The current extent.
      */
     QgsHillshadeRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
-
-    ~QgsHillshadeRendererWidget();
 
     /**
       * Factory method to create the renderer for this type.

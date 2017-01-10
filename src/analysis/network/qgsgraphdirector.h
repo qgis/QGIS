@@ -22,6 +22,7 @@
 
 #include <qgspoint.h>
 #include "qgsnetworkstrategy.h"
+#include "qgis_analysis.h"
 
 class QgsGraphBuilderInterface;
 
@@ -40,7 +41,7 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
     void buildMessage( const QString& ) const;
 
   public:
-    //! Destructor
+
     virtual ~QgsGraphDirector() { }
 
     /**

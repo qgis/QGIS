@@ -15,6 +15,7 @@
 #ifndef QGSCOLORBREWERPALETTE_H
 #define QGSCOLORBREWERPALETTE_H
 
+#include "qgis_core.h"
 #include <QList>
 #include <QColor>
 

@@ -86,15 +86,14 @@ struct EFFECTIVE_AREAS
     delete [] res_arealist;
   }
 
+  EFFECTIVE_AREAS( const EFFECTIVE_AREAS& other ) = delete;
+  EFFECTIVE_AREAS& operator=( const EFFECTIVE_AREAS& other ) = delete;
+
   bool is3d;
   QgsPointSequence inpts;
   areanode *initial_arealist;
   double *res_arealist;
 
-private:
-
-  EFFECTIVE_AREAS( const EFFECTIVE_AREAS& other );
-  EFFECTIVE_AREAS& operator=( const EFFECTIVE_AREAS& other );
 
 };
 

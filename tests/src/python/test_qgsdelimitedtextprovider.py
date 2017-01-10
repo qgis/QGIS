@@ -43,7 +43,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsFeatureRequest,
     QgsRectangle,
-    QgsMessageLog,
+    QgsApplication,
     QgsFeature,
     QgsFeatureIterator
 )
@@ -88,14 +88,14 @@ except:
 
 
 def normalize_query_items_order(s):
-    splitted_url = s.split('?')
-    urlstr = splitted_url[0]
-    if len(splitted_url) == 2:
-        items_list = splitted_url[1].split('&')
+    split_url = s.split('?')
+    urlstr = split_url[0]
+    if len(split_url) == 2:
+        items_list = split_url[1].split('&')
         items_map = {}
         for item in items_list:
-            splitted_item = item.split('=')
-            items_map[splitted_item[0]] = splitted_item[1]
+            split_item = item.split('=')
+            items_map[split_item[0]] = split_item[1]
         first_arg = True
         for k in sorted(items_map.keys()):
             if first_arg:
@@ -118,11 +118,11 @@ class MessageLogger(QObject):
         self.tag = tag
 
     def __enter__(self):
-        QgsMessageLog.instance().messageReceived.connect(self.logMessage)
+        QgsApplication.messageLog().messageReceived.connect(self.logMessage)
         return self
 
     def __exit__(self, type, value, traceback):
-        QgsMessageLog.instance().messageReceived.disconnect(self.logMessage)
+        QgsApplication.messageLog().messageReceived.disconnect(self.logMessage)
 
     def logMessage(self, msg, tag, level):
         if tag == self.tag or not self.tag:

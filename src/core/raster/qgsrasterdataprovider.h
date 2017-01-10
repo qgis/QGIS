@@ -23,6 +23,7 @@
 #ifndef QGSRASTERDATAPROVIDER_H
 #define QGSRASTERDATAPROVIDER_H
 
+#include "qgis_core.h"
 #include <cmath>
 
 #include <QDateTime>
@@ -56,8 +57,6 @@ class CORE_EXPORT QgsImageFetcher : public QObject
   public:
     //! Constructor
     QgsImageFetcher( QObject* parent = 0 ) : QObject( parent ) {}
-    //! Destructor
-    virtual ~QgsImageFetcher() {}
 
     /** Starts the image download
      * @note Make sure to connect to "finish" and "error" before starting */
@@ -86,8 +85,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     QgsRasterDataProvider();
 
     QgsRasterDataProvider( const QString & uri );
-
-    virtual ~QgsRasterDataProvider() {}
 
     virtual QgsRasterInterface * clone() const override = 0;
 

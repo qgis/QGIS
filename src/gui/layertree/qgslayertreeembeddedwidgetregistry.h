@@ -18,6 +18,7 @@
 
 #include <QMap>
 #include <QWidget>
+#include "qgis_gui.h"
 
 
 class QgsMapLayer;
@@ -32,7 +33,7 @@ class QgsMapLayer;
 class GUI_EXPORT QgsLayerTreeEmbeddedWidgetProvider
 {
   public:
-    virtual ~QgsLayerTreeEmbeddedWidgetProvider() {}
+    virtual ~QgsLayerTreeEmbeddedWidgetProvider() = default;
 
     //! Unique name of the provider (among other providers)
     virtual QString id() const = 0;
@@ -67,6 +68,11 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
 
     ~QgsLayerTreeEmbeddedWidgetRegistry();
 
+    //! QgsLayerTreeEmbeddedWidgetRegistry cannot be copied.
+    QgsLayerTreeEmbeddedWidgetRegistry( const QgsLayerTreeEmbeddedWidgetRegistry& other ) = delete;
+    //! QgsLayerTreeEmbeddedWidgetRegistry cannot be copied.
+    QgsLayerTreeEmbeddedWidgetRegistry& operator=( const QgsLayerTreeEmbeddedWidgetRegistry& other ) = delete;
+
     //! Return list of all registered providers
     QStringList providers() const;
 
@@ -88,10 +94,6 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
     //! storage of all the providers
     QMap<QString, QgsLayerTreeEmbeddedWidgetProvider*> mProviders;
 
-  private:
-
-    QgsLayerTreeEmbeddedWidgetRegistry( const QgsLayerTreeEmbeddedWidgetRegistry& other );
-    QgsLayerTreeEmbeddedWidgetRegistry& operator=( const QgsLayerTreeEmbeddedWidgetRegistry& other );
 };
 
 

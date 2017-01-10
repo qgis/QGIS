@@ -27,10 +27,6 @@ QgsAbstractGeometry::QgsAbstractGeometry(): mWkbType( QgsWkbTypes::Unknown )
 {
 }
 
-QgsAbstractGeometry::~QgsAbstractGeometry()
-{
-}
-
 QgsAbstractGeometry::QgsAbstractGeometry( const QgsAbstractGeometry& geom )
 {
   mWkbType = geom.mWkbType;

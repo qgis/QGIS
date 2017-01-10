@@ -17,6 +17,7 @@
 #define QGSPIXMAPLABEL_H
 
 #include <QLabel>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * @brief The QgsPixmapLabel class shows a pixmap and adjusts its size to the space given

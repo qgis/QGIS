@@ -8,6 +8,8 @@ INCLUDE_DIRECTORIES(
   ${GEOS_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 
 ###############################################################################

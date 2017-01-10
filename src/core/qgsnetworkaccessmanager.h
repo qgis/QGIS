@@ -24,6 +24,8 @@
 #include <QNetworkProxy>
 #include <QNetworkRequest>
 
+#include "qgis_core.h"
+
 /**
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
@@ -51,9 +53,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     static QgsNetworkAccessManager* instance();
 
     QgsNetworkAccessManager( QObject *parent = nullptr );
-
-    //! destructor
-    ~QgsNetworkAccessManager();
 
     //! insert a factory into the proxy factories list
     void insertProxyFactory( QNetworkProxyFactory *factory );

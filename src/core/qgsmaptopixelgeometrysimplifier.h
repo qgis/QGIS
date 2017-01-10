@@ -17,6 +17,7 @@
 #ifndef QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H
 #define QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsgeometrysimplifier.h"
 #include <QPolygonF>
@@ -45,7 +46,6 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 
     //! Constructor
     QgsMapToPixelSimplifier( int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm = Distance );
-    virtual ~QgsMapToPixelSimplifier();
 
     //! Applicable simplification flags
     enum SimplifyFlag

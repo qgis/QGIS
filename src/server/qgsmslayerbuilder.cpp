@@ -31,11 +31,6 @@ QgsMSLayerBuilder::QgsMSLayerBuilder()
 
 }
 
-QgsMSLayerBuilder::~QgsMSLayerBuilder()
-{
-
-}
-
 QString QgsMSLayerBuilder::layerNameFromUri( const QString& uri ) const
 {
   //file based?
@@ -95,7 +90,7 @@ void QgsMSLayerBuilder::clearRasterSymbology( QgsRasterLayer* rl ) const
     if ( rl->rasterType() == QgsRasterLayer::GrayOrUndefined )
     {
       //rl->setDrawingStyle( QgsRasterLayer::SingleBandPseudoColor );
-      rl->setRenderer( QgsRasterRendererRegistry::instance()->defaultRendererForDrawingStyle( QgsRaster::SingleBandPseudoColor, rl->dataProvider() ) );
+      rl->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( QgsRaster::SingleBandPseudoColor, rl->dataProvider() ) );
     }
   }
 }

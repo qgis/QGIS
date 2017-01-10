@@ -503,11 +503,6 @@ QgsCptCityDataItem::QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCit
 {
 }
 
-QgsCptCityDataItem::~QgsCptCityDataItem()
-{
-  // QgsDebugMsg( "mName = " + mName + " mPath = " + mPath );
-}
-
 QVector<QgsCptCityDataItem*> QgsCptCityDataItem::createChildren()
 {
   QVector<QgsCptCityDataItem*> children;
@@ -822,11 +817,7 @@ QgsCptCityCollectionItem::QgsCptCityCollectionItem( QgsCptCityDataItem* parent,
 
 QgsCptCityCollectionItem::~QgsCptCityCollectionItem()
 {
-  Q_FOREACH ( QgsCptCityDataItem* i, mChildren )
-  {
-    // QgsDebugMsg( QString( "delete child = 0x%0" ).arg(( qlonglong )i, 8, 16, QLatin1Char( '0' ) ) );
-    delete i;
-  }
+  qDeleteAll( mChildren );
 }
 
 QVector< QgsCptCityDataItem* > QgsCptCityCollectionItem::childrenRamps( bool recursive )
@@ -897,10 +888,6 @@ QgsCptCityDirectoryItem::QgsCptCityDirectoryItem( QgsCptCityDataItem* parent,
     mInfo = descMap.value( QStringLiteral( "name" ) );
 
   // populate();
-}
-
-QgsCptCityDirectoryItem::~QgsCptCityDirectoryItem()
-{
 }
 
 QVector<QgsCptCityDataItem*> QgsCptCityDirectoryItem::createChildren()
@@ -1061,13 +1048,15 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
     }
 
   }
+#if 0
   //TODO what to do with other vars? e.g. schemeNames
-  // // add schemes to archive
-  // mSchemeMap[ path ] = schemeNames;
-  // schemeCount += schemeName.count();
-  // schemeNames.clear();
-  // listVariant.clear();
-  // prevName = "";
+  // add schemes to archive
+  mSchemeMap[ path ] = schemeNames;
+  schemeCount += schemeName.count();
+  schemeNames.clear();
+  listVariant.clear();
+  prevName = "";
+#endif
   return mRampsMap;
 }
 
@@ -1146,10 +1135,6 @@ QgsCptCitySelectionItem::QgsCptCitySelectionItem( QgsCptCityDataItem* parent,
   mValid = ! path.isNull();
   if ( mValid )
     parseXml();
-}
-
-QgsCptCitySelectionItem::~QgsCptCitySelectionItem()
-{
 }
 
 QVector<QgsCptCityDataItem*> QgsCptCitySelectionItem::createChildren()
@@ -1277,10 +1262,6 @@ QgsCptCityAllRampsItem::QgsCptCityAllRampsItem( QgsCptCityDataItem* parent,
   mType = AllRamps;
   mValid = true;
   // populate();
-}
-
-QgsCptCityAllRampsItem::~QgsCptCityAllRampsItem()
-{
 }
 
 QVector<QgsCptCityDataItem*> QgsCptCityAllRampsItem::createChildren()

@@ -15,6 +15,7 @@
 #ifndef QGSDATADEFINED_H
 #define QGSDATADEFINED_H
 
+#include "qgis_core.h"
 #include <QStringList>
 #include <QDomElement>
 #include <QMap>

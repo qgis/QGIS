@@ -157,7 +157,7 @@
           <item row="1" column="1">
            <widget class="QgsDoubleSpinBox" name="mMapUnitsPerBarUnitSpinBox">
             <property name="toolTip">
-             <string>Specifies how many scalebar units per labeled unit. Eg, if your scalebar units are set to &quot;meters&quot;, a multiplier of 1000 will result in the scalebar labels in kilometers.</string>
+             <string>Specifies how many scalebar units per labeled unit. For example, if your scalebar units are set to &quot;meters&quot;, a multiplier of 1000 will result in the scalebar labels in kilometers.</string>
             </property>
             <property name="decimals">
              <number>6</number>
@@ -173,14 +173,14 @@
           <item row="2" column="1">
            <widget class="QLineEdit" name="mUnitLabelLineEdit">
             <property name="toolTip">
-             <string>Text used for labeling the scalebar units, eg &quot;m&quot; or &quot;km&quot;. This should be matched to the reflect the multiplier above. </string>
+             <string>Text used for labeling the scalebar units, e.g., &quot;m&quot; or &quot;km&quot;. This should be matched to reflect the multiplier above. </string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
            <widget class="QComboBox" name="mUnitsComboBox">
             <property name="toolTip">
-             <string>Specifies the underlying units used for scalebar calculations, eg &quot;meters&quot; or &quot;feet&quot;</string>
+             <string>Specifies the underlying units used for scalebar calculations, e.g., &quot;meters&quot; or &quot;feet&quot;</string>
             </property>
            </widget>
           </item>

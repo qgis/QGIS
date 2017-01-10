@@ -40,10 +40,6 @@ QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( QgsSymbol* symbol )
   Q_ASSERT( symbol );
 }
 
-QgsSingleSymbolRenderer::~QgsSingleSymbolRenderer()
-{
-}
-
 QgsSymbol* QgsSingleSymbolRenderer::symbolForFeature( QgsFeature&, QgsRenderContext & )
 {
   return mSymbol.data();

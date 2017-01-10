@@ -24,6 +24,7 @@ class QgsCategorizedSymbolRenderer;
 class QgsRendererCategory;
 
 #include "ui_qgscategorizedsymbolrendererv2widget.h"
+#include "qgis_gui.h"
 
 ///@cond PRIVATE
 

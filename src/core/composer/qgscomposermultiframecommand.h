@@ -21,6 +21,8 @@
 #include <QUndoCommand>
 #include <QDomDocument>
 
+#include "qgis_core.h"
+
 class QgsComposerMultiFrame;
 
 /** \ingroup core
@@ -30,7 +32,6 @@ class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
 {
   public:
     QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent = nullptr );
-    ~QgsComposerMultiFrameCommand();
 
     void undo() override;
     void redo() override;
@@ -86,7 +87,6 @@ class CORE_EXPORT QgsComposerMultiFrameMergeCommand: public QgsComposerMultiFram
     };
 
     QgsComposerMultiFrameMergeCommand( Context c, QgsComposerMultiFrame* multiFrame, const QString& text );
-    ~QgsComposerMultiFrameMergeCommand();
 
     bool mergeWith( const QUndoCommand * command ) override;
     int id() const override { return static_cast< int >( mContext ); }

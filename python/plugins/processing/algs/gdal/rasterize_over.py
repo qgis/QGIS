@@ -52,7 +52,7 @@ class rasterize_over(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
 
     def commandLineName(self):
-        return "gdalogr:rasterize_over"
+        return "gdal:rasterize_over"
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Rasterize (write over existing raster)')
@@ -64,9 +64,10 @@ class rasterize_over(GdalAlgorithm):
                                           self.tr('Existing raster layer'), False))
 
     def getConsoleCommands(self):
-        inLayer = self.getParameterValue(self.INPUT)
+        inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        inRasterLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_RASTER))
+
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
-        inRasterLayer = self.getParameterValue(self.INPUT_RASTER)
         ogrRasterLayer = ogrConnectionString(inRasterLayer)[1:-1]
 
         arguments = []

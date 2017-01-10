@@ -67,6 +67,9 @@ QgsDataDefined* QgsDataDefined::fromMap( const QgsStringMap &map, const QString 
   return new QgsDataDefined( active, useExpression, expression, field );
 }
 
+QgsDataDefined::~QgsDataDefined()
+{}
+
 QgsDataDefined::QgsDataDefined( const QString & string )
 {
   QgsExpression expression( string );
@@ -77,11 +80,6 @@ QgsDataDefined::QgsDataDefined( const QString & string )
                                  useExpression,
                                  useExpression ? expression.expression() : QString(),
                                  expression.isField() ? expression.rootNode()->dump() : QString() );
-}
-
-QgsDataDefined::~QgsDataDefined()
-{
-
 }
 
 bool QgsDataDefined::hasDefaultValues() const

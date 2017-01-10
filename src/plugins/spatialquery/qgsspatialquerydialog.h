@@ -41,7 +41,7 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
      * @param iface Pointer to the QgisInterface object.
      */
     QgsSpatialQueryDialog( QWidget *parent = nullptr, QgisInterface* iface = nullptr );
-    //! Destructor
+
     ~QgsSpatialQueryDialog();
 
     //! Verify is possible execute the query

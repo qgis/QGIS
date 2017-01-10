@@ -20,6 +20,7 @@
 
 #include "qgsrasterrendererwidget.h"
 #include "ui_qgspalettedrendererwidgetbase.h"
+#include "qgis_gui.h"
 
 class QgsRasterLayer;
 
@@ -34,7 +35,6 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
 
     QgsPalettedRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
     static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsPalettedRendererWidget( layer, theExtent ); }
-    ~QgsPalettedRendererWidget();
 
     QgsRasterRenderer* renderer() override;
 

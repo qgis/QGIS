@@ -128,7 +128,7 @@ class QgsPalLayerSettings
       Curved, /** Arranges candidates following the curvature of a line feature. Applies to line layers only.*/
       Horizontal, /**< Arranges horizontal candidates scattered throughout a polygon feature. Applies to polygon layers only.*/
       Free, /**< Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only.*/
-      OrderedPositionsAroundPoint, /**< Candidates are placed in predefined positions around a point. Peference is given to positions with greatest cartographic appeal, eg top right, bottom right, etc. Applies to point layers only.*/
+      OrderedPositionsAroundPoint, /**< Candidates are placed in predefined positions around a point. Preference is given to positions with greatest cartographic appeal, e.g., top right, bottom right, etc. Applies to point layers only.*/
       PerimeterCurved, /** Arranges candidates following the curvature of a polygon's boundary. Applies to polygon layers only.*/
     };
 
@@ -173,7 +173,7 @@ class QgsPalLayerSettings
                             respects the direction of the line feature, so a line from right to left labels will have labels
                             placed placed above the line feature. */
       MapOrientation,  /**< Signifies that the AboveLine and BelowLine flags should respect the map's orientation rather
-                            than the feature's orientation. Eg, AboveLine will always result in label's being placed
+                            than the feature's orientation. For example, AboveLine will always result in label's being placed
                             above a line, regardless of the line's direction. */
     };
 
@@ -209,7 +209,7 @@ class QgsPalLayerSettings
       MultiLeft,
       MultiCenter,
       MultiRight,
-      MultiFollowPlacement /*!< Alignment follows placement of label, eg labels to the left of a feature
+      MultiFollowPlacement /*!< Alignment follows placement of label, e.g., labels to the left of a feature
                                will be drawn with right alignment*/
     };
 
@@ -366,7 +366,7 @@ class QgsPalLayerSettings
 
     QString fieldName;
 
-    /** Is this label made from a expression string eg FieldName || 'mm'
+    /** Is this label made from a expression string, e.g., FieldName || 'mm'
       */
     bool isExpression;
 
@@ -408,7 +408,7 @@ class QgsPalLayerSettings
     bool centroidInside; // whether centroid-point calculated must be inside polygon
 
     /** Ordered list of predefined label positions for points. Positions earlier
-     * in the list will be prioritised over later positions. Only used when the placement
+     * in the list will be prioritized over later positions. Only used when the placement
      * is set to QgsPalLayerSettings::OrderedPositionsAroundPoint.
      * @note not available in Python bindings
      */
@@ -487,7 +487,7 @@ class QgsPalLayerSettings
      * @param labelFeature if using QgsLabelingEngine, this will receive the label feature. Not available
      * in Python bindings.
      * @param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
-     * should be used as an obstacle for labels (eg, if the feature has been rendered with an offset point
+     * should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point
      * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
      * the feature's original geometry will be used as an obstacle for labels. Not available
      * in Python bindings.
@@ -569,13 +569,13 @@ class QgsPalLayerSettings
      */
     // QMap<QgsPalLayerSettings::DataDefinedProperties, QPair<QString, int> > dataDefinedNames() const;
 
-    /** Returns the label text formatting settings, eg font settings, buffer settings, etc.
+    /** Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
      * @see setFormat()
      * @note added in QGIS 3.0
      */
     const QgsTextFormat& format() const;
 
-    /** Sets the label text formatting settings, eg font settings, buffer settings, etc.
+    /** Sets the label text formatting settings, e.g., font settings, buffer settings, etc.
      * @param format label text format
      * @see format()
      * @note added in QGIS 3.0
@@ -727,7 +727,7 @@ class QgsPalLabeling
 
     /** Splits a text string to a list of graphemes, which are the smallest allowable character
      * divisions in the string. This accounts for scripts were individual characters are not
-     * allowed to be split apart (eg Arabic and Indic based scripts)
+     * allowed to be split apart (e.g., Arabic and Indic based scripts)
      * @param text string to split
      * @returns list of graphemes
      * @note added in QGIS 2.10

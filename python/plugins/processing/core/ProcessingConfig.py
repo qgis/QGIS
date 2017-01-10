@@ -52,6 +52,7 @@ class ProcessingConfig(object):
     VECTOR_POLYGON_STYLE = 'VECTOR_POLYGON_STYLE'
     SHOW_RECENT_ALGORITHMS = 'SHOW_RECENT_ALGORITHMS'
     USE_SELECTED = 'USE_SELECTED'
+    FILTER_INVALID_GEOMETRIES = 'FILTER_INVALID_GEOMETRIES'
     USE_FILENAME_AS_LAYER_NAME = 'USE_FILENAME_AS_LAYER_NAME'
     KEEP_DIALOG_OPEN = 'KEEP_DIALOG_OPEN'
     SHOW_DEBUG_IN_DIALOG = 'SHOW_DEBUG_IN_DIALOG'
@@ -70,7 +71,7 @@ class ProcessingConfig(object):
 
     @staticmethod
     def initialize():
-        icon = QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+        icon = QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
         ProcessingConfig.settingIcons['General'] = icon
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
@@ -84,6 +85,14 @@ class ProcessingConfig(object):
             ProcessingConfig.tr('General'),
             ProcessingConfig.USE_SELECTED,
             ProcessingConfig.tr('Use only selected features'), True))
+        invalidFeaturesOptions = [ProcessingConfig.tr('Do not filter (better performance'),
+                                  ProcessingConfig.tr('Ignore features with invalid geometries'),
+                                  ProcessingConfig.tr('Stop algorithm execution when a geometry is invalid')]
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.FILTER_INVALID_GEOMETRIES,
+            ProcessingConfig.tr('Invalid features filtering'), invalidFeaturesOptions[2],
+            valuetype=Setting.SELECTION, options=invalidFeaturesOptions))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.USE_FILENAME_AS_LAYER_NAME,
@@ -146,7 +155,7 @@ class ProcessingConfig(object):
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.RECENT_ALGORITHMS,
-            ProcessingConfig.tr('Recent algs'), '', hidden=True))
+            ProcessingConfig.tr('Recent algorithms'), '', hidden=True))
         extensions = processing.tools.dataobjects.getSupportedOutputVectorLayerExtensions()
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
@@ -167,11 +176,11 @@ class ProcessingConfig(object):
     @staticmethod
     def getGroupIcon(group):
         if group == ProcessingConfig.tr('General'):
-            return QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+            return QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
         if group in ProcessingConfig.settingIcons:
             return ProcessingConfig.settingIcons[group]
         else:
-            return QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+            return QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
 
     @staticmethod
     def addSetting(setting):
@@ -289,16 +298,15 @@ class Setting(object):
         self.validator(value)
         self.value = value
 
-    def read(self):
-        qsettings = QSettings()
+    def read(self, qsettings=QSettings()):
         value = qsettings.value(self.qname, None)
         if value is not None:
             if isinstance(self.value, bool):
                 value = str(value).lower() == str(True).lower()
             self.value = value
 
-    def save(self):
-        QSettings().setValue(self.qname, self.value)
+    def save(self, qsettings=QSettings()):
+        qsettings.setValue(self.qname, self.value)
 
     def __str__(self):
         return self.name + '=' + str(self.value)

@@ -16,20 +16,17 @@
 #include "qgsprojectbadlayerhandler.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsapplication.h"
 
 #include <QFileInfo>
 
 void QgsProjectBadLayerHandler::handleBadLayers( const QList<QDomNode>& layers )
 {
-  QgsMessageLog::instance()->logMessage( QStringLiteral( "%1 bad layers dismissed:" ).arg( layers.size() ) );
+  QgsApplication::messageLog()->logMessage( QStringLiteral( "%1 bad layers dismissed:" ).arg( layers.size() ) );
   Q_FOREACH ( const QDomNode& layer, layers )
   {
-    QgsMessageLog::instance()->logMessage( QStringLiteral( " * %1" ).arg( dataSource( layer ) ) );
+    QgsApplication::messageLog()->logMessage( QStringLiteral( " * %1" ).arg( dataSource( layer ) ) );
   }
-}
-
-QgsProjectBadLayerHandler::~QgsProjectBadLayerHandler()
-{
 }
 
 QgsProjectBadLayerHandler::DataType QgsProjectBadLayerHandler::dataType( const QDomNode& layerNode )

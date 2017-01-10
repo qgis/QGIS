@@ -242,7 +242,7 @@ QString QgsRasterLayer::bandName( int theBandNo ) const
 
 void QgsRasterLayer::setRendererForDrawingStyle( QgsRaster::DrawingStyle theDrawingStyle )
 {
-  setRenderer( QgsRasterRendererRegistry::instance()->defaultRendererForDrawingStyle( theDrawingStyle, mDataProvider ) );
+  setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( theDrawingStyle, mDataProvider ) );
 }
 
 /**
@@ -550,7 +550,7 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int theBandNumber )
     {
       QgsDebugMsgLevel( "....got color ramp item list", 4 );
       myShader.setColorRampItemList( myColorRampItemList );
-      myShader.setColorRampType( QgsColorRampShader::DISCRETE );
+      myShader.setColorRampType( QgsColorRampShader::Discrete );
       // Draw image
       int mySize = 100;
       QPixmap myPalettePixmap( mySize, mySize );
@@ -758,7 +758,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
       // TODO: this should go somewhere else
       QgsRasterShader* shader = new QgsRasterShader();
       QgsColorRampShader* colorRampShader = new QgsColorRampShader();
-      colorRampShader->setColorRampType( QgsColorRampShader::INTERPOLATED );
+      colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
       colorRampShader->setColorRampItemList( colorTable );
       shader->setRasterShaderFunction( colorRampShader );
       r->setShader( shader );
@@ -910,12 +910,16 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
   QgsRasterMinMaxOrigin myMinMaxOrigin;
   QgsRasterRenderer* myRasterRenderer = nullptr;
   QgsSingleBandGrayRenderer* myGrayRenderer = nullptr;
+  QgsSingleBandPseudoColorRenderer* myPseudoColorRenderer = nullptr;
   QgsMultiBandColorRenderer* myMultiBandRenderer = nullptr;
   QString rendererType  = rasterRenderer->type();
   if ( rendererType == QLatin1String( "singlebandgray" ) )
   {
     myGrayRenderer = dynamic_cast<QgsSingleBandGrayRenderer*>( rasterRenderer );
-    if ( !myGrayRenderer ) return;
+    if ( !myGrayRenderer )
+    {
+      return;
+    }
     myBands << myGrayRenderer->grayBand();
     myRasterRenderer = myGrayRenderer;
     myMinMaxOrigin = myGrayRenderer->minMaxOrigin();
@@ -923,10 +927,24 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
   else if ( rendererType == QLatin1String( "multibandcolor" ) )
   {
     myMultiBandRenderer = dynamic_cast<QgsMultiBandColorRenderer*>( rasterRenderer );
-    if ( !myMultiBandRenderer ) return;
+    if ( !myMultiBandRenderer )
+    {
+      return;
+    }
     myBands << myMultiBandRenderer->redBand() << myMultiBandRenderer->greenBand() << myMultiBandRenderer->blueBand();
     myRasterRenderer = myMultiBandRenderer;
     myMinMaxOrigin = myMultiBandRenderer->minMaxOrigin();
+  }
+  else if ( rendererType == QLatin1String( "singlebandpseudocolor" ) )
+  {
+    myPseudoColorRenderer = dynamic_cast<QgsSingleBandPseudoColorRenderer*>( rasterRenderer );
+    if ( !myPseudoColorRenderer )
+    {
+      return;
+    }
+    myBands << myPseudoColorRenderer->band();
+    myRasterRenderer = myPseudoColorRenderer;
+    myMinMaxOrigin = myPseudoColorRenderer->minMaxOrigin();
   }
 
   Q_FOREACH ( int myBand, myBands )
@@ -941,9 +959,25 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
       double max;
       computeMinMax( myBand, myMinMaxOrigin, theLimits, theExtent, theSampleSize, min, max );
 
-      myEnhancement->setMinimumValue( min );
-      myEnhancement->setMaximumValue( max );
-      myEnhancements.append( myEnhancement );
+      if ( rendererType == QLatin1String( "singlebandpseudocolor" ) )
+      {
+        myPseudoColorRenderer->setClassificationMin( min );
+        myPseudoColorRenderer->setClassificationMax( max );
+        if ( myPseudoColorRenderer->shader() )
+        {
+          QgsColorRampShader* colorRampShader = dynamic_cast<QgsColorRampShader*>( myPseudoColorRenderer->shader()->rasterShaderFunction() );
+          if ( colorRampShader )
+          {
+            colorRampShader->classifyColorRamp( myPseudoColorRenderer->band(), theExtent, myPseudoColorRenderer->input() );
+          }
+        }
+      }
+      else
+      {
+        myEnhancement->setMinimumValue( min );
+        myEnhancement->setMaximumValue( max );
+        myEnhancements.append( myEnhancement );
+      }
     }
     else
     {
@@ -1057,8 +1091,30 @@ void QgsRasterLayer::refreshRendererIfNeeded( QgsRasterRenderer* rasterRenderer,
                    SAMPLE_SIZE, min, max );
     sbpcr->setClassificationMin( min );
     sbpcr->setClassificationMax( max );
-    dynamic_cast<QgsSingleBandPseudoColorRenderer*>( renderer() )->setClassificationMin( min );
-    dynamic_cast<QgsSingleBandPseudoColorRenderer*>( renderer() )->setClassificationMax( max );
+
+    if ( sbpcr->shader() )
+    {
+      QgsColorRampShader* colorRampShader = dynamic_cast<QgsColorRampShader*>( sbpcr->shader()->rasterShaderFunction() );
+      if ( colorRampShader )
+      {
+        colorRampShader->classifyColorRamp( sbpcr->band(), theExtent, rasterRenderer->input() );
+      }
+    }
+
+    QgsSingleBandPseudoColorRenderer* r = dynamic_cast<QgsSingleBandPseudoColorRenderer*>( renderer() );
+    r->setClassificationMin( min );
+    r->setClassificationMax( max );
+
+    if ( r->shader() )
+    {
+      QgsColorRampShader* colorRampShader = dynamic_cast<QgsColorRampShader*>( r->shader()->rasterShaderFunction() );
+      if ( colorRampShader )
+      {
+        colorRampShader->classifyColorRamp( sbpcr->band(), theExtent, rasterRenderer->input() );
+      }
+    }
+
+    emit repaintRequested();
     emit styleChanged();
     emit rendererChanged();
     return;
@@ -1202,7 +1258,11 @@ QDateTime QgsRasterLayer::timestamp() const
 void QgsRasterLayer::setRenderer( QgsRasterRenderer* theRenderer )
 {
   QgsDebugMsgLevel( "Entered", 4 );
-  if ( !theRenderer ) { return; }
+  if ( !theRenderer )
+  {
+    return;
+  }
+
   mPipe.set( theRenderer );
   emit rendererChanged();
   emit styleChanged();
@@ -1334,7 +1394,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   {
     QString rendererType = rasterRendererElem.attribute( QStringLiteral( "type" ) );
     QgsRasterRendererRegistryEntry rendererEntry;
-    if ( QgsRasterRendererRegistry::instance()->rendererData( rendererType, rendererEntry ) )
+    if ( QgsApplication::rasterRendererRegistry()->rendererData( rendererType, rendererEntry ) )
     {
       QgsRasterRenderer *renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
       mPipe.set( renderer );

@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERMODEL_H
 #define QGSCOMPOSERMODEL_H
 
+#include "qgis_core.h"
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
 #include <QStringList>
@@ -64,8 +65,6 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @param parent parent object
      */
     explicit QgsComposerModel( QgsComposition* composition, QObject* parent = nullptr );
-
-    ~QgsComposerModel();
 
     //reimplemented QAbstractItemModel methods
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;

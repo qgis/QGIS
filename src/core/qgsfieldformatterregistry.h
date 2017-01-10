@@ -20,6 +20,8 @@
 #include <QString>
 #include <QObject>
 
+#include "qgis_core.h"
+
 class QgsFieldFormatter;
 
 /**

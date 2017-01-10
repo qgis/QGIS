@@ -23,6 +23,7 @@
 #include <QPair>
 #include <QAction>
 #include <QUuid>
+#include "qgis_app.h"
 
 class QgsIdentifyResultsDialog;
 class QgsVectorLayer;

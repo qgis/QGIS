@@ -65,7 +65,7 @@ class GridDataMetrics(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 
     def commandLineName(self):
-        return "gdalogr:griddatametrics"
+        return "gdal:griddatametrics"
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Grid (Data metrics)')

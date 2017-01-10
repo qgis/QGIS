@@ -116,7 +116,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     explicit QgsWcsProvider( const QString& uri = QString() );
 
-    //! Destructor
+
     virtual ~QgsWcsProvider();
 
     QgsWcsProvider * clone() const override;
@@ -348,11 +348,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Name of memory file for cached data
     QString mCachedMemFilename;
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
     mutable VSILFILE * mCachedMemFile;
-#else
-    mutable FILE * mCachedMemFile;
-#endif
 
     //! Pointer to cached GDAL dataset
     mutable GDALDatasetH mCachedGdalDataset;

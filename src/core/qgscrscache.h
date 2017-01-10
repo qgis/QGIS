@@ -18,6 +18,7 @@
 #ifndef QGSCRSCACHE_H
 #define QGSCRSCACHE_H
 
+#include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 #include <QHash>
 #include <QReadWriteLock>
@@ -32,7 +33,10 @@ class CORE_EXPORT QgsCoordinateTransformCache
   public:
     static QgsCoordinateTransformCache* instance();
 
-    ~QgsCoordinateTransformCache();
+    //! QgsCoordinateTransformCache cannot be copied
+    QgsCoordinateTransformCache( const QgsCoordinateTransformCache& rh ) = delete;
+    //! QgsCoordinateTransformCache cannot be copied
+    QgsCoordinateTransformCache& operator=( const QgsCoordinateTransformCache& rh ) = delete;
 
     /** Returns coordinate transformation. Cache keeps ownership
         @param srcAuthId auth id string of source crs
@@ -50,8 +54,7 @@ class CORE_EXPORT QgsCoordinateTransformCache
     QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > mTransforms; //same auth_id pairs might have different datum transformations
 
     QgsCoordinateTransformCache();
-    QgsCoordinateTransformCache( const QgsCoordinateTransformCache& rh );
-    QgsCoordinateTransformCache& operator=( const QgsCoordinateTransformCache& rh );
+
 };
 
 #endif // QGSCRSCACHE_H

@@ -27,10 +27,6 @@ QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
 {
 }
 
-QgsBrowserTreeView::~QgsBrowserTreeView()
-{
-}
-
 void QgsBrowserTreeView::setModel( QAbstractItemModel* model )
 {
 

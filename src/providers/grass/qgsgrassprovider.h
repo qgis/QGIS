@@ -64,30 +64,12 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     virtual ~QgsGrassProvider();
 
     virtual QgsVectorDataProvider::Capabilities capabilities() const override;
-
     virtual QgsAbstractFeatureSource* featureSource() const override;
-
-    /**
-      *   Returns the permanent storage type for this layer as a friendly name.
-      */
     virtual QString storageType() const override;
-
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
-
-    /**
-     * Get the feature type as defined in WkbType (qgis.h).
-     * @return int representing the feature type
-     */
     QgsWkbTypes::Type wkbType() const override;
-
-
-    /**
-     * Get the number of features in the layer
-     */
     long featureCount() const override;
-
     virtual QgsRectangle extent() const override;
-
     QgsFields fields() const override;
 
     // ! Key (category) field index
@@ -98,7 +80,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     QVariant minimumValue( int index ) const override;
 
-    /** Returns the maximum value of an attributs
+    /** Returns the maximum value of an attribute
      *  @param index the index of the attribute */
     QVariant maxValue( int index );
 
@@ -347,10 +329,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     static int grassLayerType( const QString & );
 
-    //! Return a provider name
     QString name() const override;
-
-    //! Return description
     QString description() const override;
 
     // Layer type (layerType)

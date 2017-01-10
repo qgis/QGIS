@@ -50,11 +50,6 @@ QgsDashSpaceDialog::QgsDashSpaceDialog( const QVector<qreal>& v, QWidget* parent
   }
 }
 
-QgsDashSpaceDialog::~QgsDashSpaceDialog()
-{
-
-}
-
 void QgsDashSpaceDialog::on_mAddButton_clicked()
 {
   //add new (default) item

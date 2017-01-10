@@ -15,6 +15,7 @@
 #ifndef QGSRASTERFILEWRITER_H
 #define QGSRASTERFILEWRITER_H
 
+#include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 #include <QDomDocument>
 #include <QDomElement>

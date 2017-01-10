@@ -21,6 +21,8 @@
 #include <QGraphicsEffect>
 #include <QPainter>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * \class QgsComposerEffect
  */
@@ -30,7 +32,6 @@ class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
 
   public:
     QgsComposerEffect();
-    ~QgsComposerEffect();
 
     void setCompositionMode( QPainter::CompositionMode compositionMode );
 

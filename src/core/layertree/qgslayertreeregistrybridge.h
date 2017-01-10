@@ -19,6 +19,8 @@
 #include <QObject>
 #include <QStringList>
 
+#include "qgis_core.h"
+
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
 class QgsMapLayer;

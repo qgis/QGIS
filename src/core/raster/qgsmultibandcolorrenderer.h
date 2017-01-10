@@ -18,6 +18,7 @@
 #ifndef QGSMULTIBANDCOLORRENDERER_H
 #define QGSMULTIBANDCOLORRENDERER_H
 
+#include "qgis_core.h"
 #include "qgsrasterrenderer.h"
 
 class QgsContrastEnhancement;
@@ -33,6 +34,12 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
                                QgsContrastEnhancement* redEnhancement = nullptr, QgsContrastEnhancement* greenEnhancement = nullptr,
                                QgsContrastEnhancement* blueEnhancement = nullptr );
     ~QgsMultiBandColorRenderer();
+
+    //! QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
+    QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer& ) = delete;
+    //! QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
+    const QgsMultiBandColorRenderer& operator=( const QgsMultiBandColorRenderer& ) = delete;
+
     QgsMultiBandColorRenderer * clone() const override;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
@@ -71,8 +78,6 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     QgsContrastEnhancement* mGreenContrastEnhancement;
     QgsContrastEnhancement* mBlueContrastEnhancement;
 
-    QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer& );
-    const QgsMultiBandColorRenderer& operator=( const QgsMultiBandColorRenderer& );
 };
 
 #endif // QGSMULTIBANDCOLORRENDERER_H

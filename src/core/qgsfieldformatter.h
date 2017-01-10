@@ -19,6 +19,8 @@
 #include <QString>
 #include <QVariant>
 
+#include "qgis_core.h"
+
 class QgsVectorLayer;
 
 /**
@@ -40,7 +42,7 @@ class CORE_EXPORT QgsFieldFormatter
   public:
     QgsFieldFormatter();
 
-    virtual ~QgsFieldFormatter();
+    virtual ~QgsFieldFormatter() = default;
 
     /**
      * Return a unique id for this field formatter.

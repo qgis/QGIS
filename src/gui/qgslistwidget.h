@@ -19,6 +19,7 @@
 #include "qgstablewidgetbase.h"
 #include <QAbstractTableModel>
 #include <QVariant>
+#include "qgis_gui.h"
 
 ///@cond PRIVATE
 

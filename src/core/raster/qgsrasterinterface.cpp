@@ -36,10 +36,6 @@ QgsRasterInterface::QgsRasterInterface( QgsRasterInterface * input )
 {
 }
 
-QgsRasterInterface::~QgsRasterInterface()
-{
-}
-
 void QgsRasterInterface::initStatistics( QgsRasterBandStats &theStatistics,
     int theBandNo,
     int theStats,

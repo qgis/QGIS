@@ -73,12 +73,6 @@ QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWi
   connect( groupTree->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), this, SLOT( groupTreeSelectionChanged( const QItemSelection&, const QItemSelection& ) ) );
 }
 
-
-QgsStyleGroupSelectionDialog::~QgsStyleGroupSelectionDialog()
-{
-}
-
-
 void QgsStyleGroupSelectionDialog::setBold( QStandardItem* item )
 {
   QFont font = item->font();

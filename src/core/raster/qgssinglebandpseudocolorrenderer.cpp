@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgssinglebandpseudocolorrenderer.h"
+#include "qgscolorramp.h"
 #include "qgscolorrampshader.h"
 #include "qgsrastershader.h"
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
@@ -47,6 +49,32 @@ void QgsSingleBandPseudoColorRenderer::setBand( int bandNo )
   mBand = bandNo;
 }
 
+void QgsSingleBandPseudoColorRenderer::setClassificationMin( double min )
+{
+  mClassificationMin = min;
+  if ( shader() )
+  {
+    QgsColorRampShader* colorRampShader = dynamic_cast<QgsColorRampShader*>( shader()->rasterShaderFunction() );
+    if ( colorRampShader )
+    {
+      colorRampShader->setMinimumValue( min );
+    }
+  }
+}
+
+void QgsSingleBandPseudoColorRenderer::setClassificationMax( double max )
+{
+  mClassificationMax = max;
+  if ( shader() )
+  {
+    QgsColorRampShader* colorRampShader = dynamic_cast<QgsColorRampShader*>( shader()->rasterShaderFunction() );
+    if ( colorRampShader )
+    {
+      colorRampShader->setMaximumValue( max );
+    }
+  }
+}
+
 QgsSingleBandPseudoColorRenderer* QgsSingleBandPseudoColorRenderer::clone() const
 {
   QgsRasterShader *shader = nullptr;
@@ -67,6 +95,7 @@ QgsSingleBandPseudoColorRenderer* QgsSingleBandPseudoColorRenderer::clone() cons
         colorRampShader->setSourceColorRamp( origColorRampShader->sourceColorRamp()->clone() );
       }
       colorRampShader->setColorRampType( origColorRampShader->colorRampType() );
+      colorRampShader->setClassificationMode( origColorRampShader->classificationMode() );
       colorRampShader->setClip( origColorRampShader->clip() );
       colorRampShader->setColorRampItemList( origColorRampShader->colorRampItemList() );
       shader->setRasterShaderFunction( colorRampShader );
@@ -82,6 +111,22 @@ void QgsSingleBandPseudoColorRenderer::setShader( QgsRasterShader* shader )
 {
   delete mShader;
   mShader = shader;
+}
+
+void QgsSingleBandPseudoColorRenderer::createShader( QgsColorRamp* colorRamp, QgsColorRampShader::Type colorRampType, QgsColorRampShader::ClassificationMode classificationMode, int classes, bool clip, const QgsRectangle& extent )
+{
+  if ( band() == -1 || classificationMin() >= classificationMax() )
+  {
+    return;
+  }
+
+  QgsColorRampShader* colorRampShader = new QgsColorRampShader( classificationMin(), classificationMax(), colorRamp,  colorRampType, classificationMode );
+  colorRampShader->classifyColorRamp( classes, band(), extent, input() );
+  colorRampShader->setClip( clip );
+
+  QgsRasterShader* rasterShader = new QgsRasterShader();
+  rasterShader->setRasterShaderFunction( colorRampShader );
+  setShader( rasterShader );
 }
 
 QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& elem, QgsRasterInterface* input )

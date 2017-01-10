@@ -19,6 +19,7 @@
 #include <QPen>
 
 #include "qgsmapcanvasitem.h"
+#include "qgis_gui.h"
 
 class QgsAdvancedDigitizingDockWidget;
 
@@ -29,7 +30,6 @@ class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
 {
   public:
     explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget );
-    ~QgsAdvancedDigitizingCanvasItem();
 
     void paint( QPainter *painter ) override;
 

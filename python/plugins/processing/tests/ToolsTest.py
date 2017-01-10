@@ -32,8 +32,9 @@ import tempfile
 from qgis.core import (QgsVectorLayer, QgsFeatureRequest)
 from qgis.testing import start_app, unittest
 
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tests.TestData import testDataPath, points
+from processing.tests.TestData import testDataPath, points, invalid_geometries
 from processing.tools import vector
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')

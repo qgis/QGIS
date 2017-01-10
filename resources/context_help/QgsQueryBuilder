@@ -14,8 +14,8 @@ are sometimes limited (e.g. for shape files) or behave diffently.
 <tr>
   <td>OGR</td>
   <td>where clauses depending on the
-    <a href="http://www.gdal.org/ogr/ogr_formats.html">format</a> (eg.
-    <a href="http://www.gdal.org/ogr/ogr_sql.html">OGR SQL</a>
+    <a href="http://www.gdal.org/ogr_formats.html">format</a> (e.g.,
+    <a href="http://www.gdal.org/ogr_sql.html">OGR SQL</a>
     for shape files)
   </td>
 </tr>
@@ -30,7 +30,7 @@ are sometimes limited (e.g. for shape files) or behave diffently.
   <td>SpatiaLite</td>
   <td>where clauses using
     <a href="http://www.sqlite.org/lang_select.html">SQLite</a> and
-    <a href="http://www.gaia-gis.it/gaia-sins/spatialite-sql-4.1.0.html">SpatiaLite</a>
+    <a href="http://www.gaia-gis.it/gaia-sins/spatialite-sql-4.2.0.html">SpatiaLite</a>
   </td>
 </tr>
 <tr>

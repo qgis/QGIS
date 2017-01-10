@@ -16,6 +16,7 @@
 #ifndef QGSPROJECTSNAPPINGSETTINGS_H
 #define QGSPROJECTSNAPPINGSETTINGS_H
 
+#include "qgis_core.h"
 #include "qgstolerance.h"
 
 class QDomDocument;
@@ -123,8 +124,6 @@ class CORE_EXPORT QgsSnappingConfig
      * Constructor with default parameters defined in global settings
      */
     explicit QgsSnappingConfig( QgsProject* project = nullptr );
-
-    ~QgsSnappingConfig();
 
     bool operator==( const QgsSnappingConfig& other ) const;
 

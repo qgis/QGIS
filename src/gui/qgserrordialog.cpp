@@ -52,10 +52,6 @@ QgsErrorDialog::QgsErrorDialog( const QgsError & theError, const QString & theTi
   if ( state == Qt::Checked ) on_mDetailPushButton_clicked();
 }
 
-QgsErrorDialog::~QgsErrorDialog()
-{
-}
-
 void QgsErrorDialog::show( const QgsError & theError, const QString & theTitle, QWidget *parent, Qt::WindowFlags fl )
 {
   QgsErrorDialog d( theError, theTitle, parent, fl );

@@ -100,7 +100,7 @@ class QgsWcsCapabilities : public QObject
     explicit QgsWcsCapabilities( QgsDataSourceUri const & theUri );
     QgsWcsCapabilities();
 
-    //! Destructor
+
     ~QgsWcsCapabilities();
 
     void setUri( QgsDataSourceUri const &theUri );

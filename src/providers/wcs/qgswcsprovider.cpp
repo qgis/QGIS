@@ -49,14 +49,6 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#define FROM8(x) QString::fromLocal8Bit(x)
-#endif
-
 #define ERR(message) QGS_ERROR_MESSAGE(message,"WCS provider")
 #define SRVERR(message) QGS_ERROR_MESSAGE(message,"WCS server")
 #define QGS_ERROR(message) QgsError(message,"WCS provider")
@@ -282,7 +274,7 @@ QgsWcsProvider::QgsWcsProvider( const QString& uri )
     QgsDebugMsg( QString( "myGdalDataType[%1] = %2" ).arg( i - 1 ).arg( myGdalDataType ) );
     mSrcGdalDataType.append( myGdalDataType );
 
-    // UMN Mapserver does not automaticaly set null value, METADATA wcs_rangeset_nullvalue must be used
+    // UMN Mapserver does not automatically set null value, METADATA wcs_rangeset_nullvalue must be used
     // http://lists.osgeo.org/pipermail/mapserver-users/2010-April/065328.html
 
     // TODO: This could be shared with GDAL provider
@@ -790,7 +782,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   }
 #endif
 
-  mCachedMemFile = VSIFileFromMemBuffer( TO8F( mCachedMemFilename ),
+  mCachedMemFile = VSIFileFromMemBuffer( mCachedMemFilename.toUtf8().constData(),
                                          ( GByte* )mCachedData.data(),
                                          ( vsi_l_offset )mCachedData.size(),
                                          FALSE );
@@ -804,7 +796,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   QgsDebugMsg( "Memory file created" );
 
   CPLErrorReset();
-  mCachedGdalDataset = GDALOpen( TO8F( mCachedMemFilename ), GA_ReadOnly );
+  mCachedGdalDataset = GDALOpen( mCachedMemFilename.toUtf8().constData(), GA_ReadOnly );
   if ( !mCachedGdalDataset )
   {
     QgsMessageLog::logMessage( QString::fromUtf8( CPLGetLastErrorMsg() ), tr( "WCS" ) );

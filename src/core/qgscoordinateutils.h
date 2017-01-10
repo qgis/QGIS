@@ -20,6 +20,8 @@
 
 #include <QString>
 
+#include "qgis_core.h"
+
 class QgsPoint;
 class QgsCoordinateReferenceSystem;
 

@@ -20,6 +20,7 @@
 
 #include "qgisinterface.h"
 #include "qgsapppluginmanagerinterface.h"
+#include "qgis_app.h"
 
 class QgisApp;
 
@@ -43,7 +44,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @param qgis Pointer to the QgisApp object
      */
     QgisAppInterface( QgisApp *qgisapp );
-    ~QgisAppInterface();
+
+    QgisAppInterface( QgisAppInterface const & ) = delete;
+    QgisAppInterface & operator=( QgisAppInterface const & ) = delete;
 
     QgsPluginManagerInterface* pluginManagerInterface() override;
 
@@ -445,6 +448,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QAction *actionHideAllLayers() override;
     virtual QAction *actionShowAllLayers() override;
     virtual QAction *actionHideSelectedLayers() override;
+    virtual QAction *actionHideDeselectedLayers() override;
     virtual QAction *actionShowSelectedLayers() override;
 
     //! Plugin menu actions
@@ -522,12 +526,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void cacheloadForm( const QString& uifile );
 
   private:
-
-    /// QgisInterface aren't copied
-    QgisAppInterface( QgisAppInterface const & );
-
-    /// QgisInterface aren't copied
-    QgisAppInterface & operator=( QgisAppInterface const & );
 
     //! Pointer to the QgisApp object
     QgisApp *qgis;

@@ -16,6 +16,7 @@
 #ifndef QGSACTIONSCOPEREGISTRY_H
 #define QGSACTIONSCOPEREGISTRY_H
 
+#include "qgis_core.h"
 #include <QObject>
 #include <QSet>
 #include "qgsactionscope.h"

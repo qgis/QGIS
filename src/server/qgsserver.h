@@ -39,6 +39,7 @@
 #include "qgsserverplugins.h"
 #include "qgsserverfilter.h"
 #include "qgsserverinterfaceimpl.h"
+#include "qgis_server.h"
 #endif
 
 
@@ -53,7 +54,6 @@ class SERVER_EXPORT QgsServer
      * @param captureOutput set to false for stdout output (FCGI)
      */
     QgsServer( bool captureOutput = true );
-    ~QgsServer();
 
     /** Set environment variable
      * @param var environment variable name

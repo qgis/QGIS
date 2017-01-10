@@ -79,8 +79,6 @@ class QgsWFSProvider : public QgsVectorDataProvider
     virtual QgsCoordinateReferenceSystem crs() const override;
 
     virtual QString subsetString() const override;
-
-    //! Mutator for sql where clause used to limit dataset size
     virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() const override { return true; }
@@ -104,60 +102,16 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     //Editing operations
 
-    /**
-     * Adds a list of features
-     * @return true in case of success and false in case of failure
-     */
     virtual bool addFeatures( QgsFeatureList &flist ) override;
-
-    /**
-     * Deletes one or more features
-     * @param id list containing feature ids to delete
-     * @return true in case of success and false in case of failure
-     */
     virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
-
-    /**
-     * Changes geometries of existing features
-     * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
-     *                       that will have their geometries changed.
-     *                       The second map parameter being the new geometries themselves
-     * @return               True in case of success and false in case of failure
-     */
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
-
-    /**
-     * Changes attribute values of existing features.
-     * @param attr_map a map containing changed attributes
-     * @return true in case of success and false in case of failure
-     */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
-
-    /**
-     * Get some metadata description of the provider.
-     * @return The provider metadata
-     */
     virtual QVariantMap metadata() const override;
-
-    /**
-     * Get the translated metadata key.
-     * @param mdKey The metadata key
-     * @return The translated metadata value
-     */
     virtual QString translateMetadataKey( const QString& mdKey ) const override;
-
-    /**
-     * Get the translated metadata value.
-     * @param mdKey The metadata key
-     * @param value The metadata value
-     * @return The translated metadata value
-     */
     virtual QString translateMetadataValue( const QString& mdKey, const QVariant& value ) const override;
 
   public slots:
 
-    /** Reloads the data from the source. Needs to be implemented by providers with data caches to
-      synchronize with changes in the data source*/
     virtual void reloadData() override;
 
   private slots:

@@ -31,11 +31,6 @@ QgsNumericScaleBarStyle::QgsNumericScaleBarStyle(): QgsScaleBarStyle( nullptr ),
 
 }
 
-QgsNumericScaleBarStyle::~QgsNumericScaleBarStyle()
-{
-
-}
-
 QString QgsNumericScaleBarStyle::name() const
 {
   return QStringLiteral( "Numeric" );

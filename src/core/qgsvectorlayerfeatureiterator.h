@@ -15,6 +15,7 @@
 #ifndef QGSVECTORLAYERFEATUREITERATOR_H
 #define QGSVECTORLAYERFEATUREITERATOR_H
 
+#include "qgis_core.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
 

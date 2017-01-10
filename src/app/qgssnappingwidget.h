@@ -34,6 +34,7 @@ class QgsProject;
 
 #include <QWidget>
 #include <QSettings>
+#include "qgis_app.h"
 
 /**
   * A widget which lets the user defines settings for snapping on a project
@@ -55,7 +56,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
      */
     QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas, QWidget* parent = nullptr );
 
-    //! Destructor
+
     virtual ~QgsSnappingWidget();
 
     /**

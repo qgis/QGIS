@@ -17,6 +17,7 @@
 
 #include "qgscomposermultiframecommand.h"
 #include "qgscomposermultiframe.h"
+#include "qgscomposition.h"
 #include "qgsproject.h"
 
 QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent ):
@@ -25,10 +26,6 @@ QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand( QgsComposerMultiFram
 }
 
 QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand(): QUndoCommand( QLatin1String( "" ), nullptr ), mMultiFrame( nullptr ), mFirstRun( false )
-{
-}
-
-QgsComposerMultiFrameCommand::~QgsComposerMultiFrameCommand()
 {
 }
 
@@ -72,7 +69,7 @@ void QgsComposerMultiFrameCommand::restoreState( QDomDocument& stateDoc )
   if ( mMultiFrame )
   {
     mMultiFrame->readXml( stateDoc.documentElement().firstChild().toElement(), stateDoc );
-    QgsProject::instance()->setDirty( true );
+    mMultiFrame->composition()->project()->setDirty( true );
   }
 }
 
@@ -95,11 +92,6 @@ bool QgsComposerMultiFrameCommand::containsChange() const
 QgsComposerMultiFrameMergeCommand::QgsComposerMultiFrameMergeCommand( QgsComposerMultiFrameMergeCommand::Context c, QgsComposerMultiFrame *multiFrame, const QString &text )
     : QgsComposerMultiFrameCommand( multiFrame, text )
     , mContext( c )
-{
-
-}
-
-QgsComposerMultiFrameMergeCommand::~QgsComposerMultiFrameMergeCommand()
 {
 
 }

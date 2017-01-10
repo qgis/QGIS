@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOMETRYENGINE_H
 #define QGSGEOMETRYENGINE_H
 
+#include "qgis_core.h"
 #include "qgslinestring.h"
 
 #include <QList>
@@ -32,7 +33,7 @@ class CORE_EXPORT QgsGeometryEngine
 {
   public:
     QgsGeometryEngine( const QgsAbstractGeometry* geometry ): mGeometry( geometry ) {}
-    virtual ~QgsGeometryEngine() {}
+    virtual ~QgsGeometryEngine() = default;
 
     virtual void geometryChanged() = 0;
     virtual void prepareGeometry() = 0;

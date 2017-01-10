@@ -16,6 +16,7 @@
 #ifndef QGSATTRIBUTEEDITORELEMENT_H
 #define QGSATTRIBUTEEDITORELEMENT_H
 
+#include "qgis_core.h"
 #include "qgsrelation.h"
 #include "qgsoptionalexpression.h"
 
@@ -56,8 +57,8 @@ class CORE_EXPORT QgsAttributeEditorElement
         , mShowLabel( true )
     {}
 
-    //! Destructor
-    virtual ~QgsAttributeEditorElement() {}
+
+    virtual ~QgsAttributeEditorElement() = default;
 
     /**
      * Return the name of this element
@@ -155,7 +156,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
         , mColumnCount( 1 )
     {}
 
-    //! Destructor
+
     virtual ~QgsAttributeEditorContainer();
 
     /**
@@ -269,9 +270,6 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
         , mIdx( idx )
     {}
 
-    //! Destructor
-    virtual ~QgsAttributeEditorField() {}
-
     /**
      * Return the index of the field
      * @return
@@ -321,9 +319,6 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
         , mShowLinkButton( true )
         , mShowUnlinkButton( true )
     {}
-
-    //! Destructor
-    virtual ~QgsAttributeEditorRelation() {}
 
     /**
      * Get the id of the relation which shall be embedded

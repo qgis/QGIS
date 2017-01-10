@@ -261,7 +261,7 @@ void QgsSimpleLineSymbolLayer::renderPolygonOutline( const QPolygonF& points, QL
       }
     }
 
-    //use intersect mode, as a clip path may already exist (eg, for composer maps)
+    //use intersect mode, as a clip path may already exist (e.g., for composer maps)
     p->setClipPath( clipPath, Qt::IntersectClip );
   }
 

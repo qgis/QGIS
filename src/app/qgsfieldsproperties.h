@@ -26,6 +26,7 @@
 
 #include "qgsvectorlayer.h"
 #include "ui_qgsfieldspropertiesbase.h"
+#include "qgis_app.h"
 
 class DesignerTree;
 class DragList;

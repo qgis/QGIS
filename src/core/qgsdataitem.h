@@ -17,6 +17,7 @@
 #ifndef QGSDATAITEM_H
 #define QGSDATAITEM_H
 
+#include "qgis_core.h"
 #include <QFileSystemWatcher>
 #include <QFutureWatcher>
 #include <QIcon>
@@ -440,7 +441,6 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      * @param dirPath path to directory in file system
      * @param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites: */
     QgsDirectoryItem( QgsDataItem* parent, const QString& name, const QString& dirPath, const QString& path );
-    ~QgsDirectoryItem();
 
     virtual void setState( State state ) override;
 
@@ -482,7 +482,6 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
      * @param path The full path to the project.
      */
     QgsProjectItem( QgsDataItem* parent, const QString& name, const QString& path );
-    ~QgsProjectItem();
 
     virtual bool hasDragEnabled() const override { return true; }
 
@@ -497,7 +496,6 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
   public:
 
     QgsErrorItem( QgsDataItem* parent, const QString& error, const QString& path );
-    ~QgsErrorItem();
 
 };
 
@@ -536,8 +534,6 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
      */
     QgsFavoritesItem( QgsDataItem* parent, const QString& name, const QString& path = QString() );
 
-    ~QgsFavoritesItem();
-
     QVector<QgsDataItem*> createChildren() override;
 
     /**
@@ -574,7 +570,6 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
   public:
     QgsZipItem( QgsDataItem* parent, const QString& name, const QString& path );
     QgsZipItem( QgsDataItem* parent, const QString& name, const QString& filePath, const QString& path );
-    ~QgsZipItem();
 
     QVector<QgsDataItem*> createChildren() override;
     const QStringList & getZipFileList();

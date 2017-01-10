@@ -18,6 +18,7 @@
 #ifndef QGSPOINTV2_H
 #define QGSPOINTV2_H
 
+#include "qgis_core.h"
 #include "qgsabstractgeometry.h"
 #include "qgsrectangle.h"
 
@@ -50,7 +51,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      */
     explicit QgsPointV2( QPointF p );
 
-    /** Construct a point with a specified type (eg PointZ, PointM) and initial x, y, z, and m values.
+    /** Construct a point with a specified type (e.g., PointZ, PointM) and initial x, y, z, and m values.
      * @param type point type
      * @param x x-coordinate of point
      * @param y y-coordinate of point
@@ -153,7 +154,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
 
     /**
      * Returns the distance between this point and a specified x, y coordinate. In certain
-     * cases it may be more appropriate to call the faster distanceSquared() method, eg
+     * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
      * @note added in QGIS 3.0
      * @see distanceSquared()
@@ -162,7 +163,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
 
     /**
      * Returns the 2D distance between this point and another point. In certain
-     * cases it may be more appropriate to call the faster distanceSquared() method, eg
+     * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
      * @note added in QGIS 3.0
     */

@@ -78,10 +78,6 @@ QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem* parent, QString name, QSt
   mToolTip = mDbPath;
 }
 
-QgsSLConnectionItem::~QgsSLConnectionItem()
-{
-}
-
 static QgsLayerItem::LayerType _layerTypeFromDb( QString dbType )
 {
   if ( dbType == QLatin1String( "POINT" ) || dbType == QLatin1String( "MULTIPOINT" ) )
@@ -287,10 +283,6 @@ QgsSLRootItem::QgsSLRootItem( QgsDataItem* parent, QString name, QString path )
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconSpatialite.svg" );
   populate();
-}
-
-QgsSLRootItem::~QgsSLRootItem()
-{
 }
 
 QVector<QgsDataItem*> QgsSLRootItem::createChildren()

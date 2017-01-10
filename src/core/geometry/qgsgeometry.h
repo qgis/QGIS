@@ -16,6 +16,7 @@ email                : morb at ozemail dot com dot au
 #ifndef QGSGEOMETRY_H
 #define QGSGEOMETRY_H
 
+#include "qgis_core.h"
 #include <QString>
 #include <QVector>
 #include <QDomDocument>
@@ -95,7 +96,7 @@ class CORE_EXPORT QgsGeometry
      */
     explicit QgsGeometry( QgsAbstractGeometry* geom );
 
-    //! Destructor
+
     ~QgsGeometry();
 
     /** Returns the underlying geometry store.
@@ -617,7 +618,7 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Returns a point guaranteed to lie on the surface of a geometry. While the centroid()
-     * of a geometry may be located outside of the geometry itself (eg for concave shapes),
+     * of a geometry may be located outside of the geometry itself (e.g., for concave shapes),
      * the point on surface will always be inside the geometry.
      * @see centroid()
      * @see poleOfInaccessibility()
@@ -807,10 +808,12 @@ class CORE_EXPORT QgsGeometry
      *          1 if geometry is not of polygon type,
      *          2 if avoid intersection would change the geometry type,
      *          3 other error during intersection removal
+     *  @param avoidIntersectionsLayers list of layers to check for intersections
      *  @param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in python bindings)
      *  @note added in 1.5
      */
-    int avoidIntersections( const QHash<QgsVectorLayer*, QSet<QgsFeatureId> >& ignoreFeatures = ( QHash<QgsVectorLayer*, QSet<QgsFeatureId> >() ) );
+    int avoidIntersections( const QList<QgsVectorLayer*>& avoidIntersectionsLayers,
+                            const QHash<QgsVectorLayer*, QSet<QgsFeatureId> >& ignoreFeatures = ( QHash<QgsVectorLayer*, QSet<QgsFeatureId> >() ) );
 
     /** \ingroup core
      */
@@ -959,8 +962,8 @@ class CORE_EXPORT QgsGeometry
      * roughly doubles the number of vertices in a geometry.
      * @param iterations number of smoothing iterations to run. More iterations results
      * in a smoother geometry
-     * @param offset fraction of line to create new vertices along, between 0 and 1.0
-     * eg the default value of 0.25 will create new vertices 25% and 75% along each line segment
+     * @param offset fraction of line to create new vertices along, between 0 and 1.0,
+     * e.g., the default value of 0.25 will create new vertices 25% and 75% along each line segment
      * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
      * @param minimumDistance minimum segment length to apply smoothing to
      * @param maxAngle maximum angle at node (0-180) at which smoothing will be applied
@@ -1017,8 +1020,8 @@ class CORE_EXPORT QgsGeometry
      * @param line line to smooth
      * @param iterations number of smoothing iterations to run. More iterations results
      * in a smoother geometry
-     * @param offset fraction of line to create new vertices along, between 0 and 1.0
-     * eg the default value of 0.25 will create new vertices 25% and 75% along each line segment
+     * @param offset fraction of line to create new vertices along, between 0 and 1.0,
+     * e.g., the default value of 0.25 will create new vertices 25% and 75% along each line segment
      * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
      * @param minimumDistance minimum segment length to apply smoothing to
      * @param maxAngle maximum angle at node (0-180) at which smoothing will be applied
@@ -1030,8 +1033,8 @@ class CORE_EXPORT QgsGeometry
      * @param polygon polygon to smooth
      * @param iterations number of smoothing iterations to run. More iterations results
      * in a smoother geometry
-     * @param offset fraction of segment to create new vertices along, between 0 and 1.0
-     * eg the default value of 0.25 will create new vertices 25% and 75% along each line segment
+     * @param offset fraction of segment to create new vertices along, between 0 and 1.0,
+     * e.g., the default value of 0.25 will create new vertices 25% and 75% along each line segment
      * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
      * @param minimumDistance minimum segment length to apply smoothing to
      * @param maxAngle maximum angle at node (0-180) at which smoothing will be applied

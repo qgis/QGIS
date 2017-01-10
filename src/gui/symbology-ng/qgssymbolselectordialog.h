@@ -27,6 +27,7 @@
 #include <QStandardItemModel>
 #include <QScopedPointer>
 #include <QDialogButtonBox>
+#include "qgis_gui.h"
 
 class QgsStyle;
 class QgsSymbol;
@@ -95,19 +96,18 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
        * @param parent
        */
     QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyle* style, const QgsVectorLayer* vl, QWidget* parent = nullptr );
-    ~QgsSymbolSelectorWidget();
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu* advancedMenu();
 
-    /** Sets the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+    /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @param context symbol widget context
      * @see context()
      * @note added in QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext& context );
 
-    /** Returns the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @see setContext()
      * @note added in QGIS 3.0
      */
@@ -254,14 +254,14 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu* advancedMenu();
 
-    /** Sets the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+    /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @param context symbol widget context
      * @see context()
      * @note added in QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext& context );
 
-    /** Returns the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @see setContext()
      * @note added in QGIS 3.0
      */
@@ -274,7 +274,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     QgsSymbol* symbol();
 
   protected:
-    //! Reimplements dialog keyPress event so we can ignore it
+    // Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * e ) override;
 
     void loadSymbol();

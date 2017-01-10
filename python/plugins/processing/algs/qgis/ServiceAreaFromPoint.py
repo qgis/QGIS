@@ -215,7 +215,7 @@ class ServiceAreaFromPoint(GeoAlgorithm):
             upperBoundary.append(graph.vertex(graph.edge(tree[i]).inVertex()).point())
             lowerBoundary.append(graph.vertex(graph.edge(tree[i]).outVertex()).point())
 
-        progress.setInfo(self.tr('Writting results...'))
+        progress.setInfo(self.tr('Writing results...'))
 
         fields = QgsFields()
         fields.append(QgsField('type', QVariant.String, '', 254, 0))
@@ -244,6 +244,11 @@ class ServiceAreaFromPoint(GeoAlgorithm):
         writer.addFeature(feat)
 
         del writer
+
+        upperBoundary.append(startPoint)
+        lowerBoundary.append(startPoint)
+        geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
+        geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
 
         writer = self.getOutputFromName(
             self.OUTPUT_POLYGON).getVectorWriter(

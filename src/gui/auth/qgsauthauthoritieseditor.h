@@ -23,6 +23,7 @@
 #include "ui_qgsauthauthoritieseditor.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
+#include "qgis_gui.h"
 
 class QgsMessageBar;
 class QMenu;
@@ -42,7 +43,6 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
      * @param parent Parent widget
      */
     explicit QgsAuthAuthoritiesEditor( QWidget *parent = nullptr );
-    ~QgsAuthAuthoritiesEditor();
 
   private slots:
     void populateCaCertsView();

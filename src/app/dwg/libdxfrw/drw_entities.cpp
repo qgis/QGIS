@@ -1224,8 +1224,7 @@ void DRW_Insert::parseCode( int code, dxfReader *reader )
       zscale = reader->getDouble();
       break;
     case 50:
-      angle = reader->getDouble();
-      angle = angle / ARAD; //convert to radian
+      angle = reader->getDouble() / ARAD;
       break;
     case 70:
       colcount = reader->getInt32();
@@ -1590,7 +1589,7 @@ void DRW_Text::parseCode( int code, dxfReader *reader )
       widthscale = reader->getDouble();
       break;
     case 50:
-      angle = reader->getDouble();
+      angle = reader->getDouble() / ARAD;
       break;
     case 51:
       oblique = reader->getDouble();
@@ -1630,7 +1629,7 @@ bool DRW_Text::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
 
   QgsDebugMsg( "***************************** parsing text *********************************************" );
 
-// DataFlags RC Used to determine presence of subsquent data, set to 0xFF for R14-
+  // DataFlags RC Used to determine presence of subsequent data, set to 0xFF for R14-
   duint8 data_flags = 0x00;
   if ( version > DRW::AC1014 )  //2000+
   {

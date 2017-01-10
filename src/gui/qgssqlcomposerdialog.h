@@ -27,6 +27,7 @@ email                : even.rouault at spatialys.com
 #include <QPair>
 #include <QStringList>
 #include <QSet>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * SQL composer dialog
@@ -51,7 +52,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     class GUI_EXPORT TableSelectedCallback
     {
       public:
-        virtual ~TableSelectedCallback();
+        virtual ~TableSelectedCallback() = default;
         //! method called when a table is selected
         virtual void tableSelected( const QString& name ) = 0;
     };
@@ -63,7 +64,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     class GUI_EXPORT SQLValidatorCallback
     {
       public:
-        virtual ~SQLValidatorCallback();
+        virtual ~SQLValidatorCallback() = default;
         //! method should return true if the SQL is valid. Otherwise return false and set the errorReason
         virtual bool isValid( const QString& sql, QString& errorReason, QString& warningMsg ) = 0;
     };

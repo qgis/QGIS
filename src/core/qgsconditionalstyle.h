@@ -1,6 +1,7 @@
 #ifndef QGSCONDITIONALSTYLE_H
 #define QGSCONDITIONALSTYLE_H
 
+#include "qgis_core.h"
 #include <QFont>
 #include <QColor>
 #include <QPixmap>
@@ -69,7 +70,6 @@ class CORE_EXPORT QgsConditionalStyle
     QgsConditionalStyle();
     QgsConditionalStyle( const QgsConditionalStyle& other );
     QgsConditionalStyle( const QString& rule );
-    ~QgsConditionalStyle();
 
     QgsConditionalStyle& operator=( const QgsConditionalStyle& other );
 

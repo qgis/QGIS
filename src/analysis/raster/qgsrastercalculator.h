@@ -23,6 +23,7 @@
 #include <QString>
 #include <QVector>
 #include "gdal.h"
+#include "qgis_analysis.h"
 
 class QgsRasterLayer;
 class QProgressDialog;

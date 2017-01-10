@@ -20,6 +20,8 @@
 #include <QSortFilterProxyModel>
 #include <QStringList>
 
+#include "qgis_core.h"
+
 class QgsMapLayer;
 
 

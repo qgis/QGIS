@@ -18,6 +18,7 @@
 #ifndef QGSMAPLAYER_H
 #define QGSMAPLAYER_H
 
+#include "qgis_core.h"
 #include <QDateTime>
 #include <QDomNode>
 #include <QImage>
@@ -70,6 +71,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString& name = QString::null, const QString& source = QString::null );
 
     virtual ~QgsMapLayer();
+
+    //! QgsMapLayer cannot be copied
+    QgsMapLayer( QgsMapLayer const & ) = delete;
+    //! QgsMapLayer cannot be copied
+    QgsMapLayer & operator=( QgsMapLayer const & ) = delete;
 
     /** Returns the type of the layer.
      */
@@ -419,8 +425,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Sets layer's spatial reference system
     void setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal = true );
 
-    //! A convenience function to (un)capitalise the layer name
-    static QString capitaliseLayerName( const QString& name );
+    //! A convenience function to (un)capitalize the layer name
+    static QString capitalizeLayerName( const QString& name );
 
     /** Retrieve the style URI for this layer
      * (either as a .qml file on disk or as a
@@ -874,16 +880,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
         private to make sure setCrs must be used and crsChanged() is emitted */
     QgsCoordinateReferenceSystem mCRS;
 
-    //! Private copy constructor - QgsMapLayer not copyable
-    QgsMapLayer( QgsMapLayer const & );
-
-    //! Private assign operator - QgsMapLayer not copyable
-    QgsMapLayer & operator=( QgsMapLayer const & );
-
     //! Unique ID of this layer - used to refer to this layer in map layer registry
     QString mID;
 
-    //! Type of the layer (eg. vector, raster)
+    //! Type of the layer (e.g., vector, raster)
     QgsMapLayer::LayerType mLayerType;
 
     //! Blend mode for the layer

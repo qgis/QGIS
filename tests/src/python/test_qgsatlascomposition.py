@@ -54,7 +54,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         crs.createFromSrid(2154)
         self.mapSettings.setDestinationCrs(crs)
 
-        self.mComposition = QgsComposition(self.mapSettings)
+        self.mComposition = QgsComposition(self.mapSettings, QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
 
         # fix the renderer, fill with green

@@ -1205,7 +1205,7 @@ void QgsTextFormatWidget::updateSvgWidgets( const QString& svgPath )
   bool fillParam = false, outlineParam = false, outlineWidthParam = false;
   if ( validSVG )
   {
-    QgsSvgCache::instance()->containsParams( resolvedPath, fillParam, fill, outlineParam, outline, outlineWidthParam, outlineWidth );
+    QgsApplication::svgCache()->containsParams( resolvedPath, fillParam, fill, outlineParam, outline, outlineWidthParam, outlineWidth );
   }
 
   mShapeSVGParamsBtn->setEnabled( validSVG && ( fillParam || outlineParam || outlineWidthParam ) );

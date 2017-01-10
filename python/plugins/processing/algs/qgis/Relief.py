@@ -76,8 +76,8 @@ class Relief(GeoAlgorithm):
                     return True
 
                 if value == '':
-                   if not self.optional:
-                       return False
+                    if not self.optional:
+                        return False
 
                 if isinstance(value, str):
                     self.value = value if value != '' else None
@@ -97,7 +97,7 @@ class Relief(GeoAlgorithm):
             def fromScriptCode(self, line):
                 isOptional, name, definition = _splitParameterOptions(line)
                 descName = _createDescriptiveName(name)
-                parent =  definition.lower().strip()[len('relief colors') + 1:]
+                parent = definition.lower().strip()[len('relief colors') + 1:]
                 return ParameterReliefColors(name, description, parent)
 
             @staticmethod
@@ -117,7 +117,7 @@ class Relief(GeoAlgorithm):
                                           self.tr('Z factor'),
                                           1.0, 999999.99, 1.0))
         self.addParameter(ParameterBoolean(self.AUTO_COLORS,
-                                           self.tr('Generate relief classes automaticaly'),
+                                           self.tr('Generate relief classes automatically'),
                                            False))
         self.addParameter(ParameterReliefColors(self.COLORS,
                                                 self.tr('Relief colors'),
@@ -145,7 +145,7 @@ class Relief(GeoAlgorithm):
         else:
             if colors is None:
                 raise GeoAlgorithmExecutionException(
-                    self.tr('Specify relief colors or activate "Generate relief classes automaticaly" option.'))
+                    self.tr('Specify relief colors or activate "Generate relief classes automatically" option.'))
 
             reliefColors = []
             for c in colors.split(';'):

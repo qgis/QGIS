@@ -18,6 +18,7 @@
 #ifndef QGSRASTERPIPE_H
 #define QGSRASTERPIPE_H
 
+#include "qgis_core.h"
 #include <QImage>
 #include <QMap>
 #include <QObject>
@@ -60,6 +61,8 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterPipe( const QgsRasterPipe& thePipe );
 
     ~QgsRasterPipe();
+
+    QgsRasterPipe& operator=( const QgsRasterPipe& rh ) = delete;
 
     /** Try to insert interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
@@ -128,7 +131,6 @@ class CORE_EXPORT QgsRasterPipe
         Returns true if connected or false if connection failed */
     bool connect( QVector<QgsRasterInterface*> theInterfaces );
 
-    QgsRasterPipe& operator=( const QgsRasterPipe& rh );
 };
 
 #endif

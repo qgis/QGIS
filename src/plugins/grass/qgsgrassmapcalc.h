@@ -43,7 +43,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
       QgisInterface *iface,
       QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
-    //! Destructor
+
     ~QgsGrassMapcalc();
 
     // Current tool
@@ -87,7 +87,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     //! Grow canvas and move items
     void growCanvas( int left, int right, int top, int bottom );
 
-    //! Grow automaticaly if an item is near border
+    //! Grow automatically if an item is near border
     void autoGrow();
 
     void resizeCanvas( int width, int height );
@@ -238,7 +238,7 @@ class QgsGrassMapcalcFunction
     /* Number of inputs */
     int mInputCount;
 
-    /* Identification name, eg. 'if(x,a,b)' */
+    /* Identification name, e.g., 'if(x,a,b)' */
     //QString mName;
 
     /* Label used in combobox and objects */

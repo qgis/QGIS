@@ -21,6 +21,7 @@
 #include "qgsrectangle.h"
 
 #include <QWidget>
+#include "qgis_gui.h"
 
 class QgsRasterLayer;
 class QgsRasterRenderer;
@@ -42,8 +43,6 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
         , mExtent( extent )
         , mCanvas( nullptr )
     {}
-
-    virtual ~QgsRasterRendererWidget() {}
 
     virtual QgsRasterRenderer* renderer() = 0;
 

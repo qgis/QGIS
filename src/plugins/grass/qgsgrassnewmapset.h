@@ -55,7 +55,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
                        QgsGrassPlugin *plugin,
                        QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
-    //! Destructor
+
     ~QgsGrassNewMapset();
 
     //! Next page

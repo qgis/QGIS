@@ -41,6 +41,7 @@
 #include "modeltest.h"
 #endif
 
+
 QgsRendererWidget* QgsRuleBasedRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
 {
   return new QgsRuleBasedRendererWidget( layer, style, renderer );
@@ -519,20 +520,8 @@ void QgsRuleBasedRendererWidget::countFeatures()
   QgsRenderContext renderContext;
   renderContext.setRendererScale( 0 ); // ignore scale
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
-  if ( mContext.mapCanvas() )
-  {
-    context << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
-  }
-  else
-  {
-    context << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
-  }
-  context << QgsExpressionContextUtils::layerScope( mLayer );
+  QgsExpressionContext context( mContext.globalProjectAtlasMapLayerScopes( mLayer ) );
+
   // additional scopes
   Q_FOREACH ( const QgsExpressionContextScope& scope, mContext.additionalExpressionContextScopes() )
   {
@@ -668,11 +657,6 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   connect( mScaleRangeWidget, SIGNAL( rangeChanged( double, double ) ), this, SIGNAL( widgetChanged() ) );
 }
 
-QgsRendererRulePropsWidget::~QgsRendererRulePropsWidget()
-{
-
-}
-
 QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent, const QgsSymbolWidgetContext& context )
     : QDialog( parent )
 {
@@ -717,22 +701,10 @@ void QgsRendererRulePropsDialog::accept()
   QDialog::accept();
 }
 
+
 void QgsRendererRulePropsWidget::buildExpression()
 {
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
-  if ( mContext.mapCanvas() )
-  {
-    context << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
-  }
-  else
-  {
-    context << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
-  }
-  context << QgsExpressionContextUtils::layerScope( mLayer );
+  QgsExpressionContext context( mContext.globalProjectAtlasMapLayerScopes( mLayer ) );
 
   // additional scopes
   Q_FOREACH ( const QgsExpressionContextScope& scope, mContext.additionalExpressionContextScopes() )
@@ -755,20 +727,8 @@ void QgsRendererRulePropsWidget::testFilter()
     return;
   }
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
-  if ( mContext.mapCanvas() )
-  {
-    context << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
-  }
-  else
-  {
-    context << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
-  }
-  context << QgsExpressionContextUtils::layerScope( mLayer );
+  QgsExpressionContext context( mContext.globalProjectAtlasMapLayerScopes( mLayer ) );
+
   // additional scopes
   Q_FOREACH ( const QgsExpressionContextScope& scope, mContext.additionalExpressionContextScopes() )
   {

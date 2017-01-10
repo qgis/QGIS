@@ -60,10 +60,6 @@ QgsOfflineEditing::QgsOfflineEditing()
   connect( QgsProject::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layerAdded( QgsMapLayer* ) ) );
 }
 
-QgsOfflineEditing::~QgsOfflineEditing()
-{
-}
-
 /**
  * convert current project to offline project
  * returns offline project file path

@@ -45,7 +45,7 @@ class QgsExpressionContextGenerator
      */
     virtual QgsExpressionContext createExpressionContext() const = 0;
 
-    virtual ~QgsExpressionContextGenerator() {}
+    virtual ~QgsExpressionContextGenerator() = default;
 };
 
 #endif // QGSEXPRESSIONCONTEXTGENERATOR_H

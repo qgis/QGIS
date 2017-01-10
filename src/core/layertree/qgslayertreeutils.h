@@ -19,6 +19,7 @@
 #include <qnamespace.h>
 #include <QList>
 #include <QPair>
+#include "qgis_core.h"
 
 class QDomElement;
 class QDomDocument;

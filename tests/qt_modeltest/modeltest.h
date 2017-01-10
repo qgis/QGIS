@@ -52,6 +52,8 @@
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QStack>
 
+#include "qgis_core.h"
+
 class CORE_EXPORT ModelTest : public QObject
 {
     Q_OBJECT

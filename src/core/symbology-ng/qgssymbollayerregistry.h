@@ -16,6 +16,7 @@
 #ifndef QGSSYMBOLLAYERREGISTRY_H
 #define QGSSYMBOLLAYERREGISTRY_H
 
+#include "qgis_core.h"
 #include "qgssymbol.h"
 
 class QgsVectorLayer;
@@ -36,7 +37,7 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
         , mType( type )
     {}
 
-    virtual ~QgsSymbolLayerAbstractMetadata() {}
+    virtual ~QgsSymbolLayerAbstractMetadata() = default;
 
     QString name() const { return mName; }
     QString visibleName() const { return mVisibleName; }
@@ -111,15 +112,22 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
 
 
 /** \ingroup core
- Registry of available symbol layer classes.
- Implemented as a singleton.
+ * Registry of available symbol layer classes.
+ *
+ * QgsSymbolLayerRegistry is not usually directly created, but rather accessed through
+ * QgsApplication::symbolLayerRegistry().
  */
 class CORE_EXPORT QgsSymbolLayerRegistry
 {
   public:
 
-    //! return the single instance of this class (instantiate it if not exists)
-    static QgsSymbolLayerRegistry* instance();
+    QgsSymbolLayerRegistry();
+    ~QgsSymbolLayerRegistry();
+
+    //! QgsSymbolLayerRegistry cannot be copied.
+    QgsSymbolLayerRegistry( const QgsSymbolLayerRegistry& rh ) = delete;
+    //! QgsSymbolLayerRegistry cannot be copied.
+    QgsSymbolLayerRegistry& operator=( const QgsSymbolLayerRegistry& rh ) = delete;
 
     //! return metadata for specified symbol layer. Returns NULL if not found
     QgsSymbolLayerAbstractMetadata* symbolLayerMetadata( const QString& name ) const;
@@ -139,15 +147,9 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     //! create a new instance of symbol layer for specified symbol type with default settings
     static QgsSymbolLayer* defaultSymbolLayer( QgsSymbol::SymbolType type );
 
-  protected:
-    QgsSymbolLayerRegistry();
-    ~QgsSymbolLayerRegistry();
+  private:
 
     QMap<QString, QgsSymbolLayerAbstractMetadata*> mMetadata;
-
-  private:
-    QgsSymbolLayerRegistry( const QgsSymbolLayerRegistry& rh );
-    QgsSymbolLayerRegistry& operator=( const QgsSymbolLayerRegistry& rh );
 };
 
 #endif

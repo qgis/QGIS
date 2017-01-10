@@ -16,6 +16,7 @@
 #ifndef QGSVECTORLAYERTOOLS_H
 #define QGSVECTORLAYERTOOLS_H
 
+#include "qgis_core.h"
 #include <QObject>
 
 #include "qgsfeature.h"
@@ -39,8 +40,6 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
 
   public:
     QgsVectorLayerTools();
-
-    virtual ~QgsVectorLayerTools();
 
     /**
      * This method should/will be called, whenever a new feature will be added to the layer

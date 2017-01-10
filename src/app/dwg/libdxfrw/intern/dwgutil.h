@@ -24,7 +24,7 @@ class dwgRSCodec
 {
   public:
     dwgRSCodec() {}
-    ~dwgRSCodec() {}
+
     static void decode239I( duint8 *in, duint8 *out, duint32 blk );
     static void decode251I( duint8 *in, duint8 *out, duint32 blk );
 };
@@ -40,8 +40,6 @@ class dwgCompressor
         , pos( 0 )
         , rpos( 0 )
     {}
-
-    ~dwgCompressor() {}
 
     void decompress18( duint8 *cbuf, duint8 *dbuf, duint32 csize, duint32 dsize );
     static void decrypt18Hdr( duint8 *buf, duint32 size, duint32 offset );
@@ -72,31 +70,30 @@ class secEnum
   public:
     enum DWGSection
     {
-      UNKNOWNS,      /*!< UNKNOWN section. */
-      FILEHEADER,    /*!< File Header (in R3-R15*/
-      HEADER,        /*!< AcDb:Header */
-      CLASSES,       /*!< AcDb:Classes */
-      SUMARYINFO,    /*!< AcDb:SummaryInfo */
-      PREVIEW,       /*!< AcDb:Preview */
-      VBAPROY,       /*!< AcDb:VBAProject */
-      APPINFO,       /*!< AcDb:AppInfo */
-      FILEDEP,       /*!< AcDb:FileDepList */
-      REVHISTORY,    /*!< AcDb:RevHistory */
-      SECURITY,      /*!< AcDb:Security */
-      OBJECTS,       /*!< AcDb:AcDbObjects */
-      OBJFREESPACE,  /*!< AcDb:ObjFreeSpace */
-      TEMPLATE,      /*!< AcDb:Template */
-      HANDLES,       /*!< AcDb:Handles */
-      PROTOTYPE,     /*!< AcDb:AcDsPrototype_1b */
-      AUXHEADER,     /*!< AcDb:AuxHeader, in (R13-R15) second file header */
-      SIGNATURE,     /*!< AcDb:Signature */
-      APPINFOHISTORY,     /*!< AcDb:AppInfoHistory (in ac1021 may be a renamed section?*/
-      EXTEDATA,      /*!< Extended Entity Data */
-      PROXYGRAPHICS /*!< PROXY ENTITY GRAPHICS */
+      UNKNOWNS,      //!< UNKNOWN section.
+      FILEHEADER,    //!< File Header (in R3-R15
+      HEADER,        //!< AcDb:Header
+      CLASSES,       //!< AcDb:Classes
+      SUMARYINFO,    //!< AcDb:SummaryInfo
+      PREVIEW,       //!< AcDb:Preview
+      VBAPROY,       //!< AcDb:VBAProject
+      APPINFO,       //!< AcDb:AppInfo
+      FILEDEP,       //!< AcDb:FileDepList
+      REVHISTORY,    //!< AcDb:RevHistory
+      SECURITY,      //!< AcDb:Security
+      OBJECTS,       //!< AcDb:AcDbObjects
+      OBJFREESPACE,  //!< AcDb:ObjFreeSpace
+      TEMPLATE,      //!< AcDb:Template
+      HANDLES,       //!< AcDb:Handles
+      PROTOTYPE,     //!< AcDb:AcDsPrototype_1b
+      AUXHEADER,     //!< AcDb:AuxHeader, in (R13-R15) second file header
+      SIGNATURE,     //!< AcDb:Signature
+      APPINFOHISTORY,     //!< AcDb:AppInfoHistory (in ac1021 may be a renamed section?
+      EXTEDATA,      //!< Extended Entity Data
+      PROXYGRAPHICS //!< PROXY ENTITY GRAPHICS
     };
 
     secEnum() {}
-    ~secEnum() {}
 
     static DWGSection getEnum( std::string nameSec );
 };

@@ -621,6 +621,7 @@ bool dwgReader21::readDwgHandles()
 }
 
 /*********** objects ************************/
+
 /**
  * Reads all the object referenced in the object map section of the DWG file
  * (using their object file offsets)

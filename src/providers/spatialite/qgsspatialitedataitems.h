@@ -34,7 +34,6 @@ class QgsSLConnectionItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsSLConnectionItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsSLConnectionItem();
 
     QVector<QgsDataItem*> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
@@ -57,7 +56,6 @@ class QgsSLRootItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsSLRootItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsSLRootItem();
 
     QVector<QgsDataItem*> createChildren() override;
 

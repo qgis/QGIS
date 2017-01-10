@@ -416,7 +416,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      */
     void setTransparency( const int transparency );
 
-    /** Returns whether effects (eg blend modes) are enabled for the item
+    /** Returns whether effects (e.g., blend modes) are enabled for the item
      * @returns true if effects are enabled
      * @see setEffectsEnabled
      * @see transparency
@@ -424,7 +424,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      */
     bool effectsEnabled() const;
 
-    /** Sets whether effects (eg blend modes) are enabled for the item
+    /** Sets whether effects (e.g., blend modes) are enabled for the item
      * @param effectsEnabled set to true to enable effects
      * @see effectsEnabled
      * @see setTransparency
@@ -508,7 +508,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     /** Sets visibility for item.
      * @param visible set to true to show item, false to hide item
      * @note QGraphicsItem::setVisible should not be called directly
-     * on a QgsComposerItem, as some item types (eg groups) need to override
+     * on a QgsComposerItem, as some item types (e.g., groups) need to override
      * the visibility toggle.
      * @note added in version 2.5
      */

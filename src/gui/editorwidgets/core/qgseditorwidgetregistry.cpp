@@ -193,12 +193,12 @@ bool QgsEditorWidgetRegistry::registerWidget( const QString& widgetId, QgsEditor
 {
   if ( !widgetFactory )
   {
-    QgsMessageLog::instance()->logMessage( QStringLiteral( "QgsEditorWidgetRegistry: Factory not valid." ) );
+    QgsApplication::messageLog()->logMessage( QStringLiteral( "QgsEditorWidgetRegistry: Factory not valid." ) );
     return false;
   }
   else if ( mWidgetFactories.contains( widgetId ) )
   {
-    QgsMessageLog::instance()->logMessage( QStringLiteral( "QgsEditorWidgetRegistry: Factory with id %1 already registered." ).arg( widgetId ) );
+    QgsApplication::messageLog()->logMessage( QStringLiteral( "QgsEditorWidgetRegistry: Factory with id %1 already registered." ).arg( widgetId ) );
     return false;
   }
   else

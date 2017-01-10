@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSABSTRACTGEOMETRYV2
 #define QGSABSTRACTGEOMETRYV2
 
+#include "qgis_core.h"
 #include "qgscoordinatetransform.h"
 #include "qgswkbtypes.h"
 #include "qgswkbptr.h"
@@ -53,7 +54,7 @@ class CORE_EXPORT QgsAbstractGeometry
     };
 
     QgsAbstractGeometry();
-    virtual ~QgsAbstractGeometry();
+    virtual ~QgsAbstractGeometry() = default;
     QgsAbstractGeometry( const QgsAbstractGeometry& geom );
     virtual QgsAbstractGeometry& operator=( const QgsAbstractGeometry& geom );
 
@@ -392,7 +393,7 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual QgsRectangle calculateBoundingBox() const;
 
-    /** Clears any cached parameters associated with the geometry, eg bounding boxes
+    /** Clears any cached parameters associated with the geometry, e.g., bounding boxes
      */
     virtual void clearCache() const {}
 

@@ -114,11 +114,6 @@ QgsMapLayerActionRegistry::QgsMapLayerActionRegistry( QObject *parent ) : QObjec
   // constructor does nothing
 }
 
-QgsMapLayerActionRegistry::~QgsMapLayerActionRegistry()
-{
-
-}
-
 void QgsMapLayerActionRegistry::addMapLayerAction( QgsMapLayerAction * action )
 {
   mMapLayerActionList.append( action );

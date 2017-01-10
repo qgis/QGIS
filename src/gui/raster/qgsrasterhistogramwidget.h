@@ -20,6 +20,7 @@
 #include "ui_qgsrasterhistogramwidgetbase.h"
 
 #include "qgsmaplayerconfigwidget.h"
+#include "qgis_gui.h"
 
 class QgsRasterLayer;
 class QgsRasterRendererWidget;
@@ -43,7 +44,6 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
 
   public:
     QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent = nullptr );
-    ~QgsRasterHistogramWidget();
 
     //! Save the histogram as an image to disk
     bool histoSaveAsImage( const QString& theFilename, int width = 600, int height = 600, int quality = -1 );

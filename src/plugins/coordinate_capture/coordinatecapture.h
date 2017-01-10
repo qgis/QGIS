@@ -80,7 +80,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
     * @param theInterface Pointer to the QgisInterface object.
      */
     explicit CoordinateCapture( QgisInterface * theInterface );
-    //! Destructor
+
     virtual ~CoordinateCapture();
 
   public slots:

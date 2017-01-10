@@ -19,6 +19,7 @@
 #include <QDialog>
 #include <ui_qgssublayersdialogbase.h>
 #include "qgscontexthelp.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsSublayersDialog

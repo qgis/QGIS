@@ -63,7 +63,7 @@ class GridSurfaceCreate(FusionAlgorithm):
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterNumber(
-            self.CELLSIZE, self.tr('Cellsize'), 0, None, 10.0))
+            self.CELLSIZE, self.tr('Cell Size'), 0, None, 10.0))
         self.addParameter(ParameterSelection(
             self.XYUNITS, self.tr('XY Units'), self.UNITS))
         self.addParameter(ParameterSelection(

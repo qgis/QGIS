@@ -18,6 +18,7 @@
 
 #define DIAGRAM_NAME_HISTOGRAM "Histogram"
 
+#include "qgis_core.h"
 #include "qgsdiagram.h"
 #include <QPen>
 #include <QBrush>
@@ -37,7 +38,6 @@ class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram
 {
   public:
     QgsHistogramDiagram();
-    ~QgsHistogramDiagram();
 
     virtual QgsHistogramDiagram* clone() const override;
 

@@ -18,7 +18,8 @@ from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (QgsComposerShape,
                        QgsComposition,
-                       QgsMapSettings
+                       QgsMapSettings,
+                       QgsProject
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -37,7 +38,7 @@ class TestQgsComposerShapes(unittest.TestCase):
         self.mapSettings = QgsMapSettings()
 
         # create composition
-        self.mComposition = QgsComposition(self.mapSettings)
+        self.mComposition = QgsComposition(self.mapSettings, QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
 
         self.mComposerShape = QgsComposerShape(20, 20, 150, 100, self.mComposition)

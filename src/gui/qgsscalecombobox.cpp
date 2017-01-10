@@ -39,10 +39,6 @@ QgsScaleComboBox::QgsScaleComboBox( QWidget* parent )
   fixupScale();
 }
 
-QgsScaleComboBox::~QgsScaleComboBox()
-{
-}
-
 void QgsScaleComboBox::updateScales( const QStringList &scales )
 {
   QStringList myScalesList;

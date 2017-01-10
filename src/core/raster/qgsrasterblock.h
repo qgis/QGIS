@@ -18,6 +18,7 @@
 #ifndef QGSRASTERBLOCK_H
 #define QGSRASTERBLOCK_H
 
+#include "qgis_core.h"
 #include <limits>
 #include <QImage>
 #include "qgis.h"

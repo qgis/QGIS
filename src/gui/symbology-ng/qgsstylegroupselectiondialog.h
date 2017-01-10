@@ -20,6 +20,7 @@
 #include <QDialog>
 #include <QStandardItem>
 #include "ui_qgsstylegroupselectiondialogbase.h"
+#include "qgis_gui.h"
 
 
 class QgsStyle;
@@ -33,7 +34,6 @@ class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::Symb
 
   public:
     QgsStyleGroupSelectionDialog( QgsStyle* style, QWidget *parent = nullptr );
-    ~QgsStyleGroupSelectionDialog();
     //! Set bold font for item
     void setBold( QStandardItem *item );
 

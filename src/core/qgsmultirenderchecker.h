@@ -16,6 +16,7 @@
 #ifndef QGSMULTIRENDERCHECKER_H
 #define QGSMULTIRENDERCHECKER_H
 
+#include "qgis_core.h"
 #include "qgsrenderchecker.h"
 
 /** \ingroup core
@@ -52,6 +53,8 @@ class CORE_EXPORT QgsMultiRenderChecker
 {
   public:
     QgsMultiRenderChecker();
+
+    virtual ~QgsMultiRenderChecker() = default;
 
     /**
      * Base directory name for the control image (with control image path
@@ -139,7 +142,6 @@ class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
 {
   public:
     QgsCompositionChecker( const QString& testName, QgsComposition* composition );
-    ~QgsCompositionChecker();
 
     void setSize( QSize size ) { mSize = size; }
 

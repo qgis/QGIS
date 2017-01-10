@@ -94,7 +94,6 @@ class eVis: public QObject, public QgisPlugin
     //! Constructor
     explicit eVis( QgisInterface * theInterface );
 
-    //! Destructor */
     ~eVis();
 
   public slots:

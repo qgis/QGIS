@@ -18,7 +18,7 @@
 
 QgsOgrExpressionCompiler::QgsOgrExpressionCompiler( QgsOgrFeatureSource* source )
     : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::NoNullInBooleanLogic
-                                | QgsSqlExpressionCompiler::NoUnaryMinus )
+                                | QgsSqlExpressionCompiler::NoUnaryMinus | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
     , mSource( source )
 {
 }
@@ -57,10 +57,8 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const Qg
         case QgsExpression::boNotILike:
           return Fail; //disabled until https://trac.osgeo.org/gdal/ticket/5132 is fixed
 
-        case QgsExpression::boDiv:
         case QgsExpression::boMod:
         case QgsExpression::boConcat:
-        case QgsExpression::boIntDiv:
         case QgsExpression::boPow:
         case QgsExpression::boRegexp:
           return Fail; //not supported by OGR
@@ -102,4 +100,14 @@ QString QgsOgrExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
   }
 
   return QgsOgrProviderUtils::quotedValue( value );
+}
+
+QString QgsOgrExpressionCompiler::castToReal( const QString& value ) const
+{
+  return QStringLiteral( "CAST((%1) AS float)" ).arg( value );
+}
+
+QString QgsOgrExpressionCompiler::castToInt( const QString& value ) const
+{
+  return QStringLiteral( "CAST((%1) AS integer)" ).arg( value );
 }

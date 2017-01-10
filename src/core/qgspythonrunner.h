@@ -17,6 +17,8 @@
 
 #include <QString>
 
+#include "qgis_core.h"
+
 /** \ingroup core
   Utility class for running python commands from various parts of QGIS.
   There is no direct python support in the core library, so it is expected
@@ -48,7 +50,7 @@ class CORE_EXPORT QgsPythonRunner
   protected:
     //! Protected constructor: can be instantiated only from children
     QgsPythonRunner();
-    virtual ~QgsPythonRunner();
+    virtual ~QgsPythonRunner() = default;
 
     virtual bool runCommand( QString command, QString messageOnError = QString() ) = 0;
 

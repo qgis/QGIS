@@ -24,6 +24,7 @@
 #include "ui_qgsquerybuilderbase.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
+#include "qgis_gui.h"
 
 class QgsField;
 class QgsVectorLayer;
@@ -40,8 +41,6 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     //! Constructor - takes pointer to vector layer as a parameter
     QgsSearchQueryBuilder( QgsVectorLayer* layer, QWidget *parent = nullptr,
                            Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
-
-    ~QgsSearchQueryBuilder();
 
     //! returns newly created search string
     QString searchString();

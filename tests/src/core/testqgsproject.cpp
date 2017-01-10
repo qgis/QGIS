@@ -131,10 +131,10 @@ void TestQgsProject::testProjectUnits()
 void TestQgsProject::variablesChanged()
 {
   QgsProject* prj = new QgsProject;
-  QSignalSpy spyVariablesChanged( prj, SIGNAL( variablesChanged() ) );
-  QgsStringMap vars;
+  QSignalSpy spyVariablesChanged( prj, &QgsProject::customVariablesChanged );
+  QVariantMap vars;
   vars.insert( QStringLiteral( "variable" ), QStringLiteral( "1" ) );
-  prj->setVariables( vars );
+  prj->setCustomVariables( vars );
   QVERIFY( spyVariablesChanged.count() == 1 );
   delete prj;
 }

@@ -22,6 +22,7 @@
 
 #include "ui_qgsauthconfigeditor.h"
 #include "qgsauthmanager.h"
+#include "qgis_gui.h"
 
 class QgsMessageBar;
 
@@ -41,7 +42,6 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
      * @param relayMessages Whether to relay auth manager messages to internal message bar
      */
     explicit QgsAuthConfigEditor( QWidget *parent = nullptr, bool showUtilities = true, bool relayMessages = true );
-    ~QgsAuthConfigEditor();
 
     //! Hide the widget's title, e.g. when embedding
     void toggleTitleVisibility( bool visible );

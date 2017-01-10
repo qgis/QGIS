@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSMULTILINESTRINGV2_H
 #define QGSMULTILINESTRINGV2_H
 
+#include "qgis_core.h"
 #include "qgsmulticurve.h"
 
 /** \ingroup core

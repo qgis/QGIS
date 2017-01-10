@@ -17,6 +17,7 @@
 
 #define DIAGRAM_NAME_PIE "Pie"
 
+#include "qgis_core.h"
 #include "qgsdiagram.h"
 #include <QPen>
 #include <QBrush>
@@ -35,7 +36,6 @@ class CORE_EXPORT QgsPieDiagram: public QgsDiagram
 {
   public:
     QgsPieDiagram();
-    ~QgsPieDiagram();
 
     virtual QgsPieDiagram* clone() const override;
 

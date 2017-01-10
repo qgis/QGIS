@@ -84,9 +84,6 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* th
   pbtnLoadPredefinedQueries->setToolTip( tr( "Open File" ) );
 }
 
-/**
-* Destructor
-*/
 eVisDatabaseConnectionGui::~eVisDatabaseConnectionGui()
 {
   QSettings settings;
@@ -417,7 +414,7 @@ void eVisDatabaseConnectionGui::on_pbtnLoadPredefinedQueries_clicked()
     }
     else
     {
-      teditConsole->append( tr( "Error: Unabled to open file [%1]" ).arg( myFilename ) );
+      teditConsole->append( tr( "Error: Unable to open file [%1]" ).arg( myFilename ) );
     }
   }
 }

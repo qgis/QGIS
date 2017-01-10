@@ -92,7 +92,7 @@ function(FIND_QCATOOL TOOL_REQUIRED)
           $ENV{OSGEO4W_ROOT}/bin
       )
     else()
-      find_program(QCATOOL_EXECUTABLE NAMES qcatool qcatool2)
+      find_program(QCATOOL_EXECUTABLE NAMES qcatool qcatool2 qcatool-qt5)
     endif()
 
     if(NOT QCATOOL_EXECUTABLE)

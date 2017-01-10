@@ -20,6 +20,7 @@
 
 #include <QString>
 #include <QStringList>
+#include "qgis_core.h"
 
 /** \ingroup core
  * A class to describe the version of a project.
@@ -40,7 +41,7 @@ class CORE_EXPORT QgsProjectVersion
         , mMinor( 0 )
         , mSub( 0 )
     {}
-    ~QgsProjectVersion() {}
+
     QgsProjectVersion( int major, int minor, int sub, const QString& name = "" );
     QgsProjectVersion( const QString& string );
     int majorVersion() { return mMajor;}

@@ -17,6 +17,7 @@
 #ifndef QGSGLOWEFFECT_H
 #define QGSGLOWEFFECT_H
 
+#include "qgis_core.h"
 #include "qgspainteffect.h"
 #include "qgssymbol.h"
 #include <QPainter>
@@ -240,7 +241,6 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
     static QgsPaintEffect* create( const QgsStringMap& map );
 
     QgsOuterGlowEffect();
-    virtual ~QgsOuterGlowEffect();
 
     virtual QString type() const override { return QStringLiteral( "outerGlow" ); }
     virtual QgsOuterGlowEffect* clone() const override;
@@ -271,7 +271,6 @@ class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect
     static QgsPaintEffect* create( const QgsStringMap& map );
 
     QgsInnerGlowEffect();
-    virtual ~QgsInnerGlowEffect();
 
     virtual QString type() const override { return QStringLiteral( "innerGlow" ); }
     virtual QgsInnerGlowEffect* clone() const override;

@@ -19,6 +19,7 @@
 
 #include <QComboBox>
 #include "qgsauthcertutils.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Widget for editing the trust policy associated with a Certificate (Intermediate) Authority
@@ -39,7 +40,6 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
       QWidget *parent = nullptr,
       QgsAuthCertUtils::CertTrustPolicy policy = QgsAuthCertUtils::DefaultTrust,
       QgsAuthCertUtils::CertTrustPolicy defaultpolicy =  QgsAuthCertUtils::DefaultTrust );
-    ~QgsAuthCertTrustPolicyComboBox();
 
     //! Get currently set trust policy
     QgsAuthCertUtils::CertTrustPolicy trustPolicy();

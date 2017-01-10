@@ -15,6 +15,7 @@
 #ifndef QGSCATEGORIZEDSYMBOLRENDERERV2_H
 #define QGSCATEGORIZEDSYMBOLRENDERERV2_H
 
+#include "qgis_core.h"
 #include "qgssymbol.h"
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
@@ -38,8 +39,6 @@ class CORE_EXPORT QgsRendererCategory
 
     //! copy constructor
     QgsRendererCategory( const QgsRendererCategory& cat );
-
-    ~QgsRendererCategory() {}
 
     QgsRendererCategory& operator=( QgsRendererCategory cat );
 
@@ -79,8 +78,6 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
   public:
 
     QgsCategorizedSymbolRenderer( const QString& attrName = QString(), const QgsCategoryList& categories = QgsCategoryList() );
-
-    virtual ~QgsCategorizedSymbolRenderer();
 
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
     virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;

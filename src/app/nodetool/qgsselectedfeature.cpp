@@ -285,7 +285,7 @@ void QgsSelectedFeature::deleteSelectedVertexes()
 
       if ( res == QgsVectorLayer::EmptyGeometry )
       {
-        //geometry has been cleared as a result of deleting vertices (eg not enough vertices left to leave a valid geometry),
+        //geometry has been cleared as a result of deleting vertices (e.g., not enough vertices left to leave a valid geometry),
         //so nothing more to do
         QgsGeometry empty;
         geometryChanged( mFeatureId, empty );

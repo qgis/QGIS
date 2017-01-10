@@ -23,6 +23,7 @@
 #define DEG2RAD(x)    ((x)*M_PI/180)
 #define DEFAULT_SCALE_METHOD              QgsSymbol::ScaleDiameter
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QMap>
 #include <QPointF>
@@ -136,13 +137,13 @@ class CORE_EXPORT QgsSymbolLayer
     bool isLocked() const { return mLocked; }
 
     /** Returns the estimated maximum distance which the layer style will bleed outside
-      the drawn shape. Eg, polygons drawn with an outline will draw half the width
+      the drawn shape. For example, polygons drawn with an outline will draw half the width
       of the outline outside of the polygon. This amount is estimated, since it may
       be affected by data defined symbology rules.*/
     virtual double estimateMaxBleed() const { return 0; }
 
     /** Sets the units to use for sizes and widths within the symbol layer. Individual
-     * symbol layer subclasses will interpret this in different ways, eg a marker symbol
+     * symbol layer subclasses will interpret this in different ways, e.g., a marker symbol
      * layer may use it to specify the units for the marker size, while a line symbol
      * layer may use it to specify the units for the line width.
      * @param unit output units
@@ -151,7 +152,7 @@ class CORE_EXPORT QgsSymbolLayer
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit ) { Q_UNUSED( unit ); }
 
     /** Returns the units to use for sizes and widths within the symbol layer. Individual
-     * symbol layer subclasses will interpret this in different ways, eg a marker symbol
+     * symbol layer subclasses will interpret this in different ways, e.g., a marker symbol
      * layer may use it to specify the units for the marker size, while a line symbol
      * layer may use it to specify the units for the line width.
      * @returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol layer contains mixed units

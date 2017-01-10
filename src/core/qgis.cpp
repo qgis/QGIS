@@ -47,11 +47,7 @@ const int Qgis::QGIS_VERSION_INT = VERSION_INT;
 // Release name
 QString Qgis::QGIS_RELEASE_NAME( QStringLiteral( RELEASE_NAME ) );
 
-#if GDAL_VERSION_NUM >= 1800
 const QString GEOPROJ4 = QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" );
-#else
-const QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
-#endif
 
 const QString GEOWKT =
   "GEOGCS[\"WGS 84\", "

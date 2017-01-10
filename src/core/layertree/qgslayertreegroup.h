@@ -16,6 +16,7 @@
 #ifndef QGSLAYERTREEGROUP_H
 #define QGSLAYERTREEGROUP_H
 
+#include "qgis_core.h"
 #include "qgslayertreenode.h"
 
 class QgsMapLayer;
@@ -32,7 +33,8 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 {
     Q_OBJECT
   public:
-    QgsLayerTreeGroup( const QString& name = QString(), Qt::CheckState checked = Qt::Checked );
+    //! Constructor
+    QgsLayerTreeGroup( const QString& name = QString(), bool checked = true );
     QgsLayerTreeGroup( const QgsLayerTreeGroup& other );
 
     //! Get group's name
@@ -92,10 +94,8 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     //! Return a clone of the group. The children are cloned too.
     virtual QgsLayerTreeGroup* clone() const override;
 
-    //! Return the check state of the group node
-    Qt::CheckState isVisible() const { return mChecked; }
-    //! Set check state of the group node - will also update children
-    void setVisible( Qt::CheckState state );
+    //! Check or uncheck a node and all its children (taking into account exclusion rules)
+    virtual void setItemVisibilityCheckedRecursive( bool checked ) override;
 
     //! Return whether the group is mutually exclusive (only one child can be checked at a time)
     //! @note added in 2.12
@@ -107,20 +107,15 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     void setIsMutuallyExclusive( bool enabled, int initialChildIndex = -1 );
 
   protected slots:
-    void layerDestroyed();
     void nodeVisibilityChanged( QgsLayerTreeNode* node );
 
   protected:
-    //! Set check state of this group from its children
-    void updateVisibilityFromChildren();
-    //! Set check state of children (when this group's check state changes) - if not mutually exclusive
-    void updateChildVisibility();
+
     //! Set check state of children - if mutually exclusive
     void updateChildVisibilityMutuallyExclusive();
 
   protected:
     QString mName;
-    Qt::CheckState mChecked;
 
     bool mChangingChildVisibility;
 

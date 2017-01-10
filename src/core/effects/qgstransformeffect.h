@@ -17,6 +17,7 @@
 #ifndef QGSTRANSFORMEFFECT_H
 #define QGSTRANSFORMEFFECT_H
 
+#include "qgis_core.h"
 #include "qgspainteffect.h"
 #include "qgis.h"
 #include "qgsmapunitscale.h"
@@ -42,7 +43,6 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     static QgsPaintEffect* create( const QgsStringMap& map );
 
     QgsTransformEffect();
-    virtual ~QgsTransformEffect();
 
     virtual QString type() const override { return QStringLiteral( "transform" ); }
     virtual QgsStringMap properties() const override;

@@ -17,6 +17,7 @@
 
 #include <QItemDelegate>
 #include <QItemSelectionModel>
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QgsFeatureListModel;

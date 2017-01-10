@@ -19,6 +19,7 @@
 #include <QDialog>
 
 #include "ui_qgsgradientcolorrampdialogbase.h"
+#include "qgis_gui.h"
 
 class QgsGradientColorRamp;
 class QwtPlot;
@@ -120,8 +121,6 @@ class GUI_EXPORT QgsGradientPlotEventFilter: public QObject
   public:
 
     QgsGradientPlotEventFilter( QwtPlot *plot );
-
-    virtual ~QgsGradientPlotEventFilter() {}
 
     virtual bool eventFilter( QObject* object, QEvent* event ) override;
 

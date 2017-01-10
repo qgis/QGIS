@@ -20,6 +20,7 @@
 #include <QAbstractItemModel>
 #include <QItemDelegate>
 #include <QFile>
+#include "qgis_gui.h"
 
 class QMimeData;
 class QgsPanelWidget;
@@ -73,8 +74,6 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
      * @param parent parent object
      */
     explicit QgsColorSchemeModel( QgsColorScheme* scheme, const QString &context = QString(), const QColor &baseColor = QColor(), QObject* parent = nullptr );
-
-    ~QgsColorSchemeModel();
 
     //reimplemented QAbstractItemModel methods
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
@@ -162,8 +161,6 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
      * @param baseColor base color for color scheme
      */
     QgsColorSchemeList( QWidget *parent = nullptr, QgsColorScheme* scheme = nullptr, const QString &context = QString(), const QColor &baseColor = QColor() );
-
-    virtual ~QgsColorSchemeList();
 
     /** Saves the current colors shown in the list back to a color scheme, if supported
      * by the color scheme.

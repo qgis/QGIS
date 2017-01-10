@@ -27,6 +27,7 @@
 
 #ifdef HAVE_TOUCH
 #include <QGestureEvent>
+#include "qgis_gui.h"
 #endif
 
 class QgsMapLayer;
@@ -71,7 +72,6 @@ class GUI_EXPORT QgsMapTool : public QObject
      */
     virtual Flags flags() const { return Flags(); }
 
-    //! virtual destructor
     virtual ~QgsMapTool();
 
     //! Mouse move event for overriding. Default implementation does nothing.

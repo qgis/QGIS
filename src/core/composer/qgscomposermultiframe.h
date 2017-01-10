@@ -16,6 +16,7 @@
 #ifndef QGSCOMPOSERMULTIFRAME_H
 #define QGSCOMPOSERMULTIFRAME_H
 
+#include "qgis_core.h"
 #include "qgscomposerobject.h"
 #include <QObject>
 #include <QSizeF>
@@ -214,7 +215,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
 
     /** Creates a new frame and adds it to the multi frame and composition.
      * @param currentFrame an existing QgsComposerFrame from which to copy the size
-     * and general frame properties (eg frame style, background, rendering settings).
+     * and general frame properties (e.g., frame style, background, rendering settings).
      * @param pos position of top-left corner of the new frame
      * @param size size of the new frame
      * @returns new QgsComposerFrame

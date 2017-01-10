@@ -57,10 +57,6 @@ QgsFeature QgsActionMenu::feature()
   return mFeature;
 }
 
-QgsActionMenu::~QgsActionMenu()
-{
-}
-
 void QgsActionMenu::setFeature( const QgsFeature& feature )
 {
   mFeature = feature;

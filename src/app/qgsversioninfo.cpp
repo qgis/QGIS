@@ -15,7 +15,7 @@
 
 #include "qgsversioninfo.h"
 #include "qgis.h"
-
+#include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"
 
 QgsVersionInfo::QgsVersionInfo( QObject *parent )

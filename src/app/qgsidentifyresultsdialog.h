@@ -31,6 +31,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QUrl>
+#include "qgis_app.h"
 
 class QCloseEvent;
 class QTreeWidgetItem;
@@ -110,11 +111,12 @@ class APP_EXPORT QgsIdentifyPlotCurve
                           QwtPlot* plot, const QString &title = QString(), QColor color = QColor() );
     ~QgsIdentifyPlotCurve();
 
+    QgsIdentifyPlotCurve( const QgsIdentifyPlotCurve& rh ) = delete;
+    QgsIdentifyPlotCurve& operator=( const QgsIdentifyPlotCurve& rh ) = delete;
+
   private:
     QwtPlotCurve* mPlotCurve;
 
-    QgsIdentifyPlotCurve( const QgsIdentifyPlotCurve& rh );
-    QgsIdentifyPlotCurve& operator=( const QgsIdentifyPlotCurve& rh );
 };
 
 class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBase

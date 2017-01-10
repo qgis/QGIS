@@ -17,6 +17,7 @@
 #ifndef QGSAUTHMANAGER_H
 #define QGSAUTHMANAGER_H
 
+#include "qgis_core.h"
 #include <QObject>
 #include <QMutex>
 #include <QNetworkReply>

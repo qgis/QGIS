@@ -21,6 +21,8 @@
 #include <QDomNode>
 #include <QVariant>
 
+#include "qgis_core.h"
+
 class QgsFields;
 
 /** \ingroup core

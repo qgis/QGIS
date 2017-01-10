@@ -23,6 +23,7 @@
 #include <gdal.h>
 #include <cpl_string.h>
 #include <cpl_conv.h>
+#include "qgis_analysis.h"
 
 class QgsVectorLayer;
 class QProgressDialog;

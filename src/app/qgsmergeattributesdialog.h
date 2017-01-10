@@ -23,6 +23,7 @@
 #include "qgsfeature.h"
 #include "qgsstatisticalsummary.h"
 #include "qgsfields.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsRubberBand;
@@ -47,7 +48,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
 
     QgsAttributes mergedAttributes() const;
 
-    /** Returns a list of attribute indexes which should be skipped when merging (eg, attributes
+    /** Returns a list of attribute indexes which should be skipped when merging (e.g., attributes
      * which have been set to "skip"
      */
     QSet<int> skippedAttributeIndexes() const;

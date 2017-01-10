@@ -338,17 +338,17 @@ int QgsComposerRuler::optimumNumberDivisions( double rulerScale, int scaleMultip
   switch ( scaleMultiple )
   {
     case 1:
-      //numbers increase by 1 increment each time, eg 1, 2, 3 or 10, 20, 30
+      //numbers increase by 1 increment each time, e.g., 1, 2, 3 or 10, 20, 30
       //so we can draw either 10, 5 or 2 small ticks and have each fall on a nice value
       validSmallDivisions << 10 << 5 << 2;
       break;
     case 2:
-      //numbers increase by 2 increments each time, eg 2, 4, 6 or 20, 40, 60
+      //numbers increase by 2 increments each time, e.g., 2, 4, 6 or 20, 40, 60
       //so we can draw either 10, 4 or 2 small ticks and have each fall on a nice value
       validSmallDivisions << 10 << 4 << 2;
       break;
     case 5:
-      //numbers increase by 5 increments each time, eg 5, 10, 15 or 100, 500, 1000
+      //numbers increase by 5 increments each time, e.g., 5, 10, 15 or 100, 500, 1000
       //so we can draw either 10 or 5 small ticks and have each fall on a nice value
       validSmallDivisions << 10 << 5;
       break;

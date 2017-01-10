@@ -21,6 +21,7 @@
 #include "qgscomposition.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsapplication.h"
+#include "qgsproject.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -61,7 +62,7 @@ void TestQgsComposerMultiFrame::initTestCase()
   QgsApplication::initQgis();
 
   mMapSettings = new QgsMapSettings();
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = QStringLiteral( "<h1>Composer MultiFrame Tests</h1>\n" );

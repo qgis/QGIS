@@ -27,6 +27,7 @@ email                : sbr00pwb@users.sourceforge.net
 class QPainter;
 
 #include <QColor>
+#include "qgis_app.h"
 
 class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
 {
@@ -34,7 +35,7 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
   public:
     //! Constructor
     QgsDecorationScaleBar( QObject* parent = nullptr );
-    //! Destructor
+
     virtual ~ QgsDecorationScaleBar();
 
   public slots:

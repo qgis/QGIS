@@ -20,6 +20,7 @@
 #include "qgspanelwidget.h"
 #include "qgscolorramp.h"
 #include "ui_qgslimitedrandomcolorrampwidgetbase.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsLimitedRandomColorRampWidget

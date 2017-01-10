@@ -74,13 +74,7 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
 
     connect( mGradientComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
     connect( mContrastEnhancementComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
-    connect( mMaxLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
-    connect( mMinLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
   }
-}
-
-QgsSingleBandGrayRendererWidget::~QgsSingleBandGrayRendererWidget()
-{
 }
 
 QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
@@ -142,6 +136,7 @@ void QgsSingleBandGrayRendererWidget::minMaxModified()
         mContrastEnhancementComboBox->findData(( int ) QgsContrastEnhancement::StretchToMinimumMaximum ) );
     }
     mMinMaxWidget->userHasSetManualMinMaxValues();
+    emit widgetChanged();
   }
 }
 

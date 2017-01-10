@@ -18,6 +18,7 @@
 #include "qgsfields.h"
 #include "qgsfieldvalidator.h"
 #include "qgsexpression.h"
+#include "qgsfieldvalueslineedit.h"
 #include <QSettings>
 #include <QHBoxLayout>
 
@@ -100,10 +101,6 @@ QgsSearchWidgetWrapper::FilterFlags QgsDefaultSearchWidgetWrapper::supportedFlag
     case QVariant::Double:
     case QVariant::LongLong:
     case QVariant::ULongLong:
-      //numeric
-      flags |= GreaterThan | LessThan | GreaterThanOrEqualTo | LessThanOrEqualTo;
-      break;
-
     case QVariant::Date:
     case QVariant::DateTime:
     case QVariant::Time:
@@ -255,10 +252,20 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
   mContainer->setLayout( new QHBoxLayout() );
   mContainer->layout()->setMargin( 0 );
   mContainer->layout()->setContentsMargins( 0, 0, 0, 0 );
-  mLineEdit = new QgsFilterLineEdit();
+  QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
+
+  if ( fldType == QVariant::String )
+  {
+    mLineEdit = new QgsFieldValuesLineEdit();
+    static_cast< QgsFieldValuesLineEdit* >( mLineEdit )->setLayer( layer() );
+    static_cast< QgsFieldValuesLineEdit* >( mLineEdit )->setAttributeIndex( mFieldIdx );
+  }
+  else
+  {
+    mLineEdit = new QgsFilterLineEdit();
+  }
   mContainer->layout()->addWidget( mLineEdit );
 
-  QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
   if ( fldType == QVariant::String )
   {
     mCheckbox = new QCheckBox( QStringLiteral( "Case sensitive" ) );

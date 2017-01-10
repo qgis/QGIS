@@ -18,6 +18,7 @@
 #include "qgscolorscheme.h"
 #include <QWidget>
 #include <QWidgetAction>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsColorSwatchGrid
@@ -38,8 +39,6 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
      * @param parent parent widget
      */
     QgsColorSwatchGrid( QgsColorScheme* scheme, const QString& context = QString(), QWidget *parent = nullptr );
-
-    virtual ~QgsColorSwatchGrid();
 
     //Reimplemented to set fixed size on widget
     virtual QSize minimumSizeHint() const override;
@@ -168,8 +167,6 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
      * @param parent parent widget
      */
     QgsColorSwatchGridAction( QgsColorScheme* scheme, QMenu* menu = nullptr, const QString& context = QString(), QWidget *parent = nullptr );
-
-    virtual ~QgsColorSwatchGridAction();
 
     /** Sets the base color for the color grid
      * @param baseColor base color to pass to scheme for color generation

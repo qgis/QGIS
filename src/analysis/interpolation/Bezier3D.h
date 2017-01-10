@@ -19,6 +19,7 @@
 
 #include "ParametricLine.h"
 #include "qgslogger.h"
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * Class Bezier3D represents a bezier curve, represented by control points. Parameter t is running from 0 to 1. The class is capable to calculate the curve point and the first two derivatives belonging to t.*/
@@ -31,7 +32,7 @@ class ANALYSIS_EXPORT Bezier3D: public ParametricLine
     Bezier3D();
     //! Constructor, par is a pointer to the parent, controlpoly a controlpolygon
     Bezier3D( ParametricLine* par, QVector<Point3D*>* controlpoly );
-    //! Destructor
+
     virtual ~Bezier3D();
     //! Do not use this method, since a Bezier curve does not consist of other curves
     virtual void add( ParametricLine *pl ) override;

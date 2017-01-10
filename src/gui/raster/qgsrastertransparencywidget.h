@@ -20,6 +20,7 @@
 #include "ui_qgsrastertransparencywidget.h"
 
 #include "qgsmaplayerconfigwidget.h"
+#include "qgis_gui.h"
 
 class QgsRasterLayer;
 class QgsRasterRenderer;
@@ -40,7 +41,6 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
      * @brief Widget to control a layers transparency and related options
      */
     QgsRasterTransparencyWidget( QgsRasterLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
-    ~QgsRasterTransparencyWidget();
 
   public slots:
 

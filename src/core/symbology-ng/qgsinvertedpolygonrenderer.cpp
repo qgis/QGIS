@@ -43,10 +43,6 @@ QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRenderer* subR
   }
 }
 
-QgsInvertedPolygonRenderer::~QgsInvertedPolygonRenderer()
-{
-}
-
 void QgsInvertedPolygonRenderer::setEmbeddedRenderer( QgsFeatureRenderer* subRenderer )
 {
   if ( subRenderer )

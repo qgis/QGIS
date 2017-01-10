@@ -22,6 +22,7 @@
 #include "ui_qgsstylesavedialog.h"
 
 #include "qgsstyle.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \brief a dialog for setting properties of a newly saved style.
@@ -38,8 +39,6 @@ class GUI_EXPORT QgsStyleSaveDialog: public QDialog, private Ui::QgsStyleSaveDia
      * @param type the QgsStyle entity type being saved
      */
     QgsStyleSaveDialog( QWidget* parent = nullptr, QgsStyle::StyleEntity type = QgsStyle::SymbolEntity );
-
-    ~QgsStyleSaveDialog();
 
     //! returns the text value of the name element
     QString name() const;

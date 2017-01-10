@@ -16,6 +16,7 @@
 #ifndef QGSLABELINGENGINEV2_H
 #define QGSLABELINGENGINEV2_H
 
+#include "qgis_core.h"
 #include "qgsmapsettings.h"
 
 #include "qgspallabeling.h"
@@ -43,8 +44,8 @@ class CORE_EXPORT QgsAbstractLabelProvider
   public:
     //! Construct the provider with default values
     QgsAbstractLabelProvider( const QString& layerId = QString(), const QString& providerId = QString() );
-    //! Vritual destructor
-    virtual ~QgsAbstractLabelProvider() {}
+
+    virtual ~QgsAbstractLabelProvider() = default;
 
     //! Associate provider with a labeling engine (should be only called internally from QgsLabelingEngine)
     void setEngine( const QgsLabelingEngine* engine ) { mEngine = engine; }
@@ -165,6 +166,11 @@ class CORE_EXPORT QgsLabelingEngine
     //! Clean up everything (especially the registered providers)
     ~QgsLabelingEngine();
 
+    //! QgsLabelingEngine cannot be copied.
+    QgsLabelingEngine( const QgsLabelingEngine& rh ) = delete;
+    //! QgsLabelingEngine cannot be copied.
+    QgsLabelingEngine& operator=( const QgsLabelingEngine& rh ) = delete;
+
     enum Flag
     {
       UseAllLabels          = 1 << 1,  //!< Whether to draw all labels even if there would be collisions
@@ -238,10 +244,6 @@ class CORE_EXPORT QgsLabelingEngine
     //! Resulting labeling layout
     QgsLabelingResults* mResults;
 
-  private:
-
-    QgsLabelingEngine( const QgsLabelingEngine& rh );
-    QgsLabelingEngine& operator=( const QgsLabelingEngine& rh );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabelingEngine::Flags )

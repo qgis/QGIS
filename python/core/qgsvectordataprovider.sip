@@ -49,6 +49,8 @@ class QgsVectorDataProvider : QgsDataProvider
       ChangeFeatures,
       /** Supports renaming attributes (fields). Added in QGIS 2.16 */
       RenameAttributes,
+      //! Supports fast truncation of the layer (removing all features). Added in QGIS 3.0
+      FastTruncate,
     };
     typedef QFlags<QgsVectorDataProvider::Capability> Capabilities;
 
@@ -191,11 +193,21 @@ class QgsVectorDataProvider : QgsDataProvider
     virtual bool addFeatures( QList<QgsFeature> &flist /In,Out/ );
 
     /**
-     * Deletes one or more features
+     * Deletes one or more features from the provider. This requires the DeleteFeatures capability.
      * @param id list containing feature ids to delete
      * @return true in case of success and false in case of failure
+     * @see truncate()
      */
-    virtual bool deleteFeatures( const QSet<qint64> &id );
+    virtual bool deleteFeatures( const QgsFeatureIds &id );
+
+    /**
+     * Removes all features from the layer. This requires either the FastTruncate or DeleteFeatures capability.
+     * Providers with the FastTruncate capability will use an optimised method to truncate the layer.
+     * @returns true in case of success and false in case of failure.
+     * @note added in QGIS 3.0
+     * @see deleteFeatures()
+     */
+    virtual bool truncate();
 
     /**
      * Adds new attributes
@@ -241,8 +253,8 @@ class QgsVectorDataProvider : QgsDataProvider
      * Returns any literal default values which are present at the provider for a specified
      * field index. Important - this should ONLY be called when creating an attribute to insert
      * directly into the database. Do not call this method for non-feature creation or modification,
-     * eg when validating an attribute or to compare it against an existing value, as calling it
-     * can cause changes to the underlying data source (eg Postgres provider where the default value
+     * e.g., when validating an attribute or to compare it against an existing value, as calling it
+     * can cause changes to the underlying data source (e.g., Postgres provider where the default value
      * is calculated as a result of a sequence). It is recommended that you instead use the methods
      * in QgsVectorLayerUtils such as QgsVectorLayerUtils::createFeature()
      * so that default value handling and validation is automatically carried out.
@@ -253,7 +265,7 @@ class QgsVectorDataProvider : QgsDataProvider
     /**
      * Returns any default value clauses which are present at the provider for a specified
      * field index. These clauses are usually SQL fragments which must be evaluated by the
-     * provider, eg sequence values.
+     * provider, e.g., sequence values.
      * @see defaultValue()
      * @note added in QGIS 3.0
      */
@@ -268,7 +280,7 @@ class QgsVectorDataProvider : QgsDataProvider
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
 
     /**
-     * Returns true if a constraint check should be skipped for a specified field (eg if
+     * Returns true if a constraint check should be skipped for a specified field (e.g., if
      * the value returned by defaultValue() is trusted implicitly. An optional attribute value can be
      * passed which can help refine the skip constraint check.
      * @note added in QGIS 3.0

@@ -30,6 +30,7 @@
 #ifndef PAL_H
 #define PAL_H
 
+#include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgspallabeling.h"
 #include <QList>
@@ -94,10 +95,12 @@ namespace pal
        */
       Pal();
 
-      /**
-       * \brief delete an instance
-       */
       ~Pal();
+
+      //! Pal cannot be copied.
+      Pal( const Pal& other ) = delete;
+      //! Pal cannot be copied.
+      Pal& operator=( const Pal& other ) = delete;
 
       /**
        * \brief add a new layer
@@ -323,11 +326,6 @@ namespace pal
        * @return maximum # of iteration
        */
       int getMaxIt();
-
-    private:
-
-      Pal( const Pal& other );
-      Pal& operator=( const Pal& other );
 
   };
 

@@ -29,10 +29,6 @@ QgsVectorLayerJoinBuffer::QgsVectorLayerJoinBuffer( QgsVectorLayer* layer )
 {
 }
 
-QgsVectorLayerJoinBuffer::~QgsVectorLayerJoinBuffer()
-{
-}
-
 static QList<QgsVectorLayer*> _outEdges( QgsVectorLayer* vl )
 {
   QList<QgsVectorLayer*> lst;

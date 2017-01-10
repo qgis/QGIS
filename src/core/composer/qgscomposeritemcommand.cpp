@@ -19,6 +19,7 @@
 #include "qgscomposeritem.h"
 #include "qgscomposerframe.h"
 #include "qgscomposermultiframe.h"
+#include "qgscomposition.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
 
@@ -37,10 +38,6 @@ QgsComposerItemCommand::QgsComposerItemCommand( QgsComposerItem* item, const QSt
     mMultiFrame = frame->multiFrame();
     mFrameNumber = mMultiFrame->frameIndex( frame );
   }
-}
-
-QgsComposerItemCommand::~QgsComposerItemCommand()
-{
 }
 
 void QgsComposerItemCommand::undo()
@@ -118,7 +115,7 @@ void QgsComposerItemCommand::restoreState( QDomDocument& stateDoc ) const
 
   destItem->readXml( stateDoc.documentElement().firstChild().toElement(), stateDoc );
   destItem->repaint();
-  QgsProject::instance()->setDirty( true );
+  destItem->composition()->project()->setDirty( true );
 }
 
 //
@@ -128,10 +125,6 @@ void QgsComposerItemCommand::restoreState( QDomDocument& stateDoc ) const
 QgsComposerMergeCommand::QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text )
     : QgsComposerItemCommand( item, text )
     , mContext( c )
-{
-}
-
-QgsComposerMergeCommand::~QgsComposerMergeCommand()
 {
 }
 

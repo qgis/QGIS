@@ -61,6 +61,11 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
             self.getDescription(),
             Grass7Utils.GRASS_LOG_CONSOLE,
             self.tr('Log console output'), False))
+        ProcessingConfig.addSetting(Setting(
+            self.getDescription(),
+            Grass7Utils.GRASS_HELP_PATH,
+            self.tr('Location of GRASS docs'),
+            Grass7Utils.grassHelpPath()))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -68,6 +73,7 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
             ProcessingConfig.removeSetting(Grass7Utils.GRASS_FOLDER)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_CONSOLE)
+        ProcessingConfig.removeSetting(Grass7Utils.GRASS_HELP_PATH)
 
     def createAlgsList(self):
         self.preloadedAlgs = []
@@ -92,10 +98,11 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
         self.algs = self.preloadedAlgs
 
     def getDescription(self):
-        return self.tr('GRASS GIS 7 commands')
+        version = Grass7Utils.installedVersion()
+        return 'GRASS GIS ({})'.format(version) if version is not None else "GRASS GIS"
 
     def getName(self):
-        return 'grass70'
+        return 'grass7'
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))

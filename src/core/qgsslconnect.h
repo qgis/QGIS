@@ -18,6 +18,8 @@
 
 #include <QHash>
 
+#include "qgis_core.h"
+
 struct sqlite3;
 
 /** \ingroup core

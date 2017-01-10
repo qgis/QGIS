@@ -8,6 +8,7 @@
         <file>flags/de.png</file>
         <file>flags/en_GB.png</file>
         <file>flags/en_US.png</file>
+        <file>flags/eo.png</file>
         <file>flags/es.png</file>
         <file>flags/fa.png</file>
         <file>flags/fi.png</file>
@@ -109,6 +110,7 @@
         <file>themes/default/mActionEditNodesItem.svg</file>
         <file>themes/default/mActionEditHelpContent.svg</file>
         <file>themes/default/mActionIncreaseFont.svg</file>
+        <file>themes/default/mActionInterfaceCustomization.svg</file>
         <file>themes/default/mActionDecreaseFont.svg</file>
         <file>themes/default/mActionAddNodesItem.svg</file>
         <file>themes/default/mActionAddPolygon.svg</file>
@@ -210,9 +212,9 @@
         <file>themes/default/mActionIncreaseContrast.svg</file>
         <file>themes/default/mActionInOverview.svg</file>
         <file>themes/default/mActionInvertSelection.svg</file>
+        <file>themes/default/mActionKeyboardShortcuts.svg</file>
         <file>themes/default/mActionLabel.svg</file>
         <file>themes/default/mActionLabeling.svg</file>
-        <file>themes/default/mActionDiagramProperties.svg</file>
         <file>themes/default/mActionLocalCumulativeCutStretch.svg</file>
         <file>themes/default/mActionLocalHistogramStretch.svg</file>
         <file>themes/default/mActionLowerItems.svg</file>
@@ -343,7 +345,6 @@
         <file>themes/default/mIconExpand.png</file>
         <file>themes/default/mIconExpandSmall.svg</file>
         <file>themes/default/mIconExpression.svg</file>
-        <file>themes/default/mIconExpressionEditorOpen.svg</file>
         <file>themes/default/mIconExpressionFilter.svg</file>
         <file>themes/default/mIconExpressionPreview.svg</file>
         <file>themes/default/mIconExpressionSelect.svg</file>

@@ -27,6 +27,15 @@
 #include "qgsruntimeprofiler.h"
 #include "qgstaskmanager.h"
 #include "qgsfieldformatterregistry.h"
+#include "qgssvgcache.h"
+#include "qgscolorschemeregistry.h"
+#include "qgspainteffectregistry.h"
+#include "qgsrasterrendererregistry.h"
+#include "qgsrendererregistry.h"
+#include "qgssymbollayerregistry.h"
+#include "gps/qgsgpsconnectionregistry.h"
+#include "qgspluginlayerregistry.h"
+#include "qgsmessagelog.h"
 
 #include <QDir>
 #include <QFile>
@@ -104,15 +113,39 @@ const char* QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
 */
 QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath, const QString& platformName )
     : QApplication( argc, argv, GUIenabled )
+    , mActionScopeRegistry( nullptr )
+    , mProfiler( nullptr )
+    , mTaskManager( nullptr )
+    , mFieldFormatterRegistry( nullptr )
+    , mColorSchemeRegistry( nullptr )
+    , mPaintEffectRegistry( nullptr )
+    , mRendererRegistry( nullptr )
+    , mSvgCache( nullptr )
+    , mSymbolLayerRegistry( nullptr )
+    , mRasterRendererRegistry( nullptr )
+    , mGpsConnectionRegistry( nullptr )
+    , mDataItemProviderRegistry( nullptr )
+    , mPluginLayerRegistry( nullptr )
+    , mMessageLog( nullptr )
 {
   sPlatformName = platformName;
 
   // don't use initializer lists or scoped pointers - as more objects are added here we
   // will need to be careful with the order of creation/destruction
-  mTaskManager = new QgsTaskManager();
+  mMessageLog = new QgsMessageLog();
   mProfiler = new QgsRuntimeProfiler();
+  mTaskManager = new QgsTaskManager();
   mActionScopeRegistry = new QgsActionScopeRegistry();
   mFieldFormatterRegistry = new QgsFieldFormatterRegistry();
+  mSvgCache = new QgsSvgCache();
+  mColorSchemeRegistry = new QgsColorSchemeRegistry();
+  mColorSchemeRegistry->addDefaultSchemes();
+  mPaintEffectRegistry = new QgsPaintEffectRegistry();
+  mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
+  mRendererRegistry = new QgsRendererRegistry();
+  mRasterRendererRegistry = new QgsRasterRendererRegistry();
+  mGpsConnectionRegistry = new QgsGPSConnectionRegistry();
+  mPluginLayerRegistry = new QgsPluginLayerRegistry();
 
   init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
 }
@@ -246,8 +279,18 @@ QgsApplication::~QgsApplication()
 {
   delete mActionScopeRegistry;
   delete mTaskManager;
-  delete mProfiler;
   delete mFieldFormatterRegistry;
+  delete mRasterRendererRegistry;
+  delete mRendererRegistry;
+  delete mSymbolLayerRegistry;
+  delete mPaintEffectRegistry;
+  delete mColorSchemeRegistry;
+  delete mSvgCache;
+  delete mGpsConnectionRegistry;
+  delete mPluginLayerRegistry;
+  delete mDataItemProviderRegistry;
+  delete mProfiler;
+  delete mMessageLog;
 }
 
 QgsApplication* QgsApplication::instance()
@@ -420,7 +463,7 @@ QString QgsApplication::activeThemePath()
 
 QString QgsApplication::appIconPath()
 {
-  return iconsPath() + ( QDate::currentDate().month() == 12 ? tr( "qgis-icon-60x60_xmas.png", "December application icon" ) : QStringLiteral( "qgis-icon-60x60.png" ) );
+  return iconsPath() + QStringLiteral( "qgis-icon-60x60.png" );
 }
 
 QString QgsApplication::iconPath( const QString& iconFile )
@@ -729,16 +772,11 @@ QStringList QgsApplication::svgPaths()
   //local directories to search when looking for an SVG with a given basename
   //defined by user in options dialog
   QSettings settings;
-  QStringList myPathList;
-  QString myPaths = settings.value( QStringLiteral( "svg/searchPathsForSVG" ), QString() ).toString();
-  if ( !myPaths.isEmpty() )
-  {
-    myPathList = myPaths.split( '|' );
-  }
+  QStringList pathList = settings.value( QStringLiteral( "svg/searchPathsForSVG" ) ).toStringList();
 
   // maintain user set order while stripping duplicates
   QStringList paths;
-  Q_FOREACH ( const QString& path, myPathList )
+  Q_FOREACH ( const QString& path, pathList )
   {
     if ( !paths.contains( path ) )
       paths.append( path );
@@ -760,14 +798,9 @@ QStringList QgsApplication::composerTemplatePaths()
   //local directories to search when looking for an SVG with a given basename
   //defined by user in options dialog
   QSettings settings;
-  QStringList myPathList;
-  QString myPaths = settings.value( QStringLiteral( "composer/searchPathsForTemplates" ), QString() ).toString();
-  if ( !myPaths.isEmpty() )
-  {
-    myPathList = myPaths.split( '|' );
-  }
+  QStringList pathList = settings.value( QStringLiteral( "composer/searchPathsForTemplates" ) ).toStringList();
 
-  return myPathList;
+  return pathList;
 }
 
 QString QgsApplication::userStylePath()
@@ -903,6 +936,8 @@ void QgsApplication::initQgis()
 {
   // set the provider plugin path (this creates provider registry)
   QgsProviderRegistry::instance( pluginPath() );
+
+  instance()->mDataItemProviderRegistry = new QgsDataItemProviderRegistry();
 
   // create project instance if doesn't exist
   QgsProject::instance();
@@ -1258,6 +1293,75 @@ void QgsApplication::copyPath( const QString& src, const QString& dst )
   }
 }
 
+QVariantMap QgsApplication::customVariables()
+{
+  //read values from QSettings
+  QSettings settings;
+
+  QVariantMap variables;
+
+  //check if settings contains any variables
+  if ( settings.contains( QStringLiteral( "/variables/values" ) ) )
+  {
+    QList< QVariant > customVariableVariants = settings.value( QStringLiteral( "/variables/values" ) ).toList();
+    QList< QVariant > customVariableNames = settings.value( QStringLiteral( "/variables/names" ) ).toList();
+    int variableIndex = 0;
+    for ( QList< QVariant >::const_iterator it = customVariableVariants.constBegin();
+          it != customVariableVariants.constEnd(); ++it )
+    {
+      if ( variableIndex >= customVariableNames.length() )
+      {
+        break;
+      }
+
+      QVariant value = ( *it );
+      QString name = customVariableNames.at( variableIndex ).toString();
+
+      variables.insert( name, value );
+      variableIndex++;
+    }
+  }
+
+  return variables;
+}
+
+void QgsApplication::setCustomVariables( const QVariantMap& variables )
+{
+  QSettings settings;
+
+  QList< QVariant > customVariableValues;
+  QList< QVariant > customVariableNames;
+
+  QVariantMap::const_iterator it = variables.constBegin();
+  for ( ; it != variables.constEnd(); ++it )
+  {
+    customVariableNames << it.key();
+    customVariableValues << it.value();
+  }
+
+  settings.setValue( QStringLiteral( "/variables/names" ), customVariableNames );
+  settings.setValue( QStringLiteral( "/variables/values" ), customVariableValues );
+
+  emit instance()->customVariablesChanged();
+}
+
+void QgsApplication::setCustomVariable( const QString& name, const QVariant& value )
+{
+  // save variable to settings
+  QSettings settings;
+
+  QList< QVariant > customVariableVariants = settings.value( QStringLiteral( "/variables/values" ) ).toList();
+  QList< QVariant > customVariableNames = settings.value( QStringLiteral( "/variables/names" ) ).toList();
+
+  customVariableVariants << value;
+  customVariableNames << name;
+
+  settings.setValue( QStringLiteral( "/variables/names" ), customVariableNames );
+  settings.setValue( QStringLiteral( "/variables/values" ), customVariableVariants );
+
+  emit instance()->customVariablesChanged();
+}
+
 QString QgsApplication::nullRepresentation()
 {
   QgsApplication* app = instance();
@@ -1439,11 +1543,55 @@ QgsTaskManager* QgsApplication::taskManager()
   return instance()->mTaskManager;
 }
 
-void QgsApplication::emitSettingsChanged()
+QgsColorSchemeRegistry* QgsApplication::colorSchemeRegistry()
 {
-  emit settingsChanged();
+  return instance()->mColorSchemeRegistry;
 }
 
+QgsPaintEffectRegistry* QgsApplication::paintEffectRegistry()
+{
+  return instance()->mPaintEffectRegistry;
+}
+
+QgsRendererRegistry*QgsApplication::rendererRegistry()
+{
+  return instance()->mRendererRegistry;
+}
+
+QgsRasterRendererRegistry* QgsApplication::rasterRendererRegistry()
+{
+  return instance()->mRasterRendererRegistry;
+}
+
+QgsDataItemProviderRegistry*QgsApplication::dataItemProviderRegistry()
+{
+  return instance()->mDataItemProviderRegistry;
+}
+
+QgsSvgCache* QgsApplication::svgCache()
+{
+  return instance()->mSvgCache;
+}
+
+QgsSymbolLayerRegistry* QgsApplication::symbolLayerRegistry()
+{
+  return instance()->mSymbolLayerRegistry;
+}
+
+QgsGPSConnectionRegistry* QgsApplication::gpsConnectionRegistry()
+{
+  return instance()->mGpsConnectionRegistry;
+}
+
+QgsPluginLayerRegistry*QgsApplication::pluginLayerRegistry()
+{
+  return instance()->mPluginLayerRegistry;
+}
+
+QgsMessageLog* QgsApplication::messageLog()
+{
+  return instance()->mMessageLog;
+}
 
 QgsFieldFormatterRegistry* QgsApplication::fieldFormatterRegistry()
 {

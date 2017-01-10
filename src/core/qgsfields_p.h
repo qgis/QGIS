@@ -28,6 +28,7 @@
 // version without notice, or even be removed.
 //
 
+#include "qgis_core.h"
 #include <QSharedData>
 #include "qgsfields.h"
 

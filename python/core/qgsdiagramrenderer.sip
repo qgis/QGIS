@@ -25,13 +25,14 @@ class QgsDiagramLayerSettings
     };
 
     //! Line placement flags for controlling line based placements
-    enum LinePlacementFlags
+    enum LinePlacementFlag
     {
       OnLine,
       AboveLine,
       BelowLine,
       MapOrientation,
     };
+    typedef QFlags<QgsDiagramLayerSettings::LinePlacementFlag> LinePlacementFlags;
 
     QgsDiagramLayerSettings();
 
@@ -44,8 +45,7 @@ class QgsDiagramLayerSettings
      * @see setPlacement()
      * @note added in QGIS 2.16
      */
-    //TODO QGIS 3.0 - rename getter to placement()
-    Placement getPlacement() const;
+    Placement placement() const;
 
     /** Sets the diagram placement.
      * @param value placement value
@@ -54,16 +54,12 @@ class QgsDiagramLayerSettings
      */
     void setPlacement( Placement value );
 
-    //! Diagram placement
-    //TODO QGIS 3.0 - make private, rename to mPlacement
-    Placement placement;
-
     /** Returns the diagram placement flags. These are only used if the diagram placement
      * is set to a line type.
      * @see setLinePlacementFlags()
      * @note added in QGIS 2.16
      */
-    unsigned int linePlacementFlags() const;
+    LinePlacementFlags linePlacementFlags() const;
 
     /** Sets the the diagram placement flags. These are only used if the diagram placement
      * is set to a line type.
@@ -71,11 +67,7 @@ class QgsDiagramLayerSettings
      * @see getPlacement()
      * @note added in QGIS 2.16
      */
-    void setLinePlacementFlags( unsigned int flags );
-
-    //! Diagram placement flags
-    // TODO QGIS 3.0 - make private, rename to mPlacementFlags, use QFlags
-    unsigned int placementFlags;
+    void setLinePlacementFlags( LinePlacementFlags flags );
 
     /** Returns the diagram priority.
      * @returns diagram priority, where 0 = low and 10 = high
@@ -84,8 +76,7 @@ class QgsDiagramLayerSettings
      * @see setPriority()
      * @note added in QGIS 2.16
      */
-    //TODO QGIS 3.0 - rename getter to priority()
-    int getPriority() const;
+    int priority() const;
 
     /** Sets the diagram priority.
      * @param value priority, where 0 = low and 10 = high
@@ -94,12 +85,6 @@ class QgsDiagramLayerSettings
      */
     void setPriority( int value );
 
-    //! Placement priority, where 0 = low and 10 = high
-    //! @note placement priority is shared with labeling, so diagrams with a high priority may displace labels
-    //! and vice-versa
-    // TODO QGIS 3.0 - make private, rename to mPriority
-    int priority;
-
     /** Returns the diagram z-index. Diagrams (or labels) with a higher z-index are drawn over diagrams
      * with a lower z-index.
      * @note z-index ordering is shared with labeling, so diagrams with a high z-index may be drawn over labels
@@ -107,8 +92,7 @@ class QgsDiagramLayerSettings
      * @see setZIndex()
      * @note added in QGIS 2.16
      */
-    //TODO QGIS 3.0 - rename getter to zIndex()
-    double getZIndex() const;
+    double zIndex() const;
 
     /** Sets the diagram z-index. Diagrams (or labels) with a higher z-index are drawn over diagrams
      * with a lower z-index.
@@ -117,10 +101,6 @@ class QgsDiagramLayerSettings
      * @note added in QGIS 2.16
      */
     void setZIndex( double index );
-
-    //! Z-index of diagrams, where diagrams with a higher z-index are drawn on top of diagrams with a lower z-index
-    // TODO QGIS 3.0 - rename to mZIndex, make private
-    double zIndex;
 
     /** Returns whether the feature associated with a diagram acts as an obstacle for other labels or diagrams.
      * @see setIsObstacle()
@@ -135,10 +115,6 @@ class QgsDiagramLayerSettings
      */
     void setIsObstacle( bool isObstacle );
 
-    //! Whether associated feature acts as an obstacle for other labels or diagrams
-    // TODO QGIS 3.0 - rename to mObstacle, make private
-    bool obstacle;
-
     /** Returns the distance between the diagram and the feature (in mm).
      * @see setDistance()
      * @note added in QGIS 2.16
@@ -152,34 +128,24 @@ class QgsDiagramLayerSettings
      */
     void setDistance( double distance );
 
-    //! Distance between diagram and the feature (in mm)
-    // TODO QGIS 3.0 - make private, rename to mDistance
-    double dist;
+    /** Returns the diagram renderer associated with the layer.
+     * @see setRenderer()
+     * @note added in QGIS 2.16
+     */
+    QgsDiagramRenderer* renderer();
 
     /** Returns the diagram renderer associated with the layer.
      * @see setRenderer()
      * @note added in QGIS 2.16
      */
-    // TODO QGIS 3.0 - rename to renderer()
-    QgsDiagramRenderer* getRenderer();
-
-    /** Returns the diagram renderer associated with the layer.
-     * @see setRenderer()
-     * @note added in QGIS 2.16
-     */
-    // TODO QGIS 3.0 - rename to renderer()
-    //const QgsDiagramRenderer* getRenderer() const;
+    //const QgsDiagramRenderer* renderer() const;
 
     /** Sets the diagram renderer associated with the layer.
      * @param diagramRenderer diagram renderer. Ownership is transferred to the object.
-     * @see getRenderer()
+     * @see renderer()
      * @note added in QGIS 2.16
      */
     void setRenderer( QgsDiagramRenderer* diagramRenderer /Transfer/ );
-
-    //! Associated diagram renderer. Owned by this object.
-    // TODO QGIS 3.0 - make private, rename to mRenderer
-    QgsDiagramRenderer* renderer;
 
     /** Returns the coordinate transform associated with the layer, or an
      * invalid transform if no transformation is required.
@@ -213,10 +179,6 @@ class QgsDiagramLayerSettings
      * @note added in QGIS 2.16
      */
     void setShowAllDiagrams( bool showAllDiagrams );
-
-    //! Whether to show all diagrams, including overlapping diagrams
-    // TODO QGIS 3.0 - make private, rename to mShowAll
-    bool showAll;
 
     void readXml( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
@@ -329,8 +291,8 @@ class QgsDiagramInterpolationSettings
     QSizeF upperSize;
     double lowerValue;
     double upperValue;
-    /** Index of the classification attribute*/
-    int classificationAttribute;
+    //! Name of the field for classification
+    QString classificationField;
     QString classificationAttributeExpression;
     bool classificationAttributeIsExpression;
 };
@@ -368,8 +330,7 @@ class QgsDiagramRenderer
      * @param fields layer fields
      * @note added in QGIS 2.16
      */
-    //TODO QGIS 3.0 - remove need for fields parameter
-    virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const;
+    virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
     void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos );
 
@@ -511,7 +472,7 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRenderer
 
     QList<QString> diagramAttributes() const;
 
-    virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const;
+    virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
     QString rendererName() const;
 
@@ -527,8 +488,19 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRenderer
     void setUpperSize( QSizeF s );
     QSizeF upperSize() const;
 
-    int classificationAttribute() const;
-    void setClassificationAttribute( int index );
+    /**
+     * Returns the field name used for interpolating the diagram size.
+     * @see setClassificationField()
+     * @note added in QGIS 3.0
+     */
+    QString classificationField() const;
+
+    /**
+     * Sets the field name used for interpolating the diagram size.
+     * @see classificationField()
+     * @note added in QGIS 3.0
+     */
+    void setClassificationField( const QString& field );
 
     QString classificationAttributeExpression() const;
     void setClassificationAttributeExpression( const QString& expression );

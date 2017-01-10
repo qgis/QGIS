@@ -78,10 +78,6 @@ QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityD
   }
 }
 
-QgsAuthImportIdentityDialog::~QgsAuthImportIdentityDialog()
-{
-}
-
 QgsAuthImportIdentityDialog::IdentityType QgsAuthImportIdentityDialog::identityType()
 {
   if ( mDisabled )

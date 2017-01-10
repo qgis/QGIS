@@ -14,20 +14,22 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.testing import unittest
-from qgis.core import QgsColorSchemeRegistry, QgsRecentColorScheme
+from qgis.testing import start_app, unittest
+from qgis.core import QgsColorSchemeRegistry, QgsRecentColorScheme, QgsApplication
+
+start_app()
 
 
 class TestQgsColorSchemeRegistry(unittest.TestCase):
 
     def testCreateInstance(self):
         """Test creating global color scheme registry instance"""
-        registry = QgsColorSchemeRegistry.instance()
+        registry = QgsApplication.colorSchemeRegistry()
         self.assertTrue(registry)
 
     def testInstanceHasDefaultScheme(self):
         """Test global color scheme registry has default schemes"""
-        registry = QgsColorSchemeRegistry.instance()
+        registry = QgsApplication.colorSchemeRegistry()
         self.assertGreater(len(registry.schemes()), 0)
 
     def testCreateEmpty(self):
@@ -55,7 +57,7 @@ class TestQgsColorSchemeRegistry(unittest.TestCase):
         registry = QgsColorSchemeRegistry()
         self.assertEqual(len(registry.schemes()), 0)
         registry.populateFromInstance()
-        self.assertEqual(len(registry.schemes()), len(QgsColorSchemeRegistry.instance().schemes()))
+        self.assertEqual(len(registry.schemes()), len(QgsApplication.colorSchemeRegistry().schemes()))
 
     def testRemoveScheme(self):
         """Test removing a scheme from a registry"""

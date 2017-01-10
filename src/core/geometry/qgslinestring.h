@@ -18,6 +18,7 @@
 #ifndef QGSLINESTRINGV2_H
 #define QGSLINESTRINGV2_H
 
+#include "qgis_core.h"
 #include "qgscurve.h"
 #include <QPolygonF>
 
@@ -36,7 +37,6 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 {
   public:
     QgsLineString();
-    ~QgsLineString();
 
     bool operator==( const QgsCurve& other ) const override;
     bool operator!=( const QgsCurve& other ) const override;

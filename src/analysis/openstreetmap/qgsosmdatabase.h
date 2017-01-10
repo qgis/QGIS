@@ -22,6 +22,7 @@
 #include "qgsosmbase.h"
 
 #include "qgsgeometry.h"
+#include "qgis_analysis.h"
 
 class QgsOSMNodeIterator;
 class QgsOSMWayIterator;
@@ -48,6 +49,11 @@ class ANALYSIS_EXPORT QgsOSMDatabase
   public:
     explicit QgsOSMDatabase( const QString& dbFileName = QString() );
     ~QgsOSMDatabase();
+
+    //! QgsOSMDatabase cannot be copied.
+    QgsOSMDatabase( const QgsOSMDatabase& rh ) = delete;
+    //! QgsOSMDatabase cannot be copied.
+    QgsOSMDatabase& operator=( const QgsOSMDatabase& rh ) = delete;
 
     void setFileName( const QString& dbFileName ) { mDbFileName = dbFileName; }
     QString filename() const { return mDbFileName; }
@@ -120,8 +126,6 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     sqlite3_stmt* mStmtWayNodePoints;
     sqlite3_stmt* mStmtWayTags;
 
-    QgsOSMDatabase( const QgsOSMDatabase& rh );
-    QgsOSMDatabase& operator=( const QgsOSMDatabase& rh );
 };
 
 

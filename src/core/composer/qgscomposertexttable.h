@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERTEXTTABLE_H
 #define QGSCOMPOSERTEXTTABLE_H
 
+#include "qgis_core.h"
 #include "qgscomposertablev2.h"
 
 /** \ingroup core
@@ -31,7 +32,6 @@ class CORE_EXPORT QgsComposerTextTableV2 : public QgsComposerTableV2
 
   public:
     QgsComposerTextTableV2( QgsComposition* c, bool createUndoCommands );
-    ~QgsComposerTextTableV2();
 
     /** Adds a row to the table
      * @param row list of strings to use for each cell's value in the newly added row

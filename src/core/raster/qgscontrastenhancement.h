@@ -21,6 +21,7 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #ifndef QGSCONTRASTENHANCEMENT_H
 #define QGSCONTRASTENHANCEMENT_H
 
+#include "qgis_core.h"
 #include <limits>
 
 #include "qgis.h"
@@ -54,6 +55,8 @@ class CORE_EXPORT QgsContrastEnhancement
     QgsContrastEnhancement( Qgis::DataType theDatatype = Qgis::Byte );
     QgsContrastEnhancement( const QgsContrastEnhancement& ce );
     ~QgsContrastEnhancement();
+
+    const QgsContrastEnhancement& operator=( const QgsContrastEnhancement& ) = delete;
 
     /*
      *
@@ -146,7 +149,6 @@ class CORE_EXPORT QgsContrastEnhancement
     //! \brief Method to calculate the actual enhanceContrasted value(s)
     int calculateContrastEnhancementValue( double );
 
-    const QgsContrastEnhancement& operator=( const QgsContrastEnhancement& );
 };
 
 #endif

@@ -23,6 +23,8 @@
 #include <QMap>
 #include <QMutex>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Interface for requesting credentials in QGIS in GUI independent way.
  * This class provides abstraction of a dialog for requesting credentials to the user.
@@ -37,8 +39,8 @@
 class CORE_EXPORT QgsCredentials
 {
   public:
-    //! virtual destructor
-    virtual ~QgsCredentials();
+
+    virtual ~QgsCredentials() = default;
 
     bool get( const QString& realm, QString &username, QString &password, const QString& message = QString::null );
     void put( const QString& realm, const QString& username, const QString& password );

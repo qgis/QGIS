@@ -102,7 +102,7 @@ class TestComposerBase(TestQgsPalLabeling):
 
     def _set_up_composition(self, width, height, dpi):
         # set up composition and add map
-        self._c = QgsComposition(self._TestMapSettings)
+        self._c = QgsComposition(self._TestMapSettings, QgsProject.instance())
         """:type: QgsComposition"""
         # self._c.setUseAdvancedEffects(False)
         self._c.setPrintResolution(dpi)

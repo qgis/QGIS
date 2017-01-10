@@ -16,6 +16,7 @@
 #ifndef QGSCACHEINDEX_H
 #define QGSCACHEINDEX_H
 
+#include "qgis_core.h"
 #include "qgsfeature.h" // QgsFeatureIds
 
 class QgsFeatureRequest;
@@ -30,7 +31,7 @@ class CORE_EXPORT QgsAbstractCacheIndex
 {
   public:
     QgsAbstractCacheIndex();
-    virtual ~QgsAbstractCacheIndex();
+    virtual ~QgsAbstractCacheIndex() = default;
 
     /**
      * Is called, whenever a feature is removed from the cache. You should update your indexes, so

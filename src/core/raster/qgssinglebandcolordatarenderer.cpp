@@ -28,10 +28,6 @@ QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterInterfa
 
 }
 
-QgsSingleBandColorDataRenderer::~QgsSingleBandColorDataRenderer()
-{
-}
-
 QgsSingleBandColorDataRenderer* QgsSingleBandColorDataRenderer::clone() const
 {
   QgsSingleBandColorDataRenderer * renderer = new QgsSingleBandColorDataRenderer( nullptr, mBand );

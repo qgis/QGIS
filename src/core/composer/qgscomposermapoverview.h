@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERMAPOVERVIEW_H
 #define QGSCOMPOSERMAPOVERVIEW_H
 
+#include "qgis_core.h"
 #include "qgscomposermapitem.h"
 #include <QString>
 #include <QObject>
@@ -44,8 +45,6 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * @param map QgsComposerMap the overview stack is attached to
      */
     QgsComposerMapOverviewStack( QgsComposerMap* map );
-
-    virtual ~QgsComposerMapOverviewStack();
 
     /** Adds a new map overview to the stack and takes ownership of the overview.
      * The overview will be added to the end of the stack, and rendered

@@ -168,10 +168,6 @@ QgsCategorizedSymbolRenderer::QgsCategorizedSymbolRenderer( const QString& attrN
   }
 }
 
-QgsCategorizedSymbolRenderer::~QgsCategorizedSymbolRenderer()
-{
-}
-
 void QgsCategorizedSymbolRenderer::rebuildHash()
 {
   mSymbolHash.clear();

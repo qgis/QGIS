@@ -15,6 +15,7 @@
 #ifndef QGSDIAGRAM_H
 #define QGSDIAGRAM_H
 
+#include "qgis_core.h"
 #include <QPen>
 #include <QBrush>
 #include "qgsexpression.h" //for QMap with QgsExpression

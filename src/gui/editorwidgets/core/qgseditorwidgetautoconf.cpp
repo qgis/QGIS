@@ -96,7 +96,7 @@ QgsEditorWidgetSetup QgsEditorWidgetAutoConf::editorWidgetSetup( const QgsVector
     {
       // important check - for provider fields, we CANNOT use auto configured widgets if the field
       // uses a default value clause - otherwise the widget will obliterate the default value clause
-      // (eg by trying to convert it to a number/date/etc). Instead we have to use a text edit
+      // (e.g., by trying to convert it to a number/date/etc). Instead we have to use a text edit
       // widget so that the clause remains intact
       int providerOrigin = vl->fields().fieldOriginIndex( fieldIndex );
       if ( !vl->dataProvider()->defaultValueClause( providerOrigin ).isEmpty() )

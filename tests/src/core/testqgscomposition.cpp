@@ -26,6 +26,7 @@
 #include "qgsmapsettings.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsfillsymbollayer.h"
+#include "qgsproject.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -78,7 +79,7 @@ void TestQgsComposition::initTestCase()
   //create composition
   mMapSettings->setCrsTransformEnabled( true );
   mMapSettings->setMapUnits( QgsUnitTypes::DistanceMeters );
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposition->setNumPages( 3 );
 
@@ -269,7 +270,7 @@ void TestQgsComposition::pageIsEmpty()
 
 void TestQgsComposition::customProperties()
 {
-  QgsComposition* composition = new QgsComposition( *mMapSettings );
+  QgsComposition* composition = new QgsComposition( *mMapSettings, QgsProject::instance() );
 
   QCOMPARE( composition->customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
   QVERIFY( composition->customProperties().isEmpty() );
@@ -297,7 +298,7 @@ void TestQgsComposition::customProperties()
 
 void TestQgsComposition::writeRetrieveCustomProperties()
 {
-  QgsComposition* composition = new QgsComposition( *mMapSettings );
+  QgsComposition* composition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   composition->setCustomProperty( QStringLiteral( "testprop" ), "testval" );
   composition->setCustomProperty( QStringLiteral( "testprop2" ), 5 );
 
@@ -316,7 +317,7 @@ void TestQgsComposition::writeRetrieveCustomProperties()
   QDomElement compositionElem = evalNodeList.at( 0 ).toElement();
 
   //test reading node containing custom properties
-  QgsComposition* readComposition = new QgsComposition( *mMapSettings );
+  QgsComposition* readComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   QVERIFY( readComposition->readXml( compositionElem, doc ) );
 
   //test retrieved custom properties
@@ -333,7 +334,7 @@ void TestQgsComposition::writeRetrieveCustomProperties()
 void TestQgsComposition::bounds()
 {
   //add some items to a composition
-  QgsComposition* composition = new QgsComposition( *mMapSettings );
+  QgsComposition* composition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   QgsComposerShape* shape1 = new QgsComposerShape( composition );
   shape1->setShapeType( QgsComposerShape::Rectangle );
   composition->addComposerShape( shape1 );
@@ -391,7 +392,7 @@ void TestQgsComposition::bounds()
 void TestQgsComposition::resizeToContents()
 {
   //add some items to a composition
-  QgsComposition* composition = new QgsComposition( *mMapSettings );
+  QgsComposition* composition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
   QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
@@ -432,7 +433,7 @@ void TestQgsComposition::resizeToContentsMargin()
 {
   //resize to contents, with margin
 
-  QgsComposition* composition = new QgsComposition( *mMapSettings );
+  QgsComposition* composition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
   QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
@@ -473,7 +474,7 @@ void TestQgsComposition::resizeToContentsMultiPage()
 {
   //resize to contents with multi-page composition, should result in a single page
 
-  QgsComposition* composition = new QgsComposition( *mMapSettings );
+  QgsComposition* composition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
   QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
@@ -519,7 +520,7 @@ void TestQgsComposition::georeference()
   QgsRectangle extent( 2000, 2800, 2500, 2900 );
   QgsMapSettings ms;
   ms.setExtent( extent );
-  QgsComposition* composition = new QgsComposition( ms );
+  QgsComposition* composition = new QgsComposition( ms, QgsProject::instance() );
 
   // no map
   double* t = composition->computeGeoTransform( nullptr );
@@ -587,7 +588,7 @@ void TestQgsComposition::georeference()
 void TestQgsComposition::variablesEdited()
 {
   QgsMapSettings ms;
-  QgsComposition c( ms );
+  QgsComposition c( ms, QgsProject::instance() );
   QSignalSpy spyVariablesChanged( &c, SIGNAL( variablesChanged() ) );
 
   c.setCustomProperty( QStringLiteral( "not a variable" ), "1" );

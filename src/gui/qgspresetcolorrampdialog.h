@@ -20,6 +20,7 @@
 #include "qgspanelwidget.h"
 #include "qgscolorramp.h"
 #include "ui_qgspresetcolorrampwidgetbase.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsPresetColorRampWidget
@@ -38,8 +39,6 @@ class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::Q
      * @param parent parent widget
      */
     QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp& ramp, QWidget* parent = nullptr );
-
-    ~QgsPresetColorRampWidget();
 
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()

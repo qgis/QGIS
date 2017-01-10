@@ -31,6 +31,7 @@
 #include "qgsnewogrconnection.h"
 #include "qgsogrhelperfunctions.h"
 #include "qgscontexthelp.h"
+#include "qgsapplication.h"
 
 QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )

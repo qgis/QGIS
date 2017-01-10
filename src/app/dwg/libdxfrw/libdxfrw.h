@@ -70,7 +70,7 @@ class dxfRW
     DRW_ImageDef *writeImage( DRW_Image *ent, std::string name );
     bool writeLeader( DRW_Leader *ent );
     bool writeDimension( DRW_Dimension *ent );
-    void setEllipseParts( int parts ) {elParts = parts;} /*!< set parts number when convert ellipse to polyline */
+    void setEllipseParts( int parts ) {elParts = parts;} //!< Set parts number when convert ellipse to polyline
 
   private:
     /// used by read() to parse the content of the file
@@ -138,9 +138,9 @@ class dxfRW
     bool dimstyleStd;
     bool applyExt;
     bool writingBlock;
-    int elParts;  /*!< parts number when convert ellipse to polyline */
+    int elParts;  //!< Parts number when convert ellipse to polyline
     std::map<std::string, int> blockMap;
-    std::vector<DRW_ImageDef*> imageDef;  /*!< imageDef list */
+    std::vector<DRW_ImageDef*> imageDef;  //!< ImageDef list
 
     int currHandle;
 };

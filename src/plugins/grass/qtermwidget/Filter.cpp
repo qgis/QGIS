@@ -459,8 +459,8 @@ void UrlFilter::HotSpot::activate(const QString& actionName)
     {
         if ( kind == StandardUrl )
         {
-            // if the URL path does not include the protocol ( eg. "www.kde.org" ) then
-            // prepend http:// ( eg. "www.kde.org" --> "http://www.kde.org" )
+            // if the URL path does not include the protocol ( e.g., "www.kde.org" ) then
+            // prepend http:// ( e.g., "www.kde.org" --> "http://www.kde.org" )
             if (!url.contains(QLatin1String("://")))
             {
                 url.prepend("http://");

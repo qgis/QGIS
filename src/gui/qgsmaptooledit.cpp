@@ -29,11 +29,6 @@ QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas* canvas )
 {
 }
 
-QgsMapToolEdit::~QgsMapToolEdit()
-{
-}
-
-
 double QgsMapToolEdit::defaultZValue() const
 {
   QSettings().value( QStringLiteral( "/qgis/digitizing/default_z_value" ), Qgis::DEFAULT_Z_COORDINATE ).toDouble();

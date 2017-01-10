@@ -20,6 +20,7 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsproject.h"
 #include "qgsspatialindex.h"
 
 #include <QtAlgorithms>
@@ -509,7 +510,7 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
   mFile->setFromUrl( url );
 
   mExpressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
   mExpressionContext.setFields( mFields );
 }
 

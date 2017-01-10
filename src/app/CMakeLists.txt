@@ -524,6 +524,11 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} composer legend pluginmanager
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/python
+  ${CMAKE_BINARY_DIR}/src/analysis
+  ${CMAKE_BINARY_DIR}/src/app
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QWT_INCLUDE_DIR}
@@ -587,9 +592,6 @@ ELSE (ANDROID)
   ADD_EXECUTABLE(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 ${QGIS_APPMAIN_SRCS} ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
 ENDIF (ANDROID)
 
-REMOVE_DEFINITIONS("-DAPP_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("\"-DAPP_EXPORT=${DLLEXPORT}\"")
-
 # Putting IMAGE_RCC_SRCS into qgis_app lib is causing problems when the lib is
 # loaded (by plugin for example) in test unit (qgis_composerpicturetest).
 ADD_LIBRARY(qgis_app SHARED ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${QGIS_APP_HDRS} ${QGIS_APP_MOC_HDRS})
@@ -607,6 +609,12 @@ TARGET_LINK_LIBRARIES(qgis_app
   qgis_gui
   qgis_analysis
   libdxfrw
+)
+
+GENERATE_EXPORT_HEADER(
+   qgis_app
+   BASE_NAME APP
+   EXPORT_FILE_NAME qgis_app.h
 )
 
 IF (NOT ANDROID)

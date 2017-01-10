@@ -53,11 +53,6 @@ QgsColorSchemeList::QgsColorSchemeList( QWidget *parent, QgsColorScheme *scheme,
   setDefaultDropAction( Qt::CopyAction );
 }
 
-QgsColorSchemeList::~QgsColorSchemeList()
-{
-
-}
-
 void QgsColorSchemeList::setScheme( QgsColorScheme *scheme, const QString &context, const QColor &baseColor )
 {
   mScheme = scheme;
@@ -311,11 +306,6 @@ QgsColorSchemeModel::QgsColorSchemeModel( QgsColorScheme *scheme, const QString 
   {
     mColors = scheme->fetchColors( context, baseColor );
   }
-}
-
-QgsColorSchemeModel::~QgsColorSchemeModel()
-{
-
 }
 
 QModelIndex QgsColorSchemeModel::index( int row, int column, const QModelIndex &parent ) const

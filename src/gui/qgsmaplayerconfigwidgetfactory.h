@@ -17,6 +17,7 @@
 #define QGSMAPLAYERCONFIGWIDGETFACTORY_H
 
 #include <QListWidgetItem>
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 class QgsMapLayerConfigWidget;
@@ -37,8 +38,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
     //! Constructor
     QgsMapLayerConfigWidgetFactory( const QString &title, const QIcon &icon );
 
-    //! Destructor
-    virtual ~QgsMapLayerConfigWidgetFactory();
+    virtual ~QgsMapLayerConfigWidgetFactory() = default;
 
     /**
      * @brief The icon that will be shown in the UI for the panel.

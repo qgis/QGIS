@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolcapture.h"
+#include "qgis_app.h"
 
 //! A map tool that adds new parts to multipart features
 class APP_EXPORT QgsMapToolAddPart : public QgsMapToolCapture

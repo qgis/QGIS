@@ -15,6 +15,7 @@
 
 #include "qgsfiledownloader.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsapplication.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>

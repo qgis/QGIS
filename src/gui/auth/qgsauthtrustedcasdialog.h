@@ -23,6 +23,7 @@
 #include <QSslCertificate>
 
 #include "qgsauthmanager.h"
+#include "qgis_gui.h"
 
 class QgsMessageBar;
 
@@ -42,7 +43,6 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
      */
     explicit QgsAuthTrustedCAsDialog( QWidget *parent = nullptr,
                                       const QList<QSslCertificate>& trustedCAs = QList<QSslCertificate>() );
-    ~QgsAuthTrustedCAsDialog();
 
   private slots:
     void populateCaCertsView();
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
     void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
 
   protected:
-    //! Overridden widget show event
+
     void showEvent( QShowEvent *e ) override;
 
   private:

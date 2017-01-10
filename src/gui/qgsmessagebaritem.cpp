@@ -75,10 +75,6 @@ QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLev
   writeContent();
 }
 
-QgsMessageBarItem::~QgsMessageBarItem()
-{
-}
-
 void QgsMessageBarItem::writeContent()
 {
   if ( !mLayout )

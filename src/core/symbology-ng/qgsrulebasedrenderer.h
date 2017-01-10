@@ -16,6 +16,7 @@
 #ifndef QGSRULEBASEDRENDERERV2_H
 #define QGSRULEBASEDRENDERERV2_H
 
+#include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgis.h"
@@ -122,6 +123,11 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         Rule( QgsSymbol* symbol, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString& filterExp = QString(),
               const QString& label = QString(), const QString& description = QString(), bool elseRule = false );
         ~Rule();
+
+        //! Rules cannot be copied
+        Rule( const Rule& rh ) = delete;
+        //! Rules cannot be copied
+        Rule& operator=( const Rule& rh ) = delete;
 
         /**
          * Dump for debug purpose
@@ -388,9 +394,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         RuleList mActiveChildren;
 
       private:
-
-        Rule( const Rule& rh );
-        Rule& operator=( const Rule& rh );
 
         /**
          * Check which child rules are else rules and update the internal list of else rules

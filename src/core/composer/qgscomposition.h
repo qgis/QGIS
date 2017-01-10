@@ -16,6 +16,7 @@
 #ifndef QGSCOMPOSITION_H
 #define QGSCOMPOSITION_H
 
+#include "qgis_core.h"
 #include <memory>
 
 #include <QDomDocument>
@@ -104,7 +105,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
       Landscape
     };
 
-    explicit QgsComposition( const QgsMapSettings& mapSettings );
+    //! Construct a composition, using given map settings and project
+    explicit QgsComposition( const QgsMapSettings& mapSettings, QgsProject* project );
 
     //! Composition atlas modes
     enum AtlasMode
@@ -115,6 +117,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     };
 
     ~QgsComposition();
+
+    /**
+     * The project associated with the composition. Used to get access to layers, map themes,
+     * relations and various other bits. It is never null.
+     *
+     * \note Added in QGIS 3.0
+     */
+    QgsProject* project() const;
 
     /** Changes size of paper item.
      * @param width page width in mm
@@ -798,7 +808,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Calculates the bounds of all non-gui items in the composition. Ignores snap lines and mouse handles.
      * @param ignorePages set to true to ignore page items
-     * @param margin optional marginal (in percent, eg 0.05 = 5% ) to add around items
+     * @param margin optional marginal (in percent, e.g., 0.05 = 5% ) to add around items
      */
     QRectF compositionBounds( bool ignorePages = false, double margin = 0.0 ) const;
 
@@ -851,6 +861,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
   private:
     //! Reference to map settings of QGIS main map
     const QgsMapSettings& mMapSettings;
+
+    //! Pointer to associated project (not null)
+    QgsProject* mProject;
 
     QgsComposition::PlotStyle mPlotStyle;
     double mPageWidth;
@@ -940,7 +953,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Loads default composer settings
     void loadDefaults();
 
-    //! Loads composer settings which may change, eg grid color
+    //! Loads composer settings which may change, e.g., grid color
     void loadSettings();
 
     //! Calculates the item minimum position from an xml string

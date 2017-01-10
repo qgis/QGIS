@@ -22,6 +22,8 @@
 #include <QMap>
 #include <QString>
 
+#include "qgis_core.h"
+
 class QgsAuthMethod;
 class QgsAuthMethodMetadata;
 
@@ -76,8 +78,6 @@ class CORE_EXPORT QgsAuthMethodRegistry
      */
     QWidget *editWidget( const QString & authMethodKey, QWidget * parent = nullptr );
 
-#if QT_VERSION >= 0x050000
-
     /** Get pointer to auth method function
         @param authMethodKey identificator of the auth method
         @param functionName name of function
@@ -85,16 +85,6 @@ class CORE_EXPORT QgsAuthMethodRegistry
      */
     QFunctionPointer function( const QString & authMethodKey,
                                const QString & functionName );
-#else
-
-    /** Get pointer to auth method function
-        @param authMethodKey identificator of the auth method
-        @param functionName name of function
-        @return pointer to function or nullptr on error
-     */
-    void *function( const QString & authMethodKey,
-                    const QString & functionName );
-#endif
 
     //! Return the library object associated with an auth method key
     QLibrary *authMethodLibrary( const QString & authMethodKey ) const;

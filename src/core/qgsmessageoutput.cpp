@@ -38,11 +38,6 @@ QgsMessageOutput* QgsMessageOutput::createMessageOutput()
   return mMessageOutputCreator();
 }
 
-QgsMessageOutput::~QgsMessageOutput()
-{
-}
-
-
 void QgsMessageOutput::showMessage( const QString& title, const QString& message, MessageType msgType )
 {
   QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();

@@ -32,7 +32,7 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
     //! Constructor
     QgsMssqlNewConnection( QWidget *parent = nullptr, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
-    //! Destructor
+
     ~QgsMssqlNewConnection();
 
     //! Tests the connection using the parameters supplied

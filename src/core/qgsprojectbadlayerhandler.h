@@ -18,6 +18,8 @@
 
 #include <QDomNode>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Interface for classes that handle missing layer files when reading project file.
  */
@@ -35,10 +37,9 @@ class CORE_EXPORT QgsProjectBadLayerHandler
      * log.
      *
      * @note Added in QGIS 3.0
-     * @see QgsProjectBadLayerGuiHandler
      */
     virtual void handleBadLayers( const QList<QDomNode>& layers );
-    virtual ~QgsProjectBadLayerHandler();
+    virtual ~QgsProjectBadLayerHandler() = default;
 
 
   protected:

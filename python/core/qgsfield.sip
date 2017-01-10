@@ -18,12 +18,12 @@ class QgsField
     /** Constructor. Constructs a new QgsField object.
      * @param name Field name
      * @param type Field variant type, currently supported: String / Int / Double
-     * @param typeName Field type (eg. char, varchar, text, int, serial, double).
+     * @param typeName Field type (e.g., char, varchar, text, int, serial, double).
      * Field types are usually unique to the source and are stored exactly
      * as returned from the data store.
      * @param len Field length
      * @param prec Field precision. Usually decimal places but may also be
-     * used in conjunction with other fields types (eg. variable character fields)
+     * used in conjunction with other fields types (e.g., variable character fields)
      * @param comment Comment for the field
      * @param subType If the field is a collection, its element's type. When
      *                all the elements don't need to have the same type, leave

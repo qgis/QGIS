@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1018</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -64,20 +64,6 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="menuSelect">
-     <property name="title">
-      <string>Select</string>
-     </property>
-     <addaction name="mActionSelectFeatures"/>
-     <addaction name="mActionSelectPolygon"/>
-     <addaction name="mActionSelectFreehand"/>
-     <addaction name="mActionSelectRadius"/>
-     <addaction name="mActionSelectByExpression"/>
-     <addaction name="mActionSelectByForm"/>
-     <addaction name="mActionDeselectAll"/>
-     <addaction name="mActionSelectAll"/>
-     <addaction name="mActionInvertSelection"/>
-    </widget>
     <widget class="QMenu" name="menuMeasure">
      <property name="title">
       <string>Measure</string>
@@ -110,7 +96,6 @@
     <addaction name="mActionZoomIn"/>
     <addaction name="mActionZoomOut"/>
     <addaction name="separator"/>
-    <addaction name="menuSelect"/>
     <addaction name="mActionIdentify"/>
     <addaction name="menuMeasure"/>
     <addaction name="mActionStatisticalSummary"/>
@@ -128,6 +113,12 @@
     <addaction name="mActionNewBookmark"/>
     <addaction name="mActionShowBookmarks"/>
     <addaction name="mActionDraw"/>
+    <addaction name="separator"/>
+    <addaction name="mActionShowAllLayers"/>
+    <addaction name="mActionHideAllLayers"/>
+    <addaction name="mActionShowSelectedLayers"/>
+    <addaction name="mActionHideSelectedLayers"/>
+    <addaction name="mActionHideDeselectedLayers"/>
     <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="mLayerMenu">
@@ -190,11 +181,6 @@
     <addaction name="mActionAddToOverview"/>
     <addaction name="mActionAddAllToOverview"/>
     <addaction name="mActionRemoveAllFromOverview"/>
-    <addaction name="separator"/>
-    <addaction name="mActionShowAllLayers"/>
-    <addaction name="mActionHideAllLayers"/>
-    <addaction name="mActionShowSelectedLayers"/>
-    <addaction name="mActionHideSelectedLayers"/>
    </widget>
    <widget class="QMenu" name="mPluginMenu">
     <property name="title">
@@ -226,10 +212,12 @@
      <string>&amp;Settings</string>
     </property>
     <addaction name="mActionProjectProperties"/>
+    <addaction name="mActionStyleManager"/>
     <addaction name="mActionCustomProjection"/>
-    <addaction name="mActionStyleManagerV2"/>
+    <addaction name="separator"/>
     <addaction name="mActionConfigureShortcuts"/>
     <addaction name="mActionCustomization"/>
+    <addaction name="separator"/>
     <addaction name="mActionOptions"/>
    </widget>
    <widget class="QMenu" name="mRasterMenu">
@@ -257,6 +245,20 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <widget class="QMenu" name="menuSelect">
+     <property name="title">
+      <string>Select</string>
+     </property>
+     <addaction name="mActionSelectFeatures"/>
+     <addaction name="mActionSelectPolygon"/>
+     <addaction name="mActionSelectFreehand"/>
+     <addaction name="mActionSelectRadius"/>
+     <addaction name="mActionSelectByForm"/>
+     <addaction name="mActionSelectByExpression"/>
+     <addaction name="mActionDeselectAll"/>
+     <addaction name="mActionSelectAll"/>
+     <addaction name="mActionInvertSelection"/>
+    </widget>
     <widget class="QMenu" name="mMenuPasteAs">
      <property name="title">
       <string>Paste Features as</string>
@@ -271,6 +273,7 @@
     <addaction name="mActionCopyFeatures"/>
     <addaction name="mActionPasteFeatures"/>
     <addaction name="mMenuPasteAs"/>
+    <addaction name="menuSelect"/>
     <addaction name="separator"/>
     <addaction name="mActionAddFeature"/>
     <addaction name="mActionCircularStringCurvePoint"/>
@@ -1583,7 +1586,7 @@
     <string>&amp;Options...</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::PreferencesRole</enum>
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="mActionCustomProjection">
@@ -1592,16 +1595,16 @@
      <normaloff>:/images/themes/default/mActionCustomProjection.svg</normaloff>:/images/themes/default/mActionCustomProjection.svg</iconset>
    </property>
    <property name="text">
-    <string>Custom CRS...</string>
+    <string>Custom Projections...</string>
    </property>
   </action>
   <action name="mActionConfigureShortcuts">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
+     <normaloff>:/images/themes/default/mActionKeyboardShortcuts.svg</normaloff>:/images/themes/default/mActionKeyboardShortcuts.svg</iconset>
    </property>
    <property name="text">
-    <string>Configure Shortcuts...</string>
+    <string>Keyboard Shortcuts...</string>
    </property>
    <property name="menuRole">
     <enum>QAction::NoRole</enum>
@@ -1724,7 +1727,7 @@ Ctrl (Cmd) increments by 15 deg.</string>
     <string>Change Label</string>
    </property>
   </action>
-  <action name="mActionStyleManagerV2">
+  <action name="mActionStyleManager">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/propertyicons/symbology.svg</normaloff>:/images/themes/default/propertyicons/symbology.svg</iconset>
@@ -1774,10 +1777,10 @@ Ctrl (Cmd) increments by 15 deg.</string>
   <action name="mActionCustomization">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
+     <normaloff>:/images/themes/default/mActionInterfaceCustomization.svg</normaloff>:/images/themes/default/mActionInterfaceCustomization.svg</iconset>
    </property>
    <property name="text">
-    <string>Customization...</string>
+    <string>Interface Customization...</string>
    </property>
   </action>
   <action name="actionActionCatchForCustomization">
@@ -2243,10 +2246,13 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mIconExpressionSelect.svg</normaloff>:/images/themes/default/mIconExpressionSelect.svg</iconset>
    </property>
    <property name="text">
-    <string>Select By Expression...</string>
+    <string>Select Features by Expression...</string>
    </property>
    <property name="toolTip">
     <string>Select features using an expression</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F3</string>
    </property>
   </action>
   <action name="mActionNeedSupport">
@@ -2422,6 +2428,15 @@ Acts on currently active editable layer</string>
     <string>Hide Selected Layers</string>
    </property>
   </action>
+  <action name="mActionHideDeselectedLayers">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHideSelectedLayers.png</normaloff>:/images/themes/default/mActionHideSelectedLayers.png</iconset>
+   </property>
+   <property name="text">
+    <string>Hide Deselected Layers</string>
+   </property>
+  </action>
   <action name="mActionNewMemoryLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -2492,7 +2507,7 @@ Acts on currently active editable layer</string>
   <action name="mActionDiagramProperties">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDiagramProperties.svg</normaloff>:/images/themes/default/mActionDiagramProperties.svg</iconset>
+     <normaloff>:/images/themes/default/propertyicons/diagram.svg</normaloff>:/images/themes/default/propertyicons/diagram.svg</iconset>
    </property>
    <property name="text">
     <string>Diagram Options</string>

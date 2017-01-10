@@ -29,12 +29,6 @@ QgsComposerTableColumn::QgsComposerTableColumn( const QString& heading )
 
 }
 
-
-QgsComposerTableColumn::~QgsComposerTableColumn()
-{
-
-}
-
 bool QgsComposerTableColumn::writeXml( QDomElement& columnElem, QDomDocument& doc ) const
 {
   //background color

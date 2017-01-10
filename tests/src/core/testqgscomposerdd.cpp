@@ -87,7 +87,7 @@ void TestQgsComposerDD::initTestCase()
   QgsCoordinateReferenceSystem crs;
   crs.createFromSrid( 2154 );
   mMapSettings->setDestinationCrs( crs );
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   // fix the renderer, fill with green

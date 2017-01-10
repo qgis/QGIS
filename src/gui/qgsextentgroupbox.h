@@ -21,6 +21,7 @@
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
+#include "qgis_gui.h"
 
 class QgsCoordinateReferenceSystem;
 

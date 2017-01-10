@@ -16,6 +16,7 @@ email                : sherman at mrcc.com
 #ifndef QGSFEATURE_H
 #define QGSFEATURE_H
 
+#include "qgis_core.h"
 #include <QMap>
 #include <QString>
 #include <QVariant>
@@ -172,7 +173,7 @@ class CORE_EXPORT QgsFeature
     bool operator!=( const QgsFeature& other ) const;
 
 
-    //! Destructor
+
     virtual ~QgsFeature();
 
     /** Get the feature ID for this feature.

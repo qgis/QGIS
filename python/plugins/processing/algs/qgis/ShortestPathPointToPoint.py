@@ -232,7 +232,7 @@ class ShortestPathPointToPoint(GeoAlgorithm):
 
         self.setOutputValue(self.TRAVEL_COST, cost / multiplier)
 
-        progress.setInfo(self.tr('Writting results...'))
+        progress.setInfo(self.tr('Writing results...'))
         geom = QgsGeometry.fromPolyline(route)
         feat = QgsFeature()
         feat.setFields(fields)

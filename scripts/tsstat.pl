@@ -45,6 +45,7 @@ my $translators= {
 	'de' => 'Jürgen E. Fischer, Stephan Holl, Otto Dassau, Werner Macho',
 	'es' => 'Carlos Dávila, Javier César Aldariz, Gabriela Awad, Edwin Amado, Mayeul Kauffmann, Diana Galindo',
 	'el' => 'Theodoros Vakkas, Ioannis Tsimpiris, Evripidis Argyropoulos, Mike Pegnigiannis, Nikos Ves',
+	'eo' => 'Augustin Roche, Nikolay Korotkiy',
 	'et' => 'Veiko Viil',
 	'eu' => 'Asier Sarasua Garmendia, Irantzu Alvarez',
 	'fa' => 'Mola Pahnadayan, Masoud Pashotan , Masoud Erfanyan',

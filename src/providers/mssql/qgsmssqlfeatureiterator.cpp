@@ -464,10 +464,6 @@ QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider* p )
   mIsGeography = p->mParser.IsGeography;
 }
 
-QgsMssqlFeatureSource::~QgsMssqlFeatureSource()
-{
-}
-
 QgsFeatureIterator QgsMssqlFeatureSource::getFeatures( const QgsFeatureRequest& request )
 {
   return QgsFeatureIterator( new QgsMssqlFeatureIterator( this, false, request ) );

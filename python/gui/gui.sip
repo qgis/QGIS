@@ -75,6 +75,7 @@
 %Include qgsfieldmodel.sip
 %Include qgsfieldproxymodel.sip
 %Include qgsfieldvalidator.sip
+%Include qgsfieldvalueslineedit.sip
 %Include qgsfiledropedit.sip
 %Include qgsfilewidget.sip
 %Include qgsfiledownloader.sip
@@ -139,7 +140,6 @@
 %Include qgspluginmanagerinterface.sip
 %Include qgspresetcolorrampdialog.sip
 %Include qgsprevieweffect.sip
-%Include qgsprojectbadlayerguihandler.sip
 %Include qgsprojectionselectionwidget.sip
 %Include qgsprojectionselector.sip
 %Include qgsquerybuilder.sip

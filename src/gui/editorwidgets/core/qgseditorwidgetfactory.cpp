@@ -28,10 +28,6 @@ QgsEditorWidgetFactory::QgsEditorWidgetFactory( const QString& name )
 {
 }
 
-QgsEditorWidgetFactory::~QgsEditorWidgetFactory()
-{
-}
-
 /**
  * By default a simple QgsFilterLineEdit is returned as search widget.
  * Override in own factory to get something different than the default.

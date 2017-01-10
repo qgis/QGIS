@@ -20,6 +20,7 @@
 #include <QMap>
 #include <QString>
 #include <QVariant>
+#include "qgis_gui.h"
 
 class QgsEditorConfigWidget;
 class QgsEditorWidgetWrapper;
@@ -47,7 +48,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      */
     QgsEditorWidgetFactory( const QString& name );
 
-    virtual ~QgsEditorWidgetFactory();
+    virtual ~QgsEditorWidgetFactory() = default;
 
     /**
      * Override this in your implementation.

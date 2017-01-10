@@ -95,12 +95,6 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
   }
 }
 
-QgsDataItemProviderRegistry* QgsDataItemProviderRegistry::instance()
-{
-  static QgsDataItemProviderRegistry sInstance;
-  return &sInstance;
-}
-
 QgsDataItemProviderRegistry::~QgsDataItemProviderRegistry()
 {
   qDeleteAll( mProviders );

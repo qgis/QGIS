@@ -16,6 +16,7 @@
 #ifndef QGSJSONUTILS_H
 #define QGSJSONUTILS_H
 
+#include "qgis_core.h"
 #include "qgsfeature.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"

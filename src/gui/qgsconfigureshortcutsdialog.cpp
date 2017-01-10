@@ -28,6 +28,7 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <QSettings>
+#include <QDebug>
 
 QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget* parent, QgsShortcutsManager* manager )
     : QDialog( parent )
@@ -479,4 +480,20 @@ void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence& 
   treeActions->currentItem()->setText( 1, s.toString() );
 
   actionChanged( treeActions->currentItem(), nullptr );
+}
+
+void QgsConfigureShortcutsDialog::on_mLeFilter_textChanged( const QString& text )
+{
+  for ( int i = 0; i < treeActions->topLevelItemCount(); i++ )
+  {
+    QTreeWidgetItem* item = treeActions->topLevelItem( i );
+    if ( !item->text( 0 ).contains( text, Qt::CaseInsensitive ) && !item->text( 1 ).contains( text, Qt::CaseInsensitive ) )
+    {
+      item->setHidden( true );
+    }
+    else
+    {
+      item->setHidden( false );
+    }
+  }
 }

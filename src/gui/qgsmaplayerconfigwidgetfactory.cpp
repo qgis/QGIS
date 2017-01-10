@@ -30,10 +30,6 @@ QgsMapLayerConfigWidgetFactory::QgsMapLayerConfigWidgetFactory( const QString& t
 {
 }
 
-QgsMapLayerConfigWidgetFactory::~QgsMapLayerConfigWidgetFactory()
-{
-}
-
 bool QgsMapLayerConfigWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
 {
   Q_UNUSED( layer );

@@ -17,6 +17,7 @@
 #ifndef QGSTEXTRENDERER_PRIVATE_H
 #define QGSTEXTRENDERER_PRIVATE_H
 
+#include "qgis_core.h"
 #include "qgstextrenderer.h"
 #include "qgsmapunitscale.h"
 #include "qgsunittypes.h"
@@ -65,8 +66,6 @@ class CORE_EXPORT QgsTextBufferSettingsPrivate : public QSharedData
         , blendMode( other.blendMode )
     {
     }
-
-    ~QgsTextBufferSettingsPrivate() {}
 
     bool enabled;
     double size;
@@ -133,8 +132,6 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
         , joinStyle( other.joinStyle )
     {
     }
-
-    ~QgsTextBackgroundSettingsPrivate() {}
 
     bool enabled;
     QgsTextBackgroundSettings::ShapeType type;
@@ -205,8 +202,6 @@ class CORE_EXPORT QgsTextShadowSettingsPrivate : public QSharedData
     {
     }
 
-    ~QgsTextShadowSettingsPrivate() {}
-
     bool enabled;
     QgsTextShadowSettings::ShadowPlacement shadowUnder;
     int offsetAngle;
@@ -254,13 +249,11 @@ class CORE_EXPORT QgsTextSettingsPrivate : public QSharedData
     {
     }
 
-    ~QgsTextSettingsPrivate() {}
-
     QFont textFont;
     QString textNamedStyle;
     QgsUnitTypes::RenderUnit fontSizeUnits;
     QgsMapUnitScale fontSizeMapUnitScale;
-    double fontSize; //may differ from size in textFont due to units (eg size in map units)
+    double fontSize; //may differ from size in textFont due to units (e.g., size in map units)
     QColor textColor;
     double opacity;
     QPainter::CompositionMode blendMode;

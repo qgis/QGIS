@@ -179,7 +179,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   mPipe = new QgsRasterPipe( *layer->pipe() );
   QgsRasterRenderer* rasterRenderer = mPipe->renderer();
   if ( rasterRenderer )
-    layer->refreshRendererIfNeeded( rasterRenderer, myRasterExtent );
+    layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
 }
 
 QgsRasterLayerRenderer::~QgsRasterLayerRenderer()

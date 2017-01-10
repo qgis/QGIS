@@ -23,9 +23,6 @@
 QgsCurve::QgsCurve(): QgsAbstractGeometry()
 {}
 
-QgsCurve::~QgsCurve()
-{}
-
 bool QgsCurve::isClosed() const
 {
   if ( numPoints() == 0 )

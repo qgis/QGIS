@@ -16,6 +16,7 @@
 #define QGSMAPCANVASTRACER_H
 
 #include "qgstracer.h"
+#include "qgis_gui.h"
 
 class QAction;
 class QgsMapCanvas;

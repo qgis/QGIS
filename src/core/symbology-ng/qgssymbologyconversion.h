@@ -19,6 +19,7 @@ class QDomNode;
 
 class QgsFeatureRenderer;
 
+#include "qgis_core.h"
 #include "qgis.h"
 
 #include <Qt>

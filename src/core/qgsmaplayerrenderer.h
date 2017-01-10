@@ -18,6 +18,8 @@
 
 #include <QStringList>
 
+#include "qgis_core.h"
+
 class QgsFeedback;
 
 /** \ingroup core
@@ -46,7 +48,7 @@ class CORE_EXPORT QgsMapLayerRenderer
 {
   public:
     QgsMapLayerRenderer( const QString& layerID ) : mLayerID( layerID ) {}
-    virtual ~QgsMapLayerRenderer() {}
+    virtual ~QgsMapLayerRenderer() = default;
 
     //! Do the rendering (based on data stored in the class)
     virtual bool render() = 0;

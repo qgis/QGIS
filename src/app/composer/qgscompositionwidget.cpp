@@ -28,10 +28,9 @@
 #include <QWidget>
 #include <QPrinter> //for screen resolution
 
-QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )\
-:
-QgsPanelWidget( parent )
-, mComposition( c )
+QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
+    : QgsPanelWidget( parent )
+    , mComposition( c )
 {
   setupUi( this );
   setPanelTitle( tr( "Composition properties" ) );
@@ -53,12 +52,8 @@ QgsPanelWidget( parent )
   updateVariables();
   connect( mVariableEditor, SIGNAL( scopeChanged() ), this, SLOT( variablesChanged() ) );
   // listen out for variable edits
-  QgsApplication* app = qobject_cast<QgsApplication*>( QgsApplication::instance() );
-  if ( app )
-  {
-    connect( app, SIGNAL( settingsChanged() ), this, SLOT( updateVariables() ) );
-  }
-  connect( QgsProject::instance(), SIGNAL( variablesChanged() ), this, SLOT( updateVariables() ) );
+  connect( QgsApplication::instance(), &QgsApplication::customVariablesChanged, this, &QgsCompositionWidget::updateVariables );
+  connect( QgsProject::instance(), &QgsProject::customVariablesChanged, this, &QgsCompositionWidget::updateVariables );
 
   if ( mComposition )
   {
@@ -210,7 +205,7 @@ void QgsCompositionWidget::updateVariables()
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
   << QgsExpressionContextUtils::compositionScope( mComposition );
   mVariableEditor->setContext( &context );
   mVariableEditor->setEditableScopeIndex( 2 );

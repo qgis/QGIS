@@ -21,6 +21,7 @@
 
 #include "ui_qgsauthserverseditor.h"
 #include "qgsauthmanager.h"
+#include "qgis_gui.h"
 
 class QgsMessageBar;
 
@@ -38,7 +39,6 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
      * @param parent Parent Widget
      */
     explicit QgsAuthServersEditor( QWidget *parent = nullptr );
-    ~QgsAuthServersEditor();
 
   private slots:
     void populateSslConfigsView();
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
     void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
 
   protected:
-    //! Overridden show event of base widget
+
     void showEvent( QShowEvent *e ) override;
 
   private:

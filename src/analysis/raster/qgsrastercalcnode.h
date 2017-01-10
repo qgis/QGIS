@@ -21,6 +21,7 @@
 
 #include <QMap>
 #include <QString>
+#include "qgis_analysis.h"
 
 class QgsRasterBlock;
 class QgsRasterMatrix;
@@ -76,6 +77,11 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QgsRasterCalcNode( const QString& rasterName );
     ~QgsRasterCalcNode();
 
+    //! QgsRasterCalcNode cannot be copied
+    QgsRasterCalcNode( const QgsRasterCalcNode& rh ) = delete;
+    //! QgsRasterCalcNode cannot be copied
+    QgsRasterCalcNode& operator=( const QgsRasterCalcNode& rh ) = delete;
+
     Type type() const { return mType; }
 
     //set left node
@@ -103,8 +109,6 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QgsRasterMatrix* mMatrix;
     Operator mOperator;
 
-    QgsRasterCalcNode( const QgsRasterCalcNode& rh );
-    QgsRasterCalcNode& operator=( const QgsRasterCalcNode& rh );
 };
 
 

@@ -26,10 +26,6 @@ QgsNetworkDiskCache::QgsNetworkDiskCache( QObject *parent )
 {
 }
 
-QgsNetworkDiskCache::~QgsNetworkDiskCache()
-{
-}
-
 QString QgsNetworkDiskCache::cacheDirectory() const
 {
   QMutexLocker lock( &smDiskCacheMutex );

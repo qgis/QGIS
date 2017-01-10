@@ -18,6 +18,7 @@
 
 #include "qgsfeature.h"
 #include "qgsifeatureselectionmanager.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * This selection manager synchronizes a local set of selected features with an attribute table.

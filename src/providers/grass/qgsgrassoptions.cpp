@@ -88,10 +88,6 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
   restoreOptionsBaseUi();
 }
 
-QgsGrassOptions::~QgsGrassOptions()
-{
-}
-
 void QgsGrassOptions::on_mGisbaseBrowseButton_clicked()
 {
   QString gisbase = mGisbaseLineEdit->text();

@@ -18,6 +18,7 @@
 #ifndef QGSPOINT_H
 #define QGSPOINT_H
 
+#include "qgis_core.h"
 #include <qgis.h>
 
 #include <iostream>
@@ -241,10 +242,10 @@ class CORE_EXPORT QgsPoint
      *  Its up to the calling function to ensure that this point can
      *  be meaningfully represented in this form.
      *  @param thePrecision number of decimal points to use for seconds
-     *  @param useSuffix set to true to include a direction suffix (eg 'N'),
+     *  @param useSuffix set to true to include a direction suffix (e.g., 'N'),
      *  set to false to use a "-" prefix for west and south coordinates
      *  @param padded set to true to force minutes and seconds to use two decimals,
-     *  eg, '05' instead of '5'.
+     *  e.g., '05' instead of '5'.
      */
     QString toDegreesMinutesSeconds( int thePrecision, const bool useSuffix = true, const bool padded = false ) const;
 
@@ -252,10 +253,10 @@ class CORE_EXPORT QgsPoint
      *  Its up to the calling function to ensure that this point can
      *  be meaningfully represented in this form.
      *  @param thePrecision number of decimal points to use for minutes
-     *  @param useSuffix set to true to include a direction suffix (eg 'N'),
+     *  @param useSuffix set to true to include a direction suffix (e.g., 'N'),
      *  set to false to use a "-" prefix for west and south coordinates
      *  @param padded set to true to force minutes to use two decimals,
-     *  eg, '05' instead of '5'.
+     *  e.g., '05' instead of '5'.
      */
     QString toDegreesMinutes( int thePrecision, const bool useSuffix = true, const bool padded = false ) const;
 

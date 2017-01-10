@@ -15,6 +15,7 @@
 #ifndef QGSNULLSYMBOLRENDERER_H
 #define QGSNULLSYMBOLRENDERER_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsrenderer.h"
 #include "qgssymbol.h"
@@ -31,8 +32,6 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
   public:
 
     QgsNullSymbolRenderer();
-
-    virtual ~QgsNullSymbolRenderer();
 
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
     virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;

@@ -28,10 +28,6 @@ QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas* canvas )
   setZValue( -10 );
 }
 
-QgsMapCanvasMap::~QgsMapCanvasMap()
-{
-}
-
 void QgsMapCanvasMap::setContent( const QImage& image, const QgsRectangle& rect )
 {
   mImage = image;

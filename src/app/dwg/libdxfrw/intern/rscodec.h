@@ -28,6 +28,7 @@
 
 #ifndef RSCODEC_H
 #define RSCODEC_H
+
 /**
 mm: RS code over GF(2^4)
 nn: nn= (2^mm) - 1   length of codeword

@@ -22,6 +22,7 @@
 #include <qgspanelwidget.h>
 
 #include "ui_qgseffectstackpropertieswidgetbase.h"
+#include "qgis_gui.h"
 
 class EffectItem;
 class QgsPaintEffect;
@@ -156,7 +157,6 @@ class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
      * @param f window flags
      */
     QgsEffectStackPropertiesDialog( QgsEffectStack* stack, QWidget* parent = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsEffectStackPropertiesDialog();
 
     /** Returns effect stack attached to the dialog
      * @returns QgsEffectStack modified by the dialog

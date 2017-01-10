@@ -737,10 +737,6 @@ QgsGrassVectorMapStore::QgsGrassVectorMapStore()
 {
 }
 
-QgsGrassVectorMapStore::~QgsGrassVectorMapStore()
-{
-}
-
 QgsGrassVectorMapStore *QgsGrassVectorMapStore::instance()
 {
   static QgsGrassVectorMapStore instance;

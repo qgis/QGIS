@@ -23,6 +23,8 @@
 #include <QPair>
 #include <QObject>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * List of colors paired with a friendly display name identifying the color
  * \note Added in version 2.5
@@ -54,7 +56,7 @@ class CORE_EXPORT QgsColorScheme
 
     QgsColorScheme();
 
-    virtual ~QgsColorScheme();
+    virtual ~QgsColorScheme() = default;
 
     /** Gets the name for the color scheme
      * @returns color scheme name
@@ -113,8 +115,6 @@ class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
 
     QgsGplColorScheme();
 
-    virtual ~QgsGplColorScheme();
-
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                            const QColor &baseColor = QColor() ) override;
 
@@ -143,8 +143,6 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
      * @param filename filename of gpl palette file stored in the users "palettes" folder
      */
     QgsUserColorScheme( const QString &filename );
-
-    virtual ~QgsUserColorScheme();
 
     virtual QString schemeName() const override;
 
@@ -191,8 +189,6 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
 
     QgsRecentColorScheme();
 
-    virtual ~QgsRecentColorScheme();
-
     virtual QString schemeName() const override { return QObject::tr( "Recent colors" ); }
 
     virtual SchemeFlags flags() const override { return ShowInAllContexts; }
@@ -227,8 +223,6 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 
     QgsCustomColorScheme();
 
-    virtual ~QgsCustomColorScheme();
-
     virtual QString schemeName() const override { return QObject::tr( "Standard colors" ); }
 
     virtual SchemeFlags flags() const override { return ShowInAllContexts; }
@@ -253,8 +247,6 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
   public:
 
     QgsProjectColorScheme();
-
-    virtual ~QgsProjectColorScheme();
 
     virtual QString schemeName() const override { return QObject::tr( "Project colors" ); }
 

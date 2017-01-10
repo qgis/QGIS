@@ -20,6 +20,7 @@
 
 #include "qgsmaptoollabel.h"
 #include "qgsfeature.h"
+#include "qgis_app.h"
 
 
 //! A map tool for showing or hidding a feature's label

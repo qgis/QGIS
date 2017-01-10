@@ -26,6 +26,7 @@
 #include <QHash>
 #include <QMap>
 #include <QString>
+#include "qgis_server.h"
 
 class QgsCoordinateReferenceSystem;
 class QgsMapLayer;
@@ -38,7 +39,6 @@ class SERVER_EXPORT QgsServerProjectParser
   public:
 
     QgsServerProjectParser( QDomDocument* xmlDoc, const QString& filePath );
-    ~QgsServerProjectParser();
 
     QString projectPath() const { return mProjectPath; }
 

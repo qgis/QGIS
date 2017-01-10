@@ -14,7 +14,3 @@
  ***************************************************************************/
 
 #include "qgscustomdrophandler.h"
-
-QgsCustomDropHandler::~QgsCustomDropHandler()
-{
-}

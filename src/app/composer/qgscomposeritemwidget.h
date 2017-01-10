@@ -39,7 +39,7 @@ class QgsDataDefinedButton;
 // contains a child QgsPanelWidget, which breaks lots of assumptions made in QgsPanelWidget
 // and related classes).
 // So QgsComposerItemWidget HAS a QgsComposerConfigObject to handle these common tasks.
-// Specific item property widgets (eg QgsComposerMapWidget) should inherit from QgsComposerItemBaseWidget
+// Specific item property widgets (e.g., QgsComposerMapWidget) should inherit from QgsComposerItemBaseWidget
 // (which is a QgsPanelWidget) and also HAS a QgsComposerConfigObject, with protected methods
 // which are just proxied through to the QgsComposerConfigObject.
 // phew!
@@ -78,7 +78,7 @@ class QgsComposerConfigObject: public QObject
     //! Must be called when a data defined button changes
     void updateDataDefinedProperty();
 
-    //! Updates data defined buttons to reflect current state of atlas (eg coverage layer)
+    //! Updates data defined buttons to reflect current state of atlas (e.g., coverage layer)
     void updateDataDefinedButtons();
 
   private:

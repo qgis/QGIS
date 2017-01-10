@@ -1897,14 +1897,14 @@ bool QgsGeometry::deletePart( int partNum )
   return ok;
 }
 
-int QgsGeometry::avoidIntersections( const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures )
+int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer*>& avoidIntersectionsLayers, const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures )
 {
   if ( !d->geometry )
   {
     return 1;
   }
 
-  QgsAbstractGeometry* diffGeom = QgsGeometryEditUtils::avoidIntersections( *( d->geometry ), ignoreFeatures );
+  QgsAbstractGeometry* diffGeom = QgsGeometryEditUtils::avoidIntersections( *( d->geometry ), avoidIntersectionsLayers, ignoreFeatures );
   if ( diffGeom )
   {
     detach( false );

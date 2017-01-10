@@ -16,6 +16,7 @@
 #ifndef QGSFILLSYMBOLLAYERV2_H
 #define QGSFILLSYMBOLLAYERV2_H
 
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 
 #define DEFAULT_SIMPLEFILL_COLOR        QColor(0,0,255)
@@ -221,7 +222,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     double estimateMaxBleed() const override;
 
-    //! Type of gradient, eg linear or radial
+    //! Type of gradient, e.g., linear or radial
     GradientType gradientType() const { return mGradientType; }
     void setGradientType( GradientType gradientType ) { mGradientType = gradientType; }
 
@@ -587,7 +588,6 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
   public:
 
     QgsImageFillSymbolLayer();
-    virtual ~QgsImageFillSymbolLayer();
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
 
     virtual QgsSymbol* subSymbol() override { return mOutline; }
@@ -653,7 +653,6 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     };
 
     QgsRasterFillSymbolLayer( const QString& imageFilePath = QString() );
-    ~QgsRasterFillSymbolLayer();
 
     static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
 

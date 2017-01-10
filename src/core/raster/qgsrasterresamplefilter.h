@@ -18,6 +18,7 @@
 #ifndef QGSRASTERRESAMPLEFILTER_H
 #define QGSRASTERRESAMPLEFILTER_H
 
+#include "qgis_core.h"
 #include "qgsrasterinterface.h"
 
 class QgsRasterResampler;

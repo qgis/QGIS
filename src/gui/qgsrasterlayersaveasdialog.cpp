@@ -156,10 +156,6 @@ void QgsRasterLayerSaveAsDialog::setValidators()
   mMaximumSizeYLineEdit->setValidator( new QIntValidator( this ) );
 }
 
-QgsRasterLayerSaveAsDialog::~QgsRasterLayerSaveAsDialog()
-{
-}
-
 void QgsRasterLayerSaveAsDialog::on_mBrowseButton_clicked()
 {
   QString fileName;

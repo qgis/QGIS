@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERATTRIBUTETABLEV2_H
 #define QGSCOMPOSERATTRIBUTETABLEV2_H
 
+#include "qgis_core.h"
 #include "qgscomposertablev2.h"
 
 class QgsComposerMap;
@@ -67,7 +68,6 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     };
 
     QgsComposerAttributeTableV2( QgsComposition* composition, bool createUndoCommands );
-    ~QgsComposerAttributeTableV2();
 
     virtual QString displayName() const override;
 
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      */
     ContentSource source() const { return mSource; }
 
-    /** Returns the source layer for the table, considering the table source mode. Eg,
+    /** Returns the source layer for the table, considering the table source mode. For example,
      * if the table is set to atlas feature mode, then the source layer will be the
      * atlas coverage layer. If the table is set to layer attributes mode, then
      * the source layer will be the user specified vector layer.

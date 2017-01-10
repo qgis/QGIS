@@ -71,10 +71,6 @@ QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
            this, SIGNAL( layerSavedAs( QgsMapLayer*, QString ) ) );
 }
 
-QgisAppInterface::~QgisAppInterface()
-{
-}
-
 QgsPluginManagerInterface* QgisAppInterface::pluginManagerInterface()
 {
   return &pluginManagerIface;
@@ -631,6 +627,7 @@ QAction *QgisAppInterface::actionRemoveAllFromOverview() { return qgis->actionRe
 QAction *QgisAppInterface::actionHideAllLayers() { return qgis->actionHideAllLayers(); }
 QAction *QgisAppInterface::actionShowAllLayers() { return qgis->actionShowAllLayers(); }
 QAction *QgisAppInterface::actionHideSelectedLayers() { return qgis->actionHideSelectedLayers(); }
+QAction*QgisAppInterface::actionHideDeselectedLayers() { return qgis->actionHideDeselectedLayers(); }
 QAction *QgisAppInterface::actionShowSelectedLayers() { return qgis->actionShowSelectedLayers(); }
 
 //! Plugin menu actions

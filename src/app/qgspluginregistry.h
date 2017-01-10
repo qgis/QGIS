@@ -21,6 +21,7 @@
 
 #include <QMap>
 #include "qgspluginmetadata.h"
+#include "qgis_app.h"
 
 class QgsPythonUtils;
 class QgisPlugin;

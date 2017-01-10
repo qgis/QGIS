@@ -16,6 +16,7 @@
 #define QGS_LEGEND_FILTER_BUTTON_H
 
 #include <QToolButton>
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 
@@ -38,7 +39,6 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
      * @param parent The parent QWidget
      */
     QgsLegendFilterButton( QWidget* parent = nullptr );
-    ~QgsLegendFilterButton();
 
     /**
      * Returns the current text used as filter expression

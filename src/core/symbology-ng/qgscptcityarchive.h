@@ -17,6 +17,7 @@
 #ifndef QGSCPTCITYARCHIVE_H
 #define QGSCPTCITYARCHIVE_H
 
+#include "qgis_core.h"
 #include "qgscolorramp.h"
 
 #include <QAbstractItemModel>
@@ -40,6 +41,11 @@ class CORE_EXPORT QgsCptCityArchive
     QgsCptCityArchive( const QString& archiveName = DEFAULT_CPTCITY_ARCHIVE,
                        const QString& baseDir = QString() );
     ~QgsCptCityArchive();
+
+    //! QgsCptCityArchive cannot be copied
+    QgsCptCityArchive( const QgsCptCityArchive& rh ) = delete;
+    //! QgsCptCityArchive cannot be copied
+    QgsCptCityArchive& operator=( const QgsCptCityArchive& rh ) = delete;
 
     // basic dir info
     QString baseDir() const;
@@ -82,10 +88,6 @@ class CORE_EXPORT QgsCptCityArchive
     // mapping of copyinginfo, key is fileName
     static QMap< QString, QMap< QString, QString > > mCopyingInfoMap;
 
-  private:
-
-    QgsCptCityArchive( const QgsCptCityArchive& rh );
-    QgsCptCityArchive& operator=( const QgsCptCityArchive& rh );
 };
 
 /** Base class for all items in the model
@@ -106,7 +108,6 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
 
     QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem* parent,
                         const QString& name, const QString& path );
-    virtual ~QgsCptCityDataItem();
 
     bool hasChildren();
 
@@ -210,7 +211,6 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
                              const QString& name, const QString& path,
                              const QStringList& variantList,
                              bool initialize = false );
-    ~QgsCptCityColorRampItem() {}
 
     // --- reimplemented from QgsCptCityDataItem ---
 
@@ -259,7 +259,6 @@ class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
   public:
     QgsCptCityDirectoryItem( QgsCptCityDataItem* parent,
                              const QString& name, const QString& path );
-    ~QgsCptCityDirectoryItem();
 
     QVector<QgsCptCityDataItem*> createChildren() override;
 
@@ -283,7 +282,6 @@ class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
     Q_OBJECT
   public:
     QgsCptCitySelectionItem( QgsCptCityDataItem* parent, const QString& name, const QString& path );
-    ~QgsCptCitySelectionItem();
 
     QVector<QgsCptCityDataItem*> createChildren() override;
 
@@ -304,7 +302,6 @@ class CORE_EXPORT QgsCptCityAllRampsItem : public QgsCptCityCollectionItem
   public:
     QgsCptCityAllRampsItem( QgsCptCityDataItem* parent, const QString& name,
                             const QVector<QgsCptCityDataItem*>& items );
-    ~QgsCptCityAllRampsItem();
 
     QVector<QgsCptCityDataItem*> createChildren() override;
 

@@ -23,10 +23,6 @@ QgsDetailedItemWidget::QgsDetailedItemWidget( QWidget * parent )
   setupUi( this );
 }
 
-QgsDetailedItemWidget::~QgsDetailedItemWidget()
-{
-}
-
 void QgsDetailedItemWidget::setData( const QgsDetailedItemData& theData )
 {
   lblTitle->setText( theData.title() );

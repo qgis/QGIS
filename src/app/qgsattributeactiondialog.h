@@ -27,6 +27,7 @@ back to QgsVectorLayer.
 #include "qgsattributetableconfig.h"
 #include "qgsaction.h"
 #include <QMap>
+#include "qgis_app.h"
 
 class QgsActionManager;
 class QgsVectorLayer;
@@ -48,8 +49,6 @@ class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttrib
   public:
     QgsAttributeActionDialog( const QgsActionManager& actions,
                               QWidget* parent = nullptr );
-
-    ~QgsAttributeActionDialog() {}
 
     void init( const QgsActionManager& action , const QgsAttributeTableConfig& attributeTableConfig );
 

@@ -11,9 +11,16 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Configure shortcuts</string>
+   <string>Keyboard shortcuts</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QgsFilterLineEdit" name="mLeFilter">
+     <property name="placeholderText">
+      <string>Search...</string>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QTreeWidget" name="treeActions">
      <property name="rootIsDecorated">
@@ -110,6 +117,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>treeActions</tabstop>
   <tabstop>btnSetNoShortcut</tabstop>

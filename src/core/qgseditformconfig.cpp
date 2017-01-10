@@ -93,6 +93,9 @@ QgsEditFormConfig::QgsEditFormConfig( const QgsEditFormConfig& o )
 {
 }
 
+QgsEditFormConfig::~QgsEditFormConfig()
+{}
+
 QgsEditFormConfig& QgsEditFormConfig::operator=( const QgsEditFormConfig & o )
 {
   d = o.d;
@@ -102,11 +105,6 @@ QgsEditFormConfig& QgsEditFormConfig::operator=( const QgsEditFormConfig & o )
 bool QgsEditFormConfig::operator==( const QgsEditFormConfig& o )
 {
   return d == o.d;
-}
-
-QgsEditFormConfig::~QgsEditFormConfig()
-{
-
 }
 
 void QgsEditFormConfig::addTab( QgsAttributeEditorElement* data )

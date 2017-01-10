@@ -547,7 +547,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   connect( mActionShowRulers, SIGNAL( triggered( bool ) ), this, SLOT( toggleRulers( bool ) ) );
 
   //init undo/redo buttons
-  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings() );
+  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings(), QgsProject::instance() );
 
   mActionUndo->setEnabled( false );
   mActionRedo->setEnabled( false );
@@ -878,7 +878,7 @@ void QgsComposer::changeEvent( QEvent* event )
 #endif
     case QEvent::WindowStateChange:
     {
-      /* Listen out for window un-minimisation and restore composer map states.
+      /* Listen out for window un-minimization and restore composer map states.
        * We can't use showEvent to detect this due to QT Bug 36675 (see #6085).
        */
       QWindowStateChangeEvent* changeEv = static_cast< QWindowStateChangeEvent* >( event );
@@ -1128,7 +1128,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
   bool previewEnabled = mComposition->setAtlasMode( checked ? QgsComposition::PreviewAtlas : QgsComposition::AtlasOff );
   if ( !previewEnabled )
   {
-    //something went wrong, eg, no matching features
+    //something went wrong, e.g., no matching features
     QMessageBox::warning( nullptr, tr( "Enable atlas preview" ),
                           tr( "No matching atlas features found!" ),
                           QMessageBox::Ok,
@@ -2488,7 +2488,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
                                "with layers not being clipped to the map "
                                "bounding box.</p>" )
                          + tr( "If you require a vector-based output file from "
-                               "Qgis it is suggested that you try printing "
+                               "QGIS it is suggested that you try printing "
                                "to PostScript if the SVG output is not "
                                "satisfactory."
                                "</p>" ) );
@@ -3471,7 +3471,7 @@ void QgsComposer::writeXml( QDomNode& parentNode, QDomDocument& doc )
   QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
   composerElem.setAttribute( QStringLiteral( "title" ), mTitle );
 
-  //change preview mode of minimised / hidden maps before saving XML (show contents only on demand)
+  //change preview mode of minimized / hidden maps before saving XML (show contents only on demand)
   QMap< QgsComposerMap*, int >::const_iterator mapIt = mMapsToRestore.constBegin();
   for ( ; mapIt != mMapsToRestore.constEnd(); ++mapIt )
   {
@@ -3543,7 +3543,7 @@ void QgsComposer::readXml( const QDomElement& composerElem, const QDomDocument& 
   createComposerView();
 
   //read composition settings
-  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings() );
+  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings(), QgsProject::instance() );
   QDomNodeList compositionNodeList = composerElem.elementsByTagName( QStringLiteral( "Composition" ) );
   if ( compositionNodeList.size() > 0 )
   {

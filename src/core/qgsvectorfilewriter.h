@@ -19,6 +19,7 @@
 #ifndef QGSVECTORFILEWRITER_H
 #define QGSVECTORFILEWRITER_H
 
+#include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgssymbol.h"
 #include <ogr_api.h>
@@ -55,7 +56,7 @@ class CORE_EXPORT QgsVectorFileWriter
         Option( const QString& docString, OptionType type )
             : docString( docString )
             , type( type ) {}
-        virtual ~Option() {}
+        virtual ~Option() = default;
 
         QString docString;
         OptionType type;
@@ -182,8 +183,7 @@ class CORE_EXPORT QgsVectorFileWriter
         //! Constructor
         FieldValueConverter();
 
-        //! Destructor
-        virtual ~FieldValueConverter();
+        virtual ~FieldValueConverter() = default;
 
         /** Return a possibly modified field definition. Default implementation will return provided field unmodified.
          * @param field original field definition
@@ -337,8 +337,7 @@ class CORE_EXPORT QgsVectorFileWriter
         //! Constructor
         SaveVectorOptions();
 
-        //! Destructor
-        virtual ~SaveVectorOptions();
+        virtual ~SaveVectorOptions() = default;
 
         //! OGR driver to use
         QString driverName;
@@ -420,6 +419,11 @@ class CORE_EXPORT QgsVectorFileWriter
                          QString *newFilename = nullptr,
                          SymbologyExport symbologyExport = NoSymbology
                        );
+
+    //! QgsVectorFileWriter cannot be copied.
+    QgsVectorFileWriter( const QgsVectorFileWriter& rh ) = delete;
+    //! QgsVectorFileWriter cannot be copied.
+    QgsVectorFileWriter& operator=( const QgsVectorFileWriter& rh ) = delete;
 
     //! Returns map with format filter string as key and OGR format key as value
     static QMap< QString, QString> supportedFiltersAndFormats();
@@ -537,9 +541,7 @@ class CORE_EXPORT QgsVectorFileWriter
 
     SymbologyExport mSymbologyExport;
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1700
     QMap< QgsSymbolLayer*, QString > mSymbolLayerTable;
-#endif
 
     //! Scale for symbology export (e.g. for symbols units in map units)
     double mSymbologyScaleDenominator;
@@ -608,9 +610,6 @@ class CORE_EXPORT QgsVectorFileWriter
     //! Adds attributes needed for classification
     void addRendererAttributes( QgsVectorLayer* vl, QgsAttributeList& attList );
     static QMap<QString, MetaData> sDriverMetadata;
-
-    QgsVectorFileWriter( const QgsVectorFileWriter& rh );
-    QgsVectorFileWriter& operator=( const QgsVectorFileWriter& rh );
 
     //! Concatenates a list of options using their default values
     static QStringList concatenateOptions( const QMap<QString, Option*>& options );

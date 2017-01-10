@@ -19,6 +19,7 @@
 #ifndef QGSVECTORLAYER_H
 #define QGSVECTORLAYER_H
 
+#include "qgis_core.h"
 #include <QMap>
 #include <QSet>
 #include <QList>
@@ -447,15 +448,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param  path  The path or url of the parameter.  Typically this encodes
      *               parameters used by the data provider as url query items.
      * @param  baseName The name used to represent the layer in the legend
-     * @param  providerLib  The name of the data provider, eg "memory", "postgres"
+     * @param  providerLib  The name of the data provider, e.g., "memory", "postgres"
      * @param  loadDefaultStyleFlag whether to load the default style
      *
      */
     QgsVectorLayer( const QString& path = QString::null, const QString& baseName = QString::null,
                     const QString& providerLib = QString::null, bool loadDefaultStyleFlag = true );
 
-    //! Destructor
+
     virtual ~QgsVectorLayer();
+
+    //! QgsVectorLayer cannot be copied.
+    QgsVectorLayer( const QgsVectorLayer & rhs ) = delete;
+    //! QgsVectorLayer cannot be copied.
+    QgsVectorLayer & operator=( QgsVectorLayer const & rhs ) = delete;
 
     //! Returns the permanent storage type for this layer as a friendly name.
     QString storageType() const;
@@ -1951,13 +1957,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns true if the provider is in read-only mode
      */
     virtual bool isReadOnly() const override;
-
-    //! Vector layers are not copyable
-    QgsVectorLayer( const QgsVectorLayer & rhs );
-
-    //! Vector layers are not copyable
-    QgsVectorLayer & operator=( QgsVectorLayer const & rhs );
-
 
     /** Bind layer to a specific data provider
      * @param provider should be "postgres", "ogr", or ??

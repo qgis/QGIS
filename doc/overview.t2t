@@ -1,7 +1,7 @@
 
 = Overview = 
 
-QGIS, like a number of major projects (eg. KDE 4.0), uses CMake
+QGIS, like a number of major projects (e.g., KDE 4.0), uses CMake
 (http://www.cmake.org) for building from source.
 
 Following a summary of the required dependencies for building:
@@ -15,14 +15,17 @@ Required build tools:
 
 Required build dependencies:
 
-- Qt >= 4.8.0
+- Qt >= 5.3.0
 - Proj >= 4.4.x
 - GEOS >= 3.4
 - Sqlite3 >= 3.0.0
-- GDAL/OGR >= 1.4.x
+- SpatiaLite
+- libspatialindex
+- GDAL/OGR >= 2.0
 - Qwt >= 5.0 & (< 6.1 with internal QwtPolar)
 - expat >= 1.95
 - QScintilla2
+- QCA
 -
 
 Optional dependencies:
@@ -34,15 +37,15 @@ Optional dependencies:
 - for georeferencer - GSL >= 1.8
 - for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
 - for gps plugin - gpsbabel
-- for mapserver export and PyQGIS - Python >= 2.3 (2.5+ preferred)
-- for python support - SIP >= 4.12, PyQt >= 4.8.3 must match Qt version, Qscintilla2
+- for mapserver export and PyQGIS - Python >= 3.3
+- for python support - SIP >= 4.12, PyQt >= 5.3 must match Qt version, Qscintilla2
 - for qgis mapserver - FastCGI
 - for oracle provider - Oracle OCI library
 -
 
 Indirect dependencies:
 
-Some proprietary formats (eg. ECW and MrSid) supported by GDAL require
+Some proprietary formats (e.g., ECW and MrSid) supported by GDAL require
 proprietary third party libraries.  QGIS doesn't need any of those itself to
 build, but will only support those formats if GDAL is built accordingly.  Refer
 to http://gdal.org/formats_list.html ff. for instructions how to include

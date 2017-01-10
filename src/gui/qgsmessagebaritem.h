@@ -24,6 +24,7 @@
 #include <QIcon>
 #include <QTextEdit>
 #include <QHBoxLayout>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsMessageBarItem
@@ -43,8 +44,6 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
 
     //! make out a widget containing a widget to be displayed on the bar
     QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent = nullptr );
-
-    ~QgsMessageBarItem();
 
     QgsMessageBarItem *setText( const QString& text );
 

@@ -138,7 +138,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
     mRemoveCustomVarBtn->setEnabled( false );
     mCustomVariablesTable->setEnabled( false );
   }
-  QStringList customVarsList = mSettings->value( QStringLiteral( "qgis/customEnvVars" ), "" ).toStringList();
+  QStringList customVarsList = mSettings->value( QStringLiteral( "qgis/customEnvVars" ) ).toStringList();
   Q_FOREACH ( const QString &varStr, customVarsList )
   {
     int pos = varStr.indexOf( QLatin1Char( '|' ) );
@@ -221,25 +221,20 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
     mCurrentVariablesTable->resizeColumnToContents( 0 );
 
   //local directories to search when loading c++ plugins
-  QString myPaths = mSettings->value( QStringLiteral( "plugins/searchPathsForPlugins" ), "" ).toString();
-  if ( !myPaths.isEmpty() )
+  QStringList pathList = mSettings->value( QStringLiteral( "plugins/searchPathsForPlugins" ) ).toStringList();
+  Q_FOREACH ( const QString& path, pathList )
   {
-    QStringList myPathList = myPaths.split( '|' );
-    QStringList::const_iterator pathIt = myPathList.constBegin();
-    for ( ; pathIt != myPathList.constEnd(); ++pathIt )
-    {
-      QListWidgetItem* newItem = new QListWidgetItem( mListPluginPaths );
-      newItem->setText( *pathIt );
-      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-      mListPluginPaths->addItem( newItem );
-    }
+    QListWidgetItem* newItem = new QListWidgetItem( mListPluginPaths );
+    newItem->setText( path );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mListPluginPaths->addItem( newItem );
   }
 
   //local directories to search when looking for an SVG with a given basename
-  QStringList svgPaths = QgsApplication::svgPaths();
-  if ( !svgPaths.isEmpty() )
+  pathList = QgsApplication::svgPaths();
+  if ( !pathList.isEmpty() )
   {
-    Q_FOREACH ( const QString& path, svgPaths )
+    Q_FOREACH ( const QString& path, pathList )
     {
       QListWidgetItem* newItem = new QListWidgetItem( mListSVGPaths );
       newItem->setText( path );
@@ -248,10 +243,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
     }
   }
 
-  QStringList templatePaths = QgsApplication::composerTemplatePaths();
-  if ( !templatePaths.isEmpty() )
+  //local directories to search when looking for a composer templates
+  pathList = QgsApplication::composerTemplatePaths();
+  if ( !pathList.isEmpty() )
   {
-    Q_FOREACH ( const QString& path, templatePaths )
+    Q_FOREACH ( const QString& path, pathList )
     {
       QListWidgetItem* newItem = new QListWidgetItem( mListComposerTemplatePaths );
       newItem->setText( path );
@@ -260,13 +256,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
     }
   }
 
-  QStringList hiddenItems = mSettings->value( QStringLiteral( "/browser/hiddenPaths" ),
-                            QStringList() ).toStringList();
-  QStringList::const_iterator pathIt = hiddenItems.constBegin();
-  for ( ; pathIt != hiddenItems.constEnd(); ++pathIt )
+  //paths hidden from browser
+  pathList = mSettings->value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
+  Q_FOREACH ( const QString& path, pathList )
   {
     QListWidgetItem* newItem = new QListWidgetItem( mListHiddenBrowserPaths );
-    newItem->setText( *pathIt );
+    newItem->setText( path );
     mListHiddenBrowserPaths->addItem( newItem );
   }
 
@@ -300,18 +295,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mProxyTypeComboBox->setCurrentIndex( mProxyTypeComboBox->findText( settingProxyType ) );
 
   //URLs excluded not going through proxies
-  QString proxyExcludedURLs = mSettings->value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toString();
-  if ( !proxyExcludedURLs.isEmpty() )
+  pathList = mSettings->value( QStringLiteral( "proxy/proxyExcludedUrls" ) ).toStringList();
+  Q_FOREACH ( const QString& path, pathList )
   {
-    QStringList splitUrls = proxyExcludedURLs.split( '|' );
-    QStringList::const_iterator urlIt = splitUrls.constBegin();
-    for ( ; urlIt != splitUrls.constEnd(); ++urlIt )
-    {
-      QListWidgetItem* newItem = new QListWidgetItem( mExcludeUrlListWidget );
-      newItem->setText( *urlIt );
-      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-      mExcludeUrlListWidget->addItem( newItem );
-    }
+    QListWidgetItem* newItem = new QListWidgetItem( mExcludeUrlListWidget );
+    newItem->setText( path );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mExcludeUrlListWidget->addItem( newItem );
   }
 
   // cache settings
@@ -703,7 +693,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   pbnMeasureColor->setContext( QStringLiteral( "gui" ) );
   pbnMeasureColor->setDefaultColor( QColor( 222, 155, 67 ) );
 
-  capitaliseCheckBox->setChecked( mSettings->value( QStringLiteral( "/qgis/capitaliseLayerName" ), QVariant( false ) ).toBool() );
+  capitalizeCheckBox->setChecked( mSettings->value( QStringLiteral( "/qgis/capitalizeLayerName" ), QVariant( false ) ).toBool() );
 
   int projOpen = mSettings->value( QStringLiteral( "/qgis/projOpenAtLaunch" ), 0 ).toInt();
   mProjectOnLaunchCmbBx->setCurrentIndex( projOpen );
@@ -731,7 +721,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   spinZoomFactor->setValue( mSettings->value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toDouble() );
 
   // predefined scales for scale combobox
-  myPaths = mSettings->value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
+  QString myPaths = mSettings->value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
   if ( !myPaths.isEmpty() )
   {
     QStringList myScalesList = myPaths.split( ',' );
@@ -753,7 +743,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
 
   //find custom color scheme from registry
   QList<QgsCustomColorScheme *> customSchemes;
-  QgsColorSchemeRegistry::instance()->schemes( customSchemes );
+  QgsApplication::colorSchemeRegistry()->schemes( customSchemes );
   if ( customSchemes.length() > 0 )
   {
     mTreeCustomColors->setScheme( customSchemes.at( 0 ) );
@@ -826,7 +816,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   QStringList myI18nList = i18nList();
   Q_FOREACH ( const QString& l, myI18nList )
   {
-    cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), QLocale( l ).nativeLanguageName(), l );
+    // QTBUG-57802: eo locale is improperly handled
+    QString displayName = l.startsWith( QLatin1String( "eo" ) ) ? QLocale::languageToString( QLocale::Esperanto ) : QLocale( l ).nativeLanguageName();
+    cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), displayName, l );
   }
   cboLocale->setCurrentIndex( cboLocale->findData( myUserLocale ) );
   bool myLocaleOverrideFlag = mSettings->value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
@@ -937,15 +929,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mVariableEditor->reloadContext();
   mVariableEditor->setEditableScopeIndex( 0 );
 
-
-
   mAdvancedSettingsEditor->setSettingsObject( mSettings );
 
   // restore window and widget geometry/state
   restoreOptionsBaseUi();
 }
 
-//! Destructor
+
 QgsOptions::~QgsOptions()
 {
   delete mSettings;
@@ -987,7 +977,7 @@ void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )
 void QgsOptions::on_pbnProjectDefaultSetCurrent_clicked()
 {
   QString fileName = QgsApplication::qgisSettingsDirPath() + QStringLiteral( "project_default.qgs" );
-  if ( QgsProject::instance()->write( QFileInfo( fileName ) ) )
+  if ( QgsProject::instance()->write( fileName ) )
   {
     QMessageBox::information( nullptr, tr( "Save default project" ), tr( "Current project saved as default" ) );
   }
@@ -1081,46 +1071,34 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "qgis/customEnvVars" ), QVariant( customVars ) );
 
   //search directories for user plugins
-  QString myPaths;
+  QStringList pathsList;
   for ( int i = 0; i < mListPluginPaths->count(); ++i )
   {
-    if ( i != 0 )
-    {
-      myPaths += '|';
-    }
-    myPaths += mListPluginPaths->item( i )->text();
+    pathsList << mListPluginPaths->item( i )->text();
   }
-  mSettings->setValue( QStringLiteral( "plugins/searchPathsForPlugins" ), myPaths );
+  mSettings->setValue( QStringLiteral( "help/helpSearchPath" ), pathsList );
 
   //search directories for svgs
-  myPaths.clear();
+  pathsList.clear();
   for ( int i = 0; i < mListSVGPaths->count(); ++i )
   {
-    if ( i != 0 )
-    {
-      myPaths += '|';
-    }
-    myPaths += mListSVGPaths->item( i )->text();
+    pathsList << mListSVGPaths->item( i )->text();
   }
-  mSettings->setValue( QStringLiteral( "svg/searchPathsForSVG" ), myPaths );
+  mSettings->setValue( QStringLiteral( "svg/searchPathsForSVG" ), pathsList );
 
-  myPaths.clear();
+  pathsList.clear();
   for ( int i = 0; i < mListComposerTemplatePaths->count(); ++i )
   {
-    if ( i != 0 )
-    {
-      myPaths += '|';
-    }
-    myPaths += mListComposerTemplatePaths->item( i )->text();
+    pathsList << mListComposerTemplatePaths->item( i )->text();
   }
-  mSettings->setValue( QStringLiteral( "composer/searchPathsForTemplates" ), myPaths );
+  mSettings->setValue( QStringLiteral( "composer/searchPathsForTemplates" ), pathsList );
 
-  QStringList paths;
+  pathsList.clear();
   for ( int i = 0; i < mListHiddenBrowserPaths->count(); ++i )
   {
-    paths << mListHiddenBrowserPaths->item( i )->text();
+    pathsList << mListHiddenBrowserPaths->item( i )->text();
   }
-  mSettings->setValue( QStringLiteral( "/browser/hiddenPaths" ), paths );
+  mSettings->setValue( QStringLiteral( "/browser/hiddenPaths" ), pathsList );
 
   //Network timeout
   mSettings->setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), mNetworkTimeoutSpinBox->value() );
@@ -1213,8 +1191,8 @@ void QgsOptions::saveOptions()
 
   mSettings->setValue( QStringLiteral( "/qgis/map_update_interval" ), spinMapUpdateInterval->value() );
   mSettings->setValue( QStringLiteral( "/qgis/legendDoubleClickAction" ), cmbLegendDoubleClickAction->currentIndex() );
-  bool legendLayersCapitalise = mSettings->value( QStringLiteral( "/qgis/capitaliseLayerName" ), false ).toBool();
-  mSettings->setValue( QStringLiteral( "/qgis/capitaliseLayerName" ), capitaliseCheckBox->isChecked() );
+  bool legendLayersCapitalize = mSettings->value( QStringLiteral( "/qgis/capitalizeLayerName" ), false ).toBool();
+  mSettings->setValue( QStringLiteral( "/qgis/capitalizeLayerName" ), capitalizeCheckBox->isChecked() );
 
   // Default simplify drawing configuration
   QgsVectorSimplifyMethod::SimplifyHints simplifyHints = QgsVectorSimplifyMethod::NoSimplification;
@@ -1404,7 +1382,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), mCurveOffsetMiterLimitComboBox->value() );
 
   // default scale list
-  myPaths.clear();
+  QString myPaths;
   for ( int i = 0; i < mListGlobalScales->count(); ++i )
   {
     if ( i != 0 )
@@ -1470,7 +1448,7 @@ void QgsOptions::saveOptions()
   // refresh legend if any legend item's state is to be changed
   if ( legendLayersBold != mLegendLayersBoldChkBx->isChecked()
        || legendGroupsBold != mLegendGroupsBoldChkBx->isChecked()
-       || legendLayersCapitalise != capitaliseCheckBox->isChecked() )
+       || legendLayersCapitalize != capitalizeCheckBox->isChecked() )
   {
     // TODO[MD] QgisApp::instance()->legend()->updateLegendItemStyles();
   }
@@ -1492,12 +1470,6 @@ void QgsOptions::saveOptions()
   }
 
   saveDefaultDatumTransformations();
-
-  QgsApplication* app = qobject_cast<QgsApplication*>( QgsApplication::instance() );
-  if ( app )
-  {
-    app->emitSettingsChanged();
-  }
 }
 
 void QgsOptions::rejectOptions()
@@ -1886,12 +1858,8 @@ void QgsOptions::loadGdalDriverList()
 
     // in GDAL 2.0 vector and mixed drivers are returned by GDALGetDriver, so filter out non-raster drivers
     // TODO add same UI for vector drivers
-#ifdef GDAL_COMPUTE_VERSION
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
     if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) != "YES" )
       continue;
-#endif
-#endif
 
     myGdalDriverDescription = GDALGetDescription( myGdalDriver );
     myDrivers << myGdalDriverDescription;

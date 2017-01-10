@@ -20,6 +20,7 @@
 
 #include <QList>
 #include "qgssnapper.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QPoint;
@@ -41,6 +42,11 @@ class GUI_EXPORT QgsMapCanvasSnapper
     QgsMapCanvasSnapper();
 
     ~QgsMapCanvasSnapper();
+
+    //! QgsMapCanvasSnapper cannot be copied
+    QgsMapCanvasSnapper( const QgsMapCanvasSnapper& rh ) = delete;
+    //! QgsMapCanvasSnapper cannot be copied
+    QgsMapCanvasSnapper& operator=( const QgsMapCanvasSnapper& rh ) = delete;
 
     /** Does a snap to the current layer. Uses snap mode
      * QgsSnapper::SnapWithResultsForSamePosition if topological editing is enabled
@@ -78,8 +84,6 @@ class GUI_EXPORT QgsMapCanvasSnapper
     //! The object which does the snapping operations
     QgsSnapper* mSnapper;
 
-    QgsMapCanvasSnapper( const QgsMapCanvasSnapper& rh );
-    QgsMapCanvasSnapper& operator=( const QgsMapCanvasSnapper& rh );
 };
 
 #endif

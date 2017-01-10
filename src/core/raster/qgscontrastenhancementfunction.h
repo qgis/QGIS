@@ -19,6 +19,7 @@ email                : ersts@amnh.org
 #ifndef QGSCONTRASTENHANCEMENTFUNCTION_H
 #define QGSCONTRASTENHANCEMENTFUNCTION_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 
 /** \ingroup core
@@ -33,7 +34,7 @@ class CORE_EXPORT QgsContrastEnhancementFunction
   public:
     QgsContrastEnhancementFunction( Qgis::DataType, double, double );
     QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction& f );
-    virtual ~QgsContrastEnhancementFunction() {}
+    virtual ~QgsContrastEnhancementFunction() = default;
 
     //! \brief A customizable method that takes in a double and returns a int between 0 and 255
     virtual int enhance( double );

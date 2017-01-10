@@ -58,11 +58,6 @@ QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColo
   connect( this, SIGNAL( rejected() ), this, SLOT( discardColor() ) );
 }
 
-QgsColorDialog::~QgsColorDialog()
-{
-
-}
-
 QColor QgsColorDialog::color() const
 {
   return mColorWidget->color();

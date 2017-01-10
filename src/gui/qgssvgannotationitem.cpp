@@ -26,11 +26,6 @@ QgsSvgAnnotationItem::QgsSvgAnnotationItem( QgsMapCanvas* canvas ): QgsAnnotatio
 
 }
 
-QgsSvgAnnotationItem::~QgsSvgAnnotationItem()
-{
-
-}
-
 void QgsSvgAnnotationItem::writeXml( QDomDocument& doc ) const
 {
   QDomElement documentElem = doc.documentElement();

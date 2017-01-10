@@ -33,10 +33,6 @@ QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, double tole
 {
 }
 
-QgsMapToPixelSimplifier::~QgsMapToPixelSimplifier()
-{
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Helper simplification methods
 

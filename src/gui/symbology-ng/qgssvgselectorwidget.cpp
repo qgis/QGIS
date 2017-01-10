@@ -242,7 +242,7 @@ QPixmap QgsSvgSelectorListModel::createPreview( const QString& entry ) const
   bool fillParam, fillOpacityParam, outlineParam, outlineWidthParam, outlineOpacityParam;
   bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false,
                              hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
-  QgsSvgCache::instance()->containsParams( entry, fillParam, hasDefaultFillColor, fill,
+  QgsApplication::svgCache()->containsParams( entry, fillParam, hasDefaultFillColor, fill,
       fillOpacityParam, hasDefaultFillOpacity, fillOpacity,
       outlineParam, hasDefaultOutlineColor, outline,
       outlineWidthParam, hasDefaultOutlineWidth, outlineWidth,
@@ -259,7 +259,7 @@ QPixmap QgsSvgSelectorListModel::createPreview( const QString& entry ) const
     outlineWidth = 0.2;
 
   bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-  const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
+  const QImage& img = QgsApplication::svgCache()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
   return QPixmap::fromImage( img );
 }
 

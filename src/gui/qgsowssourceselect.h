@@ -27,6 +27,7 @@
 #include <QStringList>
 #include <QPushButton>
 #include <QNetworkRequest>
+#include "qgis_gui.h"
 
 class QgsDataProvider;
 class QButtonGroup;
@@ -58,7 +59,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
 
     //! Constructor
     QgsOWSSourceSelect( const QString& service, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
-    //! Destructor
+
     ~QgsOWSSourceSelect();
 
   public slots:

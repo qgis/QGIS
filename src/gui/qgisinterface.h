@@ -49,6 +49,7 @@ class QgsVectorLayerTools;
 
 #include "qgis.h"
 #include "qgsmaplayer.h"
+#include "qgis_gui.h"
 
 
 /** \ingroup gui
@@ -71,9 +72,6 @@ class GUI_EXPORT QgisInterface : public QObject
 
     //! Constructor
     QgisInterface();
-
-    //! Virtual destructor
-    virtual ~QgisInterface();
 
     virtual QgsPluginManagerInterface* pluginManagerInterface() = 0;
 
@@ -539,6 +537,12 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionHideAllLayers() = 0;
     virtual QAction *actionShowAllLayers() = 0;
     virtual QAction *actionHideSelectedLayers() = 0;
+
+    /**
+     * Returns the Hide Deselected Layers action.
+     * @note added in QGIS 3.0
+     */
+    virtual QAction *actionHideDeselectedLayers() = 0;
     virtual QAction *actionShowSelectedLayers() = 0;
 
     // Plugin menu actions

@@ -18,6 +18,7 @@
 #ifndef QGSVECTORLAYERJOINBUFFER_H
 #define QGSVECTORLAYERJOINBUFFER_H
 
+#include "qgis_core.h"
 #include "qgsvectorlayer.h"
 
 #include <QHash>
@@ -34,7 +35,6 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
     Q_OBJECT
   public:
     QgsVectorLayerJoinBuffer( QgsVectorLayer* layer = nullptr );
-    ~QgsVectorLayerJoinBuffer();
 
     /** Joins another vector layer to this layer
       @param joinInfo join object containing join layer id, target and source field

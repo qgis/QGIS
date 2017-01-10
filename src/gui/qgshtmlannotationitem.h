@@ -22,6 +22,7 @@
 #include "qgsfeature.h"
 
 #include <QObject>
+#include "qgis_gui.h"
 
 class QGraphicsProxyWidget;
 class QgsWebView;
@@ -36,13 +37,10 @@ class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
     ~QgsHtmlAnnotationItem();
 
     void paint( QPainter * painter ) override;
-
-    //! paint function called by map canvas
     void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr ) override;
 
     QSizeF minimumFrameSize() const override;
 
-    //! Reimplemented from QgsAnnotationItem
     void setMapPosition( const QgsPoint& pos ) override;
 
     void setHTMLPage( const QString& htmlFile );

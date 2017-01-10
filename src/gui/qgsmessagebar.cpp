@@ -99,10 +99,6 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   setVisible( false );
 }
 
-QgsMessageBar::~QgsMessageBar()
-{
-}
-
 void QgsMessageBar::mousePressEvent( QMouseEvent * e )
 {
   if ( mCountProgress == childAt( e->pos() ) && e->button() == Qt::LeftButton )

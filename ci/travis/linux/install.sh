@@ -20,6 +20,7 @@ ln -s ${HOME}/osgeo4travis/bin/ccache ${HOME}/osgeo4travis/bin/clang++-${LLVM_VE
 ln -s ${HOME}/osgeo4travis/bin/ccache ${HOME}/osgeo4travis/bin/clang-${LLVM_VERSION}
 
 ccache -s
+ccache -z
 
 export CXX="clang++-${LLVM_VERSION}"
 export CC="clang-${LLVM_VERSION}"
@@ -38,21 +39,39 @@ CLANG_WARNINGS=""
 # Include this line for debug reasons
 #      -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 #
-cmake \
-      -DCMAKE_PREFIX_PATH=/home/travis/osgeo4travis \
-      -DWITH_STAGED_PLUGINS=ON \
-      -DWITH_GRASS=ON \
-      -DWITH_GRASS7=ON \
-      -DGRASS_PREFIX7=/home/travis/osgeo4travis/grass-7.0.4 \
-      -DSUPPRESS_QT_WARNINGS=ON \
-      -DENABLE_MODELTEST=ON \
-      -DENABLE_PGTEST=ON \
-      -DWITH_QSPATIALITE=ON \
-      -DWITH_QWTPOLAR=OFF \
-      -DWITH_APIDOC=ON \
-      -DWITH_ASTYLE=ON \
-      -DWITH_SERVER=ON \
-      -DWITH_INTERNAL_YAML=OFF \
-      -DDISABLE_DEPRECATED=ON \
-      -DCXX_EXTRA_FLAGS="$CLANG_WARNINGS" \
-      ..
+CMAKE_FLAGS="
+      -DCMAKE_PREFIX_PATH=/home/travis/osgeo4travis
+      -DWITH_STAGED_PLUGINS=ON
+      -DWITH_GRASS=ON
+      -DWITH_GRASS7=ON
+      -DGRASS_PREFIX7=/home/travis/osgeo4travis/grass-7.0.4
+      -DSUPPRESS_QT_WARNINGS=ON
+      -DENABLE_MODELTEST=ON
+      -DENABLE_PGTEST=ON
+      -DWITH_QSPATIALITE=ON
+      -DWITH_QWTPOLAR=OFF
+      -DWITH_APIDOC=ON
+      -DWITH_ASTYLE=ON
+      -DWITH_INTERNAL_YAML=OFF
+      -DDISABLE_DEPRECATED=ON
+      -DCXX_EXTRA_FLAGS=${CLANG_WARNINGS}
+      "
+
+# The following options trigger a minimalized build to
+# reduce the travis build time so we don't time out and
+# have a chance of slowly filling the ccache.
+if [ "$CACHE_WARMING" = true ] ; then
+  CMAKE_FLAGS="
+    ${CMAKE_FLAGS}
+    -DWITH_DESKTOP=OFF
+    -DWITH_SERVER=OFF
+  "
+else
+  CMAKE_FLAGS="
+    ${CMAKE_FLAGS}
+    -DWITH_DESKTOP=ON
+    -DWITH_SERVER=ON
+  "
+fi
+
+cmake $CMAKE_FLAGS ..

@@ -86,12 +86,6 @@ QgsSymbolLayerAbstractMetadata* QgsSymbolLayerRegistry::symbolLayerMetadata( con
   return mMetadata.value( name );
 }
 
-QgsSymbolLayerRegistry* QgsSymbolLayerRegistry::instance()
-{
-  static QgsSymbolLayerRegistry mInstance;
-  return &mInstance;
-}
-
 QgsSymbolLayer* QgsSymbolLayerRegistry::defaultSymbolLayer( QgsSymbol::SymbolType type )
 {
   switch ( type )

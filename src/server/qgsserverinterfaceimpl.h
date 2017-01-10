@@ -39,7 +39,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     //! Constructor
     explicit QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache );
 
-    //! Destructor
+
     ~QgsServerInterfaceImpl();
 
     void setRequestHandler( QgsRequestHandler* requestHandler ) override;

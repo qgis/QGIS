@@ -21,6 +21,7 @@
 #include <QDialog>
 #include <QSslError>
 #include "ui_qgsauthsslerrorsdialog.h"
+#include "qgis_gui.h"
 
 class QNetworkReply;
 class QPushButton;
@@ -46,8 +47,6 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
                             QWidget *parent = nullptr ,
                             const QString &digest = QString(),
                             const QString &hostport = QString() );
-    ~QgsAuthSslErrorsDialog();
-
 
   private slots:
     void loadUnloadCertificate( bool load );

@@ -19,6 +19,7 @@
 #ifndef QGSLABELSEARCHTREE_H
 #define QGSLABELSEARCHTREE_H
 
+#include "qgis_core.h"
 #include <QList>
 #include <QVector>
 #include <pointset.h>
@@ -35,6 +36,11 @@ class CORE_EXPORT QgsLabelSearchTree
   public:
     QgsLabelSearchTree();
     ~QgsLabelSearchTree();
+
+    //! QgsLabelSearchTree cannot be copied.
+    QgsLabelSearchTree( const QgsLabelSearchTree& rh ) = delete;
+    //! QgsLabelSearchTree cannot be copied.
+    QgsLabelSearchTree& operator=( const QgsLabelSearchTree& rh ) = delete;
 
     //! Removes and deletes all the entries
     void clear();
@@ -62,8 +68,6 @@ class CORE_EXPORT QgsLabelSearchTree
     mutable pal::RTree<QgsLabelPosition*, double, 2, double> mSpatialIndex;
     QList< QgsLabelPosition* > mOwnedPositions;
 
-    QgsLabelSearchTree( const QgsLabelSearchTree& rh );
-    QgsLabelSearchTree& operator=( const QgsLabelSearchTree& rh );
 };
 
 #endif // QGSLABELTREE_H

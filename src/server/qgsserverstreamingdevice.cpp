@@ -25,9 +25,6 @@ QgsServerStreamingDevice::QgsServerStreamingDevice(): QIODevice( nullptr ), mReq
 
 }
 
-QgsServerStreamingDevice::~QgsServerStreamingDevice()
-{
-}
 
 bool QgsServerStreamingDevice::open( OpenMode mode )
 {

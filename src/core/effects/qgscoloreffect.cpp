@@ -41,11 +41,6 @@ QgsColorEffect::QgsColorEffect()
 
 }
 
-QgsColorEffect::~QgsColorEffect()
-{
-
-}
-
 void QgsColorEffect::draw( QgsRenderContext &context )
 {
   if ( !source() || !enabled() || !context.painter() )
@@ -53,7 +48,7 @@ void QgsColorEffect::draw( QgsRenderContext &context )
 
   QPainter* painter = context.painter();
 
-  //rasterise source and apply modifications
+  //rasterize source and apply modifications
   QImage image = sourceAsImage( context )->copy();
 
   QgsImageOperation::adjustBrightnessContrast( image, mBrightness, mContrast / 100.0 + 1 );

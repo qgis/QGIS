@@ -18,6 +18,7 @@
 #ifndef QGSRECTANGLE_H
 #define QGSRECTANGLE_H
 
+#include "qgis_core.h"
 #include <iosfwd>
 #include <QDomDocument>
 
@@ -43,7 +44,7 @@ class CORE_EXPORT QgsRectangle
     QgsRectangle( const QRectF & qRectF );
     //! Copy constructor
     QgsRectangle( const QgsRectangle &other );
-    //! Destructor
+
     ~QgsRectangle();
     //! Set the rectangle from two QgsPoints. The rectangle is
     //! normalised after construction.

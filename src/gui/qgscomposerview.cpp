@@ -335,7 +335,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       }
 
       //find highest non-locked QgsComposerItem at clicked position
-      //(other graphics items may be higher, eg selection handles)
+      //(other graphics items may be higher, e.g., selection handles)
       QList<QGraphicsItem*>::iterator itemIter = itemsAtCursorPos.begin();
       for ( ; itemIter != itemsAtCursorPos.end(); ++itemIter )
       {
@@ -1951,7 +1951,7 @@ void QgsComposerView::wheelEvent( QWheelEvent* event )
 {
   if ( mRubberBandItem || mRubberBandLineItem )
   {
-    //ignore wheel events while marquee operations are active (eg, creating new item)
+    //ignore wheel events while marquee operations are active (e.g., creating new item)
     return;
   }
 

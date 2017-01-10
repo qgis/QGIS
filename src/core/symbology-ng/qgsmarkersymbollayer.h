@@ -16,6 +16,7 @@
 #ifndef QGSMARKERSYMBOLLAYERV2_H
 #define QGSMARKERSYMBOLLAYERV2_H
 
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 
 #define DEFAULT_SIMPLEMARKER_NAME         "circle"
@@ -256,7 +257,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      */
     void setBorderColor( const QColor& color ) { mBorderColor = color; }
 
-    /** Returns the marker's outline style (eg solid, dashed, etc)
+    /** Returns the marker's outline style (e.g., solid, dashed, etc)
      * @note added in 2.4
      * @see setOutlineStyle()
      * @see borderColor()
@@ -264,7 +265,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     */
     Qt::PenStyle outlineStyle() const { return mOutlineStyle; }
 
-    /** Sets the marker's outline style (eg solid, dashed, etc)
+    /** Sets the marker's outline style (e.g., solid, dashed, etc)
      * @param outlineStyle style
      * @note added in 2.4
      * @see outlineStyle()
@@ -273,7 +274,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     */
     void setOutlineStyle( Qt::PenStyle outlineStyle ) { mOutlineStyle = outlineStyle; }
 
-    /** Returns the marker's outline join style (eg miter, bevel, etc).
+    /** Returns the marker's outline join style (e.g., miter, bevel, etc).
      * @note added in 2.16
      * @see setPenJoinStyle()
      * @see borderColor()
@@ -281,7 +282,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
 
-    /** Sets the marker's outline join style (eg miter, bevel, etc).
+    /** Sets the marker's outline join style (e.g., miter, bevel, etc).
      * @param style join style
      * @note added in 2.16
      * @see penJoinStyle()

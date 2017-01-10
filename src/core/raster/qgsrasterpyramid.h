@@ -18,6 +18,8 @@
 #ifndef QGSRASTERPYRAMID
 #define QGSRASTERPYRAMID
 
+#include "qgis_core.h"
+
 /** \ingroup core
   * This struct is used to store pyramid info for the raster layer.
   */

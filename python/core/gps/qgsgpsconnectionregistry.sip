@@ -6,7 +6,7 @@ class QgsGPSConnectionRegistry
 #include <qgsgpsconnectionregistry.h>
 %End
   public:
-    static QgsGPSConnectionRegistry* instance();
+    QgsGPSConnectionRegistry();
     ~QgsGPSConnectionRegistry();
 
     /** Inserts a connection into the registry. The connection is owned by the registry class until it is unregistered again*/
@@ -15,9 +15,6 @@ class QgsGPSConnectionRegistry
     void unregisterConnection( QgsGPSConnection* c );
 
     QList< QgsGPSConnection *> connectionList() const;
-
-  protected:
-    QgsGPSConnectionRegistry();
 
   private:
 

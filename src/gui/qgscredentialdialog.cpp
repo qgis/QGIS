@@ -46,10 +46,6 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   leUsername->setFocus();
 }
 
-QgsCredentialDialog::~QgsCredentialDialog()
-{
-}
-
 bool QgsCredentialDialog::request( const QString& realm, QString &username, QString &password, const QString& message )
 {
   bool ok;

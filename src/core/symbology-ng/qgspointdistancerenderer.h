@@ -18,6 +18,7 @@
 #ifndef QGSPOINTDISTANCERENDERER_H
 #define QGSPOINTDISTANCERENDERER_H
 
+#include "qgis_core.h"
 #include "qgsrenderer.h"
 #include <QFont>
 
@@ -25,7 +26,7 @@ class QgsSpatialIndex;
 
 /** \class QgsPointDistanceRenderer
  * \ingroup core
- * An abstract base class for distance based point renderers (eg clusterer and displacement renderers).
+ * An abstract base class for distance based point renderers (e.g., clusterer and displacement renderers).
  * QgsPointDistanceRenderer handles calculation of point clusters using a distance based threshold.
  * Subclasses must implement drawGroup() to handle the rendering of individual point clusters
  * in the desired style.

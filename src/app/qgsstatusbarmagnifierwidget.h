@@ -23,6 +23,7 @@ class QHBoxLayout;
 class QgsDoubleSpinBox;
 
 #include <QWidget>
+#include "qgis_app.h"
 
 /**
   * A widget which lets the user select the current level of magnification to
@@ -40,7 +41,7 @@ class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
       */
     QgsStatusBarMagnifierWidget( QWidget* parent = nullptr );
 
-    //! Destructor
+
     virtual ~QgsStatusBarMagnifierWidget();
 
     void setDefaultFactor( double factor );

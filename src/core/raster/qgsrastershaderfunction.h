@@ -25,6 +25,7 @@ email                : ersts@amnh.org
  * typically used to render grayscale images as false color.
  */
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QPair>
 
@@ -33,7 +34,7 @@ class CORE_EXPORT QgsRasterShaderFunction
 
   public:
     QgsRasterShaderFunction( double theMinimumValue = 0.0, double theMaximumValue = 255.0 );
-    virtual ~QgsRasterShaderFunction() {}
+    virtual ~QgsRasterShaderFunction() = default;
 
     //! \brief Set the maximum value
     virtual void setMaximumValue( double );

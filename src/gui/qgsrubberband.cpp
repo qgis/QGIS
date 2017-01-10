@@ -53,10 +53,6 @@ QgsRubberBand::QgsRubberBand()
 {
 }
 
-QgsRubberBand::~QgsRubberBand()
-{
-}
-
 /*!
   Set the outline and fill color.
   */
@@ -195,7 +191,7 @@ void QgsRubberBand::removePoint( int index, bool doUpdate/* = true*/, int geomet
 
   if ( !mPoints[geometryIndex].isEmpty() )
   {
-    // negative index removes from end, eg -1 removes last one
+    // negative index removes from end, e.g., -1 removes last one
     if ( index < 0 )
     {
       index = mPoints.at( geometryIndex ).size() + index;

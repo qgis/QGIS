@@ -53,15 +53,11 @@ class QgsMemoryFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
 
     ~QgsMemoryFeatureIterator();
 
-    //! reset the iterator to the starting position
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
   protected:
 
-    //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
 
     bool nextFeatureUsingList( QgsFeature& feature );

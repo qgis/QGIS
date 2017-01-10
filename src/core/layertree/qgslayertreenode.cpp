@@ -22,8 +22,9 @@
 #include <QStringList>
 
 
-QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t )
+QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t, bool checked )
     : mNodeType( t )
+    , mChecked( checked )
     , mParent( nullptr )
     , mExpanded( true )
 {
@@ -32,6 +33,7 @@ QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t )
 QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode& other )
     : QObject()
     , mNodeType( other.mNodeType )
+    , mChecked( other.mChecked )
     , mParent( nullptr )
     , mExpanded( other.mExpanded )
     , mProperties( other.mProperties )
@@ -59,11 +61,62 @@ QgsLayerTreeNode* QgsLayerTreeNode::readXml( QDomElement& element )
 }
 
 
+void QgsLayerTreeNode::setItemVisibilityChecked( bool checked )
+{
+  if ( mChecked == checked )
+    return;
+  mChecked = checked;
+  emit visibilityChanged( this );
+}
+
+void QgsLayerTreeNode::setItemVisibilityCheckedRecursive( bool checked )
+{
+  setItemVisibilityChecked( checked );
+}
+
+void QgsLayerTreeNode::setItemVisibilityCheckedParentRecursive( bool checked )
+{
+  setItemVisibilityChecked( checked );
+  if ( mParent )
+    mParent->setItemVisibilityCheckedParentRecursive( checked );
+}
+
+bool QgsLayerTreeNode::isVisible() const
+{
+  return mChecked && ( !mParent || mParent->isVisible() );
+}
+
+
 bool QgsLayerTreeNode::isExpanded() const
 {
   return mExpanded;
 }
 
+bool QgsLayerTreeNode::isItemVisibilityCheckedRecursive() const
+{
+  if ( !mChecked )
+    return false;
+  Q_FOREACH ( QgsLayerTreeNode* child, mChildren )
+  {
+    if ( !child->isItemVisibilityCheckedRecursive() )
+      return false;
+  }
+
+  return true;
+}
+
+bool QgsLayerTreeNode::isItemVisibilityUncheckedRecursive() const
+{
+  if ( mChecked )
+    return false;
+  Q_FOREACH ( QgsLayerTreeNode* child, mChildren )
+  {
+    if ( !child->isItemVisibilityUncheckedRecursive() )
+      return false;
+  }
+
+  return true;
+}
 
 void QgsLayerTreeNode::setExpanded( bool expanded )
 {
@@ -134,7 +187,7 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode*
     connect( nodes[i], SIGNAL( willRemoveChildren( QgsLayerTreeNode*, int, int ) ), this, SIGNAL( willRemoveChildren( QgsLayerTreeNode*, int, int ) ) );
     connect( nodes[i], SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ), this, SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ) );
     connect( nodes[i], SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ) );
-    connect( nodes[i], SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ) );
+    connect( nodes[i], &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeNode::visibilityChanged );
     connect( nodes[i], SIGNAL( expandedChanged( QgsLayerTreeNode*, bool ) ), this, SIGNAL( expandedChanged( QgsLayerTreeNode*, bool ) ) );
     connect( nodes[i], SIGNAL( nameChanged( QgsLayerTreeNode*, QString ) ), this, SIGNAL( nameChanged( QgsLayerTreeNode*, QString ) ) );
   }

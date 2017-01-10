@@ -38,7 +38,7 @@ from qgis.PyQt.QtWidgets import (QTreeWidgetItem,
                                  QMessageBox,
                                  QInputDialog,
                                  QColorDialog
-                                )
+                                 )
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import QgsApplication, QgsMapLayer

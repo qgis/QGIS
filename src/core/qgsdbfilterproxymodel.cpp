@@ -22,11 +22,6 @@ QgsDbFilterProxyModel::QgsDbFilterProxyModel( QObject* parent ): QSortFilterProx
 
 }
 
-QgsDbFilterProxyModel::~QgsDbFilterProxyModel()
-{
-
-}
-
 bool QgsDbFilterProxyModel::filterAcceptsRow( int row, const QModelIndex & source_parent ) const
 {
   //if parent is valid, we have a toplevel item that should be always shown

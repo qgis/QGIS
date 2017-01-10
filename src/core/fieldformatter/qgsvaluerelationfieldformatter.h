@@ -16,11 +16,20 @@
 #ifndef QGSVALUERELATIONFIELDKIT_H
 #define QGSVALUERELATIONFIELDKIT_H
 
+#include "qgis_core.h"
 #include "qgsfieldformatter.h"
 
 #include <QVector>
 #include <QVariant>
 
+/**
+ * \ingroup core
+ * Field formatter for a value relation field.
+ * A value relation field formatter looks up the values from
+ * features on another layer.
+ *
+ * \note Added in QGIS 3.0
+ */
 class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
 {
   public:
@@ -49,6 +58,13 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
 
     QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const override;
 
+    /**
+     * Create a cache for a value relation field.
+     * This can be used to keep the value map in the local memory
+     * if doing multiple lookups in a loop.
+     *
+     * \note Added in QGIS 3.0
+     */
     static ValueRelationCache createCache( const QVariantMap& config );
 };
 

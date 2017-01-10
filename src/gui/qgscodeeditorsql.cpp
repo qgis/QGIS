@@ -36,10 +36,6 @@ QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
   setSciLexerSQL();
 }
 
-QgsCodeEditorSQL::~QgsCodeEditorSQL()
-{
-}
-
 /** Internal use.
 
    setAutoCompletionCaseSensitivity( false ) is not sufficient when installing

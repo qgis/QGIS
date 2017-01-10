@@ -223,6 +223,7 @@ SET(QGIS_GUI_SRCS
   qgsfieldmodel.cpp
   qgsfieldproxymodel.cpp
   qgsfieldvalidator.cpp
+  qgsfieldvalueslineedit.cpp
   qgsfiledropedit.cpp
   qgsfilewidget.cpp
   qgsfilterlineedit.cpp
@@ -286,7 +287,6 @@ SET(QGIS_GUI_SRCS
   qgspluginmanagerinterface.cpp
   qgspresetcolorrampdialog.cpp
   qgsprevieweffect.cpp
-  qgsprojectbadlayerguihandler.cpp
   qgsprojectionselectionwidget.cpp
   qgsprojectionselector.cpp
   qgsquerybuilder.cpp
@@ -391,6 +391,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfieldmodel.h
   qgsfieldproxymodel.h
   qgsfieldvalidator.h
+  qgsfieldvalueslineedit.h
   qgsfiledropedit.h
   qgsfilewidget.h
   qgsfilterlineedit.h
@@ -448,7 +449,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgspluginmanagerinterface.h
   qgspresetcolorrampdialog.h
   qgsprevieweffect.h
-  qgsprojectbadlayerguihandler.h
   qgsprojectionselectionwidget.h
   qgsprojectionselector.h
   qgsquerybuilder.h
@@ -788,6 +788,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets/core
   ${CMAKE_CURRENT_SOURCE_DIR}/layertree
   ${CMAKE_CURRENT_SOURCE_DIR}/effects
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
   ../core
   ../core/auth
   ../core/composer
@@ -808,9 +810,6 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
 )
-
-REMOVE_DEFINITIONS("-DGUI_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("\"-DGUI_EXPORT=${DLLEXPORT}\"")
 
 # disable deprecation warnings for classes re-exporting deprecated methods
 IF(MSVC)
@@ -833,6 +832,14 @@ ENDIF(MSVC)
 ADD_LIBRARY(qgis_gui SHARED
      ${QGIS_GUI_SRCS} ${QGIS_GUI_MOC_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_MOC_HDRS}
 )
+
+GENERATE_EXPORT_HEADER(
+   qgis_gui
+   BASE_NAME GUI
+   EXPORT_FILE_NAME qgis_gui.h
+)
+
+SET(QGIS_GUI_HDRS ${QGIS_GUI_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_gui.h)
 
 IF(NOT APPLE)
   INSTALL(FILES ${QGIS_GUI_HDRS} ${QGIS_GUI_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})

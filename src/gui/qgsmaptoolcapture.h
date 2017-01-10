@@ -23,6 +23,7 @@
 
 #include <QPoint>
 #include <QList>
+#include "qgis_gui.h"
 
 class QgsRubberBand;
 class QgsVertexMarker;
@@ -40,13 +41,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! constructor
     QgsMapToolCapture( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget, CaptureMode mode = CaptureNone );
 
-    //! destructor
     virtual ~QgsMapToolCapture();
 
-    //! active the tool
     virtual void activate() override;
-
-    //! deactive the tool
     virtual void deactivate() override;
 
     //! Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS
@@ -59,12 +56,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     const QgsCompoundCurve* captureCurve() const { return &mCaptureCurve; }
 
-
-    /**
-     * Update the rubberband according to mouse position
-     *
-     * @param e The mouse event
-     */
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent * e ) override;
 
     /**

@@ -70,10 +70,6 @@ QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent,
   }
 }
 
-QgsAuthTrustedCAsDialog::~QgsAuthTrustedCAsDialog()
-{
-}
-
 static void setItemBold_( QTreeWidgetItem* item )
 {
   item->setFirstColumnSpanned( true );

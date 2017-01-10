@@ -25,6 +25,8 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import sys
+from inspect import isclass
 from qgis.testing import start_app, unittest
 
 from processing.core.parameters import (Parameter,
@@ -65,6 +67,19 @@ class ParameterTest(unittest.TestCase):
 
         parameter.setValue(123)
         self.assertEqual(parameter.getValueAsCommandLineParameter(), '123')
+
+    def testScriptCode(self):
+        """Simple check that default constructed object export/import correctly"""
+        paramClasses = [c for c in list(sys.modules[__name__].__dict__.values())
+                        if isclass(c) and issubclass(c, Parameter) and c != Parameter]
+
+        for paramClass in paramClasses:
+            param = paramClass()
+            if hasattr(param, 'getAsScriptCode'):
+                code = param.getAsScriptCode()
+                importedParam = paramClass.fromScriptCode(code)
+                self.assertEquals(param.optional, importedParam.optional)
+                self.assertEquals(param.default, importedParam.default, param)
 
 
 class ParameterBooleanTest(unittest.TestCase):
@@ -578,12 +593,29 @@ class ParameterStringTest(unittest.TestCase):
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
         self.assertIsInstance(result, ParameterString)
+        self.assertEqual(result.default, parameter.default)
 
+        parameter.default = None
         parameter.optional = True
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
         self.assertIsInstance(result, ParameterString)
         self.assertTrue(result.optional)
+        self.assertEqual(result.default, parameter.default)
+
+        parameter.default = 'None'
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterString)
+        self.assertTrue(result.optional)
+        self.assertEqual(result.default, parameter.default)
+
+        parameter.default = 'It\'s Mario'
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterString)
+        self.assertTrue(result.optional)
+        self.assertEqual(result.default, parameter.default)
 
 
 class ParameterExpressionTest(unittest.TestCase):
@@ -619,6 +651,7 @@ class ParameterExpressionTest(unittest.TestCase):
         result = getParameterFromString(code)
         self.assertIsInstance(result, ParameterExpression)
         self.assertTrue(result.optional)
+        self.assertEquals(result.default, parameter.default)
 
 
 class ParameterTableFieldTest(unittest.TestCase):

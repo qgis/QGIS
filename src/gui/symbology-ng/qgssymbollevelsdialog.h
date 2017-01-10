@@ -22,6 +22,7 @@
 #include "qgsrenderer.h"
 
 #include "ui_qgssymbollevelsdialogbase.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsSymbolLevelsDialog

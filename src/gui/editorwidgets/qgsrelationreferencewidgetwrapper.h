@@ -17,6 +17,7 @@
 #define QGSRELATIONREFERENCEWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgis_gui.h"
 
 class QgsRelationReferenceWidget;
 class QgsMapCanvas;

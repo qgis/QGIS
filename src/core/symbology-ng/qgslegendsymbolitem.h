@@ -18,6 +18,8 @@
 
 #include <QString>
 
+#include "qgis_core.h"
+
 class QgsSymbol;
 
 /** \ingroup core

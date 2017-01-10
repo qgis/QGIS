@@ -14,6 +14,7 @@
 
 #include "ui_qgsdecorationscalebardialog.h"
 #include <QDialog>
+#include "qgis_app.h"
 
 class QgsDecorationScaleBar;
 

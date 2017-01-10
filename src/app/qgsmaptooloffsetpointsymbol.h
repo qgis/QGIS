@@ -18,6 +18,7 @@
 
 #include "qgsmaptoolpointsymbol.h"
 #include "qgssymbol.h"
+#include "qgis_app.h"
 
 class QgsMarkerSymbol;
 class QgsPointMarkerItem;

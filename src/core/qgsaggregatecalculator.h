@@ -18,6 +18,7 @@
 #ifndef QGSAGGREGATECALCULATOR_H
 #define QGSAGGREGATECALCULATOR_H
 
+#include "qgis_core.h"
 #include "qgsstatisticalsummary.h"
 #include "qgsdatetimestatisticalsummary.h"
 #include "qgsstringstatisticalsummary.h"

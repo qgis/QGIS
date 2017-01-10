@@ -98,9 +98,6 @@ QgsWfsServer::QgsWfsServer()
 {
 }
 
-QgsWfsServer::~QgsWfsServer()
-{
-}
 
 void QgsWfsServer::executeRequest()
 {
@@ -415,7 +412,7 @@ int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format 
 
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
   QDomDocument doc;
   QString errorMsg;

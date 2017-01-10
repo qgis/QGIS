@@ -16,9 +16,11 @@
 #ifndef QGSATLASCOMPOSITION_H
 #define QGSATLASCOMPOSITION_H
 
+#include "qgis_core.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
+#include "qgsexpression.h"
 
 #include <memory>
 #include <QString>
@@ -45,7 +47,6 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     Q_OBJECT
   public:
     QgsAtlasComposition( QgsComposition* composition );
-    ~QgsAtlasComposition();
 
     /** Returns whether the atlas generation is enabled
      * @returns true if atlas is enabled

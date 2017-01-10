@@ -29,11 +29,6 @@ QgsColorScheme::QgsColorScheme()
 
 }
 
-QgsColorScheme::~QgsColorScheme()
-{
-
-}
-
 bool QgsColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
 {
   //base implementation does nothing
@@ -49,11 +44,6 @@ bool QgsColorScheme::setColors( const QgsNamedColorList &colors, const QString &
 //
 
 QgsRecentColorScheme::QgsRecentColorScheme() : QgsColorScheme()
-{
-
-}
-
-QgsRecentColorScheme::~QgsRecentColorScheme()
 {
 
 }
@@ -131,11 +121,6 @@ QColor QgsRecentColorScheme::lastUsedColor()
 
 
 QgsCustomColorScheme::QgsCustomColorScheme() : QgsColorScheme()
-{
-
-}
-
-QgsCustomColorScheme::~QgsCustomColorScheme()
 {
 
 }
@@ -223,11 +208,6 @@ QgsProjectColorScheme::QgsProjectColorScheme()
 
 }
 
-QgsProjectColorScheme::~QgsProjectColorScheme()
-{
-
-}
-
 QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString &context, const QColor &baseColor )
 {
   Q_UNUSED( context );
@@ -291,11 +271,6 @@ QgsProjectColorScheme* QgsProjectColorScheme::clone() const
 
 QgsGplColorScheme::QgsGplColorScheme()
     : QgsColorScheme()
-{
-
-}
-
-QgsGplColorScheme::~QgsGplColorScheme()
 {
 
 }
@@ -368,11 +343,6 @@ QgsUserColorScheme::QgsUserColorScheme( const QString &filename )
   {
     mName = mFilename;
   }
-}
-
-QgsUserColorScheme::~QgsUserColorScheme()
-{
-
 }
 
 QString QgsUserColorScheme::schemeName() const

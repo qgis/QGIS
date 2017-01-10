@@ -19,6 +19,8 @@
 #include "qgsoptional.h"
 #include "qgsexpression.h"
 
+#include "qgis_core.h"
+
 /**
  * \ingroup core
  *

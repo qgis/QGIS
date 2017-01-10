@@ -17,6 +17,7 @@
 #ifndef QGSCOMPOSERNODESITEM_H
 #define QGSCOMPOSERNODESITEM_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include <QBrush>
 #include <QPen>
@@ -44,9 +45,6 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
      * @param c parent composition
      */
     QgsComposerNodesItem( const QString &mTagName, const QPolygonF &polygon, QgsComposition* c );
-
-    //! Destructor
-    ~QgsComposerNodesItem();
 
     /** Add a node in current shape.
      * @param pt is the location of the new node

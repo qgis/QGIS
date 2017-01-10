@@ -105,10 +105,6 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* par
   QgsDebugMsg( "done" );
 }
 
-QgsRasterFormatSaveOptionsWidget::~QgsRasterFormatSaveOptionsWidget()
-{
-}
-
 void QgsRasterFormatSaveOptionsWidget::setFormat( const QString& format )
 {
   mFormat = format;
@@ -635,3 +631,31 @@ void QgsRasterFormatSaveOptionsWidget::showEvent( QShowEvent * event )
   QgsDebugMsg( "done" );
 }
 
+void QgsRasterFormatSaveOptionsWidget::setOptions( const QString& options )
+{
+  mOptionsTable->blockSignals( true );
+  mOptionsTable->clearContents();
+
+  QStringList values;
+  QStringList optionsList = options.trimmed().split( ' ', QString::SkipEmptyParts );
+  Q_FOREACH ( const QString &opt, optionsList )
+  {
+    int rowCount = mOptionsTable->rowCount();
+    mOptionsTable->insertRow( rowCount );
+
+    values = opt.split( '=' );
+    if ( values.count() == 2 )
+    {
+      QTableWidgetItem* nameItem = new QTableWidgetItem( values.at( 0 ) );
+      mOptionsTable->setItem( rowCount, 0, nameItem );
+      QTableWidgetItem* valueItem = new QTableWidgetItem( values.at( 1 ) );
+      mOptionsTable->setItem( rowCount, 0, valueItem );
+    }
+  }
+
+  mOptionsMap[ currentProfileKey()] = options.trimmed();
+  mOptionsLineEdit->setText( options.trimmed() );
+  mOptionsLineEdit->setCursorPosition( 0 );
+
+  mOptionsTable->blockSignals( false );
+}

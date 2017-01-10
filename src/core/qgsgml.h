@@ -15,6 +15,7 @@
 #ifndef QGSGML_H
 #define QGSGML_H
 
+#include "qgis_core.h"
 #include <expat.h>
 #include "qgis.h"
 #include "qgsfields.h"
@@ -88,6 +89,11 @@ class CORE_EXPORT QgsGmlStreamingParser
                            bool invertAxisOrientation = false );
     ~QgsGmlStreamingParser();
 
+    //! QgsGmlStreamingParser cannot be copied.
+    QgsGmlStreamingParser( const QgsGmlStreamingParser& other ) = delete;
+    //! QgsGmlStreamingParser cannot be copied.
+    QgsGmlStreamingParser& operator=( const QgsGmlStreamingParser& other ) = delete;
+
     /** Process a new chunk of data. atEnd must be set to true when this is
         the last chunk of data. */
     bool processData( const QByteArray& data, bool atEnd, QString& errorMsg );
@@ -130,9 +136,6 @@ class CORE_EXPORT QgsGmlStreamingParser
     bool isTruncatedResponse() const { return mTruncatedResponse; }
 
   private:
-
-    QgsGmlStreamingParser( const QgsGmlStreamingParser& other );
-    QgsGmlStreamingParser& operator=( const QgsGmlStreamingParser& other );
 
     enum ParseMode
     {
@@ -334,8 +337,6 @@ class CORE_EXPORT QgsGml : public QObject
       const QString& typeName,
       const QString& geometryAttribute,
       const QgsFields & fields );
-
-    ~QgsGml();
 
     /** Does the Http GET request to the wfs server
      *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.

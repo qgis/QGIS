@@ -155,10 +155,6 @@ bool QgsVectorLayerUndoCommandChangeGeometry::mergeWith( const QUndoCommand *oth
   return true;
 }
 
-QgsVectorLayerUndoCommandChangeGeometry::~QgsVectorLayerUndoCommandChangeGeometry()
-{
-}
-
 void QgsVectorLayerUndoCommandChangeGeometry::undo()
 {
   if ( FID_IS_NEW( mFid ) )

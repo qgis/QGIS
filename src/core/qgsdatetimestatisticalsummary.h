@@ -16,6 +16,7 @@
 #ifndef QGSDATETIMESTATISTICALSUMMARY_H
 #define QGSDATETIMESTATISTICALSUMMARY_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsinterval.h"
 #include <QSet>
@@ -63,13 +64,13 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     QgsDateTimeStatisticalSummary( QgsDateTimeStatisticalSummary::Statistics stats = All );
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (eg count).
+     * are always calculated (e.g., count).
      * @see setStatistics
      */
     Statistics statistics() const { return mStatistics; }
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (eg count).
+     * are always calculated (e.g., count).
      * @param stats flags for statistics to calculate
      * @see statistics
      */

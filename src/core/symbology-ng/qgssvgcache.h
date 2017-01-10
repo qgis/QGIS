@@ -27,6 +27,8 @@
 #include <QObject>
 #include <QSizeF>
 
+#include "qgis_core.h"
+
 class QDomElement;
 class QImage;
 class QPicture;
@@ -51,6 +53,11 @@ class CORE_EXPORT QgsSvgCacheEntry
      */
     QgsSvgCacheEntry( const QString& file, double size, double outlineWidth, double widthScaleFactor, double rasterScaleFactor, const QColor& fill, const QColor& outline, const QString& lookupKey = QString() );
     ~QgsSvgCacheEntry();
+
+    //! QgsSvgCacheEntry cannot be copied.
+    QgsSvgCacheEntry( const QgsSvgCacheEntry& rh ) = delete;
+    //! QgsSvgCacheEntry cannot be copied.
+    QgsSvgCacheEntry& operator=( const QgsSvgCacheEntry& rh ) = delete;
 
     //! Absolute path to SVG file
     QString file;
@@ -82,16 +89,15 @@ class CORE_EXPORT QgsSvgCacheEntry
     //! Return memory usage in bytes
     int dataSize() const;
 
-  private:
-
-    QgsSvgCacheEntry( const QgsSvgCacheEntry& rh );
-    QgsSvgCacheEntry& operator=( const QgsSvgCacheEntry& rh );
 };
 
 /** \ingroup core
  * A cache for images / pictures derived from svg files. This class supports parameter replacement in svg files
 according to the svg params specification (http://www.w3.org/TR/2009/WD-SVGParamPrimer-20090616/). Supported are
 the parameters 'fill-color', 'pen-color', 'outline-width', 'stroke-width'. E.g. <circle fill="param(fill-color red)" stroke="param(pen-color black)" stroke-width="param(outline-width 1)"
+ *
+ * QgsSvgCache is not usually directly created, but rather accessed through
+ * QgsApplication::svgCache().
 */
 class CORE_EXPORT QgsSvgCache : public QObject
 {
@@ -99,7 +105,11 @@ class CORE_EXPORT QgsSvgCache : public QObject
 
   public:
 
-    static QgsSvgCache* instance();
+    /**
+     * Constructor for QgsSvgCache.
+     */
+    QgsSvgCache( QObject * parent = nullptr );
+
     ~QgsSvgCache();
 
     /** Get SVG as QImage.
@@ -186,8 +196,6 @@ class CORE_EXPORT QgsSvgCache : public QObject
     void statusChanged( const QString&  theStatusQString );
 
   protected:
-    //! protected constructor
-    QgsSvgCache( QObject * parent = nullptr );
 
     /** Creates new cache entry and returns pointer to it
      * @param file Absolute or relative path to SVG file. If the path is relative the file is searched by QgsSymbolLayerUtils::symbolNameToPath() in SVG paths.

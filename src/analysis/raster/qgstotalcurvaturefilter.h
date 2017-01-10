@@ -19,6 +19,7 @@
 #define QGSTOTALCURVATUREFILTER_H
 
 #include "qgsninecellfilter.h"
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * Calculates total curvature as described by Wilson, Gallant (2000): terrain analysis*/

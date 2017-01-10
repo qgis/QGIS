@@ -441,7 +441,7 @@ void QgsGPSInformationWidget::connected( QgsGPSConnection *conn )
   mGPSPlainTextEdit->appendPlainText( tr( "Connected!" ) );
   mConnectButton->setText( tr( "Dis&connect" ) );
   //insert connection into registry such that it can also be used by other dialogs or plugins
-  QgsGPSConnectionRegistry::instance()->registerConnection( mNmea );
+  QgsApplication::gpsConnectionRegistry()->registerConnection( mNmea );
   showStatusBarMessage( tr( "Connected to GPS device." ) );
 
   if ( mLogFileGroupBox->isChecked() && ! mTxtLogFile->text().isEmpty() )
@@ -481,7 +481,7 @@ void QgsGPSInformationWidget::disconnectGps()
     mLogFile = nullptr;
   }
 
-  QgsGPSConnectionRegistry::instance()->unregisterConnection( mNmea );
+  QgsApplication::gpsConnectionRegistry()->unregisterConnection( mNmea );
   delete mNmea;
   mNmea = nullptr;
   if ( mpMapMarker )  // marker should not be shown on GPS disconnected - not current position
@@ -703,7 +703,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
       QgsRectangle myExtentLimit( mpCanvas->extent() );
       myExtentLimit.scale( mSpinMapExtentMultiplier->value() * 0.01 );
 
-      // only change the extents if the point is beyond the current extents to minimise repaints
+      // only change the extents if the point is beyond the current extents to minimize repaints
       if ( radRecenterMap->isChecked() ||
            ( radRecenterWhenNeeded->isChecked() && !myExtentLimit.contains( myPoint ) ) )
       {
@@ -909,7 +909,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
       f->setGeometry( g );
 
       QgsGeometry featGeom = f->geometry();
-      int avoidIntersectionsReturn = featGeom.avoidIntersections();
+      int avoidIntersectionsReturn = featGeom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
       f->setGeometry( featGeom );
       if ( avoidIntersectionsReturn == 1 )
       {

@@ -20,6 +20,7 @@
 #include <qdebug.h>
 
 #include "qgsfeature.h" // For QgsFeatureIds
+#include "qgis_gui.h"
 
 class QgsAttributeTableFilterModel;
 class QgsFeatureListModel;
@@ -51,11 +52,6 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      * @param parent   owner
      */
     explicit QgsFeatureListView( QWidget* parent = nullptr );
-
-    /**
-     * Destructor
-     */
-    virtual ~QgsFeatureListView() {}
 
     /**
      * Returns the layer cache

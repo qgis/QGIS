@@ -16,6 +16,7 @@
 #ifndef QGSSCALEEXPRESSION_H
 #define QGSSCALEEXPRESSION_H
 
+#include "qgis_core.h"
 #include "qgsexpression.h"
 
 /** \ingroup core

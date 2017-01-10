@@ -28,13 +28,15 @@ QT5_ADD_RESOURCES(coordinatecapture_RCC_SRCS ${coordinatecapture_RCCS})
 ADD_LIBRARY (coordinatecaptureplugin MODULE ${coordinatecapture_SRCS} ${coordinatecapture_MOC_SRCS} ${coordinatecapture_RCC_SRCS})
 
 INCLUDE_DIRECTORIES(
-     ${CMAKE_CURRENT_BINARY_DIR}
-     ${CMAKE_CURRENT_BINARY_DIR}/../../ui/
-     ../../core
-     ../../core/geometry
-     ../../core/raster
-     ../../gui
-     ..
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}/../../ui/
+  ../../core
+  ../../core/geometry
+  ../../core/raster
+  ../../gui
+  ..
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 INCLUDE_DIRECTORIES(SYSTEM
      ${GEOS_INCLUDE_DIR}

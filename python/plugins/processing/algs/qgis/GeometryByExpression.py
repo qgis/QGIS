@@ -95,10 +95,7 @@ class GeometryByExpression(GeoAlgorithm):
         if expression.hasParserError():
             raise GeoAlgorithmExecutionException(expression.parserErrorString())
 
-        exp_context = QgsExpressionContext()
-        exp_context.appendScope(QgsExpressionContextUtils.globalScope())
-        exp_context.appendScope(QgsExpressionContextUtils.projectScope())
-        exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+        exp_context = QgsExpressionContext(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
 
         if not expression.prepare(exp_context):
             raise GeoAlgorithmExecutionException(

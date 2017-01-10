@@ -22,6 +22,7 @@
 #include "qgsdecorationitem.h"
 
 #include <QStringList>
+#include "qgis_app.h"
 
 class QAction;
 class QToolBar;
@@ -34,7 +35,7 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
   public:
     //! Constructor
     QgsDecorationNorthArrow( QObject* parent = nullptr );
-    //! Destructor
+
     virtual ~QgsDecorationNorthArrow();
 
   public slots:

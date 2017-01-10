@@ -29,12 +29,6 @@
 #include "qgsgeoreftransform.h"
 #include "qgslogger.h"
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#endif
-
 bool QgsImageWarper::mWarpCanceled = false;
 
 QgsImageWarper::QgsImageWarper( QWidget *theParent )
@@ -48,7 +42,7 @@ bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, ResamplingMet
 {
   // Open input file
   GDALAllRegister();
-  hSrcDS = GDALOpen( TO8F( input ), GA_ReadOnly );
+  hSrcDS = GDALOpen( input.toUtf8().constData(), GA_ReadOnly );
   if ( !hSrcDS )
     return false;
 
@@ -85,7 +79,7 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
   char **papszOptions = nullptr;
   papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", compression.toLatin1() );
   hDstDS = GDALCreate( driver,
-                       TO8F( outputName ), resX, resY,
+                       outputName.toUtf8().constData(), resX, resY,
                        GDALGetRasterCount( hSrcDS ),
                        GDALGetRasterDataType( GDALGetRasterBand( hSrcDS, 1 ) ),
                        papszOptions );

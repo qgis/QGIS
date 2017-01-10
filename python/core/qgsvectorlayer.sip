@@ -352,7 +352,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      * @param  path  The path or url of the parameter.  Typically this encodes
      *               parameters used by the data provider as url query items.
      * @param  baseName The name used to represent the layer in the legend
-     * @param  providerLib  The name of the data provider, eg "memory", "postgres"
+     * @param  providerLib  The name of the data provider, e.g., "memory", "postgres"
      * @param  loadDefaultStyleFlag whether to load the default style
      *
      */

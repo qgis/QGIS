@@ -21,6 +21,7 @@
 
 #include "qgsfeature.h"
 #include "qgsaction.h"
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 class QgsMapLayerAction;
@@ -75,11 +76,6 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      * @param actionScope The action scope this menu will run in
      */
     explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString& actionScope, QWidget *parent = nullptr );
-
-    /**
-     * Destructor
-     */
-    ~QgsActionMenu();
 
     /**
      * Change the feature on which actions are performed

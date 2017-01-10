@@ -36,6 +36,8 @@ import os
 import yaml
 import nose2
 import gdal
+import shutil
+import glob
 import hashlib
 import tempfile
 
@@ -47,7 +49,7 @@ from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider
 from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
 from processing.algs.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider
-from processing.algs.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
+from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider
 from processing.algs.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
 from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider
 from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
@@ -68,6 +70,8 @@ def processingTestDataPath():
 
 
 class AlgorithmsTest(object):
+
+    in_place_layers = {}
 
     def test_algorithms(self):
         """
@@ -110,14 +114,14 @@ class AlgorithmsTest(object):
         if expectFailure:
             try:
                 alg.execute()
-                self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
+                self.check_results(alg.getOutputValuesAsDictionary(), defs['params'], defs['results'])
             except Exception:
                 pass
             else:
                 raise _UnexpectedSuccess
         else:
             alg.execute()
-            self.check_results(alg.getOutputValuesAsDictionary(), defs['results'])
+            self.check_results(alg.getOutputValuesAsDictionary(), defs['params'], defs['results'])
 
     def load_params(self, params):
         """
@@ -126,22 +130,30 @@ class AlgorithmsTest(object):
         if isinstance(params, list):
             return [self.load_param(p) for p in params]
         elif isinstance(params, dict):
-            return {key: self.load_param(p) for key, p in list(params.items())}
+            return {key: self.load_param(p, key) for key, p in list(params.items())}
         else:
             return params
 
-    def load_param(self, param):
+    def load_param(self, param, id=None):
         """
         Loads a parameter. If it's not a map, the parameter will be returned as-is. If it is a map, it will process the
         parameter based on its key `type` and return the appropriate parameter to pass to the algorithm.
         """
         try:
             if param['type'] in ('vector', 'raster', 'table'):
-                return self.load_layer(param)
+                return self.load_layer(id, param)
             elif param['type'] == 'multi':
                 return [self.load_param(p) for p in param['params']]
             elif param['type'] == 'file':
                 return self.filepath_from_param(param)
+            elif param['type'] == 'interpolation':
+                prefix = processingTestDataPath()
+                tmp = ''
+                for r in param['name'].split(';'):
+                    v = r.split(',')
+                    tmp += '{},{},{},{};'.format(os.path.join(prefix, v[0]),
+                                                 v[1], v[2], v[3])
+                return tmp[:-1]
         except TypeError:
             # No type specified, use whatever is there
             return param
@@ -168,11 +180,25 @@ class AlgorithmsTest(object):
 
         raise KeyError("Unknown type '{}' specified for parameter".format(param['type']))
 
-    def load_layer(self, param):
+    def load_layer(self, id, param):
         """
         Loads a layer which was specified as parameter.
         """
         filepath = self.filepath_from_param(param)
+
+        try:
+            # check if alg modifies layer in place
+            if param['in_place']:
+                tmpdir = tempfile.mkdtemp()
+                self.cleanup_paths.append(tmpdir)
+                path, file_name = os.path.split(filepath)
+                base, ext = os.path.splitext(file_name)
+                for file in glob.glob(os.path.join(path, '{}.*'.format(base))):
+                    shutil.copy(os.path.join(path, file), tmpdir)
+                filepath = os.path.join(tmpdir, file_name)
+                self.in_place_layers[id] = filepath
+        except:
+            pass
 
         if param['type'] in ('vector', 'table'):
             lyr = QgsVectorLayer(filepath, param['name'], 'ogr')
@@ -193,19 +219,22 @@ class AlgorithmsTest(object):
 
         return os.path.join(prefix, param['name'])
 
-    def check_results(self, results, expected):
+    def check_results(self, results, params, expected):
         """
         Checks if result produced by an algorithm matches with the expected specification.
         """
         for id, expected_result in list(expected.items()):
             if expected_result['type'] in ('vector', 'table'):
-                expected_lyr = self.load_layer(expected_result)
-                try:
-                    results[id]
-                except KeyError as e:
-                    raise KeyError('Expected result {} does not exist in {}'.format(str(e), list(results.keys())))
+                expected_lyr = self.load_layer(id, expected_result)
+                if 'in_place_result' in expected_result:
+                    result_lyr = QgsVectorLayer(self.in_place_layers[id], id, 'ogr')
+                else:
+                    try:
+                        results[id]
+                    except KeyError as e:
+                        raise KeyError('Expected result {} does not exist in {}'.format(str(e), list(results.keys())))
 
-                result_lyr = QgsVectorLayer(results[id], id, 'ogr')
+                    result_lyr = QgsVectorLayer(results[id], id, 'ogr')
 
                 compare = expected_result.get('compare', {})
 

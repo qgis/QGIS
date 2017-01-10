@@ -15,6 +15,7 @@
 #ifndef QGSGRADUATEDSYMBOLRENDERERV2_H
 #define QGSGRADUATEDSYMBOLRENDERERV2_H
 
+#include "qgis_core.h"
 #include "qgssymbol.h"
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
@@ -30,8 +31,6 @@ class CORE_EXPORT QgsRendererRange
     QgsRendererRange();
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol* symbol, const QString& label, bool render = true );
     QgsRendererRange( const QgsRendererRange& range );
-
-    ~QgsRendererRange() {}
 
     // default dtor is ok
     QgsRendererRange& operator=( QgsRendererRange range );

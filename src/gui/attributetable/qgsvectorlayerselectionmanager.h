@@ -17,6 +17,7 @@
 #define QGSVECTORLAYERSELECTIONMANAGER_H
 
 #include "qgsifeatureselectionmanager.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 

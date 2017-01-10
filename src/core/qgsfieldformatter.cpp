@@ -23,10 +23,6 @@ QgsFieldFormatter::QgsFieldFormatter()
 {
 }
 
-QgsFieldFormatter::~QgsFieldFormatter()
-{
-}
-
 QString QgsFieldFormatter::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
   Q_UNUSED( layer )

@@ -17,6 +17,7 @@
 #define QGSPAINTEFFECTWIDGET_H
 
 #include <QWidget>
+#include "qgis_gui.h"
 
 class QgsPaintEffect;
 class QgsShadowEffect;
@@ -40,7 +41,6 @@ class GUI_EXPORT QgsPaintEffectWidget : public QWidget
 
   public:
     QgsPaintEffectWidget( QWidget* parent = nullptr ) : QWidget( parent ) {}
-    virtual ~QgsPaintEffectWidget() {}
 
     /**
      * Sets the paint effect to modify with the widget

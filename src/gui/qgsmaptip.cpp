@@ -43,11 +43,6 @@ QgsMapTip::QgsMapTip()
   mMapTipVisible = false;
 }
 
-QgsMapTip::~QgsMapTip()
-{
-
-}
-
 void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
                             QgsPoint & mapPosition,
                             QPoint & thePixelPosition,
@@ -191,10 +186,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsM
   if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) ).nextFeature( feature ) )
     return QString();
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( vlayer );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
   if ( mapCanvas )
     context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
 

@@ -55,7 +55,7 @@ class QgsGrassModuleOptions
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface, bool direct );
 
-    //! Destructor
+
     virtual ~QgsGrassModuleOptions();
 
     //! Get module options as list of arguments for QProcess
@@ -149,7 +149,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
       QString xname, QDomElement confDocElem,
       bool direct, QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
-    //! Destructor
+
     ~QgsGrassModuleStandardOptions();
 
     //! Get module options as list of arguments for QProcess

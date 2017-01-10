@@ -20,6 +20,7 @@
 
 #include "qgsmaplayeractionregistry.h"
 #include "qgsmaptoolidentify.h"
+#include "qgis_gui.h"
 
 /// @cond PRIVATE
 class CustomActionRegistry : public QgsMapLayerActionRegistry

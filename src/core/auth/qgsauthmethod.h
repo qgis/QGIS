@@ -24,6 +24,8 @@
 #include <QStringList>
 #include <QUrl>
 
+#include "qgis_core.h"
+
 class QgsAuthMethodConfig;
 
 /** \ingroup core
@@ -52,8 +54,6 @@ class CORE_EXPORT QgsAuthMethod : public QObject
       All = NetworkRequest | NetworkReply | DataSourceUri | GenericDataSourceUri
     };
     Q_DECLARE_FLAGS( Expansions, Expansion )
-
-    virtual ~QgsAuthMethod() {}
 
     //! A non-translated short name representing the auth method
     virtual QString key() const = 0;

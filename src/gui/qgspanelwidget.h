@@ -18,6 +18,7 @@
 #include <QWidget>
 #include <QKeyEvent>
 #include <QStack>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * @brief Base class for any widget that can be shown as a inline panel
@@ -110,7 +111,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * @note This argument is normally raised with emit panelAccepted(this)
      * so that callers can retrive the widget easier in calling code.
      * @note this is emitted only when this panel is accepted, and is not emitted for
-     * child panels. Eg, if this panel opens a second stacked panel, then this panel
+     * child panels. For example, if this panel opens a second stacked panel, then this panel
      * will not emit panelAccepted when the second panel is accepted.
      */
     void panelAccepted( QgsPanelWidget* panel );

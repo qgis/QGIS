@@ -19,6 +19,7 @@
 #include "ui_qgssourceselectdialogbase.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgis_gui.h"
 
 class QStandardItemModel;
 class QSortFilterProxyModel;
@@ -38,7 +39,7 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
 
     //! Constructor
     QgsSourceSelectDialog( const QString& serviceName, ServiceType serviceType, QWidget* parent, Qt::WindowFlags fl );
-    //! Destructor
+
     ~QgsSourceSelectDialog();
     //! Sets the current extent and CRS. Used to select an appropriate CRS and possibly to retrieve data only in the current extent
     void setCurrentExtentAndCrs( const QgsRectangle& canvasExtent, const QgsCoordinateReferenceSystem& canvasCrs );

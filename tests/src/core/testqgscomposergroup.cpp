@@ -22,6 +22,7 @@
 #include "qgsmultirenderchecker.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
 
 #include <QObject>
 #include <QtTest/QSignalSpy>
@@ -80,7 +81,7 @@ void TestQgsComposerGroup::initTestCase()
   QgsApplication::initQgis();
 
   mMapSettings = new QgsMapSettings();
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   //create some items

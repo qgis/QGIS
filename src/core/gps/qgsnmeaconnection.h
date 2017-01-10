@@ -18,6 +18,7 @@
 #ifndef QGSNMEACONNECTION_H
 #define QGSNMEACONNECTION_H
 
+#include "qgis_core.h"
 #include "qgsgpsconnection.h"
 
 /** \ingroup core

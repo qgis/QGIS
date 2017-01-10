@@ -26,6 +26,7 @@
 #include "qgsfieldproxymodel.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 class QgsVectorLayer;

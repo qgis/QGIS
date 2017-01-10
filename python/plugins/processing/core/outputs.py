@@ -38,13 +38,13 @@ from processing.tools.system import isWindows, getTempFilenameInTempFolder, getT
 from processing.tools.vector import VectorWriter, TableWriter
 from processing.tools import dataobjects
 
-from qgis.core import QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope
+from qgis.core import QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope, QgsProject
 
 
 def _expressionContext(alg):
     context = QgsExpressionContext()
     context.appendScope(QgsExpressionContextUtils.globalScope())
-    context.appendScope(QgsExpressionContextUtils.projectScope())
+    context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
     processingScope = QgsExpressionContextScope()
     for param in alg.parameters:
         processingScope.setVariable('%s_value' % param.name, '')

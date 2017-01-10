@@ -47,10 +47,6 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapC
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapOverviewCanvas::destinationCrsChanged );
 }
 
-QgsMapOverviewCanvas::~QgsMapOverviewCanvas()
-{
-}
-
 void QgsMapOverviewCanvas::resizeEvent( QResizeEvent* e )
 {
   mPixmap = QPixmap();

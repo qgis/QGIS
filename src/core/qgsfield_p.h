@@ -28,6 +28,7 @@
 //
 
 #include "qgsfieldconstraints.h"
+#include "qgseditorwidgetsetup.h"
 #include <QString>
 #include <QVariant>
 #include <QSharedData>

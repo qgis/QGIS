@@ -15,6 +15,7 @@
 #ifndef QGSBROWSERMODEL_H
 #define QGSBROWSERMODEL_H
 
+#include "qgis_core.h"
 #include <QAbstractItemModel>
 #include <QIcon>
 #include <QMimeData>
@@ -34,7 +35,6 @@ class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem
 
   public:
     QgsBrowserWatcher( QgsDataItem * item );
-    ~QgsBrowserWatcher();
 
     QgsDataItem* item() const { return mItem; }
 

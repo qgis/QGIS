@@ -326,7 +326,7 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer* ml )
           || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
           || ( vl->layerTransparency() != 0 ) ) )
     {
-      //layer properties require rasterisation
+      //layer properties require rasterization
       return true;
     }
   }

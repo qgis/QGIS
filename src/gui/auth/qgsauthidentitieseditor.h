@@ -22,6 +22,7 @@
 
 #include "ui_qgsauthidentitieseditor.h"
 #include "qgsauthmanager.h"
+#include "qgis_gui.h"
 
 class QgsMessageBar;
 
@@ -39,7 +40,6 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
      * @param parent Parent widget
      */
     explicit QgsAuthIdentitiesEditor( QWidget *parent = nullptr );
-    ~QgsAuthIdentitiesEditor();
 
   private slots:
     void populateIdentitiesView();

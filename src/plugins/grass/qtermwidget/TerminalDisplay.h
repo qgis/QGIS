@@ -156,8 +156,8 @@ public:
      * TODO - This API does not really allow efficient usage.  Revise it so
      * that the processing can be done in a better way.
      *
-     * eg:
-     *      - Area of interest may be known ( eg. mouse cursor hovering
+     * e.g.:
+     *      - Area of interest may be known (e.g., mouse cursor hovering
      *      over an area )
      */
     void processFilters();
@@ -339,7 +339,7 @@ public:
          * or perform some other action depending on the user's settings.
          */
         NotifyBell=1,
-        /** A silent, visual bell (eg. inverting the display's colors briefly) */
+        /** A silent, visual bell (e.g., inverting the display's colors briefly) */
         VisualBell=2,
         /** No bell effects */
         NoBell=3

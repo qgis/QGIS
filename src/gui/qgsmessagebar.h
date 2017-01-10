@@ -24,6 +24,7 @@
 #include <QIcon>
 #include <QColor>
 #include <QList>
+#include "qgis_gui.h"
 
 class QWidget;
 class QGridLayout;
@@ -53,7 +54,6 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     };
 
     QgsMessageBar( QWidget *parent = nullptr );
-    ~QgsMessageBar();
 
     /**
      * Display a message item on the bar after hiding the currently visible one

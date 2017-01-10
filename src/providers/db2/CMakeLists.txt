@@ -34,6 +34,8 @@ INCLUDE_DIRECTORIES(
   ../../gui/auth
   ../../ui  
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 
 INCLUDE_DIRECTORIES(SYSTEM

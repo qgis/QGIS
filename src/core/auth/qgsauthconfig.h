@@ -17,6 +17,7 @@
 #ifndef QGSAUTHCONFIG_H
 #define QGSAUTHCONFIG_H
 
+#include "qgis_core.h"
 #include <QHash>
 #include <QString>
 
@@ -298,8 +299,6 @@ class CORE_EXPORT QgsAuthConfigSslServer
   public:
     //! Construct a default SSL server configuration
     QgsAuthConfigSslServer();
-
-    ~QgsAuthConfigSslServer() {}
 
     //! Server certificate object
     const QSslCertificate sslCertificate() const { return mSslCert; }

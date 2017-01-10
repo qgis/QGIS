@@ -35,10 +35,6 @@ QgsCubicRasterResampler::QgsCubicRasterResampler()
 {
 }
 
-QgsCubicRasterResampler::~QgsCubicRasterResampler()
-{
-}
-
 QgsCubicRasterResampler* QgsCubicRasterResampler::clone() const
 {
   return new QgsCubicRasterResampler();

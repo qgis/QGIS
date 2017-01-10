@@ -67,13 +67,6 @@ QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget* parent,
 
   // Connect our slot to get a signal when the user is done with the file dialog
   connect( this, SIGNAL( accepted() ), this, SLOT( saveUsedEncoding() ) );
-
-
-}
-
-QgsEncodingFileDialog::~QgsEncodingFileDialog()
-{
-
 }
 
 QString QgsEncodingFileDialog::encoding() const

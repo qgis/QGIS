@@ -20,6 +20,8 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/symbology-ng
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/test
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}

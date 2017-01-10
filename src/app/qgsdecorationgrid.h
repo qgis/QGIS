@@ -28,6 +28,7 @@ class QgsMarkerSymbol;
 #include <QColor>
 #include <QPen>
 #include <QFont>
+#include "qgis_app.h"
 
 class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
 {
@@ -35,7 +36,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
   public:
     //! Constructor
     QgsDecorationGrid( QObject* parent = nullptr );
-    //! Destructor
+
     virtual ~ QgsDecorationGrid();
 
     enum GridStyle

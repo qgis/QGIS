@@ -68,10 +68,7 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
 
     ~QgsDelimitedTextFeatureIterator();
 
-    //! reset the iterator to the starting position
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
     // Tests whether the geometry is required, given that testGeometry is true.
@@ -79,7 +76,6 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
     bool wantGeometry( const QgsGeometry& geom ) const;
 
   protected:
-    //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
 
     bool setNextFeatureId( qint64 fid );

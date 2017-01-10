@@ -20,6 +20,7 @@
 #include "ui_qgshandlebadlayersbase.h"
 #include "qgsproject.h"
 #include "qgsprojectbadlayerhandler.h"
+#include "qgis_app.h"
 
 class APP_EXPORT QgsHandleBadLayersHandler
       : public QObject

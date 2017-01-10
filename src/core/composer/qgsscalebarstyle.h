@@ -20,6 +20,8 @@
 #include <QIcon>
 #include <QRectF>
 
+#include "qgis_core.h"
+
 class QgsComposerScaleBar;
 class QPainter;
 
@@ -31,7 +33,7 @@ class CORE_EXPORT QgsScaleBarStyle
 {
   public:
     QgsScaleBarStyle( const QgsComposerScaleBar* bar );
-    virtual ~QgsScaleBarStyle();
+    virtual ~QgsScaleBarStyle() = default;
 
     /** Draws the style
      @param p painter object

@@ -61,7 +61,7 @@ class EffectItem : public QStandardItem
     {
       if ( role == Qt::DisplayRole || role == Qt::EditRole )
       {
-        return QgsPaintEffectRegistry::instance()->effectMetadata( mEffect->type() )->visibleName();
+        return QgsApplication::paintEffectRegistry()->effectMetadata( mEffect->type() )->visibleName();
       }
       if ( role == Qt::CheckStateRole )
       {
@@ -369,11 +369,6 @@ QgsEffectStackPropertiesDialog::QgsEffectStackPropertiesDialog( QgsEffectStack *
   setWindowTitle( tr( "Effect Properties" ) );
   mPropertiesWidget = new QgsEffectStackPropertiesWidget( stack, this );
   layout()->addWidget( mPropertiesWidget );
-}
-
-QgsEffectStackPropertiesDialog::~QgsEffectStackPropertiesDialog()
-{
-
 }
 
 QgsEffectStack* QgsEffectStackPropertiesDialog::stack()

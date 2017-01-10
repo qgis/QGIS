@@ -22,6 +22,8 @@
 #include <QObject>
 #include <QString>
 
+#include "qgis_core.h"
+
 class QIODevice;
 
 struct CORE_EXPORT QgsSatelliteInfo

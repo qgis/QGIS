@@ -17,6 +17,7 @@
 #define QGSVECTORLAYERDIRECTOR_H
 
 #include "qgsgraphdirector.h"
+#include "qgis_analysis.h"
 
 class QgsGraphBuilderInterface;
 class QgsVectorLayer;
@@ -64,7 +65,6 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
                             const Direction defaultDirection
                           );
 
-    //! Destructor
     virtual ~QgsVectorLayerDirector();
 
     /*

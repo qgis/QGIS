@@ -22,6 +22,7 @@
 #include <QAction>
 
 #include "qgsmaplayer.h"
+#include "qgis_gui.h"
 
 class QgsFeature;
 
@@ -110,8 +111,6 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
   public:
     //! Returns the instance pointer, creating the object on the first call
     static QgsMapLayerActionRegistry * instance();
-
-    ~QgsMapLayerActionRegistry();
 
     //! Adds a map layer action to the registry
     void addMapLayerAction( QgsMapLayerAction * action );

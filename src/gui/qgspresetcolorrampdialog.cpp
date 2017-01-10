@@ -41,10 +41,6 @@ QgsPresetColorRampWidget::QgsPresetColorRampWidget( const QgsPresetSchemeColorRa
   updatePreview();
 }
 
-QgsPresetColorRampWidget::~QgsPresetColorRampWidget()
-{
-}
-
 QgsPresetSchemeColorRamp QgsPresetColorRampWidget::ramp() const
 {
   return mRamp;

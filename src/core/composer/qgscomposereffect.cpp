@@ -24,10 +24,6 @@ QgsComposerEffect::QgsComposerEffect()
 {
 }
 
-QgsComposerEffect::~QgsComposerEffect()
-{
-}
-
 void QgsComposerEffect::draw( QPainter *painter )
 {
   QPoint offset;

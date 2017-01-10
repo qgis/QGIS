@@ -35,6 +35,7 @@
 
 #ifdef HAVE_TOUCH
 #include <QGestureEvent>
+#include "qgis_gui.h"
 #endif
 
 class QWheelEvent;
@@ -79,7 +80,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Constructor
     QgsMapCanvas( QWidget * parent = nullptr );
 
-    //! Destructor
+
     ~QgsMapCanvas();
 
     //! Returns the magnification factor
@@ -287,6 +288,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Zooms in/out with a given center
     void zoomWithCenter( int x, int y, bool zoomIn );
+
+    //! Zooms to feature extent. Adds a small margin around the extent
+    //! and does a pan if rect is empty (point extent)
+    void zoomToFeatureExtent( QgsRectangle& rect );
 
     //! Returns whether the scale is locked, so zooming can be performed using magnication.
     //! @note added in 2.16
@@ -588,10 +593,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! called when panning is in action, reset indicates end of panning
     void moveCanvasContents( bool reset = false );
-
-    //! Zooms to feature extent. Adds a small margin around the extent
-    //! and does a pan if rect is empty (point extent)
-    void zoomToFeatureExtent( QgsRectangle& rect );
 
     //! called on resize or changed extent to notify canvas items to change their rectangle
     void updateCanvasItemPositions();

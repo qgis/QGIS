@@ -26,12 +26,6 @@
 QgsComposerAttributeTableColumnModelV2::QgsComposerAttributeTableColumnModelV2( QgsComposerAttributeTableV2 *composerTable, QObject *parent ) : QAbstractTableModel( parent )
     , mComposerTable( composerTable )
 {
-
-}
-
-QgsComposerAttributeTableColumnModelV2::~QgsComposerAttributeTableColumnModelV2()
-{
-
 }
 
 QModelIndex QgsComposerAttributeTableColumnModelV2::index( int row, int column, const QModelIndex &parent ) const
@@ -449,11 +443,6 @@ QgsComposerTableSortColumnsProxyModelV2::QgsComposerTableSortColumnsProxyModelV2
     , mFilterType( filterType )
 {
   setDynamicSortFilter( true );
-}
-
-QgsComposerTableSortColumnsProxyModelV2::~QgsComposerTableSortColumnsProxyModelV2()
-{
-
 }
 
 bool QgsComposerTableSortColumnsProxyModelV2::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const

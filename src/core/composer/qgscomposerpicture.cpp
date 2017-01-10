@@ -99,11 +99,6 @@ void QgsComposerPicture::init()
   connect( mComposition, SIGNAL( printResolutionChanged() ), this, SLOT( recalculateSize() ) );
 }
 
-QgsComposerPicture::~QgsComposerPicture()
-{
-
-}
-
 void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
   Q_UNUSED( itemStyle );
@@ -377,7 +372,7 @@ void QgsComposerPicture::loadLocalPicture( const QString &path )
     if ( sourceFileSuffix.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
     {
       //try to open svg
-      const QByteArray &svgContent = QgsSvgCache::instance()->svgContent( pic.fileName(), rect().width(), mSvgFillColor, mSvgBorderColor, mSvgBorderWidth,
+      const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( pic.fileName(), rect().width(), mSvgFillColor, mSvgBorderColor, mSvgBorderWidth,
                                      1.0, 1.0 );
       mSVG.load( svgContent );
       if ( mSVG.isValid() )
@@ -749,7 +744,7 @@ bool QgsComposerPicture::writeXml( QDomElement& elem, QDomDocument & doc ) const
     return false;
   }
   QDomElement composerPictureElem = doc.createElement( QStringLiteral( "ComposerPicture" ) );
-  composerPictureElem.setAttribute( QStringLiteral( "file" ), QgsProject::instance()->writePath( mSourcePath ) );
+  composerPictureElem.setAttribute( QStringLiteral( "file" ), mComposition->project()->writePath( mSourcePath ) );
   composerPictureElem.setAttribute( QStringLiteral( "pictureWidth" ), QString::number( mPictureWidth ) );
   composerPictureElem.setAttribute( QStringLiteral( "pictureHeight" ), QString::number( mPictureHeight ) );
   composerPictureElem.setAttribute( QStringLiteral( "resizeMode" ), QString::number( static_cast< int >( mResizeMode ) ) );
@@ -827,7 +822,7 @@ bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocumen
     setDataDefinedProperty( QgsComposerObject::PictureSource, expressionActive, true, sourceExpression, QString() );
   }
 
-  mSourcePath = QgsProject::instance()->readPath( itemElem.attribute( QStringLiteral( "file" ) ) );
+  mSourcePath = mComposition->project()->readPath( itemElem.attribute( QStringLiteral( "file" ) ) );
 
   //picture rotation
   if ( !qgsDoubleNear( itemElem.attribute( QStringLiteral( "pictureRotation" ), QStringLiteral( "0" ) ).toDouble(), 0.0 ) )

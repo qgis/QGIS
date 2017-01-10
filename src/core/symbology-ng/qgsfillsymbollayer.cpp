@@ -1581,10 +1581,6 @@ QgsImageFillSymbolLayer::QgsImageFillSymbolLayer()
   setSubSymbol( new QgsLineSymbol() );
 }
 
-QgsImageFillSymbolLayer::~QgsImageFillSymbolLayer()
-{
-}
-
 void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
 {
   QPainter* p = context.renderContext().painter();
@@ -1825,7 +1821,7 @@ QgsMapUnitScale QgsSVGFillSymbolLayer::mapUnitScale() const
 
 void QgsSVGFillSymbolLayer::setSvgFilePath( const QString& svgPath )
 {
-  mSvgData = QgsSvgCache::instance()->getImageData( svgPath );
+  mSvgData = QgsApplication::svgCache()->getImageData( svgPath );
   storeViewBox();
 
   mSvgFilePath = svgPath;
@@ -1964,11 +1960,11 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush& brush, const QString& svgFileP
   {
     bool fitsInCache = true;
     double outlineWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), svgOutlineWidth, svgOutlineWidthUnit, svgOutlineWidthMapUnitScale );
-    const QImage& patternImage = QgsSvgCache::instance()->svgAsImage( svgFilePath, size, svgFillColor, svgOutlineColor, outlineWidth,
+    const QImage& patternImage = QgsApplication::svgCache()->svgAsImage( svgFilePath, size, svgFillColor, svgOutlineColor, outlineWidth,
                                  context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor(), fitsInCache );
     if ( !fitsInCache )
     {
-      const QPicture& patternPict = QgsSvgCache::instance()->svgAsPicture( svgFilePath, size, svgFillColor, svgOutlineColor, outlineWidth,
+      const QPicture& patternPict = QgsApplication::svgCache()->svgAsPicture( svgFilePath, size, svgFillColor, svgOutlineColor, outlineWidth,
                                     context.renderContext().scaleFactor(), 1.0 );
       double hwRatio = 1.0;
       if ( patternPict.width() > 0 )
@@ -2280,7 +2276,7 @@ void QgsSVGFillSymbolLayer::setDefaultSvgParams()
   bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultOutlineColor, hasDefaultOutlineWidth, hasDefaultOutlineOpacity;
   QColor defaultFillColor, defaultOutlineColor;
   double defaultOutlineWidth, defaultFillOpacity, defaultOutlineOpacity;
-  QgsSvgCache::instance()->containsParams( mSvgFilePath, hasFillParam, hasDefaultFillColor, defaultFillColor,
+  QgsApplication::svgCache()->containsParams( mSvgFilePath, hasFillParam, hasDefaultFillColor, defaultFillColor,
       hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
       hasOutlineParam, hasDefaultOutlineColor, defaultOutlineColor,
       hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth,
@@ -3657,11 +3653,6 @@ QgsRasterFillSymbolLayer::QgsRasterFillSymbolLayer( const QString &imageFilePath
     , mWidthUnit( QgsUnitTypes::RenderPixels )
 {
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //disable sub symbol
-}
-
-QgsRasterFillSymbolLayer::~QgsRasterFillSymbolLayer()
-{
-
 }
 
 QgsSymbolLayer *QgsRasterFillSymbolLayer::create( const QgsStringMap &properties )

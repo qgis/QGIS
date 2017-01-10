@@ -53,11 +53,6 @@ QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
   valueComboBox->setDisabled( true );
 }
 
-QgsAttributeTypeLoadDialog::~QgsAttributeTypeLoadDialog()
-{
-
-}
-
 void QgsAttributeTypeLoadDialog::setVectorLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;

@@ -16,6 +16,7 @@
 #ifndef QGSLEGENDSETTINGS_H
 #define QGSLEGENDSETTINGS_H
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QSizeF>
 

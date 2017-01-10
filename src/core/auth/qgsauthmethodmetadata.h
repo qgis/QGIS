@@ -19,6 +19,8 @@
 
 #include <QString>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Holds data auth method key, description, and associated shared library file information.
 

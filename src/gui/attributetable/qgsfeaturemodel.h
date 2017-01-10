@@ -24,7 +24,7 @@
 class QgsFeatureModel
 {
   public:
-    virtual ~QgsFeatureModel() {}
+    virtual ~QgsFeatureModel() = default;
 
     virtual QModelIndex fidToIndex( QgsFeatureId fid ) = 0;
 };

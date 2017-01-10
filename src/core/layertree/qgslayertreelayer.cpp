@@ -21,21 +21,19 @@
 
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
-    : QgsLayerTreeNode( NodeLayer )
+    : QgsLayerTreeNode( NodeLayer, true )
     , mLayerId( layer->id() )
     , mLayer( nullptr )
-    , mVisible( Qt::Checked )
 {
   Q_ASSERT( QgsProject::instance()->mapLayer( mLayerId ) == layer );
   attachToLayer();
 }
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( const QString& layerId, const QString& name )
-    : QgsLayerTreeNode( NodeLayer )
+    : QgsLayerTreeNode( NodeLayer, true )
     , mLayerId( layerId )
     , mLayerName( name )
     , mLayer( nullptr )
-    , mVisible( Qt::Checked )
 {
   attachToLayer();
 }
@@ -45,7 +43,6 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer& other )
     , mLayerId( other.mLayerId )
     , mLayerName( other.mLayerName )
     , mLayer( nullptr )
-    , mVisible( other.mVisible )
 {
   attachToLayer();
 }
@@ -94,15 +91,6 @@ void QgsLayerTreeLayer::setName( const QString& n )
   }
 }
 
-void QgsLayerTreeLayer::setVisible( Qt::CheckState state )
-{
-  if ( mVisible == state )
-    return;
-
-  mVisible = state;
-  emit visibilityChanged( this, state );
-}
-
 QgsLayerTreeLayer* QgsLayerTreeLayer::readXml( QDomElement& element )
 {
   if ( element.tagName() != QLatin1String( "layer-tree-layer" ) )
@@ -124,7 +112,7 @@ QgsLayerTreeLayer* QgsLayerTreeLayer::readXml( QDomElement& element )
 
   nodeLayer->readCommonXml( element );
 
-  nodeLayer->setVisible( checked );
+  nodeLayer->setItemVisibilityChecked( checked != Qt::Unchecked );
   nodeLayer->setExpanded( isExpanded );
   return nodeLayer;
 }
@@ -135,7 +123,7 @@ void QgsLayerTreeLayer::writeXml( QDomElement& parentElement )
   QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-layer" ) );
   elem.setAttribute( QStringLiteral( "id" ), mLayerId );
   elem.setAttribute( QStringLiteral( "name" ), name() );
-  elem.setAttribute( QStringLiteral( "checked" ), QgsLayerTreeUtils::checkStateToXml( mVisible ) );
+  elem.setAttribute( QStringLiteral( "checked" ), mChecked ? QStringLiteral( "Qt::Checked" ) : QStringLiteral( "Qt::Unchecked" ) );
   elem.setAttribute( QStringLiteral( "expanded" ), mExpanded ? "1" : "0" );
 
   writeCommonXml( elem );
@@ -145,7 +133,7 @@ void QgsLayerTreeLayer::writeXml( QDomElement& parentElement )
 
 QString QgsLayerTreeLayer::dump() const
 {
-  return QStringLiteral( "LAYER: %1 visible=%2 expanded=%3 id=%4\n" ).arg( name() ).arg( mVisible ).arg( mExpanded ).arg( layerId() );
+  return QStringLiteral( "LAYER: %1 checked=%2 expanded=%3 id=%4\n" ).arg( name() ).arg( mChecked ).arg( mExpanded ).arg( layerId() );
 }
 
 QgsLayerTreeLayer* QgsLayerTreeLayer::clone() const

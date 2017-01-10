@@ -27,10 +27,6 @@ QgsTextDiagram::QgsTextDiagram(): mOrientation( Vertical ), mShape( Circle )
   mBrush.setStyle( Qt::SolidPattern );
 }
 
-QgsTextDiagram::~QgsTextDiagram()
-{
-}
-
 QgsTextDiagram* QgsTextDiagram::clone() const
 {
   return new QgsTextDiagram( *this );
@@ -51,7 +47,7 @@ QSizeF QgsTextDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCo
   }
   else
   {
-    attrVal = feature.attributes().at( is.classificationAttribute );
+    attrVal = feature.attribute( is.classificationField );
   }
 
   bool ok = false;

@@ -21,6 +21,7 @@
 #define QGSSERVERFILTER_H
 
 #include <QMultiMap>
+#include "qgis_server.h"
 
 class QgsServerInterface;
 
@@ -46,8 +47,9 @@ class SERVER_EXPORT QgsServerFilter
      * and must be passed to QgsServerFilter instances.
      */
     QgsServerFilter( QgsServerInterface* serverInterface );
-    //! Destructor
-    virtual ~QgsServerFilter();
+
+    virtual ~QgsServerFilter() = default;
+
     //! Return the QgsServerInterface instance
     QgsServerInterface* serverInterface() { return mServerInterface; }
 

@@ -17,6 +17,7 @@
 
 #include <QList>
 #include <QSharedPointer>
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QgsEditorWidgetSetup;

@@ -23,6 +23,8 @@
 #include <QNetworkReply>
 #include <QUrl>
 
+#include "qgis_core.h"
+
 /**
   \class QgsNetworkContentFetcher
   \ingroup core

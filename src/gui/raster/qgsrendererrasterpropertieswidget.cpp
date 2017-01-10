@@ -33,17 +33,19 @@
 #include "qgssinglebandgrayrenderer.h"
 
 
+#include "qgsmessagelog.h"
+
 static void _initRendererWidgetFunctions()
 {
   static bool initialized = false;
   if ( initialized )
     return;
 
-  QgsRasterRendererRegistry::instance()->insertWidgetFunction( QStringLiteral( "paletted" ), QgsPalettedRendererWidget::create );
-  QgsRasterRendererRegistry::instance()->insertWidgetFunction( QStringLiteral( "multibandcolor" ), QgsMultiBandColorRendererWidget::create );
-  QgsRasterRendererRegistry::instance()->insertWidgetFunction( QStringLiteral( "singlebandpseudocolor" ), QgsSingleBandPseudoColorRendererWidget::create );
-  QgsRasterRendererRegistry::instance()->insertWidgetFunction( QStringLiteral( "singlebandgray" ), QgsSingleBandGrayRendererWidget::create );
-  QgsRasterRendererRegistry::instance()->insertWidgetFunction( QStringLiteral( "hillshade" ), QgsHillshadeRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "paletted" ), QgsPalettedRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "multibandcolor" ), QgsMultiBandColorRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "singlebandpseudocolor" ), QgsSingleBandPseudoColorRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "singlebandgray" ), QgsSingleBandGrayRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "hillshade" ), QgsHillshadeRendererWidget::create );
 
   initialized = true;
 }
@@ -107,11 +109,6 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
   syncToLayer( mRasterLayer );
 
   connect( mRasterLayer, SIGNAL( styleChanged() ), this, SLOT( refreshAfterSyleChanged() ) );
-}
-
-QgsRendererRasterPropertiesWidget::~QgsRendererRasterPropertiesWidget()
-{
-
 }
 
 void QgsRendererRasterPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
@@ -196,9 +193,9 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer* layer )
   cboRenderers->blockSignals( true );
   cboRenderers->clear();
   QgsRasterRendererRegistryEntry entry;
-  Q_FOREACH ( const QString& name, QgsRasterRendererRegistry::instance()->renderersList() )
+  Q_FOREACH ( const QString& name, QgsApplication::rasterRendererRegistry()->renderersList() )
   {
-    if ( QgsRasterRendererRegistry::instance()->rendererData( name, entry ) )
+    if ( QgsApplication::rasterRendererRegistry()->rendererData( name, entry ) )
     {
       if (( mRasterLayer->rasterType() != QgsRasterLayer::ColorLayer && entry.name != QLatin1String( "singlebandcolordata" ) ) ||
           ( mRasterLayer->rasterType() == QgsRasterLayer::ColorLayer && entry.name == QLatin1String( "singlebandcolordata" ) ) )
@@ -324,15 +321,40 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
 {
   QgsDebugMsg( "rendererName = " + rendererName );
   QgsRasterRendererWidget* oldWidget = mRendererWidget;
+  QgsRasterRenderer* oldRenderer = mRasterLayer->renderer();
+
+  int alphaBand = -1;
+  double opacity = 1;
+  if ( oldRenderer )
+  {
+    // Retain alpha band and opacity when switching renderer
+    alphaBand = oldRenderer->alphaBand();
+    opacity = oldRenderer->opacity();
+  }
 
   QgsRasterRendererRegistryEntry rendererEntry;
-  if ( QgsRasterRendererRegistry::instance()->rendererData( rendererName, rendererEntry ) )
+  if ( QgsApplication::rasterRendererRegistry()->rendererData( rendererName, rendererEntry ) )
   {
-    if ( rendererEntry.widgetCreateFunction ) //single band color data renderer e.g. has no widget
+    if ( rendererEntry.widgetCreateFunction ) // Single band color data renderer e.g. has no widget
     {
       QgsDebugMsg( "renderer has widgetCreateFunction" );
       // Current canvas extent (used to calc min/max) in layer CRS
       QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
+      if ( oldWidget )
+      {
+        if ( rendererName == "singlebandgray" )
+        {
+          whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( QgsRaster::SingleBandGray, mRasterLayer->dataProvider() ) );
+          whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
+        }
+        else if ( rendererName == "multibandcolor" )
+        {
+          whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( QgsRaster::MultiBandColor, mRasterLayer->dataProvider() ) );
+          whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
+        }
+      }
+      mRasterLayer->renderer()->setAlphaBand( alphaBand );
+      mRasterLayer->renderer()->setOpacity( opacity );
       mRendererWidget = rendererEntry.widgetCreateFunction( mRasterLayer, myExtent );
       mRendererWidget->setMapCanvas( mMapCanvas );
       connect( mRendererWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
@@ -340,15 +362,17 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
       stackedWidget->setCurrentWidget( mRendererWidget );
       if ( oldWidget )
       {
-        //compare used bands in new and old renderer and reset transparency dialog if different
+        // Compare used bands in new and old renderer and reset transparency dialog if different
         QgsRasterRenderer* oldRenderer = oldWidget->renderer();
         QgsRasterRenderer* newRenderer = mRendererWidget->renderer();
         QList<int> oldBands = oldRenderer->usesBands();
         QList<int> newBands = newRenderer->usesBands();
+
 //        if ( oldBands != newBands )
 //        {
 //          populateTransparencyTable( newRenderer );
 //        }
+
         delete oldRenderer;
         delete newRenderer;
       }

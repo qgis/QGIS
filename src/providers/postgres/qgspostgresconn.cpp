@@ -269,7 +269,7 @@ QgsPostgresConn::QgsPostgresConn( const QString& conninfo, bool readOnly, bool s
     return;
   }
 
-  //set client encoding to unicode because QString uses UTF-8 anyway
+  //set client encoding to Unicode because QString uses UTF-8 anyway
   QgsDebugMsg( "setting client encoding to UNICODE" );
   int errcode = PQsetClientEncoding( mConn, QStringLiteral( "UNICODE" ).toLocal8Bit() );
   if ( errcode == 0 )

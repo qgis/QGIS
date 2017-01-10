@@ -155,7 +155,7 @@ class QgsSymbol
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     /** Returns the units to use for sizes and widths within the symbol. Individual
-     * symbol layer definitions will interpret this in different ways, eg a marker symbol
+     * symbol layer definitions will interpret this in different ways, e.g., a marker symbol
      * may use it to specify the units for the marker size, while a line symbol
      * may use it to specify the units for the line width.
      * @returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol contains mixed units
@@ -164,7 +164,7 @@ class QgsSymbol
     QgsUnitTypes::RenderUnit outputUnit() const;
 
     /** Sets the units to use for sizes and widths within the symbol. Individual
-     * symbol definitions will interpret this in different ways, eg a marker symbol
+     * symbol definitions will interpret this in different ways, e.g., a marker symbol
      * may use it to specify the units for the marker size, while a line symbol
      * may use it to specify the units for the line width.
      * @param unit output units

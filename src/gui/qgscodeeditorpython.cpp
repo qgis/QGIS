@@ -36,10 +36,6 @@ QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> 
   setSciLexerPython();
 }
 
-QgsCodeEditorPython::~QgsCodeEditorPython()
-{
-}
-
 void QgsCodeEditorPython::setSciLexerPython()
 {
   // current line

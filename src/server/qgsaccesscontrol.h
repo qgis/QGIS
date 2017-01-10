@@ -22,6 +22,7 @@
 #include "qgsaccesscontrolfilter.h"
 
 #include <QMultiMap>
+#include "qgis_server.h"
 
 class QgsAccessControlPlugin;
 
@@ -47,7 +48,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
       mPluginsAccessControls = new QgsAccessControlFilterMap( *copy.mPluginsAccessControls );
     }
 
-    //! Destructor
+
     ~QgsAccessControl()
     {
       delete mPluginsAccessControls;

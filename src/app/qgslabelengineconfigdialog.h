@@ -18,6 +18,7 @@
 #include <QDialog>
 
 #include "ui_qgsengineconfigdialog.h"
+#include "qgis_app.h"
 
 
 class APP_EXPORT QgsLabelEngineConfigDialog : public QDialog, private Ui::QgsEngineConfigDialog

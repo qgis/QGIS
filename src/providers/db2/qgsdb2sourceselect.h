@@ -98,7 +98,7 @@ class QgsDb2SourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
     //! Constructor
     QgsDb2SourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
-    //! Destructor
+
     ~QgsDb2SourceSelect();
     //! Populate the connection list combo box
     void populateConnectionList();

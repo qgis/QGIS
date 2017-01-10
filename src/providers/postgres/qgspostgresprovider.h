@@ -74,29 +74,13 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     explicit QgsPostgresProvider( QString const &uri = "" );
 
-    //! Destructor
+
     virtual ~QgsPostgresProvider();
 
     virtual QgsAbstractFeatureSource* featureSource() const override;
-
-    /**
-      *   Returns the permanent storage type for this layer as a friendly name.
-      */
     virtual QString storageType() const override;
-
     virtual QgsCoordinateReferenceSystem crs() const override;
-
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
-
-    /** Get the feature type. This corresponds to
-     * WKBPoint,
-     * WKBLineString,
-     * WKBPolygon,
-     * WKBMultiPoint,
-     * WKBMultiLineString or
-     * WKBMultiPolygon
-     * as defined in qgis.h
-     */
     QgsWkbTypes::Type wkbType() const override;
 
     /** Return the number of layers for the current data source
@@ -104,9 +88,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     size_t layerCount() const;
 
-    /**
-     * Get the number of features in the layer
-     */
     long featureCount() const override;
 
     /**
@@ -126,9 +107,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void setExtent( QgsRectangle& newExtent );
 
     virtual QgsRectangle extent() const override;
-
-    /** Update the extent
-     */
     virtual void updateExtents() override;
 
     /**
@@ -145,13 +123,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void determinePrimaryKeyFromUriKeyColumn();
 
     QgsFields fields() const override;
-
-    /**
-     * Return a short comment for the data that this provider is
-     * providing access to (e.g. the comment for postgres table).
-     */
     QString dataComment() const override;
-
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
@@ -165,42 +137,14 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString defaultValueClause( int fieldId ) const override;
     QVariant defaultValue( int fieldId ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant& value = QVariant() ) const override;
-
-    /** Adds a list of features
-      @return true in case of success and false in case of failure*/
     bool addFeatures( QgsFeatureList & flist ) override;
-
-    /** Deletes a list of features
-      @param id list of feature ids
-      @return true in case of success and false in case of failure*/
     bool deleteFeatures( const QgsFeatureIds & id ) override;
-
+    bool truncate() override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool deleteAttributes( const QgsAttributeIds &name ) override;
     virtual bool renameAttributes( const QgsFieldNameMap& renamedAttributes ) override;
-
-    /** Changes attribute values of existing features
-      @param attr_map a map containing the new attributes. The integer is the feature id,
-      the first QString is the attribute name and the second one is the new attribute value
-      @return true in case of success and false in case of failure*/
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
-
-    /**
-       Changes geometries of existing features
-       @param geometry_map   A QMap containing the feature IDs to change the geometries of.
-                             the second map parameter being the new geometries themselves
-       @return               true in case of success and false in case of failure
-     */
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
-
-    /**
-     * Changes attribute values and geometries of existing features.
-     * @param attr_map a map containing changed attributes
-     * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
-     *                       that will have their geometries changed.
-     *                       The second map parameter being the new geometries themselves
-     * @return true in case of success and false in case of failure
-     */
     bool changeFeatures( const QgsChangedAttributesMap &attr_map, const QgsGeometryMap &geometry_map ) override;
 
     //! Get the postgres connection
@@ -210,13 +154,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString getTableName();
 
     QString subsetString() const override;
-
-    //! Mutator for sql where clause used to limit dataset size
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
-
     virtual bool supportsSubsetString() const override { return true; }
-
-    //! Returns a bitmask containing the supported capabilities
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /** The Postgres provider does its own transforms so we return
@@ -228,39 +167,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     //     it appears there are problems with some of the projection definitions
     bool supportsNativeTransform() {return false;}
 
-
-    /** Return a provider name
-     *
-     * Essentially just returns the provider key.  Should be used to build file
-     * dialogs so that providers can be shown with their supported types. Thus
-     * if more than one provider supports a given format, the user is able to
-     * select a specific provider to open that file.
-     *
-     * @note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
-     */
     QString name() const override;
-
-    /** Return description
-     *
-     * Return a terse string describing what the provider is.
-     *
-     * @note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
-     */
     QString description() const override;
-
-    /**
-     * Returns the transaction this data provider is included in, if any.
-     */
     virtual QgsTransaction* transaction() const override;
 
     /**
@@ -273,10 +181,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString& value );
 
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const override;
-
-    /**
-     * Return list of indexes to names for QgsPalLabeling fix
-     */
     virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
 
   signals:
@@ -427,7 +331,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     mutable QgsRectangle mLayerExtent;        //! Rectangle that contains the extent (bounding box) of the layer
 
     QgsWkbTypes::Type mDetectedGeomType;  //! geometry type detected in the database
-    bool mForce2d;                    //! geometry type needs to be forced to 2d (eg. ZM)
+    bool mForce2d;                    //! geometry type needs to be forced to 2d (e.g., ZM)
     QgsWkbTypes::Type mRequestedGeomType; //! geometry type requested in the uri
     QString mDetectedSrid;            //! Spatial reference detected in the database
     QString mRequestedSrid;           //! Spatial reference requested in the uri
@@ -559,6 +463,7 @@ class QgsPostgresSharedData
     QVariantList removeFid( QgsFeatureId fid );
     void insertFid( QgsFeatureId fid, const QVariantList& k );
     QVariantList lookupKey( QgsFeatureId featureId );
+    void clear();
 
   protected:
     QMutex mMutex; //!< Access to all data members is guarded by the mutex

@@ -32,7 +32,6 @@ QString QgsKeyValueFieldFormatter::representValue( QgsVectorLayer* layer, int fi
 
   if ( value.isNull() )
   {
-    QSettings settings;
     return QgsApplication::nullRepresentation();
   }
 
@@ -40,7 +39,8 @@ QString QgsKeyValueFieldFormatter::representValue( QgsVectorLayer* layer, int fi
   const QVariantMap map = value.toMap();
   for ( QVariantMap::const_iterator i = map.constBegin(); i != map.constEnd(); ++i )
   {
-    if ( !result.isEmpty() ) result.append( ", " );
+    if ( !result.isEmpty() )
+      result.append( ", " );
     result.append( i.key() ).append( ": " ).append( i.value().toString() );
   }
   return result;

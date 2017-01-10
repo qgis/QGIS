@@ -31,9 +31,11 @@ import sys
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, QByteArray, QSize, pyqtSignal
-from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem, QSizePolicy, QMainWindow
-from qgis.PyQt.QtGui import QIcon, QImage, QPainter
+from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, QByteArray, QSize, QSizeF, pyqtSignal
+from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem, QSizePolicy, QMainWindow, QShortcut
+from qgis.PyQt.QtGui import QIcon, QImage, QPainter, QKeySequence
+from qgis.PyQt.QtSvg import QSvgGenerator
+from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -207,12 +209,22 @@ class ModelerDialog(BASE, WIDGET):
         self.searchBox.textChanged.connect(self.fillAlgorithmTree)
         self.algorithmTree.doubleClicked.connect(self.addAlgorithm)
 
+        # Ctrl+= should also trigger a zoom in action
+        ctrlEquals = QShortcut(QKeySequence("Ctrl+="), self)
+        ctrlEquals.activated.connect(self.zoomIn)
+
         iconSize = settings.value("iconsize", 24)
         self.mToolbar.setIconSize(QSize(iconSize, iconSize))
         self.mActionOpen.triggered.connect(self.openModel)
         self.mActionSave.triggered.connect(self.save)
         self.mActionSaveAs.triggered.connect(self.saveAs)
+        self.mActionZoomIn.triggered.connect(self.zoomIn)
+        self.mActionZoomOut.triggered.connect(self.zoomOut)
+        self.mActionZoomActual.triggered.connect(self.zoomActual)
+        self.mActionZoomToItems.triggered.connect(self.zoomToItems)
         self.mActionExportImage.triggered.connect(self.exportAsImage)
+        self.mActionExportPdf.triggered.connect(self.exportAsPdf)
+        self.mActionExportSvg.triggered.connect(self.exportAsSvg)
         self.mActionExportPython.triggered.connect(self.exportAsPython)
         self.mActionEditHelp.triggered.connect(self.editHelp)
         self.mActionRun.triggered.connect(self.runModel)
@@ -286,7 +298,41 @@ class ModelerDialog(BASE, WIDGET):
     def saveAs(self):
         self.saveModel(True)
 
+    def zoomIn(self):
+        self.view.setTransformationAnchor(QGraphicsView.NoAnchor)
+        point = self.view.mapToScene(QPoint(self.view.viewport().width() / 2, self.view.viewport().height() / 2))
+
+        settings = QSettings()
+        factor = settings.value('/qgis/zoom_favor', 2.0)
+
+        self.view.scale(factor, factor)
+        self.view.centerOn(point)
+        self.repaintModel()
+
+    def zoomOut(self):
+        self.view.setTransformationAnchor(QGraphicsView.NoAnchor)
+        point = self.view.mapToScene(QPoint(self.view.viewport().width() / 2, self.view.viewport().height() / 2))
+
+        settings = QSettings()
+        factor = settings.value('/qgis/zoom_favor', 2.0)
+        factor = 1 / factor
+
+        self.view.scale(factor, factor)
+        self.view.centerOn(point)
+        self.repaintModel()
+
+    def zoomActual(self):
+        point = self.view.mapToScene(QPoint(self.view.viewport().width() / 2, self.view.viewport().height() / 2))
+        self.view.resetTransform()
+        self.view.centerOn(point)
+
+    def zoomToItems(self):
+        totalRect = self.scene.itemsBoundingRect()
+        totalRect.adjust(-10, -10, 10, 10)
+        self.view.fitInView(totalRect, Qt.KeepAspectRatio)
+
     def exportAsImage(self):
+        self.repaintModel(controls=False)
         filename, fileFilter = QFileDialog.getSaveFileName(self,
                                                            self.tr('Save Model As Image'), '',
                                                            self.tr('PNG files (*.png *.PNG)'))
@@ -296,10 +342,9 @@ class ModelerDialog(BASE, WIDGET):
         if not filename.lower().endswith('.png'):
             filename += '.png'
 
-        totalRect = QRectF(0, 0, 1, 1)
-        for item in list(self.scene.items()):
-            totalRect = totalRect.united(item.sceneBoundingRect())
+        totalRect = self.scene.itemsBoundingRect()
         totalRect.adjust(-10, -10, 10, 10)
+        imgRect = QRectF(0, 0, totalRect.width(), totalRect.height())
 
         img = QImage(totalRect.width(), totalRect.height(),
                      QImage.Format_ARGB32_Premultiplied)
@@ -307,12 +352,69 @@ class ModelerDialog(BASE, WIDGET):
         painter = QPainter()
         painter.setRenderHint(QPainter.Antialiasing)
         painter.begin(img)
-        self.scene.render(painter, totalRect, totalRect)
+        self.scene.render(painter, imgRect, totalRect)
         painter.end()
 
         img.save(filename)
 
         self.bar.pushMessage("", "Model was correctly exported as image", level=QgsMessageBar.SUCCESS, duration=5)
+        self.repaintModel(controls=True)
+
+    def exportAsPdf(self):
+        self.repaintModel(controls=False)
+        filename, fileFilter = QFileDialog.getSaveFileName(self,
+                                                           self.tr('Save Model As PDF'), '',
+                                                           self.tr('SVG files (*.pdf *.PDF)'))
+        if not filename:
+            return
+
+        if not filename.lower().endswith('.pdf'):
+            filename += '.pdf'
+
+        totalRect = self.scene.itemsBoundingRect()
+        totalRect.adjust(-10, -10, 10, 10)
+        printerRect = QRectF(0, 0, totalRect.width(), totalRect.height())
+
+        printer = QPrinter()
+        printer.setOutputFormat(QPrinter.PdfFormat)
+        printer.setOutputFileName(filename)
+        printer.setPaperSize(QSizeF(printerRect.width(), printerRect.height()), QPrinter.DevicePixel)
+        printer.setFullPage(True)
+
+        painter = QPainter(printer)
+        self.scene.render(painter, printerRect, totalRect)
+        painter.end()
+
+        self.bar.pushMessage("", "Model was correctly exported as PDF", level=QgsMessageBar.SUCCESS, duration=5)
+        self.repaintModel(controls=True)
+
+    def exportAsSvg(self):
+        self.repaintModel(controls=False)
+        filename, fileFilter = QFileDialog.getSaveFileName(self,
+                                                           self.tr('Save Model As SVG'), '',
+                                                           self.tr('SVG files (*.svg *.SVG)'))
+        if not filename:
+            return
+
+        if not filename.lower().endswith('.svg'):
+            filename += '.svg'
+
+        totalRect = self.scene.itemsBoundingRect()
+        totalRect.adjust(-10, -10, 10, 10)
+        svgRect = QRectF(0, 0, totalRect.width(), totalRect.height())
+
+        svg = QSvgGenerator()
+        svg.setFileName(filename)
+        svg.setSize(QSize(totalRect.width(), totalRect.height()))
+        svg.setViewBox(svgRect)
+        svg.setTitle(self.alg.name)
+
+        painter = QPainter(svg)
+        self.scene.render(painter, svgRect, totalRect)
+        painter.end()
+
+        self.bar.pushMessage("", "Model was correctly exported as SVG", level=QgsMessageBar.SUCCESS, duration=5)
+        self.repaintModel(controls=True)
 
     def exportAsPython(self):
         filename, filter = QFileDialog.getSaveFileName(self,
@@ -399,11 +501,11 @@ class ModelerDialog(BASE, WIDGET):
                                      self.tr('The selected model could not be loaded.\n'
                                              'See the log for more information.'))
 
-    def repaintModel(self):
+    def repaintModel(self, controls=True):
         self.scene = ModelerScene()
         self.scene.setSceneRect(QRectF(0, 0, ModelerAlgorithm.CANVAS_SIZE,
                                        ModelerAlgorithm.CANVAS_SIZE))
-        self.scene.paintModel(self.alg)
+        self.scene.paintModel(self.alg, controls)
         self.view.setScene(self.scene)
 
     def addInput(self):
@@ -437,7 +539,7 @@ class ModelerDialog(BASE, WIDGET):
         return QPointF(newX, MARGIN + BOX_HEIGHT / 2)
 
     def fillInputsTree(self):
-        icon = QIcon(os.path.join(pluginPath, 'images', 'input.png'))
+        icon = QIcon(os.path.join(pluginPath, 'images', 'input.svg'))
         parametersItem = QTreeWidgetItem()
         parametersItem.setText(0, self.tr('Parameters'))
         for paramType in ModelerParameterDefinitionDialog.paramTypes:

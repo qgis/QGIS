@@ -40,10 +40,6 @@ QgsCollapsibleGroupBoxBasic::QgsCollapsibleGroupBoxBasic( const QString &title,
   init();
 }
 
-QgsCollapsibleGroupBoxBasic::~QgsCollapsibleGroupBoxBasic()
-{
-}
-
 void QgsCollapsibleGroupBoxBasic::init()
 {
   // variables

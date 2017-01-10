@@ -44,11 +44,6 @@ QgsTransformEffect::QgsTransformEffect()
 
 }
 
-QgsTransformEffect::~QgsTransformEffect()
-{
-
-}
-
 void QgsTransformEffect::draw( QgsRenderContext &context )
 {
   if ( !source() || !enabled() || !context.painter() )

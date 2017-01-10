@@ -47,7 +47,7 @@ QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
   << QgsExpressionContextUtils::atlasScope( nullptr )
   << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );
@@ -370,7 +370,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
         }
         else
         {
-          mSizeFieldExpressionWidget->setField( mLayer->fields().at( lidr->classificationAttribute() ).name() );
+          mSizeFieldExpressionWidget->setField( lidr->classificationField() );
         }
       }
     }
@@ -379,15 +379,15 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     if ( dls )
     {
       mDiagramDistanceSpinBox->setValue( dls->distance() );
-      mPrioritySlider->setValue( dls->getPriority() );
-      mZIndexSpinBox->setValue( dls->getZIndex() );
+      mPrioritySlider->setValue( dls->priority() );
+      mZIndexSpinBox->setValue( dls->zIndex() );
       mDataDefinedXComboBox->setCurrentIndex( mDataDefinedXComboBox->findData( dls->xPosColumn ) );
       mDataDefinedYComboBox->setCurrentIndex( mDataDefinedYComboBox->findData( dls->yPosColumn ) );
       if ( dls->xPosColumn != -1 || dls->yPosColumn != -1 )
       {
         mDataDefinedPositionGroupBox->setChecked( true );
       }
-      mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( dls->getPlacement() ) );
+      mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( dls->placement() ) );
 
       chkLineAbove->setChecked( dls->linePlacementFlags() & QgsDiagramLayerSettings::AboveLine );
       chkLineBelow->setChecked( dls->linePlacementFlags() & QgsDiagramLayerSettings::BelowLine );
@@ -571,7 +571,7 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
     QgsExpression exp( sizeFieldNameOrExp );
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
     << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
     << QgsExpressionContextUtils::layerScope( mLayer );
 
@@ -801,8 +801,7 @@ void QgsDiagramProperties::apply()
     }
     else
     {
-      int attributeNumber = mLayer->fields().lookupField( sizeFieldNameOrExp );
-      dr->setClassificationAttribute( attributeNumber );
+      dr->setClassificationField( sizeFieldNameOrExp );
     }
     dr->setDiagramSettings( ds );
     renderer = dr;
@@ -838,7 +837,7 @@ void QgsDiagramProperties::apply()
   }
   dls.setPlacement(( QgsDiagramLayerSettings::Placement )mPlacementComboBox->currentData().toInt() );
 
-  unsigned int flags = 0;
+  QgsDiagramLayerSettings::LinePlacementFlags flags = 0;
   if ( chkLineAbove->isChecked() )
     flags |= QgsDiagramLayerSettings::AboveLine;
   if ( chkLineBelow->isChecked() )
@@ -860,7 +859,7 @@ QString QgsDiagramProperties::showExpressionBuilder( const QString& initialExpre
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
   << QgsExpressionContextUtils::atlasScope( nullptr )
   << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );

@@ -69,7 +69,7 @@ void QgsTextAnnotationItem::paint( QPainter * painter )
   {
     //QTextDocument::drawContents will draw text outside of the painter's clip region
     //when it is passed a clip rectangle. So, we need to intersect it with the
-    //painter's clip region to prevent text drawn outside clipped region (eg, outside composer maps, see #10400)
+    //painter's clip region to prevent text drawn outside clipped region (e.g., outside composer maps, see #10400)
     clipRect = clipRect.intersected( painter->clipRegion().boundingRect() );
   }
   //draw text document

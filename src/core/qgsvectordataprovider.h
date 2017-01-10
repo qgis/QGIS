@@ -17,6 +17,7 @@
 
 class QTextCodec;
 
+#include "qgis_core.h"
 #include <QList>
 #include <QSet>
 #include <QMap>
@@ -100,6 +101,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       ChangeFeatures =                              1 << 18,
       //! Supports renaming attributes (fields). Added in QGIS 2.16
       RenameAttributes =                            1 << 19,
+      //! Supports fast truncation of the layer (removing all features). Added in QGIS 3.0
+      FastTruncate =                                    1 << 20,
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -114,11 +117,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @param uri  uniform resource locator (URI) for a dataset
      */
     QgsVectorDataProvider( const QString& uri = QString() );
-
-    /**
-     * Destructor
-     */
-    virtual ~QgsVectorDataProvider();
 
     /**
      * Return feature source object that can be used for querying provider's data. The returned feature source
@@ -245,11 +243,21 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual bool addFeatures( QgsFeatureList &flist );
 
     /**
-     * Deletes one or more features
+     * Deletes one or more features from the provider. This requires the DeleteFeatures capability.
      * @param id list containing feature ids to delete
      * @return true in case of success and false in case of failure
+     * @see truncate()
      */
     virtual bool deleteFeatures( const QgsFeatureIds &id );
+
+    /**
+     * Removes all features from the layer. This requires either the FastTruncate or DeleteFeatures capability.
+     * Providers with the FastTruncate capability will use an optimised method to truncate the layer.
+     * @returns true in case of success and false in case of failure.
+     * @note added in QGIS 3.0
+     * @see deleteFeatures()
+     */
+    virtual bool truncate();
 
     /**
      * Adds new attributes
@@ -274,14 +282,18 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual bool renameAttributes( const QgsFieldNameMap& renamedAttributes );
 
     /**
-     * Changes attribute values of existing features.
+     * Changes attribute values of existing features. This should
+     * succeed if the provider reports the ChangeAttributeValues capability.
      * @param attr_map a map containing changed attributes
      * @return true in case of success and false in case of failure
      */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map );
 
     /**
-     * Changes attribute values and geometries of existing features.
+     * Changes attribute values and geometries of existing features. This should
+     * succeed if the provider reports both the ChangeAttributeValues and
+     * ChangeGeometries capabilities. Providers which report the ChangeFeatures
+     * capability implement an optimised version of this method.
      * @param attr_map a map containing changed attributes
      * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
      *                       that will have their geometries changed.
@@ -295,8 +307,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Returns any literal default values which are present at the provider for a specified
      * field index. Important - this should ONLY be called when creating an attribute to insert
      * directly into the database. Do not call this method for non-feature creation or modification,
-     * eg when validating an attribute or to compare it against an existing value, as calling it
-     * can cause changes to the underlying data source (eg Postgres provider where the default value
+     * e.g., when validating an attribute or to compare it against an existing value, as calling it
+     * can cause changes to the underlying data source (e.g., Postgres provider where the default value
      * is calculated as a result of a sequence). It is recommended that you instead use the methods
      * in QgsVectorLayerUtils such as QgsVectorLayerUtils::createFeature()
      * so that default value handling and validation is automatically carried out.
@@ -307,7 +319,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * Returns any default value clauses which are present at the provider for a specified
      * field index. These clauses are usually SQL fragments which must be evaluated by the
-     * provider, eg sequence values.
+     * provider, e.g., sequence values.
      * @see defaultValue()
      * @note added in QGIS 3.0
      */
@@ -322,7 +334,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
 
     /**
-     * Returns true if a constraint check should be skipped for a specified field (eg if
+     * Returns true if a constraint check should be skipped for a specified field (e.g., if
      * the value returned by defaultValue() is trusted implicitly. An optional attribute value can be
      * passed which can help refine the skip constraint check.
      * @note added in QGIS 3.0

@@ -404,13 +404,11 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         ds.CreateLayer('testMultiLineString', geom_type=ogr.wkbMultiLineString)
         ds.CreateLayer('testMultiPolygon', geom_type=ogr.wkbMultiPolygon)
         ds.CreateLayer('testGeometryCollection', geom_type=ogr.wkbGeometryCollection)
-
-        if int(gdal.VersionInfo('VERSION_NUM')) >= GDAL_COMPUTE_VERSION(2, 0, 0):
-            ds.CreateLayer('testCircularString', geom_type=ogr.wkbCircularString)
-            ds.CreateLayer('testCompoundCurve', geom_type=ogr.wkbCompoundCurve)
-            ds.CreateLayer('testCurvePolygon', geom_type=ogr.wkbCurvePolygon)
-            ds.CreateLayer('testMultiCurve', geom_type=ogr.wkbMultiCurve)
-            ds.CreateLayer('testMultiSurface', geom_type=ogr.wkbMultiSurface)
+        ds.CreateLayer('testCircularString', geom_type=ogr.wkbCircularString)
+        ds.CreateLayer('testCompoundCurve', geom_type=ogr.wkbCompoundCurve)
+        ds.CreateLayer('testCurvePolygon', geom_type=ogr.wkbCurvePolygon)
+        ds.CreateLayer('testMultiCurve', geom_type=ogr.wkbMultiCurve)
+        ds.CreateLayer('testMultiSurface', geom_type=ogr.wkbMultiSurface)
         ds = None
 
         uri.setDatabase(test_gpkg)

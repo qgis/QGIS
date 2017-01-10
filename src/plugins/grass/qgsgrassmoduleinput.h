@@ -101,7 +101,6 @@ class QgsGrassModuleInputProxy : public QSortFilterProxyModel
 
   public:
     explicit QgsGrassModuleInputProxy( QgsGrassModuleInputModel *sourceModel, QgsGrassObject::Type type, QObject *parent = 0 );
-    ~QgsGrassModuleInputProxy() {}
 
   protected:
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
@@ -243,7 +242,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
                          QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                          bool direct, QWidget * parent = 0 );
 
-    //! Destructor
+
     ~QgsGrassModuleInput();
 
     //! Retruns list of options which will be passed to module

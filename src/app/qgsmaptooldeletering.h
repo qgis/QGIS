@@ -17,6 +17,7 @@
 #define QGSMAPTOOLDELETERING_H
 
 #include "qgsmaptooledit.h"
+#include "qgis_app.h"
 
 class QgsVertexMarker;
 //! Map tool to delete vertices from line/polygon features

@@ -26,11 +26,6 @@ QgsComposerTextTableV2::QgsComposerTextTableV2( QgsComposition* c, bool createUn
 
 }
 
-QgsComposerTextTableV2::~QgsComposerTextTableV2()
-{
-
-}
-
 void QgsComposerTextTableV2::addRow( const QStringList& row )
 {
   mRowText.append( row );

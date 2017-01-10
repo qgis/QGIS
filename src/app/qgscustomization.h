@@ -25,6 +25,7 @@
 #include <QMouseEvent>
 #include <QSettings>
 #include <QTreeWidgetItem>
+#include "qgis_app.h"
 
 class QString;
 class QWidget;

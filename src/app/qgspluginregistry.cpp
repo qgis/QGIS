@@ -380,7 +380,7 @@ void QgsPluginRegistry::loadCppPlugin( const QString& theFullPathName )
         {
           // something went wrong
           QMessageBox::warning( mQgisInterface->mainWindow(), QObject::tr( "Error Loading Plugin" ),
-                                QObject::tr( "There was an error loading a plugin."
+                                QObject::tr( "There was an error loading a plugin. "
                                              "The following diagnostic information may help the QGIS developers resolve the issue:\n%1." )
                                 .arg( myError ) );
           //disable it to the qsettings file [ts]

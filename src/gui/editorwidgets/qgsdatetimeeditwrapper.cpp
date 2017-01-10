@@ -84,9 +84,9 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
   }
   else
   {
-    QgsMessageLog::instance()->logMessage( tr( "The usual date/time widget QDateTimeEdit cannot be configured to allow NULL values. "
-                                           "For that the QGIS custom widget QgsDateTimeEdit needs to be used." ),
-                                           QStringLiteral( "field widgets" ) );
+    QgsApplication::messageLog()->logMessage( tr( "The usual date/time widget QDateTimeEdit cannot be configured to allow NULL values. "
+        "For that the QGIS custom widget QgsDateTimeEdit needs to be used." ),
+        QStringLiteral( "field widgets" ) );
   }
 
   if ( mQgsDateTimeEdit )

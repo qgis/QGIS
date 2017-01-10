@@ -17,6 +17,7 @@
 
 #include "qgssymbollayerwidget.h"
 #include "ui_widget_vectorfield.h"
+#include "qgis_gui.h"
 
 class QgsVectorFieldSymbolLayer;
 
@@ -28,7 +29,6 @@ class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerWidget, p
     Q_OBJECT
   public:
     QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
-    ~QgsVectorFieldSymbolLayerWidget();
 
     static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsVectorFieldSymbolLayerWidget( vl ); }
 

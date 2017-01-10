@@ -21,6 +21,7 @@
 #include <QSizeF>
 #include <QString>
 #include <gdal_version.h>
+#include "qgis_analysis.h"
 
 class QgsRectangle;
 
@@ -48,6 +49,9 @@ class ANALYSIS_EXPORT QgsAlignRaster
       //! Construct raster info with a path to a raster file
       RasterInfo( const QString& layerpath );
       ~RasterInfo();
+
+      RasterInfo( const RasterInfo& rh ) = delete;
+      RasterInfo& operator=( const RasterInfo& rh ) = delete;
 
       //! Check whether the given path is a valid raster
       bool isValid() const { return nullptr != mDataset; }
@@ -86,9 +90,6 @@ class ANALYSIS_EXPORT QgsAlignRaster
       int mBandCnt;
 
     private:
-
-      RasterInfo( const RasterInfo& rh );
-      RasterInfo& operator=( const RasterInfo& rh );
 
       friend class QgsAlignRaster;
     };
@@ -147,7 +148,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
       //! @return false if the execution should be cancelled, true otherwise
       virtual bool progress( double complete ) = 0;
 
-      virtual ~ProgressHandler() {}
+      virtual ~ProgressHandler() = default;
     };
 
     //! Assign a progress handler instance. Does not take ownership. nullptr can be passed.

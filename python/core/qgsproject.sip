@@ -86,7 +86,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     void setCrs( const QgsCoordinateReferenceSystem& crs );
 
     /**
-     * Returns a proj string representing the project's ellipsoid setting, eg "WGS84".
+     * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
      * @see setEllipsoid()
      * @see crs()
      * @note added in QGIS 2.18
@@ -94,7 +94,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     QString ellipsoid() const;
 
     /**
-     * Sets the project's ellipsoid from a proj string representation, eg "WGS84".
+     * Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
      * @see ellipsoid()
      * @see setCrs()
      * @note added in QGIS 2.18
@@ -106,52 +106,37 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     void clear();
 
-    /** Reads a project file.
-     * @param file name of project file to read
-     * @note Any current plug-in state is erased
-     * @note Calling read() performs the following operations:
-     *
-     * - Gets the extents
-     * - Creates maplayers
-     * - Registers maplayers
-     *
-     * @note it's presumed that the caller has already reset the map canvas, map registry, and legend
+    /** Reads given project file from the given file.
+     * @param filename name of project file to read
+     * @returns true if project file has been read successfully
      */
-    bool read( const QFileInfo& file );
+    bool read( const QString& filename );
 
-    /** Reads the current project file.
-     * @note Any current plug-in state is erased
-     * @note Calling read() performs the following operations:
-     *
-     * - Gets the extents
-     * - Creates maplayers
-     * - Registers maplayers
-     *
-     * @note it's presumed that the caller has already reset the map canvas, map registry, and legend
+    /** Reads the project from its currently associated file (see fileName() ).
+     * @returns true if project file has been read successfully
      */
     bool read();
 
     /** Reads the layer described in the associated DOM node.
      *
+     * @note This method is mainly for use by QgsProjectBadLayerHandler subclasses
+     * that may fix definition of bad layers with the user's help in GUI. Calling
+     * this method with corrected DOM node adds the layer back to the project.
+     *
      * @param layerNode represents a QgsProject DOM node that encodes a specific layer.
-     *
-     * QgsProject raises an exception when one of the QgsProject::read()
-     * implementations fails.  Since the read()s are invoked from qgisapp,
-     * then qgisapp handles the exception.  It prompts the user for the new
-     * location of the data, if any.  If there is a new location, the DOM
-     * node associated with the layer has its datasource tag corrected.
-     * Then that node is passed to this member function to be re-opened.
-     *
      */
-    bool read( QDomNode& layerNode );
+    bool readLayer( const QDomNode& layerNode );
 
-    /** Writes the project to a file.
-     * @param file destination file
+    /**
+     * Writes the project to a file.
+     * @param filename destination file
      * @note calling this implicitly sets the project's filename (see setFileName() )
      * @note isDirty() will be set to false if project is successfully written
      * @returns true if project was written successfully
+     *
+     * \note Added in QGIS 3.0
      */
-    bool write( const QFileInfo& file );
+    bool write( const QString& filename );
 
     /** Writes the project to its current associated file (see fileName() ).
      * @note isDirty() will be set to false if project is successfully written
@@ -411,33 +396,16 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      *
      * @note Added in QGIS 3.0
      */
-    QStringList avoidIntersectionsList() const;
+    QList<QgsVectorLayer*> avoidIntersectionsLayers() const;
 
     /**
      * A list of layers with which intersections should be avoided.
      *
      * @note Added in QGIS 3.0
      */
-    void setAvoidIntersectionsList( const QStringList& avoidIntersectionsList );
-
-    /**
-     * A map of custom project variables.
-     * To get all available variables including generated ones
-     * use QgsExpressionContextUtils::projectScope() instead.
-     */
-    QgsStringMap variables() const;
-
-    /**
-     * A map of custom project variables.
-     * Be careful not to set generated variables.
-     */
-    void setVariables( const QgsStringMap& variables );
-
-    //
-    // Functionality from QgsMapLayerRegistry
-    //
-
-    //! Returns the number of registered layers.
+    void setAvoidIntersectionsLayers( const QList<QgsVectorLayer*>& layers );
+    QVariantMap customVariables() const;
+    void setCustomVariables( const QVariantMap& customVariables );
     int count() const;
 
     /** Retrieve a pointer to a registered layer by layer ID.
@@ -660,7 +628,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     /** Emitted whenever the expression variables stored in the project have been changed.
      * @note added in QGIS 3.0
      */
-    void variablesChanged();
+    void customVariablesChanged();
 
     /**
      * Emitted whenever a new transaction group has been created or a
@@ -678,11 +646,11 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     void topologicalEditingChanged();
 
     /**
-     * Emitted whenever avoidIntersectionsList has changed.
+     * Emitted whenever avoidIntersectionsLayers has changed.
      *
      * @note Added in QGIS 3.0
      */
-    void avoidIntersectionsListChanged();
+    void avoidIntersectionsLayersChanged();
 
     /**
      * Emitted when the map theme collection changes.

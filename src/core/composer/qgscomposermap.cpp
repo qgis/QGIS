@@ -77,10 +77,12 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
   mXOffset = 0.0;
   mYOffset = 0.0;
 
+  QgsProject* project = mComposition->project();
+
   //get the color for map canvas background and set map background color accordingly
-  int bgRedInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
-  int bgGreenInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
-  int bgBlueInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
+  int bgRedInt = project->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
+  int bgGreenInt = project->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
+  int bgBlueInt = project->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
   setBackgroundColor( QColor( bgRedInt, bgGreenInt, bgBlueInt ) );
 
   //calculate mExtent based on width/height ratio and map canvas extent
@@ -218,7 +220,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
     const int layerIdx = mCurrentExportLayer - ( hasBackground() ? 1 : 0 );
     if ( layerIdx >= 0 && layerIdx < layers.length() )
     {
-      // exporting with separate layers (eg, to svg layers), so we only want to render a single map layer
+      // exporting with separate layers (e.g., to svg layers), so we only want to render a single map layer
       QgsMapLayer* ml = layers[ layers.length() - layerIdx - 1 ];
       layers.clear();
       layers << ml;
@@ -544,8 +546,8 @@ QList<QgsMapLayer*> QgsComposerMap::layersToRender( const QgsExpressionContext* 
       presetName = exprVal.toString();
     }
 
-    if ( QgsProject::instance()->mapThemeCollection()->hasMapTheme( presetName ) )
-      renderLayers = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
+    if ( mComposition->project()->mapThemeCollection()->hasMapTheme( presetName ) )
+      renderLayers = mComposition->project()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
     else  // fallback to using map canvas layers
       renderLayers = mComposition->mapSettings().layers();
   }
@@ -567,7 +569,7 @@ QList<QgsMapLayer*> QgsComposerMap::layersToRender( const QgsExpressionContext* 
     //need to convert layer names to layer ids
     Q_FOREACH ( const QString& name, layerNames )
     {
-      QList< QgsMapLayer* > matchingLayers = QgsProject::instance()->mapLayersByName( name );
+      QList< QgsMapLayer* > matchingLayers = mComposition->project()->mapLayersByName( name );
       Q_FOREACH ( QgsMapLayer* layer, matchingLayers )
       {
         renderLayers << layer;
@@ -605,8 +607,8 @@ QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender( const QgsExp
       presetName = exprVal.toString();
     }
 
-    if ( QgsProject::instance()->mapThemeCollection()->hasMapTheme( presetName ) )
-      return QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( presetName );
+    if ( mComposition->project()->mapThemeCollection()->hasMapTheme( presetName ) )
+      return mComposition->project()->mapThemeCollection()->mapThemeStyleOverrides( presetName );
     else
       return QMap<QString, QString>();
   }
@@ -1200,7 +1202,7 @@ bool QgsComposerMap::containsAdvancedEffects() const
 void QgsComposerMap::connectUpdateSlot()
 {
   //connect signal from layer registry to update in case of new or deleted layers
-  QgsProject* project = QgsProject::instance();
+  QgsProject* project = mComposition->project();
   if ( project )
   {
     connect( project, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( layersChanged() ) );
@@ -1403,7 +1405,7 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
     for ( int i = 0; i < layerIdNodeList.size(); ++i )
     {
       QString layerId = layerIdNodeList.at( i ).toElement().text();
-      if ( QgsMapLayer* ml = QgsProject::instance()->mapLayer( layerId ) )
+      if ( QgsMapLayer* ml = mComposition->project()->mapLayer( layerId ) )
         mLayers << ml;
     }
   }
@@ -1615,7 +1617,7 @@ void QgsComposerMap::syncLayerSet()
   QList<QgsMapLayer*> currentLayers;
   if ( mKeepLayerSet )
   {
-    currentLayers = QgsProject::instance()->mapLayers().values();
+    currentLayers = mComposition->project()->mapLayers().values();
   }
   else //only consider layers visible in the map
   {

@@ -18,6 +18,7 @@
 #ifndef QGSCIRCULARSTRING_H
 #define QGSCIRCULARSTRING_H
 
+#include "qgis_core.h"
 #include "qgscurve.h"
 #include <QVector>
 
@@ -31,7 +32,6 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 {
   public:
     QgsCircularString();
-    ~QgsCircularString();
 
     virtual bool operator==( const QgsCurve& other ) const override;
     virtual bool operator!=( const QgsCurve& other ) const override;

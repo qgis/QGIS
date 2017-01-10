@@ -108,10 +108,7 @@ class FieldsCalculator(GeoAlgorithm):
         exp.setDistanceUnits(QgsProject.instance().distanceUnits())
         exp.setAreaUnits(QgsProject.instance().areaUnits())
 
-        exp_context = QgsExpressionContext()
-        exp_context.appendScope(QgsExpressionContextUtils.globalScope())
-        exp_context.appendScope(QgsExpressionContextUtils.projectScope())
-        exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+        exp_context = QgsExpressionContext(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
 
         if not exp.prepare(exp_context):
             raise GeoAlgorithmExecutionException(

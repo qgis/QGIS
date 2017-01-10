@@ -15,6 +15,7 @@
 #ifndef QGSFEATURESTORE_H
 #define QGSFEATURESTORE_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"

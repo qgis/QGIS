@@ -19,6 +19,7 @@
 #define QGSSCALECOMBOBOX_H
 
 #include <QComboBox>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A combobox which lets the user select map scale from predefined list
@@ -29,7 +30,6 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     Q_OBJECT
   public:
     QgsScaleComboBox( QWidget* parent = nullptr );
-    virtual ~QgsScaleComboBox();
 
     //! Function to read the selected scale as text
     QString scaleString();

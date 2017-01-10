@@ -27,6 +27,7 @@
 #include <QUndoStack>
 
 #include "qgspanelwidget.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsMapLayer;

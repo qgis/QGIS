@@ -22,14 +22,9 @@
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
 #include "qgsogrhelperfunctions.h"
+#include "qgsapplication.h"
 #include <ogr_api.h>
 #include <cpl_error.h>
-
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#endif
 
 QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connType, const QString& connName, Qt::WindowFlags fl )
     : QDialog( parent, fl )
@@ -88,7 +83,7 @@ void QgsNewOgrConnection::testConnection()
   OGRDataSourceH       poDS;
   OGRSFDriverH         pahDriver;
   CPLErrorReset();
-  poDS = OGROpen( TO8F( uri ), false, &pahDriver );
+  poDS = OGROpen( uri.toUtf8().constData(), false, &pahDriver );
   if ( !poDS )
   {
     QMessageBox::information( this, tr( "Test connection" ), tr( "Connection failed - Check settings and try again.\n\nExtended error information:\n%1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );

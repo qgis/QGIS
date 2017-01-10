@@ -248,7 +248,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static QString osName();
 
-    /** Returns the QGIS platform name, eg "desktop" or "server".
+    /** Returns the QGIS platform name, e.g., "desktop" or "server".
      * @note added in QGIS 2.14
      * @see osName()
      */
@@ -381,6 +381,62 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static QgsTaskManager* taskManager();
 
+    /**
+     * Returns the application's color scheme registry, used for managing color schemes.
+     * @note added in QGIS 3.0
+     */
+    static QgsColorSchemeRegistry* colorSchemeRegistry();
+
+    /**
+     * Returns the application's paint effect registry, used for managing paint effects.
+     * @note added in QGIS 3.0
+     */
+    static QgsPaintEffectRegistry* paintEffectRegistry();
+
+    /**
+     * Returns the application's renderer registry, used for managing vector layer renderers.
+     * @note added in QGIS 3.0
+     */
+    static QgsRendererRegistry* rendererRegistry();
+
+    /**
+     * Returns the application's data item provider registry, which keeps a list of data item
+     * providers that may add items to the browser tree.
+     * @note added in QGIS 3.0
+     */
+    static QgsDataItemProviderRegistry* dataItemProviderRegistry();
+
+    /**
+     * Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
+     * within SVG files.
+     * @note added in QGIS 3.0
+     */
+    static QgsSvgCache* svgCache();
+
+    /**
+     * Returns the application's symbol layer registry, used for managing symbol layers.
+     * @note added in QGIS 3.0
+     */
+    static QgsSymbolLayerRegistry* symbolLayerRegistry();
+
+    /**
+     * Returns the application's GPS connection registry, used for managing GPS connections.
+     * @note added in QGIS 3.0
+     */
+    static QgsGPSConnectionRegistry* gpsConnectionRegistry();
+
+    /**
+     * Returns the application's plugin layer registry, used for managing plugin layer types.
+     * @note added in QGIS 3.0
+     */
+    static QgsPluginLayerRegistry* pluginLayerRegistry();
+
+    /**
+     * Returns the application's message log.
+     * @note added in QGIS 3.0
+     */
+    static QgsMessageLog* messageLog();
+
 %If(ANDROID)
     //dummy method to workaround sip generation issue issue
     bool x11EventFilter ( XEvent * event );
@@ -406,24 +462,13 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static QgsFieldFormatterRegistry* fieldFormatterRegistry();
     static QString nullRepresentation();
     static void setNullRepresentation( const QString& nullRepresentation );
-  public slots:
-
-    /** Causes the application instance to emit the settingsChanged() signal. This should
-     * be called whenever global, application-wide settings are altered to advise listeners
-     * that they may need to update their state.
-     * @see settingsChanged()
-     * @note added in QGIS 3.0
-     */
-    void emitSettingsChanged();
-
+    static QVariantMap customVariables();
+    static void setCustomVariables( const QVariantMap& customVariables );
+    static void setCustomVariable( const QString& name, const QVariant& value );
   signals:
     //! @note not available in python bindings
     // void preNotify( QObject * receiver, QEvent * event, bool * done );
 
-    /** Emitted whenever any global, application-wide settings are changed.
-     * @note added in QGIS 3.0
-     * @see emitSettingsChanged()
-     */
-    void settingsChanged();
+    void customVariablesChanged();
     void nullRepresentationChanged();
 };

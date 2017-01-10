@@ -16,19 +16,25 @@
 #define QGSFLOATINGWIDGET_H
 
 #include <QWidget>
+#include "qgis_gui.h"
 
+class QgsFloatingWidgetEventFilter;
 
 /** \ingroup gui
  * \class QgsFloatingWidget
  * A QWidget subclass for creating widgets which float outside of the normal Qt layout
  * system. Floating widgets use an "anchor widget" to determine how they are anchored
  * within their parent widget.
- * \note Added in version 2.16
+ * \note Added in version 3.0
  */
 
 class GUI_EXPORT QgsFloatingWidget: public QWidget
 {
     Q_OBJECT
+    Q_ENUMS( AnchorPoint )
+    Q_PROPERTY( QWidget* anchorWidget READ anchorWidget WRITE setAnchorWidget NOTIFY anchorWidgetChanged )
+    Q_PROPERTY( AnchorPoint anchorPoint READ anchorPoint WRITE setAnchorPoint NOTIFY anchorPointChanged )
+    Q_PROPERTY( AnchorPoint anchorWidgetPoint READ anchorWidgetPoint WRITE setAnchorWidgetPoint NOTIFY anchorWidgetPointChanged )
 
   public:
 
@@ -75,7 +81,7 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
      * @param point anchor point
      * @see anchorPoint()
      */
-    void setAnchorPoint( AnchorPoint point ) { mFloatAnchorPoint = point; anchorPointChanged(); }
+    void setAnchorPoint( AnchorPoint point );
 
     /** Returns the anchor widget's anchor point, which corresponds to the point on the anchor widget which
      * the floating widget should "attach" to. The floating widget should remain fixed in the same relative position
@@ -89,7 +95,18 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
      * to this anchor widget whenever the widget's parent is resized or moved.
      * @see setAnchorWidgetPoint()
      */
-    void setAnchorWidgetPoint( AnchorPoint point ) { mAnchorWidgetAnchorPoint = point; anchorPointChanged(); }
+    void setAnchorWidgetPoint( AnchorPoint point );
+
+  signals:
+
+    //! Emitted when the anchor widget changes
+    void anchorWidgetChanged( QWidget* widget );
+
+    //! Emitted when the anchor point changes
+    void anchorPointChanged( AnchorPoint point );
+
+    //! Emitted when the anchor widget point changes
+    void anchorWidgetPointChanged( AnchorPoint point );
 
   protected:
     void showEvent( QShowEvent* e ) override;
@@ -98,13 +115,13 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
   private slots:
 
     //! Repositions the floating widget to a changed anchor point
-    void anchorPointChanged();
+    void onAnchorPointChanged();
 
   private:
 
     QWidget* mAnchorWidget;
-    QObject* mParentEventFilter;
-    QObject* mAnchorEventFilter;
+    QgsFloatingWidgetEventFilter* mParentEventFilter;
+    QgsFloatingWidgetEventFilter* mAnchorEventFilter;
     AnchorPoint mFloatAnchorPoint;
     AnchorPoint mAnchorWidgetAnchorPoint;
 

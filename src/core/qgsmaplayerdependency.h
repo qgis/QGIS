@@ -19,6 +19,7 @@
 #ifndef QGSMAPLAYERDEPENDENCY_H
 #define QGSMAPLAYERDEPENDENCY_H
 
+#include "qgis_core.h"
 #include <QString>
 
 /** \ingroup core

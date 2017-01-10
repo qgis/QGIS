@@ -16,6 +16,7 @@
 #ifndef QGSRASTERCHECKER_H
 #define QGSRASTERCHECKER_H
 
+#include "qgis_core.h"
 #include <QDir>
 #include <QString>
 class QImage;
@@ -30,9 +31,6 @@ class CORE_EXPORT QgsRasterChecker
   public:
 
     QgsRasterChecker();
-
-    //! Destructor
-    ~QgsRasterChecker() {}
 
     QString report() { return mReport; }
 

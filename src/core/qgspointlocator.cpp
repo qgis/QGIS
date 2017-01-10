@@ -65,7 +65,6 @@ class QgsPointLocator_Stream : public IDataStream
         : mDataList( dataList )
         , mIt( mDataList )
     { }
-    ~QgsPointLocator_Stream() { }
 
     virtual IData* getNext() override { return mIt.next(); }
     virtual bool hasNext() override { return mIt.hasNext(); }
@@ -192,8 +191,6 @@ class QgsPointLocator_VisitorArea : public IVisitor
         , mList( list )
         , mGeomPt( QgsGeometry::fromPoint( origPt ) )
     {}
-
-    ~QgsPointLocator_VisitorArea() {}
 
     void visitNode( const INode& n ) override { Q_UNUSED( n ); }
     void visitData( std::vector<const IData*>& v ) override { Q_UNUSED( v ); }
@@ -852,7 +849,7 @@ QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPoint& point, do
   QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
   mRTree->intersectsWithQuery( rect2region( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
-    return Match(); // // make sure that only match strictly within the tolerance is returned
+    return Match(); // make sure that only match strictly within the tolerance is returned
   return m;
 }
 
@@ -874,7 +871,7 @@ QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPoint& point, doub
   QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
   mRTree->intersectsWithQuery( rect2region( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
-    return Match(); // // make sure that only match strictly within the tolerance is returned
+    return Match(); // make sure that only match strictly within the tolerance is returned
   return m;
 }
 

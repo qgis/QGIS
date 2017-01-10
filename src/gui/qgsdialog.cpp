@@ -39,7 +39,3 @@ QgsDialog::QgsDialog( QWidget *parent, Qt::WindowFlags fl,
   setLayout( layout );
 }
 
-QgsDialog::~QgsDialog()
-{
-}
-

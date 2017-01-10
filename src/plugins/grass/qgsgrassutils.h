@@ -33,7 +33,7 @@ class QgsGrassUtils
     //! Constructor
     QgsGrassUtils();
 
-    //! Destructor
+
     ~QgsGrassUtils();
 
   public:
@@ -62,7 +62,7 @@ class QgsGrassElementDialog: public QObject
     //! Constructor
     explicit QgsGrassElementDialog( QWidget *parent );
 
-    //! Destructor
+
     ~QgsGrassElementDialog();
 
   public:

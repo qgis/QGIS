@@ -72,6 +72,21 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         cur.close()
         self.con.commit()
 
+    def getEditableLayer(self):
+        # create temporary table for edit tests
+        self.execSQLCommand('DROP TABLE IF EXISTS qgis_test."editData" CASCADE')
+        self.execSQLCommand('CREATE TABLE qgis_test."editData" ( pk SERIAL NOT NULL PRIMARY KEY, cnt integer, name text, name2 text, num_char text, geom public.geometry(Point, 4326))')
+        self.execSQLCommand("INSERT INTO qgis_test.\"editData\" (pk, cnt, name, name2, num_char, geom) VALUES "
+                            "(5, -200, NULL, 'NuLl', '5', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),"
+                            "(3, 300, 'Pear', 'PEaR', '3', NULL),"
+                            "(1, 100, 'Orange', 'oranGe', '1', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),"
+                            "(2, 200, 'Apple', 'Apple', '2', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),"
+                            "(4, 400, 'Honey', 'Honey', '4', '0101000020E610000014AE47E17A5450C03333333333935340')")
+        vl = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."editData" (geom) sql=',
+            'test', 'postgres')
+        return vl
+
     def enableCompiler(self):
         QSettings().setValue('/qgis/compileExpressions', True)
 
@@ -79,7 +94,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         QSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
-        return set(['intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))'])
+        return set([])
 
     def partiallyCompiledFilters(self):
         return set([])
@@ -649,7 +664,7 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
         QSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
-        return set(['intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))'])
+        return set([])
 
     def partiallyCompiledFilters(self):
         return set([])

@@ -18,6 +18,7 @@
 
 #include "qgstip.h"
 #include <QList>
+#include "qgis_app.h"
 
 /** \ingroup app
 * \brief A factory class to serve up tips to the user.
@@ -33,7 +34,7 @@ class APP_EXPORT QgsTipFactory : public QObject
   public:
     //! Constructor
     QgsTipFactory();
-    //! Destructor
+
     ~QgsTipFactory();
 
     /** Get a random tip (generic or gui-centric)

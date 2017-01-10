@@ -18,6 +18,7 @@
 #include "ui_qgsinvertedpolygonrendererwidgetbase.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgsrendererwidget.h"
+#include "qgis_gui.h"
 
 class QMenu;
 
@@ -46,7 +47,6 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, pr
      */
     QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
-    //! @returns the current feature renderer
     virtual QgsFeatureRenderer* renderer() override;
 
     void setContext( const QgsSymbolWidgetContext& context ) override;

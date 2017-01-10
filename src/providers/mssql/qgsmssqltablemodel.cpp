@@ -37,10 +37,6 @@ QgsMssqlTableModel::QgsMssqlTableModel()
   setHorizontalHeaderLabels( headerLabels );
 }
 
-QgsMssqlTableModel::~QgsMssqlTableModel()
-{
-}
-
 void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProperty )
 {
   QgsDebugMsg( QString( "%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7" )

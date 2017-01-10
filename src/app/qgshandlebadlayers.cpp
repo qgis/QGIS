@@ -369,7 +369,7 @@ void QgsHandleBadLayers::apply()
     QString datasource = item->text();
 
     node.namedItem( QStringLiteral( "datasource" ) ).toElement().firstChild().toText().setData( datasource );
-    if ( QgsProject::instance()->read( node ) )
+    if ( QgsProject::instance()->readLayer( node ) )
     {
       mLayerList->removeRow( i-- );
     }

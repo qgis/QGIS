@@ -17,6 +17,7 @@
 #ifndef QGSPAINTEFFECT_H
 #define QGSPAINTEFFECT_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include <QPainter>
 #include <QDomDocument>
@@ -247,7 +248,7 @@ class CORE_EXPORT QgsPaintEffect
  *
  * The draw source effect can be used to draw an unaltered copy of the original source
  * picture. Minor changes like lowering the opacity and applying a blend mode are
- * supported, however these changes will force the resultant output to be rasterised.
+ * supported, however these changes will force the resultant output to be rasterized.
  * If no alterations are performed then the original picture will be rendered as a vector.
  *
  * \note Added in version 2.9
@@ -258,7 +259,6 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
   public:
 
     QgsDrawSourceEffect();
-    virtual ~QgsDrawSourceEffect();
 
     /** Creates a new QgsDrawSource effect from a properties string map.
      * @param map encoded properties string map

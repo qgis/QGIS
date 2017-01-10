@@ -23,6 +23,8 @@
 #include <QDomElement>
 #include <QColor>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Stores properties of a column in a QgsComposerTable. Some properties of a QgsComposerTableColumn
 are applicable only in certain contexts. For instance, the attribute and setAttribute methods only
@@ -37,8 +39,6 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @param heading column heading
      */
     QgsComposerTableColumn( const QString& heading = QString() );
-
-    virtual ~QgsComposerTableColumn();
 
     /** Writes the column's properties to xml for storage.
      * @param columnElem an existing QDomElement in which to store the column's properties.

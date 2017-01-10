@@ -34,9 +34,6 @@ class MngProgressBar
      */
     explicit MngProgressBar( QProgressBar *pb );
 
-    /**
-     * \brief Destructor
-     */
     ~MngProgressBar() { mPb->reset(); }
 
     /**

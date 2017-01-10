@@ -24,6 +24,7 @@
 #include <QFileSystemWatcher>
 #include <QMap>
 #include <QObject>
+#include "qgis_server.h"
 
 class QgsServerProjectParser;
 class QgsWCSProjectParser;
@@ -38,7 +39,6 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     Q_OBJECT
   public:
     static QgsConfigCache* instance();
-    ~QgsConfigCache();
 
     QgsServerProjectParser* serverConfiguration( const QString& filePath );
     QgsWCSProjectParser* wcsConfiguration(

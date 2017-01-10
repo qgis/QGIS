@@ -19,6 +19,7 @@
 #include "ui_qgswebviewconfigdlgbase.h"
 
 #include "qgseditorconfigwidget.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsWebViewWidgetConfigDlg

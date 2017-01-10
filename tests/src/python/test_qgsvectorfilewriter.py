@@ -421,7 +421,6 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(f['nonconv'], 1)
         self.assertEqual(f['conv_attr'], 'converted_val')
 
-    @unittest.expectedFailure(int(osgeo.gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
     def testInteger64WriteTabfile(self):
         """Check writing Integer64 fields to an MapInfo tabfile (which does not support that type)."""
         ml = QgsVectorLayer(

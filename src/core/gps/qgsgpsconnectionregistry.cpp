@@ -27,12 +27,6 @@ QgsGPSConnectionRegistry::~QgsGPSConnectionRegistry()
   qDeleteAll( mConnections );
 }
 
-QgsGPSConnectionRegistry* QgsGPSConnectionRegistry::instance()
-{
-  static QgsGPSConnectionRegistry mInstance;
-  return &mInstance;
-}
-
 void QgsGPSConnectionRegistry::registerConnection( QgsGPSConnection* c )
 {
   mConnections.insert( c );

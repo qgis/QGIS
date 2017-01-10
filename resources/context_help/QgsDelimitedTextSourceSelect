@@ -166,9 +166,9 @@ are escaped.</p>
 <p>Regular expressions are mini-language used to represent character patterns.  There are many variations
 of regular expression syntax - QGIS uses the syntax provided by the <a href="http://qt-project.org/doc/qt-4.8/qregexp.html">QRegExp</a> class of the <a href="http://qt.digia.com">Qt</a> framework.</p>
 <p>In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
-If the regular expression contains capture groups (eg <tt>(cat|dog)</tt>)
+If the regular expression contains capture groups (e.g., <tt>(cat|dog)</tt>)
  then these are extracted as fields. 
- If this is not desired then use non-capturing groups (eg <tt>(?:cat|dog)</tt>).
+ If this is not desired then use non-capturing groups (e.g., <tt>(?:cat|dog)</tt>).
 </p>
 <p>The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with <tt>^</tt>).
 In this case the regular expression is matched against each line.  If the line does not match it is discarded
@@ -190,12 +190,12 @@ The delimited text layer recognizes the following
 <a href="http://en.wikipedia.org/wiki/Well-known_text">well known text</a> types - 
 <tt>POINT</tt>, <tt>MULTIPOINT</tt>, <tt>LINESTRING</tt>, <tt>MULTILINESTRING</tt>, <tt>POLYGON</tt>, and <tt>MULTIPOLYGON</tt>.  
 It will accept geometries with
-a Z coordinate (eg <tt>POINT&nbsp;Z</tt>), a measure (<tt>POINT&nbsp;M</tt>), or both (<tt>POINT&nbsp;ZM</tt>).
+a Z coordinate (e.g., <tt>POINT&nbsp;Z</tt>), a measure (<tt>POINT&nbsp;M</tt>), or both (<tt>POINT&nbsp;ZM</tt>).
 </p>
 <p>
 It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
-system id (eg <tt>SRID=4326;POINT(175.3&nbsp;41.2)</tt>), and a variant used by Informix in which the WKT is 
-preceded by an integer spatial reference id (eg <tt>1 POINT(175.3&nbsp;41.2)</tt>).
+system id (e.g., <tt>SRID=4326;POINT(175.3&nbsp;41.2)</tt>), and a variant used by Informix in which the WKT is 
+preceded by an integer spatial reference id (e.g., <tt>1 POINT(175.3&nbsp;41.2)</tt>).
 In both cases the SRID is ignored.
 </p>
 

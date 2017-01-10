@@ -16,6 +16,7 @@
 #ifndef QGSTOLERANCE_H
 #define QGSTOLERANCE_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 
 class QgsMapSettings;

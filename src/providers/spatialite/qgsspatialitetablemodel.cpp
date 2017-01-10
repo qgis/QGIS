@@ -29,11 +29,6 @@ QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel(): QStandardItemModel(), mTable
   setHorizontalHeaderLabels( headerLabels );
 }
 
-QgsSpatiaLiteTableModel::~QgsSpatiaLiteTableModel()
-{
-
-}
-
 void QgsSpatiaLiteTableModel::addTableEntry( const QString& type, const QString& tableName, const QString& geometryColName, const QString& sql )
 {
   //is there already a root item ?

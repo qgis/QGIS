@@ -295,7 +295,7 @@ void Session::run()
     // is not set then fall back to /bin/sh
 
     // here we expect full path. If there is no fullpath let's expect it's
-    // a custom shell (eg. python, etc.) available in the PATH.
+    // a custom shell (e.g., python, etc.) available in the PATH.
     if (exec.startsWith(QLatin1String("/")))
     {
         QFile excheck(exec);
@@ -371,7 +371,7 @@ void Session::runEmptyPTY()
 
 void Session::setUserTitle( int what, const QString & caption )
 {
-    //set to true if anything is actually changed (eg. old _nameTitle != new _nameTitle )
+    //set to true if anything is actually changed (e.g., old _nameTitle != new _nameTitle )
     bool modified = false;
 
     // (btw: what=0 changes _userTitle and icon, what=1 only icon, what=2 only _nameTitle

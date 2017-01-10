@@ -18,6 +18,7 @@
 
 #include <QDialog>
 #include <QGroupBox>
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsScaleRangeWidget;

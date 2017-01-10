@@ -16,6 +16,7 @@
 #ifndef QGSMAPRENDERERJOB_H
 #define QGSMAPRENDERERJOB_H
 
+#include "qgis_core.h"
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QImage>
@@ -86,8 +87,6 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
   public:
 
     QgsMapRendererJob( const QgsMapSettings& settings );
-
-    virtual ~QgsMapRendererJob() {}
 
     //! Start the rendering job and immediately return.
     //! Does nothing if the rendering is already in progress.

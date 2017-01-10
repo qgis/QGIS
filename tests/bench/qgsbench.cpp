@@ -141,8 +141,7 @@ QgsBench::~QgsBench()
 
 bool QgsBench::openProject( const QString & theFileName )
 {
-  QFileInfo file( theFileName );
-  if ( ! QgsProject::instance()->read( file ) )
+  if ( ! QgsProject::instance()->read( theFileName ) )
   {
     return false;
   }

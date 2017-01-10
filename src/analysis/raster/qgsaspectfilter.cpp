@@ -23,11 +23,6 @@ QgsAspectFilter::QgsAspectFilter( const QString& inputFile, const QString& outpu
 
 }
 
-QgsAspectFilter::~QgsAspectFilter()
-{
-
-}
-
 float QgsAspectFilter::processNineCellWindow(
   float* x11, float* x21, float* x31,
   float* x12, float* x22, float* x32,

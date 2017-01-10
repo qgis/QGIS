@@ -23,13 +23,15 @@
 class QgsGeometry;
 class QgsRectangle;
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Abstract base class for simplify geometries using a specific algorithm
  */
 class CORE_EXPORT QgsAbstractGeometrySimplifier
 {
   public:
-    virtual ~QgsAbstractGeometrySimplifier();
+    virtual ~QgsAbstractGeometrySimplifier() = default;
 
     //! Returns a simplified version the specified geometry
     virtual QgsGeometry simplify( const QgsGeometry& geometry ) const = 0;
@@ -53,10 +55,13 @@ class CORE_EXPORT QgsAbstractGeometrySimplifier
 class CORE_EXPORT QgsTopologyPreservingSimplifier : public QgsAbstractGeometrySimplifier
 {
   public:
-    QgsTopologyPreservingSimplifier( double tolerance );
-    virtual ~QgsTopologyPreservingSimplifier();
 
-    //! Returns a simplified version the specified geometry
+    /**
+     * Constructor for QgsTopologyPreservingSimplifier. The tolerance parameter
+     * is specified in layer units.
+     */
+    QgsTopologyPreservingSimplifier( double tolerance );
+
     virtual QgsGeometry simplify( const QgsGeometry& geometry ) const override;
 
   protected:

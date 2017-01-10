@@ -732,7 +732,7 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
 
 
       // LOTS OF DIFFERENT COSTS TO BALANCE HERE - feel free to tweak these, but please add a unit test
-      // which covers the situation you are adjusting for (eg "given equal length lines, choose the more horizontal line")
+      // which covers the situation you are adjusting for (e.g., "given equal length lines, choose the more horizontal line")
 
       cost = candidateLength / labelWidth;
       if ( cost > 0.98 )

@@ -19,6 +19,7 @@
 #include <QComboBox>
 
 #include "qgsfieldproxymodel.h"
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 class QgsVectorLayer;

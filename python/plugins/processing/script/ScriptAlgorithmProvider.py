@@ -67,7 +67,7 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.addSetting(ScriptUtils.SCRIPTS_FOLDER)
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'script.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'script.svg'))
 
     def getName(self):
         return 'script'

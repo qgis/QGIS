@@ -31,6 +31,7 @@ import inspect
 import os
 import sys
 
+from qgis.core import QgsApplication
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir
 from qgis.PyQt.QtWidgets import QMenu, QAction
 from qgis.PyQt.QtGui import QIcon
@@ -71,13 +72,13 @@ class ProcessingPlugin(object):
         self.toolboxAction = self.toolbox.toggleViewAction()
         self.toolboxAction.setObjectName('toolboxAction')
         self.toolboxAction.setIcon(
-            QIcon(os.path.join(cmd_folder, 'images', 'alg.png')))
+            QIcon(os.path.join(cmd_folder, 'images', 'alg.svg')))
         self.toolboxAction.setText(self.tr('&Toolbox'))
         self.iface.registerMainWindowAction(self.toolboxAction, 'Ctrl+Alt+T')
         self.menu.addAction(self.toolboxAction)
 
         self.modelerAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'model.png')),
+            QIcon(os.path.join(cmd_folder, 'images', 'model.svg')),
             self.tr('Graphical &Modeler...'), self.iface.mainWindow())
         self.modelerAction.setObjectName('modelerAction')
         self.modelerAction.triggered.connect(self.openModeler)
@@ -85,23 +86,15 @@ class ProcessingPlugin(object):
         self.menu.addAction(self.modelerAction)
 
         self.historyAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'history.gif')),
+            QIcon(os.path.join(cmd_folder, 'images', 'history.svg')),
             self.tr('&History...'), self.iface.mainWindow())
         self.historyAction.setObjectName('historyAction')
         self.historyAction.triggered.connect(self.openHistory)
         self.iface.registerMainWindowAction(self.historyAction, 'Ctrl+Alt+H')
         self.menu.addAction(self.historyAction)
 
-        self.configAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'config.png')),
-            self.tr('&Options...'), self.iface.mainWindow())
-        self.configAction.setObjectName('configAction')
-        self.configAction.triggered.connect(self.openConfig)
-        self.iface.registerMainWindowAction(self.configAction, 'Ctrl+Alt+C')
-        self.menu.addAction(self.configAction)
-
         self.resultsAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'results.png')),
+            QIcon(os.path.join(cmd_folder, 'images', 'results.svg')),
             self.tr('&Results Viewer...'), self.iface.mainWindow())
         self.resultsAction.setObjectName('resultsAction')
         self.resultsAction.triggered.connect(self.openResults)
@@ -113,13 +106,25 @@ class ProcessingPlugin(object):
             self.iface.firstRightStandardMenu().menuAction(), self.menu)
 
         self.commanderAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'commander.png')),
+            QIcon(os.path.join(cmd_folder, 'images', 'commander.svg')),
             self.tr('&Commander'), self.iface.mainWindow())
         self.commanderAction.setObjectName('commanderAction')
         self.commanderAction.triggered.connect(self.openCommander)
         self.menu.addAction(self.commanderAction)
         self.iface.registerMainWindowAction(self.commanderAction,
                                             self.tr('Ctrl+Alt+D'))
+
+        self.menu.addSeparator()
+
+        self.configAction = QAction(
+            QIcon(QgsApplication.getThemeIcon('mActionOptions.svg')),
+            self.tr('&Options...'), self.iface.mainWindow())
+        self.configAction.setObjectName('configAction')
+        self.configAction.setMenuRole(QAction.NoRole)
+
+        self.configAction.triggered.connect(self.openConfig)
+        self.iface.registerMainWindowAction(self.configAction, 'Ctrl+Alt+C')
+        self.menu.addAction(self.configAction)
 
         initializeMenus()
         createMenus()

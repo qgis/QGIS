@@ -78,7 +78,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
      * Return the plugin type
      */
     virtual int type();
-    //! Destructor
+
     virtual ~QgsGrassPlugin();
 
     //! Get an icon from the active theme if possible

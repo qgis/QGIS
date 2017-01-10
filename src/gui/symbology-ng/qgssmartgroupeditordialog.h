@@ -17,6 +17,7 @@
 #define QGSSMARTGROUPEDITORDIALOG_H
 
 #include "ui_qgssmartgroupconditionwidget.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsSmartGroupCondition
@@ -71,7 +72,6 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
 
   public:
     QgsSmartGroupEditorDialog( QgsStyle* style, QWidget* parent = nullptr );
-    ~QgsSmartGroupEditorDialog();
 
     //! returns the value from mNameLineEdit
     QString smartgroupName();

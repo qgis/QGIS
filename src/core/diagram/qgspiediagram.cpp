@@ -26,10 +26,6 @@ QgsPieDiagram::QgsPieDiagram()
   mPen.setStyle( Qt::SolidLine );
 }
 
-QgsPieDiagram::~QgsPieDiagram()
-{
-}
-
 QgsPieDiagram* QgsPieDiagram::clone() const
 {
   return new QgsPieDiagram( *this );
@@ -52,7 +48,7 @@ QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCon
   }
   else
   {
-    attrVal = feature.attributes().at( is.classificationAttribute );
+    attrVal = feature.attribute( is.classificationField );
   }
 
   bool ok = false;

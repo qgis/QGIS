@@ -39,9 +39,6 @@ QgsFileDropEdit::QgsFileDropEdit( QWidget *parent )
   setAcceptDrops( true );
 }
 
-QgsFileDropEdit::~QgsFileDropEdit()
-{}
-
 /*!
   Limit drops to directories.
 */

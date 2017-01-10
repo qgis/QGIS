@@ -21,6 +21,7 @@ class QDomElement;
 class QDomDocument;
 class QString;
 
+#include "qgis_core.h"
 #include <list>
 #include <QVector>
 

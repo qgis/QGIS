@@ -20,6 +20,7 @@
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterprojector.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 #include <QTime>
 #include <QMap>

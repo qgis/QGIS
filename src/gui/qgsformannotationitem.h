@@ -21,6 +21,7 @@
 #include "qgsannotationitem.h"
 #include "qgsfeature.h"
 #include <QObject>
+#include "qgis_gui.h"
 
 class QGraphicsProxyWidget;
 
@@ -34,15 +35,11 @@ class GUI_EXPORT QgsFormAnnotationItem: public QObject, public QgsAnnotationItem
     ~QgsFormAnnotationItem();
 
     void paint( QPainter * painter ) override;
-
-    //! paint function called by map canvas
     void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr ) override;
-
     QSizeF minimumFrameSize() const override;
     //! Returns the optimal frame size
     QSizeF preferredFrameSize() const;
 
-    //! Reimplemented from QgsAnnotationItem
     void setMapPosition( const QgsPoint& pos ) override;
 
     void setDesignerForm( const QString& uiFile );

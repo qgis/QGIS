@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgsmaptool.h"
+#include "qgis_gui.h"
 
 class QgsRubberBand;
 class QgsGeometryRubberBand;
@@ -33,7 +34,6 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
 
   public:
     QgsMapToolEdit( QgsMapCanvas* canvas );
-    virtual ~QgsMapToolEdit();
 
     virtual Flags flags() const override { return QgsMapTool::EditTool; }
 

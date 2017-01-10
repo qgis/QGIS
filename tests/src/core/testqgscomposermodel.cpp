@@ -20,6 +20,7 @@
 #include "qgscomposerlabel.h"
 #include "qgsapplication.h"
 #include "qgsmapsettings.h"
+#include "qgsproject.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -77,7 +78,7 @@ void TestQgsComposerModel::initTestCase()
   QgsApplication::initQgis();
 
   mMapSettings = new QgsMapSettings();
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
 
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 }

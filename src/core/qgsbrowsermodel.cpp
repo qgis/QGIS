@@ -37,10 +37,6 @@ QgsBrowserWatcher::QgsBrowserWatcher( QgsDataItem *item )
 {
 }
 
-QgsBrowserWatcher::~QgsBrowserWatcher()
-{
-}
-
 // sort function for QList<QgsDataItem*>, e.g. sorted/grouped provider listings
 static bool cmpByDataItemName_( QgsDataItem* a, QgsDataItem* b )
 {
@@ -133,7 +129,7 @@ void QgsBrowserModel::addRootItems()
   // container for displaying providers as sorted groups (by QgsDataProvider::DataCapability enum)
   QMap<int, QgsDataItem *> providerMap;
 
-  Q_FOREACH ( QgsDataItemProvider* pr, QgsDataItemProviderRegistry::instance()->providers() )
+  Q_FOREACH ( QgsDataItemProvider* pr, QgsApplication::dataItemProviderRegistry()->providers() )
   {
     int capabilities = pr->capabilities();
     if ( capabilities == QgsDataProvider::NoDataCapabilities )

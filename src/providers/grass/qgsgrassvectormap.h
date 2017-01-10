@@ -219,7 +219,6 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapStore
 {
   public:
     QgsGrassVectorMapStore();
-    ~QgsGrassVectorMapStore();
 
     static QgsGrassVectorMapStore *instance();
 

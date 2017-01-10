@@ -24,6 +24,7 @@
 #include <QDialog>
 #include <QMenuBar>
 #include <QGridLayout>
+#include "qgis_gui.h"
 
 class QgsDistanceArea;
 class QgsHighlight;
@@ -81,7 +82,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
 
     /**
      * Toggles the form mode.
-     * @param mode form mode. Eg if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
+     * @param mode form mode. For example, if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
      * will add a new feature when the form is accepted.
      */
     void setMode( QgsAttributeForm::Mode mode ) { mAttributeForm->setMode( mode ); }

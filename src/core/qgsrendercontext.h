@@ -18,6 +18,7 @@
 #ifndef QGSRENDERCONTEXT_H
 #define QGSRENDERCONTEXT_H
 
+#include "qgis_core.h"
 #include <QColor>
 
 #include "qgsabstractgeometry.h"

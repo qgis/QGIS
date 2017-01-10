@@ -45,11 +45,7 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition )
 {
 
   //listen out for layer removal
-  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
-}
-
-QgsAtlasComposition::~QgsAtlasComposition()
-{
+  connect( mComposition->project(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
 }
 
 void QgsAtlasComposition::setEnabled( bool enabled )
@@ -629,7 +625,7 @@ void QgsAtlasComposition::readXml( const QDomElement& atlasElem, const QDomDocum
 
   // look for stored layer name
   QString coverageLayerId = atlasElem.attribute( QStringLiteral( "coverageLayer" ) );
-  mCoverageLayer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( coverageLayerId ) );
+  mCoverageLayer = qobject_cast<QgsVectorLayer*>( mComposition->project()->mapLayer( coverageLayerId ) );
 
   mPageNameExpression = atlasElem.attribute( QStringLiteral( "pageNameExpression" ), QString() );
   mSingleFile = atlasElem.attribute( QStringLiteral( "singleFile" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
@@ -722,7 +718,7 @@ QgsExpressionContext QgsAtlasComposition::createExpressionContext()
 {
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope( mComposition->project() );
   if ( mComposition )
     expressionContext << QgsExpressionContextUtils::compositionScope( mComposition );
 

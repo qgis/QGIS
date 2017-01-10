@@ -32,7 +32,7 @@ QgsSponsors::QgsSponsors( QWidget *parent )
   init();
   QString intro = tr( "<p>We work really hard to make this nice software for you. "
                       "See all the cool features it has? Get a warm fuzzy feeling when you use it? "
-                      "QGIS is a labour of love by a dedicated team of developers. We want you to copy "
+                      "QGIS is a labor of love by a dedicated team of developers. We want you to copy "
                       "&amp; share it and put it in the hands of as many people as possible. If QGIS "
                       "is saving you money or you like our work and have the financial ability to "
                       "help, please consider sponsoring the development of QGIS. We use money from "

@@ -38,7 +38,7 @@ class dxfReader
       filestr = stream;
       type = INVALID;
     }
-    virtual ~dxfReader() {}
+    virtual ~dxfReader() = default;
     bool readRec( int *code );
 
     std::string getString() {return strData;}
@@ -81,7 +81,6 @@ class dxfReaderBinary : public dxfReader
     explicit dxfReaderBinary( std::ifstream *stream )
         : dxfReader( stream, false )
     {}
-    virtual ~dxfReaderBinary() {}
     virtual bool readCode( int *code );
     virtual bool readString( std::string *text );
     virtual bool readString();
@@ -98,7 +97,6 @@ class dxfReaderAscii : public dxfReader
     explicit dxfReaderAscii( std::ifstream *stream )
         : dxfReader( stream, true )
     {}
-    virtual ~dxfReaderAscii() {}
     virtual bool readCode( int *code );
     virtual bool readString( std::string *text );
     virtual bool readString();

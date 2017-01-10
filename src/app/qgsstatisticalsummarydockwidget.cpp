@@ -62,7 +62,7 @@ QgsExpressionContext QgsStatisticalSummaryDockWidget::createExpressionContext() 
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
   << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );
 
@@ -202,8 +202,9 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics( bool selectedOnly
   int row = 0;
   Q_FOREACH ( QgsStatisticalSummary::Statistic stat, statsToDisplay )
   {
+    double val = stats.statistic( stat );
     addRow( row, QgsStatisticalSummary::displayName( stat ),
-            QString::number( stats.statistic( stat ) ),
+            qIsNaN( val ) ? QString() : QString::number( val ),
             stats.count() != 0 );
     row++;
   }

@@ -112,10 +112,6 @@ QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate& cert,
   }
 }
 
-QgsAuthCertInfo::~QgsAuthCertInfo()
-{
-}
-
 void QgsAuthCertInfo::setupError( const QString &msg )
 {
   lblError->setVisible( true );
@@ -939,6 +935,3 @@ QgsAuthCertInfoDialog::QgsAuthCertInfoDialog( const QSslCertificate& cert,
   setLayout( layout );
 }
 
-QgsAuthCertInfoDialog::~QgsAuthCertInfoDialog()
-{
-}

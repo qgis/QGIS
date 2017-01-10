@@ -67,6 +67,7 @@
 #include <QDialog>
 #include <QAbstractSocket>
 #include <QSslSocket>
+#include "qgis_gui.h"
 
 class QPushButton;
 class QSslSocket;
@@ -86,10 +87,8 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
      * @param parent
      */
     QgsAuthSslImportDialog( QWidget *parent = nullptr );
-    ~QgsAuthSslImportDialog();
 
   public slots:
-    //! Overridden slot of base dialog
     void accept() override;
 
   private slots:

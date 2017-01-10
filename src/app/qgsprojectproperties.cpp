@@ -674,7 +674,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   connect( mButtonExportColors, SIGNAL( clicked( bool ) ), mTreeProjectColors, SLOT( showExportColorsDialog() ) );
 
   QList<QgsProjectColorScheme *> projectSchemes;
-  QgsColorSchemeRegistry::instance()->schemes( projectSchemes );
+  QgsApplication::colorSchemeRegistry()->schemes( projectSchemes );
   if ( projectSchemes.length() > 0 )
   {
     mTreeProjectColors->setScheme( projectSchemes.at( 0 ) );
@@ -723,7 +723,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   // Variables editor
   mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
-  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
   mVariableEditor->reloadContext();
   mVariableEditor->setEditableScopeIndex( 1 );
 
@@ -1190,7 +1190,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->relationManager()->setRelations( mRelationManagerDlg->relations() );
 
   //save variables
-  QgsProject::instance()->setVariables( mVariableEditor->variablesInActiveScope() );
+  QgsProject::instance()->setCustomVariables( mVariableEditor->variablesInActiveScope() );
 
   emit refresh();
 }

@@ -26,9 +26,11 @@
 #ifndef QGSPROJECTFILETRANSFORM_H
 #define QGSPROJECTFILETRANSFORM_H
 
+#include "qgis_core.h"
 #include <QString>
 #include <QDomDocument>
 #include "qgsprojectversion.h"
+
 
 class QgsRasterLayer;
 
@@ -39,7 +41,6 @@ class CORE_EXPORT QgsProjectFileTransform
   public:
     //Default constructor
     //QgsProjectfiletransform() {}
-    ~QgsProjectFileTransform() {}
 
     /** Create an instance from a Dom and a supplied version
      * @param domDocument The Dom document to use as content

@@ -19,6 +19,7 @@
 #include "ui_qgstablewidgetbase.h"
 #include <QAbstractTableModel>
 #include <QVariant>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Base widget allowing to edit a collection, using a table.

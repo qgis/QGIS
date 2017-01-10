@@ -16,6 +16,7 @@
 #ifndef QQGSDATAPROVIDER_H
 #define QQGSDATAPROVIDER_H
 
+#include "qgis_core.h"
 #include <QDateTime>
 #include <QObject>
 #include <QString>
@@ -77,12 +78,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
     QgsDataProvider( QString const & uri = "" )
         : mDataSourceURI( uri )
     {}
-
-    /**
-     * We need this so the subclass destructors get called
-     */
-    virtual ~QgsDataProvider() {}
-
 
     /** Returns the coordinate system for the data source.
      * If the provider isn't capable of returning its projection then an invalid

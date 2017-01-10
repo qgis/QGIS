@@ -252,7 +252,6 @@ class QgsWFSFeatureSource : public QgsAbstractFeatureSource
     explicit QgsWFSFeatureSource( const QgsWFSProvider* p );
     ~QgsWFSFeatureSource();
 
-    //! Returns features matching the request
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
   protected:

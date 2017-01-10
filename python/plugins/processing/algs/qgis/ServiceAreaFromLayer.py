@@ -258,6 +258,11 @@ class ServiceAreaFromLayer(GeoAlgorithm):
             feat['start'] = origPoint
             writerPoints.addFeature(feat)
 
+            upperBoundary.append(startPoint)
+            lowerBoundary.append(startPoint)
+            geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
+            geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
+
             geom = geomUpper.convexHull()
             feat.setGeometry(geom)
             feat['type'] = 'upper'

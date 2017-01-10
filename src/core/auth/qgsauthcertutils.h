@@ -23,6 +23,8 @@
 #include <QSslCertificate>
 #include <QSslError>
 
+#include "qgis_core.h"
+
 class QgsAuthConfigSslServer;
 
 #define SSL_ISSUER_INFO( var, prop ) var.issuerInfo( prop ).value(0)

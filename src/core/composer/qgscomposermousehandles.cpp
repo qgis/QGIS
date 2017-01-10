@@ -52,11 +52,6 @@ QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition )
   setAcceptHoverEvents( true );
 }
 
-QgsComposerMouseHandles::~QgsComposerMouseHandles()
-{
-
-}
-
 QGraphicsView* QgsComposerMouseHandles::graphicsView()
 {
   //have we already found the current view?
@@ -629,7 +624,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
       subcommand->saveAfterState();
     }
     mComposition->undoStack()->push( parentCommand );
-    QgsProject::instance()->setDirty( true );
+    mComposition->project()->setDirty( true );
   }
   else if ( mCurrentMouseMoveAction != QgsComposerMouseHandles::NoAction )
   {
@@ -643,7 +638,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
     {
       if (( *itemIter )->positionLock() || (( *itemIter )->flags() & QGraphicsItem::ItemIsSelectable ) == 0 )
       {
-        //don't resize locked items or unselectable items (eg, items which make up an item group)
+        //don't resize locked items or unselectable items (e.g., items which make up an item group)
         continue;
       }
       QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *itemIter, QLatin1String( "" ), parentCommand );
@@ -669,7 +664,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
       subcommand->saveAfterState();
     }
     mComposition->undoStack()->push( parentCommand );
-    QgsProject::instance()->setDirty( true );
+    mComposition->project()->setDirty( true );
   }
 
   deleteAlignItems();
@@ -1078,7 +1073,7 @@ void QgsComposerMouseHandles::resizeMouseMove( QPointF currentPosition, bool loc
   itemTransform.translate( sceneTranslate.x(), sceneTranslate.y() );
   setTransform( itemTransform );
 
-  //handle non-normalised resizes - eg, dragging the left handle so far to the right that it's past the right handle
+  //handle non-normalised resizes - e.g., dragging the left handle so far to the right that it's past the right handle
   if ( mBeginHandleWidth + rx >= 0 && mBeginHandleHeight + ry >= 0 )
   {
     mResizeRect = QRectF( 0, 0, mBeginHandleWidth + rx, mBeginHandleHeight + ry );

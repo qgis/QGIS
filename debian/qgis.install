@@ -1,8 +1,6 @@
 usr/lib/qgis/plugins/libgeorefplugin.so
 usr/lib/qgis/plugins/libgpsimporterplugin.so
-usr/lib/qgis/plugins/libinterpolationplugin.so
 usr/lib/qgis/plugins/libcoordinatecaptureplugin.so
-usr/lib/qgis/plugins/liboracleplugin.so
 usr/lib/qgis/plugins/libevis.so
 usr/lib/qgis/plugins/libspatialqueryplugin.so
 usr/lib/qgis/plugins/libofflineeditingplugin.so

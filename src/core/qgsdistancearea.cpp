@@ -60,10 +60,6 @@ QgsDistanceArea::QgsDistanceArea( const QgsDistanceArea & origDA )
   _copy( origDA );
 }
 
-QgsDistanceArea::~QgsDistanceArea()
-{
-}
-
 //! Assignment operator
 QgsDistanceArea & QgsDistanceArea::operator=( const QgsDistanceArea & origDA )
 {

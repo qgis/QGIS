@@ -62,7 +62,7 @@ class SpatialIndex(GeoAlgorithm):
 
         if provider.capabilities() & QgsVectorDataProvider.CreateSpatialIndex:
             if not provider.createSpatialIndex():
-                progress.setInfo(self.tr('Can not create spatial index'))
+                progress.setInfo(self.tr('Could not create spatial index'))
         else:
             progress.setInfo(self.tr("Layer's data provider does not support "
                                      "spatial indexes"))

@@ -20,6 +20,7 @@
 
 #include "qgspallabeling.h"
 #include "qgstextformatwidget.h"
+#include "qgis_app.h"
 
 class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpressionContextGenerator
 {

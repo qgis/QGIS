@@ -16,6 +16,7 @@
 #ifndef QGSCOMPOSERHTML_H
 #define QGSCOMPOSERHTML_H
 
+#include "qgis_core.h"
 #include "qgscomposermultiframe.h"
 #include "qgsfeature.h"
 #include <QUrl>

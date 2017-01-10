@@ -16,6 +16,7 @@
 #ifndef QGSCOLORRAMP_H
 #define QGSCOLORRAMP_H
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QGradient>
 #include "qgis.h"
@@ -30,7 +31,7 @@ class CORE_EXPORT QgsColorRamp
 {
   public:
 
-    virtual ~QgsColorRamp() {}
+    virtual ~QgsColorRamp() = default;
 
     /** Returns number of defined colors, or -1 if undefined
      */
@@ -193,12 +194,12 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
      */
     QgsGradientStopsList stops() const { return mStops; }
 
-    /** Returns any additional info attached to the gradient ramp (eg authorship notes)
+    /** Returns any additional info attached to the gradient ramp (e.g., authorship notes)
      * @see setInfo()
      */
     QgsStringMap info() const { return mInfo; }
 
-    /** Sets additional info to attach to the gradient ramp (eg authorship notes)
+    /** Sets additional info to attach to the gradient ramp (e.g., authorship notes)
      * @param info map of string info to attach
      * @see info()
      */
@@ -358,7 +359,6 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
 {
   public:
     QgsRandomColorRamp();
-    ~QgsRandomColorRamp();
 
     int count() const override;
 

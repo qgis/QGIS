@@ -24,11 +24,6 @@ QgsLUDialog::QgsLUDialog( QWidget *parent, Qt::WindowFlags fl )
   setupUi( this );
 }
 
-QgsLUDialog::~QgsLUDialog()
-{
-
-}
-
 QString QgsLUDialog::lowerValue() const
 {
   return mLowerEdit->text();

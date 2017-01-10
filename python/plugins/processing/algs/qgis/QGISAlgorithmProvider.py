@@ -167,10 +167,8 @@ from .Slope import Slope
 from .Ruggedness import Ruggedness
 from .Hillshade import Hillshade
 from .Relief import Relief
-from .IdwInterpolationZValue import IdwInterpolationZValue
-from .IdwInterpolationAttribute import IdwInterpolationAttribute
-from .TinInterpolationZValue import TinInterpolationZValue
-from .TinInterpolationAttribute import TinInterpolationAttribute
+from .IdwInterpolation import IdwInterpolation
+from .TinInterpolation import TinInterpolation
 from .ZonalStatisticsQgis import ZonalStatisticsQgis
 from .RemoveNullGeometry import RemoveNullGeometry
 from .ExtendLines import ExtendLines
@@ -189,6 +187,7 @@ from .ShortestPathPointToLayer import ShortestPathPointToLayer
 from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
 from .ServiceAreaFromPoint import ServiceAreaFromPoint
 from .ServiceAreaFromLayer import ServiceAreaFromLayer
+from .TruncateTable import TruncateTable
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -248,8 +247,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SingleSidedBuffer(), PointsAlongGeometry(),
                         Aspect(), Slope(), Ruggedness(), Hillshade(),
                         Relief(), ZonalStatisticsQgis(),
-                        IdwInterpolationZValue(), IdwInterpolationAttribute(),
-                        TinInterpolationZValue(), TinInterpolationAttribute(),
+                        IdwInterpolation(), TinInterpolation(),
                         RemoveNullGeometry(), ExtractByExpression(),
                         ExtendLines(), ExtractSpecificNodes(),
                         GeometryByExpression(), SnapGeometriesToLayer(),
@@ -258,7 +256,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RasterCalculator(), Heatmap(), Orthogonalize(),
                         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
                         ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
-                        ServiceAreaFromLayer()
+                        ServiceAreaFromLayer(), TruncateTable()
                         ]
 
         if hasMatplotlib:
@@ -303,7 +301,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
         return 'qgis'
 
     def getDescription(self):
-        return self.tr('QGIS geoalgorithms')
+        return 'QGIS'
 
     def getIcon(self):
         return self._icon

@@ -23,7 +23,6 @@ class dwgReader15 : public dwgReader
 {
   public:
     dwgReader15( std::ifstream *stream, dwgR *p ): dwgReader( stream, p ) { }
-    virtual ~dwgReader15() {}
     bool readMetaData();
     bool readFileHeader();
     bool readDwgHeader( DRW_Header& hdr );

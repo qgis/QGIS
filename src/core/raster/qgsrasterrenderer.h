@@ -18,6 +18,7 @@
 #ifndef QGSRASTERRENDERER_H
 #define QGSRASTERRENDERER_H
 
+#include "qgis_core.h"
 #include <QPair>
 
 #include "qgsrasterinterface.h"
@@ -42,6 +43,11 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     QgsRasterRenderer( QgsRasterInterface* input = nullptr, const QString& type = "" );
     virtual ~QgsRasterRenderer();
+
+    //! QgsRasterRenderer cannot be copied. Use clone() instead.
+    QgsRasterRenderer( const QgsRasterRenderer& ) = delete;
+    //! QgsRasterRenderer cannot be copied. Use clone() instead.
+    const QgsRasterRenderer& operator=( const QgsRasterRenderer& ) = delete;
 
     QgsRasterRenderer * clone() const override = 0;
 
@@ -105,10 +111,6 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     //! Origin of min/max values
     QgsRasterMinMaxOrigin mMinMaxOrigin;
 
-  private:
-
-    QgsRasterRenderer( const QgsRasterRenderer& );
-    const QgsRasterRenderer& operator=( const QgsRasterRenderer& );
 };
 
 #endif // QGSRASTERRENDERER_H

@@ -46,9 +46,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
     , mSortFieldIndex( -1 )
     , mExtraColumns( 0 )
 {
-  mExpressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( layerCache->layer() );
+  mExpressionContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layerCache->layer() ) );
 
   if ( layerCache->layer()->geometryType() == QgsWkbTypes::NullGeometry )
   {

@@ -62,7 +62,7 @@ class GetScriptsAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'script.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'script.svg'))
 
     def execute(self):
         dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.SCRIPTS)
@@ -94,7 +94,7 @@ class GetModelsAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'model.svg'))
 
     def execute(self):
         dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.MODELS)
@@ -137,11 +137,11 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         if self.resourceType == self.MODELS:
             self.folder = ModelerUtils.modelsFolders()[0]
             self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/models/'
-            self.icon = QIcon(os.path.join(pluginPath, 'images', 'model.png'))
+            self.icon = QIcon(os.path.join(pluginPath, 'images', 'model.svg'))
         elif self.resourceType == self.SCRIPTS:
             self.folder = ScriptUtils.scriptsFolders()[0]
             self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/scripts/'
-            self.icon = QIcon(os.path.join(pluginPath, 'images', 'script.png'))
+            self.icon = QIcon(os.path.join(pluginPath, 'images', 'script.svg'))
         else:
             self.folder = RUtils.RScriptsFolders()[0]
             self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/rscripts/'

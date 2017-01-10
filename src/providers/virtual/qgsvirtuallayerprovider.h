@@ -36,49 +36,25 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
      */
     explicit QgsVirtualLayerProvider( QString const &uri = "" );
 
-    //! Destructor
+
     virtual ~QgsVirtualLayerProvider();
 
     virtual QgsAbstractFeatureSource* featureSource() const override;
-
-    //! Returns the permanent storage type for this layer as a friendly name
     virtual QString storageType() const override;
-
     virtual QgsCoordinateReferenceSystem crs() const override;
-
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
-
-    //! Get the feature geometry type
     QgsWkbTypes::Type wkbType() const override;
-
-    //! Get the number of features in the layer
     long featureCount() const override;
-
     virtual QgsRectangle extent() const override;
-
     virtual QString subsetString() const override;
-
-    //! Set the subset string used to create a subset of features in the layer (WHERE clause)
     virtual bool setSubsetString( const QString& subset, bool updateFeatureCount = true ) override;
-
     virtual bool supportsSubsetString() const override { return true; }
-
     QgsFields fields() const override;
-
     bool isValid() const override;
-
-    //! Returns a bitmask containing the supported capabilities
     QgsVectorDataProvider::Capabilities capabilities() const override;
-
-    //! Return the provider name
     QString name() const override;
-
-    //! Return description
     QString description() const override;
-
     QgsAttributeList pkAttributeIndexes() const override;
-
-    //! Get the list of layer ids on which this layer depends
     QSet<QgsMapLayerDependency> dependencies() const override;
 
   private:

@@ -44,7 +44,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   QString whereClause;
 
   //beware - limitAtProvider needs to be set to false if the request cannot be completely handled
-  //by the provider (eg utilising QGIS expression filters)
+  //by the provider (e.g., utilising QGIS expression filters)
   bool limitAtProvider = ( mRequest.limit() >= 0 );
 
   if ( !request.filterRect().isNull() && !mSource->mGeometryColumn.isNull() )
@@ -180,7 +180,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   bool success = prepareStatement( whereClause, limitAtProvider ? mRequest.limit() : -1, orderByParts.join( QStringLiteral( "," ) ) );
   if ( !success && useFallbackWhereClause )
   {
-    //try with the fallback where clause, eg for cases when using compiled expression failed to prepare
+    //try with the fallback where clause, e.g., for cases when using compiled expression failed to prepare
     mExpressionCompiled = false;
     success = prepareStatement( fallbackWhereClause, -1, orderByParts.join( QStringLiteral( "," ) ) );
   }
@@ -601,10 +601,6 @@ QgsSpatiaLiteFeatureSource::QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvi
     , mSpatialIndexRTree( p->mSpatialIndexRTree )
     , mSpatialIndexMbrCache( p->mSpatialIndexMbrCache )
     , mSqlitePath( p->mSqlitePath )
-{
-}
-
-QgsSpatiaLiteFeatureSource::~QgsSpatiaLiteFeatureSource()
 {
 }
 

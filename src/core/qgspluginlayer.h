@@ -15,6 +15,7 @@
 #ifndef QGSPLUGINLAYER_H
 #define QGSPLUGINLAYER_H
 
+#include "qgis_core.h"
 #include "qgsmaplayer.h"
 
 typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;

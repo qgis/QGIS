@@ -24,10 +24,6 @@ QgsPostRequestHandler::QgsPostRequestHandler( const bool captureOutput )
 {
 }
 
-QgsPostRequestHandler::~QgsPostRequestHandler()
-{
-}
-
 void QgsPostRequestHandler::parseInput()
 {
   QgsMessageLog::logMessage( QStringLiteral( "QgsPostRequestHandler::parseInput" ) );

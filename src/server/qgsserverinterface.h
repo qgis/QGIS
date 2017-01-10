@@ -26,6 +26,7 @@
 #include "qgsserverfilter.h"
 #include "qgsaccesscontrolfilter.h"
 #include "qgsaccesscontrol.h"
+#include "qgis_server.h"
 
 /**
  * \ingroup server
@@ -48,7 +49,6 @@ class SERVER_EXPORT QgsServerInterface
     //! Constructor
     QgsServerInterface();
 
-    //! Destructor
     virtual ~QgsServerInterface() = 0;
 
     /**

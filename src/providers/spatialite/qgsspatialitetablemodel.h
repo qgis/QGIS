@@ -27,7 +27,6 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
   Q_OBJECT public:
 
     QgsSpatiaLiteTableModel();
-    ~QgsSpatiaLiteTableModel();
     //! Adds entry for one database table to the model
     void addTableEntry( const QString& type, const QString& tableName, const QString& geometryColName, const QString& sql );
     //! Sets an sql statement that belongs to a cell specified by a model index

@@ -243,11 +243,6 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
 
 } // QgsRasterHistogramWidget ctor
 
-
-QgsRasterHistogramWidget::~QgsRasterHistogramWidget()
-{
-}
-
 void QgsRasterHistogramWidget::setRendererWidget( const QString& name, QgsRasterRendererWidget* rendererWidget )
 {
   mRendererName = name;

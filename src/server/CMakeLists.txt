@@ -101,10 +101,6 @@ SET(qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
 )
 ENDIF (WITH_SERVER_PLUGINS)
 
-REMOVE_DEFINITIONS("-DSERVER_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("\"-DSERVER_EXPORT=${DLLEXPORT}\"")
-
-
 QT5_WRAP_CPP(qgis_mapserv_MOC_SRCS ${qgis_mapserv_MOC_HDRS})
 
 IF(MSVC)
@@ -115,6 +111,12 @@ ENDIF(MSVC)
 
 
 ADD_LIBRARY(qgis_server SHARED ${qgis_mapserv_SRCS} ${qgis_mapserv_MOC_SRCS} ${qgis_mapserv_HDRS} ${qgis_mapserv_MOC_HDRS})
+
+GENERATE_EXPORT_HEADER(
+   qgis_server
+   BASE_NAME SERVER
+   EXPORT_FILE_NAME qgis_server.h
+ )
 
 #generate unversioned libs for android
 IF (NOT ANDROID)
@@ -194,6 +196,11 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QCA_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/python
+  ${CMAKE_BINARY_DIR}/src/analysis
+  ${CMAKE_BINARY_DIR}/src/server
   ../core
   ../core/auth
   ../core/dxf
@@ -221,6 +228,7 @@ TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
   ${QCA_LIBRARY}
 )
 
+
 ########################################################
 # Install
 
@@ -235,4 +243,3 @@ INSTALL(FILES
   schemaExtension.xsd
   DESTINATION ${QGIS_CGIBIN_DIR}
   )
-

@@ -22,6 +22,7 @@
 #include "qgsfeature.h"
 #include "qgspallabeling.h"
 #include <QDialog>
+#include "qgis_app.h"
 
 
 //! A dialog to enter data defined label attributes

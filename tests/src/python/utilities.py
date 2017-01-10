@@ -473,7 +473,7 @@ class DoxygenParser():
 
                     elem.clear()
         except ET.ParseError as e:
-            # sometimes Doxygen generates malformed xml (eg for < and > operators)
+            # sometimes Doxygen generates malformed xml (e.g., for < and > operators)
             line_num, col = e.position
             with open(f, 'r') as xml_file:
                 for i, l in enumerate(xml_file):

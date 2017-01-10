@@ -19,6 +19,7 @@
 #include <QString>
 
 #include "qgsattributeforminterface.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * This class helps to support legacy open form scripts to be compatible with the new

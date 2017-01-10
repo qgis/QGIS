@@ -22,6 +22,7 @@
 #include "qgsmessagelog.h"
 
 #include <QString>
+#include "qgis_gui.h"
 
 class QStatusBar;
 class QToolButton;
@@ -36,7 +37,6 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogV
     Q_OBJECT
   public:
     QgsMessageLogViewer( QStatusBar *statusBar = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
-    ~QgsMessageLogViewer();
 
   public slots:
     void logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level );

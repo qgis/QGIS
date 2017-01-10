@@ -24,11 +24,6 @@ QgsVectorLayerTools::QgsVectorLayerTools()
     : QObject( nullptr )
 {}
 
-
-QgsVectorLayerTools::~QgsVectorLayerTools()
-{}
-
-
 bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest& request, double dx, double dy, QString* errorMsg ) const
 {
   bool res = false;

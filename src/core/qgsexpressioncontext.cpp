@@ -209,6 +209,11 @@ void QgsExpressionContextScope::setFields( const QgsFields &fields )
 // QgsExpressionContext
 //
 
+QgsExpressionContext::QgsExpressionContext( const QList<QgsExpressionContextScope*>& scopes )
+    : mStack( scopes )
+{
+}
+
 QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext& other )
 {
   Q_FOREACH ( const QgsExpressionContextScope* scope, other.mStack )
@@ -423,6 +428,11 @@ void QgsExpressionContext::appendScope( QgsExpressionContextScope* scope )
   mStack.append( scope );
 }
 
+void QgsExpressionContext::appendScopes( const QList<QgsExpressionContextScope*>& scopes )
+{
+  mStack.append( scopes );
+}
+
 QgsExpressionContextScope* QgsExpressionContext::popScope()
 {
   if ( !mStack.isEmpty() )
@@ -501,29 +511,11 @@ QgsExpressionContextScope* QgsExpressionContextUtils::globalScope()
 {
   QgsExpressionContextScope* scope = new QgsExpressionContextScope( QObject::tr( "Global" ) );
 
-  //read values from QSettings
-  QSettings settings;
+  QVariantMap customVariables = QgsApplication::customVariables();
 
-  //check if settings contains any variables
-  if ( settings.contains( QStringLiteral( "/variables/values" ) ) )
+  for ( QVariantMap::const_iterator it = customVariables.constBegin(); it != customVariables.constEnd(); ++it )
   {
-    QList< QVariant > customVariableVariants = settings.value( QStringLiteral( "/variables/values" ) ).toList();
-    QList< QVariant > customVariableNames = settings.value( QStringLiteral( "/variables/names" ) ).toList();
-    int variableIndex = 0;
-    for ( QList< QVariant >::const_iterator it = customVariableVariants.constBegin();
-          it != customVariableVariants.constEnd(); ++it )
-    {
-      if ( variableIndex >= customVariableNames.length() )
-      {
-        break;
-      }
-
-      QVariant value = ( *it );
-      QString name = customVariableNames.at( variableIndex ).toString();
-
-      scope->setVariable( name, value );
-      variableIndex++;
-    }
+    scope->setVariable( it.key(), it.value() );
   }
 
   //add some extra global variables
@@ -540,35 +532,12 @@ QgsExpressionContextScope* QgsExpressionContextUtils::globalScope()
 
 void QgsExpressionContextUtils::setGlobalVariable( const QString& name, const QVariant& value )
 {
-  // save variable to settings
-  QSettings settings;
-
-  QList< QVariant > customVariableVariants = settings.value( QStringLiteral( "/variables/values" ) ).toList();
-  QList< QVariant > customVariableNames = settings.value( QStringLiteral( "/variables/names" ) ).toList();
-
-  customVariableVariants << value;
-  customVariableNames << name;
-
-  settings.setValue( QStringLiteral( "/variables/names" ), customVariableNames );
-  settings.setValue( QStringLiteral( "/variables/values" ), customVariableVariants );
+  QgsApplication::setCustomVariable( name, value );
 }
 
-void QgsExpressionContextUtils::setGlobalVariables( const QgsStringMap &variables )
+void QgsExpressionContextUtils::setGlobalVariables( const QVariantMap &variables )
 {
-  QSettings settings;
-
-  QList< QVariant > customVariableVariants;
-  QList< QVariant > customVariableNames;
-
-  QMap< QString, QString >::const_iterator it = variables.constBegin();
-  for ( ; it != variables.constEnd(); ++it )
-  {
-    customVariableNames << it.key();
-    customVariableVariants << it.value();
-  }
-
-  settings.setValue( QStringLiteral( "/variables/names" ), customVariableNames );
-  settings.setValue( QStringLiteral( "/variables/values" ), customVariableVariants );
+  QgsApplication::setCustomVariables( variables );
 }
 
 /// @cond PRIVATE
@@ -576,12 +545,16 @@ void QgsExpressionContextUtils::setGlobalVariables( const QgsStringMap &variable
 class GetNamedProjectColor : public QgsScopedExpressionFunction
 {
   public:
-    GetNamedProjectColor()
+    GetNamedProjectColor( const QgsProject* project )
         : QgsScopedExpressionFunction( QStringLiteral( "project_color" ), 1, QStringLiteral( "Color" ) )
+        , mProject( project )
     {
+      if ( !project )
+        return;
+
       //build up color list from project. Do this in advance for speed
-      QStringList colorStrings = QgsProject::instance()->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ) );
-      QStringList colorLabels = QgsProject::instance()->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ) );
+      QStringList colorStrings = project->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ) );
+      QStringList colorLabels = project->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ) );
 
       //generate list from custom colors
       int colorIndex = 0;
@@ -613,26 +586,28 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
 
     QgsScopedExpressionFunction* clone() const override
     {
-      return new GetNamedProjectColor();
+      return new GetNamedProjectColor( mProject );
     }
 
   private:
 
+    const QgsProject* mProject = nullptr;
     QHash< QString, QColor > mColors;
 
 };
 
 ///@endcond
 
-QgsExpressionContextScope* QgsExpressionContextUtils::projectScope()
+QgsExpressionContextScope* QgsExpressionContextUtils::projectScope( const QgsProject* project )
 {
-  QgsProject* project = QgsProject::instance();
-
   QgsExpressionContextScope* scope = new QgsExpressionContextScope( QObject::tr( "Project" ) );
 
-  const QgsStringMap vars = QgsProject::instance()->variables();
+  if ( !project )
+    return scope;
 
-  QgsStringMap::const_iterator it = vars.constBegin();
+  const QVariantMap vars = project->customVariables();
+
+  QVariantMap::const_iterator it = vars.constBegin();
 
   for ( ; it != vars.constEnd(); ++it )
   {
@@ -648,24 +623,28 @@ QgsExpressionContextScope* QgsExpressionContextUtils::projectScope()
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs" ), projectCrs.authid(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_definition" ), projectCrs.toProj4(), true ) );
 
-  scope->addFunction( QStringLiteral( "project_color" ), new GetNamedProjectColor() );
+  scope->addFunction( QStringLiteral( "project_color" ), new GetNamedProjectColor( project ) );
   return scope;
 }
 
-void QgsExpressionContextUtils::setProjectVariable( const QString& name, const QVariant& value )
+void QgsExpressionContextUtils::setProjectVariable( QgsProject* project, const QString& name, const QVariant& value )
 {
-  QgsProject* project = QgsProject::instance();
+  if ( !project )
+    return;
 
-  QgsStringMap vars = project->variables();
+  QVariantMap vars = project->customVariables();
 
-  vars.insert( name, value.toString() );
+  vars.insert( name, value );
 
-  project->setVariables( vars );
+  project->setCustomVariables( vars );
 }
 
-void QgsExpressionContextUtils::setProjectVariables( const QgsStringMap& variables )
+void QgsExpressionContextUtils::setProjectVariables( QgsProject* project, const QVariantMap& variables )
 {
-  QgsProject::instance()->setVariables( variables );
+  if ( !project )
+    return;
+
+  project->setCustomVariables( variables );
 }
 
 QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( const QgsMapLayer* layer )
@@ -709,6 +688,20 @@ QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( const QgsMapLa
   return scope;
 }
 
+QList<QgsExpressionContextScope*> QgsExpressionContextUtils::globalProjectLayerScopes( const QgsMapLayer* layer )
+{
+  QList<QgsExpressionContextScope*> scopes;
+  scopes << globalScope();
+
+  QgsProject* project = QgsProject::instance();  // TODO: use project associated with layer
+  if ( project )
+    scopes << projectScope( project );
+
+  if ( layer )
+    scopes << layerScope( layer );
+  return scopes;
+}
+
 void QgsExpressionContextUtils::setLayerVariable( QgsMapLayer* layer, const QString& name, const QVariant& value )
 {
   if ( !layer )
@@ -725,7 +718,7 @@ void QgsExpressionContextUtils::setLayerVariable( QgsMapLayer* layer, const QStr
   layer->setCustomProperty( QStringLiteral( "variableValues" ), variableValues );
 }
 
-void QgsExpressionContextUtils::setLayerVariables( QgsMapLayer* layer, const QgsStringMap& variables )
+void QgsExpressionContextUtils::setLayerVariables( QgsMapLayer* layer, const QVariantMap& variables )
 {
   if ( !layer )
     return;
@@ -733,11 +726,11 @@ void QgsExpressionContextUtils::setLayerVariables( QgsMapLayer* layer, const Qgs
   QStringList variableNames;
   QStringList variableValues;
 
-  QMap< QString, QString >::const_iterator it = variables.constBegin();
+  QVariantMap::const_iterator it = variables.constBegin();
   for ( ; it != variables.constEnd(); ++it )
   {
     variableNames << it.key();
-    variableValues << it.value();
+    variableValues << it.value().toString();
   }
 
   layer->setCustomProperty( QStringLiteral( "variableNames" ), variableNames );
@@ -831,7 +824,7 @@ void QgsExpressionContextUtils::setCompositionVariable( QgsComposition* composit
   composition->setCustomProperty( QStringLiteral( "variableValues" ), variableValues );
 }
 
-void QgsExpressionContextUtils::setCompositionVariables( QgsComposition* composition, const QgsStringMap& variables )
+void QgsExpressionContextUtils::setCompositionVariables( QgsComposition* composition, const QVariantMap& variables )
 {
   if ( !composition )
     return;
@@ -839,11 +832,11 @@ void QgsExpressionContextUtils::setCompositionVariables( QgsComposition* composi
   QStringList variableNames;
   QStringList variableValues;
 
-  QMap< QString, QString >::const_iterator it = variables.constBegin();
+  QVariantMap::const_iterator it = variables.constBegin();
   for ( ; it != variables.constEnd(); ++it )
   {
     variableNames << it.key();
-    variableValues << it.value();
+    variableValues << it.value().toString();
   }
 
   composition->setCustomProperty( QStringLiteral( "variableNames" ), variableNames );
@@ -934,7 +927,7 @@ void QgsExpressionContextUtils::setComposerItemVariable( QgsComposerItem* compos
   composerItem->setCustomProperty( QStringLiteral( "variableValues" ), variableValues );
 }
 
-void QgsExpressionContextUtils::setComposerItemVariables( QgsComposerItem* composerItem, const QgsStringMap& variables )
+void QgsExpressionContextUtils::setComposerItemVariables( QgsComposerItem* composerItem, const QVariantMap& variables )
 {
   if ( !composerItem )
     return;
@@ -942,11 +935,11 @@ void QgsExpressionContextUtils::setComposerItemVariables( QgsComposerItem* compo
   QStringList variableNames;
   QStringList variableValues;
 
-  QMap< QString, QString >::const_iterator it = variables.constBegin();
+  QVariantMap::const_iterator it = variables.constBegin();
   for ( ; it != variables.constEnd(); ++it )
   {
     variableNames << it.key();
-    variableValues << it.value();
+    variableValues << it.value().toString();
   }
 
   composerItem->setCustomProperty( QStringLiteral( "variableNames" ), variableNames );
@@ -963,7 +956,7 @@ QgsExpressionContext QgsExpressionContextUtils::createFeatureBasedContext( const
 
 void QgsExpressionContextUtils::registerContextFunctions()
 {
-  QgsExpression::registerFunction( new GetNamedProjectColor() );
+  QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );
 }
 
 bool QgsScopedExpressionFunction::usesGeometry( const QgsExpression::NodeFunction* node ) const

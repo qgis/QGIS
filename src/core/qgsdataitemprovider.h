@@ -16,6 +16,8 @@
 #ifndef QGSDATAITEMPROVIDER_H
 #define QGSDATAITEMPROVIDER_H
 
+#include "qgis_core.h"
+
 class QgsDataItem;
 
 class QString;
@@ -35,7 +37,7 @@ class QString;
 class CORE_EXPORT QgsDataItemProvider
 {
   public:
-    virtual ~QgsDataItemProvider() {}
+    virtual ~QgsDataItemProvider() = default;
 
     //! Human-readable name of the provider name
     virtual QString name() = 0;

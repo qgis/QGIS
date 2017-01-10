@@ -23,6 +23,7 @@
 #include <QPointer>
 #include <QToolButton>
 #include <QMouseEvent>
+#include "qgis_gui.h"
 
 class QToolButton;
 class QScrollArea;
@@ -40,8 +41,6 @@ class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
         , mAltDown( false )
         , mShiftDown( false )
     {}
-
-    ~QgsGroupBoxCollapseButton() {}
 
     bool altDown() const { return mAltDown; }
     void setAltDown( bool updown ) { mAltDown = updown; }
@@ -97,7 +96,6 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
   public:
     QgsCollapsibleGroupBoxBasic( QWidget *parent = nullptr );
     QgsCollapsibleGroupBoxBasic( const QString &title, QWidget *parent = nullptr );
-    ~QgsCollapsibleGroupBoxBasic();
 
     /**
      * Returns the current collapsed state of this group box

@@ -20,6 +20,7 @@
 
 #include "qgsinterpolator.h"
 #include <QString>
+#include "qgis_analysis.h"
 
 class Triangulation;
 class TriangleInterpolator;

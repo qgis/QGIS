@@ -22,6 +22,7 @@
 #include <QProxyStyle>
 
 #include "ui_qgsgraduatedsymbolrendererv2widget.h"
+#include "qgis_gui.h"
 
 /// @cond PRIVATE
 

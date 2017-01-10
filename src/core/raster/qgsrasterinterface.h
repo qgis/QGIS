@@ -18,6 +18,7 @@
 #ifndef QGSRASTERINTERFACE_H
 #define QGSRASTERINTERFACE_H
 
+#include "qgis_core.h"
 #include <limits>
 
 #include <QCoreApplication> // for tr()
@@ -94,7 +95,7 @@ class CORE_EXPORT QgsRasterInterface
 
     QgsRasterInterface( QgsRasterInterface * input = nullptr );
 
-    virtual ~QgsRasterInterface();
+    virtual ~QgsRasterInterface() = default;
 
     //! Clone itself, create deep copy
     virtual QgsRasterInterface *clone() const = 0;
@@ -208,7 +209,7 @@ class CORE_EXPORT QgsRasterInterface
 
     /** \brief Get histogram. Histograms are cached in providers.
      * @param theBandNo The band (number).
-     * @param theBinCount Number of bins (intervals,buckets). If 0, the number of bins is decided automaticaly according to data type, raster size etc.
+     * @param theBinCount Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.
      * @param theMinimum Minimum value, if NaN, raster minimum value will be used.
      * @param theMaximum Maximum value, if NaN, raster minimum value will be used.
      * @param theExtent Extent used to calc histogram, if empty, whole raster extent is used.

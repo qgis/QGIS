@@ -19,6 +19,7 @@
 // Needed for CMake variables defines
 #include "qgsconfig.h"
 
+#include "qgis_python.h"
 
 #include <QString>
 #include <QStringList>

@@ -36,10 +36,6 @@ QgsComposerModel::QgsComposerModel( QgsComposition* composition, QObject *parent
 
 }
 
-QgsComposerModel::~QgsComposerModel()
-{
-}
-
 QgsComposerItem* QgsComposerModel::itemFromIndex( const QModelIndex &index ) const
 {
   //try to return the QgsComposerItem corresponding to a QModelIndex
@@ -537,7 +533,7 @@ void QgsComposerModel::removeItem( QgsComposerItem * item )
   QModelIndex itemIndex = indexForItem( item );
   if ( !itemIndex.isValid() )
   {
-    //removing an item not in the scene (eg, deleted item)
+    //removing an item not in the scene (e.g., deleted item)
     //we need to remove it from the list, but don't need to call
     //beginRemoveRows or endRemoveRows since the item was not used by the model
     mItemZList.removeAt( pos );

@@ -21,6 +21,7 @@
 #ifndef QGSRASTERLAYER_H
 #define QGSRASTERLAYER_H
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QDateTime>
 #include <QList>
@@ -193,7 +194,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                     const QString &providerKey,
                     bool loadDefaultStyleFlag = true );
 
-    //! \brief The destructor
     ~QgsRasterLayer();
 
     //! \brief This enumerator describes the types of shading that can be used

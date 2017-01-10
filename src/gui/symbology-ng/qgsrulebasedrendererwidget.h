@@ -55,9 +55,7 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
                                  int role = Qt::DisplayRole ) const override;
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     virtual int columnCount( const QModelIndex & = QModelIndex() ) const override;
-    //! provide model index for parent's child item
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    //! provide parent model index
     virtual QModelIndex parent( const QModelIndex &index ) const override;
 
     // editing support
@@ -174,6 +172,7 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
 #include <QDialog>
 
 #include "ui_qgsrendererrulepropsdialogbase.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsRendererRulePropsWidget
@@ -193,7 +192,6 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
        * @param context the symbol widget context
        */
     QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent = nullptr, const QgsSymbolWidgetContext& context = QgsSymbolWidgetContext() );
-    ~QgsRendererRulePropsWidget();
 
     /**
      * Return the current set rule.

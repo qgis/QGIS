@@ -21,6 +21,7 @@
 #include "effects/qgspainteffect.h"
 #include <QFontMetricsF>
 #include <QPixmap>
+#include "qgis_app.h"
 
 class QgsMarkerSymbol;
 

@@ -14,9 +14,7 @@ WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "georefplugin" "true
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "globeplugin" "false"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "gpsimporterplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "grassplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "interpolationplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "offlineeditingplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "oracleplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "spatialqueryplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "topolplugin" "true"
 

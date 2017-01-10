@@ -67,7 +67,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
         return 'model'
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'model.svg'))
 
     def _loadAlgorithms(self):
         folders = ModelerUtils.modelsFolders()

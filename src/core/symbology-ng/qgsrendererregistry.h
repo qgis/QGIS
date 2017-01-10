@@ -15,6 +15,7 @@
 #ifndef QGSRENDERERV2REGISTRY_H
 #define QGSRENDERERV2REGISTRY_H
 
+#include "qgis_core.h"
 #include <QIcon>
 #include <QMap>
 #include <QStringList>
@@ -53,7 +54,7 @@ class CORE_EXPORT QgsRendererAbstractMetadata
         , mVisibleName( visibleName )
         , mIcon( icon )
     {}
-    virtual ~QgsRendererAbstractMetadata() {}
+    virtual ~QgsRendererAbstractMetadata() = default;
 
     QString name() const { return mName; }
     QString visibleName() const { return mVisibleName; }
@@ -137,7 +138,7 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
         , mLayerTypes( layerTypes )
     {}
 
-    virtual ~QgsRendererMetadata();
+    virtual ~QgsRendererMetadata() = default;
 
     virtual QgsFeatureRenderer* createRenderer( QDomElement& elem ) override { return mCreateFunc ? mCreateFunc( elem ) : nullptr; }
     virtual QgsRendererWidget* createRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) override
@@ -175,20 +176,27 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
  * \class QgsRendererRegistry
  * \brief Registry of renderers.
  *
- * This is a singleton, renderers can be added / removed at any time
+ * QgsRendererRegistry is not usually directly created, but rather accessed through
+ * QgsApplication::rendererRegistry().
+ *
  */
 
 class CORE_EXPORT QgsRendererRegistry
 {
   public:
 
-    //! Returns a pointer to the QgsRendererRegistry singleton
-    static QgsRendererRegistry* instance();
+    QgsRendererRegistry();
+    ~QgsRendererRegistry();
+
+    //! QgsRendererRegistry cannot be copied.
+    QgsRendererRegistry( const QgsRendererRegistry& rh ) = delete;
+    //! QgsRendererRegistry cannot be copied.
+    QgsRendererRegistry& operator=( const QgsRendererRegistry& rh ) = delete;
 
     //! Adds a renderer to the registry. Takes ownership of the metadata object.
     //! @param metadata renderer metadata
     //! @returns true if renderer was added successfully, or false if renderer could not
-    //! be added (eg a renderer with a duplicate name already exists)
+    //! be added (e.g., a renderer with a duplicate name already exists)
     bool addRenderer( QgsRendererAbstractMetadata* metadata );
 
     //! Removes a renderer from registry.
@@ -210,20 +218,13 @@ class CORE_EXPORT QgsRendererRegistry
     //! @note added in QGIS 2.16
     QStringList renderersList( const QgsVectorLayer* layer ) const;
 
-  protected:
-    //! protected constructor
-    QgsRendererRegistry();
-    ~QgsRendererRegistry();
+  private:
 
     //! Map of name to renderer
     QMap<QString, QgsRendererAbstractMetadata*> mRenderers;
 
     //! List of renderers, maintained in the order that they have been added
     QStringList mRenderersOrder;
-
-  private:
-    QgsRendererRegistry( const QgsRendererRegistry& rh );
-    QgsRendererRegistry& operator=( const QgsRendererRegistry& rh );
 };
 
 #endif // QGSRENDERERV2REGISTRY_H

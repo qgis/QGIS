@@ -175,7 +175,7 @@ class SymbolLayerItem : public QStandardItem
       if ( role == Qt::DisplayRole || role == Qt::EditRole )
       {
         if ( mIsLayer )
-          return QgsSymbolLayerRegistry::instance()->symbolLayerMetadata( mLayer->layerType() )->visibleName();
+          return QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( mLayer->layerType() )->visibleName();
         else
         {
           switch ( mSymbol->type() )
@@ -271,10 +271,6 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyle* s
   layersTree->setCurrentIndex( newIndex );
 
   setPanelTitle( tr( "Symbol selector" ) );
-}
-
-QgsSymbolSelectorWidget::~QgsSymbolSelectorWidget()
-{
 }
 
 QMenu* QgsSymbolSelectorWidget::advancedMenu()
@@ -522,7 +518,7 @@ void QgsSymbolSelectorWidget::addLayer()
                            ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth()
                            : QgsDataDefined() ;
 
-  QgsSymbolLayer* newLayer = QgsSymbolLayerRegistry::instance()->defaultSymbolLayer( parentSymbol->type() );
+  QgsSymbolLayer* newLayer = QgsApplication::symbolLayerRegistry()->defaultSymbolLayer( parentSymbol->type() );
   if ( insertIdx == -1 )
     parentSymbol->appendSymbolLayer( newLayer );
   else

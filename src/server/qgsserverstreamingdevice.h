@@ -26,7 +26,6 @@ class QgsServerStreamingDevice: public QIODevice
 
   public:
     QgsServerStreamingDevice( const QString& formatName, QgsRequestHandler* rh, QObject* parent = nullptr );
-    ~QgsServerStreamingDevice();
 
     bool isSequential() const override { return false; }
 

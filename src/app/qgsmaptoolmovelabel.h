@@ -19,6 +19,7 @@
 #define QGSMAPTOOLMOVELABEL_H
 
 #include "qgsmaptoollabel.h"
+#include "qgis_app.h"
 
 //! A map tool for dragging label positions
 class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel

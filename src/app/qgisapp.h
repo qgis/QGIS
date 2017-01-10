@@ -128,6 +128,7 @@ class QgsDiagramProperties;
 #include "qgsrasterminmaxorigin.h"
 
 #include "ui_qgisapp.h"
+#include "qgis_app.h"
 
 #ifdef HAVE_TOUCH
 #include <QGestureEvent>
@@ -151,8 +152,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgisApp( QSplashScreen *splash, bool restorePlugins = true, bool skipVersionCheck = false, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
     //! Constructor for unit tests
     QgisApp();
-    //! Destructor
+
     ~QgisApp();
+
+    QgisApp( QgisApp const & ) = delete;
+    QgisApp & operator=( QgisApp const & ) = delete;
 
     /**
      * Add a vector layer to the canvas, returns pointer to it
@@ -411,6 +415,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionHideAllLayers() { return mActionHideAllLayers; }
     QAction *actionShowAllLayers() { return mActionShowAllLayers; }
     QAction *actionHideSelectedLayers() { return mActionHideSelectedLayers; }
+    QAction *actionHideDeselectedLayers() { return mActionHideDeselectedLayers; }
     QAction *actionShowSelectedLayers() { return mActionShowSelectedLayers; }
 
     QAction *actionManagePlugins() { return mActionManagePlugins; }
@@ -1027,6 +1032,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showAllLayers();
     //reimplements method from base (gui) class
     void hideSelectedLayers();
+    //! Hides any layers which are not selected
+    void hideDeselectedLayers();
     //reimplements method from base (gui) class
     void showSelectedLayers();
     //! Return pointer to the active layer
@@ -1505,11 +1512,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Configure layer tree view according to the user options from QSettings
     void setupLayerTreeViewFromSettings();
-
-    /// QgisApp aren't copyable
-    QgisApp( QgisApp const & );
-    /// QgisApp aren't copyable
-    QgisApp & operator=( QgisApp const & );
 
     void readSettings();
     void writeSettings();

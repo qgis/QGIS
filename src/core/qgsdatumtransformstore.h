@@ -15,6 +15,7 @@
 #ifndef QGSDATUMTRANSFORMSTORE_H
 #define QGSDATUMTRANSFORMSTORE_H
 
+#include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 
 class QgsCoordinateTransform;

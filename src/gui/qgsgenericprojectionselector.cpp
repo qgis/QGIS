@@ -61,7 +61,7 @@ void QgsGenericProjectionSelector::setMessage( QString theMessage )
   textEdit->setHtml( theMessage );
   textEdit->show();
 }
-//! Destructor
+
 QgsGenericProjectionSelector::~QgsGenericProjectionSelector()
 {
   QSettings settings;

@@ -22,6 +22,7 @@
 #include <qgspoint.h>
 #include <qgscoordinatereferencesystem.h>
 #include <qgsdistancearea.h>
+#include "qgis_analysis.h"
 
 /**
 * \ingroup analysis
@@ -50,7 +51,6 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
       mDa.setEllipsoidalMode( ctfEnabled );
     }
 
-    //! Destructor
     virtual ~QgsGraphBuilderInterface()
     { }
 

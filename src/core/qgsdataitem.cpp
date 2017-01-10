@@ -769,10 +769,6 @@ void QgsDirectoryItem::init()
 {
 }
 
-QgsDirectoryItem::~QgsDirectoryItem()
-{
-}
-
 QIcon QgsDirectoryItem::icon()
 {
   if ( state() == Populating )
@@ -838,7 +834,7 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren()
       }
     }
 
-    Q_FOREACH ( QgsDataItemProvider* provider, QgsDataItemProviderRegistry::instance()->providers() )
+    Q_FOREACH ( QgsDataItemProvider* provider, QgsApplication::dataItemProviderRegistry()->providers() )
     {
       int capabilities = provider->capabilities();
 
@@ -1084,20 +1080,12 @@ QgsProjectItem::QgsProjectItem( QgsDataItem* parent, const QString &name, const 
   setState( Populated ); // no more children
 }
 
-QgsProjectItem::~QgsProjectItem()
-{
-}
-
 QgsErrorItem::QgsErrorItem( QgsDataItem* parent, const QString& error, const QString& path )
     : QgsDataItem( QgsDataItem::Error, parent, error, path )
 {
   mIconName = QStringLiteral( "/mIconDelete.png" );
 
   setState( Populated ); // no more children
-}
-
-QgsErrorItem::~QgsErrorItem()
-{
 }
 
 QgsFavoritesItem::QgsFavoritesItem( QgsDataItem* parent, const QString& name, const QString& path )
@@ -1108,10 +1096,6 @@ QgsFavoritesItem::QgsFavoritesItem( QgsDataItem* parent, const QString& name, co
   mType = Favorites;
   mIconName = QStringLiteral( "/mIconFavourites.png" );
   populate();
-}
-
-QgsFavoritesItem::~QgsFavoritesItem()
-{
 }
 
 QVector<QgsDataItem*> QgsFavoritesItem::createChildren()
@@ -1171,7 +1155,7 @@ QVector<QgsDataItem*> QgsFavoritesItem::createChildren( const QString& favDir )
 {
   QVector<QgsDataItem*> children;
   QString pathName = pathComponent( favDir );
-  Q_FOREACH ( QgsDataItemProvider* provider, QgsDataItemProviderRegistry::instance()->providers() )
+  Q_FOREACH ( QgsDataItemProvider* provider, QgsApplication::dataItemProviderRegistry()->providers() )
   {
     int capabilities = provider->capabilities();
 
@@ -1270,10 +1254,6 @@ void QgsZipItem::init()
     }
   }
 
-}
-
-QgsZipItem::~QgsZipItem()
-{
 }
 
 // internal function to scan a vsidir (zip or tar file) recursively

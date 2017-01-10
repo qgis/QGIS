@@ -65,7 +65,3 @@ QgsPythonRunner::QgsPythonRunner()
 {
 }
 
-QgsPythonRunner::~QgsPythonRunner()
-{
-
-}

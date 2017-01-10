@@ -26,6 +26,7 @@ class QgsWebView;
 #include <QWidget>
 #include <QUrl>
 #include "qgsfeature.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A maptip is a class to display a tip on a map canvas
@@ -54,10 +55,6 @@ class GUI_EXPORT QgsMapTip : public QWidget
     /** Default constructor
      */
     QgsMapTip();
-
-    /** Destructor
-     */
-    virtual ~QgsMapTip();
 
     /** Show a maptip at a given point on the map canvas
      * @param thepLayer a qgis vector map layer pointer that will

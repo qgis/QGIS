@@ -19,6 +19,7 @@
 #include "qgsmaptool.h"
 #include <QGestureEvent>
 #include <QPinchGesture>
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 
@@ -38,14 +39,8 @@ class GUI_EXPORT QgsMapToolTouch : public QgsMapTool
 
     void activate() override;
     void deactivate() override;
-
-    //! Overridden mouse move event
     virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
-
-    //! Overridden mouse release event
     virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
-
-    //! Overridden Mouse double click event.
     virtual void canvasDoubleClickEvent( QgsMapMouseEvent* e ) override;
 
     virtual Flags flags() const override { return QgsMapTool::Transient | QgsMapTool::AllowZoomRect; }

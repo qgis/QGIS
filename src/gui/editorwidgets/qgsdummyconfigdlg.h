@@ -18,6 +18,7 @@
 
 #include "ui_qgsdummyconfigdlgbase.h"
 #include "qgseditorconfigwidget.h"
+#include "qgis_gui.h"
 
 
 /** \ingroup gui

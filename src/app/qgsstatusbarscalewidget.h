@@ -28,6 +28,7 @@ class QgsScaleComboBox;
 
 
 #include <QWidget>
+#include "qgis_app.h"
 
 /**
   * Widget to define scale of the map canvas.
@@ -39,7 +40,7 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
   public:
     explicit QgsStatusBarScaleWidget( QgsMapCanvas* canvas, QWidget *parent = 0 );
 
-    //! Destructor
+
     virtual ~QgsStatusBarScaleWidget();
 
     /**

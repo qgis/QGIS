@@ -16,6 +16,7 @@
 #ifndef QGSVECTORSIMPLIFYMETHOD_H
 #define QGSVECTORSIMPLIFYMETHOD_H
 
+#include "qgis_core.h"
 #include <QFlags>
 
 /** \ingroup core

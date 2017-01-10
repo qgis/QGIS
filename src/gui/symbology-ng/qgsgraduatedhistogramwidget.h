@@ -18,6 +18,7 @@
 #define QGSGRADUATEDHISTOGRAMWIDGET_H
 
 #include "qgshistogramwidget.h"
+#include "qgis_gui.h"
 
 class QwtPlotPicker;
 class QgsGraduatedHistogramEventFilter;
@@ -40,7 +41,6 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
      * @param parent parent widget
      */
     QgsGraduatedHistogramWidget( QWidget *parent = nullptr );
-    ~QgsGraduatedHistogramWidget();
 
     /** Sets the QgsGraduatedSymbolRenderer renderer associated with the histogram.
      * The histogram will fetch the ranges from the renderer before every refresh.
@@ -95,8 +95,6 @@ class GUI_EXPORT QgsGraduatedHistogramEventFilter: public QObject
   public:
 
     QgsGraduatedHistogramEventFilter( QwtPlot *plot );
-
-    virtual ~QgsGraduatedHistogramEventFilter() {}
 
     virtual bool eventFilter( QObject* object, QEvent* event ) override;
 

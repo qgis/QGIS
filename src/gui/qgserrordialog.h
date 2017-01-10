@@ -22,6 +22,7 @@
 #include "ui_qgserrordialogbase.h"
 #include "qgisgui.h"
 #include "qgserror.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsErrorDialog
@@ -31,7 +32,6 @@ class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
     Q_OBJECT
   public:
     QgsErrorDialog( const QgsError & theError, const QString & theTitle, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
-    ~QgsErrorDialog();
 
     /** Show dialog with error
      * @param theError error

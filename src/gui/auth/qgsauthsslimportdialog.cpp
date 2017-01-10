@@ -142,10 +142,6 @@ QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
   }
 }
 
-QgsAuthSslImportDialog::~QgsAuthSslImportDialog()
-{
-}
-
 void QgsAuthSslImportDialog::accept()
 {
   wdgtSslConfig->saveSslCertConfig();

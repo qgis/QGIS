@@ -15,6 +15,7 @@
 #ifndef QGSHEATMAPRENDERER_H
 #define QGSHEATMAPRENDERER_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsrenderer.h"
 #include "qgssymbol.h"
@@ -35,6 +36,11 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
 
     QgsHeatmapRenderer();
     virtual ~QgsHeatmapRenderer();
+
+    //! Direct copies are forbidden. Use clone() instead.
+    QgsHeatmapRenderer( const QgsHeatmapRenderer& ) = delete;
+    //! Direct copies are forbidden. Use clone() instead.
+    QgsHeatmapRenderer& operator=( const QgsHeatmapRenderer& ) = delete;
 
     //reimplemented methods
     virtual QgsHeatmapRenderer* clone() const override;
@@ -158,10 +164,6 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     void setWeightExpression( const QString& expression ) { mWeightExpressionString = expression; }
 
   private:
-    //! Private copy constructor. @see clone()
-    QgsHeatmapRenderer( const QgsHeatmapRenderer& );
-    //! Private assignment operator. @see clone()
-    QgsHeatmapRenderer& operator=( const QgsHeatmapRenderer& );
 
     QVector<double> mValues;
 

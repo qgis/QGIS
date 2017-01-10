@@ -17,6 +17,7 @@
 #define QGSLAYERTREEVIEW_H
 
 #include <QTreeView>
+#include "qgis_gui.h"
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
@@ -111,6 +112,9 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     QgsMapLayer* layerForIndex( const QModelIndex& index ) const;
 
+    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
+
   protected slots:
 
     void modelRowsInserted( const QModelIndex& index, int start, int end );
@@ -142,7 +146,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 class GUI_EXPORT QgsLayerTreeViewMenuProvider
 {
   public:
-    virtual ~QgsLayerTreeViewMenuProvider() {}
+    virtual ~QgsLayerTreeViewMenuProvider() = default;
 
     //! Return a newly created menu instance (or null pointer on error)
     virtual QMenu* createContextMenu() = 0;

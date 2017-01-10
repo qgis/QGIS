@@ -17,6 +17,7 @@
 #define QGSEDITORCONFIGWIDGET_H
 
 #include <QWidget>
+#include "qgis_gui.h"
 
 
 class QgsVectorLayer;
@@ -70,11 +71,6 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
      * @return The layer
      */
     QgsVectorLayer* layer();
-
-    /**
-     * Destructor
-     */
-    virtual ~QgsEditorConfigWidget() {}
 
   signals:
 

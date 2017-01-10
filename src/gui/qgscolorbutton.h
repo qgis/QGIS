@@ -18,6 +18,7 @@
 #include <QColorDialog>
 #include <QToolButton>
 #include <QTemporaryFile>
+#include "qgis_gui.h"
 
 class QMimeData;
 class QgsColorSchemeRegistry;
@@ -63,8 +64,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * specified, the button will use the global color scheme registry
      */
     QgsColorButton( QWidget *parent = nullptr, const QString& cdt = "", QgsColorSchemeRegistry* registry = nullptr );
-
-    virtual ~QgsColorButton();
 
     virtual QSize sizeHint() const override;
 

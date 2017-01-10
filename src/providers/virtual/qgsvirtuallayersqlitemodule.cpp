@@ -885,7 +885,7 @@ void registerQgisFunctions( sqlite3* db )
 
   // initialize the expression context
   qgisFunctionExpressionContext << QgsExpressionContextUtils::globalScope();
-  qgisFunctionExpressionContext << QgsExpressionContextUtils::projectScope();
+  qgisFunctionExpressionContext << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 }
 
 int qgsvlayerModuleInit( sqlite3 *db, char **pzErrMsg, void * unused /*const sqlite3_api_routines *pApi*/ )

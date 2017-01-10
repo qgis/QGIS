@@ -27,6 +27,7 @@
 #include "qgsvectorlayer.h"
 #include "layertree/qgslayertreemodel.h"
 #include "layertree/qgslayertreegroup.h"
+#include "qgis_app.h"
 
 class QgsMapLayer;
 

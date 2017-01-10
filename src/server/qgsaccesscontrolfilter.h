@@ -23,6 +23,7 @@
 #include <QMultiMap>
 #include <QList>
 #include <QString>
+#include "qgis_server.h"
 
 class QgsServerInterface;
 class QgsMapLayer;
@@ -54,8 +55,8 @@ class SERVER_EXPORT QgsAccessControlFilter
      * and must be passed to QgsAccessControlFilter instances.
      */
     QgsAccessControlFilter( const QgsServerInterface* serverInterface );
-    //! Destructor
-    virtual ~QgsAccessControlFilter();
+
+    virtual ~QgsAccessControlFilter() = default;
 
     //! Describe the layer permission
     struct LayerPermissions

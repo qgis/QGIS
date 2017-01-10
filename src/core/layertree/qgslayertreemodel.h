@@ -16,6 +16,7 @@
 #ifndef QGSLAYERTREEMODEL_H
 #define QGSLAYERTREEMODEL_H
 
+#include "qgis_core.h"
 #include <QAbstractItemModel>
 #include <QFont>
 #include <QIcon>
@@ -87,6 +88,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       AllowNodeRename            = 0x2000,  //!< Allow renaming of groups and layers
       AllowNodeChangeVisibility  = 0x4000,  //!< Allow user to set node visibility with a check box
       AllowLegendChangeState     = 0x8000,  //!< Allow check boxes for legend nodes (if supported by layer's legend)
+      ActionHierarchical         = 0x10000, //!< Check/uncheck action has consequences on children (or parents for leaf node)
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

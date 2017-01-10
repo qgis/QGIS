@@ -19,6 +19,7 @@
 
 #include "TriangleInterpolator.h"
 #include "DualEdgeTriangulation.h"
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * LinTriangleInterpolator is a class which interpolates linearly on a triangulation*/
@@ -29,7 +30,6 @@ class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
     LinTriangleInterpolator();
     //! Constructor with reference to a DualEdgeTriangulation object
     LinTriangleInterpolator( DualEdgeTriangulation* tin );
-    //! Destructor
     virtual ~LinTriangleInterpolator();
     //! Calculates the normal vector and assigns it to vec
     virtual bool calcNormVec( double x, double y, Vector3D* result ) override;

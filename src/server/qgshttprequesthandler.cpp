@@ -259,7 +259,6 @@ void QgsHttpRequestHandler::setGetMapResponse( const QString& service, QImage* i
     bool png16Bit = ( mFormatString.compare( QLatin1String( "image/png; mode=16bit" ), Qt::CaseInsensitive ) == 0 );
     bool png8Bit = ( mFormatString.compare( QLatin1String( "image/png; mode=8bit" ), Qt::CaseInsensitive ) == 0 );
     bool png1Bit = ( mFormatString.compare( QLatin1String( "image/png; mode=1bit" ), Qt::CaseInsensitive ) == 0 );
-    bool isBase64 = mFormatString.endsWith( QLatin1String( ";base64" ), Qt::CaseInsensitive );
     if ( mFormat != QLatin1String( "PNG" ) && mFormat != QLatin1String( "JPG" ) && !png16Bit && !png8Bit && !png1Bit )
     {
       QgsMessageLog::logMessage( QStringLiteral( "service exception - incorrect image format requested..." ) );
@@ -303,10 +302,6 @@ void QgsHttpRequestHandler::setGetMapResponse( const QString& service, QImage* i
       img->save( &buffer, mFormat.toUtf8().data(), imageQuality );
     }
 
-    if ( isBase64 )
-    {
-      ba = ba.toBase64();
-    }
     setHttpResponse( &ba, formatToMimeType( mFormat ) );
   }
 }
@@ -484,10 +479,6 @@ void QgsHttpRequestHandler::setServiceException( const QgsMapServiceException& e
 
 void QgsHttpRequestHandler::setGetPrintResponse( QByteArray* ba )
 {
-  if ( mFormatString.endsWith( QLatin1String( ";base64" ), Qt::CaseInsensitive ) )
-  {
-    *ba = ba->toBase64();
-  }
   setHttpResponse( ba, formatToMimeType( mFormat ) );
 }
 

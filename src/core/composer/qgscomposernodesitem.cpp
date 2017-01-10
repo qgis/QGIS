@@ -47,10 +47,6 @@ QgsComposerNodesItem::QgsComposerNodesItem( const QString& tagName,
   mPolygon = polygon.translated( -topLeft );
 }
 
-QgsComposerNodesItem::~QgsComposerNodesItem()
-{
-}
-
 double QgsComposerNodesItem::computeDistance( QPointF pt1,
     QPointF pt2 ) const
 {

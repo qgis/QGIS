@@ -266,10 +266,6 @@
 #include <gdal_version.h>
 #include <proj_api.h>
 
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(1,11,0)
-#define SUPPORT_GEOPACKAGE
-#endif
-
 //
 // Other includes
 //
@@ -879,7 +875,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mLogDock->hide();
   connect( mMessageButton, SIGNAL( toggled( bool ) ), mLogDock, SLOT( setVisible( bool ) ) );
   connect( mLogDock, SIGNAL( visibilityChanged( bool ) ), mMessageButton, SLOT( setChecked( bool ) ) );
-  connect( QgsMessageLog::instance(), SIGNAL( messageReceived( bool ) ), this, SLOT( toggleLogMessageIcon( bool ) ) );
+  connect( QgsApplication::messageLog(), SIGNAL( messageReceived( bool ) ), this, SLOT( toggleLogMessageIcon( bool ) ) );
   connect( mMessageButton, SIGNAL( toggled( bool ) ), this, SLOT( toggleLogMessageIcon( bool ) ) );
   mVectorLayerTools = new QgsGuiVectorLayerTools();
 
@@ -1707,6 +1703,7 @@ void QgisApp::createActions()
   connect( mActionHideAllLayers, SIGNAL( triggered() ), this, SLOT( hideAllLayers() ) );
   connect( mActionShowSelectedLayers, SIGNAL( triggered() ), this, SLOT( showSelectedLayers() ) );
   connect( mActionHideSelectedLayers, SIGNAL( triggered() ), this, SLOT( hideSelectedLayers() ) );
+  connect( mActionHideDeselectedLayers, &QAction::triggered, this, &QgisApp::hideDeselectedLayers );
 
   // Plugin Menu Items
 
@@ -1721,7 +1718,7 @@ void QgisApp::createActions()
   connect( mActionOptions, SIGNAL( triggered() ), this, SLOT( options() ) );
   connect( mActionCustomProjection, SIGNAL( triggered() ), this, SLOT( customProjection() ) );
   connect( mActionConfigureShortcuts, SIGNAL( triggered() ), this, SLOT( configureShortcuts() ) );
-  connect( mActionStyleManagerV2, SIGNAL( triggered() ), this, SLOT( showStyleManager() ) );
+  connect( mActionStyleManager, SIGNAL( triggered() ), this, SLOT( showStyleManager() ) );
   connect( mActionCustomization, SIGNAL( triggered() ), this, SLOT( customize() ) );
 
 #ifdef Q_OS_MAC
@@ -1963,10 +1960,6 @@ void QgisApp::createMenus()
    */
 
   // Layer menu
-#ifndef SUPPORT_GEOPACKAGE
-  mProjectMenu->removeAction( mActionDwgImport );
-  mNewLayerMenu->removeAction( mActionNewGeoPackageLayer );
-#endif
 
   // Panel and Toolbar Submenus
   mPanelMenu = new QMenu( tr( "Panels" ), this );
@@ -2028,7 +2021,11 @@ void QgisApp::createMenus()
   // keep plugins from hijacking About and Preferences application menus
   // these duplicate actions will be moved to application menus by Qt
   mProjectMenu->addAction( mActionAbout );
-  mProjectMenu->addAction( mActionOptions );
+  QAction* actionPrefs = new QAction( tr( "Preferences..." ), this );
+  actionPrefs->setMenuRole( QAction::PreferencesRole );
+  actionPrefs->setIcon( mActionOptions->icon() );
+  connect( actionPrefs, &QAction::triggered, this, &QgisApp::options );
+  mProjectMenu->addAction( actionPrefs );
 
   // Window Menu
 
@@ -2112,10 +2109,10 @@ void QgisApp::createToolBars()
   QToolButton *bt = new QToolButton( mAttributesToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   QList<QAction*> selectActions;
-  selectActions << mActionSelectByExpression << mActionSelectByForm << mActionSelectAll
+  selectActions << mActionSelectByForm << mActionSelectByExpression << mActionSelectAll
   << mActionInvertSelection;
   bt->addActions( selectActions );
-  bt->setDefaultAction( mActionSelectByExpression );
+  bt->setDefaultAction( mActionSelectByForm );
   QAction* selectionAction = mAttributesToolBar->insertWidget( mActionDeselectAll, bt );
   selectionAction->setObjectName( QStringLiteral( "ActionSelection" ) );
 
@@ -2236,9 +2233,7 @@ void QgisApp::createToolBars()
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionNewVectorLayer );
   bt->addAction( mActionNewSpatiaLiteLayer );
-#ifdef SUPPORT_GEOPACKAGE
   bt->addAction( mActionNewGeoPackageLayer );
-#endif
   bt->addAction( mActionNewMemoryLayer );
 
   QAction* defNewLayerAction = mActionNewVectorLayer;
@@ -2253,11 +2248,9 @@ void QgisApp::createToolBars()
     case 2:
       defNewLayerAction = mActionNewMemoryLayer;
       break;
-#ifdef SUPPORT_GEOPACKAGE
     case 3:
       defNewLayerAction = mActionNewGeoPackageLayer;
       break;
-#endif
   }
   bt->setDefaultAction( defNewLayerAction );
   QAction* newLayerAction = mLayerToolBar->addWidget( bt );
@@ -2626,8 +2619,8 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionShowPythonDialog->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconRunConsole.png" ) ) );
   mActionCheckQgisVersion->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCheckQgisVersion.png" ) ) );
   mActionOptions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
-  mActionConfigureShortcuts->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
-  mActionCustomization->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
+  mActionConfigureShortcuts->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionKeyboardShortcuts.svg" ) ) );
+  mActionCustomization->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInterfaceCustomization.svg" ) ) );
   mActionHelpContents->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHelpContents.svg" ) ) );
   mActionLocalHistogramStretch->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLocalHistogramStretch.svg" ) ) );
   mActionFullHistogramStretch->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFullHistogramStretch.svg" ) ) );
@@ -2726,7 +2719,7 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionMoveLabel->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveLabel.svg" ) ) );
   mActionRotateLabel->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRotateLabel.svg" ) ) );
   mActionChangeLabelProperties->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionChangeLabelProperties.svg" ) ) );
-  mActionDiagramProperties->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDiagramProperties.svg" ) ) );
+  mActionDiagramProperties->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/diagram.svg" ) ) );
   mActionDecorationCopyright->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/copyright_label.png" ) ) );
   mActionDecorationNorthArrow->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/north_arrow.png" ) ) );
   mActionDecorationScaleBar->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/scale_bar.png" ) ) );
@@ -2803,7 +2796,7 @@ void QgisApp::setupConnections()
            this, SLOT( markDirty() ) );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ),
            this, SLOT( updateNewLayerInsertionPoint() ) );
-  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ),
+  connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( visibilityChanged( QgsLayerTreeNode* ) ),
            this, SLOT( markDirty() ) );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ),
            this, SLOT( markDirty() ) );
@@ -5754,9 +5747,8 @@ void QgisApp::stopRendering()
 void QgisApp::hideAllLayers()
 {
   QgsDebugMsg( "hiding all layers!" );
+  mLayerTreeView->layerTreeModel()->rootGroup()->setItemVisibilityCheckedRecursive( false );
 
-  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
-    nodeLayer->setVisible( Qt::Unchecked );
 }
 
 
@@ -5764,9 +5756,7 @@ void QgisApp::hideAllLayers()
 void QgisApp::showAllLayers()
 {
   QgsDebugMsg( "Showing all layers!" );
-
-  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
-    nodeLayer->setVisible( Qt::Checked );
+  mLayerTreeView->layerTreeModel()->rootGroup()->setItemVisibilityCheckedRecursive( true );
 }
 
 //reimplements method from base (gui) class
@@ -5776,13 +5766,21 @@ void QgisApp::hideSelectedLayers()
 
   Q_FOREACH ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
   {
-    if ( QgsLayerTree::isGroup( node ) )
-      QgsLayerTree::toGroup( node )->setVisible( Qt::Unchecked );
-    else if ( QgsLayerTree::isLayer( node ) )
-      QgsLayerTree::toLayer( node )->setVisible( Qt::Unchecked );
+    node->setItemVisibilityChecked( false );
   }
 }
 
+void QgisApp::hideDeselectedLayers()
+{
+  QList<QgsLayerTreeLayer*> selectedLayerNodes = mLayerTreeView->selectedLayerNodes();
+
+  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
+  {
+    if ( selectedLayerNodes.contains( nodeLayer ) )
+      continue;
+    nodeLayer->setItemVisibilityChecked( false );
+  }
+}
 
 // reimplements method from base (gui) class
 void QgisApp::showSelectedLayers()
@@ -5791,10 +5789,12 @@ void QgisApp::showSelectedLayers()
 
   Q_FOREACH ( QgsLayerTreeNode* node, mLayerTreeView->selectedNodes() )
   {
-    if ( QgsLayerTree::isGroup( node ) )
-      QgsLayerTree::toGroup( node )->setVisible( Qt::Checked );
-    else if ( QgsLayerTree::isLayer( node ) )
-      QgsLayerTree::toLayer( node )->setVisible( Qt::Checked );
+    QgsLayerTreeNode* nodeIter = node;
+    while ( nodeIter )
+    {
+      nodeIter->setItemVisibilityChecked( true );
+      nodeIter = nodeIter->parent();
+    }
   }
 }
 
@@ -6353,7 +6353,7 @@ void QgisApp::saveAsLayerDefinition()
   bool saved = QgsLayerDefinition::exportLayerDefinition( path, mLayerTreeView->selectedNodes(), errorMessage );
   if ( !saved )
   {
-    messageBar()->pushMessage( tr( "Error saving layer definintion file" ), errorMessage, QgsMessageBar::WARNING );
+    messageBar()->pushMessage( tr( "Error saving layer definition file" ), errorMessage, QgsMessageBar::WARNING );
   }
 }
 
@@ -7492,6 +7492,8 @@ void QgisApp::selectByExpression()
   }
 
   QgsExpressionSelectionDialog* dlg = new QgsExpressionSelectionDialog( vlayer, QString(), this );
+  dlg->setMessageBar( messageBar() );
+  dlg->setMapCanvas( mapCanvas() );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
   dlg->show();
 }
@@ -7520,6 +7522,7 @@ void QgisApp::selectByForm()
 
   QgsSelectByFormDialog* dlg = new QgsSelectByFormDialog( vlayer, context, this );
   dlg->setMessageBar( messageBar() );
+  dlg->setMapCanvas( mapCanvas() );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
   dlg->show();
 }
@@ -7641,7 +7644,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
         geom = newGeometry;
       }
       // avoid intersection if enabled in digitize settings
-      geom.avoidIntersections();
+      geom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
     }
 
     // now create new feature using pasted feature as a template. This automatically handles default
@@ -8354,7 +8357,7 @@ void QgisApp::layerSubsetString()
         // hide the old layer
         QgsLayerTreeLayer* vLayerTreeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( vlayer->id() );
         if ( vLayerTreeLayer )
-          vLayerTreeLayer->setVisible( Qt::Unchecked );
+          vLayerTreeLayer->setItemVisibilityChecked( false );
         vlayer = newLayer;
       }
       else
@@ -8644,7 +8647,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *>& lyrList )
     QgsLayerTreeLayer* nodeDupLayer = parentGroup->insertLayer( parentGroup->children().indexOf( nodeSelectedLyr ) + 1, dupLayer );
 
     // always set duplicated layers to not visible so layer can be configured before being turned on
-    nodeDupLayer->setVisible( Qt::Unchecked );
+    nodeDupLayer->setItemVisibilityChecked( false );
 
     // duplicate the layer style
     QString errMsg;
@@ -9099,7 +9102,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
   QSettings mySettings;
   QString oldScales = mySettings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
 
-  bool oldCapitalise = mySettings.value( QStringLiteral( "/qgis/capitaliseLayerName" ), QVariant( false ) ).toBool();
+  bool oldCapitalize = mySettings.value( QStringLiteral( "/qgis/capitalizeLayerName" ), QVariant( false ) ).toBool();
 
   QgsOptions *optionsDialog = new QgsOptions( parent );
   if ( !currentPage.isEmpty() )
@@ -9124,7 +9127,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
 
     mMapCanvas->setMapUpdateInterval( mySettings.value( QStringLiteral( "/qgis/map_update_interval" ), 250 ).toInt() );
 
-    if ( oldCapitalise != mySettings.value( QStringLiteral( "/qgis/capitaliseLayerName" ), QVariant( false ) ).toBool() )
+    if ( oldCapitalize != mySettings.value( QStringLiteral( "/qgis/capitalizeLayerName" ), QVariant( false ) ).toBool() )
     {
       // if the layer capitalization has changed, we need to update all layer names
       Q_FOREACH ( QgsMapLayer* layer, QgsProject::instance()->mapLayers() )
@@ -10810,8 +10813,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionPasteFeatures->setEnabled( isEditable && canAddFeatures && !clipboard()->isEmpty() );
 
       mActionAddFeature->setEnabled( isEditable && canAddFeatures );
-      mActionCircularStringCurvePoint->setEnabled( isEditable && isSpatial && ( canAddFeatures || canChangeGeometry ) && vlayer->geometryType() != QgsWkbTypes::PointGeometry );
-      mActionCircularStringRadius->setEnabled( isEditable && isSpatial && ( canAddFeatures || canChangeGeometry ) );
+      mActionCircularStringCurvePoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
+          && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
+      mActionCircularStringRadius->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
+          && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
 
       //does provider allow deleting of features?
       mActionDeleteSelected->setEnabled( isEditable && canDeleteFeatures && layerHasSelection );
@@ -11337,7 +11342,7 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
 
 QgsPluginLayer* QgisApp::addPluginLayer( const QString& uri, const QString& baseName, const QString& providerKey )
 {
-  QgsPluginLayer* layer = QgsPluginLayerRegistry::instance()->createLayer( providerKey, uri );
+  QgsPluginLayer* layer = QgsApplication::pluginLayerRegistry()->createLayer( providerKey, uri );
   if ( !layer )
     return nullptr;
 
@@ -11654,7 +11659,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     if ( !pl )
       return;
 
-    QgsPluginLayerType* plt = QgsPluginLayerRegistry::instance()->pluginLayerType( pl->pluginLayerType() );
+    QgsPluginLayerType* plt = QgsApplication::pluginLayerRegistry()->pluginLayerType( pl->pluginLayerType() );
     if ( !plt )
       return;
 

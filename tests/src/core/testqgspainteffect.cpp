@@ -52,7 +52,6 @@ class DummyPaintEffect : public QgsPaintEffect
         : mProp1( prop1 )
         , mProp2( prop2 )
     {}
-    virtual ~DummyPaintEffect() {}
     virtual QString type() const override { return QStringLiteral( "Dummy" ); }
     virtual QgsPaintEffect* clone() const override { return new DummyPaintEffect( mProp1, mProp2 ); }
     static QgsPaintEffect* create( const QgsStringMap& props ) { return new DummyPaintEffect( props[QStringLiteral( "testProp" )], props[QStringLiteral( "testProp2" )] ); }
@@ -142,7 +141,7 @@ void TestQgsPaintEffect::initTestCase()
   mReport += QLatin1String( "<h1>Paint Effect Tests</h1>\n" );
   mPicture = 0;
 
-  QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
+  QgsPaintEffectRegistry* registry = QgsApplication::paintEffectRegistry();
   registry->addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy effect" ), DummyPaintEffect::create ) );
 
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
@@ -206,17 +205,17 @@ void TestQgsPaintEffect::saveRestore()
   QCOMPARE( effectElem.attribute( "type" ), QString( "Dummy" ) );
 
   //test reading empty node
-  QgsPaintEffect* restoredEffect = QgsPaintEffectRegistry::instance()->createEffect( noNode );
+  QgsPaintEffect* restoredEffect = QgsApplication::paintEffectRegistry()->createEffect( noNode );
   QVERIFY( !restoredEffect );
 
   //test reading bad node
   QDomElement badEffectElem = doc.createElement( QStringLiteral( "parent" ) );
   badEffectElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "bad" ) );
-  restoredEffect = QgsPaintEffectRegistry::instance()->createEffect( badEffectElem );
+  restoredEffect = QgsApplication::paintEffectRegistry()->createEffect( badEffectElem );
   QVERIFY( !restoredEffect );
 
   //test reading node
-  restoredEffect = QgsPaintEffectRegistry::instance()->createEffect( effectElem );
+  restoredEffect = QgsApplication::paintEffectRegistry()->createEffect( effectElem );
   QVERIFY( restoredEffect );
   DummyPaintEffect* restoredDummyEffect = dynamic_cast<DummyPaintEffect*>( restoredEffect );
   QVERIFY( restoredDummyEffect );
@@ -268,7 +267,7 @@ void TestQgsPaintEffect::stackSaveRestore()
   QCOMPARE( childNodeList.at( 1 ).toElement().attribute( "type" ), shadow->type() );
 
   //test reading node
-  QgsPaintEffect* restoredEffect = QgsPaintEffectRegistry::instance()->createEffect( effectElem );
+  QgsPaintEffect* restoredEffect = QgsApplication::paintEffectRegistry()->createEffect( effectElem );
   QVERIFY( restoredEffect );
   QgsEffectStack* restoredStack = dynamic_cast<QgsEffectStack*>( restoredEffect );
   QVERIFY( restoredStack );
@@ -882,7 +881,7 @@ void TestQgsPaintEffect::composer()
   ms.setLayers( QList<QgsMapLayer*>() << lineLayer );
   ms.setCrsTransformEnabled( false );
 
-  QgsComposition* composition = new QgsComposition( ms );
+  QgsComposition* composition = new QgsComposition( ms, QgsProject::instance() );
   composition->setPaperSize( 50, 50 );
   QgsComposerMap* composerMap = new QgsComposerMap( composition, 1, 1, 48, 48 );
   composerMap->setFrameEnabled( true );

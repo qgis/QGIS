@@ -15,6 +15,7 @@
 #ifndef QGSRULEBASEDLABELING_H
 #define QGSRULEBASEDLABELING_H
 
+#include "qgis_core.h"
 #include <QStringList>
 #include <QMap>
 
@@ -56,6 +57,11 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         //! takes ownership of settings
         Rule( QgsPalLayerSettings* settings, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString& filterExp = QString(), const QString& description = QString(), bool elseRule = false );
         ~Rule();
+
+        //! Rules cannot be copied.
+        Rule( const Rule& rh ) = delete;
+        //! Rules cannot be copied.
+        Rule& operator=( const Rule& rh ) = delete;
 
         //! The result of registering a rule
         enum RegisterResult
@@ -298,10 +304,6 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         // temporary
         QgsExpression* mFilter;
 
-      private:
-
-        Rule( const Rule& rh );
-        Rule& operator=( const Rule& rh );
     };
 
 

@@ -42,11 +42,6 @@ QgsVectorDataProvider::QgsVectorDataProvider( const QString& uri )
   setEncoding( settings.value( QStringLiteral( "/UI/encoding" ), "System" ).toString() );
 }
 
-
-QgsVectorDataProvider::~QgsVectorDataProvider()
-{
-}
-
 QString QgsVectorDataProvider::storageType() const
 {
   return QStringLiteral( "Generic vector file" );
@@ -67,6 +62,20 @@ bool QgsVectorDataProvider::deleteFeatures( const QgsFeatureIds &ids )
 {
   Q_UNUSED( ids );
   return false;
+}
+
+bool QgsVectorDataProvider::truncate()
+{
+  if ( !( capabilities() & DeleteFeatures ) )
+    return false;
+
+  QgsFeatureIds toDelete;
+  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+    toDelete << f.id();
+
+  return deleteFeatures( toDelete );
 }
 
 bool QgsVectorDataProvider::addAttributes( const QList<QgsField> &attributes )
@@ -128,9 +137,13 @@ bool QgsVectorDataProvider::changeGeometryValues( const QgsGeometryMap &geometry
 bool QgsVectorDataProvider::changeFeatures( const QgsChangedAttributesMap &attr_map,
     const QgsGeometryMap &geometry_map )
 {
-  Q_UNUSED( attr_map );
-  Q_UNUSED( geometry_map );
-  return false;
+  if ( !( capabilities() & ChangeAttributeValues ) || !( capabilities() & ChangeGeometries ) )
+    return false;
+
+  bool result = true;
+  result = result && changeAttributeValues( attr_map );
+  result = result && changeGeometryValues( geometry_map );
+  return result;
 }
 
 bool QgsVectorDataProvider::createSpatialIndex()

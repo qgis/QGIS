@@ -77,7 +77,7 @@ QgsExpressionContext QgsSizeScaleWidget::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
   << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( mapCanvas() )
@@ -270,7 +270,7 @@ void QgsSizeScaleWidget::computeFromLayerTriggered()
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
   << QgsExpressionContextUtils::atlasScope( nullptr )
   << QgsExpressionContextUtils::layerScope( mLayer );
 
