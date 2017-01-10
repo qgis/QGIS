@@ -37,8 +37,6 @@ import re
 import os
 import csv
 import uuid
-import codecs
-import io
 
 import psycopg2
 from osgeo import ogr
@@ -768,42 +766,17 @@ class TableWriter(object):
         if self.encoding is None or encoding == 'System':
             self.encoding = 'utf-8'
 
-        with open(self.fileName, 'wb') as csvFile:
-            self.writer = UnicodeWriter(csvFile, encoding=self.encoding)
+        with open(self.fileName, 'w', newline='', encoding=self.encoding) as f:
+            self.writer = csv.writer(f)
             if len(fields) != 0:
                 self.writer.writerow(fields)
 
     def addRecord(self, values):
-        with open(self.fileName, 'ab') as csvFile:
-            self.writer = UnicodeWriter(csvFile, encoding=self.encoding)
+        with open(self.fileName, 'a', newline='', encoding=self.encoding) as f:
+            self.writer = csv.writer(f)
             self.writer.writerow(values)
 
     def addRecords(self, records):
-        with open(self.fileName, 'ab') as csvFile:
-            self.writer = UnicodeWriter(csvFile, encoding=self.encoding)
+        with open(self.fileName, 'a', newline='', encoding=self.encoding) as f:
+            self.writer = cvs.writer(f)
             self.writer.writerows(records)
-
-
-class UnicodeWriter(object):
-
-    def __init__(self, f, dialect=csv.excel, encoding='utf-8', **kwds):
-        self.queue = io.StringIO()
-        self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
-        self.stream = f
-        self.encoder = codecs.getincrementalencoder(encoding)()
-
-    def writerow(self, row):
-        row = list(map(str, row))
-        try:
-            self.writer.writerow([s.encode('utf-8') for s in row])
-        except:
-            self.writer.writerow(row)
-        data = self.queue.getvalue()
-        data = data.decode('utf-8')
-        data = self.encoder.encode(data)
-        self.stream.write(data)
-        self.queue.truncate(0)
-
-    def writerows(self, rows):
-        for row in rows:
-            self.writerow(row)
