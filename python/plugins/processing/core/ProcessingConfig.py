@@ -64,7 +64,8 @@ class ProcessingConfig(object):
     WARN_UNMATCHING_EXTENT_CRS = 'WARN_UNMATCHING_EXTENT_CRS'
     DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DEFAULT_OUTPUT_RASTER_LAYER_EXT'
     DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DEFAULT_OUTPUT_VECTOR_LAYER_EXT'
-    SHOW_PROVIDERS_TOOLTIP = "SHOW_PROVIDERS_TOOLTIP"
+    SHOW_PROVIDERS_TOOLTIP = 'SHOW_PROVIDERS_TOOLTIP'
+    MODELS_SCRIPTS_REPO = 'MODELS_SCRIPTS_REPO'
 
     settings = {}
     settingIcons = {}
@@ -156,6 +157,11 @@ class ProcessingConfig(object):
             ProcessingConfig.tr('General'),
             ProcessingConfig.RECENT_ALGORITHMS,
             ProcessingConfig.tr('Recent algorithms'), '', hidden=True))
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.MODELS_SCRIPTS_REPO,
+            ProcessingConfig.tr('Scripts and models repository'),
+            'https://raw.githubusercontent.com/qgis/QGIS-Processing/master'))
         extensions = processing.tools.dataobjects.getSupportedOutputVectorLayerExtensions()
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
