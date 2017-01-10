@@ -1096,8 +1096,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     virtual bool isSpatial() const override;
 
-    //! Returns true if the provider has been modified since the last commit
-    bool isModified() const;
+    /**
+     * Returns true if the provider has been modified since the last commit.
+     *
+     * If the checkForPendingChanges flag is specified, the beforeModifiedCheck()
+     * signal is emitted to let components like open attribute forms push in last
+     * minute changes.
+     */
+    bool isModified( bool checkForPendingChanges = false ) const;
 
     /** Snaps a point to the closest vertex if there is one within the snapping tolerance
      *  @param point       The point which is set to the position of a vertex if there is one within the snapping tolerance.
@@ -1301,6 +1307,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * so if a stage fails, it's difficult to roll back cleanly.
      * Therefore any error message also includes which stage failed so
      * that the user has some chance of repairing the damage cleanly.
+     *
+     * You may want to call isModified( true ) before calling commitChanges()
+     * if you want to include pending changes from attribute forms.
+     *
      * @see commitErrors()
      */
     bool commitChanges();

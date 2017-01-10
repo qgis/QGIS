@@ -920,7 +920,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     virtual bool isEditable() const;
 
     virtual bool isSpatial() const;
-    bool isModified() const;
+    bool isModified( bool checkForPendingChanges = false ) const;
 
     /** Snaps a point to the closest vertex if there is one within the snapping tolerance
      *  @param point       The point which is set to the position of a vertex if there is one within the snapping tolerance.

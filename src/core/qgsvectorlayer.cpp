@@ -2832,9 +2832,11 @@ bool QgsVectorLayer::setReadOnly( bool readonly )
   return true;
 }
 
-bool QgsVectorLayer::isModified() const
+bool QgsVectorLayer::isModified( bool checkForPendingChanges ) const
 {
-  emit beforeModifiedCheck();
+  if ( checkForPendingChanges )
+    emit beforeModifiedCheck();
+
   return mEditBuffer && mEditBuffer->isModified();
 }
 

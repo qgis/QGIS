@@ -150,6 +150,14 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void setMessageBar( QgsMessageBar* messageBar );
 
+    /**
+     * Check if there are pending attribute changes that have not been
+     * saved to the edit buffer yet.
+     *
+     * @note Added in QGIS 3.0
+     */
+    bool isChanged() const;
+
   signals:
 
     /**

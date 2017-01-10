@@ -78,7 +78,7 @@ bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer* layer ) const
 {
   bool res = true;
 
-  if ( layer->isModified() )
+  if ( layer->isModified( true ) )
   {
     if ( !layer->commitChanges() )
     {
@@ -101,7 +101,7 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer* layer, bool allowCance
 {
   bool res = true;
 
-  if ( layer->isModified() )
+  if ( layer->isModified( true ) )
   {
     QMessageBox::StandardButtons buttons = QMessageBox::Save | QMessageBox::Discard;
     if ( allowCancel )

@@ -66,7 +66,6 @@ class CORE_EXPORT QgsVectorLayerUtils
                                      const QgsGeometry& geometry = QgsGeometry(),
                                      const QgsAttributeMap& attributes = QgsAttributeMap(),
                                      QgsExpressionContext* context = nullptr );
-
 };
 
 #endif // QGSVECTORLAYERUTILS_H

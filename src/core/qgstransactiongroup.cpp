@@ -64,7 +64,7 @@ bool QgsTransactionGroup::modified() const
 {
   Q_FOREACH ( QgsVectorLayer* layer, mLayers )
   {
-    if ( layer->isModified() )
+    if ( layer->isModified( true ) )
       return true;
   }
   return false;
