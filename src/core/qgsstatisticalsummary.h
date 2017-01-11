@@ -18,6 +18,7 @@
 
 #include <QMap>
 #include <QVariant>
+#include <qnumeric.h>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
