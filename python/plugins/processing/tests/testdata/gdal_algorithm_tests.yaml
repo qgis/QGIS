@@ -545,3 +545,20 @@ tests:
       OUTPUT:
         hash: f468bb08cbede2b606018a7a45a51cc221307a8421a11daefabeac12
         type: rasterhash
+
+  - algorithm: gdal:colorrelief
+    name: color relief with rgba color file
+    params:
+      BAND: 1
+      COLOR_TABLE:
+        name: color_relief.txt
+        type: file
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      MATCH_MODE: '0'
+    results:
+      OUTPUT:
+        hash: dead71c06c8467debc876d46a508bb1486953ac55320558d9a475ee8
+        type: rasterhash
