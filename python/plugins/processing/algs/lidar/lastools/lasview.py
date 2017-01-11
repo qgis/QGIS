@@ -62,7 +62,7 @@ class lasview(LAStoolsAlgorithm):
                                              self.tr("window size (x y) in pixels"), lasview.SIZES, 0))
         self.addParametersAdditionalGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasview")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
@@ -78,4 +78,4 @@ class lasview(LAStoolsAlgorithm):
 
         # fix_print_with_import
         print(commands)
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

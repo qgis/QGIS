@@ -65,11 +65,11 @@ class RasterLayerStatistics(GeoAlgorithm):
         self.addOutput(OutputNumber(self.COUNT, self.tr('No-data cells count')))
         self.addOutput(OutputNumber(self.STD_DEV, self.tr('Standard deviation')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
         uri = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(uri)
-        values = raster.scanraster(layer, progress)
+        values = raster.scanraster(layer, feedback)
 
         n = 0
         nodata = 0

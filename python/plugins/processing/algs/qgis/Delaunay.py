@@ -63,7 +63,7 @@ class Delaunay(GeoAlgorithm):
                                     self.tr('Delaunay triangulation'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
 
@@ -94,7 +94,7 @@ class Delaunay(GeoAlgorithm):
                 pts.append((x, y))
                 ptNdx += 1
                 ptDict[ptNdx] = (inFeat.id(), n)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         if len(pts) < 3:
             raise GeoAlgorithmExecutionException(
@@ -133,6 +133,6 @@ class Delaunay(GeoAlgorithm):
             geometry = QgsGeometry().fromPolygon([polygon])
             feat.setGeometry(geometry)
             writer.addFeature(feat)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

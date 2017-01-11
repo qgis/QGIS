@@ -46,7 +46,7 @@ class Explode(GeoAlgorithm):
                                           [dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Exploded'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         vlayer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
@@ -57,7 +57,7 @@ class Explode(GeoAlgorithm):
         features = vector.features(vlayer)
         total = 100.0 / len(features)
         for current, feature in enumerate(features):
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
             inGeom = feature.geometry()
             atMap = feature.attributes()
             segments = self.extractAsSingleSegments(inGeom)

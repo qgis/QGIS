@@ -56,7 +56,7 @@ class APP_EXPORT QgsMapToolSelectFeatures : public QgsMapTool
 
     QColor mFillColor;
 
-    QColor mBorderColour;
+    QColor mBorderColor;
 };
 
 #endif

@@ -33,7 +33,8 @@ import os
 import re
 import time
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingFeedback)
 import subprocess
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
@@ -41,7 +42,6 @@ from processing.tools.system import isMac, isWindows
 import logging
 import xml.etree.ElementTree as ET
 import traceback
-from processing.core.SilentProgress import SilentProgress
 
 
 OTB_FOLDER = "OTB_FOLDER"
@@ -132,8 +132,8 @@ def getInstalledVersion(runOtb=False):
         _installedVersionFound = False
         return None
     commands = [os.path.join(otbPath(), "otbcli_Smoothing")]
-    progress = SilentProgress()
-    out = executeOtb(commands, progress, False)
+    feedback = QgsProcessingFeedback()
+    out = executeOtb(commands, feedback, False)
     for line in out:
         if "version" in line:
             _installedVersionFound = True
@@ -143,7 +143,10 @@ def getInstalledVersion(runOtb=False):
 
 
 def compatibleDescriptionPath(version):
-    supportedVersions = {"5.0.0": "5.0.0", "5.4.0": "5.4.0", "5.6.0": "5.6.0"}
+    supportedVersions = {"5.0.0": "5.0.0",
+                         "5.4.0": "5.4.0",
+                         "5.6.0": "5.6.0",
+                         "5.8.0": "5.8.0"}
     if version is None:
         return None
     if version not in supportedVersions:
@@ -156,7 +159,7 @@ def compatibleDescriptionPath(version):
     return os.path.join(otbDescriptionPath(), supportedVersions[version])
 
 
-def executeOtb(commands, progress, addToLog=True):
+def executeOtb(commands, feedback, addToLog=True):
     loglines = []
     loglines.append(tr("OTB execution console output"))
     os.putenv('ITK_AUTOLOAD_PATH', otbLibPath())
@@ -169,10 +172,10 @@ def executeOtb(commands, progress, addToLog=True):
                 idx = line.find("[*")
                 perc = int(line[idx - 4:idx - 2].strip(" "))
                 if perc != 0:
-                    progress.setPercentage(perc)
+                    feedback.setProgress(perc)
             else:
                 loglines.append(line)
-                progress.setConsoleInfo(line)
+                feedback.pushConsoleInfo(line)
 
     if addToLog:
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)

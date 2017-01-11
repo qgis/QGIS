@@ -2130,3 +2130,18 @@ tests:
         name: expected/truncated.shp
         type: vector
         in_place_result: true
+
+  - algorithm: qgis:distancematrix
+    name: Distance matrix (only tests for TableWriter, does not check result)
+    params:
+      INPUT_FIELD: fid
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+      MATRIX_TYPE: '0'
+      NEAREST_POINTS: 0
+      TARGET_FIELD: fid
+      TARGET_LAYER:
+        name: points.gml
+        type: vector
+    results: {}

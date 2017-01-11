@@ -226,7 +226,7 @@ class CORE_EXPORT QgsLabelingEngine
     void writeSettingsToProject();
 
   protected:
-    void processProvider( QgsAbstractLabelProvider* provider, QgsRenderContext& context, pal::Pal& p );
+    void processProvider( QgsAbstractLabelProvider* provider, QgsRenderContext& context, pal::Pal& p );  //#spellok
 
   protected:
     //! Associated map settings instance

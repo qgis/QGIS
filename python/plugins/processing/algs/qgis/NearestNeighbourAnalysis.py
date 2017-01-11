@@ -76,7 +76,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
                                     self.tr('Number of points')))
         self.addOutput(OutputNumber(self.Z_SCORE, self.tr('Z-Score')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         output = self.getOutputValue(self.OUTPUT)
 
@@ -100,7 +100,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
             sumDist += distance.measureLine(neighbour.geometry().asPoint(),
                                             feat.geometry().asPoint())
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         do = float(sumDist) / count
         de = float(0.5 / math.sqrt(count / A))

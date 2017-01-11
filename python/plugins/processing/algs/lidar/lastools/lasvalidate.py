@@ -47,7 +47,7 @@ class lasvalidate(LAStoolsAlgorithm):
         self.addOutput(OutputFile(lasvalidate.OUTPUT, self.tr("Output XML file")))
         self.addParametersAdditionalGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasvalidate")]
         self.addParametersPointInputCommands(commands)
         if self.getParameterValue(lasvalidate.ONE_REPORT_PER_FILE):
@@ -57,4 +57,4 @@ class lasvalidate(LAStoolsAlgorithm):
             commands.append(self.getOutputValue(lasvalidate.OUTPUT))
         self.addParametersAdditionalCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

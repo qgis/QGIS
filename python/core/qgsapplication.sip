@@ -254,6 +254,11 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static QString platform();
 
+    /** Returns the QGIS locale.
+     * @note added in QGIS 3.0
+     */
+    static QString locale();
+
     //! Returns the path to user's themes folder
     static QString userThemesFolder();
 
@@ -436,6 +441,13 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * @note added in QGIS 3.0
      */
     static QgsMessageLog* messageLog();
+
+    /**
+     * Returns the application's processing registry, used for managing processing providers,
+     * algorithms, and various parameters and outputs.
+     * @note added in QGIS 3.0
+     */
+    static QgsProcessingRegistry* processingRegistry();
 
 %If(ANDROID)
     //dummy method to workaround sip generation issue issue

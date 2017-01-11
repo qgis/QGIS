@@ -61,7 +61,7 @@ class SplitRGBBands(GeoAlgorithm):
         self.addOutput(OutputRaster(SplitRGBBands.B,
                                     self.tr('Output B band layer')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         # TODO: check correct num of bands
         input = self.getParameterValue(SplitRGBBands.INPUT)
         temp = getTempFilename(None).replace('.', '')
@@ -88,4 +88,4 @@ class SplitRGBBands(GeoAlgorithm):
                         )
 
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
-        SagaUtils.executeSaga(progress)
+        SagaUtils.executeSaga(feedback)

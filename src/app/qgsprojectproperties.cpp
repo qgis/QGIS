@@ -850,7 +850,7 @@ void QgsProjectProperties::apply()
     // If the user fields have changed, use them instead.
     if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
     {
-      QgsDebugMsg( "Using paramteric major/minor" );
+      QgsDebugMsg( "Using parameteric major/minor" );
       major = QLocale::system().toDouble( leSemiMajor->text() );
       minor = QLocale::system().toDouble( leSemiMinor->text() );
     }
@@ -1504,7 +1504,7 @@ void QgsProjectProperties::on_mWMSInspireScenario2_toggled( bool on )
   mWMSInspireScenario1->blockSignals( false );
 }
 
-void QgsProjectProperties::on_pbnWFSLayersUnselectAll_clicked()
+void QgsProjectProperties::on_pbnWFSLayersDeselectAll_clicked()
 {
   for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
   {
@@ -1522,7 +1522,7 @@ void QgsProjectProperties::on_pbnWCSLayersSelectAll_clicked()
   }
 }
 
-void QgsProjectProperties::on_pbnWCSLayersUnselectAll_clicked()
+void QgsProjectProperties::on_pbnWCSLayersDeselectAll_clicked()
 {
   for ( int i = 0; i < twWCSLayers->rowCount(); i++ )
   {

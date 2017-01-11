@@ -92,7 +92,7 @@ class BasicStatisticsStrings(GeoAlgorithm):
         self.addOutput(OutputNumber(self.MIN_VALUE, self.tr('Minimum string value')))
         self.addOutput(OutputNumber(self.MAX_VALUE, self.tr('Maximum string value')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
@@ -107,7 +107,7 @@ class BasicStatisticsStrings(GeoAlgorithm):
         total = 100.0 / float(count)
         for current, ft in enumerate(features):
             stat.addValue(ft[fieldName])
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         stat.finalize()
 

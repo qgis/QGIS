@@ -172,7 +172,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     bool transactionSuccess( const QDomDocument& serverResponse ) const;
     //! Returns the inserted ids
     QStringList insertedFeatureIds( const QDomDocument& serverResponse ) const;
-    //! Retrieve version and capabilities for this layer from GetCapabilities document (will be stored in mCapabilites)
+    //! Retrieve version and capabilities for this layer from GetCapabilities document (will be stored in mCapabilities)
     bool getCapabilities();
     //! Records provider error
     void handleException( const QDomDocument& serverResponse );

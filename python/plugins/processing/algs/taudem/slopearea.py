@@ -30,7 +30,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
+from qgis.core import QgsApplication
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -54,7 +54,7 @@ class SlopeArea(GeoAlgorithm):
     SLOPE_AREA_GRID = 'SLOPE_AREA_GRID'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
+        return QgsApplication.getThemeIcon("/providerTaudem.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Slope Area Combination')
@@ -73,7 +73,7 @@ class SlopeArea(GeoAlgorithm):
         self.addOutput(OutputRaster(self.SLOPE_AREA_GRID,
                                     self.tr('Slope Area Grid')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = []
         commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
@@ -96,4 +96,4 @@ class SlopeArea(GeoAlgorithm):
         commands.append('-sa')
         commands.append(self.getOutputValue(self.SLOPE_AREA_GRID))
 
-        TauDEMUtils.executeTauDEM(commands, progress)
+        TauDEMUtils.executeTauDEM(commands, feedback)

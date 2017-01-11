@@ -43,7 +43,9 @@ except:
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsWkbTypes
+from qgis.core import (Qgis,
+                       QgsWkbTypes,
+                       QgsApplication)
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils
@@ -196,8 +198,8 @@ pluginPath = os.path.normpath(os.path.join(
 class QGISAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
-        self._icon = QIcon(os.path.join(pluginPath, 'images', 'qgis.svg'))
+        super().__init__()
+        self._icon = QgsApplication.getThemeIcon("/providerQgis.svg")
 
         self.alglist = [SumLines(), PointsInPolygon(),
                         PointsInPolygonWeighted(), PointsInPolygonUnique(),
@@ -297,14 +299,17 @@ class QGISAlgorithmProvider(AlgorithmProvider):
     def unload(self):
         AlgorithmProvider.unload(self)
 
-    def getName(self):
+    def id(self):
         return 'qgis'
 
-    def getDescription(self):
+    def name(self):
         return 'QGIS'
 
-    def getIcon(self):
-        return self._icon
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def _loadAlgorithms(self):
         self.algs = list(self.alglist) + self.externalAlgs

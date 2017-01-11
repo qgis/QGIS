@@ -308,7 +308,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>3</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -337,8 +337,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>723</width>
-                <height>640</height>
+                <width>651</width>
+                <height>590</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1023,8 +1023,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>839</width>
-                <height>850</height>
+                <width>843</width>
+                <height>1065</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1156,6 +1156,103 @@
                       <width>0</width>
                       <height>120</height>
                      </size>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_29">
+                 <property name="title">
+                  <string>Documentation paths</string>
+                 </property>
+                 <layout class="QGridLayout" name="_4">
+                  <item row="0" column="5">
+                   <widget class="QToolButton" name="mBtnMoveHelpDown">
+                    <property name="text">
+                     <string>...</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="mSVGLabel_5">
+                    <property name="text">
+                     <string>Path(s) to search for QGIS help</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <spacer>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>31</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QToolButton" name="mBtnAddHelpPath">
+                    <property name="toolTip">
+                     <string>Add new path</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="3">
+                   <widget class="QToolButton" name="mBtnRemoveHelpPath">
+                    <property name="toolTip">
+                     <string>Remove path</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0" colspan="6">
+                   <widget class="QTreeWidget" name="mHelpPathTreeWidget">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>120</height>
+                     </size>
+                    </property>
+                    <attribute name="headerVisible">
+                     <bool>false</bool>
+                    </attribute>
+                    <column>
+                     <property name="text">
+                      <string notr="true">1</string>
+                     </property>
+                    </column>
+                   </widget>
+                  </item>
+                  <item row="0" column="4">
+                   <widget class="QToolButton" name="mBtnMoveHelpUp">
+                    <property name="text">
+                     <string>...</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
                     </property>
                    </widget>
                   </item>
@@ -1456,8 +1553,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>545</width>
-                <height>694</height>
+                <width>495</width>
+                <height>659</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1814,8 +1911,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>839</width>
-                <height>982</height>
+                <width>674</width>
+                <height>936</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2565,8 +2662,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>147</width>
-                <height>240</height>
+                <width>142</width>
+                <height>239</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2712,8 +2809,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>528</width>
-                <height>327</height>
+                <width>501</width>
+                <height>316</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3055,8 +3152,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>650</width>
-                <height>612</height>
+                <width>604</width>
+                <height>589</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3486,7 +3583,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>514</width>
+                <width>480</width>
                 <height>571</height>
                </rect>
               </property>
@@ -3755,8 +3852,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>839</width>
-                <height>734</height>
+                <width>543</width>
+                <height>667</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4333,8 +4430,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>474</width>
-                <height>372</height>
+                <width>412</width>
+                <height>368</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4472,8 +4569,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>574</width>
-                <height>644</height>
+                <width>512</width>
+                <height>638</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4718,8 +4815,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>302</width>
-                <height>226</height>
+                <width>273</width>
+                <height>236</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4827,8 +4924,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>542</width>
-                <height>737</height>
+                <width>484</width>
+                <height>689</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">

@@ -81,7 +81,7 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent, Qt::Win
   mLayerTree->setModel( treeModel );
 
   connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
-  connect( mUnselectAllButton, SIGNAL( clicked() ), this, SLOT( unSelectAll() ) );
+  connect( mDeselectAllButton, SIGNAL( clicked() ), this, SLOT( deSelectAll() ) );
 }
 
 QgsOfflineEditingPluginGui::~QgsOfflineEditingPluginGui()
@@ -184,7 +184,7 @@ void QgsOfflineEditingPluginGui::selectAll()
 }
 
 
-void QgsOfflineEditingPluginGui::unSelectAll()
+void QgsOfflineEditingPluginGui::deSelectAll()
 {
   Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
     nodeLayer->setItemVisibilityChecked( false );

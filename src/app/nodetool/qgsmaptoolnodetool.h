@@ -111,7 +111,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     void createTopologyRubberBands();
 
     /**
-     * Returns the index of first selected vertex, -1 when all unselected
+     * Returns the index of first selected vertex, -1 when all deselected
      */
     int firstSelectedVertex();
 

@@ -68,7 +68,7 @@ class PointsAlongGeometry(GeoAlgorithm):
                                           self.tr('End offset'), default=0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         distance = self.getParameterValue(self.DISTANCE)
@@ -109,6 +109,6 @@ class PointsAlongGeometry(GeoAlgorithm):
 
                     current_distance += distance
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

@@ -61,7 +61,7 @@ class Orthogonalize(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Orthogonalized')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
         max_iterations = self.getParameterValue(self.MAX_ITERATIONS)
@@ -87,6 +87,6 @@ class Orthogonalize(GeoAlgorithm):
                 output_feature.setGeometry(output_geometry)
 
             writer.addFeature(output_feature)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

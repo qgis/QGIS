@@ -144,7 +144,7 @@ class ShortestPathPointToPoint(GeoAlgorithm):
                                     self.tr('Shortest path'),
                                     datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_VECTOR))
         startPoint = self.getParameterValue(self.START_POINT)
@@ -206,10 +206,10 @@ class ShortestPathPointToPoint(GeoAlgorithm):
         builder = QgsGraphBuilder(iface.mapCanvas().mapSettings().destinationCrs(),
                                   iface.mapCanvas().hasCrsTransformEnabled(),
                                   tolerance)
-        progress.setInfo(self.tr('Building graph...'))
+        feedback.pushInfo(self.tr('Building graph...'))
         snappedPoints = director.makeGraph(builder, [startPoint, endPoint])
 
-        progress.setInfo(self.tr('Calculating shortest path...'))
+        feedback.pushInfo(self.tr('Calculating shortest path...'))
         graph = builder.graph()
         idxStart = graph.findVertex(snappedPoints[0])
         idxEnd = graph.findVertex(snappedPoints[1])
@@ -232,7 +232,7 @@ class ShortestPathPointToPoint(GeoAlgorithm):
 
         self.setOutputValue(self.TRAVEL_COST, cost / multiplier)
 
-        progress.setInfo(self.tr('Writing results...'))
+        feedback.pushInfo(self.tr('Writing results...'))
         geom = QgsGeometry.fromPolyline(route)
         feat = QgsFeature()
         feat.setFields(fields)

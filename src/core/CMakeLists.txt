@@ -78,6 +78,9 @@ SET(QGIS_CORE_SRCS
   auth/qgsauthmethodmetadata.cpp
   auth/qgsauthmethodregistry.cpp
 
+  processing/qgsprocessingprovider.cpp
+  processing/qgsprocessingregistry.cpp
+
   qgis.cpp
   qgsapplication.cpp
   qgsaction.cpp
@@ -560,6 +563,9 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgsgroupungroupitemscommand.h
   composer/qgspaperitem.h
 
+  processing/qgsprocessingfeedback.h
+  processing/qgsprocessingregistry.h
+
   raster/qgsrasterlayer.h
   raster/qgsrasterdataprovider.h
 
@@ -790,6 +796,8 @@ SET(QGIS_CORE_HDRS
   composer/qgssingleboxscalebarstyle.h
   composer/qgsticksscalebarstyle.h
 
+  processing/qgsprocessingprovider.h
+
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h
   raster/qgscliptominmaxenhancement.h
@@ -912,6 +920,7 @@ INCLUDE_DIRECTORIES(
   geometry
   layertree
   pal
+  processing
   raster
   renderer
   symbology-ng

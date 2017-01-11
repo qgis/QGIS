@@ -25,7 +25,7 @@ class QgsVectorLayer;
 class QgsRasterLayer;
 class QTemporaryFile;
 
-class QgsSLDConfigParser : public QgsWmsConfigParser
+class SERVER_EXPORT QgsSLDConfigParser : public QgsWmsConfigParser
 {
   public:
 

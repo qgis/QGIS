@@ -68,7 +68,7 @@ class HypsometricCurves(GeoAlgorithm):
         self.addOutput(OutputDirectory(self.OUTPUT_DIRECTORY,
                                        self.tr('Hypsometric curves')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         rasterPath = self.getParameterValue(self.INPUT_DEM)
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.BOUNDARY_LAYER))
@@ -106,7 +106,7 @@ class HypsometricCurves(GeoAlgorithm):
             intersectedGeom = rasterGeom.intersection(geom)
 
             if intersectedGeom.isGeosEmpty():
-                progress.setInfo(
+                feedback.pushInfo(
                     self.tr('Feature %d does not intersect raster or '
                             'entirely located in NODATA area' % f.id()))
                 continue
@@ -131,7 +131,7 @@ class HypsometricCurves(GeoAlgorithm):
             srcArray = rasterBand.ReadAsArray(*srcOffset)
 
             if srcOffset[2] == 0 or srcOffset[3] == 0:
-                progress.setInfo(
+                feedback.pushInfo(
                     self.tr('Feature %d is smaller than raster '
                             'cell size' % f.id()))
                 continue
@@ -164,21 +164,21 @@ class HypsometricCurves(GeoAlgorithm):
                                           mask=numpy.logical_or(srcArray == noData,
                                                                 numpy.logical_not(rasterizedArray)))
 
-            self.calculateHypsometry(f.id(), fName, progress, masked,
+            self.calculateHypsometry(f.id(), fName, feedback, masked,
                                      cellXSize, cellYSize, percentage, step)
 
             memVDS = None
             rasterizedDS = None
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         rasterDS = None
 
-    def calculateHypsometry(self, fid, fName, progress, data, pX, pY,
+    def calculateHypsometry(self, fid, fName, feedback, data, pX, pY,
                             percentage, step):
         out = dict()
         d = data.compressed()
         if d.size == 0:
-            progress.setInfo(
+            feedback.pushInfo(
                 self.tr('Feature %d does not intersect raster or '
                         'entirely located in NODATA area' % fid))
             return

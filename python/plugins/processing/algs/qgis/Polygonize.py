@@ -57,7 +57,7 @@ class Polygonize(GeoAlgorithm):
                                            self.tr('Create geometry columns'), True))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         vlayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
         if self.getParameterValue(self.FIELDS):
@@ -71,7 +71,7 @@ class Polygonize(GeoAlgorithm):
                                    'double', 16, 2))
         allLinesList = []
         features = vector.features(vlayer)
-        progress.setInfo(self.tr('Processing lines...'))
+        feedback.pushInfo(self.tr('Processing lines...'))
         total = 40.0 / len(features)
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
@@ -79,22 +79,22 @@ class Polygonize(GeoAlgorithm):
                 allLinesList.extend(inGeom.asMultiPolyline())
             else:
                 allLinesList.append(inGeom.asPolyline())
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
-        progress.setPercentage(40)
+        feedback.setProgress(40)
         allLines = MultiLineString(allLinesList)
 
-        progress.setInfo(self.tr('Noding lines...'))
+        feedback.pushInfo(self.tr('Noding lines...'))
         allLines = unary_union(allLines)
 
-        progress.setPercentage(45)
-        progress.setInfo(self.tr('Polygonizing...'))
+        feedback.setProgress(45)
+        feedback.pushInfo(self.tr('Polygonizing...'))
         polygons = list(polygonize([allLines]))
         if not polygons:
             raise GeoAlgorithmExecutionException(self.tr('No polygons were created!'))
-        progress.setPercentage(50)
+        feedback.setProgress(50)
 
-        progress.setInfo('Saving polygons...')
+        feedback.pushInfo('Saving polygons...')
         writer = output.getVectorWriter(fields, QgsWkbTypes.Polygon, vlayer.crs())
         outFeat = QgsFeature()
         total = 50.0 / len(polygons)
@@ -104,5 +104,5 @@ class Polygonize(GeoAlgorithm):
                 outFeat.setAttributes([None] * fieldsCount + [polygon.area,
                                                               polygon.length])
             writer.addFeature(outFeat)
-            progress.setPercentage(50 + int(current * total))
+            feedback.setProgress(50 + int(current * total))
         del writer

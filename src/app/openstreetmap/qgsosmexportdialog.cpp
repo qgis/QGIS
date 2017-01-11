@@ -42,7 +42,7 @@ QgsOSMExportDialog::QgsOSMExportDialog( QWidget *parent )
   connect( radPolygons, SIGNAL( clicked() ), this, SLOT( updateLayerName() ) );
   connect( btnLoadTags, SIGNAL( clicked() ), this, SLOT( onLoadTags() ) );
   connect( btnSelectAll, SIGNAL( clicked() ), this, SLOT( onSelectAll() ) );
-  connect( btnUnselectAll, SIGNAL( clicked() ), this, SLOT( onUnselectAll() ) );
+  connect( btnDeselectAll, SIGNAL( clicked() ), this, SLOT( onDeselectAll() ) );
 
   mTagsModel = new QStandardItemModel( this );
   mTagsModel->setHorizontalHeaderLabels( QStringList() << tr( "Tag" ) << tr( "Count" ) << tr( "Not null" ) );
@@ -205,7 +205,7 @@ void QgsOSMExportDialog::onSelectAll()
   }
 }
 
-void QgsOSMExportDialog::onUnselectAll()
+void QgsOSMExportDialog::onDeselectAll()
 {
   for ( int i = 0; i < mTagsModel->rowCount(); ++i )
   {

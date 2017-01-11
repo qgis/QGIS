@@ -162,9 +162,9 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options'), '', optional=True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         self.processing = True
-        GdalAlgorithm.processAlgorithm(self, progress)
+        GdalAlgorithm.processAlgorithm(self, feedback)
         self.processing = False
 
     def getConsoleCommands(self):

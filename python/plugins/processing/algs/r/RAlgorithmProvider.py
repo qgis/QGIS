@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-
+from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.AlgorithmProvider import AlgorithmProvider
@@ -50,7 +50,7 @@ pluginPath = os.path.normpath(os.path.join(
 class RAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
         self.activate = False
         self.actions.append(CreateNewScriptAction(
             'Create new R script', CreateNewScriptAction.SCRIPT_R))
@@ -62,20 +62,20 @@ class RAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         ProcessingConfig.addSetting(Setting(
-            self.getDescription(), RUtils.RSCRIPTS_FOLDER,
+            self.name(), RUtils.RSCRIPTS_FOLDER,
             self.tr('R Scripts folder'), RUtils.defaultRScriptsFolder(),
             valuetype=Setting.MULTIPLE_FOLDERS))
         if isWindows():
             ProcessingConfig.addSetting(Setting(
-                self.getDescription(),
+                self.name(),
                 RUtils.R_FOLDER, self.tr('R folder'), RUtils.RFolder(),
                 valuetype=Setting.FOLDER))
             ProcessingConfig.addSetting(Setting(
-                self.getDescription(),
+                self.name(),
                 RUtils.R_LIBS_USER, self.tr('R user library folder'),
                 RUtils.RLibs(), valuetype=Setting.FOLDER))
             ProcessingConfig.addSetting(Setting(
-                self.getDescription(),
+                self.name(),
                 RUtils.R_USE64, self.tr('Use 64 bit version'), False))
 
     def unload(self):
@@ -86,13 +86,16 @@ class RAlgorithmProvider(AlgorithmProvider):
             ProcessingConfig.removeSetting(RUtils.R_LIBS_USER)
             ProcessingConfig.removeSetting(RUtils.R_USE64)
 
-    def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerR.svg")
 
-    def getDescription(self):
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerR.svg")
+
+    def name(self):
         return 'R scripts'
 
-    def getName(self):
+    def id(self):
         return 'r'
 
     def _loadAlgorithms(self):

@@ -67,7 +67,7 @@ class ClipData(FusionAlgorithm):
         self.addParameter(height)
         self.addAdvancedModifiers()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'ClipData.exe')]
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
@@ -91,4 +91,4 @@ class ClipData(FusionAlgorithm):
         commands.append(extent[2])
         commands.append(extent[1])
         commands.append(extent[3])
-        FusionUtils.runFusion(commands, progress)
+        FusionUtils.runFusion(commands, feedback)

@@ -84,7 +84,7 @@ class PointDistance(GeoAlgorithm):
 
         self.addOutput(OutputTable(self.DISTANCE_MATRIX, self.tr('Distance matrix')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         inLayer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
         inField = self.getParameterValue(self.INPUT_FIELD)
@@ -104,18 +104,18 @@ class PointDistance(GeoAlgorithm):
         if matType == 0:
             # Linear distance matrix
             self.linearMatrix(inLayer, inField, targetLayer, targetField,
-                              matType, nPoints, progress)
+                              matType, nPoints, feedback)
         elif matType == 1:
             # Standard distance matrix
             self.regularMatrix(inLayer, inField, targetLayer, targetField,
-                               nPoints, progress)
+                               nPoints, feedback)
         elif matType == 2:
             # Summary distance matrix
             self.linearMatrix(inLayer, inField, targetLayer, targetField,
-                              matType, nPoints, progress)
+                              matType, nPoints, feedback)
 
     def linearMatrix(self, inLayer, inField, targetLayer, targetField,
-                     matType, nPoints, progress):
+                     matType, nPoints, feedback):
         if matType == 0:
             self.writer.addRecord(['InputID', 'TargetID', 'Distance'])
         else:
@@ -156,10 +156,10 @@ class PointDistance(GeoAlgorithm):
                                        str(vari), str(min(distList)),
                                        str(max(distList))])
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
     def regularMatrix(self, inLayer, inField, targetLayer, targetField,
-                      nPoints, progress):
+                      nPoints, feedback):
         index = vector.spatialindex(targetLayer)
 
         inIdx = inLayer.fields().lookupField(inField)
@@ -190,4 +190,4 @@ class PointDistance(GeoAlgorithm):
                 data.append(str(float(dist)))
             self.writer.addRecord(data)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))

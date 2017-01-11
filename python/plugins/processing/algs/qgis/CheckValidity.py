@@ -81,7 +81,7 @@ class CheckValidity(GeoAlgorithm):
             self.ERROR_OUTPUT,
             self.tr('Error output')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         settings = QSettings()
         initial_method_setting = settings.value(settings_method_key, 1)
 
@@ -89,11 +89,11 @@ class CheckValidity(GeoAlgorithm):
         if method != 0:
             settings.setValue(settings_method_key, method)
         try:
-            self.doCheck(progress)
+            self.doCheck(feedback)
         finally:
             settings.setValue(settings_method_key, initial_method_setting)
 
-    def doCheck(self, progress):
+    def doCheck(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
 
@@ -172,7 +172,7 @@ class CheckValidity(GeoAlgorithm):
                 invalid_writer.addFeature(outFeat)
                 invalid_count += 1
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del valid_writer
         del invalid_writer

@@ -62,7 +62,7 @@ class PolygonCentroids(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Centroids')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
 
@@ -91,6 +91,6 @@ class PolygonCentroids(GeoAlgorithm):
             outFeat.setGeometry(outGeom)
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

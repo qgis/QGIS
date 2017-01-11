@@ -105,7 +105,7 @@ QRgb QgsPreviewEffect::simulateColorBlindness( QRgb& originalColor, QgsPreviewEf
   int blue = qBlue( originalColor );
 
   //convert RGB to LMS color space
-  // (http://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf p245, equation 4)
+  // (http://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf p245, equation 4) #spellok
   double L = ( 17.8824 * red ) + ( 43.5161 * green ) + ( 4.11935 * blue );
   double M = ( 3.45565 * red ) + ( 27.1554 * green ) + ( 3.86714 * blue );
   double S = ( 0.0299566 * red ) + ( 0.184309 * green ) + ( 1.46709 * blue );
@@ -124,7 +124,7 @@ QRgb QgsPreviewEffect::simulateColorBlindness( QRgb& originalColor, QgsPreviewEf
   }
 
   //convert LMS back to RGB color space
-  //(http://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf p248, equation 6)
+  //(http://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf p248, equation 6) #spellok
   red = ( 0.080944 * L ) + ( -0.130504 * M ) + ( 0.116721 * S );
   green = ( -0.0102485 * L ) + ( 0.0540194 * M ) + ( -0.113615 * S );
   blue = ( -0.000365294 * L ) + ( -0.00412163 * M ) + ( 0.693513 * S );
@@ -140,13 +140,13 @@ QRgb QgsPreviewEffect::simulateColorBlindness( QRgb& originalColor, QgsPreviewEf
 void QgsPreviewEffect::simulateProtanopeLMS( double& L, double &M, double &S )
 {
   //adjust L component to simulate vision of Protanope
-  //(http://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf p248, equation 5)
+  //(http://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf p248, equation 5) #spellok
   L = ( 2.02344 * M ) + ( -2.52581 * S );
 }
 
 void QgsPreviewEffect::simulateDeuteranopeLMS( double& L, double &M, double &S )
 {
   //adjust M component to simulate vision of Deuteranope
-  //(http://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf p248, equation 5)
+  //(http://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf p248, equation 5) #spellok
   M = ( 0.494207 * L ) + ( 1.24827 * S );
 }

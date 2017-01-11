@@ -23,7 +23,7 @@
 
 #include <QList>
 
-#define CPL_SUPRESS_CPLUSPLUS
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 
 /**

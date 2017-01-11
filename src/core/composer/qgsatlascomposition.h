@@ -31,7 +31,6 @@
 class QgsComposerMap;
 class QgsComposition;
 class QgsVectorLayer;
-class QgsExpression;
 class QgsExpressionContext;
 
 /** \ingroup core

@@ -66,7 +66,7 @@ class ASCII2DTM(FusionAlgorithm):
 
         self.addAdvancedModifiers()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'ASCII2DTM.exe')]
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
@@ -84,4 +84,4 @@ class ASCII2DTM(FusionAlgorithm):
         else:
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
-        FusionUtils.runFusion(commands, progress)
+        FusionUtils.runFusion(commands, feedback)

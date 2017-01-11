@@ -205,7 +205,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsApplication<td>userStyleV2Path<td>userStylePath
 <tr><td>QgsComposerShape<td>setUseSymbolV2<td>setUseSymbol
 <tr><td>QgsIFeatureSelectionManager<td>selectedFeaturesIds<td>selectedFeatureIds
-<tr><td>QgsMapLayer<td>capitaliseLayerName<td>capitalizeLayerName
+<tr><td>QgsMapLayer<td>capitaliseLayerName<td>capitalizeLayerName  <!--#spellok-->
 <tr><td>QgsSymbolLayerUtils<td>createSymbolLayerV2ListFromSld<td>createSymbolLayerListFromSld
 <tr><td>QgsVectorLayer<td>editorWidgetV2Config<td>editorWidgetConfig
 <tr><td>QgsVectorLayer<td>editorWidgetV2Text<td>editorWidgetText
@@ -582,6 +582,7 @@ QgsComposerNodesItem        {#qgis_api_break_3_0_QgsComposerNodesItem}
 
 - _readXMLStyle() has been renamed to _readXmlStyle()
 - _writeXMLStyle() has been renamed to _writeXMLStyle()
+- unselectNode() has been renamed to deselectNode() <!--#spellok-->
 
 
 QgsComposerPicture        {#qgis_api_break_3_0_QgsComposerPicture}
@@ -610,6 +611,11 @@ QgsComposerTableV2        {#qgis_api_break_3_0_QgsComposerTableV2}
 
 - rowsVisible(), rowRange(), drawHorizontalGridLines() and
  drawVerticalGridLines() were removed.
+ 
+ QgsComposerView        {#qgis_api_break_3_0_QgsComposerView}
+--------------------
+
+- unselectNode() has been renamed to deselectNode() <!--#spellok-->
 
 
 QgsComposition        {#qgis_api_break_3_0_QgsComposition}
@@ -625,6 +631,7 @@ were removed. Use setSnapTolerance() and snapTolerance() instead.
 - pixelFontSize(), pointFontSize(), relativeResizeRect(), relativePosition() were removed. Use the corresponding methods in QgsComposerUtils instead.
 - sortZList() was removed. Use refreshZList() instead.
 - addComposerTable(), composerTableAdded() were removed.
+- setAllUnselected() has been renamed to setAllDeselected. <!--#spellok-->
 
 
 QgsCoordinateReferenceSystem        {#qgis_api_break_3_0_QgsCoordinateReferenceSystem}
@@ -1189,7 +1196,7 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 - drawLabels() method was removed. It used old deprecated labeling. Replaced by labeling based on PAL library, see QgsLabelingEngine.
 - readLayerXML() was renamed to readLayerXml()
 - writeLayerXML() was renamed to writeLayerXml()
-- capitaliseLayerName() was renamed to capitalizeLayerName()
+- capitaliseLayerName() was renamed to capitalizeLayerName() <!--#spellok-->
 
 
 QgsMapLayerRegistry        {#qgis_api_break_3_0_QgsMapLayerRegistry}
@@ -1819,7 +1826,16 @@ optional property map passing down layer level properties to the SLD encoders. I
 - setScaleMethodToSymbol was removed. This is now handled using data defined scaling at a symbol layer level
 - usedAttributes is now a const method and returns QSet<QString> instead of QStringList
 
+Processing        {#qgis_api_break_3_0_Processing}
+----------
 
+- Algorithm providers now subclass the c++ QgsProcessingProvider class, and must be adapted to the API for QgsProcessingProvider. Specifically,
+getName() should be replaced with id(), getDescription() with name(), and getIcon with icon().
+- Algorithm's processAlgorithm method now passes a QgsProcessingFeedback object instead of the loosely defined progress parameter. Algorithms will
+need to update their use of the progress argument to utilise the QgsProcessingFeedback API.
+- Similarly, Python processing scripts no longer have access to a progress variable for reporting their progress. Instead they have a feedback
+object of type QgsProcessingFeedback, and will need to adapt their use of progress reporting to the QgsProcessingFeedback API.
+- SilentProgress was removed. Use the base QgsProcessingFeedback class instead.
 
 
 QGIS 2.4        {#qgis_api_break_2_4}

@@ -113,7 +113,7 @@ class BasicStatisticsForField(GeoAlgorithm):
         self.addOutput(OutputNumber(self.THIRDQUARTILE, self.tr('Third quartile')))
         self.addOutput(OutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
         field_name = self.getParameterValue(self.FIELD_NAME)
@@ -129,21 +129,21 @@ class BasicStatisticsForField(GeoAlgorithm):
         data.append(self.tr('Analyzed field: {}').format(field_name))
 
         if field.isNumeric():
-            data.extend(self.calcNumericStats(features, progress, field))
+            data.extend(self.calcNumericStats(features, feedback, field))
         elif field.type() in (QVariant.Date, QVariant.Time, QVariant.DateTime):
-            data.extend(self.calcDateTimeStats(features, progress, field))
+            data.extend(self.calcDateTimeStats(features, feedback, field))
         else:
-            data.extend(self.calcStringStats(features, progress, field))
+            data.extend(self.calcStringStats(features, feedback, field))
 
         self.createHTML(output_file, data)
 
-    def calcNumericStats(self, features, progress, field):
+    def calcNumericStats(self, features, feedback, field):
         count = len(features)
         total = 100.0 / float(count)
         stat = QgsStatisticalSummary()
         for current, ft in enumerate(features):
             stat.addVariant(ft[field.name()])
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
         stat.finalize()
 
         cv = stat.stDev() / stat.mean() if stat.mean() != 0 else 0
@@ -185,13 +185,13 @@ class BasicStatisticsForField(GeoAlgorithm):
         data.append(self.tr('Interquartile Range (IQR): {}').format(stat.interQuartileRange()))
         return data
 
-    def calcStringStats(self, features, progress, field):
+    def calcStringStats(self, features, feedback, field):
         count = len(features)
         total = 100.0 / float(count)
         stat = QgsStringStatisticalSummary()
         for current, ft in enumerate(features):
             stat.addValue(ft[field.name()])
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
         stat.finalize()
 
         self.setOutputValue(self.COUNT, stat.count())
@@ -216,13 +216,13 @@ class BasicStatisticsForField(GeoAlgorithm):
 
         return data
 
-    def calcDateTimeStats(self, features, progress, field):
+    def calcDateTimeStats(self, features, feedback, field):
         count = len(features)
         total = 100.0 / float(count)
         stat = QgsDateTimeStatisticalSummary()
         for current, ft in enumerate(features):
             stat.addValue(ft[field.name()])
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
         stat.finalize()
 
         self.setOutputValue(self.COUNT, stat.count())

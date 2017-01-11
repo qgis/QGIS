@@ -64,7 +64,7 @@ class PointsLayerFromTable(GeoAlgorithm):
                                        self.tr('Target CRS'), 'EPSG:4326'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Points from table'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         source = self.getParameterValue(self.INPUT)
         vlayer = dataobjects.getObjectFromUri(source)
         output = self.getOutputFromName(self.OUTPUT)
@@ -95,7 +95,7 @@ class PointsLayerFromTable(GeoAlgorithm):
         total = 100.0 / len(features)
 
         for current, feature in enumerate(features):
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
             attrs = feature.attributes()
 
             try:

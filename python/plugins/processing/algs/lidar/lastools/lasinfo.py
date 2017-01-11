@@ -81,7 +81,7 @@ class lasinfo(LAStoolsAlgorithm):
                                   self.tr("Output ASCII file")))
         self.addParametersAdditionalGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasinfo.exe")]
         else:
@@ -113,4 +113,4 @@ class lasinfo(LAStoolsAlgorithm):
         commands.append(self.getOutputValue(lasinfo.OUTPUT))
         self.addParametersAdditionalCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

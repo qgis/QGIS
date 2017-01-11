@@ -35,7 +35,6 @@ from qgis.core import QgsApplication
 from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.SilentProgress import SilentProgress
 from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir
 from processing.tests.TestData import points
 
@@ -281,7 +280,7 @@ class Grass7Utils(object):
         return command, env
 
     @staticmethod
-    def executeGrass7(commands, progress, outputCommands=None):
+    def executeGrass7(commands, feedback, outputCommands=None):
         loglines = []
         loglines.append(Grass7Utils.tr('GRASS GIS 7 execution console output'))
         grassOutDone = False
@@ -298,14 +297,14 @@ class Grass7Utils(object):
             for line in iter(proc.stdout.readline, ''):
                 if 'GRASS_INFO_PERCENT' in line:
                     try:
-                        progress.setPercentage(int(line[len('GRASS_INFO_PERCENT') + 2:]))
+                        feedback.setProgress(int(line[len('GRASS_INFO_PERCENT') + 2:]))
                     except:
                         pass
                 else:
                     if 'r.out' in line or 'v.out' in line:
                         grassOutDone = True
                     loglines.append(line)
-                    progress.setConsoleInfo(line)
+                    feedback.pushConsoleInfo(line)
 
         # Some GRASS scripts, like r.mapcalculator or r.fillnulls, call
         # other GRASS scripts during execution. This may override any
@@ -327,13 +326,13 @@ class Grass7Utils(object):
                 for line in iter(proc.stdout.readline, ''):
                     if 'GRASS_INFO_PERCENT' in line:
                         try:
-                            progress.setPercentage(int(
+                            feedback.setProgress(int(
                                 line[len('GRASS_INFO_PERCENT') + 2:]))
                         except:
                             pass
                     else:
                         loglines.append(line)
-                        progress.setConsoleInfo(line)
+                        feedback.pushConsoleInfo(line)
 
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_CONSOLE):
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)

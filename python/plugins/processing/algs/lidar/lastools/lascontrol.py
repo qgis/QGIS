@@ -60,7 +60,7 @@ class lascontrol(LAStoolsAlgorithm):
                                            self.tr("adjust z elevation by translating away the average error"), False))
         self.addParametersAdditionalGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascontrol")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
@@ -86,4 +86,4 @@ class lascontrol(LAStoolsAlgorithm):
             commands.append("-olaz")
         self.addParametersAdditionalCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

@@ -93,7 +93,7 @@ class CanopyModel(FusionAlgorithm):
             self.ASCII, self.tr('Add an ASCII output'), False))
         self.addAdvancedModifiers()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'CanopyModel.exe')]
         commands.append('/verbose')
         ground = self.getParameterValue(self.GROUND)
@@ -129,4 +129,4 @@ class CanopyModel(FusionAlgorithm):
         else:
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
-        FusionUtils.runFusion(commands, progress)
+        FusionUtils.runFusion(commands, feedback)

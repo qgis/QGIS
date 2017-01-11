@@ -75,7 +75,7 @@ class GridLine(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         extent = self.getParameterValue(self.EXTENT).split(',')
         hSpacing = self.getParameterValue(self.HSPACING)
         vSpacing = self.getParameterValue(self.VSPACING)
@@ -137,9 +137,9 @@ class GridLine(GeoAlgorithm):
             id += 1
             count += 1
             if int(math.fmod(count, count_update)) == 0:
-                progress.setPercentage(int(count / count_max * 50))
+                feedback.setProgress(int(count / count_max * 50))
 
-        progress.setPercentage(50)
+        feedback.setProgress(50)
 
         # longitude lines
         # counters for progressbar - update every 5%
@@ -164,6 +164,6 @@ class GridLine(GeoAlgorithm):
             id += 1
             count += 1
             if int(math.fmod(count, count_update)) == 0:
-                progress.setPercentage(50 + int(count / count_max * 50))
+                feedback.setProgress(50 + int(count / count_max * 50))
 
         del writer

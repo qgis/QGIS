@@ -31,6 +31,8 @@ import re
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QUrl
 
+from qgis.core import QgsApplication
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -48,13 +50,13 @@ class GdalAlgorithm(GeoAlgorithm):
 
     def getIcon(self):
         if self._icon is None:
-            self._icon = QIcon(os.path.join(pluginPath, 'images', 'gdal.svg'))
+            self._icon = QgsApplication.getThemeIcon("/providerGdal.svg")
         return self._icon
 
     def getCustomParametersDialog(self):
         return GdalAlgorithmDialog(self)
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = self.getConsoleCommands()
         layers = dataobjects.getVectorLayers()
         supported = dataobjects.getSupportedOutputVectorLayerExtensions()
@@ -71,7 +73,7 @@ class GdalAlgorithm(GeoAlgorithm):
                         c = re.sub('["\']{}["\']'.format(fileName), "'" + exportedFileName + "'", c)
 
             commands[i] = c
-        GdalUtils.runGdal(commands, progress)
+        GdalUtils.runGdal(commands, feedback)
 
     def shortHelp(self):
         helpPath = GdalUtils.gdalHelpPath()

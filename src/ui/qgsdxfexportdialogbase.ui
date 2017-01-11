@@ -91,7 +91,7 @@
       </widget>
      </item>
      <item row="0" column="2">
-      <widget class="QPushButton" name="mUnSelectAllButton">
+      <widget class="QPushButton" name="mDeselectAllButton">
        <property name="text">
         <string>Deselect all</string>
        </property>
@@ -198,7 +198,7 @@
   <tabstop>mVisibilityPresets</tabstop>
   <tabstop>mTreeView</tabstop>
   <tabstop>mSelectAllButton</tabstop>
-  <tabstop>mUnSelectAllButton</tabstop>
+  <tabstop>mDeselectAllButton</tabstop>
   <tabstop>mLayerTitleAsName</tabstop>
   <tabstop>mMapExtentCheckBox</tabstop>
   <tabstop>buttonBox</tabstop>

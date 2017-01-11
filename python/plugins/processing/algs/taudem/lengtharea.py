@@ -32,6 +32,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsApplication
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
@@ -54,7 +56,7 @@ class LengthArea(GeoAlgorithm):
     STREAM_SOURCE_GRID = 'STREAM_SOURCE_GRID'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
+        return QgsApplication.getThemeIcon("/providerTaudem.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Length Area Stream Source')
@@ -73,7 +75,7 @@ class LengthArea(GeoAlgorithm):
         self.addOutput(OutputRaster(self.STREAM_SOURCE_GRID,
                                     self.tr('Stream Source Grid')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = []
         commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
@@ -96,4 +98,4 @@ class LengthArea(GeoAlgorithm):
         commands.append('-ss')
         commands.append(self.getOutputValue(self.STREAM_SOURCE_GRID))
 
-        TauDEMUtils.executeTauDEM(commands, progress)
+        TauDEMUtils.executeTauDEM(commands, feedback)

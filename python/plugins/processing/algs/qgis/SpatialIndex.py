@@ -55,16 +55,16 @@ class SpatialIndex(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Indexed layer'), True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         fileName = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(fileName)
         provider = layer.dataProvider()
 
         if provider.capabilities() & QgsVectorDataProvider.CreateSpatialIndex:
             if not provider.createSpatialIndex():
-                progress.setInfo(self.tr('Could not create spatial index'))
+                feedback.pushInfo(self.tr('Could not create spatial index'))
         else:
-            progress.setInfo(self.tr("Layer's data provider does not support "
-                                     "spatial indexes"))
+            feedback.pushInfo(self.tr("Layer's data provider does not support "
+                                      "spatial indexes"))
 
         self.setOutputValue(self.OUTPUT, fileName)

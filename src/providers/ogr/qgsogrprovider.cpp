@@ -22,7 +22,7 @@ email                : sherman at mrcc.com
 #include "qgslocalec.h"
 #include "qgsfeedback.h"
 
-#define CPL_SUPRESS_CPLUSPLUS
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information
 #include <ogr_api.h>
 #include <ogr_srs_api.h>

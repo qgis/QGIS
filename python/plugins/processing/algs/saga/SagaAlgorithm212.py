@@ -124,7 +124,7 @@ class SagaAlgorithm212(GeoAlgorithm):
                     self.addOutput(getOutputFromString(line))
                 line = lines.readline().strip('\n').strip()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = list()
         self.exportedLayers = {}
 
@@ -257,11 +257,11 @@ class SagaAlgorithm212(GeoAlgorithm):
         loglines = []
         loglines.append(self.tr('SAGA execution commands'))
         for line in commands:
-            progress.setCommand(line)
+            feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(SagaUtils.SAGA_LOG_COMMANDS):
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
-        SagaUtils.executeSaga(progress)
+        SagaUtils.executeSaga(feedback)
 
         if self.crs is not None:
             for out in self.outputs:

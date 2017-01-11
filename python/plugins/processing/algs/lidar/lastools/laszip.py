@@ -52,7 +52,7 @@ class laszip(LAStoolsAlgorithm):
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip.exe")]
         else:
@@ -68,4 +68,4 @@ class laszip(LAStoolsAlgorithm):
         self.addParametersPointOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

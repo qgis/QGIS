@@ -59,7 +59,7 @@ class SnapGeometriesToLayer(GeoAlgorithm):
             self.modes, default=0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Snapped geometries')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         reference_layer = dataobjects.getObjectFromUri(self.getParameterValue(self.REFERENCE_LAYER))
         tolerance = self.getParameterValue(self.TOLERANCE)
@@ -71,7 +71,7 @@ class SnapGeometriesToLayer(GeoAlgorithm):
         features = vector.features(layer)
 
         self.processed = 0
-        self.progress = progress
+        self.feedback = feedback
         self.total = 100.0 / len(features)
 
         snapper = QgsGeometrySnapper(reference_layer)
@@ -84,4 +84,4 @@ class SnapGeometriesToLayer(GeoAlgorithm):
 
     def featureSnapped(self):
         self.processed += 1
-        self.progress.setPercentage(int(self.processed * self.total))
+        self.feedback.setProgress(int(self.processed * self.total))

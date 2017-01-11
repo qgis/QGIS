@@ -108,11 +108,11 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! @note added in 3.0
     bool isVisible() const;
 
-    //! Returns whether a node is checked (independantly of its ancestors or children)
+    //! Returns whether a node is checked (independently of its ancestors or children)
     //! @note added in 3.0
     bool itemVisibilityChecked() const { return mChecked; }
 
-    //! Check or uncheck a node (independantly of its ancestors or children)
+    //! Check or uncheck a node (independently of its ancestors or children)
     //! @note added in 3.0
     void setItemVisibilityChecked( bool checked );
 

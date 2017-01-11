@@ -140,6 +140,22 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_mBtnRemovePluginPath_clicked();
 
     /* Let the user add a path to the list of search paths
+     * used for finding QGIS help. */
+    void on_mBtnAddHelpPath_clicked();
+
+    /* Let the user remove a path from the list of search paths
+     * used for finding QGIS help. */
+    void on_mBtnRemoveHelpPath_clicked();
+
+    /* Let the user move selected path(s) up in the list raising
+     * their priority. */
+    void on_mBtnMoveHelpUp_clicked();
+
+    /* Let the user move selected path(s) down in the list lowering
+     * their priority. */
+    void on_mBtnMoveHelpDown_clicked();
+
+    /* Let the user add a path to the list of search paths
      * used for finding composer template files. */
     void on_mBtnAddTemplatePath_clicked();
 

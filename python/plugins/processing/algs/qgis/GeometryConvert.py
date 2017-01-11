@@ -57,7 +57,7 @@ class GeometryConvert(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Converted')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         index = self.getParameterValue(self.TYPE)
@@ -213,6 +213,6 @@ class GeometryConvert(GeoAlgorithm):
                     raise GeoAlgorithmExecutionException(
                         self.tr('Cannot convert from %s to %s', geomType, newType))
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

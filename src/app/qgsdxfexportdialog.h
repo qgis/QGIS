@@ -62,7 +62,7 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
     void applyVisibilityPreset( const QString &name );
 
     void selectAll();
-    void unSelectAll();
+    void deSelectAll();
 
   private:
     QHash<const QgsVectorLayer *, int> mAttributeIdx;
@@ -93,7 +93,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
   public slots:
     //! Change the selection of layers in the list
     void selectAll();
-    void unSelectAll();
+    void deSelectAll();
 
   private slots:
     void on_mFileSelectionButton_clicked();

@@ -192,7 +192,7 @@ ACCEPTABLE_MISSING_DOCS = {
     "QgsComposerGroupItem": ["QgsComposerGroupItem(const QString &text)"],
     "QgsGraphDirector": ["buildProgress(int, int) const ", "buildMessage(const QString &) const ", "addProperter(QgsArcProperter *prop)"],
     "QgsScaleComboBox": ["QgsScaleComboBox(QWidget *parent=nullptr)", "updateScales(const QStringList &scales=QStringList())"],
-    "QgsLabelingEngine": ["processProvider(QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p)", "Flag"],
+    "QgsLabelingEngine": ["processProvider(QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p)", "Flag"], #spellok
     "QgsSymbolSelectorDialog": ["moveLayerByOffset(int offset)", "QgsSymbolSelectorDialog(QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent=nullptr, bool embedded=false)", "lockLayer()", "moveLayerUp()", "updateUi()", "addLayer()", "moveLayerDown()", "layerChanged()", "loadSymbol()", "setWidget(QWidget *widget)", "updateLayerPreview()", "symbolModified()", "updateLockButton()", "removeLayer()", "currentLayer()", "updatePreview()"],
     "QgsCacheIndexFeatureId": ["QgsCacheIndexFeatureId(QgsVectorLayerCache *)"],
     "QgsSymbolLayerWidget": ["registerDataDefinedButton(QgsDataDefinedButton *button, const QString &propertyName, QgsDataDefinedButton::DataType type, const QString &description)", "setSymbolLayer(QgsSymbolLayer *layer)=0", "updateDataDefinedProperty()", "QgsSymbolLayerWidget(QWidget *parent, const QgsVectorLayer *vl=nullptr)", "symbolLayer()=0"],

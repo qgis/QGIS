@@ -35,7 +35,8 @@ import importlib
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsRasterLayer
+from qgis.core import (QgsRasterLayer,
+                       QgsApplication)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -102,7 +103,7 @@ class Grass7Algorithm(GeoAlgorithm):
 
     def getIcon(self):
         if self._icon is None:
-            self._icon = QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
+            self._icon = QgsApplication.getThemeIcon("/providerGrass.svg")
         return self._icon
 
     def help(self):
@@ -235,7 +236,7 @@ class Grass7Algorithm(GeoAlgorithm):
             cellsize = 100
         return cellsize
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         if system.isWindows():
             path = Grass7Utils.grassPath()
             if path == '':
@@ -285,12 +286,12 @@ class Grass7Algorithm(GeoAlgorithm):
         loglines = []
         loglines.append(self.tr('GRASS GIS 7 execution commands'))
         for line in self.commands:
-            progress.setCommand(line)
+            feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_COMMANDS):
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
-        Grass7Utils.executeGrass7(self.commands, progress, self.outputCommands)
+        Grass7Utils.executeGrass7(self.commands, feedback, self.outputCommands)
 
         for out in self.outputs:
             if isinstance(out, OutputHTML):

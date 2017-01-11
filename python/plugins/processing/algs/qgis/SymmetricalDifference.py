@@ -59,7 +59,7 @@ class SymmetricalDifference(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Symmetrical difference')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layerA = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         layerB = dataobjects.getObjectFromUri(
@@ -103,7 +103,7 @@ class SymmetricalDifference(GeoAlgorithm):
                 continue
 
             count += 1
-            progress.setPercentage(int(count * total))
+            feedback.setProgress(int(count * total))
 
         length = len(layerA.fields())
 
@@ -129,6 +129,6 @@ class SymmetricalDifference(GeoAlgorithm):
                 continue
 
             count += 1
-            progress.setPercentage(int(count * total))
+            feedback.setProgress(int(count * total))
 
         del writer

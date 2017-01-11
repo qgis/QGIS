@@ -75,7 +75,7 @@ class GridPolygon(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         idx = self.getParameterValue(self.TYPE)
         extent = self.getParameterValue(self.EXTENT).split(',')
         hSpacing = self.getParameterValue(self.HSPACING)
@@ -114,18 +114,18 @@ class GridPolygon(GeoAlgorithm):
 
         if idx == 0:
             self._rectangleGrid(
-                writer, width, height, originX, originY, hSpacing, vSpacing, progress)
+                writer, width, height, originX, originY, hSpacing, vSpacing, feedback)
         elif idx == 1:
             self._diamondGrid(
-                writer, width, height, originX, originY, hSpacing, vSpacing, progress)
+                writer, width, height, originX, originY, hSpacing, vSpacing, feedback)
         elif idx == 2:
             self._hexagonGrid(
-                writer, width, height, originX, originY, hSpacing, vSpacing, progress)
+                writer, width, height, originX, originY, hSpacing, vSpacing, feedback)
 
         del writer
 
     def _rectangleGrid(self, writer, width, height, originX, originY,
-                       hSpacing, vSpacing, progress):
+                       hSpacing, vSpacing, feedback):
         ft = QgsFeature()
 
         columns = int(math.ceil(float(width) / hSpacing))
@@ -159,10 +159,10 @@ class GridPolygon(GeoAlgorithm):
                 id += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:
-                    progress.setPercentage(int(count / cells * 100))
+                    feedback.setProgress(int(count / cells * 100))
 
     def _diamondGrid(self, writer, width, height, originX, originY,
-                     hSpacing, vSpacing, progress):
+                     hSpacing, vSpacing, feedback):
         ft = QgsFeature()
 
         halfHSpacing = hSpacing / 2
@@ -205,10 +205,10 @@ class GridPolygon(GeoAlgorithm):
                 id += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:
-                    progress.setPercentage(int(count / cells * 100))
+                    feedback.setProgress(int(count / cells * 100))
 
     def _hexagonGrid(self, writer, width, height, originX, originY,
-                     hSpacing, vSpacing, progress):
+                     hSpacing, vSpacing, feedback):
         ft = QgsFeature()
 
         # To preserve symmetry, hspacing is fixed relative to vspacing
@@ -261,4 +261,4 @@ class GridPolygon(GeoAlgorithm):
                 id += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:
-                    progress.setPercentage(int(count / cells * 100))
+                    feedback.setProgress(int(count / cells * 100))

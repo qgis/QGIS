@@ -58,7 +58,7 @@ class lasviewPro(LAStoolsAlgorithm):
         self.addParametersAdditionalGUI()
         self.addParametersVerboseGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasview")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
@@ -73,4 +73,4 @@ class lasviewPro(LAStoolsAlgorithm):
         if size != 0:
             commands.append("-win " + lasviewPro.SIZES[size])
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

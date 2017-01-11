@@ -89,7 +89,7 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     // TODO: this is not completely kosher, because QgsGrassImport exist on the main thread
     // but import is running in another thread, to do it right, we should have an import object
     // created on another thread, send cancel signal to that object which regularly processes events
-    // and thus recieves the signal.
+    // and thus receives the signal.
     // Most probably however, it will work correctly, even if read/write the bool wasn't atomic
     void cancel();
     void frameChanged() {}

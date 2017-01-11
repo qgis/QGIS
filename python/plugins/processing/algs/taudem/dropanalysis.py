@@ -32,6 +32,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsApplication
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
@@ -55,15 +57,15 @@ class DropAnalysis(GeoAlgorithm):
     D8_FLOW_DIR_GRID = 'D8_FLOW_DIR_GRID'
     ACCUM_STREAM_SOURCE_GRID = 'ACCUM_STREAM_SOURCE_GRID'
     OUTLETS_SHAPE = 'OUTLETS_SHAPE'
-    MIN_TRESHOLD = 'MIN_TRESHOLD'
+    MIN_THRESHOLD = 'MIN_THRESHOLD'
     MAX_THRESHOLD = 'MAX_THRESHOLD'
-    TRESHOLD_NUM = 'TRESHOLD_NUM'
+    THRESHOLD_NUM = 'THRESHOLD_NUM'
     STEP_TYPE = 'STEP_TYPE'
 
     DROP_ANALYSIS_FILE = 'DROP_ANALYSIS_FILE'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
+        return QgsApplication.getThemeIcon("/providerTaudem.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Stream Drop Analysis')
@@ -81,18 +83,18 @@ class DropAnalysis(GeoAlgorithm):
         self.addParameter(ParameterVector(self.OUTLETS_SHAPE,
                                           self.tr('Outlets Shapefile'),
                                           [dataobjects.TYPE_VECTOR_POINT], False))
-        self.addParameter(ParameterNumber(self.MIN_TRESHOLD,
+        self.addParameter(ParameterNumber(self.MIN_THRESHOLD,
                                           self.tr('Minimum Threshold'), 0, None, 5))
         self.addParameter(ParameterNumber(self.MAX_THRESHOLD,
                                           self.tr('Maximum Threshold'), 0, None, 500))
-        self.addParameter(ParameterNumber(self.TRESHOLD_NUM,
+        self.addParameter(ParameterNumber(self.THRESHOLD_NUM,
                                           self.tr('Number of Threshold Values'), 0, None, 10))
         self.addParameter(ParameterBoolean(self.STEP_TYPE,
                                            self.tr('Use logarithmic spacing for threshold values'), True))
         self.addOutput(OutputFile(self.DROP_ANALYSIS_FILE,
                                   self.tr('D-Infinity Drop to Stream Grid')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = []
         commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
@@ -116,11 +118,11 @@ class DropAnalysis(GeoAlgorithm):
         commands.append('-o')
         commands.append(self.getParameterValue(self.OUTLETS_SHAPE))
         commands.append('-par')
-        commands.append(str(self.getParameterValue(self.MIN_TRESHOLD)))
+        commands.append(str(self.getParameterValue(self.MIN_THRESHOLD)))
         commands.append(str(self.getParameterValue(self.MAX_THRESHOLD)))
-        commands.append(str(self.getParameterValue(self.TRESHOLD_NUM)))
+        commands.append(str(self.getParameterValue(self.THRESHOLD_NUM)))
         commands.append(str(self.getParameterValue(self.STEP_TYPE)))
         commands.append('-drp')
         commands.append(self.getOutputValue(self.DROP_ANALYSIS_FILE))
 
-        TauDEMUtils.executeTauDEM(commands, progress)
+        TauDEMUtils.executeTauDEM(commands, feedback)

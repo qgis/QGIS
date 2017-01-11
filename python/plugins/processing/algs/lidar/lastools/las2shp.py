@@ -55,7 +55,7 @@ class las2shp(LAStoolsAlgorithm):
                                     self.tr("Output SHP file")))
         self.addParametersAdditionalGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2shp")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
@@ -68,4 +68,4 @@ class las2shp(LAStoolsAlgorithm):
         commands.append("-o")
         commands.append(self.getOutputValue(las2shp.OUTPUT))
         self.addParametersAdditionalCommands(commands)
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

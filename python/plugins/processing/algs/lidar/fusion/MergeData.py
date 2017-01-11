@@ -47,7 +47,7 @@ class MergeData(FusionAlgorithm):
         self.addOutput(OutputFile(
             self.OUTPUT, self.tr('Output merged LAS file')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'MergeData.exe')]
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
@@ -59,4 +59,4 @@ class MergeData(FusionAlgorithm):
             commands.append(FusionUtils.tempFileListFilepath())
         outFile = self.getOutputValue(self.OUTPUT)
         commands.append(outFile)
-        FusionUtils.runFusion(commands, progress)
+        FusionUtils.runFusion(commands, feedback)

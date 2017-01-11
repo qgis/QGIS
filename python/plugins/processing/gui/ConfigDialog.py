@@ -51,7 +51,8 @@ from qgis.PyQt.QtGui import (QIcon,
 from qgis.gui import (QgsDoubleSpinBox,
                       QgsSpinBox
                       )
-from qgis.core import NULL
+from qgis.core import (NULL,
+                       QgsApplication)
 
 from processing.core.ProcessingConfig import (ProcessingConfig,
                                               settingsWatcher,
@@ -159,7 +160,7 @@ class ConfigDialog(BASE, WIDGET):
         Filter 'Providers' items
         """
         providersItem = QStandardItem(self.tr('Providers'))
-        icon = QIcon(os.path.join(pluginPath, 'images', 'alg.svg'))
+        icon = QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         providersItem.setIcon(icon)
         providersItem.setEditable(False)
         emptyItem = QStandardItem()
@@ -213,9 +214,9 @@ class ConfigDialog(BASE, WIDGET):
 
         providers = Processing.providers
         for provider in providers:
-            providerDescription = provider.getDescription()
+            providerDescription = provider.name()
             groupItem = QStandardItem(providerDescription)
-            icon = provider.getIcon()
+            icon = provider.icon()
             groupItem.setIcon(icon)
             groupItem.setEditable(False)
 

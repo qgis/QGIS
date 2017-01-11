@@ -255,7 +255,7 @@ ASBeautifier::~ASBeautifier()
  *
  * init() should be called every time a ABeautifier object is to start
  * beautifying a NEW source file.
- * init() recieves a pointer to a DYNAMICALLY CREATED ASSourceIterator object
+ * init() receives a pointer to a DYNAMICALLY CREATED ASSourceIterator object
  * that will be used to iterate through the source code. This object will be
  * deleted during the ASBeautifier's destruction, and thus should not be
  * deleted elsewhere.

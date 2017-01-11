@@ -45,7 +45,7 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
                                           self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
 
@@ -60,7 +60,7 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
         geoms = dict()
         for current, f in enumerate(features):
             geoms[f.id()] = f.geometry()
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         cleaned = dict(geoms)
 
@@ -75,6 +75,6 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
         request = QgsFeatureRequest().setFilterFids(list(cleaned.keys()))
         for current, f in enumerate(layer.getFeatures(request)):
             writer.addFeature(f)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

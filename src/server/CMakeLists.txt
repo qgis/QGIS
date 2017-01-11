@@ -14,6 +14,8 @@ IF (ENABLE_TESTS)
    ADD_DEFINITIONS(-DENABLE_MS_TESTS=1)
 ENDIF (ENABLE_TESTS)
 
+ADD_SUBDIRECTORY(services)
+
 ########################################################
 # Files
 
@@ -21,12 +23,8 @@ SET ( qgis_mapserv_SRCS
   qgis_map_serv.cpp
   qgscapabilitiescache.cpp
   qgsconfigcache.cpp
-  qgshttprequesthandler.cpp
-#  qgshttptransaction.cpp
-  qgsgetrequesthandler.cpp
-  qgspostrequesthandler.cpp
+  qgsrequesthandler.cpp
   qgsowsserver.cpp
-  qgswmsserver.cpp
   qgswfsserver.cpp
   qgswcsserver.cpp
   qgsmapserviceexception.cpp
@@ -49,6 +47,16 @@ SET ( qgis_mapserv_SRCS
   qgssldconfigparser.cpp
   qgsconfigparserutils.cpp
   qgsserver.cpp
+  qgsservice.cpp
+  qgsservicemodule.cpp
+  qgsservicenativeloader.cpp
+  qgsserviceregistry.cpp
+  qgsserverrequest.cpp
+  qgsserverresponse.cpp
+  qgsfcgiserverresponse.cpp
+  qgsbufferserverresponse.cpp
+  qgsfilterresponsedecorator.cpp
+#----------------------------
 )
 IF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
   SET (qgis_mapserv_SRCS ${qgis_mapserv_SRCS}

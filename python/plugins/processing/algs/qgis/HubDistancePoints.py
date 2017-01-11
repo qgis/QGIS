@@ -75,7 +75,7 @@ class HubDistancePoints(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layerPoints = dataobjects.getObjectFromUri(
             self.getParameterValue(self.POINTS))
         layerHubs = dataobjects.getObjectFromUri(
@@ -134,6 +134,6 @@ class HubDistancePoints(GeoAlgorithm):
             feat.setGeometry(QgsGeometry.fromPoint(src))
 
             writer.addFeature(feat)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

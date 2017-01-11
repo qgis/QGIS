@@ -132,7 +132,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
 
   // WFS 2.0 implementation are supposed to implement resultType=hits, and some
   // implementations (GeoServer) might advertize it, whereas others (MapServer) do not.
-  // WFS 1.1 implementation too I think, but in the examples of the GetCapabilites
+  // WFS 1.1 implementation too I think, but in the examples of the GetCapabilities
   // response of the WFS 1.1 standard (and in common implementations), this is
   // explictly advertized
   if ( mCaps.version.startsWith( QLatin1String( "2.0" ) ) )

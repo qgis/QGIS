@@ -43,7 +43,6 @@ from qgis.PyQt.QtWidgets import (QMenu,
 from qgis.core import QgsApplication
 from qgis.utils import iface
 
-from processing.core.alglist import algList
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.algs.r.RAlgorithm import RAlgorithm
@@ -279,10 +278,10 @@ class ScriptEditorDialog(BASE, WIDGET):
     def runAlgorithm(self):
         if self.algType == self.SCRIPT_PYTHON:
             alg = ScriptAlgorithm(None, self.editor.text())
-            alg.provider = algList.getProviderFromName('script')
+            alg.provider = QgsApplication.processingRegistry().providerById('script')
         if self.algType == self.SCRIPT_R:
             alg = RAlgorithm(None, self.editor.text())
-            alg.provider = algList.getProviderFromName('r')
+            alg.provider = QgsApplication.processingRegistry().providerById('r')
 
         dlg = alg.getCustomParametersDialog()
         if not dlg:

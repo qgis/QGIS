@@ -48,7 +48,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="unselectAllLabel">
+          <widget class="QLabel" name="deselectAllLabel">
            <property name="text">
             <string>&lt;a href='#'&gt;None&lt;/a&gt;</string>
            </property>

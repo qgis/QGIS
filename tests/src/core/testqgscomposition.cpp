@@ -30,6 +30,7 @@
 
 #include <QObject>
 #include "qgstest.h"
+#include "qgstestutils.h"
 
 class TestQgsComposition : public QObject
 {
@@ -55,6 +56,7 @@ class TestQgsComposition : public QObject
     void resizeToContentsMultiPage();
     void georeference();
     void variablesEdited();
+    void itemVariablesFunction();
 
   private:
     QgsComposition *mComposition;
@@ -597,6 +599,44 @@ void TestQgsComposition::variablesEdited()
   QVERIFY( spyVariablesChanged.count() == 1 );
   c.setCustomProperty( QStringLiteral( "variableValues" ), "1" );
   QVERIFY( spyVariablesChanged.count() == 2 );
+}
+
+void TestQgsComposition::itemVariablesFunction()
+{
+  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  QgsMapSettings ms;
+  ms.setExtent( extent );
+  QgsComposition* composition = new QgsComposition( ms, QgsProject::instance() );
+
+  QgsExpression e( "map_get( item_variables( 'map_id' ), 'map_scale' )" );
+  // no map
+  QgsExpressionContext c = composition->createExpressionContext();
+  QVariant r = e.evaluate( &c );
+  QVERIFY( !r.isValid() );
+
+  QgsComposerMap* map = new QgsComposerMap( composition );
+  map->setNewExtent( extent );
+  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
+  composition->addComposerMap( map );
+  map->setId( "map_id" );
+
+  c = composition->createExpressionContext();
+  r = e.evaluate( &c );
+  QGSCOMPARENEAR( r.toDouble(), 1.38916e+08, 100 );
+
+  QgsExpression e2( "map_get( item_variables( 'map_id' ), 'map_crs' )" );
+  r = e2.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "EPSG:4326" ) );
+
+  QgsExpression e3( "map_get( item_variables( 'map_id' ), 'map_crs_definition' )" );
+  r = e3.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  QgsExpression e4( "map_get( item_variables( 'map_id' ), 'map_units' )" );
+  r = e4.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "degrees" ) );
+
+  delete composition;
 }
 
 QGSTEST_MAIN( TestQgsComposition )

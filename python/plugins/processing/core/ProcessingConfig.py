@@ -31,7 +31,8 @@ import os
 
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QObject, pyqtSignal
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import NULL
+from qgis.core import (NULL,
+                       QgsApplication)
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 
@@ -64,14 +65,15 @@ class ProcessingConfig(object):
     WARN_UNMATCHING_EXTENT_CRS = 'WARN_UNMATCHING_EXTENT_CRS'
     DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DEFAULT_OUTPUT_RASTER_LAYER_EXT'
     DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DEFAULT_OUTPUT_VECTOR_LAYER_EXT'
-    SHOW_PROVIDERS_TOOLTIP = "SHOW_PROVIDERS_TOOLTIP"
+    SHOW_PROVIDERS_TOOLTIP = 'SHOW_PROVIDERS_TOOLTIP'
+    MODELS_SCRIPTS_REPO = 'MODELS_SCRIPTS_REPO'
 
     settings = {}
     settingIcons = {}
 
     @staticmethod
     def initialize():
-        icon = QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
+        icon = QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         ProcessingConfig.settingIcons['General'] = icon
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
@@ -156,6 +158,11 @@ class ProcessingConfig(object):
             ProcessingConfig.tr('General'),
             ProcessingConfig.RECENT_ALGORITHMS,
             ProcessingConfig.tr('Recent algorithms'), '', hidden=True))
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.MODELS_SCRIPTS_REPO,
+            ProcessingConfig.tr('Scripts and models repository'),
+            'https://raw.githubusercontent.com/qgis/QGIS-Processing/master'))
         extensions = processing.tools.dataobjects.getSupportedOutputVectorLayerExtensions()
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
@@ -176,11 +183,11 @@ class ProcessingConfig(object):
     @staticmethod
     def getGroupIcon(group):
         if group == ProcessingConfig.tr('General'):
-            return QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
+            return QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         if group in ProcessingConfig.settingIcons:
             return ProcessingConfig.settingIcons[group]
         else:
-            return QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
+            return QgsApplication.getThemeIcon("/processingAlgorithm.svg")
 
     @staticmethod
     def addSetting(setting):

@@ -72,13 +72,13 @@ class ProcessingPlugin(object):
         self.toolboxAction = self.toolbox.toggleViewAction()
         self.toolboxAction.setObjectName('toolboxAction')
         self.toolboxAction.setIcon(
-            QIcon(os.path.join(cmd_folder, 'images', 'alg.svg')))
+            QgsApplication.getThemeIcon("/processingAlgorithm.svg"))
         self.toolboxAction.setText(self.tr('&Toolbox'))
         self.iface.registerMainWindowAction(self.toolboxAction, 'Ctrl+Alt+T')
         self.menu.addAction(self.toolboxAction)
 
         self.modelerAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'model.svg')),
+            QgsApplication.getThemeIcon("/processingModel.svg"),
             self.tr('Graphical &Modeler...'), self.iface.mainWindow())
         self.modelerAction.setObjectName('modelerAction')
         self.modelerAction.triggered.connect(self.openModeler)

@@ -32,6 +32,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsApplication
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -68,7 +70,7 @@ class DinfDistDown(GeoAlgorithm):
     }
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
+        return QgsApplication.getThemeIcon("/providerTaudem.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('D-Infinity Distance Down')
@@ -93,7 +95,7 @@ class DinfDistDown(GeoAlgorithm):
         self.addOutput(OutputRaster(self.DIST_DOWN_GRID,
                                     self.tr('D-Infinity Drop to Stream Grid')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = []
         commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
@@ -126,4 +128,4 @@ class DinfDistDown(GeoAlgorithm):
         commands.append('-dd')
         commands.append(self.getOutputValue(self.DIST_DOWN_GRID))
 
-        TauDEMUtils.executeTauDEM(commands, progress)
+        TauDEMUtils.executeTauDEM(commands, feedback)
