@@ -52,7 +52,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     //! @note symbol2 in python bindings
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
     virtual QString dump() const override;
-    virtual QSet<QString> usedAttributes() const override;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
     static QgsFeatureRenderer* create( QDomElement& element );
     virtual QDomElement save( QDomDocument& doc ) override;
     static QgsHeatmapRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer );

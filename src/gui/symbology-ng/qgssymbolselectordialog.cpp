@@ -20,7 +20,6 @@
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbollayerregistry.h"
-#include "qgsdatadefined.h"
 
 // the widgets
 #include "qgssymbolslistwidget.h"
@@ -59,19 +58,19 @@ DataDefinedRestorer::DataDefinedRestorer( QgsSymbol* symbol, const QgsSymbolLaye
     Q_ASSERT( symbol->type() == QgsSymbol::Marker );
     mMarker = static_cast<QgsMarkerSymbol*>( symbol );
     mMarkerSymbolLayer = static_cast<const QgsMarkerSymbolLayer*>( symbolLayer );
-    mDDSize = mMarker->dataDefinedSize();
-    mDDAngle = mMarker->dataDefinedAngle();
+    mDDSize.reset( mMarker->dataDefinedSize() );
+    mDDAngle.reset( mMarker->dataDefinedAngle() );
     // check if restore is actually needed
-    if ( mDDSize == QgsDataDefined() && mDDAngle == QgsDataDefined() )
+    if ( !mDDSize && !mDDAngle )
       mMarker = nullptr;
   }
   else if ( symbolLayer->type() == QgsSymbol::Line && symbol->type() == QgsSymbol::Line )
   {
     mLine = static_cast<QgsLineSymbol*>( symbol );
     mLineSymbolLayer = static_cast<const QgsLineSymbolLayer*>( symbolLayer );
-    mDDWidth = mLine->dataDefinedWidth();
+    mDDWidth.reset( mLine->dataDefinedWidth() );
     // check if restore is actually needed
-    if ( mDDWidth == QgsDataDefined() )
+    if ( !mDDWidth )
       mLine = nullptr;
   }
   save();
@@ -96,18 +95,18 @@ void DataDefinedRestorer::restore()
 {
   if ( mMarker )
   {
-    if ( mDDSize != QgsDataDefined() &&
+    if ( mDDSize &&
          ( mSize != mMarkerSymbolLayer->size() || mMarkerOffset != mMarkerSymbolLayer->offset() ) )
-      mMarker->setDataDefinedSize( mDDSize );
-    if ( mDDAngle != QgsDataDefined() &&
+      mMarker->setDataDefinedSize( mDDSize->clone() );
+    if ( mDDAngle &&
          mAngle != mMarkerSymbolLayer->angle() )
-      mMarker->setDataDefinedAngle( mDDAngle );
+      mMarker->setDataDefinedAngle( mDDAngle->clone() );
   }
   else if ( mLine )
   {
-    if ( mDDWidth != QgsDataDefined() &&
+    if ( mDDWidth &&
          ( mWidth != mLineSymbolLayer->width() || mLineOffset != mLineSymbolLayer->offset() ) )
-      mLine->setDataDefinedWidth( mDDWidth );
+      mLine->setDataDefinedWidth( mDDWidth->clone() );
   }
   save();
 }
@@ -508,15 +507,15 @@ void QgsSymbolSelectorWidget::addLayer()
   QgsSymbol* parentSymbol = item->symbol();
 
   // save data-defined values at marker level
-  QgsDataDefined ddSize = parentSymbol->type() == QgsSymbol::Marker
-                          ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedSize()
-                          : QgsDataDefined();
-  QgsDataDefined ddAngle = parentSymbol->type() == QgsSymbol::Marker
-                           ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedAngle()
-                           : QgsDataDefined();
-  QgsDataDefined ddWidth = parentSymbol->type() == QgsSymbol::Line
-                           ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth()
-                           : QgsDataDefined() ;
+  QScopedPointer< QgsAbstractProperty > ddSize( parentSymbol->type() == QgsSymbol::Marker
+      ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedSize()
+      : nullptr );
+  QScopedPointer< QgsAbstractProperty > ddAngle( parentSymbol->type() == QgsSymbol::Marker
+      ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedAngle()
+      : nullptr );
+  QScopedPointer< QgsAbstractProperty > ddWidth( parentSymbol->type() == QgsSymbol::Line
+      ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth()
+      : nullptr );
 
   QgsSymbolLayer* newLayer = QgsApplication::symbolLayerRegistry()->defaultSymbolLayer( parentSymbol->type() );
   if ( insertIdx == -1 )
@@ -525,12 +524,12 @@ void QgsSymbolSelectorWidget::addLayer()
     parentSymbol->insertSymbolLayer( item->rowCount() - insertIdx, newLayer );
 
   // restore data-defined values at marker level
-  if ( ddSize != QgsDataDefined() )
-    static_cast<QgsMarkerSymbol *>( parentSymbol )->setDataDefinedSize( ddSize );
-  if ( ddAngle != QgsDataDefined() )
-    static_cast<QgsMarkerSymbol *>( parentSymbol )->setDataDefinedAngle( ddAngle );
-  if ( ddWidth != QgsDataDefined() )
-    static_cast<QgsLineSymbol *>( parentSymbol )->setDataDefinedWidth( ddWidth );
+  if ( ddSize )
+    static_cast<QgsMarkerSymbol *>( parentSymbol )->setDataDefinedSize( ddSize.take() );
+  if ( ddAngle )
+    static_cast<QgsMarkerSymbol *>( parentSymbol )->setDataDefinedAngle( ddAngle.take() );
+  if ( ddWidth )
+    static_cast<QgsLineSymbol *>( parentSymbol )->setDataDefinedWidth( ddWidth.take() );
 
   SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer );
   item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );

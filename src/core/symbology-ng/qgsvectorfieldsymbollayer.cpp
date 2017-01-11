@@ -281,9 +281,9 @@ void QgsVectorFieldSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext& context
   }
 }
 
-QSet<QString> QgsVectorFieldSymbolLayer::usedAttributes() const
+QSet<QString> QgsVectorFieldSymbolLayer::usedAttributes( const QgsRenderContext& context ) const
 {
-  QSet<QString> attributes = QgsMarkerSymbolLayer::usedAttributes();
+  QSet<QString> attributes = QgsMarkerSymbolLayer::usedAttributes( context );
   if ( !mXAttribute.isEmpty() )
   {
     attributes.insert( mXAttribute );
@@ -294,7 +294,7 @@ QSet<QString> QgsVectorFieldSymbolLayer::usedAttributes() const
   }
   if ( mLineSymbol )
   {
-    attributes.unite( mLineSymbol->usedAttributes() );
+    attributes.unite( mLineSymbol->usedAttributes( context ) );
   }
   return attributes;
 }

@@ -497,84 +497,84 @@
     </layout>
    </item>
    <item row="0" column="2">
-    <widget class="QgsDataDefinedButton" name="mFillColorDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mFillColorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QgsDataDefinedButton" name="mBorderColorDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mBorderColorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="2" column="2">
-    <widget class="QgsDataDefinedButton" name="mSymbolWidthDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mSymbolWidthDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="3" column="2">
-    <widget class="QgsDataDefinedButton" name="mSymbolHeightDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mSymbolHeightDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="4" column="2">
-    <widget class="QgsDataDefinedButton" name="mOutlineStyleDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mOutlineStyleDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="5" column="2">
-    <widget class="QgsDataDefinedButton" name="mJoinStyleDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mJoinStyleDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="6" column="2">
-    <widget class="QgsDataDefinedButton" name="mOutlineWidthDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mOutlineWidthDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="7" column="2">
-    <widget class="QgsDataDefinedButton" name="mRotationDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mRotationDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="8" column="2">
-    <widget class="QgsDataDefinedButton" name="mOffsetDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mOffsetDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="9" column="2">
-    <widget class="QgsDataDefinedButton" name="mVerticalAnchorDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mVerticalAnchorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="10" column="2">
-    <widget class="QgsDataDefinedButton" name="mHorizontalAnchorDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mHorizontalAnchorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="11" column="2">
-    <widget class="QgsDataDefinedButton" name="mShapeDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mShapeDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -590,9 +590,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsDataDefinedButtonV2</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgsdatadefinedbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>

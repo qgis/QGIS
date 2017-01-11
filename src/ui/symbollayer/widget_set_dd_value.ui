@@ -22,7 +22,7 @@
     </widget>
    </item>
    <item row="0" column="2">
-    <widget class="QgsDataDefinedButton" name="mDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -49,9 +49,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsDataDefinedButtonV2</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgsdatadefinedbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>

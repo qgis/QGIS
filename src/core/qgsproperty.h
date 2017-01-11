@@ -79,7 +79,7 @@ class CORE_EXPORT QgsAbstractProperty
     /**
      * Returns a clone of the property.
      */
-    virtual QgsAbstractProperty* clone() = 0;
+    virtual QgsAbstractProperty* clone() const = 0;
 
     /**
      * Returns whether the property is currently active.
@@ -92,6 +92,12 @@ class CORE_EXPORT QgsAbstractProperty
      * @see isActive()
      */
     void setActive( bool active ) { mActive = active; }
+
+    /**
+     * Returns an expression string representing the state of the property, or an empty
+     * string if the property could not be converted to an expression
+     */
+    virtual QString asExpression() const = 0;
 
     /**
      * Prepares the property against a specified expression context. Calling prepare before evaluating the
@@ -112,6 +118,7 @@ class CORE_EXPORT QgsAbstractProperty
      * in the expression context can be used to alter the calculated value for the property, so that a property
      * is able to respond to the current environment, layers and features within QGIS.
      * @param defaultValue default value to return if the property is not active or cannot be calculated
+     * @param ok if specified, will be set to true if conversion was successful
      * @returns calculated value for property
      * @see valueAsColor()
      * @see valueAsDouble()
@@ -120,48 +127,64 @@ class CORE_EXPORT QgsAbstractProperty
     QVariant value( const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const;
 
     /**
+     * Calculates the current value of the property and interprets it as a string.
+     * @param context QgsExpressionContext to evaluate the property for.
+     * @param defaultString default string to return if the property cannot be calculated as a string
+     * @param ok if specified, will be set to true if conversion was successful
+     * @returns value parsed to string
+     * @see value()
+     * @see valueAsDouble()
+     * @see valueAsInt()
+     */
+    QString valueAsString( const QgsExpressionContext& context, const QString& defaultString = QString(), bool* ok = nullptr ) const;
+
+    /**
      * Calculates the current value of the property and interprets it as a color.
      * @param context QgsExpressionContext to evaluate the property for.
      * @param defaultColor default color to return if the property cannot be calculated as a color
+     * @param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to color
      * @see value()
      * @see valueAsDouble()
      * @see valueAsInt()
      */
-    QColor valueAsColor( const QgsExpressionContext& context, const QColor& defaultColor = QColor() ) const;
+    QColor valueAsColor( const QgsExpressionContext& context, const QColor& defaultColor = QColor(), bool* ok = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a double.
      * @param context QgsExpressionContext to evaluate the property for.
      * @param defaultValue default double to return if the property cannot be calculated as a double
+     * @param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to double
      * @see value()
      * @see valueAsInt()
      * @see valueAsColor()
      */
-    double valueAsDouble( const QgsExpressionContext& context, double defaultValue = 0.0 ) const;
+    double valueAsDouble( const QgsExpressionContext& context, double defaultValue = 0.0, bool* ok = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as an integer.
      * @param context QgsExpressionContext to evaluate the property for.
      * @param defaultValue default integer to return if the property cannot be calculated as an integer
+     * @param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to integer
      * @see value()
      * @see valueAsDouble()
      * @see valueAsColor()
      */
-    int valueAsInt( const QgsExpressionContext& context, int defaultValue = 0 ) const;
+    int valueAsInt( const QgsExpressionContext& context, int defaultValue = 0, bool* ok = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as an boolean.
      * @param context QgsExpressionContext to evaluate the property for.
      * @param defaultValue default boolean to return if the property cannot be calculated as an boolean
+     * @param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to boolean
      * @see value()
      * @see valueAsDouble()
      * @see valueAsColor()
      */
-    bool valueAsBool( const QgsExpressionContext& context, bool defaultValue = false ) const;
+    bool valueAsBool( const QgsExpressionContext& context, bool defaultValue = false, bool* ok = nullptr ) const;
 
     /**
      * Writes the current state of the property into an XML element
@@ -234,7 +257,9 @@ class CORE_EXPORT QgsStaticProperty : public QgsAbstractProperty
 
     virtual Type propertyType() const override { return StaticProperty; }
 
-    virtual QgsStaticProperty* clone() override;
+    virtual QgsStaticProperty* clone() const override;
+
+    virtual QString asExpression() const override { return QgsExpression::quotedValue( mValue ); }
 
     /**
      * Sets the static value for the property.
@@ -278,7 +303,7 @@ class CORE_EXPORT QgsFieldBasedProperty : public QgsAbstractProperty
      * @param field field name
      * @param isActive whether the property is intially active
      */
-    QgsFieldBasedProperty( const QString& field = QString(), bool isActive = false );
+    QgsFieldBasedProperty( const QString& field = QString(), bool isActive = true );
 
     /**
      * Copy constructor
@@ -289,7 +314,8 @@ class CORE_EXPORT QgsFieldBasedProperty : public QgsAbstractProperty
 
     virtual Type propertyType() const override { return FieldBasedProperty; }
 
-    virtual QgsFieldBasedProperty* clone() override;
+    virtual QgsFieldBasedProperty* clone() const override;
+    virtual QString asExpression() const override { return QgsExpression::quotedColumnRef( mField ); }
 
     /**
      * Sets the field name the property references.
@@ -336,11 +362,12 @@ class CORE_EXPORT QgsExpressionBasedProperty : public QgsAbstractProperty
      * @param expression expression string
      * @param isActive whether the property is intially active
      */
-    QgsExpressionBasedProperty( const QString& expression = QString(), bool isActive = false );
+    QgsExpressionBasedProperty( const QString& expression = QString(), bool isActive = true );
 
     virtual Type propertyType() const override { return ExpressionBasedProperty; }
 
-    virtual QgsExpressionBasedProperty* clone() override;
+    virtual QgsExpressionBasedProperty* clone() const override;
+    virtual QString asExpression() const override { return mExpressionString; }
 
     /**
      * Sets the expression to use for the property value.

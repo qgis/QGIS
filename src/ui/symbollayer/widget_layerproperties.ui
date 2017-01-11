@@ -84,7 +84,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsDataDefinedButton" name="mEnabledDDBtn">
+      <widget class="QgsDataDefinedButtonV2" name="mEnabledDDBtn">
        <property name="text">
         <string>...</string>
        </property>
@@ -125,9 +125,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsDataDefinedButtonV2</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgsdatadefinedbuttonv2.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

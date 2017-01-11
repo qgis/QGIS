@@ -21,7 +21,6 @@
 #include "qgsmapcanvas.h"
 #include "qgspanelwidget.h"
 #include "qgsproject.h"
-#include "qgsdatadefined.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -286,15 +285,13 @@ QgsDataDefinedValueDialog::QgsDataDefinedValueDialog( const QList<QgsSymbol*>& s
   setupUi( this );
   setWindowFlags( Qt::WindowStaysOnTopHint );
   mLabel->setText( label );
-  connect( mDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( dataDefinedChanged() ) );
-  connect( mDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( dataDefinedChanged() ) );
-
+  connect( mDDBtn, &QgsDataDefinedButtonV2::changed, this, &QgsDataDefinedValueDialog::dataDefinedChanged );
 }
 
 void QgsDataDefinedValueDialog::setContext( const QgsSymbolWidgetContext& context )
 {
   mContext = context;
-  Q_FOREACH ( QgsDataDefinedButton* ddButton, findChildren<QgsDataDefinedButton*>() )
+  Q_FOREACH ( QgsDataDefinedButtonV2* ddButton, findChildren<QgsDataDefinedButtonV2*>() )
   {
     if ( ddButton->assistant() )
       ddButton->assistant()->setMapCanvas( context.mapCanvas() );
@@ -336,8 +333,9 @@ QgsExpressionContext QgsDataDefinedValueDialog::createExpressionContext() const
 
 void QgsDataDefinedValueDialog::init( const QString& description )
 {
-  QgsDataDefined dd = symbolDataDefined();
-  mDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, description );
+  QScopedPointer< QgsAbstractProperty > dd( symbolDataDefined() );
+
+  mDDBtn->init( mLayer, dd.data(), QgsDataDefinedButtonV2::Double, description );
   mDDBtn->registerExpressionContextGenerator( this );
 
   QgsSymbol* initialSymbol = nullptr;
@@ -352,68 +350,71 @@ void QgsDataDefinedValueDialog::init( const QString& description )
   mSpinBox->setEnabled( !mDDBtn->isActive() );
 }
 
-QgsDataDefined QgsDataDefinedValueDialog::symbolDataDefined() const
+QgsAbstractProperty* QgsDataDefinedValueDialog::symbolDataDefined() const
 {
   if ( mSymbolList.isEmpty() || !mSymbolList.back() )
-    return QgsDataDefined();
+    return nullptr;
 
   // check that all symbols share the same size expression
-  QgsDataDefined dd = symbolDataDefined( mSymbolList.back() );
+  QgsAbstractProperty* dd = symbolDataDefined( mSymbolList.back() );
   Q_FOREACH ( QgsSymbol * it, mSymbolList )
   {
-    if ( !it || symbolDataDefined( it ) != dd )
-      return QgsDataDefined();
+    QScopedPointer< QgsAbstractProperty > symbolDD( symbolDataDefined( it ) );
+    if ( !it || !dd || !symbolDD || symbolDD->asExpression() != dd->asExpression() )
+      return nullptr;
   }
   return dd;
 }
 
 void QgsDataDefinedValueDialog::dataDefinedChanged()
 {
-  QgsDataDefined dd = mDDBtn->currentDataDefined();
-  mSpinBox->setEnabled( !dd.isActive() );
+  QScopedPointer< QgsAbstractProperty > dd( mDDBtn->toProperty() );
+  mSpinBox->setEnabled( !dd->isActive() );
+
+  QScopedPointer< QgsAbstractProperty > symbolDD( symbolDataDefined() );
 
   if ( // shall we remove datadefined expressions for layers ?
-    ( symbolDataDefined().isActive() && !dd.isActive() )
+    ( symbolDD && symbolDD->isActive() && !dd->isActive() )
     // shall we set the "en masse" expression for properties ?
-    || dd.isActive() )
+    || dd->isActive() )
   {
     Q_FOREACH ( QgsSymbol * it, mSymbolList )
-      setDataDefined( it, dd );
+      setDataDefined( it, dd ? dd->clone() : nullptr );
   }
 }
 
-QgsDataDefined QgsDataDefinedSizeDialog::symbolDataDefined( const QgsSymbol *symbol ) const
+QgsAbstractProperty* QgsDataDefinedSizeDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
   const QgsMarkerSymbol* marker = static_cast<const QgsMarkerSymbol*>( symbol );
   return marker->dataDefinedSize();
 }
 
-void QgsDataDefinedSizeDialog::setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd )
+void QgsDataDefinedSizeDialog::setDataDefined( QgsSymbol* symbol, QgsAbstractProperty* dd )
 {
   static_cast<QgsMarkerSymbol*>( symbol )->setDataDefinedSize( dd );
   static_cast<QgsMarkerSymbol*>( symbol )->setScaleMethod( QgsSymbol::ScaleDiameter );
 }
 
 
-QgsDataDefined QgsDataDefinedRotationDialog::symbolDataDefined( const QgsSymbol *symbol ) const
+QgsAbstractProperty* QgsDataDefinedRotationDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
   const QgsMarkerSymbol* marker = static_cast<const QgsMarkerSymbol*>( symbol );
   return marker->dataDefinedAngle();
 }
 
-void QgsDataDefinedRotationDialog::setDataDefined( QgsSymbol *symbol, const QgsDataDefined &dd )
+void QgsDataDefinedRotationDialog::setDataDefined( QgsSymbol *symbol, QgsAbstractProperty* dd )
 {
   static_cast<QgsMarkerSymbol*>( symbol )->setDataDefinedAngle( dd );
 }
 
 
-QgsDataDefined QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbol *symbol ) const
+QgsAbstractProperty* QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
   const QgsLineSymbol* line = static_cast<const QgsLineSymbol*>( symbol );
   return line->dataDefinedWidth();
 }
 
-void QgsDataDefinedWidthDialog::setDataDefined( QgsSymbol *symbol, const QgsDataDefined &dd )
+void QgsDataDefinedWidthDialog::setDataDefined( QgsSymbol *symbol, QgsAbstractProperty* dd )
 {
   static_cast<QgsLineSymbol*>( symbol )->setDataDefinedWidth( dd );
 }

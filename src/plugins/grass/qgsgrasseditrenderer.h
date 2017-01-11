@@ -38,7 +38,7 @@ class QgsGrassEditRenderer : public QgsFeatureRenderer
 
     virtual void stopRender( QgsRenderContext& context ) override;
 
-    virtual QSet<QString> usedAttributes() const override;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
 
     virtual QgsFeatureRenderer* clone() const override;
 

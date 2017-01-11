@@ -62,7 +62,6 @@ class QgsComposerMultiFrameCommand;
 class QgsVectorLayer;
 class QgsComposer;
 class QgsFillSymbol;
-class QgsDataDefined;
 class QgsComposerModel;
 class QgsPaperItem;
 
@@ -740,22 +739,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     QList< QgsPaperItem* > pages() { return mPages; }
 
-    /** Returns a reference to the data defined settings for one of the composition's data defined properties.
-     * @param property data defined property to return
-     * @note this method was added in version 2.5
-     */
-    QgsDataDefined* dataDefinedProperty( const QgsComposerObject::DataDefinedProperty property );
-
-    /** Sets parameters for a data defined property for the composition
-     * @param property data defined property to set
-     * @param active true if data defined property is active, false if it is disabled
-     * @param useExpression true if the expression should be used
-     * @param expression expression for data defined property
-     * @param field field name if the data defined property should take its value from a field
-     * @note this method was added in version 2.5
-     */
-    void setDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
-
     /** Returns the items model attached to the composition
      * @returns QgsComposerModel for composition
      * @note this method was added in version 2.5
@@ -855,6 +838,25 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     QgsExpressionContext createExpressionContext() const override;
 
+    /** Returns a reference to the composition's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedProperties()
+     */
+    QgsPropertyCollection& dataDefinedProperties() { return mProperties; }
+
+    /** Returns a reference to the composition's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedProperties()
+     */
+    const QgsPropertyCollection& dataDefinedProperties() const { return mProperties; }
+
+    /** Sets the composition's property collection, used for data defined overrides.
+     * @param collection property collection. Existing properties will be replaced.
+     * @note added in QGIS 3.0
+     * @see dataDefinedProperties()
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection& collection ) { mProperties = collection; }
+
   protected:
     void init();
 
@@ -935,10 +937,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     QgsComposerModel * mItemsModel;
 
-    //! Map of data defined properties for the composition to string name to use when exporting composition to xml
-    QMap< QgsComposerObject::DataDefinedProperty, QString > mDataDefinedNames;
-    //! Map of current data defined properties to QgsDataDefined for the composition
-    QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > mDataDefinedProperties;
+    QgsPropertyCollection mProperties;
 
     QgsObjectCustomProperties mCustomProperties;
 
@@ -976,49 +975,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @param context expression context for data defined page sizes
      */
     void refreshPageSize( const QgsExpressionContext* context = nullptr );
-
-    /** Evaluate a data defined property and return the calculated value
-     * @returns true if data defined property could be successfully evaluated
-     * @param property data defined property to evaluate
-     * @param expressionValue QVariant for storing the evaluated value
-     * @param context expression context for evaluating expressions. Must have feature and fields set
-     * to corresponding atlas feature and coverage layer fields prior to calling this method.
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
-     * @note this method was added in version 2.5
-     */
-    bool dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue,
-                              const QgsExpressionContext& context,
-                              QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
-
-    /** Returns whether a data defined property has been set and is currently active.
-     * @param property data defined property to test
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
-     * @note this method was added in version 2.5
-     */
-    bool dataDefinedActive( const QgsComposerObject::DataDefinedProperty property,
-                            const QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const;
-
-    /** Evaluates a data defined property and returns the calculated value.
-     * @param property data defined property to evaluate
-     * @param feature current atlas feature to evaluate property for
-     * @param fields fields from atlas layer
-     * @param context expression context for evaluating expressions (note, must have fields and feature set)
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
-     * @note this method was added in version 2.5
-     */
-    QVariant dataDefinedValue( QgsComposerObject::DataDefinedProperty property, const QgsFeature *feature, const QgsFields& fields,
-                               const QgsExpressionContext& context,
-                               QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const;
-
-
-    /** Prepares the expression for a data defined property.
-     * @param dd data defined to prepare. If no data defined is set, all data defined expressions will be prepared
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
-     * @param context expression context for expression preparation.  Should have fields set to match the current atlas layer if required prior
-     * to calling this method.
-     * @note this method was added in version 2.5
-     */
-    void prepareDataDefinedExpression( QgsDataDefined *dd, QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties, const QgsExpressionContext& context ) const;
 
     /** Check whether any data defined page settings are active.
      * @returns true if any data defined page settings are active.
@@ -1088,7 +1044,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     void variablesChanged();
 
-    friend class QgsComposerObject; //for accessing dataDefinedEvaluate, readDataDefinedPropertyMap and writeDataDefinedPropertyMap
     friend class QgsComposerModel; //for accessing updateZValues (should not be public)
     friend class TestQgsComposition;
 };

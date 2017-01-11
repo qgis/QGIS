@@ -186,11 +186,11 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     void init( const QString& description ); // needed in children ctor to call virtual
 
   private:
-    QgsDataDefined symbolDataDefined() const;
+    QgsAbstractProperty* symbolDataDefined() const;
 
-    virtual QgsDataDefined symbolDataDefined( const QgsSymbol* ) const = 0;
+    virtual QgsAbstractProperty* symbolDataDefined( const QgsSymbol* ) const = 0;
     virtual double value( const QgsSymbol* ) const = 0;
-    virtual void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) = 0;
+    virtual void setDataDefined( QgsSymbol* symbol, QgsAbstractProperty* dd ) = 0;
 
     QList<QgsSymbol*> mSymbolList;
     QgsVectorLayer* mLayer;
@@ -216,11 +216,11 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
     }
 
   protected:
-    QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const override;
+    QgsAbstractProperty* symbolDataDefined( const QgsSymbol * symbol ) const override;
 
     double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsMarkerSymbol*>( symbol )->size(); }
 
-    void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) override;
+    void setDataDefined( QgsSymbol* symbol, QgsAbstractProperty* dd ) override;
 };
 
 /** \ingroup gui
@@ -237,11 +237,11 @@ class GUI_EXPORT QgsDataDefinedRotationDialog : public QgsDataDefinedValueDialog
     }
 
   protected:
-    QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const override;
+    QgsAbstractProperty* symbolDataDefined( const QgsSymbol * symbol ) const override;
 
     double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsMarkerSymbol*>( symbol )->angle(); }
 
-    void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) override;
+    void setDataDefined( QgsSymbol* symbol, QgsAbstractProperty* dd ) override;
 };
 
 /** \ingroup gui
@@ -258,11 +258,11 @@ class GUI_EXPORT QgsDataDefinedWidthDialog : public QgsDataDefinedValueDialog
     }
 
   protected:
-    QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const override;
+    QgsAbstractProperty* symbolDataDefined( const QgsSymbol * symbol ) const override;
 
     double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsLineSymbol*>( symbol )->width(); }
 
-    void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) override;
+    void setDataDefined( QgsSymbol* symbol, QgsAbstractProperty* dd ) override;
 };
 
 

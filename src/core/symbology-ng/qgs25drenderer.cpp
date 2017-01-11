@@ -19,7 +19,7 @@
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
 #include "qgsgloweffect.h"
-#include "qgsdatadefined.h"
+#include "qgsproperty.h"
 
 #define ROOF_EXPRESSION \
   "translate(" \
@@ -96,7 +96,7 @@ Qgs25DRenderer::Qgs25DRenderer()
   setRoofColor( QColor( "#b1a97c" ) );
   setWallColor( QColor( "#777777" ) );
 
-  wallLayer()->setDataDefinedProperty( QStringLiteral( "color" ), new QgsDataDefined( QString( WALL_SHADING_EXPRESSION ) ) );
+  wallLayer()->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, new QgsExpressionBasedProperty( QString( WALL_SHADING_EXPRESSION ) ) );
 
   setShadowSpread( 4 );
   setShadowColor( QColor( "#111111" ) );
@@ -146,9 +146,9 @@ void Qgs25DRenderer::stopRender( QgsRenderContext& context )
   mSymbol->stopRender( context );
 }
 
-QSet<QString> Qgs25DRenderer::usedAttributes() const
+QSet<QString> Qgs25DRenderer::usedAttributes( const QgsRenderContext& context ) const
 {
-  return mSymbol->usedAttributes();
+  return mSymbol->usedAttributes( context );
 }
 
 QgsFeatureRenderer* Qgs25DRenderer::clone() const
@@ -232,12 +232,12 @@ void Qgs25DRenderer::setWallColor( const QColor& wallColor )
 
 void Qgs25DRenderer::setWallShadingEnabled( bool enabled )
 {
-  wallLayer()->getDataDefinedProperty( QStringLiteral( "color" ) )->setActive( enabled );
+  wallLayer()->dataDefinedProperties().property( QgsSymbolLayer::PropertyFillColor )->setActive( enabled );
 }
 
 bool Qgs25DRenderer::wallShadingEnabled()
 {
-  return wallLayer()->getDataDefinedProperty( QStringLiteral( "color" ) )->isActive();
+  return wallLayer()->dataDefinedProperties().property( QgsSymbolLayer::PropertyFillColor )->isActive();
 }
 
 QColor Qgs25DRenderer::roofColor() const

@@ -71,13 +71,13 @@ void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   mCurvedArrowChck->setChecked( mLayer->isCurved() );
   mRepeatArrowChck->setChecked( mLayer->isRepeated() );
 
-  registerDataDefinedButton( mArrowWidthDDBtn, QStringLiteral( "arrow_width" ), QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mArrowStartWidthDDBtn, QStringLiteral( "arrow_start_width" ), QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mHeadWidthDDBtn, QStringLiteral( "head_length" ), QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mHeadHeightDDBtn, QStringLiteral( "head_thickness" ), QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mHeadTypeDDBtn, QStringLiteral( "head_type" ), QgsDataDefinedButton::Int, QgsDataDefinedButton::intDesc() );
-  registerDataDefinedButton( mArrowTypeDDBtn, QStringLiteral( "arrow_type" ), QgsDataDefinedButton::Int, QgsDataDefinedButton::intDesc() );
-  registerDataDefinedButton( mOffsetDDBtn, QStringLiteral( "offset" ), QgsDataDefinedButton::String, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mArrowWidthDDBtn, QgsSymbolLayer::PropertyArrowWidth, QgsDataDefinedButtonV2::Double, QgsDataDefinedButtonV2::doubleDesc() );
+  registerDataDefinedButton( mArrowStartWidthDDBtn, QgsSymbolLayer::PropertyArrowStartWidth, QgsDataDefinedButtonV2::Double, QgsDataDefinedButtonV2::doubleDesc() );
+  registerDataDefinedButton( mHeadWidthDDBtn, QgsSymbolLayer::PropertyArrowHeadLength, QgsDataDefinedButtonV2::Double, QgsDataDefinedButtonV2::doubleDesc() );
+  registerDataDefinedButton( mHeadHeightDDBtn, QgsSymbolLayer::PropertyArrowHeadThickness, QgsDataDefinedButtonV2::Double, QgsDataDefinedButtonV2::doubleDesc() );
+  registerDataDefinedButton( mHeadTypeDDBtn, QgsSymbolLayer::PropertyArrowHeadType, QgsDataDefinedButtonV2::Int, QgsDataDefinedButtonV2::intDesc() );
+  registerDataDefinedButton( mArrowTypeDDBtn, QgsSymbolLayer::PropertyArrowType, QgsDataDefinedButtonV2::Int, QgsDataDefinedButtonV2::intDesc() );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset, QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doubleDesc() );
 }
 
 

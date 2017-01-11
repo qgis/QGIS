@@ -21,7 +21,7 @@
 #include "qgssnappingutils.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
-#include "qgsdatadefined.h"
+#include "qgsproperty.h"
 #include "qgisapp.h"
 
 #include <QGraphicsPixmapItem>
@@ -96,9 +96,10 @@ void QgsMapToolRotatePointSymbols::canvasPressOnFeature( QgsMapMouseEvent *e, co
 bool QgsMapToolRotatePointSymbols::checkSymbolCompatibility( QgsMarkerSymbol* markerSymbol, QgsRenderContext& )
 {
   bool ok = false;
-  if ( markerSymbol->dataDefinedAngle().isActive() && !markerSymbol->dataDefinedAngle().useExpression() )
+  QScopedPointer< QgsAbstractProperty > ddAngle( markerSymbol->dataDefinedAngle() );
+  if ( ddAngle && ddAngle->isActive() && ddAngle->propertyType() == QgsAbstractProperty::FieldBasedProperty )
   {
-    mCurrentRotationAttributes << mActiveLayer->fields().indexFromName( markerSymbol->dataDefinedAngle().field() );
+    mCurrentRotationAttributes << mActiveLayer->fields().indexFromName( static_cast< QgsFieldBasedProperty* >( ddAngle.data() )->field() );
     ok = true;
     if ( mMarkerSymbol.isNull() )
     {
@@ -224,7 +225,7 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsMarkerSymbol* markerSymb
   {
     QgsSymbol* clone = markerSymbol->clone();
     QgsMarkerSymbol* markerClone = static_cast<QgsMarkerSymbol*>( clone );
-    markerClone->setDataDefinedAngle( QgsDataDefined() );
+    markerClone->setDataDefinedAngle( nullptr );
     pointImage = markerClone->bigSymbolPreviewImage();
     delete clone;
   }

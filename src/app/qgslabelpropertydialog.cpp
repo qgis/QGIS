@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslabelpropertydialog.h"
-#include <qgsdatadefined.h>
 #include <qgsfontutils.h>
 #include <qgslogger.h>
 #include "qgsfeatureiterator.h"

@@ -51,7 +51,7 @@
     </widget>
    </item>
    <item row="5" column="4">
-    <widget class="QgsDataDefinedButton" name="mShadeWholeShapeDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mShadeWholeShapeDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -94,14 +94,14 @@
     </layout>
    </item>
    <item row="6" column="4">
-    <widget class="QgsDataDefinedButton" name="mShadeDistanceDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mShadeDistanceDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="2" column="4">
-    <widget class="QgsDataDefinedButton" name="mEndColorDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mEndColorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -184,14 +184,14 @@
     </widget>
    </item>
    <item row="9" column="4">
-    <widget class="QgsDataDefinedButton" name="mBlurRadiusDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mBlurRadiusDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="1" column="4">
-    <widget class="QgsDataDefinedButton" name="mStartColorDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mStartColorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -247,7 +247,7 @@
     </widget>
    </item>
    <item row="8" column="4">
-    <widget class="QgsDataDefinedButton" name="mIgnoreRingsDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mIgnoreRingsDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -404,9 +404,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsDataDefinedButtonV2</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgsdatadefinedbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>

@@ -21,7 +21,7 @@
 #include "qgspainteffectregistry.h"
 #include "qgspainteffect.h"
 #include "qgsmarkersymbollayer.h"
-#include "qgsdatadefined.h"
+#include "qgsproperty.h"
 #include <cmath>
 
 #ifndef M_SQRT2
@@ -40,7 +40,7 @@ QgsPointClusterRenderer::QgsPointClusterRenderer()
   fm->setColor( QColor( 255, 255, 255 ) );
   fm->setSize( 3.2 );
   fm->setOffset( QPointF( 0, -0.4 ) );
-  fm->setDataDefinedProperty( QStringLiteral( "char" ), new QgsDataDefined( true, true, QStringLiteral( "@cluster_size" ) ) );
+  fm->setDataDefinedProperty( QgsSymbolLayer::PropertyCharacter, new QgsExpressionBasedProperty( QStringLiteral( "@cluster_size" ) ) );
   mClusterSymbol->insertSymbolLayer( 1, fm );
 }
 
@@ -157,11 +157,11 @@ QDomElement QgsPointClusterRenderer::save( QDomDocument& doc )
   return rendererElement;
 }
 
-QSet<QString> QgsPointClusterRenderer::usedAttributes() const
+QSet<QString> QgsPointClusterRenderer::usedAttributes( const QgsRenderContext& context ) const
 {
-  QSet<QString> attr = QgsPointDistanceRenderer::usedAttributes();
+  QSet<QString> attr = QgsPointDistanceRenderer::usedAttributes( context );
   if ( mClusterSymbol )
-    attr.unite( mClusterSymbol->usedAttributes() );
+    attr.unite( mClusterSymbol->usedAttributes( context ) );
   return attr;
 }
 

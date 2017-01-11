@@ -18,7 +18,7 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
     //! @note symbol2 in python bindings
     virtual QgsSymbolList symbols( QgsRenderContext& context );
     virtual QString dump() const;
-    virtual QSet<QString> usedAttributes() const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
     static QgsFeatureRenderer* create( QDomElement& element ) /Factory/;
     virtual QDomElement save( QDomDocument& doc );
     static QgsHeatmapRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer ) /Factory/;

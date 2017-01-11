@@ -215,7 +215,7 @@ class QgsSymbol
      * This should include any attributes required by the symbology including
      * the ones required by expressions.
      */
-    QSet<QString> usedAttributes() const;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     /** Returns whether the symbol utilises any data defined properties.
      * @note added in QGIS 2.12
@@ -447,7 +447,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see dataDefinedAngle
      */
-    void setDataDefinedAngle( const QgsDataDefined& dd );
+    void setDataDefinedAngle( QgsAbstractProperty* property /Transfer/ );
 
     /** Returns data defined angle for whole symbol (including all symbol layers).
      * @returns data defined angle, or empty data defined if angle is not set
@@ -455,7 +455,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see setDataDefinedAngle
      */
-    QgsDataDefined dataDefinedAngle() const;
+    QgsAbstractProperty* dataDefinedAngle() const /Factory/;
 
     /** Sets the line angle modification for the symbol's angle. This angle is added to
      * the marker's rotation and data defined rotation before rendering the symbol, and
@@ -524,7 +524,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see dataDefinedSize
      */
-    void setDataDefinedSize( const QgsDataDefined& dd );
+    void setDataDefinedSize( QgsAbstractProperty* property /Transfer/ );
 
     /** Returns data defined size for whole symbol (including all symbol layers).
      * @returns data defined size, or empty data defined if size is not set
@@ -532,7 +532,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see setDataDefinedSize
      */
-    QgsDataDefined dataDefinedSize() const;
+    QgsAbstractProperty* dataDefinedSize() const /Factory/;
 
     void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
     ScaleMethod scaleMethod();
@@ -578,7 +578,7 @@ class QgsLineSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see dataDefinedWidth
      */
-    void setDataDefinedWidth( const QgsDataDefined& dd );
+    void setDataDefinedWidth( QgsAbstractProperty* dd /Transfer/ );
 
     /** Returns data defined size for whole symbol (including all symbol layers).
      * @returns data defined size, or empty data defined if size is not set
@@ -586,7 +586,7 @@ class QgsLineSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see setDataDefinedWidth
      */
-    QgsDataDefined dataDefinedWidth() const;
+    QgsAbstractProperty* dataDefinedWidth() const /Factory/;
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 

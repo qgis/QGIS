@@ -15,7 +15,6 @@
 
 #include "qgsvectorlayerlabelprovider.h"
 
-#include "qgsdatadefined.h"
 #include "qgsgeometry.h"
 #include "qgslabelsearchtree.h"
 #include "qgspallabeling.h"

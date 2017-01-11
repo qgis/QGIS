@@ -124,17 +124,6 @@ void QgsComposerMap::init()
   mGridStack = new QgsComposerMapGridStack( this );
   mOverviewStack = new QgsComposerMapOverviewStack( this );
   connectUpdateSlot();
-
-  // data defined strings
-  mDataDefinedNames.insert( QgsComposerObject::MapRotation, QStringLiteral( "dataDefinedMapRotation" ) );
-  mDataDefinedNames.insert( QgsComposerObject::MapScale, QStringLiteral( "dataDefinedMapScale" ) );
-  mDataDefinedNames.insert( QgsComposerObject::MapXMin, QStringLiteral( "dataDefinedMapXMin" ) );
-  mDataDefinedNames.insert( QgsComposerObject::MapYMin, QStringLiteral( "dataDefinedMapYMin" ) );
-  mDataDefinedNames.insert( QgsComposerObject::MapXMax, QStringLiteral( "dataDefinedMapXMax" ) );
-  mDataDefinedNames.insert( QgsComposerObject::MapYMax, QStringLiteral( "dataDefinedMapYMax" ) );
-  mDataDefinedNames.insert( QgsComposerObject::MapAtlasMargin, QStringLiteral( "dataDefinedMapAtlasMargin" ) );
-  mDataDefinedNames.insert( QgsComposerObject::MapLayers, QStringLiteral( "dataDefinedMapLayers" ) );
-  mDataDefinedNames.insert( QgsComposerObject::MapStylePreset, QStringLiteral( "dataDefinedMapStylePreset" ) );
 }
 
 void QgsComposerMap::updateToolTip()
@@ -529,11 +518,7 @@ QList<QgsMapLayer*> QgsComposerMap::layersToRender( const QgsExpressionContext* 
     QString presetName = mFollowVisibilityPresetName;
 
     // preset name can be overridden by data-defined one
-    QVariant exprVal;
-    if ( dataDefinedEvaluate( QgsComposerObject::MapStylePreset, exprVal, *evalContext ) )
-    {
-      presetName = exprVal.toString();
-    }
+    presetName = mProperties.valueAsString( QgsComposerObject::MapStylePreset, *evalContext, presetName );
 
     if ( mComposition->project()->mapThemeCollection()->hasMapTheme( presetName ) )
       renderLayers = mComposition->project()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
@@ -549,12 +534,13 @@ QList<QgsMapLayer*> QgsComposerMap::layersToRender( const QgsExpressionContext* 
     renderLayers = mComposition->mapSettings().layers();
   }
 
-  QVariant exprVal;
-  if ( dataDefinedEvaluate( QgsComposerObject::MapLayers, exprVal, *evalContext ) )
+  bool ok = false;
+  QString ddLayers = mProperties.valueAsString( QgsComposerObject::MapLayers, *evalContext, QString(), &ok );
+  if ( ok )
   {
     renderLayers.clear();
 
-    QStringList layerNames = exprVal.toString().split( '|' );
+    QStringList layerNames = ddLayers.split( '|' );
     //need to convert layer names to layer ids
     Q_FOREACH ( const QString& name, layerNames )
     {
@@ -590,11 +576,8 @@ QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender( const QgsExp
   {
     QString presetName = mFollowVisibilityPresetName;
 
-    QVariant exprVal;
-    if ( dataDefinedEvaluate( QgsComposerObject::MapStylePreset, exprVal, context ) )
-    {
-      presetName = exprVal.toString();
-    }
+    // data defined preset name?
+    presetName = mProperties.valueAsString( QgsComposerObject::MapStylePreset, context, presetName );
 
     if ( mComposition->project()->mapThemeCollection()->hasMapTheme( presetName ) )
       return mComposition->project()->mapThemeCollection()->mapThemeStyleOverrides( presetName );
@@ -973,49 +956,30 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext* context )
   double maxXD = 0;
   double maxYD = 0;
 
-  if ( dataDefinedEvaluate( QgsComposerObject::MapXMin, exprVal, *evalContext ) )
+  bool ok = false;
+  minXD = mProperties.valueAsDouble( QgsComposerObject::MapXMin, *evalContext, 0.0, &ok );
+  if ( ok )
   {
-    bool ok;
-    minXD = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Map XMin:%1" ).arg( minXD ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      useDdXMin = true;
-      newExtent.setXMinimum( minXD );
-    }
+    useDdXMin = true;
+    newExtent.setXMinimum( minXD );
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::MapYMin, exprVal, *evalContext ) )
+  minYD = mProperties.valueAsDouble( QgsComposerObject::MapYMin, *evalContext, 0.0, &ok );
+  if ( ok )
   {
-    bool ok;
-    minYD = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Map YMin:%1" ).arg( minYD ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      useDdYMin = true;
-      newExtent.setYMinimum( minYD );
-    }
+    useDdYMin = true;
+    newExtent.setYMinimum( minYD );
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::MapXMax, exprVal, *evalContext ) )
+  maxXD = mProperties.valueAsDouble( QgsComposerObject::MapXMax, *evalContext, 0.0, &ok );
+  if ( ok )
   {
-    bool ok;
-    maxXD = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Map XMax:%1" ).arg( maxXD ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      useDdXMax = true;
-      newExtent.setXMaximum( maxXD );
-    }
+    useDdXMax = true;
+    newExtent.setXMaximum( maxXD );
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::MapYMax, exprVal, *evalContext ) )
+  maxYD = mProperties.valueAsDouble( QgsComposerObject::MapYMax, *evalContext, 0.0, &ok );
+  if ( ok )
   {
-    bool ok;
-    maxYD = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Map YMax:%1" ).arg( maxYD ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      useDdYMax = true;
-      newExtent.setYMaximum( maxYD );
-    }
+    useDdYMax = true;
+    newExtent.setYMaximum( maxYD );
   }
 
   if ( newExtent != *currentMapExtent() )
@@ -1050,16 +1014,11 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext* context )
   //now refresh scale, as this potentially overrides extents
 
   //data defined map scale set?
-  if ( dataDefinedEvaluate( QgsComposerObject::MapScale, exprVal, *evalContext ) )
+  double scaleD = mProperties.valueAsDouble( QgsComposerObject::MapScale, *evalContext, 0.0, &ok );
+  if ( ok )
   {
-    bool ok;
-    double scaleD = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Map Scale:%1" ).arg( scaleD ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      setNewScale( scaleD, false );
-      newExtent = *currentMapExtent();
-    }
+    setNewScale( scaleD, false );
+    newExtent = *currentMapExtent();
   }
 
   if ( useDdXMax || useDdXMin || useDdYMax || useDdYMin )
@@ -1101,16 +1060,7 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext* context )
   double mapRotation = mMapRotation;
 
   //data defined map rotation set?
-  if ( dataDefinedEvaluate( QgsComposerObject::MapRotation, exprVal, *evalContext ) )
-  {
-    bool ok;
-    double rotationD = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Map Rotation:%1" ).arg( rotationD ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      mapRotation = rotationD;
-    }
-  }
+  mapRotation = mProperties.valueAsDouble( QgsComposerObject::MapRotation, *evalContext, mapRotation );
 
   if ( !qgsDoubleNear( mEvaluatedMapRotation, mapRotation ) )
   {
@@ -2051,18 +2001,14 @@ double QgsComposerMap::atlasMargin( const QgsComposerObject::PropertyValueType v
 
     //start with user specified margin
     double margin = mAtlasMargin;
-    QVariant exprVal;
     QgsExpressionContext context = createExpressionContext();
-    if ( dataDefinedEvaluate( QgsComposerObject::MapAtlasMargin, exprVal, context ) )
+
+    bool ok = false;
+    double ddMargin = mProperties.valueAsDouble( QgsComposerObject::MapAtlasMargin, context, 0.0, &ok );
+    if ( ok )
     {
-      bool ok;
-      double ddMargin = exprVal.toDouble( &ok );
-      QgsDebugMsg( QString( "exprVal Map Atlas Margin:%1" ).arg( ddMargin ) );
-      if ( ok && !exprVal.isNull() )
-      {
-        //divide by 100 to convert to 0 -> 1.0 range
-        margin = ddMargin / 100;
-      }
+      //divide by 100 to convert to 0 -> 1.0 range
+      margin = ddMargin / 100;
     }
     return margin;
   }

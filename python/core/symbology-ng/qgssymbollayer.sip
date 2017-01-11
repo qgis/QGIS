@@ -65,6 +65,63 @@ class QgsSymbolLayer
 
   public:
 
+    /**
+     * Data definable properties.
+     * @note added in QGIS 3.0
+     */
+    enum Property
+    {
+      PropertySize, //!< Symbol size
+      PropertyAngle, //!< Symbol angle
+      PropertyName, //!< Name, eg shape name for simple markers
+      PropertyFillColor, //!< Fill color
+      PropertyOutlineColor, //!< Outline color
+      PropertyOutlineWidth, //!< Outline width
+      PropertyOutlineStyle, //!< Outline style (eg solid, dashed)
+      PropertyOffset, //!< Symbol offset
+      PropertyCharacter, //!< Character, eg for font marker symbol layers
+      PropertyWidth, //!< Symbol width
+      PropertyHeight, //!< Symbol height
+      PropertyFillStyle, //!< Fill style (eg solid, dots)
+      PropertyJoinStyle, //!< Line join style
+      PropertySecondaryColor, //!< Secondary color (eg for gradient fills)
+      PropertyLineAngle, //!< Line angle
+      PropertyLineDistance, //!< Distance between lines
+      PropertyGradientType, //!< Gradient fill type
+      PropertyCoordinateMode, //!< Gradient coordinate mode
+      PropertyGradientSpread, //!< Gradient spread mode
+      PropertyGradientReference1X, //!< Gradient reference point 1 x
+      PropertyGradientReference1Y, //!< Gradient reference point 1 y
+      PropertyGradientReference2X, //!< Gradient reference point 2 x
+      PropertyGradientReference2Y, //!< Gradient reference point 2 y
+      PropertyGradientReference1IsCentroid, //!< Gradient reference point 1 is centroid
+      PropertyGradientReference2IsCentroid, //!< Gradient reference point 2 is centroid
+      PropertyBlurRadius, //!< Shapeburst blur radius
+      PropertyShapeburstUseWholeShape, //!< Shapeburst use whole shape
+      PropertyShapeburstMaxDistance, //!< Shapeburst fill from edge distance
+      PropertyShapeburstIgnoreRings, //!< Shapeburst ignore rings
+      PropertyFile, //!< Filename, eg for svg files
+      PropertyDistanceX, //!< Horizontal distance between points
+      PropertyDistanceY, //!< Vertical distance between points
+      PropertyDisplacementX, //!< Horizontal displacement
+      PropertyDisplacementY, //!< Vertical displacement
+      PropertyAlpha, //!< Alpha (opacity)
+      PropertyCustomDash, //!< Custom dash pattern
+      PropertyCapStyle, //!< Line cap style
+      PropertyPlacement, //!< Line marker placement
+      PropertyInterval, //!< Line marker interval
+      PropertyOffsetAlongLine, //!< Offset along line
+      PropertyHorizontalAnchor, //!< Horizontal anchor point
+      PropertyVerticalAnchor, //!< Vertical anchor point
+      PropertyLayerEnabled, //!< Whether symbol layer is enabled
+      PropertyArrowWidth, //!< Arrow tail width
+      PropertyArrowStartWidth, //!< Arrow tail start width
+      PropertyArrowHeadLength, //!< Arrow head length
+      PropertyArrowHeadThickness, //!< Arrow head thickness
+      PropertyArrowHeadType, //!< Arrow head type
+      PropertyArrowType, //!< Arrow type
+    };
+
     virtual ~QgsSymbolLayer();
 
     /**
@@ -181,17 +238,7 @@ class QgsSymbolLayer
     /** Returns the set of attributes referenced by the layer. This includes attributes
      * required by any data defined properties associated with the layer.
      */
-    virtual QSet<QString> usedAttributes() const;
-
-    /** Returns the data defined property corresponding to the specified property key
-     * @param property property key
-     * @returns matching data defined property if it exists
-     * @note added in QGIS 2.9
-     * @see setDataDefinedProperty
-     * @see hasDataDefinedProperty
-     * @see evaluateDataDefinedProperty
-     */
-    virtual QgsDataDefined* getDataDefinedProperty( const QString& property ) const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     /** Sets a data defined property for the layer.
      * @param property unique property key. Any existing data defined with the same key will be deleted and overridden.
@@ -200,55 +247,7 @@ class QgsSymbolLayer
      * @see getDataDefinedProperty
      * @see removeDataDefinedProperty
      */
-    virtual void setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined /Transfer/ );
-
-    /** Removes a data defined property from the layer.
-     * @param property unique property key. If an associated QgsDataDefined object exists,
-     * it will be deleted and removed from the layer.
-     * @note added in QGIS 2.9
-     * @see setDataDefinedProperty
-     * @see removeDataDefinedProperties
-     */
-    virtual void removeDataDefinedProperty( const QString& property );
-
-    /** Removes all data defined properties from the layer and deletes associated
-     * objects.
-     * @see removeDataDefinedProperty
-     * @note added in QGIS 2.9
-     */
-    virtual void removeDataDefinedProperties();
-
-    /** Checks whether the layer has any associated data defined properties.
-     * @returns true if layer has data defined properties
-     * @see hasDataDefinedProperty
-     */
-    virtual bool hasDataDefinedProperties() const;
-
-    /** Checks whether the layer has a matching data defined property and if
-     * that property is currently activated.
-     * @param property property key
-     * @returns true if data defined property exists and is active
-     * @see hasDataDefinedProperties
-     * @see evaluateDataDefinedProperty
-     * @see getDataDefinedProperty
-     * @note added in QGIS 2.9
-     */
-    virtual bool hasDataDefinedProperty( const QString& property ) const;
-
-    /** Evaluates the matching data defined property and returns the calculated
-     * value. Prior to evaluation the data defined property must be prepared
-     * by calling @link prepareExpressions @endlink.
-     * @param property property key
-     * @param context symbol render context
-     * @param defaultVal default value to return if evaluation was not successful
-     * @param ok if specified, will be set to true if evaluation was successful
-     * @returns calculated value for data defined property, or default value
-     * if property does not exist or is deactivated.
-     * @see hasDataDefinedProperty
-     * @see getDataDefinedProperty
-     * @note added in QGIS 2.12
-     */
-    virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsSymbolRenderContext& context, const QVariant& defaultVal = QVariant(), bool *ok = 0 ) const;
+    virtual void setDataDefinedProperty( Property key, QgsAbstractProperty* property /Transfer/ );
 
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 
@@ -284,24 +283,35 @@ class QgsSymbolLayer
      */
     virtual void prepareExpressions( const QgsSymbolRenderContext& context );
 
-    //! Data defined layer enabled string
-    static const QString EXPR_LAYER_ENABLED;
+
+    /** Returns a reference to the symbol layer's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setProperties()
+     */
+    QgsPropertyCollection& dataDefinedProperties();
+
+    /** Returns a reference to the symbol layer's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setProperties()
+     */
+    //const QgsPropertyCollection& dataDefinedProperties() const { return mProperties; }
+
+    /** Sets the symbol layer's property collection, used for data defined overrides.
+     * @param collection property collection. Existing properties will be replaced.
+     * @note added in QGIS 3.0
+     * @see properties()
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection& collection );
 
   protected:
     QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked = false );
-
-    /** Saves all data defined properties to a string map.
-     * @param stringMap destination string map
-     * @see restoreDataDefinedProperties
-     */
-    void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
 
     /** Restores all data defined properties from string map.
      * @param stringMap source string map
      * @note added in QGIS 2.9
      * @see saveDataDefinedProperties
      */
-    void restoreDataDefinedProperties( const QgsStringMap& stringMap );
+    void restoreOldDataDefinedProperties( const QgsStringMap& stringMap );
 
     /** Copies all data defined properties of this layer to another symbol layer.
      * @param destLayer destination layer

@@ -24,7 +24,7 @@
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"
 #include "qgsmessagelog.h"
-#include "qgsdatadefined.h"
+#include "qgsproperty.h"
 #include "qgsnetworkcontentfetcher.h"
 #include "qgssymbollayerutils.h"
 #include "qgssvgcache.h"
@@ -85,9 +85,6 @@ void QgsComposerPicture::init()
 {
   //default to no background
   setBackgroundEnabled( false );
-
-  //data defined strings
-  mDataDefinedNames.insert( QgsComposerObject::PictureSource, QStringLiteral( "dataDefinedSource" ) );
 
   //connect some signals
 
@@ -307,13 +304,13 @@ void QgsComposerPicture::refreshPicture( const QgsExpressionContext *context )
 
   //data defined source set?
   mHasExpressionError = false;
-  QVariant exprVal;
-  if ( dataDefinedProperty( QgsComposerObject::PictureSource ) &&
-       dataDefinedProperty( QgsComposerObject::PictureSource )->isActive() )
+  if ( mProperties.isActive( QgsComposerObject::PictureSource ) )
   {
-    if ( dataDefinedEvaluate( QgsComposerObject::PictureSource, exprVal, *evalContext ) )
+    bool ok = false;
+    source = mProperties.valueAsString( QgsComposerObject::PictureSource, *evalContext, source, &ok );
+    if ( ok )
     {
-      source = exprVal.toString().trimmed();
+      source = source.trimmed();
       QgsDebugMsg( QString( "exprVal PictureSource:%1" ).arg( source ) );
     }
     else
@@ -819,7 +816,7 @@ bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocumen
       expressionActive = false;
     }
 
-    setDataDefinedProperty( QgsComposerObject::PictureSource, expressionActive, true, sourceExpression, QString() );
+    mProperties.setProperty( QgsComposerObject::PictureSource, new QgsExpressionBasedProperty( sourceExpression, expressionActive ) );
   }
 
   mSourcePath = mComposition->project()->readPath( itemElem.attribute( QStringLiteral( "file" ) ) );

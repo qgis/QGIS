@@ -53,7 +53,6 @@ class QgsMapToPixel;
 class QgsFeature;
 class QgsTextLabelFeature;
 class QgsVectorLayer;
-class QgsDataDefined;
 class QgsExpression;
 class QFontMetricsF;
 class QPainter;

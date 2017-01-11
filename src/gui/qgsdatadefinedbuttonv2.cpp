@@ -180,10 +180,19 @@ QgsAbstractProperty* QgsDataDefinedButtonV2::toProperty()
   return p;
 }
 
+void QgsDataDefinedButtonV2::setVectorLayer( const QgsVectorLayer* layer )
+{
+  mVectorLayer = layer;
+}
+
 void QgsDataDefinedButtonV2::registerCheckedWidget( QWidget* widget )
 {
   //TODO
 }
+
+void QgsDataDefinedButtonV2::setAssistant( const QString& title, QgsDataDefinedAssistant* assistant ) {}
+
+QgsDataDefinedAssistant*QgsDataDefinedButtonV2::assistant() { return nullptr; }
 
 void QgsDataDefinedButtonV2::mouseReleaseEvent( QMouseEvent *event )
 {
@@ -191,20 +200,19 @@ void QgsDataDefinedButtonV2::mouseReleaseEvent( QMouseEvent *event )
   if (( event->modifiers() & ( Qt::ControlModifier ) )
       || event->button() == Qt::RightButton )
   {
-    mActive = !mActive;
+    setActivePrivate( !mActive );
     updateGui();
     emit changed();
     event->ignore();
     return;
   }
 
-  // pass to default behaviour
+  // pass to default behavior
   QToolButton::mousePressEvent( event );
 }
 
 void QgsDataDefinedButtonV2::setToProperty( const QgsAbstractProperty *property )
 {
-  mActive = property && property->isActive();
   if ( property )
   {
     switch ( property->propertyType() )
@@ -233,6 +241,7 @@ void QgsDataDefinedButtonV2::setToProperty( const QgsAbstractProperty *property 
     mUseExpression = false;
     mExpressionString.clear();
   }
+  setActive( property && property->isActive() );
 }
 
 void QgsDataDefinedButtonV2::aboutToShowMenu()
@@ -396,7 +405,7 @@ void QgsDataDefinedButtonV2::menuActionTriggered( QAction* action )
 {
   if ( action == mActionActive )
   {
-    mActive = mActionActive->data().toBool();
+    setActivePrivate( mActionActive->data().toBool() );
     updateGui();
     emit changed();
   }
@@ -411,7 +420,7 @@ void QgsDataDefinedButtonV2::menuActionTriggered( QAction* action )
   else if ( action == mActionExpression )
   {
     mUseExpression = true;
-    mActive = true;
+    setActivePrivate( true );
     updateGui();
     emit changed();
   }
@@ -426,7 +435,7 @@ void QgsDataDefinedButtonV2::menuActionTriggered( QAction* action )
     {
       mExpressionString = exprString;
       mUseExpression = true;
-      mActive = true;
+      setActivePrivate( mActive );
       updateGui();
       emit changed();
     }
@@ -437,7 +446,7 @@ void QgsDataDefinedButtonV2::menuActionTriggered( QAction* action )
     if ( mActive && mUseExpression )
     {
       mUseExpression = false;
-      mActive = false;
+      setActivePrivate( false );
     }
     mExpressionString.clear();
     updateGui();
@@ -456,7 +465,7 @@ void QgsDataDefinedButtonV2::menuActionTriggered( QAction* action )
         mFieldName = action->data().toString();
       }
       mUseExpression = false;
-      mActive = true;
+      setActivePrivate( true );
       updateGui();
       emit changed();
     }
@@ -468,7 +477,7 @@ void QgsDataDefinedButtonV2::menuActionTriggered( QAction* action )
       mExpressionString = action->data().toString().prepend( "@" );
     }
     mUseExpression = true;
-    mActive = true;
+    setActivePrivate( true );
     updateGui();
     emit changed();
   }
@@ -495,7 +504,7 @@ void QgsDataDefinedButtonV2::showExpressionDialog()
     bool hasExp = !newExp.isEmpty();
 
     mUseExpression = hasExp;
-    mActive = hasExp;
+    setActivePrivate( hasExp );
     updateGui();
     emit changed();
   }
@@ -584,12 +593,22 @@ void QgsDataDefinedButtonV2::updateGui()
 
 }
 
+void QgsDataDefinedButtonV2::setActivePrivate( bool active )
+{
+  if ( mActive != active )
+  {
+    mActive = active;
+    emit activated( mActive );
+  }
+}
+
 void QgsDataDefinedButtonV2::setActive( bool active )
 {
   if ( mActive != active )
   {
     mActive = active;
     emit changed();
+    emit activated( mActive );
   }
 }
 

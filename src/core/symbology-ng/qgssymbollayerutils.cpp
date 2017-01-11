@@ -901,6 +901,14 @@ QgsSymbolLayer* QgsSymbolLayerUtils::loadSymbolLayer( QDomElement& element )
     {
       layer->setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
     }
+
+    // restore data defined properties
+    QDomElement ddProps = element.firstChildElement( QStringLiteral( "data_defined_properties" ) );
+    if ( !ddProps.isNull() )
+    {
+      layer->dataDefinedProperties().readXml( ddProps, element.ownerDocument(), QgsSymbolLayer::sPropertyNameMap );
+    }
+
     return layer;
   }
   else
@@ -947,6 +955,10 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString& name, QgsSymbol* sym
     saveProperties( layer->properties(), doc, layerEl );
     if ( !QgsPaintEffectRegistry::isDefaultStack( layer->paintEffect() ) )
       layer->paintEffect()->saveProperties( doc, layerEl );
+
+    QDomElement ddProps = doc.createElement( QStringLiteral( "data_defined_properties" ) );
+    layer->dataDefinedProperties().writeXml( ddProps, doc, QgsSymbolLayer::sPropertyNameMap );
+    layerEl.appendChild( ddProps );
 
     if ( layer->subSymbol() )
     {

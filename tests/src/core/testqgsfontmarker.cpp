@@ -30,7 +30,7 @@
 #include <qgssymbol.h>
 #include <qgssinglesymbolrenderer.h>
 #include "qgsmarkersymbollayer.h"
-#include "qgsdatadefined.h"
+#include "qgsproperty.h"
 #include "qgsfontutils.h"
 
 //qgis test includes
@@ -159,7 +159,7 @@ void TestQgsFontMarkerSymbol::bounds()
   mFontMarkerLayer->setCharacter( 'l' );
   mFontMarkerLayer->setSize( 12 );
   mFontMarkerLayer->setOutlineWidth( 0 );
-  mFontMarkerLayer->setDataDefinedProperty( QStringLiteral( "size" ), new QgsDataDefined( true, true, QStringLiteral( "min(\"importance\" * 4.47214, 7.07106)" ) ) );
+  mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, new QgsExpressionBasedProperty( QStringLiteral( "min(\"importance\" * 4.47214, 7.07106)" ) ) );
 
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
   bool result = imageCheck( QStringLiteral( "fontmarker_bounds" ) );

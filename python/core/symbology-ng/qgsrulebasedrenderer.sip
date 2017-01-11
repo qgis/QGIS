@@ -80,7 +80,7 @@ class QgsRuleBasedRenderer : QgsFeatureRenderer
          * Return the attributes used to evaluate the expression of this rule
          * @return A set of attribute names
          */
-        QSet<QString> usedAttributes() const;
+        QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
         /**
          * Returns true if this rule or one of its chilren needs the geometry to be applied.
@@ -340,7 +340,7 @@ class QgsRuleBasedRenderer : QgsFeatureRenderer
 
     virtual QString filter( const QgsFields& fields = QgsFields() );
 
-    virtual QSet<QString> usedAttributes() const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     virtual bool filterNeedsGeometry() const;
 

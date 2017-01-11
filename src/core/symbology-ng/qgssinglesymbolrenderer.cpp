@@ -28,7 +28,7 @@
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
 #include "qgsscaleexpression.h"
-#include "qgsdatadefined.h"
+#include "qgsproperty.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -68,11 +68,11 @@ void QgsSingleSymbolRenderer::stopRender( QgsRenderContext& context )
   mSymbol->stopRender( context );
 }
 
-QSet<QString> QgsSingleSymbolRenderer::usedAttributes() const
+QSet<QString> QgsSingleSymbolRenderer::usedAttributes( const QgsRenderContext& context ) const
 {
   QSet<QString> attributes;
   if ( mSymbol.data() )
-    attributes.unite( mSymbol->usedAttributes() );
+    attributes.unite( mSymbol->usedAttributes( context ) );
   return attributes;
 }
 
@@ -305,10 +305,10 @@ QgsLegendSymbolListV2 QgsSingleSymbolRenderer::legendSymbolItemsV2() const
   if ( mSymbol->type() == QgsSymbol::Marker )
   {
     const QgsMarkerSymbol * symbol = static_cast<const QgsMarkerSymbol *>( mSymbol.data() );
-    QgsDataDefined sizeDD = symbol->dataDefinedSize();
-    if ( sizeDD.isActive() && sizeDD.useExpression() )
+    QScopedPointer< QgsAbstractProperty > sizeDD( symbol->dataDefinedSize() );
+    if ( sizeDD && sizeDD->isActive() && sizeDD->propertyType() == QgsAbstractProperty::ExpressionBasedProperty )
     {
-      QgsScaleExpression scaleExp( sizeDD.expressionString() );
+      QgsScaleExpression scaleExp( sizeDD->asExpression() );
       if ( scaleExp.type() != QgsScaleExpression::Unknown )
       {
         QgsLegendSymbolItem title( nullptr, scaleExp.baseExpression(), QString() );

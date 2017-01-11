@@ -25,6 +25,7 @@
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
+class QgsAbstractProperty;
 class QgsDataDefined;
 class QgsMapCanvas;
 
@@ -43,10 +44,10 @@ class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
     QgsDataDefinedAssistant() : mMapCanvas( nullptr ) {}
 
     /**
-     * Get the data defined which was defined by this assistant.
-     * Needs to be reimplemented by subclasses.
+     * Returns the property which was defined by this assistant.
+     * The caller takes responsibility for deleting the returned object.
      */
-    virtual QgsDataDefined dataDefined() const = 0;
+    virtual QgsAbstractProperty* property() const = 0;
 
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.

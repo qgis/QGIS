@@ -56,17 +56,14 @@ class QgsComposerConfigObject: public QObject
     QgsComposerConfigObject( QWidget* parent, QgsComposerObject* composerObject );
     ~QgsComposerConfigObject();
 
-    //! Sets a data defined property for the item from its current data defined button settings
-    void setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty p );
-
     /** Registers a data defined button, setting up its initial value, connections and description.
      * @param button button to register
      * @param property corresponding data defined property
      * @param type valid data types for button
      * @param description user visible description for data defined property
      */
-    void registerDataDefinedButton( QgsDataDefinedButton* button, QgsComposerObject::DataDefinedProperty property,
-                                    QgsDataDefinedButton::DataType type, const QString& description );
+    void registerDataDefinedButton( QgsDataDefinedButtonV2* button, QgsComposerObject::DataDefinedProperty key,
+                                    QgsDataDefinedButtonV2::DataType type, const QString& description );
 
     //! Returns the current atlas coverage layer (if set)
     QgsVectorLayer* atlasCoverageLayer() const;
@@ -105,8 +102,8 @@ class QgsComposerItemBaseWidget: public QgsPanelWidget
      * @param type valid data types for button
      * @param description user visible description for data defined property
      */
-    void registerDataDefinedButton( QgsDataDefinedButton* button, QgsComposerObject::DataDefinedProperty property,
-                                    QgsDataDefinedButton::DataType type, const QString& description );
+    void registerDataDefinedButton( QgsDataDefinedButtonV2* button, QgsComposerObject::DataDefinedProperty property,
+                                    QgsDataDefinedButtonV2::DataType type, const QString& description );
 
     //! Returns the current atlas coverage layer (if set)
     QgsVectorLayer* atlasCoverageLayer() const;

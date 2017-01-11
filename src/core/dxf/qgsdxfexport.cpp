@@ -962,7 +962,7 @@ void QgsDxfExport::writeEntities()
     }
     renderer->startRender( ctx, vl->fields() );
 
-    QSet<QString> attributes = renderer->usedAttributes();
+    QSet<QString> attributes = renderer->usedAttributes( ctx );
     if ( vl->fields().exists( layerIt->second ) )
     {
       QString layerAttr = vl->fields().at( layerIt->second ).name();
@@ -1099,7 +1099,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
   {
     req.setFlags( QgsFeatureRequest::NoGeometry );
   }
-  req.setSubsetOfAttributes( renderer->usedAttributes(), layer->fields() );
+  req.setSubsetOfAttributes( renderer->usedAttributes( ctx ), layer->fields() );
   req.setFilterRect( mMapSettings.mapToLayerCoordinates( layer, mExtent ) );
 
   QgsFeatureIterator fit = layer->getFeatures( req );
@@ -4101,7 +4101,7 @@ bool QgsDxfExport::hasDataDefinedProperties( const QgsSymbolLayer* sl, const Qgs
     return true;
   }
 
-  return sl->hasDataDefinedProperties();
+  return sl->dataDefinedProperties().hasActiveProperties();
 }
 
 double QgsDxfExport::dashSize() const

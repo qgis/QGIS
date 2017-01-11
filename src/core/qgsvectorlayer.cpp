@@ -721,21 +721,21 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   }
   int featuresCounted = 0;
 
+  // Renderer (rule based) may depend on context scale, with scale is ignored if 0
+  QgsRenderContext renderContext;
+  renderContext.setRendererScale( 0 );
+  renderContext.expressionContext().appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
+
   QgsFeatureRequest request;
   if ( !mRenderer->filterNeedsGeometry() )
     request.setFlags( QgsFeatureRequest::NoGeometry );
-  request.setSubsetOfAttributes( mRenderer->usedAttributes(), mFields );
+  request.setSubsetOfAttributes( mRenderer->usedAttributes( renderContext ), mFields );
   QgsFeatureIterator fit = getFeatures( request );
   QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures interruptionCheck( &progressDialog );
   if ( showProgress )
   {
     fit.setInterruptionChecker( &interruptionCheck );
   }
-
-  // Renderer (rule based) may depend on context scale, with scale is ignored if 0
-  QgsRenderContext renderContext;
-  renderContext.setRendererScale( 0 );
-  renderContext.expressionContext().appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
 
   mRenderer->startRender( renderContext, fields() );
 

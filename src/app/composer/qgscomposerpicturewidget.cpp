@@ -701,7 +701,7 @@ void QgsComposerPictureWidget::resizeEvent( QResizeEvent * event )
 void QgsComposerPictureWidget::populateDataDefinedButtons()
 {
   registerDataDefinedButton( mSourceDDBtn, QgsComposerObject::PictureSource,
-                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::anyStringDesc() );
+                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::anyStringDesc() );
 
   //initial state of controls - disable related controls when dd buttons are active
   mPictureLineEdit->setEnabled( !mSourceDDBtn->isActive() );

@@ -26,7 +26,7 @@
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
-#include "qgsdatadefined.h"
+#include "qgsproperty.h"
 
 #include <QSet>
 
@@ -180,19 +180,19 @@ QString QgsRuleBasedRenderer::Rule::dump( int indent ) const
   return msg;
 }
 
-QSet<QString> QgsRuleBasedRenderer::Rule::usedAttributes() const
+QSet<QString> QgsRuleBasedRenderer::Rule::usedAttributes( const QgsRenderContext& context ) const
 {
   // attributes needed by this rule
   QSet<QString> attrs;
   if ( mFilter )
     attrs.unite( mFilter->referencedColumns() );
   if ( mSymbol )
-    attrs.unite( mSymbol->usedAttributes() );
+    attrs.unite( mSymbol->usedAttributes( context ) );
 
   // attributes needed by child rules
   Q_FOREACH ( Rule* rule, mChildren )
   {
-    attrs.unite( rule->usedAttributes() );
+    attrs.unite( rule->usedAttributes( context ) );
   }
   return attrs;
 }
@@ -910,9 +910,9 @@ QString QgsRuleBasedRenderer::filter( const QgsFields& )
   return mFilter;
 }
 
-QSet<QString> QgsRuleBasedRenderer::usedAttributes() const
+QSet<QString> QgsRuleBasedRenderer::usedAttributes( const QgsRenderContext& context ) const
 {
-  return mRootRule->usedAttributes();
+  return mRootRule->usedAttributes( context );
 }
 
 bool QgsRuleBasedRenderer::filterNeedsGeometry() const
@@ -1362,11 +1362,11 @@ void QgsRuleBasedRenderer::convertToDataDefinedSymbology( QgsSymbol* symbol, con
         if ( ! sizeScaleField.isEmpty() )
         {
           sizeExpression = QStringLiteral( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField );
-          msl->setDataDefinedProperty( QStringLiteral( "size" ), new QgsDataDefined( sizeExpression ) );
+          msl->setDataDefinedProperty( QgsSymbolLayer::PropertySize, new QgsExpressionBasedProperty( sizeExpression ) );
         }
         if ( ! rotationField.isEmpty() )
         {
-          msl->setDataDefinedProperty( QStringLiteral( "angle" ), new QgsDataDefined( true, false, QString(), rotationField ) );
+          msl->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, new QgsFieldBasedProperty( rotationField ) );
         }
       }
       break;
@@ -1379,7 +1379,7 @@ void QgsRuleBasedRenderer::convertToDataDefinedSymbology( QgsSymbol* symbol, con
           {
             QgsLineSymbolLayer* lsl = static_cast<QgsLineSymbolLayer*>( symbol->symbolLayer( j ) );
             sizeExpression = QStringLiteral( "%1*(%2)" ).arg( lsl->width() ).arg( sizeScaleField );
-            lsl->setDataDefinedProperty( QStringLiteral( "width" ), new QgsDataDefined( sizeExpression ) );
+            lsl->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, new QgsExpressionBasedProperty( sizeExpression ) );
           }
           if ( symbol->symbolLayer( j )->layerType() == QLatin1String( "MarkerLine" ) )
           {
@@ -1388,7 +1388,7 @@ void QgsRuleBasedRenderer::convertToDataDefinedSymbology( QgsSymbol* symbol, con
             {
               QgsMarkerSymbolLayer* msl = static_cast<QgsMarkerSymbolLayer*>( marker->symbolLayer( k ) );
               sizeExpression = QStringLiteral( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField );
-              msl->setDataDefinedProperty( QStringLiteral( "size" ), new QgsDataDefined( sizeExpression ) );
+              msl->setDataDefinedProperty( QgsSymbolLayer::PropertySize, new QgsExpressionBasedProperty( sizeExpression ) );
             }
           }
         }

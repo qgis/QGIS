@@ -493,7 +493,7 @@ void QgsDataDefinedButton::showAssistant()
 
   if ( mAssistant->exec() == QDialog::Accepted )
   {
-    QgsDataDefined dd = mAssistant->dataDefined();
+    QgsDataDefined dd; // = mAssistant->dataDefined();
     setUseExpression( dd.useExpression() );
     setActive( dd.isActive() );
     if ( dd.isActive() && dd.useExpression() )

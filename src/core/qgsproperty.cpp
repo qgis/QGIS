@@ -76,8 +76,29 @@ QVariant QgsAbstractProperty::value( const QgsExpressionContext& context, const 
   return val;
 }
 
-QColor QgsAbstractProperty::valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor ) const
+QString QgsAbstractProperty::valueAsString( const QgsExpressionContext& context, const QString& defaultString, bool* ok ) const
 {
+  QVariant val = value( context, defaultString );
+
+  if ( !val.isValid() )
+  {
+    if ( ok )
+      *ok = false;
+    return defaultString;
+  }
+  else
+  {
+    if ( ok )
+      *ok = true;
+    return val.toString();
+  }
+}
+
+QColor QgsAbstractProperty::valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor, bool* ok ) const
+{
+  if ( ok )
+    *ok = false;
+
   QVariant val = value( context, defaultColor );
 
   if ( !val.isValid() )
@@ -96,39 +117,55 @@ QColor QgsAbstractProperty::valueAsColor( const QgsExpressionContext &context, c
   if ( !color.isValid() )
     return defaultColor;
   else
+  {
+    if ( ok )
+      *ok = true;
     return color;
+  }
 }
 
-double QgsAbstractProperty::valueAsDouble( const QgsExpressionContext &context, double defaultValue ) const
+double QgsAbstractProperty::valueAsDouble( const QgsExpressionContext &context, double defaultValue, bool* ok ) const
 {
+  if ( ok )
+    *ok = false;
+
   QVariant val = value( context, defaultValue );
 
   if ( !val.isValid() )
     return defaultValue;
 
-  bool ok = false;
-  double dbl = val.toDouble( &ok );
-  if ( !ok )
+  bool convertOk = false;
+  double dbl = val.toDouble( &convertOk );
+  if ( !convertOk )
     return defaultValue;
   else
+  {
+    if ( ok )
+      *ok = true;
     return dbl;
+  }
 }
 
-int QgsAbstractProperty::valueAsInt( const QgsExpressionContext &context, int defaultValue ) const
+int QgsAbstractProperty::valueAsInt( const QgsExpressionContext &context, int defaultValue, bool* ok ) const
 {
+  if ( ok )
+    *ok = false;
+
   QVariant val = value( context, defaultValue );
 
   if ( !val.isValid() )
     return defaultValue;
 
-  bool ok = false;
-  int integer = val.toInt( &ok );
-  if ( !ok )
+  bool convertOk = false;
+  int integer = val.toInt( &convertOk );
+  if ( !convertOk )
   {
     //one more option to try
-    double dbl = val.toDouble( &ok );
-    if ( ok )
+    double dbl = val.toDouble( &convertOk );
+    if ( convertOk )
     {
+      if ( ok )
+        *ok = true;
       return qRound( dbl );
     }
     else
@@ -137,16 +174,25 @@ int QgsAbstractProperty::valueAsInt( const QgsExpressionContext &context, int de
     }
   }
   else
+  {
+    if ( ok )
+      *ok = true;
     return integer;
+  }
 }
 
-bool QgsAbstractProperty::valueAsBool( const QgsExpressionContext& context, bool defaultValue ) const
+bool QgsAbstractProperty::valueAsBool( const QgsExpressionContext& context, bool defaultValue, bool* ok ) const
 {
+  if ( ok )
+    *ok = false;
+
   QVariant val = value( context, defaultValue );
 
   if ( !val.isValid() )
     return defaultValue;
 
+  if ( ok )
+    *ok = true;
   return val.toBool();
 }
 
@@ -205,7 +251,7 @@ QgsStaticProperty::QgsStaticProperty( const QVariant& value, bool active )
 
 }
 
-QgsStaticProperty* QgsStaticProperty::clone()
+QgsStaticProperty* QgsStaticProperty::clone() const
 {
   return new QgsStaticProperty( *this );
 }
@@ -260,7 +306,7 @@ QgsFieldBasedProperty& QgsFieldBasedProperty::operator=( const QgsFieldBasedProp
   return *this;
 }
 
-QgsFieldBasedProperty* QgsFieldBasedProperty::clone()
+QgsFieldBasedProperty* QgsFieldBasedProperty::clone() const
 {
   return new QgsFieldBasedProperty( *this );
 }
@@ -339,7 +385,7 @@ QgsExpressionBasedProperty::QgsExpressionBasedProperty( const QString& expressio
 
 }
 
-QgsExpressionBasedProperty* QgsExpressionBasedProperty::clone()
+QgsExpressionBasedProperty* QgsExpressionBasedProperty::clone() const
 {
   // make sure we do the clone in a way to take advantage of implicit sharing of QgsExpression
   QgsExpressionBasedProperty* clone = new QgsExpressionBasedProperty();

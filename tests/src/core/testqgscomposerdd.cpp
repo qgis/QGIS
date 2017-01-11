@@ -26,7 +26,7 @@
 #include "qgsfeature.h"
 #include "qgssymbol.h"
 #include "qgssinglesymbolrenderer.h"
-#include "qgsdatadefined.h"
+#include "qgsproperty.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -139,11 +139,11 @@ void TestQgsComposerDD::cleanup()
 void TestQgsComposerDD::ddEvaluate()
 {
   //set a data defined property
-  mAtlasMap->setDataDefinedProperty( QgsComposerItem::PositionY, true, true, QStringLiteral( "20+30" ), QString() );
+  mAtlasMap->dataDefinedProperties().setProperty( QgsComposerItem::PositionY, new QgsExpressionBasedProperty( QStringLiteral( "20+30" ) ) );
   //evaluate property
   mAtlasMap->refreshDataDefinedProperty( QgsComposerItem::PositionY );
   QCOMPARE( mAtlasMap->pos().y(), 50.0 );
-  mAtlasMap->setDataDefinedProperty( QgsComposerItem::PositionY, false, false, QString(), QString() );
+  mAtlasMap->dataDefinedProperties().setProperty( QgsComposerItem::PositionY, nullptr );
 }
 
 QGSTEST_MAIN( TestQgsComposerDD )

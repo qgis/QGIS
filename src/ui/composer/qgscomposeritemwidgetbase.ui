@@ -79,28 +79,28 @@
          </widget>
         </item>
         <item row="1" column="3">
-         <widget class="QgsDataDefinedButton" name="mXPositionDDBtn">
+         <widget class="QgsDataDefinedButtonV2" name="mXPositionDDBtn">
           <property name="text">
            <string>...</string>
           </property>
          </widget>
         </item>
         <item row="2" column="3">
-         <widget class="QgsDataDefinedButton" name="mYPositionDDBtn">
+         <widget class="QgsDataDefinedButtonV2" name="mYPositionDDBtn">
           <property name="text">
            <string>...</string>
           </property>
          </widget>
         </item>
         <item row="3" column="3">
-         <widget class="QgsDataDefinedButton" name="mWidthDDBtn">
+         <widget class="QgsDataDefinedButtonV2" name="mWidthDDBtn">
           <property name="text">
            <string>...</string>
           </property>
          </widget>
         </item>
         <item row="4" column="3">
-         <widget class="QgsDataDefinedButton" name="mHeightDDBtn">
+         <widget class="QgsDataDefinedButtonV2" name="mHeightDDBtn">
           <property name="text">
            <string>...</string>
           </property>
@@ -380,7 +380,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QgsDataDefinedButton" name="mItemRotationDDBtn">
+         <widget class="QgsDataDefinedButtonV2" name="mItemRotationDDBtn">
           <property name="text">
            <string>...</string>
           </property>
@@ -633,7 +633,7 @@
          <widget class="QgsBlendModeComboBox" name="mBlendModeCombo"/>
         </item>
         <item>
-         <widget class="QgsDataDefinedButton" name="mBlendModeDDBtn">
+         <widget class="QgsDataDefinedButtonV2" name="mBlendModeDDBtn">
           <property name="text">
            <string>...</string>
           </property>
@@ -674,7 +674,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QgsDataDefinedButton" name="mTransparencyDDBtn">
+         <widget class="QgsDataDefinedButtonV2" name="mTransparencyDDBtn">
           <property name="text">
            <string>...</string>
           </property>
@@ -692,7 +692,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QgsDataDefinedButton" name="mExcludePrintsDDBtn">
+         <widget class="QgsDataDefinedButtonV2" name="mExcludePrintsDDBtn">
           <property name="text">
            <string>...</string>
           </property>
@@ -748,9 +748,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsDataDefinedButtonV2</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgsdatadefinedbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>

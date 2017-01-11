@@ -106,17 +106,32 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     virtual QVariant value( int key, const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const = 0;
 
     /**
+     * Calculates the current value of the property with the specified key and interprets it as a string.
+     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
+     * int and used for the key value.
+     * @param context QgsExpressionContext to evaluate the property for.
+     * @param defaultValue default string to return if the property cannot be calculated as a string
+     * @param ok if specified, will be set to true if conversion was successful
+     * @returns value parsed to string
+     * @see value()
+     * @see valueAsInteger()
+     * @see valueAsColor()
+     */
+    QString valueAsString( int key, const QgsExpressionContext& context, const QString& defaultString = QString(), bool* ok = nullptr ) const;
+
+    /**
      * Calculates the current value of the property with the specified key and interprets it as a color.
      * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * @param context QgsExpressionContext to evaluate the property for.
      * @param defaultColor default color to return if the property cannot be calculated as a color
+     * @param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to color
      * @see value()
      * @see valueAsDouble()
      * @see valueAsInteger()
      */
-    QColor valueAsColor( int key, const QgsExpressionContext& context, const QColor& defaultColor = QColor() ) const;
+    QColor valueAsColor( int key, const QgsExpressionContext& context, const QColor& defaultColor = QColor(), bool* ok = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a double.
@@ -124,12 +139,13 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * int and used for the key value.
      * @param context QgsExpressionContext to evaluate the property for.
      * @param defaultValue default double to return if the property cannot be calculated as a double
+     * @param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to double
      * @see value()
      * @see valueAsInteger()
      * @see valueAsColor()
      */
-    double valueAsDouble( int key, const QgsExpressionContext& context, double defaultValue = 0.0 ) const;
+    double valueAsDouble( int key, const QgsExpressionContext& context, double defaultValue = 0.0, bool* ok = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as an integer.
@@ -137,12 +153,13 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * int and used for the key value.
      * @param context QgsExpressionContext to evaluate the property for.
      * @param defaultValue default integer to return if the property cannot be calculated as a integer
+     * @param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to integer
      * @see value()
      * @see valueAsDouble()
      * @see valueAsColor()
      */
-    int valueAsInt( int key, const QgsExpressionContext& context, int defaultValue = 0 ) const;
+    int valueAsInt( int key, const QgsExpressionContext& context, int defaultValue = 0, bool* ok = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as an boolean.
@@ -150,12 +167,13 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * int and used for the key value.
      * @param context QgsExpressionContext to evaluate the property for.
      * @param defaultValue default boolean to return if the property cannot be calculated as a boolean
+     * @param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to bool
      * @see value()
      * @see valueAsDouble()
      * @see valueAsColor()
      */
-    bool valueAsBool( int key, const QgsExpressionContext& context, bool defaultValue = false ) const;
+    bool valueAsBool( int key, const QgsExpressionContext& context, bool defaultValue = false, bool* ok = nullptr ) const;
 
     /**
      * Prepares the collection against a specified expression context. Calling prepare before evaluating the

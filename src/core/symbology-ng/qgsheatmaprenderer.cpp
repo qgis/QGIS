@@ -367,7 +367,7 @@ QgsSymbolList QgsHeatmapRenderer::symbols( QgsRenderContext& )
   return QgsSymbolList();
 }
 
-QSet<QString> QgsHeatmapRenderer::usedAttributes() const
+QSet<QString> QgsHeatmapRenderer::usedAttributes( const QgsRenderContext& ) const
 {
   QSet<QString> attributes;
 

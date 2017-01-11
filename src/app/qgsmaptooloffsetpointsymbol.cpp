@@ -22,8 +22,8 @@
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbollayer.h"
-#include "qgsdatadefined.h"
 #include "qgisapp.h"
+#include "qgsproperty.h"
 
 #include <QGraphicsPixmapItem>
 #include <QMouseEvent>
@@ -89,25 +89,20 @@ bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbol* mar
 
   Q_FOREACH ( QgsSymbolLayer* layer, markerSymbol->symbolLayers() )
   {
-    if ( !layer->hasDataDefinedProperty( QStringLiteral( "offset" ) ) )
+    if ( !layer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertyOffset ) )
       continue;
 
-    if ( layer->getDataDefinedProperty( QStringLiteral( "offset" ) )->useExpression() )
+    QgsAbstractProperty* p = layer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
+    if ( p->propertyType() != QgsAbstractProperty::FieldBasedProperty )
       continue;
 
     ok = true;
     if ( mMarkerSymbol.isNull() )
     {
       double symbolRotation = markerSymbol->angle();
-      if ( layer->hasDataDefinedProperty( QStringLiteral( "angle" ) ) )
+      if ( layer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertyAngle ) )
       {
-        QString rotationExp = layer->getDataDefinedProperty( QStringLiteral( "angle" ) )->expressionOrField();
-        QgsExpression exp( rotationExp );
-        QVariant val = exp.evaluate( &context.expressionContext() );
-        bool convertOk = false;
-        double rotation = val.toDouble( &convertOk );
-        if ( convertOk )
-          symbolRotation = rotation;
+        symbolRotation = layer->dataDefinedProperties().valueAsDouble( QgsSymbolLayer::PropertyAngle, context.expressionContext(), symbolRotation );
       }
 
       mSymbolRotation = symbolRotation;
@@ -188,10 +183,11 @@ QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( c
   QMap<int, QVariant> newAttrValues;
   Q_FOREACH ( QgsSymbolLayer* layer, mMarkerSymbol->symbolLayers() )
   {
-    if ( !layer->hasDataDefinedProperty( QStringLiteral( "offset" ) ) )
+    if ( !layer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertyOffset ) )
       continue;
 
-    if ( layer->getDataDefinedProperty( QStringLiteral( "offset" ) )->useExpression() )
+    QgsAbstractProperty* ddOffset = layer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
+    if ( ddOffset->propertyType() != QgsAbstractProperty::FieldBasedProperty )
       continue;
 
     QgsMarkerSymbolLayer* ml = dynamic_cast< QgsMarkerSymbolLayer* >( layer );
@@ -199,7 +195,7 @@ QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( c
       continue;
 
     QPointF offset = calculateOffset( startPoint, endPoint, ml->offsetUnit() );
-    int fieldIdx = mActiveLayer->fields().indexFromName( layer->getDataDefinedProperty( QStringLiteral( "offset" ) )->field() );
+    int fieldIdx = mActiveLayer->fields().indexFromName( static_cast< QgsFieldBasedProperty* >( ddOffset )->field() );
     if ( fieldIdx >= 0 )
       newAttrValues[ fieldIdx ] = QgsSymbolLayerUtils::encodePoint( offset );
   }

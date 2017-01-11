@@ -84,21 +84,24 @@ class QgsComposerObject : QObject, QgsExpressionContextGenerator
      */
     virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
-    /** Returns a reference to the data defined settings for one of the item's data defined properties.
-     * @param property data defined property to return
-     * @note this method was added in version 2.5
+    /** Returns a reference to the object's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedProperties()
      */
-    QgsDataDefined* dataDefinedProperty( const DataDefinedProperty property ) const;
+    QgsPropertyCollection& dataDefinedProperties();
 
-    /** Sets parameters for a data defined property for the item
-     * @param property data defined property to set
-     * @param active true if data defined property is active, false if it is disabled
-     * @param useExpression true if the expression should be used
-     * @param expression expression for data defined property
-     * @param field field name if the data defined property should take its value from a field
-     * @note this method was added in version 2.5
+    /** Returns a reference to the object's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedProperties()
      */
-    void setDataDefinedProperty( const DataDefinedProperty property, const bool active, const bool useExpression, const QString &expression, const QString &field );
+    //const QgsPropertyCollection& dataDefinedProperties() const;
+
+    /** Sets the objects's property collection, used for data defined overrides.
+     * @param collection property collection. Existing properties will be replaced.
+     * @note added in QGIS 3.0
+     * @see dataDefinedProperties()
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection& collection );
 
     /** Set a custom property for the object.
      * @param key property key. If a property with the same key already exists it will be overwritten.
@@ -158,18 +161,6 @@ class QgsComposerObject : QObject, QgsExpressionContextGenerator
      * @note this method was added in version 2.5
      */
     virtual void refreshDataDefinedProperty( const DataDefinedProperty property = AllProperties, const QgsExpressionContext* context = 0 );
-
-  protected:
-
-    /** Evaluate a data defined property and return the calculated value
-     * @returns true if data defined property could be successfully evaluated
-     * @param property data defined property to evaluate
-     * @param expressionValue QVariant for storing the evaluated value
-     * @param context expression context for evaluating expressions. Must have feature and fields set to current
-     * atlas feature and coverage layer fields prior to calling this method.
-     * @note this method was added in version 2.5
-     */
-    bool dataDefinedEvaluate( const QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue, const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
   signals:
     /** Emitted when the item changes. Signifies that the item widgets must update the

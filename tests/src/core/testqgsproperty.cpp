@@ -228,6 +228,15 @@ void TestQgsProperty::conversions()
   QCOMPARE( b1->valueAsBool( context , true ), false );
   QCOMPARE( collection.valueAsBool( 3, context , false ), false );
   QCOMPARE( collection.valueAsBool( 3, context , true ), false );
+
+  // test string conversions
+  QgsStaticProperty* s1 = new QgsStaticProperty( QVariant(), true );
+  collection.setProperty( 4, s1 );
+  QCOMPARE( s1->valueAsString( context , "n" ), QString( "n" ) );
+  QCOMPARE( collection.valueAsString( 4, context , "y" ), QString( "y" ) );
+  s1->setStaticValue( "s" );
+  QCOMPARE( s1->valueAsString( context , "n" ), QString( "s" ) );
+  QCOMPARE( collection.valueAsString( 1, context , "y" ), QString( "s" ) );
 }
 
 void TestQgsProperty::staticProperty()

@@ -29,6 +29,7 @@
 class QgsVectorLayer;
 class QgsDataDefined;
 class QgsMapCanvas;
+class QgsDataDefinedAssistant;
 
 /** \ingroup gui
  * \class QgsDataDefinedButtonV2
@@ -110,9 +111,43 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
     void setUsageInfo( const QString& info ) { mUsageInfo = info; updateGui(); }
 
     /**
+     * Sets the vector layer associated with the button. This controls which fields are
+     * displayed within the widget's pop up menu.
+     * @see vectorLayer()
+     */
+    void setVectorLayer( const QgsVectorLayer* layer );
+
+    /**
+     * Returns the vector layer associated with the button. This controls which fields are
+     * displayed within the widget's pop up menu.
+     * @see setVectorLayer()
+     */
+    const QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
+
+    //TODO
+
+    /**
      * Register a sibling widget that get checked when data definition or expression is active
      */
     void registerCheckedWidget( QWidget* widget );
+
+    /**
+     * Sets an assistant used to define the data defined object properties.
+     * Ownership of the assistant is transferred to the widget.
+     * @param title menu title for the assistant
+     * @param assistant data defined assistant. Set to null to remove the assistant
+     * option from the button.
+     * @note added in 2.10
+     * @see assistant()
+     */
+    void setAssistant( const QString& title, QgsDataDefinedAssistant * assistant );
+
+    /** Returns the assistant used to defined the data defined object properties, if set.
+     * @see setAssistant()
+     * @note added in QGIS 2.12
+     */
+    QgsDataDefinedAssistant* assistant();
+
 
     //! Callback function for retrieving the expression context for the button
     typedef QgsExpressionContext( *ExpressionContextCallback )( const void* context );
@@ -176,6 +211,9 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
     //! Emitted when property definition changes
     void changed();
 
+    //! Emitted when the activated status of the widget changes
+    void activated( bool isActive );
+
   protected:
     void mouseReleaseEvent( QMouseEvent *event ) override;
 
@@ -187,7 +225,13 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
     void showExpressionDialog();
     void updateGui();
 
-    const QgsVectorLayer* mVectorLayer;
+    /**
+     * Sets the active status, emitting the activated signal where necessary (but never emitting the changed signal!).
+     * Call this when you know you'll later be emitting the changed signal and want to avoid duplicate signals.
+     */
+    void setActivePrivate( bool active );
+
+    const QgsVectorLayer* mVectorLayer = nullptr;
 
     QStringList mFieldNameList;
     QStringList mFieldTypeList;

@@ -20,6 +20,7 @@
 #include "qgsmultirenderchecker.h"
 #include "qgscomposerpicture.h"
 #include "qgsproject.h"
+#include "qgsproperty.h"
 #include <QObject>
 #include "qgstest.h"
 #include <QColor>
@@ -395,8 +396,7 @@ void TestQgsComposerPicture::pictureExpression()
   mComposition->addComposerPicture( mComposerPicture );
 
   QString expr = QStringLiteral( "'%1' || '/sample_svg.svg'" ).arg( TEST_DATA_DIR );
-  mComposerPicture->setDataDefinedProperty( QgsComposerObject::PictureSource,
-      true, true, expr, QString() );
+  mComposerPicture->dataDefinedProperties().setProperty( QgsComposerObject::PictureSource, new QgsExpressionBasedProperty( expr ) );
   mComposerPicture->refreshPicture();
 
   QgsCompositionChecker checker( QStringLiteral( "composerpicture_expression" ), mComposition );
@@ -404,8 +404,7 @@ void TestQgsComposerPicture::pictureExpression()
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
-  mComposerPicture->setDataDefinedProperty( QgsComposerObject::PictureSource,
-      false, false, QString(), QString() );
+  mComposerPicture->dataDefinedProperties().setProperty( QgsComposerObject::PictureSource, nullptr );
 }
 
 void TestQgsComposerPicture::pictureInvalidExpression()
@@ -414,8 +413,7 @@ void TestQgsComposerPicture::pictureInvalidExpression()
   mComposition->addComposerPicture( mComposerPicture );
 
   QString expr = QStringLiteral( "bad expression" );
-  mComposerPicture->setDataDefinedProperty( QgsComposerObject::PictureSource,
-      true, true, expr, QString() );
+  mComposerPicture->dataDefinedProperties().setProperty( QgsComposerObject::PictureSource, new QgsExpressionBasedProperty( expr ) );
   mComposerPicture->refreshPicture();
 
   QgsCompositionChecker checker( QStringLiteral( "composerpicture_badexpression" ), mComposition );
@@ -423,8 +421,7 @@ void TestQgsComposerPicture::pictureInvalidExpression()
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
-  mComposerPicture->setDataDefinedProperty( QgsComposerObject::PictureSource,
-      false, false, QString(), QString() );
+  mComposerPicture->dataDefinedProperties().setProperty( QgsComposerObject::PictureSource, nullptr );
 }
 
 QGSTEST_MAIN( TestQgsComposerPicture )

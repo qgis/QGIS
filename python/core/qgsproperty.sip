@@ -56,7 +56,7 @@ class QgsAbstractProperty
 
     /** Returns a clone of the property.
      */
-    virtual QgsAbstractProperty* clone() = 0 /Factory/;
+    virtual QgsAbstractProperty* clone() const = 0 /Factory/;
 
     /** Returns whether the property is currently active.
      * @see setActive()
@@ -68,6 +68,12 @@ class QgsAbstractProperty
      * @see isActive()
      */
     void setActive( bool active );
+
+    /**
+     * Returns an expression string representing the state of the property, or an empty
+     * string if the property could not be converted to an expression
+     */
+    virtual QString asExpression() const = 0;
 
     /**
      * Prepares the property against a specified expression context. Calling prepare before evaluating the
@@ -93,6 +99,18 @@ class QgsAbstractProperty
      */
     QVariant value( const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const;
 
+    /**
+     * Calculates the current value of the property and interprets it as a string.
+     * @param context QgsExpressionContext to evaluate the property for.
+     * @param defaultString default string to return if the property cannot be calculated as a string
+     * @param ok if specified, will be set to true if conversion was successful
+     * @returns value parsed to string
+     * @see value()
+     * @see valueAsDouble()
+     * @see valueAsInt()
+     */
+    QString valueAsString( const QgsExpressionContext& context, const QString& defaultString = QString(), bool* ok /Out/ = nullptr ) const;
+
     /** Calculates the current value of the property and interprets it as a color.
      * @param context QgsExpressionContext to evaluate the property for.
      * @param defaultColor default color to return if the property cannot be calculated as a color
@@ -101,7 +119,7 @@ class QgsAbstractProperty
      * @see valueAsDouble()
      * @see valueAsInt()
      */
-    QColor valueAsColor( const QgsExpressionContext& context, const QColor& defaultColor = QColor() ) const;
+    QColor valueAsColor( const QgsExpressionContext& context, const QColor& defaultColor = QColor(), bool* ok /Out/ = nullptr  ) const;
 
     /** Calculates the current value of the property and interprets it as a double.
      * @param context QgsExpressionContext to evaluate the property for.
@@ -111,7 +129,7 @@ class QgsAbstractProperty
      * @see valueAsInt()
      * @see valueAsColor()
      */
-    double valueAsDouble( const QgsExpressionContext& context, double defaultValue = 0.0 ) const;
+    double valueAsDouble( const QgsExpressionContext& context, double defaultValue = 0.0, bool* ok /Out/ = nullptr  ) const;
 
     /** Calculates the current value of the property and interprets it as an integer.
      * @param context QgsExpressionContext to evaluate the property for.
@@ -121,7 +139,7 @@ class QgsAbstractProperty
      * @see valueAsDouble()
      * @see valueAsColor()
      */
-    int valueAsInt( const QgsExpressionContext& context, int defaultValue = 0 ) const;
+    int valueAsInt( const QgsExpressionContext& context, int defaultValue = 0, bool* ok /Out/ = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as an boolean.
@@ -132,7 +150,7 @@ class QgsAbstractProperty
      * @see valueAsDouble()
      * @see valueAsColor()
      */
-    bool valueAsBool( const QgsExpressionContext& context, bool defaultValue = false ) const;
+    bool valueAsBool( const QgsExpressionContext& context, bool defaultValue = false, bool* ok /Out/ = nullptr ) const;
 
     /** Writes the current state of the property into an XML element
      * @param propertyElem destination element for the property's state
@@ -197,7 +215,8 @@ class QgsStaticProperty : QgsAbstractProperty
 
     virtual Type propertyType() const;
 
-    virtual QgsStaticProperty* clone() /Factory/;
+    virtual QgsStaticProperty* clone() const /Factory/;
+    virtual QString asExpression() const;
 
     /** Sets the static value for the property.
      * @param value property value
@@ -238,11 +257,12 @@ class QgsFieldBasedProperty : QgsAbstractProperty
      * @param field field name
      * @param isActive whether the property is intially active
      */
-    QgsFieldBasedProperty( const QString& field = QString(), bool isActive = false );
+    QgsFieldBasedProperty( const QString& field = QString(), bool isActive = true );
 
     virtual Type propertyType() const;
 
-    virtual QgsFieldBasedProperty* clone() /Factory/;
+    virtual QgsFieldBasedProperty* clone() const /Factory/;
+    virtual QString asExpression() const;
 
     /** Sets the field name the property references.
      * @param field field name
@@ -285,11 +305,12 @@ class QgsExpressionBasedProperty : QgsAbstractProperty
      * @param expression expression string
      * @param isActive whether the property is intially active
      */
-    QgsExpressionBasedProperty( const QString& expression = QString(), bool isActive = false );
+    QgsExpressionBasedProperty( const QString& expression = QString(), bool isActive = true );
 
     virtual Type propertyType() const;
 
-    virtual QgsExpressionBasedProperty* clone() /Factory/;
+    virtual QgsExpressionBasedProperty* clone() const /Factory/;
+    virtual QString asExpression() const;
 
     /** Sets the expression to use for the property value.
      * @param expression expression string

@@ -2940,7 +2940,7 @@ void QgsVectorFileWriter::addRendererAttributes( QgsVectorLayer* vl, QgsAttribut
   QgsFeatureRenderer* renderer = symbologyRenderer( vl );
   if ( renderer )
   {
-    const QSet<QString> rendererAttributes = renderer->usedAttributes();
+    const QSet<QString> rendererAttributes = renderer->usedAttributes( mRenderContext );
   for ( const QString& attr : rendererAttributes )
     {
       int index = vl->fields().lookupField( attr );

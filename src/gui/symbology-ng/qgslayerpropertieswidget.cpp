@@ -33,7 +33,6 @@
 #include "qgsvectorfieldsymbollayerwidget.h"
 #include "qgssymbol.h" //for the unit
 #include "qgspanelwidget.h"
-#include "qgsdatadefined.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
@@ -130,24 +129,8 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const
 
   mEffectWidget->setPaintEffect( mLayer->paintEffect() );
 
-  const QgsDataDefined* dd = mLayer->getDataDefinedProperty( QgsSymbolLayer::EXPR_LAYER_ENABLED );
-  mEnabledDDBtn->init( mVectorLayer, dd, QgsDataDefinedButton::AnyType, QgsDataDefinedButton::boolDesc() );
-  connect( mEnabledDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedEnable() ) );
-  connect( mEnabledDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedEnable() ) );
-  mEnabledDDBtn->registerExpressionContextGenerator( this );
-}
-
-void QgsLayerPropertiesWidget::updateDataDefinedEnable()
-{
-  QgsDataDefined* dd = mLayer->getDataDefinedProperty( QgsSymbolLayer::EXPR_LAYER_ENABLED );
-  if ( !dd )
-  {
-    dd = new QgsDataDefined();
-    mLayer->setDataDefinedProperty( QgsSymbolLayer::EXPR_LAYER_ENABLED, dd );
-  }
-  mEnabledDDBtn->updateDataDefined( dd );
-
-  emit changed();
+  registerDataDefinedButton( mEnabledDDBtn, QgsSymbolLayer::PropertyLayerEnabled,
+                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::boolDesc() );
 }
 
 void QgsLayerPropertiesWidget::setContext( const QgsSymbolWidgetContext& context )
@@ -275,6 +258,22 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
                                       << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE );
 
   return expContext;
+}
+
+void QgsLayerPropertiesWidget::registerDataDefinedButton( QgsDataDefinedButtonV2* button, QgsSymbolLayer::Property key, QgsDataDefinedButtonV2::DataType type, const QString& description )
+{
+  button->init( mVectorLayer, mLayer->dataDefinedProperties().property( key ), type, description );
+  button->setProperty( "propertyKey", key );
+  connect( button, &QgsDataDefinedButtonV2::changed, this, &QgsLayerPropertiesWidget::updateProperty );
+  button->registerExpressionContextGenerator( this );
+}
+
+void QgsLayerPropertiesWidget::updateProperty()
+{
+  QgsDataDefinedButtonV2* button = qobject_cast<QgsDataDefinedButtonV2*>( sender() );
+  QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->property( "propertyKey" ).toInt() );
+  mLayer->setDataDefinedProperty( key, button->toProperty() );
+  emit changed();
 }
 
 void QgsLayerPropertiesWidget::layerTypeChanged()

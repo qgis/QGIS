@@ -26,40 +26,61 @@ QgsAbstractPropertyCollection::QgsAbstractPropertyCollection( const QString& nam
 
 }
 
-QColor QgsAbstractPropertyCollection::valueAsColor( int key, const QgsExpressionContext &context, const QColor &defaultColor ) const
+QString QgsAbstractPropertyCollection::valueAsString( int key, const QgsExpressionContext& context, const QString& defaultString, bool* ok ) const
 {
+  if ( ok )
+    *ok = false;
+
+  const QgsAbstractProperty* prop = property( key );
+  if ( !prop || !prop->isActive() )
+    return defaultString;
+
+  return prop->valueAsString( context, defaultString, ok );
+}
+
+QColor QgsAbstractPropertyCollection::valueAsColor( int key, const QgsExpressionContext &context, const QColor &defaultColor, bool* ok ) const
+{
+  if ( ok )
+    *ok = false;
+
   const QgsAbstractProperty* prop = property( key );
   if ( !prop || !prop->isActive() )
     return defaultColor;
 
-  return prop->valueAsColor( context, defaultColor );
+  return prop->valueAsColor( context, defaultColor, ok );
 }
 
-double QgsAbstractPropertyCollection::valueAsDouble( int key, const QgsExpressionContext &context, double defaultValue ) const
+double QgsAbstractPropertyCollection::valueAsDouble( int key, const QgsExpressionContext &context, double defaultValue, bool* ok ) const
 {
+  if ( ok )
+    *ok = false;
   const QgsAbstractProperty* prop = property( key );
   if ( !prop || !prop->isActive() )
     return defaultValue;
 
-  return prop->valueAsDouble( context, defaultValue );
+  return prop->valueAsDouble( context, defaultValue, ok );
 }
 
-int QgsAbstractPropertyCollection::valueAsInt( int key, const QgsExpressionContext &context, int defaultValue ) const
+int QgsAbstractPropertyCollection::valueAsInt( int key, const QgsExpressionContext &context, int defaultValue, bool* ok ) const
 {
+  if ( ok )
+    *ok = false;
   const QgsAbstractProperty* prop = property( key );
   if ( !prop || !prop->isActive() )
     return defaultValue;
 
-  return prop->valueAsInt( context, defaultValue );
+  return prop->valueAsInt( context, defaultValue, ok );
 }
 
-bool QgsAbstractPropertyCollection::valueAsBool( int key, const QgsExpressionContext& context, bool defaultValue ) const
+bool QgsAbstractPropertyCollection::valueAsBool( int key, const QgsExpressionContext& context, bool defaultValue, bool* ok ) const
 {
+  if ( ok )
+    *ok = false;
   const QgsAbstractProperty* prop = property( key );
   if ( !prop || !prop->isActive() )
     return defaultValue;
 
-  return prop->valueAsBool( context, defaultValue );
+  return prop->valueAsBool( context, defaultValue, ok );
 }
 
 
@@ -233,16 +254,19 @@ void QgsPropertyCollection::rescan() const
 {
   mHasActiveProperties = false;
   mHasActiveDynamicProperties = false;
-  QHash<int, QgsAbstractProperty*>::const_iterator it = mProperties.constBegin();
-  for ( ; it != mProperties.constEnd(); ++it )
+  if ( !mProperties.isEmpty() )
   {
-    if ( it.value()->isActive() )
+    QHash<int, QgsAbstractProperty*>::const_iterator it = mProperties.constBegin();
+    for ( ; it != mProperties.constEnd(); ++it )
     {
-      mHasActiveProperties = true;
-      if ( it.value()->propertyType() != QgsAbstractProperty::StaticProperty )
+      if ( it.value()->isActive() )
       {
-        mHasActiveDynamicProperties = true;
-        break;
+        mHasActiveProperties = true;
+        if ( it.value()->propertyType() != QgsAbstractProperty::StaticProperty )
+        {
+          mHasActiveDynamicProperties = true;
+          break;
+        }
       }
     }
   }

@@ -91,7 +91,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mScaleDDBtn">
+             <widget class="QgsDataDefinedButtonV2" name="mScaleDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -119,7 +119,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mMapRotationDDBtn">
+             <widget class="QgsDataDefinedButtonV2" name="mMapRotationDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -201,7 +201,7 @@
              <widget class="QComboBox" name="mFollowVisibilityPresetCombo"/>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mStylePresetsDDBtn">
+             <widget class="QgsDataDefinedButtonV2" name="mStylePresetsDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -248,7 +248,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mLayersDDBtn">
+             <widget class="QgsDataDefinedButtonV2" name="mLayersDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -303,7 +303,7 @@
              <widget class="QLineEdit" name="mXMinLineEdit"/>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mXMinDDBtn">
+             <widget class="QgsDataDefinedButtonV2" name="mXMinDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -330,7 +330,7 @@
              <widget class="QLineEdit" name="mYMinLineEdit"/>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mYMinDDBtn">
+             <widget class="QgsDataDefinedButtonV2" name="mYMinDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -357,7 +357,7 @@
              <widget class="QLineEdit" name="mXMaxLineEdit"/>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mXMaxDDBtn">
+             <widget class="QgsDataDefinedButtonV2" name="mXMaxDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -384,7 +384,7 @@
              <widget class="QLineEdit" name="mYMaxLineEdit"/>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mYMaxDDBtn">
+             <widget class="QgsDataDefinedButtonV2" name="mYMaxDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -462,7 +462,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mAtlasMarginDDBtn">
+             <widget class="QgsDataDefinedButtonV2" name="mAtlasMarginDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -796,9 +796,9 @@
    <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsDataDefinedButtonV2</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgsdatadefinedbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>

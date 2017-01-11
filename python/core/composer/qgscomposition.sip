@@ -660,22 +660,6 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
      */
     QList< QgsPaperItem* > pages();
 
-    /** Returns a reference to the data defined settings for one of the composition's data defined properties.
-     * @param property data defined property to return
-     * @note this method was added in version 2.5
-     */
-    QgsDataDefined* dataDefinedProperty( const QgsComposerObject::DataDefinedProperty property );
-
-    /** Sets parameters for a data defined property for the composition
-     * @param property data defined property to set
-     * @param active true if data defined property is active, false if it is disabled
-     * @param useExpression true if the expression should be used
-     * @param expression expression for data defined property
-     * @param field field name if the data defined property should take its value from a field
-     * @note this method was added in version 2.5
-     */
-    void setDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
-
     /** Returns the items model attached to the composition
      * @returns QgsComposerModel for composition
      * @note this method was added in version 2.5
@@ -774,6 +758,25 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
      * @note added in QGIS 2.12
      */
     QgsExpressionContext createExpressionContext() const;
+
+    /** Returns a reference to the composition's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedProperties()
+     */
+    QgsPropertyCollection& dataDefinedProperties();
+
+    /** Returns a reference to the composition's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedProperties()
+     */
+    //const QgsPropertyCollection& dataDefinedProperties() const;
+
+    /** Sets the composition's property collection, used for data defined overrides.
+     * @param collection property collection. Existing properties will be replaced.
+     * @note added in QGIS 3.0
+     * @see dataDefinedProperties()
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection& collection );
 
   protected:
     void init();

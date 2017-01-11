@@ -17,12 +17,12 @@
 #ifndef QGSSYMBOLLAYERWIDGET_H
 #define QGSSYMBOLLAYERWIDGET_H
 
-#include "qgsdatadefinedbutton.h"
+#include "qgsdatadefinedbuttonv2.h"
 #include "qgssymbolwidgetcontext.h"
+#include "qgssymbollayer.h"
 #include <QWidget>
 #include <QStandardItemModel>
 
-class QgsSymbolLayer;
 class QgsVectorLayer;
 class QgsMapCanvas;
 
@@ -62,7 +62,7 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
     const QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 
   protected:
-    void registerDataDefinedButton( QgsDataDefinedButton* button, const QString& propertyName, QgsDataDefinedButton::DataType type, const QString& description );
+    void registerDataDefinedButton( QgsDataDefinedButtonV2* button, QgsSymbolLayer::Property key, QgsDataDefinedButtonV2::DataType type, const QString& description );
 
     QgsExpressionContext createExpressionContext() const override;
 

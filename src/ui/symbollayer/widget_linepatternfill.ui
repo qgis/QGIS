@@ -22,7 +22,7 @@
     </widget>
    </item>
    <item row="0" column="2">
-    <widget class="QgsDataDefinedButton" name="mAngleDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mAngleDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -111,7 +111,7 @@
     </layout>
    </item>
    <item row="1" column="2">
-    <widget class="QgsDataDefinedButton" name="mDistanceDDBtn">
+    <widget class="QgsDataDefinedButtonV2" name="mDistanceDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -154,9 +154,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsDataDefinedButtonV2</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgsdatadefinedbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>

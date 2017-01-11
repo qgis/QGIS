@@ -466,7 +466,7 @@ void QgsComposerHtmlWidget::setGuiElementValues()
 void QgsComposerHtmlWidget::populateDataDefinedButtons()
 {
   registerDataDefinedButton( mUrlDDBtn, QgsComposerObject::SourceUrl,
-                             QgsDataDefinedButton::AnyType, tr( "url string" ) );
+                             QgsDataDefinedButtonV2::AnyType, tr( "url string" ) );
 
   //initial state of controls - disable related controls when dd buttons are active
   mUrlLineEdit->setEnabled( !mUrlDDBtn->isActive() );

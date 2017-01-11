@@ -29,7 +29,6 @@ class QDomDocument;
 class QDomElement;
 class QGraphicsLineItem;
 class QgsComposerItemGroup;
-class QgsDataDefined;
 class QgsComposition;
 class QgsExpressionContext;
 class QgsComposerEffect;

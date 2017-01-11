@@ -19,6 +19,7 @@
 #include "ui_widget_layerproperties.h"
 #include "qgsexpressioncontext.h"
 #include "qgssymbolwidgetcontext.h"
+#include "qgssymbollayer.h"
 
 class QgsSymbol;
 class QgsSymbolLayer;
@@ -77,17 +78,20 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, protected Qgs
 
     QgsExpressionContext createExpressionContext() const override;
 
+    void registerDataDefinedButton( QgsDataDefinedButtonV2 *button, QgsSymbolLayer::Property key, QgsDataDefinedButtonV2::DataType type, const QString &description );
+
   protected: // data
     QgsSymbolLayer* mLayer;
 
     const QgsSymbol* mSymbol;
     const QgsVectorLayer* mVectorLayer;
 
+  protected slots:
+    void updateProperty();
+
   private slots:
     void reloadLayer();
     void on_mEnabledCheckBox_toggled( bool enabled );
-
-    void updateDataDefinedEnable();
 
   private:
 

@@ -141,10 +141,9 @@ void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget *>& w
 {
   Q_FOREACH ( QWidget* widget, widgets )
   {
-    if ( QgsDataDefinedButton* w = qobject_cast<QgsDataDefinedButton*>( widget ) )
+    if ( QgsDataDefinedButtonV2* w = qobject_cast<QgsDataDefinedButtonV2*>( widget ) )
     {
-      connect( w, SIGNAL( dataDefinedActivated( bool ) ), this, slot );
-      connect( w, SIGNAL( dataDefinedChanged( QString ) ), this, slot );
+      connect( w, SIGNAL( changed ), this, slot );
     }
     else if ( QgsFieldExpressionWidget* w = qobject_cast<QgsFieldExpressionWidget*>( widget ) )
     {

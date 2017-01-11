@@ -88,6 +88,20 @@ class QgsAbstractPropertyCollection
      */
     virtual QVariant value( int key, const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const = 0;
 
+    /**
+     * Calculates the current value of the property with the specified key and interprets it as a string.
+     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
+     * int and used for the key value.
+     * @param context QgsExpressionContext to evaluate the property for.
+     * @param defaultValue default string to return if the property cannot be calculated as a string
+     * @param ok if specified, will be set to true if conversion was successful
+     * @returns value parsed to string
+     * @see value()
+     * @see valueAsInteger()
+     * @see valueAsColor()
+     */
+    QString valueAsString( int key, const QgsExpressionContext& context, const QString& defaultString = QString(), bool* ok /Out/ = nullptr ) const;
+
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a color.
@@ -100,7 +114,7 @@ class QgsAbstractPropertyCollection
      * @see valueAsDouble()
      * @see valueAsInteger()
      */
-    QColor valueAsColor( int key, const QgsExpressionContext& context, const QColor& defaultColor = QColor() ) const;
+    QColor valueAsColor( int key, const QgsExpressionContext& context, const QColor& defaultColor = QColor(), bool* ok /Out/ = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a double.
@@ -113,7 +127,7 @@ class QgsAbstractPropertyCollection
      * @see valueAsInteger()
      * @see valueAsColor()
      */
-    double valueAsDouble( int key, const QgsExpressionContext& context, double defaultValue = 0.0 ) const;
+    double valueAsDouble( int key, const QgsExpressionContext& context, double defaultValue = 0.0, bool* ok /Out/ = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as an integer.
@@ -126,7 +140,7 @@ class QgsAbstractPropertyCollection
      * @see valueAsDouble()
      * @see valueAsColor()
      */
-    int valueAsInt( int key, const QgsExpressionContext& context, int defaultValue = 0 ) const;
+    int valueAsInt( int key, const QgsExpressionContext& context, int defaultValue = 0, bool* ok /Out/ = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as an boolean.
@@ -139,7 +153,7 @@ class QgsAbstractPropertyCollection
      * @see valueAsDouble()
      * @see valueAsColor()
      */
-    bool valueAsBool( int key, const QgsExpressionContext& context, bool defaultValue = false ) const;
+    bool valueAsBool( int key, const QgsExpressionContext& context, bool defaultValue = false, bool* ok /Out/ = nullptr ) const;
 
 
     /**
@@ -164,14 +178,14 @@ class QgsAbstractPropertyCollection
 
     /**
      * Returns true if the collection has any active properties, or false if all properties
-     * within the collection are deactived.
+     * within the collection are deactivated.
      * @see hasActiveDynamicProperties()
      */
     virtual bool hasActiveProperties() const = 0;
 
     /**
      * Returns true if the collection has any active, non-static properties, or false if either all non-static properties
-     * within the collection are deactived or if the collection only contains static properties.
+     * within the collection are deactivated or if the collection only contains static properties.
      * @see hasActiveProperties()
      */
     virtual bool hasActiveDynamicProperties() const = 0;
@@ -323,14 +337,14 @@ class QgsPropertyCollectionStack : QgsAbstractPropertyCollection
     QgsPropertyCollection* collection( const QString& name );
 
     /** Returns true if the collection has any active properties, or false if all properties
-     * within the collection are deactived.
+     * within the collection are deactivated.
      * @see hasActiveProperty()
      * @see hasActiveDynamicProperties()
      */
     bool hasActiveProperties() const;
 
     /** Returns true if the collection has any active, non-static properties, or false if either all non-static properties
-     * within the collection are deactived or if the collection only contains static properties.
+     * within the collection are deactivated or if the collection only contains static properties.
      * @see hasActiveProperties()
      */
     bool hasActiveDynamicProperties() const;

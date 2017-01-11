@@ -40,7 +40,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
     void stopRender( QgsRenderContext& context ) override;
 
-    QSet<QString> usedAttributes() const override;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
     QgsFeatureRenderer* clone() const override;
 
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;

@@ -32,7 +32,7 @@ class QgsArrowSymbolLayer : public QgsLineSymbolLayer
     virtual bool setSubSymbol( QgsSymbol* symbol /Transfer/ );
 
     /** Return a list of attributes required to render this feature */
-    virtual QSet<QString> usedAttributes() const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     /** Get current arrow width */
     double arrowWidth() const;

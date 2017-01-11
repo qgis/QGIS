@@ -620,7 +620,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
 
     Qt::PenStyle dxfPenStyle() const override;
 
-    QSet<QString> usedAttributes() const override;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
 
   protected:
     QBrush mBrush;
@@ -1042,7 +1042,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     bool setSubSymbol( QgsSymbol* symbol ) override;
     QgsSymbol* subSymbol() override;
 
-    QSet<QString> usedAttributes() const override;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
 
   protected:
     //! Distance (in mm or map units) between lines
@@ -1065,7 +1065,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
   private:
     //! Applies the svg pattern to the brush
-    void applyPattern( const QgsSymbolRenderContext& context, QBrush& brush, double lineAngle, double distance, double lineWidth, const QColor& color );
+    void applyPattern( const QgsSymbolRenderContext& context, QBrush& brush, double lineAngle, double distance );
 
     //! Fill line
     QgsLineSymbol* mFillLineSymbol;
@@ -1183,7 +1183,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    virtual QSet<QString> usedAttributes() const override;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
     void setColor( const QColor& c ) override;
     virtual QColor color() const override;
 
@@ -1251,7 +1251,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    virtual QSet<QString> usedAttributes() const override;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
 
     void setPointOnSurface( bool pointOnSurface ) { mPointOnSurface = pointOnSurface; }
     bool pointOnSurface() const { return mPointOnSurface; }
