@@ -247,14 +247,14 @@ void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
   //If no errors thus far, request a new database connection
   if ( !errors )
   {
-    eVisDatabaseConnection::DATABASE_TYPE myDatabaseType;
+    eVisDatabaseConnection::DatabaseType myDatabaseType;
     if ( cboxDatabaseType->currentText() == QLatin1String( "MSAccess" ) )
     {
-      myDatabaseType = eVisDatabaseConnection::MSACCESS;
+      myDatabaseType = eVisDatabaseConnection::MSAccess;
     }
     else if ( cboxDatabaseType->currentText() == QLatin1String( "MYSQL" ) )
     {
-      myDatabaseType = eVisDatabaseConnection::QMYSQL;
+      myDatabaseType = eVisDatabaseConnection::QMySQL;
     }
     else if ( cboxDatabaseType->currentText() == QLatin1String( "ODBC" ) )
     {
@@ -266,7 +266,7 @@ void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
     }
     else
     {
-      myDatabaseType = eVisDatabaseConnection::QSQLITE;
+      myDatabaseType = eVisDatabaseConnection::QSqlite;
     }
 
     //If there is aready a database connection object, reset with the current parameters

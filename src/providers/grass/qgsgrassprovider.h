@@ -333,19 +333,19 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     QString description() const override;
 
     // Layer type (layerType)
-    enum TYPE      // layer name:
+    enum Type      // layer name:
     {
-      POINT = 1,   // <field>_point
-      LINE,        // <field>_line
-      FACE,        // <field>_face
-      POLYGON,     // <field>_polygon
-      BOUNDARY,    // boundary (currently not used)
-      CENTROID,    // centroid (currently not used)
+      Point = 1,   //!< <field>_point
+      Line,        //!< <field>_line
+      Face,        //!< <field>_face
+      Polygon,     //!< <field>_polygon
+      Boundary,    //!< Boundary (currently not used)
+      Centroid,    //!< Centroid (currently not used)
       // topology layers, may be used to display internal GRASS topology info
       // useful for debugging of GRASS topology and modules using topology
-      TOPO_POINT,  // all points with topology id
-      TOPO_LINE,   // all lines with topology id
-      TOPO_NODE    // topology nodes
+      TopoPoint,  //!< All points with topology id
+      TopoLine,   //!< All lines with topology id
+      TopoNode    //!< Topology nodes
     };
 
     // Set type for next digitized feature (GV_POINT,GV_LINE, GV_BOUNDARY, GV_CENTROID, GV_AREA)

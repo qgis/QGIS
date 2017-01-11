@@ -565,7 +565,7 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
             OCI_VERIFY_E( err, OCINumberFromInt( err, &g.gtype, sizeof( int ), OCI_NUMBER_SIGNED, &geometryObj->gtype ) );
             OCI_VERIFY_E( err, OCINumberFromInt( err, &g.srid, sizeof( int ), OCI_NUMBER_SIGNED, &geometryObj->srid ) );
 
-            if ( SDO_GTYPE_TT( g.gtype ) == gtPoint )
+            if ( SDO_GTYPE_TT( g.gtype ) == GtPoint )
             {
               geometryInd->point._atomic = OCI_IND_NOTNULL;
               geometryInd->point.x       = OCI_IND_NOTNULL;
@@ -2396,13 +2396,13 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
   Q_ASSERT( nElems % 3 == 0 );
   Q_ASSERT( nOrds % nDims == 0 );
 
-  if ( iType == gtUnknown )
+  if ( iType == GtUnknown )
   {
     qWarning() << "unknown geometry";
     return false;
   }
 
-  if ( iType == gtPoint && nElems == 0 )
+  if ( iType == GtPoint && nElems == 0 )
   {
     Q_ASSERT( nOrds == 0 );
 
@@ -2511,7 +2511,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     return false;
   }
 
-  if ( iType == gtPoint || iType == gtMultiPoint )
+  if ( iType == GtPoint || iType == GtMultiPoint )
   {
     int nPoints = 0;
 
@@ -2529,7 +2529,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     }
 
     Q_ASSERT( nPoints % nDims == 0 );
-    Q_ASSERT( iType == gtMultiPoint || nPoints == nDims );
+    Q_ASSERT( iType == GtMultiPoint || nPoints == nDims );
 
     int wkbSize = 0;
 
@@ -2586,7 +2586,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     return true;
   }
 
-  if ( iType == gtLine || iType == gtMultiLine )
+  if ( iType == GtLine || iType == GtMultiLine )
   {
     Q_ASSERT( nOrds % nDims == 0 );
 
@@ -2658,7 +2658,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     return true;
   }
 
-  if ( iType == gtPolygon || iType == gtMultiPolygon )
+  if ( iType == GtPolygon || iType == GtMultiPolygon )
   {
     int nPolygons = 0;
     int nPoints = 0;

@@ -1165,7 +1165,7 @@ void QgsGrassMapcalc::save()
 void QgsGrassMapcalc::load()
 {
 
-  QgsGrassSelect *sel = new QgsGrassSelect( this, QgsGrassSelect::MAPCALC );
+  QgsGrassSelect *sel = new QgsGrassSelect( this, QgsGrassSelect::MapCalc );
   if ( sel->exec() == QDialog::Rejected )
     return;
 

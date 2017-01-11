@@ -52,7 +52,7 @@ static const QString sDescription = QObject::tr( "Capture mouse coordinates in d
 static const QString sCategory = QObject::tr( "Vector" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QString sPluginIcon = QStringLiteral( ":/coordinate_capture/coordinate_capture.png" );
-static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
+static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
 
 //////////////////////////////////////////////////////////////////////
 //

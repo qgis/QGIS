@@ -308,7 +308,7 @@ bool NormVecDecorator::getTriangle( double x, double y, Point3D* p1, Vector3D* v
   }
 }
 
-NormVecDecorator::pointState NormVecDecorator::getState( int pointno ) const
+NormVecDecorator::PointState NormVecDecorator::getState( int pointno ) const
 {
   if ( pointno >= 0 )
   {
@@ -322,7 +322,7 @@ NormVecDecorator::pointState NormVecDecorator::getState( int pointno ) const
 }
 
 
-bool NormVecDecorator::getTriangle( double x, double y, Point3D* p1, int* ptn1, Vector3D* v1, pointState* state1, Point3D* p2, int* ptn2, Vector3D* v2, pointState* state2, Point3D* p3, int* ptn3, Vector3D* v3, pointState* state3 )
+bool NormVecDecorator::getTriangle( double x, double y, Point3D* p1, int* ptn1, Vector3D* v1, PointState* state1, Point3D* p2, int* ptn2, Vector3D* v2, PointState* state2, Point3D* p3, int* ptn3, Vector3D* v3, PointState* state3 )
 {
   if ( p1 && p2 && p3 && v1 && v2 && v3 && ptn1 && ptn2 && ptn3 && state1 && state2 && state3 )
   {
@@ -377,7 +377,7 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
   int numberofbreaks = 0;//number of counted breaklines
   double weights = 0;//sum of the weights
   double currentweight = 0;//current weight
-  pointState status;
+  PointState status;
 
   QList<int>* vlist = getSurroundingTriangles( pointno );//get the value list
 
@@ -468,15 +468,15 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
 
   if ( numberofbreaks == 0 )
   {
-    status = NORMAL;
+    status = Normal;
   }
   else if ( numberofbreaks == 1 )
   {
-    status = ENDPOINT;
+    status = EndPoint;
   }
   else
   {
-    status = BREAKLINE;
+    status = BreakLine;
   }
 
   delete vlist;
@@ -558,7 +558,7 @@ void NormVecDecorator::eliminateHorizontalTriangles()
   }
 }
 
-void NormVecDecorator::setState( int pointno, pointState s )
+void NormVecDecorator::setState( int pointno, PointState s )
 {
   if ( pointno >= 0 )
   {

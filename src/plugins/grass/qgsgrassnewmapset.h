@@ -40,14 +40,14 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
 
   public:
 
-    enum PAGE
+    enum Page
     {
-      DATABASE,
-      LOCATION,
-      CRS,
-      REGION,
-      MAPSET,
-      FINISH
+      Database,
+      Location,
+      Crs,
+      Region,
+      MapSet,
+      Finish
     };
 
     //! Constructor

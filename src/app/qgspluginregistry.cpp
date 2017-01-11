@@ -332,7 +332,7 @@ void QgsPluginRegistry::loadCppPlugin( const QString& theFullPathName )
 
   switch ( pType() )
   {
-    case QgisPlugin::RENDERER:
+    case QgisPlugin::Renderer:
     case QgisPlugin::UI:
     {
       // UI only -- doesn't use mapcanvas

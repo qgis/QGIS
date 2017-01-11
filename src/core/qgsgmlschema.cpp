@@ -377,7 +377,7 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
   }
   else if ( localName.compare( QLatin1String( "featureMembers" ), Qt::CaseInsensitive ) == 0 )
   {
-    mParseModeStack.push( QgsGmlSchema::featureMembers );
+    mParseModeStack.push( QgsGmlSchema::FeatureMembers );
   }
   // GML does not specify that gml:FeatureAssociationType elements should end
   // with 'Member' apart standard gml:featureMember, but it is quite usual to
@@ -386,7 +386,7 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
 
   else if ( localName.endsWith( QLatin1String( "member" ), Qt::CaseInsensitive ) )
   {
-    mParseModeStack.push( QgsGmlSchema::featureMember );
+    mParseModeStack.push( QgsGmlSchema::FeatureMember );
   }
   // UMN Mapserver simple GetFeatureInfo response layer element (ends with _layer)
   else if ( elementName.endsWith( QLatin1String( "_layer" ) ) )
@@ -398,8 +398,8 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
   // QGIS mapserver 2.2 GetFeatureInfo is using <Feature id="###"> for feature member,
   // without any feature class distinction.
   else if ( elementName.endsWith( QLatin1String( "_feature" ) )
-            || parseMode == QgsGmlSchema::featureMember
-            || parseMode == QgsGmlSchema::featureMembers
+            || parseMode == QgsGmlSchema::FeatureMember
+            || parseMode == QgsGmlSchema::FeatureMembers
             || localName.compare( QLatin1String( "feature" ), Qt::CaseInsensitive ) == 0 )
   {
     QgsDebugMsg( "is feature path = " + path );
@@ -408,9 +408,9 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
       mFeatureClassMap.insert( localName, QgsGmlFeatureClass( localName, path ) );
     }
     mCurrentFeatureName = localName;
-    mParseModeStack.push( QgsGmlSchema::feature );
+    mParseModeStack.push( QgsGmlSchema::Feature );
   }
-  else if ( parseMode == QgsGmlSchema::attribute && ns == GML_NAMESPACE && mGeometryTypes.indexOf( localName ) >= 0 )
+  else if ( parseMode == QgsGmlSchema::Attribute && ns == GML_NAMESPACE && mGeometryTypes.indexOf( localName ) >= 0 )
   {
     // Geometry (Point,MultiPoint,...) in geometry attribute
     QStringList &geometryAttributes = mFeatureClassMap[mCurrentFeatureName].geometryAttributes();
@@ -420,7 +420,7 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
     }
     mSkipLevel = mLevel + 1; // no need to parse children
   }
-  else if ( parseMode == QgsGmlSchema::feature )
+  else if ( parseMode == QgsGmlSchema::Feature )
   {
     // An element in feature should be ordinary or geometry attribute
     //QgsDebugMsg( "is attribute");
@@ -441,7 +441,7 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
     else
     {
       mAttributeName = localName;
-      mParseModeStack.push( QgsGmlSchema::attribute );
+      mParseModeStack.push( QgsGmlSchema::Attribute );
       mStringCash.clear();
     }
   }
@@ -470,11 +470,11 @@ void QgsGmlSchema::endElement( const XML_Char* el )
 
   QgsGmlSchema::ParseMode parseMode = modeStackTop();
 
-  if ( parseMode == QgsGmlSchema::featureMembers )
+  if ( parseMode == QgsGmlSchema::FeatureMembers )
   {
     modeStackPop();
   }
-  else if ( parseMode == QgsGmlSchema::attribute && localName == mAttributeName )
+  else if ( parseMode == QgsGmlSchema::Attribute && localName == mAttributeName )
   {
     // End of attribute
     //QgsDebugMsg("end attribute");
@@ -507,7 +507,7 @@ void QgsGmlSchema::characters( const XML_Char* chars, int len )
   }
 
   //save chars in mStringCash attribute mode for value type analysis
-  if ( modeStackTop() == QgsGmlSchema::attribute )
+  if ( modeStackTop() == QgsGmlSchema::Attribute )
   {
     mStringCash.append( QString::fromUtf8( chars, len ) );
   }

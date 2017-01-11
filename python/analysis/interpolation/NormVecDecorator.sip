@@ -5,8 +5,8 @@ class NormVecDecorator : TriDecorator
 %End
 
   public:
-    /** Enumeration for the state of a point. NORMAL means, that the point is not on a breakline, BREAKLINE means that the point is on a breakline (but not an endpoint of it) and ENDPOINT means, that it is an endpoint of a breakline*/
-    enum pointState {NORMAL, BREAKLINE, ENDPOINT};
+    //! Enumeration for the state of a point. Normal means, that the point is not on a BreakLine, BreakLine means that the point is on a breakline (but not an end point of it) and EndPoint means, that it is an endpoint of a breakline
+    enum PointState {Normal, BreakLine, EndPoint};
     NormVecDecorator();
     NormVecDecorator( Triangulation* tin );
     virtual ~NormVecDecorator();
@@ -28,12 +28,12 @@ class NormVecDecorator : TriDecorator
     Vector3D* getNormal( int n ) const;
     /** Finds out, in which triangle a point with coordinates x and y is and assigns the triangle points to p1, p2, p3 and the estimated normals to v1, v2, v3. The vectors are normaly taken from 'mNormVec', exept if p1, p2 or p3 is a point on a breakline. In this case, the normal is calculated on-the-fly. Returns false, if something went wrong and true otherwise*/
     bool getTriangle( double x, double y, Point3D* p1 /Out/, Vector3D* v1 /Out/, Point3D* p2 /Out/, Vector3D* v2 /Out/, Point3D* p3 /Out/, Vector3D* v3 /Out/ );
-    /** This function behaves similar to the one above. Additionally, the numbers of the points are returned (ptn1, ptn2, ptn3) as well as the pointStates of the triangle points (state1, state2, state3)
+    /** This function behaves similar to the one above. Additionally, the numbers of the points are returned (ptn1, ptn2, ptn3) as well as the PointStates of the triangle points (state1, state2, state3)
      * @note not available in Python bindings
      */
-    //bool getTriangle( double x, double y, Point3D* p1 /Out/, int* ptn1 /Out/, Vector3D* v1 /Out/, pointState* state1 /Out/, Point3D* p2 /Out/, int* ptn2 /Out/, Vector3D* v2 /Out/, pointState* state2 /Out/, Point3D* p3 /Out/, int* ptn3 /Out/, Vector3D* v3 /Out/, pointState* state3 /Out/);
+    //bool getTriangle( double x, double y, Point3D* p1 /Out/, int* ptn1 /Out/, Vector3D* v1 /Out/, PointState* state1 /Out/, Point3D* p2 /Out/, int* ptn2 /Out/, Vector3D* v2 /Out/, PointState* state2 /Out/, Point3D* p3 /Out/, int* ptn3 /Out/, Vector3D* v3 /Out/, PointState* state3 /Out/);
     /** Returns the state of the point with the number 'pointno'*/
-    pointState getState( int pointno ) const;
+    PointState getState( int pointno ) const;
     /** Sets an interpolator*/
     void setTriangleInterpolator( TriangleInterpolator* inter );
     /** Swaps the edge which is closest to the point with x and y coordinates (if this is possible) and forces recalculation of the concerned normals (if alreadyestimated is true)*/
@@ -43,6 +43,6 @@ class NormVecDecorator : TriDecorator
     virtual bool saveAsShapefile( const QString& fileName ) const;
 
   protected:
-    /** Sets the state (BREAKLINE, NORMAL, ENDPOINT) of a point*/
-    void setState( int pointno, pointState s );
+    /** Sets the state (BreakLine, Normal, EndPoint) of a point*/
+    void setState( int pointno, PointState s );
 };

@@ -247,11 +247,11 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     void removeMapsetFromSearchPath( const QString & mapset, QString& error );
 
     //! Error codes returned by error()
-    enum GERROR
+    enum GError
     {
       OK, //!< OK. No error.
-      WARNING, //!< Warning, non fatal error. Should be printed by application.
-      FATAL //!< Fatal error
+      Warning, //!< Warning, non fatal error. Should be printed by application.
+      Fatal //!< Fatal error
     };
 
     //! Reset error code (to OK). Call this before a piece of code where an error is expected
@@ -680,7 +680,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     QFileSystemWatcher *mMapsetSearchPathWatcher;
 
     /* last error in GRASS libraries */
-    static GERROR lastError;         // static, because used in constructor
+    static GError lastError;         // static, because used in constructor
     static QString error_message;
     // error set in init() if it failed
     static QString mInitError;

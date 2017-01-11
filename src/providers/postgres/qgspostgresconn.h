@@ -38,21 +38,21 @@ class QgsField;
 //! Spatial column types
 enum QgsPostgresGeometryColumnType
 {
-  sctNone,
-  sctGeometry,
-  sctGeography,
-  sctTopoGeometry,
-  sctPcPatch
+  SctNone,
+  SctGeometry,
+  SctGeography,
+  SctTopoGeometry,
+  SctPcPatch
 };
 
 enum QgsPostgresPrimaryKeyType
 {
-  pktUnknown,
-  pktInt,
-  pktUint64,
-  pktTid,
-  pktOid,
-  pktFidMap
+  PktUnknown,
+  PktInt,
+  PktUint64,
+  PktTid,
+  PktOid,
+  PktFidMap
 };
 
 //! Schema properties structure

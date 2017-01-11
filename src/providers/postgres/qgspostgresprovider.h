@@ -262,7 +262,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * @return the PrimaryKeyType
      *
      * @note that this only makes sense for single-field primary keys,
-     *       whereas multi-field keys always need the pktFidMap
+     *       whereas multi-field keys always need the PktFidMap
      *       primary key type.
      */
     QgsPostgresPrimaryKeyType pkType( const QgsField& fld ) const;

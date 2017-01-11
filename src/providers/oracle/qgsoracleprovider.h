@@ -39,10 +39,10 @@ class QgsOracleSharedData;
 
 enum QgsOraclePrimaryKeyType
 {
-  pktUnknown,
-  pktInt,
-  pktRowId,
-  pktFidMap
+  PktUnknown,
+  PktInt,
+  PktRowId,
+  PktFidMap
 };
 
 /**

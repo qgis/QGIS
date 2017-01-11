@@ -43,18 +43,18 @@ class eVisDatabaseConnection
   public:
 
     //! \brief Enum containting the type of database supported by this class
-    enum DATABASE_TYPE
+    enum DatabaseType
     {
-      UNDEFINED,
-      MSACCESS,
-      QMYSQL,
+      Undefined,
+      MSAccess,
+      QMySQL,
       QPSQL,
       QODBC,
-      QSQLITE
+      QSqlite
     } mDatabaseType;
 
     //! \brief Constructor
-    eVisDatabaseConnection( const QString&, int, const QString&, const QString&, const QString&, DATABASE_TYPE );
+    eVisDatabaseConnection( const QString&, int, const QString&, const QString&, const QString&, DatabaseType );
 
     //! \brief Public method that finalizes a connection to a databse
     bool connect();
@@ -63,13 +63,13 @@ class eVisDatabaseConnection
     QSqlQuery* query( const QString& );
 
     //! \brief Public method for resetting the database connection parameters - equivalent to re running the constructor
-    void resetConnectionParameters( const QString&, int, const QString&, const QString&, const QString&, DATABASE_TYPE );
+    void resetConnectionParameters( const QString&, int, const QString&, const QString&, const QString&, DatabaseType );
 
     //! \brief Returns a list of tables in the current database
     QStringList tables();
 
     //! \brief Accessor to the database type
-    DATABASE_TYPE databaseType()
+    DatabaseType databaseType()
     {
       return mDatabaseType;
     }
@@ -87,7 +87,7 @@ class eVisDatabaseConnection
     }
 
     //! \brief Mutator for database type
-    void setDatabaseType( DATABASE_TYPE connectionType )
+    void setDatabaseType( DatabaseType connectionType )
     {
       mDatabaseType = connectionType;
     }

@@ -244,14 +244,14 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QStringList wktGetChildBlocks( const QString& wkt , const QString &defaultType = "" );
 
-    enum componentType
+    enum ComponentType
     {
-      VERTEX,
-      RING,
-      PART
+      Vertex,
+      Ring,
+      Part
     };
 
-    template<class T> static double closestSegmentFromComponents( T& container, componentType ctype, const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon )
+    template<class T> static double closestSegmentFromComponents( T& container, ComponentType ctype, const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon )
     {
       double minDist = std::numeric_limits<double>::max();
       double minDistSegmentX = 0.0, minDistSegmentY = 0.0;
@@ -280,16 +280,16 @@ class CORE_EXPORT QgsGeometryUtils
           }
         }
 
-        if ( ctype == VERTEX )
+        if ( ctype == Vertex )
         {
           //-1 because compoundcurve counts duplicated vertices of neighbour curves as one node
           vertexOffset += container.at( i )->nCoordinates() - 1;
         }
-        else if ( ctype == RING )
+        else if ( ctype == Ring )
         {
           ringOffset += 1;
         }
-        else if ( ctype == PART )
+        else if ( ctype == Part )
         {
           partOffset += 1;
         }

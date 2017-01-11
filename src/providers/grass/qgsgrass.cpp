@@ -805,7 +805,7 @@ int QgsGrass::initialized = 0;
 
 bool QgsGrass::active = 0;
 
-QgsGrass::GERROR QgsGrass::lastError = QgsGrass::OK;
+QgsGrass::GError QgsGrass::lastError = QgsGrass::OK;
 
 QString QgsGrass::error_message;
 QString QgsGrass::mInitError;
@@ -846,7 +846,7 @@ int QgsGrass::error_routine( const char *msg, int fatal )
     QgsDebugMsg( "fatal -> longjmp" );
     // Exceptions cannot be thrown from here if GRASS lib is not compiled with -fexceptions
     //throw QgsGrass::Exception( QString::fromUtf8( msg ) );
-    lastError = FATAL;
+    lastError = Fatal;
 
 #if (GRASS_VERSION_MAJOR < 7)
     // longjump() is called by G_fatal_error in GRASS >= 7
@@ -855,7 +855,7 @@ int QgsGrass::error_routine( const char *msg, int fatal )
   }
   else
   {
-    lastError = WARNING;
+    lastError = Warning;
   }
 
   return 1;
