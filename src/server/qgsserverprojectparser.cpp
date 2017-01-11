@@ -1173,6 +1173,27 @@ QSet<QString> QgsServerProjectParser::findRestrictedLayers() const
       }
     }
   }
+  // Add short name in restricted layers
+  else
+  {
+    QDomNodeList layerNodeList = mXMLDoc->elementsByTagName( "maplayer" );
+    for ( int i = 0; i < layerNodeList.size(); ++i )
+    {
+      QDomElement layerElem = layerNodeList.at( i ).toElement();
+      // get name
+      QString lName = layerName( layerElem );
+      if ( restrictedLayerSet.contains( lName ) )
+      {
+        // get short name
+        lName = layerShortName( layerElem );
+        if ( !lName.isEmpty() )
+        {
+          // add short name
+          restrictedLayerSet.insert( lName );
+        }
+      }
+    }
+  }
   return restrictedLayerSet;
 }
 
