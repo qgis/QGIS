@@ -25,7 +25,7 @@
 
 #include "qgsmodule.h"
 #include "qgswmsconfigparser.h"
-#include "qgsmapserviceexception.h"
+#include "qgswmsserviceexception.h"
 
 /**
  * \ingroup server
@@ -50,10 +50,6 @@ namespace QgsWms
   /** Return the highest version supported by this implementation
    */
   QString ImplementationVersion();
-
-  /** Send WMS standard XML Error respons
-   */
-  void writeError( QgsServerResponse& response, const QString& code, const QString& message );
 
   /** Parse image format parameter
    *  @return OutputFormat

@@ -30,22 +30,16 @@ namespace QgsWms
   {
     Q_UNUSED( version );
     QgsServerRequest::Parameters params = request.parameters();
-    try
-    {
-      QgsWmsServer server( serverIface->configFilePath(),
-                           *serverIface->serverSettings(), params,
-                           getConfigParser( serverIface ),
-                           serverIface->accessControls() );
-      QDomDocument doc = server.getSchemaExtension();
-      response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
-      response.write( doc.toByteArray() );
-    }
-    catch ( QgsMapServiceException& ex )
-    {
-      writeError( response, ex.code(), ex.message() );
-    }
-  }
 
+    QgsWmsServer server( serverIface->configFilePath(),
+                         *serverIface->serverSettings(), params,
+                         getConfigParser( serverIface ),
+                         serverIface->accessControls() );
+
+    QDomDocument doc = server.getSchemaExtension();
+    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
+    response.write( doc.toByteArray() );
+  }
 
 } // samespace QgsWms
 

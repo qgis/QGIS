@@ -42,7 +42,6 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgsmapserviceexception.h"
 #include "qgssldconfigparser.h"
 #include "qgssymbol.h"
 #include "qgsrenderer.h"
@@ -53,6 +52,7 @@
 #include "qgsaccesscontrol.h"
 #include "qgsfeaturerequest.h"
 #include "qgsmaprendererjobproxy.h"
+#include "qgswmsserviceexception.h"
 
 #include <QImage>
 #include <QPainter>
@@ -405,7 +405,7 @@ namespace QgsWms
     ok = true;
     if ( d[2] <= d[0] || d[3] <= d[1] )
     {
-      throw QgsMapServiceException( "InvalidParameterValue", "BBOX is empty" );
+      throw QgsServiceException( "InvalidParameterValue", "BBOX is empty" );
     }
     return QgsRectangle( d[0], d[1], d[2], d[3] );
   }
@@ -419,11 +419,11 @@ namespace QgsWms
     }
     if ( !mParameters.contains( QStringLiteral( "LAYER" ) ) && !mParameters.contains( QStringLiteral( "LAYERS" ) ) )
     {
-      throw QgsMapServiceException( QStringLiteral( "LayerNotSpecified" ), QStringLiteral( "LAYER is mandatory for GetLegendGraphic operation" ) );
+      throw QgsServiceException( QStringLiteral( "LayerNotSpecified" ), QStringLiteral( "LAYER is mandatory for GetLegendGraphic operation" ) );
     }
     if ( !mParameters.contains( QStringLiteral( "FORMAT" ) ) )
     {
-      throw QgsMapServiceException( QStringLiteral( "FormatNotSpecified" ), QStringLiteral( "FORMAT is mandatory for GetLegendGraphic operation" ) );
+      throw QgsServiceException( QStringLiteral( "FormatNotSpecified" ), QStringLiteral( "FORMAT is mandatory for GetLegendGraphic operation" ) );
     }
 
     bool contentBasedLegend = false;
@@ -436,10 +436,10 @@ namespace QgsWms
       bool bboxOk;
       contentBasedLegendExtent = _parseBBOX( mParameters[QStringLiteral( "BBOX" )], bboxOk );
       if ( !bboxOk || contentBasedLegendExtent.isEmpty() )
-        throw QgsMapServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Invalid BBOX parameter" ) );
+        throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Invalid BBOX parameter" ) );
 
       if ( mParameters.contains( QStringLiteral( "RULE" ) ) )
-        throw QgsMapServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "BBOX parameter cannot be combined with RULE" ) );
+        throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "BBOX parameter cannot be combined with RULE" ) );
     }
 
     QStringList layersList, stylesList;
@@ -635,7 +635,7 @@ namespace QgsWms
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( !mAccessControl->layerReadPermission( nodeLayer->layer() ) )
         {
-          throw QgsMapServiceException( QStringLiteral( "Security" ), "You are not allowed to access to the layer: " + nodeLayer->layer()->name() );
+          throw QgsServiceException( QStringLiteral( "Security" ), "You are not allowed to access to the layer: " + nodeLayer->layer()->name() );
         }
 #endif
 
@@ -877,12 +877,12 @@ namespace QgsWms
     QDomDocument doc;
     if ( !mParameters.contains( QStringLiteral( "STYLE" ) ) )
     {
-      throw QgsMapServiceException( QStringLiteral( "StyleNotSpecified" ), QStringLiteral( "Style is mandatory for GetStyle operation" ) );
+      throw QgsServiceException( QStringLiteral( "StyleNotSpecified" ), QStringLiteral( "Style is mandatory for GetStyle operation" ) );
     }
 
     if ( !mParameters.contains( QStringLiteral( "LAYER" ) ) )
     {
-      throw QgsMapServiceException( QStringLiteral( "LayerNotSpecified" ), QStringLiteral( "Layer is mandatory for GetStyle operation" ) );
+      throw QgsServiceException( QStringLiteral( "LayerNotSpecified" ), QStringLiteral( "Layer is mandatory for GetStyle operation" ) );
     }
 
     QString styleName = mParameters[ QStringLiteral( "STYLE" )];
@@ -897,13 +897,13 @@ namespace QgsWms
     QDomDocument doc;
     if ( !mParameters.contains( QStringLiteral( "LAYERS" ) ) )
     {
-      throw QgsMapServiceException( QStringLiteral( "LayerNotSpecified" ), QStringLiteral( "Layers is mandatory for GetStyles operation" ) );
+      throw QgsServiceException( QStringLiteral( "LayerNotSpecified" ), QStringLiteral( "Layers is mandatory for GetStyles operation" ) );
     }
 
     QStringList layersList = mParameters[ QStringLiteral( "LAYERS" )].split( QStringLiteral( "," ), QString::SkipEmptyParts );
     if ( layersList.size() < 1 )
     {
-      throw QgsMapServiceException( QStringLiteral( "LayerNotSpecified" ), QStringLiteral( "Layers is mandatory for GetStyles operation" ) );
+      throw QgsServiceException( QStringLiteral( "LayerNotSpecified" ), QStringLiteral( "Layers is mandatory for GetStyles operation" ) );
     }
 
     return mConfigParser->getStyles( layersList );
@@ -914,22 +914,22 @@ namespace QgsWms
   {
     if ( !mParameters.contains( QStringLiteral( "SLD_VERSION" ) ) )
     {
-      throw QgsMapServiceException( QStringLiteral( "MissingParameterValue" ), QStringLiteral( "SLD_VERSION is mandatory for DescribeLayer operation" ) );
+      throw QgsServiceException( QStringLiteral( "MissingParameterValue" ), QStringLiteral( "SLD_VERSION is mandatory for DescribeLayer operation" ) );
     }
     if ( mParameters[ QStringLiteral( "SLD_VERSION" )] != QLatin1String( "1.1.0" ) )
     {
-      throw QgsMapServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "SLD_VERSION = %1 is not supported" ).arg( mParameters[ QStringLiteral( "SLD_VERSION" )] ) );
+      throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "SLD_VERSION = %1 is not supported" ).arg( mParameters[ QStringLiteral( "SLD_VERSION" )] ) );
     }
 
     if ( !mParameters.contains( QStringLiteral( "LAYERS" ) ) )
     {
-      throw QgsMapServiceException( QStringLiteral( "MissingParameterValue" ), QStringLiteral( "LAYERS is mandatory for DescribeLayer operation" ) );
+      throw QgsServiceException( QStringLiteral( "MissingParameterValue" ), QStringLiteral( "LAYERS is mandatory for DescribeLayer operation" ) );
     }
 
     QStringList layersList = mParameters[ QStringLiteral( "LAYERS" )].split( QStringLiteral( "," ), QString::SkipEmptyParts );
     if ( layersList.size() < 1 )
     {
-      throw QgsMapServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Layers is empty" ) );
+      throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Layers is empty" ) );
     }
 
     //Prepare url
@@ -958,7 +958,7 @@ namespace QgsWms
     {
       if ( !mAccessControl->layerReadPermission( layer ) )
       {
-        throw QgsMapServiceException( QStringLiteral( "Security" ), "You are not allowed to access to the layer: " + layer->name() );
+        throw QgsServiceException( QStringLiteral( "Security" ), "You are not allowed to access to the layer: " + layer->name() );
       }
     }
 #endif
@@ -979,7 +979,7 @@ namespace QgsWms
     if ( !mParameters.contains( QStringLiteral( "TEMPLATE" ) ) )
     {
       clearFeatureSelections( selectedLayerIdList );
-      throw QgsMapServiceException( QStringLiteral( "ParameterMissing" ), QStringLiteral( "The TEMPLATE parameter is required for the GetPrint request" ) );
+      throw QgsServiceException( QStringLiteral( "ParameterMissing" ), QStringLiteral( "The TEMPLATE parameter is required for the GetPrint request" ) );
     }
 
     QList< QPair< QgsVectorLayer*, QgsFeatureRenderer*> > bkVectorRenderers;
@@ -1056,7 +1056,7 @@ namespace QgsWms
     {
       restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
       clearFeatureSelections( selectedLayerIdList );
-      throw QgsMapServiceException( QStringLiteral( "InvalidFormat" ), "Output format '" + formatString + "' is not supported in the GetPrint request" );
+      throw QgsServiceException( QStringLiteral( "InvalidFormat" ), "Output format '" + formatString + "' is not supported in the GetPrint request" );
     }
 
     restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
@@ -1095,7 +1095,7 @@ namespace QgsWms
   {
     if ( !checkMaximumWidthHeight() )
     {
-      throw QgsMapServiceException( QStringLiteral( "Size error" ), QStringLiteral( "The requested map size is too large" ) );
+      throw QgsServiceException( QStringLiteral( "Size error" ), QStringLiteral( "The requested map size is too large" ) );
     }
     QStringList layersList, stylesList, layerIdList;
     QImage* theImage = initializeRendering( layersList, stylesList, layerIdList, mapSettings );
@@ -1116,7 +1116,7 @@ namespace QgsWms
     {
       if ( !mAccessControl->layerReadPermission( layer ) )
       {
-        throw QgsMapServiceException( QStringLiteral( "Security" ), "You are not allowed to access to the layer: " + layer->name() );
+        throw QgsServiceException( QStringLiteral( "Security" ), "You are not allowed to access to the layer: " + layer->name() );
       }
     }
 #endif
@@ -1193,7 +1193,7 @@ namespace QgsWms
     //check if i, j are in the pixel range of the image
     if ( i < 0 || i > mapSettings.outputSize().width() || j < 0 || j > mapSettings.outputSize().height() )
     {
-      throw QgsMapServiceException( "InvalidPoint", "I/J parameters not within the pixel range" );
+      throw QgsServiceException( "InvalidPoint", "I/J parameters not within the pixel range" );
     }
 
     double xRes = mapSettings.extent().width() / mapSettings.outputSize().width();
@@ -1250,13 +1250,13 @@ namespace QgsWms
     //read QUERY_LAYERS
     if ( !mParameters.contains( QStringLiteral( "QUERY_LAYERS" ) ) )
     {
-      throw QgsMapServiceException( QStringLiteral( "ParameterMissing" ), QStringLiteral( "No QUERY_LAYERS" ) );
+      throw QgsServiceException( QStringLiteral( "ParameterMissing" ), QStringLiteral( "No QUERY_LAYERS" ) );
     }
 
     QStringList queryLayerList = mParameters[ QStringLiteral( "QUERY_LAYERS" )].split( QStringLiteral( "," ), QString::SkipEmptyParts );
     if ( queryLayerList.size() < 1 )
     {
-      throw QgsMapServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Malformed QUERY_LAYERS" ) );
+      throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Malformed QUERY_LAYERS" ) );
     }
 
     //read I,J resp. X,Y
@@ -1297,7 +1297,7 @@ namespace QgsWms
       }
       else
       {
-        throw QgsMapServiceException( QStringLiteral( "ParameterMissing" ), QStringLiteral( "I/J parameters are required for GetFeatureInfo" ) );
+        throw QgsServiceException( QStringLiteral( "ParameterMissing" ), QStringLiteral( "I/J parameters are required for GetFeatureInfo" ) );
       }
     }
     else
@@ -1388,7 +1388,7 @@ namespace QgsWms
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( !mAccessControl->layerReadPermission( currentLayer ) )
         {
-          throw QgsMapServiceException( QStringLiteral( "Security" ), "You are not allowed to access to the layer: " + currentLayer->name() );
+          throw QgsServiceException( QStringLiteral( "Security" ), "You are not allowed to access to the layer: " + currentLayer->name() );
         }
 #endif
 
@@ -1706,12 +1706,12 @@ namespace QgsWms
     if ( !bboxOk )
     {
       //throw a service exception
-      throw QgsMapServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Invalid BBOX parameter" ) );
+      throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Invalid BBOX parameter" ) );
     }
 
     if ( mParameters.contains( "BBOX" ) && mapExtent.isEmpty() )
     {
-      throw QgsMapServiceException( "InvalidParameterValue", "BBOX is empty" );
+      throw QgsServiceException( "InvalidParameterValue", "BBOX is empty" );
     }
 
     QgsUnitTypes::DistanceUnit mapUnits = QgsUnitTypes::DistanceDegrees;
@@ -1743,7 +1743,7 @@ namespace QgsWms
       if ( !outputCRS.isValid() )
       {
         QgsMessageLog::logMessage( QStringLiteral( "Error, could not create output CRS from EPSG" ) );
-        throw QgsMapServiceException( QStringLiteral( "InvalidCRS" ), QStringLiteral( "Could not create output CRS" ) );
+        throw QgsServiceException( QStringLiteral( "InvalidCRS" ), QStringLiteral( "Could not create output CRS" ) );
       }
 
       //then set destinationCrs
@@ -2220,7 +2220,7 @@ namespace QgsWms
         else
         {
           QgsMessageLog::logMessage( QStringLiteral( "Layer or style not defined, aborting" ) );
-          throw QgsMapServiceException( QStringLiteral( "LayerNotDefined" ), "Layer '" + *llstIt + "' and/or style '" + styleName + "' not defined" );
+          throw QgsServiceException( QStringLiteral( "LayerNotDefined" ), "Layer '" + *llstIt + "' and/or style '" + styleName + "' not defined" );
         }
       }
 
@@ -2256,10 +2256,10 @@ namespace QgsWms
         //filter string could be unsafe (danger of sql injection)
         if ( !testFilterStringSafety( eqSplit.at( 1 ) ) )
         {
-          throw QgsMapServiceException( QStringLiteral( "Filter string rejected" ), "The filter string " + eqSplit.at( 1 ) +
-                                        " has been rejected because of security reasons. Note: Text strings have to be enclosed in single or double quotes. " +
-                                        "A space between each word / special character is mandatory. Allowed Keywords and special characters are " +
-                                        "AND,OR,IN,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX. Not allowed are semicolons in the filter expression." );
+          throw QgsServiceException( QStringLiteral( "Filter string rejected" ), "The filter string " + eqSplit.at( 1 ) +
+                                     " has been rejected because of security reasons. Note: Text strings have to be enclosed in single or double quotes. " +
+                                     "A space between each word / special character is mandatory. Allowed Keywords and special characters are " +
+                                     "AND,OR,IN,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX. Not allowed are semicolons in the filter expression." );
         }
 
         //we need to find the maplayer objects matching the layer name

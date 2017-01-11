@@ -25,7 +25,6 @@
 
 namespace QgsWms
 {
-
   typedef QList< QPair<QRgb, int> > QgsColorBox; //Color / number of pixels
   typedef QMultiMap< int, QgsColorBox > QgsColorBoxMap; // sum of pixels / color box
 
@@ -42,33 +41,11 @@ namespace QgsWms
     QgsWmsConfigParser* parser  = QgsConfigCache::instance()->wmsConfiguration( configFilePath, serverIface->accessControls() );
     if ( !parser )
     {
-      throw QgsMapServiceException(
+      throw QgsServiceException(
         QStringLiteral( "WMS configuration error" ),
         QStringLiteral( "There was an error reading the project file or the SLD configuration" ) );
-
     }
     return parser;
-  }
-
-  // Output a wms standard error
-  void writeError( QgsServerResponse& response, const QString& code, const QString& message )
-  {
-    // WMS errors return erros with http 200
-    // XXX Do we really need to use a QDomDocument here ?
-    QDomDocument doc;
-    QDomElement root = doc.createElement( QStringLiteral( "ServiceExceptionReport" ) );
-    root.setAttribute( QStringLiteral( "version" ), ImplementationVersion() );
-    root.setAttribute( QStringLiteral( "xmlns" ) , QStringLiteral( "http://www.opengis.net/ogc" ) );
-    doc.appendChild( root );
-
-    QDomElement elem = doc.createElement( QStringLiteral( "ServiceException" ) );
-    elem.setAttribute( QStringLiteral( "code" ), code );
-    QDomText messageText = doc.createTextNode( message );
-    elem.appendChild( messageText );
-    root.appendChild( elem );
-
-    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
-    response.write( doc.toByteArray() );
   }
 
   ImageOutputFormat parseImageFormat( const QString& format )
@@ -164,8 +141,8 @@ namespace QgsWms
     }
     else
     {
-      writeError( response, "InvalidFormat",
-                  QString( "Output format '%1' is not supported in the GetMap request" ).arg( formatStr ) );
+      throw QgsServiceException( "InvalidFormat",
+                                 QString( "Output format '%1' is not supported in the GetMap request" ).arg( formatStr ) );
     }
   }
 

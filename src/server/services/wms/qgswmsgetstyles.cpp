@@ -34,16 +34,10 @@ namespace QgsWms
                          *serverIface->serverSettings(), params,
                          getConfigParser( serverIface ),
                          serverIface->accessControls() );
-    try
-    {
-      QDomDocument doc = server.getStyles();
-      response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
-      response.write( doc.toByteArray() );
-    }
-    catch ( QgsMapServiceException& ex )
-    {
-      writeError( response, ex.code(), ex.message() );
-    }
+
+    QDomDocument doc = server.getStyles();
+    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
+    response.write( doc.toByteArray() );
   }
 
 

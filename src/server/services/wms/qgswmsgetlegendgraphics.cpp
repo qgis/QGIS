@@ -33,25 +33,22 @@ namespace QgsWms
     QgsServerRequest::Parameters params = request.parameters();
     QgsWmsConfigParser* parser = getConfigParser( serverIface );
 
-    QgsWmsServer server( serverIface->configFilePath(), *serverIface->serverSettings(),
-                         params, parser, serverIface->accessControls() );
-    try
+    QgsWmsServer server( serverIface->configFilePath(),
+                         *serverIface->serverSettings(),
+                         params, parser,
+                         serverIface->accessControls() );
+
+    QScopedPointer<QImage> result( server.getLegendGraphics() );
+
+    if ( !result.isNull() )
     {
-      QScopedPointer<QImage> result( server.getLegendGraphics() );
-      if ( !result.isNull() )
-      {
-        QString format = params.value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
-        writeImage( response, *result,  format, server.getImageQuality() );
-      }
-      else
-      {
-        writeError( response, QStringLiteral( "UnknownError" ),
-                    QStringLiteral( "Failed to compute GetLegendGraphics image" ) );
-      }
+      QString format = params.value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
+      writeImage( response, *result,  format, server.getImageQuality() );
     }
-    catch ( QgsMapServiceException& ex )
+    else
     {
-      writeError( response, ex.code(), ex.message() );
+      throw QgsServiceException( QStringLiteral( "UnknownError" ),
+                                 QStringLiteral( "Failed to compute GetLegendGraphics image" ) );
     }
   }
 

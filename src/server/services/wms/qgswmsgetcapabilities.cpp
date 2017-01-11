@@ -49,20 +49,14 @@ namespace QgsWms
     {
       QgsMessageLog::logMessage( QStringLiteral( "Capabilities document not found in cache" ) );
       QDomDocument doc;
-      try
-      {
-        QgsWmsServer server( configFilePath,
-                             *serverSettings,
-                             params,
-                             getConfigParser( serverIface ),
-                             accessControl );
-        doc = server.getCapabilities( version, projectSettings );
-      }
-      catch ( QgsMapServiceException& ex )
-      {
-        writeError( response, ex.code(), ex.message() );
-        return;
-      }
+      QgsWmsServer server( configFilePath,
+                           *serverSettings,
+                           params,
+                           getConfigParser( serverIface ),
+                           accessControl );
+
+      doc = server.getCapabilities( version, projectSettings );
+
       if ( cache )
       {
         capabilitiesCache->insertCapabilitiesDocument( configFilePath, cacheKey, &doc );

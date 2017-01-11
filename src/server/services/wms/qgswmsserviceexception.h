@@ -1,6 +1,6 @@
 /***************************************************************************
-                              qgsmapserviceexception.h
-                              -------------------
+                              qgsserviceexception.h
+                              ------------------------
   begin                : June 13, 2006
   copyright            : (C) 2006 by Marco Hugentobler
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
@@ -15,11 +15,36 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmapserviceexception.h"
+#ifndef QGSWMSSERVICEEXCEPTION_H
+#define QGSWMSSERVICEEXCEPTION_H
 
-QgsMapServiceException::QgsMapServiceException( const QString& code, const QString& message ):
-    QgsException( message ),
-    mCode( code ), mMessage( message )
+#include <QString>
+
+#include "qgsserverexception.h"
+
+namespace QgsWms
 {
 
-}
+  /** \ingroup server
+   * \class  QgsserviceException
+   * \brief Exception class for WMS service exceptions.
+   *
+   * The most important codes are:
+   *  * "InvalidFormat"
+   *  * "Invalid CRS"
+   *  * "LayerNotDefined" / "StyleNotDefined"
+   *  * "OperationNotSupported"
+   */
+  class QgsServiceException : public QgsOgcServiceException
+  {
+    public:
+      QgsServiceException( const QString& code, const QString& message, const QString& locator = QString(),
+                           int responseCode = 200 )
+          : QgsOgcServiceException( code, message, locator, responseCode, QStringLiteral( "1.3.0" ) )
+      {}
+  };
+
+
+} // namespace QgsWms
+
+#endif

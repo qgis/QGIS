@@ -20,45 +20,14 @@
 class QgsRequestHandler  /Abstract/
 {
 %TypeHeaderCode
-#include "qgsmapserviceexception.h"
+#include "qgsserverexception.h"
 #include "qgsrequesthandler.h"
 %End
 
   public:
 
-    /** Parses the input and creates a request neutral Parameter/Value map
-     * @note not available in Python bindings
-     */
-    // virtual void parseInput() = 0;
-
-    /** Sends the map image back to the client
-     * @note not available in Python bindings
-     */
-    // virtual void setGetMapResponse( const QString& service, QImage* img, int imageQuality ) = 0;
-
-    //! @note not available in Python bindings
-    // virtual void setGetCapabilitiesResponse( const QDomDocument& doc ) = 0;
-
-    //! @note not available in Python bindings
-    // virtual void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) = 0;
-
-    /** Allow plugins to return a QgsMapServiceException*/
-    void setServiceException( const QgsMapServiceException& ex /Transfer/ );
-
-    //! @note not available in Python bindings
-    // virtual void setXmlResponse( const QDomDocument& doc ) = 0;
-
-    //! @note not available in Python bindings
-    // virtual void setXmlResponse( const QDomDocument& doc, const QString& mimeType ) = 0;
-
-    //! @note not available in Python bindings
-    // virtual void setGetPrintResponse( QByteArray* b ) = 0;
-
-    //! @note not available in Python bindings
-    // virtual bool startGetFeatureResponse( QByteArray* ba, const QString& infoFormat ) = 0;
-
-    //! @note not available in Python bindings
-    // virtual void setGetFeatureResponse( QByteArray* ba ) = 0;
+    /** Allow plugins to return a QgsServerException*/
+    void setServiceException( const QgsServerException& ex );
 
     //! @note not available in Python bindings
     void endGetFeatureResponse( QByteArray* ba );
@@ -116,12 +85,4 @@ class QgsRequestHandler  /Abstract/
 
     /** Return true if the HTTP headers were already sent to the client*/
     bool headersSent() const;
-
-
-    //! @note not available in Python bindings
-    // virtual QPair<QByteArray, QByteArray> getResponse() = 0;
-
-private:
-    /** Parses the input and creates a request neutral Parameter/Value map*/
-    void parseInput();
 };

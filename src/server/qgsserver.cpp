@@ -396,107 +396,120 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
   // Call  requestReady() method (if enabled)
   theResponse.start();
 
-  QMap<QString, QString> parameterMap = request.parameters();
-  printRequestParameters( parameterMap, logLevel );
-
-  QgsAccessControl* accessControl = sServerInterface->accessControls();
-
-  //Config file path
-  QString configFilePath = configPath( *sConfigFilePath, parameterMap );
-
-  sServerInterface->setConfigFilePath( configFilePath );
-
-  //Service parameter
-  QString serviceString = parameterMap.value( QStringLiteral( "SERVICE" ) );
-
-  if ( serviceString.isEmpty() )
-  {
-    // SERVICE not mandatory for WMS 1.3.0 GetMap & GetFeatureInfo
-    QString requestString = parameterMap.value( QStringLiteral( "REQUEST" ) );
-    if ( requestString == QLatin1String( "GetMap" ) || requestString == QLatin1String( "GetFeatureInfo" ) )
-    {
-      serviceString = QStringLiteral( "WMS" );
-    }
-  }
-
-  QString versionString = parameterMap.value( QStringLiteral( "VERSION" ) );
-
-  //possibility for client to suggest a download filename
-  QString outputFileName = parameterMap.value( QStringLiteral( "FILE_NAME" ) );
-  if ( !outputFileName.isEmpty() )
-  {
-    theRequestHandler.setHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
-  }
-
-  // Enter core services main switch
+  // Plugins may have set exceptions
   if ( !theRequestHandler.exceptionRaised() )
   {
-    // Lookup for service
+    try
+    {
+      QMap<QString, QString> parameterMap = request.parameters();
+      printRequestParameters( parameterMap, logLevel );
 
-    QgsService* service = sServiceRegistry.getService( serviceString, versionString );
-    if ( service )
-    {
-      service->executeRequest( request, theResponse );
-    }
-    else if ( serviceString == QLatin1String( "WCS" ) )
-    {
-      QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration(
-                                 configFilePath
-                                 , accessControl
-                               );
-      if ( !p )
+      QgsAccessControl* accessControl = sServerInterface->accessControls();
+
+      //Config file path
+      QString configFilePath = configPath( *sConfigFilePath, parameterMap );
+
+      sServerInterface->setConfigFilePath( configFilePath );
+
+      //Service parameter
+      QString serviceString = parameterMap.value( QStringLiteral( "SERVICE" ) );
+
+      if ( serviceString.isEmpty() )
       {
-        theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ), QStringLiteral( "Error reading the project file" ) ) );
+        // SERVICE not mandatory for WMS 1.3.0 GetMap & GetFeatureInfo
+        QString requestString = parameterMap.value( QStringLiteral( "REQUEST" ) );
+        if ( requestString == QLatin1String( "GetMap" ) || requestString == QLatin1String( "GetFeatureInfo" ) )
+        {
+          serviceString = QStringLiteral( "WMS" );
+        }
+      }
+
+      QString versionString = parameterMap.value( QStringLiteral( "VERSION" ) );
+
+      //possibility for client to suggest a download filename
+      QString outputFileName = parameterMap.value( QStringLiteral( "FILE_NAME" ) );
+      if ( !outputFileName.isEmpty() )
+      {
+        theRequestHandler.setHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
+      }
+
+      // Lookup for service
+      QgsService* service = sServiceRegistry.getService( serviceString, versionString );
+      if ( service )
+      {
+        service->executeRequest( request, theResponse );
+      }
+      else if ( serviceString == QLatin1String( "WCS" ) )
+      {
+
+        QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration(
+                                   configFilePath
+                                   , accessControl
+                                 );
+        if ( !p )
+        {
+          theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ),
+                                                 QStringLiteral( "Error reading the project file" ) ) );
+        }
+        else
+        {
+          QgsWCSServer wcsServer(
+            configFilePath
+            , sSettings
+            , parameterMap
+            , p
+            , &theRequestHandler
+            , accessControl
+          );
+          wcsServer.executeRequest();
+        }
+      }
+      else if ( serviceString == QLatin1String( "WFS" ) )
+      {
+        QgsWfsProjectParser* p = QgsConfigCache::instance()->wfsConfiguration(
+                                   configFilePath
+                                   , accessControl
+                                 );
+        if ( !p )
+        {
+          theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ),
+                                                 QStringLiteral( "Error reading the project file" ) ) );
+        }
+        else
+        {
+          QgsWfsServer wfsServer(
+            configFilePath
+            , sSettings
+            , parameterMap
+            , p
+            , &theRequestHandler
+            , accessControl
+          );
+          wfsServer.executeRequest();
+        }
       }
       else
       {
-        QgsWCSServer wcsServer(
-          configFilePath
-          , sSettings
-          , parameterMap
-          , p
-          , &theRequestHandler
-          , accessControl
-        );
-        wcsServer.executeRequest();
+        throw QgsOgcServiceException( QStringLiteral( "Service configuration error" ),
+                                      QStringLiteral( "Service unknown or unsupported" ) ) ;
       }
     }
-    else if ( serviceString == QLatin1String( "WFS" ) )
+    catch ( QgsServerException& ex )
     {
-      QgsWfsProjectParser* p = QgsConfigCache::instance()->wfsConfiguration(
-                                 configFilePath
-                                 , accessControl
-                               );
-      if ( !p )
-      {
-        theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ), QStringLiteral( "Error reading the project file" ) ) );
-      }
-      else
-      {
-        QgsWfsServer wfsServer(
-          configFilePath
-          , sSettings
-          , parameterMap
-          , p
-          , &theRequestHandler
-          , accessControl
-        );
-        wfsServer.executeRequest();
-      }
+      theResponse.write( ex );
     }
-    else
+    catch ( QgsException& ex )
     {
-      theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Service configuration error" ), QStringLiteral( "Service unknown or unsupported" ) ) );
-    } // end switch
-  } // end if not exception raised
-
+      // Internal server error
+      theResponse.sendError( 500, ex.what() );
+    }
+  }
   // Terminate the response
   theResponse.finish();
 
   // We are done using theRequestHandler in plugins, make sure we don't access
   // to a deleted request handler from Python bindings
   sServerInterface->clearRequestHandler();
-
 
   if ( logLevel == QgsMessageLog::INFO )
   {

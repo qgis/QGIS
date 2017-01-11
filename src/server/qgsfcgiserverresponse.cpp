@@ -30,16 +30,14 @@
 //
 
 QgsFcgiServerResponse::QgsFcgiServerResponse( QgsServerRequest::Method method )
+    : mMethod( method )
 {
   mBuffer.open( QIODevice::ReadWrite );
-  mHeadersSent    = false;
-  mFinished       = false;
-  mMethod         = method;
+  setDefaultHeaders();
 }
 
 QgsFcgiServerResponse::~QgsFcgiServerResponse()
 {
-
 }
 
 void QgsFcgiServerResponse::clearHeader( const QString& key )
@@ -82,7 +80,6 @@ void QgsFcgiServerResponse::sendError( int code,  const QString& message )
   }
 
   clear();
-  setDefaultHeaders();
   setReturnCode( code );
   setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/html;charset=utf-8" ) );
   write( QStringLiteral( "<html><body>%1</body></html>" ).arg( message ) );
@@ -157,6 +154,9 @@ void QgsFcgiServerResponse::clear()
   mHeaders.clear();
   mBuffer.seek( 0 );
   mBuffer.buffer().clear();
+
+  // Restore default headers
+  setDefaultHeaders();
 }
 
 void QgsFcgiServerResponse::setDefaultHeaders()
