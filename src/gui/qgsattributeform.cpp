@@ -833,7 +833,7 @@ bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields,
     {
       if ( ! eww->isValidConstraint() )
       {
-        invalidFields.append( eww->field().name() );
+        invalidFields.append( eww->field().displayName() );
 
         QString desc = eww->layer()->editFormConfig()->expressionDescription( eww->fieldIdx() );
         descriptions.append( desc );
