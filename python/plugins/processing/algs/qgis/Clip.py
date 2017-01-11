@@ -59,7 +59,7 @@ class Clip(GeoAlgorithm):
                                           self.tr('Clip layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addOutput(OutputVector(Clip.OUTPUT, self.tr('Clipped')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         source_layer = dataobjects.getObjectFromUri(
             self.getParameterValue(Clip.INPUT))
         mask_layer = dataobjects.getObjectFromUri(
@@ -137,10 +137,10 @@ class Clip(GeoAlgorithm):
                     continue
 
                 if single_clip_feature:
-                    progress.setPercentage(int(current * total))
+                    feedback.setProgress(int(current * total))
 
             if not single_clip_feature:
                 # coarse progress report for multiple clip geometries
-                progress.setPercentage(100.0 * i / len(clip_geoms))
+                feedback.setProgress(100.0 * i / len(clip_geoms))
 
         del writer

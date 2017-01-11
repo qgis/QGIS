@@ -67,7 +67,7 @@ class hugeFileGroundClassify(LAStoolsAlgorithm):
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
 
         # first we tile the data with option '-reversible'
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
@@ -85,7 +85,7 @@ class hugeFileGroundClassify(LAStoolsAlgorithm):
         commands.append("-o")
         commands.append("hugeFileGroundClassify.laz")
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we ground classify the reversible tiles
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
@@ -106,7 +106,7 @@ class hugeFileGroundClassify(LAStoolsAlgorithm):
         commands.append("-olaz")
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we reverse the tiling
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
@@ -115,4 +115,4 @@ class hugeFileGroundClassify(LAStoolsAlgorithm):
         commands.append("-reverse_tiling")
         self.addParametersPointOutputCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

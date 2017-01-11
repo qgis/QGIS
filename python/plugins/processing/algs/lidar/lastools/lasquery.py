@@ -48,7 +48,7 @@ class lasquery(LAStoolsAlgorithm):
         self.addParameter(ParameterExtent(self.AOI, self.tr('area of interest'), optional=False))
         self.addParametersAdditionalGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
 
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasview")]
         self.addParametersVerboseCommands(commands)
@@ -77,4 +77,4 @@ class lasquery(LAStoolsAlgorithm):
         commands.append(aoiCoords[3])
         self.addParametersAdditionalCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

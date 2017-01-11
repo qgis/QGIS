@@ -95,7 +95,7 @@ class DinfDistDown(GeoAlgorithm):
         self.addOutput(OutputRaster(self.DIST_DOWN_GRID,
                                     self.tr('D-Infinity Drop to Stream Grid')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = []
         commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
@@ -128,4 +128,4 @@ class DinfDistDown(GeoAlgorithm):
         commands.append('-dd')
         commands.append(self.getOutputValue(self.DIST_DOWN_GRID))
 
-        TauDEMUtils.executeTauDEM(commands, progress)
+        TauDEMUtils.executeTauDEM(commands, feedback)

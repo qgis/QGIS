@@ -141,7 +141,7 @@ class ShortestPathPointToLayer(GeoAlgorithm):
                                     self.tr('Shortest path'),
                                     datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_VECTOR))
         startPoint = self.getParameterValue(self.START_POINT)
@@ -206,7 +206,7 @@ class ShortestPathPointToLayer(GeoAlgorithm):
                                   iface.mapCanvas().hasCrsTransformEnabled(),
                                   tolerance)
 
-        progress.setInfo(self.tr('Loading end points...'))
+        feedback.pushInfo(self.tr('Loading end points...'))
         request = QgsFeatureRequest()
         request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
         features = vector.features(endPoints, request)
@@ -216,10 +216,10 @@ class ShortestPathPointToLayer(GeoAlgorithm):
         for f in features:
             points.append(f.geometry().asPoint())
 
-        progress.setInfo(self.tr('Building graph...'))
+        feedback.pushInfo(self.tr('Building graph...'))
         snappedPoints = director.makeGraph(builder, points)
 
-        progress.setInfo(self.tr('Calculating shortest paths...'))
+        feedback.pushInfo(self.tr('Calculating shortest paths...'))
         graph = builder.graph()
 
         idxStart = graph.findVertex(snappedPoints[0])
@@ -232,7 +232,7 @@ class ShortestPathPointToLayer(GeoAlgorithm):
 
             if tree[idxEnd] == -1:
                 msg = self.tr('There is no route from start point ({}) to end point ({}).'.format(startPoint.toString(), points[i].toString()))
-                progress.setText(msg)
+                feedback.setProgressText(msg)
                 ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, msg)
                 continue
 
@@ -255,6 +255,6 @@ class ShortestPathPointToLayer(GeoAlgorithm):
 
             route[:] = []
 
-            progress.setPercentage(int(i * total))
+            feedback.setProgress(int(i * total))
 
         del writer

@@ -146,7 +146,7 @@ class ServiceAreaFromLayer(GeoAlgorithm):
                                     self.tr('Service area (convex hull)'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_VECTOR))
         startPoints = dataobjects.getObjectFromUri(
@@ -212,7 +212,7 @@ class ServiceAreaFromLayer(GeoAlgorithm):
                                   iface.mapCanvas().hasCrsTransformEnabled(),
                                   tolerance)
 
-        progress.setInfo(self.tr('Loading start points...'))
+        feedback.pushInfo(self.tr('Loading start points...'))
         request = QgsFeatureRequest()
         request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
         features = vector.features(startPoints, request)
@@ -220,10 +220,10 @@ class ServiceAreaFromLayer(GeoAlgorithm):
         for f in features:
             points.append(f.geometry().asPoint())
 
-        progress.setInfo(self.tr('Building graph...'))
+        feedback.pushInfo(self.tr('Building graph...'))
         snappedPoints = director.makeGraph(builder, points)
 
-        progress.setInfo(self.tr('Calculating service areas...'))
+        feedback.pushInfo(self.tr('Calculating service areas...'))
         graph = builder.graph()
 
         vertices = []
@@ -279,7 +279,7 @@ class ServiceAreaFromLayer(GeoAlgorithm):
             upperBoundary[:] = []
             lowerBoundary[:] = []
 
-            progress.setPercentage(int(i * total))
+            feedback.setProgress(int(i * total))
 
         del writerPoints
         del writerPolygons

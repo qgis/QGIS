@@ -99,7 +99,7 @@ class GridSurfaceCreate(FusionAlgorithm):
         advance_modifiers.isAdvanced = True
         self.addParameter(advance_modifiers)
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'GridSurfaceCreate.exe')]
         commands.append('/verbose')
         spike = self.getParameterValue(self.SPIKE)
@@ -137,4 +137,4 @@ class GridSurfaceCreate(FusionAlgorithm):
         else:
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
-        FusionUtils.runFusion(commands, progress)
+        FusionUtils.runFusion(commands, feedback)

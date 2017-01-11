@@ -72,7 +72,7 @@ class PeukerDouglas(GeoAlgorithm):
         self.addOutput(OutputRaster(self.STREAM_SOURCE_GRID,
                                     self.tr('Stream Source Grid')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = []
         commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
@@ -94,4 +94,4 @@ class PeukerDouglas(GeoAlgorithm):
         commands.append('-ss')
         commands.append(self.getOutputValue(self.STREAM_SOURCE_GRID))
 
-        TauDEMUtils.executeTauDEM(commands, progress)
+        TauDEMUtils.executeTauDEM(commands, feedback)

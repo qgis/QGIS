@@ -74,7 +74,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection stratified'), True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.INPUT)
 
         layer = dataobjects.getObjectFromUri(filename)
@@ -115,7 +115,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
                     if attrs[index] == i:
                         FIDs.append(inFeat.id())
                     current += 1
-                    progress.setPercentage(int(current * total))
+                    feedback.setProgress(int(current * total))
 
                 if method == 1:
                     selValue = int(round(value * len(FIDs), 0))

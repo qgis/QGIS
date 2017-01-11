@@ -66,7 +66,7 @@ class lastilePro(LAStoolsAlgorithm):
         self.addParametersAdditionalGUI()
         self.addParametersVerboseGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
@@ -91,4 +91,4 @@ class lastilePro(LAStoolsAlgorithm):
         self.addParametersPointOutputFormatCommands(commands)
         self.addParametersAdditionalCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

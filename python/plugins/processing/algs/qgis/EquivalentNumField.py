@@ -49,7 +49,7 @@ class EquivalentNumField(GeoAlgorithm):
                                               self.tr('Class field'), self.INPUT))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Layer with index field')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         fieldname = self.getParameterValue(self.FIELD)
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = dataobjects.getObjectFromUri(
@@ -65,7 +65,7 @@ class EquivalentNumField(GeoAlgorithm):
         features = vector.features(vlayer)
         total = 100.0 / len(features)
         for current, feature in enumerate(features):
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
             inGeom = feature.geometry()
             outFeat.setGeometry(inGeom)
             atMap = feature.attributes()

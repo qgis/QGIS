@@ -9,7 +9,7 @@ from operator import itemgetter
 
 To_keep = int(To_keep)
 if To_keep < 1:
-    progress.setInfo("'To keep' value has been modified to be at least 1.")
+    feedback.pushInfo("'To keep' value has been modified to be at least 1.")
     To_keep = 1
 
 
@@ -21,7 +21,7 @@ writer = processing.VectorWriter(Results, None, polyPrder.fields(),
 
 
 for n, feat in enumerate(processing.features(polyLayer)):
-    progress.setPercentage(int(100 * n / count))
+    feedback.setProgress(int(100 * n / count))
     geom = feat.geometry()
     if geom.isMultipart():
         featres = feat

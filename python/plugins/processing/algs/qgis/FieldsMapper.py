@@ -93,7 +93,7 @@ class FieldsMapper(GeoAlgorithm):
                                     self.tr('Refactored'),
                                     base_input=self.INPUT_LAYER))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = self.getParameterValue(self.INPUT_LAYER)
         mapping = self.getParameterValue(self.FIELDS_MAPPING)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
@@ -161,7 +161,7 @@ class FieldsMapper(GeoAlgorithm):
 
             writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer
 

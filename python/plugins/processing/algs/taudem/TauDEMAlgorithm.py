@@ -97,7 +97,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
                                            self.tr('Could not load TauDEM algorithm: {}\n{}'.format(self.descriptionFile, line)))
                     raise e
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = []
         commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
@@ -131,4 +131,4 @@ class TauDEMAlgorithm(GeoAlgorithm):
             commands.append(out.name)
             commands.append(out.value)
 
-        TauDEMUtils.executeTauDEM(commands, progress)
+        TauDEMUtils.executeTauDEM(commands, feedback)

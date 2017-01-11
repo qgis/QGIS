@@ -69,7 +69,7 @@ class Intersection(GeoAlgorithm):
                                           self.tr('Intersect layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersection')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         vlayerA = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         vlayerB = dataobjects.getObjectFromUri(
@@ -84,7 +84,7 @@ class Intersection(GeoAlgorithm):
         selectionA = vector.features(vlayerA)
         total = 100.0 / len(selectionA)
         for current, inFeatA in enumerate(selectionA):
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
             geom = inFeatA.geometry()
             atMapA = inFeatA.attributes()
             intersects = index.intersects(geom.boundingBox())

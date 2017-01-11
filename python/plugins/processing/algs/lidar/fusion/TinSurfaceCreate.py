@@ -70,7 +70,7 @@ class TinSurfaceCreate(FusionAlgorithm):
         return_sel.isAdvanced = True
         self.addParameter(return_sel)
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'TINSurfaceCreate.exe')]
         commands.append('/verbose')
         class_var = self.getParameterValue(self.CLASS)
@@ -93,7 +93,7 @@ class TinSurfaceCreate(FusionAlgorithm):
             commands.append(self.getParameterValue(self.INPUT))
         else:
             commands.extend(files)
-        FusionUtils.runFusion(commands, progress)
+        FusionUtils.runFusion(commands, feedback)
         commands = [os.path.join(FusionUtils.FusionPath(), 'DTM2ASCII.exe')]
         commands.append('/raster')
         commands.append(outFile)

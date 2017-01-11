@@ -65,7 +65,7 @@ class LAStoolsUtils(object):
         return folder
 
     @staticmethod
-    def runLAStools(commands, progress):
+    def runLAStools(commands, feedback):
         loglines = []
         commandline = " ".join(commands)
         loglines.append(QCoreApplication.translate("LAStoolsUtils", "LAStools command line"))
@@ -75,5 +75,5 @@ class LAStoolsUtils(object):
                                 stderr=subprocess.STDOUT, universal_newlines=False).stdout
         for line in iter(proc.readline, ""):
             loglines.append(line)
-            progress.setConsoleInfo(line)
+            feedback.pushConsoleInfo(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)

@@ -60,7 +60,7 @@ class Translate(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Translated')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
 
@@ -89,6 +89,6 @@ class Translate(GeoAlgorithm):
                 output_feature.setGeometry(output_geometry)
 
             writer.addFeature(output_feature)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

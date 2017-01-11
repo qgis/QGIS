@@ -85,7 +85,7 @@ class GridNet(GeoAlgorithm):
         self.addOutput(OutputRaster(self.STRAHLER_GRID,
                                     self.tr('Strahler Network Order Grid')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = []
         commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
@@ -118,4 +118,4 @@ class GridNet(GeoAlgorithm):
         commands.append('-gord')
         commands.append(self.getOutputValue(self.STRAHLER_GRID))
 
-        TauDEMUtils.executeTauDEM(commands, progress)
+        TauDEMUtils.executeTauDEM(commands, feedback)

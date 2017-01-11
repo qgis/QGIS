@@ -94,7 +94,7 @@ class DropAnalysis(GeoAlgorithm):
         self.addOutput(OutputFile(self.DROP_ANALYSIS_FILE,
                                   self.tr('D-Infinity Drop to Stream Grid')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = []
         commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
@@ -125,4 +125,4 @@ class DropAnalysis(GeoAlgorithm):
         commands.append('-drp')
         commands.append(self.getOutputValue(self.DROP_ANALYSIS_FILE))
 
-        TauDEMUtils.executeTauDEM(commands, progress)
+        TauDEMUtils.executeTauDEM(commands, feedback)

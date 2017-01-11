@@ -48,7 +48,7 @@ class lasindex(LAStoolsAlgorithm):
                                            self.tr("is mobile or terrestrial LiDAR (not airborne)"), False))
         self.addParametersAdditionalGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex.exe")]
         else:
@@ -64,4 +64,4 @@ class lasindex(LAStoolsAlgorithm):
             commands.append("-100")
         self.addParametersAdditionalCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

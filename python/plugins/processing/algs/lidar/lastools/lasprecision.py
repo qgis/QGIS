@@ -48,7 +48,7 @@ class lasprecision(LAStoolsAlgorithm):
         self.addOutput(OutputFile(lasprecision.OUTPUT, self.tr("Output ASCII file")))
         self.addParametersAdditionalGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasprecision")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
@@ -56,4 +56,4 @@ class lasprecision(LAStoolsAlgorithm):
         commands.append(self.getOutputValue(lasprecision.OUTPUT))
         self.addParametersAdditionalCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

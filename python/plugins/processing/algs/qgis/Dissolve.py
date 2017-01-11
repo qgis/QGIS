@@ -66,7 +66,7 @@ class Dissolve(GeoAlgorithm):
                                               self.tr('Unique ID fields'), Dissolve.INPUT, optional=True, multiple=True))
         self.addOutput(OutputVector(Dissolve.OUTPUT, self.tr('Dissolved')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         useField = not self.getParameterValue(Dissolve.DISSOLVE_ALL)
         field_names = self.getParameterValue(Dissolve.FIELD)
         vlayerA = dataobjects.getObjectFromUri(
@@ -87,7 +87,7 @@ class Dissolve(GeoAlgorithm):
             # we dissolve geometries in blocks using unaryUnion
             geom_queue = []
             for current, inFeat in enumerate(features):
-                progress.setPercentage(int(current * total))
+                feedback.setProgress(int(current * total))
                 if first:
                     outFeat.setAttributes(inFeat.attributes())
                     first = False
@@ -161,7 +161,7 @@ class Dissolve(GeoAlgorithm):
             for key, value in list(geometry_dict.items()):
                 outFeat = QgsFeature()
                 nElement += 1
-                progress.setPercentage(int(nElement * 100 / nFeat))
+                feedback.setProgress(int(nElement * 100 / nFeat))
                 try:
                     tmpOutGeom = QgsGeometry.unaryUnion(value)
                 except:

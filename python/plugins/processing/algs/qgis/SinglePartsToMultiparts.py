@@ -61,7 +61,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Multipart')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         fieldName = self.getParameterValue(self.FIELD)
 
@@ -91,7 +91,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
             inGeom = feature.geometry()
             collection_geom[key].append(inGeom)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         for key, geoms in collection_geom.items():
             outFeat.setAttributes(collection_attrs[key])

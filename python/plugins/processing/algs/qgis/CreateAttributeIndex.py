@@ -52,7 +52,7 @@ class CreateAttributeIndex(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Indexed layer'), True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         file_name = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(file_name)
         field = self.getParameterValue(self.FIELD)
@@ -60,14 +60,14 @@ class CreateAttributeIndex(GeoAlgorithm):
 
         field_index = layer.fields().lookupField(field)
         if field_index < 0 or layer.fields().fieldOrigin(field_index) != QgsFields.OriginProvider:
-            progress.setInfo(self.tr('Can not create attribute index on "{}"').format(field))
+            feedback.pushInfo(self.tr('Can not create attribute index on "{}"').format(field))
         else:
             provider_index = layer.fields().fieldOriginIndex(field_index)
             if provider.capabilities() & QgsVectorDataProvider.CreateAttributeIndex:
                 if not provider.createAttributeIndex(provider_index):
-                    progress.setInfo(self.tr('Could not create attribute index'))
+                    feedback.pushInfo(self.tr('Could not create attribute index'))
             else:
-                progress.setInfo(self.tr("Layer's data provider does not support "
-                                         "creating attribute indexes"))
+                feedback.pushInfo(self.tr("Layer's data provider does not support "
+                                          "creating attribute indexes"))
 
         self.setOutputValue(self.OUTPUT, file_name)

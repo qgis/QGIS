@@ -67,7 +67,7 @@ class SumLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Line length'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         lineLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.LINES))
         polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
         lengthFieldName = self.getParameterValue(self.LEN_FIELD)
@@ -128,6 +128,6 @@ class SumLines(GeoAlgorithm):
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

@@ -56,7 +56,7 @@ class PointsDisplacement(GeoAlgorithm):
                                            self.tr('Horizontal distribution for two point case')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Displaced'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         radius = self.getParameterValue(self.DISTANCE)
         horizontal = self.getParameterValue(self.HORIZONTAL)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
@@ -78,11 +78,11 @@ class PointsDisplacement(GeoAlgorithm):
             else:
                 duplicates[wkt].extend([f.id()])
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         current = 0
         total = 100.0 / len(duplicates)
-        progress.setPercentage(0)
+        feedback.setProgress(0)
 
         fullPerimeter = 2 * math.pi
 
@@ -117,6 +117,6 @@ class PointsDisplacement(GeoAlgorithm):
                     currentAngle += angleStep
 
             current += 1
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

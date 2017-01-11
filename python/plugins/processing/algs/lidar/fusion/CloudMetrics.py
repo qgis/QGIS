@@ -70,7 +70,7 @@ class CloudMetrics(FusionAlgorithm):
         htmin.isAdvanced = True
         self.addParameter(htmin)
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'CloudMetrics.exe')]
         commands.append('/verbose')
         above = self.getParameterValue(self.ABOVE)
@@ -92,4 +92,4 @@ class CloudMetrics(FusionAlgorithm):
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
         commands.append(self.getOutputValue(self.OUTPUT))
-        FusionUtils.runFusion(commands, progress)
+        FusionUtils.runFusion(commands, feedback)

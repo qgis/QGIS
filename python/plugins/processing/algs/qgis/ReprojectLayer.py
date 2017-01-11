@@ -59,7 +59,7 @@ class ReprojectLayer(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Reprojected')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         crsId = self.getParameterValue(self.TARGET_CRS)
         targetCrs = QgsCoordinateReferenceSystem()
@@ -81,7 +81,7 @@ class ReprojectLayer(GeoAlgorithm):
             outFeat.setAttributes(f.attributes())
             writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer
 

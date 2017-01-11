@@ -45,7 +45,7 @@ class AutoincrementalField(GeoAlgorithm):
                                           self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Incremented')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = \
             dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
@@ -57,7 +57,7 @@ class AutoincrementalField(GeoAlgorithm):
         features = vector.features(vlayer)
         total = 100.0 / len(features)
         for current, feat in enumerate(features):
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
             geom = feat.geometry()
             outFeat.setGeometry(geom)
             attrs = feat.attributes()

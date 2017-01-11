@@ -128,7 +128,7 @@ class Relief(GeoAlgorithm):
         self.addOutput(OutputTable(self.FREQUENCY_DISTRIBUTION,
                                    self.tr('Frequency distribution')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         inputFile = self.getParameterValue(self.INPUT_LAYER)
         zFactor = self.getParameterValue(self.Z_FACTOR)
         automaticColors = self.getParameterValue(self.AUTO_COLORS)

@@ -56,7 +56,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         interval = self.getParameterValue(self.INTERVAL)
 
@@ -76,7 +76,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
                 feature.setGeometry(new_geometry)
             writer.addFeature(feature)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer
 

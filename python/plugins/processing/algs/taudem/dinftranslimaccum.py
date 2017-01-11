@@ -87,7 +87,7 @@ class DinfTransLimAccum(GeoAlgorithm):
         self.addOutput(OutputRaster(self.DEPOSITION_GRID,
                                     self.tr('Deposition Grid')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = []
         commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
@@ -118,4 +118,4 @@ class DinfTransLimAccum(GeoAlgorithm):
         commands.append('-tdep')
         commands.append(self.getOutputValue(self.DEPOSITION_GRID))
 
-        TauDEMUtils.executeTauDEM(commands, progress)
+        TauDEMUtils.executeTauDEM(commands, feedback)

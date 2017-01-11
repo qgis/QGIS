@@ -46,7 +46,7 @@ class Csv2Grid(FusionAlgorithm):
         self.addParameter(ParameterString(self.COLUMN, self.tr('Column')))
         self.addOutput(OutputFile(self.OUTPUT, self.tr('Raster Output file'), 'asc'))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'CSV2Grid.exe')]
         commands.append('/verbose')
         files = self.getParameterValue(self.INPUT).split(';')
@@ -57,4 +57,4 @@ class Csv2Grid(FusionAlgorithm):
             commands.append(FusionUtils.tempFileListFilepath())
         commands.append(self.getParameterValue(self.COLUMN))
         commands.append(self.getOutputValue(self.OUTPUT))
-        FusionUtils.runFusion(commands, progress)
+        FusionUtils.runFusion(commands, feedback)

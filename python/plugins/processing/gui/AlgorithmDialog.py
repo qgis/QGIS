@@ -196,7 +196,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 self.tr('<b>Algorithm %s starting...</b>') % self.alg.name)
 
             if self.iterateParam:
-                if runalgIterating(self.alg, self.iterateParam, self):
+                if runalgIterating(self.alg, self.iterateParam, self.feedback):
                     self.finish()
                 else:
                     QApplication.restoreOverrideCursor()
@@ -206,7 +206,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 if command:
                     ProcessingLog.addToLog(
                         ProcessingLog.LOG_ALGORITHM, command)
-                if runalg(self.alg, self):
+                if runalg(self.alg, self.feedback):
                     self.finish()
                 else:
                     QApplication.restoreOverrideCursor()
@@ -228,7 +228,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
         if self.iterateParam is None:
-            if not handleAlgorithmResults(self.alg, self, not keepOpen):
+            if not handleAlgorithmResults(self.alg, self.feedback, not keepOpen):
                 self.resetGUI()
                 return
 

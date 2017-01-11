@@ -57,7 +57,7 @@ class SelectByAttributeSum(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute sum)'), True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         fileName = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(fileName)
         fieldName = self.getParameterValue(self.FIELD)
@@ -79,7 +79,7 @@ class SelectByAttributeSum(GeoAlgorithm):
         while not completed:
             intersected = idx.intersects(geom.boundingBox())
             if len(intersected) < 0:
-                progress.setInfo(self.tr('No adjacent features found.'))
+                feedback.pushInfo(self.tr('No adjacent features found.'))
                 break
 
             req = QgsFeatureRequest().setFilterFids(intersected).setSubsetOfAttributes([fieldName], layer.fields())

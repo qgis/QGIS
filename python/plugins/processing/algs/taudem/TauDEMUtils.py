@@ -84,13 +84,13 @@ class TauDEMUtils(object):
             os.path.join(os.path.dirname(__file__), 'description'))
 
     @staticmethod
-    def executeTauDEM(command, progress):
+    def executeTauDEM(command, feedback):
         loglines = []
         loglines.append(TauDEMUtils.tr('TauDEM execution console output'))
         command = escapeAndJoin(command)
         fused_command = ''.join(['"%s" ' % c for c in command])
-        progress.setInfo(TauDEMUtils.tr('TauDEM command:'))
-        progress.setCommand(fused_command.replace('" "', ' ').strip('"'))
+        feedback.pushInfo(TauDEMUtils.tr('TauDEM command:'))
+        feedback.pushCommandInfo(fused_command.replace('" "', ' ').strip('"'))
         proc = subprocess.Popen(
             fused_command,
             shell=True,
@@ -100,7 +100,7 @@ class TauDEMUtils(object):
             universal_newlines=True,
         ).stdout
         for line in iter(proc.readline, ''):
-            progress.setConsoleInfo(line)
+            feedback.pushConsoleInfo(line)
             loglines.append(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 

@@ -102,7 +102,7 @@ class lascanopyPro(LAStoolsAlgorithm):
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascanopy")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
@@ -163,4 +163,4 @@ class lascanopyPro(LAStoolsAlgorithm):
         self.addParametersAdditionalCommands(commands)
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

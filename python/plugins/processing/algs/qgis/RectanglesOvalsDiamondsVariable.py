@@ -88,7 +88,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                                     self.tr('Output'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
         shape = self.getParameterValue(self.SHAPE)

@@ -66,7 +66,7 @@ class ExportGeometryInfo(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Added geom info')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         method = self.getParameterValue(self.METHOD)
@@ -150,6 +150,6 @@ class ExportGeometryInfo(GeoAlgorithm):
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

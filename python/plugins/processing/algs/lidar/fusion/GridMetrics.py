@@ -100,7 +100,7 @@ class GridMetrics(FusionAlgorithm):
         class_var.isAdvanced = True
         self.addParameter(class_var)
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'GridMetrics.exe')]
         commands.append('/verbose')
         outlier = self.getParameterValue(self.OUTLIER)
@@ -125,7 +125,7 @@ class GridMetrics(FusionAlgorithm):
         else:
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
-        FusionUtils.runFusion(commands, progress)
+        FusionUtils.runFusion(commands, feedback)
         basePath = self.getOutputValue(self.OUTPUT_CSV_ELEVATION)
         basePath = os.path.join(os.path.dirname(basePath), os.path.splitext(os.path.basename(basePath))[0])
         self.setOutputValue(self.OUTPUT_CSV_ELEVATION, basePath + '_all_returns_elevation_stats.csv')

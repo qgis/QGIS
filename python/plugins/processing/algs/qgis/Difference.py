@@ -60,7 +60,7 @@ class Difference(GeoAlgorithm):
                                           self.tr('Difference layer')))
         self.addOutput(OutputVector(Difference.OUTPUT, self.tr('Difference')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layerA = dataobjects.getObjectFromUri(
             self.getParameterValue(Difference.INPUT))
         layerB = dataobjects.getObjectFromUri(
@@ -97,6 +97,6 @@ class Difference(GeoAlgorithm):
                                        self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
                 continue
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

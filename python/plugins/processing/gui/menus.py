@@ -220,10 +220,10 @@ def _executeAlgorithm(alg):
                 pass
             canvas.setMapTool(prevMapTool)
     else:
-        progress = MessageBarProgress()
-        runalg(alg, progress)
-        handleAlgorithmResults(alg, progress)
-        progress.close()
+        feedback = MessageBarProgress()
+        runalg(alg, feedback)
+        handleAlgorithmResults(alg, feedback)
+        feedback.close()
 
 
 def getMenu(name, parent):
