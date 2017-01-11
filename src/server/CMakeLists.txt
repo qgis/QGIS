@@ -38,7 +38,6 @@ SET ( qgis_mapserv_SRCS
   qgsremotedatasourcebuilder.cpp
   qgssentdatasourcebuilder.cpp
   qgsserverlogger.cpp
-  qgsmapserverutils.cpp
   qgswcsprojectparser.cpp
   qgswfsprojectparser.cpp
   qgswmsconfigparser.cpp
