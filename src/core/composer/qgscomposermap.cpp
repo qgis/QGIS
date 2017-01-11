@@ -1834,6 +1834,13 @@ QgsExpressionContext QgsComposerMap::createExpressionContext() const
   QgsGeometry centerPoint = QgsGeometry::fromPoint( extent.center() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent_center" ), QVariant::fromValue( centerPoint ), true ) );
 
+  if ( mComposition )
+  {
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs" ), mComposition->mapSettings().destinationCrs().authid(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_definition" ), mComposition->mapSettings().destinationCrs().toProj4(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_units" ), QgsUnitTypes::toString( mComposition->mapSettings().mapUnits() ), true ) );
+  }
+
   context.appendScope( scope );
 
   return context;

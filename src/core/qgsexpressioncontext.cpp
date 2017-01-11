@@ -274,6 +274,17 @@ QVariant QgsExpressionContext::variable( const QString& name ) const
   return scope ? scope->variable( name ) : QVariant();
 }
 
+QVariantMap QgsExpressionContext::variablesToMap() const
+{
+  QStringList names = variableNames();
+  QVariantMap m;
+  Q_FOREACH ( const QString& name, names )
+  {
+    m.insert( name, variable( name ) );
+  }
+  return m;
+}
+
 bool QgsExpressionContext::isHighlightedVariable( const QString &name ) const
 {
   return mHighlightedVariables.contains( name );
@@ -598,6 +609,41 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
 
 };
 
+class GetComposerItemVariables : public QgsScopedExpressionFunction
+{
+  public:
+    GetComposerItemVariables( const QgsComposition* c )
+        : QgsScopedExpressionFunction( QStringLiteral( "item_variables" ), QgsExpression::ParameterList() << QgsExpression::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "Composition" ) )
+        , mComposition( c )
+    {}
+
+    virtual QVariant func( const QVariantList& values, const QgsExpressionContext*, QgsExpression* ) override
+    {
+      if ( !mComposition )
+        return QVariant();
+
+      QString id = values.at( 0 ).toString().toLower();
+
+      const QgsComposerItem* item = mComposition->getComposerItemById( id );
+      if ( !item )
+        return QVariant();
+
+      QgsExpressionContext c = item->createExpressionContext();
+
+      return c.variablesToMap();
+    }
+
+    QgsScopedExpressionFunction* clone() const override
+    {
+      return new GetComposerItemVariables( mComposition );
+    }
+
+  private:
+
+    const QgsComposition* mComposition;
+
+};
+
 ///@endcond
 
 QgsExpressionContextScope* QgsExpressionContextUtils::projectScope( const QgsProject* project )
@@ -757,6 +803,10 @@ QgsExpressionContextScope* QgsExpressionContextUtils::mapSettingsScope( const Qg
   QgsGeometry centerPoint = QgsGeometry::fromPoint( mapSettings.visibleExtent().center() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent_center" ), QVariant::fromValue( centerPoint ), true ) );
 
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs" ), mapSettings.destinationCrs().authid(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_definition" ), mapSettings.destinationCrs().toProj4(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_units" ), QgsUnitTypes::toString( mapSettings.mapUnits() ), true ) );
+
   return scope;
 }
 
@@ -806,6 +856,9 @@ QgsExpressionContextScope *QgsExpressionContextUtils::compositionScope( const Qg
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pageheight" ), composition->paperHeight(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pagewidth" ), composition->paperWidth(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_dpi" ), composition->printResolution(), true ) );
+
+
+  scope->addFunction( QStringLiteral( "item_variables" ), new GetComposerItemVariables( composition ) );
 
   return scope;
 }
@@ -959,6 +1012,7 @@ QgsExpressionContext QgsExpressionContextUtils::createFeatureBasedContext( const
 void QgsExpressionContextUtils::registerContextFunctions()
 {
   QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );
+  QgsExpression::registerFunction( new GetComposerItemVariables( nullptr ) );
 }
 
 bool QgsScopedExpressionFunction::usesGeometry( const QgsExpression::NodeFunction* node ) const
