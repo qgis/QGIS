@@ -71,25 +71,25 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
 
   switch ( type )
   {
-    case QgsGrassSelect::VECTOR:
+    case QgsGrassSelect::Vector:
       setWindowTitle( tr( "Select GRASS Vector Layer" ) );
       break;
 
-    case QgsGrassSelect::RASTER:
+    case QgsGrassSelect::Raster:
       /* Remove layer combo box */
       Layer->hide();
       elayer->hide();
       setWindowTitle( tr( "Select GRASS Raster Layer" ) );
       break;
 
-    case QgsGrassSelect::MAPCALC:
+    case QgsGrassSelect::MapCalc:
       /* Remove layer combo box */
       Layer->hide();
       elayer->hide();
       setWindowTitle( tr( "Select GRASS mapcalc schema" ) );
       break;
 
-    case QgsGrassSelect::MAPSET:
+    case QgsGrassSelect::MapSet:
       Layer->hide();
       elayer->hide();
       MapName->hide();
@@ -149,7 +149,7 @@ void QgsGrassSelect::setLocations()
     }
 
     // if type is MAPSET check also if at least one mapset owned by user exists
-    if ( QgsGrassSelect::type == QgsGrassSelect::MAPSET )
+    if ( QgsGrassSelect::type == QgsGrassSelect::MapSet )
     {
       bool exists = false;
 
@@ -252,7 +252,7 @@ void QgsGrassSelect::setMaps()
   int idx = 0;
   int sel = -1;
 
-  if ( type == VECTOR ) // vector
+  if ( type == Vector ) // vector
   {
     QStringList list = QgsGrass::vectors( egisdbase->text(),
                                           elocation->currentText(), emapset->currentText() );
@@ -266,7 +266,7 @@ void QgsGrassSelect::setMaps()
     }
 
   }
-  else if ( type == RASTER )
+  else if ( type == Raster )
   {
     /* add cells */
     QStringList list = QgsGrass::rasters( egisdbase->text(),
@@ -299,7 +299,7 @@ void QgsGrassSelect::setMaps()
       idx++;
     }
   }
-  else if ( type == MAPCALC )
+  else if ( type == MapCalc )
   {
     QDir md = QDir( ldpath + "/mapcalc/" );
     md.setFilter( QDir::Files );
@@ -339,7 +339,7 @@ void QgsGrassSelect::setLayers()
 
   elayer->clear();
 
-  if ( type != VECTOR )
+  if ( type != Vector )
     return;
   if ( emap->count() < 1 )
     return;
@@ -437,14 +437,14 @@ void QgsGrassSelect::accept()
 
   map = emap->currentText().trimmed();
 
-  if ( type != QgsGrassSelect::MAPSET && map.isEmpty() )
+  if ( type != QgsGrassSelect::MapSet && map.isEmpty() )
   {
     QString msg = tr( "Select a map." );
     QMessageBox::warning( 0, tr( "No map" ), msg );
     return;
   }
 
-  if ( type == QgsGrassSelect::VECTOR )
+  if ( type == QgsGrassSelect::Vector )
   {
     if ( elayer->count() == 0 )
     {
@@ -456,20 +456,20 @@ void QgsGrassSelect::accept()
     layer = elayer->currentText().trimmed();
     lastLayer = layer;
   }
-  else if ( type == QgsGrassSelect::RASTER )
+  else if ( type == QgsGrassSelect::Raster )
   {
     lastRasterMap = map;
     if ( map.indexOf( QLatin1String( " (GROUP)" ) ) != -1 )
     {
       map.remove( QStringLiteral( " (GROUP)" ) );
-      selectedType = QgsGrassSelect::GROUP;
+      selectedType = QgsGrassSelect::Group;
     }
     else
     {
-      selectedType = QgsGrassSelect::RASTER;
+      selectedType = QgsGrassSelect::Raster;
     }
   }
-  else if ( type == QgsGrassSelect::MAPCALC )
+  else if ( type == QgsGrassSelect::MapCalc )
   {
     lastMapcalc = map;
   }

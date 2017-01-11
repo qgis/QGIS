@@ -45,14 +45,14 @@
 QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
-  if ( index.column() == QgsDb2TableModel::dbtmSql )
+  if ( index.column() == QgsDb2TableModel::DbtmSql )
   {
     QLineEdit *le = new QLineEdit( parent );
     le->setText( index.data( Qt::DisplayRole ).toString() );
     return le;
   }
 
-  if ( index.column() == QgsDb2TableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
+  if ( index.column() == QgsDb2TableModel::DbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
     Q_FOREACH ( QgsWkbTypes::Type type,
@@ -71,7 +71,7 @@ QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyle
     return cb;
   }
 
-  if ( index.column() == QgsDb2TableModel::dbtmPkCol )
+  if ( index.column() == QgsDb2TableModel::DbtmPkCol )
   {
     QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
 
@@ -84,7 +84,7 @@ QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyle
     }
   }
 
-  if ( index.column() == QgsDb2TableModel::dbtmSrid )
+  if ( index.column() == QgsDb2TableModel::DbtmSrid )
   {
     QLineEdit *le = new QLineEdit( parent );
     le->setValidator( new QIntValidator( -1, 999999, parent ) );
@@ -100,7 +100,7 @@ void QgsDb2SourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMod
   QComboBox *cb = qobject_cast<QComboBox *>( editor );
   if ( cb )
   {
-    if ( index.column() == QgsDb2TableModel::dbtmType )
+    if ( index.column() == QgsDb2TableModel::DbtmType )
     {
       QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->currentData().toInt();
 
@@ -108,7 +108,7 @@ void QgsDb2SourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMod
       model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::displayString( type ) : tr( "Select..." ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
-    else if ( index.column() == QgsDb2TableModel::dbtmPkCol )
+    else if ( index.column() == QgsDb2TableModel::DbtmPkCol )
     {
       model->setData( index, cb->currentText() );
       model->setData( index, cb->currentText(), Qt::UserRole + 2 );
@@ -355,31 +355,31 @@ void QgsDb2SourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QSt
   }
   else if ( text == tr( "Schema" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsDb2TableModel::dbtmSchema );
+    mProxyModel.setFilterKeyColumn( QgsDb2TableModel::DbtmSchema );
   }
   else if ( text == tr( "Table" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsDb2TableModel::dbtmTable );
+    mProxyModel.setFilterKeyColumn( QgsDb2TableModel::DbtmTable );
   }
   else if ( text == tr( "Type" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsDb2TableModel::dbtmType );
+    mProxyModel.setFilterKeyColumn( QgsDb2TableModel::DbtmType );
   }
   else if ( text == tr( "Geometry column" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsDb2TableModel::dbtmGeomCol );
+    mProxyModel.setFilterKeyColumn( QgsDb2TableModel::DbtmGeomCol );
   }
   else if ( text == tr( "Primary key column" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsDb2TableModel::dbtmPkCol );
+    mProxyModel.setFilterKeyColumn( QgsDb2TableModel::DbtmPkCol );
   }
   else if ( text == tr( "SRID" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsDb2TableModel::dbtmSrid );
+    mProxyModel.setFilterKeyColumn( QgsDb2TableModel::DbtmSrid );
   }
   else if ( text == tr( "Sql" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsDb2TableModel::dbtmSql );
+    mProxyModel.setFilterKeyColumn( QgsDb2TableModel::DbtmSql );
   }
 }
 
@@ -441,7 +441,7 @@ void QgsDb2SourceSelect::addTables()
 
   Q_FOREACH ( const QModelIndex& idx, mTablesTreeView->selectionModel()->selection().indexes() )
   {
-    if ( idx.column() != QgsDb2TableModel::dbtmTable )
+    if ( idx.column() != QgsDb2TableModel::DbtmTable )
       continue;
 
     QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), mConnInfo, mUseEstimatedMetadata );
@@ -559,8 +559,8 @@ void QgsDb2SourceSelect::finishList()
 {
   QApplication::restoreOverrideCursor();
 
-  mTablesTreeView->sortByColumn( QgsDb2TableModel::dbtmTable, Qt::AscendingOrder );
-  mTablesTreeView->sortByColumn( QgsDb2TableModel::dbtmSchema, Qt::AscendingOrder );
+  mTablesTreeView->sortByColumn( QgsDb2TableModel::DbtmTable, Qt::AscendingOrder );
+  mTablesTreeView->sortByColumn( QgsDb2TableModel::DbtmSchema, Qt::AscendingOrder );
 }
 
 void QgsDb2SourceSelect::columnThreadFinished()
@@ -591,7 +591,7 @@ void QgsDb2SourceSelect::setSql( const QModelIndex &index )
   }
 
   QModelIndex idx = mProxyModel.mapToSource( index );
-  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsDb2TableModel::dbtmTable ) )->text();
+  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsDb2TableModel::DbtmTable ) )->text();
 
   QgsVectorLayer *vlayer = new QgsVectorLayer( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata ), tableName, QStringLiteral( "DB2" ) );
 

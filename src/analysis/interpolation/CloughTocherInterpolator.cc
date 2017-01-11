@@ -260,7 +260,7 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
 {
   Vector3D v1, v2, v3;//normals at the three data points
   int ptn1, ptn2, ptn3;//numbers of the vertex points
-  NormVecDecorator::pointState state1, state2, state3;//states of the vertex points (NORMAL, BREAKLINE, ENDPOINT possible)
+  NormVecDecorator::PointState state1, state2, state3;//states of the vertex points (Normal, BreakLine, EndPoint possible)
 
   if ( mTIN )
   {
@@ -309,7 +309,7 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
     cp10.setY(( point1.getY() + point2.getY() + point3.getY() ) / 3 );
 
     //set the derivatives of the points to new values if they are on a breakline
-    if ( state1 == NormVecDecorator::BREAKLINE )
+    if ( state1 == NormVecDecorator::BreakLine )
     {
       Vector3D target1;
       if ( mTIN->calcNormalForPoint( x, y, ptn1, &target1 ) )
@@ -317,12 +317,12 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
         der1X = -target1.getX() / target1.getZ();
         der1Y = -target1.getY() / target1.getZ();
 
-        if ( state2 == NormVecDecorator::NORMAL )
+        if ( state2 == NormVecDecorator::Normal )
         {
           //recalculate cp1
           cp1.setZ( point1.getZ() + ( cp1.getX() - point1.getX() )*der1X + ( cp1.getY() - point1.getY() )*der1Y );
         }
-        if ( state3 == NormVecDecorator::NORMAL )
+        if ( state3 == NormVecDecorator::Normal )
         {
           //recalculate cp6
           cp6.setZ( point1.getZ() + ( cp6.getX() - point1.getX() )*der1X + ( cp6.getY() - point1.getY() )*der1Y );
@@ -330,7 +330,7 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
       }
     }
 
-    if ( state2 == NormVecDecorator::BREAKLINE )
+    if ( state2 == NormVecDecorator::BreakLine )
     {
       Vector3D target2;
       if ( mTIN->calcNormalForPoint( x, y, ptn2, &target2 ) )
@@ -338,12 +338,12 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
         der2X = -target2.getX() / target2.getZ();
         der2Y = -target2.getY() / target2.getZ();
 
-        if ( state1 == NormVecDecorator::NORMAL )
+        if ( state1 == NormVecDecorator::Normal )
         {
           //recalculate cp2
           cp2.setZ( point2.getZ() + ( cp2.getX() - point2.getX() )*der2X + ( cp2.getY() - point2.getY() )*der2Y );
         }
-        if ( state3 == NormVecDecorator::NORMAL )
+        if ( state3 == NormVecDecorator::Normal )
         {
           //recalculate cp9
           cp9.setZ( point2.getZ() + ( cp9.getX() - point2.getX() )*der2X + ( cp9.getY() - point2.getY() )*der2Y );
@@ -351,7 +351,7 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
       }
     }
 
-    if ( state3 == NormVecDecorator::BREAKLINE )
+    if ( state3 == NormVecDecorator::BreakLine )
     {
       Vector3D target3;
       if ( mTIN->calcNormalForPoint( x, y, ptn3, &target3 ) )
@@ -359,12 +359,12 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
         der3X = -target3.getX() / target3.getZ();
         der3Y = -target3.getY() / target3.getZ();
 
-        if ( state1 == NormVecDecorator::NORMAL )
+        if ( state1 == NormVecDecorator::Normal )
         {
           //recalculate cp14
           cp14.setZ( point3.getZ() + ( cp14.getX() - point3.getX() )*der3X + ( cp14.getY() - point3.getY() )*der3Y );
         }
-        if ( state2 == NormVecDecorator::NORMAL )
+        if ( state2 == NormVecDecorator::Normal )
         {
           //recalculate cp16
           cp16.setZ( point3.getZ() + ( cp16.getX() - point3.getX() )*der3X + ( cp16.getY() - point3.getY() )*der3Y );
@@ -506,7 +506,7 @@ void CloughTocherInterpolator::init( double x, double y )//version which has uni
 {
   Vector3D v1, v2, v3;//normals at the three data points
   int ptn1, ptn2, ptn3;//numbers of the vertex points
-  NormVecDecorator::pointState state1, state2, state3;//states of the vertex points (NORMAL, BREAKLINE, ENDPOINT possible)
+  NormVecDecorator::PointState state1, state2, state3;//states of the vertex points (Normal, BreakLine, EndPoint possible)
 
   if ( mTIN )
   {
@@ -562,51 +562,51 @@ void CloughTocherInterpolator::init( double x, double y )//version which has uni
     Vector3D tmp( 0, 0, 0 );
 
     //point1
-    if ( state1 == NormVecDecorator::BREAKLINE )
+    if ( state1 == NormVecDecorator::BreakLine )
     {
       if ( mTIN->calcNormalForPoint( x, y, ptn1, &tmp ) )
       {
         tmpx = -tmp.getX() / tmp.getZ();
         tmpy = -tmp.getY() / tmp.getZ();
-        if ( state3 == NormVecDecorator::NORMAL )
+        if ( state3 == NormVecDecorator::Normal )
         {
           cp6.setZ( point1.getZ() + (( point3.getX() - point1.getX() ) / 3 )*tmpx + (( point3.getY() - point1.getY() ) / 3 )*tmpy );
         }
-        if ( state2 == NormVecDecorator::NORMAL )
+        if ( state2 == NormVecDecorator::Normal )
         {
           cp1.setZ( point1.getZ() + (( point2.getX() - point1.getX() ) / 3 )*tmpx + (( point2.getY() - point1.getY() ) / 3 )*tmpy );
         }
       }
     }
 
-    if ( state2 == NormVecDecorator::BREAKLINE )
+    if ( state2 == NormVecDecorator::Breakline )
     {
       if ( mTIN->calcNormalForPoint( x, y, ptn2, &tmp ) )
       {
         tmpx = -tmp.getX() / tmp.getZ();
         tmpy = -tmp.getY() / tmp.getZ();
-        if ( state1 == NormVecDecorator::NORMAL )
+        if ( state1 == NormVecDecorator::Normal )
         {
           cp2.setZ( point2.getZ() + (( point1.getX() - point2.getX() ) / 3 )*tmpx + (( point1.getY() - point2.getY() ) / 3 )*tmpy );
         }
-        if ( state3 == NormVecDecorator::NORMAL )
+        if ( state3 == NormVecDecorator::Normal )
         {
           cp9.setZ( point2.getZ() + (( point3.getX() - point2.getX() ) / 3 )*tmpx + (( point3.getY() - point2.getY() ) / 3 )*tmpy );
         }
       }
     }
 
-    if ( state3 == NormVecDecorator::BREAKLINE )
+    if ( state3 == NormVecDecorator::Breakline )
     {
       if ( mTIN->calcNormalForPoint( x, y, ptn3, &tmp ) )
       {
         tmpx = -tmp.getX() / tmp.getZ();
         tmpy = -tmp.getY() / tmp.getZ();
-        if ( state1 == NormVecDecorator::NORMAL )
+        if ( state1 == NormVecDecorator::Normal )
         {
           cp14.setZ( point3.getZ() + (( point1.getX() - point3.getX() ) / 3 )*tmpx + (( point1.getY() - point3.getY() ) / 3 )*tmpy );
         }
-        if ( state2 == NormVecDecorator::NORMAL )
+        if ( state2 == NormVecDecorator::Normal )
         {
           cp16.setZ( point3.getZ() + (( point2.getX() - point3.getX() ) / 3 )*tmpx + (( point2.getY() - point3.getY() ) / 3 )*tmpy );
         }
@@ -618,7 +618,7 @@ void CloughTocherInterpolator::init( double x, double y )//version which has uni
 
     cp3.setX( point1.getX() + ( cp10.getX() - point1.getX() ) / 3 );
     cp3.setY( point1.getY() + ( cp10.getY() - point1.getY() ) / 3 );
-    if ( state1 == NormVecDecorator::BREAKLINE )
+    if ( state1 == NormVecDecorator::Breakline )
     {
       MathUtils::normalFromPoints( &point1, &cp1, &cp6, &normal );
       //recalculate der1X and der1Y
@@ -632,7 +632,7 @@ void CloughTocherInterpolator::init( double x, double y )//version which has uni
 
     cp5.setX( point2.getX() + ( cp10.getX() - point2.getX() ) / 3 );
     cp5.setY( point2.getY() + ( cp10.getY() - point2.getY() ) / 3 );
-    if ( state2 == NormVecDecorator::BREAKLINE )
+    if ( state2 == NormVecDecorator::Breakline )
     {
       MathUtils::normalFromPoints( &point2, &cp9, &cp2, &normal );
       //recalculate der2X and der2Y
@@ -645,7 +645,7 @@ void CloughTocherInterpolator::init( double x, double y )//version which has uni
 
     cp15.setX( point3.getX() + ( cp10.getX() - point3.getX() ) / 3 );
     cp15.setY( point3.getY() + ( cp10.getY() - point3.getY() ) / 3 );
-    if ( state3 == NormVecDecorator::BREAKLINE )
+    if ( state3 == NormVecDecorator::Breakline )
     {
       MathUtils::normalFromPoints( &point3, &cp14, &cp16, &normal );
       //recalculate der3X and der3Y

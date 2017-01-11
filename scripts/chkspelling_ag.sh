@@ -34,7 +34,7 @@ else
   FILES="."
 fi
 
-SPELLOK='(#spellok|<!--#spellok-->)$'
+SPELLOK='(#\s*spellok|<!--#\s*spellok-->)$'
 
 
 exec 5>&1

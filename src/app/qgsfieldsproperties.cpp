@@ -79,20 +79,20 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   mFieldsList = new DragList( mAttributesListFrame );
   mAttributesListLayout->addWidget( mFieldsList );
 
-  mFieldsList->setColumnCount( attrColCount );
+  mFieldsList->setColumnCount( AttrColCount );
   mFieldsList->setSelectionBehavior( QAbstractItemView::SelectRows );
   mFieldsList->setDragDropMode( QAbstractItemView::DragOnly );
-  mFieldsList->setHorizontalHeaderItem( attrIdCol, new QTableWidgetItem( tr( "Id" ) ) );
-  mFieldsList->setHorizontalHeaderItem( attrNameCol, new QTableWidgetItem( tr( "Name" ) ) );
-  mFieldsList->setHorizontalHeaderItem( attrTypeCol, new QTableWidgetItem( tr( "Type" ) ) );
-  mFieldsList->setHorizontalHeaderItem( attrTypeNameCol, new QTableWidgetItem( tr( "Type name" ) ) );
-  mFieldsList->setHorizontalHeaderItem( attrLengthCol, new QTableWidgetItem( tr( "Length" ) ) );
-  mFieldsList->setHorizontalHeaderItem( attrPrecCol, new QTableWidgetItem( tr( "Precision" ) ) );
-  mFieldsList->setHorizontalHeaderItem( attrCommentCol, new QTableWidgetItem( tr( "Comment" ) ) );
-  mFieldsList->setHorizontalHeaderItem( attrEditTypeCol, new QTableWidgetItem( tr( "Edit widget" ) ) );
-  mFieldsList->setHorizontalHeaderItem( attrWMSCol, new QTableWidgetItem( QStringLiteral( "WMS" ) ) );
-  mFieldsList->setHorizontalHeaderItem( attrWFSCol, new QTableWidgetItem( QStringLiteral( "WFS" ) ) );
-  mFieldsList->setHorizontalHeaderItem( attrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
+  mFieldsList->setHorizontalHeaderItem( AttrIdCol, new QTableWidgetItem( tr( "Id" ) ) );
+  mFieldsList->setHorizontalHeaderItem( AttrNameCol, new QTableWidgetItem( tr( "Name" ) ) );
+  mFieldsList->setHorizontalHeaderItem( AttrTypeCol, new QTableWidgetItem( tr( "Type" ) ) );
+  mFieldsList->setHorizontalHeaderItem( AttrTypeNameCol, new QTableWidgetItem( tr( "Type name" ) ) );
+  mFieldsList->setHorizontalHeaderItem( AttrLengthCol, new QTableWidgetItem( tr( "Length" ) ) );
+  mFieldsList->setHorizontalHeaderItem( AttrPrecCol, new QTableWidgetItem( tr( "Precision" ) ) );
+  mFieldsList->setHorizontalHeaderItem( AttrCommentCol, new QTableWidgetItem( tr( "Comment" ) ) );
+  mFieldsList->setHorizontalHeaderItem( AttrEditTypeCol, new QTableWidgetItem( tr( "Edit widget" ) ) );
+  mFieldsList->setHorizontalHeaderItem( AttrWMSCol, new QTableWidgetItem( QStringLiteral( "WMS" ) ) );
+  mFieldsList->setHorizontalHeaderItem( AttrWFSCol, new QTableWidgetItem( QStringLiteral( "WFS" ) ) );
+  mFieldsList->setHorizontalHeaderItem( AttrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
 
   mFieldsList->setSortingEnabled( true );
   mFieldsList->sortByColumn( 0, Qt::AscendingOrder );
@@ -296,13 +296,13 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
       dataItem->setIcon( mLayer->fields().iconForField( idx ) );
       break;
   }
-  mFieldsList->setItem( row, attrIdCol, dataItem );
+  mFieldsList->setItem( row, AttrIdCol, dataItem );
   mIndexedWidgets.insert( idx, mFieldsList->item( row, 0 ) );
-  mFieldsList->setItem( row, attrNameCol, new QTableWidgetItem( field.name() ) );
-  mFieldsList->setItem( row, attrTypeCol, new QTableWidgetItem( QVariant::typeToName( field.type() ) ) );
-  mFieldsList->setItem( row, attrTypeNameCol, new QTableWidgetItem( field.typeName() ) );
-  mFieldsList->setItem( row, attrLengthCol, new QTableWidgetItem( QString::number( field.length() ) ) );
-  mFieldsList->setItem( row, attrPrecCol, new QTableWidgetItem( QString::number( field.precision() ) ) );
+  mFieldsList->setItem( row, AttrNameCol, new QTableWidgetItem( field.name() ) );
+  mFieldsList->setItem( row, AttrTypeCol, new QTableWidgetItem( QVariant::typeToName( field.type() ) ) );
+  mFieldsList->setItem( row, AttrTypeNameCol, new QTableWidgetItem( field.typeName() ) );
+  mFieldsList->setItem( row, AttrLengthCol, new QTableWidgetItem( QString::number( field.length() ) ) );
+  mFieldsList->setItem( row, AttrPrecCol, new QTableWidgetItem( QString::number( field.precision() ) ) );
   if ( mLayer->fields().fieldOrigin( idx ) == QgsFields::OriginExpression )
   {
     QWidget* expressionWidget = new QWidget;
@@ -314,51 +314,51 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
     expressionWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
     expressionWidget->layout()->addWidget( editExpressionButton );
     expressionWidget->layout()->addWidget( new QLabel( mLayer->expressionField( idx ) ) );
-    mFieldsList->setCellWidget( row, attrCommentCol, expressionWidget );
+    mFieldsList->setCellWidget( row, AttrCommentCol, expressionWidget );
   }
   else
   {
-    mFieldsList->setItem( row, attrCommentCol, new QTableWidgetItem( field.comment() ) );
+    mFieldsList->setItem( row, AttrCommentCol, new QTableWidgetItem( field.comment() ) );
   }
 
   QList<int> notEditableCols = QList<int>()
-                               << attrIdCol
-                               << attrNameCol
-                               << attrTypeCol
-                               << attrTypeNameCol
-                               << attrLengthCol
-                               << attrPrecCol;
+                               << AttrIdCol
+                               << AttrNameCol
+                               << AttrTypeCol
+                               << AttrTypeNameCol
+                               << AttrLengthCol
+                               << AttrPrecCol;
   Q_FOREACH ( int i, notEditableCols )
     mFieldsList->item( row, i )->setFlags( mFieldsList->item( row, i )->flags() & ~Qt::ItemIsEditable );
 
   bool canRenameFields = mLayer->isEditable() && ( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::RenameAttributes ) && !mLayer->readOnly();
   if ( canRenameFields )
-    mFieldsList->item( row, attrNameCol )->setFlags( mFieldsList->item( row, attrNameCol )->flags() | Qt::ItemIsEditable );
+    mFieldsList->item( row, AttrNameCol )->setFlags( mFieldsList->item( row, AttrNameCol )->flags() | Qt::ItemIsEditable );
   else
-    mFieldsList->item( row, attrNameCol )->setFlags( mFieldsList->item( row, attrNameCol )->flags() & ~Qt::ItemIsEditable );
+    mFieldsList->item( row, AttrNameCol )->setFlags( mFieldsList->item( row, AttrNameCol )->flags() & ~Qt::ItemIsEditable );
 
   FieldConfig cfg( mLayer, idx );
   QPushButton *pb;
   pb = new QPushButton( QgsEditorWidgetRegistry::instance()->name( cfg.mEditorWidgetType ) );
   cfg.mButton = pb;
-  mFieldsList->setCellWidget( row, attrEditTypeCol, pb );
+  mFieldsList->setCellWidget( row, AttrEditTypeCol, pb );
 
   connect( pb, SIGNAL( pressed() ), this, SLOT( attributeTypeDialog() ) );
 
   setConfigForRow( row, cfg );
 
   //set the alias for the attribute
-  mFieldsList->setItem( row, attrAliasCol, new QTableWidgetItem( field.alias() ) );
+  mFieldsList->setItem( row, AttrAliasCol, new QTableWidgetItem( field.alias() ) );
 
   //published WMS/WFS attributes
   QTableWidgetItem* wmsAttrItem = new QTableWidgetItem();
   wmsAttrItem->setCheckState( mLayer->excludeAttributesWms().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
   wmsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-  mFieldsList->setItem( row, attrWMSCol, wmsAttrItem );
+  mFieldsList->setItem( row, AttrWMSCol, wmsAttrItem );
   QTableWidgetItem* wfsAttrItem = new QTableWidgetItem();
   wfsAttrItem->setCheckState( mLayer->excludeAttributesWfs().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
   wfsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-  mFieldsList->setItem( row, attrWFSCol, wfsAttrItem );
+  mFieldsList->setItem( row, AttrWFSCol, wfsAttrItem );
 }
 
 void QgsFieldsProperties::loadRelations()
@@ -784,9 +784,9 @@ void QgsFieldsProperties::updateButtons()
 
 void QgsFieldsProperties::attributesListCellChanged( int row, int column )
 {
-  if ( column == attrAliasCol && mLayer )
+  if ( column == AttrAliasCol && mLayer )
   {
-    int idx = mFieldsList->item( row, attrIdCol )->text().toInt();
+    int idx = mFieldsList->item( row, AttrIdCol )->text().toInt();
 
     const QgsFields &fields = mLayer->fields();
 
@@ -808,7 +808,7 @@ void QgsFieldsProperties::attributesListCellChanged( int row, int column )
       }
     }
   }
-  else if ( column == attrNameCol && mLayer && mLayer->isEditable() )
+  else if ( column == AttrNameCol && mLayer && mLayer->isEditable() )
   {
     QTableWidgetItem *nameItem = mFieldsList->item( row, column );
     if ( !nameItem ||
@@ -875,9 +875,9 @@ void QgsFieldsProperties::updateFieldRenamingStatus()
   for ( int row = 0; row < mFieldsList->rowCount(); ++row )
   {
     if ( canRenameFields )
-      mFieldsList->item( row, attrNameCol )->setFlags( mFieldsList->item( row, attrNameCol )->flags() | Qt::ItemIsEditable );
+      mFieldsList->item( row, AttrNameCol )->setFlags( mFieldsList->item( row, AttrNameCol )->flags() | Qt::ItemIsEditable );
     else
-      mFieldsList->item( row, attrNameCol )->setFlags( mFieldsList->item( row, attrNameCol )->flags() & ~Qt::ItemIsEditable );
+      mFieldsList->item( row, AttrNameCol )->setFlags( mFieldsList->item( row, AttrNameCol )->flags() & ~Qt::ItemIsEditable );
   }
 }
 
@@ -985,7 +985,7 @@ void QgsFieldsProperties::apply()
 
   for ( int i = 0; i < mFieldsList->rowCount(); i++ )
   {
-    int idx = mFieldsList->item( i, attrIdCol )->text().toInt();
+    int idx = mFieldsList->item( i, AttrIdCol )->text().toInt();
     QString name = mLayer->fields().at( idx ).name();
     FieldConfig cfg = configForRow( i );
 
@@ -1019,13 +1019,13 @@ void QgsFieldsProperties::apply()
       mLayer->removeFieldConstraint( i, QgsFieldConstraints::ConstraintExpression );
     }
 
-    if ( mFieldsList->item( i, attrWMSCol )->checkState() == Qt::Unchecked )
+    if ( mFieldsList->item( i, AttrWMSCol )->checkState() == Qt::Unchecked )
     {
-      excludeAttributesWMS.insert( mFieldsList->item( i, attrNameCol )->text() );
+      excludeAttributesWMS.insert( mFieldsList->item( i, AttrNameCol )->text() );
     }
-    if ( mFieldsList->item( i, attrWFSCol )->checkState() == Qt::Unchecked )
+    if ( mFieldsList->item( i, AttrWFSCol )->checkState() == Qt::Unchecked )
     {
-      excludeAttributesWFS.insert( mFieldsList->item( i, attrNameCol )->text() );
+      excludeAttributesWFS.insert( mFieldsList->item( i, AttrNameCol )->text() );
     }
   }
 

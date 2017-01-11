@@ -52,7 +52,7 @@ static const QString name_ = QObject::tr( "GPS Tools" );
 static const QString description_ = QObject::tr( "Tools for loading and importing GPS data" );
 static const QString category_ = QObject::tr( "Vector" );
 static const QString version_ = QObject::tr( "Version 0.1" );
-static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
+static const QgisPlugin::PluginType type_ = QgisPlugin::UI;
 static const QString icon_ = QStringLiteral( ":/gps_importer.svg" );
 
 

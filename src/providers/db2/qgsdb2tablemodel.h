@@ -63,17 +63,17 @@ class QgsDb2TableModel : public QStandardItemModel
     //! Returns the number of tables in the model
     int tableCount() const { return mTableCount; }
 
-    enum columns
+    enum Columns
     {
-      dbtmSchema = 0,
-      dbtmTable,
-      dbtmType,
-      dbtmGeomCol,
-      dbtmSrid,
-      dbtmPkCol,
-      dbtmSelectAtId,
-      dbtmSql,
-      dbtmColumns
+      DbtmSchema = 0,
+      DbtmTable,
+      DbtmType,
+      DbtmGeomCol,
+      DbtmSrid,
+      DbtmPkCol,
+      DbtmSelectAtId,
+      DbtmSql,
+      DbtmColumns
     };
 
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;

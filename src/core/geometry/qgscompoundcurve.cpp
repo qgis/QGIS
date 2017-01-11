@@ -653,7 +653,7 @@ QList< QPair<int, QgsVertexId> > QgsCompoundCurve::curveVertexId( QgsVertexId id
 
 double QgsCompoundCurve::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
 {
-  return QgsGeometryUtils::closestSegmentFromComponents( mCurves, QgsGeometryUtils::VERTEX, pt, segmentPt, vertexAfter, leftOf, epsilon );
+  return QgsGeometryUtils::closestSegmentFromComponents( mCurves, QgsGeometryUtils::Vertex, pt, segmentPt, vertexAfter, leftOf, epsilon );
 }
 
 bool QgsCompoundCurve::pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const

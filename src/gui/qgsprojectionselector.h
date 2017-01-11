@@ -140,7 +140,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
      *          does not scroll the list to the selection if the widget is not visible.
      *          Therefore you will typically want to use this in a showEvent().
      */
-    void applySelection( int column = NONE, QString value = QString::null );
+    void applySelection( int column = QgsProjectionSelector::None, QString value = QString::null );
 
     /**
        * \brief gets an arbitrary sqlite3 expression from the selection
@@ -182,7 +182,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     //! Has the Recent Projection List been populated?
     bool mRecentProjListDone;
 
-    enum columns { NAME_COLUMN, AUTHID_COLUMN, QGIS_CRS_ID_COLUMN, NONE };
+    enum Columns { NameColumn, AuthidColumn, QgisCrsIdColumn, None };
     int mSearchColumn;
     QString mSearchValue;
 

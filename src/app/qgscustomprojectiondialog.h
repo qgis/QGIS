@@ -69,7 +69,7 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     QStringList deletedCRSs;
 
     //Columns in the tree widget
-    enum columns { QGIS_CRS_NAME_COLUMN, QGIS_CRS_ID_COLUMN, QGIS_CRS_PARAMETERS_COLUMN };
+    enum Columns { QgisCrsNameColumn, QgisCrsIdColumn, QgisCrsParametersColumn };
 };
 
 

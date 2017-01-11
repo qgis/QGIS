@@ -61,7 +61,7 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
     mIgnoreGetMapUrl = false;
     mIgnoreGetFeatureInfoUrl = false;
     mSmoothPixmapTransform = true;
-    mDpiMode = dpiNone; // does not matter what we set here
+    mDpiMode = DpiNone; // does not matter what we set here
     mActiveSubLayers = QStringList( QStringLiteral( "xyz" ) );  // just a placeholder to have one sub-layer
     mActiveSubStyles = QStringList( QStringLiteral( "xyz" ) );  // just a placeholder to have one sub-style
     mActiveSubLayerVisibility.clear();
@@ -85,7 +85,7 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
   mParserSettings.invertAxisOrientation = uri.hasParam( QStringLiteral( "InvertAxisOrientation" ) ); // must be before parsing!
   mSmoothPixmapTransform = uri.hasParam( QStringLiteral( "SmoothPixmapTransform" ) );
 
-  mDpiMode = uri.hasParam( QStringLiteral( "dpiMode" ) ) ? static_cast< QgsWmsDpiMode >( uri.param( QStringLiteral( "dpiMode" ) ).toInt() ) : dpiAll;
+  mDpiMode = uri.hasParam( QStringLiteral( "dpiMode" ) ) ? static_cast< QgsWmsDpiMode >( uri.param( QStringLiteral( "dpiMode" ) ).toInt() ) : DpiAll;
 
   mAuth.mUserName = uri.param( QStringLiteral( "username" ) );
   QgsDebugMsg( "set username to " + mAuth.mUserName );

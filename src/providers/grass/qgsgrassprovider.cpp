@@ -112,7 +112,7 @@ int QgsGrassProvider::mEditedCount = 0;
 QgsGrassProvider::QgsGrassProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
     , mLayerField( -1 )
-    , mLayerType( POINT )
+    , mLayerType( Point )
     , mGrassType( 0 )
     , mQgisType( QgsWkbTypes::Unknown )
     , mLayer( 0 )
@@ -163,27 +163,27 @@ QgsGrassProvider::QgsGrassProvider( const QString& uri )
   */
   if ( mLayerName.compare( QLatin1String( "boundary" ) ) == 0 ) // currently not used
   {
-    mLayerType = BOUNDARY;
+    mLayerType = Boundary;
     mGrassType = GV_BOUNDARY;
   }
   else if ( mLayerName.compare( QLatin1String( "centroid" ) ) == 0 ) // currently not used
   {
-    mLayerType = CENTROID;
+    mLayerType = Centroid;
     mGrassType = GV_CENTROID;
   }
   else if ( mLayerName == QLatin1String( "topo_point" ) )
   {
-    mLayerType = TOPO_POINT;
+    mLayerType = TopoPoint;
     mGrassType = GV_POINTS;
   }
   else if ( mLayerName == QLatin1String( "topo_line" ) )
   {
-    mLayerType = TOPO_LINE;
+    mLayerType = TopoLine;
     mGrassType = GV_LINES;
   }
   else if ( mLayerName == QLatin1String( "topo_node" ) )
   {
-    mLayerType = TOPO_NODE;
+    mLayerType = TopoNode;
     mGrassType = 0;
   }
   else
@@ -199,19 +199,19 @@ QgsGrassProvider::QgsGrassProvider( const QString& uri )
 
     if ( mGrassType == GV_POINT )
     {
-      mLayerType = POINT;
+      mLayerType = Point;
     }
     else if ( mGrassType == GV_LINES )
     {
-      mLayerType = LINE;
+      mLayerType = Line;
     }
     else if ( mGrassType == GV_FACE )
     {
-      mLayerType = FACE;
+      mLayerType = Face;
     }
     else if ( mGrassType == GV_AREA )
     {
-      mLayerType = POLYGON;
+      mLayerType = Polygon;
     }
     else
     {
@@ -223,7 +223,7 @@ QgsGrassProvider::QgsGrassProvider( const QString& uri )
   QgsDebugMsg( QString( "mLayerField: %1" ).arg( mLayerField ) );
   QgsDebugMsg( QString( "mLayerType: %1" ).arg( mLayerType ) );
 
-  if ( mLayerType == BOUNDARY || mLayerType == CENTROID )
+  if ( mLayerType == Boundary || mLayerType == Centroid )
   {
     QgsDebugMsg( "Layer type not supported." );
     return;
@@ -232,19 +232,19 @@ QgsGrassProvider::QgsGrassProvider( const QString& uri )
   // Set QGIS type
   switch ( mLayerType )
   {
-    case POINT:
-    case CENTROID:
-    case TOPO_POINT:
-    case TOPO_NODE:
+    case Point:
+    case Centroid:
+    case TopoPoint:
+    case TopoNode:
       mQgisType = QgsWkbTypes::Point;
       break;
-    case LINE:
-    case BOUNDARY:
-    case TOPO_LINE:
+    case Line:
+    case Boundary:
+    case TopoLine:
       mQgisType = QgsWkbTypes::LineString;
       break;
-    case POLYGON:
-    case FACE:
+    case Polygon:
+    case Face:
       mQgisType = QgsWkbTypes::Polygon;
       break;
   }
@@ -348,15 +348,15 @@ void QgsGrassProvider::loadMapInfo()
   // Getting the total number of features in the layer
   int cidxFieldIndex = -1;
   mNumberFeatures = 0;
-  if ( mLayerType == TOPO_POINT )
+  if ( mLayerType == TopoPoint )
   {
     mNumberFeatures = Vect_get_num_primitives( map(), GV_POINTS );
   }
-  else if ( mLayerType == TOPO_LINE )
+  else if ( mLayerType == TopoLine )
   {
     mNumberFeatures = Vect_get_num_primitives( map(), GV_LINES );
   }
-  else if ( mLayerType == TOPO_NODE )
+  else if ( mLayerType == TopoNode )
   {
     mNumberFeatures = Vect_get_num_nodes( map() );
   }
@@ -1059,19 +1059,19 @@ bool QgsGrassProvider::isTopoType() const
 
 bool QgsGrassProvider::isTopoType( int layerType )
 {
-  return layerType == TOPO_POINT || layerType == TOPO_LINE || layerType == TOPO_NODE;
+  return layerType == TopoPoint || layerType == TopoLine || layerType == TopoNode;
 }
 
 void QgsGrassProvider::setTopoFields()
 {
   mTopoFields.append( QgsField( QStringLiteral( "id" ), QVariant::Int ) );
 
-  if ( mLayerType == TOPO_POINT )
+  if ( mLayerType == TopoPoint )
   {
     mTopoFields.append( QgsField( QStringLiteral( "type" ), QVariant::String ) );
     mTopoFields.append( QgsField( QStringLiteral( "node" ), QVariant::Int ) );
   }
-  else if ( mLayerType == TOPO_LINE )
+  else if ( mLayerType == TopoLine )
   {
     mTopoFields.append( QgsField( QStringLiteral( "type" ), QVariant::String ) );
     mTopoFields.append( QgsField( QStringLiteral( "node1" ), QVariant::Int ) );
@@ -1079,7 +1079,7 @@ void QgsGrassProvider::setTopoFields()
     mTopoFields.append( QgsField( QStringLiteral( "left" ), QVariant::Int ) );
     mTopoFields.append( QgsField( QStringLiteral( "right" ), QVariant::Int ) );
   }
-  else if ( mLayerType == TOPO_NODE )
+  else if ( mLayerType == TopoNode )
   {
     mTopoFields.append( QgsField( QStringLiteral( "lines" ), QVariant::String ) );
   }

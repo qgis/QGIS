@@ -668,7 +668,7 @@ double QgsCurvePolygon::closestSegment( const QgsPointV2& pt, QgsPointV2& segmen
   QList<QgsCurve*> segmentList;
   segmentList.append( mExteriorRing );
   segmentList.append( mInteriorRings );
-  return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::RING, pt, segmentPt,  vertexAfter, leftOf, epsilon );
+  return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::Ring, pt, segmentPt,  vertexAfter, leftOf, epsilon );
 }
 
 bool QgsCurvePolygon::nextVertex( QgsVertexId& vId, QgsPointV2& vertex ) const

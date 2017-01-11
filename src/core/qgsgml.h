@@ -139,23 +139,23 @@ class CORE_EXPORT QgsGmlStreamingParser
 
     enum ParseMode
     {
-      none,
-      boundingBox,
-      null,
-      envelope,
-      lowerCorner,
-      upperCorner,
-      feature,  // feature element containing attrs and geo (inside gml:featureMember)
-      attribute,
-      tuple, // wfs:Tuple of a join layer
-      featureTuple,
-      attributeTuple,
-      geometry,
-      coordinate,
-      posList,
-      multiPoint,
-      multiLine,
-      multiPolygon,
+      None,
+      BoundingBox,
+      Null,
+      Envelope,
+      LowerCorner,
+      UpperCorner,
+      Feature,  // feature element containing attrs and geo (inside gml:featureMember)
+      Attribute,
+      Tuple, // wfs:Tuple of a join layer
+      FeatureTuple,
+      AttributeTuple,
+      Geometry,
+      Coordinate,
+      PosList,
+      MultiPoint,
+      MultiLine,
+      MultiPolygon,
       ExceptionReport,
       ExceptionText
     };
@@ -231,10 +231,10 @@ class CORE_EXPORT QgsGmlStreamingParser
     int totalWKBFragmentSize() const;
 
     //! Get safely (if empty) top from mode stack
-    ParseMode modeStackTop() { return mParseModeStack.isEmpty() ? none : mParseModeStack.top(); }
+    ParseMode modeStackTop() { return mParseModeStack.isEmpty() ? None : mParseModeStack.top(); }
 
     //! Safely (if empty) pop from mode stack
-    ParseMode modeStackPop() { return mParseModeStack.isEmpty() ? none : mParseModeStack.pop(); }
+    ParseMode modeStackPop() { return mParseModeStack.isEmpty() ? None : mParseModeStack.pop(); }
 
     //! Expat parser
     XML_Parser mParser;

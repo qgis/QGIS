@@ -219,23 +219,23 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     // between fieldIdx and QTableWidgetItem->row()
     QList<QTableWidgetItem*> mIndexedWidgets;
 
-    enum attrColumns
+    enum AttrColumns
     {
-      attrIdCol = 0,
-      attrNameCol,
-      attrEditTypeCol,
-      attrAliasCol,
-      attrTypeCol,
-      attrTypeNameCol,
-      attrLengthCol,
-      attrPrecCol,
-      attrCommentCol,
-      attrWMSCol,
-      attrWFSCol,
-      attrColCount,
+      AttrIdCol = 0,
+      AttrNameCol,
+      AttrEditTypeCol,
+      AttrAliasCol,
+      AttrTypeCol,
+      AttrTypeNameCol,
+      AttrLengthCol,
+      AttrPrecCol,
+      AttrCommentCol,
+      AttrWMSCol,
+      AttrWFSCol,
+      AttrColCount,
     };
 
-    enum relationColumns
+    enum RelationColumns
     {
       RelNameCol = 0,
       RelLayerCol,

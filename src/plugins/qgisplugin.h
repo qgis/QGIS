@@ -55,7 +55,7 @@ class QgisPlugin
     //virtual QgisPluginGui *gui()=0;
     //! Element types that can be added to the interface
 #if 0
-    enum ELEMENTS
+    enum Elements
     {
       MENU,
       MENU_ITEM,
@@ -66,11 +66,11 @@ class QgisPlugin
     @todo XXX this may be a hint that there should be subclasses
 #endif
 
-    enum PLUGINTYPE
+    enum PluginType
     {
-      UI = 1,                     /* user interface plug-in */
-      MAPLAYER,                    /* map layer plug-in */
-      RENDERER,                     /*a plugin for a new renderer class*/
+      UI = 1,   //!< User interface plug-in
+      MapLayer, //!< Map layer plug-in
+      Renderer, //!< A plugin for a new renderer class
     };
 
 
@@ -81,7 +81,7 @@ class QgisPlugin
                 QString const & description = "",
                 QString const & category = "",
                 QString const & version = "",
-                PLUGINTYPE type = MAPLAYER )
+                PluginType type = MapLayer )
         : mName( name )
         , mDescription( description )
         , mCategory( category )
@@ -140,14 +140,14 @@ class QgisPlugin
     }
 
     //! Plugin type, either UI or map layer
-    QgisPlugin::PLUGINTYPE const & type() const
+    QgisPlugin::PluginType const & type() const
     {
       return mType;
     }
 
 
     //! Plugin type, either UI or map layer
-    QgisPlugin::PLUGINTYPE       & type()
+    QgisPlugin::PluginType       & type()
     {
       return mType;
     }
@@ -178,7 +178,7 @@ class QgisPlugin
       @todo Really, might be indicative that this needs to split into
       maplayer vs. ui plug-in vs. other kind of plug-in
       */
-    PLUGINTYPE mType;
+    PluginType mType;
 
 }; // class QgisPlugin
 

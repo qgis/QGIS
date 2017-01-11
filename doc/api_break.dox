@@ -1045,6 +1045,13 @@ QgsEditorWidgetFactory         {#qgis_api_break_3_0_QgsEditorWidgetFactory}
 - `alignmentFlag` has been removed. Use QgsFieldFormatter::representValue() instead
 - `createCache` has been removed. Use QgsFieldFormatter::representValue() instead
 
+
+QgsGeometryUtils         {#qgis_api_break_3_0_QgsGeometryUtils}
+----------------
+
+- componentType enum has been renamed to ComponentType and its members were CamelCased too: VERTEX, RING and PART become Vertex, Ring and Part, respectively.
+
+
 QgsGPSConnectionRegistry        {#qgis_api_break_3_0_QgsGPSConnectionRegistry}
 ------------------------
 

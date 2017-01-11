@@ -72,11 +72,11 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
 
   private:
     //! Enum Type of items
-    enum TypeItems { itemsResult, itemsInvalidTarget, itemsInvalidReference };
+    enum TypeItems { ItemsResult, ItemsInvalidTarget, ItemsInvalidReference };
     //! Enum Type Result for
-    enum TypeResultFor { selectedNew, selectedAdd, selectedRemove };
+    enum TypeResultFor { SelectedNew, SelectedAdd, SelectedRemove };
     //! Enum Type of verify subset
-    enum TypeVerifyCreateSubset { verifyOk, verifyTry, verifyImpossible };
+    enum TypeVerifyCreateSubset { VerifyOk, VerifyTry, VerifyImpossible };
 
     //! Initialize the Gui
     void initGui();

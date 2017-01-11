@@ -77,7 +77,7 @@ static const QString sName = QObject::tr( "eVis" );
 static const QString sDescription = QObject::tr( "An event visualization tool - view images associated with vector features" );
 static const QString sCategory = QObject::tr( "Database" );
 static const QString sPluginVersion = QObject::tr( "Version 1.1.0" );
-static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
+static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
 static const QString sIcon = QStringLiteral( ":/evis/eVisEventBrowser.png" );
 
 

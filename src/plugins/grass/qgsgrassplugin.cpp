@@ -721,7 +721,7 @@ void QgsGrassPlugin::redrawRegion()
 
 void QgsGrassPlugin::openMapset()
 {
-  QgsGrassSelect *sel = new QgsGrassSelect( qGisInterface->mainWindow(), QgsGrassSelect::MAPSET );
+  QgsGrassSelect *sel = new QgsGrassSelect( qGisInterface->mainWindow(), QgsGrassSelect::MapSet );
 
   if ( !sel->exec() )
     return;

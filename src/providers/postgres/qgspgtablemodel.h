@@ -42,19 +42,19 @@ class QgsPgTableModel : public QStandardItemModel
     //! Returns the number of tables in the model
     int tableCount() const { return mTableCount; }
 
-    enum columns
+    enum Columns
     {
-      dbtmSchema = 0,
-      dbtmTable,
-      dbtmComment,
-      dbtmGeomCol,
-      dbtmGeomType, // Data type (geometry, geography, topogeometry, ...)
-      dbtmType, // Spatial type (point, line, polygon, ...)
-      dbtmSrid,
-      dbtmPkCol,
-      dbtmSelectAtId,
-      dbtmSql,
-      dbtmColumns
+      DbtmSchema = 0,
+      DbtmTable,
+      DbtmComment,
+      DbtmGeomCol,
+      DbtmGeomType, // Data type (geometry, geography, topogeometry, ...)
+      DbtmType, // Spatial type (point, line, polygon, ...)
+      DbtmSrid,
+      DbtmPkCol,
+      DbtmSelectAtId,
+      DbtmSql,
+      DbtmColumns
     };
 
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
