@@ -39,7 +39,9 @@ from qgis.PyQt.QtWidgets import QApplication, QTreeWidgetItem, QPushButton, QMes
 from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 
 from qgis.utils import iface, show_message_log
-from qgis.core import QgsNetworkAccessManager, QgsMessageLog
+from qgis.core import (QgsNetworkAccessManager,
+                       QgsMessageLog,
+                       QgsApplication)
 from qgis.gui import QgsMessageBar
 
 from processing.core.alglist import algList
@@ -63,7 +65,7 @@ class GetScriptsAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'script.svg'))
+        return QgsApplication.getThemeIcon("/processingScript.svg")
 
     def execute(self):
         repoUrl = ProcessingConfig.getSetting(ProcessingConfig.MODELS_SCRIPTS_REPO)
@@ -85,7 +87,7 @@ class GetRScriptsAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
+        return QgsApplication.getThemeIcon("/providerR.svg")
 
     def execute(self):
         repoUrl = ProcessingConfig.getSetting(ProcessingConfig.MODELS_SCRIPTS_REPO)
@@ -108,7 +110,7 @@ class GetModelsAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'model.svg'))
+        return QgsApplication.getThemeIcon("/processingModel.svg")
 
     def execute(self):
         repoUrl = ProcessingConfig.getSetting(ProcessingConfig.MODELS_SCRIPTS_REPO)
@@ -160,15 +162,15 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         if self.resourceType == self.MODELS:
             self.folder = ModelerUtils.modelsFolders()[0]
             self.urlBase = '{}/models/'.format(repoUrl)
-            self.icon = QIcon(os.path.join(pluginPath, 'images', 'model.svg'))
+            self.icon = QgsApplication.getThemeIcon("/processingModel.svg")
         elif self.resourceType == self.SCRIPTS:
             self.folder = ScriptUtils.scriptsFolders()[0]
             self.urlBase = '{}/scripts/'.format(repoUrl)
-            self.icon = QIcon(os.path.join(pluginPath, 'images', 'script.svg'))
+            self.icon = QgsApplication.getThemeIcon("/processingScript.svg")
         else:
             self.folder = RUtils.RScriptsFolders()[0]
             self.urlBase = '{}/rscripts/'.format(repoUrl)
-            self.icon = QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
+            self.icon = QgsApplication.getThemeIcon("/providerR.svg")
 
         self.lastSelectedItem = None
         self.updateProvider = False

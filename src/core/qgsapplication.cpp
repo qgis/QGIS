@@ -36,6 +36,7 @@
 #include "gps/qgsgpsconnectionregistry.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsmessagelog.h"
+#include "processing/qgsprocessingregistry.h"
 
 #include <QDir>
 #include <QFile>
@@ -114,20 +115,6 @@ const char* QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
 */
 QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath, const QString& platformName )
     : QApplication( argc, argv, GUIenabled )
-    , mActionScopeRegistry( nullptr )
-    , mProfiler( nullptr )
-    , mTaskManager( nullptr )
-    , mFieldFormatterRegistry( nullptr )
-    , mColorSchemeRegistry( nullptr )
-    , mPaintEffectRegistry( nullptr )
-    , mRendererRegistry( nullptr )
-    , mSvgCache( nullptr )
-    , mSymbolLayerRegistry( nullptr )
-    , mRasterRendererRegistry( nullptr )
-    , mGpsConnectionRegistry( nullptr )
-    , mDataItemProviderRegistry( nullptr )
-    , mPluginLayerRegistry( nullptr )
-    , mMessageLog( nullptr )
 {
   sPlatformName = platformName;
 
@@ -147,6 +134,7 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const
   mRasterRendererRegistry = new QgsRasterRendererRegistry();
   mGpsConnectionRegistry = new QgsGPSConnectionRegistry();
   mPluginLayerRegistry = new QgsPluginLayerRegistry();
+  mProcessingRegistry = new QgsProcessingRegistry();
 
   init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
 }
@@ -278,6 +266,7 @@ void QgsApplication::init( QString customConfigPath )
 
 QgsApplication::~QgsApplication()
 {
+  delete mProcessingRegistry;
   delete mActionScopeRegistry;
   delete mTaskManager;
   delete mFieldFormatterRegistry;
@@ -1606,6 +1595,11 @@ QgsPluginLayerRegistry*QgsApplication::pluginLayerRegistry()
 QgsMessageLog* QgsApplication::messageLog()
 {
   return instance()->mMessageLog;
+}
+
+QgsProcessingRegistry*QgsApplication::processingRegistry()
+{
+  return instance()->mProcessingRegistry;
 }
 
 QgsFieldFormatterRegistry* QgsApplication::fieldFormatterRegistry()

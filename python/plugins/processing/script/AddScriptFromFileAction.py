@@ -28,8 +28,9 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
-from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QSettings, QFileInfo
+
+from qgis.core import QgsApplication
 
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.gui.ToolboxAction import ToolboxAction
@@ -47,7 +48,7 @@ class AddScriptFromFileAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'script.svg'))
+        return QgsApplication.getThemeIcon("/processingScript.svg")
 
     def execute(self):
         settings = QSettings()

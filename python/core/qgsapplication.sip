@@ -442,6 +442,13 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static QgsMessageLog* messageLog();
 
+    /**
+     * Returns the application's processing registry, used for managing processing providers,
+     * algorithms, and various parameters and outputs.
+     * @note added in QGIS 3.0
+     */
+    static QgsProcessingRegistry* processingRegistry();
+
 %If(ANDROID)
     //dummy method to workaround sip generation issue issue
     bool x11EventFilter ( XEvent * event );

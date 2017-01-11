@@ -31,7 +31,7 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTreeWidgetItem, QFileDialog
 
-from processing.core.alglist import algList
+from qgis.core import QgsApplication
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -47,7 +47,7 @@ class ScriptSelector(BASE, WIDGET):
         self.scripts = None
 
         allScripts = defaultdict(list)
-        alglist = algList.getProviderFromName("script").algs
+        alglist = QgsApplication.processingRegistry().providerById("script").algs
         for script in alglist:
             allScripts[script.group].append(script)
 

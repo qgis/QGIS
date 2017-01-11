@@ -1826,7 +1826,11 @@ optional property map passing down layer level properties to the SLD encoders. I
 - setScaleMethodToSymbol was removed. This is now handled using data defined scaling at a symbol layer level
 - usedAttributes is now a const method and returns QSet<QString> instead of QStringList
 
+Processing        {#qgis_api_break_3_0_Processing}
+----------
 
+- Algorithm providers now subclass the c++ QgsProcessingProvider class, and must be adapted to the API for QgsProcessingProvider. Specifically,
+getName() should be replaced with id(), getDescription() with name(), and getIcon with icon().
 
 
 QGIS 2.4        {#qgis_api_break_2_4}

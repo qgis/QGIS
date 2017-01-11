@@ -146,7 +146,7 @@ from .fusion.FusionUtils import FusionUtils
 class LidarToolsAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
         self.activate = False
 
     def _loadAlgorithms(self):
@@ -222,28 +222,28 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         ProcessingConfig.addSetting(Setting(
-            self.getDescription(),
+            self.name(),
             LAStoolsUtils.LASTOOLS_FOLDER,
             self.tr('LAStools folder'), LAStoolsUtils.LAStoolsPath(),
             valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(
-            self.getDescription(),
+            self.name(),
             FusionUtils.FUSION_FOLDER,
             self.tr('Fusion folder'), FusionUtils.FusionPath(),
             valuetype=Setting.FOLDER))
         if not isWindows():
             ProcessingConfig.addSetting(Setting(
-                self.getDescription(),
+                self.name(),
                 LAStoolsUtils.WINE_FOLDER,
                 self.tr('Wine folder'), '', valuetype=Setting.FOLDER))
 
-    def getName(self):
+    def id(self):
         return 'lidartools'
 
-    def getDescription(self):
+    def name(self):
         return self.tr('Tools for LiDAR data')
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.dirname(__file__) + '/../../images/tool.png')
 
     def getSupportedOutputTableExtensions(self):

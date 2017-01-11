@@ -29,8 +29,11 @@ __revision__ = '$Format:%H$'
 import os
 import re
 import json
-from qgis.core import QgsExpressionContextUtils, QgsExpressionContext, QgsProject
-from qgis.PyQt.QtGui import QIcon
+from qgis.core import (QgsExpressionContextUtils,
+                       QgsExpressionContext,
+                       QgsProject,
+                       QgsApplication)
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import getHtmlFromHelpFile
 from processing.core.parameters import getParameterFromString
@@ -52,7 +55,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         """
 
         GeoAlgorithm.__init__(self)
-        self._icon = QIcon(os.path.join(pluginPath, 'images', 'script.svg'))
+        self._icon = QgsApplication.getThemeIcon("/processingScript.svg")
 
         self.script = script
         self.allowEdit = True
@@ -68,7 +71,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         newone.provider = self.provider
         return newone
 
-    def getIcon(self):
+    def icon(self):
         return self._icon
 
     def defineCharacteristicsFromFile(self):

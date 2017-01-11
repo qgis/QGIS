@@ -31,6 +31,8 @@ import re
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QUrl
 
+from qgis.core import QgsApplication
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -48,7 +50,7 @@ class GdalAlgorithm(GeoAlgorithm):
 
     def getIcon(self):
         if self._icon is None:
-            self._icon = QIcon(os.path.join(pluginPath, 'images', 'gdal.svg'))
+            self._icon = QgsApplication.getThemeIcon("/providerGdal.svg")
         return self._icon
 
     def getCustomParametersDialog(self):

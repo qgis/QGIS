@@ -38,7 +38,8 @@ from qgis.PyQt.QtWidgets import QApplication
 from qgis.PyQt.QtGui import QCursor
 
 from qgis.utils import iface
-from qgis.core import QgsMessageLog
+from qgis.core import (QgsMessageLog,
+                       QgsApplication)
 
 import processing
 from processing.core.AlgorithmProvider import AlgorithmProvider
@@ -87,21 +88,21 @@ class Processing(object):
         """Use this method to add algorithms from external providers.
         """
 
-        if provider.getName() in [p.getName() for p in algList.providers]:
+        if provider.id() in [p.id() for p in QgsApplication.processingRegistry().providers()]:
             return
         try:
             provider.initializeSettings()
             Processing.providers.append(provider)
             ProcessingConfig.readSettings()
             provider.loadAlgorithms()
-            Processing.actions[provider.getName()] = provider.actions
+            Processing.actions[provider.id()] = provider.actions
             Processing.contextMenuActions.extend(provider.contextMenuActions)
             algList.addProvider(provider)
         except:
             ProcessingLog.addToLog(
                 ProcessingLog.LOG_ERROR,
                 Processing.tr('Could not load provider: %s\n%s')
-                % (provider.getDescription(), traceback.format_exc()))
+                % (provider.name(), traceback.format_exc()))
             Processing.removeProvider(provider)
 
     @staticmethod
@@ -114,11 +115,11 @@ class Processing(object):
         try:
             provider.unload()
             for p in Processing.providers:
-                if p.getName() == provider.getName():
+                if p.id() == provider.id():
                     Processing.providers.remove(p)
-            algList.removeProvider(provider.getName())
-            if provider.getName() in Processing.actions:
-                del Processing.actions[provider.getName()]
+            algList.removeProvider(provider.id())
+            if provider.id() in Processing.actions:
+                del Processing.actions[provider.id()]
             for act in provider.contextMenuActions:
                 Processing.contextMenuActions.remove(act)
         except:
@@ -129,20 +130,15 @@ class Processing(object):
             pass
 
     @staticmethod
-    def getProviderFromName(name):
-        """Returns the provider with the given name."""
-        return algList.getProviderFromName(name)
-
-    @staticmethod
     def activateProvider(providerOrName, activate=True):
-        providerName = providerOrName.getName() if isinstance(providerOrName, AlgorithmProvider) else providerOrName
-        name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
+        provider_id = providerOrName.id() if isinstance(providerOrName, AlgorithmProvider) else providerOrName
+        name = 'ACTIVATE_' + provider_id.upper().replace(' ', '_')
         ProcessingConfig.setSettingValue(name, activate)
-        algList.providerUpdated.emit(providerName)
+        algList.providerUpdated.emit(provider_id)
 
     @staticmethod
     def initialize():
-        if "model" in [p.getName() for p in Processing.providers]:
+        if "model" in [p.id() for p in Processing.providers]:
             return
         # Add the basic providers
         for c in AlgorithmProvider.__subclasses__():
@@ -155,7 +151,7 @@ class Processing(object):
     @staticmethod
     def addScripts(folder):
         Processing.initialize()
-        provider = Processing.getProviderFromName("qgis")
+        provider = QgsApplication.processingRegistry().providerById("qgis")
         scripts = ScriptUtils.loadFromFolder(folder)
         # fix_print_with_import
         print(scripts)
@@ -168,7 +164,7 @@ class Processing(object):
 
     @staticmethod
     def removeScripts(folder):
-        provider = Processing.getProviderFromName("qgis")
+        provider = QgsApplication.processingRegistry().providerById("qgis")
         for alg in provider.externalAlgs[::-1]:
             path = os.path.dirname(alg.descriptionFile)
             if path == folder:
@@ -187,8 +183,8 @@ class Processing(object):
         QApplication.restoreOverrideCursor()
 
     @staticmethod
-    def reloadProvider(providerName):
-        algList.reloadProvider(providerName)
+    def reloadProvider(provider_id):
+        algList.reloadProvider(provider_id)
 
     @staticmethod
     def getAlgorithm(name):

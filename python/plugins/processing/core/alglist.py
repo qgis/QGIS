@@ -25,13 +25,13 @@ __copyright__ = '(C) 2016, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import (QgsApplication,
+                       QgsProcessingRegistry)
 from qgis.PyQt.QtCore import QObject, pyqtSignal
 
 
 class AlgorithmList(QObject):
 
-    providerAdded = pyqtSignal(str)
-    providerRemoved = pyqtSignal(str)
     providerUpdated = pyqtSignal(str)
 
     # A dictionary of algorithms. Keys are names of providers
@@ -40,32 +40,23 @@ class AlgorithmList(QObject):
 
     providers = []
 
-    def removeProvider(self, providerName):
-        for p in self.providers:
-            if p.getName() == providerName:
-                self.providers.remove(p)
-                break
-        if providerName in self.algs:
-            del self.algs[providerName]
-        self.providerRemoved.emit(providerName)
+    def removeProvider(self, provider_id):
+        if provider_id in self.algs:
+            del self.algs[provider_id]
 
-    def reloadProvider(self, providerName):
+        QgsApplication.processingRegistry().removeProvider(provider_id)
+
+    def reloadProvider(self, provider_id):
         for p in self.providers:
-            if p.getName() == providerName:
+            if p.id() == provider_id:
                 p.loadAlgorithms()
-                self.algs[p.getName()] = {a.commandLineName(): a for a in p.algs}
-                self.providerUpdated.emit(p.getName())
+                self.algs[p.id()] = {a.commandLineName(): a for a in p.algs}
+                self.providerUpdated.emit(p.id())
                 break
 
     def addProvider(self, provider):
-        self.providers.append(provider)
-        self.algs[provider.getName()] = {a.commandLineName(): a for a in provider.algs}
-        self.providerAdded.emit(provider.getName())
-
-    def getProviderFromName(self, name):
-        for provider in self.providers:
-            if provider.getName() == name:
-                return provider
+        if QgsApplication.processingRegistry().addProvider(provider):
+            self.algs[provider.id()] = {a.commandLineName(): a for a in provider.algs}
 
     def getAlgorithm(self, name):
         for provider in list(self.algs.values()):

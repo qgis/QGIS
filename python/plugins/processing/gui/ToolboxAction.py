@@ -27,8 +27,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from qgis.PyQt.QtGui import QIcon
+
 from qgis.PyQt.QtCore import QCoreApplication
+
+from qgis.core import QgsApplication
 
 
 class ToolboxAction(object):
@@ -37,7 +39,7 @@ class ToolboxAction(object):
         self.toolbox = toolbox
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
+        return QgsApplication.getThemeIcon("/processingAlgorithm.svg")
 
     def tr(self, string, context=''):
         if context == '':

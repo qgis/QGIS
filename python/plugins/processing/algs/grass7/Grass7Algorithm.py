@@ -35,7 +35,8 @@ import importlib
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsRasterLayer
+from qgis.core import (QgsRasterLayer,
+                       QgsApplication)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -102,7 +103,7 @@ class Grass7Algorithm(GeoAlgorithm):
 
     def getIcon(self):
         if self._icon is None:
-            self._icon = QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
+            self._icon = QgsApplication.getThemeIcon("/providerGrass.svg")
         return self._icon
 
     def help(self):
