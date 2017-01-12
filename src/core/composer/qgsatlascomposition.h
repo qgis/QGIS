@@ -220,15 +220,6 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      */
     void readXml( const QDomElement& elem, const QDomDocument& doc );
 
-    /** Reads old (pre 2.2) map related atlas settings from xml
-     * @param elem a QDomElement holding the atlas map properties.
-     * @param doc QDomDocument for the source xml.
-     * @see readXMLMapSettings
-     * @note This method should be called after restoring composer item properties
-     * @note added in version 2.5
-     */
-    void readXmlMapSettings( const QDomElement& elem, const QDomDocument& doc );
-
     QgsComposition* composition() { return mComposition; }
 
     /** Requeries the current atlas coverage layer and applies filtering and sorting. Returns

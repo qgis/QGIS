@@ -661,40 +661,6 @@ void QgsAtlasComposition::readXml( const QDomElement& atlasElem, const QDomDocum
   emit parameterChanged();
 }
 
-void QgsAtlasComposition::readXmlMapSettings( const QDomElement &elem, const QDomDocument &doc )
-{
-  Q_UNUSED( doc );
-  //look for stored composer map, to upgrade pre 2.1 projects
-  int composerMapNo = elem.attribute( QStringLiteral( "composerMap" ), QStringLiteral( "-1" ) ).toInt();
-  QgsComposerMap * composerMap = nullptr;
-  if ( composerMapNo != -1 )
-  {
-    QList<QgsComposerMap*> maps;
-    mComposition->composerItems( maps );
-    for ( QList<QgsComposerMap*>::iterator it = maps.begin(); it != maps.end(); ++it )
-    {
-      if (( *it )->id() == composerMapNo )
-      {
-        composerMap = ( *it );
-        composerMap->setAtlasDriven( true );
-        break;
-      }
-    }
-  }
-
-  //upgrade pre 2.1 projects
-  double margin = elem.attribute( QStringLiteral( "margin" ), QStringLiteral( "0.0" ) ).toDouble();
-  if ( composerMap && !qgsDoubleNear( margin, 0.0 ) )
-  {
-    composerMap->setAtlasMargin( margin );
-  }
-  bool fixedScale = elem.attribute( QStringLiteral( "fixedScale" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
-  if ( composerMap && fixedScale )
-  {
-    composerMap->setAtlasScalingMode( QgsComposerMap::Fixed );
-  }
-}
-
 void QgsAtlasComposition::setHideCoverage( bool hide )
 {
   mHideCoverage = hide;

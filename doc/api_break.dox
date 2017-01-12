@@ -399,7 +399,8 @@ QgsAdvancedDigitizingDockWidget        {#qgis_api_break_3_0_QgsAdvancedDigitizin
 QgsAtlasComposition        {#qgis_api_break_3_0_QgsAtlasComposition}
 -------------------
 
-- readXMLMapSettings() has been renamed to readXmlMapSettings()
+- readXMLMapSettings() was removed. QGIS no longer supports upgrading pre 2.2 compositions and if this is a
+requirement the projects should first be upgraded by opening and saving in 2.18.
 - composerMap() and setComposerMap() were removed. Use QgsComposerMap::atlasDriven() and setAtlasDriven()
 instead
 - fixedScale() and setFixedScale() were removed. Use QgsComposerMap::atlasScalingMode() and setAtlasScalingMode()
