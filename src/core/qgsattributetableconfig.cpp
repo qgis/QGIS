@@ -65,7 +65,7 @@ void QgsAttributeTableConfig::update( const QgsFields& fields )
     const ColumnConfig& column = mColumns.at( i );
     if ( column.type == Field )
     {
-      if ( fields.lookupField( column.name ) == -1 )
+      if ( fields.indexOf( column.name ) == -1 )
       {
         mColumns.remove( i );
       }
