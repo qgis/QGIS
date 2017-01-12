@@ -3931,7 +3931,7 @@ void QgsComposer::cleanupAfterTemplateRead()
         double currentHeight = mapItem->rect().height();
         if ( currentWidth - 0 > 0.0 ) //don't divide through zero
         {
-          QgsRectangle canvasExtent = mComposition->mapSettings().visibleExtent();
+          QgsRectangle canvasExtent = mQgis->mapCanvas()->mapSettings().visibleExtent();
           //adapt min y of extent such that the size of the map item stays the same
           double newCanvasExtentHeight = currentHeight / currentWidth * canvasExtent.width();
           canvasExtent.setYMinimum( canvasExtent.yMaximum() - newCanvasExtentHeight );

@@ -469,7 +469,7 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
     return;
   }
 
-  QgsRectangle newExtent = mComposerMap->composition()->mapSettings().visibleExtent();
+  QgsRectangle newExtent = QgisApp::instance()->mapCanvas()->mapSettings().visibleExtent();
 
   mComposerMap->beginCommand( tr( "Map extent changed" ) );
   mComposerMap->zoomToExtent( newExtent );
