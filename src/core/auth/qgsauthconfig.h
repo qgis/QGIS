@@ -172,7 +172,7 @@ class CORE_EXPORT QgsAuthMethodConfig
     static const QString mConfigKeySep;
     static const QString mConfigListSep;
 
-    static const int mConfigVersion;
+    static const int sConfigVersion;
 };
 
 typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;

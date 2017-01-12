@@ -1121,10 +1121,10 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     // do better than that ... (but perhaps ogr should be enhanced to
     // do this instead?).
 
-    static const double feetToMeter = 0.3048;
-    static const double smallNum = 1e-3;
+    static const double FEET_TO_METER = 0.3048;
+    static const double SMALL_NUM = 1e-3;
 
-    if ( qAbs( toMeter - feetToMeter ) < smallNum )
+    if ( qAbs( toMeter - FEET_TO_METER ) < SMALL_NUM )
       unit = QStringLiteral( "Foot" );
 
     QgsDebugMsg( "Projection has linear units of " + unit );

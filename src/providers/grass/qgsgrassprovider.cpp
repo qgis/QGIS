@@ -107,7 +107,7 @@ Vect_delete_line_function_type *Vect_delete_line_function_pointer = ( Vect_delet
 static QString GRASS_KEY = QStringLiteral( "grass" );
 
 int QgsGrassProvider::LAST_TYPE = -9999;
-int QgsGrassProvider::mEditedCount = 0;
+int QgsGrassProvider::sEditedCount = 0;
 
 QgsGrassProvider::QgsGrassProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
@@ -299,7 +299,7 @@ QgsVectorDataProvider::Capabilities QgsGrassProvider::capabilities() const
   // Because of bug in GRASS https://trac.osgeo.org/grass/ticket/2775 it is not possible
   // close db drivers in random order on Unix and probably Mac -> disable editing if another layer is edited
 #ifndef Q_OS_WIN
-  if ( mEditedCount > 0 && !mEditBuffer )
+  if ( sEditedCount > 0 && !mEditBuffer )
   {
     return 0;
   }
@@ -650,7 +650,7 @@ bool QgsGrassProvider::closeEdit( bool newMap, QgsVectorLayer *vectorLayer )
     }
     connect( mLayer->map(), SIGNAL( dataChanged() ), SLOT( onDataChanged() ) );
     emit fullExtentCalculated();
-    mEditedCount--;
+    sEditedCount--;
     return true;
   }
   return false;
@@ -1134,7 +1134,7 @@ void QgsGrassProvider::startEditing( QgsVectorLayer *vectorLayer )
   formConfig.setReadOnly( mLayer->fields().size() - 1, true );
   vectorLayer->setEditFormConfig( formConfig );
 
-  mEditedCount++;
+  sEditedCount++;
 
   QgsDebugMsg( "edit started" );
 }

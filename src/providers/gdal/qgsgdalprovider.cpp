@@ -70,25 +70,25 @@ int CPL_STDCALL progressCallback( double dfComplete,
                                   const char * pszMessage,
                                   void * pProgressArg )
 {
-  static double dfLastComplete = -1.0;
+  static double sDfLastComplete = -1.0;
 
   QgsGdalProgress *prog = static_cast<QgsGdalProgress *>( pProgressArg );
   QgsGdalProvider *mypProvider = prog->provider;
 
-  if ( dfLastComplete > dfComplete )
+  if ( sDfLastComplete > dfComplete )
   {
-    if ( dfLastComplete >= 1.0 )
-      dfLastComplete = -1.0;
+    if ( sDfLastComplete >= 1.0 )
+      sDfLastComplete = -1.0;
     else
-      dfLastComplete = dfComplete;
+      sDfLastComplete = dfComplete;
   }
 
-  if ( floor( dfLastComplete*10 ) != floor( dfComplete*10 ) )
+  if ( floor( sDfLastComplete*10 ) != floor( dfComplete*10 ) )
   {
     mypProvider->emitProgress( prog->type, dfComplete * 100, QString( pszMessage ) );
     mypProvider->emitProgressUpdate( dfComplete * 100 );
   }
-  dfLastComplete = dfComplete;
+  sDfLastComplete = dfComplete;
 
   return true;
 }

@@ -42,8 +42,6 @@ email                : tim@linfiniti.com
 #include <cmath>
 #include <cassert>
 
-
-const double QgsDecorationNorthArrow::PI = 3.14159265358979323846;
 //  const double QgsNorthArrowPlugin::DEG2RAD = 0.0174532925199433;
 const double QgsDecorationNorthArrow::TOL = 1e-8;
 
@@ -124,7 +122,7 @@ void QgsDecorationNorthArrow::render( QPainter * theQPainter )
       if ( mAutomatic )
         calculateNorthDirection();
 
-      double myRadiansDouble = mRotationInt * PI / 180.0;
+      double myRadiansDouble = mRotationInt * M_PI / 180.0;
       int xShift = static_cast<int>((
                                       ( centerXDouble * cos( myRadiansDouble ) ) +
                                       ( centerYDouble * sin( myRadiansDouble ) )
@@ -266,8 +264,8 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
       double angle = 0.0;
 
       // convert to radians for the equations below
-      p1.multiply( PI / 180.0 );
-      p2.multiply( PI / 180.0 );
+      p1.multiply( M_PI / 180.0 );
+      p2.multiply( M_PI / 180.0 );
 
       double y = sin( p2.x() - p1.x() ) * cos( p2.y() );
       double x = cos( p1.y() ) * sin( p2.y() ) -
@@ -282,25 +280,25 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
         if ( x > 0.0 && ( y / x ) > TOL )
           angle = atan( y / x );
         else if ( x < 0.0 && ( y / x ) < -TOL )
-          angle = PI - atan( -y / x );
+          angle = M_PI - atan( -y / x );
         else
-          angle = 0.5 * PI;
+          angle = 0.5 * M_PI;
       }
       else if ( y < 0.0 )
       {
         if ( x > 0.0 && ( y / x ) < -TOL )
           angle = -atan( -y / x );
         else if ( x < 0.0 && ( y / x ) > TOL )
-          angle = atan( y / x ) - PI;
+          angle = atan( y / x ) - M_PI;
         else
-          angle = 1.5 * PI;
+          angle = 1.5 * M_PI;
       }
       else
       {
         if ( x > TOL )
           angle = 0.0;
         else if ( x < -TOL )
-          angle = PI;
+          angle = M_PI;
         else
         {
           angle = 0.0; // p1 = p2
@@ -309,7 +307,7 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
       }
       // And set the angle of the north arrow. Perhaps do something
       // different if goodDirn = false.
-      mRotationInt = qRound( fmod( 360.0 - angle * 180.0 / PI, 360.0 ) );
+      mRotationInt = qRound( fmod( 360.0 - angle * 180.0 / M_PI, 360.0 ) );
     }
     else
     {

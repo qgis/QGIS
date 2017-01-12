@@ -60,7 +60,7 @@ QgsGPXProvider::DataType QgsGPXProvider::attrUsed[] =
   QgsGPXProvider::AllType, QgsGPXProvider::AllType
 };
 
-const int QgsGPXProvider::attrCount = sizeof( QgsGPXProvider::attr ) / sizeof( const char* );
+const int QgsGPXProvider::sAttrCount = sizeof( QgsGPXProvider::attr ) / sizeof( const char* );
 
 const QString GPX_KEY = QStringLiteral( "gpx" );
 
@@ -88,7 +88,7 @@ QgsGPXProvider::QgsGPXProvider( const QString& uri )
                    ( typeStr == QLatin1String( "route" ) ? RouteType : TrackType ) );
 
   // set up the attributes and the geometry type depending on the feature type
-  for ( int i = 0; i < attrCount; ++i )
+  for ( int i = 0; i < sAttrCount; ++i )
   {
     if ( attrUsed[i] & mFeatureType )
     {

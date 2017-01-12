@@ -340,8 +340,8 @@ class CORE_EXPORT QgsDxfExport
 
     QTextStream mTextStream;
 
-    static int mDxfColors[][3];
-    static const char *mDxfEncodings[][2];
+    static int sDxfColors[][3];
+    static const char *sDxfEncodings[][2];
 
     int mSymbolLayerCounter; //internal counter
     int mNextHandleId;

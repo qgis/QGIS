@@ -79,7 +79,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
     // geographic coordinates (usually +/- 180 degrees,
     // and is assumed to be so here), and draw each
     // extent separately.
-    static const double splitCoord = 180.0;
+    static const double SPLIT_COORD = 180.0;
 
     if ( ml->crs().isGeographic() )
     {
@@ -132,8 +132,8 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
           // so let's use (-180,180). This hopefully does not add too much overhead. It is
           // more straightforward than rendering with two separate extents and more consistent
           // for rendering, labeling and caching as everything is rendered just in one go
-          extent.setXMinimum( -splitCoord );
-          extent.setXMaximum( splitCoord );
+          extent.setXMinimum( -SPLIT_COORD );
+          extent.setXMaximum( SPLIT_COORD );
         }
       }
 

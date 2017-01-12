@@ -31,8 +31,8 @@
 
 QMutex QgsWFSUtils::gmMutex;
 QThread* QgsWFSUtils::gmThread = nullptr;
-bool QgsWFSUtils::gmKeepAliveWorks = false;
-int QgsWFSUtils::gmCounter = 0;
+bool QgsWFSUtils::sKeepAliveWorks = false;
+int QgsWFSUtils::sCounter = 0;
 
 QString QgsWFSUtils::getBaseCacheDirectory( bool createIfNotExisting )
 {
@@ -64,12 +64,12 @@ QString QgsWFSUtils::getCacheDirectory( bool createIfNotExisting )
       QgsDebugMsg( QString( "Creating our cache dir %1/%2" ).arg( baseDirectory, processPath ) );
       QDir( baseDirectory ).mkpath( processPath );
     }
-    if ( gmCounter == 0 && gmKeepAliveWorks )
+    if ( sCounter == 0 && sKeepAliveWorks )
     {
       gmThread = new QgsWFSUtilsKeepAlive();
       gmThread->start();
     }
-    gmCounter ++;
+    sCounter ++;
   }
   return QDir( baseDirectory ).filePath( processPath );
 }
@@ -82,8 +82,8 @@ QString QgsWFSUtils::acquireCacheDirectory()
 void QgsWFSUtils::releaseCacheDirectory()
 {
   QMutexLocker locker( &gmMutex );
-  gmCounter --;
-  if ( gmCounter == 0 )
+  sCounter --;
+  if ( sCounter == 0 )
   {
     if ( gmThread )
     {
@@ -204,10 +204,10 @@ QSharedMemory* QgsWFSUtils::createAndAttachSHM()
 void QgsWFSUtils::init()
 {
   QSharedMemory* sharedMemory = createAndAttachSHM();
-  gmKeepAliveWorks = sharedMemory != nullptr;
+  sKeepAliveWorks = sharedMemory != nullptr;
   delete sharedMemory;
 
-  if ( gmKeepAliveWorks )
+  if ( sKeepAliveWorks )
   {
     QgsDebugMsg( QString( "Keep-alive mechanism works" ) );
   }
@@ -234,7 +234,7 @@ void QgsWFSUtils::init()
         {
           canDelete = true;
         }
-        else if ( gmKeepAliveWorks )
+        else if ( sKeepAliveWorks )
         {
           canDelete = true;
           QSharedMemory otherSharedMemory( QStringLiteral( "qgis_wfs_pid_%1" ).arg( pid ) );

@@ -49,8 +49,8 @@ static bool _initWidgetFunction( const QString& name, QgsPaintEffectWidgetFunc f
 
 static void _initWidgetFunctions()
 {
-  static bool initialized = false;
-  if ( initialized )
+  static bool sInitialized = false;
+  if ( sInitialized )
     return;
 
   _initWidgetFunction( QStringLiteral( "blur" ), QgsBlurWidget::create );
@@ -62,7 +62,7 @@ static void _initWidgetFunctions()
   _initWidgetFunction( QStringLiteral( "transform" ), QgsTransformWidget::create );
   _initWidgetFunction( QStringLiteral( "color" ), QgsColorEffectWidget::create );
 
-  initialized = true;
+  sInitialized = true;
 }
 
 

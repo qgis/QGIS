@@ -487,7 +487,7 @@ int DualEdgeTriangulation::baseEdgeOfTriangle( Point3D* point )
 
   while ( true )
   {
-    if ( runs > nBaseOfRuns )//prevents endless loops
+    if ( runs > sNumBaseOfRuns )//prevents endless loops
     {
       // QgsDebugMsg("warning, probable endless loop detected");
       return -100;
@@ -2606,7 +2606,7 @@ bool DualEdgeTriangulation::pointInside( double x, double y )
 
   while ( true )
   {
-    if ( runs > nBaseOfRuns )//prevents endless loops
+    if ( runs > sNumBaseOfRuns )//prevents endless loops
     {
       QgsDebugMsg( QString( "warning, instability detected: Point coordinates: %1//%2" ).arg( x ).arg( y ) );
       return false;

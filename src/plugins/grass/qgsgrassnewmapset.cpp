@@ -60,7 +60,7 @@ QString temp3( GRASS_VERSION_MINOR );
 QString temp4( GRASS_VERSION_RELEASE );
 #endif
 
-bool QgsGrassNewMapset::mRunning = false;
+bool QgsGrassNewMapset::sRunning = false;
 
 QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
                                       QgsGrassPlugin *plugin, QWidget * parent,
@@ -75,7 +75,7 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   setWizardStyle( QWizard::ClassicStyle );
 #endif
 
-  mRunning = true;
+  sRunning = true;
   mIface = iface;
   mProjectionSelector = 0;
   mPreviousPage = -1;
@@ -130,7 +130,7 @@ QgsGrassNewMapset::~QgsGrassNewMapset()
 {
   QSettings settings;
   settings.setValue( QStringLiteral( "/Windows/QgsGrassNewMapset/geometry" ), saveGeometry() );
-  mRunning = false;
+  sRunning = false;
 }
 /*************************** DATABASE *******************************/
 void QgsGrassNewMapset::browseDatabase()
@@ -1414,14 +1414,14 @@ void QgsGrassNewMapset::pageSelected( int index )
 
 bool QgsGrassNewMapset::isRunning( void )
 {
-  return mRunning;
+  return sRunning;
 }
 
 void QgsGrassNewMapset::close( void )
 {
 
   hide();
-  mRunning = false;
+  sRunning = false;
   deleteLater();
 }
 

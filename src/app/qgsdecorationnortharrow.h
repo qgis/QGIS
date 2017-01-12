@@ -57,7 +57,6 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
 
   private:
 
-    static const double PI;
     //  static const double DEG2RAD;
     static const double TOL;
 

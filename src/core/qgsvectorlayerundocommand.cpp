@@ -28,17 +28,17 @@
 QgsVectorLayerUndoCommandAddFeature::QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer* buffer, QgsFeature& f )
     : QgsVectorLayerUndoCommand( buffer )
 {
-  static int addedIdLowWaterMark = -1;
+  static int sAddedIdLowWaterMark = -1;
 
   //assign a temporary id to the feature (use negative numbers)
-  addedIdLowWaterMark--;
+  sAddedIdLowWaterMark--;
 
-  QgsDebugMsgLevel( "Assigned feature id " + QString::number( addedIdLowWaterMark ), 4 );
+  QgsDebugMsgLevel( "Assigned feature id " + QString::number( sAddedIdLowWaterMark ), 4 );
 
   // Force a feature ID (to keep other functions in QGIS happy,
   // providers will use their own new feature ID when we commit the new feature)
   // and add to the known added features.
-  f.setId( addedIdLowWaterMark );
+  f.setId( sAddedIdLowWaterMark );
 
   mFeature = f;
 }

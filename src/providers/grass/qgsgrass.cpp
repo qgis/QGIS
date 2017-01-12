@@ -321,12 +321,12 @@ bool QgsGrass::init( void )
   // G_set_error_routine() once called from plugin
   // is not valid in provider -> call it always
 
-  if ( mNonInitializable )
+  if ( sNonInitializable )
   {
     return false;
   }
 
-  if ( initialized )
+  if ( sInitialized )
   {
     return true;
   }
@@ -337,7 +337,7 @@ bool QgsGrass::init( void )
   lock();
   QgsDebugMsg( "do init" );
 
-  active = false;
+  sActive = false;
   // Is it active mode ?
   if ( getenv( "GISRC" ) )
   {
@@ -347,7 +347,7 @@ bool QgsGrass::init( void )
       defaultGisdbase = G_gisdbase();
       defaultLocation = G_location();
       defaultMapset = G_mapset();
-      active = true;
+      sActive = true;
     }
     G_CATCH( QgsGrass::Exception &e )
     {
@@ -368,7 +368,7 @@ bool QgsGrass::init( void )
   {
     mInitError = tr( "Problem in GRASS initialization, GRASS provider and plugin will not work : %1" ).arg( e.what() );
     QgsDebugMsg( mInitError );
-    mNonInitializable = true;
+    sNonInitializable = true;
     unlock();
     return false;
   }
@@ -390,7 +390,7 @@ bool QgsGrass::init( void )
   // where to look for things.
   if ( !isValidGrassBaseDir( gisbase() ) )
   {
-    mNonInitializable = true;
+    sNonInitializable = true;
     mInitError = tr( "GRASS was not found in '%1' (GISBASE), provider and plugin will not work." ).arg( gisbase() );
     QgsDebugMsg( mInitError );
 #if 0
@@ -483,13 +483,13 @@ bool QgsGrass::init( void )
         putEnv( QStringLiteral( "GRASS_PAGER" ), pager );
       }
     }
-    initialized = 1;
+    sInitialized = 1;
   }
 
   unlock();
 
   // after unlock because it is using setMapset() which calls init()
-  if ( active )
+  if ( sActive )
   {
     QgsGrass::instance()->loadMapsetSearchPath(); // must be after G_no_gisinit()
     QgsGrass::instance()->setMapsetSearchPathWatcher();
@@ -550,7 +550,7 @@ void QgsGrass::unlock()
 
 bool QgsGrass::activeMode()
 {
-  return active;
+  return sActive;
 }
 
 QString QgsGrass::getDefaultGisdbase()
@@ -570,7 +570,7 @@ QgsGrassObject QgsGrass::getDefaultLocationObject()
 
 QString QgsGrass::getDefaultLocationPath()
 {
-  if ( !active )
+  if ( !sActive )
   {
     return QString();
   }
@@ -800,10 +800,10 @@ void QgsGrass::onSearchPathFileChanged( const QString & path )
 
 jmp_buf QgsGrass::jumper;
 
-bool QgsGrass::mNonInitializable = false;
-int QgsGrass::initialized = 0;
+bool QgsGrass::sNonInitializable = false;
+int QgsGrass::sInitialized = 0;
 
-bool QgsGrass::active = 0;
+bool QgsGrass::sActive = 0;
 
 QgsGrass::GError QgsGrass::lastError = QgsGrass::OK;
 
@@ -821,7 +821,7 @@ QString QgsGrass::mTmp;
 
 QMutex QgsGrass::sMutex;
 
-bool QgsGrass::mMute = false;
+bool QgsGrass::sMute = false;
 
 int QgsGrass::error_routine( char *msg, int fatal )
 {
@@ -1056,7 +1056,7 @@ QString QgsGrass::openMapset( const QString& gisdbase,
   defaultLocation = location;
   defaultMapset = mapset;
 
-  active = true;
+  sActive = true;
 
   QgsGrass::instance()->loadMapsetSearchPath();
   QgsGrass::instance()->setMapsetSearchPathWatcher();
@@ -1109,7 +1109,7 @@ QString QgsGrass::closeMapset()
     defaultGisdbase = QLatin1String( "" );
     defaultLocation = QLatin1String( "" );
     defaultMapset = QLatin1String( "" );
-    active = 0;
+    sActive = 0;
 
     // Delete temporary dir
 
@@ -2818,8 +2818,8 @@ void QgsGrass::setGisbase( bool custom, const QString &customDir )
 
   if ( custom != previousCustom || ( custom && customDir != previousCustomDir ) )
   {
-    mNonInitializable = false;
-    initialized = false;
+    sNonInitializable = false;
+    sInitialized = false;
     mInitError.clear();
     if ( !QgsGrass::init() )
     {
@@ -2913,7 +2913,7 @@ void QgsGrass::openOptions()
 
 void QgsGrass::warning( const QString &message )
 {
-  if ( !mMute )
+  if ( !sMute )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ), message );
   }

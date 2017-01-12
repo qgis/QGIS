@@ -56,7 +56,7 @@
 #define DXF_HANDPLOTSTYLE 0xf
 
 // dxf color palette
-int QgsDxfExport::mDxfColors[][3] =
+int QgsDxfExport::sDxfColors[][3] =
 {
   { 255, 255, 255 },
   { 255, 0, 0 },
@@ -316,7 +316,7 @@ int QgsDxfExport::mDxfColors[][3] =
   { 255, 255, 255 },
 };
 
-const char *QgsDxfExport::mDxfEncodings[][2] =
+const char *QgsDxfExport::sDxfEncodings[][2] =
 {
   { "ASCII", "" },
   { "8859_1", "ISO-8859-1" },
@@ -432,7 +432,7 @@ void QgsDxfExport::writeGroup( const QColor& color, int exactMatchCode, int rgbC
   int minDistAt = -1;
   int minDist = INT_MAX;
 
-  for ( int i = 1; i < static_cast< int >( sizeof( mDxfColors ) / sizeof( *mDxfColors ) ) && minDist > 0; ++i )
+  for ( int i = 1; i < static_cast< int >( sizeof( sDxfColors ) / sizeof( *sDxfColors ) ) && minDist > 0; ++i )
   {
     int dist = color_distance( color.rgba(), i );
     if ( dist >= minDist )
@@ -3873,7 +3873,7 @@ int QgsDxfExport::closestColorMatch( QRgb pixel )
 {
   int idx = 0;
   int current_distance = INT_MAX;
-  for ( int i = 1; i < static_cast< int >( sizeof( mDxfColors ) / sizeof( *mDxfColors ) ); ++i )
+  for ( int i = 1; i < static_cast< int >( sizeof( sDxfColors ) / sizeof( *sDxfColors ) ); ++i )
   {
     int dist = color_distance( pixel, i );
     if ( dist < current_distance )
@@ -3894,9 +3894,9 @@ int QgsDxfExport::color_distance( QRgb p1, int index )
     return 0;
   }
 
-  double redDiff = qRed( p1 ) - mDxfColors[index][0];
-  double greenDiff = qGreen( p1 ) - mDxfColors[index][1];
-  double blueDiff = qBlue( p1 ) - mDxfColors[index][2];
+  double redDiff = qRed( p1 ) - sDxfColors[index][0];
+  double greenDiff = qGreen( p1 ) - sDxfColors[index][1];
+  double blueDiff = qBlue( p1 ) - sDxfColors[index][2];
 #if 0
   QgsDebugMsg( QString( "color_distance( r:%1 g:%2 b:%3 <=> i:%4 r:%5 g:%6 b:%7 ) => %8" )
                .arg( qRed( p1 ) ).arg( qGreen( p1 ) ).arg( qBlue( p1 ) )
@@ -4211,13 +4211,13 @@ QString QgsDxfExport::dxfEncoding( const QString &name )
       continue;
 
     int i;
-    for ( i = 0; i < static_cast< int >( sizeof( mDxfEncodings ) / sizeof( *mDxfEncodings ) ) && name != mDxfEncodings[i][1]; ++i )
+    for ( i = 0; i < static_cast< int >( sizeof( sDxfEncodings ) / sizeof( *sDxfEncodings ) ) && name != sDxfEncodings[i][1]; ++i )
       ;
 
-    if ( i == static_cast< int >( sizeof( mDxfEncodings ) / sizeof( *mDxfEncodings ) ) )
+    if ( i == static_cast< int >( sizeof( sDxfEncodings ) / sizeof( *sDxfEncodings ) ) )
       continue;
 
-    return mDxfEncodings[i][0];
+    return sDxfEncodings[i][0];
   }
 
   return QString::null;
@@ -4229,10 +4229,10 @@ QStringList QgsDxfExport::encodings()
   Q_FOREACH ( QByteArray codec, QTextCodec::availableCodecs() )
   {
     int i;
-    for ( i = 0; i < static_cast< int >( sizeof( mDxfEncodings ) / sizeof( *mDxfEncodings ) ) && strcmp( codec.data(), mDxfEncodings[i][1] ) != 0; ++i )
+    for ( i = 0; i < static_cast< int >( sizeof( sDxfEncodings ) / sizeof( *sDxfEncodings ) ) && strcmp( codec.data(), sDxfEncodings[i][1] ) != 0; ++i )
       ;
 
-    if ( i < static_cast< int >( sizeof( mDxfEncodings ) / sizeof( *mDxfEncodings ) ) )
+    if ( i < static_cast< int >( sizeof( sDxfEncodings ) / sizeof( *sDxfEncodings ) ) )
       encodings << codec.data();
   }
   return encodings;

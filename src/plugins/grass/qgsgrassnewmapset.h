@@ -197,7 +197,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     QgsGrassPlugin *mPlugin;
 
     //! Editing is already running
-    static bool mRunning;
+    static bool sRunning;
 
     //! Projection selector
     QgsProjectionSelector *mProjectionSelector;
