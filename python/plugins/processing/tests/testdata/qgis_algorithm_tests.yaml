@@ -2177,3 +2177,17 @@ tests:
       OUTPUT:
         name: expected/count_points_weighted.gml
         type: vector
+
+  - algorithm: qgis:pointsalonglines
+    name: standard points alog lines
+    params:
+      DISTANCE: 1.0
+      END_OFFSET: 0.0
+      INPUT:
+        name: lines.gml
+        type: vector
+      START_OFFSET: 0.0
+    results:
+      OUTPUT:
+        name: expected/points_alog_lines.gml
+        type: vector
