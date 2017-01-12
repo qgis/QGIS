@@ -29,6 +29,7 @@ import os
 from PyQt4.QtGui import QIcon
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
+from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
 from GdalUtils import GdalUtils
 
@@ -100,6 +101,18 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.createAlgsList()
+
+    def initializeSettings(self):
+        AlgorithmProvider.initializeSettings(self)
+        ProcessingConfig.addSetting(Setting(
+            self.getDescription(),
+            GdalUtils.GDAL_HELP_PATH,
+            self.tr('Location of GDAL docs'),
+            GdalUtils.gdalHelpPath()))
+
+    def unload(self):
+        AlgorithmProvider.unload(self)
+        ProcessingConfig.removeSetting(GdalUtils.GDAL_HELP_PATH)
 
     def getDescription(self):
         return self.tr('GDAL/OGR')
