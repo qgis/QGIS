@@ -2145,3 +2145,19 @@ tests:
         name: points.gml
         type: vector
     results: {}
+
+  - algorithm: qgis:countuniquepointsinpolygon
+    name: Test (qgis:countuniquepointsinpolygon)
+    params:
+      CLASSFIELD: id2
+      FIELD: NUMPOINTS
+      POINTS:
+        name: points.gml
+        type: vector
+      POLYGONS:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/count_unique_points.gml
+        type: vector
