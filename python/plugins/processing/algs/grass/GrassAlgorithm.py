@@ -80,7 +80,14 @@ class GrassAlgorithm(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
 
     def help(self):
-        return False, 'http://grass.osgeo.org/grass64/manuals/' + self.grassName + '.html'
+        helpPath = GrassUtils.grassHelpPath()
+        if helpPath == '':
+            return False, None
+
+        if os.path.exists(helpPath):
+            return False, QUrl.fromLocalFile(os.path.join(helpPath, '{}.html'.format(self.grassName))).toString()
+        else:
+            return False, helpPath + '{}.html'.format(self.grassName)
 
     def getParameterDescriptions(self):
         descs = {}
