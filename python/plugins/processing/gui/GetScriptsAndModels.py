@@ -32,13 +32,14 @@ from functools import partial
 
 from PyQt4 import uic
 from PyQt4.QtCore import Qt, QCoreApplication, QUrl
-from PyQt4.QtGui import QIcon, QCursor, QApplication, QTreeWidgetItem, QPushButton
+from PyQt4.QtGui import QIcon, QCursor, QApplication, QTreeWidgetItem, QPushButton, QMessageBox
 from PyQt4.QtNetwork import QNetworkReply, QNetworkRequest
 
 from qgis.utils import iface, show_message_log
 from qgis.core import QgsNetworkAccessManager, QgsMessageLog
 from qgis.gui import QgsMessageBar
 
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.script.ScriptUtils import ScriptUtils
 from processing.algs.r.RUtils import RUtils
@@ -61,6 +62,13 @@ class GetScriptsAction(ToolboxAction):
         return QIcon(os.path.join(pluginPath, 'images', 'script.png'))
 
     def execute(self):
+        repoUrl = ProcessingConfig.getSetting(ProcessingConfig.MODELS_SCRIPTS_REPO)
+        if repoUrl is None or repoUrl == '':
+            QMessageBox.warning(None,
+                                self.tr('Repository error'),
+                                self.tr('Scripts and models repository is not configured.'))
+            return
+
         dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.SCRIPTS)
         dlg.exec_()
         if dlg.updateToolbox:
@@ -77,6 +85,13 @@ class GetRScriptsAction(ToolboxAction):
         return QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
 
     def execute(self):
+        repoUrl = ProcessingConfig.getSetting(ProcessingConfig.MODELS_SCRIPTS_REPO)
+        if repoUrl is None or repoUrl == '':
+            QMessageBox.warning(None,
+                                self.tr('Repository error'),
+                                self.tr('Scripts and models repository is not configured.'))
+            return
+
         dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.RSCRIPTS)
         dlg.exec_()
         if dlg.updateToolbox:
@@ -93,6 +108,13 @@ class GetModelsAction(ToolboxAction):
         return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
 
     def execute(self):
+        repoUrl = ProcessingConfig.getSetting(ProcessingConfig.MODELS_SCRIPTS_REPO)
+        if repoUrl is None or repoUrl == '':
+            QMessageBox.warning(None,
+                                self.tr('Repository error'),
+                                self.tr('Scripts and models repository is not configured.'))
+            return
+
         dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.MODELS)
         dlg.exec_()
         if dlg.updateToolbox:
@@ -125,18 +147,20 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         self.setupUi(self)
         self.manager = QgsNetworkAccessManager.instance()
 
+        repoUrl = ProcessingConfig.getSetting(ProcessingConfig.MODELS_SCRIPTS_REPO)
+
         self.resourceType = resourceType
         if self.resourceType == self.MODELS:
             self.folder = ModelerUtils.modelsFolder()
-            self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/models/'
+            self.urlBase = '{}/models/'.format(repoUrl)
             self.icon = QIcon(os.path.join(pluginPath, 'images', 'model.png'))
         elif self.resourceType == self.SCRIPTS:
             self.folder = ScriptUtils.scriptsFolder()
-            self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/scripts/'
+            self.urlBase = '{}/scripts/'.format(repoUrl)
             self.icon = QIcon(os.path.join(pluginPath, 'images', 'script.png'))
         else:
             self.folder = RUtils.RScriptsFolder()
-            self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/rscripts/'
+            self.urlBase = '{}/rscripts/'.format(repoUrl)
             self.icon = QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
 
         self.lastSelectedItem = None
