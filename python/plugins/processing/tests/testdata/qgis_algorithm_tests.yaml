@@ -2202,3 +2202,15 @@ tests:
       OUTPUT:
         name: expected/mean_coordinates.gml
         type: vector
+
+  - algorithm: qgis:singlepartstomultipart
+    name: single part to multipart
+    params:
+      FIELD: id
+      INPUT:
+        name: custom/single_part_poly.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/single_to_multi.gml
+        type: vector
