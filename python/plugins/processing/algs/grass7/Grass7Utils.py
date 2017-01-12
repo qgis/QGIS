@@ -47,6 +47,7 @@ class Grass7Utils:
     GRASS_FOLDER = 'GRASS7_FOLDER'
     GRASS_LOG_COMMANDS = 'GRASS7_LOG_COMMANDS'
     GRASS_LOG_CONSOLE = 'GRASS7_LOG_CONSOLE'
+    GRASS_HELP_PATH = 'GRASS7_HELP_PATH'
 
     sessionRunning = False
     sessionLayers = {}
@@ -399,3 +400,27 @@ class Grass7Utils:
         except TypeError:
             # Python 3
             output.write(command + '\n')
+
+    @staticmethod
+    def grassHelpPath():
+        helpPath = ProcessingConfig.getSetting(Grass7Utils.GRASS_HELP_PATH)
+
+        if helpPath is None:
+            if isWindows():
+                localPath = os.path.join(Grass7Utils.grassPath(), 'docs/html')
+                if os.path.exists(localPath):
+                    helpPath = os.path.abspath(localPath)
+            elif isMac():
+                localPath = '/Applications/GRASS-7.0.app/Contents/MacOS/docs/html'
+                if os.path.exists(localPath):
+                    helpPath = os.path.abspath(localPath)
+            else:
+                searchPaths = ['/usr/share/doc/grass-doc/html',
+                               '/opt/grass/docs/html',
+                               '/usr/share/doc/grass/docs/html']
+                for path in searchPaths:
+                    if os.path.exists(path):
+                        helpPath = os.path.abspath(path)
+                        break
+
+        return helpPath if helpPath is not None else 'http://grass.osgeo.org/grass70/manuals/'

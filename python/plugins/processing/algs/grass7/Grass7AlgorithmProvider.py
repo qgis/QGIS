@@ -60,6 +60,11 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
             self.getDescription(),
             Grass7Utils.GRASS_LOG_CONSOLE,
             self.tr('Log console output'), False))
+        ProcessingConfig.addSetting(Setting(
+            self.getDescription(),
+            Grass7Utils.GRASS_HELP_PATH,
+            self.tr('Location of GRASS 7 docs'),
+            Grass7Utils.grassHelpPath()))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -67,6 +72,7 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
             ProcessingConfig.removeSetting(Grass7Utils.GRASS_FOLDER)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_CONSOLE)
+        ProcessingConfig.removeSetting(Grass7Utils.GRASS_HELP_PATH)
 
     def createAlgsList(self):
         self.preloadedAlgs = []
