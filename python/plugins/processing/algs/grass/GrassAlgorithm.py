@@ -96,9 +96,15 @@ class GrassAlgorithm(GeoAlgorithm):
             self._icon = QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
         return self._icon
 
-
     def help(self):
-        return False, 'http://grass.osgeo.org/grass64/manuals/' + self.grassName + '.html'
+        helpPath = GrassUtils.grassHelpPath()
+        if helpPath == '':
+            return False, None
+
+        if os.path.exists(helpPath):
+            return False, QUrl.fromLocalFile(os.path.join(helpPath, '{}.html'.format(self.grassName))).toString()
+        else:
+            return False, helpPath + '{}.html'.format(self.grass7Name)
 
     def getParameterDescriptions(self):
         descs = {}
@@ -162,7 +168,7 @@ class GrassAlgorithm(GeoAlgorithm):
                     elif isinstance(output, OutputVector):
                         vectorOutputs += 1
                     if isinstance(output, OutputHTML):
-                        self.addOutput(OutputFile("rawoutput", output.description + 
+                        self.addOutput(OutputFile("rawoutput", output.description +
                                                   " (raw output)", "txt"))
                 line = lines.readline().strip('\n').strip()
             except Exception as e:

@@ -50,6 +50,7 @@ class GrassUtils:
     GRASS_WIN_SHELL = 'GRASS_WIN_SHELL'
     GRASS_LOG_COMMANDS = 'GRASS_LOG_COMMANDS'
     GRASS_LOG_CONSOLE = 'GRASS_LOG_CONSOLE'
+    GRASS_HELP_PATH = 'GRASS_HELP_PATH'
 
     sessionRunning = False
     sessionLayers = {}
@@ -412,3 +413,27 @@ class GrassUtils:
         if context == '':
             context = 'GrassUtils'
         return QCoreApplication.translate(context, string)
+
+    @staticmethod
+    def grassHelpPath():
+        helpPath = ProcessingConfig.getSetting(GrassUtils.GRASS_HELP_PATH)
+
+        if helpPath is None:
+            if isWindows():
+                localPath = os.path.join(Grass7Utils.grassPath(), 'docs/html')
+                if os.path.exists(localPath):
+                    helpPath = os.path.abspath(localPath)
+            elif isMac():
+                localPath = '/Applications/GRASS-6.4.app/Contents/MacOS/docs/html'
+                if os.path.exists(localPath):
+                    helpPath = os.path.abspath(localPath)
+            else:
+                searchPaths = ['/usr/share/doc/grass-doc/html',
+                               '/opt/grass/docs/html',
+                               '/usr/share/doc/grass/docs/html']
+                for path in searchPaths:
+                    if os.path.exists(path):
+                        helpPath = os.path.abspath(path)
+                        break
+
+        return helpPath if helpPath is not None else 'http://grass.osgeo.org/grass64/manuals/'
