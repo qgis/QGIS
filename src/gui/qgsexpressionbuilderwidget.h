@@ -307,7 +307,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QSortFilterProxyModel *mProxyValues;
     QgsExpressionItemSearchProxy *mProxyModel;
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
-    QgsFeature mFeature;
     QgsExpressionHighlighter* highlighter;
     bool mExpressionValid;
     QgsDistanceArea mDa;

@@ -543,33 +543,19 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     // Only set calculator if we have layer, else use default.
     exp.setGeomCalculator( &mDa );
 
-    if ( !mFeature.isValid() )
+    if ( !mExpressionContext.feature().isValid() )
     {
-      mLayer->getFeatures().nextFeature( mFeature );
-    }
-
-    if ( mFeature.isValid() )
-    {
-      mExpressionContext.setFeature( mFeature );
-      QVariant value = exp.evaluate( &mExpressionContext );
-      if ( !exp.hasEvalError() )
-        lblPreview->setText( QgsExpression::formatPreviewString( value ) );
-    }
-    else
-    {
-      // The feature is invalid because we don't have one but that doesn't mean user can't
-      // build a expression string.  They just get no preview.
-      lblPreview->setText( QLatin1String( "" ) );
+      // no feature passed yet, try to get from layer
+      QgsFeature f;
+      mLayer->getFeatures().nextFeature( f );
+      mExpressionContext.setFeature( f );
     }
   }
-  else
+
+  QVariant value = exp.evaluate( &mExpressionContext );
+  if ( !exp.hasEvalError() )
   {
-    // No layer defined
-    QVariant value = exp.evaluate( &mExpressionContext );
-    if ( !exp.hasEvalError() )
-    {
-      lblPreview->setText( QgsExpression::formatPreviewString( value ) );
-    }
+    lblPreview->setText( QgsExpression::formatPreviewString( value ) );
   }
 
   if ( exp.hasParserError() || exp.hasEvalError() )
