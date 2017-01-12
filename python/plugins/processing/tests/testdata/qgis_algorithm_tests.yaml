@@ -2177,3 +2177,36 @@ tests:
       OUTPUT:
         name: expected/count_points_weighted.gml
         type: vector
+
+  - algorithm: qgis:createspatialindex
+    name: create spatial index. No output, does not check result
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+    results: {}
+
+  - algorithm: qgis:meancoordinates
+    name: standard mean coordinates
+    params:
+      POINTS:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/mean_coordinates.gml
+        type: vector
+
+  - algorithm: qgis:pointsalonglines
+    name: standard poins along lines
+    params:
+      DISTANCE: 1.0
+      END_OFFSET: 0.0
+      INPUT:
+        name: lines.gml
+        type: vector
+      START_OFFSET: 0.0
+    results:
+      OUTPUT:
+        name: expected/points_alog_lines.gml
+        type: vector
