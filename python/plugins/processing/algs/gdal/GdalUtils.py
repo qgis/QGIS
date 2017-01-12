@@ -34,7 +34,9 @@ from osgeo import gdal
 from qgis.PyQt.QtCore import QSettings
 from qgis.core import QgsApplication, QgsVectorFileWriter
 from processing.core.ProcessingLog import ProcessingLog
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.SilentProgress import SilentProgress
+from processing.tools.system import isWindows, isMac
 
 try:
     from osgeo import gdal
@@ -44,6 +46,8 @@ except:
 
 
 class GdalUtils:
+
+    GDAL_HELP_PATH = 'GDAL_HELP_PATH'
 
     supportedRasters = None
 
@@ -182,3 +186,21 @@ class GdalUtils:
     @staticmethod
     def version():
         return int(gdal.VersionInfo('VERSION_NUM'))
+
+    @staticmethod
+    def gdalHelpPath():
+        helpPath = ProcessingConfig.getSetting(GdalUtils.GDAL_HELP_PATH)
+
+        if helpPath is None:
+            if isWindows():
+                pass
+            elif isMac():
+                pass
+            else:
+                searchPaths = ['/usr/share/doc/libgdal-doc/gdal']
+                for path in searchPaths:
+                    if os.path.exists(path):
+                        helpPath = os.path.abspath(path)
+                        break
+
+        return helpPath if helpPath is not None else 'http://www.gdal.org/'

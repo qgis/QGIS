@@ -29,11 +29,12 @@ import os
 import re
 
 from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QUrl
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools import dataobjects
+from processing.tools import dataobjects, system
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -67,10 +68,18 @@ class GdalAlgorithm(GeoAlgorithm):
         GdalUtils.runGdal(commands, progress)
 
     def shortHelp(self):
-        return self._formatHelp('''This algorithm is based on the GDAL %s module.
+        helpPath = GdalUtils.gdalHelpPath()
+        if helpPath == '':
+            return
 
-                For more info, see the <a href = 'http://www.gdal.org/%s.html'> module help</a>
-                ''' % (self.commandName(), self.commandName()))
+        if os.path.exists(helpPath):
+            url = QUrl.fromLocalFile(os.path.join(helpPath, '{}.html'.format(self.commandName()))).toString()
+        else:
+            url = helpPath + '{}.html'.format(self.commandName())
+
+        return self._formatHelp('''This algorithm is based on the GDAL {} module.
+                For more info, see the <a href={}> module help</a>
+                '''.format(self.commandName(), url))
 
     def commandName(self):
         alg = self.getCopy()
