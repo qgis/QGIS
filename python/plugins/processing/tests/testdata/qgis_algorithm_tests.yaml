@@ -2214,3 +2214,20 @@ tests:
       OUTPUT:
         name: expected/single_to_multi.gml
         type: vector
+
+  - algorithm: qgis:zonalstatistics
+    name: simple zonal statistics
+    params:
+      COLUMN_PREFIX: _
+      GLOBAL_EXTENT: false
+      INPUT_RASTER:
+        name: dem.tif
+        type: raster
+      INPUT_VECTOR:
+        name: custom/polygon_mask.gml
+        type: vector
+      RASTER_BAND: 1
+    results:
+      OUTPUT_LAYER:
+        name: expected/zonal_statistics.gml
+        type: vector
