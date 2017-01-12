@@ -83,7 +83,7 @@ class eVisImageDisplayWidget : public QWidget
     //! \brief widget to display the image in
     QScrollArea* mDisplayArea;
 
-    //! \brief Method that acually display the image in the widget
+    //! \brief Method that actually display the image in the widget
     void displayImage();
 
     //! \brief Pointer to the http buffer

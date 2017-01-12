@@ -42,7 +42,7 @@ class eVisDatabaseConnection
 
   public:
 
-    //! \brief Enum containting the type of database supported by this class
+    //! \brief Enum containing the type of database supported by this class
     enum DatabaseType
     {
       Undefined,

@@ -80,7 +80,7 @@ class QgsRenderChecker
     bool runTest( const QString& theTestName, unsigned int theMismatchCount = 0 );
 
     /**
-     * Test using two arbitary images (map renderer will not be used)
+     * Test using two arbitrary images (map renderer will not be used)
      * @param theTestName - to be used as the basis for writing a file to
      * e.g. /tmp/theTestName.png
      * @param theMismatchCount - defaults to 0 - the number of pixels that
@@ -93,9 +93,9 @@ class QgsRenderChecker
     bool compareImages( const QString& theTestName, unsigned int theMismatchCount = 0, const QString& theRenderedImageFile = "" );
     /** Get a list of all the anomalies. An anomaly is a rendered difference
      * file where there is some red pixel content (indicating a render check
-     * mismatch), but where the output was still acceptible. If the render
+     * mismatch), but where the output was still acceptable. If the render
      * diff matches one of these anomalies we will still consider it to be
-     * acceptible.
+     * acceptable.
      * @return a bool indicating if the diff matched one of the anomaly files
      */
     bool isKnownAnomaly( const QString& theDiffImageFile );

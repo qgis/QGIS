@@ -13,6 +13,7 @@ python/qsci_apis/
 src/app/dwg/libdxfrw/
 src/app/gps/qwtpolar-1.0/
 src/app/gps/qwtpolar-1.1.1/
+src/core/pal
 src/plugins/grass/qtermwidget/
 
 #Extensions
@@ -45,5 +46,3 @@ resources/cpt-city-qgis-min/wkp/schwarzwald/COPYING.xml
 tests/testdata/qgis_server/ets-wms13/project.qgs
 tests/testdata/qgis_server_accesscontrol/project.qgs
 tests/testdata/qgis_server_accesscontrol/Hello.qml
-
-

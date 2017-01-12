@@ -114,7 +114,7 @@ void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&
 }
 
 //
-// Return the bouding box of a spatialite geometry blob
+// Return the bounding box of a spatialite geometry blob
 QgsRectangle spatialiteBlobBbox( const char* blob, size_t size )
 {
   Q_UNUSED( size );

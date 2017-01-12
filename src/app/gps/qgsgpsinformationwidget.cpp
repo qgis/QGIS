@@ -683,7 +683,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
     mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : QLatin1String( "" ) );
   } //position
 
-  // Avoid refreshing / panning if we havent moved
+  // Avoid refreshing / panning if we haven't moved
   if ( mLastGpsPosition != myNewCenter )
   {
     mLastGpsPosition = myNewCenter;

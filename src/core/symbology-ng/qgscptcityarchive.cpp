@@ -655,7 +655,7 @@ void QgsCptCityDataItem::refresh()
   // Add new items
   Q_FOREACH ( QgsCptCityDataItem *item, items )
   {
-    // Is it present in childs?
+    // Is it present in children?
     if ( findItem( mChildren, item ) >= 0 )
     {
       delete item;

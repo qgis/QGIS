@@ -674,7 +674,7 @@ void QgsGrassTools::itemClicked( const QModelIndex &theIndex )
   if ( theIndex.column() == 0 )
   {
     //
-    // If the model has been filtered, the index row in the proxy wont match
+    // If the model has been filtered, the index row in the proxy won't match
     // the index row in the underlying model so we need to jump through this
     // little hoop to get the correct item
     //

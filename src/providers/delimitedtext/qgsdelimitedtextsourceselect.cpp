@@ -3,7 +3,7 @@
  *   sherman at mrcc.com                                                   *
  *                                                                         *
  *   GUI for loading a delimited text file as a layer in QGIS              *
- *   This plugin works in conjuction with the delimited text data          *
+ *   This plugin works in conjunction with the delimited text data          *
  *   provider plugin                                                       *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

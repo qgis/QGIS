@@ -451,7 +451,7 @@ IF (WIN32)
     SET (DEFAULT_BIN_SUBDIR bin)
     SET (DEFAULT_CGIBIN_SUBDIR bin)
     # put all the build products into a single directory
-    # under build (doesnt affect install target) to make for
+    # under build (doesn't affect install target) to make for
     # easier debugging.
 
     # Turn on defines for non standard maths stuff

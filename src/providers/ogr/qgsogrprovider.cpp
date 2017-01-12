@@ -1130,7 +1130,7 @@ QgsFields QgsOgrProvider::fields() const
 }
 
 
-//TODO - add sanity check for shape file layers, to include cheking to
+//TODO - add sanity check for shape file layers, to include checking to
 //       see if the .shp, .dbf, .shx files are all present and the layer
 //       actually has features
 bool QgsOgrProvider::isValid() const

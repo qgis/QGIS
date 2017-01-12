@@ -131,7 +131,7 @@ eVisGenericEventBrowserGui::~eVisGenericEventBrowserGui()
 }
 
 /**
- * This method is an extension of the constructor. It was implemented to reduce the amount of code duplicated between the constuctors.
+ * This method is an extension of the constructor. It was implemented to reduce the amount of code duplicated between the constructors.
  */
 bool eVisGenericEventBrowserGui::initBrowser()
 {
@@ -484,7 +484,7 @@ void eVisGenericEventBrowserGui::accept()
  */
 void eVisGenericEventBrowserGui::buildEventImagePath()
 {
-  //This if statement is a bit of a hack, have to track down where the 0 is comming from on initalization
+  //This if statement is a bit of a hack, have to track down where the 0 is coming from on initalization
   if ( "0" != mEventImagePath )
   {
     int myImageNameMarker = 0;
@@ -519,7 +519,7 @@ void eVisGenericEventBrowserGui::buildEventImagePath()
  */
 void eVisGenericEventBrowserGui::displayImage()
 {
-  //This if statement is a bit of a hack, have to track down where the 0 is comming from on initalization
+  //This if statement is a bit of a hack, have to track down where the 0 is coming from on initalization
   if ( "0" != mEventImagePath && 0 == displayArea->currentIndex() )
   {
     if ( mEventImagePath.startsWith( QLatin1String( "http://" ), Qt::CaseInsensitive ) )

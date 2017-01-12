@@ -1649,7 +1649,7 @@ string ASBeautifier::beautify(const string &originalLine)
 			foundAssignmentOp = findHeader(line, i, assignmentOperators, true);
 		const string *foundNonAssignmentOp = findHeader(line, i, nonAssignmentOperators, false);
 
-		// Since findHeader's boundry checking was not used above, it is possible
+		// Since findHeader's boundary checking was not used above, it is possible
 		// that both an assignment op and a non-assignment op where found,
 		// e.g. '>>' and '>>='. If this is the case, treat the LONGER one as the
 		// found operator.

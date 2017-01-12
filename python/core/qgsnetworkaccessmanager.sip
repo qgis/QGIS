@@ -57,7 +57,7 @@ class QgsNetworkAccessManager : QNetworkAccessManager
     //! Get QNetworkRequest::CacheLoadControl from name
     static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &theName );
 
-    //! Setup the NAM according to the user's settings
+    //! Setup the NAM according to the user's settings #spellok
     void setupDefaultProxyAndCache();
 
     //! return whether the system proxy should be used

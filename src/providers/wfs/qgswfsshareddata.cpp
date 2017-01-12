@@ -913,7 +913,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
 
     // Update the feature ids of the non-cached feature, i.e. the one that
     // will be notified to the user, from the feature id of the database
-    // That way we will always have a consistant feature id, even in case of
+    // That way we will always have a consistent feature id, even in case of
     // paging or BBOX request
     Q_ASSERT( featureListToCache.size() == updatedFeatureList.size() );
     for ( int i = 0; i < updatedFeatureList.size(); i++ )

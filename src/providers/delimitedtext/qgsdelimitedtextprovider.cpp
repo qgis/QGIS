@@ -552,7 +552,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     if ( buildSubsetIndex ) mSubsetIndex.append( mFile->recordId() );
 
 
-    // If we are going to use this record, then assess the potential types of each colum
+    // If we are going to use this record, then assess the potential types of each column
 
     for ( int i = 0; i < parts.size(); i++ )
     {

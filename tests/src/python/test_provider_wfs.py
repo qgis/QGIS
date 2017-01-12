@@ -17,7 +17,7 @@ import os
 import tempfile
 import shutil
 
-# Needed on Qt 5 so that the serialization of XML is consistant among all executions
+# Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
 from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime, QSettings

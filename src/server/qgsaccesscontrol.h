@@ -30,7 +30,7 @@ class QgsAccessControlPlugin;
 /**
  * \ingroup server
  * \class QgsAccessControl
- * \brief A helper class that centralise the restrictions given by all the
+ * \brief A helper class that centralize the restrictions given by all the
  *        access control filter plugins.
  **/
 class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
@@ -111,7 +111,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
 
     /** Fill the capabilities caching key
      * @param cacheKey the list to fill with a cache variant
-     * @return false if we cant create a cache
+     * @return false if we can't create a cache
      */
     bool fillCacheKey( QStringList& cacheKey ) const;
 

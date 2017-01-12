@@ -580,7 +580,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     static void invalidateCache();
 
     // Mutators -----------------------------------
-    // We don't want to expose these to the public api since they wont create
+    // We don't want to expose these to the public api since they won't create
     // a fully valid crs. Programmers should use the createFrom* methods rather
   private:
 

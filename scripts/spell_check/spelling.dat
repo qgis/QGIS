@@ -244,8 +244,8 @@ adecuate:adequate
 adequit:adequate
 adhearing:adhering
 adherance:adherence
-aditional:additional
-aditionally:additionally
+aditional:additional:*
+aditionally:additionally:*
 aditionaly:additionally
 admendment:amendment
 admininistrative:administrative
@@ -349,7 +349,7 @@ alcholic:alcoholic
 alcohal:alcohol
 alcoholical:alcoholic
 aleady:already
-aledge:allege
+aledge:allege:*
 aledged:alleged
 aledges:alleges
 alege:allege
@@ -537,7 +537,7 @@ apperances:appearances
 appereance:appearance
 appereances:appearances
 appered:appeared
-appers:appears
+appers:appears*
 applicaiton:application
 applicaitons:applications
 appliction:application
@@ -633,7 +633,7 @@ arguements:arguments
 aribitary:arbitrary
 aribtrarily:arbitrarily
 aribtrary:arbitrary
-arised:arose
+arised:arose:*
 arithmatic:arithmetic
 arithmentic:arithmetic
 aritmetic:arithmetic
@@ -781,7 +781,7 @@ attemts:attempts
 attendence:attendance
 attendent:attendant
 attendents:attendants
-attened:attended
+attened:attended:*
 attension:attention
 attibute:attribute
 attibutes:attributes
@@ -818,7 +818,7 @@ authrorities:authorities
 autochtonous:autochthonous
 autoctonous:autochthonous
 autoincrememnt:autoincrement
-automaticall:automatically
+automaticall:automatically*
 automaticaly:automatically
 automaticly:automatically
 automatize:automate
@@ -858,6 +858,7 @@ avaluated:evaluated
 avaluate:evaluate
 avaluates:evaluates
 avaluating:evaluating
+avaoided:avoided
 avation:aviation
 avengence:a vengeance
 averageed:averaged
@@ -1120,7 +1121,7 @@ cartilege:cartilage
 cartilidge:cartilage
 cartrige:cartridge
 casette:cassette
-casion:caisson
+casion:caisson:*
 cassawory:cassowary
 cassowarry:cassowary
 casue:cause
@@ -1273,7 +1274,7 @@ clasifies:classifies
 clasify:classify
 clasifying:classifying
 classess:classes
-classs:class
+classs:class:*
 classses:classes
 cleareance:clearance
 clearified:clarified
@@ -5335,6 +5336,7 @@ proctecting:protecting
 proctect:protect
 proctects:protects
 procude:produce
+proejction:projection
 profesion:profession
 profesor:professor
 professer:professor
@@ -5358,6 +5360,7 @@ progresss:progress
 progrom:program
 progroms:programs
 prohabition:prohibition
+projectio:projection
 prologomena:prolegomena
 prominance:prominence
 prominantly:prominently
@@ -5746,6 +5749,7 @@ reminscent:reminiscent
 reminsicent:reminiscent
 remoote:remote
 removeable:removable
+rendereing:rendering
 renderering:rendering
 rendevous:rendezvous
 rendezous:rendezvous
@@ -6156,6 +6160,7 @@ seperatly:separately
 seperator:separator
 sepina:subpoena
 sepperate:separate
+seprate:separate
 seprator:separator
 seprators:separators
 sepulchure:sepulchre
@@ -7375,6 +7380,7 @@ wehn:when
 weigth:weight
 weilded:wielded
 weild:wield
+weill:will
 weired:weird
 wendsay:Wednesday
 wensday:Wednesday

@@ -90,7 +90,7 @@ namespace QgisGui
     QMap<QString, QString> filterMap;
     Q_FOREACH ( const QByteArray& format, QImageWriter::supportedImageFormats() )
     {
-      //svg doesnt work so skip it
+      //svg doesn't work so skip it
       if ( format ==  "svg" )
         continue;
 

@@ -411,7 +411,7 @@ class GeoDB(object):
 
     def get_table_indexes(self, table, schema=None):
         """Get info about table's indexes. ignore primary key and unique
-        index, they get listed in constaints.
+        index, they get listed in constraints.
         """
 
         c = self.con.cursor()

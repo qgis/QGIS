@@ -1652,7 +1652,7 @@ int GRASS_LIB_EXPORT G_write_raster_units( const char *name, const char *str )
 
 int GRASS_LIB_EXPORT G_open_update( const char *element, const char *name )
 {
-  // G_open_update is used in r.flow if parm.seg, but parm.seg doesnt seem
+  // G_open_update is used in r.flow if parm.seg, but parm.seg doesn't seem
   // to be set to 1
   Q_UNUSED( element );
   Q_UNUSED( name );

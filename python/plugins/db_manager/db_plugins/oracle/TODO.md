@@ -104,7 +104,7 @@
 
 * Connector
   * getVectorTablesCache should present only one line per table (don't show tables more than once).
-  * correspondance between Oracle SDO_GTYPE and Qgis.WkbType in a class dict.
+  * correspondence between Oracle SDO_GTYPE and Qgis.WkbType in a class dict.
   * Show only one table/layer in the table tree even if entry is duplicated in cache. 
   * Reuse the pre-calculated extent metadata when updating.
   * Create a better privilege function using ALL_PRIVS_RECD

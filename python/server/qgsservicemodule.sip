@@ -41,7 +41,7 @@ class QgsServiceModule
     virtual ~QgsServiceModule() = 0;
 
     /**
-     * Ask module to registe all provided services
+     * Ask module to register all provided services
      * @param registry QgsServiceRegistry
      */
     virtual void registerSelf( QgsServiceRegistry& registry,

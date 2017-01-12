@@ -226,7 +226,7 @@ void QgsSizeScaleWidget::updatePreview()
     {
       QScopedPointer< QgsMarkerSymbol > symbol( static_cast<QgsMarkerSymbol*>( mSymbol->clone() ) );
       symbol->setDataDefinedSize( QgsDataDefined() );
-      symbol->setDataDefinedAngle( QgsDataDefined() ); // to avoid symbol not beeing drawn
+      symbol->setDataDefinedAngle( QgsDataDefined() ); // to avoid symbol not being drawn
       symbol->setSize( expr->size( breaks[i] ) );
       node.reset( new QgsSymbolLegendNode( mLayerTreeLayer, QgsLegendSymbolItem( symbol.data(), QString::number( i ), QString() ) ) );
     }

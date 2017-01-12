@@ -366,7 +366,7 @@ bool QgsStyle::load( const QString& filename )
     return false;
   }
 
-  // Make sure there are no Null fields in parenting symbols ang groups
+  // Make sure there are no Null fields in parenting symbols and groups
   char *query = sqlite3_mprintf( "UPDATE symbol SET favorite=0 WHERE favorite IS NULL;"
                                  "UPDATE colorramp SET favorite=0 WHERE favorite IS NULL;"
                                  "UPDATE symgroup SET parent=0 WHERE parent IS NULL;" );

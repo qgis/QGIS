@@ -372,7 +372,7 @@ bool QgsColorRampShader::shade( double theValue, int* theReturnRedValue, int* th
     // get initial value from LUT
     idx = mLUT.at( lutIndex );
 
-    // check if it's correct and if not increase untill correct
+    // check if it's correct and if not increase until correct
     // the LUT is made in such a way the index is always correct or too low, never too high
     while ( idx < colorRampItemListCount && mColorRampItemList.at( idx ).value + DOUBLE_DIFF_THRESHOLD < theValue )
     {

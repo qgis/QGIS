@@ -2097,7 +2097,7 @@ QString QgsGeorefPluginGui::guessWorldFileName( const QString &rasterFileName )
 }
 
 // Note this code is duplicated from qgisapp.cpp because
-// I didnt want to make plugins on qgsapplication [TS]
+// I didn't want to make plugins on qgsapplication [TS]
 QIcon QgsGeorefPluginGui::getThemeIcon( const QString &theName )
 {
   if ( QFile::exists( QgsApplication::activeThemePath() + theName ) )

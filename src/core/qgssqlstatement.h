@@ -454,7 +454,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeColumnRef : public Node
     {
       public:
-        //! Constructor with colum name only
+        //! Constructor with column name only
         NodeColumnRef( const QString& name, bool star ) : mName( name ), mDistinct( false ), mStar( star ) {}
         //! Constructor with table and column name
         NodeColumnRef( const QString& tableName, const QString& name, bool star ) : mTableName( tableName ), mName( name ), mDistinct( false ), mStar( star ) {}

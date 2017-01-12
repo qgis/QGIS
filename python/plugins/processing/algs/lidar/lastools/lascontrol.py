@@ -42,7 +42,7 @@ class lascontrol(LAStoolsAlgorithm):
     CONTROL_POINT_FILE = "CONTROL_POINT_FILE"
     PARSE_STRING = "PARSE_STRING"
     USE_POINTS = "USE_POINTS"
-    USE_POINTS_LIST = ["all", "ground (2)", "ground (2) and keypoints (8)", "ground (2), buldings (6), and keypoints (8)"]
+    USE_POINTS_LIST = ["all", "ground (2)", "ground (2) and keypoints (8)", "ground (2), buildings (6), and keypoints (8)"]
     ADJUST_Z = "ADJUST_Z"
 
     def defineCharacteristics(self):

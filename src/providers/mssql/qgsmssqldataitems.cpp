@@ -101,7 +101,7 @@ void QgsMssqlConnectionItem::refresh()
   // Add new items
   Q_FOREACH ( QgsDataItem *item, items )
   {
-    // Is it present in childs?
+    // Is it present in children?
     int index = findItem( mChildren, item );
     if ( index >= 0 )
     {
@@ -526,7 +526,7 @@ void QgsMssqlSchemaItem::addLayers( QgsDataItem* newLayers )
   // Add new items
   Q_FOREACH ( QgsDataItem *child, newLayers->children() )
   {
-    // Is it present in childs?
+    // Is it present in children?
     if ( findItem( mChildren, child ) >= 0 )
     {
       continue;

@@ -243,7 +243,7 @@ namespace QgsWms
 
       void appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats );
 
-      /** Checks WIDTH/HEIGHT values agains MaxWidth and MaxHeight
+      /** Checks WIDTH/HEIGHT values against MaxWidth and MaxHeight
         @return true if width/height values are okay*/
       bool checkMaximumWidthHeight() const;
 

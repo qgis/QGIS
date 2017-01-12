@@ -1527,7 +1527,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   rightPolygon.append( mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext() );
   mHalfEdge[rightPolygon.last()]->setNext( dualfirstedge );//set 'Next' of the last edge to dualfirstedge
 
-  //set the necessary nexts of leftPolygon(exept the first)
+  //set the necessary nexts of leftPolygon(except the first)
   int actedgel = leftPolygon[1];
   leftiter = leftPolygon.constBegin();
   leftiter += 2;

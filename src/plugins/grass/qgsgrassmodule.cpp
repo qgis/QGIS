@@ -595,7 +595,7 @@ void QgsGrassModule::run()
     environment.insert( QStringLiteral( "GRASS_HTML_BROWSER" ), QgsGrassUtils::htmlBrowserPath() );
 
     // Warning: it is not useful to write requested region to WIND file and
-    //          reset then to original beacuse it is reset before
+    //          reset then to original because it is reset before
     //          the region is read by a module even if waitForStarted() is used
     //          -> necessary to pass region as environment variable
     //             but the feature is available in GRASS 6.1 only since 23.3.2006
@@ -779,7 +779,7 @@ void QgsGrassModule::readStdout()
     QByteArray ba = mProcess.readLine();
     line = QString::fromLocal8Bit( ba ).replace( '\n', QLatin1String( "" ) );
 
-    // GRASS_INFO_PERCENT is catched here only because of bugs in GRASS,
+    // GRASS_INFO_PERCENT is caught here only because of bugs in GRASS,
     // normaly it should be printed to stderr
     if ( rxpercent.indexIn( line ) != -1 )
     {

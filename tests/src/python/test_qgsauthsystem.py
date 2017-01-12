@@ -135,7 +135,7 @@ class TestQgsAuthManager(unittest.TestCase):
         full_chain = 'chains_subissuer-issuer-root_issuer2-root2.pem'
         full_chain_path = os.path.join(PKIDATA, full_chain)
 
-        # load CA file authorites for later comaprison
+        # load CA file authorities for later comaprison
         # noinspection PyTypeChecker
         # ca_certs = QSslCertificate.fromPath(full_chain_path)
         ca_certs = QgsAuthCertUtils.certsFromFile(full_chain_path)

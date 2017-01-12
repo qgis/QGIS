@@ -1580,7 +1580,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     /** Is emitted, when edited changes successfully have been written to the data provider */
     void editingStopped();
 
-    /** Is emitted, before changes are commited to the data provider */
+    /** Is emitted, before changes are committed to the data provider */
     void beforeCommitChanges();
 
     /** Is emitted, before changes are rolled back*/

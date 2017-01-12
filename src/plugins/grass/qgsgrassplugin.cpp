@@ -895,7 +895,7 @@ void QgsGrassPlugin::setCurrentTheme( QString theThemeName )
 }
 
 // Note this code is duplicated from qgisapp.cpp because
-// I didnt want to make plugins dependent on qgsapplication
+// I didn't want to make plugins dependent on qgsapplication
 // and because it needs grass specific path into
 // the GRASS plugin resource bundle [TS]
 QIcon QgsGrassPlugin::getThemeIcon( const QString &theName )

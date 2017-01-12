@@ -116,7 +116,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     mutable QString mWkt;
     mutable QString mProj4;
 
-    //! True if presence of an inverted axis needs to be recaculated
+    //! True if presence of an inverted axis needs to be recalculated
     mutable bool mAxisInvertedDirty;
 
     //! Whether this is a coordinate system has inverted axis

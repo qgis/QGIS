@@ -73,7 +73,7 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, Vector3D* result
   if ( result )
   {
     init( x, y );
-    Point3D barycoord( 0, 0, 0 );//barycentric coordinates of (x,y) whith respect to the triangle
+    Point3D barycoord( 0, 0, 0 );//barycentric coordinates of (x,y) with respect to the triangle
     Point3D endpointUXY( 0, 0, 0 );//endpoint of the derivative in u-direction (in xy-coordinates)
     Point3D endpointV( 0, 0, 0 );//endpoint of the derivative in v-direction (in barycentric coordinates)
     Point3D endpointVXY( 0, 0, 0 );//endpoint of the derivative in v-direction (in xy-coordinates)

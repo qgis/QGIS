@@ -1740,7 +1740,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Is emitted, when edited changes successfully have been written to the data provider
     void editingStopped();
 
-    //! Is emitted, before changes are commited to the data provider
+    //! Is emitted, before changes are committed to the data provider
     void beforeCommitChanges();
 
     //! Is emitted, before changes are rolled back
@@ -1958,7 +1958,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool setDataProvider( QString const & provider );
 
-    //! Goes through all features and finds a free id (e.g. to give it temporarily to a not-commited feature)
+    //! Goes through all features and finds a free id (e.g. to give it temporarily to a not-committed feature)
     QgsFeatureId findFreeId();
 
     /** Snaps to a geometry and adds the result to the multimap if it is within the snapping result

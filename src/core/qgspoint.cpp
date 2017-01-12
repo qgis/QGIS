@@ -106,8 +106,8 @@ QgsVector QgsVector::perpVector() const
 
 double QgsVector::angle() const
 {
-  double ang = atan2( mY, mX );
-  return ang < 0.0 ? ang + 2.0 * M_PI : ang;
+  double theAngle = atan2( mY, mX );
+  return theAngle < 0.0 ? theAngle + 2.0 * M_PI : theAngle;
 }
 
 double QgsVector::angle( QgsVector v ) const
@@ -117,9 +117,9 @@ double QgsVector::angle( QgsVector v ) const
 
 QgsVector QgsVector::rotateBy( double rot ) const
 {
-  double ang = atan2( mY, mX ) + rot;
+  double theAngle = atan2( mY, mX ) + rot;
   double len = length();
-  return QgsVector( len * cos( ang ), len * sin( ang ) );
+  return QgsVector( len * cos( theAngle ), len * sin( theAngle ) );
 }
 
 QgsVector QgsVector::normalized() const

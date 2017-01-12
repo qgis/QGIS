@@ -361,7 +361,7 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     // Refresh item specified by path
     void refresh( const QString& path );
 
-    // Refresh item childs
+    // Refresh item children
     void refresh( const QModelIndex &index = QModelIndex() );
 
     //! return index of a path

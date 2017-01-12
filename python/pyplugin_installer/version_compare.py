@@ -1,7 +1,7 @@
 """
 /***************************************************************************
                         Plugin Installer module
-                        Plugin version comparision functions
+                        Plugin version comparison functions
                              -------------------
     Date                 : 2008-11-24
     Copyright            : (C) 2008 by Borys Jurgiel
@@ -23,7 +23,7 @@ and recognizes all major notations, prefixes (ver. and version), delimiters
 
 Usage: compareVersions(version1, version2)
 
-The function accepts arguments of any type convertable to Unicode string
+The function accepts arguments of any type convertible to Unicode string
 and returns integer value:
 0 - the versions are equal
 1 - version 1 is higher

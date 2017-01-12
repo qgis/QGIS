@@ -41,7 +41,7 @@
 #define ERR(message) QGS_ERROR_MESSAGE(message,"GRASS provider")
 #define QGS_ERROR(message) QgsError(message,"GRASS provider")
 
-// Do not use warning dialogs, providers are also created on threads (rendering) where dialogs connot be used (constructing QPixmap icon)
+// Do not use warning dialogs, providers are also created on threads (rendering) where dialogs cannot be used (constructing QPixmap icon)
 
 QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
     : QgsRasterDataProvider( uri )

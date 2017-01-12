@@ -24,7 +24,7 @@
  * made available to plugins.
  *
  * This class provides methods to access the request handler and
- * the capabilties cache. A method to read the environment
+ * the capabilities cache. A method to read the environment
  * variables set in the main FCGI loop is also available.
  * Plugins can add listeners (instances of QgsServerFilter) with
  * a certain priority through the registerFilter( QgsServerFilter* , int) method.

@@ -52,7 +52,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
     bool startEditing( QgsVectorLayer* layer ) const override;
 
     /**
-     * Should be called, when an editing session is ended and the features should be commited.
+     * Should be called, when an editing session is ended and the features should be committed.
      * An appropriate dialog asking the user if he wants to save the edits will be shown if
      * allowCancel is set to true.
      *
@@ -64,7 +64,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
     bool stopEditing( QgsVectorLayer* layer, bool allowCancel = true ) const override;
 
     /**
-     * Should be called, when the features should be commited but the editing session is not ended.
+     * Should be called, when the features should be committed but the editing session is not ended.
      *
      * @param layer       The layer to commit
      * @return            True if successful
