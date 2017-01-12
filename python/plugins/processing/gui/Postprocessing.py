@@ -87,7 +87,7 @@ def handleAlgorithmResults(alg, feedback=None, showResults=True):
         msg = "The following layers were not correctly generated.<ul>"
         msg += "".join(["<li>%s</li>" % lay for lay in wrongLayers]) + "</ul>"
         msg += "You can check the log messages to find more information about the execution of the algorithm"
-        feedback.reportRrror(msg)
+        feedback.reportError(msg)
 
     if showResults and htmlResults and not wrongLayers:
         dlg = ResultsDialog()
