@@ -118,12 +118,12 @@ double QgsScaleCalculator::calculateGeographicDistance( const QgsRectangle &mapE
   const static double rads = ( 4.0 * atan( 1.0 ) ) / 180.0;
   double a = pow( cos( lat * rads ), 2 );
   double c = 2.0 * atan2( sqrt( a ), sqrt( 1.0 - a ) );
-  const static double ra = 6378000; // [m]
+  const static double RA = 6378000; // [m]
   // The eccentricity. This comes from sqrt(1.0 - rb*rb/(ra*ra)) with rb set
   // to 6357000 m.
-  const static double e = 0.0810820288;
-  double radius = ra * ( 1.0 - e * e ) /
-                  pow( 1.0 - e * e * sin( lat * rads ) * sin( lat * rads ), 1.5 );
+  const static double E = 0.0810820288;
+  double radius = RA * ( 1.0 - E * E ) /
+                  pow( 1.0 - E * E * sin( lat * rads ) * sin( lat * rads ), 1.5 );
   double meters = ( mapExtent.xMaximum() - mapExtent.xMinimum() ) / 180.0 * radius * c;
 
   QgsDebugMsg( "Distance across map extent (m): " + QString::number( meters ) );

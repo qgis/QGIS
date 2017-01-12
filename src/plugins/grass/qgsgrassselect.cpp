@@ -45,7 +45,7 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
-  if ( first )
+  if ( sFirst )
   {
     if ( QgsGrass::activeMode() )
     {
@@ -65,7 +65,7 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
       }
       lastMapset = settings.value( QStringLiteral( "/GRASS/lastMapset" ) ).toString();
     }
-    first = false;
+    sFirst = false;
   }
   QgsGrassSelect::type = type;
 
@@ -108,7 +108,7 @@ QgsGrassSelect::~QgsGrassSelect()
 {
 }
 
-bool QgsGrassSelect::first = true;
+bool QgsGrassSelect::sFirst = true;
 QString QgsGrassSelect::lastGisdbase;
 QString QgsGrassSelect::lastLocation;
 QString QgsGrassSelect::lastMapset;

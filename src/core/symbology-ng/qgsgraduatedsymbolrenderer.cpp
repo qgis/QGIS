@@ -176,8 +176,8 @@ void QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, QgsString
 
 ///////////
 
-int QgsRendererRangeLabelFormat::MaxPrecision = 15;
-int QgsRendererRangeLabelFormat::MinPrecision = -6;
+const int QgsRendererRangeLabelFormat::MaxPrecision = 15;
+const int QgsRendererRangeLabelFormat::MinPrecision = -6;
 
 QgsRendererRangeLabelFormat::QgsRendererRangeLabelFormat()
     : mFormat( QStringLiteral( " %1 - %2 " ) )

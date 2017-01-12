@@ -60,8 +60,8 @@ static bool _initWidgetFunction( const QString& name, QgsSymbolLayerWidgetFunc f
 
 static void _initWidgetFunctions()
 {
-  static bool initialized = false;
-  if ( initialized )
+  static bool sInitialized = false;
+  if ( sInitialized )
     return;
 
   _initWidgetFunction( QStringLiteral( "SimpleLine" ), QgsSimpleLineSymbolLayerWidget::create );
@@ -86,7 +86,7 @@ static void _initWidgetFunctions()
 
   _initWidgetFunction( QStringLiteral( "GeometryGenerator" ), QgsGeometryGeneratorSymbolLayerWidget::create );
 
-  initialized = true;
+  sInitialized = true;
 }
 
 

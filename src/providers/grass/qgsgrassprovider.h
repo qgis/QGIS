@@ -452,7 +452,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     int mLastType;
 
     // number of currently being edited providers
-    static int mEditedCount;
+    static int sEditedCount;
 
     friend class QgsGrassFeatureSource;
     friend class QgsGrassFeatureIterator;

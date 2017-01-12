@@ -426,10 +426,10 @@ QString QgsApplication::prefixPath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
   {
-    static bool once = true;
-    if ( once )
+    static bool sOnce = true;
+    if ( sOnce )
       qWarning( "!!! prefix path was requested, but it is not valid - we do not run from installed path !!!" );
-    once = false;
+    sOnce = false;
   }
 
   return ABISYM( mPrefixPath );

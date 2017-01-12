@@ -107,8 +107,8 @@ class CORE_EXPORT QgsRendererRangeLabelFormat
     void setFromDomElement( QDomElement &element );
     void saveToDomElement( QDomElement &element );
 
-    static int MaxPrecision;
-    static int MinPrecision;
+    static const int MaxPrecision;
+    static const int MinPrecision;
 
   protected:
     QString mFormat;

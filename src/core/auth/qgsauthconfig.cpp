@@ -32,7 +32,7 @@ const QString QgsAuthMethodConfig::mConfigSep = QStringLiteral( "|||" );
 const QString QgsAuthMethodConfig::mConfigKeySep = QStringLiteral( ":::" );
 const QString QgsAuthMethodConfig::mConfigListSep = QStringLiteral( "```" );
 
-const int QgsAuthMethodConfig::mConfigVersion = 1;
+const int QgsAuthMethodConfig::sConfigVersion = 1;
 
 // get uniqueConfigId only on save
 QgsAuthMethodConfig::QgsAuthMethodConfig( const QString& method, int version )

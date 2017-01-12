@@ -605,7 +605,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     /** Set mute mode, if set, warning() does not open dialog but prints only
      * debug message and sets the error which returns errorMessage() */
-    static void setMute() { mMute = true; }
+    static void setMute() { sMute = true; }
 
     /** Allocate struct Map_info. Call to this function may result in G_fatal_error
      * and must be surrounded by G_TRY/G_CATCH. */
@@ -667,9 +667,9 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     void newLayer( QString uri, QString name );
 
   private:
-    static bool mNonInitializable;
-    static int initialized; // Set to 1 after initialization
-    static bool active; // is active mode
+    static bool sNonInitializable;
+    static int sInitialized; // Set to 1 after initialization
+    static bool sActive; // is active mode
     static QStringList mGrassModulesPaths;
     static QString defaultGisdbase;
     static QString defaultLocation;
@@ -701,7 +701,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // Mutex for common locking when calling GRASS functions which are mostly non thread safe
     static QMutex sMutex;
     // Mute mode, do not show warning dialogs.
-    static bool mMute;
+    static bool sMute;
 };
 
 #endif // QGSGRASS_H

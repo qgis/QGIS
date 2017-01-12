@@ -197,10 +197,10 @@ void QgsSpatialQueryDialog::runQuery()
 
 void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime *datetimeEnd )
 {
-  static int countQuery = 0;
+  static int sCountQuery = 0;
   // Report processing
-  countQuery++;
-  QString msg = tr( "%1)Query" ).arg( countQuery );
+  sCountQuery++;
+  QString msg = tr( "%1)Query" ).arg( sCountQuery );
   teStatus->append( msg );
   msg = tr( "Begin at %L1" ).arg( datetimeStart->toString() );
   teStatus->append( msg );
@@ -659,15 +659,15 @@ void QgsSpatialQueryDialog::changeLwFeature( QgsVectorLayer* lyr, QgsFeatureId f
 void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 {
   static QgsVectorLayer* lyrCheck = nullptr;
-  static bool hasMsg = false;
+  static bool sHasMsg = false;
   if ( ! lyrCheck || lyrCheck != lyr )
   {
     lyrCheck = lyr;
-    hasMsg = true;
+    sHasMsg = true;
   }
   else
   {
-    hasMsg = false;
+    sHasMsg = false;
   }
 
   QgsFeature feat;
@@ -684,7 +684,7 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
   QgsCoordinateReferenceSystem srcMapcanvas = mIface->mapCanvas()->mapSettings().destinationCrs();
   if ( ! srsSource.isValid() )
   {
-    if ( hasMsg )
+    if ( sHasMsg )
     {
       QString crsMapcanvas = srcMapcanvas.authid();
       bool isFly = mIface->mapCanvas()->mapSettings().hasCrsTransformEnabled();

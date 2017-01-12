@@ -51,8 +51,8 @@ class QgsWFSUtils
   private:
     static QMutex gmMutex;
     static QThread* gmThread;
-    static bool gmKeepAliveWorks;
-    static int gmCounter;
+    static bool sKeepAliveWorks;
+    static int sCounter;
 
     //! Return the name of temporary directory.
     static QString getCacheDirectory( bool createIfNotExisting );
