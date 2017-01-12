@@ -33,7 +33,7 @@ from qgis.PyQt.QtCore import QCoreApplication, QSettings, QObject, pyqtSignal
 from qgis.PyQt.QtGui import QIcon
 from qgis.core import NULL, QgsApplication
 from processing.tools.system import defaultOutputFolder
-from processing.tools import dataobjects
+import processing.tools.dataobjects
 
 
 class SettingsWatcher(QObject):
@@ -166,7 +166,7 @@ class ProcessingConfig(object):
             valuetype=Setting.SELECTION,
             options=invalidFeaturesOptions))
 
-        extensions = dataobjects.getSupportedOutputVectorLayerExtensions()
+        extensions = processing.tools.dataobjects.getSupportedOutputVectorLayerExtensions()
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
@@ -175,7 +175,7 @@ class ProcessingConfig(object):
             valuetype=Setting.SELECTION,
             options=extensions))
 
-        extensions = dataobjects.getSupportedOutputRasterLayerExtensions()
+        extensions = processing.tools.dataobjects.getSupportedOutputRasterLayerExtensions()
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
