@@ -191,7 +191,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
 #endif
 
       //XXX todo overload == operator for QgsCoordinateReferenceSystem
-      //at the moment srs.parameters contains the whole proj def...soon it wont...
+      //at the moment srs.parameters contains the whole proj def...soon it won't...
       //if (mSourceCRS->toProj4() == mDestCRS->toProj4())
       if ( mSourceCRS == mDestCRS )
       {

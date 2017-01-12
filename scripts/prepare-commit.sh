@@ -41,7 +41,7 @@ set -e
 
 # determine changed files
 MODIFIED=$(git status --porcelain| sed -ne "s/^ *[MA]  *//p" | sort -u)
-${TOPLEVEL}/scripts/chkspelling_ag.sh $MODIFIED
+${TOPLEVEL}/scripts/spell_check/check_spelling.sh $MODIFIED
 
 
 if [ -z "$MODIFIED" ]; then

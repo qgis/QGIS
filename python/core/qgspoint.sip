@@ -241,7 +241,7 @@ class QgsPoint
     /** Calculates azimuth between this point and other one (clockwise in degree, starting from north) */
     double azimuth( const QgsPoint& other ) const;
 
-    /** Returns a new point which correponds to this point projected by a specified distance
+    /** Returns a new point which corresponds to this point projected by a specified distance
      * in a specified bearing.
      * @param distance distance to project
      * @param bearing angle to project in, clockwise in degrees starting from north

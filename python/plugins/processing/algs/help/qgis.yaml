@@ -247,7 +247,7 @@ qgis:intersection: >
 qgis:joinattributesbylocation: >
   This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
 
-  The additional attributes and their values are taken from a second vector layer.  A spatial critera is applied to select the values from the second layer that are added to each feature from the first layer in the resulting one.
+  The additional attributes and their values are taken from a second vector layer.  A spatial criteria is applied to select the values from the second layer that are added to each feature from the first layer in the resulting one.
 
 
 qgis:joinattributestable: >
@@ -441,7 +441,7 @@ qgis:rasterlayerstatistics: >
 qgis:refactorfields: >
   This algorithms allows editing the structure of the attributes table of a vector layer. Fields can be modified in their type and name, using a fields mapping
 
-  The original layer is not modified. A new layer is generated, which contains a modified attributes table, accordint to the provided fields mapping
+  The original layer is not modified. A new layer is generated, which contains a modified attributes table, according to the provided fields mapping
 
 qgis:regularpoints:
 

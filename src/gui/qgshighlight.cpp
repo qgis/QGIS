@@ -251,7 +251,7 @@ void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
 
     for ( int j = 0; j < polygon[i].size(); j++ )
     {
-      //adding point only if it is more than a pixel appart from the previous one
+      //adding point only if it is more than a pixel apart from the previous one
       const QPointF cur = toCanvasCoordinates( polygon[i][j] ) - pos();
       if ( 0 == j || std::abs( ring.back().x() - cur.x() ) > 1 || std::abs( ring.back().y() - cur.y() ) > 1 )
       {

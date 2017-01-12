@@ -48,11 +48,11 @@ QgsPostgresResult::~QgsPostgresResult()
   mRes = nullptr;
 }
 
-QgsPostgresResult &QgsPostgresResult::operator=( PGresult * theRes )
+QgsPostgresResult &QgsPostgresResult::operator=( PGresult * theResult )
 {
   if ( mRes )
     ::PQclear( mRes );
-  mRes = theRes;
+  mRes = theResult;
   return *this;
 }
 

@@ -51,7 +51,7 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     bool estimateFirstDerivatives( QProgressDialog* d = nullptr );
     //! Returns a pointer to the normal vector for the point with the number n
     Vector3D* getNormal( int n ) const;
-    //! Finds out, in which triangle a point with coordinates x and y is and assigns the triangle points to p1, p2, p3 and the estimated normals to v1, v2, v3. The vectors are normaly taken from 'mNormVec', exept if p1, p2 or p3 is a point on a breakline. In this case, the normal is calculated on-the-fly. Returns false, if something went wrong and true otherwise
+    //! Finds out, in which triangle a point with coordinates x and y is and assigns the triangle points to p1, p2, p3 and the estimated normals to v1, v2, v3. The vectors are normaly taken from 'mNormVec', except if p1, p2 or p3 is a point on a breakline. In this case, the normal is calculated on-the-fly. Returns false, if something went wrong and true otherwise
     bool getTriangle( double x, double y, Point3D* p1, Vector3D* v1, Point3D* p2, Vector3D* v2, Point3D* p3, Vector3D* v3 );
 
     /** This function behaves similar to the one above. Additionally, the numbers of the points are returned (ptn1, ptn2, ptn3) as well as the PointStates of the triangle points (state1, state2, state3)

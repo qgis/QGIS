@@ -269,7 +269,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     //! Record file updates, flags rescan required
     mutable bool mRescanRequired;
 
-    // Coordinate reference sytem
+    // Coordinate reference system
     QgsCoordinateReferenceSystem mCrs;
 
     QgsWkbTypes::Type mWkbType;

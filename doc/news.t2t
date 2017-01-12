@@ -1032,7 +1032,7 @@ features for you.
 
 Probably the biggest new feature is the addition of the new vector symbology
 infrastructure. This is provided alongside the old implementation - you can
-switch using a button in the vector layer properties dialog. It does't replace
+switch using a button in the vector layer properties dialog. It doesn't replace
 the old symbology implementation completely yet because there are various isues
 that need to be resolved and a large amount of testinhen it is considered
 ready.
@@ -1877,13 +1877,13 @@ Complete buffering so that bar as well as text will be visible on both
 
 Fix for bug [ 973922 ] Overview shows layers in wrong order
 
-Fixed show stopper bug where maplayerregistry wasnt being cleared properly on file new
+Fixed show stopper bug where maplayerregistry wasn't being cleared properly on file new
 
 Added setZOrder which will be used in next commit to fix projectio zorder problem
 
 2004-06-20 [ts] 0.3.0devel43
 
-Fix anoying 'mapcanvas isnt freezing while loading rasters' bug
+Fix anoying 'mapcanvas isn't freezing while loading rasters' bug
 
 2004-06-19 [ts] 0.3.0devel42
 
@@ -1898,8 +1898,8 @@ Added an option for setting the length of the scale bar to closest
 Win32 support for package path - which will hopefully ensure pyramid and overview mini 
    icons are displayed on legend entry now.
 
-Beginnings of generic vector file writer - incomplete and doesnt do anything useful 
-   yet except has abilty to make a shapefile with a couple of user defined fields e.g. 
+Beginnings of generic vector file writer - incomplete and doesn't do anything useful 
+   yet except has ability to make a shapefile with a couple of user defined fields e.g. 
    to create a new point shapefile:
     
    QgsVectorFileWriter myFileWriter("/tmp/test.shp", wkbPoint);
@@ -2348,7 +2348,7 @@ updated German translation
 !! otherwise it's not detected by the plugins autogen.sh (more exactly
 !! aclocal)
 !! It can be cheated by adding -I path/to/qgis.m4 to the aclocal of
-!! autogen.sh. But be carefull not to commit that to CVS
+!! autogen.sh. But be careful not to commit that to CVS
 
 2004-04-18 [jobi] 0.1.0devel33
 Added internationalisations stuff
@@ -2362,7 +2362,7 @@ Fix for crash when opening singleband grayscale images introduced by Steves
    grayscale
 
 2004-04-06 [ts] 0.1.0devel31
-Added new plugin (grid_maker) to build arbitary sized graticules and add
+Added new plugin (grid_maker) to build arbitrary sized graticules and add
    them to the current map view.
 
 2004-04-05 [jobi] 0.1.0devel30

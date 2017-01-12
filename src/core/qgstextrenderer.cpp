@@ -2305,7 +2305,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext& context, const QgsTextRender
                   componentHeight + ( pictbuffer * 2.0 ) + ( blurbuffer * 2.0 ),
                   QImage::Format_ARGB32_Premultiplied );
 
-  // TODO: add labeling gui option to not show any shadows under/over a certian size
+  // TODO: add labeling gui option to not show any shadows under/over a certain size
   // keep very small QImages from causing paint device issues, i.e. must be at least > 1
   int minBlurImgSize = 1;
   // max limitation on QgsSvgCache is 10,000 for screen, which will probably be reasonable for future caching here, too

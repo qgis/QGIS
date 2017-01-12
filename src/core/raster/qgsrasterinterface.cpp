@@ -268,7 +268,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &theHistogram,
     else
     {
       // We need statistics -> avoid histogramDefaults in hasHistogram if possible
-      // TODO: use approximated statistics if aproximated histogram is requested
+      // TODO: use approximated statistics if approximated histogram is requested
       // (theSampleSize > 0)
       QgsRasterBandStats stats = bandStatistics( theBandNo, QgsRasterBandStats::Min, theExtent, theSampleSize );
       theHistogram.minimum = stats.minimumValue;

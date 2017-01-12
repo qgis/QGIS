@@ -172,7 +172,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     // QString containing the last reported error message
     QString mLastError;
 
-    // Coordinate reference sytem
+    // Coordinate reference system
     mutable QgsCoordinateReferenceSystem mCrs;
 
     mutable QgsWkbTypes::Type mWkbType;

@@ -154,7 +154,7 @@ class Eliminate(GeoAlgorithm):
                     msg = ''
 
                 if y.isNull():
-                    # Conversion was unsuccessfull
+                    # Conversion was unsuccessful
                     selectionError = True
                     msg += self.tr('Enter the date and the date format, e.g. "07.26.2011" "MM.dd.yyyy".')
 

@@ -108,7 +108,7 @@ make install
 ==== Final python notes ====
 
 /!\ You can delete the directories with unpacked SIP and PyQt4 sources after a
-successfull install, they're not needed anymore.
+successful install, they're not needed anymore.
 
 === git ===
 

@@ -222,7 +222,7 @@ void QgsComposerArrow::drawHardcodedMarker( QPainter *p, MarkerType type )
 void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QString &markerPath )
 {
   Q_UNUSED( markerPath );
-  double ang = QgsComposerUtils::angle( mStartPoint, mStopPoint );
+  double theAngle = QgsComposerUtils::angle( mStartPoint, mStopPoint );
 
   double arrowHeadHeight;
   if ( type == StartMarker )
@@ -280,7 +280,7 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
       fixPoint.setY( -arrowHeadHeight / 2.0 );
     }
     QPointF rotatedFixPoint;
-    double angleRad = ang / 180 * M_PI;
+    double angleRad = theAngle / 180 * M_PI;
     rotatedFixPoint.setX( fixPoint.x() * cos( angleRad ) + fixPoint.y() * -sin( angleRad ) );
     rotatedFixPoint.setY( fixPoint.x() * sin( angleRad ) + fixPoint.y() * cos( angleRad ) );
     p->translate( canvasPoint.x() - rotatedFixPoint.x(), canvasPoint.y() - rotatedFixPoint.y() );
@@ -290,7 +290,7 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
     p->translate( canvasPoint.x(), canvasPoint.y() );
   }
 
-  p->rotate( ang );
+  p->rotate( theAngle );
   p->translate( -mArrowHeadWidth / 2.0, -arrowHeadHeight / 2.0 );
   r.render( p, QRectF( 0, 0, mArrowHeadWidth, arrowHeadHeight ) );
   p->restore();

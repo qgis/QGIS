@@ -2015,7 +2015,7 @@ void QgsComposerView::wheelZoom( QWheelEvent * event )
     zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 10.0;
   }
 
-  //caculate zoom scale factor
+  //calculate zoom scale factor
   bool zoomIn = event->delta() > 0;
   double scaleFactor = ( zoomIn ? 1 / zoomFactor : zoomFactor );
 

@@ -64,7 +64,7 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
                               QgsWkbTypes::Point,
                               mInputLayer->crs() );
 
-  //check if creation of output layer successfull
+  //check if creation of output layer successful
   if ( writer.hasError() != QgsVectorFileWriter::NoError )
   {
     return 3;

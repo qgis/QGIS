@@ -151,10 +151,10 @@ struct QgsPostgresLayerProperty
 class QgsPostgresResult
 {
   public:
-    explicit QgsPostgresResult( PGresult *theRes = nullptr ) : mRes( theRes ) {}
+    explicit QgsPostgresResult( PGresult *theResult = nullptr ) : mRes( theResult ) {}
     ~QgsPostgresResult();
 
-    QgsPostgresResult &operator=( PGresult *theRes );
+    QgsPostgresResult &operator=( PGresult *theResult );
     QgsPostgresResult &operator=( const QgsPostgresResult &src );
 
     ExecStatusType PQresultStatus();

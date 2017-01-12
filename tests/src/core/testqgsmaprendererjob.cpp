@@ -106,7 +106,7 @@ void TestQgsMapRendererJob::initTestCase()
   mFields.append( myField1 );
   mCRS = QgsCoordinateReferenceSystem( GEOWKT );
   //
-  // Create the test dataset if it doesnt exist
+  // Create the test dataset if it doesn't exist
   //
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + '/';

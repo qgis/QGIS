@@ -109,7 +109,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     QList<IdentifyResult> identify( int x, int y, const QList<QgsMapLayer*>& layerList = QList<QgsMapLayer*>(), IdentifyMode mode = DefaultQgsSetting );
 
     /** Performs the identification.
-    To avoid beeing forced to specify IdentifyMode with a list of layers
+    To avoid being forced to specify IdentifyMode with a list of layers
     this has been made private and two publics methods are offered
     @param x x coordinates of mouseEvent
     @param y y coordinates of mouseEvent
@@ -133,7 +133,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
   protected:
 
     /** Performs the identification.
-    To avoid beeing forced to specify IdentifyMode with a list of layers
+    To avoid being forced to specify IdentifyMode with a list of layers
     this has been made private and two publics methods are offered
     @param x x coordinates of mouseEvent
     @param y y coordinates of mouseEvent

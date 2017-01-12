@@ -484,7 +484,7 @@ QIcon QgsApplication::getThemeIcon( const QString &theName )
   else if ( QFile::exists( myDefaultPath ) )
   {
     //could still return an empty icon if it
-    //doesnt exist in the default theme either!
+    //doesn't exist in the default theme either!
     icon = QIcon( myDefaultPath );
   }
   else
@@ -509,7 +509,7 @@ QPixmap QgsApplication::getThemePixmap( const QString &theName )
   else
   {
     //could still return an empty icon if it
-    //doesnt exist in the default theme either!
+    //doesn't exist in the default theme either!
     return QPixmap( myDefaultPath );
   }
 }
@@ -1417,7 +1417,7 @@ bool QgsApplication::createDB( QString *errorMessage )
   // first we look for ~/.qgis/qgis.db
   if ( !qgisPrivateDbFile.exists() )
   {
-    // if it doesnt exist we copy it in from the global resources dir
+    // if it doesn't exist we copy it in from the global resources dir
     QString qgisMasterDbFileName = QgsApplication::qgisMasterDbFilePath();
     QFile masterFile( qgisMasterDbFileName );
 

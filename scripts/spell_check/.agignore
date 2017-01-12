@@ -13,6 +13,7 @@ python/qsci_apis/
 src/app/dwg/libdxfrw/
 src/app/gps/qwtpolar-1.0/
 src/app/gps/qwtpolar-1.1.1/
+src/core/pal
 src/plugins/grass/qtermwidget/
 
 #Extensions
@@ -25,6 +26,8 @@ src/plugins/grass/qtermwidget/
 ChangeLog
 debian/qgis.desktop
 debian/qbrowser.desktop
+debian/qgis-provider-grass.lintian-overrides
+debian/qgis-plugin-grass.lintian-overrides
 doc/contributors.json
 Exception_to_GPL_for_Qt.txt
 images/themes/default/svgbase/hammer.svg
@@ -35,7 +38,7 @@ python/plugins/processing/tests/testdata/expected/orthagonal_lines.gml
 python/plugins/processing/tests/testdata/expected/orthagonal_lines.gfs
 python/plugins/processing/tests/testdata/expected/orthagonal_polys.gfs
 python/plugins/processing/tests/testdata/qgis_algorithm_tests.yaml
-spelling.dat
+scripts/spell_check/spelling.dat
 src/server/qgis_wms.xmi
 resources/cpt-city-qgis-min/fme/metres/DESC.xml
 resources/cpt-city-qgis-min/selections/reds.xml
@@ -43,5 +46,3 @@ resources/cpt-city-qgis-min/wkp/schwarzwald/COPYING.xml
 tests/testdata/qgis_server/ets-wms13/project.qgs
 tests/testdata/qgis_server_accesscontrol/project.qgs
 tests/testdata/qgis_server_accesscontrol/Hello.qml
-
-

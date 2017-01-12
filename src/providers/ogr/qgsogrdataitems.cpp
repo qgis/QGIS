@@ -263,7 +263,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   QStringList myExtensions = fileExtensions();
 
-  // skip *.aux.xml files (GDAL auxilary metadata files),
+  // skip *.aux.xml files (GDAL auxiliary metadata files),
   // *.shp.xml files (ESRI metadata) and *.tif.xml files (TIFF metadata)
   // unless that extension is in the list (*.xml might be though)
   if ( thePath.endsWith( QLatin1String( ".aux.xml" ), Qt::CaseInsensitive ) &&

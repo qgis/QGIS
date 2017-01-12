@@ -126,8 +126,8 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   // Connect the UI to the event filter to update constraints
   connect( mEnableAction, SIGNAL( triggered( bool ) ), this, SLOT( activateCad( bool ) ) );
   connect( mConstructionModeButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstructionMode( bool ) ) );
-  connect( mParallelButton, SIGNAL( clicked( bool ) ), this, SLOT( addtionalConstraintClicked( bool ) ) );
-  connect( mPerpendicularButton, SIGNAL( clicked( bool ) ), this, SLOT( addtionalConstraintClicked( bool ) ) );
+  connect( mParallelButton, SIGNAL( clicked( bool ) ), this, SLOT( additionalConstraintClicked( bool ) ) );
+  connect( mPerpendicularButton, SIGNAL( clicked( bool ) ), this, SLOT( additionalConstraintClicked( bool ) ) );
   connect( mLockAngleButton, SIGNAL( clicked( bool ) ), this, SLOT( lockConstraint( bool ) ) );
   connect( mLockDistanceButton, SIGNAL( clicked( bool ) ), this, SLOT( lockConstraint( bool ) ) );
   connect( mLockXButton, SIGNAL( clicked( bool ) ), this, SLOT( lockConstraint( bool ) ) );
@@ -234,7 +234,7 @@ void QgsAdvancedDigitizingDockWidget::activateCad( bool enabled )
   setCadEnabled( enabled );
 }
 
-void QgsAdvancedDigitizingDockWidget::addtionalConstraintClicked( bool activated )
+void QgsAdvancedDigitizingDockWidget::additionalConstraintClicked( bool activated )
 {
   if ( !activated )
   {
@@ -787,7 +787,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
   }
 
   // *****************************
-  // ---- caluclate CAD values
+  // ---- calculate CAD values
   QgsDebugMsg( QString( "point:             %1 %2" ).arg( point.x() ).arg( point.y() ) );
   QgsDebugMsg( QString( "previous point:    %1 %2" ).arg( previousPt.x() ).arg( previousPt.y() ) );
   QgsDebugMsg( QString( "penultimate point: %1 %2" ).arg( penultimatePt.x() ).arg( penultimatePt.y() ) );

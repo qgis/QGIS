@@ -753,7 +753,7 @@ to get versions that match your current Qt installed version.
       ===========================
 
 /!\ You can delete the directories with unpacked SIP and PyQt4 sources after a
-successfull install, they're not needed anymore.
+successful install, they're not needed anymore.
 
 
     4.2.5. git

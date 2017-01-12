@@ -269,7 +269,7 @@ void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
       myDatabaseType = eVisDatabaseConnection::QSqlite;
     }
 
-    //If there is aready a database connection object, reset with the current parameters
+    //If there is already a database connection object, reset with the current parameters
     if ( mDatabaseConnection )
     {
       mDatabaseConnection->resetConnectionParameters( leDatabaseHost->text(), leDatabasePort->text().toInt(), leDatabaseName->text(), leDatabaseUsername->text(), leDatabasePassword->text(), myDatabaseType );

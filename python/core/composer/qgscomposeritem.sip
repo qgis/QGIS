@@ -515,7 +515,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     virtual void setVisibility( const bool visible );
 
     /** Returns whether the item should be excluded from composer exports and prints
-     * @param valueType controls whether the returned value is the user specified vaule,
+     * @param valueType controls whether the returned value is the user specified value,
      * or the current evaluated value (which may be affected by data driven settings).
      * @returns true if item should be excluded
      * @note added in version 2.5
@@ -629,7 +629,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
 
     /** Evaluates an item's bounding rect to consider data defined position and size of item
      * and reference point
-     * @param newRect target bouding rect for item
+     * @param newRect target bounding rect for item
      * @param resizeOnly set to true if the item is only being resized. If true then
      * the position of the returned rect will be adjusted to account for the item's
      * position mode

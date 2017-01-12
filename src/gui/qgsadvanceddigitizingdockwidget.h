@@ -357,7 +357,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
   private slots:
     //! set the additional constraint by clicking on the perpendicular/parallel buttons
-    void addtionalConstraintClicked( bool activated );
+    void additionalConstraintClicked( bool activated );
 
     //! lock/unlock a constraint and set its value
     void lockConstraint( bool activate = true );

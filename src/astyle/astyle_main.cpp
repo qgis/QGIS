@@ -160,7 +160,7 @@ bool g_isQuiet = false;
 bool g_optionsFileRequired = false;
 string g_origSuffix = ".orig";
 vector<string> g_excludeVector;		// exclude from wildcard hits
-vector<bool>   g_excludeHitsVector;	// exclude flags for eror reporting
+vector<bool>   g_excludeHitsVector;	// exclude flags for error reporting
 size_t g_mainDirectoryLength;       // main directory name can be excluded for displays
 // stringstream g_msg;              // info messages are not printed until a file is read
 int _CRT_glob = 0;                  // turn off MinGW automatic file globbing

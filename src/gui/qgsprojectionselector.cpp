@@ -480,7 +480,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   //now only will be shown
   QString databaseFileName = QgsApplication::qgisUserDbFilePath();
   // first we look for ~/.qgis/qgis.db
-  // if it doesnt exist we copy it in from the global resources dir
+  // if it doesn't exist we copy it in from the global resources dir
 
   //return straight away if the user has not created any custom projections
   if ( !QFileInfo::exists( databaseFileName ) )
@@ -915,7 +915,7 @@ long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
   }
   else
   {
-    //only bother looking in srs.db if it wasnt found above
+    //only bother looking in srs.db if it wasn't found above
     result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
     if ( result )
     {

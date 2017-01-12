@@ -389,7 +389,7 @@ void QgsRuleBasedRenderer::Rule::toSld( QDomDocument& doc, QDomElement &element,
     mSymbol->toSld( doc, ruleElem, props );
   }
 
-  // loop into childern rule list
+  // loop into children rule list
   Q_FOREACH ( Rule* rule, mChildren )
   {
     rule->toSld( doc, element, props );

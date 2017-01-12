@@ -535,7 +535,7 @@ class QgisInterface : QObject
     virtual QgsVectorLayerTools* vectorLayerTools() = 0;
 
     /** This method is only needed when using a UI form with a custom widget plugin and calling
-     * openFeatureForm or getFeatureForm from Python (PyQt4) and you havn't used the info tool first.
+     * openFeatureForm or getFeatureForm from Python (PyQt4) and you haven't used the info tool first.
      * Python will crash bringing QGIS wtih it
      * if the custom form is not loaded from a C++ method call.
      *

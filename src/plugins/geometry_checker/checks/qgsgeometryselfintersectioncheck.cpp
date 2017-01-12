@@ -229,7 +229,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
 
         if ( method == ToMultiObject )
         {
-          // If is alreay a geometry collection, just add the new polygon.
+          // If is already a geometry collection, just add the new polygon.
           if ( dynamic_cast<QgsGeometryCollection*>( geom ) )
           {
             static_cast<QgsGeometryCollection*>( geom )->addGeometry( poly2 );
