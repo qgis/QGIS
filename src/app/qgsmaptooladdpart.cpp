@@ -65,6 +65,10 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
     return;
   }
 
+  bool isGeometryEmpty = false;
+  if ( vlayer->selectedFeatures()[0].geometry().isEmpty() )
+    isGeometryEmpty = true;
+
   if ( !checkSelection() )
   {
     stopCapturing();
@@ -194,6 +198,12 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       vlayer->endEditCommand();
 
       vlayer->triggerRepaint();
+
+      if (( !isGeometryEmpty ) && QgsWkbTypes::isSingleType( vlayer->wkbType() ) )
+      {
+        emit messageEmitted( tr( "Add part: Feature geom is single part and you've added more than one" ), QgsMessageBar::WARNING );
+      }
+
       return;
     }
 
