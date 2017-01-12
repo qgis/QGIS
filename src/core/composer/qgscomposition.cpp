@@ -1084,12 +1084,6 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
   //addItemsFromXML
   addItemsFromXml( importDoc.documentElement(), importDoc, nullptr, addUndoCommands, nullptr );
 
-  //read atlas map parameters (for pre 2.2 templates)
-  //this can only be done after items have been added
-  if ( clearComposition )
-  {
-    atlasComposition().readXmlMapSettings( atlasElem, importDoc );
-  }
   return true;
 }
 

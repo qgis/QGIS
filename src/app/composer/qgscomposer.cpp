@@ -3588,10 +3588,6 @@ void QgsComposer::readXml( const QDomElement& composerElem, const QDomDocument& 
   delete oldAtlasWidget;
   mAtlasDock->setWidget( new QgsAtlasCompositionWidget( mAtlasDock, mComposition ) );
 
-  //read atlas map parameters (for pre 2.2 templates)
-  //this part must be done after adding items
-  mComposition->atlasComposition().readXmlMapSettings( atlasElem, doc );
-
   //set state of atlas controls
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   toggleAtlasControls( atlasMap->enabled() );
