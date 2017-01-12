@@ -546,7 +546,7 @@ void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVector
   }
   if ( mComposition )
   {
-    mDistanceArea->setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
+    mDistanceArea->setEllipsoidalMode( true );
     mDistanceArea->setEllipsoid( mComposition->project()->ellipsoid() );
   }
 
