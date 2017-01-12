@@ -2191,3 +2191,14 @@ tests:
       OUTPUT:
         name: expected/points_alog_lines.gml
         type: vector
+
+  - algorithm: qgis:meancoordinates
+    name: standard mean coordinates
+    params:
+      POINTS:
+        name: custom/points.shp
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/mean_coordinates.gml
+        type: vector
