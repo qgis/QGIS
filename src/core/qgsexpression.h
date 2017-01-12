@@ -1261,9 +1261,6 @@ class CORE_EXPORT QgsExpression
   protected:
     void initGeomCalculator();
 
-    static QMap<QString, QVariant> gmSpecialColumns;
-    static QMap<QString, QString> gmSpecialColumnGroups;
-
     struct HelpArg
     {
       HelpArg( const QString& arg, const QString& desc, bool descOnly = false, bool syntaxOnly = false,

@@ -926,8 +926,7 @@ class CORE_EXPORT QgsWkbTypes
       bool mHasM;
     };
 
-    static QMap<Type, wkbEntry> registerTypes();
-    static QMap<Type, wkbEntry>* entries();
+    static const QMap<Type, wkbEntry> sEntries;
 };
 
 #endif // QGSWKBTYPES_H
