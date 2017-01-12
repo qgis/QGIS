@@ -377,6 +377,7 @@ void QgsComposerHtmlWidget::on_mInsertExpressionButton_clicked()
       {
         mHtmlEditor->insertAt( "[%" + expression + "%]", line, index );
       }
+      mHtml->setHtml( mHtmlEditor->text() );
       composition->endMultiFrameCommand();
       blockSignals( false );
     }
