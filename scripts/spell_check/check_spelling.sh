@@ -55,10 +55,10 @@ if [[ "$OSTYPE" =~ darwin* ]]; then
   GNUPREFIX=g
 fi
 
-${GNUPREFIX}split --number=l/$SPLIT --numeric-suffixes=1 --suffix-length=1 --additional-suffix=~ ${DIR}/spelling.dat spelling
+${GNUPREFIX}split --number=l/$SPLIT --numeric-suffixes --suffix-length=1 --additional-suffix=~ ${DIR}/spelling.dat spelling
 
 
-for ((I=1;I<=$SPLIT;I++)) ; do
+for ((I=0;I<$SPLIT;I++)) ; do
   SPELLFILE=spelling$I~;
 
   # This will try to look for mispelling within larger words.
@@ -102,7 +102,7 @@ for ((I=1;I<=$SPLIT;I++)) ; do
 	    fi
 
         echo ""
-        echo -e "  \x1B[4mr\x1B[0meplace by \x1B[33m$CORRECTION\x1B[0m"
+        echo -e "  \x1B[4mr\x1B[0meplace by \x1B[33m$CORRECTION\x1B[0m at line $NUMBER"
         echo -e "  \x1B[4ma\x1B[0mppend \x1B[33m$SPELLOKSTR\x1B[0m at the end of the line to avoid spell check on this line"
         echo -e "  en\x1B[4mt\x1B[0mer your own correction"
         echo -e "  ignore and \x1B[4mc\x1B[0montinue"
