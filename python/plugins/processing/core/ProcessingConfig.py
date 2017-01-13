@@ -328,7 +328,10 @@ class Setting(object):
                 value = str(value).lower() == str(True).lower()
 
             if self.valuetype == self.SELECTION:
-                self.value = self.options[int(value)]
+                try:
+                    self.value = self.options[int(value)]
+                except:
+                    self.value = self.options[0]
             else:
                 self.value = value
 
