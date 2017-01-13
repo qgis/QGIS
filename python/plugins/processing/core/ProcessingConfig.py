@@ -232,10 +232,7 @@ class ProcessingConfig(object):
                     v = None
             except:
                 pass
-            if ProcessingConfig.settings[name].valuetype == Setting.SELECTION:
-                return ProcessingConfig.settings[name].options.index(v)
-            else:
-                return v
+            return v
         else:
             return None
 
@@ -328,7 +325,10 @@ class Setting(object):
                 value = str(value).lower() == str(True).lower()
 
             if self.valuetype == self.SELECTION:
-                self.value = self.options[int(value)]
+                try:
+                    self.value = self.options[int(value)]
+                except:
+                    self.value = self.options[0]
             else:
                 self.value = value
 
