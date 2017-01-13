@@ -399,10 +399,7 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
   //Config file path
   QString configFilePath = configPath( *sConfigFilePath, parameterMap );
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-  // XXX Why this is enabled only fol plugins ?
   sServerInterface->setConfigFilePath( configFilePath );
-#endif
 
   //Service parameter
   QString serviceString = parameterMap.value( QStringLiteral( "SERVICE" ) );

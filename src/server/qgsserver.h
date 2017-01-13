@@ -71,7 +71,7 @@ class SERVER_EXPORT QgsServer
      */
     void handleRequest( QgsServerRequest& request, QgsServerResponse& response );
 
-    /** Handles the request from query strinf
+    /** Handles the request from query string
      * The query string is normally read from environment
      * but can be also passed in args and in this case overrides the environment
      * variable.
@@ -125,9 +125,7 @@ class SERVER_EXPORT QgsServer
     // Status
     static QString* sConfigFilePath;
     static QgsCapabilitiesCache* sCapabilitiesCache;
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
     static QgsServerInterfaceImpl* sServerInterface;
-#endif
     //! Initialization must run once for all servers
     static bool sInitialised;
 
