@@ -32,7 +32,9 @@ namespace QgsWms
     QgsServerRequest::Parameters params = request.parameters();
     try
     {
-      QgsWmsServer server( serverIface->configFilePath(), params,
+      QgsWmsServer server( serverIface->configFilePath(),
+                           *serverIface->serverSettings(),
+                           params,
                            getConfigParser( serverIface ),
                            serverIface->accessControls() );
       QDomDocument doc = server.describeLayer();

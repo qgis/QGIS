@@ -31,7 +31,8 @@ namespace QgsWms
   {
     QgsServerRequest::Parameters params = request.parameters();
     QString configFilePath = serverIface->configFilePath();
-    const QgsAccessControl* accessControl = serverIface->accessControls();
+    QgsServerSettings* serverSettings = serverIface->serverSettings();
+    QgsAccessControl* accessControl = serverIface->accessControls();
     QgsCapabilitiesCache* capabilitiesCache = serverIface->capabilitiesCache();
 
     QStringList cacheKeyList;
@@ -50,7 +51,9 @@ namespace QgsWms
       QDomDocument doc;
       try
       {
-        QgsWmsServer server( configFilePath, params,
+        QgsWmsServer server( configFilePath,
+                             *serverSettings,
+                             params,
                              getConfigParser( serverIface ),
                              accessControl );
         doc = server.getCapabilities( version, projectSettings );

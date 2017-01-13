@@ -34,7 +34,8 @@ namespace QgsWms
     QgsServerRequest::Parameters params = request.parameters();
     QgsWmsConfigParser* parser = getConfigParser( serverIface );
 
-    QgsWmsServer server( serverIface->configFilePath(), params, parser,
+    QgsWmsServer server( serverIface->configFilePath(),
+                         *serverIface->serverSettings(), params, parser,
                          serverIface->accessControls() );
     try
     {

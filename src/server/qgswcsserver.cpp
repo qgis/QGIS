@@ -40,13 +40,15 @@ static const QString OGC_NAMESPACE = QStringLiteral( "http://www.opengis.net/ogc
 
 QgsWCSServer::QgsWCSServer(
   const QString& configFilePath
+  , const QgsServerSettings& settings
   , QMap<QString, QString> &parameters
   , QgsWCSProjectParser* pp
   , QgsRequestHandler* rh
-  , const QgsAccessControl* accessControl
+  , QgsAccessControl* accessControl
 )
     : QgsOWSServer(
       configFilePath
+      , settings
       , parameters
       , rh
       , accessControl
@@ -60,6 +62,7 @@ QgsWCSServer::QgsWCSServer(
 QgsWCSServer::QgsWCSServer()
     : QgsOWSServer(
       QString()
+      , QgsServerSettings()
       , QMap<QString, QString>()
       , nullptr
       , nullptr

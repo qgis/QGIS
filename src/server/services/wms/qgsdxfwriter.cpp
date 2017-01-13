@@ -122,7 +122,9 @@ namespace QgsWms
 
     QMap<QString, QString> formatOptionsMap = parseFormatOptions( params.value( QStringLiteral( "FORMAT_OPTIONS" ) ) );
 
-    QgsWmsServer server( serverIface->configFilePath(), params,
+    QgsWmsServer server( serverIface->configFilePath(),
+                         *serverIface->serverSettings(),
+                         params,
                          configParser,
                          serverIface->accessControls() );
 

@@ -56,6 +56,13 @@ class QgsMSLayerCache: public QObject
     static QgsMSLayerCache* instance();
     ~QgsMSLayerCache();
 
+    /**
+      * Set the maximum number of layers in cache.
+      * @param maxCacheLayers the number of layers in cache
+      * @note added in QGIS 3.0
+      */
+    void setMaxCacheLayers( int maxCacheLayers );
+
     /** Inserts a new layer into the cash
     @param url the layer datasource
     @param layerName the layer name (to distinguish between different layers in a request using the same datasource

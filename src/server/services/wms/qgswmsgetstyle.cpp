@@ -33,7 +33,8 @@ namespace QgsWms
     try
     {
       Q_UNUSED( version );
-      QgsWmsServer server( serverIface->configFilePath(), params,
+      QgsWmsServer server( serverIface->configFilePath(),
+                           *serverIface->serverSettings(), params,
                            getConfigParser( serverIface ),
                            serverIface->accessControls() );
       QDomDocument doc = server.getStyle();

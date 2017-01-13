@@ -36,7 +36,8 @@ class QgsServerInterfaceImpl : public QgsServerInterface
 
     //! Constructor
     explicit QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache,
-                                     QgsServiceRegistry* srvRegistry );
+                                     QgsServiceRegistry* srvRegistry,
+                                     QgsServerSettings* serverSettings );
 
 
     ~QgsServerInterfaceImpl();
@@ -55,7 +56,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     /** Gets the helper over all the registered access control filters
      * @return the access control helper
      */
-    const QgsAccessControl* accessControls() const override { return mAccessControls; }
+    QgsAccessControl* accessControls() const override { return mAccessControls; }
     QString getEnv( const QString& name ) const override;
     QString configFilePath() override { return mConfigFilePath; }
     void setConfigFilePath( const QString& configFilePath ) override;
@@ -65,6 +66,8 @@ class QgsServerInterfaceImpl : public QgsServerInterface
 
     QgsServiceRegistry* serviceRegistry() override;
 
+    QgsServerSettings* serverSettings() override;
+
   private:
 
     QString mConfigFilePath;
@@ -73,6 +76,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     QgsCapabilitiesCache* mCapabilitiesCache;
     QgsRequestHandler* mRequestHandler;
     QgsServiceRegistry* mServiceRegistry;
+    QgsServerSettings* mServerSettings;
 };
 
 #endif // QGSSERVERINTERFACEIMPL_H
