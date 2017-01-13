@@ -23,6 +23,7 @@ matrix:
             - llvm-toolchain-precise-3.8
             - ubuntu-toolchain-r-test
             - george-edison55-precise-backports # doxygen 1.8.3
+            - sourceline: 'ppa:nomeata/travis-backports'
             # - laurent-boulard-devtools (for silver-search, not whitelisted yet https://github.com/travis-ci/apt-source-whitelist/pull/345)
           packages:
             - doxygen
