@@ -165,6 +165,10 @@ class TinInterpolation(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('You need to specify at least one input layer.'))
 
+        if cellsizeX == 0.0 or cellsizeY == 0.0:
+            raise GeoAlgorithmExecutionException(
+                self.tr('Cellsize should be greater than 0.'))
+
         xMin = float(extent[0])
         xMax = float(extent[1])
         yMin = float(extent[2])
