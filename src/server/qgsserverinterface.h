@@ -57,7 +57,7 @@ class SERVER_EXPORT QgsServerInterface
     //! Constructor
     QgsServerInterface();
 
-    virtual ~QgsServerInterface() = 0;
+    virtual ~QgsServerInterface() = default;
 
     /**
      * Set the request handler
