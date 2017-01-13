@@ -143,7 +143,8 @@ class TinInterpolation(GeoAlgorithm):
                                           self.tr('Cell size Y'),
                                           0.0, 999999.000000, 0.0))
         self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Extent')))
+                                          self.tr('Extent'),
+                                          optional=False))
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Interpolated')))
         self.addOutput(OutputVector(self.TRIANULATION_FILE,
