@@ -198,18 +198,18 @@ void QgsServer::printRequestParameters( const QMap< QString, QString>& parameter
  */
 void QgsServer::printRequestInfos()
 {
-  QgsMessageLog::logMessage( QStringLiteral( "******************** New request ***************" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "******************** New request ***************", "Server", QgsMessageLog::INFO );
   if ( getenv( "REMOTE_ADDR" ) )
   {
-    QgsMessageLog::logMessage( "REMOTE_ADDR: " + QString( getenv( "REMOTE_ADDR" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "REMOTE_ADDR: " + QString( getenv( "REMOTE_ADDR" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "REMOTE_HOST" ) )
   {
-    QgsMessageLog::logMessage( "REMOTE_HOST: " + QString( getenv( "REMOTE_HOST" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "REMOTE_HOST: " + QString( getenv( "REMOTE_HOST" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "REMOTE_USER" ) )
   {
-    QgsMessageLog::logMessage( "REMOTE_USER: " + QString( getenv( "REMOTE_USER" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "REMOTE_USER: " + QString( getenv( "REMOTE_USER" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "REMOTE_IDENT" ) )
   {
@@ -241,7 +241,7 @@ void QgsServer::printRequestInfos()
   }
   if ( getenv( "HTTP_AUTHORIZATION" ) )
   {
-    QgsMessageLog::logMessage( "HTTP_AUTHORIZATION: " + QString( getenv( "HTTP_AUTHORIZATION" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "HTTP_AUTHORIZATION: " + QString( getenv( "HTTP_AUTHORIZATION" ) ), "Server", QgsMessageLog::INFO );
   }
 }
 
