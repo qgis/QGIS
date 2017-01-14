@@ -397,7 +397,7 @@ void QgsPointDistanceRenderer::drawLabels( QPointF centerPoint, QgsSymbolRenderC
   QFont pixelSizeFont = mLabelFont;
   pixelSizeFont.setPixelSize( context.outputLineWidth( mLabelFont.pointSizeF() * 0.3527 ) );
   QFont scaledFont = pixelSizeFont;
-  scaledFont.setPixelSize( pixelSizeFont.pixelSize() * context.renderContext().rasterScaleFactor() );
+  scaledFont.setPixelSize( pixelSizeFont.pixelSize() );
   p->setFont( scaledFont );
 
   QFontMetricsF fontMetrics( pixelSizeFont );
@@ -421,7 +421,6 @@ void QgsPointDistanceRenderer::drawLabels( QPointF centerPoint, QgsSymbolRenderC
     QPointF drawingPoint( centerPoint + currentLabelShift );
     p->save();
     p->translate( drawingPoint.x(), drawingPoint.y() );
-    p->scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
     p->drawText( QPointF( 0, 0 ), groupIt->label );
     p->restore();
   }

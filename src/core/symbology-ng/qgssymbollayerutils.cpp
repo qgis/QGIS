@@ -3305,7 +3305,8 @@ double QgsSymbolLayerUtils::lineWidthScaleFactor( const QgsRenderContext& c, Qgs
       }
     }
     case QgsUnitTypes::RenderPixels:
-      return 1.0 / c.rasterScaleFactor();
+      return 1.0;
+
     case QgsUnitTypes::RenderUnknownUnit:
     case QgsUnitTypes::RenderPercentage:
       //no sensible value
@@ -3343,7 +3344,7 @@ double QgsSymbolLayerUtils::convertToMapUnits( const QgsRenderContext &c, double
       double minSizeMU = -DBL_MAX;
       if ( scale.minSizeMMEnabled )
       {
-        minSizeMU = scale.minSizeMM * c.scaleFactor() * c.rasterScaleFactor() * mup;
+        minSizeMU = scale.minSizeMM * c.scaleFactor() * mup;
       }
       if ( !qgsDoubleNear( scale.minScale, 0.0 ) )
       {
@@ -3354,7 +3355,7 @@ double QgsSymbolLayerUtils::convertToMapUnits( const QgsRenderContext &c, double
       double maxSizeMU = DBL_MAX;
       if ( scale.maxSizeMMEnabled )
       {
-        maxSizeMU = scale.maxSizeMM * c.scaleFactor() * c.rasterScaleFactor() * mup;
+        maxSizeMU = scale.maxSizeMM * c.scaleFactor() * mup;
       }
       if ( !qgsDoubleNear( scale.maxScale, 0.0 ) )
       {
@@ -3366,11 +3367,11 @@ double QgsSymbolLayerUtils::convertToMapUnits( const QgsRenderContext &c, double
     }
     case QgsUnitTypes::RenderMillimeters:
     {
-      return size * c.scaleFactor() * c.rasterScaleFactor() * mup;
+      return size * c.scaleFactor() * mup;
     }
     case QgsUnitTypes::RenderPoints:
     {
-      return size * c.scaleFactor() * c.rasterScaleFactor() * mup / POINTS_TO_MM;
+      return size * c.scaleFactor() * mup / POINTS_TO_MM;
     }
     case QgsUnitTypes::RenderPixels:
     {
@@ -3397,11 +3398,11 @@ double QgsSymbolLayerUtils::convertFromMapUnits( const QgsRenderContext& context
     }
     case QgsUnitTypes::RenderMillimeters:
     {
-      return sizeInMapUnits / ( context.scaleFactor() * context.rasterScaleFactor() * mup );
+      return sizeInMapUnits / ( context.scaleFactor() * mup );
     }
     case QgsUnitTypes::RenderPoints:
     {
-      return sizeInMapUnits / ( context.scaleFactor() * context.rasterScaleFactor() * mup / POINTS_TO_MM );
+      return sizeInMapUnits / ( context.scaleFactor() * mup / POINTS_TO_MM );
     }
     case QgsUnitTypes::RenderPixels:
     {
@@ -3421,15 +3422,15 @@ double QgsSymbolLayerUtils::pixelSizeScaleFactor( const QgsRenderContext& c, Qgs
   switch ( u )
   {
     case QgsUnitTypes::RenderMillimeters:
-      return ( c.scaleFactor() * c.rasterScaleFactor() );
+      return c.scaleFactor();
     case QgsUnitTypes::RenderPoints:
-      return ( c.scaleFactor() * c.rasterScaleFactor() ) * POINTS_TO_MM;
+      return c.scaleFactor() * POINTS_TO_MM;
     case QgsUnitTypes::RenderMapUnits:
     {
       double mup = scale.computeMapUnitsPerPixel( c );
       if ( mup > 0 )
       {
-        return c.rasterScaleFactor() / mup;
+        return 1.0 / mup;
       }
       else
       {
@@ -3451,9 +3452,9 @@ double QgsSymbolLayerUtils::mapUnitScaleFactor( const QgsRenderContext &c, QgsUn
   switch ( u )
   {
     case QgsUnitTypes::RenderMillimeters:
-      return scale.computeMapUnitsPerPixel( c ) * c.scaleFactor() * c.rasterScaleFactor();
+      return scale.computeMapUnitsPerPixel( c ) * c.scaleFactor();
     case QgsUnitTypes::RenderPoints:
-      return scale.computeMapUnitsPerPixel( c ) * c.scaleFactor() * c.rasterScaleFactor() * POINTS_TO_MM;
+      return scale.computeMapUnitsPerPixel( c ) * c.scaleFactor() * POINTS_TO_MM;
     case QgsUnitTypes::RenderMapUnits:
     {
       return 1.0;

@@ -75,8 +75,6 @@ class QgsRenderContext
 
     double scaleFactor() const;
 
-    double rasterScaleFactor() const;
-
     bool renderingStopped() const;
 
     bool forceVectorOutput() const;
@@ -119,7 +117,6 @@ class QgsRenderContext
 
     void setRenderingStopped( bool stopped );
     void setScaleFactor( double factor );
-    void setRasterScaleFactor( double factor );
     void setRendererScale( double scale );
     void setPainter( QPainter* p );
 

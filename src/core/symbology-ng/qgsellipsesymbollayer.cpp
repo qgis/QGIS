@@ -676,8 +676,6 @@ QRectF QgsEllipseSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext& con
   double angle = 0;
   calculateOffsetAndRotation( context, size.width(), size.height(), hasDataDefinedRotation, offset, angle );
 
-  double pixelSize = 1.0 / context.renderContext().rasterScaleFactor();
-
   QMatrix transform;
 
   // move to the desired position
@@ -707,8 +705,8 @@ QRectF QgsEllipseSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext& con
     }
   }
 
-  //antialiasing
-  penWidth += pixelSize;
+  //antialiasing, add 1 pixel
+  penWidth += 1;
 
   QRectF symbolBounds = transform.mapRect( QRectF( -size.width() / 2.0,
                         -size.height() / 2.0,

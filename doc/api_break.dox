@@ -1532,6 +1532,7 @@ QgsRenderContext        {#qgis_api_break_3_0_QgsRenderContext}
 - coordinateTransform() now returns a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
 be returned instead of a null pointer if no transformation is required.
 - setCoordinateTransform() now takes a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should be used instead of a null pointer if no transformation is required.
+- rasterScaleFactor() and setRasterScaleFactor() were removed. In QGIS 3.0 QPainter destinations should always be constructed so that 1 painter unit = 1 pixel.
 
 QgsRendererRangeLabelFormat        {#qgis_api_break_3_0_QgsRendererRangeLabelFormat}
 ---------------------------

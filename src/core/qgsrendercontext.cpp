@@ -28,7 +28,6 @@ QgsRenderContext::QgsRenderContext()
     , mPainter( nullptr )
     , mRenderingStopped( false )
     , mScaleFactor( 1.0 )
-    , mRasterScaleFactor( 1.0 )
     , mRendererScale( 1.0 )
     , mLabelingEngine( nullptr )
     , mGeometry( nullptr )
@@ -47,7 +46,6 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext& rh )
     , mMapToPixel( rh.mMapToPixel )
     , mRenderingStopped( rh.mRenderingStopped )
     , mScaleFactor( rh.mScaleFactor )
-    , mRasterScaleFactor( rh.mRasterScaleFactor )
     , mRendererScale( rh.mRendererScale )
     , mLabelingEngine( rh.mLabelingEngine )
     , mSelectionColor( rh.mSelectionColor )
@@ -69,7 +67,6 @@ QgsRenderContext&QgsRenderContext::operator=( const QgsRenderContext & rh )
   mMapToPixel = rh.mMapToPixel;
   mRenderingStopped = rh.mRenderingStopped;
   mScaleFactor = rh.mScaleFactor;
-  mRasterScaleFactor = rh.mRasterScaleFactor;
   mRendererScale = rh.mRendererScale;
   mLabelingEngine = rh.mLabelingEngine;
   mSelectionColor = rh.mSelectionColor;
@@ -92,7 +89,6 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter* painter )
 {
   QgsRenderContext context;
   context.setPainter( painter );
-  context.setRasterScaleFactor( 1.0 );
   if ( painter && painter->device() )
   {
     context.setScaleFactor( painter->device()->logicalDpiX() / 25.4 );
@@ -143,7 +139,6 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings& mapSet
   ctx.setFlag( RenderMapTile, mapSettings.testFlag( QgsMapSettings::RenderMapTile ) );
   ctx.setFlag( Antialiasing, mapSettings.testFlag( QgsMapSettings::Antialiasing ) );
   ctx.setFlag( RenderPartialOutput, mapSettings.testFlag( QgsMapSettings::RenderPartialOutput ) );
-  ctx.setRasterScaleFactor( 1.0 );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setRendererScale( mapSettings.scale() );
   ctx.setExpressionContext( mapSettings.expressionContext() );

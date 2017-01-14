@@ -117,8 +117,6 @@ class CORE_EXPORT QgsRenderContext
 
     double scaleFactor() const {return mScaleFactor;}
 
-    double rasterScaleFactor() const {return mRasterScaleFactor;}
-
     bool renderingStopped() const {return mRenderingStopped;}
 
     bool forceVectorOutput() const;
@@ -160,7 +158,6 @@ class CORE_EXPORT QgsRenderContext
 
     void setRenderingStopped( bool stopped ) {mRenderingStopped = stopped;}
     void setScaleFactor( double factor ) {mScaleFactor = factor;}
-    void setRasterScaleFactor( double factor ) {mRasterScaleFactor = factor;}
     void setRendererScale( double scale ) {mRendererScale = scale;}
     void setPainter( QPainter* p ) {mPainter = p;}
 
@@ -261,9 +258,6 @@ class CORE_EXPORT QgsRenderContext
 
     //! Factor to scale line widths and point marker sizes
     double mScaleFactor;
-
-    //! Factor to scale rasters
-    double mRasterScaleFactor;
 
     //! Map scale
     double mRendererScale;

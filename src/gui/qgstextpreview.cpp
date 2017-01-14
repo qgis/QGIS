@@ -42,16 +42,16 @@ void QgsTextPreview::paintEvent( QPaintEvent *e )
   // slightly inset text
   double xtrans = 0;
   if ( mFormat.buffer().enabled() )
-    xtrans = QgsTextRenderer::scaleToPixelContext( mFormat.buffer().size(), mContext, mFormat.buffer().sizeUnit(), false, mFormat.buffer().sizeMapUnitScale() );
+    xtrans = QgsTextRenderer::scaleToPixelContext( mFormat.buffer().size(), mContext, mFormat.buffer().sizeUnit(), mFormat.buffer().sizeMapUnitScale() );
   if ( mFormat.background().enabled() && mFormat.background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
-    xtrans = qMax( xtrans, QgsTextRenderer::scaleToPixelContext( mFormat.background().size().width(), mContext, mFormat.background().sizeUnit(), false, mFormat.background().sizeMapUnitScale() ) );
+    xtrans = qMax( xtrans, QgsTextRenderer::scaleToPixelContext( mFormat.background().size().width(), mContext, mFormat.background().sizeUnit(), mFormat.background().sizeMapUnitScale() ) );
   xtrans += 4;
 
   double ytrans = 0.0;
   if ( mFormat.buffer().enabled() )
-    ytrans = qMax( ytrans, QgsTextRenderer::scaleToPixelContext( mFormat.buffer().size(), mContext, mFormat.buffer().sizeUnit(), false, mFormat.buffer().sizeMapUnitScale() ) );
+    ytrans = qMax( ytrans, QgsTextRenderer::scaleToPixelContext( mFormat.buffer().size(), mContext, mFormat.buffer().sizeUnit(), mFormat.buffer().sizeMapUnitScale() ) );
   if ( mFormat.background().enabled() )
-    ytrans = qMax( ytrans, QgsTextRenderer::scaleToPixelContext( mFormat.background().size().height(), mContext, mFormat.background().sizeUnit(), false, mFormat.background().sizeMapUnitScale() ) );
+    ytrans = qMax( ytrans, QgsTextRenderer::scaleToPixelContext( mFormat.background().size().height(), mContext, mFormat.background().sizeUnit(), mFormat.background().sizeMapUnitScale() ) );
   ytrans += 4;
 
   QRectF textRect = rect();

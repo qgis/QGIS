@@ -172,7 +172,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   // TODO R->mLastViewPort = *mRasterViewPort;
 
   // TODO: is it necessary? Probably WMS only?
-  layer->dataProvider()->setDpi( rendererContext.rasterScaleFactor() * 25.4 * rendererContext.scaleFactor() );
+  layer->dataProvider()->setDpi( 25.4 * rendererContext.scaleFactor() );
 
 
   // copy the whole raster pipe!

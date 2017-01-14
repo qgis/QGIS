@@ -39,7 +39,7 @@ class CORE_EXPORT QgsMapUnitScale
      * @param minScale minimum allowed scale, or 0.0 if no minimum scale set
      * @param maxScale maximum allowed scale, or 0.0 if no maximum scale set
      */
-    QgsMapUnitScale( double minScale = 0.0, double maxScale = 0.0 )
+    explicit QgsMapUnitScale( double minScale = 0.0, double maxScale = 0.0 )
         : minScale( minScale )
         , maxScale( maxScale )
         , minSizeMMEnabled( false )
