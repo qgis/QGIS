@@ -246,7 +246,7 @@ QString QgsAuthMethodRegistry::pluginList( bool asHtml ) const
   return list;
 }
 
-const QDir &QgsAuthMethodRegistry::libraryDirectory() const
+QDir QgsAuthMethodRegistry::libraryDirectory() const
 {
   return mLibraryDirectory;
 }

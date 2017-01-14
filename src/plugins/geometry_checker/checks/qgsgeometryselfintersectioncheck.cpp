@@ -324,7 +324,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
   }
 }
 
-const QStringList& QgsGeometrySelfIntersectionCheck::getResolutionMethods() const
+QStringList QgsGeometrySelfIntersectionCheck::getResolutionMethods() const
 {
   static QStringList methods = QStringList()
                                << tr( "Split feature into a multi-object feature" )

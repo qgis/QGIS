@@ -334,7 +334,7 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
   private:
 
     // Lazily initializes mImage
-    const QImage& getLegendGraphic() const;
+    QImage getLegendGraphic() const;
 
     QImage renderMessage( const QString& msg ) const;
 

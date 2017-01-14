@@ -109,8 +109,8 @@ QgsSvgCache::~QgsSvgCache()
 }
 
 
-const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                       double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache )
+QImage QgsSvgCache::svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                                double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache )
 {
   QMutexLocker locker( &mMutex );
 
@@ -154,8 +154,8 @@ const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const Q
   return *( currentEntry->image );
 }
 
-const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-    double widthScaleFactor, double rasterScaleFactor, bool forceVectorOutput )
+QPicture QgsSvgCache::svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                                    double widthScaleFactor, double rasterScaleFactor, bool forceVectorOutput )
 {
   QMutexLocker locker( &mMutex );
 
@@ -172,8 +172,8 @@ const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, con
   return *( currentEntry->picture );
 }
 
-const QByteArray& QgsSvgCache::svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-    double widthScaleFactor, double rasterScaleFactor )
+QByteArray QgsSvgCache::svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                                    double widthScaleFactor, double rasterScaleFactor )
 {
   QMutexLocker locker( &mMutex );
 

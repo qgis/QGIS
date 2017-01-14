@@ -84,7 +84,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Get list of children of the node. Children are owned by the parent
     QList<QgsLayerTreeNode*> children() { return mChildren; }
     //! Get list of children of the node. Children are owned by the parent
-    const QList<QgsLayerTreeNode*>& children() const { return mChildren; }
+    QList<QgsLayerTreeNode*> children() const { return mChildren; }
 
     //! Return name of the node
     //! @note added in 3.0

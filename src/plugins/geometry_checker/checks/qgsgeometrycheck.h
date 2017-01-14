@@ -77,7 +77,7 @@ class QgsGeometryCheck : public QObject
     {}
     virtual void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const = 0;
     virtual void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const = 0;
-    virtual const QStringList& getResolutionMethods() const = 0;
+    virtual QStringList getResolutionMethods() const = 0;
     virtual QString errorDescription() const = 0;
     virtual QString errorName() const = 0;
     CheckType getCheckType() const { return mCheckType; }
@@ -115,11 +115,11 @@ class QgsGeometryCheckError
     virtual QgsRectangle affectedAreaBBox() { return geometry() ? geometry()->boundingBox() : QgsRectangle(); }
     virtual QString description() const { return mCheck->errorDescription(); }
     const QgsPointV2& location() const { return mErrorLocation; }
-    const QVariant& value() const { return mValue; }
+    QVariant value() const { return mValue; }
     ValueType valueType() const { return mValueType; }
     QgsVertexId vidx() const { return mVidx; }
     Status status() const { return mStatus; }
-    const QString& resolutionMessage() const { return mResolutionMessage; }
+    QString resolutionMessage() const { return mResolutionMessage; }
     void setFixed( int method )
     {
       mStatus = StatusFixed;

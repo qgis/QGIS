@@ -74,9 +74,9 @@ class SERVER_EXPORT QgsServerProjectParser
 
     QStringList supportedOutputCrsList() const;
 
-    const QList<QDomElement>& projectLayerElements() const { return mProjectLayerElements; }
+    QList<QDomElement> projectLayerElements() const { return mProjectLayerElements; }
 
-    const QList<QDomElement>& legendGroupElements() const { return mLegendGroupElements; }
+    QList<QDomElement> legendGroupElements() const { return mLegendGroupElements; }
 
     QString projectTitle() const;
 
@@ -84,11 +84,11 @@ class SERVER_EXPORT QgsServerProjectParser
 
     QDomElement propertiesElem() const;
 
-    const QSet<QString>& restrictedLayers() const { return mRestrictedLayers; }
+    QSet<QString> restrictedLayers() const { return mRestrictedLayers; }
     bool useLayerIds() const { return mUseLayerIDs; }
 
-    const QHash< QString, QDomElement >& projectLayerElementsByName() const { return mProjectLayerElementsByName; }
-    const QHash< QString, QDomElement >& projectLayerElementsById() const { return mProjectLayerElementsById; }
+    QHash< QString, QDomElement > projectLayerElementsByName() const { return mProjectLayerElementsByName; }
+    QHash< QString, QDomElement > projectLayerElementsById() const { return mProjectLayerElementsById; }
 
     void layerFromLegendLayer( const QDomElement& legendLayerElem, QMap< int, QgsMapLayer*>& layers, bool useCache = true ) const;
 

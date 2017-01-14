@@ -269,7 +269,7 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
     /**
      * Snapped to a segment
      */
-    const QList<QgsPoint>& snappedSegment() const;
+    QList<QgsPoint> snappedSegment() const;
 
     //! return the action used to enable/disable the tools
     QAction* enableAction();

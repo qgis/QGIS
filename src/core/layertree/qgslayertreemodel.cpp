@@ -1109,14 +1109,9 @@ bool QgsLayerTreeModel::testFlag( QgsLayerTreeModel::Flag f ) const
   return mFlags.testFlag( f );
 }
 
-const QIcon& QgsLayerTreeModel::iconGroup()
+QIcon QgsLayerTreeModel::iconGroup()
 {
-  static QIcon icon;
-
-  if ( icon.isNull() )
-    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionFolder.svg" ) );
-
-  return icon;
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionFolder.svg" ) );
 }
 
 QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::filterLegendNodes( const QList<QgsLayerTreeModelLegendNode*>& nodes )

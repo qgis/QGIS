@@ -40,7 +40,7 @@ void QgsRelationManager::setRelations( const QList<QgsRelation>& relations )
   emit changed();
 }
 
-const QMap<QString, QgsRelation>& QgsRelationManager::relations() const
+QMap<QString, QgsRelation> QgsRelationManager::relations() const
 {
   return mRelations;
 }

@@ -152,7 +152,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return All ids and factories
      */
-    const QMap<QString, QgsEditorWidgetFactory*>& factories();
+    QMap<QString, QgsEditorWidgetFactory*> factories();
 
     /**
      * Get a factory for the given widget type id.

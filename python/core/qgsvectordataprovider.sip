@@ -375,7 +375,7 @@ class QgsVectorDataProvider : QgsDataProvider
     /**
      * Returns the names of the supported types
      */
-    const QList< QgsVectorDataProvider::NativeType > &nativeTypes() const;
+    QList< QgsVectorDataProvider::NativeType > nativeTypes() const;
 
     /**
      * Returns true if the provider is strict about the type of inserted features

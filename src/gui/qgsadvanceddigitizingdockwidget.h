@@ -315,7 +315,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
      * Snapped to a segment
      */
-    const QList<QgsPoint>& snappedSegment() const { return mSnappedSegment; }
+    QList<QgsPoint> snappedSegment() const { return mSnappedSegment; }
 
     //! return the action used to enable/disable the tools
     QAction* enableAction() { return mEnableAction; }

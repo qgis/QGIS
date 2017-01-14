@@ -136,7 +136,7 @@ const QList<QNetworkProxyFactory *> QgsNetworkAccessManager::proxyFactories() co
   return mProxyFactories;
 }
 
-const QStringList &QgsNetworkAccessManager::excludeList() const
+QStringList QgsNetworkAccessManager::excludeList() const
 {
   return mExcludedURLs;
 }

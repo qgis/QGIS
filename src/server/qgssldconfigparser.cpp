@@ -655,7 +655,7 @@ double QgsSLDConfigParser::legendSymbolHeight() const
   return 0;
 }
 
-const QFont& QgsSLDConfigParser::legendLayerFont() const
+QFont QgsSLDConfigParser::legendLayerFont() const
 {
   if ( mFallbackParser )
   {
@@ -664,7 +664,7 @@ const QFont& QgsSLDConfigParser::legendLayerFont() const
   return mLegendLayerFont;
 }
 
-const QFont& QgsSLDConfigParser::legendItemFont() const
+QFont QgsSLDConfigParser::legendItemFont() const
 {
   if ( mFallbackParser )
   {

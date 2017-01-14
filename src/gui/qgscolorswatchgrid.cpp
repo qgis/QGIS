@@ -320,7 +320,7 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
   }
 }
 
-const QPixmap& QgsColorSwatchGrid::transparentBackground()
+QPixmap QgsColorSwatchGrid::transparentBackground()
 {
   static QPixmap transpBkgrd;
 

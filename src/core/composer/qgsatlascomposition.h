@@ -176,7 +176,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @see setPredefinedScales
      * @see QgsComposerMap::atlasScalingMode
      */
-    const QVector<qreal>& predefinedScales() const { return mPredefinedScales; }
+    QVector<qreal> predefinedScales() const { return mPredefinedScales; }
 
     /** Sets the list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.

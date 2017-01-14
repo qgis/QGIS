@@ -99,7 +99,7 @@ void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError* error, int 
   }
 }
 
-const QStringList& QgsGeometrySegmentLengthCheck::getResolutionMethods() const
+QStringList QgsGeometrySegmentLengthCheck::getResolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;

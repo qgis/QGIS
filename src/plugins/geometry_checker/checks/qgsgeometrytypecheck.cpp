@@ -155,7 +155,7 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
   }
 }
 
-const QStringList& QgsGeometryTypeCheck::getResolutionMethods() const
+QStringList QgsGeometryTypeCheck::getResolutionMethods() const
 {
   static QStringList methods = QStringList()
                                << tr( "Convert to corresponding multi or single type if possible, otherwise delete feature" )

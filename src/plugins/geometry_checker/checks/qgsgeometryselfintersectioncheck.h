@@ -54,7 +54,7 @@ class QgsGeometrySelfIntersectionCheck : public QgsGeometryCheck
         : QgsGeometryCheck( FeatureNodeCheck, featurePool ) {}
     void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
-    const QStringList& getResolutionMethods() const override;
+    QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Self intersection" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometrySelfIntersectionCheck" ); }
   private:

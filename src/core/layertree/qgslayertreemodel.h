@@ -255,7 +255,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      */
     void refreshScaleBasedLayers( const QModelIndex& index = QModelIndex() );
 
-    static const QIcon& iconGroup();
+    static QIcon iconGroup();
 
     //! Filter nodes from QgsMapLayerLegend according to the current filtering rules
     QList<QgsLayerTreeModelLegendNode*> filterLegendNodes( const QList<QgsLayerTreeModelLegendNode*>& nodes );

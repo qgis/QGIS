@@ -1111,10 +1111,10 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
 
     const QMap< QString, QString >& attributeAliases() const;
 
-    const QSet<QString>& excludeAttributesWms() const;
+    QSet<QString> excludeAttributesWms() const;
     void setExcludeAttributesWms( const QSet<QString>& att );
 
-    const QSet<QString>& excludeAttributesWfs() const;
+    QSet<QString> excludeAttributesWfs() const;
     void setExcludeAttributesWfs( const QSet<QString>& att );
 
     /** Delete an attribute field (but does not commit it) */

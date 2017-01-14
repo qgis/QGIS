@@ -60,9 +60,9 @@ class QgsServerProjectParser
 
     QStringList supportedOutputCrsList() const;
 
-    const QList<QDomElement>& projectLayerElements() const;
+    QList<QDomElement> projectLayerElements() const;
 
-    const QList<QDomElement>& legendGroupElements() const;
+    QList<QDomElement> legendGroupElements() const;
 
     QString projectTitle() const;
 
@@ -73,8 +73,8 @@ class QgsServerProjectParser
     const QSet<QString>& restrictedLayers() const;
     bool useLayerIds() const;
 
-    const QHash< QString, QDomElement >& projectLayerElementsByName() const;
-    const QHash< QString, QDomElement >& projectLayerElementsById() const;
+    QHash< QString, QDomElement > projectLayerElementsByName() const;
+    QHash< QString, QDomElement > projectLayerElementsById() const;
 
     // SIP doesn't like QMap:
     // void layerFromLegendLayer( const QDomElement& legendLayerElem, QMap< int, QgsMapLayer*>& layers, bool useCache = true ) const;

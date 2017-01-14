@@ -84,7 +84,7 @@ void QgsGeometryDegeneratePolygonCheck::fixError( QgsGeometryCheckError* error, 
   }
 }
 
-const QStringList& QgsGeometryDegeneratePolygonCheck::getResolutionMethods() const
+QStringList QgsGeometryDegeneratePolygonCheck::getResolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "Delete feature" ) << tr( "No action" );
   return methods;

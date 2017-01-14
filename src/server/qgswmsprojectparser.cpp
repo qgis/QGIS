@@ -379,12 +379,12 @@ double QgsWmsProjectParser::legendSymbolHeight() const
   return legendElem.isNull() ? 4.0 : legendElem.attribute( QStringLiteral( "symbolHeight" ) ).toDouble();
 }
 
-const QFont& QgsWmsProjectParser::legendLayerFont() const
+QFont QgsWmsProjectParser::legendLayerFont() const
 {
   return mLegendLayerFont;
 }
 
-const QFont& QgsWmsProjectParser::legendItemFont() const
+QFont QgsWmsProjectParser::legendItemFont() const
 {
   return mLegendItemFont;
 }

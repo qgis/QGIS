@@ -585,7 +585,7 @@ QgsWmsLegendNode::QgsWmsLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* paren
 {
 }
 
-const QImage& QgsWmsLegendNode::getLegendGraphic() const
+QImage QgsWmsLegendNode::getLegendGraphic() const
 {
   if ( ! mValid && ! mFetcher )
   {
