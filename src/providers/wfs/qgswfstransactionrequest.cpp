@@ -36,6 +36,7 @@ bool QgsWFSTransactionRequest::send( const QDomDocument& doc, QDomDocument& serv
       QgsDebugMsg( errorMsg );
       return false;
     }
+    QgsDebugMsg( mResponse );
     return true;
   }
   return false;

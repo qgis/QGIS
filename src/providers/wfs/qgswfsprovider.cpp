@@ -849,6 +849,16 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
   {
     //transaction successful. Add the features to the cache
     QStringList idList = insertedFeatureIds( serverResponse );
+    /* Fix issue with GeoServer and shapefile feature stores when no real
+       feature id are returned but new0 returned instead of the featureId*/
+  for ( const QString &v : idList )
+    {
+      if ( v.startsWith( "new" ) )
+      {
+        reloadData();
+        return true;
+      }
+    }
     QStringList::const_iterator idIt = idList.constBegin();
     featureIt = flist.begin();
 
@@ -1344,7 +1354,10 @@ bool QgsWFSProvider::sendTransactionDocument( const QDomDocument& doc, QDomDocum
 QDomElement QgsWFSProvider::createTransactionElement( QDomDocument& doc ) const
 {
   QDomElement transactionElem = doc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, "Transaction" );
-  transactionElem.setAttribute( "version", "1.0.0" );
+  // QString WfsVersion = mShared->mWFSVersion;
+  // For now: hardcoded to 1.0.0
+  QString WfsVersion = "1.0.0";
+  transactionElem.setAttribute( "version", WfsVersion );
   transactionElem.setAttribute( "service", "WFS" );
   transactionElem.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
 
@@ -1353,7 +1366,7 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument& doc ) const
   if ( mShared->mURI.baseURL().toString().contains( "fake_qgis_http_endpoint" ) )
     describeFeatureTypeURL = QUrl( "http://fake_qgis_http_endpoint" );
   describeFeatureTypeURL.addQueryItem( "REQUEST", "DescribeFeatureType" );
-  describeFeatureTypeURL.addQueryItem( "VERSION", "1.0.0" );
+  describeFeatureTypeURL.addQueryItem( "VERSION", WfsVersion );
   describeFeatureTypeURL.addQueryItem( "TYPENAME", mShared->mURI.typeName() );
 
   transactionElem.setAttribute( "xsi:schemaLocation", mApplicationNamespace + ' '
