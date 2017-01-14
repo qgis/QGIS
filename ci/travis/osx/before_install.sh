@@ -16,26 +16,11 @@
 # Remove default gdal provided by travis  (we will replace it with gdal 2)
 brew remove gdal || true
 
-brew tap osgeo/osgeo4mac
-brew update
-brew install osgeo/osgeo4mac/qgis-214 --without-postgresql --only-dependencies
-brew install spawn-fcgi
-brew install lighttpd
-brew install poppler
-brew install bison
-brew install expat
+brew install python3
+pip3 install psycopg2 numpy nose2 pyyaml mock future ninja
 
-brew ln bison --force
-brew ln sqlite --force
-brew ln openssl --force
-brew ln expat --force
-brew ln libxml2 --force
-brew ln gettext --force
-brew ln libffi --force
+# Temporary workaround
+brew install m-kuhn/qgisdev/qgis3-dev --only-dependencies
+brew install spawn-fcgi lighttpd poppler bison expat ccache
 
-mkdir -p ${HOME}/Library/Python/2.7/lib/python/site-packages
-echo 'import site; site.addsitedir("/usr/local/lib/python2.7/site-packages")' >> ${HOME}/Library/Python/2.7/lib/python/site-packages/homebrew.pth
-echo 'import site; site.addsitedir("/usr/local/opt/gdal-20/lib/python2.7/site-packages")' >> ${HOME}/Library/Python/2.7/lib/python/site-packages/gdal2.pth
-
-# Needed for Processing
-pip install psycopg2 numpy nose2 pyyaml mock future
+ln -s /usr/local/opt/qt5-webkit/Frameworks/QtWebKit.framework /usr/local/Cellar/qt5/5.7.1_1/lib/QtWebKit.framework
