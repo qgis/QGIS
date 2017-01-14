@@ -395,10 +395,10 @@ class CORE_EXPORT QgsExpression
     };
 
     //! @note not available in Python bindings
-    static const char* BinaryOperatorText[];
+    static const char* BINARY_OPERATOR_TEXT[];
 
     //! @note not available in Python bindings
-    static const char* UnaryOperatorText[];
+    static const char* UNARY_OPERATOR_TEXT[];
 
     /** \ingroup core
       * Represents a single parameter passed to a function.
@@ -751,11 +751,11 @@ class CORE_EXPORT QgsExpression
     };
 
     //! @note not available in Python bindings
-    static QList<Function*> gmFunctions;
+    static QList<Function*> sFunctions;
     static const QList<Function*>& Functions();
 
     //! @note not available in Python bindings
-    static QStringList gmBuiltinFunctions;
+    static QStringList sBuiltinFunctions;
     static const QStringList& BuiltinFunctions();
 
     /** Registers a function to the expression engine. This is required to allow expressions to utilise the function.
@@ -774,7 +774,7 @@ class CORE_EXPORT QgsExpression
 
     //! List of functions owned by the expression engine
     //! @note not available in Python bindings
-    static QList<Function*> gmOwnedFunctions;
+    static QList<Function*> sOwnedFunctions;
 
     /** Deletes all registered functions whose ownership have been transferred to the expression engine.
      * @note added in QGIS 2.12
@@ -1344,9 +1344,9 @@ class CORE_EXPORT QgsExpression
 
     QgsExpressionPrivate* d;
 
-    static QHash<QString, Help> gFunctionHelpTexts;
-    static QHash<QString, QString> gVariableHelpTexts;
-    static QHash<QString, QString> gGroups;
+    static QHash<QString, Help> sFunctionHelpTexts;
+    static QHash<QString, QString> sVariableHelpTexts;
+    static QHash<QString, QString> sGroups;
 
     //! @note not available in Python bindings
     static void initFunctionHelp();

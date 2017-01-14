@@ -69,8 +69,8 @@ void writePolyline( struct Map_info* map, int type, const QgsPolyline& polyline,
 
 static struct Map_info *finalMap = 0;
 static struct Map_info *tmpMap = 0;
-static QString finalName;
-static QString tmpName;
+static QString sFinalName;
+static QString sTmpName;
 dbDriver *driver = 0;
 
 void closeMaps()
@@ -78,12 +78,12 @@ void closeMaps()
   if ( tmpMap )
   {
     Vect_close( tmpMap );
-    Vect_delete( tmpName.toUtf8().data() );
+    Vect_delete( sTmpName.toUtf8().data() );
   }
   if ( finalMap )
   {
     Vect_close( finalMap );
-    Vect_delete( finalName.toUtf8().data() );
+    Vect_delete( sFinalName.toUtf8().data() );
   }
   if ( driver )
   {
@@ -147,9 +147,9 @@ int main( int argc, char **argv )
   QDataStream stdoutStream( &stdoutFile );
 
   // global finalName, tmpName are used by checkStream()
-  finalName = QString( mapOption->answer );
+  sFinalName = QString( mapOption->answer );
   QDateTime now = QDateTime::currentDateTime();
-  tmpName = QStringLiteral( "qgis_import_tmp_%1_%2" ).arg( mapOption->answer, now.toString( QStringLiteral( "yyyyMMddhhmmss" ) ) );
+  sTmpName = QStringLiteral( "qgis_import_tmp_%1_%2" ).arg( mapOption->answer, now.toString( QStringLiteral( "yyyyMMddhhmmss" ) ) );
 
   qint32 typeQint32;
   stdinStream >> typeQint32;
@@ -166,7 +166,7 @@ int main( int argc, char **argv )
   {
     tmpMap = QgsGrass::vectNewMapStruct();
     // TODO: use Vect_open_tmp_new with GRASS 7
-    Vect_open_new( tmpMap, tmpName.toUtf8().data(), 0 );
+    Vect_open_new( tmpMap, sTmpName.toUtf8().data(), 0 );
     map = tmpMap;
   }
 
@@ -449,7 +449,7 @@ int main( int argc, char **argv )
     G_message( "Copying lines from temporary map" );
     Vect_copy_map_lines( tmpMap, finalMap );
     Vect_close( tmpMap );
-    Vect_delete( tmpName.toUtf8().data() );
+    Vect_delete( sTmpName.toUtf8().data() );
 
     int centroidsCount = centroids.size();
     count = 0;

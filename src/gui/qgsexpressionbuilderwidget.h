@@ -53,7 +53,7 @@ class QgsExpressionItem : public QStandardItem
       mExpressionText = expressionText;
       mHelpText = helpText;
       mType = itemType;
-      setData( itemType, ItemTypeRole );
+      setData( itemType, ITEM_TYPE_ROLE );
     }
 
     QgsExpressionItem( const QString& label,
@@ -63,7 +63,7 @@ class QgsExpressionItem : public QStandardItem
     {
       mExpressionText = expressionText;
       mType = itemType;
-      setData( itemType, ItemTypeRole );
+      setData( itemType, ITEM_TYPE_ROLE );
     }
 
     QString getExpressionText() const { return mExpressionText; }
@@ -87,9 +87,9 @@ class QgsExpressionItem : public QStandardItem
     QgsExpressionItem::ItemType getItemType() const { return mType; }
 
     //! Custom sort order role
-    static const int CustomSortRole = Qt::UserRole + 1;
+    static const int CUSTOM_SORT_ROLE = Qt::UserRole + 1;
     //! Item type role
-    static const int ItemTypeRole = Qt::UserRole + 2;
+    static const int ITEM_TYPE_ROLE = Qt::UserRole + 2;
 
   private:
     QString mExpressionText;

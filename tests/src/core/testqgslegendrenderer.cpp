@@ -205,8 +205,8 @@ void TestQgsLegendRenderer::init()
   }
   QgsProject::instance()->addMapLayer( mVL3 );
 
-  static char raster_array[] = { 1, 2, 2, 1 };
-  QString rasterUri = QStringLiteral( "MEM:::DATAPOINTER=%1,PIXELS=2,LINES=2" ).arg(( qulonglong ) raster_array );
+  static const char RASTER_ARRAY[] = { 1, 2, 2, 1 };
+  QString rasterUri = QStringLiteral( "MEM:::DATAPOINTER=%1,PIXELS=2,LINES=2" ).arg(( qulonglong ) RASTER_ARRAY );
   mRL = new QgsRasterLayer( rasterUri, QStringLiteral( "Raster Layer" ), QStringLiteral( "gdal" ) );
   QgsProject::instance()->addMapLayer( mRL );
 

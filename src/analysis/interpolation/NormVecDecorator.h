@@ -72,7 +72,7 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
   protected:
     //! Is true, if the normals already have been estimated
     bool alreadyestimated;
-    const static unsigned int mDefaultStorageForNormals = 100000;
+    static const unsigned int DEFAULT_STORAGE_FOR_NORMALS = 100000;
     //! Association with an interpolator object
     TriangleInterpolator* mInterpolator;
     //! Vector that stores the normals for the points. If 'estimateFirstDerivatives()' was called and there is a null pointer, this means, that the triangle point is on a breakline
@@ -83,12 +83,12 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     void setState( int pointno, PointState s );
 };
 
-inline NormVecDecorator::NormVecDecorator(): TriDecorator(), mInterpolator( nullptr ), mNormVec( new QVector<Vector3D*>( mDefaultStorageForNormals ) ), mPointState( new QVector<PointState>( mDefaultStorageForNormals ) )
+inline NormVecDecorator::NormVecDecorator(): TriDecorator(), mInterpolator( nullptr ), mNormVec( new QVector<Vector3D*>( DEFAULT_STORAGE_FOR_NORMALS ) ), mPointState( new QVector<PointState>( DEFAULT_STORAGE_FOR_NORMALS ) )
 {
   alreadyestimated = false;
 }
 
-inline NormVecDecorator::NormVecDecorator( Triangulation* tin ): TriDecorator( tin ), mInterpolator( nullptr ), mNormVec( new QVector<Vector3D*>( mDefaultStorageForNormals ) ), mPointState( new QVector<PointState>( mDefaultStorageForNormals ) )
+inline NormVecDecorator::NormVecDecorator( Triangulation* tin ): TriDecorator( tin ), mInterpolator( nullptr ), mNormVec( new QVector<Vector3D*>( DEFAULT_STORAGE_FOR_NORMALS ) ), mPointState( new QVector<PointState>( DEFAULT_STORAGE_FOR_NORMALS ) )
 {
   alreadyestimated = false;
 }

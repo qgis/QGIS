@@ -614,11 +614,11 @@ static bool _compareEncodings( const QString& s1, const QString& s2 )
 
 QStringList QgsVectorDataProvider::availableEncodings()
 {
-  if ( smEncodings.isEmpty() )
+  if ( sEncodings.isEmpty() )
   {
     Q_FOREACH ( const QString& codec, QTextCodec::availableCodecs() )
     {
-      smEncodings << codec;
+      sEncodings << codec;
     }
 #if 0
     smEncodings << "BIG5";
@@ -670,9 +670,9 @@ QStringList QgsVectorDataProvider::availableEncodings()
   }
 
   // Do case-insensitive sorting of encodings
-  qSort( smEncodings.begin(), smEncodings.end(), _compareEncodings );
+  qSort( sEncodings.begin(), sEncodings.end(), _compareEncodings );
 
-  return smEncodings;
+  return sEncodings;
 }
 
 void QgsVectorDataProvider::clearErrors()
@@ -816,7 +816,7 @@ QTextCodec* QgsVectorDataProvider::textEncoding() const
   return mEncoding;
 }
 
-QStringList QgsVectorDataProvider::smEncodings;
+QStringList QgsVectorDataProvider::sEncodings;
 
 QList<QgsRelation> QgsVectorDataProvider::discoverRelations( const QgsVectorLayer*, const QList<QgsVectorLayer*>& ) const
 {

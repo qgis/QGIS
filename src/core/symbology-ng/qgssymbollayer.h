@@ -307,9 +307,12 @@ class CORE_EXPORT QgsSymbolLayer
     QgsFields mFields;
 
     // Configuration of selected symbology implementation
-    static const bool selectionIsOpaque = true;  // Selection ignores symbol alpha
-    static const bool selectFillBorder = false;  // Fill symbol layer also selects border symbology
-    static const bool selectFillStyle = false;   // Fill symbol uses symbol layer style..
+    //! Whether styles for selected features ignore symbol alpha
+    static const bool SELECTION_IS_OPAQUE = true;
+    //! Whether fill styles for selected features also highlight symbol border
+    static const bool SELECT_FILL_BORDER = false;
+    //! Whether fill styles for selected features uses symbol layer style
+    static const bool SELECT_FILL_STYLE = false;
 
     /** Saves all data defined properties to a string map.
      * @param stringMap destination string map

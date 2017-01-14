@@ -168,11 +168,11 @@ class CORE_EXPORT QgsAuthMethodConfig
 
     QgsStringMap mConfigMap;
 
-    static const QString mConfigSep;
-    static const QString mConfigKeySep;
-    static const QString mConfigListSep;
+    static const QString CONFIG_SEP;
+    static const QString CONFIG_KEY_SEP;
+    static const QString CONFIG_LIST_SEP;
 
-    static const int sConfigVersion;
+    static const int CONFIG_VERSION;
 };
 
 typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;
@@ -367,7 +367,7 @@ class CORE_EXPORT QgsAuthConfigSslServer
     int mSslPeerVerifyDepth;
     int mVersion;
 
-    static const QString mConfSep;
+    static const QString CONF_SEP;
 };
 #endif
 

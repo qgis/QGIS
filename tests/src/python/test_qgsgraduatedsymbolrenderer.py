@@ -194,8 +194,8 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         self.assertFalse(format.trimTrailingZeroes(), "TrimTrailingZeroes getter/setter failed")
         minprecision = -6
         maxprecision = 15
-        self.assertEqual(QgsRendererRangeLabelFormat.MinPrecision, minprecision, "Minimum precision != -6")
-        self.assertEqual(QgsRendererRangeLabelFormat.MaxPrecision, maxprecision, "Maximum precision != 15")
+        self.assertEqual(QgsRendererRangeLabelFormat.MIN_PRECISION, minprecision, "Minimum precision != -6")
+        self.assertEqual(QgsRendererRangeLabelFormat.MAX_PRECISION, maxprecision, "Maximum precision != 15")
         format.setPrecision(-10)
         self.assertEqual(format.precision(), minprecision, "Minimum precision not enforced")
         format.setPrecision(20)

@@ -687,18 +687,18 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     // cache
 
-    static QReadWriteLock mSrIdCacheLock;
-    static QHash< long, QgsCoordinateReferenceSystem > mSrIdCache;
-    static QReadWriteLock mOgcLock;
-    static QHash< QString, QgsCoordinateReferenceSystem > mOgcCache;
-    static QReadWriteLock mProj4CacheLock;
-    static QHash< QString, QgsCoordinateReferenceSystem > mProj4Cache;
-    static QReadWriteLock mCRSWktLock;
-    static QHash< QString, QgsCoordinateReferenceSystem > mWktCache;
-    static QReadWriteLock mCRSSrsIdLock;
-    static QHash< long, QgsCoordinateReferenceSystem > mSrsIdCache;
-    static QReadWriteLock mCrsStringLock;
-    static QHash< QString, QgsCoordinateReferenceSystem > mStringCache;
+    static QReadWriteLock sSrIdCacheLock;
+    static QHash< long, QgsCoordinateReferenceSystem > sSrIdCache;
+    static QReadWriteLock sOgcLock;
+    static QHash< QString, QgsCoordinateReferenceSystem > sOgcCache;
+    static QReadWriteLock sProj4CacheLock;
+    static QHash< QString, QgsCoordinateReferenceSystem > sProj4Cache;
+    static QReadWriteLock sCRSWktLock;
+    static QHash< QString, QgsCoordinateReferenceSystem > sWktCache;
+    static QReadWriteLock sCRSSrsIdLock;
+    static QHash< long, QgsCoordinateReferenceSystem > sSrsIdCache;
+    static QReadWriteLock sCrsStringLock;
+    static QHash< QString, QgsCoordinateReferenceSystem > sStringCache;
 
     friend class TestQgsCoordinateReferenceSystem;
 };

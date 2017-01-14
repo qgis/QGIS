@@ -41,14 +41,14 @@ typedef QString category_t();
 typedef int type_t();
 
 
-QgsPluginRegistry *QgsPluginRegistry::_instance = nullptr;
+QgsPluginRegistry *QgsPluginRegistry::sInstance = nullptr;
 QgsPluginRegistry *QgsPluginRegistry::instance()
 {
-  if ( !_instance )
+  if ( !sInstance )
   {
-    _instance = new QgsPluginRegistry();
+    sInstance = new QgsPluginRegistry();
   }
-  return _instance;
+  return sInstance;
 }
 
 QgsPluginRegistry::QgsPluginRegistry()

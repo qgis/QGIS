@@ -225,7 +225,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QSize mIconSize;
 
     // ident the symbol icon to make it look like a tree structure
-    static const int sIndentSize = 20;
+    static const int INDENT_SIZE = 20;
 
     // return a temporary context or null if legendMapViewData are not valid
     QgsRenderContext * createTemporaryRenderContext() const;

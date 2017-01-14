@@ -32,7 +32,7 @@
 
 ///@cond PRIVATE
 
-static const int EffectItemType = QStandardItem::UserType + 1;
+static const int EFFECT_ITEM_TYPE = QStandardItem::UserType + 1;
 
 class EffectItem : public QStandardItem
 {
@@ -50,7 +50,7 @@ class EffectItem : public QStandardItem
       emitDataChanged();
     }
 
-    int type() const override { return EffectItemType; }
+    int type() const override { return EFFECT_ITEM_TYPE; }
 
     QgsPaintEffect* effect()
     {

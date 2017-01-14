@@ -86,7 +86,7 @@ QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant& value, bool& o
 
 QString QgsSQLiteExpressionCompiler::sqlFunctionFromFunctionName( const QString& fnName ) const
 {
-  static const QMap<QString, QString> sFnNames
+  static const QMap<QString, QString> FN_NAMES
   {
     { "abs", "abs" },
     { "char", "char" },
@@ -97,7 +97,7 @@ QString QgsSQLiteExpressionCompiler::sqlFunctionFromFunctionName( const QString&
     { "upper", "upper" },
   };
 
-  return sFnNames.value( fnName, QString() );
+  return FN_NAMES.value( fnName, QString() );
 }
 
 QString QgsSQLiteExpressionCompiler::castToReal( const QString& value ) const

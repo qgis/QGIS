@@ -20,7 +20,7 @@
 #include <QStringList>
 
 //constants
-const QString QgsFeatureRequest::AllAttributes = QStringLiteral( "#!allattributes!#" );
+const QString QgsFeatureRequest::ALL_ATTRIBUTES = QStringLiteral( "#!allattributes!#" );
 
 QgsFeatureRequest::QgsFeatureRequest()
     : mFilter( FilterNone )
@@ -197,7 +197,7 @@ QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QgsAttributeL
 
 QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields )
 {
-  if ( attrNames.contains( QgsFeatureRequest::AllAttributes ) )
+  if ( attrNames.contains( QgsFeatureRequest::ALL_ATTRIBUTES ) )
   {
     //attribute string list contains the all attributes flag, so we must fetch all attributes
     return *this;
@@ -218,7 +218,7 @@ QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QStringList& 
 
 QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QSet<QString>& attrNames, const QgsFields& fields )
 {
-  if ( attrNames.contains( QgsFeatureRequest::AllAttributes ) )
+  if ( attrNames.contains( QgsFeatureRequest::ALL_ATTRIBUTES ) )
   {
     //attribute string list contains the all attributes flag, so we must fetch all attributes
     return *this;

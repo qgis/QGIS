@@ -244,11 +244,11 @@ void QgsSimpleFillSymbolLayer::startRender( QgsSymbolRenderContext& context )
 
   QColor selColor = context.renderContext().selectionColor();
   QColor selPenColor = selColor == mColor ? selColor : mBorderColor;
-  if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
+  if ( ! SELECTION_IS_OPAQUE ) selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
   // N.B. unless a "selection line color" is implemented in addition to the "selection color" option
   // this would mean symbols with "no fill" look the same whether or not they are selected
-  if ( selectFillStyle )
+  if ( SELECT_FILL_STYLE )
     mSelBrush.setStyle( mBrushStyle );
 
   QColor borderColor = mBorderColor;
@@ -844,7 +844,7 @@ void QgsGradientFillSymbolLayer::applyGradient( const QgsSymbolRenderContext &co
 void QgsGradientFillSymbolLayer::startRender( QgsSymbolRenderContext& context )
 {
   QColor selColor = context.renderContext().selectionColor();
-  if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
+  if ( ! SELECTION_IS_OPAQUE ) selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
 }
 
@@ -1143,7 +1143,7 @@ void QgsShapeburstFillSymbolLayer::startRender( QgsSymbolRenderContext& context 
 {
   //TODO - check this
   QColor selColor = context.renderContext().selectionColor();
-  if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
+  if ( ! SELECTION_IS_OPAQUE ) selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
 }
 
@@ -1624,13 +1624,13 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
   _renderPolygon( p, points, rings, context );
   if ( mOutline )
   {
-    mOutline->renderPolyline( points, context.feature(), context.renderContext(), -1, selectFillBorder && context.selected() );
+    mOutline->renderPolyline( points, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
     if ( rings )
     {
       QList<QPolygonF>::const_iterator ringIt = rings->constBegin();
       for ( ; ringIt != rings->constEnd(); ++ringIt )
       {
-        mOutline->renderPolyline( *ringIt, context.feature(), context.renderContext(), -1, selectFillBorder && context.selected() );
+        mOutline->renderPolyline( *ringIt, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
       }
     }
   }

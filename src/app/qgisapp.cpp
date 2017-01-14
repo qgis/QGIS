@@ -501,7 +501,7 @@ void QgisApp::activeLayerChanged( QgsMapLayer* layer )
  */
 void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
 {
-  static QString authid = QString::null;
+  static QString sAuthId = QString::null;
   QSettings mySettings;
   QString myDefaultProjectionOption = mySettings.value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString();
   if ( myDefaultProjectionOption == QLatin1String( "prompt" ) )
@@ -511,10 +511,10 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
 
     QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector();
     mySelector->setMessage( srs.validationHint() ); //shows a generic message, if not specified
-    if ( authid.isNull() )
-      authid = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid();
+    if ( sAuthId.isNull() )
+      sAuthId = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid();
 
-    QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authid );
+    QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( sAuthId );
     if ( defaultCrs.isValid() )
     {
       mySelector->setSelectedCrsId( defaultCrs.srsid() );
@@ -527,7 +527,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
     if ( mySelector->exec() )
     {
       QgsDebugMsg( "Layer srs set from dialog: " + QString::number( mySelector->selectedCrsId() ) );
-      authid = mySelector->selectedAuthId();
+      sAuthId = mySelector->selectedAuthId();
       srs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
     }
 
@@ -539,17 +539,17 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
   else if ( myDefaultProjectionOption == QLatin1String( "useProject" ) )
   {
     // XXX TODO: Change project to store selected CS as 'projectCRS' not 'selectedWkt'
-    authid = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid();
-    srs.createFromOgcWmsCrs( authid );
-    QgsDebugMsg( "Layer srs set from project: " + authid );
-    messageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to project CRS %1 - %2" ).arg( authid, srs.description() ), QgsMessageBar::WARNING, messageTimeout() );
+    sAuthId = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid();
+    srs.createFromOgcWmsCrs( sAuthId );
+    QgsDebugMsg( "Layer srs set from project: " + sAuthId );
+    messageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to project CRS %1 - %2" ).arg( sAuthId, srs.description() ), QgsMessageBar::WARNING, messageTimeout() );
   }
   else ///Projections/defaultBehavior==useGlobal
   {
-    authid = mySettings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
-    srs.createFromOgcWmsCrs( authid );
-    QgsDebugMsg( "Layer srs set from default: " + authid );
-    messageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1 - %2" ).arg( authid, srs.description() ), QgsMessageBar::WARNING, messageTimeout() );
+    sAuthId = mySettings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
+    srs.createFromOgcWmsCrs( sAuthId );
+    QgsDebugMsg( "Layer srs set from default: " + sAuthId );
+    messageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1 - %2" ).arg( sAuthId, srs.description() ), QgsMessageBar::WARNING, messageTimeout() );
   }
 }
 
@@ -559,7 +559,7 @@ static bool cmpByText_( QAction* a, QAction* b )
 }
 
 
-QgisApp *QgisApp::smInstance = nullptr;
+QgisApp *QgisApp::sInstance = nullptr;
 
 // constructor starts here
 QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, QWidget * parent, Qt::WindowFlags fl )
@@ -598,7 +598,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     , mWelcomePage( nullptr )
     , mCentralContainer( nullptr )
 {
-  if ( smInstance )
+  if ( sInstance )
   {
     QMessageBox::critical(
       this,
@@ -607,7 +607,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     abort();
   }
 
-  smInstance = this;
+  sInstance = this;
   QgsRuntimeProfiler* profiler = QgsApplication::profiler();
 
   namSetup();
@@ -1209,7 +1209,7 @@ QgisApp::QgisApp()
     , mCentralContainer( nullptr )
     , mProjOpen( 0 )
 {
-  smInstance = this;
+  sInstance = this;
   setupUi( this );
   mInternalClipboard = new QgsClipboard;
   mMapCanvas = new QgsMapCanvas();
@@ -3467,11 +3467,11 @@ void QgisApp::sponsors()
 
 void QgisApp::about()
 {
-  static QgsAbout *abt = nullptr;
-  if ( !abt )
+  static QgsAbout *sAbt = nullptr;
+  if ( !sAbt )
   {
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    abt = new QgsAbout( this );
+    sAbt = new QgsAbout( this );
     QString versionString = QStringLiteral( "<html><body><div align='center'><table width='100%'>" );
 
     versionString += QLatin1String( "<tr>" );
@@ -3532,13 +3532,13 @@ void QgisApp::about()
 
     versionString += QLatin1String( "</tr></table></div></body></html>" );
 
-    abt->setVersion( versionString );
+    sAbt->setVersion( versionString );
 
     QApplication::restoreOverrideCursor();
   }
-  abt->show();
-  abt->raise();
-  abt->activateWindow();
+  sAbt->show();
+  sAbt->raise();
+  sAbt->activateWindow();
 }
 
 void QgisApp::addLayerDefinition()
@@ -11358,7 +11358,7 @@ QgsPluginLayer* QgisApp::addPluginLayer( const QString& uri, const QString& base
 #ifdef ANDROID
 void QgisApp::keyReleaseEvent( QKeyEvent *event )
 {
-  static bool accepted = true;
+  static bool sAccepted = true;
   if ( event->key() == Qt::Key_Close )
   {
     // do something useful here
@@ -11374,8 +11374,8 @@ void QgisApp::keyReleaseEvent( QKeyEvent *event )
       case QMessageBox::No:
         break;
     }
-    event->setAccepted( accepted ); // don't close my Top Level Widget !
-    accepted = false;// close the app next time when the user press back button
+    event->setAccepted( sAccepted ); // don't close my Top Level Widget !
+    sAccepted = false;// close the app next time when the user press back button
   }
   else
   {
@@ -11520,21 +11520,21 @@ void QgisApp::projectChanged( const QDomDocument &doc )
   if ( !fi.exists() )
     return;
 
-  static QString prevProjectDir = QString::null;
+  static QString sPrevProjectDir = QString::null;
 
-  if ( prevProjectDir == fi.canonicalPath() )
+  if ( sPrevProjectDir == fi.canonicalPath() )
     return;
 
   QString expr;
-  if ( !prevProjectDir.isNull() )
+  if ( !sPrevProjectDir.isNull() )
   {
-    QString prev = prevProjectDir;
+    QString prev = sPrevProjectDir;
     expr = QStringLiteral( "sys.path.remove(u'%1'); " ).arg( prev.replace( '\'', QLatin1String( "\\'" ) ) );
   }
 
-  prevProjectDir = fi.canonicalPath();
+  sPrevProjectDir = fi.canonicalPath();
 
-  QString prev = prevProjectDir;
+  QString prev = sPrevProjectDir;
   expr += QStringLiteral( "sys.path.append(u'%1')" ).arg( prev.replace( '\'', QLatin1String( "\\'" ) ) );
 
   QgsPythonRunner::run( expr );

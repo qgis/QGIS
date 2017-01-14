@@ -23,7 +23,7 @@
  * See details in QEP #17
  ****************************************************************************/
 
-const QMap<QgsWkbTypes::Type, QgsWkbTypes::wkbEntry> QgsWkbTypes::sEntries
+const QMap<QgsWkbTypes::Type, QgsWkbTypes::wkbEntry> QgsWkbTypes::ENTRIES
 {
   //register the known wkb types
   { Unknown, wkbEntry( QStringLiteral( "Unknown" ), false, Unknown, Unknown, Unknown, UnknownGeometry, false, false ) },
@@ -100,8 +100,8 @@ QgsWkbTypes::Type QgsWkbTypes::parseType( const QString &wktStr )
 {
   QString typestr = wktStr.left( wktStr.indexOf( '(' ) ).simplified().remove( ' ' );
 
-  QMap<QgsWkbTypes::Type, QgsWkbTypes::wkbEntry>::const_iterator it = sEntries.constBegin();
-  for ( ; it != sEntries.constEnd(); ++it )
+  QMap<QgsWkbTypes::Type, QgsWkbTypes::wkbEntry>::const_iterator it = ENTRIES.constBegin();
+  for ( ; it != ENTRIES.constEnd(); ++it )
   {
     if ( it.value().mName.compare( typestr, Qt::CaseInsensitive ) == 0 )
     {
@@ -113,8 +113,8 @@ QgsWkbTypes::Type QgsWkbTypes::parseType( const QString &wktStr )
 
 QString QgsWkbTypes::displayString( Type type )
 {
-  QMap< Type, wkbEntry >::const_iterator it = sEntries.constFind( type );
-  if ( it == sEntries.constEnd() )
+  QMap< Type, wkbEntry >::const_iterator it = ENTRIES.constFind( type );
+  if ( it == ENTRIES.constEnd() )
   {
     return QString::null;
   }

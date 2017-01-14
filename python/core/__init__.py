@@ -42,7 +42,7 @@ QgsGeometry.__nonzero__ = _geometryNonZero
 QgsGeometry.__bool__ = _geometryNonZero
 
 
-def register_function(function, arg_count, group, usesgeometry=False, referenced_columns=[QgsFeatureRequest.AllAttributes], **kwargs):
+def register_function(function, arg_count, group, usesgeometry=False, referenced_columns=[QgsFeatureRequest.ALL_ATTRIBUTES], **kwargs):
     """
     Register a Python function to be used as a expression function.
 
@@ -71,7 +71,7 @@ def register_function(function, arg_count, group, usesgeometry=False, referenced
     """
     class QgsExpressionFunction(QgsExpression.Function):
 
-        def __init__(self, func, name, args, group, helptext='', usesGeometry=True, referencedColumns=QgsFeatureRequest.AllAttributes, expandargs=False):
+        def __init__(self, func, name, args, group, helptext='', usesGeometry=True, referencedColumns=QgsFeatureRequest.ALL_ATTRIBUTES, expandargs=False):
             QgsExpression.Function.__init__(self, name, args, group, helptext)
             self.function = func
             self.expandargs = expandargs

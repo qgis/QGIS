@@ -225,7 +225,7 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * A special attribute that if set matches all attributes
      */
-    static const QString AllAttributes;
+    static const QString ALL_ATTRIBUTES;
 
     //! construct a default request: for all features get attributes and geometries
     QgsFeatureRequest();

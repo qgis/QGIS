@@ -26,10 +26,10 @@
 
 QgsMSLayerCache* QgsMSLayerCache::instance()
 {
-  static QgsMSLayerCache *mInstance = 0;
-  if ( !mInstance )
-    mInstance = new QgsMSLayerCache();
-  return mInstance;
+  static QgsMSLayerCache *sInstance = nullptr;
+  if ( !sInstance )
+    sInstance = new QgsMSLayerCache();
+  return sInstance;
 }
 
 QgsMSLayerCache::QgsMSLayerCache()

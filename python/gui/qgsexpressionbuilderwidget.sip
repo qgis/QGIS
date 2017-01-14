@@ -43,9 +43,9 @@ class QgsExpressionItem : QStandardItem
     QgsExpressionItem::ItemType getItemType() const;
 
     //! Custom sort order role
-    static const int CustomSortRole;
+    static const int CUSTOM_SORT_ROLE;
     //! Item type role
-    static const int ItemTypeRole;
+    static const int ITEM_TYPE_ROLE;
 };
 
 /** Search proxy used to filter the QgsExpressionBuilderWidget tree.

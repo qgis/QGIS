@@ -224,13 +224,6 @@ bool QgsComposerModel::setData( const QModelIndex & index, const QVariant & valu
 
 QVariant QgsComposerModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  static QIcon lockIcon;
-  if ( lockIcon.isNull() )
-    lockIcon = QgsApplication::getThemeIcon( QStringLiteral( "/locked.svg" ) );
-  static QIcon showIcon;
-  if ( showIcon.isNull() )
-    showIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) );
-
   switch ( role )
   {
     case Qt::DisplayRole:
@@ -246,11 +239,11 @@ QVariant QgsComposerModel::headerData( int section, Qt::Orientation orientation,
     {
       if ( section == Visibility )
       {
-        return qVariantFromValue( showIcon );
+        return qVariantFromValue( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
       }
       else if ( section == LockStatus )
       {
-        return qVariantFromValue( lockIcon );
+        return qVariantFromValue( QgsApplication::getThemeIcon( QStringLiteral( "/locked.svg" ) ) );
       }
 
       return QVariant();

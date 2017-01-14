@@ -108,7 +108,7 @@ void usage( std::string const & appName )
 static QString myProjectFileName = QLatin1String( "" );
 
 // This is the 'leftover' arguments collection
-static QStringList myFileList;
+static QStringList sFileList;
 
 int main( int argc, char *argv[] )
 {
@@ -277,7 +277,7 @@ int main( int argc, char *argv[] )
       int idx = optind;
       QgsDebugMsg( QString( "%1: %2" ).arg( idx ).arg( argv[idx] ) );
 #endif
-      myFileList.append( QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[optind++] ) ).absoluteFilePath() ) );
+      sFileList.append( QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[optind++] ) ).absoluteFilePath() ) );
     }
   }
 #else
@@ -520,8 +520,8 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
-  QgsDebugMsg( QString( "Number of files in myFileList: %1" ).arg( myFileList.count() ) );
-  for ( QStringList::Iterator myIterator = myFileList.begin(); myIterator != myFileList.end(); ++myIterator )
+  QgsDebugMsg( QString( "Number of files in myFileList: %1" ).arg( sFileList.count() ) );
+  for ( QStringList::Iterator myIterator = sFileList.begin(); myIterator != sFileList.end(); ++myIterator )
   {
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg(( *myIterator ) ) );
     QString myLayerName = *myIterator;

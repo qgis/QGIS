@@ -496,7 +496,7 @@ class QgsZipItem : QgsDataCollectionItem
 
     //! @note not available via python bindings
     // static QVector<dataItem_t *> mDataItemPtr;
-    static QStringList mProviderNames;
+    static QStringList sProviderNames;
 
     static QString vsiPrefix( const QString& uri );
 

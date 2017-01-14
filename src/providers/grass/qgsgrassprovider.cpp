@@ -106,7 +106,7 @@ Vect_delete_line_function_type *Vect_delete_line_function_pointer = ( Vect_delet
 
 static QString GRASS_KEY = QStringLiteral( "grass" );
 
-int QgsGrassProvider::LAST_TYPE = -9999;
+int QgsGrassProvider::sLastType = -9999;
 int QgsGrassProvider::sEditedCount = 0;
 
 QgsGrassProvider::QgsGrassProvider( const QString& uri )
@@ -1211,7 +1211,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
 
   if ( FID_IS_NEW( fid ) )
   {
-    if ( mNewFeatureType == QgsGrassProvider::LAST_TYPE )
+    if ( mNewFeatureType == QgsGrassProvider::sLastType )
     {
       type = mLastType;
       QgsDebugMsg( QString( "use mLastType = %1" ).arg( mLastType ) );

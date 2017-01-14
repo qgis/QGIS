@@ -18,14 +18,14 @@
 #include <QSettings>
 #include <QShortcut>
 
-QgsShortcutsManager* QgsShortcutsManager::mInstance = nullptr;
+QgsShortcutsManager* QgsShortcutsManager::sInstance = nullptr;
 
 
 QgsShortcutsManager* QgsShortcutsManager::instance()
 {
-  if ( !mInstance )
-    mInstance = new QgsShortcutsManager( nullptr );
-  return mInstance;
+  if ( !sInstance )
+    sInstance = new QgsShortcutsManager( nullptr );
+  return sInstance;
 }
 
 QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString& settingsRoot )

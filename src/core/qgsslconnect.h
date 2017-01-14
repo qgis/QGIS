@@ -37,7 +37,7 @@ class CORE_EXPORT QgsSLConnect
 
 #if defined(SPATIALITE_HAS_INIT_EX)
   private:
-    static QHash<sqlite3 *, void *> mSLconns;
+    static QHash<sqlite3 *, void *> sSLconns;
 #endif
 };
 

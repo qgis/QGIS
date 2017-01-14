@@ -163,13 +163,13 @@ class CORE_EXPORT QgsSQLStatement
     };
 
     //! @note not available in Python bindings
-    static const char* BinaryOperatorText[];
+    static const char* BINARY_OPERATOR_TEXT[];
 
     //! @note not available in Python bindings
-    static const char* UnaryOperatorText[];
+    static const char* UNARY_OPERATOR_TEXT[];
 
     //! @note not available in Python bindings
-    static const char* JoinTypeText[];
+    static const char* JOIN_TYPE_TEXT[];
 
     //////
 

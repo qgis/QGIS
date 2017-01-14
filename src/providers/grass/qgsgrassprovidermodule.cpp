@@ -366,7 +366,7 @@ QVector<QgsDataItem*>QgsGrassLocationItem::createChildren()
 
 //----------------------- QgsGrassMapsetItem ------------------------------
 
-QList<QgsGrassImport*> QgsGrassMapsetItem::mImports;
+QList<QgsGrassImport*> QgsGrassMapsetItem::sImports;
 
 QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QString path )
     : QgsDirectoryItem( parent, QLatin1String( "" ), dirPath, path )
@@ -436,7 +436,7 @@ void QgsGrassMapsetItem::setState( State state )
 
 bool QgsGrassMapsetItem::objectInImports( const QgsGrassObject& grassObject )
 {
-  Q_FOREACH ( QgsGrassImport* import, mImports )
+  Q_FOREACH ( QgsGrassImport* import, sImports )
   {
     if ( !import )
     {
@@ -628,7 +628,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
     items.append( layer );
   }
 
-  Q_FOREACH ( QgsGrassImport* import, mImports )
+  Q_FOREACH ( QgsGrassImport* import, sImports )
   {
     if ( mRefreshLater )
     {
@@ -670,7 +670,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
   QStringList existingRasters = QgsGrass::rasters( mGrassObject.mapsetPath() );
   QStringList existingVectors = QgsGrass::vectors( mGrassObject.mapsetPath() );
   // add currently being imported
-  Q_FOREACH ( QgsGrassImport* import, mImports )
+  Q_FOREACH ( QgsGrassImport* import, sImports )
   {
     if ( import && import->grassObject().type() == QgsGrassObject::Raster )
     {
@@ -884,7 +884,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
     }
 
     import->importInThread();
-    mImports.append( import );
+    sImports.append( import );
     if ( u.layerType == QLatin1String( "raster" ) )
     {
       existingRasters.append( import->names() );
@@ -918,7 +918,7 @@ void QgsGrassMapsetItem::onImportFinished( QgsGrassImport* import )
     output->showMessage();
   }
 
-  mImports.removeOne( import );
+  sImports.removeOne( import );
   import->deleteLater();
   refresh();
 }
@@ -1078,15 +1078,9 @@ QgsGrassRasterItem::QgsGrassRasterItem( QgsDataItem* parent, QgsGrassObject gras
 
 QIcon QgsGrassRasterItem::icon()
 {
-  static QIcon linkIcon;
-
   if ( mExternal )
   {
-    if ( linkIcon.isNull() )
-    {
-      linkIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconRasterLink.svg" ) );
-    }
-    return linkIcon;
+    return QgsApplication::getThemeIcon( QStringLiteral( "/mIconRasterLink.svg" ) );
   }
   return QgsDataItem::icon();
 }
@@ -1107,13 +1101,7 @@ QgsGrassGroupItem::QgsGrassGroupItem( QgsDataItem* parent, QgsGrassObject grassO
 
 QIcon QgsGrassGroupItem::icon()
 {
-  static QIcon linkIcon;
-
-  if ( linkIcon.isNull() )
-  {
-    linkIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconRasterGroup.svg" ) );
-  }
-  return linkIcon;
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconRasterGroup.svg" ) );
 }
 
 //----------------------- QgsGrassImportItemWidget ------------------------------
@@ -1153,7 +1141,7 @@ void QgsGrassImportItemWidget::onProgressChanged( const QString &recentHtml, con
 
 //----------------------- QgsGrassImportItem ------------------------------
 
-QgsAnimatedIcon *QgsGrassImportItem::mImportIcon = 0;
+QgsAnimatedIcon *QgsGrassImportItem::sImportIcon = 0;
 
 QgsGrassImportItem::QgsGrassImportItem( QgsDataItem* parent, const QString& name, const QString& path, QgsGrassImport* import )
     : QgsDataItem( QgsDataItem::Layer, parent, name, path )

@@ -57,7 +57,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    static int LAST_TYPE;
+    static int sLastType;
 
     QgsGrassProvider( const QString &uri = QString() );
 

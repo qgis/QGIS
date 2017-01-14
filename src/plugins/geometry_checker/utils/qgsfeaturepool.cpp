@@ -27,7 +27,7 @@
 #include <limits>
 
 QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, bool selectedOnly )
-    : mFeatureCache( sCacheSize )
+    : mFeatureCache( CACHE_SIZE )
     , mLayer( layer )
     , mSelectedOnly( selectedOnly )
 {

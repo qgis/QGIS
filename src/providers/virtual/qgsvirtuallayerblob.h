@@ -44,7 +44,7 @@ struct SpatialiteBlobHeader
 
   SpatialiteBlobHeader();
 
-  static const size_t length = 39;
+  static const size_t LENGTH = 39;
 
   void readFrom( const char* p );
 

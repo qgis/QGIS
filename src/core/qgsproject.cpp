@@ -1801,15 +1801,15 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
 {
   QgsDebugCall;
 
-  static QString prevProjectFilePath;
-  static QDateTime prevProjectFileTimestamp;
-  static QDomDocument projectDocument;
+  static QString sPrevProjectFilePath;
+  static QDateTime sPrevProjectFileTimestamp;
+  static QDomDocument sProjectDocument;
 
   QDateTime projectFileTimestamp = QFileInfo( projectFilePath ).lastModified();
 
-  if ( projectFilePath != prevProjectFilePath || projectFileTimestamp != prevProjectFileTimestamp )
+  if ( projectFilePath != sPrevProjectFilePath || projectFileTimestamp != sPrevProjectFileTimestamp )
   {
-    prevProjectFilePath.clear();
+    sPrevProjectFilePath.clear();
 
     QFile projectFile( projectFilePath );
     if ( !projectFile.open( QIODevice::ReadOnly ) )
@@ -1817,19 +1817,19 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
       return false;
     }
 
-    if ( !projectDocument.setContent( &projectFile ) )
+    if ( !sProjectDocument.setContent( &projectFile ) )
     {
       return false;
     }
 
-    prevProjectFilePath = projectFilePath;
-    prevProjectFileTimestamp = projectFileTimestamp;
+    sPrevProjectFilePath = projectFilePath;
+    sPrevProjectFileTimestamp = projectFileTimestamp;
   }
 
   // does project store pathes absolute or relative?
   bool useAbsolutePathes = true;
 
-  QDomElement propertiesElem = projectDocument.documentElement().firstChildElement( QStringLiteral( "properties" ) );
+  QDomElement propertiesElem = sProjectDocument.documentElement().firstChildElement( QStringLiteral( "properties" ) );
   if ( !propertiesElem.isNull() )
   {
     QDomElement absElem = propertiesElem.firstChildElement( QStringLiteral( "Paths" ) ).firstChildElement( QStringLiteral( "Absolute" ) );
@@ -1839,7 +1839,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
     }
   }
 
-  QDomElement projectLayersElem = projectDocument.documentElement().firstChildElement( QStringLiteral( "projectlayers" ) );
+  QDomElement projectLayersElem = sProjectDocument.documentElement().firstChildElement( QStringLiteral( "projectlayers" ) );
   if ( projectLayersElem.isNull() )
   {
     return false;
@@ -1927,7 +1927,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
         }
 
         dsElem.removeChild( dsElem.childNodes().at( 0 ) );
-        dsElem.appendChild( projectDocument.createTextNode( datasource ) );
+        dsElem.appendChild( sProjectDocument.createTextNode( datasource ) );
       }
 
       if ( addLayer( mapLayerElem, brokenNodes, vectorLayerList ) )

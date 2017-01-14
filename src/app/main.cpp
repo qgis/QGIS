@@ -166,10 +166,10 @@ void usage( const QString& appName )
 // AppleEvent handler as well as by the main routine argv processing
 
 // This behavior will cause QGIS to autoload a project
-static QString myProjectFileName = QLatin1String( "" );
+static QString sProjectFileName = QLatin1String( "" );
 
 // This is the 'leftover' arguments collection
-static QStringList myFileList;
+static QStringList sFileList;
 
 
 /* Test to determine if this program was started on Mac OS X by double-clicking
@@ -207,8 +207,8 @@ static void dumpBacktrace( unsigned int depth )
   // Maybe some problems could be resolved with dup2() and waitpid(), but it seems
   // that if the operations on descriptors are not serialized, things will get nasty.
   // That's why there's this lovely mutex here...
-  static QMutex mutex;
-  QMutexLocker locker( &mutex );
+  static QMutex sMutex;
+  QMutexLocker locker( &sMutex );
 
   int stderr_fd = -1;
   if ( access( "/usr/bin/c++filt", X_OK ) < 0 )
@@ -614,7 +614,7 @@ int main( int argc, char *argv[] )
       }
       else if ( i + 1 < argc && ( arg == QLatin1String( "--project" ) || arg == QLatin1String( "-p" ) ) )
       {
-        myProjectFileName = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        sProjectFileName = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
       }
       else if ( i + 1 < argc && ( arg == QLatin1String( "--extent" ) || arg == QLatin1String( "-e" ) ) )
       {
@@ -732,11 +732,11 @@ int main( int argc, char *argv[] )
       else if ( arg == QLatin1String( "--" ) )
       {
         for ( i++; i < args.size(); ++i )
-          myFileList.append( QDir::toNativeSeparators( QFileInfo( args[i] ).absoluteFilePath() ) );
+          sFileList.append( QDir::toNativeSeparators( QFileInfo( args[i] ).absoluteFilePath() ) );
       }
       else
       {
-        myFileList.append( QDir::toNativeSeparators( QFileInfo( args[i] ).absoluteFilePath() ) );
+        sFileList.append( QDir::toNativeSeparators( QFileInfo( args[i] ).absoluteFilePath() ) );
       }
     }
   }
@@ -747,7 +747,7 @@ int main( int argc, char *argv[] )
   // of a project file by clicking on it in various desktop managers //
   // where an appropriate mime-type has been set up.                 //
   /////////////////////////////////////////////////////////////////////
-  if ( myProjectFileName.isEmpty() )
+  if ( sProjectFileName.isEmpty() )
   {
     // check for a .qgs
     for ( int i = 0; i < args.size(); i++ )
@@ -755,7 +755,7 @@ int main( int argc, char *argv[] )
       QString arg = QDir::toNativeSeparators( QFileInfo( args[i] ).absoluteFilePath() );
       if ( arg.contains( QLatin1String( ".qgs" ) ) )
       {
-        myProjectFileName = arg;
+        sProjectFileName = arg;
         break;
       }
     }
@@ -1083,16 +1083,16 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   // Load a project file if one was specified
   /////////////////////////////////////////////////////////////////////
-  if ( ! myProjectFileName.isEmpty() )
+  if ( ! sProjectFileName.isEmpty() )
   {
-    qgis->openProject( myProjectFileName );
+    qgis->openProject( sProjectFileName );
   }
 
   /////////////////////////////////////////////////////////////////////
   // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
-  QgsDebugMsg( QString( "Number of files in myFileList: %1" ).arg( myFileList.count() ) );
-  for ( QStringList::Iterator myIterator = myFileList.begin(); myIterator != myFileList.end(); ++myIterator )
+  QgsDebugMsg( QString( "Number of files in myFileList: %1" ).arg( sFileList.count() ) );
+  for ( QStringList::Iterator myIterator = sFileList.begin(); myIterator != sFileList.end(); ++myIterator )
   {
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg(( *myIterator ) ) );
     QString myLayerName = *myIterator;

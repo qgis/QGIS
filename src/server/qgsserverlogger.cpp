@@ -24,15 +24,15 @@
 
 #include <cstdlib>
 
-QgsServerLogger* QgsServerLogger::mInstance = nullptr;
+QgsServerLogger* QgsServerLogger::sInstance = nullptr;
 
 QgsServerLogger* QgsServerLogger::instance()
 {
-  if ( !mInstance )
+  if ( !sInstance )
   {
-    mInstance = new QgsServerLogger();
+    sInstance = new QgsServerLogger();
   }
-  return mInstance;
+  return sInstance;
 }
 
 QgsServerLogger::QgsServerLogger()

@@ -33,7 +33,7 @@
 #include <QComboBox>
 #include <QSettings>
 
-QList< QgsStatisticalSummary::Statistic > QgsMergeAttributesDialog::mDisplayStats =
+const QList< QgsStatisticalSummary::Statistic > QgsMergeAttributesDialog::DISPLAY_STATS =
   QList< QgsStatisticalSummary::Statistic > () << QgsStatisticalSummary::Count
   << QgsStatisticalSummary::Sum
   << QgsStatisticalSummary::Mean
@@ -192,7 +192,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
     case QVariant::Int:
     case QVariant::LongLong:
     {
-      Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
+      Q_FOREACH ( QgsStatisticalSummary::Statistic stat, DISPLAY_STATS )
       {
         newComboBox->addItem( QgsStatisticalSummary::displayName( stat ) , stat );
       }

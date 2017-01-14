@@ -44,7 +44,7 @@ class CORE_EXPORT QgsValueMapFieldFormatter : public QgsFieldFormatter
      * Will be saved in the configuration when a value is NULL.
      * It's the magic UUID {2839923C-8B7D-419E-B84B-CA2FE9B80EC7}
      */
-    static const QString NullValue;
+    static const QString NULL_VALUE;
 
     virtual QString id() const override;
 

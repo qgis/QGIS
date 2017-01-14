@@ -176,8 +176,8 @@ void QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, QgsString
 
 ///////////
 
-const int QgsRendererRangeLabelFormat::MaxPrecision = 15;
-const int QgsRendererRangeLabelFormat::MinPrecision = -6;
+const int QgsRendererRangeLabelFormat::MAX_PRECISION = 15;
+const int QgsRendererRangeLabelFormat::MIN_PRECISION = -6;
 
 QgsRendererRangeLabelFormat::QgsRendererRangeLabelFormat()
     : mFormat( QStringLiteral( " %1 - %2 " ) )
@@ -216,7 +216,7 @@ bool QgsRendererRangeLabelFormat::operator!=( const QgsRendererRangeLabelFormat 
 void QgsRendererRangeLabelFormat::setPrecision( int precision )
 {
   // Limit the range of decimal places to a reasonable range
-  precision = qBound( MinPrecision, precision, MaxPrecision );
+  precision = qBound( MIN_PRECISION, precision, MAX_PRECISION );
   mPrecision = precision;
   mNumberScale = 1.0;
   mNumberSuffix = QLatin1String( "" );

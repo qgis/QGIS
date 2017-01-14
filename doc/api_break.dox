@@ -475,6 +475,11 @@ QgsColorBrewerColorRampDialog        {#qgis_api_break_3_0_QgsColorBrewerColorRam
 and the new ramp can be retrieved after executing the dialog by calling ramp().
 - Some internal methods which were previously public or protected were made private.
 
+QgsColorBrewerPalette        {#qgis_api_break_3_0_QgsColorBrewerPalette}
+---------------------
+
+- brewerString was renamed to BREWER_STRING
+
 QgsColorButton     {#qgis_api_break_3_0_QgsColorButton}
 --------------
 
@@ -902,6 +907,11 @@ QgsExpression::Function       {#qgis_api_break_3_0_QgsExpression_Function}
 - `QStringList QgsExpression::Function::referencedColumns()` has been changed to `QSet<QString> QgsExpression::Function::referencedColumns( const NodeFunction* node )`
 - `QgsExpression::Function::helptext()` has been renamed to `helpText()`
 
+QgsExpressionItem        {#qgis_api_break_3_0_QgsExpressionItem}
+-----------------
+
+- CustomSortRole was renamed to CUSTOM_SORT_ROLE
+- ItemTypeRole was renamed to ITEM_TYPE_ROLE
 
 QgsExpressionContextUtils       {#qgis_api_break_3_0_QgsExpressionContextUtils}
 -------------------------
@@ -924,6 +934,11 @@ None will need to be modified, as the method will return an empty geometry if th
 - fields() no longer returns a pointer, but instead a QgsFields value.
 - The duplicate method setFeatureId() was removed. Use setId() instead.
 
+QgsFeatureListViewDelegate        {#qgis_api_break_3_0_QgsFeatureListViewDelegate}
+--------------------------
+
+- sIconSize was rename to ICON_SIZE
+
 
 QgsFeatureRendererV2        {#qgis_api_break_3_0_QgsFeatureRendererV2}
 --------------------
@@ -940,6 +955,10 @@ QgsFeatureRendererV2        {#qgis_api_break_3_0_QgsFeatureRendererV2}
 - originalSymbolsForFeature( QgsFeature& feat ) has been removed. The originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) method should be used instead (previously available as originalSymbolsForFeature2 in PyQGIS bindings).
 - copyPaintEffect() was removed. copyRendererData() should be used instead.
 
+QgsFeatureRequest        {#qgis_api_break_3_0_QgsFeatureRequest}
+-----------------
+
+- AllAttributes was renamed to ALL_ATTRIBUTES
 
 QgsFieldCombobox        {#qgis_api_break_3_0_QgsFieldCombobox}
 ----------------
@@ -1512,6 +1531,12 @@ QgsRenderContext        {#qgis_api_break_3_0_QgsRenderContext}
 be returned instead of a null pointer if no transformation is required.
 - setCoordinateTransform() now takes a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should be used instead of a null pointer if no transformation is required.
 
+QgsRendererRangeLabelFormat        {#qgis_api_break_3_0_QgsRendererRangeLabelFormat}
+---------------------------
+
+- MaxPrecision was renamed to MAX_PRECISION
+- MinPrecision was renamed to MIN_PRECISION
+
 
 QgsRendererRegistry        {#qgis_api_break_3_0_QgsRendererRegistry}
 ----------------------
@@ -1829,6 +1854,11 @@ QgsWMSLegendNode        {#qgis_api_break_3_0_QgsWMSLegendNode}
 ----------------
 
 - QgsWMSLegendNode has been renamed to QgsWmsLegendNode
+
+QgsZipItem        {#qgis_api_break_3_0_QgsZipItem}
+----------
+
+- mProviderNames was rename to sProviderNames
 
 
 QgsRenderer        {#qgis_api_break_3_0_QgsRenderer}

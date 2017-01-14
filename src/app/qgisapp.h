@@ -252,7 +252,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Returns a pointer to the internal clipboard
     QgsClipboard *clipboard();
 
-    static QgisApp *instance() { return smInstance; }
+    static QgisApp *instance() { return sInstance; }
 
     //! initialize network manager
     void namSetup();
@@ -1786,7 +1786,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsPythonUtils *mPythonUtils;
 
-    static QgisApp *smInstance;
+    static QgisApp *sInstance;
 
     QgsUndoWidget *mUndoWidget;
     QgsDockWidget *mUndoDock;

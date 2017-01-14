@@ -89,7 +89,7 @@ class CORE_EXPORT QgsCredentials
     QMap< QString, QPair<QString, QString> > mCredentialCache;
 
     //! Pointer to the credential instance
-    static QgsCredentials *smInstance;
+    static QgsCredentials *sInstance;
 
     QMutex mMutex;
 };

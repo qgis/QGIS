@@ -56,7 +56,7 @@ class QgsAuthPkiPathsMethod : public QgsAuthMethod
 
     void removePkiConfigBundle( const QString &authcfg );
 
-    static QMap<QString, QgsPkiConfigBundle *> mPkiConfigBundleCache;
+    static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
 };
 
 #endif // QGSAUTHPKIPATHSMETHOD_H

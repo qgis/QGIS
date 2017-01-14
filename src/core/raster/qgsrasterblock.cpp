@@ -25,7 +25,7 @@
 #include "qgsrectangle.h"
 
 // See #9101 before any change of NODATA_COLOR!
-const QRgb QgsRasterBlock::mNoDataColor = qRgba( 0, 0, 0, 0 );
+const QRgb QgsRasterBlock::NO_DATA_COLOR = qRgba( 0, 0, 0, 0 );
 
 QgsRasterBlock::QgsRasterBlock()
     : mValid( true )
@@ -305,7 +305,7 @@ QRgb QgsRasterBlock::color( qgssize index ) const
 
 QRgb QgsRasterBlock::color( int row, int column ) const
 {
-  if ( !mImage ) return mNoDataColor;
+  if ( !mImage ) return NO_DATA_COLOR;
 
   return mImage->pixel( column, row );
 }
@@ -470,7 +470,7 @@ bool QgsRasterBlock::setIsNoData()
       return false;
     }
     QgsDebugMsgLevel( "Fill image", 4 );
-    mImage->fill( mNoDataColor );
+    mImage->fill( NO_DATA_COLOR );
     return true;
   }
 }
@@ -601,7 +601,7 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect theExceptRect )
       return false;
     }
 
-    QRgb nodataRgba = mNoDataColor;
+    QRgb nodataRgba = NO_DATA_COLOR;
     QRgb *nodataRow = new QRgb[mWidth]; // full row of no data
     int rgbSize = sizeof( QRgb );
     for ( int c = 0; c < mWidth; c ++ )

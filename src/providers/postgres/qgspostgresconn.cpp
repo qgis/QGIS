@@ -139,7 +139,7 @@ Oid QgsPostgresResult::PQoidValue()
 
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRO;
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRW;
-const int QgsPostgresConn::sGeomTypeSelectLimit = 100;
+const int QgsPostgresConn::GEOM_TYPE_SELECT_LIMIT = 100;
 
 QgsPostgresConn *QgsPostgresConn::connectDb( const QString& conninfo, bool readonly, bool shared, bool transaction )
 {
@@ -1419,7 +1419,7 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
               .arg( quotedIdentifier( layerProperty.geometryColName ),
                     table,
                     layerProperty.sql.isEmpty() ? QLatin1String( "" ) : QStringLiteral( " WHERE %1" ).arg( layerProperty.sql ) )
-              .arg( sGeomTypeSelectLimit );
+              .arg( GEOM_TYPE_SELECT_LIMIT );
     }
     else if ( !layerProperty.sql.isEmpty() )
     {

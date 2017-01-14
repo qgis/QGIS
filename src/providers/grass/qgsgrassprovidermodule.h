@@ -111,7 +111,7 @@ class QgsGrassMapsetItem : public QgsDirectoryItem, public QgsGrassObjectItemBas
     QFileSystemWatcher *mMapsetFileSystemWatcher;
     bool mRefreshLater;
     // running imports
-    static QList<QgsGrassImport*> mImports;
+    static QList<QgsGrassImport*> sImports;
 };
 
 class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
@@ -234,7 +234,7 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
     QgsGrassImport* mImport;
 
   private:
-    static QgsAnimatedIcon *mImportIcon;
+    static QgsAnimatedIcon *sImportIcon;
 };
 
 #endif // QGSGRASSPROVIDERMODULE_H

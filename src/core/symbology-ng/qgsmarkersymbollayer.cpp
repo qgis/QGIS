@@ -874,7 +874,7 @@ bool QgsSimpleMarkerSymbolLayer::prepareCache( QgsSymbolRenderContext& context )
   int imageSize = ( static_cast< int >( scaledSize ) + pw ) / 2 * 2 + 1; //  make image width, height odd; account for pen width
   double center = imageSize / 2.0;
 
-  if ( imageSize > mMaximumCacheWidth )
+  if ( imageSize > MAXIMUM_CACHE_WIDTH )
   {
     return false;
   }

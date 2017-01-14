@@ -362,7 +362,7 @@ void QgsExpressionBuilderWidget::registerItem( const QString& group,
 {
   QgsExpressionItem* item = new QgsExpressionItem( label, expressionText, helpText, type );
   item->setData( label, Qt::UserRole );
-  item->setData( sortOrder, QgsExpressionItem::CustomSortRole );
+  item->setData( sortOrder, QgsExpressionItem::CUSTOM_SORT_ROLE );
 
   // Look up the group and insert the new function.
   if ( mExpressionGroups.contains( group ) )
@@ -376,7 +376,7 @@ void QgsExpressionBuilderWidget::registerItem( const QString& group,
     QgsExpressionItem *newgroupNode = new QgsExpressionItem( QgsExpression::group( group ), QLatin1String( "" ), QgsExpressionItem::Header );
     newgroupNode->setData( group, Qt::UserRole );
     //Recent group should always be last group
-    newgroupNode->setData( group.startsWith( QLatin1String( "Recent (" ) ) ? 2 : 1, QgsExpressionItem::CustomSortRole );
+    newgroupNode->setData( group.startsWith( QLatin1String( "Recent (" ) ) ? 2 : 1, QgsExpressionItem::CUSTOM_SORT_ROLE );
     newgroupNode->appendRow( item );
     newgroupNode->setBackground( QBrush( QColor( "#eee" ) ) );
     mModel->appendRow( newgroupNode );
@@ -388,7 +388,7 @@ void QgsExpressionBuilderWidget::registerItem( const QString& group,
     //insert a copy as a top level item
     QgsExpressionItem* topLevelItem = new QgsExpressionItem( label, expressionText, helpText, type );
     topLevelItem->setData( label, Qt::UserRole );
-    item->setData( 0, QgsExpressionItem::CustomSortRole );
+    item->setData( 0, QgsExpressionItem::CUSTOM_SORT_ROLE );
     QFont font = topLevelItem->font();
     font.setBold( true );
     topLevelItem->setFont( font );
@@ -795,7 +795,7 @@ QgsExpressionItemSearchProxy::QgsExpressionItemSearchProxy()
 bool QgsExpressionItemSearchProxy::filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const
 {
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
-  QgsExpressionItem::ItemType itemType = QgsExpressionItem::ItemType( sourceModel()->data( index, QgsExpressionItem::ItemTypeRole ).toInt() );
+  QgsExpressionItem::ItemType itemType = QgsExpressionItem::ItemType( sourceModel()->data( index, QgsExpressionItem::ITEM_TYPE_ROLE ).toInt() );
 
   int count = sourceModel()->rowCount( index );
   bool matchchild = false;
@@ -819,8 +819,8 @@ bool QgsExpressionItemSearchProxy::filterAcceptsRow( int source_row, const QMode
 
 bool QgsExpressionItemSearchProxy::lessThan( const QModelIndex& left, const QModelIndex& right ) const
 {
-  int leftSort = sourceModel()->data( left, QgsExpressionItem::CustomSortRole ).toInt();
-  int rightSort = sourceModel()->data( right,  QgsExpressionItem::CustomSortRole ).toInt();
+  int leftSort = sourceModel()->data( left, QgsExpressionItem::CUSTOM_SORT_ROLE ).toInt();
+  int rightSort = sourceModel()->data( right,  QgsExpressionItem::CUSTOM_SORT_ROLE ).toInt();
   if ( leftSort != rightSort )
     return leftSort < rightSort;
 

@@ -30,9 +30,9 @@
 class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
 {
   public:
-    static const QString DefaultDateFormat;
-    static const QString DefaultTimeFormat;
-    static const QString DefaultDateTimeFormat;
+    static const QString DEFAULT_DATE_FORMAT;
+    static const QString DEFAULT_TIME_FORMAT;
+    static const QString DEFAULT_DATETIME_FORMAT;
 
     virtual QString id() const override;
 

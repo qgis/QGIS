@@ -275,10 +275,6 @@ void QgsWCSRootItem::newConnection()
 
 // ---------------------------------------------------------------------------
 
-static QString filterString;
-static QStringList extensions = QStringList();
-static QStringList wildcards = QStringList();
-
 QGISEXTERN int dataCapabilities()
 {
   return  QgsDataProvider::Net;
