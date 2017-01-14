@@ -1874,7 +1874,7 @@ void QgsProjectProperties::populateEllipsoidList()
   mEllipsoidList.append( myItem );
 
   myItem.acronym = QStringLiteral( "PARAMETER:6370997:6370997" );
-  myItem.description = tr( "Parameters:" );
+  myItem.description = tr( "Custom" );
   myItem.semiMajor = 6370997.0;
   myItem.semiMinor = 6370997.0;
   mEllipsoidList.append( myItem );
@@ -1977,8 +1977,8 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
   }
   else
   {
-    leSemiMajor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
-    leSemiMinor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
+    leSemiMajor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Custom" ) ) );
+    leSemiMinor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Custom" ) ) );
   }
   if ( mEllipsoidList[ mEllipsoidIndex ].acronym != GEO_NONE )
   {
