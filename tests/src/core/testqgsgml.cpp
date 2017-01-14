@@ -76,6 +76,7 @@ class TestQgsGML : public QObject
     void testPartialFeature();
     void testThroughOGRGeometry();
     void testThroughOGRGeometry_urn_EPSG_4326();
+    void testAccents();
 };
 
 const QString data1( "<myns:FeatureCollection "
@@ -1100,6 +1101,54 @@ void TestQgsGML::testThroughOGRGeometry_urn_EPSG_4326()
   QCOMPARE( multi[0][0].size(), 4 );
   QgsDebugMsg( multi[0][0][0].toString() );
   QCOMPARE( multi[0][0][0], QgsPoint( 2, 49 ) );
+  delete features[0].first;
+}
+
+void TestQgsGML::testAccents()
+{
+  QgsFields fields;
+  QgsGmlStreamingParser gmlParser( QString::fromUtf8( QByteArray( "my\xc3\xa9typename" ) ),
+                                   QString::fromUtf8( QByteArray( "my\xc3\xa9geom" ) ),
+                                   fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                   "xmlns:myns='http://myns' "
+                                   "xmlns:gml='http://www.opengis.net/gml'>"
+                                   "<gml:featureMember>"
+                                   "<myns:my\xc3\xa9typename fid='mytypename.1'>"
+                                   "<myns:my\xc3\xa9geom>"
+                                   "<gml:MultiSurface srsName='EPSG:27700'>"
+                                   "<gml:surfaceMember>"
+                                   "<gml:Polygon srsName='EPSG:27700'>"
+                                   "<gml:exterior>"
+                                   "<gml:LinearRing>"
+                                   "<gml:posList>0 0 0 10 10 10 10 0 0 0</gml:posList>"
+                                   "</gml:LinearRing>"
+                                   "</gml:exterior>"
+                                   "</gml:Polygon>"
+                                   "</gml:surfaceMember>"
+                                   "<gml:surfaceMember>"
+                                   "<gml:Polygon srsName='EPSG:27700'>"
+                                   "<gml:exterior>"
+                                   "<gml:LinearRing>"
+                                   "<gml:posList>0 0 0 10 10 10 10 0 0 0</gml:posList>"
+                                   "</gml:LinearRing>"
+                                   "</gml:exterior>"
+                                   "</gml:Polygon>"
+                                   "</gml:surfaceMember>"
+                                   "</gml:MultiSurface>"
+                                   "</myns:my\xc3\xa9geom>"
+                                   "</myns:my\xc3\xa9typename>"
+                                   "</gml:featureMember>"
+                                   "</myns:FeatureCollection>" ), true ), true );
+  QCOMPARE( gmlParser.wkbType(), QgsWkbTypes::MultiPolygon );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  QVERIFY( features[0].first->hasGeometry() );
+  QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
+  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QCOMPARE( multi.size(), 2 );
+  QCOMPARE( multi[0].size(), 1 );
+  QCOMPARE( multi[0][0].size(), 5 );
   delete features[0].first;
 }
 
