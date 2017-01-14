@@ -464,7 +464,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
           }
           if ( xyDms )
           {
-            ok = QgsDelimitedTextProvider::CrdDmsRegexp.indexIn( value ) == 0;
+            ok = QgsDelimitedTextProvider::sCrdDmsRegexp.indexIn( value ) == 0;
           }
           else
           {
@@ -474,7 +474,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
         }
         if ( isValidWkt[i] )
         {
-          value.remove( QgsDelimitedTextProvider::WktPrefixRegexp );
+          value.remove( QgsDelimitedTextProvider::sWktPrefixRegexp );
           isValidWkt[i] = value.contains( wktre );
         }
       }

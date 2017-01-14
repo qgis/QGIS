@@ -594,7 +594,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     //! List of errors
     mutable QStringList mErrors;
 
-    static QStringList smEncodings;
+    static QStringList sEncodings;
 
     /**
      * Includes this data provider in the specified transaction. Ownership of transaction is not transferred.

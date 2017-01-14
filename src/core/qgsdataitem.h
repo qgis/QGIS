@@ -311,7 +311,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     bool mDeferredDelete;
     QFutureWatcher< QVector <QgsDataItem*> > *mFutureWatcher;
     // number of items currently in loading (populating) state
-    static QgsAnimatedIcon * mPopulatingIcon;
+    static QgsAnimatedIcon * sPopulatingIcon;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataItem::Capabilities )
@@ -575,8 +575,8 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     QStringList getZipFileList();
 
     //! @note not available via python bindings
-    static QVector<dataItem_t *> mDataItemPtr;
-    static QStringList mProviderNames;
+    static QVector<dataItem_t *> sDataItemPtr;
+    static QStringList sProviderNames;
 
     static QString vsiPrefix( const QString& uri ) { return qgsVsiPrefix( uri ); }
 

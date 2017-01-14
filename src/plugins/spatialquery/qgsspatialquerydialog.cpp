@@ -658,11 +658,11 @@ void QgsSpatialQueryDialog::changeLwFeature( QgsVectorLayer* lyr, QgsFeatureId f
 
 void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 {
-  static QgsVectorLayer* lyrCheck = nullptr;
+  static QgsVectorLayer* sLyrCheck = nullptr;
   static bool sHasMsg = false;
-  if ( ! lyrCheck || lyrCheck != lyr )
+  if ( ! sLyrCheck || sLyrCheck != lyr )
   {
-    lyrCheck = lyr;
+    sLyrCheck = lyr;
     sHasMsg = true;
   }
   else

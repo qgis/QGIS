@@ -230,7 +230,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     ActionsHash mActions;
     ShortcutsHash mShortcuts;
     QString mSettingsPath;
-    static QgsShortcutsManager* mInstance;
+    static QgsShortcutsManager* sInstance;
 };
 
 #endif // QGSSHORTCUTSMANAGER_H

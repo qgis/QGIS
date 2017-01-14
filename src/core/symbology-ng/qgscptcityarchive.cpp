@@ -39,10 +39,10 @@
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
 
-QString QgsCptCityArchive::mDefaultArchiveName;
-QMap< QString, QgsCptCityArchive* > QgsCptCityArchive::mArchiveRegistry;
-QMap< QString, QgsCptCityArchive* > QgsCptCityArchive::archiveRegistry() { return mArchiveRegistry; }
-QMap< QString, QMap< QString, QString > > QgsCptCityArchive::mCopyingInfoMap;
+QString QgsCptCityArchive::sDefaultArchiveName;
+QMap< QString, QgsCptCityArchive* > QgsCptCityArchive::sArchiveRegistry;
+QMap< QString, QgsCptCityArchive* > QgsCptCityArchive::archiveRegistry() { return sArchiveRegistry; }
+QMap< QString, QMap< QString, QString > > QgsCptCityArchive::sCopyingInfoMap;
 
 QgsCptCityArchive::QgsCptCityArchive( const QString& archiveName, const QString& baseDir )
     : mArchiveName( archiveName )
@@ -115,7 +115,7 @@ QString QgsCptCityArchive::baseDir( QString archiveName )
   // search for matching archive in the registry
   if ( archiveName.isNull() )
     archiveName = DEFAULT_CPTCITY_ARCHIVE;
-  if ( QgsCptCityArchive* archive = mArchiveRegistry.value( archiveName, nullptr ) )
+  if ( QgsCptCityArchive* archive = sArchiveRegistry.value( archiveName, nullptr ) )
     return archive->baseDir();
   else
     return defaultBaseDir();
@@ -176,10 +176,10 @@ QgsStringMap QgsCptCityArchive::copyingInfo( const QString& fileName )
   if ( fileName.isNull() )
     return copyingMap;
 
-  if ( QgsCptCityArchive::mCopyingInfoMap.contains( fileName ) )
+  if ( QgsCptCityArchive::sCopyingInfoMap.contains( fileName ) )
   {
     QgsDebugMsg( "found copying info in copyingInfoMap, file = " + fileName );
-    return QgsCptCityArchive::mCopyingInfoMap.value( fileName );
+    return QgsCptCityArchive::sCopyingInfoMap.value( fileName );
   }
 
   QgsDebugMsg( "fileName = " + fileName );
@@ -266,7 +266,7 @@ QgsStringMap QgsCptCityArchive::copyingInfo( const QString& fileName )
   }
 
   // save copyingMap for further access
-  QgsCptCityArchive::mCopyingInfoMap[ fileName ] = copyingMap;
+  QgsCptCityArchive::sCopyingInfoMap[ fileName ] = copyingMap;
   return copyingMap;
 }
 
@@ -416,9 +416,9 @@ bool QgsCptCityArchive::isEmpty()
 QgsCptCityArchive* QgsCptCityArchive::defaultArchive()
 {
   QSettings settings;
-  mDefaultArchiveName = settings.value( QStringLiteral( "CptCity/archiveName" ), DEFAULT_CPTCITY_ARCHIVE ).toString();
-  if ( QgsCptCityArchive::mArchiveRegistry.contains( mDefaultArchiveName ) )
-    return QgsCptCityArchive::mArchiveRegistry.value( mDefaultArchiveName );
+  sDefaultArchiveName = settings.value( QStringLiteral( "CptCity/archiveName" ), DEFAULT_CPTCITY_ARCHIVE ).toString();
+  if ( QgsCptCityArchive::sArchiveRegistry.contains( sDefaultArchiveName ) )
+    return QgsCptCityArchive::sArchiveRegistry.value( sDefaultArchiveName );
   else
     return nullptr;
 }
@@ -427,9 +427,9 @@ void QgsCptCityArchive::initArchive( const QString& archiveName, const QString& 
 {
   QgsDebugMsg( "archiveName = " + archiveName + " archiveBaseDir = " + archiveBaseDir );
   QgsCptCityArchive *archive = new QgsCptCityArchive( archiveName, archiveBaseDir );
-  if ( mArchiveRegistry.contains( archiveName ) )
-    delete mArchiveRegistry[ archiveName ];
-  mArchiveRegistry[ archiveName ] = archive;
+  if ( sArchiveRegistry.contains( archiveName ) )
+    delete sArchiveRegistry[ archiveName ];
+  sArchiveRegistry[ archiveName ] = archive;
 }
 
 void QgsCptCityArchive::initDefaultArchive()
@@ -441,7 +441,7 @@ void QgsCptCityArchive::initDefaultArchive()
   // sub-dir defaults to
   QString defArchiveName = settings.value( QStringLiteral( "CptCity/archiveName" ), DEFAULT_CPTCITY_ARCHIVE ).toString();
 
-  if ( ! mArchiveRegistry.contains( defArchiveName ) )
+  if ( ! sArchiveRegistry.contains( defArchiveName ) )
     initArchive( defArchiveName, baseDir + '/' + defArchiveName );
 }
 
@@ -482,13 +482,13 @@ void QgsCptCityArchive::initArchives( bool loadAll )
       QgsDebugMsg( QString( "not loading archive [%1] because dir %2 does not exist " ).arg( it.key(), it.value() ) );
     }
   }
-  mDefaultArchiveName = defArchiveName;
+  sDefaultArchiveName = defArchiveName;
 }
 
 void QgsCptCityArchive::clearArchives()
 {
-  qDeleteAll( mArchiveRegistry );
-  mArchiveRegistry.clear();
+  qDeleteAll( sArchiveRegistry );
+  sArchiveRegistry.clear();
 }
 
 

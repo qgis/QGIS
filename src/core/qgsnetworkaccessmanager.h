@@ -101,7 +101,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QStringList mExcludedURLs;
     bool mUseSystemProxy;
     bool mInitialized;
-    static QgsNetworkAccessManager *smMainNAM;
+    static QgsNetworkAccessManager *sMainNAM;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H

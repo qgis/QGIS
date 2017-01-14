@@ -23,8 +23,8 @@
 const int RULER_FONT_SIZE = 8;
 const unsigned int COUNT_VALID_MULTIPLES = 3;
 const unsigned int COUNT_VALID_MAGNITUDES = 5;
-const int QgsComposerRuler::validScaleMultiples[] = {1, 2, 5};
-const int QgsComposerRuler::validScaleMagnitudes[] = {1, 10, 100, 1000, 10000};
+const int QgsComposerRuler::VALID_SCALE_MULTIPLES[] = {1, 2, 5};
+const int QgsComposerRuler::VALID_SCALE_MAGNITUDES[] = {1, 10, 100, 1000, 10000};
 
 QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d )
     : QWidget( nullptr )
@@ -312,14 +312,14 @@ int QgsComposerRuler::optimumScale( double minPixelDiff, int &magnitude, int &mu
   {
     for ( unsigned int multipleCandidate = 0; multipleCandidate < COUNT_VALID_MULTIPLES; ++multipleCandidate )
     {
-      int candidateScale = validScaleMultiples[multipleCandidate] * validScaleMagnitudes[magnitudeCandidate];
+      int candidateScale = VALID_SCALE_MULTIPLES[multipleCandidate] * VALID_SCALE_MAGNITUDES[magnitudeCandidate];
       //find pixel size for each step using this candidate scale
       double pixelDiff = mTransform.map( QPointF( candidateScale, 0 ) ).x() - mTransform.map( QPointF( 0, 0 ) ).x();
       if ( pixelDiff > minPixelDiff )
       {
         //found the optimum major scale
-        magnitude = validScaleMagnitudes[magnitudeCandidate];
-        multiple = validScaleMultiples[multipleCandidate];
+        magnitude = VALID_SCALE_MAGNITUDES[magnitudeCandidate];
+        multiple = VALID_SCALE_MULTIPLES[multipleCandidate];
         return candidateScale;
       }
     }

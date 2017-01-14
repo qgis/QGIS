@@ -172,8 +172,8 @@ class QgsWmsModule: public QgsServiceModule
 // Entry points
 QGISEXTERN QgsServiceModule* QGS_ServiceModule_Init()
 {
-  static QgsWmsModule module;
-  return &module;
+  static QgsWmsModule sModule;
+  return &sModule;
 }
 QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule* )
 {

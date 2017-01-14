@@ -80,13 +80,13 @@ class CORE_EXPORT QgsCptCityArchive
 
     QString mArchiveName;
     QString mBaseDir;
-    static QString mDefaultArchiveName;
-    static QMap< QString, QgsCptCityArchive* > mArchiveRegistry;
+    static QString sDefaultArchiveName;
+    static QMap< QString, QgsCptCityArchive* > sArchiveRegistry;
     // root items, namely directories at root of archive
     QVector< QgsCptCityDataItem* > mRootItems;
     QVector<QgsCptCityDataItem*> mSelectionItems;
     // mapping of copyinginfo, key is fileName
-    static QMap< QString, QMap< QString, QString > > mCopyingInfoMap;
+    static QMap< QString, QMap< QString, QString > > sCopyingInfoMap;
 
 };
 

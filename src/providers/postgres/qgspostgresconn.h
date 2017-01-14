@@ -310,7 +310,7 @@ class QgsPostgresConn : public QObject
 
     QString connInfo() const { return mConnInfo; }
 
-    static const int sGeomTypeSelectLimit;
+    static const int GEOM_TYPE_SELECT_LIMIT;
 
     static QString displayStringForWkbType( QgsWkbTypes::Type wkbType );
     static QString displayStringForGeomType( QgsPostgresGeometryColumnType geomType );

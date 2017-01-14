@@ -26,8 +26,8 @@ QgsGeometryCheckPrecision::QgsGeometryCheckPrecision()
 
 QgsGeometryCheckPrecision* QgsGeometryCheckPrecision::get()
 {
-  static QgsGeometryCheckPrecision instance;
-  return &instance;
+  static QgsGeometryCheckPrecision sInstance;
+  return &sInstance;
 }
 
 void QgsGeometryCheckPrecision::setPrecision( int tolerance )

@@ -534,7 +534,7 @@ void QgsGrassPlugin::onSplitFeaturesTriggered( bool checked )
       QgsDebugMsg( "grassProvider is null" );
       return;
     }
-    grassProvider->setNewFeatureType( QgsGrassProvider::LAST_TYPE );
+    grassProvider->setNewFeatureType( QgsGrassProvider::sLastType );
   }
 }
 

@@ -46,7 +46,7 @@
 
 /// @cond PRIVATE
 
-static const int SymbolLayerItemType = QStandardItem::UserType + 1;
+static const int SYMBOL_LAYER_ITEM_TYPE = QStandardItem::UserType + 1;
 
 DataDefinedRestorer::DataDefinedRestorer( QgsSymbol* symbol, const QgsSymbolLayer* symbolLayer )
     : mMarker( nullptr )
@@ -156,7 +156,7 @@ class SymbolLayerItem : public QStandardItem
         static_cast<SymbolLayerItem*>( parent() )->updatePreview();
     }
 
-    int type() const override { return SymbolLayerItemType; }
+    int type() const override { return SYMBOL_LAYER_ITEM_TYPE; }
     bool isLayer() { return mIsLayer; }
 
     // returns the symbol pointer; helpful in determining a layer's parent symbol

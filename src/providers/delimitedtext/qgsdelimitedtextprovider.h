@@ -65,8 +65,8 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * Regular expression defining possible prefixes to WKT string,
      * (EWKT srid, Informix SRID)
      */
-    static QRegExp WktPrefixRegexp;
-    static QRegExp CrdDmsRegexp;
+    static QRegExp sWktPrefixRegexp;
+    static QRegExp sCrdDmsRegexp;
 
     enum GeomRepresentationType
     {

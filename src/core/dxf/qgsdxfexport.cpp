@@ -316,7 +316,7 @@ int QgsDxfExport::sDxfColors[][3] =
   { 255, 255, 255 },
 };
 
-const char *QgsDxfExport::sDxfEncodings[][2] =
+const char *QgsDxfExport::DXF_ENCODINGS[][2] =
 {
   { "ASCII", "" },
   { "8859_1", "ISO-8859-1" },
@@ -4211,13 +4211,13 @@ QString QgsDxfExport::dxfEncoding( const QString &name )
       continue;
 
     int i;
-    for ( i = 0; i < static_cast< int >( sizeof( sDxfEncodings ) / sizeof( *sDxfEncodings ) ) && name != sDxfEncodings[i][1]; ++i )
+    for ( i = 0; i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) && name != DXF_ENCODINGS[i][1]; ++i )
       ;
 
-    if ( i == static_cast< int >( sizeof( sDxfEncodings ) / sizeof( *sDxfEncodings ) ) )
+    if ( i == static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) )
       continue;
 
-    return sDxfEncodings[i][0];
+    return DXF_ENCODINGS[i][0];
   }
 
   return QString::null;
@@ -4229,10 +4229,10 @@ QStringList QgsDxfExport::encodings()
   Q_FOREACH ( QByteArray codec, QTextCodec::availableCodecs() )
   {
     int i;
-    for ( i = 0; i < static_cast< int >( sizeof( sDxfEncodings ) / sizeof( *sDxfEncodings ) ) && strcmp( codec.data(), sDxfEncodings[i][1] ) != 0; ++i )
+    for ( i = 0; i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) && strcmp( codec.data(), DXF_ENCODINGS[i][1] ) != 0; ++i )
       ;
 
-    if ( i < static_cast< int >( sizeof( sDxfEncodings ) / sizeof( *sDxfEncodings ) ) )
+    if ( i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) )
       encodings << codec.data();
   }
   return encodings;

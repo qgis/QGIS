@@ -73,7 +73,7 @@ using namespace pal;
   based on my preferences, and to follow Krygier and Wood's placements more closer. (I'm not going to disagree
   with Denis Wood on anything cartography related...!)
 */
-QVector< QgsPalLayerSettings::PredefinedPointPosition > QgsPalLayerSettings::DEFAULT_PLACEMENT_ORDER = QVector< QgsPalLayerSettings::PredefinedPointPosition >()
+const QVector< QgsPalLayerSettings::PredefinedPointPosition > QgsPalLayerSettings::DEFAULT_PLACEMENT_ORDER = QVector< QgsPalLayerSettings::PredefinedPointPosition >()
     << QgsPalLayerSettings::TopRight
     << QgsPalLayerSettings::TopLeft
     << QgsPalLayerSettings::BottomRight

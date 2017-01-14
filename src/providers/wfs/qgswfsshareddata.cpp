@@ -299,10 +299,10 @@ bool QgsWFSSharedData::createCache()
 #endif
   if ( !ogrWaySuccessful )
   {
-    static QMutex mutexDBnameCreation;
-    static QByteArray cachedDBTemplate;
-    QMutexLocker mutexDBnameCreationHolder( &mutexDBnameCreation );
-    if ( cachedDBTemplate.size() == 0 )
+    static QMutex sMutexDBnameCreation;
+    static QByteArray sCachedDBTemplate;
+    QMutexLocker mutexDBnameCreationHolder( &sMutexDBnameCreation );
+    if ( sCachedDBTemplate.size() == 0 )
     {
       // Create a template Spatialite DB
       QTemporaryFile tempFile;
@@ -335,7 +335,7 @@ bool QgsWFSSharedData::createCache()
       // Ingest it in a buffer
       QFile file( tempFile.fileName() );
       if ( file.open( QIODevice::ReadOnly ) )
-        cachedDBTemplate = file.readAll();
+        sCachedDBTemplate = file.readAll();
       file.close();
       QFile::remove( tempFile.fileName() );
     }
@@ -347,7 +347,7 @@ bool QgsWFSSharedData::createCache()
       QgsMessageLog::logMessage( tr( "Cannot create temporary SpatiaLite cache" ), tr( "WFS" ) );
       return false;
     }
-    if ( dbFile.write( cachedDBTemplate ) < 0 )
+    if ( dbFile.write( sCachedDBTemplate ) < 0 )
     {
       QgsMessageLog::logMessage( tr( "Cannot create temporary SpatiaLite cache" ), tr( "WFS" ) );
       return false;

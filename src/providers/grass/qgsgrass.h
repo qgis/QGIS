@@ -264,7 +264,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static QString errorMessage( void );
 
     //! Get initialization error
-    static QString initError() { return mInitError; }
+    static QString initError() { return sInitError; }
 
     //! Test is current user is owner of mapset
     static bool isOwner( const QString& gisdbase, const QString& location, const QString& mapset );
@@ -551,7 +551,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // It does not contain paths from PATH environment variable
     static QStringList grassModulesPaths()
     {
-      return mGrassModulesPaths;
+      return sGrassModulesPaths;
     }
 
     // path to QGIS GRASS modules like qgis.g.info etc.
@@ -670,20 +670,20 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static bool sNonInitializable;
     static int sInitialized; // Set to 1 after initialization
     static bool sActive; // is active mode
-    static QStringList mGrassModulesPaths;
-    static QString defaultGisdbase;
-    static QString defaultLocation;
-    static QString defaultMapset;
+    static QStringList sGrassModulesPaths;
+    static QString sDefaultGisdbase;
+    static QString sDefaultLocation;
+    static QString sDefaultMapset;
 
     // Mapsets in current search path
     QStringList mMapsetSearchPath;
     QFileSystemWatcher *mMapsetSearchPathWatcher;
 
     /* last error in GRASS libraries */
-    static GError lastError;         // static, because used in constructor
-    static QString error_message;
+    static GError sLastError;         // static, because used in constructor
+    static QString sErrorMessage;
     // error set in init() if it failed
-    static QString mInitError;
+    static QString sInitError;
 
     // G_set_error_routine has two versions of the function's first argument it expects:
     // - char* msg - older version
@@ -693,11 +693,11 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static int error_routine( char *msg, int fatal ); // static because pointer to this function is set later
 
     // Current mapset lock file path
-    static QString mMapsetLock;
+    static QString sMapsetLock;
     // Current mapset GISRC file path
-    static QString mGisrc;
+    static QString sGisrc;
     // Temporary directory where GISRC and sockets are stored
-    static QString mTmp;
+    static QString sTmp;
     // Mutex for common locking when calling GRASS functions which are mostly non thread safe
     static QMutex sMutex;
     // Mute mode, do not show warning dialogs.

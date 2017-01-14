@@ -70,7 +70,7 @@ class QgsServerLogger: public QObject
     QgsServerLogger();
 
   private:
-    static QgsServerLogger* mInstance;
+    static QgsServerLogger* sInstance;
 
     QFile mLogFile;
     QTextStream mTextStream;

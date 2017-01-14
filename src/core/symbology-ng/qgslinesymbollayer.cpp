@@ -225,7 +225,7 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext& context )
 
   mSelPen = mPen;
   QColor selColor = context.renderContext().selectionColor();
-  if ( ! selectionIsOpaque )
+  if ( ! SELECTION_IS_OPAQUE )
     selColor.setAlphaF( context.alpha() );
   mSelPen.setColor( selColor );
 }

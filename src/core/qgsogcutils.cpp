@@ -1635,7 +1635,7 @@ QgsExpression* QgsOgcUtils::expressionFromOgcFilter( const QDomElement& element 
 }
 
 
-static const QMap<QString, int> sBinaryOperatorsTagNamesMap
+static const QMap<QString, int> BINARY_OPERATORS_TAG_NAMES_MAP
 {
   // logical
   {  QStringLiteral( "Or" ), QgsExpression::boOr },
@@ -1658,7 +1658,7 @@ static const QMap<QString, int> sBinaryOperatorsTagNamesMap
 static int binaryOperatorFromTagName( const QString& tagName )
 {
 
-  return sBinaryOperatorsTagNamesMap.value( tagName, -1 );
+  return BINARY_OPERATORS_TAG_NAMES_MAP.value( tagName, -1 );
 }
 
 static QString binaryOperatorToTagName( QgsExpression::BinaryOperator op )
@@ -1667,7 +1667,7 @@ static QString binaryOperatorToTagName( QgsExpression::BinaryOperator op )
   {
     return QStringLiteral( "PropertyIsLike" );
   }
-  return sBinaryOperatorsTagNamesMap.key( op, QString() );
+  return BINARY_OPERATORS_TAG_NAMES_MAP.key( op, QString() );
 }
 
 static bool isBinaryOperator( const QString& tagName )
@@ -2288,7 +2288,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionUnaryOperatorToOgcFilter( const Q
       break;
 
     default:
-      mErrorMessage = QObject::tr( "Unary operator %1 not implemented yet" ).arg( QgsExpression::UnaryOperatorText[node->op()] );
+      mErrorMessage = QObject::tr( "Unary operator %1 not implemented yet" ).arg( QgsExpression::UNARY_OPERATOR_TEXT[node->op()] );
       return QDomElement();
   }
 
@@ -2342,7 +2342,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionBinaryOperatorToOgcFilter( const 
   {
     // not implemented binary operators
     // TODO: regex, % (mod), ^ (pow) are not supported yet
-    mErrorMessage = QObject::tr( "Binary operator %1 not implemented yet" ).arg( QgsExpression::BinaryOperatorText[op] );
+    mErrorMessage = QObject::tr( "Binary operator %1 not implemented yet" ).arg( QgsExpression::BINARY_OPERATOR_TEXT[op] );
     return QDomElement();
   }
 
@@ -2434,7 +2434,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionInOperatorToOgcFilter( const QgsE
   return orElem;
 }
 
-static const QMap<QString, QString> sBinarySpatialOpsMap
+static const QMap<QString, QString> BINARY_SPATIAL_OPS_MAP
 {
   { QStringLiteral( "disjoint" ), QStringLiteral( "Disjoint" ) },
   { QStringLiteral( "intersects" ), QStringLiteral( "Intersects" )},
@@ -2447,12 +2447,12 @@ static const QMap<QString, QString> sBinarySpatialOpsMap
 
 static bool isBinarySpatialOperator( const QString& fnName )
 {
-  return sBinarySpatialOpsMap.contains( fnName );
+  return BINARY_SPATIAL_OPS_MAP.contains( fnName );
 }
 
 static QString tagNameForSpatialOperator( const QString& fnName )
 {
-  return sBinarySpatialOpsMap.value( fnName );
+  return BINARY_SPATIAL_OPS_MAP.value( fnName );
 }
 
 static bool isGeometryColumn( const QgsExpression::Node* node )
@@ -2703,7 +2703,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
       break;
 
     default:
-      mErrorMessage = QObject::tr( "Unary operator %1 not implemented yet" ).arg( QgsSQLStatement::UnaryOperatorText[node->op()] );
+      mErrorMessage = QObject::tr( "Unary operator %1 not implemented yet" ).arg( QgsSQLStatement::UNARY_OPERATOR_TEXT[node->op()] );
       return QDomElement();
   }
 
@@ -2777,7 +2777,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   if ( opText.isEmpty() )
   {
     // not implemented binary operators
-    mErrorMessage = QObject::tr( "Binary operator %1 not implemented yet" ).arg( QgsSQLStatement::BinaryOperatorText[op] );
+    mErrorMessage = QObject::tr( "Binary operator %1 not implemented yet" ).arg( QgsSQLStatement::BINARY_OPERATOR_TEXT[op] );
     return QDomElement();
   }
 

@@ -61,8 +61,8 @@ class QgsGeometryCheckFactoryRegistry
 
     static QgsGeometryCheckFactoryRegistry* instance()
     {
-      static QgsGeometryCheckFactoryRegistry reg;
-      return &reg;
+      static QgsGeometryCheckFactoryRegistry sReg;
+      return &sReg;
     }
 };
 

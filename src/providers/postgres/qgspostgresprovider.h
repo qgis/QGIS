@@ -429,19 +429,19 @@ class QgsPostgresUtils
 
     static QString andWhereClauses( const QString& c1, const QString& c2 );
 
-    static const qint64 int32pk_offset = 4294967296;
+    static const qint64 INT32PK_OFFSET = 4294967296;
 
     // We shift negative 32bit integers to above the max 32bit
     // positive integer to support the whole range of int32 values
     // See http://hub.qgis.org/issues/14262
     static qint64 int32pk_to_fid( qint32 x )
     {
-      return x >= 0 ? x : x + int32pk_offset;
+      return x >= 0 ? x : x + INT32PK_OFFSET;
     }
 
     static qint32 fid_to_int32pk( qint64 x )
     {
-      return x <= (( int32pk_offset ) / 2.0 ) ? x : -( int32pk_offset - x );
+      return x <= (( INT32PK_OFFSET ) / 2.0 ) ? x : -( INT32PK_OFFSET - x );
     }
 };
 

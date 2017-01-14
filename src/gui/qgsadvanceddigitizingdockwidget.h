@@ -32,8 +32,8 @@ class QgsPoint;
 
 // tolerances for soft constraints (last values, and common angles)
 // for angles, both tolerance in pixels and degrees are used for better performance
-static const double SoftConstraintTolerancePixel = 15;
-static const double SoftConstraintToleranceDegrees = 10;
+static const double SOFT_CONSTRAINT_TOLERANCE_PIXEL = 15;
+static const double SOFT_CONSTRAINT_TOLERANCE_DEGREES = 10;
 
 /** \ingroup gui
  * @brief The QgsAdvancedDigitizingDockWidget class is a dockable widget

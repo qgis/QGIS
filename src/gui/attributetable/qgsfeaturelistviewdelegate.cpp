@@ -38,7 +38,7 @@ QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *lis
 
 QgsFeatureListViewDelegate::Element QgsFeatureListViewDelegate::positionToElement( QPoint pos )
 {
-  if ( pos.x() > sIconSize )
+  if ( pos.x() > ICON_SIZE )
   {
     return EditElement;
   }
@@ -66,18 +66,18 @@ void QgsFeatureListViewDelegate::setEditSelectionModel( QItemSelectionModel* edi
 QSize QgsFeatureListViewDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   Q_UNUSED( index )
-  int height = sIconSize;
+  int height = ICON_SIZE;
   return QSize( option.rect.width(), qMax( height, option.fontMetrics.height() ) );
 }
 
 void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  static QPixmap selectedIcon;
-  if ( selectedIcon.isNull() )
-    selectedIcon = QgsApplication::getThemePixmap( QStringLiteral( "/mIconSelected.svg" ) );
-  static QPixmap deselectedIcon;
-  if ( deselectedIcon.isNull() )
-    deselectedIcon = QgsApplication::getThemePixmap( QStringLiteral( "/mIconDeselected.svg" ) );
+  static QPixmap sSelectedIcon;
+  if ( sSelectedIcon.isNull() )
+    sSelectedIcon = QgsApplication::getThemePixmap( QStringLiteral( "/mIconSelected.svg" ) );
+  static QPixmap sDeselectedIcon;
+  if ( sDeselectedIcon.isNull() )
+    sDeselectedIcon = QgsApplication::getThemePixmap( QStringLiteral( "/mIconDeselected.svg" ) );
 
   QString text = index.model()->data( index, Qt::EditRole ).toString();
   QgsFeatureListModel::FeatureInfo featInfo = index.model()->data( index, Qt::UserRole ).value<QgsFeatureListModel::FeatureInfo>();
@@ -89,10 +89,10 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
 
   QRect iconLayoutBounds( option.rect.x(), option.rect.y(), option.rect.height(), option.rect.height() );
 
-  QPixmap icon = mFeatureSelectionModel->isSelected( index ) ? selectedIcon : deselectedIcon;
+  QPixmap icon = mFeatureSelectionModel->isSelected( index ) ? sSelectedIcon : sDeselectedIcon;
 
   // Scale up the icon if needed
-  if ( option.rect.height() > sIconSize )
+  if ( option.rect.height() > ICON_SIZE )
   {
     icon = icon.scaledToHeight( option.rect.height(), Qt::SmoothTransformation );
   }

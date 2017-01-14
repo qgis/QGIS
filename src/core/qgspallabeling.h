@@ -679,7 +679,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     QgsTextFormat mFormat;
 
-    static QVector< PredefinedPointPosition > DEFAULT_PLACEMENT_ORDER;
+    static const QVector< PredefinedPointPosition > DEFAULT_PLACEMENT_ORDER;
 };
 
 /** \ingroup core

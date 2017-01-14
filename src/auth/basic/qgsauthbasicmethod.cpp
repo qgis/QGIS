@@ -23,7 +23,7 @@
 static const QString AUTH_METHOD_KEY = QStringLiteral( "Basic" );
 static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "Basic authentication" );
 
-QMap<QString, QgsAuthMethodConfig> QgsAuthBasicMethod::mAuthConfigCache = QMap<QString, QgsAuthMethodConfig>();
+QMap<QString, QgsAuthMethodConfig> QgsAuthBasicMethod::sAuthConfigCache = QMap<QString, QgsAuthMethodConfig>();
 
 
 QgsAuthBasicMethod::QgsAuthBasicMethod()
@@ -152,9 +152,9 @@ QgsAuthMethodConfig QgsAuthBasicMethod::getMethodConfig( const QString &authcfg,
   QgsAuthMethodConfig mconfig;
 
   // check if it is cached
-  if ( mAuthConfigCache.contains( authcfg ) )
+  if ( sAuthConfigCache.contains( authcfg ) )
   {
-    mconfig = mAuthConfigCache.value( authcfg );
+    mconfig = sAuthConfigCache.value( authcfg );
     QgsDebugMsg( QString( "Retrieved config for authcfg: %1" ).arg( authcfg ) );
     return mconfig;
   }
@@ -175,14 +175,14 @@ QgsAuthMethodConfig QgsAuthBasicMethod::getMethodConfig( const QString &authcfg,
 void QgsAuthBasicMethod::putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig& mconfig )
 {
   QgsDebugMsg( QString( "Putting basic config for authcfg: %1" ).arg( authcfg ) );
-  mAuthConfigCache.insert( authcfg, mconfig );
+  sAuthConfigCache.insert( authcfg, mconfig );
 }
 
 void QgsAuthBasicMethod::removeMethodConfig( const QString &authcfg )
 {
-  if ( mAuthConfigCache.contains( authcfg ) )
+  if ( sAuthConfigCache.contains( authcfg ) )
   {
-    mAuthConfigCache.remove( authcfg );
+    sAuthConfigCache.remove( authcfg );
     QgsDebugMsg( QString( "Removed basic config for authcfg: %1" ).arg( authcfg ) );
   }
 }

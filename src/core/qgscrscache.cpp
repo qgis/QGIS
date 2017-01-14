@@ -21,8 +21,8 @@
 
 QgsCoordinateTransformCache* QgsCoordinateTransformCache::instance()
 {
-  static QgsCoordinateTransformCache mInstance;
-  return &mInstance;
+  static QgsCoordinateTransformCache sInstance;
+  return &sInstance;
 }
 
 QgsCoordinateTransformCache::QgsCoordinateTransformCache()

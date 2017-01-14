@@ -49,21 +49,21 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
   {
     if ( QgsGrass::activeMode() )
     {
-      lastGisdbase = QgsGrass::getDefaultGisdbase();
-      lastLocation = QgsGrass::getDefaultLocation();
-      lastMapset = QgsGrass::getDefaultMapset();
+      sLastGisdbase = QgsGrass::getDefaultGisdbase();
+      sLastLocation = QgsGrass::getDefaultLocation();
+      sLastMapset = QgsGrass::getDefaultMapset();
     }
     else
     {
       QSettings settings;
-      lastGisdbase = settings.value( QStringLiteral( "/GRASS/lastGisdbase" ) ).toString();
+      sLastGisdbase = settings.value( QStringLiteral( "/GRASS/lastGisdbase" ) ).toString();
       //check we got something from qsettings otherwise default to users home dir
-      if ( lastGisdbase.isEmpty() )
+      if ( sLastGisdbase.isEmpty() )
       {
         QDir home = QDir::home();
-        lastGisdbase = QString( home.path() );
+        sLastGisdbase = QString( home.path() );
       }
-      lastMapset = settings.value( QStringLiteral( "/GRASS/lastMapset" ) ).toString();
+      sLastMapset = settings.value( QStringLiteral( "/GRASS/lastMapset" ) ).toString();
     }
     sFirst = false;
   }
@@ -98,7 +98,7 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
       break;
   }
 
-  egisdbase->setText( lastGisdbase );
+  egisdbase->setText( sLastGisdbase );
 
   setLocations();
   adjustSize();
@@ -109,13 +109,13 @@ QgsGrassSelect::~QgsGrassSelect()
 }
 
 bool QgsGrassSelect::sFirst = true;
-QString QgsGrassSelect::lastGisdbase;
-QString QgsGrassSelect::lastLocation;
-QString QgsGrassSelect::lastMapset;
-QString QgsGrassSelect::lastVectorMap;
-QString QgsGrassSelect::lastRasterMap;
-QString QgsGrassSelect::lastLayer;
-QString QgsGrassSelect::lastMapcalc;
+QString QgsGrassSelect::sLastGisdbase;
+QString QgsGrassSelect::sLastLocation;
+QString QgsGrassSelect::sLastMapset;
+QString QgsGrassSelect::sLastVectorMap;
+QString QgsGrassSelect::sLastRasterMap;
+QString QgsGrassSelect::sLastLayer;
+QString QgsGrassSelect::sLastMapcalc;
 
 void QgsGrassSelect::setLocations()
 {
@@ -175,7 +175,7 @@ void QgsGrassSelect::setLocations()
     }
 
     elocation->addItem( QString( d[i] ) );
-    if ( QString( d[i] ) == lastLocation )
+    if ( QString( d[i] ) == sLastLocation )
     {
       sel = idx;
     }
@@ -216,7 +216,7 @@ void QgsGrassSelect::setMapsets()
     if ( QgsGrass::isMapset( ldpath + "/" + ld[i] ) )
     {
       emapset->addItem( ld[i] );
-      if ( ld[i] == lastMapset )
+      if ( ld[i] == sLastMapset )
       {
         sel = idx;
       }
@@ -260,7 +260,7 @@ void QgsGrassSelect::setMaps()
     for ( int j = 0; j < list.count(); j++ )
     {
       emap->addItem( list[j] );
-      if ( list[j] == lastVectorMap )
+      if ( list[j] == sLastVectorMap )
         sel = idx;
       idx++;
     }
@@ -275,7 +275,7 @@ void QgsGrassSelect::setMaps()
     for ( int j = 0; j < list.count(); j++ )
     {
       emap->addItem( list[j] );
-      if ( list[j] == lastRasterMap )
+      if ( list[j] == sLastRasterMap )
         sel = idx;
       idx++;
     }
@@ -292,7 +292,7 @@ void QgsGrassSelect::setMaps()
 
       QString m = QString( md[j] + " (GROUP)" );
       emap->addItem( m );
-      if ( m == lastRasterMap )
+      if ( m == sLastRasterMap )
       {
         sel = idx;
       }
@@ -308,7 +308,7 @@ void QgsGrassSelect::setMaps()
     {
       QString m = QString( md[j] );
       emap->addItem( m );
-      if ( m == lastMapcalc )
+      if ( m == sLastMapcalc )
       {
         sel = idx;
       }
@@ -362,7 +362,7 @@ void QgsGrassSelect::setLayers()
   for ( int i = 0; i < layers.count(); i++ )
   {
     elayer->addItem( layers[i] );
-    if ( layers[i] == lastLayer )
+    if ( layers[i] == sLastLayer )
       sel = idx;
     idx++;
   }
@@ -414,7 +414,7 @@ void QgsGrassSelect::on_GisdbaseBrowse_clicked()
 void QgsGrassSelect::accept()
 {
   gisdbase = egisdbase->text();
-  lastGisdbase = QString( gisdbase );
+  sLastGisdbase = QString( gisdbase );
 
   if ( elocation->count() == 0 )
   {
@@ -425,15 +425,15 @@ void QgsGrassSelect::accept()
 
   //write to qgsettings as gisdbase seems to be valid
   QSettings settings;
-  settings.setValue( QStringLiteral( "/GRASS/lastGisdbase" ), lastGisdbase );
+  settings.setValue( QStringLiteral( "/GRASS/lastGisdbase" ), sLastGisdbase );
 
   location = elocation->currentText();
-  lastLocation = location;
+  sLastLocation = location;
 
   mapset = emapset->currentText();
-  lastMapset = mapset;
+  sLastMapset = mapset;
 
-  settings.setValue( QStringLiteral( "/GRASS/lastMapset" ), lastMapset );
+  settings.setValue( QStringLiteral( "/GRASS/lastMapset" ), sLastMapset );
 
   map = emap->currentText().trimmed();
 
@@ -452,13 +452,13 @@ void QgsGrassSelect::accept()
                             tr( "No layers available in this map" ) );
       return;
     }
-    lastVectorMap = map;
+    sLastVectorMap = map;
     layer = elayer->currentText().trimmed();
-    lastLayer = layer;
+    sLastLayer = layer;
   }
   else if ( type == QgsGrassSelect::Raster )
   {
-    lastRasterMap = map;
+    sLastRasterMap = map;
     if ( map.indexOf( QLatin1String( " (GROUP)" ) ) != -1 )
     {
       map.remove( QStringLiteral( " (GROUP)" ) );
@@ -471,7 +471,7 @@ void QgsGrassSelect::accept()
   }
   else if ( type == QgsGrassSelect::MapCalc )
   {
-    lastMapcalc = map;
+    sLastMapcalc = map;
   }
   QDialog::accept();
 }

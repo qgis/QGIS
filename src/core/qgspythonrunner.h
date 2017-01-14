@@ -56,7 +56,7 @@ class CORE_EXPORT QgsPythonRunner
 
     virtual bool evalCommand( QString command, QString& result ) = 0;
 
-    static QgsPythonRunner* mInstance;
+    static QgsPythonRunner* sInstance;
 };
 
 #endif // QGSPYTHONRUNNER_H

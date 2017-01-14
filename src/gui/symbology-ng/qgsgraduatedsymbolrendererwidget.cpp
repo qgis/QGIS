@@ -447,8 +447,8 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
 
-  spinPrecision->setMinimum( QgsRendererRangeLabelFormat::MinPrecision );
-  spinPrecision->setMaximum( QgsRendererRangeLabelFormat::MaxPrecision );
+  spinPrecision->setMinimum( QgsRendererRangeLabelFormat::MIN_PRECISION );
+  spinPrecision->setMaximum( QgsRendererRangeLabelFormat::MAX_PRECISION );
 
   btnColorRamp->setShowRandomColorRamp( true );
 

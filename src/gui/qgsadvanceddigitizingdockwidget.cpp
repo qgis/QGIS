@@ -644,7 +644,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
       softAngle -= deltaAngle;
     }
     int quo = qRound( softAngle / commonAngle );
-    if ( qAbs( softAngle - quo * commonAngle ) * 180.0 * M_1_PI <= SoftConstraintToleranceDegrees )
+    if ( qAbs( softAngle - quo * commonAngle ) * 180.0 * M_1_PI <= SOFT_CONSTRAINT_TOLERANCE_DEGREES )
     {
       // also check the distance in pixel to the line, otherwise it's too sticky at long ranges
       softAngle = quo * commonAngle ;
@@ -652,7 +652,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
       // use the direction vector (cos(a),sin(a)) from previous point. |x2-x1|=1 since sin2+cos2=1
       const double dist = qAbs( qCos( softAngle + deltaAngle ) * ( previousPt.y() - point.y() )
                                 - qSin( softAngle + deltaAngle ) * ( previousPt.x() - point.x() ) );
-      if ( dist / mMapCanvas->mapSettings().mapUnitsPerPixel() < SoftConstraintTolerancePixel )
+      if ( dist / mMapCanvas->mapSettings().mapUnitsPerPixel() < SOFT_CONSTRAINT_TOLERANCE_PIXEL )
       {
         mAngleConstraint->setLockMode( CadConstraint::SoftLock );
         mAngleConstraint->setValue( 180.0 / M_PI * softAngle );

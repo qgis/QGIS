@@ -26,12 +26,12 @@
 #include <QSettings>
 
 
-const int QgsPostgresFeatureIterator::sFeatureQueueSize = 2000;
+const int QgsPostgresFeatureIterator::FEATURE_QUEUE_SIZE = 2000;
 
 
 QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>( source, ownSource, request )
-    , mFeatureQueueSize( sFeatureQueueSize )
+    , mFeatureQueueSize( FEATURE_QUEUE_SIZE )
     , mFetched( 0 )
     , mFetchGeometry( false )
     , mExpressionCompiled( false )

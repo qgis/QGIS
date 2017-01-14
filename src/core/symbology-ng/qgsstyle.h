@@ -385,7 +385,7 @@ class CORE_EXPORT QgsStyle : public QObject
 
     sqlite3* mCurrentDB;
 
-    static QgsStyle* mDefaultStyle;
+    static QgsStyle* sDefaultStyle;
 
     //! Convenience function to open the DB and return a sqlite3 object
     bool openDB( const QString& filename );

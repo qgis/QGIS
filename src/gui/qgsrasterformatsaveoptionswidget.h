@@ -141,7 +141,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
     QgsRasterLayer* mRasterLayer;
     QString mRasterFileName;
     QMap< QString, QString> mOptionsMap;
-    static QMap< QString, QStringList > mBuiltinProfiles;
+    static QMap< QString, QStringList > sBuiltinProfiles;
     bool mPyramids;
     QgsRaster::RasterPyramidsFormat mPyramidsFormat;
 

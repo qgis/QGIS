@@ -19,7 +19,7 @@
 #include <math.h>
 #include <limits>
 
-static const QRegExp identifierRE( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" );
+static const QRegExp IDENTIFIER_RE( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" );
 
 // from parser
 extern QgsSQLStatement::Node* parse( const QString& str, QString& parserErrorMsg );
@@ -27,7 +27,7 @@ extern QgsSQLStatement::Node* parse( const QString& str, QString& parserErrorMsg
 ///////////////////////////////////////////////
 // operators
 
-const char* QgsSQLStatement::BinaryOperatorText[] =
+const char* QgsSQLStatement::BINARY_OPERATOR_TEXT[] =
 {
   // this must correspond (number and order of element) to the declaration of the enum BinaryOperator
   "OR", "AND",
@@ -36,13 +36,13 @@ const char* QgsSQLStatement::BinaryOperatorText[] =
   "||"
 };
 
-const char* QgsSQLStatement::UnaryOperatorText[] =
+const char* QgsSQLStatement::UNARY_OPERATOR_TEXT[] =
 {
   // this must correspond (number and order of element) to the declaration of the enum UnaryOperator
   "NOT", "-"
 };
 
-const char* QgsSQLStatement::JoinTypeText[] =
+const char* QgsSQLStatement::JOIN_TYPE_TEXT[] =
 {
   // this must correspond (number and order of element) to the declaration of the enum JoinType
   "", "LEFT", "LEFT OUTER", "RIGHT", "RIGHT OUTER", "CROSS", "INNER", "FULL"
@@ -74,7 +74,7 @@ QString QgsSQLStatement::quotedIdentifier( QString name )
 QString QgsSQLStatement::quotedIdentifierIfNeeded( const QString& name )
 {
   // This might not be complete, but it must be at least what we recognize
-  static const char* const reservedKeyWords[] =
+  static const char* const RESERVED_KEYWORDS[] =
   {
     "AND", "OR", "NOT", "LIKE", "IN", "IS", "BETWEEN", "NULL", "SELECT", "ALL", "DISTINCT", "CAST", "AS",
     "FROM", "JOIN", "ON", "USING", "WHERE", "ORDER", "BY", "ASC", "DESC",
@@ -82,14 +82,14 @@ QString QgsSQLStatement::quotedIdentifierIfNeeded( const QString& name )
     "OFFSET", "LIMIT", "GROUP", "HAVING"
   };
 
-  for ( size_t i = 0; i < sizeof( reservedKeyWords ) / sizeof( reservedKeyWords[0] ); ++i )
+  for ( size_t i = 0; i < sizeof( RESERVED_KEYWORDS ) / sizeof( RESERVED_KEYWORDS[0] ); ++i )
   {
-    if ( name.compare( QString( reservedKeyWords[i] ), Qt::CaseInsensitive ) == 0 )
+    if ( name.compare( QString( RESERVED_KEYWORDS[i] ), Qt::CaseInsensitive ) == 0 )
     {
       return quotedIdentifier( name );
     }
   }
-  return identifierRE.exactMatch( name ) ? name : quotedIdentifier( name );
+  return IDENTIFIER_RE.exactMatch( name ) ? name : quotedIdentifier( name );
 }
 
 QString QgsSQLStatement::stripQuotedIdentifier( QString text )
@@ -276,7 +276,7 @@ QString QgsSQLStatement::NodeList::dump() const
 
 QString QgsSQLStatement::NodeUnaryOperator::dump() const
 {
-  return QStringLiteral( "%1 %2" ).arg( UnaryOperatorText[mOp], mOperand->dump() );
+  return QStringLiteral( "%1 %2" ).arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
 }
 
 QgsSQLStatement::Node*QgsSQLStatement::NodeUnaryOperator::clone() const
@@ -394,7 +394,7 @@ QString QgsSQLStatement::NodeBinaryOperator::dump() const
     fmt += rOp && ( rOp->precedence() < precedence() ) ? "(%3)" : "%3";
   }
 
-  return fmt.arg( mOpLeft->dump(), BinaryOperatorText[mOp], rdump );
+  return fmt.arg( mOpLeft->dump(), BINARY_OPERATOR_TEXT[mOp], rdump );
 }
 
 QgsSQLStatement::Node* QgsSQLStatement::NodeBinaryOperator::clone() const
@@ -630,7 +630,7 @@ QString QgsSQLStatement::NodeJoin::dump() const
   QString ret;
   if ( mType != jtDefault )
   {
-    ret += JoinTypeText[mType];
+    ret += JOIN_TYPE_TEXT[mType];
     ret += QLatin1String( " " );
   }
   ret += QLatin1String( "JOIN " );

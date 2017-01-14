@@ -133,18 +133,18 @@ QIcon QgsDataCollectionItem::iconDataCollection()
 
 QIcon QgsDataCollectionItem::iconDir()
 {
-  static QIcon icon;
+  static QIcon sIcon;
 
-  if ( icon.isNull() )
+  if ( sIcon.isNull() )
   {
     // initialize shared icons
     QStyle *style = QApplication::style();
-    icon = QIcon( style->standardPixmap( QStyle::SP_DirClosedIcon ) );
-    icon.addPixmap( style->standardPixmap( QStyle::SP_DirOpenIcon ),
-                    QIcon::Normal, QIcon::On );
+    sIcon = QIcon( style->standardPixmap( QStyle::SP_DirClosedIcon ) );
+    sIcon.addPixmap( style->standardPixmap( QStyle::SP_DirOpenIcon ),
+                     QIcon::Normal, QIcon::On );
   }
 
-  return icon;
+  return sIcon;
 }
 
 QIcon QgsFavoritesItem::iconFavorites()
@@ -158,7 +158,7 @@ QIcon QgsZipItem::iconZip()
 // icon from http://www.softicons.com/free-icons/application-icons/mega-pack-icons-1-by-nikolay-verin/winzip-folder-icon
 }
 
-QgsAnimatedIcon * QgsDataItem::mPopulatingIcon = nullptr;
+QgsAnimatedIcon * QgsDataItem::sPopulatingIcon = nullptr;
 
 QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, const QString& name, const QString& path )
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
@@ -251,8 +251,8 @@ void QgsDataItem::moveToThread( QThread * targetThread )
 
 QIcon QgsDataItem::icon()
 {
-  if ( state() == Populating && mPopulatingIcon )
-    return mPopulatingIcon->icon();
+  if ( state() == Populating && sPopulatingIcon )
+    return sPopulatingIcon->icon();
 
   if ( !mIcon.isNull() )
     return mIcon;
@@ -571,16 +571,16 @@ void QgsDataItem::setState( State state )
 
   if ( state == Populating ) // start loading
   {
-    if ( !mPopulatingIcon )
+    if ( !sPopulatingIcon )
     {
       // TODO: ensure that QgsAnimatedIcon is created on UI thread only
-      mPopulatingIcon = new QgsAnimatedIcon( QgsApplication::iconPath( QStringLiteral( "/mIconLoading.gif" ) ) );
+      sPopulatingIcon = new QgsAnimatedIcon( QgsApplication::iconPath( QStringLiteral( "/mIconLoading.gif" ) ) );
     }
-    mPopulatingIcon->connectFrameChanged( this, SLOT( emitDataChanged() ) );
+    sPopulatingIcon->connectFrameChanged( this, SLOT( emitDataChanged() ) );
   }
-  else if ( mState == Populating && mPopulatingIcon ) // stop loading
+  else if ( mState == Populating && sPopulatingIcon ) // stop loading
   {
-    mPopulatingIcon->disconnectFrameChanged( this, SLOT( emitDataChanged() ) );
+    sPopulatingIcon->disconnectFrameChanged( this, SLOT( emitDataChanged() ) );
   }
 
   mState = state;
@@ -1136,8 +1136,8 @@ QVector<QgsDataItem*> QgsFavoritesItem::createChildren( const QString& favDir )
 }
 
 //-----------------------------------------------------------------------
-QStringList QgsZipItem::mProviderNames = QStringList();
-QVector<dataItem_t *> QgsZipItem::mDataItemPtr = QVector<dataItem_t*>();
+QStringList QgsZipItem::sProviderNames = QStringList();
+QVector<dataItem_t *> QgsZipItem::sDataItemPtr = QVector<dataItem_t*>();
 
 
 QgsZipItem::QgsZipItem( QgsDataItem* parent, const QString& name, const QString& path )
@@ -1160,7 +1160,7 @@ void QgsZipItem::init()
   mIconName = QStringLiteral( "/mIconZip.png" );
   mVsiPrefix = vsiPrefix( mFilePath );
 
-  if ( mProviderNames.isEmpty() )
+  if ( sProviderNames.isEmpty() )
   {
     // QStringList keys = QgsProviderRegistry::instance()->providerList();
     // only use GDAL and OGR providers as we use the VSIFILE mechanism
@@ -1199,8 +1199,8 @@ void QgsZipItem::init()
         }
 
         // mLibraries.append( library );
-        mDataItemPtr.append( dataItem );
-        mProviderNames.append( k );
+        sDataItemPtr.append( dataItem );
+        sProviderNames.append( k );
       }
       else
       {
@@ -1310,10 +1310,10 @@ QVector<QgsDataItem*> QgsZipItem::createChildren()
     QgsDebugMsgLevel( "tmpPath = " + tmpPath, 3 );
 
     // Q_FOREACH( dataItem_t *dataItem, mDataItemPtr )
-    for ( int i = 0; i < mProviderNames.size(); i++ )
+    for ( int i = 0; i < sProviderNames.size(); i++ )
     {
       // ugly hack to remove .dbf file if there is a .shp file
-      if ( mProviderNames[i] == QLatin1String( "ogr" ) )
+      if ( sProviderNames[i] == QLatin1String( "ogr" ) )
       {
         if ( info.suffix().toLower() == QLatin1String( "dbf" ) )
         {
@@ -1327,10 +1327,10 @@ QVector<QgsDataItem*> QgsZipItem::createChildren()
       }
 
       // try to get data item from provider
-      dataItem_t *dataItem = mDataItemPtr.at( i );
+      dataItem_t *dataItem = sDataItemPtr.at( i );
       if ( dataItem )
       {
-        QgsDebugMsgLevel( QString( "trying to load item %1 with %2" ).arg( tmpPath, mProviderNames.at( i ) ), 3 );
+        QgsDebugMsgLevel( QString( "trying to load item %1 with %2" ).arg( tmpPath, sProviderNames.at( i ) ), 3 );
         QgsDataItem * item = dataItem( tmpPath, this );
         if ( item )
         {
@@ -1432,17 +1432,17 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, const QString& fileP
     QgsDebugMsgLevel( QString( "will try to create a normal dataItem from filePath= %2 or vsiPath = %3" ).arg( filePath, vsiPath ), 3 );
 
     // try to open using registered providers (gdal and ogr)
-    for ( int i = 0; i < mProviderNames.size(); i++ )
+    for ( int i = 0; i < sProviderNames.size(); i++ )
     {
-      dataItem_t *dataItem = mDataItemPtr.at( i );
+      dataItem_t *dataItem = sDataItemPtr.at( i );
       if ( dataItem )
       {
         QgsDataItem *item = nullptr;
         // try first with normal path (Passthru)
         // this is to simplify .qml handling, and without this some tests will fail
         // (e.g. testZipItemVectorTransparency(), second test)
-        if (( mProviderNames.at( i ) == QLatin1String( "ogr" ) ) ||
-            ( mProviderNames.at( i ) == QLatin1String( "gdal" ) && zipFileCount == 1 ) )
+        if (( sProviderNames.at( i ) == QLatin1String( "ogr" ) ) ||
+            ( sProviderNames.at( i ) == QLatin1String( "gdal" ) && zipFileCount == 1 ) )
           item = dataItem( filePath, parent );
         // try with /vsizip/
         if ( ! item )

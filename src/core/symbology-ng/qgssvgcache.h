@@ -237,8 +237,8 @@ class CORE_EXPORT QgsSvgCache : public QObject
     QgsSvgCacheEntry* mLeastRecentEntry;
     QgsSvgCacheEntry* mMostRecentEntry;
 
-    //Maximum cache size
-    static const long mMaximumSize = 20000000;
+    //! Maximum cache size
+    static const long MAXIMUM_SIZE = 20000000;
 
     //! Replaces parameters in elements of a dom node and calls method for all child nodes
     void replaceElemParams( QDomElement& elem, const QColor& fill, const QColor& outline, double outlineWidth );

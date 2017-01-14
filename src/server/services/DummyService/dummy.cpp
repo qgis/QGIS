@@ -56,8 +56,8 @@ class QgsSampleModule: public QgsServiceModule
 // Entry points
 QGISEXTERN QgsServiceModule* QGS_ServiceModule_Init()
 {
-  static QgsSampleModule module;
-  return &module;
+  static QgsSampleModule sModule;
+  return &sModule;
 }
 QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule* )
 {

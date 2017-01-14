@@ -73,13 +73,13 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
   private:
     int type; // map type (mapset element)
     static bool sFirst; // called first time
-    static QString lastGisdbase; // Last selected values
-    static QString lastLocation;
-    static QString lastMapset;
-    static QString lastVectorMap;
-    static QString lastRasterMap;
-    static QString lastLayer; // vector layer
-    static QString lastMapcalc;
+    static QString sLastGisdbase; // Last selected values
+    static QString sLastLocation;
+    static QString sLastMapset;
+    static QString sLastVectorMap;
+    static QString sLastRasterMap;
+    static QString sLastLayer; // vector layer
+    static QString sLastMapcalc;
 };
 
 

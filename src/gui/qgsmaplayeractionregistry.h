@@ -138,7 +138,7 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
 
   private:
 
-    static QgsMapLayerActionRegistry *mInstance;
+    static QgsMapLayerActionRegistry *sInstance;
 
     QMap< QgsMapLayer*, QgsMapLayerAction* > mDefaultLayerActionMap;
 

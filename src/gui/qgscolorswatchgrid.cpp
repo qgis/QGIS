@@ -322,12 +322,12 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
 
 QPixmap QgsColorSwatchGrid::transparentBackground()
 {
-  static QPixmap transpBkgrd;
+  static QPixmap sTranspBkgrd;
 
-  if ( transpBkgrd.isNull() )
-    transpBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
+  if ( sTranspBkgrd.isNull() )
+    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
 
-  return transpBkgrd;
+  return sTranspBkgrd;
 }
 
 int QgsColorSwatchGrid::swatchForPosition( QPoint position ) const

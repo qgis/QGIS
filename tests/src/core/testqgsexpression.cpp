@@ -1165,8 +1165,8 @@ class TestQgsExpression: public QObject
 
     void eval_precedence()
     {
-      QCOMPARE( QgsExpression::BinaryOperatorText[QgsExpression::boDiv], "/" );
-      QCOMPARE( QgsExpression::BinaryOperatorText[QgsExpression::boConcat], "||" );
+      QCOMPARE( QgsExpression::BINARY_OPERATOR_TEXT[QgsExpression::boDiv], "/" );
+      QCOMPARE( QgsExpression::BINARY_OPERATOR_TEXT[QgsExpression::boConcat], "||" );
     }
 
     void eval_columns()
@@ -1642,7 +1642,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.hasParserError(), false );
       QSet<QString> refCols = exp.referencedColumns();
       // make sure we get the all attributes flag
-      bool allAttributesFlag = refCols.contains( QgsFeatureRequest::AllAttributes );
+      bool allAttributesFlag = refCols.contains( QgsFeatureRequest::ALL_ATTRIBUTES );
       QCOMPARE( allAttributesFlag, true );
     }
 

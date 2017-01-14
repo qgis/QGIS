@@ -99,7 +99,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     QgsFields mFields;
     QSet<int> mHiddenAttributes;
 
-    static QList< QgsStatisticalSummary::Statistic > mDisplayStats;
+    static const QList< QgsStatisticalSummary::Statistic > DISPLAY_STATS;
 
 };
 

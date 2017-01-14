@@ -114,11 +114,11 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Y-coordinate of the lower left corner of the bounding box
     double yMin;
     //! Default value for the number of storable points at the beginning
-    const static unsigned int mDefaultStorageForPoints = 100000;
+    static const unsigned int DEFAULT_STORAGE_FOR_POINTS = 100000;
     //! Stores pointers to all points in the triangulations (including the points contained in the lines)
     QVector<Point3D*> mPointVector;
     //! Default value for the number of storable HalfEdges at the beginning
-    const static unsigned int mDefaultStorageForHalfEdges = 300006;
+    static const unsigned int DEFAULT_STORAGE_FOR_HALF_EDGES = 300006;
     //! Stores pointers to the HalfEdges
     QVector<HalfEdge*> mHalfEdge;
     //! Association to an interpolator object
@@ -140,7 +140,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Threshold for the leftOfTest to handle numerical instabilities
     //const static double leftOfTresh=0.00001;
     //! Security to prevent endless loops in 'baseEdgeOfTriangle'. It there are more iteration then this number, the point will not be inserted
-    const static int sNumBaseOfRuns = 300000;
+    static const int MAX_BASE_ITERATIONS = 300000;
     //! Returns the number of an edge which points to the point with number 'point' or -1 if there is an error
     int baseEdgeOfPoint( int point );
     //! Returns the number of a HalfEdge from a triangle in which 'point' is in. If the number -10 is returned, this means, that 'point' is outside the convex hull. If -5 is returned, then numerical problems with the leftOfTest occurred (and the value of the possible edge is stored in the variable 'mUnstableEdge'. -20 means, that the inserted point is exactly on an edge (the number is stored in the variable 'mEdgeWithPoint'). -25 means, that the point is already in the triangulation (the number of the point is stored in the member 'mTwiceInsPoint'. If -100 is returned, this means that something else went wrong
@@ -194,8 +194,8 @@ inline DualEdgeTriangulation::DualEdgeTriangulation()
     , mUnstableEdge( 0 )
     , mTwiceInsPoint( 0 )
 {
-  mPointVector.reserve( mDefaultStorageForPoints );
-  mHalfEdge.reserve( mDefaultStorageForHalfEdges );
+  mPointVector.reserve( DEFAULT_STORAGE_FOR_POINTS );
+  mHalfEdge.reserve( DEFAULT_STORAGE_FOR_HALF_EDGES );
 }
 
 inline DualEdgeTriangulation::DualEdgeTriangulation( int nop, Triangulation* decorator )

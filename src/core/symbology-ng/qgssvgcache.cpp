@@ -131,7 +131,7 @@ QImage QgsSvgCache::svgAsImage( const QString& file, double size, const QColor& 
     long cachedDataSize = 0;
     cachedDataSize += currentEntry->svgContent.size();
     cachedDataSize += static_cast< int >( currentEntry->size * currentEntry->size * hwRatio * 32 );
-    if ( cachedDataSize > mMaximumSize / 2 )
+    if ( cachedDataSize > MAXIMUM_SIZE / 2 )
     {
       fitsInCache = false;
       delete currentEntry->image;
@@ -908,7 +908,7 @@ void QgsSvgCache::trimToMaximumSize()
     return;
   }
   QgsSvgCacheEntry* entry = mLeastRecentEntry;
-  while ( entry && ( mTotalSize > mMaximumSize ) )
+  while ( entry && ( mTotalSize > MAXIMUM_SIZE ) )
   {
     QgsSvgCacheEntry* bkEntry = entry;
     entry = entry->nextEntry;

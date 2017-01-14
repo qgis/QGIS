@@ -55,7 +55,7 @@ class QgsConnectionPoolGroup
 {
   public:
 
-    static const int sMaxConcurrentConnections;
+    static const int MAX_CONCURRENT_CONNECTIONS;
 
     struct Item
     {

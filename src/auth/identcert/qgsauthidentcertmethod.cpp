@@ -33,7 +33,7 @@
 static const QString AUTH_METHOD_KEY = QStringLiteral( "Identity-Cert" );
 static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "Identity certificate authentication" );
 
-QMap<QString, QgsPkiConfigBundle *> QgsAuthIdentCertMethod::mPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
+QMap<QString, QgsPkiConfigBundle *> QgsAuthIdentCertMethod::sPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
 
 
 QgsAuthIdentCertMethod::QgsAuthIdentCertMethod()
@@ -51,8 +51,8 @@ QgsAuthIdentCertMethod::QgsAuthIdentCertMethod()
 
 QgsAuthIdentCertMethod::~QgsAuthIdentCertMethod()
 {
-  qDeleteAll( mPkiConfigBundleCache );
-  mPkiConfigBundleCache.clear();
+  qDeleteAll( sPkiConfigBundleCache );
+  sPkiConfigBundleCache.clear();
 }
 
 QString QgsAuthIdentCertMethod::key() const
@@ -223,9 +223,9 @@ QgsPkiConfigBundle *QgsAuthIdentCertMethod::getPkiConfigBundle( const QString &a
   QgsPkiConfigBundle * bundle = nullptr;
 
   // check if it is cached
-  if ( mPkiConfigBundleCache.contains( authcfg ) )
+  if ( sPkiConfigBundleCache.contains( authcfg ) )
   {
-    bundle = mPkiConfigBundleCache.value( authcfg );
+    bundle = sPkiConfigBundleCache.value( authcfg );
     if ( bundle )
     {
       QgsDebugMsg( QString( "Retrieved PKI bundle for authcfg %1" ).arg( authcfg ) );
@@ -273,14 +273,14 @@ QgsPkiConfigBundle *QgsAuthIdentCertMethod::getPkiConfigBundle( const QString &a
 void QgsAuthIdentCertMethod::putPkiConfigBundle( const QString &authcfg, QgsPkiConfigBundle *pkibundle )
 {
   QgsDebugMsg( QString( "Putting PKI bundle for authcfg %1" ).arg( authcfg ) );
-  mPkiConfigBundleCache.insert( authcfg, pkibundle );
+  sPkiConfigBundleCache.insert( authcfg, pkibundle );
 }
 
 void QgsAuthIdentCertMethod::removePkiConfigBundle( const QString &authcfg )
 {
-  if ( mPkiConfigBundleCache.contains( authcfg ) )
+  if ( sPkiConfigBundleCache.contains( authcfg ) )
   {
-    QgsPkiConfigBundle * pkibundle = mPkiConfigBundleCache.take( authcfg );
+    QgsPkiConfigBundle * pkibundle = sPkiConfigBundleCache.take( authcfg );
     delete pkibundle;
     pkibundle = nullptr;
     QgsDebugMsg( QString( "Removed PKI bundle for authcfg: %1" ).arg( authcfg ) );

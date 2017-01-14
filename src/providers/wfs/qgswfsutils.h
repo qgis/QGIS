@@ -49,8 +49,8 @@ class QgsWFSUtils
     static QSharedMemory* createAndAttachSHM();
 
   private:
-    static QMutex gmMutex;
-    static QThread* gmThread;
+    static QMutex sMutex;
+    static QThread* sThread;
     static bool sKeepAliveWorks;
     static int sCounter;
 

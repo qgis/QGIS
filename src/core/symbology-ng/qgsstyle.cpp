@@ -36,7 +36,7 @@
 
 #define STYLE_CURRENT_VERSION  "1"
 
-QgsStyle *QgsStyle::mDefaultStyle = nullptr;
+QgsStyle *QgsStyle::sDefaultStyle = nullptr;
 
 
 QgsStyle::QgsStyle() : QObject()
@@ -51,27 +51,27 @@ QgsStyle::~QgsStyle()
 
 QgsStyle* QgsStyle::defaultStyle() // static
 {
-  if ( !mDefaultStyle )
+  if ( !sDefaultStyle )
   {
     QString styleFilename = QgsApplication::userStylePath();
 
     // copy default style if user style doesn't exist
     if ( !QFile::exists( styleFilename ) )
     {
-      mDefaultStyle = new QgsStyle;
-      mDefaultStyle->createDb( styleFilename );
+      sDefaultStyle = new QgsStyle;
+      sDefaultStyle->createDb( styleFilename );
       if ( QFile::exists( QgsApplication::defaultStylePath() ) )
       {
-        mDefaultStyle->importXml( QgsApplication::defaultStylePath() );
+        sDefaultStyle->importXml( QgsApplication::defaultStylePath() );
       }
     }
     else
     {
-      mDefaultStyle = new QgsStyle;
-      mDefaultStyle->load( styleFilename );
+      sDefaultStyle = new QgsStyle;
+      sDefaultStyle->load( styleFilename );
     }
   }
-  return mDefaultStyle;
+  return sDefaultStyle;
 }
 
 

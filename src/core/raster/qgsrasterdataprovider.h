@@ -478,8 +478,5 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     mutable QgsRectangle mExtent;
 
-    static QStringList mPyramidResamplingListGdal;
-    static QgsStringMap mPyramidResamplingMapGdal;
-
 };
 #endif

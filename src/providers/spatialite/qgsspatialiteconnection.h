@@ -184,7 +184,7 @@ class QgsSqliteHandle
     QString mDbPath;
     bool mIsValid;
 
-    static QMap < QString, QgsSqliteHandle * > handles;
+    static QMap < QString, QgsSqliteHandle * > sHandles;
 };
 
 

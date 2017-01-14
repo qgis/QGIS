@@ -24,9 +24,9 @@
 
 bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
 {
-  static bool watchdog = false;
+  static bool sWatchDog = false;
 
-  if ( watchdog )
+  if ( sWatchDog )
     return false;
 
   // If we deal with a NULL QVariant (and it's not a QByteArray which properly
@@ -35,10 +35,10 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
   // instead of a blacklist.
   if ( varp->isNull() && varp->type() != QVariant::ByteArray )
   {
-    watchdog = true;
+    sWatchDog = true;
     PyObject* vartype = sipConvertFromEnum( varp->type(), sipType_QVariant_Type );
     *objp = PyObject_Call(( PyObject * )sipTypeAsPyTypeObject( sipType_QVariant ), PyTuple_Pack( 1, vartype ), nullptr );
-    watchdog = false;
+    sWatchDog = false;
     return true;
   }
   else

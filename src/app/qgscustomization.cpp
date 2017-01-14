@@ -451,7 +451,7 @@ QString QgsCustomizationDialog::widgetPath( QWidget * theWidget, const QString& 
 
   QString path = thePath;
 
-  if ( !QgsCustomization::mInternalWidgets.contains( name ) )
+  if ( !QgsCustomization::sInternalWidgets.contains( name ) )
   {
     if ( !path.isEmpty() )
     {
@@ -615,16 +615,16 @@ void QgsCustomization::createTreeItemStatus()
   mMainWindowItems << topItem;
 }
 
-QStringList QgsCustomization::mInternalWidgets = QStringList() <<  QStringLiteral( "qt_tabwidget_stackedwidget" ) << QStringLiteral( "qt_tabwidget_tabbar" );
+QStringList QgsCustomization::sInternalWidgets = QStringList() <<  QStringLiteral( "qt_tabwidget_stackedwidget" ) << QStringLiteral( "qt_tabwidget_tabbar" );
 
-QgsCustomization *QgsCustomization::pinstance = nullptr;
+QgsCustomization *QgsCustomization::sInstance = nullptr;
 QgsCustomization *QgsCustomization::instance()
 {
-  if ( !pinstance )
+  if ( !sInstance )
   {
-    pinstance = new QgsCustomization();
+    sInstance = new QgsCustomization();
   }
-  return pinstance;
+  return sInstance;
 }
 
 QgsCustomization::QgsCustomization()
@@ -823,7 +823,7 @@ void QgsCustomization::customizeWidget( const QString& thePath, QWidget * theWid
   // qt_tabwidget_stackedwidget, such widgets do not appear in the tree generated
   // from ui files and do not have sense from user poin of view -> skip
 
-  if ( !QgsCustomization::mInternalWidgets.contains( name ) )
+  if ( !QgsCustomization::sInternalWidgets.contains( name ) )
   {
     myPath = thePath + '/' + name;
   }

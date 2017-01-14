@@ -52,7 +52,7 @@ class QgsFeaturePool
       QLinkedList<QgsFeatureId>::iterator ageIt;
     };
 
-    static const int sCacheSize = 1000;
+    static const int CACHE_SIZE = 1000;
 
     QCache<QgsFeatureId, QgsFeature> mFeatureCache;
     QgsVectorLayer* mLayer;
