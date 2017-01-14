@@ -80,15 +80,7 @@ void QgsMeasureDialog::updateSettings()
   mAreaUnits = QgsProject::instance()->areaUnits();
   mDa.setSourceCrs( mTool->canvas()->mapSettings().destinationCrs().srsid() );
   mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  // Only use ellipsoidal calculation when project wide transformation is enabled.
-  if ( mTool->canvas()->mapSettings().hasCrsTransformEnabled() )
-  {
-    mDa.setEllipsoidalMode( true );
-  }
-  else
-  {
-    mDa.setEllipsoidalMode( false );
-  }
+  mDa.setEllipsoidalMode( true );
 
   QgsDebugMsg( "****************" );
   QgsDebugMsg( QString( "Ellipsoid ID : %1" ).arg( mDa.ellipsoid() ) );
@@ -301,33 +293,21 @@ void QgsMeasureDialog::updateUi()
     else
     {
       QgsUnitTypes::AreaUnit resultUnit = QgsUnitTypes::AreaUnknownUnit;
-      if ( ! mTool->canvas()->hasCrsTransformEnabled() )
+      if ( mDa.willUseEllipsoid() )
       {
-        resultUnit = QgsUnitTypes::distanceToAreaUnit( mTool->canvas()->mapSettings().destinationCrs().mapUnits() );
-        toolTip += "<br> * " + tr( "Project CRS transformation is turned off." ) + ' ';
-        toolTip += tr( "Area is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
-                   mTool->canvas()->mapSettings().destinationCrs().description() );
-        toolTip += "<br> * " + tr( "Ellipsoidal calculation is not possible with CRS transformation disabled." );
-        setWindowTitle( tr( "Measure (OTF off)" ) );
+        resultUnit = QgsUnitTypes::AreaSquareMeters;
+        toolTip += "<br> * " + tr( "Project ellipsoidal calculation is selected." ) + ' ';
+        toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the area is calculated in %2." ).arg( mDa.ellipsoid(),
+                   QgsUnitTypes::toString( resultUnit ) );
       }
       else
       {
-        if ( mDa.willUseEllipsoid() )
-        {
-          resultUnit = QgsUnitTypes::AreaSquareMeters;
-          toolTip += "<br> * " + tr( "Project CRS transformation is turned on and ellipsoidal calculation is selected." ) + ' ';
-          toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the area is calculated in %2." ).arg( mDa.ellipsoid(),
-                     QgsUnitTypes::toString( resultUnit ) );
-        }
-        else
-        {
-          resultUnit = QgsUnitTypes::distanceToAreaUnit( mTool->canvas()->mapSettings().destinationCrs().mapUnits() );
-          toolTip += "<br> * " + tr( "Project CRS transformation is turned on but ellipsoidal calculation is not selected." ) + ' ';
-          toolTip += tr( "Area is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
-                     mTool->canvas()->mapSettings().destinationCrs().description() );
-        }
-        setWindowTitle( tr( "Measure (OTF on)" ) );
+        resultUnit = QgsUnitTypes::distanceToAreaUnit( mTool->canvas()->mapSettings().destinationCrs().mapUnits() );
+        toolTip += "<br> * " + tr( "Project ellipsoidal calculation is not selected." ) + ' ';
+        toolTip += tr( "Area is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
+                   mTool->canvas()->mapSettings().destinationCrs().description() );
       }
+      setWindowTitle( tr( "Measure (OTF on)" ) );
 
       if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Geographic &&
            QgsUnitTypes::unitType( mAreaUnits ) == QgsUnitTypes::Standard )
@@ -375,33 +355,21 @@ void QgsMeasureDialog::updateUi()
     else
     {
       QgsUnitTypes::DistanceUnit resultUnit = QgsUnitTypes::DistanceUnknownUnit;
-      if ( ! mTool->canvas()->hasCrsTransformEnabled() )
+      if ( mDa.willUseEllipsoid() )
       {
-        resultUnit =  mTool->canvas()->mapSettings().destinationCrs().mapUnits();
-        toolTip += "<br> * " + tr( "Project CRS transformation is turned off." ) + ' ';
-        toolTip += tr( "Distance is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
-                   mTool->canvas()->mapSettings().destinationCrs().description() );
-        toolTip += "<br> * " + tr( "Ellipsoidal calculation is not possible with CRS transformation disabled." );
-        setWindowTitle( tr( "Measure (OTF off)" ) );
+        resultUnit = QgsUnitTypes::DistanceMeters;
+        toolTip += "<br> * " + tr( "Project ellipsoidal calculation is selected." ) + ' ';
+        toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the distance is calculated in %2." ).arg( mDa.ellipsoid(),
+                   QgsUnitTypes::toString( resultUnit ) );
       }
       else
       {
-        if ( mDa.willUseEllipsoid() )
-        {
-          resultUnit = QgsUnitTypes::DistanceMeters;
-          toolTip += "<br> * " + tr( "Project CRS transformation is turned on and ellipsoidal calculation is selected." ) + ' ';
-          toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the distance is calculated in %2." ).arg( mDa.ellipsoid(),
-                     QgsUnitTypes::toString( resultUnit ) );
-        }
-        else
-        {
-          resultUnit = mTool->canvas()->mapSettings().destinationCrs().mapUnits();
-          toolTip += "<br> * " + tr( "Project CRS transformation is turned on but ellipsoidal calculation is not selected." ) + ' ';
-          toolTip += tr( "Distance is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
-                     mTool->canvas()->mapSettings().destinationCrs().description() );
-        }
-        setWindowTitle( tr( "Measure (OTF on)" ) );
+        resultUnit = mTool->canvas()->mapSettings().destinationCrs().mapUnits();
+        toolTip += "<br> * " + tr( "Project ellipsoidal calculation is not selected." ) + ' ';
+        toolTip += tr( "Distance is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
+                   mTool->canvas()->mapSettings().destinationCrs().description() );
       }
+      setWindowTitle( tr( "Measure (OTF on)" ) );
 
       if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Geographic &&
            QgsUnitTypes::unitType( mDistanceUnits ) == QgsUnitTypes::Standard )

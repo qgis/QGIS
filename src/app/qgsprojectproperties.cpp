@@ -1967,31 +1967,25 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
   leSemiMinor->setEnabled( false );
   leSemiMajor->setText( QLatin1String( "" ) );
   leSemiMinor->setText( QLatin1String( "" ) );
-  if ( cbxProjectionEnabled->isChecked() )
+
+  cmbEllipsoid->setEnabled( true );
+  cmbEllipsoid->setToolTip( QLatin1String( "" ) );
+  if ( mEllipsoidList.at( mEllipsoidIndex ).acronym.startsWith( QLatin1String( "PARAMETER:" ) ) )
   {
-    cmbEllipsoid->setEnabled( true );
-    cmbEllipsoid->setToolTip( QLatin1String( "" ) );
-    if ( mEllipsoidList.at( mEllipsoidIndex ).acronym.startsWith( QLatin1String( "PARAMETER:" ) ) )
-    {
-      leSemiMajor->setEnabled( true );
-      leSemiMinor->setEnabled( true );
-    }
-    else
-    {
-      leSemiMajor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
-      leSemiMinor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
-    }
-    if ( mEllipsoidList[ mEllipsoidIndex ].acronym != GEO_NONE )
-    {
-      leSemiMajor->setText( QLocale::system().toString( myMajor, 'f', 3 ) );
-      leSemiMinor->setText( QLocale::system().toString( myMinor, 'f', 3 ) );
-    }
+    leSemiMajor->setEnabled( true );
+    leSemiMinor->setEnabled( true );
   }
   else
   {
-    cmbEllipsoid->setEnabled( false );
-    cmbEllipsoid->setToolTip( tr( "Can only use ellipsoidal calculations when CRS transformation is enabled" ) );
+    leSemiMajor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
+    leSemiMinor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
   }
+  if ( mEllipsoidList[ mEllipsoidIndex ].acronym != GEO_NONE )
+  {
+    leSemiMajor->setText( QLocale::system().toString( myMajor, 'f', 3 ) );
+    leSemiMinor->setText( QLocale::system().toString( myMinor, 'f', 3 ) );
+  }
+
   cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
 }
 
