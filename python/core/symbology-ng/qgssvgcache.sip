@@ -79,7 +79,7 @@ class QgsSvgCache : QObject
      * @param rasterScaleFactor raster scale factor
      * @param fitsInCache
      */
-    const QImage& svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+    QImage svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                               double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache );
     /** Get SVG  as QPicture&.
      * @param file Absolute or relative path to SVG file.
@@ -91,7 +91,7 @@ class QgsSvgCache : QObject
      * @param rasterScaleFactor raster scale factor
      * @param forceVectorOutput
      */
-    const QPicture& svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+    QPicture svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                   double widthScaleFactor, double rasterScaleFactor, bool forceVectorOutput = false );
 
     /** Calculates the viewbox size of a (possibly cached) SVG file.
@@ -144,7 +144,7 @@ class QgsSvgCache : QObject
     QByteArray getImageData( const QString &path ) const;
 
     /** Get SVG content*/
-    const QByteArray& svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+    QByteArray svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                   double widthScaleFactor, double rasterScaleFactor );
 
   signals:

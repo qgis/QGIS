@@ -235,7 +235,7 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
     double snapGridOffsetY() const;
 
     void setGridPen( const QPen& p );
-    const QPen& gridPen() const;
+    QPen gridPen() const;
 
     void setGridStyle( const GridStyle s );
     GridStyle gridStyle() const;

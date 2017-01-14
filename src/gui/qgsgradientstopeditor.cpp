@@ -376,7 +376,7 @@ void QgsGradientStopEditor::keyPressEvent( QKeyEvent *e )
   QWidget::keyPressEvent( e );
 }
 
-const QPixmap& QgsGradientStopEditor::transparentBackground()
+QPixmap QgsGradientStopEditor::transparentBackground()
 {
   static QPixmap transpBkgrd;
 

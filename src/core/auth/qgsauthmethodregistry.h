@@ -56,7 +56,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
     QString pluginList( bool asHtml = false ) const;
 
     //! Return library directory where plugins are found
-    const QDir & libraryDirectory() const;
+    QDir libraryDirectory() const;
 
     //! Set library directory where to search for plugins
     void setLibraryDirectory( const QDir & path );

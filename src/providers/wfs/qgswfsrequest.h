@@ -49,10 +49,10 @@ class QgsWfsRequest : public QObject
     ErrorCode errorCode() const { return mErrorCode; }
 
     //! \brief Return error message (after download/post)
-    const QString& errorMessage() const { return mErrorMessage; }
+    QString errorMessage() const { return mErrorMessage; }
 
     //! \brief Return server response (after download/post)
-    const QByteArray& response() const { return mResponse; }
+    QByteArray response() const { return mResponse; }
 
   public slots:
     //! Abort network request immediately

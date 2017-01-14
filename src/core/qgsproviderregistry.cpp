@@ -328,7 +328,7 @@ void QgsProviderRegistry::setLibraryDirectory( QDir const & path )
   init();
 }
 
-QDir const & QgsProviderRegistry::libraryDirectory() const
+QDir QgsProviderRegistry::libraryDirectory() const
 {
   return mLibraryDirectory;
 }

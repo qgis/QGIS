@@ -76,7 +76,7 @@ void QgsGeometryHoleCheck::fixError( QgsGeometryCheckError* error, int method, i
   }
 }
 
-const QStringList& QgsGeometryHoleCheck::getResolutionMethods() const
+QStringList QgsGeometryHoleCheck::getResolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "Remove hole" ) << tr( "No action" );
   return methods;

@@ -96,77 +96,42 @@ void QgsAnimatedIcon::disconnectFrameChanged( const QObject * receiver, const ch
 }
 
 // shared icons
-const QIcon &QgsLayerItem::iconPoint()
+QIcon QgsLayerItem::iconPoint()
 {
-  static QIcon icon;
-
-  if ( icon.isNull() )
-    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );
-
-  return icon;
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );
 }
 
-const QIcon &QgsLayerItem::iconLine()
+QIcon QgsLayerItem::iconLine()
 {
-  static QIcon icon;
-
-  if ( icon.isNull() )
-    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) );
-
-  return icon;
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) );
 }
 
-const QIcon &QgsLayerItem::iconPolygon()
+QIcon QgsLayerItem::iconPolygon()
 {
-  static QIcon icon;
-
-  if ( icon.isNull() )
-    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) );
-
-  return icon;
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) );
 }
 
-const QIcon &QgsLayerItem::iconTable()
+QIcon QgsLayerItem::iconTable()
 {
-  static QIcon icon;
-
-  if ( icon.isNull() )
-    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) );
-
-  return icon;
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) );
 }
 
-const QIcon &QgsLayerItem::iconRaster()
+QIcon QgsLayerItem::iconRaster()
 {
-  static QIcon icon;
-
-  if ( icon.isNull() )
-    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconRaster.svg" ) );
-
-  return icon;
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconRaster.svg" ) );
 }
 
-const QIcon &QgsLayerItem::iconDefault()
+QIcon QgsLayerItem::iconDefault()
 {
-  static QIcon icon;
-
-  if ( icon.isNull() )
-    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
-
-  return icon;
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
 }
 
-const QIcon &QgsDataCollectionItem::iconDataCollection()
+QIcon QgsDataCollectionItem::iconDataCollection()
 {
-  static QIcon icon;
-
-  if ( icon.isNull() )
-    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.png" ) );
-
-  return icon;
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.png" ) );
 }
 
-const QIcon &QgsDataCollectionItem::iconDir()
+QIcon QgsDataCollectionItem::iconDir()
 {
   static QIcon icon;
 
@@ -182,25 +147,15 @@ const QIcon &QgsDataCollectionItem::iconDir()
   return icon;
 }
 
-const QIcon &QgsFavoritesItem::iconFavorites()
+QIcon QgsFavoritesItem::iconFavorites()
 {
-  static QIcon icon;
-
-  if ( icon.isNull() )
-    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavourites.png" ) );
-
-  return icon;
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavourites.png" ) );
 }
 
-const QIcon &QgsZipItem::iconZip()
+QIcon QgsZipItem::iconZip()
 {
-  static QIcon icon;
-
-  if ( icon.isNull() )
-    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconZip.png" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconZip.png" ) );
 // icon from http://www.softicons.com/free-icons/application-icons/mega-pack-icons-1-by-nikolay-verin/winzip-folder-icon
-
-  return icon;
 }
 
 QgsAnimatedIcon * QgsDataItem::mPopulatingIcon = nullptr;
@@ -1501,7 +1456,7 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, const QString& fileP
   return nullptr;
 }
 
-const QStringList &QgsZipItem::getZipFileList()
+QStringList QgsZipItem::getZipFileList()
 {
   if ( ! mZipFileList.isEmpty() )
     return mZipFileList;

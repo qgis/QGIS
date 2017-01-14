@@ -1245,7 +1245,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
      */
-    const QSet<QString>& excludeAttributesWms() const { return mExcludeAttributesWMS; }
+    QSet<QString> excludeAttributesWms() const { return mExcludeAttributesWMS; }
 
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
@@ -1255,7 +1255,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * A set of attributes that are not advertised in WFS requests with QGIS server.
      */
-    const QSet<QString>& excludeAttributesWfs() const { return mExcludeAttributesWFS; }
+    QSet<QString> excludeAttributesWfs() const { return mExcludeAttributesWFS; }
 
     /**
      * A set of attributes that are not advertised in WFS requests with QGIS server.

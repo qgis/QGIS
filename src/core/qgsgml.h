@@ -112,7 +112,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     int getEPSGCode() const { return mEpsg; }
 
     //! Return the value of the srsName attribute
-    const QString& srsName() const { return mSrsName; }
+    QString srsName() const { return mSrsName; }
 
     //! Return layer bounding box
     const QgsRectangle& layerExtent() const { return mLayerExtent; }
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     bool isException() const { return mIsException; }
 
     //! Return the exception text.
-    const QString& exceptionText() const { return mExceptionText; }
+    QString exceptionText() const { return mExceptionText; }
 
     //! Return whether a "truncatedResponse" element is found
     bool isTruncatedResponse() const { return mTruncatedResponse; }

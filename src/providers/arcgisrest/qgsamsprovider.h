@@ -32,7 +32,7 @@ class QgsAmsLegendFetcher : public QgsImageFetcher
     QgsAmsLegendFetcher( QgsAmsProvider* provider );
     void start() override;
     bool haveImage() const { return mLegendImage.isNull(); }
-    const QImage& getImage() const { return mLegendImage; }
+    QImage getImage() const { return mLegendImage; }
     const QString& errorTitle() const { return mErrorTitle; }
     const QString& errorMessage() const { return mError; }
 

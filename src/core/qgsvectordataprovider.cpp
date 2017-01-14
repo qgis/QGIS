@@ -318,7 +318,7 @@ QgsAttributeList QgsVectorDataProvider::pkAttributeIndexes() const
   return QgsAttributeList();
 }
 
-const QList< QgsVectorDataProvider::NativeType > &QgsVectorDataProvider::nativeTypes() const
+QList<QgsVectorDataProvider::NativeType> QgsVectorDataProvider::nativeTypes() const
 {
   return mNativeTypes;
 }

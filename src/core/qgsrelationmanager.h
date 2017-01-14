@@ -53,7 +53,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * @return A QMap where the key is the relation id, the value the relation object.
      */
-    const QMap<QString, QgsRelation>& relations() const;
+    QMap<QString, QgsRelation> relations() const;
 
     /**
      * Add a relation.

@@ -724,7 +724,7 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
   painter->restore();
 }
 
-const QPixmap& QgsColorSwatchDelegate::transparentBackground() const
+QPixmap QgsColorSwatchDelegate::transparentBackground() const
 {
   static QPixmap transpBkgrd;
 

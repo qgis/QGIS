@@ -122,8 +122,8 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * @param rasterScaleFactor raster scale factor
      * @param fitsInCache
      */
-    const QImage& svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                              double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache );
+    QImage svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                       double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache );
 
     /** Get SVG  as QPicture&.
      * @param file Absolute or relative path to SVG file.
@@ -135,8 +135,8 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * @param rasterScaleFactor raster scale factor
      * @param forceVectorOutput
      */
-    const QPicture& svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                  double widthScaleFactor, double rasterScaleFactor, bool forceVectorOutput = false );
+    QPicture svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                           double widthScaleFactor, double rasterScaleFactor, bool forceVectorOutput = false );
 
     /** Calculates the viewbox size of a (possibly cached) SVG file.
      * @param file Absolute or relative path to SVG file.
@@ -188,8 +188,8 @@ class CORE_EXPORT QgsSvgCache : public QObject
     QByteArray getImageData( const QString &path ) const;
 
     //! Get SVG content
-    const QByteArray& svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                  double widthScaleFactor, double rasterScaleFactor );
+    QByteArray svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                           double widthScaleFactor, double rasterScaleFactor );
 
   signals:
     //! Emit a signal to be caught by qgisapp and display a msg on status bar

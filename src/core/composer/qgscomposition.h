@@ -301,7 +301,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     double snapGridOffsetY() const {return mSnapGridOffsetY;}
 
     void setGridPen( const QPen& p );
-    const QPen& gridPen() const {return mGridPen;}
+    QPen gridPen() const {return mGridPen;}
 
     void setGridStyle( const GridStyle s );
     GridStyle gridStyle() const {return mGridStyle;}

@@ -88,8 +88,8 @@ class QgsWmsConfigParser
     virtual double legendIconLabelSpace() const = 0;
     virtual double legendSymbolWidth() const = 0;
     virtual double legendSymbolHeight() const = 0;
-    virtual const QFont& legendLayerFont() const = 0;
-    virtual const QFont& legendItemFont() const = 0;
+    virtual QFont legendLayerFont() const = 0;
+    virtual QFont legendItemFont() const = 0;
 
     virtual double maxWidth() const = 0;
     virtual double maxHeight() const = 0;

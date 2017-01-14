@@ -65,7 +65,7 @@ QgsMeasureTool::~QgsMeasureTool()
 }
 
 
-const QList<QgsPoint>& QgsMeasureTool::points()
+QList<QgsPoint> QgsMeasureTool::points()
 {
   return mPoints;
 }

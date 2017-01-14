@@ -194,7 +194,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError* error, int method
   delete interGeom;
 }
 
-const QStringList& QgsGeometryOverlapCheck::getResolutionMethods() const
+QStringList QgsGeometryOverlapCheck::getResolutionMethods() const
 {
   static QStringList methods = QStringList()
                                << tr( "Remove overlapping area from neighboring polygon with shortest shared edge" )

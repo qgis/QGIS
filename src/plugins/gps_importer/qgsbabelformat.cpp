@@ -33,7 +33,7 @@ QgsBabelFormat::QgsBabelFormat( const QString& name )
 }
 
 
-const QString& QgsBabelFormat::name() const
+QString QgsBabelFormat::name() const
 {
   return mName;
 }
