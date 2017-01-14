@@ -282,10 +282,12 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QString& typeName,
     : mTypeName( typeName )
     , mTypeNameBA( mTypeName.toUtf8() )
     , mTypeNamePtr( mTypeNameBA.constData() )
+    , mTypeNameUTF8Len( strlen( mTypeNamePtr ) )
     , mWkbType( QGis::WKBUnknown )
     , mGeometryAttribute( geometryAttribute )
     , mGeometryAttributeBA( geometryAttribute.toUtf8() )
     , mGeometryAttributePtr( mGeometryAttributeBA.constData() )
+    , mGeometryAttributeUTF8Len( strlen( mGeometryAttributePtr ) )
     , mFields( fields )
     , mIsException( false )
     , mTruncatedResponse( false )
@@ -320,6 +322,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QString& typeName,
     mTypeName = mTypeName.mid( index + 1 );
     mTypeNameBA = mTypeName.toUtf8();
     mTypeNamePtr = mTypeNameBA.constData();
+    mTypeNameUTF8Len = strlen( mTypeNamePtr );
   }
 
   mParser = XML_ParserCreateNS( nullptr, NS_SEPARATOR );
@@ -345,8 +348,10 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties>& laye
     bool invertAxisOrientation )
     : mLayerProperties( layerProperties )
     , mTypeNamePtr( nullptr )
+    , mTypeNameUTF8Len( 0 )
     , mWkbType( QGis::WKBUnknown )
     , mGeometryAttributePtr( nullptr )
+    , mGeometryAttributeUTF8Len( 0 )
     , mFields( fields )
     , mIsException( false )
     , mTruncatedResponse( false )
@@ -402,6 +407,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties>& laye
     mGeometryAttribute = mLayerProperties[0].mGeometryAttribute;
     mGeometryAttributeBA = mGeometryAttribute.toUtf8();
     mGeometryAttributePtr = mGeometryAttributeBA.constData();
+    mGeometryAttributeUTF8Len = strlen( mGeometryAttributePtr );
     int index = mTypeName.indexOf( ':' );
     if ( index != -1 && index < mTypeName.length() )
     {
@@ -409,6 +415,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties>& laye
     }
     mTypeNameBA = mTypeName.toUtf8();
     mTypeNamePtr = mTypeNameBA.constData();
+    mTypeNameUTF8Len = strlen( mTypeNamePtr );
   }
 
   mEndian = QgsApplication::endian();
@@ -547,7 +554,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
       }
     }
   }
-  else if ( localNameLen == mGeometryAttribute.size() &&
+  else if ( localNameLen == static_cast<int>( mGeometryAttributeUTF8Len ) &&
             memcmp( pszLocalName, mGeometryAttributePtr, localNameLen ) == 0 )
   {
     mParseModeStack.push( QgsGmlStreamingParser::geometry );
@@ -611,6 +618,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
       }
       mGeometryAttributeBA = mGeometryAttribute.toUtf8();
       mGeometryAttributePtr = mGeometryAttributeBA.constData();
+      mGeometryAttributeUTF8Len = strlen( mGeometryAttributePtr );
       mParseModeStack.push( QgsGmlStreamingParser::featureTuple );
       QString id;
       if ( mGMLNameSpaceURI.isEmpty() )
@@ -639,7 +647,8 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
     }
   }
   else if ( theParseMode == none &&
-            localNameLen == mTypeName.size() && memcmp( pszLocalName, mTypeNamePtr, mTypeName.size() ) == 0 )
+            localNameLen == static_cast<int>( mTypeNameUTF8Len ) &&
+            memcmp( pszLocalName, mTypeNamePtr, mTypeNameUTF8Len ) == 0 )
   {
     Q_ASSERT( !mCurrentFeature );
     mCurrentFeature = new QgsFeature( mFeatureCount );
@@ -862,7 +871,8 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
 
     setAttribute( mAttributeName, mStringCash );
   }
-  else if ( theParseMode == geometry && localNameLen == mGeometryAttribute.size() &&
+  else if ( theParseMode == geometry &&
+            localNameLen == static_cast<int>( mGeometryAttributeUTF8Len ) &&
             memcmp( pszLocalName, mGeometryAttributePtr, localNameLen ) == 0 )
   {
     mParseModeStack.pop();
@@ -944,8 +954,9 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
   }
   else if (( theParseMode == tuple && !mTypeNamePtr &&
              LOCALNAME_EQUALS( "Tuple" ) ) ||
-           ( theParseMode == feature && localNameLen == mTypeName.size() &&
-             memcmp( pszLocalName, mTypeNamePtr, mTypeName.size() ) == 0 ) )
+           ( theParseMode == feature &&
+             localNameLen == static_cast<int>( mTypeNameUTF8Len ) &&
+             memcmp( pszLocalName, mTypeNamePtr, mTypeNameUTF8Len ) == 0 ) )
   {
     Q_ASSERT( mCurrentFeature );
     if ( !mCurrentFeature->geometry() )

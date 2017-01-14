@@ -244,6 +244,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     QString mTypeName;
     QByteArray mTypeNameBA;
     const char* mTypeNamePtr;
+    size_t mTypeNameUTF8Len;
 
     QGis::WkbType mWkbType;
 
@@ -253,6 +254,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     QString mGeometryAttribute;
     QByteArray mGeometryAttributeBA;
     const char* mGeometryAttributePtr;
+    size_t mGeometryAttributeUTF8Len;
 
     QgsFields mFields;
     QMap<QString, QPair<int, QgsField> > mThematicAttributes;
