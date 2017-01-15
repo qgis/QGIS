@@ -179,6 +179,15 @@ class QgsPointV2: public QgsAbstractGeometry
      */
     double azimuth( const QgsPointV2& other ) const;
 
+    /** Returns a new point which correponds to this point projected by a specified distance
+     * in a specified angle.
+     * @param distance distance to project
+     * @param azimuth angle to project in X Y, clockwise in degrees starting from north
+     * @param inclinaison angle to project in Z (3D)
+     * @note added in QGIS 3.0
+     */
+    QgsPointV2 project( double distance, double azimuth, double inclinaison = 90.0 ) const;
+
     /**
      * Calculates the vector obtained by subtracting a point from this point.
      * @note added in QGIS 3.0
