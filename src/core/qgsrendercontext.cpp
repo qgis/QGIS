@@ -25,15 +25,6 @@
 
 QgsRenderContext::QgsRenderContext()
     : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
-    , mPainter( nullptr )
-    , mRenderingStopped( false )
-    , mScaleFactor( 1.0 )
-    , mRendererScale( 1.0 )
-    , mLabelingEngine( nullptr )
-    , mGeometry( nullptr )
-    , mFeatureFilterProvider( nullptr )
-    , mSegmentationTolerance( M_PI_2 / 90 )
-    , mSegmentationToleranceType( QgsAbstractGeometry::MaximumAngle )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 }
@@ -73,16 +64,10 @@ QgsRenderContext&QgsRenderContext::operator=( const QgsRenderContext & rh )
   mVectorSimplifyMethod = rh.mVectorSimplifyMethod;
   mExpressionContext = rh.mExpressionContext;
   mGeometry = rh.mGeometry;
-  mFeatureFilterProvider = rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr;
+  mFeatureFilterProvider.reset( rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr );
   mSegmentationTolerance = rh.mSegmentationTolerance;
   mSegmentationToleranceType = rh.mSegmentationToleranceType;
   return *this;
-}
-
-QgsRenderContext::~QgsRenderContext()
-{
-  delete mFeatureFilterProvider;
-  mFeatureFilterProvider = nullptr;
 }
 
 QgsRenderContext QgsRenderContext::fromQPainter( QPainter* painter )
@@ -209,11 +194,17 @@ void QgsRenderContext::setUseRenderingOptimization( bool enabled )
 
 void QgsRenderContext::setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp )
 {
-  delete mFeatureFilterProvider;
-  mFeatureFilterProvider = nullptr;
-
   if ( ffp )
   {
-    mFeatureFilterProvider = ffp->clone();
+    mFeatureFilterProvider.reset( ffp->clone() );
   }
+  else
+  {
+    mFeatureFilterProvider.reset( nullptr );
+  }
+}
+
+const QgsFeatureFilterProvider* QgsRenderContext::featureFilterProvider() const
+{
+  return mFeatureFilterProvider.data();
 }
