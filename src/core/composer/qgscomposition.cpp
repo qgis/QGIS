@@ -791,7 +791,24 @@ void QgsComposition::setPrintResolution( const int dpi )
 
 QgsComposerMap* QgsComposition::referenceMap() const
 {
-  return dynamic_cast< QgsComposerMap* >( const_cast< QgsComposerItem* >( getComposerItemByUuid( mWorldFileMapId ) ) );
+  // prefer explicitly set reference map
+  if ( QgsComposerMap* map = dynamic_cast< QgsComposerMap* >( const_cast< QgsComposerItem* >( getComposerItemByUuid( mWorldFileMapId ) ) ) )
+    return map;
+
+  // else try to find largest map
+  QList< const QgsComposerMap* > maps = composerMapItems();
+  const QgsComposerMap* largestMap = nullptr;
+  double largestMapArea = 0;
+  Q_FOREACH ( const QgsComposerMap* map, maps )
+  {
+    double area = map->rect().width() * map->rect().height();
+    if ( area > largestMapArea )
+    {
+      largestMapArea = area;
+      largestMap = map;
+    }
+  }
+  return const_cast< QgsComposerMap* >( largestMap );
 }
 
 void QgsComposition::setReferenceMap( QgsComposerMap* map )

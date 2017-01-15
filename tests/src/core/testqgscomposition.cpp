@@ -57,6 +57,7 @@ class TestQgsComposition : public QObject
     void georeference();
     void variablesEdited();
     void itemVariablesFunction();
+    void referenceMap();
 
   private:
     QgsComposition *mComposition;
@@ -635,6 +636,38 @@ void TestQgsComposition::itemVariablesFunction()
   QgsExpression e4( "map_get( item_variables( 'map_id' ), 'map_units' )" );
   r = e4.evaluate( &c );
   QCOMPARE( r.toString(), QString( "degrees" ) );
+
+  delete composition;
+}
+
+void TestQgsComposition::referenceMap()
+{
+  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  QgsMapSettings ms;
+  ms.setExtent( extent );
+  QgsComposition* composition = new QgsComposition( ms, QgsProject::instance() );
+
+  // no maps
+  QVERIFY( !composition->referenceMap() );
+
+  QgsComposerMap* map = new QgsComposerMap( composition );
+  map->setNewExtent( extent );
+  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
+  composition->addComposerMap( map );
+
+  QCOMPARE( composition->referenceMap(), map );
+
+  // add a larger map
+  QgsComposerMap* map2 = new QgsComposerMap( composition );
+  map2->setNewExtent( extent );
+  map2->setSceneRect( QRectF( 30, 60, 250, 150 ) );
+  composition->addComposerMap( map2 );
+
+  QCOMPARE( composition->referenceMap(), map2 );
+
+  // explicitly set reference map
+  composition->setReferenceMap( map );
+  QCOMPARE( composition->referenceMap(), map );
 
   delete composition;
 }
