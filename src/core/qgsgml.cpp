@@ -913,6 +913,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
          mCurrentFeature == nullptr && mFeatureCount == 0 )
     {
       mLayerExtent = mCurrentExtent;
+      mCurrentExtent = QgsRectangle();
     }
 
     mParseModeStack.pop();
