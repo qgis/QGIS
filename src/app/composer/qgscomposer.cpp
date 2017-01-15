@@ -2077,9 +2077,9 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     mView->setPaintingEnabled( false );
 
     int worldFilePageNo = -1;
-    if ( mComposition->worldFileMap() )
+    if ( mComposition->referenceMap() )
     {
-      worldFilePageNo = mComposition->worldFileMap()->page() - 1;
+      worldFilePageNo = mComposition->referenceMap()->page() - 1;
     }
 
     for ( int i = 0; i < mComposition->numPages(); ++i )
@@ -2315,9 +2315,9 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       QString filename = QDir( dir ).filePath( atlasMap->currentFilename() ) + fileExt;
 
       int worldFilePageNo = -1;
-      if ( mComposition->worldFileMap() )
+      if ( mComposition->referenceMap() )
       {
-        worldFilePageNo = mComposition->worldFileMap()->page() - 1;
+        worldFilePageNo = mComposition->referenceMap()->page() - 1;
       }
 
       for ( int i = 0; i < mComposition->numPages(); ++i )

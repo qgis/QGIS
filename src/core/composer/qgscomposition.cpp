@@ -789,12 +789,12 @@ void QgsComposition::setPrintResolution( const int dpi )
   mProject->setDirty( true );
 }
 
-QgsComposerMap* QgsComposition::worldFileMap() const
+QgsComposerMap* QgsComposition::referenceMap() const
 {
   return dynamic_cast< QgsComposerMap* >( const_cast< QgsComposerItem* >( getComposerItemByUuid( mWorldFileMapId ) ) );
 }
 
-void QgsComposition::setWorldFileMap( QgsComposerMap* map )
+void QgsComposition::setReferenceMap( QgsComposerMap* map )
 {
   mWorldFileMapId = map ? map->uuid() : QString();
   mProject->setDirty( true );
@@ -3047,7 +3047,7 @@ void QgsComposition::renderRect( QPainter* p, const QRectF& rect )
 double* QgsComposition::computeGeoTransform( const QgsComposerMap* map, const QRectF& region , double dpi ) const
 {
   if ( !map )
-    map = worldFileMap();
+    map = referenceMap();
 
   if ( !map )
     return nullptr;
@@ -3151,7 +3151,7 @@ QGraphicsView *QgsComposition::graphicsView() const
 
 void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c, double& d, double& e, double& f ) const
 {
-  const QgsComposerMap* map = worldFileMap();
+  const QgsComposerMap* map = referenceMap();
   if ( !map )
   {
     return;
@@ -3166,7 +3166,7 @@ void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c
 void QgsComposition::computeWorldFileParameters( const QRectF& exportRegion, double& a, double& b, double& c, double& d, double& e, double& f ) const
 {
   // World file parameters : affine transformation parameters from pixel coordinates to map coordinates
-  QgsComposerMap* map = worldFileMap();
+  QgsComposerMap* map = referenceMap();
   if ( !map )
   {
     return;
