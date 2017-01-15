@@ -411,7 +411,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Returns true if the composition will generate corresponding world files when pages
      * are exported.
      * @see setGenerateWorldFile()
-     * @see worldFileMap()
+     * @see referenceMap()
      */
     bool generateWorldFile() const { return mGenerateWorldFile; }
 
@@ -419,24 +419,24 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * are exported.
      * @param enabled set to true to generate world files
      * @see generateWorldFile()
-     * @see setWorldFileMap()
+     * @see setReferenceMap()
      */
     void setGenerateWorldFile( bool enabled ) { mGenerateWorldFile = enabled; }
 
     /** Returns the map item which will be used to generate corresponding world files when the
      * composition is exported, or nullptr if no corresponding map is set.
-     * @see setWorldFileMap()
+     * @see setReferenceMap()
      * @see generateWorldFile()
      */
-    QgsComposerMap* worldFileMap() const;
+    QgsComposerMap* referenceMap() const;
 
     /** Sets the map item which will be used to generate corresponding world files when the
      * composition is exported.
      * @param map composer map item
-     * @see worldFileMap()
+     * @see referenceMap()
      * @see setGenerateWorldFile()
      */
-    void setWorldFileMap( QgsComposerMap* map );
+    void setReferenceMap( QgsComposerMap* map );
 
     //! Returns true if a composition should use advanced effects such as blend modes
     bool useAdvancedEffects() const {return mUseAdvancedEffects;}
@@ -692,7 +692,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Georeferences a file (image of PDF) exported from the composition.
      * @param file filename of exported file
      * @param referenceMap map item to use for georeferencing, or leave as nullptr to use the
-     * currently defined worldFileMap().
+     * currently defined referenceMap().
      * @param exportRegion set to a valid rectangle to indicate that only part of the composition was
      * exported
      * @param dpi set to DPI of exported file, or leave as -1 to use composition's DPI.
@@ -1027,7 +1027,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Computes a GDAL style geotransform for georeferencing a composition.
      * @param referenceMap map item to use for georeferencing, or leave as nullptr to use the
-     * currently defined worldFileMap().
+     * currently defined referenceMap().
      * @param exportRegion set to a valid rectangle to indicate that only part of the composition is
      * being exported
      * @param dpi allows overriding the default composition DPI, or leave as -1 to use composition's DPI.

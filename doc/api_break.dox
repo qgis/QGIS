@@ -646,6 +646,7 @@ were removed. Use setSnapTolerance() and snapTolerance() instead.
 - sortZList() was removed. Use refreshZList() instead.
 - addComposerTable(), composerTableAdded() were removed.
 - setAllUnselected() has been renamed to setAllDeselected. <!--#spellok-->
+- worldFileMap() and setWorldFileMap() have been renamed to referenceMap() and setReferenceMap()
 
 
 QgsCoordinateReferenceSystem        {#qgis_api_break_3_0_QgsCoordinateReferenceSystem}

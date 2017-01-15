@@ -161,7 +161,7 @@ class TestQgsComposerMap(unittest.TestCase):
         self.mComposerMap.setMapRotation(30.0)
 
         self.mComposition.setGenerateWorldFile(True)
-        self.mComposition.setWorldFileMap(self.mComposerMap)
+        self.mComposition.setReferenceMap(self.mComposerMap)
 
         p = self.mComposition.computeWorldFileParameters()
         pexpected = (4.180480199790922, 2.4133064516129026, 779443.7612381146,

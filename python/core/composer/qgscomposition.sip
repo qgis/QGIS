@@ -359,20 +359,9 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
      */
     void setGenerateWorldFile( bool enabled );
 
-    /** Returns the map item which will be used to generate corresponding world files when the
-     * composition is exported, or nullptr if no corresponding map is set.
-     * @see setWorldFileMap()
-     * @see generateWorldFile()
-     */
-    QgsComposerMap* worldFileMap() const;
+    QgsComposerMap* referenceMap() const;
 
-    /** Sets the map item which will be used to generate corresponding world files when the
-     * composition is exported.
-     * @param map composer map item
-     * @see worldFileMap()
-     * @see setGenerateWorldFile()
-     */
-    void setWorldFileMap( QgsComposerMap* map );
+    void setReferenceMap( QgsComposerMap* map );
 
     /** Returns true if a composition should use advanced effects such as blend modes */
     bool useAdvancedEffects() const;

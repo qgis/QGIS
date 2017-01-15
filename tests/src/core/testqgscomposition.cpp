@@ -543,7 +543,7 @@ void TestQgsComposition::georeference()
   delete[] t;
 
   // don't specify map
-  composition->setWorldFileMap( map );
+  composition->setReferenceMap( map );
   t = composition->computeGeoTransform();
   QVERIFY( qgsDoubleNear( t[0], 1925.0, 1.0 ) );
   QVERIFY( qgsDoubleNear( t[1], 0.211719, 0.0001 ) );

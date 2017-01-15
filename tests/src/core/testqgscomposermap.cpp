@@ -176,7 +176,7 @@ void TestQgsComposerMap::worldFileGeneration()
   mComposerMap->setMapRotation( 30.0 );
 
   mComposition->setGenerateWorldFile( true );
-  mComposition->setWorldFileMap( mComposerMap );
+  mComposition->setReferenceMap( mComposerMap );
 
   double a, b, c, d, e, f;
   mComposition->computeWorldFileParameters( a, b, c, d, e, f );
