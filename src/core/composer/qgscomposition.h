@@ -424,7 +424,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void setGenerateWorldFile( bool enabled ) { mGenerateWorldFile = enabled; }
 
     /** Returns the map item which will be used to generate corresponding world files when the
-     * composition is exported, or nullptr if no corresponding map is set.
+     * composition is exported. If no map was explicitly set via setReferenceMap(), the largest
+     * map in the composition will be returned (or nullptr if there are no maps in the composition).
      * @see setReferenceMap()
      * @see generateWorldFile()
      */
