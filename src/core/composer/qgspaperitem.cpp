@@ -20,6 +20,7 @@
 #include "qgsstyle.h"
 #include "qgslogger.h"
 #include "qgsmapsettings.h"
+#include "qgscomposerutils.h"
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 #include <QPainter>
@@ -155,12 +156,9 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
   double dotsPerMM = painter->device()->logicalDpiX() / 25.4;
 
   //setup render context
-  QgsMapSettings ms = mComposition->mapSettings();
-  //context units should be in dots
-  ms.setOutputDpi( painter->device()->logicalDpiX() );
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  context.setPainter( painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, *painter );
   context.setForceVectorOutput( true );
+
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 

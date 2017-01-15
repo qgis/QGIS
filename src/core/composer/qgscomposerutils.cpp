@@ -18,6 +18,8 @@
 #include "qgscomposerutils.h"
 #include "qgscomposition.h"
 #include "qgsdatadefined.h"
+#include "qgsmapsettings.h"
+#include "qgscomposermap.h"
 #include <QPainter>
 
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
@@ -544,4 +546,25 @@ void QgsComposerUtils::drawText( QPainter *painter, const QRectF &rect, const QS
   painter->scale( scaleFactor, scaleFactor );
   painter->drawText( scaledRect, halignment | valignment | flags, text );
   painter->restore();
+}
+
+QgsRenderContext QgsComposerUtils::createRenderContext( QgsComposition* composition, QPainter &painter )
+{
+  QgsComposerMap* referenceMap = composition ? composition->referenceMap() : nullptr;
+  if ( !referenceMap )
+  {
+    return QgsRenderContext::fromQPainter( &painter );
+  }
+
+  int dpi = painter.device()->logicalDpiX();
+  double dotsPerMM = dpi / 25.4;
+
+  // get map settings from reference map
+  QgsRectangle extent = *( referenceMap->currentMapExtent() );
+  QSizeF mapSizeMM = referenceMap->rect().size();
+  QgsMapSettings ms = referenceMap->mapSettings( extent, mapSizeMM * dotsPerMM, dpi );
+
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
+  context.setPainter( &painter );
+  return context;
 }

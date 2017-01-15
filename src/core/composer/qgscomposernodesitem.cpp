@@ -137,11 +137,7 @@ void QgsComposerNodesItem::drawNodes( QPainter *painter ) const
   symbol.data()->setSize( rectSize );
   symbol.data()->setAngle( 45 );
 
-  QgsMapSettings ms = mComposition->mapSettings();
-  ms.setOutputDpi( painter->device()->logicalDpiX() );
-
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  context.setPainter( painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, *painter );
   context.setForceVectorOutput( true );
 
   QgsExpressionContext expressionContext = createExpressionContext();
@@ -172,11 +168,7 @@ void QgsComposerNodesItem::drawSelectedNode( QPainter *painter ) const
   symbol.reset( QgsMarkerSymbol::createSimple( properties ) );
   symbol.data()->setSize( rectSize );
 
-  QgsMapSettings ms = mComposition->mapSettings();
-  ms.setOutputDpi( painter->device()->logicalDpiX() );
-
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  context.setPainter( painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, *painter );
   context.setForceVectorOutput( true );
 
   QgsExpressionContext expressionContext = createExpressionContext();

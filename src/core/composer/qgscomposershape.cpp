@@ -21,6 +21,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgscomposermodel.h"
 #include "qgsmapsettings.h"
+#include "qgscomposerutils.h"
 #include <QPainter>
 
 QgsComposerShape::QgsComposerShape( QgsComposition* composition )
@@ -178,11 +179,7 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
   double dotsPerMM = p->device()->logicalDpiX() / 25.4;
 
   //setup render context
-  QgsMapSettings ms = mComposition->mapSettings();
-  //context units should be in dots
-  ms.setOutputDpi( p->device()->logicalDpiX() );
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  context.setPainter( p );
+  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, *p );
   context.setForceVectorOutput( true );
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
