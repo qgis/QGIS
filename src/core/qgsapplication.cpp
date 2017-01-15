@@ -396,7 +396,7 @@ QString QgsApplication::activeThemePath()
 
 QString QgsApplication::appIconPath()
 {
-  return QString( "qgis-icon-60x60.png" );
+  return iconsPath() + QStringLiteral( "qgis-icon-60x60.png" );
 }
 
 QString QgsApplication::iconPath( const QString& iconFile )
