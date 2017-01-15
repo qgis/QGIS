@@ -39,13 +39,11 @@ class GUI_EXPORT QgsMapToolTouch : public QgsMapTool
 
     void activate() override;
     void deactivate() override;
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
-    virtual void canvasDoubleClickEvent( QgsMapMouseEvent* e ) override;
-
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e ) override;
     virtual Flags flags() const override { return QgsMapTool::Transient | QgsMapTool::AllowZoomRect; }
-
-    bool gestureEvent( QGestureEvent *event ) override;
+    bool gestureEvent( QGestureEvent *e ) override;
 
   private:
 

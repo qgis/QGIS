@@ -300,12 +300,10 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
      */
     QList<QgsComposerItem*> selectedComposerItems( const bool includeLockedItems = true );
 
-%If (QLISTCONSTPTR_CONVERSION)
     /** Returns pointers to all composer maps in the scene
-      @note available in python bindings only with PyQt >= 4.8.4
-      */
+     * @note available in python bindings only with PyQt >= 4.8.4
+     */
     QList<const QgsComposerMap*> composerMapItems() const;
-%End
 
     /** Return composer items of a specific type
      * @param itemList list of item type to store matching items in

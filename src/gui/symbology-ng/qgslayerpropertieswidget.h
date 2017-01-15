@@ -37,7 +37,7 @@ class SymbolLayerItem;
 /** \ingroup gui
  * \class QgsLayerPropertiesWidget
  */
-class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, protected QgsExpressionContextGenerator, private Ui::LayerPropertiesWidget
+class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExpressionContextGenerator, private Ui::LayerPropertiesWidget
 {
     Q_OBJECT
 

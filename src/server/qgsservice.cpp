@@ -17,8 +17,8 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "qgsservice.h"
+
 
 //! Constructor
 QgsService::QgsService()

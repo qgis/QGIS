@@ -36,7 +36,7 @@ class QgsVectorLayerFeatureIterator;
  * Partial snapshot of vector layer's state (only the members necessary for access to features)
  * @note not available in Python bindings
 */
-class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
+class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {
   public:
 

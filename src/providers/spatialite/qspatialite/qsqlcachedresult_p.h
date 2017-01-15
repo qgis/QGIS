@@ -62,7 +62,7 @@ template <typename T> class QVector;
 
 class QSqlCachedResultPrivate;
 
-class Q_SQL_EXPORT QSqlCachedResult: public QSqlResult
+class /* Q_SQL_EXPORT */ QSqlCachedResult: public QSqlResult
 {
   public:
     virtual ~QSqlCachedResult() {}

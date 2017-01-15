@@ -1,5 +1,3 @@
-%Feature PROXY_FACTORY
-
 /*
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
@@ -31,7 +29,6 @@ class QgsNetworkAccessManager : QNetworkAccessManager
     //! destructor
     ~QgsNetworkAccessManager();
 
-%If (PROXY_FACTORY)
     //! insert a factory into the proxy factories list
     void insertProxyFactory( QNetworkProxyFactory *factory /Transfer/ );
 
@@ -40,7 +37,6 @@ class QgsNetworkAccessManager : QNetworkAccessManager
 
     //! retrieve proxy factory list
     const QList<QNetworkProxyFactory *> proxyFactories() const;
-%End
 
     //! retrieve fall back proxy (for urls that no factory returned proxies for)
     const QNetworkProxy &fallbackProxy() const;

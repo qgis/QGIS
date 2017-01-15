@@ -1,5 +1,4 @@
 %Module(name=qgis._gui,
-        version=0,
         keyword_arguments="Optional")
 
 %Feature HAVE_QSCI_SIP

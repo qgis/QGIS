@@ -2101,8 +2101,8 @@ QString createFilters( const QString& type )
       {
         sDatabaseDrivers += QObject::tr( "ESRI Personal GeoDatabase" ) + ",PGeo;";
 #ifdef Q_OS_WIN
-        myFileFilters += createFileFilter_( QObject::tr( "ESRI Personal GeoDatabase" ), "*.mdb" );
-        myExtensions << "mdb";
+        sFileFilters += createFileFilter_( QObject::tr( "ESRI Personal GeoDatabase" ), "*.mdb" );
+        sExtensions << "mdb";
 #endif
       }
       else if ( driverName.startsWith( QLatin1String( "SDE" ) ) )

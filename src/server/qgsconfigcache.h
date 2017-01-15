@@ -24,12 +24,13 @@
 #include <QFileSystemWatcher>
 #include <QMap>
 #include <QObject>
+
 #include "qgis_server.h"
+#include "qgswmsconfigparser.h"
+#include "qgswfsprojectparser.h"
+#include "qgswcsprojectparser.h"
 
 class QgsServerProjectParser;
-class QgsWCSProjectParser;
-class QgsWfsProjectParser;
-class QgsWmsConfigParser;
 class QgsAccessControl;
 
 class QDomDocument;

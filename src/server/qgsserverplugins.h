@@ -20,7 +20,6 @@
 
 #include "qgsrequesthandler.h"
 #include "qgsserverinterface.h"
-#include "qgis_server.h"
 
 // This is needed by SIP otherwise it doesn't find QgsPythonUtils header
 class QgsPythonUtils;

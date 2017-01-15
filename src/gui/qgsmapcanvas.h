@@ -80,7 +80,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Constructor
     QgsMapCanvas( QWidget * parent = nullptr );
 
-
     ~QgsMapCanvas();
 
     //! Returns the magnification factor

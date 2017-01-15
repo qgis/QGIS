@@ -24,6 +24,7 @@
 #include "qgsaccesscontrol.h"
 #include "qgslogger.h"
 
+
 QgsWfsProjectParser::QgsWfsProjectParser(
   const QString& filePath
   , const QgsAccessControl* ac

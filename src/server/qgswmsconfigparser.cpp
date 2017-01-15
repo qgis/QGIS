@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis_server.h"
+
 #include "qgswmsconfigparser.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
@@ -36,9 +38,9 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+
 QgsWmsConfigParser::QgsWmsConfigParser()
 {
-
 }
 
 QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const

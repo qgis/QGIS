@@ -465,7 +465,6 @@ void QgsMapThemeCollection::layerStyleRenamed( const QString& oldName, const QSt
   emit mapThemesChanged();
 }
 
-
 QHash<QgsMapLayer*, QgsMapThemeCollection::MapThemeLayerRecord> QgsMapThemeCollection::MapThemeRecord::validLayerRecords() const
 {
   QHash<QgsMapLayer*, MapThemeLayerRecord> validSet;

@@ -345,7 +345,7 @@ int main( int argc, char *argv[] )
     }
     else
     {
-      myFileList.append( QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
+      sFileList.append( QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
     }
   }
 #endif // Q_OS_WIN

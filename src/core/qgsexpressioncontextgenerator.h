@@ -33,7 +33,7 @@
  * @note added in QGIS 3.0
  */
 
-class QgsExpressionContextGenerator
+class CORE_EXPORT QgsExpressionContextGenerator
 {
   public:
 

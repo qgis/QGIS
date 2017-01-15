@@ -21,10 +21,10 @@
 #include "qgsmessagelog.h"
 #include "qgsserverexception.h"
 
+
 //! constructor
 QgsServerResponse::QgsServerResponse()
 {
-
 }
 
 
@@ -91,5 +91,4 @@ void QgsServerResponse::write( const QgsServerException& ex )
   setHeader( "Content-Type", responseFormat );
   write( ba );
 }
-
 

@@ -682,7 +682,7 @@ QgsAbstractGeometry * QgsGrassVectorMap::areaGeometry( int id )
   QgsPolygonV2 * polygon = new QgsPolygonV2();
 
   struct line_pnts *points = Vect_new_line_struct();
-  QgsDebugMsgLevel( QString( "points= %1" ).arg(( long )points ), 3 );
+  QgsDebugMsgLevel( QString( "points= %1" ).arg(( quint64 )points ), 3 );
   // Vect_get_area_points and Vect_get_isle_pointsis using static variable -> lock
   // TODO: Faster to lock the whole feature iterator? Maybe only for areas?
   QgsGrass::lock();

@@ -119,6 +119,8 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
 
     virtual bool operator<( const QTreeWidgetItem &other ) const override;
 
+    bool operator>=( const QTreeWidgetItem &other ) const { return !( *this < other ); }
+
   private:
 
     enum ItemDataRole

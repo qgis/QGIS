@@ -25,6 +25,7 @@
 #include <algorithm>
 #include <functional>
 
+
 namespace
 {
 
@@ -82,7 +83,6 @@ namespace
 
 QgsServiceRegistry::QgsServiceRegistry()
 {
-
 }
 
 QgsServiceRegistry::~QgsServiceRegistry()

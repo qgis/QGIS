@@ -27,10 +27,10 @@
 #include "qgssymbol.h"
 #include "qgis.h"
 #include "qgsmapunitscale.h"
+#include "qgscolorramp.h"
 
 class QgsExpression;
 class QgsSymbolLayer;
-class QgsColorRamp;
 
 typedef QMap<QString, QString> QgsStringMap;
 typedef QMap<QString, QgsSymbol* > QgsSymbolMap;

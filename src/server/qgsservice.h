@@ -23,7 +23,6 @@
 
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
-#include "qgis_server.h"
 
 class QgsProject;
 

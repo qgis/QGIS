@@ -2228,6 +2228,9 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 
     v.clear();
 
+    if ( CSLCount( values ) == 0 )
+      break;
+
     if ( CSLCount( values ) < n )
     {
       qWarning( "Only %d columns", CSLCount( values ) );

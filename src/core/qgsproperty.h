@@ -19,6 +19,8 @@
 #include "qgsproperty_p.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
+#include "qgscolorramp.h"
+
 #include <QVariant>
 #include <QHash>
 #include <QString>
@@ -28,7 +30,6 @@
 #include <QColor>
 
 class QgsPropertyTransformer;
-class QgsColorRamp;
 
 /**
  * \ingroup core

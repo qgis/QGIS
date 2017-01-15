@@ -352,7 +352,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
     if ( mSource->isSpatial() )
     {
       QByteArray ar = record.value( mSource->mGeometryColName ).toByteArray();
-      size_t wkb_size = ar.size();
+      int wkb_size = ar.size();
       if ( 0 < wkb_size )
       {
         unsigned char* db2data = new unsigned char[wkb_size + 1]; // allocate persistent storage

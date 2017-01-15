@@ -31,7 +31,7 @@
   * currently supported for configuration.
   * @note added in QGIS 3.0
   */
-class QgsServerSettingsEnv : public QObject
+class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 {
     Q_OBJECT
 

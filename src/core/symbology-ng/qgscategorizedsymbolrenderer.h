@@ -19,11 +19,11 @@
 #include "qgssymbol.h"
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
+#include "qgscolorramp.h"
 
 #include <QHash>
 #include <QScopedPointer>
 
-class QgsColorRamp;
 class QgsVectorLayer;
 
 /** \ingroup core

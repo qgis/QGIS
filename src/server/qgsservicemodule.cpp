@@ -17,9 +17,8 @@
  *                                                                         *
  ***************************************************************************/
 
-
-
 #include "qgsservicemodule.h"
+
 
 //! Constructor
 QgsServiceModule::QgsServiceModule()

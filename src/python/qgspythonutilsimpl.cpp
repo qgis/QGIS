@@ -74,7 +74,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
 
 #ifdef Q_OS_WIN
   runString( "oldhome=None" );
-  runString( "if os.environ.has_key('HOME'): oldhome=os.environ['HOME']\n" );
+  runString( "if 'HOME' in os.environ: oldhome=os.environ['HOME']\n" );
   runString( "os.environ['HOME']=os.environ['USERPROFILE']\n" );
 #endif
 
@@ -238,7 +238,7 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
     return;
   }
   // initialize 'iface' object
-  runString( "qgis.utils.initInterface(" + QString::number(( unsigned long ) interface ) + ')' );
+  runString( "qgis.utils.initInterface(" + QString::number(( quint64 ) interface ) + ')' );
   if ( !checkQgisUser() )
   {
     exitPython();
@@ -268,7 +268,7 @@ void QgsPythonUtilsImpl::initServerPython( QgsServerInterface* interface )
   }
 
   // This is the other main difference with initInterface() for desktop plugins
-  runString( "qgis.utils.initServerInterface(" + QString::number(( unsigned long ) interface ) + ')' );
+  runString( "qgis.utils.initServerInterface(" + QString::number(( quint64 ) interface ) + ')' );
 
   doCustomImports();
   finish();

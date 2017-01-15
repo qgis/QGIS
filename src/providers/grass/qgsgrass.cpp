@@ -432,14 +432,14 @@ bool QgsGrass::init( void )
     QString msysBin = QCoreApplication::applicationDirPath() + "/msys/bin/";
     if ( QFileInfo( msysBin ).isDir() )
     {
-      mGrassModulesPaths << shortPath( QCoreApplication::applicationDirPath() + "/msys/bin/" );
+      sGrassModulesPaths << shortPath( QCoreApplication::applicationDirPath() + "/msys/bin/" );
     }
 #endif
 
     //QString p = getenv( "PATH" );
     //path.append( sep + p );
 
-    QgsDebugMsg( "mGrassModulesPaths = " + sGrassModulesPaths.join( "," ) );
+    QgsDebugMsg( "sGrassModulesPaths = " + sGrassModulesPaths.join( "," ) );
     //putEnv( "PATH", path );
 
     // TODO: move where it is required for QProcess
@@ -2961,7 +2961,7 @@ void QgsGrass::vectDestroyMapStruct( struct Map_info *map )
   // TODO: replace by Vect_destroy_map_struct once it appears in GRASS
   // TODO: until switch to hypothetical Vect_destroy_map_struct verify that Vect_destroy_map_struct cannot
   // call G_fatal_error, otherwise check and remove use of vectDestroyMapStruct from G_CATCH blocks
-  QgsDebugMsg( QString( "free map = %1" ).arg(( long )map ) );
+  QgsDebugMsg( QString( "free map = %1" ).arg(( quint64 )map ) );
   qgsFree( map );
   map = 0;
 }

@@ -29,7 +29,7 @@
  * QgsFcgiServerResponse
  * Class defining fcgi response
  */
-class QgsFcgiServerResponse: public QgsServerResponse
+class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
 {
   public:
 
@@ -76,7 +76,7 @@ class QgsFcgiServerResponse: public QgsServerResponse
  * QgsFcgiServerResquest
  * Class defining fcgi request
  */
-class QgsFcgiServerRequest: public QgsServerRequest
+class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
 {
   public:
     QgsFcgiServerRequest();
