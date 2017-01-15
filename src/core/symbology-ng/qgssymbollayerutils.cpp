@@ -2574,21 +2574,21 @@ QgsStringMap QgsSymbolLayerUtils::getSvgParameterList( QDomElement &element )
     if ( paramElem.localName() == QLatin1String( "SvgParameter" ) || paramElem.localName() == QLatin1String( "CssParameter" ) )
     {
       QString name = paramElem.attribute( QStringLiteral( "name" ) );
-      if (paramElem.firstChild().nodeType() == QDomNode::TextNode)
+      if ( paramElem.firstChild().nodeType() == QDomNode::TextNode )
       {
         value = paramElem.firstChild().nodeValue();
       }
       else
       {
-        if (paramElem.firstChild().nodeType() == QDomNode::ElementNode &&
-            paramElem.firstChild().localName() == QLatin1String("Literal"))
+        if ( paramElem.firstChild().nodeType() == QDomNode::ElementNode &&
+             paramElem.firstChild().localName() == QLatin1String( "Literal" ) )
         {
-          QgsDebugMsg(paramElem.firstChild().localName());
+          QgsDebugMsg( paramElem.firstChild().localName() );
           value = paramElem.firstChild().firstChild().nodeValue();
         }
         else
         {
-          QgsDebugMsg(QString("unexpected child of %1").arg(paramElem.localName()));
+          QgsDebugMsg( QString( "unexpected child of %1" ).arg( paramElem.localName() ) );
         }
       }
 
