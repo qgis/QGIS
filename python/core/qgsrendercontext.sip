@@ -62,7 +62,6 @@ class QgsRenderContext
     //getters
 
     QPainter* painter();
-    const QPainter* constPainter() const;
 
     /** Returns the current coordinate transform for the context, or an invalid
      * transform is no coordinate transformation is required.

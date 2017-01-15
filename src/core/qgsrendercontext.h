@@ -105,7 +105,6 @@ class CORE_EXPORT QgsRenderContext
      * @see setPainter()
     */
     QPainter* painter() {return mPainter;}
-    const QPainter* constPainter() const { return mPainter; }
 
     /** Returns the current coordinate transform for the context, or an invalid
      * transform is no coordinate transformation is required.
