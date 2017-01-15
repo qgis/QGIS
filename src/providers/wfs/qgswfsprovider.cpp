@@ -849,9 +849,10 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
   {
     //transaction successful. Add the features to the cache
     QStringList idList = insertedFeatureIds( serverResponse );
+
     /* Fix issue with GeoServer and shapefile feature stores when no real
        feature id are returned but new0 returned instead of the featureId*/
-  for ( const QString &v : idList )
+    Q_FOREACH ( const QString &v, idList )
     {
       if ( v.startsWith( "new" ) )
       {
@@ -859,6 +860,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
         return true;
       }
     }
+
     QStringList::const_iterator idIt = idList.constBegin();
     featureIt = flist.begin();
 
