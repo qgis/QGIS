@@ -430,9 +430,6 @@ class QgsSymbolLayerUtils
     /** Returns scale factor painter units -> map units*/
     static double mapUnitScaleFactor( const QgsRenderContext& c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
-    /** Creates a render context for a pixel based device*/
-    static QgsRenderContext createRenderContext( QPainter* p );
-
     /** Multiplies opacity of image pixel values with a (global) transparency value*/
     static void multiplyImageOpacity( QImage* image, qreal alpha );
 

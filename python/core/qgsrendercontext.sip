@@ -51,6 +51,14 @@ class QgsRenderContext
     //! @note added in 2.4
     static QgsRenderContext fromMapSettings( const QgsMapSettings& mapSettings );
 
+    /**
+     * Creates a default render context given a pixel based QPainter destination.
+     * If no painter is specified or the painter has no device, then a default
+     * DPI of 88 will be assumed.
+     * @note added in QGIS 3.0
+     */
+    static QgsRenderContext fromQPainter( QPainter* painter );
+
     //getters
 
     QPainter* painter();

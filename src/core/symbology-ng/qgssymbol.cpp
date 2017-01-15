@@ -447,7 +447,7 @@ QColor QgsSymbol::color() const
 
 void QgsSymbol::drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext* customContext )
 {
-  QgsRenderContext context = customContext ? *customContext : QgsSymbolLayerUtils::createRenderContext( painter );
+  QgsRenderContext context = customContext ? *customContext : QgsRenderContext::fromQPainter( painter );
   context.setForceVectorOutput( true );
   QgsSymbolRenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, QgsFields(), mapUnitScale() );
 
@@ -526,7 +526,7 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext* expressionContext
     p.drawLine( 50, 0, 50, 100 );
   }
 
-  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &p );
+  QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
   if ( expressionContext )
     context.setExpressionContext( *expressionContext );
 

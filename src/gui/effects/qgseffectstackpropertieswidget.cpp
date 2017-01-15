@@ -212,7 +212,7 @@ void QgsEffectStackPropertiesWidget::updatePreview()
   previewImage.fill( Qt::transparent );
   painter.begin( &previewImage );
   painter.setRenderHint( QPainter::Antialiasing );
-  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &painter );
+  QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
   if ( !mPreviewPicture )
   {
     QPicture previewPic;
