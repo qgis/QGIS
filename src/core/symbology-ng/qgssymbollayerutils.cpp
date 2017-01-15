@@ -626,7 +626,7 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( QgsSymbolLayer* layer, 
   QPainter painter;
   painter.begin( &picture );
   painter.setRenderHint( QPainter::Antialiasing );
-  QgsRenderContext renderContext = createRenderContext( &painter );
+  QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
   renderContext.setForceVectorOutput( true );
   QgsSymbolRenderContext symbolContext( renderContext, units, 1.0, false, 0, nullptr, QgsFields(), scale );
   layer->drawPreviewIcon( symbolContext, size );
@@ -641,7 +641,7 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( QgsSymbolLayer* layer, QgsUni
   QPainter painter;
   painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
-  QgsRenderContext renderContext = createRenderContext( &painter );
+  QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
   QgsSymbolRenderContext symbolContext( renderContext, u, 1.0, false, 0, nullptr, QgsFields(), scale );
   layer->drawPreviewIcon( symbolContext, size );
   painter.end();
@@ -3466,22 +3466,6 @@ double QgsSymbolLayerUtils::mapUnitScaleFactor( const QgsRenderContext &c, QgsUn
       return 1.0;
   }
   return 1.0;
-}
-
-QgsRenderContext QgsSymbolLayerUtils::createRenderContext( QPainter* p )
-{
-  QgsRenderContext context;
-  context.setPainter( p );
-  context.setRasterScaleFactor( 1.0 );
-  if ( p && p->device() )
-  {
-    context.setScaleFactor( p->device()->logicalDpiX() / 25.4 );
-  }
-  else
-  {
-    context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
-  }
-  return context;
 }
 
 void QgsSymbolLayerUtils::multiplyImageOpacity( QImage* image, qreal alpha )

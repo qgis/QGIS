@@ -88,6 +88,22 @@ QgsRenderContext::~QgsRenderContext()
   mFeatureFilterProvider = nullptr;
 }
 
+QgsRenderContext QgsRenderContext::fromQPainter( QPainter* painter )
+{
+  QgsRenderContext context;
+  context.setPainter( painter );
+  context.setRasterScaleFactor( 1.0 );
+  if ( painter && painter->device() )
+  {
+    context.setScaleFactor( painter->device()->logicalDpiX() / 25.4 );
+  }
+  else
+  {
+    context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
+  }
+  return context;
+}
+
 void QgsRenderContext::setFlags( QgsRenderContext::Flags flags )
 {
   mFlags = flags;
