@@ -43,7 +43,7 @@ class QgsRelation
     void writeXml( QDomNode& node, QDomDocument& doc ) const;
 
     /**
-     * Set a name for this relation
+     * Set an id for this relation
      *
      * @param id
      */
