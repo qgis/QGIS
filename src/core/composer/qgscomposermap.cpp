@@ -1128,7 +1128,7 @@ void QgsComposerMap::updateItem()
 
 bool QgsComposerMap::containsWmsLayer() const
 {
-  Q_FOREACH ( QgsMapLayer* layer, mComposition->mapSettings().layers() )
+  Q_FOREACH ( QgsMapLayer* layer, layersToRender() )
   {
     if ( QgsRasterLayer* currentRasterLayer = qobject_cast<QgsRasterLayer *>( layer ) )
     {
@@ -1164,7 +1164,7 @@ bool QgsComposerMap::containsAdvancedEffects() const
   // check if map contains advanced effects like blend modes, or flattened layers for transparency
 
   QgsTextFormat layerFormat;
-  Q_FOREACH ( QgsMapLayer* layer, mComposition->mapSettings().layers() )
+  Q_FOREACH ( QgsMapLayer* layer, layersToRender() )
   {
     if ( layer )
     {
@@ -1188,6 +1188,7 @@ bool QgsComposerMap::containsAdvancedEffects() const
         if ( QgsPalLabeling::staticWillUseLayer( currentVectorLayer ) )
         {
           // Check all label blending properties
+
           layerFormat.readFromLayer( currentVectorLayer );
           if ( layerFormat.containsAdvancedEffects() )
             return true;
