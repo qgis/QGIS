@@ -373,7 +373,7 @@ void QgsComposerPicture::loadLocalPicture( const QString &path )
     {
       //try to open svg
       const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( pic.fileName(), rect().width(), mSvgFillColor, mSvgBorderColor, mSvgBorderWidth,
-                                     1.0, 1.0 );
+                                     1.0 );
       mSVG.load( svgContent );
       if ( mSVG.isValid() )
       {

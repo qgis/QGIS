@@ -41,7 +41,6 @@ QgsSvgCacheEntry::QgsSvgCacheEntry()
     , size( 0.0 )
     , outlineWidth( 0 )
     , widthScaleFactor( 1.0 )
-    , rasterScaleFactor( 1.0 )
     , fill( Qt::black )
     , outline( Qt::black )
     , image( nullptr )
@@ -51,13 +50,12 @@ QgsSvgCacheEntry::QgsSvgCacheEntry()
 {
 }
 
-QgsSvgCacheEntry::QgsSvgCacheEntry( const QString& f, double s, double ow, double wsf, double rsf, const QColor& fi, const QColor& ou, const QString& lk )
+QgsSvgCacheEntry::QgsSvgCacheEntry( const QString& f, double s, double ow, double wsf, const QColor& fi, const QColor& ou, const QString& lk )
     : file( f )
     , lookupKey( lk.isEmpty() ? f : lk )
     , size( s )
     , outlineWidth( ow )
     , widthScaleFactor( wsf )
-    , rasterScaleFactor( rsf )
     , fill( fi )
     , outline( ou )
     , image( nullptr )
@@ -77,7 +75,7 @@ QgsSvgCacheEntry::~QgsSvgCacheEntry()
 bool QgsSvgCacheEntry::operator==( const QgsSvgCacheEntry& other ) const
 {
   return other.file == file && qgsDoubleNear( other.size, size ) && qgsDoubleNear( other.outlineWidth, outlineWidth ) && qgsDoubleNear( other.widthScaleFactor, widthScaleFactor )
-         && qgsDoubleNear( other.rasterScaleFactor, rasterScaleFactor ) && other.fill == fill && other.outline == outline;
+         && other.fill == fill && other.outline == outline;
 }
 
 int QgsSvgCacheEntry::dataSize() const
@@ -110,12 +108,12 @@ QgsSvgCache::~QgsSvgCache()
 
 
 QImage QgsSvgCache::svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache )
+                                double widthScaleFactor, bool& fitsInCache )
 {
   QMutexLocker locker( &mMutex );
 
   fitsInCache = true;
-  QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+  QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor );
 
   //if current entry image is 0: cache image for entry
   // checks to see if image will fit into cache
@@ -155,11 +153,11 @@ QImage QgsSvgCache::svgAsImage( const QString& file, double size, const QColor& 
 }
 
 QPicture QgsSvgCache::svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                    double widthScaleFactor, double rasterScaleFactor, bool forceVectorOutput )
+                                    double widthScaleFactor, bool forceVectorOutput )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+  QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor );
 
   //if current entry picture is 0: cache picture for entry
   //update stats for memory usage
@@ -173,31 +171,31 @@ QPicture QgsSvgCache::svgAsPicture( const QString& file, double size, const QCol
 }
 
 QByteArray QgsSvgCache::svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                    double widthScaleFactor, double rasterScaleFactor )
+                                    double widthScaleFactor )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor );
 
   return currentEntry->svgContent;
 }
 
-QSizeF QgsSvgCache::svgViewboxSize( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth, double widthScaleFactor, double rasterScaleFactor )
+QSizeF QgsSvgCache::svgViewboxSize( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth, double widthScaleFactor )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor );
 
   return currentEntry->viewboxSize;
 }
 
 QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-    double widthScaleFactor, double rasterScaleFactor )
+    double widthScaleFactor )
 {
   // The file may be relative path (e.g. if path is data defined)
   QString path = QgsSymbolLayerUtils::symbolNameToPath( file );
 
-  QgsSvgCacheEntry* entry = new QgsSvgCacheEntry( path, size, outlineWidth, widthScaleFactor, rasterScaleFactor, fill, outline, file );
+  QgsSvgCacheEntry* entry = new QgsSvgCacheEntry( path, size, outlineWidth, widthScaleFactor, fill, outline, file );
 
   replaceParamsAndCacheSvg( entry );
 
@@ -564,7 +562,7 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
 }
 
 QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-    double widthScaleFactor, double rasterScaleFactor )
+    double widthScaleFactor )
 {
   //search entries in mEntryLookup
   QgsSvgCacheEntry* currentEntry = nullptr;
@@ -575,8 +573,7 @@ QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, con
   {
     QgsSvgCacheEntry* cacheEntry = *entryIt;
     if ( qgsDoubleNear( cacheEntry->size, size ) && cacheEntry->fill == fill && cacheEntry->outline == outline &&
-         qgsDoubleNear( cacheEntry->outlineWidth, outlineWidth ) && qgsDoubleNear( cacheEntry->widthScaleFactor, widthScaleFactor )
-         && qgsDoubleNear( cacheEntry->rasterScaleFactor, rasterScaleFactor ) )
+         qgsDoubleNear( cacheEntry->outlineWidth, outlineWidth ) && qgsDoubleNear( cacheEntry->widthScaleFactor, widthScaleFactor ) )
     {
       currentEntry = cacheEntry;
       break;
@@ -587,7 +584,7 @@ QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, con
   //cache and replace params in svg content
   if ( !currentEntry )
   {
-    currentEntry = insertSVG( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+    currentEntry = insertSVG( file, size, fill, outline, outlineWidth, widthScaleFactor );
   }
   else
   {
@@ -895,7 +892,6 @@ void QgsSvgCache::printEntryList()
     QgsDebugMsg( "File:" + entry->file );
     QgsDebugMsg( "Size:" + QString::number( entry->size ) );
     QgsDebugMsg( "Width scale factor" + QString::number( entry->widthScaleFactor ) );
-    QgsDebugMsg( "Raster scale factor" + QString::number( entry->rasterScaleFactor ) );
     entry = entry->nextEntry;
   }
 }

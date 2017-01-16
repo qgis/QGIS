@@ -1973,7 +1973,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   {
     usePict = false;
     const QImage& img = QgsApplication::svgCache()->svgAsImage( path, size, fillColor, outlineColor, outlineWidth,
-                        context.renderContext().scaleFactor(), 1.0, fitsInCache );
+                        context.renderContext().scaleFactor(), fitsInCache );
     if ( fitsInCache && img.width() > 1 )
     {
       //consider transparency
@@ -1996,7 +1996,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   {
     p->setOpacity( context.alpha() );
     const QPicture& pct = QgsApplication::svgCache()->svgAsPicture( path, size, fillColor, outlineColor, outlineWidth,
-                          context.renderContext().scaleFactor(), 1.0, context.renderContext().forceVectorOutput() );
+                          context.renderContext().scaleFactor(), context.renderContext().forceVectorOutput() );
 
     if ( pct.width() > 1 )
     {
@@ -2348,8 +2348,7 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
   }
 
   const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, size, fillColor, outlineColor, outlineWidth,
-                                 context.renderContext().scaleFactor(),
-                                 1.0 );
+                                 context.renderContext().scaleFactor() );
 
   //if current entry image is 0: cache image for entry
   // checks to see if image will fit into cache
@@ -2431,8 +2430,7 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext& c
   }
 
   QSizeF svgViewbox = QgsApplication::svgCache()->svgViewboxSize( path, scaledSize, fillColor, outlineColor, outlineWidth,
-                      context.renderContext().scaleFactor(),
-                      1.0 );
+                      context.renderContext().scaleFactor() );
 
   double scaledHeight = svgViewbox.isValid() ? scaledSize * svgViewbox.height() / svgViewbox.width() : scaledSize;
 

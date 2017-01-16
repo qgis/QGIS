@@ -1951,11 +1951,11 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush& brush, const QString& svgFileP
     bool fitsInCache = true;
     double outlineWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), svgOutlineWidth, svgOutlineWidthUnit, svgOutlineWidthMapUnitScale );
     const QImage& patternImage = QgsApplication::svgCache()->svgAsImage( svgFilePath, size, svgFillColor, svgOutlineColor, outlineWidth,
-                                 context.renderContext().scaleFactor(), 1.0, fitsInCache );
+                                 context.renderContext().scaleFactor(), fitsInCache );
     if ( !fitsInCache )
     {
       const QPicture& patternPict = QgsApplication::svgCache()->svgAsPicture( svgFilePath, size, svgFillColor, svgOutlineColor, outlineWidth,
-                                    context.renderContext().scaleFactor(), 1.0 );
+                                    context.renderContext().scaleFactor() );
       double hwRatio = 1.0;
       if ( patternPict.width() > 0 )
       {

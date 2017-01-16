@@ -1632,6 +1632,12 @@ QgsSvgCache        {#qgis_api_break_3_0_QgsSvgCache}
 
 - This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::svgCache() to access an application-wide cache.
 - containsParamsV2() was removed. Use containsParamsV3() instead.
+- The rasterScaleFactor parameter was removed from all methods
+
+QgsSvgCacheEntry       {#qgis_api_break_3_0_QgsSvgCacheEntry}
+----------------
+
+- The rasterScaleFactor member was removed.
 
 QgsStyle (renamed from QgsStyleV2)        {#qgis_api_break_3_0_QgsStyle}
 ----------------------------------

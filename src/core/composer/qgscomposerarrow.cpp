@@ -256,7 +256,7 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
 
   QSvgRenderer r;
   const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( svgFileName, mArrowHeadWidth, mArrowHeadFillColor, mArrowHeadOutlineColor, mArrowHeadOutlineWidth,
-                                 1.0, 1.0 );
+                                 1.0 );
   r.load( svgContent );
 
   p->save();
