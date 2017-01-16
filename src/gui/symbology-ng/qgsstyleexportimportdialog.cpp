@@ -134,7 +134,7 @@ void QgsStyleExportImportDialog::doExportImport()
       return;
     }
 
-    // ensure the user never ommited the extension from the file name
+    // ensure the user never omitted the extension from the file name
     if ( !fileName.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) )
     {
       fileName += QLatin1String( ".xml" );

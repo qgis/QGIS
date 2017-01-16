@@ -137,7 +137,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
      */
     bool attributesOutdated();
 
-    //! Map descripton for debugging
+    //! Map description for debugging
     QString toString();
 
     /** Get topology symbol code

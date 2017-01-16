@@ -105,7 +105,7 @@ const char* QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
   \brief The QgsApplication class manages application-wide information.
 
   This is a subclass of QApplication and should be instantiated in place of
-  QApplication. Most methods are static in keeping witn the design of QApplication.
+  QApplication. Most methods are static in keeping with the design of QApplication.
 
   This class hides platform-specific path information and provides
   a portable way of referencing specific files and directories.

@@ -1,7 +1,7 @@
 /***************************************************************************
                           qgsactionmanager.h
 
- These classes store and control the managment and execution of actions
+ These classes store and control the management and execution of actions
  associated with a particular Qgis layer. Actions are defined to be
  external programs that are run with user-specified inputs that can
  depend on the contents of layer attributes.
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsActionManager
      * in the action definition.
      * @param actionId action id
      * @param feature feature to run action for
-     * @param context expression context to evalute expressions under
+     * @param context expression context to evaluate expressions under
      */
     void doAction( const QUuid& actionId, const QgsFeature& feature, const QgsExpressionContext& context );
 

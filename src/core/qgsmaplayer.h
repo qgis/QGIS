@@ -390,7 +390,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     static QDomDocument asLayerDefinition( const QList<QgsMapLayer*>& layers, const QString& relativeBasePath = QString::null );
 
-    /** Creates a new layer from a layer defininition document
+    /** Creates a new layer from a layer definition document
      */
     static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document, bool addToRegistry = false, bool addToLegend = false );
     static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString &qlrfile );

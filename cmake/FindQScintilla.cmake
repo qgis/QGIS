@@ -69,7 +69,7 @@ ELSE(EXISTS QSCINTILLA_VERSION_STR)
   ENDIF(QSCINTILLA_LIBRARY AND QSCINTILLA_INCLUDE_DIR)
 
   IF(QSCINTILLA_INCLUDE_DIR AND NOT EXISTS QSCINTILLA_VERSION_STR)
-    # get QScintilla2 version from header, is optinally retrieved via bindings
+    # get QScintilla2 version from header, is optionally retrieved via bindings
     # with Qsci PyQt4 module
     FILE(READ ${QSCINTILLA_INCLUDE_DIR}/Qsci/qsciglobal.h qsci_header)
     STRING(REGEX REPLACE "^.*QSCINTILLA_VERSION_STR +\"([^\"]+)\".*$" "\\1" QSCINTILLA_VERSION_STR "${qsci_header}")

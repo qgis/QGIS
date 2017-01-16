@@ -163,7 +163,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
 
     def testOptionsAsFiles(self):
         # verify QGIS accepts filenames that match options after the special option '--'
-        # '--help' should return immediatly (after displaying the usage hints)
+        # '--help' should return immediately (after displaying the usage hints)
         # '-- --help' should not exit but try (and probably fail) to load a layer called '--help'
         with self.assertRaises(Exception):
             self.doTestStartup(option="--configpath",

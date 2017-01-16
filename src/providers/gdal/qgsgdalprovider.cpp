@@ -1458,7 +1458,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
                                         const QStringList & theConfigOptions )
 {
   //TODO: Consider making theRasterPyramidList modifyable by this method to indicate if the pyramid exists after build attempt
-  //without requiring the user to rebuild the pyramid list to get the updated infomation
+  //without requiring the user to rebuild the pyramid list to get the updated information
 
   //
   // Note: Make sure the raster is not opened in write mode
@@ -2063,7 +2063,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
       // Then what we have here is a driver with no corresponding
       // file extension; e.g., GRASS.  In which case we append the
       // string to the "catch-all" which will match all file types.
-      // (I.e., "*.*") We use the driver description intead of the
+      // (I.e., "*.*") We use the driver description instead of the
       // long time to prevent the catch-all line from getting too
       // large.
 

@@ -416,7 +416,7 @@ def one_point_per_col_output(separator, output_files, output_time_list,
 
 def one_point_per_timerow_output(separator, output_files, output_time_list,
                                  output, write_header, site_input):
-    """Use the original layout of the r.waht output and print instead of
+    """Use the original layout of the r.what output and print instead of
        the raster names, the time stamps as header
 
        One point per line for all time stamps:

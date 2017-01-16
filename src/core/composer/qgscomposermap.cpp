@@ -241,7 +241,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   if ( mComposition->plotStyle() == QgsComposition::Print ||
        mComposition->plotStyle() == QgsComposition::Postscript )
   {
-    //if outputing composer, disable optimisations like layer simplification
+    //if outputting composer, disable optimisations like layer simplification
     jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, false );
   }
 
@@ -713,7 +713,7 @@ void QgsComposerMap::zoomContent( const double factor, const QPointF point, cons
 
   if ( mAtlasDriven && mAtlasScalingMode == Fixed && mComposition->atlasMode() != QgsComposition::AtlasOff )
   {
-    //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanant
+    //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanent
     //and also apply to the map's original extent (see #9602)
     //we can't use the scaleRatio calculated earlier, as the scale can vary depending on extent for geographic coordinate systems
     QgsScaleCalculator calculator;
@@ -866,7 +866,7 @@ QgsRectangle* QgsComposerMap::currentMapExtent()
   }
   else
   {
-    //otherwise return permenant user set extent
+    //otherwise return permanent user set extent
     return &mExtent;
   }
 }
@@ -882,7 +882,7 @@ const QgsRectangle* QgsComposerMap::currentMapExtent() const
   }
   else
   {
-    //otherwise return permenant user set extent
+    //otherwise return permanent user set extent
     return &mExtent;
   }
 }
@@ -901,7 +901,7 @@ void QgsComposerMap::setNewScale( double scaleDenominator, bool forceUpdate )
 
   if ( mAtlasDriven && mAtlasScalingMode == Fixed && mComposition->atlasMode() != QgsComposition::AtlasOff )
   {
-    //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanant
+    //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanent
     //and also apply to the map's original extent (see #9602)
     //we can't use the scaleRatio calculated earlier, as the scale can vary depending on extent for geographic coordinate systems
     QgsScaleCalculator calculator;

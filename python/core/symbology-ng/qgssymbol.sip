@@ -227,7 +227,7 @@ class QgsSymbol
     const QgsVectorLayer* layer() const;
 
     /**
-     * Render a feature. Before calling this the startRender() method should be called to initialise
+     * Render a feature. Before calling this the startRender() method should be called to initialize
      * the rendering process. After rendering all features stopRender() must be called.
      */
     void renderFeature( const QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, int currentVertexMarkerSize = 0 );

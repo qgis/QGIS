@@ -1087,7 +1087,7 @@ void QgsComposer::atlasFeatureChanged( QgsFeature *feature )
   }
   mAtlasPageComboBox->blockSignals( false );
 
-  //update expression context variables in map canvas to allow for previewing atlas feature based renderering
+  //update expression context variables in map canvas to allow for previewing atlas feature based rendering
   mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featurenumber" ), mComposition->atlasComposition().currentFeatureNumber() + 1, true ) );
   mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_pagename" ), mComposition->atlasComposition().currentPageName(), true ) );
   QgsFeature atlasFeature = mComposition->atlasComposition().feature();

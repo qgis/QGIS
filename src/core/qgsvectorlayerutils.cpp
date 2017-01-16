@@ -249,7 +249,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer* layer, const QgsG
   newFeature.setValid( true );
   newFeature.setGeometry( geometry );
 
-  // initialise attributes
+  // initialize attributes
   newFeature.initAttributes( fields.count() );
   for ( int idx = 0; idx < fields.count(); ++idx )
   {

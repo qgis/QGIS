@@ -31,7 +31,7 @@ class QgsSQLStatement
 
     //! Return a statement string, constructed from the internal
     //! abstract syntax tree. This does not contain any nice whitespace
-    //! formatting or comments. In general it is preferrable to use
+    //! formatting or comments. In general it is preferable to use
     //! statement() instead.
     QString dump() const;
 
@@ -412,7 +412,7 @@ class QgsSQLStatement
         /** Set alias name */
         void setAlias( const QString& alias );
 
-        /** Column that is refered to */
+        /** Column that is referred to */
         QgsSQLStatement::Node* column() const;
 
         /** Alias name */
@@ -434,7 +434,7 @@ class QgsSQLStatement
       public:
         NodeCast( QgsSQLStatement::Node* node /Transfer/, const QString& type );
 
-        /** Node that is refered to */
+        /** Node that is referred to */
         QgsSQLStatement::Node* node() const;
 
         /** Type */

@@ -105,7 +105,7 @@ void eVisEventIdTool::select( const QgsPoint& thePoint )
   myRectangle.setYMinimum( thePoint.y() - searchWidth );
   myRectangle.setYMaximum( thePoint.y() + searchWidth );
 
-  //Transform rectange to map coordinates
+  //Transform rectangle to map coordinates
   myRectangle = toLayerCoordinates( myLayer, myRectangle );
 
   //select features

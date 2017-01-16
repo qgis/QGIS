@@ -375,7 +375,7 @@ double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString& inputValu
   }
   else
   {
-    // try to evalute expression
+    // try to evaluate expression
     QgsExpression expr( inputValue );
     QVariant result = expr.evaluate();
     if ( expr.hasEvalError() )

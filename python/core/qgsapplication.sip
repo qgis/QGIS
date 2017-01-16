@@ -188,10 +188,10 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Returns the path to the srs.db file.
     static QString srsDbFilePath();
 
-    //! Returns the pathes to svg directories.
+    //! Returns the paths to svg directories.
     static QStringList svgPaths();
 
-    //! Returns the pathes to composer template directories
+    //! Returns the paths to composer template directories
     static QStringList composerTemplatePaths();
 
     //! Returns the system environment variables passed to application.
@@ -292,7 +292,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! loads providers
     static void initQgis();
 
-    //! initialise qgis.db
+    //! initialize qgis.db
     static bool createDB( QString* errorMessage = 0 );
 
     //! Create the users theme folder

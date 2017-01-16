@@ -92,7 +92,7 @@ class TestQgsRendererV2Registry(unittest.TestCase):
         """ test removing renderers from registry """
         clearRegistry()
 
-        # try removing non-existant renderer
+        # try removing non-existent renderer
         self.assertFalse(QgsApplication.rendererRegistry().removeRenderer('test3'))
 
         # now add it
@@ -110,7 +110,7 @@ class TestQgsRendererV2Registry(unittest.TestCase):
         """ test retrieving renderer by name """
         clearRegistry()
 
-        # try non-existant renderer
+        # try non-existent renderer
         self.assertFalse(QgsApplication.rendererRegistry().rendererMetadata('test4'))
 
         # now add it

@@ -437,7 +437,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
     ++it;
   }
 
-  // In GDAL >= 2.0, the driver implements a defered creation strategy, so
+  // In GDAL >= 2.0, the driver implements a deferred creation strategy, so
   // issue a command that will force table creation
   CPLErrorReset();
   OGR_L_ResetReading( hLayer );

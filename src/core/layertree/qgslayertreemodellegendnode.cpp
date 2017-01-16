@@ -58,7 +58,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
   QFont symbolLabelFont = settings.style( QgsLegendStyle::SymbolLabel ).font();
 
   double textHeight = settings.fontHeightCharacterMM( symbolLabelFont, QChar( '0' ) );
-  // itemHeight here is not realy item height, it is only for symbol
+  // itemHeight here is not really item height, it is only for symbol
   // vertical alignment purpose, i.e. ok take single line height
   // if there are more lines, thos run under the symbol
   double itemHeight = qMax( static_cast< double >( settings.symbolSize().height() ), textHeight );

@@ -1,7 +1,7 @@
 /***************************************************************************
     qgscredentials.h  -  interface for requesting credentials
     ----------------------
-    begin                : Feburary 2010
+    begin                : February 2010
     copyright            : (C) 2010 by Juergen E. Fischer
     email                : jef at norbit dot de
  ***************************************************************************

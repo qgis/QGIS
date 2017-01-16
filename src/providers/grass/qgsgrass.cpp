@@ -619,7 +619,7 @@ void QgsGrass::setMapset( const QString& gisdbase, const QString& location, cons
   // Add all available mapsets to search path
   // Why? Other mapsets should not be necessary.
 #if 0
-  // G_get_available_mapsets in GRASS 6 returs pointer to memory managed by GRASS,
+  // G_get_available_mapsets in GRASS 6 returns pointer to memory managed by GRASS,
   // in GRASS 7 it always allocates new memory and caller must free that
   char **ms = 0;
   G_TRY
@@ -3000,8 +3000,8 @@ QgsGrass::ModuleOutput QgsGrass::parseModuleOutput( const QString & input, QStri
   // Ticket created https://trac.osgeo.org/grass/ticket/2751
   QRegExp rxprogress( " +(\\d+)\\b\\b\\b\\b\\b\\b\\b\\b\\b\\b" );
 
-  // We return simple messages in html non formated, monospace text should be set on widget
-  // where it is used because output may be formated assuming fixed width font
+  // We return simple messages in html non formatted, monospace text should be set on widget
+  // where it is used because output may be formatted assuming fixed width font
   if ( input.trimmed().isEmpty() )
   {
     return OutputNone;

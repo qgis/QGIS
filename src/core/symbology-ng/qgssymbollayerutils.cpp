@@ -2419,7 +2419,7 @@ void QgsSymbolLayerUtils::createGeometryElement( QDomDocument &doc, QDomElement 
   QDomElement geometryElem = doc.createElement( QStringLiteral( "Geometry" ) );
   element.appendChild( geometryElem );
 
-  /* About using a function withing the Geometry tag.
+  /* About using a function within the Geometry tag.
    *
    * The SLD specification <= 1.1 is vague:
    * "In principle, a fixed geometry could be defined using GML or

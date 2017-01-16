@@ -37,7 +37,7 @@
   therefore the original objects can safely be destructed independent of
   the lifetime of the internal clipboard.
 
-  As this class matures it should also be able to accept CSV repesentations
+  As this class matures it should also be able to accept CSV representations
   of features in and out of the system clipboard (QClipboard).
 
 */

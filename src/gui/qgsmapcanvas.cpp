@@ -191,7 +191,7 @@ QgsMapCanvas::~QgsMapCanvas()
   }
   mLastNonZoomMapTool = nullptr;
 
-  // delete canvas items prior to deleteing the canvas
+  // delete canvas items prior to deleting the canvas
   // because they might try to update canvas when it's
   // already being destructed, ends with segfault
   QList<QGraphicsItem*> list = mScene->items();

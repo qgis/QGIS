@@ -99,7 +99,7 @@ class QgsMapRendererJob : QObject
     //! @note The way how geometries are cached is really suboptimal - this method may be removed in future releases
     void setRequestedGeometryCacheForLayers( const QStringList& layerIds );
 
-    //! Find out how log it took to finish the job (in miliseconds)
+    //! Find out how log it took to finish the job (in milliseconds)
     int renderingTime() const;
 
     /**

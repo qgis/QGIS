@@ -758,7 +758,7 @@ string ASFormatter::nextLine()
 					spacePadNum = 0;                // don't count as padding
 
 					size_t firstChar = formattedLine.find_first_not_of(" \t");
-					if (firstChar != string::npos)		// if a blank line does not preceed this
+					if (firstChar != string::npos)		// if a blank line does not precede this
 					{
 						isInLineBreak = false;
 						appendSpacePad();
@@ -1263,7 +1263,7 @@ bool ASFormatter::isBeforeLineEndComment(int startPos) const
 * get the next character, increasing the current placement in the process.
 * the new character is inserted into the variable currentChar.
 *
-* @return   whether succeded to receive the new character.
+* @return   whether succeeded to receive the new character.
 */
 bool ASFormatter::getNextChar()
 {
@@ -2137,7 +2137,7 @@ void ASFormatter::formatBrackets(BracketType bracketType)
 			}
 			else
 			{
-				// if a blank line preceeds this don't attach
+				// if a blank line precedes this don't attach
 				size_t firstChar = formattedLine.find_first_not_of(" \t");
 				if (firstChar == string::npos)
 					appendCurrentChar();			// don't attach
@@ -2197,7 +2197,7 @@ void ASFormatter::formatBrackets(BracketType bracketType)
 	else if (currentChar == '}')
 	{
 		// mark state of immediately after empty block
-		// this state will be used for locating brackets that appear immedately AFTER an empty block (e.g. '{} \n}').
+		// this state will be used for locating brackets that appear immediately AFTER an empty block (e.g. '{} \n}').
 		if (previousCommandChar == '{')
 			isImmediatelyPostEmptyBlock = true;
 
@@ -2267,7 +2267,7 @@ void ASFormatter::formatArrayBrackets(BracketType bracketType, bool isOpeningArr
 				}
 				else
 				{
-					// if a blank line preceeds this don't attach
+					// if a blank line precedes this don't attach
 					size_t firstChar = formattedLine.find_first_not_of(" \t");
 					if (firstChar == string::npos)
 						appendCurrentChar();				// don't attach

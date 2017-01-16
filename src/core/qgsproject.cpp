@@ -115,7 +115,7 @@ QgsProjectProperty* findKey_( const QString& scope,
                               QgsProjectPropertyKey& rootProperty )
 {
   QgsProjectPropertyKey* currentProperty = &rootProperty;
-  QgsProjectProperty* nextProperty;           // link to next property down hiearchy
+  QgsProjectProperty* nextProperty;           // link to next property down hierarchy
 
   QStringList keySequence = makeKeyTokens_( scope, key );
 
@@ -194,7 +194,7 @@ QgsProjectProperty *addKey_( const QString& scope,
 
   // cursor through property key/value hierarchy
   QgsProjectPropertyKey *currentProperty = rootProperty;
-  QgsProjectProperty *nextProperty; // link to next property down hiearchy
+  QgsProjectProperty *nextProperty; // link to next property down hierarchy
   QgsProjectPropertyKey* newPropertyKey;
 
   while ( ! keySequence.isEmpty() )
@@ -260,8 +260,8 @@ void removeKey_( const QString& scope,
 {
   QgsProjectPropertyKey *currentProperty = &rootProperty;
 
-  QgsProjectProperty *nextProperty = nullptr;   // link to next property down hiearchy
-  QgsProjectPropertyKey *previousQgsPropertyKey = nullptr; // link to previous property up hiearchy
+  QgsProjectProperty *nextProperty = nullptr;   // link to next property down hierarchy
+  QgsProjectPropertyKey *previousQgsPropertyKey = nullptr; // link to previous property up hierarchy
 
   QStringList keySequence = makeKeyTokens_( scope, key );
 
@@ -1826,7 +1826,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
     sPrevProjectFileTimestamp = projectFileTimestamp;
   }
 
-  // does project store pathes absolute or relative?
+  // does project store paths absolute or relative?
   bool useAbsolutePathes = true;
 
   QDomElement propertiesElem = sProjectDocument.documentElement().firstChildElement( QStringLiteral( "properties" ) );

@@ -72,7 +72,7 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
         virtual void onNewData() override;
       private:
         QgsRasterLayerRenderer* mR;   //!< Parent renderer instance
-        int mMinimalPreviewInterval;  //!< In miliseconds
+        int mMinimalPreviewInterval;  //!< In milliseconds
         QTime mLastPreview;           //!< When last preview has been generated
     };
 

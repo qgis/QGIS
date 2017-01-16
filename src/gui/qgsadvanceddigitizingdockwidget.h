@@ -39,7 +39,7 @@ static const double SOFT_CONSTRAINT_TOLERANCE_DEGREES = 10;
  * @brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
  * used to handle the CAD tools on top of a selection of map tools.
  * It handles both the UI and the constraints. Constraints are applied
- * by implemeting filters called from QgsMapToolAdvancedDigitizing.
+ * by implementing filters called from QgsMapToolAdvancedDigitizing.
  */
 class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private Ui::QgsAdvancedDigitizingDockWidgetBase
 {
@@ -419,7 +419,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void clearPoints();
 
     //! filters key press
-    //! @note called by eventFilter (fitler on line edits), canvasKeyPressEvent (filter on map tool) and keyPressEvent (filter on dock)
+    //! @note called by eventFilter (filter on line edits), canvasKeyPressEvent (filter on map tool) and keyPressEvent (filter on dock)
     bool filterKeyPress( QKeyEvent* e );
 
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)

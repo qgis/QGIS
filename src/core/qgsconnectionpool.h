@@ -224,7 +224,7 @@ class QgsConnectionPoolGroup
 
 /** \ingroup core
  * Template class responsible for keeping a pool of open connections.
- * This is desired to avoid the overhead of creation of new connection everytime.
+ * This is desired to avoid the overhead of creation of new connection every time.
  *
  * The methods are thread safe.
  *

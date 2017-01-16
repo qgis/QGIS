@@ -116,7 +116,7 @@ eVisGenericEventBrowserGui::~eVisGenericEventBrowserGui()
   QSettings settings;
   settings.setValue( QStringLiteral( "/eVis/browser-geometry" ), saveGeometry() );
 
-  //Clean up, disconnect the highlighting routine and refesh the canvase to clear highlighting symbol
+  //Clean up, disconnect the highlighting routine and refresh the canvase to clear highlighting symbol
   if ( mCanvas )
   {
     disconnect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderSymbol( QPainter * ) ) );
@@ -484,7 +484,7 @@ void eVisGenericEventBrowserGui::accept()
  */
 void eVisGenericEventBrowserGui::buildEventImagePath()
 {
-  //This if statement is a bit of a hack, have to track down where the 0 is coming from on initalization
+  //This if statement is a bit of a hack, have to track down where the 0 is coming from on initialization
   if ( "0" != mEventImagePath )
   {
     int myImageNameMarker = 0;
@@ -519,7 +519,7 @@ void eVisGenericEventBrowserGui::buildEventImagePath()
  */
 void eVisGenericEventBrowserGui::displayImage()
 {
-  //This if statement is a bit of a hack, have to track down where the 0 is coming from on initalization
+  //This if statement is a bit of a hack, have to track down where the 0 is coming from on initialization
   if ( "0" != mEventImagePath && 0 == displayArea->currentIndex() )
   {
     if ( mEventImagePath.startsWith( QLatin1String( "http://" ), Qt::CaseInsensitive ) )
@@ -559,7 +559,7 @@ void eVisGenericEventBrowserGui::displayImage()
 }
 
 /**
- * Returns a pointer to the reqested feature with a given featureid
+ * Returns a pointer to the requested feature with a given featureid
  * @param id - FeatureId of the feature to find/select
  */
 QgsFeature* eVisGenericEventBrowserGui::featureAtId( QgsFeatureId id )

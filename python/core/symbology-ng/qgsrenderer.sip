@@ -369,11 +369,11 @@ class QgsFeatureRenderer
      */
     void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
 
-    /** @note this function is used to convert old sizeScale expresssions to symbol
+    /** @note this function is used to convert old sizeScale expressions to symbol
      * level DataDefined size
      */
     static void convertSymbolSizeScale( QgsSymbol * symbol, QgsSymbol::ScaleMethod method, const QString & field );
-    /** @note this function is used to convert old rotations expresssions to symbol
+    /** @note this function is used to convert old rotations expressions to symbol
      * level DataDefined angle
      */
     static void convertSymbolRotation( QgsSymbol * symbol, const QString & field );

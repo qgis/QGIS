@@ -52,7 +52,7 @@ class QgsMssqlTableModel : public QStandardItemModel
     void setSql( const QModelIndex& index, const QString& sql );
 
     /** Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
-       This is for tables where the type is dectected later by thread*/
+       This is for tables where the type is detected later by thread*/
     void setGeometryTypesForTable( QgsMssqlLayerProperty layerProperty );
 
     //! Returns the number of tables in the model

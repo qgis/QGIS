@@ -2493,7 +2493,7 @@ void QgsComposition::addComposerMap( QgsComposerMap* map, const bool setDefaultP
   addItem( map );
   if ( setDefaultPreviewStyle )
   {
-    //set default preview mode to cache. Must be done here between adding composer map to scene and emiting signal
+    //set default preview mode to cache. Must be done here between adding composer map to scene and emitting signal
     map->setPreviewMode( QgsComposerMap::Cache );
   }
 

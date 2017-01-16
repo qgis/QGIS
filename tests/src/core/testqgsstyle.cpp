@@ -249,7 +249,7 @@ void TestStyle::testSaveLoad()
 
 void TestStyle::testFavorites()
 {
-  // save initial number of favorites to compare against additions / substractions
+  // save initial number of favorites to compare against additions / subtractions
   QStringList favorites;
   favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
   int count = favorites.count();

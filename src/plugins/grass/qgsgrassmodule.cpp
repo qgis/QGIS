@@ -96,7 +96,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   QgsDebugMsg( "called" );
 
   setupUi( this );
-  // use fixed width font because module's output may be formated
+  // use fixed width font because module's output may be formatted
   mOutputTextBrowser->setStyleSheet( QStringLiteral( "font-family: Monospace; font-size: 9pt;" ) );
   lblModuleName->setText( tr( "Module: %1" ).arg( moduleName ) );
   mTools = tools;
@@ -647,7 +647,7 @@ void QgsGrassModule::run()
     // but it fails (without error) to re-run the script with
     // execlp(). And I could not figure out why it fails.
     // Because of this problem we simulate here what g.parser
-    // normaly does and that way we can avoid it.
+    // normally does and that way we can avoid it.
 
     QStringList execArguments = QgsGrassModule::execArguments( mXName );
 
@@ -780,7 +780,7 @@ void QgsGrassModule::readStdout()
     line = QString::fromLocal8Bit( ba ).replace( '\n', QLatin1String( "" ) );
 
     // GRASS_INFO_PERCENT is caught here only because of bugs in GRASS,
-    // normaly it should be printed to stderr
+    // normally it should be printed to stderr
     if ( rxpercent.indexIn( line ) != -1 )
     {
       int progress = rxpercent.cap( 1 ).toInt();

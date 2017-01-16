@@ -478,7 +478,7 @@ int DualEdgeTriangulation::baseEdgeOfPoint( int point )
 
 int DualEdgeTriangulation::baseEdgeOfTriangle( Point3D* point )
 {
-  unsigned int actedge = mEdgeInside;//start with an edge which does not point to the virtual point (usualy number 3)
+  unsigned int actedge = mEdgeInside;//start with an edge which does not point to the virtual point (usually number 3)
   int counter = 0;//number of consecutive successful left-of-tests
   int nulls = 0;//number of left-of-tests, which returned 0. 1 means, that the point is on a line, 2 means that it is on an existing point
   int numinstabs = 0;//number of suspect left-of-tests due to 'leftOfTresh'

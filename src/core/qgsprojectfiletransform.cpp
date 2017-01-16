@@ -768,10 +768,10 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNo
   //convert renderer specific properties
   QString drawingStyle = rasterPropertiesElem.firstChildElement( QStringLiteral( "mDrawingStyle" ) ).text();
 
-  // While PalettedColor should normaly contain only integer values, usually
+  // While PalettedColor should normally contain only integer values, usually
   // color palette 0-255, it may happen (Tim, issue #7023) that it contains
   // colormap classification with double values and text labels
-  // (which should normaly only appear in SingleBandPseudoColor drawingStyle)
+  // (which should normally only appear in SingleBandPseudoColor drawingStyle)
   // => we have to check first the values and change drawingStyle if necessary
   if ( drawingStyle == QLatin1String( "PalettedColor" ) )
   {

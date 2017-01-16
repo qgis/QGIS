@@ -371,7 +371,7 @@ void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
 
   sqlite3_free_table( results );
 
-  // all right, it's empty: proceding to initialize
+  // all right, it's empty: proceeding to initialize
   char *errMsg = nullptr;
   ret = sqlite3_exec( sqlite_handle, above41 ? "SELECT InitSpatialMetadata(1)" : "SELECT InitSpatialMetadata()", nullptr, nullptr, &errMsg );
 

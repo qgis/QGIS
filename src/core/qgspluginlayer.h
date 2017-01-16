@@ -48,7 +48,7 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     void setSource( const QString& source );
 
     //! return a list of symbology items for the legend
-    //! (defult implementation returns nothing)
+    //! (default implementation returns nothing)
     //! @note Added in v2.1
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 

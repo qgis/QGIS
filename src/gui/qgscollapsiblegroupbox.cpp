@@ -77,7 +77,7 @@ void QgsCollapsibleGroupBoxBasic::init()
 
 void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent * event )
 {
-  // initialise widget on first show event only
+  // initialize widget on first show event only
   if ( mShown )
   {
     event->accept();
@@ -524,7 +524,7 @@ void QgsCollapsibleGroupBox::init()
 
 void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
 {
-  // initialise widget on first show event only
+  // initialize widget on first show event only
   if ( mShown )
   {
     event->accept();

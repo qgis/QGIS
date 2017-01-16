@@ -20,7 +20,7 @@ class QgsUnitTypes
       DistanceFeet, /*!< imperial feet */
       DistanceNauticalMiles, /*!< nautical miles */
       DistanceYards, /*!< imperial yards */
-      DistanceMiles, /*!< terrestial miles */
+      DistanceMiles, /*!< terrestrial miles */
       DistanceDegrees, /*!< degrees, for planar geographic CRS distance measurements */
       DistanceUnknownUnit, /*!< unknown distance unit */
     };

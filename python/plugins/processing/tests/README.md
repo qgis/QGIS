@@ -166,7 +166,7 @@ OUTPUT:
       
 #### Files
 
-You can compare the content of an ouptut file by an expected result reference file
+You can compare the content of an output file by an expected result reference file
 
 ```yaml
 OUTPUT_HTML_FILE:

@@ -56,7 +56,7 @@
 
 
 
-// Server status static initialisers.
+// Server status static initializers.
 // Default values are for C++, SIP bindings will override their
 // options in in init()
 

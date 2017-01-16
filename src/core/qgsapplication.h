@@ -66,7 +66,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QgsApplication* instance();
 
-    /** This method initialises paths etc for QGIS. Called by the ctor or call it manually
+    /** This method initializes paths etc for QGIS. Called by the ctor or call it manually
         when your app does not extend the QApplication class.
         @note you will probably want to call initQgis too to load the providers in
         the above case.
@@ -176,10 +176,10 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to the srs.db file.
     static QString srsDbFilePath();
 
-    //! Returns the pathes to svg directories.
+    //! Returns the paths to svg directories.
     static QStringList svgPaths();
 
-    //! Returns the pathes to composer template directories
+    //! Returns the paths to composer template directories
     static QStringList composerTemplatePaths();
 
     //! Returns the system environment variables passed to application.
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! loads providers
     static void initQgis();
 
-    //! initialise qgis.db
+    //! initialize qgis.db
     static bool createDB( QString* errorMessage = nullptr );
 
     //! Create the users theme folder

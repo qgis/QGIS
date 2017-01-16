@@ -66,7 +66,7 @@
                  .arg( tr( "This is a Qt designer 'ui' file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools)." ) )
                  .arg( tr( "This is the concrete class where application logic for the above mentioned dialog should go. The world is your oyster here really...." ) )
                  .arg( tr( "This is the Qt4 resources file for your plugin. The Makefile generated for your plugin is all set up to compile the resource file so all you need to do is add your additional icons etc using the simple xml file format. Note the namespace used for all your resources e.g. (':/Homann/'). It is important to use this prefix for all your resources. We suggest you include any other images and run time data in this resurce file too." ) )
-                 .arg( tr( "This is the icon that will be used for your plugin menu entry and toolbar icon. Simply replace this icon with your own icon to make your plugin disctinctive from the rest." ) )
+                 .arg( tr( "This is the icon that will be used for your plugin menu entry and toolbar icon. Simply replace this icon with your own icon to make your plugin distinctive from the rest." ) )
                  .arg( tr( "This file contains the documentation you are reading now!" ) )
                  .arg( tr( "Getting developer help:" ) )
                  .arg( tr( "For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:" ) )

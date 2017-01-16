@@ -56,7 +56,7 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* th
 
   mTempOutputFileList = theTemoraryFileList;
 
-  //Initialize varaibles
+  //Initialize variables
   mQueryDefinitionMap = new QMap<int, eVisQueryDefinition>;
   mDatabaseConnection = nullptr;
 

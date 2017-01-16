@@ -513,7 +513,7 @@ class QgsCoordinateReferenceSystem
      */
     static QStringList recentProjections();
 
-    /** Clears the internal cache used to initialise QgsCoordinateReferenceSystem objects.
+    /** Clears the internal cache used to initialize QgsCoordinateReferenceSystem objects.
      * This should be called whenever the srs database has been modified in order to ensure
      * that outdated CRS objects are not created.
      * @note added in QGIS 3.0

@@ -214,7 +214,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     }
     else
     {
-      // Verify if we realy need no data value, i.e.
+      // Verify if we really need no data value, i.e.
       QgsRectangle srcExtent = outputExtent;
       QgsRasterProjector *projector = pipe->projector();
       if ( projector && projector->destinationCrs() != projector->sourceCrs() )

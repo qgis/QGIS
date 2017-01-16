@@ -69,7 +69,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
         , mDestinationDatumTransform( -1 )
     {
       setFinder();
-      initialise();
+      initialize();
     }
 
     QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate& other )
@@ -84,7 +84,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
         , mDestinationDatumTransform( other.mDestinationDatumTransform )
     {
       //must reinitialize to setup mSourceProjection and mDestinationProjection
-      initialise();
+      initialize();
     }
 
     ~QgsCoordinateTransformPrivate()
@@ -100,7 +100,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
       }
     }
 
-    bool initialise()
+    bool initialize()
     {
       mShortCircuit = true;
       mIsValid = false;
