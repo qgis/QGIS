@@ -3800,45 +3800,35 @@ void QgsComposer::setSelectionTool()
 
 bool QgsComposer::containsWmsLayer() const
 {
-  QMap<QgsComposerItem*, QgsPanelWidget*>::const_iterator item_it = mItemWidgetMap.constBegin();
-  QgsComposerItem* currentItem = nullptr;
-  QgsComposerMap* currentMap = nullptr;
+  QList< QgsComposerMap *> maps;
+  mComposition->composerItems( maps );
 
-  for ( ; item_it != mItemWidgetMap.constEnd(); ++item_it )
+  Q_FOREACH ( QgsComposerMap* map, maps )
   {
-    currentItem = item_it.key();
-    currentMap = dynamic_cast<QgsComposerMap *>( currentItem );
-    if ( currentMap )
-    {
-      if ( currentMap->containsWmsLayer() )
-      {
-        return true;
-      }
-    }
+    if ( map->containsWmsLayer() )
+      return true;
   }
   return false;
 }
 
 bool QgsComposer::containsAdvancedEffects() const
 {
-  // Check if composer contains any blend modes or flattened layers for transparency
-  QMap<QgsComposerItem*, QgsPanelWidget*>::const_iterator item_it = mItemWidgetMap.constBegin();
-  QgsComposerItem* currentItem = nullptr;
-  QgsComposerMap* currentMap = nullptr;
+  QList< QgsComposerItem *> items;
+  mComposition->composerItems( items );
 
-  for ( ; item_it != mItemWidgetMap.constEnd(); ++item_it )
+  Q_FOREACH ( QgsComposerItem* currentItem, items )
   {
-    currentItem = item_it.key();
     // Check composer item's blend mode
     if ( currentItem->blendMode() != QPainter::CompositionMode_SourceOver )
     {
       return true;
     }
+
     // If item is a composer map, check if it contains any advanced effects
-    currentMap = dynamic_cast<QgsComposerMap *>( currentItem );
-    if ( currentMap && currentMap->containsAdvancedEffects() )
+    if ( QgsComposerMap * currentMap = dynamic_cast<QgsComposerMap *>( currentItem ) )
     {
-      return true;
+      if ( currentMap->containsAdvancedEffects() )
+        return true;
     }
   }
   return false;
