@@ -1,14 +1,12 @@
 /***************************************************************************
-                              qgswfsutils.h
+                              qgswcsutils.h
 
-  Define WFS service utility functions
+  Define WCS service utility functions
   ------------------------------------
-  begin                : December 20 , 2016
-  copyright            : (C) 2007 by Marco Hugentobler  ( parts fron qgswfshandler)
-                         (C) 2014 by Alessandro Pasotti ( parts from qgswfshandler)
+  begin                : January 16 , 2017
+  copyright            : (C) 2013 by René-Luc D'Hont  ( parts from qgswcsserver )
                          (C) 2017 by David Marteau
-  email                : marco dot hugentobler at karto dot baug dot ethz dot ch
-                         a dot pasotti at itopen dot it
+  email                : rldhont at 3liz dot com
                          david dot marteau at 3liz dot com
  ***************************************************************************/
 
@@ -20,23 +18,24 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSWFSUTILS_H
-#define QGSWFSUTILS_H
+#ifndef QGSWCSUTILS_H
+#define QGSWCSUTILS_H
 
 #include "qgsmodule.h"
-#include "qgswfsprojectparser.h"
-#include "qgswfsserviceexception.h"
+#include "qgswcsprojectparser.h"
+#include "qgswcsserviceexception.h"
 
 /**
  * \ingroup server
- * WMS implementation
+ * WCS implementation
  */
 
-//! WMS implementation
-namespace QgsWfs
+//! WCS implementation
+namespace QgsWcs
 {
 
-  /** Return the highest version supported by this implementation
+  /**
+   * Return the highest version supported by this implementation
    */
   QString implementationVersion();
 
@@ -46,20 +45,25 @@ namespace QgsWfs
    * XXX This is needed in the current implementation.
    * This should disappear as soon we get rid of singleton.
    */
-  QgsWfsProjectParser* getConfigParser( QgsServerInterface* serverIface );
+  QgsWCSProjectParser* getConfigParser( QgsServerInterface* serverIface );
 
   /**
    * Service URL string
    */
-  QString serviceUrl( const QgsServerRequest& request, QgsWfsProjectParser* parser = nullptr );
+  QString serviceUrl( const QgsServerRequest& request, QgsWCSProjectParser* parser = nullptr );
+
+  /**
+   * Parse bounding box
+   */
+  //XXX At some point, should be moved to common library
+  QgsRectangle parseBbox( const QString& bboxStr );
 
   // Define namespaces used in WFS documents
-  const QString WFS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wfs" );
+  const QString WCS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wcs" );
   const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
   const QString OGC_NAMESPACE = QStringLiteral( "http://www.opengis.net/ogc" );
-  const QString QGS_NAMESPACE = QStringLiteral( "http://www.qgis.org/gml" );
 
-} // namespace QgsWfs
+} // namespace QgsWcs
 
 #endif
 

@@ -2,19 +2,18 @@
 ########################################################
 # Files
 
-SET (wfs_SRCS
-  qgswfs.cpp
-  qgswfsutils.cpp
-  qgswfsgetcapabilities.cpp
-  qgswfsdescribefeaturetype.cpp
-  qgswfsgetfeature.cpp
-  qgswfstransaction.cpp
+SET (wcs_SRCS
+  qgswcs.cpp
+  qgswcsutils.cpp
+  qgswcsgetcapabilities.cpp
+  qgswcsdescribecoverage.cpp
+  qgswcsgetcoverage.cpp
 )
 
 ########################################################
 # Build
 
-ADD_LIBRARY (wfs MODULE ${wfs_SRCS})
+ADD_LIBRARY (wcs MODULE ${wcs_SRCS})
 
 
 INCLUDE_DIRECTORIES(SYSTEM
@@ -44,7 +43,7 @@ INCLUDE_DIRECTORIES(
 
 
 #endif
-TARGET_LINK_LIBRARIES(wfs
+TARGET_LINK_LIBRARIES(wcs
   qgis_core
   qgis_server
 )
@@ -53,7 +52,7 @@ TARGET_LINK_LIBRARIES(wfs
 ########################################################
 # Install
 
-INSTALL(TARGETS wfs
+INSTALL(TARGETS wcs
     RUNTIME DESTINATION ${QGIS_SERVER_MODULE_DIR}
     LIBRARY DESTINATION ${QGIS_SERVER_MODULE_DIR}
 )

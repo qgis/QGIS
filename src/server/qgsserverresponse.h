@@ -30,6 +30,8 @@ class QgsServerException;
  * \ingroup server
  * QgsServerResponse
  * Class defining response interface passed to services QgsService::executeRequest() method
+ *
+ * @note added in QGIS 3.0
  */
 
 // Note:

@@ -22,7 +22,6 @@
 #include "qgsconfig.h"
 #include "qgsserver.h"
 #include "qgsmslayercache.h"
-
 #include "qgsmapsettings.h"
 #include "qgsauthmanager.h"
 #include "qgscapabilitiescache.h"
@@ -31,7 +30,6 @@
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
-#include "qgswcsserver.h"
 #include "qgsmapserviceexception.h"
 #include "qgspallabeling.h"
 #include "qgsnetworkaccessmanager.h"
@@ -403,8 +401,6 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
       QMap<QString, QString> parameterMap = request.parameters();
       printRequestParameters( parameterMap, logLevel );
 
-      QgsAccessControl* accessControl = sServerInterface->accessControls();
-
       //Config file path
       QString configFilePath = configPath( *sConfigFilePath, parameterMap );
 
@@ -437,31 +433,6 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
       if ( service )
       {
         service->executeRequest( request, theResponse );
-      }
-      else if ( serviceString == QLatin1String( "WCS" ) )
-      {
-
-        QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration(
-                                   configFilePath
-                                   , accessControl
-                                 );
-        if ( !p )
-        {
-          theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ),
-                                                 QStringLiteral( "Error reading the project file" ) ) );
-        }
-        else
-        {
-          QgsWCSServer wcsServer(
-            configFilePath
-            , sSettings
-            , parameterMap
-            , p
-            , &theRequestHandler
-            , accessControl
-          );
-          wcsServer.executeRequest();
-        }
       }
       else
       {

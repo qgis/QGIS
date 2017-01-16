@@ -41,6 +41,7 @@ class QgsServerInterface;
  * IMPORTANT: The registry hold ownership of registered services and
  * will call 'delete'  on cleanup
  *
+ * @note added in QGIS 3.0
  */
 class SERVER_EXPORT QgsServiceRegistry
 {

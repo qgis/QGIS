@@ -25,6 +25,7 @@
 
 namespace QgsWfs
 {
+
   /**
    * Create get capabilities document
    */

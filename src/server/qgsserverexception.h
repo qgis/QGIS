@@ -27,10 +27,13 @@
 /** \ingroup server
  * \class  QgsServerException
  * \brief Exception base class for server exceptions.
+ *
+ * @note added in QGIS 3.0
  */
 class SERVER_EXPORT QgsServerException : public QgsException
 {
   public:
+    //! Constructor
     QgsServerException( const QString& message, int responseCode = 500 );
 
     /**
@@ -52,23 +55,34 @@ class SERVER_EXPORT QgsServerException : public QgsException
 };
 
 /** \ingroup server
- * \class  QgsOcgServiceException
+ * \class  QgsOgcServiceException
  * \brief Exception base class for service exceptions.
  *
- * Note that this exception is assaciated with a default return code 200 which may be
+ * Note that this exception is associated with a default return code 200 which may be
  * not appropriate in some situations.
+ *
+ * @note added in QGIS 3.0
  */
 class SERVER_EXPORT QgsOgcServiceException : public QgsServerException
 {
   public:
+    //! Construction
     QgsOgcServiceException( const QString& code, const QString& message, const QString& locator = QString(),
                             int responseCode = 200, const QString& version = QStringLiteral( "1.3.0" ) );
 
+    //! @return message
     QString message() const { return mMessage; }
+
+    //! @return code
     QString code()    const { return mCode; }
+
+    //! @return locator
     QString locator() const { return mLocator; }
+
+    //!return exception version
     QString version() const { return mVersion; }
 
+    //! Overrided from QgsServerException
     virtual QByteArray formatResponse( QString& responseFormat ) const override;
 
   private:
@@ -76,8 +90,6 @@ class SERVER_EXPORT QgsOgcServiceException : public QgsServerException
     QString mMessage;
     QString mLocator;
     QString mVersion;
-
-
 };
 
 #endif

@@ -29,9 +29,6 @@ class QgsRequestHandler  /Abstract/
     /** Allow plugins to return a QgsServerException*/
     void setServiceException( const QgsServerException& ex );
 
-    //! @note not available in Python bindings
-    void setGetCoverageResponse( QByteArray* ba );
-
     /** Set an HTTP header*/
     void setHeader( const QString &name, const QString &value );
 
@@ -49,9 +46,6 @@ class QgsRequestHandler  /Abstract/
 
     /** Append the bytestream to response body*/
     void appendBody( const QByteArray &body );
-
-    /** Set the info format string such as "text/xml"*/
-    void setInfoFormat( const QString &format );
 
     /** Send out HTTP headers and flush output buffer*/
     void sendResponse();
@@ -76,9 +70,6 @@ class QgsRequestHandler  /Abstract/
 
     /** Return the requested format string*/
     QString format() const;
-
-    /** Return the mime type for the response*/
-    QString infoFormat() const;
 
     /** Return true if the HTTP headers were already sent to the client*/
     bool headersSent() const;

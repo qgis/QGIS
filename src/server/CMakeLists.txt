@@ -24,8 +24,6 @@ SET ( qgis_mapserv_SRCS
   qgscapabilitiescache.cpp
   qgsconfigcache.cpp
   qgsrequesthandler.cpp
-  qgsowsserver.cpp
-  qgswcsserver.cpp
   qgsserversettings.cpp
   qgsserverexception.cpp
   qgsmslayercache.cpp

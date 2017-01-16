@@ -1898,6 +1898,13 @@ optional property map passing down layer level properties to the SLD encoders. I
 - usedAttributes is now a const method and returns QSet<QString> instead of QStringList
 
 
+QgsRequestHandler    {#qgis_api_break_3_0_QgsRequestHandler}
+-----------------
+
+- Removed infoFormat and setInfoFormat methods: the format of the response is given and set with the "Content-Type" header.
+- Removed setCoverageResponse
+
+
 Processing        {#qgis_api_break_3_0_Processing}
 ----------
 

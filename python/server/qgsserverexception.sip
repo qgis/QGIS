@@ -47,6 +47,7 @@ class QgsOgcServiceException
     QString message() const;
     QString code()    const;
     QString locator() const;
+    QString version() const;
 
     virtual QByteArray formatResponse( QString& responseFormat / Out / ) const;
 };
