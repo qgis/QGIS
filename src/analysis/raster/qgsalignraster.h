@@ -237,7 +237,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
 
     // set by the client
 
-    //! Object that facilitates reporting of progress / cancellation
+    //! Object that facilitates reporting of progress / cancelation
     ProgressHandler* mProgressHandler;
 
     //! Last error message from run()

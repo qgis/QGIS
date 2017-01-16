@@ -129,7 +129,7 @@ void QgsComposerAttributeTableWidget::on_mAttributesPushButton_clicked()
     return;
   }
 
-  //make deep copy of current columns, so we can restore them in case of cancellation
+  //make deep copy of current columns, so we can restore them in case of cancelation
   QList<QgsComposerTableColumn*> currentColumns;
   QList<QgsComposerTableColumn*>::const_iterator it = mComposerTable->columns()->constBegin();
   for ( ; it != mComposerTable->columns()->constEnd() ; ++it )

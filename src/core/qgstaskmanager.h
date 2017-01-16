@@ -308,7 +308,7 @@ class CORE_EXPORT QgsTask : public QObject
     void completed();
 
     /**
-     * Called when the task has failed, as either a result of an internal failure or via cancellation.
+     * Called when the task has failed, as either a result of an internal failure or via cancelation.
      */
     void terminated();
 
