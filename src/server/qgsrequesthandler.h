@@ -31,7 +31,7 @@
 
 class QDomDocument;
 class QImage;
-class QgsMapServiceException;
+class QgsServerException;
 class QgsServerRequest;
 class QgsServerResponse;
 
@@ -58,7 +58,7 @@ class SERVER_EXPORT QgsRequestHandler
     void setGetCapabilitiesResponse( const QDomDocument& doc );
 
     //! Allow plugins to return a QgsMapServiceException
-    void setServiceException( const QgsMapServiceException &ex );
+    void setServiceException( const QgsServerException &ex );
 
     //! @note not available in Python bindings
     void setXmlResponse( const QDomDocument& doc );
@@ -154,7 +154,7 @@ class SERVER_EXPORT QgsRequestHandler
     QString mFormatString; //format string as it is passed in the request (with base)
     QString mService;
     QString mInfoFormat;
-    QgsMapServiceException* mException; // Stores the exception
+    bool mExceptionRaised;
 
     QgsServerRequest&   mRequest;
     QgsServerResponse&  mResponse;

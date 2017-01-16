@@ -28,51 +28,46 @@ namespace QgsWms
                       const QgsServerRequest& request, QgsServerResponse& response )
   {
     QgsServerRequest::Parameters params = request.parameters();
-    try
+
+    Q_UNUSED( version );
+
+    QgsWmsServer server( serverIface->configFilePath(),
+                         *serverIface->serverSettings(), params,
+                         getConfigParser( serverIface ),
+                         serverIface->accessControls() );
+
+    QString format = params.value( "FORMAT" );
+    QString contentType;
+
+    // GetPrint supports svg/png/pdf
+    if ( format.compare( QStringLiteral( "image/png" ), Qt::CaseInsensitive ) == 0 ||
+         format.compare( QStringLiteral( "png" ), Qt::CaseInsensitive ) == 0 )
     {
-      Q_UNUSED( version );
-      QgsWmsServer server( serverIface->configFilePath(),
-                           *serverIface->serverSettings(), params,
-                           getConfigParser( serverIface ),
-                           serverIface->accessControls() );
-
-      QString format = params.value( "FORMAT" );
-      QString contentType;
-
-      // GetPrint supports svg/png/pdf
-      if ( format.compare( QStringLiteral( "image/png" ), Qt::CaseInsensitive ) == 0 ||
-           format.compare( QStringLiteral( "png" ), Qt::CaseInsensitive ) == 0 )
-      {
-        format   = "png";
-        contentType = "image/png";
-      }
-      else if ( format.compare( QStringLiteral( "image/svg" ), Qt::CaseInsensitive ) == 0 ||
-                format.compare( QStringLiteral( "image/svg+xml" ), Qt::CaseInsensitive ) == 0 ||
-                format.compare( QStringLiteral( "svg" ), Qt::CaseInsensitive ) == 0 )
-      {
-        format   = "svg";
-        contentType = "image/svg+xml";
-      }
-      else if ( format.compare( QStringLiteral( "application/pdf" ), Qt::CaseInsensitive ) == 0 ||
-                format.compare( QStringLiteral( "pdf" ), Qt::CaseInsensitive ) == 0 )
-      {
-        format = "pdf";
-        contentType = "application/pdf";
-      }
-      else
-      {
-        writeError( response, QStringLiteral( "InvalidFormat" ),
-                    QString( "Output format %1 is not supported by the GetPrint request" ).arg( format ) );
-      }
-
-      QScopedPointer<QByteArray> result( server.getPrint( format ) );
-      response.setHeader( QStringLiteral( "Content-Type" ), contentType );
-      response.write( *result );
+      format   = "png";
+      contentType = "image/png";
     }
-    catch ( QgsMapServiceException& ex )
+    else if ( format.compare( QStringLiteral( "image/svg" ), Qt::CaseInsensitive ) == 0 ||
+              format.compare( QStringLiteral( "image/svg+xml" ), Qt::CaseInsensitive ) == 0 ||
+              format.compare( QStringLiteral( "svg" ), Qt::CaseInsensitive ) == 0 )
     {
-      writeError( response, ex.code(), ex.message() );
+      format   = "svg";
+      contentType = "image/svg+xml";
     }
+    else if ( format.compare( QStringLiteral( "application/pdf" ), Qt::CaseInsensitive ) == 0 ||
+              format.compare( QStringLiteral( "pdf" ), Qt::CaseInsensitive ) == 0 )
+    {
+      format = "pdf";
+      contentType = "application/pdf";
+    }
+    else
+    {
+      throw QgsServiceException( QStringLiteral( "InvalidFormat" ),
+                                 QString( "Output format %1 is not supported by the GetPrint request" ).arg( format ) );
+    }
+
+    QScopedPointer<QByteArray> result( server.getPrint( format ) );
+    response.setHeader( QStringLiteral( "Content-Type" ), contentType );
+    response.write( *result );
   }
 
 } // samespace QgsWms

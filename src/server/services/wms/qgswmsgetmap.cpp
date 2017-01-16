@@ -37,23 +37,17 @@ namespace QgsWms
     QgsWmsServer server( serverIface->configFilePath(),
                          *serverIface->serverSettings(), params, parser,
                          serverIface->accessControls() );
-    try
+
+    QScopedPointer<QImage> result( server.getMap() );
+    if ( !result.isNull() )
     {
-      QScopedPointer<QImage> result( server.getMap() );
-      if ( !result.isNull() )
-      {
-        QString format = params.value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
-        writeImage( response, *result, format, server.getImageQuality() );
-      }
-      else
-      {
-        writeError( response, QStringLiteral( "UnknownError" ),
-                    QStringLiteral( "Failed to compute GetMap image" ) );
-      }
+      QString format = params.value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
+      writeImage( response, *result, format, server.getImageQuality() );
     }
-    catch ( QgsMapServiceException& ex )
+    else
     {
-      writeError( response, ex.code(), ex.message() );
+      throw QgsServiceException( QStringLiteral( "UnknownError" ),
+                                 QStringLiteral( "Failed to compute GetMap image" ) );
     }
   }
 

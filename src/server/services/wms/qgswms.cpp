@@ -79,9 +79,8 @@ namespace QgsWms
         QString req = params.value( QStringLiteral( "REQUEST" ) );
         if ( req.isEmpty() )
         {
-          writeError( response, QStringLiteral( "OperationNotSupported" ),
-                      QStringLiteral( "Please check the value of the REQUEST parameter" ) );
-          return;
+          throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
+                                     QStringLiteral( "Please check the value of the REQUEST parameter" ) );
         }
 
         if (( QSTR_COMPARE( mVersion, "1.1.1" ) && QSTR_COMPARE( req, "capabilities" ) )
@@ -142,9 +141,8 @@ namespace QgsWms
         else
         {
           // Operation not supported
-          writeError( response, QStringLiteral( "OperationNotSupported" ),
-                      QString( "Request %1 is not supported" ).arg( req ) );
-          return;
+          throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
+                                     QString( "Request %1 is not supported" ).arg( req ) );
         }
       }
 

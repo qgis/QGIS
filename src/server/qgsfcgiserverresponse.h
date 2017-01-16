@@ -61,13 +61,13 @@ class QgsFcgiServerResponse: public QgsServerResponse
     /**
      * Set the default headers
      */
-    virtual void setDefaultHeaders();
+    void setDefaultHeaders();
 
   private:
     QMap<QString, QString> mHeaders;
-    QBuffer                mBuffer;
-    bool                   mFinished;
-    bool                   mHeadersSent;
+    QBuffer mBuffer;
+    bool mFinished    = false;
+    bool mHeadersSent = false;
     QgsServerRequest::Method mMethod;
 };
 

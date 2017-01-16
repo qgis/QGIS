@@ -24,7 +24,7 @@
 #include "qgshttptransaction.h"
 #endif
 #include "qgsmessagelog.h"
-#include "qgsmapserviceexception.h"
+#include "qgsserverexception.h"
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
 #include <QBuffer>
@@ -38,7 +38,7 @@
 #include <QUrlQuery>
 
 QgsRequestHandler::QgsRequestHandler( QgsServerRequest& request, QgsServerResponse& response )
-    : mException( nullptr )
+    : mExceptionRaised( false )
     , mRequest( request )
     , mResponse( response )
 {
@@ -46,7 +46,6 @@ QgsRequestHandler::QgsRequestHandler( QgsServerRequest& request, QgsServerRespon
 
 QgsRequestHandler::~QgsRequestHandler()
 {
-  delete mException;
 }
 
 QMap<QString, QString> QgsRequestHandler::parameterMap() const
@@ -70,7 +69,7 @@ void QgsRequestHandler::setHttpResponse( const QByteArray& ba, const QString &fo
 
 bool QgsRequestHandler::exceptionRaised() const
 {
-  return mException;
+  return mExceptionRaised;
 }
 
 void QgsRequestHandler::setHeader( const QString &name, const QString &value )
@@ -169,28 +168,11 @@ void QgsRequestHandler::setXmlResponse( const QDomDocument& doc, const QString& 
   setHttpResponse( ba, mimeType );
 }
 
-void QgsRequestHandler::setServiceException( const QgsMapServiceException& ex )
+void QgsRequestHandler::setServiceException( const QgsServerException& ex )
 {
   // Safety measure to avoid potential leaks if called repeatedly
-  delete mException;
-  mException = new QgsMapServiceException( ex );
-  //create Exception DOM document
-  QDomDocument exceptionDoc;
-  QDomElement serviceExceptionReportElem = exceptionDoc.createElement( QStringLiteral( "ServiceExceptionReport" ) );
-  serviceExceptionReportElem.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.3.0" ) );
-  serviceExceptionReportElem.setAttribute( QStringLiteral( "xmlns" ), QStringLiteral( "http://www.opengis.net/ogc" ) );
-  exceptionDoc.appendChild( serviceExceptionReportElem );
-  QDomElement serviceExceptionElem = exceptionDoc.createElement( QStringLiteral( "ServiceException" ) );
-  serviceExceptionElem.setAttribute( QStringLiteral( "code" ), ex.code() );
-  QDomText messageText = exceptionDoc.createTextNode( ex.message() );
-  serviceExceptionElem.appendChild( messageText );
-  serviceExceptionReportElem.appendChild( serviceExceptionElem );
-
-  QByteArray ba = exceptionDoc.toByteArray();
-  // Clear response headers and body and set new exception
-  // TODO: check for headersSent()
-  clear();
-  setHttpResponse( ba, QStringLiteral( "text/xml" ) );
+  mExceptionRaised = true;
+  mResponse.write( ex );
 }
 
 bool QgsRequestHandler::startGetFeatureResponse( QByteArray* ba, const QString& infoFormat )

@@ -28,7 +28,7 @@ SET ( qgis_mapserv_SRCS
   qgswfsserver.cpp
   qgswcsserver.cpp
   qgsserversettings.cpp
-  qgsmapserviceexception.cpp
+  qgsserverexception.cpp
   qgsmslayercache.cpp
   qgsmslayerbuilder.cpp
   qgshostedvdsbuilder.cpp
@@ -38,7 +38,6 @@ SET ( qgis_mapserv_SRCS
   qgsremotedatasourcebuilder.cpp
   qgssentdatasourcebuilder.cpp
   qgsserverlogger.cpp
-  qgsmapserverutils.cpp
   qgswcsprojectparser.cpp
   qgswfsprojectparser.cpp
   qgswmsconfigparser.cpp

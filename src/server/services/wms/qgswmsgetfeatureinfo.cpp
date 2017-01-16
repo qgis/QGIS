@@ -146,9 +146,8 @@ namespace QgsWms
     }
     else //unsupported format, set exception
     {
-      writeError( response,  QStringLiteral( "InvalidFormat" ),
-                  QString( "Feature info format '%1' is not supported. Possibilities are 'text/plain', 'text/html' or 'text/xml'." ).arg( infoFormat ) );
-      return;
+      throw QgsServiceException( QStringLiteral( "InvalidFormat" ),
+                                 QString( "Feature info format '%1' is not supported. Possibilities are 'text/plain', 'text/html' or 'text/xml'." ).arg( infoFormat ) );
     }
 
     response.setHeader( QStringLiteral( "Content-Type" ), infoFormat + QStringLiteral( "; charset=utf-8" ) );
@@ -165,17 +164,10 @@ namespace QgsWms
                          *serverIface->serverSettings(), params,
                          getConfigParser( serverIface ),
                          serverIface->accessControls() );
-    try
-    {
-      QDomDocument doc = server.getFeatureInfo( version );
-      QString outputFormat = params.value( QStringLiteral( "INFO_FORMAT" ), QStringLiteral( "text/plain" ) );
-      writeInfoResponse( doc,  response, outputFormat );
-    }
-    catch ( QgsMapServiceException& ex )
-    {
-      writeError( response, ex.code(), ex.message() );
-    }
 
+    QDomDocument doc = server.getFeatureInfo( version );
+    QString outputFormat = params.value( QStringLiteral( "INFO_FORMAT" ), QStringLiteral( "text/plain" ) );
+    writeInfoResponse( doc,  response, outputFormat );
   }
 
 

@@ -24,6 +24,8 @@
 #include <QString>
 #include <QIODevice>
 
+class QgsServerException;
+
 /**
  * \ingroup server
  * QgsServerResponse
@@ -125,6 +127,11 @@ class SERVER_EXPORT QgsServerResponse
      * @note not available in python bindings
      */
     virtual qint64 write( const char* data );
+
+    /**
+     * Write server exception
+     */
+    virtual void write( const QgsServerException& ex );
 
     /**
      * Return the underlying QIODevice
