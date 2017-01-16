@@ -114,7 +114,7 @@ for ((I=0;I<$SPLIT;I++)) ; do
 
         # escape string
         SPELLOKSTR='//#spellok'
-        if [[ "$FILE" =~ \.(txt|html|htm)$ ]]; then
+        if [[ "$FILE" =~ \.(txt|html|htm|dox)$ ]]; then
           SPELLOKSTR='<!--#spellok-->'
         fi
         if [[ "$FILE" =~ \.(h|cpp|sip)$ ]]; then

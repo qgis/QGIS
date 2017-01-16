@@ -427,7 +427,7 @@ class QgsWcsDownloadHandler : public QObject
   protected slots:
     void cacheReplyFinished();
     void cacheReplyProgress( qint64, qint64 );
-    void cancelled();
+    void canceled();
 
   protected:
     void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }

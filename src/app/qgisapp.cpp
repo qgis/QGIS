@@ -4453,7 +4453,7 @@ void QgisApp::fileExit()
 
     // active tasks
     if ( QMessageBox::question( this, tr( "Active tasks" ),
-                                tr( "The following tasks are currently running in the background:\n\n%1\n\nDo you want to try cancelling these active tasks?" ).arg( tasks.join( "\n" ) ),
+                                tr( "The following tasks are currently running in the background:\n\n%1\n\nDo you want to try canceling these active tasks?" ).arg( tasks.join( "\n" ) ),
                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
     {
       QgsApplication::taskManager()->cancelAll();
@@ -4859,7 +4859,7 @@ void QgisApp::showRasterCalculator()
                                    QgsMessageBar::CRITICAL );
         break;
 
-      case QgsRasterCalculator::Cancelled:
+      case QgsRasterCalculator::Canceled:
         break;
 
       case QgsRasterCalculator::ParserError:
@@ -9573,7 +9573,7 @@ void QgisApp::setExtent( const QgsRectangle& theRect )
 
 /**
   Prompt and save if project has been modified.
-  @return true if saved or discarded, false if cancelled
+  @return true if saved or discarded, false if canceled
  */
 bool QgisApp::saveDirty()
 {

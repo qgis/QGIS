@@ -223,7 +223,7 @@ class GeoDB(object):
                                                                      password,
                                                                      err)
                 if not ok:
-                    raise DbError(u'Action cancelled by user')
+                    raise DbError(u'Action canceled by user')
                 if user:
                     self.uri.setUsername(user)
                 if password:

@@ -192,7 +192,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     QVector<bool> mTransparencyToEdited;
 
     /** Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is cancelled */
+     * was loaded but dialog is canceled */
     QgsMapLayerStyle mOldStyle;
 };
 #endif

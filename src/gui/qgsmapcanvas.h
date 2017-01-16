@@ -458,7 +458,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! called when current maptool is destroyed
     void mapToolDestroyed();
 
-    //! called when a renderer job has finished successfully or when it was cancelled
+    //! called when a renderer job has finished successfully or when it was canceled
     void rendererJobFinished();
 
     void mapUpdateTimeout();
@@ -664,8 +664,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Job that takes care of map rendering in background
     QgsMapRendererQImageJob* mJob;
 
-    //! Flag determining whether the active job has been cancelled
-    bool mJobCancelled;
+    //! Flag determining whether the active job has been canceled
+    bool mJobCanceled;
 
     //! Labeling results from the recently rendered map
     QgsLabelingResults* mLabelingResults;

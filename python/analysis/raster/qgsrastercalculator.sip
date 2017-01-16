@@ -24,7 +24,7 @@ class QgsRasterCalculator
       Success, /*!< Calculation successful */
       CreateOutputError, /*!< Error creating output data file */
       InputLayerError, /*!< Error reading input layer */
-      Cancelled, /*!< User cancelled calculation */
+      Canceled, /*!< User canceled calculation */
       ParserError, /*!< Error parsing formula */
       MemoryError, /*!< Error allocating memory for result */
     };

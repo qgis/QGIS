@@ -48,7 +48,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
       Success = 0, //!< Calculation successful
       CreateOutputError = 1, //!< Error creating output data file
       InputLayerError = 2, //!< Error reading input layer
-      Cancelled = 3, //!< User cancelled calculation
+      Canceled = 3, //!< User canceled calculation
       ParserError = 4, //!< Error parsing formula
       MemoryError = 5, //!< Error allocating memory for result
     };

@@ -476,7 +476,7 @@ QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QStri
       set.insert( value );
     }
 
-    if (( limit >= 0 && results.size() >= limit ) || ( feedback && feedback->isCancelled() ) )
+    if (( limit >= 0 && results.size() >= limit ) || ( feedback && feedback->isCanceled() ) )
       break;
   }
   return results;

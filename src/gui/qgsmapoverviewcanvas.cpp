@@ -173,7 +173,7 @@ void QgsMapOverviewCanvas::refresh()
 
   if ( mJob )
   {
-    QgsDebugMsg( "oveview - cancelling old" );
+    QgsDebugMsg( "oveview - canceling old" );
     mJob->cancel();
     QgsDebugMsg( "oveview - deleting old" );
     delete mJob; // get rid of previous job (if any)

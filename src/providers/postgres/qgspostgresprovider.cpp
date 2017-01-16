@@ -1618,7 +1618,7 @@ QStringList QgsPostgresProvider::uniqueStringsMatching( int index, const QString
       for ( int i = 0; i < res.PQntuples(); i++ )
       {
         results << ( convertValue( fld.type(), fld.subType(), res.PQgetvalue( i, 0 ) ) ).toString();
-        if ( feedback && feedback->isCancelled() )
+        if ( feedback && feedback->isCanceled() )
           break;
       }
     }

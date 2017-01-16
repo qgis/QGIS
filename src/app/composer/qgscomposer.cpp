@@ -1717,7 +1717,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     if ( !QDir( outputDir ).exists() || !QFileInfo( outputDir ).isWritable() )
     {
       QMessageBox::warning( nullptr, tr( "Unable to write into the directory" ),
-                            tr( "The given output directory is not writable. Cancelling." ),
+                            tr( "The given output directory is not writable. Canceling." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       return;
@@ -1936,7 +1936,7 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
     for ( int i = 0; i < atlasMap->numFeatures(); ++i )
     {
       progress.setValue( i );
-      // process input events in order to allow cancelling
+      // process input events in order to allow canceling
       QCoreApplication::processEvents();
 
       if ( progress.wasCanceled() )
@@ -2252,7 +2252,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     if ( !QDir( dir ).exists() || !QFileInfo( dir ).isWritable() )
     {
       QMessageBox::warning( nullptr, tr( "Unable to write into the directory" ),
-                            tr( "The given output directory is not writable. Cancelling." ),
+                            tr( "The given output directory is not writable. Canceling." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       return;
@@ -2293,7 +2293,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     for ( int feature = 0; feature < atlasMap->numFeatures(); ++feature )
     {
       progress.setValue( feature );
-      // process input events in order to allow cancelling
+      // process input events in order to allow canceling
       QCoreApplication::processEvents();
 
       if ( progress.wasCanceled() )
@@ -2576,7 +2576,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     if ( !QDir( outputDir ).exists() || !QFileInfo( outputDir ).isWritable() )
     {
       QMessageBox::warning( nullptr, tr( "Unable to write into the directory" ),
-                            tr( "The given output directory is not writable. Cancelling." ),
+                            tr( "The given output directory is not writable. Canceling." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       return;

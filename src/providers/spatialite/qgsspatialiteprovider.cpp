@@ -3755,7 +3755,7 @@ QStringList QgsSpatiaLiteProvider::uniqueStringsMatching( int index, const QStri
     return results;
   }
 
-  while (( limit < 0 || results.size() < limit ) && ( !feedback || !feedback->isCancelled() ) )
+  while (( limit < 0 || results.size() < limit ) && ( !feedback || !feedback->isCanceled() ) )
   {
     // this one is an infinitive loop, intended to fetch any row
     int ret = sqlite3_step( stmt );

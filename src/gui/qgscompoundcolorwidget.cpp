@@ -351,7 +351,7 @@ void QgsCompoundColorWidget::removePalette()
                               QString( tr( "Are you sure you want to remove %1?" ) ).arg( userScheme->schemeName() ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
   {
-    //user cancelled
+    //user canceled
     return;
   }
 
@@ -377,7 +377,7 @@ void QgsCompoundColorWidget::newPalette()
 
   if ( !ok || name.isEmpty() )
   {
-    //user cancelled
+    //user canceled
     return;
   }
 

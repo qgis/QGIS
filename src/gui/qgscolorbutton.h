@@ -342,7 +342,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     void mouseReleaseEvent( QMouseEvent *e ) override;
 
     /**
-     * Reimplemented to allow cancelling color pick via keypress, and sample via space bar press
+     * Reimplemented to allow canceling color pick via keypress, and sample via space bar press
      */
     void keyPressEvent( QKeyEvent *e ) override;
 

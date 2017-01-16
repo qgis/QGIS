@@ -2783,7 +2783,7 @@ void QgsAuthManager::tryToStartDbErase()
   if ( mScheduledDbEraseRequestCount >= trycutoff )
   {
     setScheduledAuthDbErase( false );
-    QgsDebugMsg( "authDatabaseEraseRequest emitting/scheduling cancelled" );
+    QgsDebugMsg( "authDatabaseEraseRequest emitting/scheduling canceled" );
     return;
   }
   else

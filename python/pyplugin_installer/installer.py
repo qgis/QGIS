@@ -459,7 +459,7 @@ class QgsPluginInstaller(QObject):
             dlg.labelInfo.setText(self.tr("This repository is blocked due to incompatibility with your QGIS version"))
             dlg.labelInfo.setFrameShape(QFrame.Box)
         if not dlg.exec_():
-            return  # nothing to do if cancelled
+            return  # nothing to do if canceled
         for i in list(repositories.all().values()):
             if dlg.editURL.text().strip() == i["url"] and dlg.editURL.text().strip() != repositories.all()[reposName]["url"]:
                 iface.pluginManagerInterface().pushMessage(self.tr("Unable to add another repository with the same URL!"), QgsMessageBar.WARNING)

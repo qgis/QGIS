@@ -99,7 +99,7 @@ class QgsAuthManager : QObject
 
     /** Schedule an optional erase of authentication database, starting when mutex is lockable.
      * @note When an erase is scheduled, any attempt to set the master password,
-     * e.g. password input dialog, is effectively cancelled.
+     * e.g. password input dialog, is effectively canceled.
      * For example: In a GUI app, this keeps excess password input dialogs from popping
      * up when a user has initiated an erase, from a password input dialog, because
      * they forgot their password.

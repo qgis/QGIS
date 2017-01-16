@@ -45,7 +45,7 @@ static bool _canExportToGeos( const QgsGeometry& geom )
 topolTest::topolTest( QgisInterface* qgsIface )
 {
   theQgsInterface = qgsIface;
-  mTestCancelled = false;
+  mTestCanceled = false;
 
   // one layer tests
   mTopologyRuleMap.insert( tr( "must not have invalid geometries" ),
@@ -139,16 +139,16 @@ topolTest::~topolTest()
     delete *lit;
 }
 
-void topolTest::setTestCancelled()
+void topolTest::setTestCanceled()
 {
-  mTestCancelled = true;
+  mTestCanceled = true;
 }
 
-bool topolTest::testCancelled()
+bool topolTest::testCanceled()
 {
-  if ( mTestCancelled )
+  if ( mTestCanceled )
   {
-    mTestCancelled = false;
+    mTestCanceled = false;
     return true;
   }
 
@@ -173,7 +173,7 @@ ErrorList topolTest::checkCloseFeature( double tolerance, QgsVectorLayer* layer1
     if ( !( ++i % 100 ) )
       emit progress( i );
 
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
 
     QgsGeometry* g1 = it->feature.geometry();
@@ -266,7 +266,7 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer
     if ( !( ++i % 100 ) )
       emit progress( i );
 
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
 
     QgsGeometry g1 = it->feature.geometry();
@@ -378,7 +378,7 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
       continue;
     }
 
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
 
     QgsGeometry g1 = it->feature.geometry();
@@ -488,7 +488,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
       continue;
     }
 
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
 
     QgsGeometry g1 = it->feature.geometry();
@@ -608,7 +608,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
       emit progress( i );
     }
 
-    if ( testCancelled() )
+    if ( testCanceled() )
     {
       break;
     }
@@ -753,7 +753,7 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
     if ( !( ++i % 100 ) )
       emit progress( i );
 
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
 
     QgsGeometry g1 = it->feature.geometry();
@@ -854,7 +854,7 @@ ErrorList topolTest::checkValid( double tolerance, QgsVectorLayer* layer1, QgsVe
   {
     if ( !( ++i % 100 ) )
       emit progress( ++i );
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
 
     QgsGeometry g = it->feature.geometry();
@@ -910,7 +910,7 @@ ErrorList topolTest::checkPointCoveredBySegment( double tolerance, QgsVectorLaye
     if ( !( ++i % 100 ) )
       emit progress( i );
 
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
 
     QgsGeometry g1 = it->feature.geometry();
@@ -997,7 +997,7 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer* layer
       emit progress( i );
     }
 
-    if ( testCancelled() )
+    if ( testCanceled() )
     {
       break;
     }
@@ -1139,7 +1139,7 @@ ErrorList topolTest::checkOverlapWithLayer( double tolerance, QgsVectorLayer* la
     if ( !( ++i % 100 ) )
       emit progress( i );
 
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
 
     QgsGeometry g1 = it->feature.geometry();
@@ -1234,7 +1234,7 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
   {
     if ( !( ++i % 100 ) )
       emit progress( i );
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
     QgsGeometry g1 = it->feature.geometry();
     QgsRectangle bb = g1.boundingBox();
@@ -1311,7 +1311,7 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
   {
     if ( !( ++i % 100 ) )
       emit progress( i );
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
     QgsGeometry g1 = it->feature.geometry();
 
@@ -1410,7 +1410,7 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
   {
     if ( !( ++i % 100 ) )
       emit progress( i );
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
     QgsGeometry g1 = it->feature.geometry();
     QgsRectangle bb = g1.boundingBox();
@@ -1484,7 +1484,7 @@ ErrorList topolTest::checkPolygonContainsPoint( double tolerance, QgsVectorLayer
   {
     if ( !( ++i % 100 ) )
       emit progress( i );
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
     QgsGeometry g1 = it->feature.geometry();
     QgsRectangle bb = g1.boundingBox();
@@ -1534,7 +1534,7 @@ ErrorList topolTest::checkMultipart( double tolerance, QgsVectorLayer *layer1, Q
   {
     if ( !( ++i % 100 ) )
       emit progress( ++i );
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
     QgsGeometry g = it->feature.geometry();
     if ( g.isEmpty() )
@@ -1634,7 +1634,7 @@ QgsSpatialIndex* topolTest::createIndex( QgsVectorLayer* layer, const QgsRectang
     if ( !( ++i % 100 ) )
       emit progress( i );
 
-    if ( testCancelled() )
+    if ( testCanceled() )
     {
       delete index;
       return nullptr;

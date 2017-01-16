@@ -6,15 +6,15 @@
  *
  * When cancel() is called, the internal code has two options to check for cancellation state:
  * - if the worker thread uses an event loop (e.g. for network communication), the code can
- *   make a queued connection to cancelled() signal and handle the cancellation in its slot.
- * - if the worker thread does not use an event loop, it can poll isCancelled() method regularly
- *   to see if the operation should be cancelled.
+ *   make a queued connection to canceled() signal and handle the cancellation in its slot.
+ * - if the worker thread does not use an event loop, it can poll isCanceled() method regularly
+ *   to see if the operation should be canceled.
  *
  * The class is meant to be created and destroyed in the main thread.
  *
  * For map rendering, the object may be created in constructor of a QgsMapLayerRenderer
  * subclass and available with QgsMapLayerRenderer::feedback() method. When a map rendering job
- * gets cancelled, the cancel() method is called on the feedback object of all layers.
+ * gets canceled, the cancel() method is called on the feedback object of all layers.
  *
  * @note added in QGIS 3.0
  */
@@ -30,14 +30,14 @@ class QgsFeedback : QObject
 
     virtual ~QgsFeedback();
 
-    //! Tells the internal routines that the current operation should be cancelled. This should be run by the main thread
+    //! Tells the internal routines that the current operation should be canceled. This should be run by the main thread
     void cancel();
 
-    //! Tells whether the operation has been cancelled already
-    bool isCancelled() const;
+    //! Tells whether the operation has been canceled already
+    bool isCanceled() const;
 
   signals:
     //! Internal routines can connect to this signal if they use event loop
-    void cancelled();
+    void canceled();
 
 };

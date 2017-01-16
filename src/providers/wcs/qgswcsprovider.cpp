@@ -1649,11 +1649,11 @@ QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorizati
 {
   if ( feedback )
   {
-    connect( feedback, SIGNAL( cancelled() ), this, SLOT( cancelled() ), Qt::QueuedConnection );
+    connect( feedback, SIGNAL( canceled() ), this, SLOT( canceled() ), Qt::QueuedConnection );
 
-    // rendering could have been cancelled before we started to listen to cancelled() signal
+    // rendering could have been canceled before we started to listen to canceled() signal
     // so let's check before doing the download and maybe quit prematurely
-    if ( feedback->isCancelled() )
+    if ( feedback->isCanceled() )
       return;
   }
 
@@ -1688,7 +1688,7 @@ QgsWcsDownloadHandler::~QgsWcsDownloadHandler()
 
 void QgsWcsDownloadHandler::blockingDownload()
 {
-  if ( mFeedback && mFeedback->isCancelled() )
+  if ( mFeedback && mFeedback->isCanceled() )
     return; // nothing to do
 
   mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
@@ -1878,7 +1878,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
   }
   else
   {
-    // report any errors except for the one we have caused by cancelling the request
+    // report any errors except for the one we have caused by canceling the request
     if ( mCacheReply->error() != QNetworkReply::OperationCanceledError )
     {
       // Resend request if AlwaysCache
@@ -1931,9 +1931,9 @@ void QgsWcsDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint64 byt
   QgsDebugMsgLevel( tr( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ), 3 );
 }
 
-void QgsWcsDownloadHandler::cancelled()
+void QgsWcsDownloadHandler::canceled()
 {
-  QgsDebugMsg( "Caught cancelled() signal" );
+  QgsDebugMsg( "Caught canceled() signal" );
   if ( mCacheReply )
   {
     QgsDebugMsg( "Aborting WCS network request" );

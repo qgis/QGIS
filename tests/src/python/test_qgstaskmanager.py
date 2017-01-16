@@ -30,7 +30,7 @@ start_app()
 
 def run(task, result):
     if not result:
-        raise Exception('cancelled')
+        raise Exception('canceled')
     else:
         return result
 
@@ -43,19 +43,19 @@ def run_with_kwargs(task, password, result):
 
 
 def cancellable(task):
-    while not task.isCancelled():
+    while not task.isCanceled():
         pass
-    if task.isCancelled():
-        raise Exception('cancelled')
+    if task.isCanceled():
+        raise Exception('canceled')
 
 
 def progress_function(task):
     task.setProgress(50)
 
-    while not task.isCancelled():
+    while not task.isCanceled():
         pass
-    if task.isCancelled():
-        raise Exception('cancelled')
+    if task.isCanceled():
+        raise Exception('canceled')
 
 
 def run_no_result(task):
@@ -143,7 +143,7 @@ class TestQgsTaskManager(unittest.TestCase):
         self.assertEqual(task.status(), QgsTask.Complete)
 
     def testTaskFromFunctionIsCancellable(self):
-        """ test that task from function can check cancelled status """
+        """ test that task from function can check canceled status """
         bad_task = QgsTask.fromFunction('test task4', cancellable)
         QgsApplication.taskManager().addTask(bad_task)
         while bad_task.status() != QgsTask.Running:
@@ -204,7 +204,7 @@ class TestQgsTaskManager(unittest.TestCase):
         self.assertTrue(finished_fail.finished_exception)
         self.assertEqual(task.exception, finished_fail.finished_exception)
 
-    def testTaskFromFunctionCancelledWhileQueued(self):
+    def testTaskFromFunctionCanceledWhileQueued(self):
         """ test that task from finished is called with exception when task is terminated while queued"""
         task = QgsTask.fromFunction('test task', run_no_result, on_finished=finished_fail)
         task.hold()

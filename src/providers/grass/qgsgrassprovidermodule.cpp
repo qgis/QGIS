@@ -1197,7 +1197,7 @@ void QgsGrassImportItem::cancel()
   }
   mImport->cancel();
   QgsGrassImportIcon::instance()->disconnectFrameChanged( this, SLOT( emitDataChanged() ) );
-  setName( name() + " : " + tr( "cancelling" ) );
+  setName( name() + " : " + tr( "canceling" ) );
   emitDataChanged();
 }
 
