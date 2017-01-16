@@ -339,7 +339,7 @@ QgsFeature QgsRelationReferenceWidget::referencedFeature() const
     }
     else
     {
-      fid = mComboBox->itemData( mComboBox->currentIndex(), QgsAttributeTableModel::FeatureIdRole ).value<QgsFeatureId>();
+      fid = mComboBox->currentData( QgsAttributeTableModel::FeatureIdRole ).value<QgsFeatureId>();
     }
     mReferencedLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( f );
   }

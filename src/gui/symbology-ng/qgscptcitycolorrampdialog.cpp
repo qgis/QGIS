@@ -435,7 +435,7 @@ void QgsCptCityColorRampDialog::on_cboVariantName_currentIndexChanged( int index
 {
   Q_UNUSED( index );
   if ( cboVariantName->currentIndex() != -1 )
-    mRamp.setVariantName( cboVariantName->itemData( cboVariantName->currentIndex(), Qt::UserRole ).toString() );
+    mRamp.setVariantName( cboVariantName->currentData( Qt::UserRole ).toString() );
   QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
   updatePreview();
   emit changed();
