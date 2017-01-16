@@ -655,48 +655,14 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      * @note Called by QgsMapLayer::writeXml().
      */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc ) const;
-
-    /**
-     * Save named and sld style of the layer to the style table in the db.
-     * @param name
-     * @param description
-     * @param useAsDefault
-     * @param uiFileContent
-     * @param msgError (out)
-     */
-    virtual void saveStyleToDatabase( const QString& name, const QString& description,
+    void saveStyleToDatabase( const QString& name, const QString& description,
                                       bool useAsDefault, const QString& uiFileContent,
                                       QString &msgError /Out/ );
-
-    /**
-     * Lists all the style in db split into related to the layer and not related to
-     * @param ids the list in which will be stored the style db ids
-     * @param names the list in which will be stored the style names
-     * @param descriptions the list in which will be stored the style descriptions
-     * @param msgError
-     * @return the number of styles related to current layer
-     */
-    virtual int listStylesInDatabase( QStringList &ids /Out/, QStringList &names /Out/,
+    int listStylesInDatabase( QStringList &ids /Out/, QStringList &names /Out/,
                                       QStringList &descriptions /Out/, QString &msgError /Out/ );
-
-    /**
-     * Will return the named style corresponding to style id provided
-     */
-    virtual QString getStyleFromDatabase( const QString& styleId, QString &msgError /Out/ );
-
-    /**
-     * Load a named style from file/local db/datasource db
-     * @param theURI the URI of the style or the URI of the layer
-     * @param theResultFlag will be set to true if a named style is correctly loaded
-     * @param loadFromLocalDb if true forces to load from local db instead of datasource one
-     */
-    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag /Out/, bool loadFromLocalDb );
-
-    /**
-     * Calls loadNamedStyle( theURI, theResultFlag, false );
-     * Retained for backward compatibility
-     */
-    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag /Out/ );
+    QString getStyleFromDatabase( const QString& styleId, QString &msgError /Out/ );
+    QString loadNamedStyle( const QString &theURI, bool &theResultFlag /Out/, bool loadFromLocalDb );
+    QString loadNamedStyle( const QString &theURI, bool &theResultFlag /Out/ );
 
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.
@@ -756,21 +722,8 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      * @return true if calculated, false if failed or was canceled by user
      */
     bool countSymbolFeatures( bool showProgress = true );
-
-    /**
-     * Set the string (typically sql) used to define a subset of the layer
-     * @param subset The subset string. This may be the where clause of a sql statement
-     *               or other defintion string specific to the underlying dataprovider
-     *               and data store.
-     * @return true, when setting the subset string was successful, false otherwise
-     */
-    virtual bool setSubsetString( const QString& subset );
-
-    /**
-     * Get the string (typically sql) used to define a subset of the layer
-     * @return The subset string or QString::null if not implemented by the provider
-     */
-    virtual QString subsetString() const;
+    bool setSubsetString( const QString& subset );
+    QString subsetString() const;
 
     /**
      * Query the layer for features specified in request.
@@ -967,9 +920,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     virtual bool isEditable() const;
 
     virtual bool isSpatial() const;
-
-    /** Returns true if the provider has been modified since the last commit */
-    virtual bool isModified() const;
+    bool isModified( bool checkForPendingChanges = false ) const;
 
     /** Snaps a point to the closest vertex if there is one within the snapping tolerance
      *  @param point       The point which is set to the position of a vertex if there is one within the snapping tolerance.
@@ -1533,11 +1484,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      * @see selectByIds()
      */
     void removeSelection();
-
-    /** Update the extents for the layer. This is necessary if features are
-     *  added/deleted or the layer has been subsetted.
-     */
-    virtual void updateExtents();
+    void updateExtents();
 
     /** Check if there is a join with a layer that will be removed */
     void checkJoinLayerRemove( const QString& theLayerId );

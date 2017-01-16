@@ -122,7 +122,7 @@ class QgsAttributeForm : QWidget
      * @note added in QGIS 2.16
      */
     void setMessageBar( QgsMessageBar* messageBar );
-
+    bool isChanged() const;
   signals:
     /**
      * Notifies about changes of attributes

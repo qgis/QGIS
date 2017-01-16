@@ -8002,7 +8002,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   bool isModified = false;
 
   // Assume changes if: a) the layer reports modifications or b) its transaction group was modified
-  if ( vlayer->isModified() || ( tg && tg->layers().contains( vlayer ) && tg->modified() ) )
+  if ( vlayer->isModified( true ) || ( tg && tg->layers().contains( vlayer ) && tg->modified() ) )
     isModified  = true;
 
   if ( !vlayer->isEditable() && !vlayer->readOnly() )
@@ -8112,7 +8112,7 @@ void QgisApp::saveActiveLayerEdits()
 void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer || !vlayer->isEditable() || !vlayer->isModified() )
+  if ( !vlayer || !vlayer->isEditable() || !vlayer->isModified( true ) )
     return;
 
   if ( vlayer == activeLayer() )
@@ -8300,14 +8300,8 @@ QList<QgsMapLayer *> QgisApp::editableLayers( bool modified ) const
   // use legend layers (instead of registry) so QList mirrors its order
   Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTreeView->layerTreeModel()->rootGroup()->findLayers() )
   {
-    if ( !nodeLayer->layer() )
-      continue;
-
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( nodeLayer->layer() );
-    if ( !vl )
-      continue;
-
-    if ( vl->isEditable() && ( !modified || vl->isModified() ) )
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( nodeLayer->layer() );
+    if ( vl && vl->isEditable() && ( !modified || vl->isModified() ) )
       editLayers << vl;
   }
   return editLayers;
