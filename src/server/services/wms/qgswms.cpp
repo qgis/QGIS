@@ -88,13 +88,13 @@ namespace QgsWms
         {
           writeGetCapabilities( mServerIface, versionString, request, response, false );
         }
-        else if QSTR_COMPARE( req, "GetProjectSettings" )
+        else if( QSTR_COMPARE( req, "GetProjectSettings" ) )
         {
           //getProjectSettings extends WMS 1.3.0 capabilities
           versionString = QStringLiteral( "1.3.0" );
           writeGetCapabilities( mServerIface, versionString, request, response, true );
         }
-        else if QSTR_COMPARE( req, "GetMap" )
+        else if( QSTR_COMPARE( req, "GetMap" ) )
         {
           QString format = params.value( QStringLiteral( "FORMAT" ) );
           if QSTR_COMPARE( format, "application/dxf" )
@@ -106,35 +106,35 @@ namespace QgsWms
             writeGetMap( mServerIface, versionString, request, response );
           }
         }
-        else if QSTR_COMPARE( req, "GetFeatureInfo" )
+        else if( QSTR_COMPARE( req, "GetFeatureInfo" ) )
         {
           writeGetFeatureInfo( mServerIface, versionString, request, response );
         }
-        else if QSTR_COMPARE( req, "GetContext" )
+        else if( QSTR_COMPARE( req, "GetContext" ) )
         {
           writeGetContext( mServerIface, versionString, request, response );
         }
-        else if QSTR_COMPARE( req, "GetSchemaExtension" )
+        else if( QSTR_COMPARE( req, "GetSchemaExtension" ) )
         {
           writeGetSchemaExtension( mServerIface, versionString, request, response );
         }
-        else if QSTR_COMPARE( req, "GetStyle" )
+        else if( QSTR_COMPARE( req, "GetStyle" ) )
         {
           writeGetStyle( mServerIface, versionString, request, response );
         }
-        else if QSTR_COMPARE( req, "GetStyles" )
+        else if( QSTR_COMPARE( req, "GetStyles" ) )
         {
           writeGetStyles( mServerIface, versionString, request, response );
         }
-        else if QSTR_COMPARE( req, "DescribeLayer" )
+        else if( QSTR_COMPARE( req, "DescribeLayer" ) )
         {
           writeDescribeLayer( mServerIface, versionString, request, response );
         }
-        else if ( QSTR_COMPARE( req, "GetLegendGraphic" ) || QSTR_COMPARE( req, "GetLegendGraphics" ) )
+        else if( QSTR_COMPARE( req, "GetLegendGraphic" ) || QSTR_COMPARE( req, "GetLegendGraphics" ) )
         {
           writeGetLegendGraphics( mServerIface, versionString, request, response );
         }
-        else if QSTR_COMPARE( req, "GetPrint" )
+        else if( QSTR_COMPARE( req, "GetPrint" ) )
         {
           writeGetPrint( mServerIface, versionString, request, response );
         }

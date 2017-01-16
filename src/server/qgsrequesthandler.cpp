@@ -156,75 +156,11 @@ void QgsRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc )
   setHttpResponse( ba, QStringLiteral( "text/xml" ) );
 }
 
-void QgsRequestHandler::setXmlResponse( const QDomDocument& doc )
-{
-  QByteArray ba = doc.toByteArray();
-  setHttpResponse( ba, QStringLiteral( "text/xml" ) );
-}
-
-void QgsRequestHandler::setXmlResponse( const QDomDocument& doc, const QString& mimeType )
-{
-  QByteArray ba = doc.toByteArray();
-  setHttpResponse( ba, mimeType );
-}
-
 void QgsRequestHandler::setServiceException( const QgsServerException& ex )
 {
   // Safety measure to avoid potential leaks if called repeatedly
   mExceptionRaised = true;
   mResponse.write( ex );
-}
-
-bool QgsRequestHandler::startGetFeatureResponse( QByteArray* ba, const QString& infoFormat )
-{
-  if ( !ba )
-  {
-    return false;
-  }
-
-  if ( ba->size() < 1 )
-  {
-    return false;
-  }
-
-  QString format;
-  if ( infoFormat == QLatin1String( "GeoJSON" ) )
-    format = QStringLiteral( "text/plain" );
-  else
-    format = QStringLiteral( "text/xml" );
-
-  setInfoFormat( format );
-  appendBody( *ba );
-  // Streaming
-  sendResponse();
-  return true;
-}
-
-void QgsRequestHandler::setGetFeatureResponse( QByteArray* ba )
-{
-  if ( !ba )
-  {
-    return;
-  }
-
-  if ( ba->size() < 1 )
-  {
-    return;
-  }
-  appendBody( *ba );
-  // Streaming
-  sendResponse();
-}
-
-void QgsRequestHandler::endGetFeatureResponse( QByteArray* ba )
-{
-  if ( !ba )
-  {
-    return;
-  }
-  appendBody( *ba );
-  // do NOT call sendResponse()
-  // finish will be called at the end of the transaction
 }
 
 void QgsRequestHandler::setGetCoverageResponse( QByteArray* ba )

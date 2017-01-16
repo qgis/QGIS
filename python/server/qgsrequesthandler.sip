@@ -30,9 +30,6 @@ class QgsRequestHandler  /Abstract/
     void setServiceException( const QgsServerException& ex );
 
     //! @note not available in Python bindings
-    void endGetFeatureResponse( QByteArray* ba );
-
-    //! @note not available in Python bindings
     void setGetCoverageResponse( QByteArray* ba );
 
     /** Set an HTTP header*/

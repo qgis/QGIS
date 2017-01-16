@@ -61,21 +61,6 @@ class SERVER_EXPORT QgsRequestHandler
     void setServiceException( const QgsServerException &ex );
 
     //! @note not available in Python bindings
-    void setXmlResponse( const QDomDocument& doc );
-
-    //! @note not available in Python bindings
-    void setXmlResponse( const QDomDocument& doc, const QString& mimeType );
-
-    //! @note not available in Python bindings
-    bool startGetFeatureResponse( QByteArray* ba, const QString& infoFormat );
-
-    //! @note not available in Python bindings
-    void setGetFeatureResponse( QByteArray* ba );
-
-    //! @note not available in Python bindings
-    void endGetFeatureResponse( QByteArray* ba );
-
-    //! @note not available in Python bindings
     void setGetCoverageResponse( QByteArray* ba );
 
     /** Send out HTTP headers and flush output buffer

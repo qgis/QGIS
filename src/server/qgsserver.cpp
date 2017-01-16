@@ -31,7 +31,6 @@
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
-#include "qgswfsserver.h"
 #include "qgswcsserver.h"
 #include "qgsmapserviceexception.h"
 #include "qgspallabeling.h"
@@ -462,30 +461,6 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
             , accessControl
           );
           wcsServer.executeRequest();
-        }
-      }
-      else if ( serviceString == QLatin1String( "WFS" ) )
-      {
-        QgsWfsProjectParser* p = QgsConfigCache::instance()->wfsConfiguration(
-                                   configFilePath
-                                   , accessControl
-                                 );
-        if ( !p )
-        {
-          theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ),
-                                                 QStringLiteral( "Error reading the project file" ) ) );
-        }
-        else
-        {
-          QgsWfsServer wfsServer(
-            configFilePath
-            , sSettings
-            , parameterMap
-            , p
-            , &theRequestHandler
-            , accessControl
-          );
-          wfsServer.executeRequest();
         }
       }
       else
