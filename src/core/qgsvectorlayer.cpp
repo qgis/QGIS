@@ -172,6 +172,7 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
 
 QgsVectorLayer::~QgsVectorLayer()
 {
+  emit willBeDeleted();
 
   mValid = false;
 
