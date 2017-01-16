@@ -729,8 +729,8 @@ bool QgsWFSSharedData::changeGeometryValues( const QgsGeometryMap &geometry_map 
       newAttrMap[idx] = QString( wkb.toHex().data() );
       newChangedAttrMap[ iter.key()] = newAttrMap;
 
-      QgsGeometry polyBoudingBox = QgsGeometry::fromRect( iter.value().boundingBox() );
-      newGeometryMap[ iter.key()] = polyBoudingBox;
+      QgsGeometry polyBoundingBox = QgsGeometry::fromRect( iter.value().boundingBox() );
+      newGeometryMap[ iter.key()] = polyBoundingBox;
     }
     else
     {

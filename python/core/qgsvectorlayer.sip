@@ -420,7 +420,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     bool removeJoin( const QString& joinLayerId );
 
     /**
-     * Acccessor to the join buffer object
+     * Accessor to the join buffer object
      * @note added 2.14.7
      */
     QgsVectorLayerJoinBuffer* joinBuffer();

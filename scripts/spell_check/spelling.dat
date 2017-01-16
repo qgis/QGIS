@@ -69,7 +69,7 @@ accesing:accessing
 accesnt:accent
 accesories:accessories
 accessable:accessible
-accesss:access
+accesss:access:*
 accidant:accident
 accidentaly:accidentally
 accidential:accidental
@@ -351,8 +351,8 @@ alcoholical:alcoholic
 aleady:already
 aledge:allege:*
 aledged:alleged
-aledges:alleges
-alege:allege
+aledges:alleges:*
+alege:allege:*
 aleged:alleged
 alegience:allegiance
 alegorical:allegorical
@@ -368,10 +368,10 @@ algorythm:algorithm
 alientating:alienating
 alignemnt:alignment
 alignemnts:alignments
-alledge:allege
+alledge:allege:*
 alledged:alleged
 alledgedly:allegedly
-alledges:alleges
+alledges:alleges:*
 allegedely:allegedly
 allegedy:allegedly
 allegely:allegedly
@@ -387,7 +387,7 @@ alliviate:alleviate
 allmost:almost
 allopone:allophone
 allopones:allophones
-allowd:allowed
+allowd:allowed:*
 allpication:application
 allready:already
 allthough:although
@@ -985,7 +985,7 @@ boudaries:boundaries
 boudary:boundary
 bouding:bounding
 boundries:boundaries
-boundry:boundary
+boundry:boundary:*
 bouyancy:buoyancy
 bouyant:buoyant
 boyant:buoyant
@@ -1054,7 +1054,7 @@ calcualte:calculate
 calcualted:calculated
 calcualtes:calculates
 calcualting:calculating
-calculater:calculator
+calculater:calculator:*
 calculs:calculus
 calender:calendar
 calenders:calendars
@@ -1239,11 +1239,11 @@ chemestry:chemistry
 chemicaly:chemically
 childen:children
 childern:children
-childs:children
+childs:children:*
 chnage:change
 chnages:changes
 choise:choice
-choosed:chose
+choosed:chose:*
 choosen:chosen
 chosing:choosing
 chould:should
@@ -1281,7 +1281,7 @@ clearified:clarified
 clearifies:clarifies
 clearify:clarify
 clearifying:clarifying
-cleint:client
+cleint:client:*
 cleints:clients
 clera:clear
 clincial:clinical
@@ -1387,10 +1387,10 @@ commisioned:commissioned
 commisioner:commissioner
 commisioning:commissioning
 commisions:commissions
-commited:committed
-commitee:committee
-commiter:committer
-commiters:committers
+commited:committed:*
+commitee:committee:*
+commiter:committer:*
+commiters:committers:*
 commiting:committing
 committ:commit
 committe:committee

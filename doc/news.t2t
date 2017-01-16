@@ -2558,7 +2558,7 @@ Raster support for most GDAL formats
 Raster implementation supports a variety of rendering settings including
   semi transparent overlays, pallette inversion, flexible band to color mapping
   in multiband images and creation of pseudocolor.
-Change to a data provider architecture for vector layers. Addtional data
+Change to a data provider architecture for vector layers. Additional data
   types can be supported by writing a provider plugin
 Buffer plugin for PostGIS layers
 PostgreSQL port number can be specified when making connections

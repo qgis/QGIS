@@ -168,7 +168,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      */
     struct FetchJoinInfo
     {
-      const QgsVectorJoinInfo* joinInfo;//!< Cannonical source of information about the join
+      const QgsVectorJoinInfo* joinInfo;//!< Canonical source of information about the join
       QgsAttributeList attributes;      //!< Attributes to fetch
       int indexOffset;                  //!< At what position the joined fields start
       QgsVectorLayer* joinLayer;        //!< Resolved pointer to the joined layer

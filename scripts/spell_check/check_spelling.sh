@@ -61,9 +61,9 @@ SPLIT=4
 ${GNUPREFIX}split --number=l/$SPLIT --numeric-suffixes --suffix-length=1 --additional-suffix=~ ${DIR}/spelling.dat spelling
 
 # global replace variables (dictionary)
-declare -A GLOBREP_ALLFILES
-declare -A GLOBREP_CURRENTFILE
-declare -A GLOBREP_IGNORE
+declare -A GLOBREP_ALLFILES=()
+declare -A GLOBREP_CURRENTFILE=()
+declare -A GLOBREP_IGNORE=()
 
 for ((I=0;I<$SPLIT;I++)) ; do
   SPELLFILE=spelling$I~;
@@ -130,9 +130,9 @@ for ((I=0;I<$SPLIT;I++)) ; do
         # Display menu
         echo "***"
         echo -e "Error found: \x1B[31m$ERROR\x1B[0m"
-        echo -e "  \x1B[4mr\x1B[0meplace by \x1B[33m$CORRECTION\x1B[0m at line $NUMBER"
-        echo -e "  replace all occurences by \x1B[33m$CORRECTION\x1B[0m in current \x1B[4mf\x1B[0mile"
-        echo -e "  replace all occurences by \x1B[33m$CORRECTION\x1B[0m in \x1B[4ma\x1B[0mll files"
+        echo -e "  \x1B[4mr\x1B[0meplace by \x1B[33m$CORRECTIONCASE\x1B[0m at line $NUMBER"
+        echo -e "  replace all occurences by \x1B[33m$CORRECTIONCASE\x1B[0m in current \x1B[4mf\x1B[0mile"
+        echo -e "  replace all occurences by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[4ma\x1B[0mll files"
         echo -e "  a\x1B[4mp\x1B[0mpend \x1B[33m$SPELLOKSTR\x1B[0m at the end of the line $NUMBER to avoid spell check on this line"
         echo -e "  en\x1B[4mt\x1B[0mer your own correction"
         echo -e "  skip and \x1B[4mc\x1B[0montinue"
@@ -148,13 +148,13 @@ for ((I=0;I<$SPLIT;I++)) ; do
                 break
                 ;;
               f)
-                GLOBREP_CURRENTFILE+=(["$ERROR"]="$CORRECTION")
+                GLOBREP_CURRENTFILE+=(["$ERROR"]=1)
                 echo -e "replacing \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m"
                 ${GNUPREFIX}sed -i -r "/${SPELLOKRX}/! s/$ERROR/$CORRECTIONCASE/g" $FILE
                 break
                 ;;
               a)
-                GLOBREP_CURRENTFILE+=(["$ERROR"]="$CORRECTION")
+                GLOBREP_CURRENTFILE+=(["$ERROR"]=1)
                 GLOBREP_ALLFILES+=(["$ERROR"]="$CORRECTION")
                 echo -e "replace \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m"
                 ${GNUPREFIX}sed -i -r "/${SPELLOKRX}/! s/$ERROR/$CORRECTIONCASE/g" $FILE
@@ -193,8 +193,8 @@ for ((I=0;I<$SPLIT;I++)) ; do
         FILE=""
       fi
     fi
-  done 3< <(unbuffer ag --smart-case --all-text --nopager --color-match "30;43" --numbers --nomultiline --word-regexp -p $AGIGNORE "${WHOLEWORDS}"'(?!.*'"${SPELLOKRX}"')' $INPUTFILES ; \
-           unbuffer ag --smart-case --all-text --nopager --color-match "30;43" --numbers --nomultiline               -p $AGIGNORE "${INWORDS}"'(?!.*'"${SPELLOKRX}"')'    $INPUTFILES )
+  done 3< <(unbuffer ag --ignore-case --all-text --nopager --color-match "30;43" --numbers --nomultiline --word-regexp -p $AGIGNORE "${WHOLEWORDS}"'(?!.*'"${SPELLOKRX}"')' $INPUTFILES ; \
+           unbuffer ag --ignore-case --all-text --nopager --color-match "30;43" --numbers --nomultiline               -p $AGIGNORE "${INWORDS}"'(?!.*'"${SPELLOKRX}"')'    $INPUTFILES )
 
   rm $SPELLFILE
 
