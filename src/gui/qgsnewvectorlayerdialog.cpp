@@ -171,7 +171,7 @@ void QgsNewVectorLayerDialog::on_mAddAttributeButton_clicked()
   QString myWidth = mWidth->text();
   QString myPrecision = mPrecision->isEnabled() ? mPrecision->text() : QLatin1String( "" );
   //use userrole to avoid translated type string
-  QString myType = mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole ).toString();
+  QString myType = mTypeBox->currentData( Qt::UserRole ).toString();
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << myName << myType << myWidth << myPrecision ) );
   if ( mAttributeView->topLevelItemCount() > 0 )
   {
@@ -205,7 +205,7 @@ void QgsNewVectorLayerDialog::attributes( QList< QPair<QString, QString> >& at )
 QString QgsNewVectorLayerDialog::selectedFileFormat() const
 {
   //use userrole to avoid translated type string
-  QString myType = mFileFormatComboBox->itemData( mFileFormatComboBox->currentIndex(), Qt::UserRole ).toString();
+  QString myType = mFileFormatComboBox->currentData( Qt::UserRole ).toString();
   return myType;
 }
 
