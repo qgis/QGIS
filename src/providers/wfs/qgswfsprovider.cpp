@@ -852,6 +852,16 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
   {
     //transaction successful. Add the features to the cache
     QStringList idList = insertedFeatureIds( serverResponse );
+    /* Fix issue with GeoServer and shapefile feature stores when no real
+       feature id are returned but new0 returned instead of the featureId*/
+    Q_FOREACH ( const QString &v, idList )
+    {
+      if ( v.startsWith( QStringLiteral( "new" ) ) )
+      {
+        reloadData();
+        return true;
+      }
+    }
     QStringList::const_iterator idIt = idList.constBegin();
     featureIt = flist.begin();
 
@@ -1392,7 +1402,10 @@ bool QgsWFSProvider::sendTransactionDocument( const QDomDocument& doc, QDomDocum
 QDomElement QgsWFSProvider::createTransactionElement( QDomDocument& doc ) const
 {
   QDomElement transactionElem = doc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Transaction" ) );
-  transactionElem.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0.0" ) );
+  // QString WfsVersion = mShared->mWFSVersion;
+  // For now: hardcoded to 1.0.0
+  QString WfsVersion = QStringLiteral( "1.0.0" );
+  transactionElem.setAttribute( QStringLiteral( "version" ), WfsVersion );
   transactionElem.setAttribute( QStringLiteral( "service" ), QStringLiteral( "WFS" ) );
   transactionElem.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
 
