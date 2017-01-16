@@ -1561,17 +1561,6 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
   return true;
 }
 
-void QgsComposerMap::storeCurrentLayerSet()
-{
-  mLayers = _qgis_listRawToQPointer( mComposition->mapSettings().layers() );
-
-  if ( mKeepLayerStyles )
-  {
-    // also store styles associated with the layers
-    storeCurrentLayerStyles();
-  }
-}
-
 QList<QgsMapLayer*> QgsComposerMap::layers() const
 {
   return _qgis_listQPointerToRaw( mLayers );

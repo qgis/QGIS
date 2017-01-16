@@ -569,7 +569,7 @@ and should be accessed using QgsComposerMap::overview() or QgsComposerMap::overv
 instead.
 - atlasFixedScale() and setAtlasFixedScale() were removed. Use atlasScalingMode()
 and setAtlasScalingMode() instead.
-
+- storeCurrentLayerSet() was removed. Use setLayers() instead.
 
 QgsComposerMapGrid        {#qgis_api_break_3_0_QgsComposerMapGrid}
 ------------------
