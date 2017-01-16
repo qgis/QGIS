@@ -1,6 +1,6 @@
 #!/bin/bash
 ###########################################################################
-#    chkspelling_ag.sh
+#    checkk_spelling.sh
 #    ---------------------
 #    Date                 : December 2016
 #    Copyright            : (C) 2016 by Denis Rouzaud
@@ -14,7 +14,7 @@
 #                                                                         #
 ###########################################################################
 
-# -i: enter interactive mode to fix errors
+# -r: deactivate interactive mode to fix errors
 # optional argument: list of files to be checked
 
 
@@ -46,17 +46,24 @@ else
   INPUTFILES="."
 fi
 
-SPELLOK='(#\s*spellok|<!--#\s*spellok-->)$'
-
-# split into several files to avoid too long regexes
-SPLIT=4
+# prefix command for mac os support (gsed, gsplit)
 GNUPREFIX=
 if [[ "$OSTYPE" =~ darwin* ]]; then
   GNUPREFIX=g
 fi
 
+# regex to find escape string
+SPELLOKRX='(#\s*spellok|<!--\s*#\s*spellok\s*-->)$'
+
+# split into several files to avoid too long regexes
+SPLIT=4
+
 ${GNUPREFIX}split --number=l/$SPLIT --numeric-suffixes --suffix-length=1 --additional-suffix=~ ${DIR}/spelling.dat spelling
 
+# global replace variables (dictionary)
+declare -A GLOBREP_ALLFILES
+declare -A GLOBREP_CURRENTFILE
+declare -A GLOBREP_IGNORE
 
 for ((I=0;I<$SPLIT;I++)) ; do
   SPELLFILE=spelling$I~;
@@ -72,12 +79,13 @@ for ((I=0;I<$SPLIT;I++)) ; do
   COMMANDS=""
   ERRORFOUND=NO
   while read -u 3 -r LINE; do
-	echo "$LINE"
-	ERRORFOUND=YES
-	if [[ "$INTERACTIVE" =~ YES ]]; then
+    echo "$LINE"
+    ERRORFOUND=YES
+    if [[ "$INTERACTIVE" =~ YES ]]; then
       NOCOLOR=$(echo "$LINE" | ${GNUPREFIX}sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g')
       if [[ "$NOCOLOR" =~ ^[[:alnum:]][[:alnum:]\/\._-]+$ ]]; then
         FILE=$NOCOLOR
+        GLOBREP_CURRENTFILE=()
       fi
       if [[ "$NOCOLOR" =~ ^[0-9]+: ]]; then
         if [[ -z $FILE ]]; then
@@ -85,9 +93,26 @@ for ((I=0;I<$SPLIT;I++)) ; do
           exit 1
         fi
         NUMBER=$(echo "$NOCOLOR" | cut -d: -f1)
-        ERROR=$(echo "$LINE" | ${GNUPREFIX}sed -r 's/^.*\x1B\[30;43m(.*?)\x1B\[0m.*$/\1/')
+        ERROR=$(echo "$LINE" | ${GNUPREFIX}sed -r 's/^.*?\x1B\[30;43m(.*?)\x1B\[0m.*$/\1/')
         CORRECTION=$(ag --nonumbers --ignore-case --word-regexp "$ERROR" ${DIR}/spelling.dat | cut -d: -f2)
+        # Match case
+        MATCHCASE="$ERROR:$CORRECTION"
+        CORRECTIONCASE=$(echo "$MATCHCASE" | ${GNUPREFIX}sed -r 's/([A-Z]+):(.*)/\1:\U\2/; s/([A-Z][a-z]+):([a-z])/\1:\U\2\L/' | cut -d: -f2)
 
+        # Skip global replace
+        if [[ !  -z  ${GLOBREP_CURRENTFILE["$ERROR"]} ]]; then
+          continue
+        fi
+        if [[ !  -z  ${GLOBREP_ALLFILES["$ERROR"]} ]]; then
+          echo -e "replace \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m"
+          ${GNUPREFIX}sed -i -r "/${SPELLOKRX}/! s/$ERROR/$CORRECTIONCASE/g" $FILE
+          continue
+        fi
+        if [[ !  -z  ${GLOBREP_IGNORE["$ERROR"]} ]]; then
+          continue
+        fi
+
+        # escape string
         SPELLOKSTR='//#spellok'
         if [[ "$FILE" =~ \.(txt|html|htm)$ ]]; then
           SPELLOKSTR='<!--#spellok-->'
@@ -98,41 +123,62 @@ for ((I=0;I<$SPLIT;I++)) ; do
           fi
         fi
         if [[ "$FILE" =~ \.(py)$ ]]; then
-	      SPELLOKSTR='#spellok'
-	    fi
+          SPELLOKSTR='#spellok'
+        fi
+        SPELLOKSTR_ESC=$(echo "$SPELLOKSTR" | ${GNUPREFIX}sed -r 's/\//\\\//g')
 
-        echo ""
+        # Display menu
+        echo "***"
+        echo -e "Error found: \x1B[31m$ERROR\x1B[0m"
         echo -e "  \x1B[4mr\x1B[0meplace by \x1B[33m$CORRECTION\x1B[0m at line $NUMBER"
-        echo -e "  \x1B[4ma\x1B[0mppend \x1B[33m$SPELLOKSTR\x1B[0m at the end of the line to avoid spell check on this line"
+        echo -e "  replace all occurences by \x1B[33m$CORRECTION\x1B[0m in current \x1B[4mf\x1B[0mile"
+        echo -e "  replace all occurences by \x1B[33m$CORRECTION\x1B[0m in \x1B[4ma\x1B[0mll files"
+        echo -e "  a\x1B[4mp\x1B[0mpend \x1B[33m$SPELLOKSTR\x1B[0m at the end of the line $NUMBER to avoid spell check on this line"
         echo -e "  en\x1B[4mt\x1B[0mer your own correction"
-        echo -e "  ignore and \x1B[4mc\x1B[0montinue"
+        echo -e "  skip and \x1B[4mc\x1B[0montinue"
+        echo -e "  skip all \x1B[4mo\x1B[0mccurences and continue"
         echo -e "  ignore and \x1B[4me\x1B[0mxit"
 
         while read -n 1 n; do
           echo ""
           case $n in
               r)
-                MATCHCASE="$ERROR:$CORRECTION"
-                CORRECTIONCASE=$(echo "$MATCHCASE" | ${GNUPREFIX}sed -r 's/([A-Z]+):(.*)/\U\2/;s/([A-Z][a-z]+):([a-z])/\U\2\L/')
-                echo -e "replacing \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTION\x1B[0m in \x1B[33m$FILE\x1B[0m at line \x1B[33m$NUMBER\x1B[0m"
-                ${GNUPREFIX}sed -i "${NUMBER}s/$ERROR/$CORRECTION/g" $FILE
+                echo -e "replacing \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m at line \x1B[33m$NUMBER\x1B[0m"
+                ${GNUPREFIX}sed -i "${NUMBER}s/$ERROR/$CORRECTIONCASE/g" $FILE
+                break
+                ;;
+              f)
+                GLOBREP_CURRENTFILE+=(["$ERROR"]="$CORRECTION")
+                echo -e "replacing \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m"
+                ${GNUPREFIX}sed -i -r "/${SPELLOKRX}/! s/$ERROR/$CORRECTIONCASE/g" $FILE
                 break
                 ;;
               a)
+                GLOBREP_CURRENTFILE+=(["$ERROR"]="$CORRECTION")
+                GLOBREP_ALLFILES+=(["$ERROR"]="$CORRECTION")
+                echo -e "replace \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m"
+                ${GNUPREFIX}sed -i -r "/${SPELLOKRX}/! s/$ERROR/$CORRECTIONCASE/g" $FILE
+                break
+                ;;
+              p)
                 echo -e "appending \x1B[33m$SPELLOKSTR\x1B[0m to \x1B[33m$FILE\x1B[0m at line \x1B[33m$NUMBER\x1B[0m"
-                SPELLOKSTR=$(echo "$SPELLOKSTR" | ${GNUPREFIX}sed -r 's/\//\\\//g')
-                ${GNUPREFIX}sed -i "${NUMBER}s/\$/  $SPELLOKSTR/" $FILE
+                ${GNUPREFIX}sed -i "${NUMBER}s/\$/  $SPELLOKSTR_ESC/" $FILE
                 break
                 ;;
               t)
                 echo "Enter the correction: "
                 read CORRECTION
                 MATCHCASE="$ERROR:$CORRECTION"
-                CORRECTIONCASE=$(echo "$MATCHCASE" | ${GNUPREFIX}sed -r 's/([A-Z]+):(.*)/\U\2/;s/([A-Z][a-z]+):([a-z])/\U\2\L/')
-                echo -e "replacing \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTION\x1B[0m in \x1B[33m$FILE\x1B[0m at line \x1B[33m$NUMBER\x1B[0m"                sed -i "${NUMBER}s/$ERROR/$CORRECTION/g" $FILE
+                CORRECTIONCASE=$(echo "$MATCHCASE" | ${GNUPREFIX}sed -r 's/([A-Z]+):(.*)/\1:\U\2/; s/([A-Z][a-z]+):([a-z])/\1:\U\2\L/' | cut -d: -f2)
+                echo -e "replacing \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m at line \x1B[33m$NUMBER\x1B[0m"
+                sed -i "${NUMBER}s/$ERROR/$CORRECTIONCASE/g" $FILE
                 break
                 ;;
               c)
+                break
+                ;;
+              o)
+                GLOBREP_IGNORE+=(["$ERROR"]="$CORRECTION")
                 break
                 ;;
               e)
@@ -147,8 +193,8 @@ for ((I=0;I<$SPLIT;I++)) ; do
         FILE=""
       fi
     fi
-  done 3< <(unbuffer ag --smart-case --all-text --nopager --color-match "30;43" --numbers --nomultiline --word-regexp -p $AGIGNORE "${WHOLEWORDS}"'(?!.*'"${SPELLOK}"')' $INPUTFILES ; \
-           unbuffer ag --smart-case --all-text --nopager --color-match "30;43" --numbers --nomultiline               -p $AGIGNORE "${INWORDS}"'(?!.*'"${SPELLOK}"')'    $INPUTFILES )
+  done 3< <(unbuffer ag --smart-case --all-text --nopager --color-match "30;43" --numbers --nomultiline --word-regexp -p $AGIGNORE "${WHOLEWORDS}"'(?!.*'"${SPELLOKRX}"')' $INPUTFILES ; \
+           unbuffer ag --smart-case --all-text --nopager --color-match "30;43" --numbers --nomultiline               -p $AGIGNORE "${INWORDS}"'(?!.*'"${SPELLOKRX}"')'    $INPUTFILES )
 
   rm $SPELLFILE
 
