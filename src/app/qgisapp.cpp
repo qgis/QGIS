@@ -10275,13 +10275,13 @@ void QgisApp::updateCrsStatusBar()
 
   if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
   {
-    mOnTheFlyProjectionStatusButton->setText( tr( "%1 (OTF)" ).arg( mOnTheFlyProjectionStatusButton->text() ) );
     mOnTheFlyProjectionStatusButton->setToolTip(
       tr( "Current CRS: %1 (OTF enabled)" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconProjectionEnabled.svg" ) ) );
   }
   else
   {
+    mOnTheFlyProjectionStatusButton->setText( tr( "%1 (OTF off)" ).arg( mOnTheFlyProjectionStatusButton->text() ) );
     mOnTheFlyProjectionStatusButton->setToolTip(
       tr( "Current CRS: %1 (OTF disabled)" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconProjectionDisabled.svg" ) ) );
