@@ -104,7 +104,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * @brief Set the current UI theme used to style the interface.  Use uiThemes() to
-     * find valid themes to use. Variabels found in variables.qss will be added to the stylesheet
+     * find valid themes to use. Variables found in variables.qss will be added to the stylesheet
      * on load.
      * @param themeName The name of the theme.
      * @note using an invalid theme name will reset to default

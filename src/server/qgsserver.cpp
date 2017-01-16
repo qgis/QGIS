@@ -64,7 +64,7 @@ QString* QgsServer::sConfigFilePath = nullptr;
 QgsCapabilitiesCache* QgsServer::sCapabilitiesCache = nullptr;
 QgsServerInterfaceImpl* QgsServer::sServerInterface = nullptr;
 // Initialization must run once for all servers
-bool QgsServer::sInitialised =  false;
+bool QgsServer::sInitialized =  false;
 QgsServerSettings QgsServer::sSettings;
 
 QgsServiceRegistry QgsServer::sServiceRegistry;
@@ -240,7 +240,7 @@ QString QgsServer::configPath( const QString& defaultConfigPath, const QMap<QStr
  */
 bool QgsServer::init( )
 {
-  if ( sInitialised )
+  if ( sInitialized )
   {
     return false;
   }
@@ -335,7 +335,7 @@ bool QgsServer::init( )
   qDebug() << "Initializing server modules from " << modulePath << endl;
   sServiceRegistry.init( modulePath,  sServerInterface );
 
-  sInitialised = true;
+  sInitialized = true;
   QgsMessageLog::logMessage( QStringLiteral( "Server initialized" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   return true;
 }

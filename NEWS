@@ -647,7 +647,7 @@ were made.
 - Fix #4496 (Refresh map list in composer table widget in showEvent)
 - OS X build/install updates
 - GRASS version support
-- Intializing from WKT favourize EPSG instead of PROJ.4
+- Initializing from WKT favourize EPSG instead of PROJ.4
 - Add What's this to Help menu (implement #4179)
 - fTools: update layers lists after adding new layer to TOC (fix #4318)
 - Don't block QGIS main window when running Merge shapefiles tool. Partially addresses #4383

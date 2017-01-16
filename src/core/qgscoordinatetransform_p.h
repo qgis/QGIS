@@ -180,7 +180,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
       else
       {
         QgsDebugMsg( "------------------------------------------------------------" );
-        QgsDebugMsg( "The OGR Coordinate transformation FAILED TO INITIALISE!" );
+        QgsDebugMsg( "The OGR Coordinate transformation FAILED TO INITIALIZE!" );
         QgsDebugMsg( "------------------------------------------------------------" );
       }
 #else

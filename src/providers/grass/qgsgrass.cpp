@@ -2059,7 +2059,7 @@ QProcess *QgsGrass::startModule( const QString& gisdbase, const QString&  locati
   environment.insert( QStringLiteral( "PYTHONPATH" ), QgsGrass::getPythonPath() );
   environment.insert( QStringLiteral( "GISRC" ), gisrcFile.fileName() );
   environment.insert( QStringLiteral( "GRASS_MESSAGE_FORMAT" ), QStringLiteral( "gui" ) );
-  // Normaly modules must be run in a mapset owned by user, because each module calls G_gisinit()
+  // Normally modules must be run in a mapset owned by user, because each module calls G_gisinit()
   // which checks if G_mapset() is owned by user. The check is disabled by GRASS_SKIP_MAPSET_OWNER_CHECK.
   environment.insert( QStringLiteral( "GRASS_SKIP_MAPSET_OWNER_CHECK" ), QStringLiteral( "1" ) );
 

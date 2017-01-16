@@ -1827,7 +1827,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
   }
 
   // does project store paths absolute or relative?
-  bool useAbsolutePathes = true;
+  bool useAbsolutePaths = true;
 
   QDomElement propertiesElem = sProjectDocument.documentElement().firstChildElement( QStringLiteral( "properties" ) );
   if ( !propertiesElem.isNull() )
@@ -1835,7 +1835,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
     QDomElement absElem = propertiesElem.firstChildElement( QStringLiteral( "Paths" ) ).firstChildElement( QStringLiteral( "Absolute" ) );
     if ( !absElem.isNull() )
     {
-      useAbsolutePathes = absElem.text().compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+      useAbsolutePaths = absElem.text().compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
     }
   }
 
@@ -1863,7 +1863,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
 
       // change datasource path from relative to absolute if necessary
       // see also QgsMapLayer::readLayerXML
-      if ( !useAbsolutePathes )
+      if ( !useAbsolutePaths )
       {
         QString provider( mapLayerElem.firstChildElement( QStringLiteral( "provider" ) ).text() );
         QDomElement dsElem( mapLayerElem.firstChildElement( QStringLiteral( "datasource" ) ) );

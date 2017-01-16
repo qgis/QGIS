@@ -3756,7 +3756,7 @@ QString QgsSymbolLayerUtils::symbolPathToName( QString path )
 
   QStringList svgPaths = QgsApplication::svgPaths();
 
-  bool isInSvgPathes = false;
+  bool isInSvgPaths = false;
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
     QString dir = QFileInfo( svgPaths[i] ).canonicalFilePath();
@@ -3764,12 +3764,12 @@ QString QgsSymbolLayerUtils::symbolPathToName( QString path )
     if ( !dir.isEmpty() && path.startsWith( dir ) )
     {
       path = path.mid( dir.size() + 1 );
-      isInSvgPathes = true;
+      isInSvgPaths = true;
       break;
     }
   }
 
-  if ( isInSvgPathes )
+  if ( isInSvgPaths )
     return path;
 
   return QgsProject::instance()->writePath( path );

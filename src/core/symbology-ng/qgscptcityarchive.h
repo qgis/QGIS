@@ -225,7 +225,7 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
 
   protected:
 
-    bool mInitialised;
+    bool mInitialized;
     QgsCptCityColorRamp mRamp;
     QList< QIcon > mIcons;
 };

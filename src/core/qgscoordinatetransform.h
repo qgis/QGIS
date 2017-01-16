@@ -284,7 +284,7 @@ class CORE_EXPORT QgsCoordinateTransform
 inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateTransform &r )
 {
   QString mySummary( QStringLiteral( "\n%%%%%%%%%%%%%%%%%%%%%%%%\nCoordinate Transform def begins:" ) );
-  mySummary += QLatin1String( "\n\tInitialised? : " );
+  mySummary += QLatin1String( "\n\tInitialized? : " );
   //prevent warnings
   if ( r.isValid() )
   {

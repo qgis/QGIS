@@ -674,7 +674,7 @@ QgsCoordinateReferenceSystem object.
 - QgsCoordinateTransform::clone() has been removed. Just use direct copies instead.
 - sourceCrs() and destCrs() now return a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
 plugins calling these methods will need to be updated.
-- isInitialised() has been renamed to isValid()
+- isInitialised() has been renamed to isValid()  <!--#spellok-->
 - theCRS parameter in setSourceCrs has been renamed to 'crs'
 - setDestCRS() has been renamed to setDestinationCrs() for consistency
 - destCRS() has been renamed to destinationCrs() for consistency

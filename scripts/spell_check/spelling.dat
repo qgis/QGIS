@@ -2148,7 +2148,7 @@ dicovered:discovered
 dicovering:discovering
 dicovers:discovers
 dicovery:discovery
-dictionarys:dictionaries
+dictionarys:dictionaries:*
 dictionay:dictionary
 dictionnary:dictionary
 dicussed:discussed
@@ -2202,7 +2202,7 @@ dirctory:directory
 direcories:directories
 direcory:directory
 directores:directories
-directorys:directories
+directorys:directories:*
 directoty:directory
 directoy:directory
 directries:directories
@@ -2436,7 +2436,7 @@ eigth:eight
 eiter:either
 elction:election
 electic:eclectic
-electon:election
+electon:election:*
 electrial:electrical
 electricly:electrically
 electricty:electricity
@@ -2848,7 +2848,7 @@ extered:exerted
 extermist:extremist
 extesion:extension
 extesions:extensions
-extint:extinct
+extint:extinct:*
 extracter:extractor
 extradiction:extradition
 extraenous:extraneous
@@ -2978,7 +2978,7 @@ Formalhaut:Fomalhaut
 formallized:formalized
 formallize:formalize
 formaly:formally
-formated:formatted
+formated:formatted:*
 formating:formatting
 formelly:formerly
 formidible:formidable
@@ -3023,7 +3023,7 @@ frequentily:frequently
 frequncies:frequencies
 frequncy:frequency
 frist:first
-fromed:formed
+fromed:formed:*
 frome:from
 froniter:frontier
 frontent:frontend
@@ -3157,7 +3157,7 @@ graet:great
 grafitti:graffiti
 grahical:graphical
 grahpical:graphical
-gramar:grammar
+gramar:grammar:*
 gramatically:grammatically:*
 grammaticaly:grammatically:*
 grammer:grammar:*
@@ -3649,7 +3649,7 @@ indipendently:independently
 indispensible:indispensable
 indisputible:indisputable
 indisputibly:indisputably
-indite:indict
+indite:indict:*
 indivdual:individual
 indivdually:individually
 individualy:individually
@@ -3723,8 +3723,8 @@ initialised:initialized
 initialise:initialize
 initialises:initializes
 initialising:initializing
-initialsed:initialized
-initialse:initialize
+initialsed:initialized:*
+initialse:initialize:*
 initialses:initializes
 initialysed:initialized
 initialyse:initialize
@@ -3773,7 +3773,7 @@ inot:into
 inpeach:impeach
 inpolite:impolite
 inprisonment:imprisonment
-inproper:improper
+inproper:improper:*
 inproperly:improperly
 inproving:improving
 inscpeting:inspecting
@@ -4466,7 +4466,7 @@ multidimensionnal:multidimensional
 multifuction:multifunction
 multipe:multiple
 multipes:multiples
-multipled:multiplied
+multipled:multiplied:*
 multiplers:multipliers
 multple:multiple
 multplied:multiplied
@@ -4736,7 +4736,7 @@ oponent:opponent
 oportunity:opportunity
 opose:oppose
 oposite:opposite
-oposition:opposition
+oposition:opposition:*
 oppenly:openly
 oppinion:opinion
 opponant:opponent
@@ -4823,7 +4823,7 @@ overlayed:overlaid
 overriddden:overridden
 overridded:overridden
 overridding:overriding
-overrided:overridden
+overrided:overridden:*
 overriden:overridden
 overrridden:overridden
 overrriden:overridden
@@ -4982,7 +4982,7 @@ performes:performs
 perfromance:performance
 perfromed:performed
 perfroming:performing
-perfrom:perform
+perfrom:perform:*
 perfroms:performs
 perhasp:perhaps
 perheaps:perhaps
@@ -5012,8 +5012,8 @@ perpindicular:perpendicular
 perseverence:perseverance
 persistance:persistence
 persistant:persistent
-personell:personnel
-personel:personal
+personell:personnel:*
+personel:personal:*
 personnal:personal
 personnell:personnel
 persuded:persuaded
@@ -5071,15 +5071,15 @@ planation:plantation:*
 planed:planned
 plantiff:plaintiff
 plase:please
-plateu:plateau
+plateu:plateau:*
 platfrom:platform
 platfroms:platforms
 plathome:platform
 plattform:platform
 plattforms:platforms
 plausable:plausible
-playright:playwright
-playwrite:playwright
+playright:playwright:*
+playwrite:playwright:*
 playwrites:playwrights
 pleaes:please
 pleasent:pleasant
@@ -5323,14 +5323,14 @@ proceeeds:proceeds
 procesed:processed
 proceses:processes
 proces:process
-processer:processor
+processer:processor:*
 processessing:processing
 processess:processes
 processpr:processor
 processsed:processed
 processses:processes
 processsing:processing
-processs:process
+processs:process:*
 proclaimation:proclamation
 proclamed:proclaimed
 proclaming:proclaiming
@@ -5362,7 +5362,7 @@ programers:programmers
 programing:programming
 programm:program
 programms:programs
-progresss:progress
+progresss:progress:*
 progrom:program
 progroms:programs
 prohabition:prohibition
@@ -5859,7 +5859,7 @@ resembelance:resemblance
 resembes:resembles
 resemblence:resemblance
 reserverd:reserved
-reseted:reset
+reseted:reset:*
 reseting:resetting
 resetted:reset
 resevoir:reservoir
@@ -5940,7 +5940,7 @@ resursive:recursive
 retalitated:retaliated
 retalitation:retaliation
 retored:restored
-retore:restore
+retore:restore:*
 retores:restores
 retoring:restoring
 retransmited:retransmitted
@@ -6259,7 +6259,7 @@ simpliest:simplest
 simultanously:simultaneously
 simultanous:simultaneous
 sincerley:sincerely
-singal:signal
+singal:signal:*
 singed:signed
 singsog:singsong
 sinse:since
@@ -6686,7 +6686,7 @@ swaped:swapped:*
 swaping:swapping
 swepth:swept
 swiming:swimming
-switchs:switches
+switchs:switches:*
 syas:says
 syles:styles
 syle:style
@@ -6962,7 +6962,7 @@ transitionned:transitioned
 transitons:transitions
 transiton:transition
 translaters:translators
-translater:translator
+translater:translator:*
 transmissable:transmissible
 transmited:transmitted
 transmiters:transmitters
@@ -7243,7 +7243,7 @@ usefuly:usefully
 usege:usage
 useing:using
 usera:users
-userful:useful
+userful:useful:*
 usetnet:Usenet
 usuable:usable
 usualy:usually
@@ -7273,6 +7273,7 @@ varable:variable
 varaibles:variables
 varaible:variable
 varations:variations
+variabel:variable
 variabes:variables
 variabe:variable
 variantions:variations
@@ -7440,7 +7441,7 @@ withdrawl:withdrawal
 witheld:withheld
 withe:with
 withh:with
-withing:within
+withing:within:*
 withold:withhold
 withthe:with the
 witht:with

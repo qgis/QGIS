@@ -2336,8 +2336,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
 
   if ( dataDefinedEvaluate( QgsPalLayerSettings::PredefinedPositionOrder, exprVal, &context.expressionContext(), QgsLabelingUtils::encodePredefinedPositionOrder( predefinedPositionOrder ) ) )
   {
-    QString orderD = exprVal.toString();
-    positionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( orderD );
+    QString orderD = exprVal.toString();  //#spellok
+    positionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( orderD );  //#spellok
   }
   ( *labelFeature )->setPredefinedPositionOrder( positionOrder );
 

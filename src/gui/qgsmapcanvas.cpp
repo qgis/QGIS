@@ -430,9 +430,9 @@ bool QgsMapCanvas::isParallelRenderingEnabled() const
   return mUseParallelRendering;
 }
 
-void QgsMapCanvas::setMapUpdateInterval( int timeMiliseconds )
+void QgsMapCanvas::setMapUpdateInterval( int timeMilliseconds )
 {
-  mMapUpdateTimer.setInterval( timeMiliseconds );
+  mMapUpdateTimer.setInterval( timeMilliseconds );
 }
 
 int QgsMapCanvas::mapUpdateInterval() const

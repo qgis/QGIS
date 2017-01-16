@@ -1135,14 +1135,14 @@ QgsPoint QgsGeometryAnalyzer::createPointOffset( double x, double y, double dist
   double dx = afterVertex.x() - beforeVertex.x();
   double dy = afterVertex.y() - beforeVertex.y();
   double normalX = -dy;
-  double normalY = dx;
-  double normalLength = sqrt( normalX * normalX + normalY * normalY );
+  double normalY = dx;  //#spellok
+  double normalLength = sqrt( normalX * normalX + normalY * normalY );  //#spellok
   normalX *= ( dist / normalLength );
-  normalY *= ( dist / normalLength );
+  normalY *= ( dist / normalLength );  //#spellok
 
-  double debugLength = sqrt( normalX * normalX + normalY * normalY ); //control
+  double debugLength = sqrt( normalX * normalX + normalY * normalY ); //control  //#spellok
   Q_UNUSED( debugLength );
-  return QgsPoint( x - normalX, y - normalY ); //negative values -> left side, positive values -> right side
+  return QgsPoint( x - normalX, y - normalY ); //negative values -> left side, positive values -> right side  //#spellok
 }
 
 QgsGeometry QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, double toMeasure, const QgsGeometry& lineGeom )

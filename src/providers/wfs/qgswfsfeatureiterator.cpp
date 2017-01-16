@@ -1025,7 +1025,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
           mWriterFilename.clear();
         }
       }
-      // Instanciates the reader stream from memory buffer if not empty
+      // Instantiates the reader stream from memory buffer if not empty
       if ( !mReaderByteArray.isEmpty() )
       {
         mReaderStream = new QDataStream( &mReaderByteArray, QIODevice::ReadOnly );
