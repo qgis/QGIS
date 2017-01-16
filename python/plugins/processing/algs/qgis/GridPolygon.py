@@ -171,7 +171,7 @@ class GridPolygon(GeoAlgorithm):
                 id += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:
-                    feedback.setPercentage(int(count / cells * 100))
+                    feedback.setProgress(int(count / cells * 100))
 
     def _diamondGrid(self, writer, width, height, originX, originY,
                      hSpacing, vSpacing, hOverlay, vOverlay, feedback):
@@ -222,7 +222,7 @@ class GridPolygon(GeoAlgorithm):
                 id += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:
-                    feedback.setPercentage(int(count / cells * 100))
+                    feedback.setProgress(int(count / cells * 100))
 
     def _hexagonGrid(self, writer, width, height, originX, originY,
                      hSpacing, vSpacing, hOverlay, vOverlay, feedback):
@@ -286,4 +286,4 @@ class GridPolygon(GeoAlgorithm):
                 id += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:
-                    feedback.setPercentage(int(count / cells * 100))
+                    feedback.setProgress(int(count / cells * 100))

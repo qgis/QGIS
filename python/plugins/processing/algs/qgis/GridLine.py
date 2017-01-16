@@ -159,9 +159,9 @@ class GridLine(GeoAlgorithm):
             id += 1
             count += 1
             if int(math.fmod(count, count_update)) == 0:
-                feedback.setPercentage(int(count / count_max * 50))
+                feedback.setProgress(int(count / count_max * 50))
 
-        feedback.setPercentage(50)
+        feedback.setProgress(50)
 
         # longitude lines
         # counters for progressbar - update every 5%
@@ -186,6 +186,6 @@ class GridLine(GeoAlgorithm):
             id += 1
             count += 1
             if int(math.fmod(count, count_update)) == 0:
-                feedback.setPercentage(50 + int(count / count_max * 50))
+                feedback.setProgress(50 + int(count / count_max * 50))
 
         del writer
