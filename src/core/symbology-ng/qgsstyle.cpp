@@ -1562,7 +1562,7 @@ bool QgsStyle::importXml( const QString& filename )
 
   if ( version == STYLE_CURRENT_VERSION )
   {
-    // For the new style, load symbols individualy
+    // For the new style, load symbols individually
     while ( !e.isNull() )
     {
       if ( e.tagName() == QLatin1String( "symbol" ) )

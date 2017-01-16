@@ -132,7 +132,7 @@ class QgsEditorWidgetRegistry : QObject
      /**
      * Register a new auto-conf plugin.
      *
-     * @param plugin The plugin (ownership is transfered)
+     * @param plugin The plugin (ownership is transferred)
      */
     void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin* plugin );
 };

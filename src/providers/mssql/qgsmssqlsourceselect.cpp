@@ -512,7 +512,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
 
   if ( !QgsMssqlProvider::OpenDatabase( db ) )
   {
-    // Let user know we couldn't initialise the MSSQL provider
+    // Let user know we couldn't initialize the MSSQL provider
     QMessageBox::warning( this,
                           tr( "MSSQL Provider" ), db.lastError().text() );
     return;

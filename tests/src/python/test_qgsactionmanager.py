@@ -109,7 +109,7 @@ class TestQgsActionManager(unittest.TestCase):
         id2 = self.manager.addAction(QgsAction.GenericPython, 'test_action2', 'i=2')
         id3 = self.manager.addAction(QgsAction.GenericPython, 'test_action3', 'i=3')
 
-        # remove non-existant action
+        # remove non-existent action
         self.manager.removeAction(QUuid.createUuid())
 
         # remove them one by one

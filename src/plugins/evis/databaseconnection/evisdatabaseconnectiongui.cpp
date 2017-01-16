@@ -46,7 +46,7 @@
 * @param parent - Pointer the to parent QWidget for modality
 * @param fl - Windown flags
 */
-eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* theTemoraryFileList, QWidget* parent, Qt::WindowFlags fl )
+eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* theTemporaryFileList, QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
@@ -54,9 +54,9 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* th
   QSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/eVis/db-geometry" ) ).toByteArray() );
 
-  mTempOutputFileList = theTemoraryFileList;
+  mTempOutputFileList = theTemporaryFileList;
 
-  //Initialize varaibles
+  //Initialize variables
   mQueryDefinitionMap = new QMap<int, eVisQueryDefinition>;
   mDatabaseConnection = nullptr;
 

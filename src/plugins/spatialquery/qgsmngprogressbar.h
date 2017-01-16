@@ -38,7 +38,7 @@ class MngProgressBar
 
     /**
      * \brief Sets the progress bar's minimum and maximum values to minimum and maximum respectively
-     * \param minimum minimun value.
+     * \param minimum minimum value.
      * \param maximum maximum value.
      */
     void init( int minimum, int maximum );

@@ -572,7 +572,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     static QStringList recentProjections();
 
-    /** Clears the internal cache used to initialise QgsCoordinateReferenceSystem objects.
+    /** Clears the internal cache used to initialize QgsCoordinateReferenceSystem objects.
      * This should be called whenever the srs database has been modified in order to ensure
      * that outdated CRS objects are not created.
      * @note added in QGIS 3.0
@@ -649,7 +649,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! A string based associative array used for passing records around
     typedef QMap<QString, QString> RecordMap;
 
-    /** Get a record from the srs.db or qgis.db backends, given an sql statment.
+    /** Get a record from the srs.db or qgis.db backends, given an sql statement.
      * @note only handles queries that return a single record.
      * @note it will first try the system srs.db then the users qgis.db!
      * @param theSql The sql query to execute

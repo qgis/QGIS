@@ -682,7 +682,7 @@ bool QgsCptCityDataItem::equal( const QgsCptCityDataItem *other )
 QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
     const QString& name, const QString& path, const QString& variantName, bool initialize )
     : QgsCptCityDataItem( ColorRamp, parent, name, path )
-    , mInitialised( false )
+    , mInitialized( false )
     , mRamp( path, variantName, false )
 {
   // QgsDebugMsg( "name= " + name + " path= " + path );
@@ -694,7 +694,7 @@ QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
 QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
     const QString& name, const QString& path, const QStringList& variantList, bool initialize )
     : QgsCptCityDataItem( ColorRamp, parent, name, path )
-    , mInitialised( false )
+    , mInitialized( false )
     , mRamp( path, variantList, QString(), false )
 {
   // QgsDebugMsg( "name= " + name + " path= " + path );
@@ -706,9 +706,9 @@ QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
 // TODO only load file when icon is requested...
 void QgsCptCityColorRampItem::init()
 {
-  if ( mInitialised )
+  if ( mInitialized )
     return;
-  mInitialised = true;
+  mInitialized = true;
 
   QgsDebugMsg( "path = " + path() );
 

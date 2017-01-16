@@ -463,7 +463,7 @@ void QgsAlignRasterLayerConfigDialog::browseOutputFilename()
 
   if ( !fileName.isEmpty() )
   {
-    // ensure the user never ommited the extension from the file name
+    // ensure the user never omitted the extension from the file name
     if ( !fileName.endsWith( QLatin1String( ".tif" ), Qt::CaseInsensitive ) && !fileName.endsWith( QLatin1String( ".tiff" ), Qt::CaseInsensitive ) )
     {
       fileName += QLatin1String( ".tif" );

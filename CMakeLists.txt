@@ -96,7 +96,7 @@ SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be
 IF (WITH_BINDINGS)
   # By default bindings will be installed only to QGIS directory
   # Someone might want to install it to python site-packages directory
-  # as otherwise user has to use PYTHONPATH environemnt variable to add
+  # as otherwise user has to use PYTHONPATH environment variable to add
   # QGIS bindings to package search path
   SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
   SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")

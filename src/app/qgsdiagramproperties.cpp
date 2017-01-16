@@ -157,13 +157,13 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
   QSettings settings;
 
-  // reset horiz strech of left side of options splitter (set to 1 for previewing in Qt Designer)
+  // reset horiz stretch of left side of options splitter (set to 1 for previewing in Qt Designer)
   QSizePolicy policy( mDiagramOptionsListFrame->sizePolicy() );
   policy.setHorizontalStretch( 0 );
   mDiagramOptionsListFrame->setSizePolicy( policy );
   if ( !settings.contains( QStringLiteral( "/Windows/Diagrams/OptionsSplitState" ) ) )
   {
-    // set left list widget width on intial showing
+    // set left list widget width on initial showing
     QList<int> splitsizes;
     splitsizes << 115;
     mDiagramOptionsSplitter->setSizes( splitsizes );

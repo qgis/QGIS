@@ -580,7 +580,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         response, headers = self._post_restricted(data)
         self.assertFalse(
             str(response).find("<qgs:pk>1</qgs:pk>") != -1,
-            "Unexpeced result in GetFeatureInfo\n%s" % response)
+            "Unexpeced result in GetFeatureInfo\n%s" % response)  #spellok
 
 
 # # WCS # # WCS # # WCS # #

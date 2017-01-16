@@ -116,7 +116,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
     /**
      * @brief Set the current UI theme used to style the interface.  Use uiThemes() to
-     * find valid themes to use. Variabels found in variables.qss will be added to the stylesheet
+     * find valid themes to use. Variables found in variables.qss will be added to the stylesheet
      * on load.
      * @param themeName The name of the theme.
      * @note using an invalid theme name will reset to default
@@ -188,10 +188,10 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Returns the path to the srs.db file.
     static QString srsDbFilePath();
 
-    //! Returns the pathes to svg directories.
+    //! Returns the paths to svg directories.
     static QStringList svgPaths();
 
-    //! Returns the pathes to composer template directories
+    //! Returns the paths to composer template directories
     static QStringList composerTemplatePaths();
 
     //! Returns the system environment variables passed to application.
@@ -292,7 +292,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! loads providers
     static void initQgis();
 
-    //! initialise qgis.db
+    //! initialize qgis.db
     static bool createDB( QString* errorMessage = 0 );
 
     //! Create the users theme folder

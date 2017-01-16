@@ -253,7 +253,7 @@ QgsWcsProvider::QgsWcsProvider( const QString& uri )
   }
   // Geoserver is giving rotated raster for geographic CRS - switched axis,
   // Geoserver developers argue that changed axis order applies also to
-  // returned raster, that is exagerated IMO but we have to handle that.
+  // returned raster, that is exaggerated IMO but we have to handle that.
   if (( responseWidth == requestHeight && responseHeight == requestWidth ) ||
       ( responseWidth == requestHeight - 1 && responseHeight == requestWidth - 1 ) )
   {
@@ -650,7 +650,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   // "The spatial extent of a grid coverage extends only as far as the outermost
   // grid points contained in the bounding box. It does NOT include any area
   // (partial or whole grid cells or sample spaces) beyond those grid points."
-  // Mapserver and GDAL are using bbox defined by grid points, i.e. shrinked
+  // Mapserver and GDAL are using bbox defined by grid points, i.e. shrunk
   // by 1 pixel, but Geoserver and ArcGIS are using full bbox including
   // the space around edge grid points.
   if ( mCapabilities.version().startsWith( QLatin1String( "1.1" ) ) && !mFixBox )
@@ -723,7 +723,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
     setQueryItem( url, QStringLiteral( "GRIDTYPE" ), QStringLiteral( "urn:ogc:def:method:WCS:1.1:2dSimpleGrid" ) );
 
     // GridOrigin is BBOX minx, maxy
-    // Note: shifting origin to cell center (not realy necessary nor making sense)
+    // Note: shifting origin to cell center (not really necessary nor making sense)
     // does not work with Mapserver 6.0.3
     // Mapserver 6.0.3 does not work with origin on yMinimum (lower left)
     // Geoserver works OK with yMinimum (lower left)

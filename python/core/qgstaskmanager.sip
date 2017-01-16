@@ -318,7 +318,7 @@ class QgsTaskManager : QObject
     void cancelAll();
 
     //! Returns true if all dependencies for the specified task are satisfied
-    bool dependenciesSatisified( long taskId ) const;
+    bool dependenciesSatisfied( long taskId ) const;
 
     //! Returns the set of task IDs on which a task is dependent
     //! @note not available in Python bindings

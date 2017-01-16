@@ -28,7 +28,7 @@
  *
  * { "map": { 1: "one", 2: "two", 3: "three" } }
  *
- * Values that are not on the map will be wrapped in parantheses. So with the above
+ * Values that are not on the map will be wrapped in parentheses. So with the above
  * configuration:
  *
  * - 3 => "three"

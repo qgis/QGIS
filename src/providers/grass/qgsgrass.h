@@ -160,7 +160,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     // This does not work (gcc/Linux), such exception cannot be caught
     // so I have enabled the old version, if you are able to fix it, please
-    // check first if it realy works, i.e. can be caught!
+    // check first if it really works, i.e. can be caught!
 #if 0
     struct Exception : public QgsException
     {
@@ -613,7 +613,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // Free struct Map_info
     static void vectDestroyMapStruct( struct Map_info *map );
 
-    // Sleep miliseconds (for debugging), does not work on threads(?)
+    // Sleep milliseconds (for debugging), does not work on threads(?)
     static void sleep( int ms );
 
     void emitNewLayer( const QString& uri, const QString& name ) { emit newLayer( uri, name ); }
@@ -621,7 +621,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     /** Parse single line of output from GRASS modules run with GRASS_MESSAGE_FORMAT=gui
      * @param input input string read from module stderr
      * @param text parsed text
-     * @param html html formated parsed text, e.g. + icons
+     * @param html html formatted parsed text, e.g. + icons
      * @param value percent 0-100 or progress as absolute number if total is unknown*/
     static ModuleOutput parseModuleOutput( const QString & input, QString &text, QString &html, int &value );
 

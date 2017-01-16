@@ -542,7 +542,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   // We have 2 options for resampling:
   //  a) 'Stretch' the src and align the start edge of src to the start edge of dst.
   //     That means however, that to the target cells may be assigned values of source
-  //     which are not nearest to the center of dst cells. Usualy probably not a problem
+  //     which are not nearest to the center of dst cells. Usually probably not a problem
   //     but we are not precise. The shift is in maximum ... TODO
   //  b) We could cut the first destination column and left only the second one which is
   //     completely covered by src. No (significant) stretching is applied in that
@@ -1458,7 +1458,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
                                         const QStringList & theConfigOptions )
 {
   //TODO: Consider making theRasterPyramidList modifyable by this method to indicate if the pyramid exists after build attempt
-  //without requiring the user to rebuild the pyramid list to get the updated infomation
+  //without requiring the user to rebuild the pyramid list to get the updated information
 
   //
   // Note: Make sure the raster is not opened in write mode
@@ -2063,7 +2063,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
       // Then what we have here is a driver with no corresponding
       // file extension; e.g., GRASS.  In which case we append the
       // string to the "catch-all" which will match all file types.
-      // (I.e., "*.*") We use the driver description intead of the
+      // (I.e., "*.*") We use the driver description instead of the
       // long time to prevent the catch-all line from getting too
       // large.
 
@@ -2474,7 +2474,7 @@ void QgsGdalProvider::initBaseDataset()
 
   if ( !hasGeoTransform )
   {
-    // Initialise the affine transform matrix
+    // Initialize the affine transform matrix
     mGeoTransform[0] =  0;
     mGeoTransform[1] =  1;
     mGeoTransform[2] =  0;

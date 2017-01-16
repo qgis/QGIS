@@ -959,8 +959,8 @@ void TestQgsTaskManager::dependencies()
   childTask->hold();
   taskId = manager.addTask( QgsTaskManager::TaskDefinition( task, QgsTaskList() << childTask ) );
   childTaskId = manager.addTask( childTask );
-  QVERIFY( !manager.dependenciesSatisified( taskId ) );
-  QVERIFY( manager.dependenciesSatisified( childTaskId ) );
+  QVERIFY( !manager.dependenciesSatisfied( taskId ) );
+  QVERIFY( manager.dependenciesSatisfied( childTaskId ) );
 
   QCOMPARE( childTask->status(), QgsTask::OnHold );
   QCOMPARE( task->status(), QgsTask::Queued );
@@ -981,7 +981,7 @@ void TestQgsTaskManager::dependencies()
     QCoreApplication::processEvents();
   }
   flushEvents();
-  QVERIFY( manager.dependenciesSatisified( taskId ) );
+  QVERIFY( manager.dependenciesSatisfied( taskId ) );
   QCOMPARE( childTask->status(), QgsTask::Complete );
   //wait for task to spin up
   while ( !task->isActive() )

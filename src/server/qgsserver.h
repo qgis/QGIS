@@ -86,7 +86,7 @@ class SERVER_EXPORT QgsServer
     QgsServerInterfaceImpl* serverInterface() { return sServerInterface; }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    //! Intialize python
+    //! Initialize python
     //! Note: not in python bindings
     void initPython( );
 #endif
@@ -128,7 +128,7 @@ class SERVER_EXPORT QgsServer
     static QgsCapabilitiesCache* sCapabilitiesCache;
     static QgsServerInterfaceImpl* sServerInterface;
     //! Initialization must run once for all servers
-    static bool sInitialised;
+    static bool sInitialized;
 
     //! service registry
     static QgsServiceRegistry sServiceRegistry;

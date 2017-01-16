@@ -499,7 +499,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   {
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist. But we checked earlier for its existence
-    //     and aborted in that case. This is because we may be runnig from read only
+    //     and aborted in that case. This is because we may be running from read only
     //     media such as live cd and don't want to force trying to create a db.
     showDBMissingWarning( databaseFileName );
     return;
@@ -895,7 +895,7 @@ long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
     {
       // XXX This will likely never happen since on open, sqlite creates the
       //     database if it does not exist. But we checked earlier for its existence
-      //     and aborted in that case. This is because we may be runnig from read only
+      //     and aborted in that case. This is because we may be running from read only
       //     media such as live cd and don't want to force trying to create a db.
       showDBMissingWarning( databaseFileName );
       return 0;

@@ -331,7 +331,7 @@ void QgsDataItem::childrenCreated()
     return;
   }
 
-  if ( mChildren.isEmpty() ) // usually populating but may also be refresh if originaly there were no children
+  if ( mChildren.isEmpty() ) // usually populating but may also be refresh if originally there were no children
   {
     populate( mFutureWatcher->result() );
   }

@@ -255,7 +255,7 @@ class CORE_EXPORT QgsExpression
 
     //! Return an expression string, constructed from the internal
     //! abstract syntax tree. This does not contain any nice whitespace
-    //! formatting or comments. In general it is preferrable to use
+    //! formatting or comments. In general it is preferable to use
     //! expression() instead.
     QString dump() const;
 
@@ -543,7 +543,7 @@ class CORE_EXPORT QgsExpression
         //! The number of parameters this function takes.
         int params() const { return mParameterList.isEmpty() ? mParams : mParameterList.count(); }
 
-        //! The mininum number of parameters this function takes.
+        //! The minimum number of parameters this function takes.
         int minParams() const
         {
           if ( mParameterList.isEmpty() )

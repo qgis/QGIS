@@ -72,7 +72,7 @@ else(NOT QCA_FOUND)
     file(STRINGS "${_qca_version_h}" _qca_version_str REGEX "^.*QCA_VERSION_STR +\"[^\"]+\".*$")
     string(REGEX REPLACE "^.*QCA_VERSION_STR +\"([^\"]+)\".*$" "\\1" QCA_VERSION_STR "${_qca_version_str}")
   else()
-    # qca_core.h contains hexidecimal version in <= 2.0.3
+    # qca_core.h contains hexadecimal version in <= 2.0.3
     set(_qca_core_h "${QCA_INCLUDE_DIR}/qca_core.h")
     if(EXISTS "${_qca_core_h}")
       file(STRINGS "${_qca_core_h}" _qca_version_str REGEX "^#define +QCA_VERSION +0x[0-9a-fA-F]+.*")

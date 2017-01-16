@@ -620,7 +620,7 @@ bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList &fields, QList<boo
 void QgsDelimitedTextSourceSelect::getOpenFileName()
 {
   // Get a file to process, starting at the current directory
-  // Set inital dir to last used
+  // Set initial dir to last used
   QSettings settings;
   QString selectedFilter = settings.value( mPluginKey + "/file_filter", "" ).toString();
 

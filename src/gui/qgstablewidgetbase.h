@@ -42,7 +42,7 @@ class GUI_EXPORT QgsTableWidgetBase: public QWidget, public Ui::QgsTableWidgetBa
   protected:
 
     /**
-     * Initialise the table with the given model.
+     * Initialize the table with the given model.
      * Must be called once in the child class' constructor.
      */
     void init( QAbstractTableModel* model );

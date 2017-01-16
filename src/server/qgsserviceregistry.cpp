@@ -38,7 +38,7 @@ namespace
 // The strings are split into dot separated segment
 // Each segment are compared up to the shortest number of segment of the
 // lists. Remaining segments are dropped.
-// If both segments can be intepreted as numbers the are compared as numbers, otherwise
+// If both segments can be interpreted as numbers the are compared as numbers, otherwise
 // They are compared lexicographically.
 // Return true if v1 is greater than v2
   bool isVersionGreater( const QString& v1, const QString& v2 )

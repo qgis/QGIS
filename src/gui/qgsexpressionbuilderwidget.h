@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgisexpressionbuilderwidget.h - A genric expression string builder widget.
+    qgisexpressionbuilderwidget.h - A generic expression string builder widget.
      --------------------------------------
     Date                 :  29-May-2011
     Copyright            : (C) 2011 by Nathan Woodrow
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsExpressionItemSearchProxy : public QSortFilterProxyModel
 
 /** \ingroup gui
  * A reusable widget that can be used to build a expression string.
-  * See QgsExpressionBuilderDialog for exmaple of usage.
+  * See QgsExpressionBuilderDialog for example of usage.
   */
 class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilderWidgetBase
 {

@@ -238,7 +238,7 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
   bool myHasGeoTransform = GDALGetGeoTransform( gdalDataset, myGeoTransform ) == CE_None;
   if ( !myHasGeoTransform )
   {
-    // Initialise the affine transform matrix
+    // Initialize the affine transform matrix
     myGeoTransform[0] =  0;
     myGeoTransform[1] =  1;
     myGeoTransform[2] =  0;

@@ -509,7 +509,7 @@ class ProviderTestCase(object):
         expected = set([fids[1], fids[3], fids[4]])
         assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)
 
-        #providers should ignore non-existant fids
+        #providers should ignore non-existent fids
         result = set([f.id() for f in self.provider.getFeatures(QgsFeatureRequest().setFilterFids([-101, fids[1], -102, fids[3], -103, fids[4], -104]))])
         expected = set([fids[1], fids[3], fids[4]])
         assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)

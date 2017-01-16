@@ -660,7 +660,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
 
         def appendfile(layer):
             with open(filename, 'a') as f:
-                f.write('3,tigger\n')
+                f.write('3,tiger\n')
             # print "Appended to file - sleeping"
             time.sleep(1)
             QCoreApplication.instance().processEvents()

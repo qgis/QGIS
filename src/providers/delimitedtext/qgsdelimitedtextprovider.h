@@ -184,7 +184,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     bool boundsCheck( QgsGeometry *geom );
 
     /**
-     * Try to read field types from CSVT (or equialent xxxT) file.
+     * Try to read field types from CSVT (or equivalent xxxT) file.
      * @param filename The name of the file from which to read the field types
      * @param message  Pointer to a string to receive a status message
      * @return A list of field type strings, empty if not found or not valid

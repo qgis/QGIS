@@ -311,9 +311,9 @@ class CORE_EXPORT QgsGmlStreamingParser
     const char* mGMLNameSpaceURIPtr;
     //! Axis orientation logic
     AxisOrientationLogic mAxisOrientationLogic;
-    //! Whether to invert axis orientation. This value is immutable, but combined with what is infered from data and mAxisOrientationLogic, is used to compute mInvertAxisOrientation
+    //! Whether to invert axis orientation. This value is immutable, but combined with what is inferred from data and mAxisOrientationLogic, is used to compute mInvertAxisOrientation
     bool mInvertAxisOrientationRequest;
-    //! Whether to invert axis orientation: result of mAxisOrientationLogic, mInvertAxisOrientationRequest and what is infered from data and mAxisOrientationLogic
+    //! Whether to invert axis orientation: result of mAxisOrientationLogic, mInvertAxisOrientationRequest and what is inferred from data and mAxisOrientationLogic
     bool mInvertAxisOrientation;
     //! WFS 2.0 "numberReturned" or WFS 1.1 "numberOfFeatures" attribute, or -1 if invalid/not found
     int mNumberReturned;

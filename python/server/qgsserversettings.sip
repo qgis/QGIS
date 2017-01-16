@@ -37,7 +37,7 @@ class QgsServerSettings
       */
     void load();
 
-    /** Log a summary of settings curently loaded.
+    /** Log a summary of settings currently loaded.
       */
     void logSummary() const;
 

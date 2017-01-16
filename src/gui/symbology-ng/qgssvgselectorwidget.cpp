@@ -529,7 +529,7 @@ void QgsSvgSelectorWidget::populateList()
     mGroupsTreeView->setExpanded( g->indexFromItem( g->item( i ) ), true );
   }
 
-  // Initally load the icons in the List view without any grouping
+  // Initially load the icons in the List view without any grouping
   QAbstractItemModel* oldModel = mImagesListView->model();
   QgsSvgSelectorListModel* m = new QgsSvgSelectorListModel( mImagesListView );
   mImagesListView->setModel( m );

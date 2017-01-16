@@ -121,7 +121,7 @@ class QgsDxfExport
     void setLayerTitleAsName( bool layerTitleAsName );
 
     /**
-     * Retrieve wether layer title (where set) instead of name shall be use
+     * Retrieve whether layer title (where set) instead of name shall be use
      * @returns flag
      * @see setLayerTitleAsName
      */

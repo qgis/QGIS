@@ -401,7 +401,7 @@ void QgsVectorLayerUndoCommandDeleteAttribute::undo()
   {
     if ( !FID_IS_NEW( it.key() ) )
     {
-      QgsAttributeMap& attrs = mBuffer->mChangedAttributeValues[it.key()]; // also adds record if nonexistant
+      QgsAttributeMap& attrs = mBuffer->mChangedAttributeValues[it.key()]; // also adds record if nonexistent
       attrs.insert( mFieldIndex, it.value() );
     }
   }

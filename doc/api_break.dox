@@ -666,7 +666,7 @@ called if changes are made to the CRS database.
 QgsCoordinateTransform        {#qgis_api_break_3_0_QgsCoordinateTransform}
 ----------------------
 
-- QgsCoordinateTransform is no longer a QObject. readXml, writeXml and initialise are all normal public members now,
+- QgsCoordinateTransform is no longer a QObject. readXml, writeXml and initialize are all normal public members now,
 not slots. The invalidTransformInput() signal has been removed.
 - The extra QgsCoordinateTransform constructors (those not taking QgsCoordinateReferenceSystem arguments) have been
 removed. Now, QgsCoordinateTransform must be created using an already existing source and destination
@@ -674,7 +674,7 @@ QgsCoordinateReferenceSystem object.
 - QgsCoordinateTransform::clone() has been removed. Just use direct copies instead.
 - sourceCrs() and destCrs() now return a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
 plugins calling these methods will need to be updated.
-- isInitialised() has been renamed to isValid()
+- isInitialised() has been renamed to isValid()  <!--#spellok-->
 - theCRS parameter in setSourceCrs has been renamed to 'crs'
 - setDestCRS() has been renamed to setDestinationCrs() for consistency
 - destCRS() has been renamed to destinationCrs() for consistency

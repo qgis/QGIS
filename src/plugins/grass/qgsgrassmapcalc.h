@@ -391,7 +391,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     // Number of outputs (0 or 1)
     int mOutputCount;
 
-    // Funcion
+    // Function
     QgsGrassMapcalcFunction mFunction;
 
     // Label font

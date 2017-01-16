@@ -67,7 +67,7 @@ class QgsServiceRegistry
      *
      * @param name the tame of the service
      * @param version (optional) the specific version to unload
-     * @return the number of unregstered services
+     * @return the number of unregistered services
      *
      * If the version is not specified then all versions from the specified service
      * are unloaded

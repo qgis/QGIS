@@ -1608,7 +1608,7 @@ bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString& name )
   }
 
   //if this is the first record we need to ensure that its srs_id is 10000. For
-  //any rec after that sqlite3 will take care of the autonumering
+  //any rec after that sqlite3 will take care of the autonumbering
   //this was done to support sqlite 3.0 as it does not yet support
   //the autoinc related system tables.
   if ( getRecordCount() == 0 )

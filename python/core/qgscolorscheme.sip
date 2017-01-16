@@ -59,7 +59,7 @@ class QgsColorScheme
 
     /** Gets a list of colors from the scheme. The colors can optionally
      * be generated using the supplied context and base color.
-     * @param context string specifiying an optional context for the returned
+     * @param context string specifying an optional context for the returned
      * colors. For instance, a "recent colors" scheme may filter returned colors
      * by context so that colors used only in a "composer" context are returned.
      * @param baseColor base color for the scheme's colors. Some color schemes

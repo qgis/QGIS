@@ -350,7 +350,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /** Creates a color ramp from the settings encoded in an XML element
      * @param element DOM element
-     * @returns new color ramp. Caller takes responsiblity for deleting the returned value.
+     * @returns new color ramp. Caller takes responsibility for deleting the returned value.
      * @see saveColorRamp()
      */
     static QgsColorRamp* loadColorRamp( QDomElement& element );

@@ -188,7 +188,7 @@ void TestQgsAtlasComposition::init()
   mComposition->addComposerLabel( mLabel1 );
   mLabel1->setText( QStringLiteral( "[% \"NAME_1\" %] area" ) );
   mLabel1->setFont( QgsFontUtils::getStandardTestFont() );
-  //need to explictly set width, since expression hasn't been evaluated against
+  //need to explicitly set width, since expression hasn't been evaluated against
   //an atlas feature yet and will be shorter than required
   mLabel1->setSceneRect( QRectF( 150, 5, 60, 15 ) );
 

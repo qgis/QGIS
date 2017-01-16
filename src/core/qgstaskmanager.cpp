@@ -473,7 +473,7 @@ void QgsTaskManager::cancelAll()
   }
 }
 
-bool QgsTaskManager::dependenciesSatisified( long taskId ) const
+bool QgsTaskManager::dependenciesSatisfied( long taskId ) const
 {
   mTaskMutex->lock();
   QMap< long, QgsTaskList > dependencies = mTaskDependencies;
@@ -749,7 +749,7 @@ void QgsTaskManager::processQueue()
   for ( QMap< long, TaskInfo >::iterator it = mTasks.begin(); it != mTasks.end(); ++it )
   {
     QgsTask* task = it.value().task;
-    if ( task && task->mStatus == QgsTask::Queued && dependenciesSatisified( it.key() ) && it.value().added.testAndSetRelaxed( 0, 1 ) )
+    if ( task && task->mStatus == QgsTask::Queued && dependenciesSatisfied( it.key() ) && it.value().added.testAndSetRelaxed( 0, 1 ) )
     {
       QThreadPool::globalInstance()->start( it.value().runnable, it.value().priority );
     }

@@ -55,7 +55,7 @@ class SERVER_EXPORT QgsServerException : public QgsException
  * \class  QgsOcgServiceException
  * \brief Exception base class for service exceptions.
  *
- * Note that this exeception is assaciated with a default return code 200 which may be
+ * Note that this exception is assaciated with a default return code 200 which may be
  * not appropriate in some situations.
  */
 class SERVER_EXPORT QgsOgcServiceException : public QgsServerException

@@ -266,7 +266,7 @@ namespace QgsWms
       QMap<QString, QString> mParameters;
       bool mOwnsConfigParser; //delete config parser after request (e.g. sent SLD)
 
-      // speficy if layer or rule item labels should be drawn in the legend graphic with GetLegendGraphics
+      // specify if layer or rule item labels should be drawn in the legend graphic with GetLegendGraphics
       bool mDrawLegendLayerLabel;
       bool mDrawLegendItemLabel;
 

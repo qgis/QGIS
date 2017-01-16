@@ -230,7 +230,7 @@ void QgsGml::calculateExtentFromFeatures()
 
   QgsFeature* currentFeature = nullptr;
   QgsGeometry currentGeometry;
-  bool bboxInitialised = false; //gets true once bbox has been set to the first geometry
+  bool bboxInitialized = false; //gets true once bbox has been set to the first geometry
 
   for ( int i = 0; i < mFeatures.size(); ++i )
   {
@@ -242,10 +242,10 @@ void QgsGml::calculateExtentFromFeatures()
     currentGeometry = currentFeature->geometry();
     if ( !currentGeometry.isEmpty() )
     {
-      if ( !bboxInitialised )
+      if ( !bboxInitialized )
       {
         mExtent = currentGeometry.boundingBox();
-        bboxInitialised = true;
+        bboxInitialized = true;
       }
       else
       {

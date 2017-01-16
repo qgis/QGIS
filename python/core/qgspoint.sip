@@ -35,7 +35,7 @@ class QgsVector
     QgsVector operator/( double scalar ) const;
 
     /** Returns the sum of the x component of this vector multiplied by the x component of another
-     * vector plus the y component of this vector multipled by the y component of another vector.
+     * vector plus the y component of this vector multiplied by the y component of another vector.
      */
     double operator*( QgsVector v ) const;
 
@@ -94,7 +94,7 @@ class QgsVector
      */
     QgsVector rotateBy( double rot ) const;
 
-    /** Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0). Will throw an expection
+    /** Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0). Will throw an exception
      * if called on a vector with length of 0.
      */
     QgsVector normalized() const;

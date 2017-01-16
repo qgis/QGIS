@@ -796,7 +796,7 @@ class GeoDB(object):
                            % srid)
             srtext = c.fetchone()[0]
 
-            # Try to extract just SR name (should be qouted in double
+            # Try to extract just SR name (should be quoted in double
             # quotes)
             x = re.search('"([^"]+)"', srtext)
             if x is not None:

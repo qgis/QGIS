@@ -77,8 +77,8 @@ void TestOpenStreetMap::download()
   QVERIFY( res );
 
   // wait for finished() signal
-  int timeout = 15000; // in miliseconds - max waiting time
-  int waitTime = 500; // in miliseconds - unit waiting time
+  int timeout = 15000; // in milliseconds - max waiting time
+  int waitTime = 500; // in milliseconds - unit waiting time
   QSignalSpy spy( &download, SIGNAL( finished() ) );
   while ( timeout > 0 && spy.count() == 0 )
   {

@@ -4506,7 +4506,7 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
     return convertedValue;
   }
 
-  //otherwise try to evalute as expression
+  //otherwise try to evaluate as expression
   QgsExpression expr( text );
 
   QgsExpressionContext context;
@@ -4663,7 +4663,7 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, const Q
         ENSURE_NO_EVAL_ERROR;
         if ( mOp == boDiv || mOp == boMul || mOp == boMod )
         {
-          parent->setEvalErrorString( tr( "Can't preform /, *, or % on DateTime and Interval" ) );
+          parent->setEvalErrorString( tr( "Can't perform /, *, or % on DateTime and Interval" ) );
           return QVariant();
         }
         return QVariant( computeDateTimeFromInterval( dL, &iL ) );

@@ -134,7 +134,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   // implementations (GeoServer) might advertize it, whereas others (MapServer) do not.
   // WFS 1.1 implementation too I think, but in the examples of the GetCapabilities
   // response of the WFS 1.1 standard (and in common implementations), this is
-  // explictly advertized
+  // explicitly advertized
   if ( mCaps.version.startsWith( QLatin1String( "2.0" ) ) )
     mCaps.supportsHits = true;
 
@@ -246,11 +246,31 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   }
 
   // Parse operations supported for all feature types
-  bool insertCap, updateCap, deleteCap;
-  parseSupportedOperations( featureTypeListElem.firstChildElement( QStringLiteral( "Operations" ) ),
-                            insertCap,
-                            updateCap,
-                            deleteCap );
+  bool insertCap = false;
+  bool updateCap = false;
+  bool deleteCap = false;
+  // WFS < 2
+  if ( mCaps.version.startsWith( QLatin1String( "1" ) ) )
+  {
+    parseSupportedOperations( featureTypeListElem.firstChildElement( QStringLiteral( "Operations" ) ),
+                              insertCap,
+                              updateCap,
+                              deleteCap );
+  }
+  else // WFS 2.0.0 tested on GeoServer
+  {
+    QDomNodeList operationNodes = doc.elementsByTagName( "Operation" );
+    for ( int i = 0; i < operationNodes.count(); i++ )
+    {
+      QDomElement operationElement = operationNodes.at( i ).toElement( );
+      if ( operationElement.isElement( ) && "Transaction" == operationElement.attribute( "name" ) )
+      {
+        insertCap = true;
+        updateCap = true;
+        deleteCap = true;
+      }
+    }
+  }
 
   // get the <FeatureType> elements
   QDomNodeList featureTypeList = featureTypeListElem.elementsByTagName( QStringLiteral( "FeatureType" ) );
@@ -473,10 +493,6 @@ void QgsWfsCapabilities::parseSupportedOperations( const QDomElement& operations
   insertCap = false;
   updateCap = false;
   deleteCap = false;
-
-  // TODO: remove me when WFS-T 1.1 or 2.0 is done
-  if ( !mCaps.version.startsWith( QLatin1String( "1.0" ) ) )
-    return;
 
   if ( operationsElem.isNull() )
   {

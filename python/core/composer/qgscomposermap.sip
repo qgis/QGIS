@@ -111,7 +111,7 @@ class QgsComposerMap : QgsComposerItem
      */
     void zoomToExtent( const QgsRectangle& extent );
 
-    /** Sets new Extent for the current atlas preview and changes width, height (and implicitely also scale).
+    /** Sets new Extent for the current atlas preview and changes width, height (and implicitly also scale).
       Atlas preview extents are only temporary, and are regenerated whenever the atlas feature changes
      */
     void setNewAtlasFeatureExtent( const QgsRectangle& extent );

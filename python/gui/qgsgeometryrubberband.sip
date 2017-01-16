@@ -61,7 +61,7 @@ class QgsGeometryRubberBand: QgsMapCanvasItem
     void moveVertex( QgsVertexId id, const QgsPointV2& newPos );
     /** Sets fill color for vertex markers*/
     void setFillColor( const QColor& c );
-    /** Sets outline color for vertex markes*/
+    /** Sets outline color for vertex markers*/
     void setOutlineColor( const QColor& c );
     /** Sets outline width*/
     void setOutlineWidth( int width );
