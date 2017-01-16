@@ -202,7 +202,7 @@ void QgsCompassPlugin::about()
                           "(this can be done from within QGIS as well).</p>"
                         ).arg( sPluginVersion );
 
-  // create dynamicaly because on Mac this dialog is modeless
+  // create dynamically because on Mac this dialog is modeless
   QWidget *w = new QWidget;
   w->setAttribute( Qt::WA_DeleteOnClose );
   w->setWindowIcon( getThemeIcon( "/compass.png" ) );

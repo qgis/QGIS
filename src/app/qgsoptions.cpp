@@ -393,7 +393,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   leLayerGlobalCrs->setCrs( mLayerDefaultCrs );
 
   //on the fly CRS transformation settings
-  //it would be logical to have single settings value but originaly the radio buttons were checkboxes
+  //it would be logical to have single settings value but originally the radio buttons were checkboxes
   if ( mSettings->value( QStringLiteral( "/Projections/otfTransformAutoEnable" ), true ).toBool() )
   {
     radOtfAuto->setChecked( true );
@@ -2094,7 +2094,7 @@ void QgsOptions::on_pbnExportScales_clicked()
     return;
   }
 
-  // ensure the user never ommited the extension from the file name
+  // ensure the user never omitted the extension from the file name
   if ( !fileName.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) )
   {
     fileName += QLatin1String( ".xml" );

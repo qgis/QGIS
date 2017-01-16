@@ -77,7 +77,7 @@ class QgsMapCanvas : QGraphicsView
 
     //! Set how often map preview should be updated while it is being rendered (in milliseconds)
     //! @note added in 2.4
-    void setMapUpdateInterval( int timeMiliseconds );
+    void setMapUpdateInterval( int timeMilliseconds );
 
     //! Find out how often map preview should be updated while it is being rendered (in milliseconds)
     //! @note added in 2.4

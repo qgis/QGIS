@@ -168,14 +168,14 @@ class QgsStatisticalSummary
      */
     int variety() const;
 
-    /** Returns minority of values. The minority is the value with least occurances in the list
+    /** Returns minority of values. The minority is the value with least occurrences in the list
      * This is only calculated if Statistic::Minority has been specified in the constructor
      * or via setStatistics.
      * @see majority
      */
     double minority() const;
 
-    /** Returns majority of values. The majority is the value with most occurances in the list
+    /** Returns majority of values. The majority is the value with most occurrences in the list
      * This is only calculated if Statistic::Majority has been specified in the constructor
      * or via setStatistics.
      * @see minority

@@ -680,10 +680,10 @@ void QgsBrowserDockWidget::setCaseSensitive( bool caseSensitive )
 
 int QgsBrowserDockWidget::selectedItemsCount()
 {
-  QItemSelectionModel *selectonModel = mBrowserView->selectionModel();
-  if ( selectonModel )
+  QItemSelectionModel *selectionModel = mBrowserView->selectionModel();
+  if ( selectionModel )
   {
-    return selectonModel->selectedIndexes().size();
+    return selectionModel->selectedIndexes().size();
   }
   return 0;
 }
@@ -710,10 +710,10 @@ void QgsBrowserDockWidget::clearPropertiesWidget()
 void QgsBrowserDockWidget::setPropertiesWidget()
 {
   clearPropertiesWidget();
-  QItemSelectionModel *selectonModel = mBrowserView->selectionModel();
-  if ( selectonModel )
+  QItemSelectionModel *selectionModel = mBrowserView->selectionModel();
+  if ( selectionModel )
   {
-    QModelIndexList indexes = selectonModel->selectedIndexes();
+    QModelIndexList indexes = selectionModel->selectedIndexes();
     if ( indexes.size() == 1 )
     {
       QModelIndex index = mProxyModel->mapToSource( indexes.value( 0 ) );

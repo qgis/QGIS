@@ -2419,7 +2419,7 @@ void QgsSymbolLayerUtils::createGeometryElement( QDomDocument &doc, QDomElement 
   QDomElement geometryElem = doc.createElement( QStringLiteral( "Geometry" ) );
   element.appendChild( geometryElem );
 
-  /* About using a function withing the Geometry tag.
+  /* About using a function within the Geometry tag.
    *
    * The SLD specification <= 1.1 is vague:
    * "In principle, a fixed geometry could be defined using GML or
@@ -3756,7 +3756,7 @@ QString QgsSymbolLayerUtils::symbolPathToName( QString path )
 
   QStringList svgPaths = QgsApplication::svgPaths();
 
-  bool isInSvgPathes = false;
+  bool isInSvgPaths = false;
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
     QString dir = QFileInfo( svgPaths[i] ).canonicalFilePath();
@@ -3764,12 +3764,12 @@ QString QgsSymbolLayerUtils::symbolPathToName( QString path )
     if ( !dir.isEmpty() && path.startsWith( dir ) )
     {
       path = path.mid( dir.size() + 1 );
-      isInSvgPathes = true;
+      isInSvgPaths = true;
       break;
     }
   }
 
-  if ( isInSvgPathes )
+  if ( isInSvgPaths )
     return path;
 
   return QgsProject::instance()->writePath( path );

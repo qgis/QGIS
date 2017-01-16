@@ -109,7 +109,7 @@ bool QgsProjectLayerGroupDialog::isValid() const
 
 void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
 {
-  //line edit might emit editingFinished signal when loosing focus
+  //line edit might emit editingFinished signal when losing focus
   mProjectFileLineEdit->blockSignals( true );
 
   QSettings s;

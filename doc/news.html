@@ -758,7 +758,7 @@ were made.
 <LI>Fix #4496 (Refresh map list in composer table widget in showEvent)
 <LI>OS X build/install updates
 <LI>GRASS version support
-<LI>Intializing from WKT favourize EPSG instead of PROJ.4
+<LI>Initializing from WKT favourize EPSG instead of PROJ.4
 <LI>Add What's this to Help menu (implement #4179)
 <LI>fTools: update layers lists after adding new layer to TOC (fix #4318)
 <LI>Don't block QGIS main window when running Merge shapefiles tool. Partially addresses #4383
@@ -825,7 +825,7 @@ were made.
 <LI>Tweak for layer cache
 <LI>[backport] Fix bug where histogram can be assigned negative frequency for a pixel range. Also fix potential memory leak as new histogram vector was assigned to band stats without clearing the old.
 <LI>Added section on using QtCreator
-<LI>Fix bugs causing a crash when histogram is gathered due to uninitilised histogram vector
+<LI>Fix bugs causing a crash when histogram is gathered due to uninitialized histogram vector
 <LI>Added missing QUrl include
 <LI>A neater fix for missing map parameter as suggested by Juergen
 <LI>Fixed a bug where map= was not being published in onlineresource url when project files are not in the same dir as cgi
@@ -1133,7 +1133,7 @@ pixels or map units
 <LI>Allow postgres layers without saved username &amp;amp; password by asking for credentials
 <LI>Support NULL values in search strings
 <LI>Optionally add new layers to the selected group
-<LI>Map composer can add attribute Tables in layouts. It is possibile to show
+<LI>Map composer can add attribute Tables in layouts. It is possible to show
 only visible features in composer table or all features
 <LI>Identify tool attribute form now non-modal in view mode (since r12796)
 <LI>Identified features' highlight disappear when window is deactivate or
@@ -1281,7 +1281,7 @@ such it contains new features and extends the programmatic interface over
 QGIS 1.0.x. If stability and long term support is more important to you 
 then cool new and untested features, we recommend that you use a copy 
 of QGIS from our stable 1.0.x release series.
-This release includes over 140 bug fixes and enchancements 
+This release includes over 140 bug fixes and enhancements 
 over the QGIS 1.1.0 release. In addition we have added 
 the following new features:
 </P>
@@ -1423,7 +1423,7 @@ QGIS 1.0.x. If stability and long term support is more important to you
 then cool new and untested features, we recommend that you use a copy 
 of QGIS from our stable 1.0.x release series.
 <P></P>
-This release includes many bug fixes and enchancements 
+This release includes many bug fixes and enhancements 
 over the QGIS 1.0.0 release. In addition we have added 
 the following new features:
 <P></P>
@@ -1526,7 +1526,7 @@ QGIS 0.10.0 release. In addition we have made the following changes:
 <H1>22. Version 0.10.0 'Io'</H1>
 
 <P>
-This release includes over 120 bug fixes and enchancements 
+This release includes over 120 bug fixes and enhancements 
 over the QGIS 0.9.1 release. In addition we have added 
 the following new features:
 </P>
@@ -1550,7 +1550,7 @@ improvements 'under the hood'.
 <H1>23. Version 0.9.2rc1 'Ganymede'</H1>
 
 <UL>
-<LI>This release candidate includes over 40 bug fixes and enchancements 
+<LI>This release candidate includes over 40 bug fixes and enhancements 
 over the QGIS 0.9.1 release. In addition we have added 
 the following new features:
 <LI>Imrovements to digitising capabilities.
@@ -2060,7 +2060,7 @@ Added remove all layers from overview button.
 Extents are now correctly restored when project is loaded
  <P></P>
 2004-06-24 [ts] 0.3.0devel51
-Completion of projectio fixes to freeze canvas and restore zorder correctly. 
+Completion of projection fixes to freeze canvas and restore zorder correctly. 
    Small issue with restoring extents properly needs to be resolved still.
  <P></P>
 2004-06-23 [mcoletti] 0.3.0devel50
@@ -2071,11 +2071,11 @@ linking with -rdynamic and using dlopen()'s RTLD_GLOBAL flag.
  <P></P>
 2004-06-21 [ts] 0.3.0devel49
  <P></P>
-Revised raster stats emiting of progress update to not do it when stats are 
+Revised raster stats emitting of progress update to not do it when stats are 
    fetched from cache. QGisApp progress bar now updates as each layer is rendered 
    in the mapCanvas.
  <P></P>
-Some minor updates to projectio   
+Some minor updates to projection   
  <P></P>
 2004-06-21 [larsl] 0.3.0devel48
 Hooked up the GPS gui to code that uses gpsbabel to import lots of GPS file
@@ -2087,7 +2087,7 @@ fixed wrong versions and DOS endlines
  <P></P>
 2004-06-21 [ts] 0.3.0devel46
  <P></P>
-Got tired of always resetting my gidbase dir everytime qgis restarts - 
+Got tired of always resetting my gidbase dir every time qgis restarts - 
    added it to qsettings.
  <P></P>
 2004-06-21 [ts] 0.3.0devel45
@@ -2101,7 +2101,7 @@ Fix for bug [ 973922 ] Overview shows layers in wrong order
  <P></P>
 Fixed show stopper bug where maplayerregistry wasn't being cleared properly on file new
  <P></P>
-Added setZOrder which will be used in next commit to fix projectio zorder problem
+Added setZOrder which will be used in next commit to fix projection zorder problem
  <P></P>
 2004-06-20 [ts] 0.3.0devel43
  <P></P>
@@ -2125,7 +2125,7 @@ Beginnings of generic vector file writer - incomplete and doesn't do anything us
    to create a new point shapefile:
  <P></P>
    QgsVectorFileWriter myFileWriter("/tmp/test.shp", wkbPoint);
-   if (myFileWriter.initialise())
+   if (myFileWriter.initialise())  <!--#spellok-->
    {
      myFileWriter.createField("TestInt",OFTInteger,8,0);
      myFileWriter.createField("TestRead",OFTReal,8,3);
@@ -2225,7 +2225,7 @@ Added acetate layer support to the map canvas. Currently there is only one
 </P>
 <P>
 2004-06-10 [ts] 0.3.0devel27
-Modified projectio (serialisation and deserialisation of project files) to
+Modified projection (serialisation and deserialisation of project files) to
    use maplayerregistry and not mapcanvas.
 </P>
 <P>
@@ -2745,7 +2745,7 @@ endian-ness.
 </P>
 <P>
 2004-04-01 [jobi] 0.1.0devel24
-changed qgiscommit to hopefuly fix all problems
+changed qgiscommit to hopefully fix all problems
 </P>
 <P>
 2004-04-01 [jobi] 0.1.0devel23
@@ -2815,7 +2815,7 @@ Added gps_importer plugin (still a work in progress)
 <P>
 2004-03-22 [mac] 0.1.0devel8
 s/config.h/qgsconfig.h/
-qgsconfig.h now has header sentinals
+qgsconfig.h now has header sentinels
 now will install headers in $(prefix)/qgis/include and libqis.* library in
   $(prefix)/lib
 "src/Makefile" no longer relies on explicit dependencies and uses better
@@ -2934,7 +2934,7 @@ QGIS can load layers and / or a project on start up by specifying these
 Symbol renderers for simple, graduated, and continuous symbols
 Raster support for most GDAL formats
 Raster implementation supports a variety of rendering settings including
-  semi transparent overlays, pallette inversion, flexible band to color mapping
+  semi transparent overlays, palette inversion, flexible band to color mapping
   in multiband images and creation of pseudocolor.
 Change to a data provider architecture for vector layers. Additional data
   types can be supported by writing a provider plugin
@@ -2970,7 +2970,7 @@ Features in shapefiles can be selected by dragging a selection
   box or selecting the records in the attribute table
 Zoom to extent of selected features (Shapefiles only)
 Bug fix: Bug that prevented reopening of the attribute table once
-  it was initally displayed and closed
+  it was initially displayed and closed
 Bug fix: Bug that prevented lines from being drawn with widths
   other than 1 pixel
 Build system has changed for building with PostgreSQL support.

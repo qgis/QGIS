@@ -566,7 +566,7 @@ void QgsPalLayerSettings::readDataDefinedProperty( QgsVectorLayer* layer,
       // Fix to migrate from old-style vector api, where returned QMap keys possibly
       //   had 'holes' in sequence of field indices, e.g. 0,2,3
       // QgsAttrPalIndexNameHash provides a means of access field name in sequences from
-      //   providers that procuded holes (e.g. PostGIS skipped geom column), otherwise it is empty
+      //   providers that produced holes (e.g. PostGIS skipped geom column), otherwise it is empty
       QgsAttrPalIndexNameHash oldIndicesToNames = layer->dataProvider()->palAttributeIndexNames();
 
       if ( !oldIndicesToNames.isEmpty() )
@@ -2336,8 +2336,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
 
   if ( dataDefinedEvaluate( QgsPalLayerSettings::PredefinedPositionOrder, exprVal, &context.expressionContext(), QgsLabelingUtils::encodePredefinedPositionOrder( predefinedPositionOrder ) ) )
   {
-    QString orderD = exprVal.toString();
-    positionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( orderD );
+    QString orderD = exprVal.toString();  //#spellok
+    positionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( orderD );  //#spellok
   }
   ( *labelFeature )->setPredefinedPositionOrder( positionOrder );
 

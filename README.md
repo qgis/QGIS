@@ -76,4 +76,4 @@ repository, and then [issue a pull request](http://help.github.com/pull-requests
 review your contribution and commit it upstream as appropriate.
 If you commit a new feature, add [FEATURE] to your commit message AND give a clear description of the new feature. A webhook will automatically create an issue on the QGIS-Documentation repo to tell people to write about it.
 
-If you are not a developer, there are many other possibilities which do not require programing skills to help QGIS to evolve. Check our [project homepage for more information](http://qgis.org/en/site/getinvolved/index.html).
+If you are not a developer, there are many other possibilities which do not require programming skills to help QGIS to evolve. Check our [project homepage for more information](http://qgis.org/en/site/getinvolved/index.html).

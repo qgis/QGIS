@@ -191,7 +191,7 @@ QgsMapCanvas::~QgsMapCanvas()
   }
   mLastNonZoomMapTool = nullptr;
 
-  // delete canvas items prior to deleteing the canvas
+  // delete canvas items prior to deleting the canvas
   // because they might try to update canvas when it's
   // already being destructed, ends with segfault
   QList<QGraphicsItem*> list = mScene->items();
@@ -430,9 +430,9 @@ bool QgsMapCanvas::isParallelRenderingEnabled() const
   return mUseParallelRendering;
 }
 
-void QgsMapCanvas::setMapUpdateInterval( int timeMiliseconds )
+void QgsMapCanvas::setMapUpdateInterval( int timeMilliseconds )
 {
-  mMapUpdateTimer.setInterval( timeMiliseconds );
+  mMapUpdateTimer.setInterval( timeMilliseconds );
 }
 
 int QgsMapCanvas::mapUpdateInterval() const

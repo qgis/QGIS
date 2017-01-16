@@ -37,7 +37,7 @@
    there were considered various possibilities but no optimal solution was found.
    What does not work:
    - lighter/darker color: it would work more or less for fully opaque highlight, but
-     overlaying transparent lighter color over original has small visual efect.
+     overlaying transparent lighter color over original has small visual effect.
    - complemetary color: mixing transparent (128) complement color with original color
      results in grey for all colors
    - contrast line style/ fill pattern: impression is not highligh but just different style

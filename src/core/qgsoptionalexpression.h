@@ -27,7 +27,7 @@
  * An expression with an additional enabled flag.
  *
  * This can be used for configuration options where an expression can be enabled
- * or diabled but when disabled it shouldn't lose it's information for the case
+ * or disabled but when disabled it shouldn't lose it's information for the case
  * it gets re-enabled later on and a user shouldn't be force to redo the configuration.
  *
  * @note Added in QGIS 2.18

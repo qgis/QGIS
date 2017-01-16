@@ -104,17 +104,17 @@ void TestQgsScaleComboBox::basic()
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 4 ) ) );
   QCOMPARE( s->scale(), 0.25 );
 
-  // Test setting programatically
+  // Test setting programmatically
   s->setScale( 0.19 );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 5 ) ) );
   QCOMPARE( s->scale(), 0.2 );
 
-  // Test setting programatically
+  // Test setting programmatically
   s->setScaleString( QStringLiteral( "1:240" ) );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 240 ) ) );
   QCOMPARE( s->scale(), 1.0 / 240.0 );
 
-  // Test setting programatically illegal string
+  // Test setting programmatically illegal string
   s->setScaleString( QStringLiteral( "1:2" ) + QLocale::system().decimalPoint() + "4" );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 240 ) ) );
   QCOMPARE( s->scale(), 1.0 / 240.0 );

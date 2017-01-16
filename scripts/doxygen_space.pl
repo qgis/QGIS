@@ -17,7 +17,7 @@
 
 # adapted from scripts/sort_includes.sh
 
-# this is slurped in whole-file mode, as opposed to unify_incudes.pl
+# this is slurped in whole-file mode, as opposed to unify_includes.pl
 # which slurps in per-line mode
 
 use strict;

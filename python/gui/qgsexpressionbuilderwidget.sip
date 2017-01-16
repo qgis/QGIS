@@ -70,7 +70,7 @@ class QgsExpressionItemSearchProxy : QSortFilterProxyModel
 
 
 /** A reusable widget that can be used to build a expression string.
-  * See QgsExpressionBuilderDialog for exmaple of usage.
+  * See QgsExpressionBuilderDialog for example of usage.
   */
 class QgsExpressionBuilderWidget : QWidget
 {

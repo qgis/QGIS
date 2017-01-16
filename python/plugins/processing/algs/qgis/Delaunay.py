@@ -111,12 +111,12 @@ class Delaunay(GeoAlgorithm):
 
         total = 100.0 / len(triangles)
         for current, triangle in enumerate(triangles):
-            indicies = list(triangle)
-            indicies.append(indicies[0])
+            indices = list(triangle)
+            indices.append(indices[0])
             polygon = []
             attrs = []
             step = 0
-            for index in indicies:
+            for index in indices:
                 fid, n = ptDict[ids[index]]
                 request = QgsFeatureRequest().setFilterFid(fid)
                 inFeat = next(layer.getFeatures(request))

@@ -63,7 +63,7 @@ namespace QgsWms
 
 
   /**
-   * Parse bbox paramater
+   * Parse bbox parameter
    * @param bboxstr the bbox string as comma separated values
    * @return QgsRectangle
    *

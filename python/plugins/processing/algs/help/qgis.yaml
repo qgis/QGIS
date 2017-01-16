@@ -580,7 +580,7 @@ qgis:rastercalculator: >
     
     The cell size is assumed to be the same in both X and Y axes.
     
-    Layers are refered by their name as displayed in the layer list and the number of the band to use (based on 1), using the pattern 'layer_name@band number'. For instance, the first band from a layer named DEM will be referred as DEM@1.
+    Layers are referred by their name as displayed in the layer list and the number of the band to use (based on 1), using the pattern 'layer_name@band number'. For instance, the first band from a layer named DEM will be referred as DEM@1.
     
-    When using the calculator in the batch interface or from the console, the files to use have to be specified. The corresponding layers are refered using the base name of the file (without the full path). For instance, is using a layer at path/to/my/rasterfile.tif, the first band of that layer will be refered as rasterfile.tif@1.
+    When using the calculator in the batch interface or from the console, the files to use have to be specified. The corresponding layers are referred using the base name of the file (without the full path). For instance, is using a layer at path/to/my/rasterfile.tif, the first band of that layer will be referred as rasterfile.tif@1.
     

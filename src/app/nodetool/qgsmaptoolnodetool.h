@@ -106,7 +106,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     bool checkCorrectnessOfFeature( QgsVectorLayer* vlayer );
 
     /**
-     * Creates rubber bands for ther features when topology editing is enabled
+     * Creates rubber bands for their features when topology editing is enabled
      */
     void createTopologyRubberBands();
 

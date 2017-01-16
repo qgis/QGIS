@@ -15,7 +15,7 @@ class QgsTableWidgetBase: public QWidget
 
   protected:
     /**
-     * Initialise the table with the given model.
+     * Initialize the table with the given model.
      * Must be called once in the child class' constructor.
      */
     void init( QAbstractTableModel* model );

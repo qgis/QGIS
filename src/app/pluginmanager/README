@@ -28,7 +28,7 @@ version_available   available version
 zip_repository      the remote repository id
 download_url        url for downloading the plugin
 filename            the zip file name to be unzipped after downloaded
-downloads           number of dowloads
+downloads           number of downloads
 average_vote        average vote
 rating_votes        number of votes
 

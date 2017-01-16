@@ -3253,7 +3253,7 @@ void QgisApp::autoSelectAddedLayer( QList<QgsMapLayer*> layers )
 
 void QgisApp::createMapTips()
 {
-  // Set up the timer for maptips. The timer is reset everytime the mouse is moved
+  // Set up the timer for maptips. The timer is reset every time the mouse is moved
   mpMapTipsTimer = new QTimer( mMapCanvas );
   // connect the timer to the maptips slot
   connect( mpMapTipsTimer, SIGNAL( timeout() ), this, SLOT( showMapTip() ) );
@@ -4537,7 +4537,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
 
   setTitleBarText_( *this );
 
-  //QgsDebugMsg("emiting new project signal");
+  //QgsDebugMsg("emitting new project signal");
 
   // emit signal so listeners know we have a new project
   emit newProject();
@@ -5553,7 +5553,7 @@ void QgisApp::saveMapAsImage( const QString& theImageFileNameQString, QPixmap * 
   }
   else
   {
-    //force the size of the canvase
+    //force the size of the canvas
     mMapCanvas->resize( theQPixmap->width(), theQPixmap->height() );
     //save the mapview to the selected file
     mMapCanvas->saveAsImage( theImageFileNameQString, theQPixmap );
@@ -6461,7 +6461,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
           {
             ct.setDestinationDatumTransform( sdt.at( 1 ) );
           }
-          ct.initialise();
+          ct.initialize();
         }
       }
     }
@@ -7103,7 +7103,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
 
   //merge the attributes together
   QgsMergeAttributesDialog d( featureList, vl, mapCanvas() );
-  //intialise dialog with all columns set to skip
+  //initialize dialog with all columns set to skip
   d.setAllToSkip();
   if ( d.exec() == QDialog::Rejected )
   {
@@ -11547,7 +11547,7 @@ void QgisApp::writeProject( QDomDocument &doc )
   // Ideally the server should be ported to new layer tree implementation, but that requires
   // non-trivial changes to the server components.
   // The <legend> tag is ignored by QGIS application in >= 2.4 and this way also the new project files
-  // can be opened in older versions of QGIS without loosing information about layer groups.
+  // can be opened in older versions of QGIS without losing information about layer groups.
 
   QgsLayerTreeNode* clonedRoot = QgsProject::instance()->layerTreeRoot()->clone();
   QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
@@ -11937,7 +11937,7 @@ void QgisApp::eraseAuthenticationDatabase()
   //       such connections with possible master password requests *should* be ignored
   //       when there is an authentication db erase scheduled.
 
-  // This funtion should tell QgsAuthManager to stop any erase db schedule timer,
+  // This function should tell QgsAuthManager to stop any erase db schedule timer,
   // *after* interacting with the user
   QgsAuthGuiUtils::eraseAuthenticationDatabase( messageBar(), messageTimeout(), this );
 }

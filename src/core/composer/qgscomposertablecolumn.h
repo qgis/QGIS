@@ -195,7 +195,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
 
   private:
 
-    QColor mBackgroundColor; //curently unused
+    QColor mBackgroundColor; //currently unused
     Qt::AlignmentFlag mHAlignment;
     Qt::AlignmentFlag mVAlignment;
     QString mHeading;

@@ -284,7 +284,7 @@ void TestQgsComposerMap::dataDefinedLayers()
   QVERIFY( result.contains( mPolysLayer ) );
   QVERIFY( result.contains( mRasterLayer ) );
 
-  //test non-existant layer
+  //test non-existent layer
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
                                         QStringLiteral( "'x|%1|%2'" ).arg( mLinesLayer->name(), mPointsLayer->name() ), QString() );
   result = mComposerMap->layersToRender();
@@ -374,7 +374,7 @@ void TestQgsComposerMap::dataDefinedStyles()
   QVERIFY( result.contains( mLinesLayer ) );
   QVERIFY( result.contains( mPointsLayer ) );
 
-  //test non-existant preset
+  //test non-existent preset
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true,
                                         QStringLiteral( "'bad preset'" ), QString() );
   result = mComposerMap->layersToRender().toSet();

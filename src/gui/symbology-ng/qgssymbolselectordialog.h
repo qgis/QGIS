@@ -215,7 +215,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     void updateLayerPreview();
 
     /**
-     * Update the preivew of the whole symbol in the iterface.
+     * Update the preview of the whole symbol in the interface.
      */
     void updatePreview();
 

@@ -69,7 +69,7 @@ There is also high level benchmark support available in QTestLib, it is possible
 
 -tickcounter - reads rdtsc register (on Linux), thus it counts real time, result is not constant
 
--callgrind - reruns the command with callgrind, number of 'instr. loads' is constant for constant number of iterations, number of instructions per iterarion decreases with number of iterarions (for small numbers of iterations) for a simple function the number of instractions of the second iteration may be 40% of the first one - cache, prediction??? Callgrind is realy very slow. I am not sure what 'instr. loads' exactly means and if it can be somehow converted to time, but I don't believe so. AFAIK each instruction need a different number of cycles and it may be different even for the same instruction because of CPU cache, then there are instruction pipelines etc.
+-callgrind - reruns the command with callgrind, number of 'instr. loads' is constant for constant number of iterations, number of instructions per iterarion decreases with number of iterarions (for small numbers of iterations) for a simple function the number of instractions of the second iteration may be 40% of the first one - cache, prediction??? Callgrind is really very slow. I am not sure what 'instr. loads' exactly means and if it can be somehow converted to time, but I don't believe so. AFAIK each instruction need a different number of cycles and it may be different even for the same instruction because of CPU cache, then there are instruction pipelines etc.
 
 
     Build options

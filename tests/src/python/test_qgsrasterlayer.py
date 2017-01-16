@@ -150,7 +150,7 @@ class TestQgsRasterLayer(unittest.TestCase):
     def testIssue7023(self):
         """Check if converting a raster from 1.8 to 2 works."""
         myPath = os.path.join(unitTestDataPath('raster'),
-                              'raster-pallette-crash2.tif')
+                              'raster-palette-crash2.tif')
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)

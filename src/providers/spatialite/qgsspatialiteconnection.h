@@ -97,7 +97,7 @@ class QgsSpatiaLiteConnection : public QObject
      * please note: this method is fully based on the Abstract Interface
      * implemented in libspatialite starting since v.4.0
      *
-     * using the Abstract Interface is highly reccommended, because all
+     * using the Abstract Interface is highly recommended, because all
      * version-dependent implementation details become completely transparent,
      * thus completely freeing the client application to take care of them.
      */

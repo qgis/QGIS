@@ -620,7 +620,7 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
     // ! File type (New, Old)
     int mType;
 
-    // ! Optionaly split file to dir and file path
+    // ! Optionally split file to dir and file path
     QString mFileOption;
 
     //! Line

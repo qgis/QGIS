@@ -49,7 +49,7 @@ class CORE_EXPORT QgsAnnotation
      * false if the annotation uses a position relative to the current map
      * extent.
      * @see mapPosition()
-     * @see relativePositon()
+     * @see relativePosition()
      */
     virtual bool hasFixedMapPosition() const = 0;
 

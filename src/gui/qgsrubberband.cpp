@@ -568,7 +568,7 @@ void QgsRubberBand::updatePosition()
   // See http://hub.qgis.org/issues/12392
   // NOTE: could be optimized by saving map-extent
   //       of rubberband and simply re-projecting
-  //       that to device-rectange on "updatePosition"
+  //       that to device-rectangle on "updatePosition"
   updateRect();
 }
 

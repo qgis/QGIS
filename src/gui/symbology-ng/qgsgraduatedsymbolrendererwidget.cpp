@@ -628,7 +628,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
   else
   {
     methodComboBox->setCurrentIndex( 1 );
-    if ( !mRenderer->ranges().isEmpty() ) // avoid overiding default size with zeros
+    if ( !mRenderer->ranges().isEmpty() ) // avoid overriding default size with zeros
     {
       minSizeSpinBox->setValue( mRenderer->minSymbolSize() );
       maxSizeSpinBox->setValue( mRenderer->maxSymbolSize() );

@@ -94,7 +94,7 @@ class QgsServerInterface
      */
     virtual void registerAccessControl( QgsAccessControlFilter* accessControl / Transfer / , int priority = 0 ) = 0;
 
-    /** Gets the registred access control filters */
+    /** Gets the registered access control filters */
     virtual const QgsAccessControl* accessControls() const = 0;
 
     //! Return an enrironment variable, used to pass  environment variables to python

@@ -161,7 +161,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
                                    QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
                                    const QStringList & theConfigOptions = QStringList() );
 
-    /** \brief Accessor for ths raster layers pyramid list.
+    /** \brief Accessor for the raster layers pyramid list.
      * @param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
      * A pyramid list defines the
      * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers

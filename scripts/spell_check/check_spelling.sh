@@ -72,8 +72,12 @@ for ((I=0;I<$SPLIT;I++)) ; do
   # Condition is hard to explain in words.
   # You can test it here: https://regex101.com/r/7kznVA/9
   # extra words that should not be checked in longer words
-  WHOLEWORDS=$(echo "("; perl -ne 'print if not /^(\w)(\w)\w{2,}(\w)(\w):(\2\2|\1(?:(?!\1)\w)|(?:(?!\1)\w)\2|(?:(?!\1)\w)(?:(?!\1)\w)|\2\1)\w*(\3\3|(?:(?!\4)\w)(?:(?!\3)\4)|\3(?:(?!\4).)|(?:(?!\4)\w)(?:(?!\4)\w)|\4\3)(?!:\*)$/' $SPELLFILE | cut -d: -f1 |  tr '\n' '\|' | sed -e 's/|$//'; echo ")")
-  INWORDS=$(   echo "("; perl -ne 'print if     /^(\w)(\w)\w{2,}(\w)(\w):(\2\2|\1(?:(?!\1)\w)|(?:(?!\1)\w)\2|(?:(?!\1)\w)(?:(?!\1)\w)|\2\1)\w*(\3\3|(?:(?!\4)\w)(?:(?!\3)\4)|\3(?:(?!\4).)|(?:(?!\4)\w)(?:(?!\4)\w)|\4\3)(?!:\*)$/' $SPELLFILE | cut -d: -f1 |  tr '\n' '\|' | sed -e 's/|$//'; echo ")")
+  RESPECT_CASE=$(sed -n '/:\w*[A-Z]\w*$/p' $SPELLFILE)
+  IGNORE_CASE=$(sed     '/:\w*[A-Z]\w*$/d' $SPELLFILE)
+  WHOLEWORDS_RESPECT=$(echo "("; echo "$RESPECT_CASE" | perl -ne 'print if not /^(\w)(\w)\w{2,}(\w)(\w):(\2\2|\1(?:(?!\1)\w)|(?:(?!\1)\w)\2|(?:(?!\1)\w)(?:(?!\1)\w)|\2\1)\w*(\3\3|(?:(?!\4)\w)(?:(?!\3)\4)|\3(?:(?!\4).)|(?:(?!\4)\w)(?:(?!\4)\w)|\4\3)(?!:\*)$/' | cut -d: -f1 |  tr '\n' '\|' | sed -e 's/|$//'; echo ")")
+  WHOLEWORDS_IGNORE=$( echo "("; echo "$IGNORE_CASE"  | perl -ne 'print if not /^(\w)(\w)\w{2,}(\w)(\w):(\2\2|\1(?:(?!\1)\w)|(?:(?!\1)\w)\2|(?:(?!\1)\w)(?:(?!\1)\w)|\2\1)\w*(\3\3|(?:(?!\4)\w)(?:(?!\3)\4)|\3(?:(?!\4).)|(?:(?!\4)\w)(?:(?!\4)\w)|\4\3)(?!:\*)$/' | cut -d: -f1 |  tr '\n' '\|' | sed -e 's/|$//'; echo ")")
+  INWORDS_RESPECT=$(   echo "("; echo "$RESPECT_CASE" | perl -ne 'print if     /^(\w)(\w)\w{2,}(\w)(\w):(\2\2|\1(?:(?!\1)\w)|(?:(?!\1)\w)\2|(?:(?!\1)\w)(?:(?!\1)\w)|\2\1)\w*(\3\3|(?:(?!\4)\w)(?:(?!\3)\4)|\3(?:(?!\4).)|(?:(?!\4)\w)(?:(?!\4)\w)|\4\3)(?!:\*)$/' | cut -d: -f1 |  tr '\n' '\|' | sed -e 's/|$//'; echo ")")
+  INWORDS_IGNORE=$(    echo "("; echo "$IGNORE_CASE"  | perl -ne 'print if     /^(\w)(\w)\w{2,}(\w)(\w):(\2\2|\1(?:(?!\1)\w)|(?:(?!\1)\w)\2|(?:(?!\1)\w)(?:(?!\1)\w)|\2\1)\w*(\3\3|(?:(?!\4)\w)(?:(?!\3)\4)|\3(?:(?!\4).)|(?:(?!\4)\w)(?:(?!\4)\w)|\4\3)(?!:\*)$/' | cut -d: -f1 |  tr '\n' '\|' | sed -e 's/|$//'; echo ")")
 
   FILE=$INPUTFILES  # init with input files (if ag is run with single file, file path is now in output)
   COMMANDS=""
@@ -93,8 +97,9 @@ for ((I=0;I<$SPLIT;I++)) ; do
           exit 1
         fi
         NUMBER=$(echo "$NOCOLOR" | cut -d: -f1)
+        ERRORLINE=$(echo "$NOCOLOR" | cut -d: -f2)
         ERROR=$(echo "$LINE" | ${GNUPREFIX}sed -r 's/^.*?\x1B\[30;43m(.*?)\x1B\[0m.*$/\1/')
-        CORRECTION=$(ag --nonumbers --ignore-case "^$ERROR:" ${DIR}/spelling.dat | cut -d: -f2)
+        CORRECTION=$(ag --nonumbers --case-sensitive "^${ERROR,,}:" ${DIR}/spelling.dat | cut -d: -f2)
         # Match case
         MATCHCASE="$ERROR:$CORRECTION"
         CORRECTIONCASE=$(echo "$MATCHCASE" | ${GNUPREFIX}sed -r 's/([A-Z]+):(.*)/\1:\U\2/; s/([A-Z][a-z]+):([a-z])/\1:\U\2\L/' | cut -d: -f2)
@@ -112,7 +117,7 @@ for ((I=0;I<$SPLIT;I++)) ; do
             SPELLOKSTR='<!--#spellok-->'
           fi
           if [[ "$FILE" =~ \.(h|cpp|sip)$ ]]; then
-            if [[ "$NOCOLOR" =~ ^\s*(\/*)|(\/\/) ]]; then
+            if [[ "$ERRORLINE" =~ ^\s*(\/*\|\/\/) ]]; then
               SPELLOKSTR='#spellok'
             fi
           fi
@@ -187,8 +192,10 @@ for ((I=0;I<$SPLIT;I++)) ; do
         FILE=""
       fi
     fi
-  done 3< <(unbuffer ag --smart-case --all-text --nopager --color-match "30;43" --numbers --nomultiline --word-regexp -p $AGIGNORE "${WHOLEWORDS}"'(?!.*'"${SPELLOKRX}"')' $INPUTFILES ; \
-           unbuffer ag --smart-case --all-text --nopager --color-match "30;43" --numbers --nomultiline               -p $AGIGNORE "${INWORDS}"'(?!.*'"${SPELLOKRX}"')'    $INPUTFILES )
+  done 3< <(unbuffer ag --all-text --nopager --color-match "30;43" --numbers --nomultiline --word-regexp --case-sensitive -p $AGIGNORE "${WHOLEWORDS_RESPECT}"'(?!.*'"${SPELLOKRX}"')' $INPUTFILES ; \
+            unbuffer ag --all-text --nopager --color-match "30;43" --numbers --nomultiline --word-regexp --ignore-case    -p $AGIGNORE "${WHOLEWORDS_IGNORE}"'(?!.*'"${SPELLOKRX}"')'  $INPUTFILES ; \
+            unbuffer ag --all-text --nopager --color-match "30;43" --numbers --nomultiline               --case-sensitive -p $AGIGNORE "${INWORDS_RESPECT}"'(?!.*'"${SPELLOKRX}"')'    $INPUTFILES ; \
+            unbuffer ag --all-text --nopager --color-match "30;43" --numbers --nomultiline               --ignore-case    -p $AGIGNORE "${INWORDS_IGNORE}"'(?!.*'"${SPELLOKRX}"')'     $INPUTFILES )
 
   rm $SPELLFILE
 

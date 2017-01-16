@@ -1643,7 +1643,7 @@ void QgsProjectProperties::on_pbnExportScales_clicked()
     return;
   }
 
-  // ensure the user never ommited the extension from the file name
+  // ensure the user never omitted the extension from the file name
   if ( !fileName.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) )
   {
     fileName += QLatin1String( ".xml" );
@@ -1993,7 +1993,7 @@ void QgsProjectProperties::projectionSelectorInitialized()
 {
   QgsDebugMsg( "Setting up ellipsoid" );
 
-  // Reading ellipsoid from setttings
+  // Reading ellipsoid from settings
   QStringList mySplitEllipsoid = QgsProject::instance()->ellipsoid().split( ':' );
 
   int myIndex = 0;
@@ -2006,7 +2006,7 @@ void QgsProjectProperties::projectionSelectorInitialized()
     }
   }
 
-  // Update paramaters if present.
+  // Update parameters if present.
   if ( mySplitEllipsoid.length() >= 3 )
   {
     mEllipsoidList[ myIndex ].semiMajor =  mySplitEllipsoid[ 1 ].toDouble();

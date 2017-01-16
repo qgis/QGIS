@@ -5,7 +5,7 @@ class QgsRasterPyramid
 #include <qgsrasterpyramid.h>
 %End
   public:
-    /** \brief The pyramid level as implemented in gdal (level 2 is half orignal raster size etc) */
+    /** \brief The pyramid level as implemented in gdal (level 2 is half original raster size etc) */
     int level;
     /** \brief XDimension for this pyramid layer */
     int xDim;

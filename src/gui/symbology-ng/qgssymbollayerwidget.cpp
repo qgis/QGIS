@@ -1795,7 +1795,7 @@ void QgsSvgMarkerSymbolLayerWidget::populateList()
     viewGroups->setExpanded( g->indexFromItem( g->item( i ) ), true );
   }
 
-  // Initally load the icons in the List view without any grouping
+  // Initially load the icons in the List view without any grouping
   oldModel = viewImages->model();
   QgsSvgSelectorListModel* m = new QgsSvgSelectorListModel( viewImages );
   viewImages->setModel( m );

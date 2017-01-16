@@ -142,7 +142,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     //! @note The way how geometries are cached is really suboptimal - this method may be removed in future releases
     void setRequestedGeometryCacheForLayers( const QStringList& layerIds ) { mRequestedGeomCacheForLayers = layerIds; }
 
-    //! Find out how log it took to finish the job (in miliseconds)
+    //! Find out how long it took to finish the job (in milliseconds)
     int renderingTime() const { return mRenderingTime; }
 
     /**

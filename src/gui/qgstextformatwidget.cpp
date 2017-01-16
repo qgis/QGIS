@@ -211,7 +211,7 @@ void QgsTextFormatWidget::initWidget()
   // TODO: is this necessary? maybe just use the data defined-only rotation?
   mPointAngleDDBtn->setVisible( false );
 
-  // Global settings group for groupboxes' saved/retored collapsed state
+  // Global settings group for groupboxes' saved/restored collapsed state
   // maintains state across different dialogs
   Q_FOREACH ( QgsCollapsibleGroupBox *grpbox, findChildren<QgsCollapsibleGroupBox*>() )
   {
@@ -228,13 +228,13 @@ void QgsTextFormatWidget::initWidget()
 
   QSettings settings;
 
-  // reset horiz strech of left side of options splitter (set to 1 for previewing in Qt Designer)
+  // reset horiz stretch of left side of options splitter (set to 1 for previewing in Qt Designer)
   QSizePolicy policy( mLabelingOptionsListFrame->sizePolicy() );
   policy.setHorizontalStretch( 0 );
   mLabelingOptionsListFrame->setSizePolicy( policy );
   if ( !settings.contains( QStringLiteral( "/Windows/Labeling/OptionsSplitState" ) ) )
   {
-    // set left list widget width on intial showing
+    // set left list widget width on initial showing
     QList<int> splitsizes;
     splitsizes << 115;
     mLabelingOptionsSplitter->setSizes( splitsizes );
