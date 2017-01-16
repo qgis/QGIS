@@ -203,7 +203,7 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext& context )
     QStringList versionSplit = QString( qVersion() ).split( '.' );
     if ( versionSplit.size() > 1
          && versionSplit.at( 1 ).toInt() >= 8
-         && ( scaledWidth * context.renderContext().rasterScaleFactor() ) < 1.0 )
+         && scaledWidth < 1.0 )
     {
       dashWidthDiv = 1.0;
     }
@@ -522,7 +522,7 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
     QStringList versionSplit = QString( qVersion() ).split( '.' );
     if ( versionSplit.size() > 1
          && versionSplit.at( 1 ).toInt() >= 8
-         && ( scaledWidth * context.renderContext().rasterScaleFactor() ) < 1.0 )
+         && scaledWidth < 1.0 )
     {
       dashWidthDiv = 1.0;
     }

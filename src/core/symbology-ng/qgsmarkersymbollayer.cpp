@@ -842,16 +842,6 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext& context )
 
   if ( mUsingCache )
   {
-    if ( !qgsDoubleNear( context.renderContext().rasterScaleFactor(), 1.0 ) )
-    {
-      QTransform transform;
-      transform.scale( context.renderContext().rasterScaleFactor(), context.renderContext().rasterScaleFactor() );
-      if ( !mPolygon.isEmpty() )
-        mPolygon = transform.map( mPolygon );
-      else
-        mPath = transform.map( mPath );
-    }
-
     if ( !prepareCache( context ) )
     {
       mUsingCache = false;
@@ -1017,7 +1007,7 @@ void QgsSimpleMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
   if ( mUsingCache )
   {
     QImage &img = context.selected() ? mSelCache : mCache;
-    double s = img.width() / context.renderContext().rasterScaleFactor();
+    double s = img.width();
 
     bool hasDataDefinedSize = false;
     double scaledSize = calculateSize( context, hasDataDefinedSize );
@@ -1456,7 +1446,6 @@ QRectF QgsSimpleMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
   QRectF symbolBounds = QgsSimpleMarkerSymbolLayerBase::bounds( point, context );
 
   // need to account for outline width
-  double pixelSize = 1.0 / context.renderContext().rasterScaleFactor();
   double penWidth = 0.0;
   bool ok = true;
   if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_OUTLINE_WIDTH ) )
@@ -1477,8 +1466,8 @@ QRectF QgsSimpleMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
       penWidth = 0.0;
     }
   }
-  //antialiasing
-  penWidth += pixelSize;
+  //antialiasing, add 1 pixel
+  penWidth += 1;
 
   //extend bounds by pen width / 2.0
   symbolBounds.adjust( -penWidth / 2.0, -penWidth / 2.0,
@@ -1984,7 +1973,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   {
     usePict = false;
     const QImage& img = QgsApplication::svgCache()->svgAsImage( path, size, fillColor, outlineColor, outlineWidth,
-                        context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor(), fitsInCache );
+                        context.renderContext().scaleFactor(), fitsInCache );
     if ( fitsInCache && img.width() > 1 )
     {
       //consider transparency
@@ -2007,7 +1996,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   {
     p->setOpacity( context.alpha() );
     const QPicture& pct = QgsApplication::svgCache()->svgAsPicture( path, size, fillColor, outlineColor, outlineWidth,
-                          context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor(), context.renderContext().forceVectorOutput() );
+                          context.renderContext().scaleFactor(), context.renderContext().forceVectorOutput() );
 
     if ( pct.width() > 1 )
     {
@@ -2359,8 +2348,7 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
   }
 
   const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, size, fillColor, outlineColor, outlineWidth,
-                                 context.renderContext().scaleFactor(),
-                                 context.renderContext().rasterScaleFactor() );
+                                 context.renderContext().scaleFactor() );
 
   //if current entry image is 0: cache image for entry
   // checks to see if image will fit into cache
@@ -2442,11 +2430,9 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext& c
   }
 
   QSizeF svgViewbox = QgsApplication::svgCache()->svgViewboxSize( path, scaledSize, fillColor, outlineColor, outlineWidth,
-                      context.renderContext().scaleFactor(),
-                      context.renderContext().rasterScaleFactor() );
+                      context.renderContext().scaleFactor() );
 
   double scaledHeight = svgViewbox.isValid() ? scaledSize * svgViewbox.height() / svgViewbox.width() : scaledSize;
-  double pixelSize = 1.0 / context.renderContext().rasterScaleFactor();
 
   QMatrix transform;
 
@@ -2457,7 +2443,7 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext& c
     transform.rotate( angle );
 
   //antialiasing
-  outlineWidth += pixelSize / 2.0;
+  outlineWidth += 1.0 / 2.0;
 
   QRectF symbolBounds = transform.mapRect( QRectF( -scaledSize / 2.0,
                         -scaledHeight / 2.0,

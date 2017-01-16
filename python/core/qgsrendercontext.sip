@@ -62,7 +62,6 @@ class QgsRenderContext
     //getters
 
     QPainter* painter();
-    const QPainter* constPainter() const;
 
     /** Returns the current coordinate transform for the context, or an invalid
      * transform is no coordinate transformation is required.
@@ -74,8 +73,6 @@ class QgsRenderContext
     const QgsMapToPixel& mapToPixel() const;
 
     double scaleFactor() const;
-
-    double rasterScaleFactor() const;
 
     bool renderingStopped() const;
 
@@ -119,7 +116,6 @@ class QgsRenderContext
 
     void setRenderingStopped( bool stopped );
     void setScaleFactor( double factor );
-    void setRasterScaleFactor( double factor );
     void setRendererScale( double scale );
     void setPainter( QPainter* p );
 
