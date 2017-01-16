@@ -69,7 +69,7 @@ class Union(GeoAlgorithm):
                                           self.tr('Input layer 2')))
         self.addOutput(OutputVector(Union.OUTPUT, self.tr('Union')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         vlayerA = dataobjects.getObjectFromUri(self.getParameterValue(Union.INPUT))
         vlayerB = dataobjects.getObjectFromUri(self.getParameterValue(Union.INPUT2))
 
@@ -88,7 +88,7 @@ class Union(GeoAlgorithm):
         featuresA = vector.features(vlayerA)
         nFeat = len(featuresA)
         for inFeatA in featuresA:
-            progress.setPercentage(nElement / float(nFeat) * 50)
+            feedback.setProgress(nElement / float(nFeat) * 50)
             nElement += 1
             lstIntersectingB = []
             geom = inFeatA.geometry()
@@ -161,9 +161,6 @@ class Union(GeoAlgorithm):
                 if len(lstIntersectingB) != 0:
                     intB = QgsGeometry.unaryUnion(lstIntersectingB)
                     diff_geom = diff_geom.difference(intB)
-                    if diff_geom.isGeosEmpty() or not diff_geom.isGeosValid():
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
 
                 if diff_geom.wkbType() == 0 or QgsWkbTypes.flatType(diff_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                     temp_list = diff_geom.asGeometryCollection()
@@ -184,7 +181,7 @@ class Union(GeoAlgorithm):
         featuresA = vector.features(vlayerB)
         nFeat = len(featuresA)
         for inFeatA in featuresA:
-            progress.setPercentage(nElement / float(nFeat) * 100)
+            feedback.setProgress(nElement / float(nFeat) * 100)
             add = False
             geom = inFeatA.geometry()
             diff_geom = QgsGeometry(geom)
@@ -214,12 +211,9 @@ class Union(GeoAlgorithm):
                     if engine.intersects(tmpGeom.geometry()):
                         add = True
                         diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))
-                        if diff_geom.isGeosEmpty() or not diff_geom.isGeosValid():
-                            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                                   self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
                     else:
                         try:
-                            # Ihis only happends if the bounding box
+                            # Ihis only happens if the bounding box
                             # intersects, but the geometry doesn't
                             outFeat.setGeometry(diff_geom)
                             outFeat.setAttributes(atMap)

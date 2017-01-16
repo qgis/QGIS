@@ -17,6 +17,7 @@
 #ifndef QGSDATAITEM_H
 #define QGSDATAITEM_H
 
+#include "qgis_core.h"
 #include <QFileSystemWatcher>
 #include <QFutureWatcher>
 #include <QIcon>
@@ -310,7 +311,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     bool mDeferredDelete;
     QFutureWatcher< QVector <QgsDataItem*> > *mFutureWatcher;
     // number of items currently in loading (populating) state
-    static QgsAnimatedIcon * mPopulatingIcon;
+    static QgsAnimatedIcon * sPopulatingIcon;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataItem::Capabilities )
@@ -386,12 +387,12 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     QStringList mSupportFormats;
 
   public:
-    static const QIcon &iconPoint();
-    static const QIcon &iconLine();
-    static const QIcon &iconPolygon();
-    static const QIcon &iconTable();
-    static const QIcon &iconRaster();
-    static const QIcon &iconDefault();
+    static QIcon iconPoint();
+    static QIcon iconLine();
+    static QIcon iconPolygon();
+    static QIcon iconTable();
+    static QIcon iconRaster();
+    static QIcon iconDefault();
 
     //! @return the layer name
     virtual QString layerName() const { return name(); }
@@ -410,8 +411,8 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 
     void addChild( QgsDataItem *item ) { mChildren.append( item ); }
 
-    static const QIcon &iconDir(); // shared icon: open/closed directory
-    static const QIcon &iconDataCollection(); // default icon for data collection
+    static QIcon iconDir(); // shared icon: open/closed directory
+    static QIcon iconDataCollection(); // default icon for data collection
 };
 
 /** \ingroup core
@@ -548,7 +549,7 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
     void removeDirectory( QgsDirectoryItem *item );
 
     //! Icon for favorites group
-    static const QIcon &iconFavorites();
+    static QIcon iconFavorites();
 
   private:
     QVector<QgsDataItem*> createChildren( const QString& favDir );
@@ -571,11 +572,11 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     QgsZipItem( QgsDataItem* parent, const QString& name, const QString& filePath, const QString& path );
 
     QVector<QgsDataItem*> createChildren() override;
-    const QStringList & getZipFileList();
+    QStringList getZipFileList();
 
     //! @note not available via python bindings
-    static QVector<dataItem_t *> mDataItemPtr;
-    static QStringList mProviderNames;
+    static QVector<dataItem_t *> sDataItemPtr;
+    static QStringList sProviderNames;
 
     static QString vsiPrefix( const QString& uri ) { return qgsVsiPrefix( uri ); }
 
@@ -590,7 +591,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     */
     static QgsDataItem* itemFromPath( QgsDataItem* parent, const QString& filePath, const QString& name, const QString& path );
 
-    static const QIcon &iconZip();
+    static QIcon iconZip();
 
   private:
     void init();

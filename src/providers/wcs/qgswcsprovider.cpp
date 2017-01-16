@@ -49,14 +49,6 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#define FROM8(x) QString::fromLocal8Bit(x)
-#endif
-
 #define ERR(message) QGS_ERROR_MESSAGE(message,"WCS provider")
 #define SRVERR(message) QGS_ERROR_MESSAGE(message,"WCS server")
 #define QGS_ERROR(message) QgsError(message,"WCS provider")
@@ -261,7 +253,7 @@ QgsWcsProvider::QgsWcsProvider( const QString& uri )
   }
   // Geoserver is giving rotated raster for geographic CRS - switched axis,
   // Geoserver developers argue that changed axis order applies also to
-  // returned raster, that is exagerated IMO but we have to handle that.
+  // returned raster, that is exaggerated IMO but we have to handle that.
   if (( responseWidth == requestHeight && responseHeight == requestWidth ) ||
       ( responseWidth == requestHeight - 1 && responseHeight == requestWidth - 1 ) )
   {
@@ -658,7 +650,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   // "The spatial extent of a grid coverage extends only as far as the outermost
   // grid points contained in the bounding box. It does NOT include any area
   // (partial or whole grid cells or sample spaces) beyond those grid points."
-  // Mapserver and GDAL are using bbox defined by grid points, i.e. shrinked
+  // Mapserver and GDAL are using bbox defined by grid points, i.e. shrunk
   // by 1 pixel, but Geoserver and ArcGIS are using full bbox including
   // the space around edge grid points.
   if ( mCapabilities.version().startsWith( QLatin1String( "1.1" ) ) && !mFixBox )
@@ -731,7 +723,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
     setQueryItem( url, QStringLiteral( "GRIDTYPE" ), QStringLiteral( "urn:ogc:def:method:WCS:1.1:2dSimpleGrid" ) );
 
     // GridOrigin is BBOX minx, maxy
-    // Note: shifting origin to cell center (not realy necessary nor making sense)
+    // Note: shifting origin to cell center (not really necessary nor making sense)
     // does not work with Mapserver 6.0.3
     // Mapserver 6.0.3 does not work with origin on yMinimum (lower left)
     // Geoserver works OK with yMinimum (lower left)
@@ -790,7 +782,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   }
 #endif
 
-  mCachedMemFile = VSIFileFromMemBuffer( TO8F( mCachedMemFilename ),
+  mCachedMemFile = VSIFileFromMemBuffer( mCachedMemFilename.toUtf8().constData(),
                                          ( GByte* )mCachedData.data(),
                                          ( vsi_l_offset )mCachedData.size(),
                                          FALSE );
@@ -804,7 +796,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   QgsDebugMsg( "Memory file created" );
 
   CPLErrorReset();
-  mCachedGdalDataset = GDALOpen( TO8F( mCachedMemFilename ), GA_ReadOnly );
+  mCachedGdalDataset = GDALOpen( mCachedMemFilename.toUtf8().constData(), GA_ReadOnly );
   if ( !mCachedGdalDataset )
   {
     QgsMessageLog::logMessage( QString::fromUtf8( CPLGetLastErrorMsg() ), tr( "WCS" ) );

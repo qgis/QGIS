@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgisexpressionbuilderwidget.cpp - A genric expression string builder widget.
+    qgisexpressionbuilderwidget.cpp - A generic expression string builder widget.
      --------------------------------------
     Date                 :  29-May-2011
     Copyright            : (C) 2011 by Nathan Woodrow
@@ -80,9 +80,9 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtSearchEditValues->setPlaceholderText( tr( "Search" ) );
 
   QSettings settings;
-  splitter->restoreState( settings.value( QStringLiteral( "/windows/QgsExpressionBuilderWidget/splitter" ) ).toByteArray() );
-  editorSplit->restoreState( settings.value( QStringLiteral( "/windows/QgsExpressionBuilderWidget/editorsplitter" ) ).toByteArray() );
-  functionsplit->restoreState( settings.value( QStringLiteral( "/windows/QgsExpressionBuilderWidget/functionsplitter" ) ).toByteArray() );
+  splitter->restoreState( settings.value( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/splitter" ) ).toByteArray() );
+  editorSplit->restoreState( settings.value( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/editorsplitter" ) ).toByteArray() );
+  functionsplit->restoreState( settings.value( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/functionsplitter" ) ).toByteArray() );
 
   txtExpressionString->setFoldingVisible( false );
 
@@ -104,15 +104,16 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   expressionTree->setCurrentIndex( firstItem );
 
   lblAutoSave->setText( QLatin1String( "" ) );
+  txtExpressionString->setWrapMode( QsciScintilla::WrapWord );
 }
 
 
 QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
 {
   QSettings settings;
-  settings.setValue( QStringLiteral( "/windows/QgsExpressionBuilderWidget/splitter" ), splitter->saveState() );
-  settings.setValue( QStringLiteral( "/windows/QgsExpressionBuilderWidget/editorsplitter" ), editorSplit->saveState() );
-  settings.setValue( QStringLiteral( "/windows/QgsExpressionBuilderWidget/functionsplitter" ), functionsplit->saveState() );
+  settings.setValue( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/splitter" ), splitter->saveState() );
+  settings.setValue( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/editorsplitter" ), editorSplit->saveState() );
+  settings.setValue( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/functionsplitter" ), functionsplit->saveState() );
 
   delete mModel;
   delete mProxyModel;
@@ -361,7 +362,7 @@ void QgsExpressionBuilderWidget::registerItem( const QString& group,
 {
   QgsExpressionItem* item = new QgsExpressionItem( label, expressionText, helpText, type );
   item->setData( label, Qt::UserRole );
-  item->setData( sortOrder, QgsExpressionItem::CustomSortRole );
+  item->setData( sortOrder, QgsExpressionItem::CUSTOM_SORT_ROLE );
 
   // Look up the group and insert the new function.
   if ( mExpressionGroups.contains( group ) )
@@ -375,7 +376,7 @@ void QgsExpressionBuilderWidget::registerItem( const QString& group,
     QgsExpressionItem *newgroupNode = new QgsExpressionItem( QgsExpression::group( group ), QLatin1String( "" ), QgsExpressionItem::Header );
     newgroupNode->setData( group, Qt::UserRole );
     //Recent group should always be last group
-    newgroupNode->setData( group.startsWith( QLatin1String( "Recent (" ) ) ? 2 : 1, QgsExpressionItem::CustomSortRole );
+    newgroupNode->setData( group.startsWith( QLatin1String( "Recent (" ) ) ? 2 : 1, QgsExpressionItem::CUSTOM_SORT_ROLE );
     newgroupNode->appendRow( item );
     newgroupNode->setBackground( QBrush( QColor( "#eee" ) ) );
     mModel->appendRow( newgroupNode );
@@ -387,7 +388,7 @@ void QgsExpressionBuilderWidget::registerItem( const QString& group,
     //insert a copy as a top level item
     QgsExpressionItem* topLevelItem = new QgsExpressionItem( label, expressionText, helpText, type );
     topLevelItem->setData( label, Qt::UserRole );
-    item->setData( 0, QgsExpressionItem::CustomSortRole );
+    item->setData( 0, QgsExpressionItem::CUSTOM_SORT_ROLE );
     QFont font = topLevelItem->font();
     font.setBold( true );
     topLevelItem->setFont( font );
@@ -542,33 +543,19 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     // Only set calculator if we have layer, else use default.
     exp.setGeomCalculator( &mDa );
 
-    if ( !mFeature.isValid() )
+    if ( !mExpressionContext.feature().isValid() )
     {
-      mLayer->getFeatures().nextFeature( mFeature );
-    }
-
-    if ( mFeature.isValid() )
-    {
-      mExpressionContext.setFeature( mFeature );
-      QVariant value = exp.evaluate( &mExpressionContext );
-      if ( !exp.hasEvalError() )
-        lblPreview->setText( QgsExpression::formatPreviewString( value ) );
-    }
-    else
-    {
-      // The feature is invalid because we don't have one but that doesn't mean user can't
-      // build a expression string.  They just get no preview.
-      lblPreview->setText( QLatin1String( "" ) );
+      // no feature passed yet, try to get from layer
+      QgsFeature f;
+      mLayer->getFeatures().nextFeature( f );
+      mExpressionContext.setFeature( f );
     }
   }
-  else
+
+  QVariant value = exp.evaluate( &mExpressionContext );
+  if ( !exp.hasEvalError() )
   {
-    // No layer defined
-    QVariant value = exp.evaluate( &mExpressionContext );
-    if ( !exp.hasEvalError() )
-    {
-      lblPreview->setText( QgsExpression::formatPreviewString( value ) );
-    }
+    lblPreview->setText( QgsExpression::formatPreviewString( value ) );
   }
 
   if ( exp.hasParserError() || exp.hasEvalError() )
@@ -808,7 +795,7 @@ QgsExpressionItemSearchProxy::QgsExpressionItemSearchProxy()
 bool QgsExpressionItemSearchProxy::filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const
 {
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
-  QgsExpressionItem::ItemType itemType = QgsExpressionItem::ItemType( sourceModel()->data( index, QgsExpressionItem::ItemTypeRole ).toInt() );
+  QgsExpressionItem::ItemType itemType = QgsExpressionItem::ItemType( sourceModel()->data( index, QgsExpressionItem::ITEM_TYPE_ROLE ).toInt() );
 
   int count = sourceModel()->rowCount( index );
   bool matchchild = false;
@@ -832,8 +819,8 @@ bool QgsExpressionItemSearchProxy::filterAcceptsRow( int source_row, const QMode
 
 bool QgsExpressionItemSearchProxy::lessThan( const QModelIndex& left, const QModelIndex& right ) const
 {
-  int leftSort = sourceModel()->data( left, QgsExpressionItem::CustomSortRole ).toInt();
-  int rightSort = sourceModel()->data( right,  QgsExpressionItem::CustomSortRole ).toInt();
+  int leftSort = sourceModel()->data( left, QgsExpressionItem::CUSTOM_SORT_ROLE ).toInt();
+  int rightSort = sourceModel()->data( right,  QgsExpressionItem::CUSTOM_SORT_ROLE ).toInt();
   if ( leftSort != rightSort )
     return leftSort < rightSort;
 

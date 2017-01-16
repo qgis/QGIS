@@ -22,6 +22,7 @@
 #include "qgscolorrampshader.h"
 #include "qgsrasterrenderer.h"
 #include "ui_qgssinglebandpseudocolorrendererwidgetbase.h"
+#include "qgis_gui.h"
 
 class QgsRasterMinMaxWidget;
 

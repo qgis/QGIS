@@ -30,6 +30,9 @@ import shutil
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 from qgis.PyQt.QtCore import QSettings, QFileInfo
+
+from qgis.core import QgsApplication
+
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
@@ -46,7 +49,7 @@ class AddModelFromFileAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'model.svg'))
+        return QgsApplication.getThemeIcon("/processingModel.svg")
 
     def execute(self):
         settings = QSettings()

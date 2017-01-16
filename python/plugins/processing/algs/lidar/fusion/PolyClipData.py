@@ -62,7 +62,7 @@ class PolyClipData(FusionAlgorithm):
         self.addParameter(ParameterString(self.VALUE, self.tr("Shape value")))
         self.addAdvancedModifiers()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'PolyClipData.exe')]
         commands.append('/verbose')
         if self.getParameterValue(self.SHAPE):
@@ -78,4 +78,4 @@ class PolyClipData(FusionAlgorithm):
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
 
-        FusionUtils.runFusion(commands, progress)
+        FusionUtils.runFusion(commands, feedback)

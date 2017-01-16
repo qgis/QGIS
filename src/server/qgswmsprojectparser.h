@@ -21,6 +21,7 @@
 #include "qgswmsconfigparser.h"
 #include "qgsserverprojectparser.h"
 #include "qgslayertreegroup.h"
+#include "qgis_server.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 class QgsAccessControl;
@@ -61,8 +62,8 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
     double legendIconLabelSpace() const override;
     double legendSymbolWidth() const override;
     double legendSymbolHeight() const override;
-    const QFont& legendLayerFont() const override;
-    const QFont& legendItemFont() const override;
+    QFont legendLayerFont() const override;
+    QFont legendItemFont() const override;
 
     double maxWidth() const override;
     double maxHeight() const override;

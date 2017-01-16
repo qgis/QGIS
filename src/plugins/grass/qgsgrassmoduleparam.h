@@ -99,7 +99,7 @@ class QgsGrassModuleParam
     //! Is the item hidden
     bool hidden();
 
-    //! Retruns list of options which will be passed to module
+    //! Returns list of options which will be passed to module
     virtual QStringList options();
 
     //! Item's key
@@ -262,7 +262,7 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     //! Output type
     enum OutputType { None, Vector, Raster };
 
-    //! Retruns list of options which will be passed to module
+    //! Returns list of options which will be passed to module
     virtual QStringList options() override;
 
     //! True if this option is output
@@ -359,7 +359,7 @@ class QgsGrassModuleFlag : public QgsGrassModuleCheckBox, public QgsGrassModuleP
 
     ~QgsGrassModuleFlag();
 
-    //! Retruns list of options which will be passed to module
+    //! Returns list of options which will be passed to module
     virtual QStringList options() override;
 
 };
@@ -474,7 +474,7 @@ class QgsGrassModuleVectorField : public QgsGrassModuleMultiParam
 
     ~QgsGrassModuleVectorField();
 
-    //! Retruns list of options which will be passed to module
+    //! Returns list of options which will be passed to module
     virtual QStringList options() override;
 
     void setLayerInput( QgsGrassModuleInput * layerInput ) { mLayerInput = layerInput; }
@@ -539,7 +539,7 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
 
     ~QgsGrassModuleSelection();
 
-    //! Retruns list of options which will be passed to module
+    //! Returns list of options which will be passed to module
     virtual QStringList options() override;
 
   public slots:
@@ -620,7 +620,7 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
     // ! File type (New, Old)
     int mType;
 
-    // ! Optionaly split file to dir and file path
+    // ! Optionally split file to dir and file path
     QString mFileOption;
 
     //! Line

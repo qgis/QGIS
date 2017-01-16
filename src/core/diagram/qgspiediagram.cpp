@@ -48,7 +48,7 @@ QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCon
   }
   else
   {
-    attrVal = feature.attributes().at( is.classificationAttribute );
+    attrVal = feature.attribute( is.classificationField );
   }
 
   bool ok = false;

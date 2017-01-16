@@ -22,6 +22,7 @@
 #include "qgspanelwidget.h"
 #include "ui_qgssubstitutionlistwidgetbase.h"
 #include "qgsstringutils.h"
+#include "qgis_gui.h"
 
 /** \class QgsSubstitutionListWidget
  * \ingroup gui

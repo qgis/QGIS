@@ -50,7 +50,7 @@ class information(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-info.png'))
 
     def commandLineName(self):
-        return "gdalorg:rasterinfo"
+        return "gdal:gdalinfo"
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Information')
@@ -73,8 +73,8 @@ class information(GdalAlgorithm):
         arguments.append(self.getParameterValue(information.INPUT))
         return ['gdalinfo', GdalUtils.escapeAndJoin(arguments)]
 
-    def processAlgorithm(self, progress):
-        GdalUtils.runGdal(self.getConsoleCommands(), progress)
+    def processAlgorithm(self, feedback):
+        GdalUtils.runGdal(self.getConsoleCommands(), feedback)
         output = self.getOutputValue(information.OUTPUT)
         with open(output, 'w') as f:
             f.write('<pre>')

@@ -61,7 +61,7 @@ class RasterLayerHistogram(GeoAlgorithm):
         self.addOutput(OutputHTML(self.PLOT, self.tr('Histogram')))
         self.addOutput(OutputTable(self.TABLE, self.tr('Table')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         nbins = self.getParameterValue(self.BINS)
@@ -69,7 +69,7 @@ class RasterLayerHistogram(GeoAlgorithm):
         outputplot = self.getOutputValue(self.PLOT)
         outputtable = self.getOutputFromName(self.TABLE)
 
-        values = raster.scanraster(layer, progress)
+        values = raster.scanraster(layer, feedback)
 
         # ALERT: this is potentially blocking if the layer is too big
         plt.close()

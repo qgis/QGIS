@@ -19,6 +19,7 @@
 #ifndef QGSSCALECALCULATOR_H
 #define QGSSCALECALCULATOR_H
 
+#include "qgis_core.h"
 #include <qgis.h>
 #include "qgsunittypes.h"
 

@@ -15,6 +15,7 @@
 #ifndef QGSVECTORLAYERFEATUREITERATOR_H
 #define QGSVECTORLAYERFEATUREITERATOR_H
 
+#include "qgis_core.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
 
@@ -152,12 +153,12 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      */
     void addExpressionAttribute( QgsFeature& f, int attrIndex );
 
-    /** Update feature with uncommited attribute updates.
+    /** Update feature with uncommitted attribute updates.
      * @note not available in Python bindings
      */
     void updateChangedAttributes( QgsFeature& f );
 
-    /** Update feature with uncommited geometry updates.
+    /** Update feature with uncommitted geometry updates.
      * @note not available in Python bindings
      */
     void updateFeatureGeometry( QgsFeature& f );
@@ -167,7 +168,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      */
     struct FetchJoinInfo
     {
-      const QgsVectorJoinInfo* joinInfo;//!< Cannonical source of information about the join
+      const QgsVectorJoinInfo* joinInfo;//!< Canonical source of information about the join
       QgsAttributeList attributes;      //!< Attributes to fetch
       int indexOffset;                  //!< At what position the joined fields start
       QgsVectorLayer* joinLayer;        //!< Resolved pointer to the joined layer

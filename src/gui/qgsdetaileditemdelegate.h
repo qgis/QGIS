@@ -19,6 +19,7 @@
 
 #include <QAbstractItemDelegate>
 #include <QString>
+#include "qgis_gui.h"
 
 class QCheckBox;
 class QgsDetailedItemWidget;

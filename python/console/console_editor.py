@@ -168,7 +168,7 @@ class Editor(QsciScintilla):
         self.newShortcutCS.activated.connect(self.autoCompleteKeyBinding)
         self.runScut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
         self.runScut.setContext(Qt.WidgetShortcut)
-        self.runScut.activated.connect(self.runSelectedCode)
+        self.runScut.activated.connect(self.runSelectedCode)  # spellok
         self.runScriptScut = QShortcut(QKeySequence(Qt.SHIFT + Qt.CTRL + Qt.Key_E), self)
         self.runScriptScut.setContext(Qt.WidgetShortcut)
         self.runScriptScut.activated.connect(self.runScriptCode)
@@ -307,9 +307,9 @@ class Editor(QsciScintilla):
         syntaxCheck = menu.addAction(iconSyntaxCk,
                                      QCoreApplication.translate("PythonConsole", "Check Syntax"),
                                      self.syntaxCheck, 'Ctrl+4')
-        runSelected = menu.addAction(iconRun,
+        runSelected = menu.addAction(iconRun,  # spellok
                                      QCoreApplication.translate("PythonConsole", "Run Selected"),
-                                     self.runSelectedCode, 'Ctrl+E')
+                                     self.runSelectedCode, 'Ctrl+E')  # spellok
         menu.addAction(iconRunScript,
                        QCoreApplication.translate("PythonConsole", "Run Script"),
                        self.runScriptCode, 'Shift+Ctrl+E')
@@ -358,14 +358,14 @@ class Editor(QsciScintilla):
         pasteAction.setEnabled(False)
         codePadAction.setEnabled(False)
         cutAction.setEnabled(False)
-        runSelected.setEnabled(False)
+        runSelected.setEnabled(False)  # spellok
         copyAction.setEnabled(False)
         selectAllAction.setEnabled(False)
         undoAction.setEnabled(False)
         redoAction.setEnabled(False)
         showCodeInspection.setEnabled(False)
         if self.hasSelectedText():
-            runSelected.setEnabled(True)
+            runSelected.setEnabled(True)  # spellok
             copyAction.setEnabled(True)
             cutAction.setEnabled(True)
             codePadAction.setEnabled(True)
@@ -600,7 +600,7 @@ class Editor(QsciScintilla):
             self.parent.pc.shell.runCommand(u"exec(open(u'{0}'.encode('{1}')).read())"
                                             .format(filename.replace("\\", "/"), sys.getfilesystemencoding()))
 
-    def runSelectedCode(self):
+    def runSelectedCode(self):  # spellok
         cmd = self.selectedText()
         self.parent.pc.shell.insertFromDropPaste(cmd)
         self.parent.pc.shell.entered()
@@ -758,8 +758,8 @@ class EditorTab(QWidget):
         self.path = None
         self.readOnly = readOnly
 
-        self.fileExcuteList = {}
-        self.fileExcuteList = dict()
+        self.fileExecuteList = {}
+        self.fileExecuteList = dict()
 
         self.newEditor = Editor(self)
         if filename:

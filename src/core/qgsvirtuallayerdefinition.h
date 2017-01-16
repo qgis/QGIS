@@ -17,6 +17,7 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUALLAYERDEFINITION_H
 #define QGSVIRTUALLAYERDEFINITION_H
 
+#include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgis.h"
 

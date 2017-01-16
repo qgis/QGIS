@@ -18,9 +18,12 @@
 #include "qgsapplication.h" //for standard test font
 #include "qgscomposerutils.h"
 #include "qgscomposition.h"
+#include "qgscomposermap.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsdatadefined.h"
 #include "qgsfontutils.h"
+#include "qgsproject.h"
+#include "qgstestutils.h"
 #include <QObject>
 #include "qgstest.h"
 #include <QMap>
@@ -60,6 +63,7 @@ class TestQgsComposerUtils : public QObject
     void textHeightMM(); //test calculating text height in mm
     void drawTextPos(); //test drawing text at a pos
     void drawTextRect(); //test drawing text in a rect
+    void createRenderContext();
 
   private:
     bool renderCheck( const QString& testName, QImage &image, int mismatchCount = 0 );
@@ -83,7 +87,7 @@ void TestQgsComposerUtils::initTestCase()
   QgsApplication::initQgis(); //for access to test font
 
   mMapSettings = new QgsMapSettings();
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = QStringLiteral( "<h1>Composer Utils Tests</h1>\n" );
@@ -698,6 +702,42 @@ void TestQgsComposerUtils::drawTextRect()
   QgsComposerUtils::drawText( &testPainter, QRectF( 5, 15, 20, 50 ), QStringLiteral( "Abc123" ), mTestFont, Qt::white, Qt::AlignLeft, Qt::AlignTop, Qt::TextDontClip );
   testPainter.end();
   QVERIFY( renderCheck( "composerutils_drawtext_rectflag", testImage, 100 ) );
+}
+
+void TestQgsComposerUtils::createRenderContext()
+{
+  QImage testImage = QImage( 250, 250, QImage::Format_RGB32 );
+  testImage.setDotsPerMeterX( 150 / 25.4 * 1000 );
+  testImage.setDotsPerMeterY( 150 / 25.4 * 1000 );
+  QPainter p( &testImage );
+
+  // no composition
+  QgsRenderContext rc = QgsComposerUtils::createRenderContext( nullptr, p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QCOMPARE( rc.painter(), &p );
+
+  //create composition with no reference map
+  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  QgsMapSettings ms;
+  ms.setExtent( extent );
+  QgsComposition* composition = new QgsComposition( ms, QgsProject::instance() );
+  rc = QgsComposerUtils::createRenderContext( composition, p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QCOMPARE( rc.painter(), &p );
+
+  // add a reference map
+  QgsComposerMap* map = new QgsComposerMap( composition );
+  map->setNewExtent( extent );
+  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
+  composition->addComposerMap( map );
+  composition->setReferenceMap( map );
+
+  rc = QgsComposerUtils::createRenderContext( composition, p );
+  QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
+  QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 100000 );
+  QCOMPARE( rc.painter(), &p );
+
+  p.end();
 }
 
 bool TestQgsComposerUtils::renderCheck( const QString& testName, QImage &image, int mismatchCount )

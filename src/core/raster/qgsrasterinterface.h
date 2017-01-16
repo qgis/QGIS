@@ -18,6 +18,7 @@
 #ifndef QGSRASTERINTERFACE_H
 #define QGSRASTERINTERFACE_H
 
+#include "qgis_core.h"
 #include <limits>
 
 #include <QCoreApplication> // for tr()
@@ -215,7 +216,7 @@ class CORE_EXPORT QgsRasterInterface
      * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
      * @param theIncludeOutOfRange include out of range values
      * @return Vector of non NULL cell counts for each bin.
-     * @note theBinCount, theMinimun and theMaximum not optional in python bindings
+     * @note theBinCount, theMinimum and theMaximum not optional in python bindings
      */
     virtual QgsRasterHistogram histogram( int theBandNo,
                                           int theBinCount = 0,
@@ -226,7 +227,7 @@ class CORE_EXPORT QgsRasterInterface
                                           bool theIncludeOutOfRange = false );
 
     /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram()
-     * @note theBinCount, theMinimun and theMaximum not optional in python bindings
+     * @note theBinCount, theMinimum and theMaximum not optional in python bindings
      */
     virtual bool hasHistogram( int theBandNo,
                                int theBinCount,
@@ -272,7 +273,7 @@ class CORE_EXPORT QgsRasterInterface
     bool mOn;
 
     /** Fill in histogram defaults if not specified
-     * @note theBinCount, theMinimun and theMaximum not optional in python bindings
+     * @note theBinCount, theMinimum and theMaximum not optional in python bindings
      */
     void initHistogram( QgsRasterHistogram &theHistogram, int theBandNo,
                         int theBinCount = 0,

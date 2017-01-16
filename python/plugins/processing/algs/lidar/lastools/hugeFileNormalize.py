@@ -66,7 +66,7 @@ class hugeFileNormalize(LAStoolsAlgorithm):
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
 
         # first we tile the data with option '-reversible'
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
@@ -84,7 +84,7 @@ class hugeFileNormalize(LAStoolsAlgorithm):
         commands.append("-o")
         commands.append("hugeFileNormalize.laz")
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we ground classify the reversible tiles
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
@@ -105,7 +105,7 @@ class hugeFileNormalize(LAStoolsAlgorithm):
         commands.append("-olaz")
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we height-normalize each points in the reversible tiles
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
@@ -118,7 +118,7 @@ class hugeFileNormalize(LAStoolsAlgorithm):
         commands.append("-olaz")
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we reverse the tiling
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
@@ -127,4 +127,4 @@ class hugeFileNormalize(LAStoolsAlgorithm):
         commands.append("-reverse_tiling")
         self.addParametersPointOutputCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

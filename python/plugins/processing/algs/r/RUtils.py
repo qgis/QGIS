@@ -116,7 +116,7 @@ class RUtils(object):
         return RUtils.getRScriptFilename() + '.Rout'
 
     @staticmethod
-    def executeRAlgorithm(alg, progress):
+    def executeRAlgorithm(alg, feedback):
         # generate new R script file name in a temp folder
         RUtils.rscriptfilename = getTempFilenameInTempFolder('processing_script.r')
         # run commands
@@ -156,7 +156,7 @@ class RUtils(object):
         loglines.append(RUtils.tr('R execution console output'))
         loglines += RUtils.allConsoleResults
         for line in loglines:
-            progress.setConsoleInfo(line)
+            feedback.pushConsoleInfo(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
     @staticmethod

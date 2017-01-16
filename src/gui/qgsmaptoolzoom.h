@@ -18,6 +18,7 @@
 
 #include "qgsmaptool.h"
 #include <QRect>
+#include "qgis_gui.h"
 
 class QgsRubberBand;
 

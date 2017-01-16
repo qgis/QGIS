@@ -22,7 +22,8 @@ from qgis.core import (QgsComposerPolyline,
                        QgsComposerItem,
                        QgsComposition,
                        QgsMapSettings,
-                       QgsLineSymbol
+                       QgsLineSymbol,
+                       QgsProject
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -43,7 +44,7 @@ class TestQgsComposerPolyline(unittest.TestCase):
         self.mapSettings = QgsMapSettings()
 
         # create composition
-        self.mComposition = QgsComposition(self.mapSettings)
+        self.mComposition = QgsComposition(self.mapSettings, QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
 
         # create
@@ -105,7 +106,7 @@ class TestQgsComposerPolyline(unittest.TestCase):
         assert myTestResult, myMessage
 
     def testSelectedNode(self):
-        """Test selectedNode and unselectNode methods"""
+        """Test selectedNode and deselectNode methods"""
 
         self.mComposerPolyline.setDisplayNodes(True)
 
@@ -116,7 +117,7 @@ class TestQgsComposerPolyline(unittest.TestCase):
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-        self.mComposerPolyline.unselectNode()
+        self.mComposerPolyline.deselectNode()
         self.mComposerPolyline.setDisplayNodes(False)
         checker = QgsCompositionChecker(
             'composerpolyline_defaultstyle', self.mComposition)

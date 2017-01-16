@@ -71,7 +71,7 @@ class ExtractByLocation(GeoAlgorithm):
                                           0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (location)')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(filename)
         filename = self.getParameterValue(self.INTERSECT)
@@ -114,7 +114,7 @@ class ExtractByLocation(GeoAlgorithm):
                             selectedSet.append(feat.id())
                             break
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         if 'disjoint' in predicates:
             selectedSet = selectedSet + disjoinSet
@@ -124,5 +124,5 @@ class ExtractByLocation(GeoAlgorithm):
         for current, f in enumerate(features):
             if f.id() in selectedSet:
                 writer.addFeature(f)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
         del writer

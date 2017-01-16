@@ -59,7 +59,7 @@ class FusionUtils(object):
                 out.write(f + '\n')
 
     @staticmethod
-    def runFusion(commands, progress):
+    def runFusion(commands, feedback):
         loglines = []
         loglines.append(
             QCoreApplication.translate('FusionUtils',

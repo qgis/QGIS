@@ -19,6 +19,7 @@
 #include "ui_qgstablewidgetbase.h"
 #include <QAbstractTableModel>
 #include <QVariant>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Base widget allowing to edit a collection, using a table.
@@ -41,7 +42,7 @@ class GUI_EXPORT QgsTableWidgetBase: public QWidget, public Ui::QgsTableWidgetBa
   protected:
 
     /**
-     * Initialise the table with the given model.
+     * Initialize the table with the given model.
      * Must be called once in the child class' constructor.
      */
     void init( QAbstractTableModel* model );

@@ -382,3 +382,25 @@ void QgsLayerTreeView::collapseAllNodes()
   _expandAllNodes( layerTreeModel()->rootGroup(), false, layerTreeModel() );
   collapseAll();
 }
+
+void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
+{
+  const QgsLayerTreeModel::Flags oldFlags = layerTreeModel()->flags();
+  if ( event->modifiers() & Qt::ControlModifier )
+    layerTreeModel()->setFlags( oldFlags | QgsLayerTreeModel::ActionHierarchical );
+  else
+    layerTreeModel()->setFlags( oldFlags & ~QgsLayerTreeModel::ActionHierarchical );
+  QTreeView::mouseReleaseEvent( event );
+  layerTreeModel()->setFlags( oldFlags );
+}
+
+void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
+{
+  const QgsLayerTreeModel::Flags oldFlags = layerTreeModel()->flags();
+  if ( event->modifiers() & Qt::ControlModifier )
+    layerTreeModel()->setFlags( oldFlags | QgsLayerTreeModel::ActionHierarchical );
+  else
+    layerTreeModel()->setFlags( oldFlags & ~QgsLayerTreeModel::ActionHierarchical );
+  QTreeView::keyPressEvent( event );
+  layerTreeModel()->setFlags( oldFlags );
+}

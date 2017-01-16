@@ -64,20 +64,18 @@ static const QString QGS_NAMESPACE = QStringLiteral( "http://www.qgis.org/gml" )
 
 QgsWfsServer::QgsWfsServer(
   const QString& configFilePath
+  , const QgsServerSettings& settings
   , QMap<QString, QString> &parameters
   , QgsWfsProjectParser* cp
   , QgsRequestHandler* rh
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-  , const QgsAccessControl* accessControl
-#endif
+  , QgsAccessControl* accessControl
 )
     : QgsOWSServer(
       configFilePath
+      , settings
       , parameters
       , rh
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , accessControl
-#endif
     )
     , mWithGeom( true )
     , mConfigParser( cp )
@@ -87,11 +85,10 @@ QgsWfsServer::QgsWfsServer(
 QgsWfsServer::QgsWfsServer()
     : QgsOWSServer(
       QString()
+      , QgsServerSettings()
       , QMap<QString, QString>()
       , nullptr
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , nullptr
-#endif
     )
     , mWithGeom( true )
     , mConfigParser( nullptr )
@@ -412,7 +409,7 @@ int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format 
 
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
   QDomDocument doc;
   QString errorMsg;

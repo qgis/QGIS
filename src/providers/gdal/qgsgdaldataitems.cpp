@@ -40,7 +40,7 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
     setState( Populated );
 
   GDALAllRegister();
-  GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
+  GDALDatasetH hDS = GDALOpen( mPath.toUtf8().constData(), GA_Update );
 
   if ( hDS )
   {
@@ -51,7 +51,7 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
 
 bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
-  GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
+  GDALDatasetH hDS = GDALOpen( mPath.toUtf8().constData(), GA_Update );
   if ( !hDS )
     return false;
 
@@ -117,10 +117,10 @@ QString QgsGdalLayerItem::layerName() const
 
 // ---------------------------------------------------------------------------
 
-static QString filterString;
-static QStringList extensions = QStringList();
-static QStringList wildcards = QStringList();
-static QMutex gBuildingFilters;
+static QString sFilterString;
+static QStringList sExtensions = QStringList();
+static QStringList sWildcards = QStringList();
+static QMutex sBuildingFilters;
 
 QGISEXTERN int dataCapabilities()
 {
@@ -176,37 +176,37 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     return nullptr;
 
   // get supported extensions
-  if ( extensions.isEmpty() )
+  if ( sExtensions.isEmpty() )
   {
     // this code may be executed by more threads at once!
     // use a mutex to make sure this does not happen (so there's no crash on start)
-    QMutexLocker locker( &gBuildingFilters );
-    if ( extensions.isEmpty() )
+    QMutexLocker locker( &sBuildingFilters );
+    if ( sExtensions.isEmpty() )
     {
-      buildSupportedRasterFileFilterAndExtensions( filterString, extensions, wildcards );
-      QgsDebugMsgLevel( "extensions: " + extensions.join( " " ), 2 );
-      QgsDebugMsgLevel( "wildcards: " + wildcards.join( " " ), 2 );
+      buildSupportedRasterFileFilterAndExtensions( sFilterString, sExtensions, sWildcards );
+      QgsDebugMsgLevel( "extensions: " + sExtensions.join( " " ), 2 );
+      QgsDebugMsgLevel( "wildcards: " + sWildcards.join( " " ), 2 );
     }
   }
 
-  // skip *.aux.xml files (GDAL auxilary metadata files),
+  // skip *.aux.xml files (GDAL auxiliary metadata files),
   // *.shp.xml files (ESRI metadata) and *.tif.xml files (TIFF metadata)
   // unless that extension is in the list (*.xml might be though)
   if ( thePath.endsWith( QLatin1String( ".aux.xml" ), Qt::CaseInsensitive ) &&
-       !extensions.contains( QStringLiteral( "aux.xml" ) ) )
+       !sExtensions.contains( QStringLiteral( "aux.xml" ) ) )
     return nullptr;
   if ( thePath.endsWith( QLatin1String( ".shp.xml" ), Qt::CaseInsensitive ) &&
-       !extensions.contains( QStringLiteral( "shp.xml" ) ) )
+       !sExtensions.contains( QStringLiteral( "shp.xml" ) ) )
     return nullptr;
   if ( thePath.endsWith( QLatin1String( ".tif.xml" ), Qt::CaseInsensitive ) &&
-       !extensions.contains( QStringLiteral( "tif.xml" ) ) )
+       !sExtensions.contains( QStringLiteral( "tif.xml" ) ) )
     return nullptr;
 
   // Filter files by extension
-  if ( !extensions.contains( suffix ) )
+  if ( !sExtensions.contains( suffix ) )
   {
     bool matches = false;
-    Q_FOREACH ( const QString& wildcard, wildcards )
+    Q_FOREACH ( const QString& wildcard, sWildcards )
     {
       QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
       if ( rx.exactMatch( info.fileName() ) )
@@ -248,7 +248,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       // do not print errors, but write to debug
       CPLPushErrorHandler( CPLQuietErrorHandler );
       CPLErrorReset();
-      if ( ! GDALIdentifyDriver( TO8F( thePath ), nullptr ) )
+      if ( ! GDALIdentifyDriver( thePath.toUtf8().constData(), nullptr ) )
       {
         QgsDebugMsgLevel( "Skipping VRT file because root is not a GDAL VRT", 2 );
         CPLPopErrorHandler();
@@ -269,7 +269,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  GDALDatasetH hDS = GDALOpen( TO8F( thePath ), GA_ReadOnly );
+  GDALDatasetH hDS = GDALOpen( thePath.toUtf8().constData(), GA_ReadOnly );
   CPLPopErrorHandler();
 
   if ( ! hDS )

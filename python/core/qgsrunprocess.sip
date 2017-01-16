@@ -17,7 +17,7 @@ class QgsRunProcess : QObject /NoDefaultCtors/
 
     // The action argument contains string with the command.
     // If capture is true, the standard output and error from the process
-    // will be sent to QgsMessageOuptut - usually a dialog box.
+    // will be sent to QgsMessageOutput - usually a dialog box.
     static QgsRunProcess* create( const QString& action, bool capture ) /Factory/;
 
   public slots:

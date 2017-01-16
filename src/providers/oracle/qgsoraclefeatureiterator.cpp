@@ -318,19 +318,19 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
 
     switch ( mSource->mPrimaryKeyType )
     {
-      case pktInt:
+      case PktInt:
         // get 64bit integer from result
         fid = mQry.value( col++ ).toLongLong();
         if ( mAttributeList.contains( mSource->mPrimaryKeyAttrs[0] ) )
           feature.setAttribute( mSource->mPrimaryKeyAttrs[0], fid );
         break;
 
-      case pktRowId:
-      case pktFidMap:
+      case PktRowId:
+      case PktFidMap:
       {
         QList<QVariant> primaryKeyVals;
 
-        if ( mSource->mPrimaryKeyType == pktFidMap )
+        if ( mSource->mPrimaryKeyType == PktFidMap )
         {
           Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
           {
@@ -356,12 +356,12 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
       }
       break;
 
-      case pktUnknown:
+      case PktUnknown:
         Q_ASSERT( !"FAILURE: cannot get feature with unknown primary key" );
         return false;
     }
 
-    feature.setFeatureId( fid );
+    feature.setId( fid );
     QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 5 );
 
     // iterate attributes
@@ -439,17 +439,17 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause, bool showLog )
 
     switch ( mSource->mPrimaryKeyType )
     {
-      case pktRowId:
+      case PktRowId:
         query += delim + QgsOracleProvider::quotedIdentifier( "ROWID" );
         delim = ",";
         break;
 
-      case pktInt:
+      case PktInt:
         query += delim + QgsOracleProvider::quotedIdentifier( mSource->mFields.at( mSource->mPrimaryKeyAttrs[0] ).name() );
         delim = ",";
         break;
 
-      case pktFidMap:
+      case PktFidMap:
         Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
         {
           query += delim + mConnection->fieldExpression( mSource->mFields.at( idx ) );
@@ -457,7 +457,7 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause, bool showLog )
         }
         break;
 
-      case pktUnknown:
+      case PktUnknown:
         QgsDebugMsg( "Cannot query without primary key." );
         return false;
         break;

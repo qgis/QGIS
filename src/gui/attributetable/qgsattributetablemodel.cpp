@@ -46,16 +46,14 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
     , mSortFieldIndex( -1 )
     , mExtraColumns( 0 )
 {
-  mExpressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( layerCache->layer() );
+  mExpressionContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layerCache->layer() ) );
 
   if ( layerCache->layer()->geometryType() == QgsWkbTypes::NullGeometry )
   {
     mFeatureRequest.setFlags( QgsFeatureRequest::NoGeometry );
   }
 
-  mFeat.setFeatureId( std::numeric_limits<int>::min() );
+  mFeat.setId( std::numeric_limits<int>::min() );
 
   if ( !layer()->hasGeometryType() )
     mFeatureRequest.setFlags( QgsFeatureRequest::NoGeometry );
@@ -746,7 +744,7 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
 
 void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
 {
-  mFeat.setFeatureId( std::numeric_limits<int>::min() );
+  mFeat.setId( std::numeric_limits<int>::min() );
   emit dataChanged( index1, index2 );
 }
 
@@ -767,7 +765,7 @@ QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
 {
   QgsFeature f;
   f.initAttributes( mAttributes.size() );
-  f.setFeatureId( rowToId( idx.row() ) );
+  f.setId( rowToId( idx.row() ) );
   for ( int i = 0; i < mAttributes.size(); i++ )
   {
     f.setAttribute( mAttributes[i], data( index( idx.row(), i ), Qt::EditRole ) );

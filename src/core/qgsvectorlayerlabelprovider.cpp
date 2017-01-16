@@ -552,8 +552,8 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
     component.center = centerPt;
 
     // convert label size to render units
-    double labelWidthPx = QgsTextRenderer::scaleToPixelContext( label->getWidth(), context, QgsUnitTypes::RenderMapUnits, true );
-    double labelHeightPx = QgsTextRenderer::scaleToPixelContext( label->getHeight(), context, QgsUnitTypes::RenderMapUnits, true );
+    double labelWidthPx = QgsTextRenderer::scaleToPixelContext( label->getWidth(), context, QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
+    double labelHeightPx = QgsTextRenderer::scaleToPixelContext( label->getHeight(), context, QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
 
     component.size = QSizeF( labelWidthPx, labelHeightPx );
 

@@ -16,6 +16,7 @@
 #define QGSSYMBOLWIDGETCONTEXT_H
 
 #include "qgsexpressioncontext.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 
@@ -78,6 +79,12 @@ class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
      * @see setAdditionalExpressionContextScopes()
      */
     QList< QgsExpressionContextScope > additionalExpressionContextScopes() const;
+
+    /** Returns list of scopes: global, project, atlas, map, layer.
+     * Ownership is transferred to the caller.
+     * @note added in QGIS 3.0
+     */
+    QList<QgsExpressionContextScope*> globalProjectAtlasMapLayerScopes( const QgsMapLayer* layer ) const;
 
   private:
 

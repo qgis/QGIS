@@ -16,14 +16,23 @@
 #ifndef QGSDATETIMEFIELDKIT_H
 #define QGSDATETIMEFIELDKIT_H
 
+#include "qgis_core.h"
 #include "qgsfieldformatter.h"
 
+/**
+ * \ingroup core
+ * Field formatter for a date time field.
+ * This represents a date, time or datetime value based on
+ * the field configuration.
+ *
+ * \note Added in QGIS 3.0
+ */
 class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
 {
   public:
-    static const QString DefaultDateFormat;
-    static const QString DefaultTimeFormat;
-    static const QString DefaultDateTimeFormat;
+    static const QString DEFAULT_DATE_FORMAT;
+    static const QString DEFAULT_TIME_FORMAT;
+    static const QString DEFAULT_DATETIME_FORMAT;
 
     virtual QString id() const override;
 
@@ -37,7 +46,7 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
      * - QVariant::Date
      * - QVariant::Time
      */
-    static QString defaultFormat( const QVariant::Type type );
+    static QString defaultFormat( QVariant::Type type );
 };
 
 #endif // QGSDATETIMEFIELDKIT_H

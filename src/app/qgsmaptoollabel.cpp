@@ -242,7 +242,7 @@ QFont QgsMapToolLabel::currentLabelFont()
       if ( sizeIndx != -1 )
       {
         font.setPixelSize( QgsTextRenderer::sizeToPixel( f.attribute( sizeIndx ).toDouble(),
-                           context, labelSettings.format().sizeUnit(), true,
+                           context, labelSettings.format().sizeUnit(),
                            labelSettings.format().sizeMapUnitScale() ) );
       }
 

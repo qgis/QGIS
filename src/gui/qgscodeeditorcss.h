@@ -17,6 +17,7 @@
 #define QGSCODEEDITORCSS_H
 
 #include "qgscodeeditor.h"
+#include "qgis_gui.h"
 
 
 /** \ingroup gui

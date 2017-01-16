@@ -15,6 +15,7 @@
 #ifndef QGSAPPLICATION_H
 #define QGSAPPLICATION_H
 
+#include "qgis_core.h"
 #include <QApplication>
 #include <QEvent>
 #include <QStringList>
@@ -36,6 +37,7 @@ class QgsGPSConnectionRegistry;
 class QgsDataItemProviderRegistry;
 class QgsPluginLayerRegistry;
 class QgsMessageLog;
+class QgsProcessingRegistry;
 
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
@@ -64,7 +66,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QgsApplication* instance();
 
-    /** This method initialises paths etc for QGIS. Called by the ctor or call it manually
+    /** This method initializes paths etc for QGIS. Called by the ctor or call it manually
         when your app does not extend the QApplication class.
         @note you will probably want to call initQgis too to load the providers in
         the above case.
@@ -102,7 +104,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * @brief Set the current UI theme used to style the interface.  Use uiThemes() to
-     * find valid themes to use. Variabels found in variables.qss will be added to the stylesheet
+     * find valid themes to use. Variables found in variables.qss will be added to the stylesheet
      * on load.
      * @param themeName The name of the theme.
      * @note using an invalid theme name will reset to default
@@ -174,10 +176,10 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to the srs.db file.
     static QString srsDbFilePath();
 
-    //! Returns the pathes to svg directories.
+    //! Returns the paths to svg directories.
     static QStringList svgPaths();
 
-    //! Returns the pathes to composer template directories
+    //! Returns the paths to composer template directories
     static QStringList composerTemplatePaths();
 
     //! Returns the system environment variables passed to application.
@@ -240,6 +242,11 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QString platform();
 
+    /** Returns the QGIS locale.
+     * @note added in QGIS 3.0
+     */
+    static QString locale();
+
     //! Returns the path to user's themes folder
     static QString userThemesFolder();
 
@@ -273,7 +280,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! loads providers
     static void initQgis();
 
-    //! initialise qgis.db
+    //! initialize qgis.db
     static bool createDB( QString* errorMessage = nullptr );
 
     //! Create the users theme folder
@@ -448,6 +455,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QgsMessageLog* messageLog();
 
+    /**
+     * Returns the application's processing registry, used for managing processing providers,
+     * algorithms, and various parameters and outputs.
+     * @note added in QGIS 3.0
+     */
+    static QgsProcessingRegistry* processingRegistry();
+
 #ifdef ANDROID
     //dummy method to workaround sip generation issue issue
     bool x11EventFilter( XEvent * event )
@@ -578,20 +592,21 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     QMap<QString, QIcon> mIconCache;
 
-    QgsActionScopeRegistry* mActionScopeRegistry;
-    QgsRuntimeProfiler* mProfiler;
-    QgsTaskManager* mTaskManager;
-    QgsFieldFormatterRegistry* mFieldFormatterRegistry;
-    QgsColorSchemeRegistry* mColorSchemeRegistry;
-    QgsPaintEffectRegistry* mPaintEffectRegistry;
-    QgsRendererRegistry* mRendererRegistry;
-    QgsSvgCache* mSvgCache;
-    QgsSymbolLayerRegistry* mSymbolLayerRegistry;
-    QgsRasterRendererRegistry* mRasterRendererRegistry;
-    QgsGPSConnectionRegistry* mGpsConnectionRegistry;
-    QgsDataItemProviderRegistry* mDataItemProviderRegistry;
-    QgsPluginLayerRegistry* mPluginLayerRegistry;
-    QgsMessageLog* mMessageLog;
+    QgsActionScopeRegistry* mActionScopeRegistry = nullptr;
+    QgsRuntimeProfiler* mProfiler = nullptr;
+    QgsTaskManager* mTaskManager = nullptr;
+    QgsFieldFormatterRegistry* mFieldFormatterRegistry = nullptr;
+    QgsColorSchemeRegistry* mColorSchemeRegistry = nullptr;
+    QgsPaintEffectRegistry* mPaintEffectRegistry = nullptr;
+    QgsRendererRegistry* mRendererRegistry = nullptr;
+    QgsSvgCache* mSvgCache = nullptr;
+    QgsSymbolLayerRegistry* mSymbolLayerRegistry = nullptr;
+    QgsRasterRendererRegistry* mRasterRendererRegistry = nullptr;
+    QgsGPSConnectionRegistry* mGpsConnectionRegistry = nullptr;
+    QgsDataItemProviderRegistry* mDataItemProviderRegistry = nullptr;
+    QgsPluginLayerRegistry* mPluginLayerRegistry = nullptr;
+    QgsMessageLog* mMessageLog = nullptr;
+    QgsProcessingRegistry* mProcessingRegistry = nullptr;
     QString mNullRepresentation;
 };
 

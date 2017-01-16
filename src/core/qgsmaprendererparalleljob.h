@@ -16,6 +16,7 @@
 #ifndef QGSMAPRENDERERPARALLELJOB_H
 #define QGSMAPRENDERERPARALLELJOB_H
 
+#include "qgis_core.h"
 #include "qgsmaprendererjob.h"
 
 /** \ingroup core

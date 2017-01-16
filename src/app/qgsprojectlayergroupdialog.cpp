@@ -109,7 +109,7 @@ bool QgsProjectLayerGroupDialog::isValid() const
 
 void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
 {
-  //line edit might emit editingFinished signal when loosing focus
+  //line edit might emit editingFinished signal when losing focus
   mProjectFileLineEdit->blockSignals( true );
 
   QSettings s;
@@ -206,12 +206,12 @@ void QgsProjectLayerGroupDialog::onTreeViewSelectionChanged()
 {
   Q_FOREACH ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
   {
-    unselectChildren( index );
+    deselectChildren( index );
   }
 }
 
 
-void QgsProjectLayerGroupDialog::unselectChildren( const QModelIndex& index )
+void QgsProjectLayerGroupDialog::deselectChildren( const QModelIndex& index )
 {
   int childCount = mTreeView->model()->rowCount( index );
   for ( int i = 0; i < childCount; ++i )
@@ -220,7 +220,7 @@ void QgsProjectLayerGroupDialog::unselectChildren( const QModelIndex& index )
     if ( mTreeView->selectionModel()->isSelected( childIndex ) )
       mTreeView->selectionModel()->select( childIndex, QItemSelectionModel::Deselect );
 
-    unselectChildren( childIndex );
+    deselectChildren( childIndex );
   }
 }
 

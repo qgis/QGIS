@@ -19,6 +19,9 @@
 #define QGSADDREMOVEITEMCOMMAND_H
 
 #include <QUndoCommand>
+
+#include "qgis_core.h"
+
 class QgsComposerItem;
 class QgsComposition;
 

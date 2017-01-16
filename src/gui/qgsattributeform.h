@@ -23,6 +23,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QDialogButtonBox>
+#include "qgis_gui.h"
 
 
 class QgsAttributeFormInterface;
@@ -304,7 +305,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     int messageTimeout();
     void clearMultiEditMessages();
     void pushSelectedFeaturesMessage();
-    void runSearchSelect( QgsVectorLayer::SelectBehaviour behaviour );
+    void runSearchSelect( QgsVectorLayer::SelectBehavior behavior );
 
     QString createFilterExpression() const;
 

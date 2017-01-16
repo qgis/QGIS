@@ -40,7 +40,7 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
       Landscape
     };
 
-    explicit QgsComposition( const QgsMapSettings& mapSettings );
+    explicit QgsComposition( const QgsMapSettings& mapSettings, QgsProject* project );
 
     /** Composition atlas modes*/
     enum AtlasMode
@@ -51,6 +51,14 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
     };
 
     ~QgsComposition();
+
+    /**
+     * The project associated with the composition. Used to get access to layers, map themes,
+     * relations and various other bits. It is never null.
+     *
+     * \note Added in QGIS 3.0
+     */
+    QgsProject* project() const;
 
     /** Changes size of paper item.
      * @param width page width in mm
@@ -227,7 +235,7 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
     double snapGridOffsetY() const;
 
     void setGridPen( const QPen& p );
-    const QPen& gridPen() const;
+    QPen gridPen() const;
 
     void setGridStyle( const GridStyle s );
     GridStyle gridStyle() const;
@@ -351,20 +359,9 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
      */
     void setGenerateWorldFile( bool enabled );
 
-    /** Returns the map item which will be used to generate corresponding world files when the
-     * composition is exported, or nullptr if no corresponding map is set.
-     * @see setWorldFileMap()
-     * @see generateWorldFile()
-     */
-    QgsComposerMap* worldFileMap() const;
+    QgsComposerMap* referenceMap() const;
 
-    /** Sets the map item which will be used to generate corresponding world files when the
-     * composition is exported.
-     * @param map composer map item
-     * @see worldFileMap()
-     * @see setGenerateWorldFile()
-     */
-    void setWorldFileMap( QgsComposerMap* map );
+    void setReferenceMap( QgsComposerMap* map );
 
     /** Returns true if a composition should use advanced effects such as blend modes */
     bool useAdvancedEffects() const;
@@ -760,7 +757,7 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
      * QGraphicsScene::clearSelection, as the latter does not correctly emit signals to allow
      * the composition's model to update.
      * @note added in version 2.5*/
-    void setAllUnselected();
+    void setAllDeselected();
 
     /** Refreshes a data defined property for the composition by reevaluating the property's value
      * and redrawing the composition with this new value.

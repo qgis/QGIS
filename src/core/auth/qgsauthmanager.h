@@ -17,6 +17,7 @@
 #ifndef QGSAUTHMANAGER_H
 #define QGSAUTHMANAGER_H
 
+#include "qgis_core.h"
 #include <QObject>
 #include <QMutex>
 #include <QNetworkReply>
@@ -76,10 +77,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QSqlDatabase authDbConnection() const;
 
     //! Name of the authentication database table that stores configs
-    const QString authDbConfigTable() const { return smAuthConfigTable; }
+    const QString authDbConfigTable() const { return AUTH_CONFIG_TABLE; }
 
     //! Name of the authentication database table that stores server exceptions/configs
-    const QString authDbServersTable() const { return smAuthServersTable; }
+    const QString authDbServersTable() const { return AUTH_SERVERS_TABLE; }
 
     //! Initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
     bool init( const QString& pluginPath = QString::null );
@@ -167,7 +168,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     void setScheduledAuthDbEraseRequestEmitted( bool emitted ) { mScheduledDbEraseRequestEmitted = emitted; }
 
     //! Simple text tag describing authentication system for message logs
-    QString authManTag() const { return smAuthManTag; }
+    QString authManTag() const { return AUTH_MAN_TAG; }
 
     //! Instantiate and register existing C++ core authentication methods from plugins
     bool registerCoreAuthMethods();
@@ -237,7 +238,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool hasConfigId( const QString &txt ) const;
 
     //! Return regular expression for authcfg=.{7} key/value token for authentication ids
-    QString configIdRegex() const { return smAuthCfgRegex;}
+    QString configIdRegex() const { return AUTH_CFG_REGEX;}
 
     //! Get list of authentication ids from database
     QStringList configIds() const;
@@ -504,7 +505,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @param tag Associated tag (title)
      * @param level Message log level
      */
-    void messageOut( const QString& message, const QString& tag = smAuthManTag, QgsAuthManager::MessageLevel level = INFO ) const;
+    void messageOut( const QString& message, const QString& tag = AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = INFO ) const;
 
     /**
      * Emitted when a password has been verify (or not)
@@ -585,26 +586,26 @@ class CORE_EXPORT QgsAuthManager : public QObject
     void insertCaCertInCache( QgsAuthCertUtils::CaCertSource source, const QList<QSslCertificate> &certs );
 #endif
 
-    const QString authDbPassTable() const { return smAuthPassTable; }
+    const QString authDbPassTable() const { return AUTH_PASS_TABLE; }
 
-    const QString authDbSettingsTable() const { return smAuthSettingsTable; }
+    const QString authDbSettingsTable() const { return AUTH_SETTINGS_TABLE; }
 
-    const QString authDbIdentitiesTable() const { return smAuthIdentitiesTable; }
+    const QString authDbIdentitiesTable() const { return AUTH_IDENTITIES_TABLE; }
 
-    const QString authDbAuthoritiesTable() const { return smAuthAuthoritiesTable; }
+    const QString authDbAuthoritiesTable() const { return AUTH_AUTHORITIES_TABLE; }
 
-    const QString authDbTrustTable() const { return smAuthTrustTable; }
+    const QString authDbTrustTable() const { return AUTH_TRUST_TABLE; }
 
-    static QgsAuthManager* smInstance;
-    static const QString smAuthConfigTable;
-    static const QString smAuthPassTable;
-    static const QString smAuthSettingsTable;
-    static const QString smAuthIdentitiesTable;
-    static const QString smAuthServersTable;
-    static const QString smAuthAuthoritiesTable;
-    static const QString smAuthTrustTable;
-    static const QString smAuthManTag;
-    static const QString smAuthCfgRegex;
+    static QgsAuthManager* sInstance;
+    static const QString AUTH_CONFIG_TABLE;
+    static const QString AUTH_PASS_TABLE;
+    static const QString AUTH_SETTINGS_TABLE;
+    static const QString AUTH_IDENTITIES_TABLE;
+    static const QString AUTH_SERVERS_TABLE;
+    static const QString AUTH_AUTHORITIES_TABLE;
+    static const QString AUTH_TRUST_TABLE;
+    static const QString AUTH_MAN_TAG;
+    static const QString AUTH_CFG_REGEX;
 
     bool mAuthInit;
     QString mAuthDbPath;

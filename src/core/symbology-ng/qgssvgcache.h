@@ -27,6 +27,8 @@
 #include <QObject>
 #include <QSizeF>
 
+#include "qgis_core.h"
+
 class QDomElement;
 class QImage;
 class QPicture;
@@ -44,12 +46,11 @@ class CORE_EXPORT QgsSvgCacheEntry
      * @param size
      * @param outlineWidth width of outline
      * @param widthScaleFactor width scale factor
-     * @param rasterScaleFactor raster scale factor
      * @param fill color of fill
      * @param outline color of outline
      * @param lookupKey the key string used in QgsSvgCache for quick lookup of this entry (relative or absolute path)
      */
-    QgsSvgCacheEntry( const QString& file, double size, double outlineWidth, double widthScaleFactor, double rasterScaleFactor, const QColor& fill, const QColor& outline, const QString& lookupKey = QString() );
+    QgsSvgCacheEntry( const QString& file, double size, double outlineWidth, double widthScaleFactor, const QColor& fill, const QColor& outline, const QString& lookupKey = QString() );
     ~QgsSvgCacheEntry();
 
     //! QgsSvgCacheEntry cannot be copied.
@@ -64,7 +65,6 @@ class CORE_EXPORT QgsSvgCacheEntry
     double size; //size in pixels (cast to int for QImage)
     double outlineWidth;
     double widthScaleFactor;
-    double rasterScaleFactor;
 
     /** SVG viewbox size.
      * @note added in QGIS 2.14
@@ -117,11 +117,10 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * @param outline color of outline
      * @param outlineWidth width of outline
      * @param widthScaleFactor width scale factor
-     * @param rasterScaleFactor raster scale factor
      * @param fitsInCache
      */
-    const QImage& svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                              double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache );
+    QImage svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                       double widthScaleFactor, bool& fitsInCache );
 
     /** Get SVG  as QPicture&.
      * @param file Absolute or relative path to SVG file.
@@ -130,11 +129,10 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * @param outline color of outline
      * @param outlineWidth width of outline
      * @param widthScaleFactor width scale factor
-     * @param rasterScaleFactor raster scale factor
      * @param forceVectorOutput
      */
-    const QPicture& svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                  double widthScaleFactor, double rasterScaleFactor, bool forceVectorOutput = false );
+    QPicture svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                           double widthScaleFactor, bool forceVectorOutput = false );
 
     /** Calculates the viewbox size of a (possibly cached) SVG file.
      * @param file Absolute or relative path to SVG file.
@@ -143,12 +141,11 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * @param outline color of outline
      * @param outlineWidth width of outline
      * @param widthScaleFactor width scale factor
-     * @param rasterScaleFactor raster scale factor
      * @returns viewbox size set in SVG file
      * @note added in QGIS 2.14
      */
     QSizeF svgViewboxSize( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                           double widthScaleFactor, double rasterScaleFactor );
+                           double widthScaleFactor );
 
     /** Tests if an svg file contains parameters for fill, outline color, outline width. If yes, possible default values are returned. If there are several
       default values in the svg file, only the first one is considered*/
@@ -186,8 +183,8 @@ class CORE_EXPORT QgsSvgCache : public QObject
     QByteArray getImageData( const QString &path ) const;
 
     //! Get SVG content
-    const QByteArray& svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                  double widthScaleFactor, double rasterScaleFactor );
+    QByteArray svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                           double widthScaleFactor );
 
   signals:
     //! Emit a signal to be caught by qgisapp and display a msg on status bar
@@ -203,17 +200,16 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * @param outline color of outline
      * @param outlineWidth width of outline
      * @param widthScaleFactor width scale factor
-     * @param rasterScaleFactor raster scale factor
      */
     QgsSvgCacheEntry* insertSVG( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                 double widthScaleFactor, double rasterScaleFactor );
+                                 double widthScaleFactor );
 
     void replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry );
     void cacheImage( QgsSvgCacheEntry* entry );
     void cachePicture( QgsSvgCacheEntry* entry, bool forceVectorOutput = false );
     //! Returns entry from cache or creates a new entry if it does not exist already
     QgsSvgCacheEntry* cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                  double widthScaleFactor, double rasterScaleFactor );
+                                  double widthScaleFactor );
 
     //! Removes the least used items until the maximum size is under the limit
     void trimToMaximumSize();
@@ -235,8 +231,8 @@ class CORE_EXPORT QgsSvgCache : public QObject
     QgsSvgCacheEntry* mLeastRecentEntry;
     QgsSvgCacheEntry* mMostRecentEntry;
 
-    //Maximum cache size
-    static const long mMaximumSize = 20000000;
+    //! Maximum cache size
+    static const long MAXIMUM_SIZE = 20000000;
 
     //! Replaces parameters in elements of a dom node and calls method for all child nodes
     void replaceElemParams( QDomElement& elem, const QColor& fill, const QColor& outline, double outlineWidth );

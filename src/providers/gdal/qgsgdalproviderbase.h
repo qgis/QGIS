@@ -23,16 +23,8 @@
 
 #include <QList>
 
-#define CPL_SUPRESS_CPLUSPLUS
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
-
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#define FROM8(x) QString::fromLocal8Bit(x)
-#endif
 
 /**
   \brief Base clasee for GDAL and WCS providers.

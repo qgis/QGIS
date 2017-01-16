@@ -32,7 +32,7 @@ class TestQgsOgcUtils : public QObject
 
     void initTestCase()
     {
-      // Needed on Qt 5 so that the serialization of XML is consistant among all executions
+      // Needed on Qt 5 so that the serialization of XML is consistent among all executions
       extern Q_CORE_EXPORT QBasicAtomicInt qt_qhash_seed;
       qt_qhash_seed.store( 0 );
 

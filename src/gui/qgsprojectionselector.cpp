@@ -35,7 +35,7 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name,
     , mProjListDone( false )
     , mUserProjListDone( false )
     , mRecentProjListDone( false )
-    , mSearchColumn( NONE )
+    , mSearchColumn( QgsProjectionSelector::None )
     , mPushProjectionToFront( false )
 {
   Q_UNUSED( name );
@@ -50,19 +50,19 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name,
   // Get the full path name to the sqlite3 spatial reference database.
   mSrsDatabaseFileName = QgsApplication::srsDbFilePath();
 
-  lstCoordinateSystems->header()->setResizeMode( AUTHID_COLUMN, QHeaderView::Stretch );
-  lstCoordinateSystems->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
-  lstCoordinateSystems->header()->setResizeMode( QGIS_CRS_ID_COLUMN, QHeaderView::Fixed );
+  lstCoordinateSystems->header()->setResizeMode( AuthidColumn, QHeaderView::Stretch );
+  lstCoordinateSystems->header()->resizeSection( QgisCrsIdColumn, 0 );
+  lstCoordinateSystems->header()->setResizeMode( QgisCrsIdColumn, QHeaderView::Fixed );
 
   // Hide (internal) ID column
-  lstCoordinateSystems->setColumnHidden( QGIS_CRS_ID_COLUMN, true );
+  lstCoordinateSystems->setColumnHidden( QgisCrsIdColumn, true );
 
-  lstRecent->header()->setResizeMode( AUTHID_COLUMN, QHeaderView::Stretch );
-  lstRecent->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
-  lstRecent->header()->setResizeMode( QGIS_CRS_ID_COLUMN, QHeaderView::Fixed );
+  lstRecent->header()->setResizeMode( AuthidColumn, QHeaderView::Stretch );
+  lstRecent->header()->resizeSection( QgisCrsIdColumn, 0 );
+  lstRecent->header()->setResizeMode( QgisCrsIdColumn, QHeaderView::Fixed );
 
   // Hide (internal) ID column
-  lstRecent->setColumnHidden( QGIS_CRS_ID_COLUMN, true );
+  lstRecent->setColumnHidden( QgisCrsIdColumn, true );
 
   mRecentProjections = QgsCoordinateReferenceSystem::recentProjections();
 }
@@ -114,13 +114,13 @@ QgsProjectionSelector::~QgsProjectionSelector()
 
 void QgsProjectionSelector::resizeEvent( QResizeEvent * theEvent )
 {
-  lstCoordinateSystems->header()->resizeSection( NAME_COLUMN, theEvent->size().width() - 240 );
-  lstCoordinateSystems->header()->resizeSection( AUTHID_COLUMN, 240 );
-  lstCoordinateSystems->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
+  lstCoordinateSystems->header()->resizeSection( NameColumn, theEvent->size().width() - 240 );
+  lstCoordinateSystems->header()->resizeSection( AuthidColumn, 240 );
+  lstCoordinateSystems->header()->resizeSection( QgisCrsIdColumn, 0 );
 
-  lstRecent->header()->resizeSection( NAME_COLUMN, theEvent->size().width() - 240 );
-  lstRecent->header()->resizeSection( AUTHID_COLUMN, 240 );
-  lstRecent->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
+  lstRecent->header()->resizeSection( NameColumn, theEvent->size().width() - 240 );
+  lstRecent->header()->resizeSection( AuthidColumn, 240 );
+  lstRecent->header()->resizeSection( QgisCrsIdColumn, 0 );
 }
 
 void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
@@ -206,17 +206,17 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
 
 void QgsProjectionSelector::setSelectedCrsName( const QString& theCRSName )
 {
-  applySelection( NAME_COLUMN, theCRSName );
+  applySelection( NameColumn, theCRSName );
 }
 
 void QgsProjectionSelector::setSelectedCrsId( long theCRSID )
 {
-  applySelection( QGIS_CRS_ID_COLUMN, QString::number( theCRSID ) );
+  applySelection( QgisCrsIdColumn, QString::number( theCRSID ) );
 }
 
 void QgsProjectionSelector::setSelectedAuthId( const QString& id )
 {
-  applySelection( AUTHID_COLUMN, id );
+  applySelection( AuthidColumn, id );
 }
 
 void QgsProjectionSelector::applySelection( int column, QString value )
@@ -229,17 +229,17 @@ void QgsProjectionSelector::applySelection( int column, QString value )
     return;
   }
 
-  if ( column == NONE )
+  if ( column == QgsProjectionSelector::None )
   {
     // invoked deferred selection
     column = mSearchColumn;
     value  = mSearchValue;
 
-    mSearchColumn = NONE;
+    mSearchColumn = QgsProjectionSelector::None;
     mSearchValue.clear();
   }
 
-  if ( column == NONE )
+  if ( column == QgsProjectionSelector::None )
     return;
 
   QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( value, Qt::MatchExactly | Qt::MatchRecursive, column );
@@ -264,14 +264,14 @@ void QgsProjectionSelector::insertRecent( long theCrsId )
   if ( !mProjListDone || !mUserProjListDone )
     return;
 
-  QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( QString::number( theCrsId ), Qt::MatchExactly | Qt::MatchRecursive, QGIS_CRS_ID_COLUMN );
+  QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( QString::number( theCrsId ), Qt::MatchExactly | Qt::MatchRecursive, QgisCrsIdColumn );
   if ( nodes.isEmpty() )
     return;
 
   lstRecent->insertTopLevelItem( 0, new QTreeWidgetItem( lstRecent, QStringList()
-                                 << nodes.first()->text( NAME_COLUMN )
-                                 << nodes.first()->text( AUTHID_COLUMN )
-                                 << nodes.first()->text( QGIS_CRS_ID_COLUMN ) ) );
+                                 << nodes.first()->text( NameColumn )
+                                 << nodes.first()->text( AuthidColumn )
+                                 << nodes.first()->text( QgisCrsIdColumn ) ) );
 }
 
 //note this line just returns the projection name!
@@ -279,7 +279,7 @@ QString QgsProjectionSelector::selectedName()
 {
   // return the selected wkt name from the list view
   QTreeWidgetItem *lvi = lstCoordinateSystems->currentItem();
-  return lvi ? lvi->text( NAME_COLUMN ) : QString::null;
+  return lvi ? lvi->text( NameColumn ) : QString::null;
 }
 
 // Returns the whole proj4 string for the selected projection node
@@ -292,10 +292,10 @@ QString QgsProjectionSelector::selectedProj4String()
   //
   // Get the selected node
   QTreeWidgetItem *item = lstCoordinateSystems->currentItem();
-  if ( !item || item->text( QGIS_CRS_ID_COLUMN ).isEmpty() )
+  if ( !item || item->text( QgisCrsIdColumn ).isEmpty() )
     return QLatin1String( "" );
 
-  QString srsId = item->text( QGIS_CRS_ID_COLUMN );
+  QString srsId = item->text( QgisCrsIdColumn );
 
   QgsDebugMsg( "srsId = " + srsId );
   QgsDebugMsg( "USER_CRS_START_ID = " + QString::number( USER_CRS_START_ID ) );
@@ -361,7 +361,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   // Get the selected node and make sure it is a srs andx
   // not a top-level projection node
   QTreeWidgetItem *lvi = lstCoordinateSystems->currentItem();
-  if ( !lvi || lvi->text( QGIS_CRS_ID_COLUMN ).isEmpty() )
+  if ( !lvi || lvi->text( QgisCrsIdColumn ).isEmpty() )
     return QString();
 
   //
@@ -369,7 +369,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   // user projection defs all have srs_id >= 100000
   //
   QString databaseFileName;
-  if ( lvi->text( QGIS_CRS_ID_COLUMN ).toLong() >= USER_CRS_START_ID )
+  if ( lvi->text( QgisCrsIdColumn ).toLong() >= USER_CRS_START_ID )
   {
     databaseFileName = QgsApplication::qgisUserDbFilePath();
     if ( !QFileInfo::exists( databaseFileName ) )
@@ -400,7 +400,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   sqlite3_stmt *stmt;
   QString sql = QStringLiteral( "select %1 from tbl_srs where srs_id=%2" )
                 .arg( expression,
-                      lvi->text( QGIS_CRS_ID_COLUMN ) );
+                      lvi->text( QgisCrsIdColumn ) );
 
   QgsDebugMsg( QString( "Finding selected attribute using : %1" ).arg( sql ) );
   rc = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
@@ -441,8 +441,8 @@ long QgsProjectionSelector::selectedCrsId()
 {
   QTreeWidgetItem* item = lstCoordinateSystems->currentItem();
 
-  if ( item && !item->text( QGIS_CRS_ID_COLUMN ).isEmpty() )
-    return lstCoordinateSystems->currentItem()->text( QGIS_CRS_ID_COLUMN ).toLong();
+  if ( item && !item->text( QgisCrsIdColumn ).isEmpty() )
+    return lstCoordinateSystems->currentItem()->text( QgisCrsIdColumn ).toLong();
   else
     return 0;
 }
@@ -480,7 +480,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   //now only will be shown
   QString databaseFileName = QgsApplication::qgisUserDbFilePath();
   // first we look for ~/.qgis/qgis.db
-  // if it doesnt exist we copy it in from the global resources dir
+  // if it doesn't exist we copy it in from the global resources dir
 
   //return straight away if the user has not created any custom projections
   if ( !QFileInfo::exists( databaseFileName ) )
@@ -499,7 +499,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   {
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist. But we checked earlier for its existence
-    //     and aborted in that case. This is because we may be runnig from read only
+    //     and aborted in that case. This is because we may be running from read only
     //     media such as live cd and don't want to force trying to create a db.
     showDBMissingWarning( databaseFileName );
     return;
@@ -521,8 +521,8 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
       // display the epsg (field 2) in the second column of the list view
       // newItem->setText( EPSG_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 2 ) ) );
       // display the qgis srs_id (field 1) in the third column of the list view
-      newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 1 ) ) );
-      newItem->setText( AUTHID_COLUMN, QStringLiteral( "USER:%1" ).arg( QString::fromUtf8(( char * )sqlite3_column_text( stmt, 1 ) ).toInt() ) );
+      newItem->setText( QgisCrsIdColumn, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 1 ) ) );
+      newItem->setText( AuthidColumn, QStringLiteral( "USER:%1" ).arg( QString::fromUtf8(( char * )sqlite3_column_text( stmt, 1 ) ).toInt() ) );
     }
   }
   // close the sqlite3 statement
@@ -612,10 +612,10 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
         newItem = new QTreeWidgetItem( mGeoList, QStringList( QString::fromUtf8(( char * )sqlite3_column_text( stmt, 0 ) ) ) );
 
         // display the authority name (field 2) in the second column of the list view
-        newItem->setText( AUTHID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 2 ) ) );
+        newItem->setText( AuthidColumn, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 2 ) ) );
 
         // display the qgis srs_id (field 1) in the third column of the list view
-        newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 1 ) ) );
+        newItem->setText( QgisCrsIdColumn, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 1 ) ) );
       }
       else
       {
@@ -630,7 +630,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
         }
         else
         { // Different from last one, need to search
-          QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( srsType, Qt::MatchExactly | Qt::MatchRecursive, NAME_COLUMN );
+          QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( srsType, Qt::MatchExactly | Qt::MatchRecursive, NameColumn );
           if ( nodes.isEmpty() )
           {
             // the node doesn't exist -- create it
@@ -651,9 +651,9 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
         // add the item, setting the projection name in the first column of the list view
         newItem = new QTreeWidgetItem( node, QStringList( QString::fromUtf8(( char * )sqlite3_column_text( stmt, 0 ) ) ) );
         // display the authority id (field 2) in the second column of the list view
-        newItem->setText( AUTHID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 2 ) ) );
+        newItem->setText( AuthidColumn, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 2 ) ) );
         // display the qgis srs_id (field 1) in the third column of the list view
-        newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 1 ) ) );
+        newItem->setText( QgisCrsIdColumn, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 1 ) ) );
         // expand also parent node
         newItem->parent()->setExpanded( true );
       }
@@ -696,15 +696,15 @@ void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWid
     teProjection->setText( selectedProj4String() );
     teSelected->setText( selectedName() );
 
-    QList<QTreeWidgetItem*> nodes = lstRecent->findItems( current->text( QGIS_CRS_ID_COLUMN ), Qt::MatchExactly, QGIS_CRS_ID_COLUMN );
+    QList<QTreeWidgetItem*> nodes = lstRecent->findItems( current->text( QgisCrsIdColumn ), Qt::MatchExactly, QgisCrsIdColumn );
     if ( !nodes.isEmpty() )
     {
-      QgsDebugMsg( QString( "found srs %1 in recent" ).arg( current->text( QGIS_CRS_ID_COLUMN ) ) );
+      QgsDebugMsg( QString( "found srs %1 in recent" ).arg( current->text( QgisCrsIdColumn ) ) );
       lstRecent->setCurrentItem( nodes.first() );
     }
     else
     {
-      QgsDebugMsg( QString( "srs %1 not recent" ).arg( current->text( QGIS_CRS_ID_COLUMN ) ) );
+      QgsDebugMsg( QString( "srs %1 not recent" ).arg( current->text( QgisCrsIdColumn ) ) );
       lstRecent->clearSelection();
       lstCoordinateSystems->setFocus( Qt::OtherFocusReason );
     }
@@ -749,7 +749,7 @@ void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *cu
 
   lstRecent->scrollToItem( current );
 
-  QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( current->text( QGIS_CRS_ID_COLUMN ), Qt::MatchExactly | Qt::MatchRecursive, QGIS_CRS_ID_COLUMN );
+  QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( current->text( QgisCrsIdColumn ), Qt::MatchExactly | Qt::MatchRecursive, QgisCrsIdColumn );
   if ( !nodes.isEmpty() )
     lstCoordinateSystems->setCurrentItem( nodes.first() );
 }
@@ -766,7 +766,7 @@ void QgsProjectionSelector::on_lstRecent_itemDoubleClicked( QTreeWidgetItem *cur
     return;
   }
 
-  QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( current->text( QGIS_CRS_ID_COLUMN ), Qt::MatchExactly | Qt::MatchRecursive, QGIS_CRS_ID_COLUMN );
+  QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( current->text( QgisCrsIdColumn ), Qt::MatchExactly | Qt::MatchRecursive, QgisCrsIdColumn );
   if ( !nodes.isEmpty() )
     emit projectionDoubleClicked();
 }
@@ -806,8 +806,8 @@ void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTx
   {
     if (( *itr )->childCount() == 0 ) // it's an end node aka a projection
     {
-      if (( *itr )->text( NAME_COLUMN ).contains( re )
-          || ( *itr )->text( AUTHID_COLUMN ).contains( re )
+      if (( *itr )->text( NameColumn ).contains( re )
+          || ( *itr )->text( AuthidColumn ).contains( re )
          )
       {
         ( *itr )->setHidden( false );
@@ -837,8 +837,8 @@ void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTx
   {
     if (( *it )->childCount() == 0 ) // it's an end node aka a projection
     {
-      if (( *it )->text( NAME_COLUMN ).contains( re )
-          || ( *it )->text( AUTHID_COLUMN ).contains( re )
+      if (( *it )->text( NameColumn ).contains( re )
+          || ( *it )->text( AuthidColumn ).contains( re )
          )
       {
         ( *it )->setHidden( false );
@@ -895,7 +895,7 @@ long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
     {
       // XXX This will likely never happen since on open, sqlite creates the
       //     database if it does not exist. But we checked earlier for its existence
-      //     and aborted in that case. This is because we may be runnig from read only
+      //     and aborted in that case. This is because we may be running from read only
       //     media such as live cd and don't want to force trying to create a db.
       showDBMissingWarning( databaseFileName );
       return 0;
@@ -915,7 +915,7 @@ long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
   }
   else
   {
-    //only bother looking in srs.db if it wasnt found above
+    //only bother looking in srs.db if it wasn't found above
     result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
     if ( result )
     {

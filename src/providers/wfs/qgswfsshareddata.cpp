@@ -202,9 +202,7 @@ bool QgsWFSSharedData::computeFilter( QString& errorMsg )
 // The difference is that in the QGIS way we have to create the template database
 // on disk, which is a slightly bit slower. But due to later caching, this is
 // not so a big deal.
-#if GDAL_VERSION_MAJOR >= 2 || GDAL_VERSION_MINOR >= 11
 #define USE_OGR_FOR_DB_CREATION
-#endif
 
 static QString quotedIdentifier( QString id )
 {
@@ -216,9 +214,9 @@ bool QgsWFSSharedData::createCache()
 {
   Q_ASSERT( mCacheDbname.isEmpty() );
 
-  static int tmpCounter = 0;
-  ++tmpCounter;
-  mCacheDbname =  QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QStringLiteral( "wfs_cache_%1.sqlite" ).arg( tmpCounter ) );
+  static int sTmpCounter = 0;
+  ++sTmpCounter;
+  mCacheDbname =  QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QStringLiteral( "wfs_cache_%1.sqlite" ).arg( sTmpCounter ) );
 
   QgsFields cacheFields;
   Q_FOREACH ( const QgsField& field, mFields )
@@ -248,16 +246,8 @@ bool QgsWFSSharedData::createCache()
   // but QgsVectorFileWriter will refuse anyway to create a ogc_fid, so we will
   // do it manually
   bool useReservedNames = cacheFields.lookupField( QStringLiteral( "ogc_fid" ) ) >= 0;
-#if GDAL_VERSION_MAJOR < 2
-  if ( cacheFields.lookupField( QStringLiteral( "geometry" ) ) >= 0 )
-    useReservedNames = true;
-#endif
   if ( !useReservedNames )
   {
-#if GDAL_VERSION_MAJOR < 2
-    fidName = QStringLiteral( "ogc_fid" );
-    geometryFieldname = QStringLiteral( "GEOMETRY" );
-#endif
     // Creating a spatialite database can be quite slow on some file systems
     // so we create a GDAL in-memory file, and then copy it on
     // the file system.
@@ -266,10 +256,8 @@ bool QgsWFSSharedData::createCache()
     QStringList layerOptions;
     datasourceOptions.push_back( QStringLiteral( "INIT_WITH_EPSG=NO" ) );
     layerOptions.push_back( QStringLiteral( "LAUNDER=NO" ) ); // to get exact matches for field names, especially regarding case
-#if GDAL_VERSION_MAJOR >= 2
     layerOptions.push_back( "FID=__ogc_fid" );
     layerOptions.push_back( "GEOMETRY_NAME=__spatialite_geometry" );
-#endif
     vsimemFilename.sprintf( "/vsimem/qgis_wfs_cache_template_%p/features.sqlite", this );
     mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
     VSIUnlink( vsimemFilename.toStdString().c_str() );
@@ -311,10 +299,10 @@ bool QgsWFSSharedData::createCache()
 #endif
   if ( !ogrWaySuccessful )
   {
-    static QMutex mutexDBnameCreation;
-    static QByteArray cachedDBTemplate;
-    QMutexLocker mutexDBnameCreationHolder( &mutexDBnameCreation );
-    if ( cachedDBTemplate.size() == 0 )
+    static QMutex sMutexDBnameCreation;
+    static QByteArray sCachedDBTemplate;
+    QMutexLocker mutexDBnameCreationHolder( &sMutexDBnameCreation );
+    if ( sCachedDBTemplate.size() == 0 )
     {
       // Create a template Spatialite DB
       QTemporaryFile tempFile;
@@ -347,7 +335,7 @@ bool QgsWFSSharedData::createCache()
       // Ingest it in a buffer
       QFile file( tempFile.fileName() );
       if ( file.open( QIODevice::ReadOnly ) )
-        cachedDBTemplate = file.readAll();
+        sCachedDBTemplate = file.readAll();
       file.close();
       QFile::remove( tempFile.fileName() );
     }
@@ -359,7 +347,7 @@ bool QgsWFSSharedData::createCache()
       QgsMessageLog::logMessage( tr( "Cannot create temporary SpatiaLite cache" ), tr( "WFS" ) );
       return false;
     }
-    if ( dbFile.write( cachedDBTemplate ) < 0 )
+    if ( dbFile.write( sCachedDBTemplate ) < 0 )
     {
       QgsMessageLog::logMessage( tr( "Cannot create temporary SpatiaLite cache" ), tr( "WFS" ) );
       return false;
@@ -741,8 +729,8 @@ bool QgsWFSSharedData::changeGeometryValues( const QgsGeometryMap &geometry_map 
       newAttrMap[idx] = QString( wkb.toHex().data() );
       newChangedAttrMap[ iter.key()] = newAttrMap;
 
-      QgsGeometry polyBoudingBox = QgsGeometry::fromRect( iter.value().boundingBox() );
-      newGeometryMap[ iter.key()] = polyBoudingBox;
+      QgsGeometry polyBoundingBox = QgsGeometry::fromRect( iter.value().boundingBox() );
+      newGeometryMap[ iter.key()] = polyBoundingBox;
     }
     else
     {
@@ -925,15 +913,15 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
 
     // Update the feature ids of the non-cached feature, i.e. the one that
     // will be notified to the user, from the feature id of the database
-    // That way we will always have a consistant feature id, even in case of
+    // That way we will always have a consistent feature id, even in case of
     // paging or BBOX request
     Q_ASSERT( featureListToCache.size() == updatedFeatureList.size() );
     for ( int i = 0; i < updatedFeatureList.size(); i++ )
     {
       if ( cacheOk )
-        updatedFeatureList[i].first.setFeatureId( featureListToCache[i].id() );
+        updatedFeatureList[i].first.setId( featureListToCache[i].id() );
       else
-        updatedFeatureList[i].first.setFeatureId( mTotalFeaturesAttemptedToBeCached + i + 1 );
+        updatedFeatureList[i].first.setId( mTotalFeaturesAttemptedToBeCached + i + 1 );
     }
 
     {
@@ -1035,7 +1023,7 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
     QgsFeature f;
     f.setGeometry( QgsGeometry::fromRect( mRect ) );
     QgsFeatureId id = mRegions.size();
-    f.setFeatureId( id );
+    f.setId( id );
     f.initAttributes( 1 );
     f.setAttribute( 0, QVariant( bDownloadLimit ) );
     mRegions.push_back( f );

@@ -20,6 +20,7 @@
 #include <QMap>
 #include <QString>
 #include <QVariant>
+#include "qgis_gui.h"
 
 class QgsEditorConfigWidget;
 class QgsEditorWidgetWrapper;
@@ -114,7 +115,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *   * 0: not supported
      *   * 5: maybe support (for example, Datetime support strings depending on their content)
      *   * 10: basic support (this is what returns TextEdit for example, since it supports everything in a crude way)
-     *   * 20: specialised support
+     *   * 20: specialized support
      *
      * @param vl
      * @param fieldIdx

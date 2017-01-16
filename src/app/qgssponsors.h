@@ -18,6 +18,7 @@
 #define QGSSPONSORS_H
 
 #include "ui_qgssponsorsbase.h"
+#include "qgis_app.h"
 
 class APP_EXPORT QgsSponsors : public QDialog, private Ui::QgsSponsorsBase
 {

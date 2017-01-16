@@ -7,12 +7,12 @@ class Triangulation
   public:
 
 
-    //! Enumeration describing the behaviour, if two forced lines cross.
-    enum forcedCrossBehaviour
+    //! Enumeration describing the behavior, if two forced lines cross.
+    enum ForcedCrossBehavior
     {
-      SnappingType_VERTICE,  //!< the second inserted forced line is snapped to the closest vertice of the first inserted forced line.
-      DELETE_FIRST,          //!< the status of the first inserted forced line is reset to that of a normal edge (so that the second inserted forced line remain and the first not)
-      INSERT_VERTICE
+      SnappingTypeVertex, //!< the second inserted forced line is snapped to the closest vertice of the first inserted forced line.
+      DeleteFirst,        //!< the status of the first inserted forced line is reset to that of a normal edge (so that the second inserted forced line remain and the first not)
+      InsertVertex
     };
 
     virtual ~Triangulation();
@@ -91,8 +91,8 @@ class Triangulation
 
     /** Draws the points, edges and the forced lines*/
     //virtual void draw(QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height) const=0;
-    /** Sets the behaviour of the triangulation in case of crossing forced lines*/
-    virtual void setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b ) = 0;
+    /** Sets the behavior of the triangulation in case of crossing forced lines*/
+    virtual void setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b ) = 0;
     /** Sets the color of the normal edges*/
     virtual void setEdgeColor( int r, int g, int b ) = 0;
     /** Sets the color of the forced edges*/

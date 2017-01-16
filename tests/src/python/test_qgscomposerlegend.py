@@ -23,7 +23,8 @@ from qgis.core import (QgsComposerLegend,
                        QgsProject,
                        QgsMarkerSymbol,
                        QgsSingleSymbolRenderer,
-                       QgsRectangle
+                       QgsRectangle,
+                       QgsProject
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -52,7 +53,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         s = QgsMapSettings()
         s.setLayers([point_layer])
         s.setCrsTransformEnabled(False)
-        composition = QgsComposition(s)
+        composition = QgsComposition(s, QgsProject.instance())
         composition.setPaperSize(297, 210)
 
         composer_map = QgsComposerMap(composition, 20, 20, 80, 80)
@@ -87,7 +88,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         s = QgsMapSettings()
         s.setLayers([point_layer])
         s.setCrsTransformEnabled(False)
-        composition = QgsComposition(s)
+        composition = QgsComposition(s, QgsProject.instance())
         composition.setPaperSize(297, 210)
 
         composer_map = QgsComposerMap(composition, 20, 20, 80, 80)
@@ -125,7 +126,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         s = QgsMapSettings()
         s.setLayers([point_layer])
         s.setCrsTransformEnabled(False)
-        composition = QgsComposition(s)
+        composition = QgsComposition(s, QgsProject.instance())
         composition.setPaperSize(297, 210)
 
         composer_map = QgsComposerMap(composition, 20, 20, 80, 80)
@@ -167,7 +168,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         s = QgsMapSettings()
         s.setLayers([point_layer])
         s.setCrsTransformEnabled(False)
-        composition = QgsComposition(s)
+        composition = QgsComposition(s, QgsProject.instance())
         composition.setPaperSize(297, 210)
 
         composer_map = QgsComposerMap(composition, 20, 20, 80, 80)

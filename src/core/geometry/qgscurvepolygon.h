@@ -18,6 +18,7 @@
 #ifndef QGSCURVEPOLYGONV2_H
 #define QGSCURVEPOLYGONV2_H
 
+#include "qgis_core.h"
 #include "qgssurface.h"
 
 class QgsPolygonV2;

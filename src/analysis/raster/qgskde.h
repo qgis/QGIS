@@ -23,6 +23,7 @@
 #include <gdal.h>
 #include <cpl_string.h>
 #include <cpl_conv.h>
+#include "qgis_analysis.h"
 
 class QgsVectorLayer;
 class QProgressDialog;
@@ -165,7 +166,7 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     GDALDatasetH mDatasetH;
     GDALRasterBandH mRasterBandH;
 
-    //! Creates a new raster layer and initialises it to the no data value
+    //! Creates a new raster layer and initializes it to the no data value
     bool createEmptyLayer( GDALDriverH driver, const QgsRectangle& bounds, int rows, int columns ) const;
     int radiusSizeInPixels( double radius ) const;
 };

@@ -172,6 +172,7 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
 
 QgsVectorLayer::~QgsVectorLayer()
 {
+  emit willBeDeleted();
 
   mValid = false;
 
@@ -283,7 +284,7 @@ void QgsVectorLayer::deselect( const QgsFeatureIds& featureIds )
   emit selectionChanged( QgsFeatureIds(), featureIds, false );
 }
 
-void QgsVectorLayer::selectByRect( QgsRectangle& rect, QgsVectorLayer::SelectBehaviour behaviour )
+void QgsVectorLayer::selectByRect( QgsRectangle& rect, QgsVectorLayer::SelectBehavior behavior )
 {
   // normalize the rectangle
   rect.normalize();
@@ -302,19 +303,16 @@ void QgsVectorLayer::selectByRect( QgsRectangle& rect, QgsVectorLayer::SelectBeh
   }
   features.close();
 
-  selectByIds( newSelection, behaviour );
+  selectByIds( newSelection, behavior );
 }
 
-void QgsVectorLayer::selectByExpression( const QString& expression, QgsVectorLayer::SelectBehaviour behaviour )
+void QgsVectorLayer::selectByExpression( const QString& expression, QgsVectorLayer::SelectBehavior behavior )
 {
   QgsFeatureIds newSelection;
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( this );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
 
-  if ( behaviour == SetSelection || behaviour == AddToSelection )
+  if ( behavior == SetSelection || behavior == AddToSelection )
   {
     QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( expression )
                                 .setExpressionContext( context )
@@ -323,7 +321,7 @@ void QgsVectorLayer::selectByExpression( const QString& expression, QgsVectorLay
 
     QgsFeatureIterator features = getFeatures( request );
 
-    if ( behaviour == AddToSelection )
+    if ( behavior == AddToSelection )
     {
       newSelection = selectedFeatureIds();
     }
@@ -334,7 +332,7 @@ void QgsVectorLayer::selectByExpression( const QString& expression, QgsVectorLay
     }
     features.close();
   }
-  else if ( behaviour == IntersectSelection || behaviour == RemoveFromSelection )
+  else if ( behavior == IntersectSelection || behavior == RemoveFromSelection )
   {
     QgsExpression exp( expression );
     exp.prepare( &context );
@@ -354,11 +352,11 @@ void QgsVectorLayer::selectByExpression( const QString& expression, QgsVectorLay
       context.setFeature( feat );
       bool matches = exp.evaluate( &context ).toBool();
 
-      if ( matches && behaviour == IntersectSelection )
+      if ( matches && behavior == IntersectSelection )
       {
         newSelection << feat.id();
       }
-      else if ( !matches && behaviour == RemoveFromSelection )
+      else if ( !matches && behavior == RemoveFromSelection )
       {
         newSelection << feat.id();
       }
@@ -368,11 +366,11 @@ void QgsVectorLayer::selectByExpression( const QString& expression, QgsVectorLay
   selectByIds( newSelection );
 }
 
-void QgsVectorLayer::selectByIds( const QgsFeatureIds& ids, QgsVectorLayer::SelectBehaviour behaviour )
+void QgsVectorLayer::selectByIds( const QgsFeatureIds& ids, QgsVectorLayer::SelectBehavior behavior )
 {
   QgsFeatureIds newSelection;
 
-  switch ( behaviour )
+  switch ( behavior )
   {
     case SetSelection:
       newSelection = ids;
@@ -737,9 +735,7 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   // Renderer (rule based) may depend on context scale, with scale is ignored if 0
   QgsRenderContext renderContext;
   renderContext.setRendererScale( 0 );
-  renderContext.expressionContext() << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( this );
+  renderContext.expressionContext().appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
 
   mRenderer->startRender( renderContext, fields() );
 
@@ -3109,10 +3105,7 @@ QVariant QgsVectorLayer::defaultValue( int index, const QgsFeature& feature, Qgs
   if ( !evalContext )
   {
     // no context passed, so we create a default one
-    tempContext.reset( new QgsExpressionContext() );
-    tempContext->appendScope( QgsExpressionContextUtils::globalScope() );
-    tempContext->appendScope( QgsExpressionContextUtils::projectScope() );
-    tempContext->appendScope( QgsExpressionContextUtils::layerScope( this ) );
+    tempContext.reset( new QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( this ) ) );
     evalContext = tempContext.data();
   }
 
@@ -3599,9 +3592,7 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
   {
     // try to use expression
     expression.reset( new QgsExpression( fieldOrExpression ) );
-    context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::layerScope( this );
+    context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
 
     if ( expression->hasParserError() || !expression->prepare( &context ) )
     {
@@ -3993,12 +3984,7 @@ void QgsVectorLayer::setAttributeTableConfig( const QgsAttributeTableConfig& att
 
 QgsExpressionContext QgsVectorLayer::createExpressionContext() const
 {
-  QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( this );
-
-  return expContext;
+  return QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
 }
 
 void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings& s )

@@ -29,7 +29,7 @@ class QgsBabelFormat
     explicit QgsBabelFormat( const QString& name = "" );
     virtual ~QgsBabelFormat() { }
 
-    const QString& name() const;
+    QString name() const;
     virtual QStringList importCommand( const QString& babel,
                                        const QString& featuretype,
                                        const QString& input,

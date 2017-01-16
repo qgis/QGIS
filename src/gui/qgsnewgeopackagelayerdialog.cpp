@@ -42,15 +42,6 @@
 #include <cpl_error.h>
 #include <cpl_string.h>
 
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
-#define SUPPORT_GEOMETRY_LESS
-#define SUPPORT_CURVE_GEOMETRIES
-#define SUPPORT_INTEGER64
-#define SUPPORT_SPATIAL_INDEX
-#define SUPPORT_IDENTIFIER_DESCRIPTION
-#define SUPPORT_FIELD_WIDTH
-#endif
-
 QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
     , mOkButton( nullptr )
@@ -65,16 +56,14 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
 
-#ifdef SUPPORT_GEOMETRY_LESS
   mGeometryTypeBox->addItem( tr( "Non spatial" ), wkbNone );
-#endif
   mGeometryTypeBox->addItem( tr( "Point" ), wkbPoint );
   mGeometryTypeBox->addItem( tr( "Line" ), wkbLineString );
   mGeometryTypeBox->addItem( tr( "Polygon" ), wkbPolygon );
   mGeometryTypeBox->addItem( tr( "Multi point" ), wkbMultiPoint );
   mGeometryTypeBox->addItem( tr( "Multi line" ), wkbMultiLineString );
   mGeometryTypeBox->addItem( tr( "Multi polygon" ), wkbMultiPolygon );
-#ifdef SUPPORT_CURVE_GEOMETRIES
+
 #if 0
   // QGIS always create CompoundCurve and there's no real interest of having just CircularString. CompoundCurve are more useful
   mGeometryTypeBox->addItem( tr( "Circular string" ), wkbCircularString );
@@ -83,19 +72,14 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mGeometryTypeBox->addItem( tr( "Curve polygon" ), wkbCurvePolygon );
   mGeometryTypeBox->addItem( tr( "Multi curve" ), wkbMultiCurve );
   mGeometryTypeBox->addItem( tr( "Multi surface" ), wkbMultiSurface );
-#endif
 
-#ifdef SUPPORT_GEOMETRY_LESS
   mGeometryColumnEdit->setEnabled( false );
   mCheckBoxCreateSpatialIndex->setEnabled( false );
   mCrsSelector->setEnabled( false );
-#endif
 
   mFieldTypeBox->addItem( tr( "Text data" ), "text" );
   mFieldTypeBox->addItem( tr( "Whole number (integer)" ), "integer" );
-#ifdef SUPPORT_INTEGER64
   mFieldTypeBox->addItem( tr( "Whole number (integer 64 bit)" ), "integer64" );
-#endif
   mFieldTypeBox->addItem( tr( "Decimal number (real)" ), "real" );
   mFieldTypeBox->addItem( tr( "Date" ), "date" );
   mFieldTypeBox->addItem( tr( "Date&time" ), "datetime" );
@@ -116,24 +100,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mAddAttributeButton->setEnabled( false );
   mRemoveAttributeButton->setEnabled( false );
 
-#ifndef SUPPORT_SPATIAL_INDEX
-  mCheckBoxCreateSpatialIndex->hide();
-  mCheckBoxCreateSpatialIndex->setChecked( false );
-#else
   mCheckBoxCreateSpatialIndex->setChecked( true );
-#endif
-
-#ifndef SUPPORT_IDENTIFIER_DESCRIPTION
-  mLayerIdentifierLabel->hide();
-  mLayerIdentifierEdit->hide();
-  mLayerDescriptionLabel->hide();
-  mLayerDescriptionEdit->hide();
-#endif
-
-#ifndef SUPPORT_FIELD_WIDTH
-  mFieldLengthLabel->hide();
-  mFieldLengthEdit->hide();
-#endif
 }
 
 QgsNewGeoPackageLayerDialog::~QgsNewGeoPackageLayerDialog()
@@ -144,7 +111,7 @@ QgsNewGeoPackageLayerDialog::~QgsNewGeoPackageLayerDialog()
 
 void QgsNewGeoPackageLayerDialog::on_mFieldTypeBox_currentIndexChanged( int )
 {
-  QString myType = mFieldTypeBox->itemData( mFieldTypeBox->currentIndex(), Qt::UserRole ).toString();
+  QString myType = mFieldTypeBox->currentData( Qt::UserRole ).toString();
   mFieldLengthEdit->setEnabled( myType == QLatin1String( "text" ) );
   if ( myType != QLatin1String( "text" ) )
     mFieldLengthEdit->setText( QLatin1String( "" ) );
@@ -154,7 +121,7 @@ void QgsNewGeoPackageLayerDialog::on_mFieldTypeBox_currentIndexChanged( int )
 void QgsNewGeoPackageLayerDialog::on_mGeometryTypeBox_currentIndexChanged( int )
 {
   OGRwkbGeometryType geomType = static_cast<OGRwkbGeometryType>
-                                ( mGeometryTypeBox->itemData( mGeometryTypeBox->currentIndex(), Qt::UserRole ).toInt() );
+                                ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
   bool isSpatial = geomType != wkbNone;
   mGeometryColumnEdit->setEnabled( isSpatial );
   mCheckBoxCreateSpatialIndex->setEnabled( isSpatial );
@@ -229,7 +196,7 @@ void QgsNewGeoPackageLayerDialog::on_mAddAttributeButton_clicked()
     }
 
     //use userrole to avoid translated type string
-    QString myType = mFieldTypeBox->itemData( mFieldTypeBox->currentIndex(), Qt::UserRole ).toString();
+    QString myType = mFieldTypeBox->currentData( Qt::UserRole ).toString();
     QString length = mFieldLengthEdit->text();
     mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << myName << myType << length ) );
 
@@ -381,7 +348,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   QString layerDescription( mLayerDescriptionEdit->text() );
 
   OGRwkbGeometryType wkbType = static_cast<OGRwkbGeometryType>
-                               ( mGeometryTypeBox->itemData( mGeometryTypeBox->currentIndex(), Qt::UserRole ).toInt() );
+                               ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
   OGRSpatialReferenceH hSRS = nullptr;
   // consider spatial reference system of the layer
@@ -411,10 +378,8 @@ bool QgsNewGeoPackageLayerDialog::apply()
   if ( wkbType != wkbNone && !geometryColumn.isEmpty() )
     options = CSLSetNameValue( options, "GEOMETRY_COLUMN", geometryColumn.toUtf8().constData() );
 
-#ifdef SUPPORT_SPATIAL_INDEX
   if ( wkbType != wkbNone )
     options = CSLSetNameValue( options, "SPATIAL_INDEX", mCheckBoxCreateSpatialIndex->isChecked() ? "YES" : "NO" );
-#endif
 
   OGRLayerH hLayer = OGR_DS_CreateLayer( hDS, tableName.toUtf8().constData(), hSRS, wkbType, options );
   CSLDestroy( options );
@@ -441,10 +406,8 @@ bool QgsNewGeoPackageLayerDialog::apply()
       ogrType = OFTString;
     else if ( fieldType == QLatin1String( "integer" ) )
       ogrType = OFTInteger;
-#ifdef SUPPORT_INTEGER64
     else if ( fieldType == "integer64" )
       ogrType = OFTInteger64;
-#endif
     else if ( fieldType == QLatin1String( "real" ) )
       ogrType = OFTReal;
     else if ( fieldType == QLatin1String( "date" ) )
@@ -474,7 +437,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
     ++it;
   }
 
-  // In GDAL >= 2.0, the driver implements a defered creation strategy, so
+  // In GDAL >= 2.0, the driver implements a deferred creation strategy, so
   // issue a command that will force table creation
   CPLErrorReset();
   OGR_L_ResetReading( hLayer );

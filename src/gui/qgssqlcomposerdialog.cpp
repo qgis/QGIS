@@ -548,7 +548,7 @@ void QgsSQLComposerDialog::loadTableColumns( const QString& table )
 
 static void resetCombo( QComboBox* combo )
 {
-  // We do it in a defered way, otherwise Valgrind complains when using QTest
+  // We do it in a deferred way, otherwise Valgrind complains when using QTest
   // since basically this call a recursive call to QComboBox::setCurrentIndex()
   // which cause internal QComboBox logic to operate on a destroyed object
   // However that isn't reproduce in live session. Anyway this hack is safe

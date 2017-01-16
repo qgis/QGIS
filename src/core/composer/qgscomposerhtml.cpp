@@ -185,7 +185,7 @@ void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext 
   //set html, using the specified url as base if in Url mode or the project file if in manual mode
   const QUrl baseUrl = mContentMode == QgsComposerHtml::Url ?
                        QUrl( mActualFetchedUrl ) :
-                       QUrl::fromLocalFile( QgsProject::instance()->fileInfo().absoluteFilePath() );
+                       QUrl::fromLocalFile( mComposition->project()->fileInfo().absoluteFilePath() );
   mWebPage->mainFrame()->setHtml( loadedHtml, baseUrl );
 
   //set user stylesheet
@@ -546,9 +546,9 @@ void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVector
   }
   if ( mComposition )
   {
-    mDistanceArea->setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
+    mDistanceArea->setEllipsoidalMode( true );
+    mDistanceArea->setEllipsoid( mComposition->project()->ellipsoid() );
   }
-  mDistanceArea->setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   // create JSON representation of feature
   QgsJSONExporter exporter( layer );

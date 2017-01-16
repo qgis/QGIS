@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSMULTIPOLYGONV2_H
 #define QGSMULTIPOLYGONV2_H
 
+#include "qgis_core.h"
 #include "qgsmultisurface.h"
 
 /** \ingroup core

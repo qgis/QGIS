@@ -19,6 +19,7 @@
 
 #include "TriangleInterpolator.h"
 #include "Point3D.h"
+#include "qgis_analysis.h"
 
 class NormVecDecorator;
 

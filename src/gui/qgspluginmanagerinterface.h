@@ -21,6 +21,7 @@
 #include <QString>
 #include <QMap>
 #include "qgsmessagebar.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsPluginManagerInterface

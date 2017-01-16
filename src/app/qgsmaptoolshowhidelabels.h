@@ -20,9 +20,10 @@
 
 #include "qgsmaptoollabel.h"
 #include "qgsfeature.h"
+#include "qgis_app.h"
 
 
-//! A map tool for showing or hidding a feature's label
+//! A map tool for showing or hiding a feature's label
 class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
 {
     Q_OBJECT

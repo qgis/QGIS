@@ -112,7 +112,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( mOptionsStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( mOptionsStackedWidget_CurrentChanged( int ) ) );
 
   mContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
   << QgsExpressionContextUtils::atlasScope( nullptr )
   << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );
@@ -309,7 +309,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // use visibility as selection
   mLayersDependenciesTreeModel->setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
 
-  mLayersDependenciesTreeGroup->setVisible( Qt::Unchecked );
+  mLayersDependenciesTreeGroup->setItemVisibilityChecked( false );
 
   QSet<QString> dependencySources;
   Q_FOREACH ( const QgsMapLayerDependency& dep, mLayer->dependencies() )
@@ -318,7 +318,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   }
   Q_FOREACH ( QgsLayerTreeLayer* layer, mLayersDependenciesTreeGroup->findLayers() )
   {
-    layer->setVisible( dependencySources.contains( layer->layerId() ) ? Qt::Checked : Qt::Unchecked );
+    layer->setItemVisibilityChecked( dependencySources.contains( layer->layerId() ) );
   }
 
   mLayersDependenciesTreeView->setModel( mLayersDependenciesTreeModel.data() );
@@ -1333,7 +1333,7 @@ void QgsVectorLayerProperties::updateVariableEditor()
   QgsExpressionContext context;
   mVariableEditor->setContext( &context );
   mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
-  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
   mVariableEditor->context()->appendScope( QgsExpressionContextUtils::layerScope( mLayer ) );
   mVariableEditor->reloadContext();
   mVariableEditor->setEditableScopeIndex( 2 );

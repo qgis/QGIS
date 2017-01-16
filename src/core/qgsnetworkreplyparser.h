@@ -21,6 +21,8 @@
 
 #include <QNetworkReply>
 
+#include "qgis_core.h"
+
 /** \ingroup core
   \brief Multipart QNetworkReply parser.
 

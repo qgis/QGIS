@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgssymbolwidgetcontext.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
 
 QgsSymbolWidgetContext::QgsSymbolWidgetContext()
     : mMapCanvas( nullptr )
@@ -74,4 +76,24 @@ void QgsSymbolWidgetContext::setAdditionalExpressionContextScopes( const QList<Q
 QList<QgsExpressionContextScope> QgsSymbolWidgetContext::additionalExpressionContextScopes() const
 {
   return mAdditionalScopes;
+}
+
+QList<QgsExpressionContextScope *> QgsSymbolWidgetContext::globalProjectAtlasMapLayerScopes( const QgsMapLayer* layer ) const
+{
+  QList<QgsExpressionContextScope *> scopes;
+  scopes << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+  << QgsExpressionContextUtils::atlasScope( nullptr );
+  if ( mMapCanvas )
+  {
+    scopes << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
+    << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+  }
+  else
+  {
+    scopes << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+  if ( layer )
+    scopes << QgsExpressionContextUtils::layerScope( layer );
+  return scopes;
 }

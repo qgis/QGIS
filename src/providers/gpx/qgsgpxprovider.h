@@ -107,10 +107,10 @@ class QgsGPXProvider : public QgsVectorDataProvider
 
     DataType mFeatureType;
 
-    static const char* attr[];
+    static const char* ATTR[];
     static QVariant::Type attrType[];
     static DataType attrUsed[];
-    static const int attrCount;
+    static const int ATTR_COUNT;
 
     bool mValid;
 

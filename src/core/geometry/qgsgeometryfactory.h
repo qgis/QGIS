@@ -18,6 +18,7 @@
 #ifndef QGSGEOMETRYFACTORY_H
 #define QGSGEOMETRYFACTORY_H
 
+#include "qgis_core.h"
 #include <QString>
 
 class QgsAbstractGeometry;

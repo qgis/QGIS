@@ -41,7 +41,7 @@ class QgsGeometryChecker : public QObject
     bool fixError( QgsGeometryCheckError *error, int method );
     QgsMapLayer* getLayer() const;
     const QList<QgsGeometryCheck*> getChecks() const { return mChecks; }
-    const QStringList& getMessages() const { return mMessages; }
+    QStringList getMessages() const { return mMessages; }
 
   public slots:
     void setMergeAttributeIndex( int mergeAttributeIndex ) { mMergeAttributeIndex = mergeAttributeIndex; }

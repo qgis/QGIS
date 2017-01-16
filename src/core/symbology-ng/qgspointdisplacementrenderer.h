@@ -18,6 +18,7 @@
 #ifndef QGSPOINTDISPLACEMENTRENDERER_H
 #define QGSPOINTDISPLACEMENTRENDERER_H
 
+#include "qgis_core.h"
 #include "qgspointdistancerenderer.h"
 
 /** \class QgsPointDisplacementRenderer

@@ -22,6 +22,7 @@
 #include "qgscontexthelp.h"
 
 #include "qgis.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsNewVectorLayerDialog

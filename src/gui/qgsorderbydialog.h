@@ -21,6 +21,7 @@
 
 #include "ui_qgsorderbydialogbase.h"
 #include "qgsfeaturerequest.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 

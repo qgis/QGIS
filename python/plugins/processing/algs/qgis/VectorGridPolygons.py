@@ -71,7 +71,7 @@ class VectorGridPolygons(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         extent = self.getParameterValue(self.EXTENT).split(',')
         xSpace = self.getParameterValue(self.STEP_X)
         ySpace = self.getParameterValue(self.STEP_Y)
@@ -124,6 +124,6 @@ class VectorGridPolygons(GeoAlgorithm):
             y = y - ySpace
             count += 1
             if int(math.fmod(count, count_update)) == 0:
-                progress.setPercentage(int(count / count_max * 100))
+                feedback.setProgress(int(count / count_max * 100))
 
         del writer

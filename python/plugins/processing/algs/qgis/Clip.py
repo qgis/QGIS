@@ -59,7 +59,7 @@ class Clip(GeoAlgorithm):
                                           self.tr('Clip layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addOutput(OutputVector(Clip.OUTPUT, self.tr('Clipped')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         source_layer = dataobjects.getObjectFromUri(
             self.getParameterValue(Clip.INPUT))
         mask_layer = dataobjects.getObjectFromUri(
@@ -119,16 +119,7 @@ class Clip(GeoAlgorithm):
                     if new_geom.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(new_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                         int_com = in_feat.geometry().combine(new_geom)
                         int_sym = in_feat.geometry().symDifference(new_geom)
-                        if not int_com or not int_sym:
-                            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                                   self.tr('GEOS geoprocessing error: One or more '
-                                                           'input features have invalid geometry.'))
-                        else:
-                            new_geom = int_com.difference(int_sym)
-                            if new_geom.isGeosEmpty() or not new_geom.isGeosValid():
-                                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                                       self.tr('GEOS geoprocessing error: One or more '
-                                                               'input features have invalid geometry.'))
+                        new_geom = int_com.difference(int_sym)
                 else:
                     # clip geometry totally contains feature geometry, so no need to perform intersection
                     new_geom = in_feat.geometry()
@@ -146,10 +137,10 @@ class Clip(GeoAlgorithm):
                     continue
 
                 if single_clip_feature:
-                    progress.setPercentage(int(current * total))
+                    feedback.setProgress(int(current * total))
 
             if not single_clip_feature:
                 # coarse progress report for multiple clip geometries
-                progress.setPercentage(100.0 * i / len(clip_geoms))
+                feedback.setProgress(100.0 * i / len(clip_geoms))
 
         del writer

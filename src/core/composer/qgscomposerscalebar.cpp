@@ -302,9 +302,9 @@ double QgsComposerScaleBar::mapWidth() const
   else
   {
     QgsDistanceArea da;
-    da.setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
+    da.setEllipsoidalMode( true );
     da.setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
-    da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+    da.setEllipsoid( mComposition->project()->ellipsoid() );
 
     QgsUnitTypes::DistanceUnit units = QgsUnitTypes::DistanceMeters;
     double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ),

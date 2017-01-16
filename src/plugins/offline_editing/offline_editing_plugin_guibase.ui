@@ -82,7 +82,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="mUnselectAllButton">
+        <widget class="QPushButton" name="mDeselectAllButton">
          <property name="text">
           <string>Deselect all</string>
          </property>

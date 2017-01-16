@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERSHAPE_H
 #define QGSCOMPOSERSHAPE_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include <QBrush>
 #include <QPen>

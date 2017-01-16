@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOS_H
 #define QGSGEOS_H
 
+#include "qgis_core.h"
 #include "qgsgeometryengine.h"
 #include <geos_c.h>
 
@@ -243,7 +244,7 @@ class GEOSException // clazy:exclude=rule-of-three
 
   private:
     QString msg;
-    static QString& lastMsg() { static QString _lastMsg; return _lastMsg; }
+    static QString& lastMsg() { static QString sLastMsg; return sLastMsg; }
 };
 
 /// @endcond

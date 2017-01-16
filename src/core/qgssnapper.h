@@ -18,6 +18,7 @@
 #ifndef QGSSNAPPER_H
 #define QGSSNAPPER_H
 
+#include "qgis_core.h"
 #include "qgspoint.h"
 #include "qgstolerance.h"
 #include "qgsfeature.h"

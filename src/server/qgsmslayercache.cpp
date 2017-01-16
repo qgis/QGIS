@@ -21,31 +21,20 @@
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgsserversettings.h"
 #include <QFile>
 
 QgsMSLayerCache* QgsMSLayerCache::instance()
 {
-  static QgsMSLayerCache *mInstance = 0;
-  if ( !mInstance )
-    mInstance = new QgsMSLayerCache();
-  return mInstance;
+  static QgsMSLayerCache *sInstance = nullptr;
+  if ( !sInstance )
+    sInstance = new QgsMSLayerCache();
+  return sInstance;
 }
 
 QgsMSLayerCache::QgsMSLayerCache()
-    : mProjectMaxLayers( 0 )
+    : mProjectMaxLayers( 100 )
 {
-  mDefaultMaxLayers = 100;
-  //max layer from environment variable overrides default
-  char* maxLayerEnv = getenv( "MAX_CACHE_LAYERS" );
-  if ( maxLayerEnv )
-  {
-    bool conversionOk = false;
-    int maxLayerInt = QString( maxLayerEnv ).toInt( &conversionOk );
-    if ( conversionOk )
-    {
-      mDefaultMaxLayers = maxLayerInt;
-    }
-  }
   QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString& ) ), this, SLOT( removeProjectFileLayers( const QString& ) ) );
 }
 
@@ -57,6 +46,11 @@ QgsMSLayerCache::~QgsMSLayerCache()
     delete entry.layerPointer;
   }
   mEntries.clear();
+}
+
+void QgsMSLayerCache::setMaxCacheLayers( int maxCacheLayers )
+{
+  mDefaultMaxLayers = maxCacheLayers;
 }
 
 void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QString& configFile, const QList<QString>& tempFiles )
@@ -134,7 +128,7 @@ void QgsMSLayerCache::removeProjectFileLayers( const QString& project )
     {
       removeEntries.push_back( entryIt.key() );
       removeEntriesValues.push_back( entryIt.value() );
-      freeEntryRessources( entryIt.value() );
+      freeEntryResources( entryIt.value() );
     }
   }
 
@@ -183,11 +177,11 @@ void QgsMSLayerCache::removeLeastUsedEntry()
   }
 
   QgsMessageLog::logMessage( "Removing last accessed layer '" + lowest_it.value().layerPointer->name() + "' project file " + lowest_it.value().configFile + " from cache" , QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  freeEntryRessources( *lowest_it );
+  freeEntryResources( *lowest_it );
   mEntries.erase( lowest_it );
 }
 
-void QgsMSLayerCache::freeEntryRessources( QgsMSLayerCacheEntry& entry )
+void QgsMSLayerCache::freeEntryResources( QgsMSLayerCacheEntry& entry )
 {
   // remove layer from QgsProject before delete it
   if ( QgsProject::instance()->mapLayer( entry.layerPointer->id() ) )

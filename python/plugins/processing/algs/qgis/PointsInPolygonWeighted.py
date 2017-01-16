@@ -64,7 +64,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Weighted count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
         pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
@@ -97,7 +97,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
             count = 0
             points = spatialIndex.intersects(geom.boundingBox())
             if len(points) > 0:
-                progress.setText(str(len(points)))
+                feedback.setProgressText(str(len(points)))
                 request = QgsFeatureRequest().setFilterFids(points).setSubsetOfAttributes([fieldIdx])
                 fit = pointLayer.getFeatures(request)
                 ftPoint = QgsFeature()
@@ -119,6 +119,6 @@ class PointsInPolygonWeighted(GeoAlgorithm):
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

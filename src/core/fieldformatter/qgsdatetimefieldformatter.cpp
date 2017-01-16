@@ -20,9 +20,9 @@
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
 
-const QString QgsDateTimeFieldFormatter::DefaultDateFormat = QStringLiteral( "yyyy-MM-dd" );
-const QString QgsDateTimeFieldFormatter::DefaultTimeFormat = QStringLiteral( "HH:mm:ss" );
-const QString QgsDateTimeFieldFormatter::DefaultDateTimeFormat = QStringLiteral( "yyyy-MM-dd HH:mm:ss" );
+const QString QgsDateTimeFieldFormatter::DEFAULT_DATE_FORMAT = QStringLiteral( "yyyy-MM-dd" );
+const QString QgsDateTimeFieldFormatter::DEFAULT_TIME_FORMAT = QStringLiteral( "HH:mm:ss" );
+const QString QgsDateTimeFieldFormatter::DEFAULT_DATETIME_FORMAT = QStringLiteral( "yyyy-MM-dd HH:mm:ss" );
 
 
 QString QgsDateTimeFieldFormatter::id() const
@@ -60,17 +60,17 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer* layer, int fi
   return result;
 }
 
-QString QgsDateTimeFieldFormatter::defaultFormat( const QVariant::Type type )
+QString QgsDateTimeFieldFormatter::defaultFormat( QVariant::Type type )
 {
   switch ( type )
   {
     case QVariant::DateTime:
-      return QgsDateTimeFieldFormatter::DefaultDateTimeFormat;
+      return QgsDateTimeFieldFormatter::DEFAULT_DATETIME_FORMAT;
       break;
     case QVariant::Time:
-      return QgsDateTimeFieldFormatter::DefaultTimeFormat;
+      return QgsDateTimeFieldFormatter::DEFAULT_TIME_FORMAT;
       break;
     default:
-      return QgsDateTimeFieldFormatter::DefaultDateFormat;
+      return QgsDateTimeFieldFormatter::DEFAULT_DATE_FORMAT;
   }
 }

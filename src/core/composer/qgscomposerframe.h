@@ -16,6 +16,7 @@
 #ifndef QGSCOMPOSERFRAME_H
 #define QGSCOMPOSERFRAME_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 
 class QgsComposition;

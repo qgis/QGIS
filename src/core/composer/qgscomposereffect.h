@@ -21,6 +21,8 @@
 #include <QGraphicsEffect>
 #include <QPainter>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * \class QgsComposerEffect
  */

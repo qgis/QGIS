@@ -76,8 +76,8 @@ class QgsRendererRangeLabelFormat
     void setFromDomElement( QDomElement &element );
     void saveToDomElement( QDomElement &element );
 
-    static int MaxPrecision;
-    static int MinPrecision;
+    static const int MAX_PRECISION;
+    static const int MIN_PRECISION;
 
 };
 

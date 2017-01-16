@@ -527,6 +527,8 @@ QString QgsOracleConn::databaseTypeFilter( QString alias, QString geomCol, QgsWk
     case QgsWkbTypes::Unknown:
       Q_ASSERT( !"unknown geometry unexpected" );
       return QString::null;
+    default:
+      break;
   }
 
   Q_ASSERT( !"unexpected geomType" );
@@ -630,6 +632,9 @@ QString QgsOracleConn::displayStringForWkbType( QgsWkbTypes::Type type )
 
     case QgsWkbTypes::Unknown:
       return tr( "Unknown Geometry" );
+
+    default:
+      break;
   }
 
   Q_ASSERT( !"unexpected wkbType" );

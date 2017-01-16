@@ -68,7 +68,7 @@ class flightlinesToCHM(LAStoolsAlgorithm):
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         # first we tile the data
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(commands)
@@ -89,7 +89,7 @@ class flightlinesToCHM(LAStoolsAlgorithm):
         commands.append(base_name)
         commands.append("-olaz")
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we ground classify the tiles
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
@@ -110,7 +110,7 @@ class flightlinesToCHM(LAStoolsAlgorithm):
         commands.append("-olaz")
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we height-normalize the tiles
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
@@ -123,7 +123,7 @@ class flightlinesToCHM(LAStoolsAlgorithm):
         commands.append("-olaz")
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we thin and splat the tiles
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasthin")]
@@ -143,7 +143,7 @@ class flightlinesToCHM(LAStoolsAlgorithm):
         commands.append("-olaz")
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we rasterize the classified tiles into CHMs
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
@@ -159,4 +159,4 @@ class flightlinesToCHM(LAStoolsAlgorithm):
         self.addParametersRasterOutputFormatCommands(commands)
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

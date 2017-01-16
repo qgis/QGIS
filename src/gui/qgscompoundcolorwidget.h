@@ -19,6 +19,7 @@
 #include "qgisgui.h"
 #include "qgspanelwidget.h"
 #include "ui_qgscompoundcolorwidget.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsCompoundColorWidget

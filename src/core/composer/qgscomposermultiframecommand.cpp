@@ -17,6 +17,7 @@
 
 #include "qgscomposermultiframecommand.h"
 #include "qgscomposermultiframe.h"
+#include "qgscomposition.h"
 #include "qgsproject.h"
 
 QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent ):
@@ -68,7 +69,7 @@ void QgsComposerMultiFrameCommand::restoreState( QDomDocument& stateDoc )
   if ( mMultiFrame )
   {
     mMultiFrame->readXml( stateDoc.documentElement().firstChild().toElement(), stateDoc );
-    QgsProject::instance()->setDirty( true );
+    mMultiFrame->composition()->project()->setDirty( true );
   }
 }
 

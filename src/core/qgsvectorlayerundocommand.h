@@ -16,6 +16,7 @@
 #ifndef QGSVECTORLAYERUNDOCOMMAND_H
 #define QGSVECTORLAYERUNDOCOMMAND_H
 
+#include "qgis_core.h"
 #include <QUndoCommand>
 
 #include <QVariant>

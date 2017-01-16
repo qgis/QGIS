@@ -26,7 +26,7 @@ QgsExpressionContext QgsLabelingGui::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
   << QgsExpressionContextUtils::atlasScope( nullptr )
   << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
 
@@ -94,7 +94,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer* mapLayer )
   mFieldExpressionWidget->setLayer( mLayer );
   QgsDistanceArea da;
   da.setSourceCrs( mLayer->crs().srsid() );
-  da.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
+  da.setEllipsoidalMode( true );
   da.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mFieldExpressionWidget->setGeomCalculator( da );
 

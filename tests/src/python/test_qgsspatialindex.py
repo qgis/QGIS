@@ -33,7 +33,7 @@ class TestQgsSpatialIndex(unittest.TestCase):
         for y in range(5, 15, 5):
             for x in range(5, 25, 5):
                 ft = QgsFeature()
-                ft.setFeatureId(fid)
+                ft.setId(fid)
                 ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(x, y)))
                 idx.insertFeature(ft)
                 fid += 1

@@ -65,8 +65,8 @@ static bool _initRenderer( const QString& name, QgsRendererWidgetFunc f, const Q
 
 static void _initRendererWidgetFunctions()
 {
-  static bool initialized = false;
-  if ( initialized )
+  static bool sInitialized = false;
+  if ( sInitialized )
     return;
 
   _initRenderer( QStringLiteral( "singleSymbol" ), QgsSingleSymbolRendererWidget::create, QStringLiteral( "rendererSingleSymbol.svg" ) );
@@ -79,7 +79,7 @@ static void _initRendererWidgetFunctions()
   _initRenderer( QStringLiteral( "heatmapRenderer" ), QgsHeatmapRendererWidget::create, QStringLiteral( "rendererHeatmapSymbol.svg" ) );
   _initRenderer( QStringLiteral( "25dRenderer" ), Qgs25DRendererWidget::create, QStringLiteral( "renderer25dSymbol.svg" ) );
   _initRenderer( QStringLiteral( "nullSymbol" ), QgsNullSymbolRendererWidget::create, QStringLiteral( "rendererNullSymbol.svg" ) );
-  initialized = true;
+  sInitialized = true;
 }
 
 QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer* layer, QgsStyle* style, bool embedded, QWidget* parent )

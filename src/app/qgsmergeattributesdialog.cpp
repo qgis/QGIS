@@ -33,7 +33,7 @@
 #include <QComboBox>
 #include <QSettings>
 
-QList< QgsStatisticalSummary::Statistic > QgsMergeAttributesDialog::mDisplayStats =
+const QList< QgsStatisticalSummary::Statistic > QgsMergeAttributesDialog::DISPLAY_STATS =
   QList< QgsStatisticalSummary::Statistic > () << QgsStatisticalSummary::Count
   << QgsStatisticalSummary::Sum
   << QgsStatisticalSummary::Mean
@@ -192,7 +192,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
     case QVariant::Int:
     case QVariant::LongLong:
     {
-      Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
+      Q_FOREACH ( QgsStatisticalSummary::Statistic stat, DISPLAY_STATS )
       {
         newComboBox->addItem( QgsStatisticalSummary::displayName( stat ) , stat );
       }
@@ -287,25 +287,25 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
     return;
   }
 
-  //evaluate behaviour (feature value or min / max / mean )
-  QString mergeBehaviourString = comboBox->currentData().toString();
+  //evaluate behavior (feature value or min / max / mean )
+  QString mergeBehaviorString = comboBox->currentData().toString();
   QVariant mergeResult; // result to show in the merge result field
-  if ( mergeBehaviourString == QLatin1String( "concat" ) )
+  if ( mergeBehaviorString == QLatin1String( "concat" ) )
   {
     mergeResult = concatenationAttribute( col );
   }
-  else if ( mergeBehaviourString == QLatin1String( "skip" ) )
+  else if ( mergeBehaviorString == QLatin1String( "skip" ) )
   {
     mergeResult = tr( "Skipped" );
   }
-  else if ( mergeBehaviourString == QLatin1String( "manual" ) )
+  else if ( mergeBehaviorString == QLatin1String( "manual" ) )
   {
     return; //nothing to do
   }
-  else if ( mergeBehaviourString.startsWith( 'f' ) )
+  else if ( mergeBehaviorString.startsWith( 'f' ) )
   {
     //an existing feature value
-    QgsFeatureId featureId = STRING_TO_FID( mergeBehaviourString.mid( 1 ) );
+    QgsFeatureId featureId = STRING_TO_FID( mergeBehaviorString.mid( 1 ) );
     mergeResult = featureAttribute( featureId, col );
   }
   else

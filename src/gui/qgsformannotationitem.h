@@ -21,6 +21,7 @@
 #include "qgsannotationitem.h"
 #include "qgsfeature.h"
 #include <QObject>
+#include "qgis_gui.h"
 
 class QGraphicsProxyWidget;
 

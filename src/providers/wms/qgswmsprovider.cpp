@@ -956,11 +956,11 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle& viewExtent, int pi
 
   if ( mDpi != -1 )
   {
-    if ( mSettings.mDpiMode & dpiQGIS )
+    if ( mSettings.mDpiMode & DpiQGIS )
       setQueryItem( url, QStringLiteral( "DPI" ), QString::number( mDpi ) );
-    if ( mSettings.mDpiMode & dpiUMN )
+    if ( mSettings.mDpiMode & DpiUMN )
       setQueryItem( url, QStringLiteral( "MAP_RESOLUTION" ), QString::number( mDpi ) );
-    if ( mSettings.mDpiMode & dpiGeoServer )
+    if ( mSettings.mDpiMode & DpiGeoServer )
       setQueryItem( url, QStringLiteral( "FORMAT_OPTIONS" ), QStringLiteral( "dpi:%1" ).arg( mDpi ) );
   }
 
@@ -1001,11 +1001,11 @@ void QgsWmsProvider::createTileRequestsWMSC( const QgsWmtsTileMatrix* tm, const 
 
   if ( mDpi != -1 )
   {
-    if ( mSettings.mDpiMode & dpiQGIS )
+    if ( mSettings.mDpiMode & DpiQGIS )
       setQueryItem( url, QStringLiteral( "DPI" ), QString::number( mDpi ) );
-    if ( mSettings.mDpiMode & dpiUMN )
+    if ( mSettings.mDpiMode & DpiUMN )
       setQueryItem( url, QStringLiteral( "MAP_RESOLUTION" ), QString::number( mDpi ) );
-    if ( mSettings.mDpiMode & dpiGeoServer )
+    if ( mSettings.mDpiMode & DpiGeoServer )
       setQueryItem( url, QStringLiteral( "FORMAT_OPTIONS" ), QStringLiteral( "dpi:%1" ).arg( mDpi ) );
   }
 
@@ -3328,14 +3328,14 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle& 
   QgsDebugMsg( QString( "defaultLegendGraphicResolution: %1" ).arg( defaultLegendGraphicResolution ) );
   if ( defaultLegendGraphicResolution )
   {
-    if ( mSettings.mDpiMode & dpiQGIS )
+    if ( mSettings.mDpiMode & DpiQGIS )
       setQueryItem( url, QStringLiteral( "DPI" ), QString::number( defaultLegendGraphicResolution ) );
-    if ( mSettings.mDpiMode & dpiUMN )
+    if ( mSettings.mDpiMode & DpiUMN )
     {
       setQueryItem( url, QStringLiteral( "MAP_RESOLUTION" ), QString::number( defaultLegendGraphicResolution ) );
       setQueryItem( url, QStringLiteral( "SCALE" ), QString::number( scale, 'f' ) );
     }
-    if ( mSettings.mDpiMode & dpiGeoServer )
+    if ( mSettings.mDpiMode & DpiGeoServer )
     {
       setQueryItem( url, QStringLiteral( "FORMAT_OPTIONS" ), QStringLiteral( "dpi:%1" ).arg( defaultLegendGraphicResolution ) );
       setQueryItem( url, QStringLiteral( "SCALE" ), QString::number( scale, 'f' ) );

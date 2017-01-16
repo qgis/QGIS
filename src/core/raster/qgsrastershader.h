@@ -20,6 +20,8 @@ email                : ersts@amnh.org
 #ifndef QGSRASTERSHADER_H
 #define QGSRASTERSHADER_H
 
+#include "qgis_core.h"
+
 class QDomDocument;
 class QDomElement;
 class QgsRasterShaderFunction;

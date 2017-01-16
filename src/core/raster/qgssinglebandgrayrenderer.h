@@ -18,6 +18,7 @@
 #ifndef QGSSINGLEBANDGRAYRENDERER_H
 #define QGSSINGLEBANDGRAYRENDERER_H
 
+#include "qgis_core.h"
 #include "qgsrasterrenderer.h"
 
 class QgsContrastEnhancement;

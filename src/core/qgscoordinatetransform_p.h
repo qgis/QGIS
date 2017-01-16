@@ -69,7 +69,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
         , mDestinationDatumTransform( -1 )
     {
       setFinder();
-      initialise();
+      initialize();
     }
 
     QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate& other )
@@ -84,7 +84,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
         , mDestinationDatumTransform( other.mDestinationDatumTransform )
     {
       //must reinitialize to setup mSourceProjection and mDestinationProjection
-      initialise();
+      initialize();
     }
 
     ~QgsCoordinateTransformPrivate()
@@ -100,7 +100,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
       }
     }
 
-    bool initialise()
+    bool initialize()
     {
       mShortCircuit = true;
       mIsValid = false;
@@ -180,7 +180,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
       else
       {
         QgsDebugMsg( "------------------------------------------------------------" );
-        QgsDebugMsg( "The OGR Coordinate transformation FAILED TO INITIALISE!" );
+        QgsDebugMsg( "The OGR Coordinate transformation FAILED TO INITIALIZE!" );
         QgsDebugMsg( "------------------------------------------------------------" );
       }
 #else
@@ -191,7 +191,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
 #endif
 
       //XXX todo overload == operator for QgsCoordinateReferenceSystem
-      //at the moment srs.parameters contains the whole proj def...soon it wont...
+      //at the moment srs.parameters contains the whole proj def...soon it won't...
       //if (mSourceCRS->toProj4() == mDestCRS->toProj4())
       if ( mSourceCRS == mDestCRS )
       {

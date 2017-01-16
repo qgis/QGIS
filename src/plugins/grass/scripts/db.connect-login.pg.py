@@ -104,7 +104,7 @@ def main():
     if port:
         conn += ",port=" + port
 
-    # Unfortunately we cannot test untill user/password is set
+    # Unfortunately we cannot test until user/password is set
     if user or password:
         print("Setting login (db.login) ... ")
         sys.stdout.flush()

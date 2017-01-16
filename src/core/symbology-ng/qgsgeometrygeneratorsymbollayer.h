@@ -16,6 +16,7 @@
 #ifndef QGSGEOMETRYGENERATORSYMBOLLAYERV2_H
 #define QGSGEOMETRYGENERATORSYMBOLLAYERV2_H
 
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 
 /** \ingroup core

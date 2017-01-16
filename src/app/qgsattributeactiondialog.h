@@ -27,6 +27,7 @@ back to QgsVectorLayer.
 #include "qgsattributetableconfig.h"
 #include "qgsaction.h"
 #include <QMap>
+#include "qgis_app.h"
 
 class QgsActionManager;
 class QgsVectorLayer;

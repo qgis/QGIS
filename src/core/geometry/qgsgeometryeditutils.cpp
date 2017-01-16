@@ -224,7 +224,9 @@ bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometry* geom, int partNum )
   return c->removeGeometry( partNum );
 }
 
-QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry& geom, QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures )
+QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry& geom,
+    const QList<QgsVectorLayer*>& avoidIntersectionsLayers,
+    QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures )
 {
   QScopedPointer<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( &geom ) );
   if ( geomEngine.isNull() )
@@ -240,39 +242,32 @@ QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstract
     return nullptr;
   }
 
-  QStringList avoidIntersectionsList = QgsProject::instance()->avoidIntersectionsList();
-  if ( avoidIntersectionsList.isEmpty() )
+  if ( avoidIntersectionsLayers.isEmpty() )
     return nullptr; //no intersections stored in project does not mean error
 
   QList< QgsAbstractGeometry* > nearGeometries;
 
   //go through list, convert each layer to vector layer and call QgsVectorLayer::removePolygonIntersections for each
-  QgsVectorLayer* currentLayer = nullptr;
-  QStringList::const_iterator aIt = avoidIntersectionsList.constBegin();
-  for ( ; aIt != avoidIntersectionsList.constEnd(); ++aIt )
+  Q_FOREACH ( QgsVectorLayer* currentLayer, avoidIntersectionsLayers )
   {
-    currentLayer = dynamic_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( *aIt ) );
-    if ( currentLayer )
+    QgsFeatureIds ignoreIds;
+    QHash<QgsVectorLayer*, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.find( currentLayer );
+    if ( ignoreIt != ignoreFeatures.constEnd() )
+      ignoreIds = ignoreIt.value();
+
+    QgsFeatureIterator fi = currentLayer->getFeatures( QgsFeatureRequest( geom.boundingBox() )
+                            .setFlags( QgsFeatureRequest::ExactIntersect )
+                            .setSubsetOfAttributes( QgsAttributeList() ) );
+    QgsFeature f;
+    while ( fi.nextFeature( f ) )
     {
-      QgsFeatureIds ignoreIds;
-      QHash<QgsVectorLayer*, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.find( currentLayer );
-      if ( ignoreIt != ignoreFeatures.constEnd() )
-        ignoreIds = ignoreIt.value();
+      if ( ignoreIds.contains( f.id() ) )
+        continue;
 
-      QgsFeatureIterator fi = currentLayer->getFeatures( QgsFeatureRequest( geom.boundingBox() )
-                              .setFlags( QgsFeatureRequest::ExactIntersect )
-                              .setSubsetOfAttributes( QgsAttributeList() ) );
-      QgsFeature f;
-      while ( fi.nextFeature( f ) )
-      {
-        if ( ignoreIds.contains( f.id() ) )
-          continue;
+      if ( !f.hasGeometry() )
+        continue;
 
-        if ( !f.hasGeometry() )
-          continue;
-
-        nearGeometries << f.geometry().geometry()->clone();
-      }
+      nearGeometries << f.geometry().geometry()->clone();
     }
   }
 

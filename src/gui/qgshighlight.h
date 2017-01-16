@@ -24,6 +24,7 @@
 #include <QPen>
 #include <QPainter>
 #include <QPainterPath>
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 class QgsVectorLayer;

@@ -479,13 +479,13 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
         // first column always contains the ROWID (or the primary key)
         QgsFeatureId fid = sqlite3_column_int64( stmt, ic );
         QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 3 );
-        feature.setFeatureId( fid );
+        feature.setId( fid );
       }
       else
       {
         // autoincrement a row number
         mRowNumber++;
-        feature.setFeatureId( mRowNumber );
+        feature.setId( mRowNumber );
       }
     }
     else if ( mFetchGeometry && ic == mGeomColIdx )

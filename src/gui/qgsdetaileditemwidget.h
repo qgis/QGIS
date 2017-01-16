@@ -19,6 +19,7 @@
 
 #include <ui_qgsdetaileditemwidgetbase.h>
 #include <qgsdetaileditemdata.h>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A widget renderer for detailed item views.

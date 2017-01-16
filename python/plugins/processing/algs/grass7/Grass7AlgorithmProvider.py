@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 from qgis.PyQt.QtGui import QIcon
+from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingLog import ProcessingLog
@@ -43,24 +44,29 @@ pluginPath = os.path.normpath(os.path.join(
 class Grass7AlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
         self.createAlgsList()
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         if isWindows() or isMac():
             ProcessingConfig.addSetting(Setting(
-                self.getDescription(),
+                self.name(),
                 Grass7Utils.GRASS_FOLDER, self.tr('GRASS7 folder'),
                 Grass7Utils.grassPath(), valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(
-            self.getDescription(),
+            self.name(),
             Grass7Utils.GRASS_LOG_COMMANDS,
             self.tr('Log execution commands'), False))
         ProcessingConfig.addSetting(Setting(
-            self.getDescription(),
+            self.name(),
             Grass7Utils.GRASS_LOG_CONSOLE,
             self.tr('Log console output'), False))
+        ProcessingConfig.addSetting(Setting(
+            self.name(),
+            Grass7Utils.GRASS_HELP_PATH,
+            self.tr('Location of GRASS docs'),
+            Grass7Utils.grassHelpPath()))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -68,6 +74,7 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
             ProcessingConfig.removeSetting(Grass7Utils.GRASS_FOLDER)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_CONSOLE)
+        ProcessingConfig.removeSetting(Grass7Utils.GRASS_HELP_PATH)
 
     def createAlgsList(self):
         self.preloadedAlgs = []
@@ -91,14 +98,18 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
 
-    def getDescription(self):
-        return self.tr('GRASS GIS 7 commands')
+    def name(self):
+        version = Grass7Utils.installedVersion()
+        return 'GRASS GIS ({})'.format(version) if version is not None else "GRASS GIS"
 
-    def getName(self):
-        return 'grass70'
+    def id(self):
+        return 'grass7'
 
-    def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerGrass.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerGrass.svg")
 
     def getSupportedOutputVectorLayerExtensions(self):
         return ['shp']

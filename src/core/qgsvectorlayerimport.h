@@ -19,6 +19,7 @@
 #ifndef QGSVECTORLAYERIMPORT_H
 #define QGSVECTORLAYERIMPORT_H
 
+#include "qgis_core.h"
 #include "qgsfeature.h"
 
 class QProgressDialog;

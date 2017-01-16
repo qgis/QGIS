@@ -314,9 +314,6 @@ void TestZipLayer::testPassthruVectorZip()
   QSettings settings;
   QString myFileName = mDataDir + "points2.zip";
   QgsDebugMsg( "GDAL: " + QString( GDAL_RELEASE_NAME ) );
-#if GDAL_VERSION_NUM < 1800
-  myFileName = "/vsizip/" + myFileName + "/points.shp";
-#endif
   QgsDebugMsg( "FILE: " + QString( myFileName ) );
   Q_FOREACH ( const QString& s, mScanZipSettings )
   {
@@ -328,9 +325,6 @@ void TestZipLayer::testPassthruVectorZip()
 
 void TestZipLayer::testPassthruVectorTar()
 {
-#if GDAL_VERSION_NUM < 1800
-  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
-#endif
   QSettings settings;
   QString myFileName = mDataDir + "points2.tar";
   Q_FOREACH ( const QString& s, mScanZipSettings )
@@ -343,9 +337,6 @@ void TestZipLayer::testPassthruVectorTar()
 
 void TestZipLayer::testPassthruVectorGzip()
 {
-#if GDAL_VERSION_NUM < 1700
-  QSKIP( "This test requires GDAL >= 1.7", SkipSingle );
-#endif
   QSettings settings;
   Q_FOREACH ( const QString& s, mScanZipSettings )
   {
@@ -368,9 +359,6 @@ void TestZipLayer::testPassthruRasterZip()
 
 void TestZipLayer::testPassthruRasterTar()
 {
-#if GDAL_VERSION_NUM < 1800
-  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
-#endif
   QSettings settings;
   Q_FOREACH ( const QString& s, mScanZipSettings )
   {
@@ -404,9 +392,6 @@ void TestZipLayer::testZipItemRaster()
 
 void TestZipLayer::testTarItemRaster()
 {
-#if GDAL_VERSION_NUM < 1800
-  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
-#endif
   QSettings settings;
   Q_FOREACH ( const QString& s, mScanZipSettings )
   {
@@ -429,9 +414,6 @@ void TestZipLayer::testZipItemVector()
 
 void TestZipLayer::testTarItemVector()
 {
-#if GDAL_VERSION_NUM < 1800
-  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
-#endif
   QSettings settings;
   Q_FOREACH ( const QString& s, mScanZipSettings )
   {
@@ -455,9 +437,6 @@ void TestZipLayer::testZipItemAll()
 
 void TestZipLayer::testTarItemAll()
 {
-#if GDAL_VERSION_NUM < 1800
-  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
-#endif
   QSettings settings;
   settings.setValue( mSettingsKey, "full" );
   QVERIFY( "full" == settings.value( mSettingsKey ).toString() );
@@ -497,9 +476,6 @@ void TestZipLayer::testZipItemRasterTransparency()
 
 void TestZipLayer::testTarItemRasterTransparency()
 {
-#if GDAL_VERSION_NUM < 1800
-  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
-#endif
   QVERIFY( testZipItemTransparency( mDataDir + "landsat_b1.tar", "gdal", 250 ) );
 }
 
@@ -521,9 +497,6 @@ void TestZipLayer::testZipItemSubfolder()
 
 void TestZipLayer::testTarItemSubfolder()
 {
-#if GDAL_VERSION_NUM < 1800
-  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
-#endif
   QSettings settings;
   Q_FOREACH ( const QString& s, mScanZipSettings )
   {
@@ -536,9 +509,6 @@ void TestZipLayer::testTarItemSubfolder()
 
 void TestZipLayer::testZipItemVRT()
 {
-#if GDAL_VERSION_NUM < 1700
-  QSKIP( "This test requires GDAL >= 1.7", SkipSingle );
-#endif
   QSettings settings;
   Q_FOREACH ( const QString& s, mScanZipSettings )
   {

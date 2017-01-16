@@ -19,7 +19,7 @@
 #include "qgssqlexpressioncompiler.h"
 
 QgsSQLiteExpressionCompiler::QgsSQLiteExpressionCompiler( const QgsFields& fields )
-    : QgsSqlExpressionCompiler( fields, QgsSqlExpressionCompiler::LikeIsCaseInsensitive )
+    : QgsSqlExpressionCompiler( fields, QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
 {
 }
 
@@ -82,6 +82,32 @@ QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant& value, bool& o
       // in a row - as in Pascal. C-style escapes using the backslash character are not supported because they are not standard SQL. """
       return v.replace( '\'', QLatin1String( "''" ) ).prepend( '\'' ).append( '\'' );
   }
+}
+
+QString QgsSQLiteExpressionCompiler::sqlFunctionFromFunctionName( const QString& fnName ) const
+{
+  static const QMap<QString, QString> FN_NAMES
+  {
+    { "abs", "abs" },
+    { "char", "char" },
+    { "coalesce", "coalesce" },
+    { "lower", "lower" },
+    { "round", "round" },
+    { "trim", "trim" },
+    { "upper", "upper" },
+  };
+
+  return FN_NAMES.value( fnName, QString() );
+}
+
+QString QgsSQLiteExpressionCompiler::castToReal( const QString& value ) const
+{
+  return QStringLiteral( "CAST((%1) AS REAL)" ).arg( value );
+}
+
+QString QgsSQLiteExpressionCompiler::castToInt( const QString& value ) const
+{
+  return QStringLiteral( "CAST((%1) AS INTEGER)" ).arg( value );
 }
 
 ///@endcond

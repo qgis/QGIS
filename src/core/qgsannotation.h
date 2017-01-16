@@ -18,6 +18,7 @@
 #ifndef QGSANNOTATION_H
 #define QGSANNOTATION_H
 
+#include "qgis_core.h"
 #include "qgspoint.h"
 #include "qgscoordinatereferencesystem.h"
 
@@ -48,7 +49,7 @@ class CORE_EXPORT QgsAnnotation
      * false if the annotation uses a position relative to the current map
      * extent.
      * @see mapPosition()
-     * @see relativePositon()
+     * @see relativePosition()
      */
     virtual bool hasFixedMapPosition() const = 0;
 

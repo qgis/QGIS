@@ -18,6 +18,7 @@
 #ifndef QGSPALETTEDRASTERRENDERER_H
 #define QGSPALETTEDRASTERRENDERER_H
 
+#include "qgis_core.h"
 #include <QVector>
 
 #include "qgsrasterrenderer.h"

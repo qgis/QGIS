@@ -65,8 +65,8 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * Regular expression defining possible prefixes to WKT string,
      * (EWKT srid, Informix SRID)
      */
-    static QRegExp WktPrefixRegexp;
-    static QRegExp CrdDmsRegexp;
+    static QRegExp sWktPrefixRegexp;
+    static QRegExp sCrdDmsRegexp;
 
     enum GeomRepresentationType
     {
@@ -184,7 +184,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     bool boundsCheck( QgsGeometry *geom );
 
     /**
-     * Try to read field types from CSVT (or equialent xxxT) file.
+     * Try to read field types from CSVT (or equivalent xxxT) file.
      * @param filename The name of the file from which to read the field types
      * @param message  Pointer to a string to receive a status message
      * @return A list of field type strings, empty if not found or not valid
@@ -269,7 +269,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     //! Record file updates, flags rescan required
     mutable bool mRescanRequired;
 
-    // Coordinate reference sytem
+    // Coordinate reference system
     QgsCoordinateReferenceSystem mCrs;
 
     QgsWkbTypes::Type mWkbType;

@@ -70,7 +70,7 @@ class ConvexHull(GeoAlgorithm):
                                              self.tr('Method'), self.methods))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Convex hull'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         useField = self.getParameterValue(self.METHOD) == 1
@@ -126,7 +126,7 @@ class ConvexHull(GeoAlgorithm):
                         points = vector.extractPoints(inGeom)
                         hull.extend(points)
                     current += 1
-                    progress.setPercentage(int(current * total))
+                    feedback.setProgress(int(current * total))
 
                 if len(hull) >= 3:
                     tmpGeom = QgsGeometry(outGeom.fromMultiPoint(hull))
@@ -148,7 +148,7 @@ class ConvexHull(GeoAlgorithm):
                 inGeom = f.geometry()
                 points = vector.extractPoints(inGeom)
                 hull.extend(points)
-                progress.setPercentage(int(current * total))
+                feedback.setProgress(int(current * total))
 
             tmpGeom = QgsGeometry(outGeom.fromMultiPoint(hull))
             try:

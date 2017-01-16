@@ -89,7 +89,7 @@ class FixedDistanceBuffer(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         distance = self.getParameterValue(self.DISTANCE)
         dissolve = self.getParameterValue(self.DISSOLVE)
@@ -102,5 +102,5 @@ class FixedDistanceBuffer(GeoAlgorithm):
             self.OUTPUT).getVectorWriter(layer.fields().toList(),
                                          QgsWkbTypes.Polygon, layer.crs())
 
-        buff.buffering(progress, writer, distance, None, False, layer,
+        buff.buffering(feedback, writer, distance, None, False, layer,
                        dissolve, segments, end_cap_style, join_style, miter_limit)

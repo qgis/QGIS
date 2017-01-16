@@ -38,7 +38,8 @@ from qgis.PyQt.QtWidgets import QApplication
 from qgis.PyQt.QtGui import QCursor
 
 from qgis.utils import iface
-from qgis.core import QgsMessageLog
+from qgis.core import (QgsMessageLog,
+                       QgsApplication)
 
 import processing
 from processing.core.AlgorithmProvider import AlgorithmProvider
@@ -57,12 +58,11 @@ from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider
 from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
 from processing.algs.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider
-from processing.algs.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
+from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider
 from processing.algs.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
 from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider
 from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
-from processing.algs.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
 from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider
 
 
@@ -87,21 +87,21 @@ class Processing(object):
         """Use this method to add algorithms from external providers.
         """
 
-        if provider.getName() in [p.getName() for p in algList.providers]:
+        if provider.id() in [p.id() for p in QgsApplication.processingRegistry().providers()]:
             return
         try:
             provider.initializeSettings()
             Processing.providers.append(provider)
             ProcessingConfig.readSettings()
             provider.loadAlgorithms()
-            Processing.actions[provider.getName()] = provider.actions
+            Processing.actions[provider.id()] = provider.actions
             Processing.contextMenuActions.extend(provider.contextMenuActions)
             algList.addProvider(provider)
         except:
             ProcessingLog.addToLog(
                 ProcessingLog.LOG_ERROR,
                 Processing.tr('Could not load provider: %s\n%s')
-                % (provider.getDescription(), traceback.format_exc()))
+                % (provider.name(), traceback.format_exc()))
             Processing.removeProvider(provider)
 
     @staticmethod
@@ -114,11 +114,11 @@ class Processing(object):
         try:
             provider.unload()
             for p in Processing.providers:
-                if p.getName() == provider.getName():
+                if p.id() == provider.id():
                     Processing.providers.remove(p)
-            algList.removeProvider(provider.getName())
-            if provider.getName() in Processing.actions:
-                del Processing.actions[provider.getName()]
+            algList.removeProvider(provider.id())
+            if provider.id() in Processing.actions:
+                del Processing.actions[provider.id()]
             for act in provider.contextMenuActions:
                 Processing.contextMenuActions.remove(act)
         except:
@@ -129,20 +129,15 @@ class Processing(object):
             pass
 
     @staticmethod
-    def getProviderFromName(name):
-        """Returns the provider with the given name."""
-        return algList.getProviderFromName(name)
-
-    @staticmethod
     def activateProvider(providerOrName, activate=True):
-        providerName = providerOrName.getName() if isinstance(providerOrName, AlgorithmProvider) else providerOrName
-        name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
+        provider_id = providerOrName.id() if isinstance(providerOrName, AlgorithmProvider) else providerOrName
+        name = 'ACTIVATE_' + provider_id.upper().replace(' ', '_')
         ProcessingConfig.setSettingValue(name, activate)
-        algList.providerUpdated.emit(providerName)
+        algList.providerUpdated.emit(provider_id)
 
     @staticmethod
     def initialize():
-        if "model" in [p.getName() for p in Processing.providers]:
+        if "model" in [p.id() for p in Processing.providers]:
             return
         # Add the basic providers
         for c in AlgorithmProvider.__subclasses__():
@@ -155,7 +150,7 @@ class Processing(object):
     @staticmethod
     def addScripts(folder):
         Processing.initialize()
-        provider = Processing.getProviderFromName("qgis")
+        provider = QgsApplication.processingRegistry().providerById("qgis")
         scripts = ScriptUtils.loadFromFolder(folder)
         # fix_print_with_import
         print(scripts)
@@ -168,7 +163,7 @@ class Processing(object):
 
     @staticmethod
     def removeScripts(folder):
-        provider = Processing.getProviderFromName("qgis")
+        provider = QgsApplication.processingRegistry().providerById("qgis")
         for alg in provider.externalAlgs[::-1]:
             path = os.path.dirname(alg.descriptionFile)
             if path == folder:
@@ -187,8 +182,8 @@ class Processing(object):
         QApplication.restoreOverrideCursor()
 
     @staticmethod
-    def reloadProvider(providerName):
-        algList.reloadProvider(providerName)
+    def reloadProvider(provider_id):
+        algList.reloadProvider(provider_id)
 
     @staticmethod
     def getAlgorithm(name):
@@ -300,23 +295,23 @@ class Processing(object):
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 overrideCursor = True
 
-        progress = None
-        if kwargs is not None and "progress" in list(kwargs.keys()):
-            progress = kwargs["progress"]
+        feedback = None
+        if kwargs is not None and "feedback" in list(kwargs.keys()):
+            feedback = kwargs["feedback"]
         elif iface is not None:
-            progress = MessageBarProgress(alg.name)
+            feedback = MessageBarProgress(alg.name)
 
-        ret = runalg(alg, progress)
+        ret = runalg(alg, feedback)
         if ret:
             if onFinish is not None:
-                onFinish(alg, progress)
+                onFinish(alg, feedback)
         else:
             QgsMessageLog.logMessage(Processing.tr("There were errors executing the algorithm."), Processing.tr("Processing"))
 
         if overrideCursor:
             QApplication.restoreOverrideCursor()
-        if isinstance(progress, MessageBarProgress):
-            progress.close()
+        if isinstance(feedback, MessageBarProgress):
+            feedback.close()
         return alg
 
     @staticmethod

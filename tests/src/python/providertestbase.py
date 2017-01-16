@@ -168,6 +168,10 @@ class ProviderTestCase(object):
         self.assert_query(provider, 'cnt <= 100', [1, 5])
         self.assert_query(provider, 'pk IN (1, 2, 4, 8)', [1, 2, 4])
         self.assert_query(provider, 'cnt = 50 * 2', [1])
+        self.assert_query(provider, 'cnt = 150 / 1.5', [1])
+        self.assert_query(provider, 'cnt = 1000 / 10', [1])
+        self.assert_query(provider, 'cnt = 1000/11+10', []) # checks that provider isn't rounding int/int
+        self.assert_query(provider, 'pk = 9 // 4', [2]) # int division
         self.assert_query(provider, 'cnt = 99 + 1', [1])
         self.assert_query(provider, 'cnt = 101 - 1', [1])
         self.assert_query(provider, 'cnt - 1 = 99', [1])
@@ -222,8 +226,53 @@ class ProviderTestCase(object):
         # against numeric literals
         self.assert_query(provider, 'num_char IN (2, 4, 5)', [2, 4, 5])
 
+        #function
+        self.assert_query(provider, 'sqrt(pk) >= 2', [4, 5])
+        self.assert_query(provider, 'radians(cnt) < 2', [1, 5])
+        self.assert_query(provider, 'degrees(pk) <= 200', [1, 2, 3])
+        self.assert_query(provider, 'abs(cnt) <= 200', [1, 2, 5])
+        self.assert_query(provider, 'cos(pk) < 0', [2, 3, 4])
+        self.assert_query(provider, 'sin(pk) < 0', [4, 5])
+        self.assert_query(provider, 'tan(pk) < 0', [2, 3, 5])
+        self.assert_query(provider, 'acos(-1) < pk', [4, 5])
+        self.assert_query(provider, 'asin(1) < pk', [2, 3, 4, 5])
+        self.assert_query(provider, 'atan(3.14) < pk', [2, 3, 4, 5])
+        self.assert_query(provider, 'atan2(3.14, pk) < 1', [3, 4, 5])
+        self.assert_query(provider, 'exp(pk) < 10', [1, 2])
+        self.assert_query(provider, 'ln(pk) <= 1', [1, 2])
+        self.assert_query(provider, 'log(3, pk) <= 1', [1, 2, 3])
+        self.assert_query(provider, 'log10(pk) < 0.5', [1, 2, 3])
+        self.assert_query(provider, 'round(3.14) <= pk', [3, 4, 5])
+        self.assert_query(provider, 'round(0.314,1) * 10 = pk', [3])
+        self.assert_query(provider, 'floor(3.14) <= pk', [3, 4, 5])
+        self.assert_query(provider, 'ceil(3.14) <= pk', [4, 5])
+        self.assert_query(provider, 'pk < pi()', [1, 2, 3])
+
+        self.assert_query(provider, 'round(cnt / 66.67) <= 2', [1, 5])
+        self.assert_query(provider, 'floor(cnt / 66.67) <= 2', [1, 2, 5])
+        self.assert_query(provider, 'ceil(cnt / 66.67) <= 2', [1, 5])
+        self.assert_query(provider, 'pk < pi() / 2', [1])
+        self.assert_query(provider, 'pk = char(51)', [3])
+        self.assert_query(provider, 'pk = coalesce(NULL,3,4)', [3])
+        self.assert_query(provider, 'lower(name) = \'apple\'', [2])
+        self.assert_query(provider, 'upper(name) = \'APPLE\'', [2])
+        self.assert_query(provider, 'name = trim(\'   Apple   \')', [2])
+
         # geometry
+        # azimuth and touches tests are deactivated because they do not pass for WFS provider
+        #self.assert_query(provider, 'azimuth($geometry,geom_from_wkt( \'Point (-70 70)\')) < pi()', [1, 5])
+        self.assert_query(provider, 'x($geometry) < -70', [1, 5])
+        self.assert_query(provider, 'y($geometry) > 70', [2, 4, 5])
+        self.assert_query(provider, 'xmin($geometry) < -70', [1, 5])
+        self.assert_query(provider, 'ymin($geometry) > 70', [2, 4, 5])
+        self.assert_query(provider, 'xmax($geometry) < -70', [1, 5])
+        self.assert_query(provider, 'ymax($geometry) > 70', [2, 4, 5])
+        self.assert_query(provider, 'disjoint($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))', [4, 5])
         self.assert_query(provider, 'intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))', [1, 2])
+        #self.assert_query(provider, 'touches($geometry,geom_from_wkt( \'Polygon ((-70.332 66.33, -65.32 66.33, -65.32 78.3, -70.332 78.3, -70.332 66.33))\'))', [1, 4])
+        self.assert_query(provider, 'contains(geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'),$geometry)', [1, 2])
+        self.assert_query(provider, 'distance($geometry,geom_from_wkt( \'Point (-70 70)\')) > 7', [4, 5])
+        self.assert_query(provider, 'intersects($geometry,geom_from_gml( \'<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-72.2,66.1 -65.2,66.1 -65.2,72.0 -72.2,72.0 -72.2,66.1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>\'))', [1, 2])
 
         # combination of an uncompilable expression and limit
         feature = next(self.vl.getFeatures('pk=4'))
@@ -240,6 +289,29 @@ class ProviderTestCase(object):
         values = [f['pk'] for f in self.vl.getFeatures(request)]
         self.assertEqual(values, [4])
 
+    def runPolyGetFeatureTests(self, provider):
+        assert len([f for f in provider.getFeatures()]) == 4
+
+        # geometry
+        self.assert_query(provider, 'x($geometry) < -70', [1])
+        self.assert_query(provider, 'y($geometry) > 79', [1, 2])
+        self.assert_query(provider, 'xmin($geometry) < -70', [1, 3])
+        self.assert_query(provider, 'ymin($geometry) < 76', [3])
+        self.assert_query(provider, 'xmax($geometry) > -68', [2, 3])
+        self.assert_query(provider, 'ymax($geometry) > 80', [1, 2])
+        self.assert_query(provider, 'area($geometry) > 10', [1])
+        self.assert_query(provider, 'perimeter($geometry) < 12', [2, 3])
+        self.assert_query(provider, 'relate($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\')) = \'FF2FF1212\'', [1, 3])
+        self.assert_query(provider, 'relate($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\'), \'****F****\')', [1, 3])
+        self.assert_query(provider, 'crosses($geometry,geom_from_wkt( \'Linestring (-68.2 82.1, -66.95 82.1, -66.95 79.05)\'))', [2])
+        self.assert_query(provider, 'overlaps($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\'))', [2])
+        self.assert_query(provider, 'within($geometry,geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))', [1])
+        self.assert_query(provider, 'overlaps(translate($geometry,-1,-1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))', [1])
+        self.assert_query(provider, 'overlaps(buffer($geometry,1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))', [1, 3])
+        self.assert_query(provider, 'intersects(centroid($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))', [2])
+        self.assert_query(provider, 'intersects(point_on_surface($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))', [1, 2])
+        self.assert_query(provider, 'distance($geometry,geom_from_wkt( \'Point (-70 70)\')) > 7', [1, 2])
+
     def testGetFeaturesUncompiled(self):
         self.compiled = False
         try:
@@ -247,12 +319,16 @@ class ProviderTestCase(object):
         except AttributeError:
             pass
         self.runGetFeatureTests(self.provider)
+        if hasattr(self, 'poly_provider'):
+            self.runPolyGetFeatureTests(self.poly_provider)
 
-    def testGetFeaturesCompiled(self):
+    def testPolyGetFeaturesCompiled(self):
         try:
             self.enableCompiler()
             self.compiled = True
             self.runGetFeatureTests(self.provider)
+            if hasattr(self, 'poly_provider'):
+                self.runPolyGetFeatureTests(self.poly_provider)
         except AttributeError:
             print('Provider does not support compiling')
 
@@ -433,7 +509,7 @@ class ProviderTestCase(object):
         expected = set([fids[1], fids[3], fids[4]])
         assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)
 
-        #providers should ignore non-existant fids
+        #providers should ignore non-existent fids
         result = set([f.id() for f in self.provider.getFeatures(QgsFeatureRequest().setFilterFids([-101, fids[1], -102, fids[3], -103, fids[4], -104]))])
         expected = set([fids[1], fids[3], fids[4]])
         assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)
@@ -622,7 +698,7 @@ class ProviderTestCase(object):
         assert count == 3, 'Got {}'.format(count)
 
     def testClosedIterators(self):
-        """ Test behaviour of closed iterators """
+        """ Test behavior of closed iterators """
 
         # Test retrieving feature after closing iterator
         f_it = self.provider.getFeatures(QgsFeatureRequest())

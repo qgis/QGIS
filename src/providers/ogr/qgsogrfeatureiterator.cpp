@@ -58,7 +58,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
   }
   else
   {
-    ogrLayer = OGR_DS_GetLayerByName( mConn->ds, TO8( mSource->mLayerName ) );
+    ogrLayer = OGR_DS_GetLayerByName( mConn->ds, mSource->mLayerName.toUtf8().constData() );
   }
   if ( !ogrLayer )
   {
@@ -294,7 +294,7 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
 
 bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature ) const
 {
-  feature.setFeatureId( OGR_F_GetFID( fet ) );
+  feature.setId( OGR_F_GetFID( fet ) );
   feature.initAttributes( mSource->mFields.count() );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 

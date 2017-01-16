@@ -16,6 +16,7 @@
 #ifndef QGSVECTORLAYERLABELPROVIDER_H
 #define QGSVECTORLAYERLABELPROVIDER_H
 
+#include "qgis_core.h"
 #include "qgslabelingengine.h"
 #include "qgsrenderer.h"
 

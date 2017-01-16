@@ -30,8 +30,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import (Qt,
-                              QEvent)
+from qgis.PyQt.QtCore import Qt, QEvent, QSettings
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QDialog,
                                  QStyle,
@@ -52,7 +51,8 @@ from qgis.PyQt.QtGui import (QIcon,
 from qgis.gui import (QgsDoubleSpinBox,
                       QgsSpinBox
                       )
-from qgis.core import NULL
+from qgis.core import (NULL,
+                       QgsApplication)
 
 from processing.core.ProcessingConfig import (ProcessingConfig,
                                               settingsWatcher,
@@ -160,7 +160,7 @@ class ConfigDialog(BASE, WIDGET):
         Filter 'Providers' items
         """
         providersItem = QStandardItem(self.tr('Providers'))
-        icon = QIcon(os.path.join(pluginPath, 'images', 'alg.svg'))
+        icon = QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         providersItem.setIcon(icon)
         providersItem.setEditable(False)
         emptyItem = QStandardItem()
@@ -214,9 +214,9 @@ class ConfigDialog(BASE, WIDGET):
 
         providers = Processing.providers
         for provider in providers:
-            providerDescription = provider.getDescription()
+            providerDescription = provider.name()
             groupItem = QStandardItem(providerDescription)
-            icon = provider.getIcon()
+            icon = provider.icon()
             groupItem.setIcon(icon)
             groupItem.setEditable(False)
 
@@ -266,6 +266,7 @@ class ConfigDialog(BASE, WIDGET):
 
     def accept(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        qsettings = QSettings()
         for setting in list(self.items.keys()):
             if setting.group != menusSettingsGroup or self.saveMenus:
                 if isinstance(setting.value, bool):
@@ -277,7 +278,7 @@ class ConfigDialog(BASE, WIDGET):
                         QMessageBox.warning(self, self.tr('Wrong value'),
                                             self.tr('Wrong value for parameter "%s":\n\n%s' % (setting.description, str(e))))
                         return
-                setting.save()
+                setting.save(qsettings)
         Processing.updateAlgsList()
         settingsWatcher.settingsChanged.emit()
         QApplication.restoreOverrideCursor()

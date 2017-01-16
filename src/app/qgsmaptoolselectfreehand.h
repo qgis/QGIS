@@ -17,6 +17,7 @@
 #define QGSMAPTOOLSELECTFREEHAND_H
 
 #include "qgsmaptool.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsRubberBand;
@@ -47,7 +48,7 @@ class APP_EXPORT QgsMapToolSelectFreehand : public QgsMapTool
     bool mDragging;
 
     QColor mFillColor;
-    QColor mBorderColour;
+    QColor mBorderColor;
 };
 
 #endif

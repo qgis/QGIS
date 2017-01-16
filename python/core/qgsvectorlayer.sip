@@ -231,7 +231,7 @@ struct QgsVectorJoinInfo
  *
  * - skipEmptyFields=(yes|no)
  *
- *   If yes then empty fields will be discarded (eqivalent to concatenating consecutive
+ *   If yes then empty fields will be discarded (equivalent to concatenating consecutive
  *   delimiters)
  *
  * - maxFields=#
@@ -334,8 +334,8 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
       InvalidLayer, /**< Edit failed due to invalid layer */
     };
 
-    //! Selection behaviour
-    enum SelectBehaviour
+    //! Selection behavior
+    enum SelectBehavior
     {
       SetSelection, /**< Set selection, removing any existing selection */
       AddToSelection, /**< Add selection to current selection */
@@ -420,7 +420,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     bool removeJoin( const QString& joinLayerId );
 
     /**
-     * Acccessor to the join buffer object
+     * Accessor to the join buffer object
      * @note added 2.14.7
      */
     QgsVectorLayerJoinBuffer* joinBuffer();
@@ -506,34 +506,34 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     /**
      * Select features found within the search rectangle (in layer's coordinates)
      * @param rect search rectangle
-     * @param behaviour selection type, allows adding to current selection, removing
+     * @param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
      * @see invertSelectionInRectangle(QgsRectangle & rect)
      * @see selectByExpression()
      * @see selectByIds()
      */
-    void selectByRect( QgsRectangle & rect, SelectBehaviour behaviour = SetSelection );
+    void selectByRect( QgsRectangle & rect, SelectBehavior behavior = SetSelection );
 
     /** Select matching features using an expression.
      * @param expression expression to evaluate to select features
-     * @param behaviour selection type, allows adding to current selection, removing
+     * @param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
      * @note added in QGIS 2.16
      * @see selectByRect()
      * @see selectByIds()
      */
-    void selectByExpression( const QString& expression, SelectBehaviour behaviour = SetSelection );
+    void selectByExpression( const QString& expression, SelectBehavior behavior = SetSelection );
 
     /** Select matching features using a list of feature IDs. Will emit the
      * selectionChanged() signal with the clearAndSelect flag set.
      * @param ids feature IDs to select
-     * @param behaviour selection type, allows adding to current selection, removing
+     * @param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
      * @note added in QGIS 2.16
      * @see selectByRect()
      * @see selectByExpression()
      */
-    void selectByIds( const QgsFeatureIds &ids, SelectBehaviour behaviour = SetSelection );
+    void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
 
     /**
      * Modifies the current selection on this layer
@@ -760,7 +760,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     /**
      * Set the string (typically sql) used to define a subset of the layer
      * @param subset The subset string. This may be the where clause of a sql statement
-     *               or other defintion string specific to the underlying dataprovider
+     *               or other definition string specific to the underlying dataprovider
      *               and data store.
      * @return true, when setting the subset string was successful, false otherwise
      */
@@ -1111,10 +1111,10 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
 
     const QMap< QString, QString >& attributeAliases() const;
 
-    const QSet<QString>& excludeAttributesWms() const;
+    QSet<QString> excludeAttributesWms() const;
     void setExcludeAttributesWms( const QSet<QString>& att );
 
-    const QSet<QString>& excludeAttributesWfs() const;
+    QSet<QString> excludeAttributesWfs() const;
     void setExcludeAttributesWfs( const QSet<QString>& att );
 
     /** Delete an attribute field (but does not commit it) */
@@ -1580,7 +1580,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     /** Is emitted, when edited changes successfully have been written to the data provider */
     void editingStopped();
 
-    /** Is emitted, before changes are commited to the data provider */
+    /** Is emitted, before changes are committed to the data provider */
     void beforeCommitChanges();
 
     /** Is emitted, before changes are rolled back*/

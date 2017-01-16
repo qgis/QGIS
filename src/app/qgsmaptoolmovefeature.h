@@ -17,6 +17,7 @@
 #define QGSMAPTOOLMOVEFEATURE_H
 
 #include "qgsmaptooladvanceddigitizing.h"
+#include "qgis_app.h"
 
 //! Map tool for translating feature position by mouse drag
 class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing

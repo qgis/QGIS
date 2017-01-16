@@ -28,12 +28,6 @@
 #include <QProgressDialog>
 #include <QFile>
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#endif
-
 QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix, int rasterBand, Statistics stats )
     : mRasterFilePath( rasterFile )
     , mRasterBand( rasterBand )
@@ -69,7 +63,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
 
   //open the raster layer and the raster band
   GDALAllRegister();
-  GDALDatasetH inputDataset = GDALOpen( TO8F( mRasterFilePath ), GA_ReadOnly );
+  GDALDatasetH inputDataset = GDALOpen( mRasterFilePath.toUtf8().constData(), GA_ReadOnly );
   if ( !inputDataset )
   {
     return 3;

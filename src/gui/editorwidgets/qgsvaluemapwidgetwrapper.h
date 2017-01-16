@@ -19,6 +19,7 @@
 #include "qgseditorwidgetwrapper.h"
 
 #include <QComboBox>
+#include "qgis_gui.h"
 
 
 /** \ingroup gui

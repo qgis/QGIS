@@ -59,12 +59,11 @@ class QgsWfsServer: public QgsOWSServer
     //! Constructor. Takes parameter map and a pointer to a renderer object (does not take ownership)
     QgsWfsServer(
       const QString& configFilePath
+      , const QgsServerSettings& settings
       , QMap<QString, QString>& parameters
       , QgsWfsProjectParser* cp
       , QgsRequestHandler* rh
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-      , const QgsAccessControl* accessControl
-#endif
+      , QgsAccessControl* accessControl
     );
 
     void executeRequest() override;

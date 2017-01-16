@@ -19,6 +19,7 @@
 #include <QWidget>
 #include "qgsexpressioncontext.h"
 #include "qgsdistancearea.h"
+#include "qgis_gui.h"
 
 class QgsFilterLineEdit;
 class QToolButton;

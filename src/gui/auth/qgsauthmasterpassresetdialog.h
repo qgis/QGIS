@@ -20,6 +20,7 @@
 #include <QDialog>
 
 #include "ui_qgsauthmasterpassresetdialog.h"
+#include "qgis_gui.h"
 
 class QLabel;
 class QVBoxLayout;

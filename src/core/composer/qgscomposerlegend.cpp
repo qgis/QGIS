@@ -46,14 +46,14 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mForceResize( false )
     , mSizeToContents( true )
 {
-  mLegendModel = new QgsLegendModel( QgsProject::instance()->layerTreeRoot() );
+  mLegendModel = new QgsLegendModel( mComposition->project()->layerTreeRoot() );
 
   connect( &composition->atlasComposition(), SIGNAL( renderEnded() ), this, SLOT( onAtlasEnded() ) );
   connect( &composition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( onAtlasFeature( QgsFeature* ) ) );
 
   // Connect to the main layertreeroot.
   // It serves in "auto update mode" as a medium between the main app legend and this one
-  connect( QgsProject::instance()->layerTreeRoot(), SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode*, QString ) ) );
+  connect( mComposition->project()->layerTreeRoot(), SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode*, QString ) ) );
 }
 
 QgsComposerLegend::QgsComposerLegend()
@@ -225,7 +225,7 @@ bool QgsComposerLegend::resizeToContents() const
 
 void QgsComposerLegend::setCustomLayerTree( QgsLayerTreeGroup* rootGroup )
 {
-  mLegendModel->setRootGroup( rootGroup ? rootGroup : QgsProject::instance()->layerTreeRoot() );
+  mLegendModel->setRootGroup( rootGroup ? rootGroup : mComposition->project()->layerTreeRoot() );
 
   delete mCustomLayerTree;
   mCustomLayerTree = rootGroup;
@@ -237,7 +237,7 @@ void QgsComposerLegend::setAutoUpdateModel( bool autoUpdate )
   if ( autoUpdate == autoUpdateModel() )
     return;
 
-  setCustomLayerTree( autoUpdate ? nullptr : QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() ) );
+  setCustomLayerTree( autoUpdate ? nullptr : QgsLayerTree::toGroup( mComposition->project()->layerTreeRoot()->clone() ) );
   adjustBoxSize();
   updateItem();
 }
@@ -414,7 +414,7 @@ bool QgsComposerLegend::writeXml( QDomElement& elem, QDomDocument & doc ) const
   return _writeXml( composerLegendElem, doc );
 }
 
-static void _readOldLegendGroup( QDomElement& elem, QgsLayerTreeGroup* parentGroup )
+static void _readOldLegendGroup( QDomElement& elem, QgsLayerTreeGroup* parentGroup, QgsProject* project )
 {
   QDomElement itemElem = elem.firstChildElement();
 
@@ -424,7 +424,7 @@ static void _readOldLegendGroup( QDomElement& elem, QgsLayerTreeGroup* parentGro
     if ( itemElem.tagName() == QLatin1String( "LayerItem" ) )
     {
       QString layerId = itemElem.attribute( QStringLiteral( "layerId" ) );
-      if ( QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId ) )
+      if ( QgsMapLayer* layer = project->mapLayer( layerId ) )
       {
         QgsLayerTreeLayer* nodeLayer = parentGroup->addLayer( layer );
         QString userText = itemElem.attribute( QStringLiteral( "userText" ) );
@@ -447,7 +447,7 @@ static void _readOldLegendGroup( QDomElement& elem, QgsLayerTreeGroup* parentGro
       if ( !style.isEmpty() )
         nodeGroup->setCustomProperty( QStringLiteral( "legend/title-style" ), style );
 
-      _readOldLegendGroup( itemElem, nodeGroup );
+      _readOldLegendGroup( itemElem, nodeGroup, project );
     }
 
     itemElem = itemElem.nextSiblingElement();
@@ -527,7 +527,7 @@ bool QgsComposerLegend::readXml( const QDomElement& itemElem, const QDomDocument
   {
     // QGIS <= 2.4
     QgsLayerTreeGroup* nodeRoot = new QgsLayerTreeGroup();
-    _readOldLegendGroup( oldLegendModelElem, nodeRoot );
+    _readOldLegendGroup( oldLegendModelElem, nodeRoot, mComposition->project() );
     setCustomLayerTree( nodeRoot );
   }
   else
@@ -687,7 +687,7 @@ void QgsComposerLegend::doUpdateFilterByMap()
     mLegendModel->setLayerStyleOverrides( QMap<QString, QString>() );
 
 
-  bool filterByExpression = QgsLayerTreeUtils::hasLegendFilterExpression( *( mCustomLayerTree ? mCustomLayerTree : QgsProject::instance()->layerTreeRoot() ) );
+  bool filterByExpression = QgsLayerTreeUtils::hasLegendFilterExpression( *( mCustomLayerTree ? mCustomLayerTree : mComposition->project()->layerTreeRoot() ) );
 
   if ( mComposerMap && ( mLegendFilterByMap || filterByExpression || mInAtlas ) )
   {

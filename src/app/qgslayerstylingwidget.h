@@ -29,6 +29,7 @@
 
 #include "ui_qgsmapstylingwidgetbase.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
+#include "qgis_app.h"
 
 class QgsLabelingWidget;
 class QgsMapLayer;

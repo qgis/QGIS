@@ -20,6 +20,7 @@
 #include "ui_qgsnewmemorylayerdialogbase.h"
 #include "qgisgui.h"
 #include "qgis.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 

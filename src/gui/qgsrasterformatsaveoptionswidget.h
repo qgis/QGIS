@@ -20,6 +20,7 @@
 
 #include "ui_qgsrasterformatsaveoptionswidgetbase.h"
 #include "qgsraster.h"
+#include "qgis_gui.h"
 
 class QgsRasterLayer;
 
@@ -46,20 +47,71 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
                                       QgsRasterFormatSaveOptionsWidget::Type type = Default,
                                       const QString& provider = "gdal" );
 
+    /**
+     * Set output raster format, it is used to determine list
+     * of available options
+     */
     void setFormat( const QString& format );
+
+    /**
+     * Set provider key, , it is used to determine list
+     * of available options
+     */
     void setProvider( const QString& provider );
+
+    /**
+     * Set output raster layer
+     */
     void setRasterLayer( QgsRasterLayer* rasterLayer ) { mRasterLayer = rasterLayer; mRasterFileName = QString(); }
+
+    /**
+     * Set output raster file name
+     */
     void setRasterFileName( const QString& file ) { mRasterLayer = nullptr; mRasterFileName = file; }
+
+    /**
+     * Returns list of selected options
+     * @see setOptions()
+     */
     QStringList options() const;
+
+    /**
+     * Populate widget with user-defined options. String should contain
+     * key=value pairs separated by spaces, e.g. "TILED=YES TFW=YES"
+     * @see options()
+     * @note added in QGIS 3.0
+     */
+    void setOptions( const QString& options );
+
+    /**
+     * Set widget look and feel
+     */
     void setType( QgsRasterFormatSaveOptionsWidget::Type type = Default );
+
+    /**
+     * Set pyramids format to use
+     */
     void setPyramidsFormat( QgsRaster::RasterPyramidsFormat format )
     { mPyramids = true; mPyramidsFormat = format; }
 
   public slots:
 
     void apply();
+
+    /**
+     * Opens window with options desctiption for given provider
+     * and output format
+     */
     void helpOptions();
+
+    /**
+     * Validates options correctness
+     */
     QString validateOptions( bool gui = true, bool reportOk = true );
+
+    /**
+     * Reloads profiles list from QGIS settings
+     */
     void updateProfiles();
 
   private slots:
@@ -89,7 +141,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
     QgsRasterLayer* mRasterLayer;
     QString mRasterFileName;
     QMap< QString, QString> mOptionsMap;
-    static QMap< QString, QStringList > mBuiltinProfiles;
+    static QMap< QString, QStringList > sBuiltinProfiles;
     bool mPyramids;
     QgsRaster::RasterPyramidsFormat mPyramidsFormat;
 

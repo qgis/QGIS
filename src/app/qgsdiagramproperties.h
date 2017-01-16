@@ -21,6 +21,7 @@
 #include <QDialog>
 #include <ui_qgsdiagrampropertiesbase.h>
 #include <QStyledItemDelegate>
+#include "qgis_app.h"
 
 class QgsVectorLayer;
 class QgsMapCanvas;

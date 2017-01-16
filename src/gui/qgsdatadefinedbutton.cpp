@@ -235,7 +235,7 @@ void QgsDataDefinedButton::mouseReleaseEvent( QMouseEvent *event )
     return;
   }
 
-  // pass to default behaviour
+  // pass to default behavior
   QToolButton::mousePressEvent( event );
 }
 

@@ -61,6 +61,7 @@ class QgsLayerTreeModel : QAbstractItemModel
       AllowNodeRename,            //!< Allow renaming of groups and layers
       AllowNodeChangeVisibility,  //!< Allow user to set node visibility with a check box
       AllowLegendChangeState,     //!< Allow check boxes for legend nodes (if supported by layer's legend)
+      ActionHierarchical,         //!< Check/uncheck action has consequences on children (or parents for leaf node)
     };
     typedef QFlags<QgsLayerTreeModel::Flag> Flags;
 
@@ -227,7 +228,7 @@ class QgsLayerTreeModel : QAbstractItemModel
      */
     void refreshScaleBasedLayers( const QModelIndex& index = QModelIndex() );
 
-    static const QIcon& iconGroup();
+    static QIcon iconGroup();
 
     //! Filter nodes from QgsMapLayerLegend according to the current filtering rules
     QList<QgsLayerTreeModelLegendNode*> filterLegendNodes( const QList<QgsLayerTreeModelLegendNode*>& nodes );

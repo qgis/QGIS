@@ -15,9 +15,9 @@ class QgsColorButton : QToolButton
 
   public:
 
-    /** Specifies the behaviour when the button is clicked
+    /** Specifies the behavior when the button is clicked
      */
-    enum Behaviour
+    enum Behavior
     {
       ShowDialog, /*!< show a color picker dialog when clicked */
       SignalOnly /*!< emit colorClicked signal only, no dialog */
@@ -80,7 +80,7 @@ class QgsColorButton : QToolButton
      */
     void setAcceptLiveUpdates( const bool accept );
 
-    /** Sets whether the drop down menu should be shown for the button. The default behaviour is to
+    /** Sets whether the drop down menu should be shown for the button. The default behavior is to
      * show the menu.
      * @param showMenu set to false to hide the drop down menu
      * @see showMenu
@@ -93,18 +93,18 @@ class QgsColorButton : QToolButton
      */
     bool showMenu() const;
 
-    /** Sets the behaviour for when the button is clicked. The default behaviour is to show
+    /** Sets the behavior for when the button is clicked. The default behavior is to show
      * a color picker dialog.
-     * @param behaviour behaviour when button is clicked
-     * @see behaviour
+     * @param behavior behavior when button is clicked
+     * @see behavior
      */
-    void setBehaviour( const Behaviour behaviour );
+    void setBehavior( const Behavior behavior );
 
-    /** Returns the behaviour for when the button is clicked.
-     * @returns behaviour when button is clicked
-     * @see setBehaviour
+    /** Returns the behavior for when the button is clicked.
+     * @returns behavior when button is clicked
+     * @see setBehavior
      */
-    Behaviour behaviour() const;
+    Behavior behavior() const;
 
     /** Sets the default color for the button, which is shown in the button's drop down menu for the
      * "default color" option.
@@ -274,10 +274,10 @@ class QgsColorButton : QToolButton
      */
     void colorChanged( const QColor &color );
 
-    /** Emitted when the button is clicked, if the button's behaviour is set to SignalOnly
+    /** Emitted when the button is clicked, if the button's behavior is set to SignalOnly
      * @param color button color
-     * @see setBehaviour
-     * @see behaviour
+     * @see setBehavior
+     * @see behavior
      */
     void colorClicked( const QColor &color );
 

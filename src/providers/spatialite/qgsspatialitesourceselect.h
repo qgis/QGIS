@@ -98,12 +98,12 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void addDatabaseLayers( QStringList const & paths, QString const & providerKey );
 
   private:
-    enum columns
+    enum Columns
     {
-      dbssType = 0,
-      dbssDetail,
-      dbssSql,
-      dbssColumns,
+      DbssType = 0,
+      DbssDetail,
+      DbssSql,
+      DbssColumns,
     };
 
     typedef QPair< QString, QString > geomPair;

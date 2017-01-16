@@ -27,7 +27,7 @@ MACRO(FIND_TXT2TAGS)
       FIND_PROGRAM(PDFLATEX_EXECUTABLE pdflatex)
     ENDIF (NOT PDFLATEX_EXECUTABLE)
     IF (NOT PDFLATEX_EXECUTABLE)
-      MESSAGE(ERROR "pdflatex not found - txt2tags documention pdf cannot be generated")
+      MESSAGE(ERROR "pdflatex not found - txt2tags documentation pdf cannot be generated")
     ENDIF(NOT PDFLATEX_EXECUTABLE)
   ENDIF(WITH_TXT2TAGS_PDF)
 ENDMACRO(FIND_TXT2TAGS)
@@ -42,7 +42,7 @@ MACRO(ADD_TXT2TAGS_FILES _sources)
     ADD_CUSTOM_COMMAND(
       OUTPUT ${_out}
       COMMAND ${TXT2TAGS_EXECUTABLE}
-      ARGS -o${_out} -t txt ${_in}
+      ARGS --encoding=utf-8 -o${_out} -t txt ${_in}
       DEPENDS ${_in}
       COMMENT "Building ${_out} from ${_in}"
       )

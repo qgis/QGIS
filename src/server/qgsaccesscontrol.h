@@ -22,6 +22,7 @@
 #include "qgsaccesscontrolfilter.h"
 
 #include <QMultiMap>
+#include "qgis_server.h"
 
 class QgsAccessControlPlugin;
 
@@ -29,7 +30,7 @@ class QgsAccessControlPlugin;
 /**
  * \ingroup server
  * \class QgsAccessControl
- * \brief A helper class that centralise the restrictions given by all the
+ * \brief A helper class that centralize the restrictions given by all the
  *        access control filter plugins.
  **/
 class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
@@ -39,12 +40,15 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     QgsAccessControl()
     {
       mPluginsAccessControls = new QgsAccessControlFilterMap();
+      mResolved = false;
     }
 
     //! Constructor
     QgsAccessControl( const QgsAccessControl& copy )
     {
       mPluginsAccessControls = new QgsAccessControlFilterMap( *copy.mPluginsAccessControls );
+      mFilterFeaturesExpressions = copy.mFilterFeaturesExpressions;
+      mResolved = copy.mResolved;
     }
 
 
@@ -52,6 +56,11 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     {
       delete mPluginsAccessControls;
     }
+
+    /** Resolve features' filter of layers
+     * @param layers to filter
+     */
+    void resolveFilterFeatures( const QList<QgsMapLayer*> &layers );
 
     /** Filter the features of the layer
      * @param layer the layer to control
@@ -110,7 +119,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
 
     /** Fill the capabilities caching key
      * @param cacheKey the list to fill with a cache variant
-     * @return false if we cant create a cache
+     * @return false if we can't create a cache
      */
     bool fillCacheKey( QStringList& cacheKey ) const;
 
@@ -121,8 +130,13 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     void registerAccessControl( QgsAccessControlFilter* accessControl, int priority = 0 );
 
   private:
+    QString resolveFilterFeatures( const QgsVectorLayer* layer ) const;
+
     //! The AccessControl plugins registry
     QgsAccessControlFilterMap* mPluginsAccessControls;
+
+    QMap<QString, QString> mFilterFeaturesExpressions;
+    bool mResolved;
 };
 
 #endif

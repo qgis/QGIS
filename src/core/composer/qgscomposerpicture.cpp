@@ -373,7 +373,7 @@ void QgsComposerPicture::loadLocalPicture( const QString &path )
     {
       //try to open svg
       const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( pic.fileName(), rect().width(), mSvgFillColor, mSvgBorderColor, mSvgBorderWidth,
-                                     1.0, 1.0 );
+                                     1.0 );
       mSVG.load( svgContent );
       if ( mSVG.isValid() )
       {
@@ -744,7 +744,7 @@ bool QgsComposerPicture::writeXml( QDomElement& elem, QDomDocument & doc ) const
     return false;
   }
   QDomElement composerPictureElem = doc.createElement( QStringLiteral( "ComposerPicture" ) );
-  composerPictureElem.setAttribute( QStringLiteral( "file" ), QgsProject::instance()->writePath( mSourcePath ) );
+  composerPictureElem.setAttribute( QStringLiteral( "file" ), mComposition->project()->writePath( mSourcePath ) );
   composerPictureElem.setAttribute( QStringLiteral( "pictureWidth" ), QString::number( mPictureWidth ) );
   composerPictureElem.setAttribute( QStringLiteral( "pictureHeight" ), QString::number( mPictureHeight ) );
   composerPictureElem.setAttribute( QStringLiteral( "resizeMode" ), QString::number( static_cast< int >( mResizeMode ) ) );
@@ -781,7 +781,7 @@ bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocumen
   mPictureWidth = itemElem.attribute( QStringLiteral( "pictureWidth" ), QStringLiteral( "10" ) ).toDouble();
   mPictureHeight = itemElem.attribute( QStringLiteral( "pictureHeight" ), QStringLiteral( "10" ) ).toDouble();
   mResizeMode = QgsComposerPicture::ResizeMode( itemElem.attribute( QStringLiteral( "resizeMode" ), QStringLiteral( "0" ) ).toInt() );
-  //when loading from xml, default to anchor point of middle to match pre 2.4 behaviour
+  //when loading from xml, default to anchor point of middle to match pre 2.4 behavior
   mPictureAnchor = static_cast< QgsComposerItem::ItemPositionMode >( itemElem.attribute( QStringLiteral( "anchorPoint" ), QString::number( QgsComposerItem::Middle ) ).toInt() );
 
   mSvgFillColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 255, 255, 255 ) ) ) );
@@ -822,7 +822,7 @@ bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocumen
     setDataDefinedProperty( QgsComposerObject::PictureSource, expressionActive, true, sourceExpression, QString() );
   }
 
-  mSourcePath = QgsProject::instance()->readPath( itemElem.attribute( QStringLiteral( "file" ) ) );
+  mSourcePath = mComposition->project()->readPath( itemElem.attribute( QStringLiteral( "file" ) ) );
 
   //picture rotation
   if ( !qgsDoubleNear( itemElem.attribute( QStringLiteral( "pictureRotation" ), QStringLiteral( "0" ) ).toDouble(), 0.0 ) )

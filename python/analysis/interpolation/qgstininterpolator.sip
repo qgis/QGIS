@@ -5,12 +5,12 @@ class QgsTINInterpolator: QgsInterpolator
 %End
   public:
     //describes the type of interpolation
-    enum TIN_INTERPOLATION
+    enum TINInterpolation
     {
       Linear,
       CloughTocher
     };
-    QgsTINInterpolator( const QList<QgsInterpolator::LayerData>& inputData, TIN_INTERPOLATION interpolation = Linear, bool showProgressDialog = false );
+    QgsTINInterpolator( const QList<QgsInterpolator::LayerData>& inputData, TINInterpolation interpolation = Linear, bool showProgressDialog = false );
     ~QgsTINInterpolator();
 
     /** Calculates interpolation value for map coordinates x, y

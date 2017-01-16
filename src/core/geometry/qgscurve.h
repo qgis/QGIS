@@ -18,6 +18,7 @@
 #ifndef QGSCURVEV2_H
 #define QGSCURVEV2_H
 
+#include "qgis_core.h"
 #include "qgsabstractgeometry.h"
 #include "qgsrectangle.h"
 
@@ -80,8 +81,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      */
     virtual int numPoints() const = 0;
 
-    /** Calculates the area of the curve. Derived classes should override this
-     * to return the correct area of the curve.
+    /** Sums up the area of the curve by iterating over the vertices (shoelace formula).
      */
     virtual void sumUpArea( double& sum ) const = 0;
 

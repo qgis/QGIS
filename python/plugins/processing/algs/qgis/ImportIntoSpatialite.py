@@ -67,7 +67,7 @@ class ImportIntoSpatialite(GeoAlgorithm):
         self.addParameter(ParameterBoolean(self.DROP_STRING_LENGTH, self.tr('Drop length constraints on character fields'), False))
         self.addParameter(ParameterBoolean(self.FORCE_SINGLEPART, self.tr('Create single-part geometries instead of multi-part'), False))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         database = self.getParameterValue(self.DATABASE)
         uri = QgsDataSourceUri(database)
         if uri.database() is '':

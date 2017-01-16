@@ -17,6 +17,7 @@
 #ifndef QGSTRANSFORMEFFECT_H
 #define QGSTRANSFORMEFFECT_H
 
+#include "qgis_core.h"
 #include "qgspainteffect.h"
 #include "qgis.h"
 #include "qgsmapunitscale.h"

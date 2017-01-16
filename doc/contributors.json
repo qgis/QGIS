@@ -207,7 +207,7 @@
       "properties": {
         "Name": "Marco Hugentobler",
         "Committer": "Yes",
-        "First Commit Message": "Changes in the display behaviour of qgsmapcanvas (updating the screen, avoid flickering when paning).",
+        "First Commit Message": "Changes in the display behavior of qgsmapcanvas (updating the screen, avoid flickering when paning).",
         "First Commit Date": "15-06-2003",
         "GIT Nickname": "mhugent"
       },

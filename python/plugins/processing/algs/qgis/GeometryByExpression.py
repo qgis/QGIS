@@ -68,7 +68,7 @@ class GeometryByExpression(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Modified geometry')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
 
@@ -95,10 +95,7 @@ class GeometryByExpression(GeoAlgorithm):
         if expression.hasParserError():
             raise GeoAlgorithmExecutionException(expression.parserErrorString())
 
-        exp_context = QgsExpressionContext()
-        exp_context.appendScope(QgsExpressionContextUtils.globalScope())
-        exp_context.appendScope(QgsExpressionContextUtils.projectScope())
-        exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+        exp_context = QgsExpressionContext(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
 
         if not expression.prepare(exp_context):
             raise GeoAlgorithmExecutionException(
@@ -124,6 +121,6 @@ class GeometryByExpression(GeoAlgorithm):
                 output_feature.setGeometry(value)
 
             writer.addFeature(output_feature)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

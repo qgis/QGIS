@@ -74,7 +74,7 @@ class RegularPoints(GeoAlgorithm):
                                            self.tr('Use point spacing'), True))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Regular points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         extent = str(self.getParameterValue(self.EXTENT)).split(',')
 
         spacing = float(self.getParameterValue(self.SPACING))
@@ -129,6 +129,6 @@ class RegularPoints(GeoAlgorithm):
                     writer.addFeature(f)
                     x += pSpacing
                     count += 1
-                    progress.setPercentage(int(count * total))
+                    feedback.setProgress(int(count * total))
             y = y - pSpacing
         del writer

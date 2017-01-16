@@ -336,7 +336,7 @@ void TestQgsPaintEffect::drawSource()
 
   QPainter painter;
   painter.begin( &image );
-  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &painter );
+  QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
 
   effect = new QgsDrawSourceEffect();
   effect->render( *mPicture, context );
@@ -410,7 +410,7 @@ void TestQgsPaintEffect::blur()
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
-  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &painter );
+  QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
 
   effect = new QgsBlurEffect();
   effect->render( *mPicture, context );
@@ -508,7 +508,7 @@ void TestQgsPaintEffect::dropShadow()
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
-  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &painter );
+  QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
 
   effect = new QgsDropShadowEffect();
   effect->render( *mPicture, context );
@@ -611,7 +611,7 @@ void TestQgsPaintEffect::glow()
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
-  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &painter );
+  QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
 
   effect = new QgsOuterGlowEffect();
   effect->setSpread( 20 );
@@ -673,7 +673,7 @@ void TestQgsPaintEffect::stack()
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
-  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &painter );
+  QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
 
   effect = new QgsEffectStack();
   QgsBlurEffect* blur = new QgsBlurEffect();
@@ -881,7 +881,7 @@ void TestQgsPaintEffect::composer()
   ms.setLayers( QList<QgsMapLayer*>() << lineLayer );
   ms.setCrsTransformEnabled( false );
 
-  QgsComposition* composition = new QgsComposition( ms );
+  QgsComposition* composition = new QgsComposition( ms, QgsProject::instance() );
   composition->setPaperSize( 50, 50 );
   QgsComposerMap* composerMap = new QgsComposerMap( composition, 1, 1, 48, 48 );
   composerMap->setFrameEnabled( true );

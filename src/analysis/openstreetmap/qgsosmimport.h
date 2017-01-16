@@ -20,6 +20,7 @@
 #include <QObject>
 
 #include "qgsosmbase.h"
+#include "qgis_analysis.h"
 
 class QXmlStreamReader;
 
@@ -27,7 +28,7 @@ class QXmlStreamReader;
  * @brief The QgsOSMXmlImport class imports OpenStreetMap XML format to our topological representation
  * in a SQLite database (see QgsOSMDatabase for details).
  *
- * How to use the classs:
+ * How to use the class:
  * 1. set input XML file name and output DB file name (in constructor or with respective functions)
  * 2. run import()
  * 3. check errorString() if the import failed

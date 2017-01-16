@@ -23,6 +23,7 @@
 
 #include "qgslayertreemodel.h"
 #include "qgssnappingconfig.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsProject;

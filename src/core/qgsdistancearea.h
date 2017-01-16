@@ -16,6 +16,7 @@
 #ifndef QGSDISTANCEAREA_H
 #define QGSDISTANCEAREA_H
 
+#include "qgis_core.h"
 #include <QList>
 #include "qgscoordinatetransform.h"
 #include "qgsunittypes.h"

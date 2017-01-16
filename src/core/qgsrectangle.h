@@ -18,6 +18,7 @@
 #ifndef QGSRECTANGLE_H
 #define QGSRECTANGLE_H
 
+#include "qgis_core.h"
 #include <iosfwd>
 #include <QDomDocument>
 

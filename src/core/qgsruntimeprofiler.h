@@ -5,6 +5,8 @@
 #include <QPair>
 #include <QStack>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * \class QgsRuntimeProfiler
  */

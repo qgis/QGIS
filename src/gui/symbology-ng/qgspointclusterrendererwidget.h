@@ -20,6 +20,7 @@
 
 #include "ui_qgspointclusterrendererwidgetbase.h"
 #include "qgsrendererwidget.h"
+#include "qgis_gui.h"
 
 class QgsPointClusterRenderer;
 

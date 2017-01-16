@@ -17,6 +17,7 @@
 #ifndef QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H
 #define QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsgeometrysimplifier.h"
 #include <QPolygonF>

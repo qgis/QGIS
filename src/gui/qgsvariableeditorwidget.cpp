@@ -77,7 +77,7 @@ QgsVariableEditorWidget::~QgsVariableEditorWidget()
 
 void QgsVariableEditorWidget::showEvent( QShowEvent * event )
 {
-  // initialise widget on first show event only
+  // initialize widget on first show event only
   if ( mShown )
   {
     event->accept();

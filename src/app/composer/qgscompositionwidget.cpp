@@ -82,9 +82,9 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     mGenerateWorldFileCheckBox->setChecked( mComposition->generateWorldFile() );
 
     // populate the map list
-    mWorldFileMapComboBox->setComposition( mComposition );
-    mWorldFileMapComboBox->setItemType( QgsComposerItem::ComposerMap );
-    mWorldFileMapComboBox->setItem( mComposition->worldFileMap() );
+    mReferenceMapComboBox->setComposition( mComposition );
+    mReferenceMapComboBox->setItemType( QgsComposerItem::ComposerMap );
+    mReferenceMapComboBox->setItem( mComposition->referenceMap() );
 
     mSnapToleranceSpinBox->setValue( mComposition->snapTolerance() );
 
@@ -124,7 +124,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   connect( mPaperOrientationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
   connect( mPaperOrientationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPaperOrientationComboBox, SLOT( setDisabled( bool ) ) );
 
-  connect( mWorldFileMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( worldFileMapChanged( QgsComposerItem* ) ) );
+  connect( mReferenceMapComboBox, &QgsComposerItemComboBox::itemChanged, this, &QgsCompositionWidget::referenceMapChanged );
 
   //initialize data defined buttons
   populateDataDefinedButtons();
@@ -205,7 +205,7 @@ void QgsCompositionWidget::updateVariables()
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
   << QgsExpressionContextUtils::compositionScope( mComposition );
   mVariableEditor->setContext( &context );
   mVariableEditor->setEditableScopeIndex( 2 );
@@ -642,7 +642,7 @@ void QgsCompositionWidget::setNumberPages()
   mNumPagesSpinBox->blockSignals( false );
 }
 
-void QgsCompositionWidget::displaySnapingSettings()
+void QgsCompositionWidget::displaySnappingSettings()
 {
   if ( !mComposition )
   {
@@ -679,7 +679,7 @@ void QgsCompositionWidget::on_mGenerateWorldFileCheckBox_toggled( bool state )
   mComposition->setGenerateWorldFile( state );
 }
 
-void QgsCompositionWidget::worldFileMapChanged( QgsComposerItem* item )
+void QgsCompositionWidget::referenceMapChanged( QgsComposerItem* item )
 {
   if ( !mComposition )
   {
@@ -687,7 +687,7 @@ void QgsCompositionWidget::worldFileMapChanged( QgsComposerItem* item )
   }
 
   QgsComposerMap* map = dynamic_cast< QgsComposerMap* >( item );
-  mComposition->setWorldFileMap( map );
+  mComposition->setReferenceMap( map );
 }
 
 void QgsCompositionWidget::on_mGridResolutionSpinBox_valueChanged( double d )
@@ -738,6 +738,6 @@ void QgsCompositionWidget::blockSignals( bool block )
   mOffsetYSpinBox->blockSignals( block );
   mSnapToleranceSpinBox->blockSignals( block );
   mGenerateWorldFileCheckBox->blockSignals( block );
-  mWorldFileMapComboBox->blockSignals( block );
+  mReferenceMapComboBox->blockSignals( block );
 }
 

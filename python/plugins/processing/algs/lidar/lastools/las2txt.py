@@ -48,7 +48,7 @@ class las2txt(LAStoolsAlgorithm):
         self.addOutput(OutputFile(las2txt.OUTPUT, self.tr("Output ASCII file")))
         self.addParametersAdditionalGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt.exe")]
         else:
@@ -63,4 +63,4 @@ class las2txt(LAStoolsAlgorithm):
         commands.append(self.getOutputValue(las2txt.OUTPUT))
         self.addParametersAdditionalCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

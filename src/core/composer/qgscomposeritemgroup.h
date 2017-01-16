@@ -17,6 +17,7 @@
 #ifndef QGSCOMPOSERITEMGROUP_H
 #define QGSCOMPOSERITEMGROUP_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include <QSet>
 

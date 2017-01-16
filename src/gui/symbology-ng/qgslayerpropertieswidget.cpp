@@ -35,6 +35,7 @@
 #include "qgspanelwidget.h"
 #include "qgsdatadefined.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
 static bool _initWidgetFunction( const QString& name, QgsSymbolLayerWidgetFunc f )
@@ -59,8 +60,8 @@ static bool _initWidgetFunction( const QString& name, QgsSymbolLayerWidgetFunc f
 
 static void _initWidgetFunctions()
 {
-  static bool initialized = false;
-  if ( initialized )
+  static bool sInitialized = false;
+  if ( sInitialized )
     return;
 
   _initWidgetFunction( QStringLiteral( "SimpleLine" ), QgsSimpleLineSymbolLayerWidget::create );
@@ -85,7 +86,7 @@ static void _initWidgetFunctions()
 
   _initWidgetFunction( QStringLiteral( "GeometryGenerator" ), QgsGeometryGeneratorSymbolLayerWidget::create );
 
-  initialized = true;
+  sInitialized = true;
 }
 
 
@@ -231,7 +232,7 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
 
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
   << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( mContext.mapCanvas() )

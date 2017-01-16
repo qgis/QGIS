@@ -192,7 +192,7 @@ ACCEPTABLE_MISSING_DOCS = {
     "QgsComposerGroupItem": ["QgsComposerGroupItem(const QString &text)"],
     "QgsGraphDirector": ["buildProgress(int, int) const ", "buildMessage(const QString &) const ", "addProperter(QgsArcProperter *prop)"],
     "QgsScaleComboBox": ["QgsScaleComboBox(QWidget *parent=nullptr)", "updateScales(const QStringList &scales=QStringList())"],
-    "QgsLabelingEngine": ["processProvider(QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p)", "Flag"],
+    "QgsLabelingEngine": ["processProvider(QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p)", "Flag"],  # spellok
     "QgsSymbolSelectorDialog": ["moveLayerByOffset(int offset)", "QgsSymbolSelectorDialog(QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent=nullptr, bool embedded=false)", "lockLayer()", "moveLayerUp()", "updateUi()", "addLayer()", "moveLayerDown()", "layerChanged()", "loadSymbol()", "setWidget(QWidget *widget)", "updateLayerPreview()", "symbolModified()", "updateLockButton()", "removeLayer()", "currentLayer()", "updatePreview()"],
     "QgsCacheIndexFeatureId": ["QgsCacheIndexFeatureId(QgsVectorLayerCache *)"],
     "QgsSymbolLayerWidget": ["registerDataDefinedButton(QgsDataDefinedButton *button, const QString &propertyName, QgsDataDefinedButton::DataType type, const QString &description)", "setSymbolLayer(QgsSymbolLayer *layer)=0", "updateDataDefinedProperty()", "QgsSymbolLayerWidget(QWidget *parent, const QgsVectorLayer *vl=nullptr)", "symbolLayer()=0"],
@@ -684,7 +684,7 @@ ACCEPTABLE_MISSING_DOCS = {
     "QgsGeometryCache": ["cachedGeometries()", "cachedGeometriesRect()", "setCachedGeometriesRect(const QgsRectangle &extent)"],
     "QgsAuthCertInfo": ["QgsAuthCertInfo(const QSslCertificate &cert, bool manageCertTrust=false, QWidget *parent=nullptr, const QList< QSslCertificate > &connectionCAs=QList< QSslCertificate >())", "trustCacheRebuilt()"],
     "QgsExpressionBuilderWidget": ["loadRecent(const QString &key)", "QgsExpressionBuilderWidget(QWidget *parent)", "isExpressionValid()", "saveToRecent(const QString &key)", "loadFieldNames(const QgsFields &fields)", "showEvent(QShowEvent *e)"],
-    "QgsTINInterpolator": ["setExportTriangulationToFile(bool e)", "TIN_INTERPOLATION", "setTriangulationFilePath(const QString &filepath)", "QgsTINInterpolator(const QList< LayerData > &inputData, TIN_INTERPOLATION interpolation=Linear, bool showProgressDialog=false)"],
+    "QgsTINInterpolator": ["setExportTriangulationToFile(bool e)", "TINInterpolation", "setTriangulationFilePath(const QString &filepath)", "QgsTINInterpolator(const QList< LayerData > &inputData, TINInterpolation interpolation=Linear, bool showProgressDialog=false)"],
     "QgsMapLayerProxyModel": ["Filter", "exceptedLayerList()", "filters() const "],
     "QgsCompoundCurve": ["QgsCompoundCurve(const QgsCompoundCurve &curve)"],
     "QgisPlugin": ["QgisPlugin(QString const &name=\"\", QString const &description=\"\", QString const &category=\"\", QString const &version=\"\", PLUGINTYPE const &type=MAPLAYER)", "name()"],

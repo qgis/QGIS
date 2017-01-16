@@ -18,6 +18,7 @@
 #define QGSDOCKWIDGET_H
 
 #include <QDockWidget>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsDockWidget

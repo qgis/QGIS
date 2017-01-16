@@ -20,6 +20,7 @@
 
 #include "qgsmaptool.h"
 #include "qgsannotationitem.h"
+#include "qgis_app.h"
 
 class APP_EXPORT QgsMapToolAnnotation: public QgsMapTool
 {

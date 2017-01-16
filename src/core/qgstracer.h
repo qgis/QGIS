@@ -18,6 +18,7 @@
 
 class QgsVectorLayer;
 
+#include "qgis_core.h"
 #include <QSet>
 #include <QVector>
 

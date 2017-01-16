@@ -18,6 +18,7 @@
 #ifndef QGSSINGLEBANDPSEUDOCOLORRENDERER_H
 #define QGSSINGLEBANDPSEUDOCOLORRENDERER_H
 
+#include "qgis_core.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampshader.h"
 #include "qgsrasterrenderer.h"

@@ -21,16 +21,6 @@
 #include <QTextCodec>
 #include <QUuid>
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8(x)   (x).toUtf8().constData()
-#define TO8F(x)  (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-#else
-#define TO8(x)   (x).toLocal8Bit().constData()
-#define TO8F(x)  QFile::encodeName( x ).constData()
-#define FROM8(x) QString::fromLocal8Bit(x)
-#endif
-
 QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields& fields, QTextCodec* encoding )
 {
   QgsFeature feature;
@@ -40,7 +30,7 @@ QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields& fie
     return feature;
   }
 
-  feature.setFeatureId( OGR_F_GetFID( ogrFet ) );
+  feature.setId( OGR_F_GetFID( ogrFet ) );
   feature.setValid( true );
 
   if ( !readOgrFeatureGeometry( ogrFet, feature ) )
@@ -80,15 +70,12 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec* encoding )
       case OFTInteger:
         varType = QVariant::Int;
         break;
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
       case OFTInteger64:
         varType = QVariant::LongLong;
         break;
-#endif
       case OFTReal:
         varType = QVariant::Double;
         break;
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1400
       case OFTDate:
         varType = QVariant::Date;
         break;
@@ -99,7 +86,6 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec* encoding )
         varType = QVariant::DateTime;
         break;
       case OFTString:
-#endif
       default:
         varType = QVariant::String; // other unsupported, leave it as a string
     }
@@ -148,11 +134,9 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
       case QVariant::Int:
         value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attIndex ) );
         break;
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
       case QVariant::LongLong:
         value = QVariant( OGR_F_GetFieldAsInteger64( ogrFet, attIndex ) );
         break;
-#endif
       case QVariant::Double:
         value = QVariant( OGR_F_GetFieldAsDouble( ogrFet, attIndex ) );
         break;
@@ -245,13 +229,13 @@ QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString& string, const Qg
 
   // create memory file system object from string buffer
   QByteArray ba = string.toUtf8();
-  VSIFCloseL( VSIFileFromMemBuffer( TO8( randomFileName ), reinterpret_cast< GByte* >( ba.data() ),
+  VSIFCloseL( VSIFileFromMemBuffer( randomFileName.toUtf8().constData(), reinterpret_cast< GByte* >( ba.data() ),
                                     static_cast< vsi_l_offset >( ba.size() ), FALSE ) );
 
-  OGRDataSourceH hDS = OGROpen( TO8( randomFileName ), false, nullptr );
+  OGRDataSourceH hDS = OGROpen( randomFileName.toUtf8().constData(), false, nullptr );
   if ( !hDS )
   {
-    VSIUnlink( TO8( randomFileName ) );
+    VSIUnlink( randomFileName.toUtf8().constData() );
     return features;
   }
 
@@ -259,7 +243,7 @@ QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString& string, const Qg
   if ( !ogrLayer )
   {
     OGR_DS_Destroy( hDS );
-    VSIUnlink( TO8( randomFileName ) );
+    VSIUnlink( randomFileName.toUtf8().constData() );
     return features;
   }
 
@@ -274,7 +258,7 @@ QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString& string, const Qg
   }
 
   OGR_DS_Destroy( hDS );
-  VSIUnlink( TO8( randomFileName ) );
+  VSIUnlink( randomFileName.toUtf8().constData() );
 
   return features;
 }
@@ -289,13 +273,13 @@ QgsFields QgsOgrUtils::stringToFields( const QString& string, QTextCodec* encodi
 
   // create memory file system object from buffer
   QByteArray ba = string.toUtf8();
-  VSIFCloseL( VSIFileFromMemBuffer( TO8( randomFileName ), reinterpret_cast< GByte* >( ba.data() ),
+  VSIFCloseL( VSIFileFromMemBuffer( randomFileName.toUtf8().constData(), reinterpret_cast< GByte* >( ba.data() ),
                                     static_cast< vsi_l_offset >( ba.size() ), FALSE ) );
 
-  OGRDataSourceH hDS = OGROpen( TO8( randomFileName ), false, nullptr );
+  OGRDataSourceH hDS = OGROpen( randomFileName.toUtf8().constData(), false, nullptr );
   if ( !hDS )
   {
-    VSIUnlink( TO8( randomFileName ) );
+    VSIUnlink( randomFileName.toUtf8().constData() );
     return fields;
   }
 
@@ -303,7 +287,7 @@ QgsFields QgsOgrUtils::stringToFields( const QString& string, QTextCodec* encodi
   if ( !ogrLayer )
   {
     OGR_DS_Destroy( hDS );
-    VSIUnlink( TO8( randomFileName ) );
+    VSIUnlink( randomFileName.toUtf8().constData() );
     return fields;
   }
 
@@ -316,6 +300,6 @@ QgsFields QgsOgrUtils::stringToFields( const QString& string, QTextCodec* encodi
   }
 
   OGR_DS_Destroy( hDS );
-  VSIUnlink( TO8( randomFileName ) );
+  VSIUnlink( randomFileName.toUtf8().constData() );
   return fields;
 }

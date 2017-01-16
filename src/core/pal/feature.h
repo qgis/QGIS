@@ -30,6 +30,7 @@
 #ifndef FEATURE_H
 #define FEATURE_H
 
+#include "qgis_core.h"
 #include "pointset.h"
 #include "labelposition.h" // for LabelPosition enum
 #include "qgslabelfeature.h"

@@ -46,7 +46,7 @@
 * @param parent - Pointer the to parent QWidget for modality
 * @param fl - Windown flags
 */
-eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* theTemoraryFileList, QWidget* parent, Qt::WindowFlags fl )
+eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* theTemporaryFileList, QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
@@ -54,9 +54,9 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* th
   QSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/eVis/db-geometry" ) ).toByteArray() );
 
-  mTempOutputFileList = theTemoraryFileList;
+  mTempOutputFileList = theTemporaryFileList;
 
-  //Initialize varaibles
+  //Initialize variables
   mQueryDefinitionMap = new QMap<int, eVisQueryDefinition>;
   mDatabaseConnection = nullptr;
 
@@ -247,14 +247,14 @@ void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
   //If no errors thus far, request a new database connection
   if ( !errors )
   {
-    eVisDatabaseConnection::DATABASE_TYPE myDatabaseType;
+    eVisDatabaseConnection::DatabaseType myDatabaseType;
     if ( cboxDatabaseType->currentText() == QLatin1String( "MSAccess" ) )
     {
-      myDatabaseType = eVisDatabaseConnection::MSACCESS;
+      myDatabaseType = eVisDatabaseConnection::MSAccess;
     }
     else if ( cboxDatabaseType->currentText() == QLatin1String( "MYSQL" ) )
     {
-      myDatabaseType = eVisDatabaseConnection::QMYSQL;
+      myDatabaseType = eVisDatabaseConnection::QMySQL;
     }
     else if ( cboxDatabaseType->currentText() == QLatin1String( "ODBC" ) )
     {
@@ -266,10 +266,10 @@ void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
     }
     else
     {
-      myDatabaseType = eVisDatabaseConnection::QSQLITE;
+      myDatabaseType = eVisDatabaseConnection::QSqlite;
     }
 
-    //If there is aready a database connection object, reset with the current parameters
+    //If there is already a database connection object, reset with the current parameters
     if ( mDatabaseConnection )
     {
       mDatabaseConnection->resetConnectionParameters( leDatabaseHost->text(), leDatabasePort->text().toInt(), leDatabaseName->text(), leDatabaseUsername->text(), leDatabasePassword->text(), myDatabaseType );

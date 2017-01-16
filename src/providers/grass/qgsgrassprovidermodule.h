@@ -26,7 +26,7 @@ class QProgressBar;
 class QgsGrassImportItem;
 
 /* Qt does not allow inheritance from multiple QObjects, that is why we have QgsGrassItemActions
- * to keep common actions. QgsGrassItemActions must be childern of data items, so that when a data item
+ * to keep common actions. QgsGrassItemActions must be children of data items, so that when a data item
  * is moved to to another thread, it moves also QgsGrassItemActions and signals work.
  * That is why each data item class keeps QgsGrassItemActions, instead of putting them to QgsGrassObjectItemBase,
  * because it would be ugly and dangerous to be parent of member's member. */
@@ -111,7 +111,7 @@ class QgsGrassMapsetItem : public QgsDirectoryItem, public QgsGrassObjectItemBas
     QFileSystemWatcher *mMapsetFileSystemWatcher;
     bool mRefreshLater;
     // running imports
-    static QList<QgsGrassImport*> mImports;
+    static QList<QgsGrassImport*> sImports;
 };
 
 class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
@@ -234,7 +234,7 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
     QgsGrassImport* mImport;
 
   private:
-    static QgsAnimatedIcon *mImportIcon;
+    static QgsAnimatedIcon *sImportIcon;
 };
 
 #endif // QGSGRASSPROVIDERMODULE_H

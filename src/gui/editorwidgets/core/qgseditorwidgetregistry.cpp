@@ -179,7 +179,7 @@ QString QgsEditorWidgetRegistry::name( const QString& widgetId )
   return QString();
 }
 
-const QMap<QString, QgsEditorWidgetFactory*>& QgsEditorWidgetRegistry::factories()
+QMap<QString, QgsEditorWidgetFactory*> QgsEditorWidgetRegistry::factories()
 {
   return mWidgetFactories;
 }

@@ -20,6 +20,7 @@
 
 #include <QComboBox>
 #include <QLineEdit>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Wraps a unique value widget. Will offer any value previously used for this field.

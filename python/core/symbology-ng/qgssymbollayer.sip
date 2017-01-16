@@ -225,7 +225,7 @@ class QgsSymbolLayer
     virtual bool hasDataDefinedProperties() const;
 
     /** Checks whether the layer has a matching data defined property and if
-     * that property is currently actived.
+     * that property is currently activated.
      * @param property property key
      * @returns true if data defined property exists and is active
      * @see hasDataDefinedProperties
@@ -243,7 +243,7 @@ class QgsSymbolLayer
      * @param defaultVal default value to return if evaluation was not successful
      * @param ok if specified, will be set to true if evaluation was successful
      * @returns calculated value for data defined property, or default value
-     * if property does not exist or is deactived.
+     * if property does not exist or is deactivated.
      * @see hasDataDefinedProperty
      * @see getDataDefinedProperty
      * @note added in QGIS 2.12

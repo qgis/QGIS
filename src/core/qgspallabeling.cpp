@@ -73,7 +73,7 @@ using namespace pal;
   based on my preferences, and to follow Krygier and Wood's placements more closer. (I'm not going to disagree
   with Denis Wood on anything cartography related...!)
 */
-QVector< QgsPalLayerSettings::PredefinedPointPosition > QgsPalLayerSettings::DEFAULT_PLACEMENT_ORDER = QVector< QgsPalLayerSettings::PredefinedPointPosition >()
+const QVector< QgsPalLayerSettings::PredefinedPointPosition > QgsPalLayerSettings::DEFAULT_PLACEMENT_ORDER = QVector< QgsPalLayerSettings::PredefinedPointPosition >()
     << QgsPalLayerSettings::TopRight
     << QgsPalLayerSettings::TopLeft
     << QgsPalLayerSettings::BottomRight
@@ -566,7 +566,7 @@ void QgsPalLayerSettings::readDataDefinedProperty( QgsVectorLayer* layer,
       // Fix to migrate from old-style vector api, where returned QMap keys possibly
       //   had 'holes' in sequence of field indices, e.g. 0,2,3
       // QgsAttrPalIndexNameHash provides a means of access field name in sequences from
-      //   providers that procuded holes (e.g. PostGIS skipped geom column), otherwise it is empty
+      //   providers that produced holes (e.g. PostGIS skipped geom column), otherwise it is empty
       QgsAttrPalIndexNameHash oldIndicesToNames = layer->dataProvider()->palAttributeIndexNames();
 
       if ( !oldIndicesToNames.isEmpty() )
@@ -1409,7 +1409,6 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline
 
   h += fm->height() + static_cast< double >(( lines - 1 ) * labelHeight * multilineH );
-  h /= context->rasterScaleFactor();
 
   for ( int i = 0; i < lines; ++i )
   {
@@ -1419,7 +1418,6 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
       w = width;
     }
   }
-  w /= context->rasterScaleFactor();
 
 #if 0 // XXX strk
   QgsPoint ptSize = xform->toMapCoordinatesF( w, h );
@@ -1567,7 +1565,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     return;
   }
 
-  int fontPixelSize = QgsTextRenderer::sizeToPixel( fontSize, context, fontunits, true, mFormat.sizeMapUnitScale() );
+  int fontPixelSize = QgsTextRenderer::sizeToPixel( fontSize, context, fontunits, mFormat.sizeMapUnitScale() );
   // don't try to show font sizes less than 1 pixel (Qt complains)
   if ( fontPixelSize < 1 )
   {
@@ -2224,7 +2222,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   double topMargin = qMax( 0.25 * labelFontMetrics->ascent(), 0.0 );
   double bottomMargin = 1.0 + labelFontMetrics->descent();
   QgsLabelFeature::VisualMargin vm( topMargin, 0.0, bottomMargin, 0.0 );
-  vm *= xform->mapUnitsPerPixel() / context.rasterScaleFactor();
+  vm *= xform->mapUnitsPerPixel();
   ( *labelFeature )->setVisualMargin( vm );
 
   // store the label's calculated font for later use during painting
@@ -2234,7 +2232,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   // TODO: only for placement which needs character info
   // account for any data defined font metrics adjustments
   lf->calculateInfo( placement == QgsPalLayerSettings::Curved || placement == QgsPalLayerSettings::PerimeterCurved,
-                     labelFontMetrics.data(), xform, context.rasterScaleFactor(), maxcharanglein, maxcharangleout );
+                     labelFontMetrics.data(), xform, maxcharanglein, maxcharangleout );
   // for labelFeature the LabelInfo is passed to feat when it is registered
 
   // TODO: allow layer-wide feature dist in PAL...?
@@ -2338,8 +2336,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
 
   if ( dataDefinedEvaluate( QgsPalLayerSettings::PredefinedPositionOrder, exprVal, &context.expressionContext(), QgsLabelingUtils::encodePredefinedPositionOrder( predefinedPositionOrder ) ) )
   {
-    QString orderD = exprVal.toString();
-    positionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( orderD );
+    QString orderD = exprVal.toString();  //#spellok
+    positionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( orderD );  //#spellok
   }
   ( *labelFeature )->setPredefinedPositionOrder( positionOrder );
 
@@ -2706,7 +2704,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
       wordspace = wspacing;
     }
   }
-  labelFont.setWordSpacing( QgsTextRenderer::scaleToPixelContext( wordspace, context, fontunits, false, mFormat.sizeMapUnitScale() ) );
+  labelFont.setWordSpacing( QgsTextRenderer::scaleToPixelContext( wordspace, context, fontunits, mFormat.sizeMapUnitScale() ) );
 
   // data defined letter spacing?
   double letterspace = labelFont.letterSpacing();
@@ -2720,7 +2718,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
       letterspace = lspacing;
     }
   }
-  labelFont.setLetterSpacing( QFont::AbsoluteSpacing, QgsTextRenderer::scaleToPixelContext( letterspace, context, fontunits, false, mFormat.sizeMapUnitScale() ) );
+  labelFont.setLetterSpacing( QFont::AbsoluteSpacing, QgsTextRenderer::scaleToPixelContext( letterspace, context, fontunits, mFormat.sizeMapUnitScale() ) );
 
   // data defined strikeout font style?
   if ( dataDefinedEvaluate( QgsPalLayerSettings::Strikeout, exprVal, &context.expressionContext(), labelFont.strikeOut() ) )

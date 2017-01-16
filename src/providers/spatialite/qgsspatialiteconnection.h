@@ -97,8 +97,8 @@ class QgsSpatiaLiteConnection : public QObject
      * please note: this method is fully based on the Abstract Interface
      * implemented in libspatialite starting since v.4.0
      *
-     * using the Abstract Interface is highly reccommended, because all
-     * version-dependent implementation details become completly transparent,
+     * using the Abstract Interface is highly recommended, because all
+     * version-dependent implementation details become completely transparent,
      * thus completely freeing the client application to take care of them.
      */
     bool getTableInfoAbstractInterface( sqlite3 * handle, bool loadGeometrylessTables );
@@ -184,7 +184,7 @@ class QgsSqliteHandle
     QString mDbPath;
     bool mIsValid;
 
-    static QMap < QString, QgsSqliteHandle * > handles;
+    static QMap < QString, QgsSqliteHandle * > sHandles;
 };
 
 

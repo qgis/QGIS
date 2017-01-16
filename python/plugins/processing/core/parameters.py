@@ -38,7 +38,8 @@ import numbers
 from qgis.utils import iface
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinateReferenceSystem,
-                       QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope)
+                       QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope,
+                       QgsProject)
 
 from processing.tools.vector import resolveFieldIndex, features
 from processing.tools import dataobjects
@@ -70,7 +71,7 @@ def _createDescriptiveName(s):
 def _expressionContext():
     context = QgsExpressionContext()
     context.appendScope(QgsExpressionContextUtils.globalScope())
-    context.appendScope(QgsExpressionContextUtils.projectScope())
+    context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
 
     if iface.mapCanvas():
         context.appendScope(QgsExpressionContextUtils.mapSettingsScope(iface.mapCanvas().mapSettings()))

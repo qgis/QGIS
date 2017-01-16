@@ -23,6 +23,7 @@
 #include <QPair>
 #include <QString>
 #include "gdal.h"
+#include "qgis_analysis.h"
 
 class QgsAspectFilter;
 class QgsSlopeFilter;
@@ -60,7 +61,7 @@ class ANALYSIS_EXPORT QgsRelief
 
     void clearReliefColors();
     void addReliefColorClass( const ReliefColor& color );
-    const QList< ReliefColor >& reliefColors() const { return mReliefColors; }
+    QList< ReliefColor > reliefColors() const { return mReliefColors; }
     void setReliefColors( const QList< ReliefColor >& c ) { mReliefColors = c; }
 
     /** Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression

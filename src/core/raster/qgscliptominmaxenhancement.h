@@ -19,6 +19,7 @@ email                : ersts@amnh.org
 #ifndef QGSCLIPTOMINMAXENHANCEMENT_H
 #define QGSCLIPTOMINMAXENHANCEMENT_H
 
+#include "qgis_core.h"
 #include "qgscontrastenhancementfunction.h"
 
 /** \ingroup core

@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QSet>
 #include <QStringList>
+#include "qgis_app.h"
 
 class QAction;
 class QDomDocument;

@@ -20,6 +20,7 @@
 
 #include "qgsrasterrendererwidget.h"
 #include "ui_qgspalettedrendererwidgetbase.h"
+#include "qgis_gui.h"
 
 class QgsRasterLayer;
 

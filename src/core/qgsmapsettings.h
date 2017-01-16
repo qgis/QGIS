@@ -16,6 +16,7 @@
 #ifndef QGSMAPSETTINGS_H
 #define QGSMAPSETTINGS_H
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QImage>
 #include <QPointer>

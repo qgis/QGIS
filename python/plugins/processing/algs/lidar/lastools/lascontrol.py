@@ -42,7 +42,7 @@ class lascontrol(LAStoolsAlgorithm):
     CONTROL_POINT_FILE = "CONTROL_POINT_FILE"
     PARSE_STRING = "PARSE_STRING"
     USE_POINTS = "USE_POINTS"
-    USE_POINTS_LIST = ["all", "ground (2)", "ground (2) and keypoints (8)", "ground (2), buldings (6), and keypoints (8)"]
+    USE_POINTS_LIST = ["all", "ground (2)", "ground (2) and keypoints (8)", "ground (2), buildings (6), and keypoints (8)"]
     ADJUST_Z = "ADJUST_Z"
 
     def defineCharacteristics(self):
@@ -60,7 +60,7 @@ class lascontrol(LAStoolsAlgorithm):
                                            self.tr("adjust z elevation by translating away the average error"), False))
         self.addParametersAdditionalGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascontrol")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
@@ -86,4 +86,4 @@ class lascontrol(LAStoolsAlgorithm):
             commands.append("-olaz")
         self.addParametersAdditionalCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

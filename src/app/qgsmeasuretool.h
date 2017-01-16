@@ -18,6 +18,7 @@
 #define QGSMEASURETOOL_H
 
 #include "qgsmaptool.h"
+#include "qgis_app.h"
 
 class QgsDistanceArea;
 class QgsMapCanvas;
@@ -51,7 +52,7 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     void addPoint( const QgsPoint &point );
 
     //! Returns reference to array of the points
-    const QList<QgsPoint>& points();
+    QList<QgsPoint> points();
 
     // Inherited from QgsMapTool
 

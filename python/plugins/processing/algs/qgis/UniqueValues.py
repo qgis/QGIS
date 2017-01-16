@@ -65,7 +65,7 @@ class UniqueValues(GeoAlgorithm):
         self.addOutput(OutputNumber(self.TOTAL_VALUES, self.tr('Total unique values')))
         self.addOutput(OutputString(self.UNIQUE_VALUES, self.tr('Unique values')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
         outputFile = self.getOutputValue(self.OUTPUT)

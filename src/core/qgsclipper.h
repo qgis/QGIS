@@ -19,6 +19,7 @@
 #ifndef QGSCLIPPER_H
 #define QGSCLIPPER_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"
@@ -194,7 +195,7 @@ inline void QgsClipper::trimPolygon( QPolygonF& pts, const QgsRectangle& clipRec
   trimPolygonToBoundary( tmpPts, pts, clipRect, YMin, clipRect.yMinimum() );
 }
 
-// An auxilary function that is part of the polygon trimming
+// An auxiliary function that is part of the polygon trimming
 // code. Will trim the given polygon to the given boundary and return
 // the trimmed polygon in the out pointer. Uses Sutherland and
 // Hodgman's polygon-clipping algorithm.
@@ -298,7 +299,7 @@ inline void QgsClipper::trimPolygonToBoundary( const QPolygonF& inPts, QPolygonF
   }
 }
 
-// An auxilary function to trimPolygonToBoundarY() that returns
+// An auxiliary function to trimPolygonToBoundarY() that returns
 // whether a point is inside or outside the given boundary.
 
 inline bool QgsClipper::inside( const double x, const double y, Boundary b )
@@ -342,7 +343,7 @@ inline bool QgsClipper::inside( QPointF pt, Boundary b, double val )
 }
 
 
-// An auxilary function to trimPolygonToBoundarY() that calculates and
+// An auxiliary function to trimPolygonToBoundarY() that calculates and
 // returns the intersection of the line defined by the given points
 // and the given boundary.
 

@@ -21,6 +21,7 @@
 #ifndef QGSRASTERLAYER_H
 #define QGSRASTERLAYER_H
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QDateTime>
 #include <QList>
@@ -62,7 +63,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *  SingleBandGray -> a GRAYSCALE layer drawn as a range of gray colors (0-255)
  *  SingleBandPseudoColor -> a GRAYSCALE layer drawn using a pseudocolor algorithm
  *  PalettedSingleBandGray -> a PaletteD layer drawn in gray scale (using only one of the color components)
- *  PalettedSingleBandPseudoColor -> a PaletteD layer having only one of its color components rendered as psuedo color
+ *  PalettedSingleBandPseudoColor -> a PaletteD layer having only one of its color components rendered as pseudo color
  *  PalettedMultiBandColor -> a PaletteD image where the bands contains 24bit color info and 8 bits is pulled out per color
  *  MultiBandSingleBandGray -> a layer containing 2 or more bands, but using only one band to produce a grayscale image
  *  MultiBandSingleBandPseudoColor -> a layer containing 2 or more bands, but using only one band to produce a pseudocolor image
@@ -74,7 +75,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *  bandStatistics function. Note that statistics gathering is a slow process and
  *  every effort should be made to call this function as few times as possible. For this
  *  reason, qgsraster has a vector class member to store stats for each band. The
- *  constructor initialises this vector on startup, but only populates the band name and
+ *  constructor initializes this vector on startup, but only populates the band name and
  *  number fields.
  *
  *  Note that where bands are of gdal 'undefined' type, their values may exceed the

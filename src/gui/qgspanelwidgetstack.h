@@ -21,6 +21,7 @@
 #include <QStack>
 
 #include "ui_qgsrenderercontainerbase.h"
+#include "qgis_gui.h"
 
 class QgsPanelWidget;
 

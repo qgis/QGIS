@@ -19,6 +19,7 @@
 #define QGSSVGANNOTATIONDIALOG_H
 
 #include "ui_qgsformannotationdialogbase.h"
+#include "qgis_app.h"
 
 class QgsSvgAnnotationItem;
 class QgsAnnotationWidget;

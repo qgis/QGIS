@@ -17,6 +17,7 @@
 
 #include "qgssymbollayerwidget.h"
 #include "ui_widget_vectorfield.h"
+#include "qgis_gui.h"
 
 class QgsVectorFieldSymbolLayer;
 

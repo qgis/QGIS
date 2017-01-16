@@ -17,6 +17,7 @@
 #define QGSVECTORLAYERDIRECTOR_H
 
 #include "qgsgraphdirector.h"
+#include "qgis_analysis.h"
 
 class QgsGraphBuilderInterface;
 class QgsVectorLayer;

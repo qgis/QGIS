@@ -34,13 +34,15 @@
 #include "qgscapabilitiescache.h"
 #include "qgsmapsettings.h"
 #include "qgsmessagelog.h"
-
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
+#include "qgsserviceregistry.h"
+#include "qgsserversettings.h"
 #include "qgsserverplugins.h"
 #include "qgsserverfilter.h"
 #include "qgsserverinterfaceimpl.h"
-#endif
+#include "qgis_server.h"
 
+class QgsServerRequest;
+class QgsServerResponse;
 
 /** \ingroup server
  * The QgsServer class provides OGC web services.
@@ -50,9 +52,8 @@ class SERVER_EXPORT QgsServer
   public:
 
     /** Creates the server instance
-     * @param captureOutput set to false for stdout output (FCGI)
      */
-    QgsServer( bool captureOutput = true );
+    QgsServer();
 
     /** Set environment variable
      * @param var environment variable name
@@ -61,24 +62,31 @@ class SERVER_EXPORT QgsServer
      */
     void putenv( const QString &var, const QString &val );
 
-    /** Handles the request. The output is normally printed trough FCGI printf
-     * by the request handler or, in case the server has been invoked from python
-     * bindings, a flag is set that captures all the output headers and body, instead
-     * of printing it returns the output as a QPair of QByteArray.
+    /** Handles the request.
      * The query string is normally read from environment
      * but can be also passed in args and in this case overrides the environment
      * variable
      *
-     * @param queryString optional QString containing the query string
-     * @return the response headers and body QPair of QByteArray if called from python bindings, empty otherwise
+     * @param request a QgsServerRequest holding request parameters
+     * @param response a QgsServerResponse for handling response I/O)
      */
-    QPair<QByteArray, QByteArray> handleRequest( const QString& queryString = QString() );
+    void handleRequest( QgsServerRequest& request, QgsServerResponse& response );
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    /** Handles the request from query string
+     * The query string is normally read from environment
+     * but can be also passed in args and in this case overrides the environment
+     * variable.
+     *
+     * @param queryString QString containing the query string
+     * @return the response headers and body QPair of QByteArray
+     */
+    QPair<QByteArray, QByteArray> handleRequest( const QString& queryString );
+
     //! Returns a pointer to the server interface
     QgsServerInterfaceImpl* serverInterface() { return sServerInterface; }
 
-    //! Intialize python
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    //! Initialize python
     //! Note: not in python bindings
     void initPython( );
 #endif
@@ -110,7 +118,7 @@ class SERVER_EXPORT QgsServer
     static QFileInfo defaultAdminSLD();
     static void setupNetworkAccessManager();
     //! Create and return a request handler instance
-    static QgsRequestHandler* createRequestHandler( const bool captureOutput = false );
+    static QgsRequestHandler* createRequestHandler( const QgsServerRequest& request, QgsServerResponse& response );
 
     // Return the server name
     static QString &serverName();
@@ -118,12 +126,14 @@ class SERVER_EXPORT QgsServer
     // Status
     static QString* sConfigFilePath;
     static QgsCapabilitiesCache* sCapabilitiesCache;
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
     static QgsServerInterfaceImpl* sServerInterface;
-#endif
     //! Initialization must run once for all servers
-    static bool sInitialised;
-    static bool sCaptureOutput;
+    static bool sInitialized;
+
+    //! service registry
+    static QgsServiceRegistry sServiceRegistry;
+
+    static QgsServerSettings sSettings;
 };
 #endif // QGSSERVER_H
 

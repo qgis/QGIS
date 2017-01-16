@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include "qgsmultirenderchecker.h"
 #include "qgscomposershape.h"
+#include "qgsproject.h"
 #include <QObject>
 #include "qgstest.h"
 #include <QColor>
@@ -61,7 +62,7 @@ void TestQgsComposerEffects::initTestCase()
 
   //create composition with two rectangles
 
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerRect1 = new QgsComposerShape( 20, 20, 150, 100, mComposition );
   mComposerRect1->setShapeType( QgsComposerShape::Rectangle );

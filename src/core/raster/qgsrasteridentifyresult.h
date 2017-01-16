@@ -18,6 +18,7 @@
 #ifndef QGSRASTERIDENTIFYRESULT_H
 #define QGSRASTERIDENTIFYRESULT_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsraster.h"
 #include "qgserror.h"

@@ -23,7 +23,8 @@ matrix:
             - llvm-toolchain-precise-3.8
             - ubuntu-toolchain-r-test
             - george-edison55-precise-backports # doxygen 1.8.3
-            # - laurent-boulard-devtools not whitelisted yet https://github.com/travis-ci/apt-source-whitelist/pull/345
+            - sourceline: 'ppa:nomeata/travis-backports'
+            # - laurent-boulard-devtools (for silver-search, not whitelisted yet https://github.com/travis-ci/apt-source-whitelist/pull/345)
           packages:
             - doxygen
             - bison
@@ -31,8 +32,9 @@ matrix:
             - graphviz
             - libpq-dev
             - libfcgi-dev
-            - libfftw3-3	    
+            - libfftw3-3
             - pkg-config
+            - perl  # lookahead regex in spell check script
             - poppler-utils
             - txt2tags
             - xvfb
@@ -41,12 +43,13 @@ matrix:
             # used for spell checks
             # - silversearcher-ag not available in precise nor in a white listed ppa (in osgeo4travis as for now)
             - expect-dev  # unbuffer
+            - coreutils
     # OSX based build with QT4 and Python 2
     # - os: osx
     #  env:
     #    - BUILD=osx
     #    - IGNORE_BUILD_FAILURES=YES
-    
+
 
 git:
   depth: 30

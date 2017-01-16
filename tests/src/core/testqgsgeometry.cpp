@@ -27,6 +27,7 @@
 
 //qgis includes...
 #include <qgsapplication.h>
+#include "qgscompoundcurve.h"
 #include <qgsgeometry.h>
 #include "qgsgeometryutils.h"
 #include <qgspoint.h>
@@ -69,6 +70,7 @@ class TestQgsGeometry : public QObject
     void point(); //test QgsPointV2
     void lineString(); //test QgsLineString
     void polygon(); //test QgsPolygonV2
+    void compoundCurve(); //test QgsCompoundCurve
     void multiPoint();
     void multiLineString();
     void multiPolygon();
@@ -215,7 +217,7 @@ void TestQgsGeometry::cleanupTestCase()
 void TestQgsGeometry::init()
 {
   //
-  // Reset / reinitialise the geometries before each test is run
+  // Reset / reinitialize the geometries before each test is run
   //
   mPoint1 = QgsPoint( 20.0, 20.0 );
   mPoint2 = QgsPoint( 80.0, 20.0 );
@@ -2126,13 +2128,13 @@ void TestQgsGeometry::lineString()
   QCOMPARE( area, 1.0 );
   l36.setPoints( QgsPointSequence() << QgsPointV2( 5, 10 ) << QgsPointV2( 10, 10 ) );
   l36.sumUpArea( area );
-  QCOMPARE( area, 1.0 );
+  QVERIFY( qgsDoubleNear( area, -24 ) );
   l36.setPoints( QgsPointSequence() << QgsPointV2( 0, 0 ) << QgsPointV2( 2, 0 ) << QgsPointV2( 2, 2 ) );
   l36.sumUpArea( area );
-  QVERIFY( qgsDoubleNear( area, 3.0 ) );
+  QVERIFY( qgsDoubleNear( area, -22 ) );
   l36.setPoints( QgsPointSequence() << QgsPointV2( 0, 0 ) << QgsPointV2( 2, 0 ) << QgsPointV2( 2, 2 ) << QgsPointV2( 0, 2 ) );
   l36.sumUpArea( area );
-  QVERIFY( qgsDoubleNear( area, 7.0 ) );
+  QVERIFY( qgsDoubleNear( area, -18 ) );
 
   //boundingBox - test that bounding box is updated after every modification to the line string
   QgsLineString l37;
@@ -3090,6 +3092,31 @@ void TestQgsGeometry::polygon()
   removeRings1.removeInteriorRings();
   QCOMPARE( removeRings1.numInteriorRings(), 0 );
 
+}
+
+void TestQgsGeometry::compoundCurve()
+{
+  //test that area of a compound curve ring is equal to a closed linestring with the same vertices
+  QgsCompoundCurve cc;
+  QgsLineString* l1 = new QgsLineString();
+  l1->setPoints( QgsPointSequence() << QgsPointV2( 1, 1 ) << QgsPointV2( 0, 2 ) );
+  cc.addCurve( l1 );
+  QgsLineString* l2 = new QgsLineString();
+  l2->setPoints( QgsPointSequence() << QgsPointV2( 0, 2 ) << QgsPointV2( -1, 0 ) << QgsPointV2( 0, -1 ) );
+  cc.addCurve( l2 );
+  QgsLineString* l3 = new QgsLineString();
+  l3->setPoints( QgsPointSequence() << QgsPointV2( 0, -1 ) << QgsPointV2( 1, 1 ) );
+  cc.addCurve( l3 );
+
+  double ccArea = 0.0;
+  cc.sumUpArea( ccArea );
+
+  QgsLineString ls;
+  ls.setPoints( QgsPointSequence() << QgsPointV2( 1, 1 ) << QgsPointV2( 0, 2 ) <<  QgsPointV2( -1, 0 ) << QgsPointV2( 0, -1 )
+                << QgsPointV2( 1, 1 ) );
+  double lsArea = 0.0;
+  ls.sumUpArea( lsArea );
+  QVERIFY( qgsDoubleNear( ccArea, lsArea ) );
 }
 
 void TestQgsGeometry::multiPoint()

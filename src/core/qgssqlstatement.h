@@ -24,6 +24,8 @@
 #include <QList>
 #include <QSet>
 
+#include "qgis_core.h"
+
 /** \ingroup core
 Class for parsing SQL statements.
 * @note Added in QGIS 2.16
@@ -72,7 +74,7 @@ class CORE_EXPORT QgsSQLStatement
 
     //! Return  statement string, constructed from the internal
     //! abstract syntax tree. This does not contain any nice whitespace
-    //! formatting or comments. In general it is preferrable to use
+    //! formatting or comments. In general it is preferable to use
     //! statement() instead.
     QString dump() const;
 
@@ -161,13 +163,13 @@ class CORE_EXPORT QgsSQLStatement
     };
 
     //! @note not available in Python bindings
-    static const char* BinaryOperatorText[];
+    static const char* BINARY_OPERATOR_TEXT[];
 
     //! @note not available in Python bindings
-    static const char* UnaryOperatorText[];
+    static const char* UNARY_OPERATOR_TEXT[];
 
     //! @note not available in Python bindings
-    static const char* JoinTypeText[];
+    static const char* JOIN_TYPE_TEXT[];
 
     //////
 
@@ -452,7 +454,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeColumnRef : public Node
     {
       public:
-        //! Constructor with colum name only
+        //! Constructor with column name only
         NodeColumnRef( const QString& name, bool star ) : mName( name ), mDistinct( false ), mStar( star ) {}
         //! Constructor with table and column name
         NodeColumnRef( const QString& tableName, const QString& name, bool star ) : mTableName( tableName ), mName( name ), mDistinct( false ), mStar( star ) {}
@@ -499,7 +501,7 @@ class CORE_EXPORT QgsSQLStatement
         //! Set alias name
         void setAlias( const QString& alias ) { mAlias = alias; }
 
-        //! Column that is refered to
+        //! Column that is referred to
         Node* column() const { return mColumnNode; }
 
         //! Alias name
@@ -527,7 +529,7 @@ class CORE_EXPORT QgsSQLStatement
         NodeCast( Node* node, const QString& type ) : mNode( node ), mType( type ) {}
         virtual ~NodeCast() { delete mNode; }
 
-        //! Node that is refered to
+        //! Node that is referred to
         Node* node() const { return mNode; }
 
         //! Type

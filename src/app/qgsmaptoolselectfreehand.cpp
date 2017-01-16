@@ -30,7 +30,7 @@ QgsMapToolSelectFreehand::QgsMapToolSelectFreehand( QgsMapCanvas* canvas )
   mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
   mFillColor = QColor( 254, 178, 76, 63 );
-  mBorderColour = QColor( 254, 58, 29, 100 );
+  mBorderColor = QColor( 254, 58, 29, 100 );
 }
 
 QgsMapToolSelectFreehand::~QgsMapToolSelectFreehand()
@@ -47,7 +47,7 @@ void QgsMapToolSelectFreehand::canvasPressEvent( QgsMapMouseEvent* e )
   {
     mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
     mRubberBand->setFillColor( mFillColor );
-    mRubberBand->setBorderColor( mBorderColour );
+    mRubberBand->setBorderColor( mBorderColor );
   }
   mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
   mDragging = true;

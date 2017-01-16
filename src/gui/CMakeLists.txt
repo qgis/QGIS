@@ -237,6 +237,7 @@ SET(QGIS_GUI_SRCS
   qgsgroupwmsdatadialog.cpp
   qgshighlight.cpp
   qgshistogramwidget.cpp
+  qgshelp.cpp
   qgshtmlannotationitem.cpp
   qgsidentifymenu.cpp
   qgskeyvaluewidget.cpp
@@ -287,7 +288,6 @@ SET(QGIS_GUI_SRCS
   qgspluginmanagerinterface.cpp
   qgspresetcolorrampdialog.cpp
   qgsprevieweffect.cpp
-  qgsprojectbadlayerguihandler.cpp
   qgsprojectionselectionwidget.cpp
   qgsprojectionselector.cpp
   qgsquerybuilder.cpp
@@ -304,7 +304,7 @@ SET(QGIS_GUI_SRCS
   qgsshortcutsmanager.cpp
   qgsslider.cpp
   qgssublayersdialog.cpp
-  qgssubstitutionlistwidget.cpp  
+  qgssubstitutionlistwidget.cpp
   qgssqlcomposerdialog.cpp
   qgssvgannotationitem.cpp
   qgstablewidgetbase.cpp
@@ -450,7 +450,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgspluginmanagerinterface.h
   qgspresetcolorrampdialog.h
   qgsprevieweffect.h
-  qgsprojectbadlayerguihandler.h
   qgsprojectionselectionwidget.h
   qgsprojectionselector.h
   qgsquerybuilder.h
@@ -505,7 +504,7 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgslayerpropertieswidget.h
   symbology-ng/qgsnullsymbolrendererwidget.h
   symbology-ng/qgspenstylecombobox.h
-  symbology-ng/qgspointclusterrendererwidget.h  
+  symbology-ng/qgspointclusterrendererwidget.h
   symbology-ng/qgspointdisplacementrendererwidget.h
   symbology-ng/qgsrendererpropertiesdialog.h
   symbology-ng/qgsrendererwidget.h
@@ -653,6 +652,7 @@ SET(QGIS_GUI_HDRS
   qgsdetaileditemdata.h
   qgsexpressionbuilderdialog.h
   qgsfiledropedit.h
+  qgshelp.h
   qgshighlight.h
   qgsmapcanvasitem.h
   qgsmapcanvasmap.h
@@ -720,7 +720,7 @@ SET(QGIS_GUI_HDRS
   layertree/qgslayertreeembeddedwidgetregistry.h
 
   raster/qgsrasterrendererwidget.h
-  
+
   symbology-ng/qgssymbolwidgetcontext.h
 )
 
@@ -790,6 +790,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets/core
   ${CMAKE_CURRENT_SOURCE_DIR}/layertree
   ${CMAKE_CURRENT_SOURCE_DIR}/effects
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
   ../core
   ../core/auth
   ../core/composer
@@ -810,9 +812,6 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
 )
-
-REMOVE_DEFINITIONS("-DGUI_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("\"-DGUI_EXPORT=${DLLEXPORT}\"")
 
 # disable deprecation warnings for classes re-exporting deprecated methods
 IF(MSVC)
@@ -835,6 +834,14 @@ ENDIF(MSVC)
 ADD_LIBRARY(qgis_gui SHARED
      ${QGIS_GUI_SRCS} ${QGIS_GUI_MOC_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_MOC_HDRS}
 )
+
+GENERATE_EXPORT_HEADER(
+   qgis_gui
+   BASE_NAME GUI
+   EXPORT_FILE_NAME qgis_gui.h
+)
+
+SET(QGIS_GUI_HDRS ${QGIS_GUI_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_gui.h)
 
 IF(NOT APPLE)
   INSTALL(FILES ${QGIS_GUI_HDRS} ${QGIS_GUI_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})

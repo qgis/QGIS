@@ -74,10 +74,7 @@ void QgsFieldConditionalFormatWidget::updateIcon()
 
 void QgsFieldConditionalFormatWidget::setExpression()
 {
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
   context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "value" ), 0, true ) );
   context.setHighlightedVariables( QStringList() << QStringLiteral( "value" ) );
 

@@ -16,6 +16,7 @@
 #ifndef QGSCOMPOSERSCALEBAR_H
 #define QGSCOMPOSERSCALEBAR_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include <QFont>
 #include <QPen>

@@ -26,12 +26,12 @@
 #include <QSettings>
 
 
-const int QgsPostgresFeatureIterator::sFeatureQueueSize = 2000;
+const int QgsPostgresFeatureIterator::FEATURE_QUEUE_SIZE = 2000;
 
 
 QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>( source, ownSource, request )
-    , mFeatureQueueSize( sFeatureQueueSize )
+    , mFeatureQueueSize( FEATURE_QUEUE_SIZE )
     , mFetched( 0 )
     , mFetchGeometry( false )
     , mExpressionCompiled( false )
@@ -381,7 +381,7 @@ bool QgsPostgresFeatureIterator::close()
 QString QgsPostgresFeatureIterator::whereClauseRect()
 {
   QgsRectangle rect = mRequest.filterRect();
-  if ( mSource->mSpatialColType == sctGeography )
+  if ( mSource->mSpatialColType == SctGeography )
   {
     rect = QgsRectangle( -180.0, -90.0, 180.0, 90.0 ).intersect( &rect );
   }
@@ -409,8 +409,8 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
                  mSource->mRequestedSrid.isEmpty() ? mSource->mDetectedSrid : mSource->mRequestedSrid );
   }
 
-  bool castToGeometry = mSource->mSpatialColType == sctGeography ||
-                        mSource->mSpatialColType == sctPcPatch;
+  bool castToGeometry = mSource->mSpatialColType == SctGeography ||
+                        mSource->mSpatialColType == SctPcPatch;
 
   QString whereClause = QStringLiteral( "%1%2 && %3" )
                         .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ),
@@ -467,8 +467,8 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long
   {
     QString geom = QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn );
 
-    if ( mSource->mSpatialColType == sctGeography ||
-         mSource->mSpatialColType == sctPcPatch )
+    if ( mSource->mSpatialColType == SctGeography ||
+         mSource->mSpatialColType == SctPcPatch )
       geom += QLatin1String( "::geometry" );
 
     if ( mSource->mForce2d )
@@ -567,23 +567,23 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long
 
   switch ( mSource->mPrimaryKeyType )
   {
-    case pktOid:
+    case PktOid:
       query += delim + "oid";
       delim = ',';
       break;
 
-    case pktTid:
+    case PktTid:
       query += delim + "ctid";
       delim = ',';
       break;
 
-    case pktInt:
-    case pktUint64:
+    case PktInt:
+    case PktUint64:
       query += delim + QgsPostgresConn::quotedIdentifier( mSource->mFields.at( mSource->mPrimaryKeyAttrs.at( 0 ) ).name() );
       delim = ',';
       break;
 
-    case pktFidMap:
+    case PktFidMap:
       Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
       {
         query += delim + mConn->fieldExpression( mSource->mFields.at( idx ) );
@@ -591,7 +591,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long
       }
       break;
 
-    case pktUnknown:
+    case PktUnknown:
       QgsDebugMsg( "Cannot declare cursor without primary key." );
       return false;
   }
@@ -707,19 +707,19 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
 
   switch ( mSource->mPrimaryKeyType )
   {
-    case pktOid:
-    case pktTid:
+    case PktOid:
+    case PktTid:
       fid = mConn->getBinaryInt( queryResult, row, col++ );
       break;
 
-    case pktInt:
-    case pktUint64:
+    case PktInt:
+    case PktUint64:
       fid = mConn->getBinaryInt( queryResult, row, col++ );
       if ( !subsetOfAttributes || fetchAttributes.contains( mSource->mPrimaryKeyAttrs.at( 0 ) ) )
       {
         feature.setAttribute( mSource->mPrimaryKeyAttrs[0], fid );
       }
-      if ( mSource->mPrimaryKeyType == pktInt )
+      if ( mSource->mPrimaryKeyType == PktInt )
       {
         // NOTE: this needs be done _after_ the setAttribute call
         // above as we want the attribute value to be 1:1 with
@@ -728,7 +728,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       }
       break;
 
-    case pktFidMap:
+    case PktFidMap:
     {
       QVariantList primaryKeyVals;
 
@@ -750,12 +750,12 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
     }
     break;
 
-    case pktUnknown:
+    case PktUnknown:
       Q_ASSERT( !"FAILURE: cannot get feature with unknown primary key" );
       return false;
   }
 
-  feature.setFeatureId( fid );
+  feature.setId( fid );
   QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 4 );
 
   // iterate attributes

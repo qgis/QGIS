@@ -62,7 +62,7 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* compos
     , mFeatureFilter( QLatin1String( "" ) )
 {
   //set first vector layer from layer registry as default one
-  QMap<QString, QgsMapLayer*> layerMap =  QgsProject::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*> layerMap =  mComposition->project()->mapLayers();
   QMap<QString, QgsMapLayer*>::const_iterator mapIt = layerMap.constBegin();
   for ( ; mapIt != layerMap.constEnd(); ++mapIt )
   {
@@ -79,10 +79,11 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* compos
     //listen for modifications to layer and refresh table when they occur
     connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( refreshAttributes() ) );
   }
-  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
 
   if ( mComposition )
   {
+    connect( mComposition->project(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
+
     //refresh table attributes when composition is refreshed
     connect( mComposition, SIGNAL( refreshItemsTriggered() ), this, SLOT( refreshAttributes() ) );
 
@@ -140,7 +141,7 @@ void QgsComposerAttributeTableV2::setRelationId( const QString& relationId )
 
   QgsVectorLayer* prevLayer = sourceLayer();
   mRelationId = relationId;
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( mRelationId );
+  QgsRelation relation = mComposition->project()->relationManager()->relation( mRelationId );
   QgsVectorLayer* newLayer = relation.referencingLayer();
 
   if ( mSource == QgsComposerAttributeTableV2::RelationChildren && newLayer != prevLayer )
@@ -418,7 +419,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
   if ( mComposerMap && mShowOnlyVisibleFeatures )
   {
     selectionRect = *mComposerMap->currentMapExtent();
-    if ( layer && mComposition->mapSettings().hasCrsTransformEnabled() )
+    if ( layer )
     {
       //transform back to layer CRS
       QgsCoordinateTransform coordTransform( layer->crs(), mComposition->mapSettings().destinationCrs() );
@@ -438,7 +439,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
 
   if ( mSource == QgsComposerAttributeTableV2::RelationChildren )
   {
-    QgsRelation relation = QgsProject::instance()->relationManager()->relation( mRelationId );
+    QgsRelation relation = mComposition->project()->relationManager()->relation( mRelationId );
     QgsFeature atlasFeature = mComposition->atlasComposition().feature();
     req = relation.getRelatedFeaturesRequest( atlasFeature );
   }
@@ -564,7 +565,7 @@ QgsVectorLayer *QgsComposerAttributeTableV2::sourceLayer()
       return mVectorLayer;
     case QgsComposerAttributeTableV2::RelationChildren:
     {
-      QgsRelation relation = QgsProject::instance()->relationManager()->relation( mRelationId );
+      QgsRelation relation = mComposition->project()->relationManager()->relation( mRelationId );
       return relation.referencingLayer();
     }
   }
@@ -731,7 +732,7 @@ bool QgsComposerAttributeTableV2::readXml( const QDomElement& itemElem, const QD
   }
   else
   {
-    QgsMapLayer* ml = QgsProject::instance()->mapLayer( layerId );
+    QgsMapLayer* ml = mComposition->project()->mapLayer( layerId );
     if ( ml )
     {
       mVectorLayer = dynamic_cast<QgsVectorLayer*>( ml );

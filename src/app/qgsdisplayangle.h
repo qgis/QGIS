@@ -17,6 +17,7 @@
 #define QGSDISPLAYANGLE_H
 
 #include "ui_qgsdisplayanglebase.h"
+#include "qgis_app.h"
 
 class QgsMapToolMeasureAngle;
 

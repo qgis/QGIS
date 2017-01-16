@@ -19,6 +19,7 @@
 #ifndef QGS_OFFLINE_EDITING_H
 #define QGS_OFFLINE_EDITING_H
 
+#include "qgis_core.h"
 #include <qgsfeature.h>
 #include <qgsvectorlayer.h>
 

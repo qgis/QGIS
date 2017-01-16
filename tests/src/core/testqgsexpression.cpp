@@ -1165,8 +1165,8 @@ class TestQgsExpression: public QObject
 
     void eval_precedence()
     {
-      QCOMPARE( QgsExpression::BinaryOperatorText[QgsExpression::boDiv], "/" );
-      QCOMPARE( QgsExpression::BinaryOperatorText[QgsExpression::boConcat], "||" );
+      QCOMPARE( QgsExpression::BINARY_OPERATOR_TEXT[QgsExpression::boDiv], "/" );
+      QCOMPARE( QgsExpression::BINARY_OPERATOR_TEXT[QgsExpression::boConcat], "||" );
     }
 
     void eval_columns()
@@ -1642,7 +1642,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.hasParserError(), false );
       QSet<QString> refCols = exp.referencedColumns();
       // make sure we get the all attributes flag
-      bool allAttributesFlag = refCols.contains( QgsFeatureRequest::AllAttributes );
+      bool allAttributesFlag = refCols.contains( QgsFeatureRequest::ALL_ATTRIBUTES );
       QCOMPARE( allAttributesFlag, true );
     }
 
@@ -2158,7 +2158,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "OGR no Crosses" ) << "crosses( $geometry, geomFromWKT('LINESTRING ( 0 0, 0 10 )') )" << QgsGeometry::fromPolyline( line ) << false << QVariant( 0 );
       QTest::newRow( "OGR Within" ) << "within( $geometry, geomFromWKT('POLYGON((-90 -90, -90 90, 190 -90, -90 -90))') )" << QgsGeometry::fromPolygon( polygon ) << false << QVariant( 1 );
       QTest::newRow( "OGR no Within" ) << "within( geomFromWKT('POLYGON((-90 -90, -90 90, 190 -90, -90 -90))'), $geometry )" << QgsGeometry::fromPolygon( polygon ) << false << QVariant( 0 );
-      QTest::newRow( "OGR Contians" ) << "contains( geomFromWKT('POLYGON((-90 -90, -90 90, 190 -90, -90 -90))'), $geometry )" << QgsGeometry::fromPolygon( polygon ) << false << QVariant( 1 );
+      QTest::newRow( "OGR Contains" ) << "contains( geomFromWKT('POLYGON((-90 -90, -90 90, 190 -90, -90 -90))'), $geometry )" << QgsGeometry::fromPolygon( polygon ) << false << QVariant( 1 );
       QTest::newRow( "OGR no Contains" ) << "contains( $geometry, geomFromWKT('POLYGON((-90 -90, -90 90, 190 -90, -90 -90))') )" << QgsGeometry::fromPolygon( polygon ) << false << QVariant( 0 );
       QTest::newRow( "OGR no Overlaps" ) << "overlaps( geomFromWKT('POLYGON((-90 -90, -90 90, 190 -90, -90 -90))'), $geometry )" << QgsGeometry::fromPolygon( polygon ) << false << QVariant( 0 );
       QTest::newRow( "OGR overlaps" ) << "overlaps( geomFromWKT('POLYGON((0 -5,10 5,10 -5,0 -5))'), $geometry )" << QgsGeometry::fromPolygon( polygon ) << false << QVariant( 1 );

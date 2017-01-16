@@ -159,7 +159,7 @@ void QgsOWSSourceSelect::populateFormats()
   // value used in UMN Mapserver for OUTPUTFORMAT->NAME is used in
   // WCS 1.0.0 SupportedFormats/Format
 
-  // TODO: It is impossible to cover all possible formats comming from server
+  // TODO: It is impossible to cover all possible formats coming from server
   //       -> enabled all formats, GDAL may be able to open them
 
   QMap<QString, QString> formatsMap;

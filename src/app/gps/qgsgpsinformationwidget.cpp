@@ -208,7 +208,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   mRadAutodetect->setChecked( true );
 #endif
 
-  //auto digitising behaviour
+  //auto digitising behavior
   mCbxAutoAddVertices->setChecked( mySettings.value( QStringLiteral( "/gps/autoAddVertices" ), "false" ).toBool() );
 
   mCbxAutoCommit->setChecked( mySettings.value( QStringLiteral( "/gps/autoCommit" ), "false" ).toBool() );
@@ -683,12 +683,12 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
     mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : QLatin1String( "" ) );
   } //position
 
-  // Avoid refreshing / panning if we havent moved
+  // Avoid refreshing / panning if we haven't moved
   if ( mLastGpsPosition != myNewCenter )
   {
     mLastGpsPosition = myNewCenter;
 
-    // Pan based on user specified behaviour
+    // Pan based on user specified behavior
     if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
     {
       QgsCoordinateReferenceSystem mypSRS = mpCanvas->mapSettings().destinationCrs();
@@ -909,7 +909,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
       f->setGeometry( g );
 
       QgsGeometry featGeom = f->geometry();
-      int avoidIntersectionsReturn = featGeom.avoidIntersections();
+      int avoidIntersectionsReturn = featGeom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
       f->setGeometry( featGeom );
       if ( avoidIntersectionsReturn == 1 )
       {

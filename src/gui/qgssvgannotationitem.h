@@ -20,6 +20,7 @@
 
 #include "qgsannotationitem.h"
 #include <QSvgRenderer>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsSvgAnnotationItem

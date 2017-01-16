@@ -19,6 +19,8 @@
 #include <QString>
 #include <QVariant>
 
+#include "qgis_core.h"
+
 class QgsVectorLayer;
 
 /**

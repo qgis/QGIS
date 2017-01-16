@@ -217,10 +217,7 @@ void QgsHtmlAnnotationItem::setFeatureForMapPosition()
     mFeatureId = currentFeatureId;
     mFeature = currentFeature;
 
-    QgsExpressionContext context;
-    context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::layerScope( mVectorLayer );
+    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
     if ( mMapCanvas )
       context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() ) );
     context.setFeature( mFeature );

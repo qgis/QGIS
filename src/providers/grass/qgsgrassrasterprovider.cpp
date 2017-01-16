@@ -41,7 +41,7 @@
 #define ERR(message) QGS_ERROR_MESSAGE(message,"GRASS provider")
 #define QGS_ERROR(message) QgsError(message,"GRASS provider")
 
-// Do not use warning dialogs, providers are also created on threads (rendering) where dialogs connot be used (constructing QPixmap icon)
+// Do not use warning dialogs, providers are also created on threads (rendering) where dialogs cannot be used (constructing QPixmap icon)
 
 QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
     : QgsRasterDataProvider( uri )
@@ -389,7 +389,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGrassRasterProvider::colorTable( int
   Q_UNUSED( bandNo );
   QList<QgsColorRampShader::ColorRampItem> ct;
 
-  // TODO: check if color can be realy discontinuous in GRASS,
+  // TODO: check if color can be really discontinuous in GRASS,
   // for now we just believe that they are continuous, i.e. end and beginning
   // of the ramp with the same value has the same color
   // we are also expecting ordered CT records in the list

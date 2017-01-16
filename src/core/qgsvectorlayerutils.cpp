@@ -239,10 +239,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer* layer, const QgsG
   if ( !evalContext )
   {
     // no context passed, so we create a default one
-    tempContext.reset( new QgsExpressionContext() );
-    tempContext->appendScope( QgsExpressionContextUtils::globalScope() );
-    tempContext->appendScope( QgsExpressionContextUtils::projectScope() );
-    tempContext->appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+    tempContext.reset( new QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) ) );
     evalContext = tempContext.data();
   }
 
@@ -252,7 +249,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer* layer, const QgsG
   newFeature.setValid( true );
   newFeature.setGeometry( geometry );
 
-  // initialise attributes
+  // initialize attributes
   newFeature.initAttributes( fields.count() );
   for ( int idx = 0; idx < fields.count(); ++idx )
   {

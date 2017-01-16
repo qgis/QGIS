@@ -116,7 +116,7 @@ void TestQgsComposerMap::init()
   //create composition with composer map
   mMapSettings->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
   mMapSettings->setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
@@ -176,7 +176,7 @@ void TestQgsComposerMap::worldFileGeneration()
   mComposerMap->setMapRotation( 30.0 );
 
   mComposition->setGenerateWorldFile( true );
-  mComposition->setWorldFileMap( mComposerMap );
+  mComposition->setReferenceMap( mComposerMap );
 
   double a, b, c, d, e, f;
   mComposition->computeWorldFileParameters( a, b, c, d, e, f );
@@ -261,7 +261,7 @@ void TestQgsComposerMap::dataDefinedLayers()
   ms.setLayers( QList<QgsMapLayer*>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer );
   ms.setCrsTransformEnabled( true );
 
-  mComposition = new QgsComposition( ms );
+  mComposition = new QgsComposition( ms, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
@@ -284,7 +284,7 @@ void TestQgsComposerMap::dataDefinedLayers()
   QVERIFY( result.contains( mPolysLayer ) );
   QVERIFY( result.contains( mRasterLayer ) );
 
-  //test non-existant layer
+  //test non-existent layer
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
                                         QStringLiteral( "'x|%1|%2'" ).arg( mLinesLayer->name(), mPointsLayer->name() ), QString() );
   result = mComposerMap->layersToRender();
@@ -341,7 +341,7 @@ void TestQgsComposerMap::dataDefinedStyles()
   ms.setLayers( QList<QgsMapLayer*>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer );
   ms.setCrsTransformEnabled( true );
 
-  mComposition = new QgsComposition( ms );
+  mComposition = new QgsComposition( ms, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
@@ -374,7 +374,7 @@ void TestQgsComposerMap::dataDefinedStyles()
   QVERIFY( result.contains( mLinesLayer ) );
   QVERIFY( result.contains( mPointsLayer ) );
 
-  //test non-existant preset
+  //test non-existent preset
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true,
                                         QStringLiteral( "'bad preset'" ), QString() );
   result = mComposerMap->layersToRender().toSet();

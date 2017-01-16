@@ -17,7 +17,9 @@
 #ifndef QGSCOMPOSERUTILS_H
 #define QGSCOMPOSERUTILS_H
 
+#include "qgis_core.h"
 #include "qgscomposition.h" //for page size and orientation enums
+#include "qgsrendercontext.h"
 #include <QPointF>
 #include <QRectF>
 
@@ -263,6 +265,14 @@ class CORE_EXPORT QgsComposerUtils
      * @note added in version 2.5
      */
     static void drawText( QPainter* painter, const QRectF& rect, const QString& text, const QFont& font, const QColor& color = QColor(), const Qt::AlignmentFlag halignment = Qt::AlignLeft, const Qt::AlignmentFlag valignment = Qt::AlignTop, const int flags = Qt::TextWordWrap );
+
+    /**
+     * Creates a render context suitable for the specified composition and QPainter destination.
+     * This method returns a new QgsRenderContext which matches the scale and settings from the composition's
+     * QgsComposition::referenceMap().
+     * @note added in QGIS 3.0
+     */
+    static QgsRenderContext createRenderContext( QgsComposition* composition, QPainter& painter );
 
 };
 

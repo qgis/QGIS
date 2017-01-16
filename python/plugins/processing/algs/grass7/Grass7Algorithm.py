@@ -35,7 +35,8 @@ import importlib
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsRasterLayer
+from qgis.core import (QgsRasterLayer,
+                       QgsApplication)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -102,38 +103,18 @@ class Grass7Algorithm(GeoAlgorithm):
 
     def getIcon(self):
         if self._icon is None:
-            self._icon = QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
+            self._icon = QgsApplication.getThemeIcon("/providerGrass.svg")
         return self._icon
 
     def help(self):
-        localDoc = None
-        html = self.grass7Name + '.html'
-        if system.isWindows():
-            # For MS-Windows, use the configured GRASS7 path
-            localPath = os.path.join(Grass7Utils.grassPath(), 'docs/html', html)
-            if os.path.exists(localPath):
-                localDoc = os.path.abspath(localPath)
-        elif system.isMac():
-            # For MacOSX official package
-            localPath = os.path.join('/Applications/GRASS-7.0.app/Contents/MacOS/docs/html', html)
-            if os.path.exists(localPath):
-                localDoc = os.path.abspath(localPath)
+        helpPath = Grass7Utils.grassHelpPath()
+        if helpPath == '':
+            return False, None
+
+        if os.path.exists(helpPath):
+            return False, QUrl.fromLocalFile(os.path.join(helpPath, '{}.html'.format(self.grass7Name))).toString()
         else:
-            # For GNU/Linux distributions
-            searchPaths = ['/usr/share/doc/grass-doc/html', '/opt/grass/docs/html',
-                           '/usr/share/doc/grass/docs/html']
-            for path in searchPaths:
-                localPath = os.path.join(path, html)
-                if os.path.exists(localPath):
-                    localDoc = os.path.abspath(localPath)
-
-        # Found the local documentation
-        if localDoc:
-            localDoc = QUrl.fromLocalFile(localDoc).toString()
-            return False, localDoc
-
-        # Return the URL if local doc is not found
-        return False, 'http://grass.osgeo.org/grass70/manuals/' + self.grass7Name + '.html'
+            return False, helpPath + '{}.html'.format(self.grass7Name)
 
     def getParameterDescriptions(self):
         descs = {}
@@ -255,7 +236,7 @@ class Grass7Algorithm(GeoAlgorithm):
             cellsize = 100
         return cellsize
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         if system.isWindows():
             path = Grass7Utils.grassPath()
             if path == '':
@@ -305,12 +286,12 @@ class Grass7Algorithm(GeoAlgorithm):
         loglines = []
         loglines.append(self.tr('GRASS GIS 7 execution commands'))
         for line in self.commands:
-            progress.setCommand(line)
+            feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_COMMANDS):
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
-        Grass7Utils.executeGrass7(self.commands, progress, self.outputCommands)
+        Grass7Utils.executeGrass7(self.commands, feedback, self.outputCommands)
 
         for out in self.outputs:
             if isinstance(out, OutputHTML):

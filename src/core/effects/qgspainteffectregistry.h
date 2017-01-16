@@ -16,6 +16,7 @@
 #ifndef QGSPAINTEFFECTREGISTRY_H
 #define QGSPAINTEFFECTREGISTRY_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include <QDomElement>
 #include <QDomDocument>

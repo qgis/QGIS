@@ -16,6 +16,7 @@
 #ifndef QGSCOMPOSERMULTIFRAME_H
 #define QGSCOMPOSERMULTIFRAME_H
 
+#include "qgis_core.h"
 #include "qgscomposerobject.h"
 #include <QObject>
 #include <QSizeF>
@@ -42,7 +43,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
 
   public:
 
-    /** Specifies the behaviour for creating new frames to fit the multiframe's content
+    /** Specifies the behavior for creating new frames to fit the multiframe's content
      */
     enum ResizeMode
     {

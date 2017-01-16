@@ -25,7 +25,7 @@ class QgsVectorLayer;
 class QgsRasterLayer;
 class QTemporaryFile;
 
-class QgsSLDConfigParser : public QgsWmsConfigParser
+class SERVER_EXPORT QgsSLDConfigParser : public QgsWmsConfigParser
 {
   public:
 
@@ -100,8 +100,8 @@ class QgsSLDConfigParser : public QgsWmsConfigParser
     double legendIconLabelSpace() const override;
     double legendSymbolWidth() const override;
     double legendSymbolHeight() const override;
-    const QFont& legendLayerFont() const override;
-    const QFont& legendItemFont() const override;
+    QFont legendLayerFont() const override;
+    QFont legendItemFont() const override;
 
     double maxWidth() const override;
     double maxHeight() const override;

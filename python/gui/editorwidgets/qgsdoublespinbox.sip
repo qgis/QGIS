@@ -12,7 +12,7 @@ class QgsDoubleSpinBox : QDoubleSpinBox
 
   public:
 
-    //! Behaviour when widget is cleared.
+    //! Behavior when widget is cleared.
     enum ClearValueMode
     {
       MinimumValue, //!< Reset value to minimum()

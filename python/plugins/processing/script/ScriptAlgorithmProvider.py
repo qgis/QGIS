@@ -29,6 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsApplication
+
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.gui.EditScriptAction import EditScriptAction
@@ -45,19 +47,19 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class ScriptAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
         self.actions.extend([CreateNewScriptAction('Create new script',
                                                    CreateNewScriptAction.SCRIPT_PYTHON),
                              AddScriptFromFileAction(),
                              GetScriptsAction(),
-                             CreateScriptCollectionPluginAction(), ])
+                             CreateScriptCollectionPluginAction()])
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
+        ProcessingConfig.addSetting(Setting(self.name(),
                                             ScriptUtils.SCRIPTS_FOLDER,
                                             self.tr('Scripts folder', 'ScriptAlgorithmProvider'),
                                             ScriptUtils.defaultScriptsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
@@ -66,13 +68,16 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.unload(self)
         ProcessingConfig.addSetting(ScriptUtils.SCRIPTS_FOLDER)
 
-    def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'script.svg'))
+    def icon(self):
+        return QgsApplication.getThemeIcon("/processingScript.svg")
 
-    def getName(self):
+    def svgIconPath(self):
+        return QgsApplication.iconPath("processingScript.svg")
+
+    def id(self):
         return 'script'
 
-    def getDescription(self):
+    def name(self):
         return self.tr('Scripts', 'ScriptAlgorithmProvider')
 
     def _loadAlgorithms(self):

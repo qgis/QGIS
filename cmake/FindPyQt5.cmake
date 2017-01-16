@@ -12,7 +12,7 @@
 # This file defines the following variables:
 #
 # PYQT5_VERSION - The version of PyQt5 found expressed as a 6 digit hex number
-#     suitable for comparision as a string
+#     suitable for comparison as a string
 #
 # PYQT5_VERSION_STR - The version of PyQt5 as a human readable string.
 #

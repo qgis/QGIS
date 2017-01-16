@@ -20,6 +20,7 @@
 #include <QAction>
 
 #include "qgsfeature.h" // For QgsFeatureIds
+#include "qgis_gui.h"
 
 class QgsAttributeTableDelegate;
 class QgsAttributeTableFilterModel;
@@ -128,7 +129,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
 
     /**
      * @brief
-     * Is emitted, in order to provide a hook to add aditional menu entries to the context menu.
+     * Is emitted, in order to provide a hook to add additional* menu entries to the context menu.
      *
      * @param menu     If additional QMenuItems are added, they will show up in the context menu.
      * @param atIndex  The QModelIndex, to which the context menu belongs. Relative to the source model.

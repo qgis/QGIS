@@ -16,6 +16,7 @@
 #ifndef QGSCACHEINDEXFEATUREID_H
 #define QGSCACHEINDEXFEATUREID_H
 
+#include "qgis_core.h"
 #include "qgscacheindex.h"
 
 class QgsVectorLayerCache;

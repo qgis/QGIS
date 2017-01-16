@@ -18,6 +18,7 @@
 #define QGSCOMPOSERMAP_H
 
 //#include "ui_qgscomposermapbase.h"
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include "qgsrectangle.h"
 #include <QFont>
@@ -149,7 +150,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void zoomToExtent( const QgsRectangle& extent );
 
-    /** Sets new Extent for the current atlas preview and changes width, height (and implicitely also scale).
+    /** Sets new Extent for the current atlas preview and changes width, height (and implicitly also scale).
       Atlas preview extents are only temporary, and are regenerated whenever the atlas feature changes
      */
     void setNewAtlasFeatureExtent( const QgsRectangle& extent );
@@ -177,8 +178,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QList<QgsMapLayer*> layers() const;
     //! Setter for stored layer set that is used if mKeepLayerSet is true
     void setLayers( const QList<QgsMapLayer*> layers );
-    //! Stores the current layer set of the qgis mapcanvas in mLayerSet
-    void storeCurrentLayerSet();
 
     //! Getter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8
     bool keepLayerStyles() const { return mKeepLayerStyles; }
@@ -443,7 +442,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     QgsComposerMapOverviewStack* mOverviewStack;
 
-    // Map region in map units realy used for rendering
+    // Map region in map units really used for rendering
     // It can be the same as mUserExtent, but it can be bigger in on dimension if mCalculate==Scale,
     // so that full rectangle in paper is used.
     QgsRectangle mExtent;

@@ -16,6 +16,7 @@
 #ifndef QGSMAPRENDERERSEQUENTIALJOB_H
 #define QGSMAPRENDERERSEQUENTIALJOB_H
 
+#include "qgis_core.h"
 #include "qgsmaprendererjob.h"
 
 class QgsMapRendererCustomPainterJob;

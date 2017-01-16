@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include "qgsmultirenderchecker.h"
 #include "qgscomposerpicture.h"
+#include "qgsproject.h"
 #include <QObject>
 #include "qgstest.h"
 #include <QColor>
@@ -91,7 +92,7 @@ void TestQgsComposerPicture::initTestCase()
   mSvgImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_svg.svg";
   mSvgParamsImage = QStringLiteral( TEST_DATA_DIR ) + "/svg_params.svg";
 
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mComposerPicture = new QgsComposerPicture( mComposition );

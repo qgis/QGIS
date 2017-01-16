@@ -170,6 +170,8 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
 
 QgsRasterLayer::~QgsRasterLayer()
 {
+  emit willBeDeleted();
+
   mValid = false;
   // Note: provider and other interfaces are owned and deleted by pipe
 }
@@ -1258,7 +1260,11 @@ QDateTime QgsRasterLayer::timestamp() const
 void QgsRasterLayer::setRenderer( QgsRasterRenderer* theRenderer )
 {
   QgsDebugMsgLevel( "Entered", 4 );
-  if ( !theRenderer ) { return; }
+  if ( !theRenderer )
+  {
+    return;
+  }
+
   mPipe.set( theRenderer );
   emit rendererChanged();
   emit styleChanged();
@@ -1361,7 +1367,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
 
   // pipe element was introduced in the end of 1.9 development when there were
   // already many project files in use so we support 1.9 backward compatibility
-  // even it was never officialy released -> use pipe element if present, otherwise
+  // even it was never officially released -> use pipe element if present, otherwise
   // use layer node
   QDomNode pipeNode = layer_node.firstChildElement( QStringLiteral( "pipe" ) );
   if ( pipeNode.isNull() ) // old project
@@ -1533,7 +1539,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
 
   // Check timestamp
   // This was probably introduced to reload completely raster if data changed and
-  // reset completly symbology to reflect new data type etc. It creates however
+  // reset completely symbology to reflect new data type etc. It creates however
   // problems, because user defined symbology is complete lost if data file time
   // changed (the content may be the same). See also 6900.
 #if 0

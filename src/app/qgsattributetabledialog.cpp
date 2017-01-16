@@ -54,7 +54,7 @@ QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );
@@ -94,7 +94,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
     mVisibleFields.append( field.name() );
   }
 
-  // Fix selection color on loosing focus (Windows)
+  // Fix selection color on losing focus (Windows)
   setStyleSheet( QgisApp::instance()->styleSheet() );
 
   setAttribute( Qt::WA_DeleteOnClose );
@@ -126,7 +126,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   myDa = new QgsDistanceArea();
 
   myDa->setSourceCrs( mLayer->crs() );
-  myDa->setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
+  myDa->setEllipsoidalMode( true );
   myDa->setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   mEditorContext.setDistanceArea( *myDa );
@@ -134,7 +134,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   QgsFeatureRequest r;
   if ( mLayer->geometryType() != QgsWkbTypes::NullGeometry &&
-       settings.value( QStringLiteral( "/qgis/attributeTableBehaviour" ), QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
+       settings.value( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
   {
     QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
     QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( theLayer, mc->extent() ) );
@@ -258,7 +258,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mMainViewButtonGroup->setId( mAttributeViewButton, QgsDualView::AttributeEditor );
 
   // Load default attribute table filter
-  QgsAttributeTableFilterModel::FilterMode defaultFilterMode = ( QgsAttributeTableFilterModel::FilterMode ) settings.value( QStringLiteral( "/qgis/attributeTableBehaviour" ), QgsAttributeTableFilterModel::ShowAll ).toInt();
+  QgsAttributeTableFilterModel::FilterMode defaultFilterMode = ( QgsAttributeTableFilterModel::FilterMode ) settings.value( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ).toInt();
 
   switch ( defaultFilterMode )
   {
@@ -474,10 +474,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, const 
 
   int rownum = 1;
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( layer );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
 
   QgsField fld = layer->fields().at( fieldindex );
 
@@ -583,17 +580,14 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
 void QgsAttributeTableDialog::filterExpressionBuilder()
 {
   // Show expression builder
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   QgsExpressionBuilderDialog dlg( mLayer, mFilterQuery->text(), this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Expression based filter" ) );
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs().srsid() );
-  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
+  myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   dlg.setGeomCalculator( myDa );
 
@@ -954,7 +948,7 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, 
   QgsDistanceArea myDa;
 
   myDa.setSourceCrs( mLayer->crs().srsid() );
-  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
+  myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   // parse search string and build parsed tree
@@ -965,10 +959,7 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, 
     return;
   }
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   if ( !filterExpression.prepare( &context ) )
   {

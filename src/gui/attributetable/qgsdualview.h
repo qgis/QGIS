@@ -24,6 +24,7 @@
 #include "qgsattributetablefiltermodel.h"
 #include "qgsdistancearea.h"
 #include "qgsattributeform.h"
+#include "qgis_gui.h"
 
 class QgsFeatureRequest;
 class QSignalMapper;

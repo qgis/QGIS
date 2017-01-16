@@ -18,6 +18,7 @@
 #ifndef QGSRASTERHISTOGRAM
 #define QGSRASTERHISTOGRAM
 
+#include "qgis_core.h"
 #include <QString>
 #include <QVector>
 

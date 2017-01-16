@@ -19,6 +19,7 @@
 
 #include <Point3D.h>
 #include <Vector3D.h>
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * This is an interface for interpolator classes for triangulations*/

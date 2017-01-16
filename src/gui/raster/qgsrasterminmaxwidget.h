@@ -24,6 +24,7 @@
 #include "qgsraster.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsRasterLayer;
@@ -79,7 +80,7 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
     //! Hide updated extent choice
     void hideUpdatedExtent();
 
-    //! Load programmaticaly with current values
+    //! Load programmatically with current values
     void doComputations();
 
     //! Uncheck cumulative cut, min/max, std-dev radio buttons

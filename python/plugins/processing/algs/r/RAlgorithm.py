@@ -33,6 +33,8 @@ import json
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsApplication
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
@@ -88,7 +90,7 @@ class RAlgorithm(GeoAlgorithm):
 
     def getIcon(self):
         if self._icon is None:
-            self._icon = QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
+            self._icon = QgsApplication.getThemeIcon("/providerR.svg")
         return self._icon
 
     def defineCharacteristicsFromScript(self):
@@ -187,7 +189,7 @@ class RAlgorithm(GeoAlgorithm):
             raise WrongScriptException(
                 self.tr('Could not load R script: %s.\n Problem with line %s' % (self.descriptionFile, line)))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         if isWindows():
             path = RUtils.RFolder()
             if path == '':
@@ -198,9 +200,9 @@ class RAlgorithm(GeoAlgorithm):
         loglines.append(self.tr('R execution commands'))
         loglines += self.getFullSetOfRCommands()
         for line in loglines:
-            progress.setCommand(line)
+            feedback.pushCommandInfo(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
-        RUtils.executeRAlgorithm(self, progress)
+        RUtils.executeRAlgorithm(self, feedback)
         if self.showPlots:
             htmlfilename = self.getOutputValue(RAlgorithm.RPLOTS)
             with open(htmlfilename, 'w') as f:

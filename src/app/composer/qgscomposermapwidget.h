@@ -163,6 +163,9 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void loadOverviewEntries();
 
     void updateOverviewFrameSymbolMarker( const QgsComposerMapOverview* overview );
+
+    void storeCurrentLayerSet();
+
 };
 
 #endif

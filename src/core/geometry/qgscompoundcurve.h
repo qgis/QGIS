@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOUNDCURVEV2_H
 #define QGSCOMPOUNDCURVEV2_H
 
+#include "qgis_core.h"
 #include "qgscurve.h"
 
 /** \ingroup core

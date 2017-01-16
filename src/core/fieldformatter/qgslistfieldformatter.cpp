@@ -31,16 +31,15 @@ QString QgsListFieldFormatter::representValue( QgsVectorLayer* layer, int fieldI
 
   if ( value.isNull() )
   {
-    QSettings settings;
     return QgsApplication::nullRepresentation();
   }
 
   QString result;
-  const QVariantList list = value.toList();
-  for ( QVariantList::const_iterator i = list.constBegin(); i != list.constEnd(); ++i )
+  Q_FOREACH ( const QVariant& val, value.toList() )
   {
-    if ( !result.isEmpty() ) result.append( ", " );
-    result.append( i->toString() );
+    if ( !result.isEmpty() )
+      result.append( ", " );
+    result.append( val.toString() );
   }
   return result;
 }

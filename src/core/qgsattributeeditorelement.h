@@ -16,6 +16,7 @@
 #ifndef QGSATTRIBUTEEDITORELEMENT_H
 #define QGSATTRIBUTEEDITORELEMENT_H
 
+#include "qgis_core.h"
 #include "qgsrelation.h"
 #include "qgsoptionalexpression.h"
 

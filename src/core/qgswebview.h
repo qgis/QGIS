@@ -23,6 +23,8 @@
 #include <QWebView>
 #include <QDesktopWidget>
 
+#include "qgis_core.h"
+
 
 /** \ingroup core
  */

@@ -15,6 +15,7 @@
 #ifndef QGSNULLSYMBOLRENDERER_H
 #define QGSNULLSYMBOLRENDERER_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsrenderer.h"
 #include "qgssymbol.h"

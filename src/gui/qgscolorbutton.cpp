@@ -40,7 +40,7 @@
 
 QgsColorButton::QgsColorButton( QWidget *parent, const QString& cdt, QgsColorSchemeRegistry* registry )
     : QToolButton( parent )
-    , mBehaviour( QgsColorButton::ShowDialog )
+    , mBehavior( QgsColorButton::ShowDialog )
     , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )
     , mColor( QColor() )
     , mDefaultColor( QColor() ) //default to invalid color
@@ -80,12 +80,12 @@ QSize QgsColorButton::sizeHint() const
 
 const QPixmap& QgsColorButton::transparentBackground()
 {
-  static QPixmap transpBkgrd;
+  static QPixmap sTranspBkgrd;
 
-  if ( transpBkgrd.isNull() )
-    transpBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
+  if ( sTranspBkgrd.isNull() )
+    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
 
-  return transpBkgrd;
+  return sTranspBkgrd;
 }
 
 void QgsColorButton::showColorDialog()
@@ -319,7 +319,7 @@ void QgsColorButton::keyPressEvent( QKeyEvent *e )
 {
   if ( !mPickingColor )
   {
-    //if not picking a color, use default tool button behaviour
+    //if not picking a color, use default tool button behavior
     QToolButton::keyPressEvent( e );
     return;
   }
@@ -409,7 +409,7 @@ QPixmap QgsColorButton::createMenuIcon( const QColor &color, const bool showChec
 
 void QgsColorButton::buttonClicked()
 {
-  switch ( mBehaviour )
+  switch ( mBehavior )
   {
     case ShowDialog:
       showColorDialog();
@@ -711,9 +711,9 @@ void QgsColorButton::setShowMenu( const bool showMenu )
   setButtonBackground( mColor );
 }
 
-void QgsColorButton::setBehaviour( const QgsColorButton::Behaviour behaviour )
+void QgsColorButton::setBehavior( const QgsColorButton::Behavior behavior )
 {
-  mBehaviour = behaviour;
+  mBehavior = behavior;
 }
 
 void QgsColorButton::setDefaultColor( const QColor& color )

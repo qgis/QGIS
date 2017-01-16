@@ -16,6 +16,7 @@
 #ifndef QGSPROJECTSNAPPINGSETTINGS_H
 #define QGSPROJECTSNAPPINGSETTINGS_H
 
+#include "qgis_core.h"
 #include "qgstolerance.h"
 
 class QDomDocument;
@@ -80,7 +81,7 @@ class CORE_EXPORT QgsSnappingConfig
         //! return if settings are valid
         bool valid() const;
 
-        //! return if snaping is enbaled
+        //! return if snapping is enabled
         bool enabled() const;
 
         //! enables the snapping
@@ -129,7 +130,7 @@ class CORE_EXPORT QgsSnappingConfig
     //! reset to default values
     void reset();
 
-    //! return if snapping is enbaled
+    //! return if snapping is enabled
     bool enabled() const;
 
     //! enables the snapping

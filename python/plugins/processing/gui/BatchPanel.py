@@ -73,7 +73,7 @@ class BatchPanel(BASE, WIDGET):
         self.btnRemove.setIcon(QgsApplication.getThemeIcon('/symbologyRemove.svg'))
         self.btnOpen.setIcon(QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
         self.btnSave.setIcon(QgsApplication.getThemeIcon('/mActionFileSave.svg'))
-        self.btnAdvanced.setIcon(QIcon(os.path.join(pluginPath, 'images', 'alg.svg')))
+        self.btnAdvanced.setIcon(QgsApplication.getThemeIcon("/processingAlgorithm.svg"))
 
         self.alg = alg
         self.parent = parent

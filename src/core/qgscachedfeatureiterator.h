@@ -16,6 +16,7 @@
 #ifndef QGSCACHEDFEATUREITERATOR_H
 #define QGSCACHEDFEATUREITERATOR_H
 
+#include "qgis_core.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 

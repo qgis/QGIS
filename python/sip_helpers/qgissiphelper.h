@@ -19,6 +19,6 @@
 
 class QVariant;
 
-typedef bool ( *FromQVariantConvertorFn )( const QVariant *, PyObject ** );
+typedef bool ( *FromQVariantConverterFn )( const QVariant *, PyObject ** );
 
-bool null_from_qvariant_convertor( const QVariant *, PyObject ** );
+bool null_from_qvariant_converter( const QVariant *, PyObject ** );

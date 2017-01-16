@@ -16,6 +16,7 @@
 #ifndef QGSSQLEXPRESSIONCOMPILER_H
 #define QGSSQLEXPRESSIONCOMPILER_H
 
+#include "qgis_core.h"
 #include "qgsexpression.h"
 #include "qgsfields.h"
 
@@ -47,10 +48,11 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      */
     enum Flag
     {
-      CaseInsensitiveStringMatch = 0x01,  //!< Provider performs case-insensitive string matching for all strings
-      LikeIsCaseInsensitive = 0x02, //!< Provider treats LIKE as case-insensitive
-      NoNullInBooleanLogic = 0x04, //!< Provider does not support using NULL with boolean logic, e.g., "(...) OR NULL"
-      NoUnaryMinus = 0x08, //!< Provider does not unary minus, e.g., " -( 100 * 2 ) = ..."
+      CaseInsensitiveStringMatch = 1,  //!< Provider performs case-insensitive string matching for all strings
+      LikeIsCaseInsensitive = 1 << 1, //!< Provider treats LIKE as case-insensitive
+      NoNullInBooleanLogic = 1 << 2, //!< Provider does not support using NULL with boolean logic, e.g., "(...) OR NULL"
+      NoUnaryMinus = 1 << 3, //!< Provider does not unary minus, e.g., " -( 100 * 2 ) = ..."
+      IntegerDivisionResultsInInteger = 1 << 4, //!< Dividing int by int results in int on provider. Subclass must implement the castToReal() function to allow compilation of division.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -92,6 +94,36 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      * @returns result of node compilation
      */
     virtual Result compileNode( const QgsExpression::Node* node, QString& str );
+
+    /** Return the SQL function for the expression function.
+     * Derived classes should override this to help compile functions
+     * @param fnName expression function name
+     * @returns the SQL function name
+     */
+    virtual QString sqlFunctionFromFunctionName( const QString& fnName ) const;
+
+    /** Return the Arguments for SQL function for the expression function.
+     * Derived classes should override this to help compile functions
+     * @param fnName expression function name
+     * @param fnArgs arguments from expression
+     * @returns the arguments updated for SQL Function
+     */
+    virtual QStringList sqlArgumentsFromFunctionName( const QString& fnName, const QStringList& fnArgs ) const;
+
+    /**
+     * Casts a value to a real result. Subclasses which indicate the IntegerDivisionResultsInInteger
+     * flag must reimplement this to cast a numeric value to a real type value so that division results
+     * in a real value result instead of integer.
+     * @note added in QGIS 3.0
+     */
+    virtual QString castToReal( const QString& value ) const;
+
+    /**
+     * Casts a value to a integer result. Subclasses must reimplement this to cast a numeric value to a integer
+     * type value so that integer division results in a integer value result instead of real.
+     * @note added in QGIS 3.0
+     */
+    virtual QString castToInt( const QString& value ) const;
 
     QString mResult;
     QgsFields mFields;

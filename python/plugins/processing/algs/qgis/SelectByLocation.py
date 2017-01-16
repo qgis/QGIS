@@ -88,7 +88,7 @@ class SelectByLocation(GeoAlgorithm):
                                              self.methods, 0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (location)'), True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.INPUT)
         inputLayer = dataobjects.getObjectFromUri(filename)
         method = self.getParameterValue(self.METHOD)
@@ -133,7 +133,7 @@ class SelectByLocation(GeoAlgorithm):
                             selectedSet.append(feat.id())
                             break
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         if 'disjoint' in predicates:
             selectedSet = selectedSet + disjoinSet

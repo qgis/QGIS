@@ -17,6 +17,7 @@
 #define QGSTABWIDGET_H
 
 #include <QTabWidget>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * The QgsTabWidget class is the same as the QTabWidget but with additional methods to

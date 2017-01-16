@@ -57,11 +57,11 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
         self.canRunInBatchMode = False
         self.showInModeler = False
 
-    def execute(self, progress):
+    def execute(self, feedback):
         self.alg = algList.getAlgorithm(self.description["algname"]).getCopy()
         for name, value in list(self.description["parameters"].items()):
             self.alg.setParameterValue(name, value)
         for name, value in list(self.description["outputs"].items()):
             self.alg.setOutputValue(name, value)
-        self.alg.execute(progress)
+        self.alg.execute(feedback)
         self.outputs = self.alg.outputs

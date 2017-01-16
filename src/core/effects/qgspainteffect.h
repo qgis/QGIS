@@ -17,6 +17,7 @@
 #ifndef QGSPAINTEFFECT_H
 #define QGSPAINTEFFECT_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include <QPainter>
 #include <QDomDocument>
@@ -93,7 +94,7 @@ class CORE_EXPORT QgsPaintEffect
     virtual void readProperties( const QgsStringMap& props ) = 0;
 
     /** Saves the current state of the effect to a DOM element. The default
-     * behaviour is to save the properties string map returned by
+     * behavior is to save the properties string map returned by
      * @link properties @endlink.
      * @param doc destination DOM document
      * @param element destination DOM element

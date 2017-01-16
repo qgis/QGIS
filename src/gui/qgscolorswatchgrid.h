@@ -18,6 +18,7 @@
 #include "qgscolorscheme.h"
 #include <QWidget>
 #include <QWidgetAction>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsColorSwatchGrid
@@ -142,7 +143,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     /** Generates a checkboard pattern for transparent color backgrounds
      * @returns checkboard pixmap
      */
-    const QPixmap &transparentBackground();
+    QPixmap transparentBackground();
 };
 
 

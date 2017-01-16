@@ -21,6 +21,7 @@
 
 #include "qgsfeature.h"
 #include "qgsaction.h"
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 class QgsMapLayerAction;

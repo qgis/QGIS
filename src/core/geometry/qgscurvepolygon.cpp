@@ -359,7 +359,7 @@ double QgsCurvePolygon::area() const
 
   double totalArea = 0.0;
 
-  if ( mExteriorRing->isClosed() )
+  if ( mExteriorRing->isRing() )
   {
     double area = 0.0;
     mExteriorRing->sumUpArea( area );
@@ -370,7 +370,7 @@ double QgsCurvePolygon::area() const
   for ( ; ringIt != mInteriorRings.constEnd(); ++ringIt )
   {
     double area = 0.0;
-    if (( *ringIt )->isClosed() )
+    if (( *ringIt )->isRing() )
     {
       ( *ringIt )->sumUpArea( area );
       totalArea -= qAbs( area );
@@ -668,7 +668,7 @@ double QgsCurvePolygon::closestSegment( const QgsPointV2& pt, QgsPointV2& segmen
   QList<QgsCurve*> segmentList;
   segmentList.append( mExteriorRing );
   segmentList.append( mInteriorRings );
-  return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::RING, pt, segmentPt,  vertexAfter, leftOf, epsilon );
+  return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::Ring, pt, segmentPt,  vertexAfter, leftOf, epsilon );
 }
 
 bool QgsCurvePolygon::nextVertex( QgsVertexId& vId, QgsPointV2& vertex ) const

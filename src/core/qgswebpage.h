@@ -16,6 +16,7 @@
 #ifndef QGSWEBPAGE_H
 #define QGSWEBPAGE_H
 
+#include "qgis_core.h"
 #include "qgsmessagelog.h"
 #include <QObject>
 

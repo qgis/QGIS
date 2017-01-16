@@ -45,7 +45,7 @@
 #include "qgsgpxprovider.h"
 #include "gpsdata.h"
 
-const char* QgsGPXProvider::attr[] = { "name", "elevation", "symbol", "number",
+const char* QgsGPXProvider::ATTR[] = { "name", "elevation", "symbol", "number",
                                        "comment", "description", "source",
                                        "url", "url name"
                                      };
@@ -60,7 +60,7 @@ QgsGPXProvider::DataType QgsGPXProvider::attrUsed[] =
   QgsGPXProvider::AllType, QgsGPXProvider::AllType
 };
 
-const int QgsGPXProvider::attrCount = sizeof( QgsGPXProvider::attr ) / sizeof( const char* );
+const int QgsGPXProvider::ATTR_COUNT = sizeof( QgsGPXProvider::ATTR ) / sizeof( const char* );
 
 const QString GPX_KEY = QStringLiteral( "gpx" );
 
@@ -88,12 +88,12 @@ QgsGPXProvider::QgsGPXProvider( const QString& uri )
                    ( typeStr == QLatin1String( "route" ) ? RouteType : TrackType ) );
 
   // set up the attributes and the geometry type depending on the feature type
-  for ( int i = 0; i < attrCount; ++i )
+  for ( int i = 0; i < ATTR_COUNT; ++i )
   {
     if ( attrUsed[i] & mFeatureType )
     {
       QString attrTypeName = ( attrType[i] == QVariant::Int ? "int" : ( attrType[i] == QVariant::Double ? "double" : "text" ) );
-      attributeFields.append( QgsField( attr[i], attrType[i], attrTypeName ) );
+      attributeFields.append( QgsField( ATTR[i], attrType[i], attrTypeName ) );
       indexToAttr.append( i );
     }
   }

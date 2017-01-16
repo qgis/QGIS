@@ -17,6 +17,7 @@
 
 #define DIAGRAM_NAME_TEXT "Text"
 
+#include "qgis_core.h"
 #include "qgsdiagram.h"
 #include <QPen>
 #include <QBrush>

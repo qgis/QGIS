@@ -36,7 +36,7 @@ QgsAddRemoveItemCommand::~QgsAddRemoveItemCommand()
 
 void QgsAddRemoveItemCommand::redo()
 {
-  QUndoCommand::redo(); // call redo() on all childs
+  QUndoCommand::redo(); // call redo() on all children
   if ( mFirstRun )
   {
     mFirstRun = false;
@@ -47,7 +47,7 @@ void QgsAddRemoveItemCommand::redo()
 
 void QgsAddRemoveItemCommand::undo()
 {
-  QUndoCommand::undo(); // call undo() on all childs, in reverse order
+  QUndoCommand::undo(); // call undo() on all children, in reverse order
   if ( mFirstRun )
   {
     mFirstRun = false;
@@ -80,5 +80,5 @@ void QgsAddRemoveItemCommand::switchState()
     emit itemAdded( mItem );
     mState = Added;
   }
-  QgsProject::instance()->setDirty( true );
+  mComposition->project()->setDirty( true );
 }

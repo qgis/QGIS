@@ -86,7 +86,7 @@ QSize QgsDetailedItemDelegate::sizeHint(
       //return QSize(theOption.rect.width(), myHeight + myVerticalSpacer);
     }
   }
-  else //cant convert to qgsdetaileditemdata
+  else //can't convert to qgsdetaileditemdata
   {
     return QSize( 50, 50 ); //fallback
   }

@@ -184,6 +184,5 @@ void QgsMapToolMeasureAngle::configureDistanceArea()
   QString ellipsoidId = QgsProject::instance()->ellipsoid();
   mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs().srsid() );
   mDa.setEllipsoid( ellipsoidId );
-  // Only use ellipsoidal calculation when project wide transformation is enabled.
-  mDa.setEllipsoidalMode( mCanvas->mapSettings().hasCrsTransformEnabled() );
+  mDa.setEllipsoidalMode( true );
 }

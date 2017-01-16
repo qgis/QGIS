@@ -147,7 +147,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   mRasterViewPort->mWidth = static_cast<int>( mRasterViewPort->mBottomRightPoint.x() - mRasterViewPort->mTopLeftPoint.x() );
   mRasterViewPort->mHeight = static_cast<int>( mRasterViewPort->mBottomRightPoint.y() - mRasterViewPort->mTopLeftPoint.y() );
 
-  //the drawable area can start to get very very large when you get down displaying 2x2 or smaller, this is becasue
+  //the drawable area can start to get very very large when you get down displaying 2x2 or smaller, this is because
   //mapToPixel.mapUnitsPerPixel() is less then 1,
   //so we will just get the pixel data and then render these special cases differently in paintImageToCanvas()
 
@@ -172,7 +172,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   // TODO R->mLastViewPort = *mRasterViewPort;
 
   // TODO: is it necessary? Probably WMS only?
-  layer->dataProvider()->setDpi( rendererContext.rasterScaleFactor() * 25.4 * rendererContext.scaleFactor() );
+  layer->dataProvider()->setDpi( 25.4 * rendererContext.scaleFactor() );
 
 
   // copy the whole raster pipe!

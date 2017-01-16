@@ -62,7 +62,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         # needed for thinning and killing
         step = self.getParametersStepValue()
 
@@ -82,7 +82,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("-o")
         commands.append("tile.laz")
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we ground classify the tiles
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
@@ -103,7 +103,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("-olaz")
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we height-normalize the tiles
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
@@ -116,7 +116,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("-olaz")
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we thin and splat the tiles
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasthin")]
@@ -135,7 +135,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("-olaz")
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we rasterize the classified tiles into the partial CHMs at level 00
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
@@ -151,7 +151,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("-obil")
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we rasterize the classified tiles into the partial CHMs at level 02
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
@@ -171,7 +171,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("-obil")
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we rasterize the classified tiles into the partial CHMs at level 05
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
@@ -191,7 +191,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("-obil")
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we rasterize the classified tiles into the partial CHMs at level 10
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
@@ -211,7 +211,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("-obil")
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we rasterize the classified tiles into the partial CHMs at level 15
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
@@ -231,7 +231,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("-obil")
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we rasterize the classified tiles into the partial CHMs at level 20
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
@@ -251,7 +251,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("-obil")
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we combine the partial CHMs into a single output CHM
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasgrid")]
@@ -261,4 +261,4 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         self.addParametersStepCommands(commands)
         self.addParametersRasterOutputCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

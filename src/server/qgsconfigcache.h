@@ -24,6 +24,7 @@
 #include <QFileSystemWatcher>
 #include <QMap>
 #include <QObject>
+#include "qgis_server.h"
 
 class QgsServerProjectParser;
 class QgsWCSProjectParser;

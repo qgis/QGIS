@@ -692,7 +692,7 @@ error:
 
 
 
-QMap < QString, QgsSqliteHandle * > QgsSqliteHandle::handles;
+QMap < QString, QgsSqliteHandle * > QgsSqliteHandle::sHandles;
 
 
 bool QgsSqliteHandle::checkMetadata( sqlite3 *handle )
@@ -726,11 +726,11 @@ QgsSqliteHandle* QgsSqliteHandle::openDb( const QString & dbPath, bool shared )
 
   //QMap < QString, QgsSqliteHandle* >&handles = QgsSqliteHandle::handles;
 
-  if ( shared && handles.contains( dbPath ) )
+  if ( shared && sHandles.contains( dbPath ) )
   {
     QgsDebugMsg( QString( "Using cached connection for %1" ).arg( dbPath ) );
-    handles[dbPath]->ref++;
-    return handles[dbPath];
+    sHandles[dbPath]->ref++;
+    return sHandles[dbPath];
   }
 
   QgsDebugMsg( QString( "New sqlite connection for " ) + dbPath );
@@ -758,7 +758,7 @@ QgsSqliteHandle* QgsSqliteHandle::openDb( const QString & dbPath, bool shared )
 
   QgsSqliteHandle *handle = new QgsSqliteHandle( sqlite_handle, dbPath, shared );
   if ( shared )
-    handles.insert( dbPath, handle );
+    sHandles.insert( dbPath, handle );
 
   return handle;
 }
@@ -774,7 +774,7 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle * &handle )
   else
   {
     QMap < QString, QgsSqliteHandle * >::iterator i;
-    for ( i = handles.begin(); i != handles.end() && i.value() != handle; ++i )
+    for ( i = sHandles.begin(); i != sHandles.end() && i.value() != handle; ++i )
       ;
 
     Q_ASSERT( i.value() == handle );
@@ -784,7 +784,7 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle * &handle )
     {
       i.value()->sqliteClose();
       delete i.value();
-      handles.remove( i.key() );
+      sHandles.remove( i.key() );
     }
   }
 
@@ -794,13 +794,13 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle * &handle )
 void QgsSqliteHandle::closeAll()
 {
   QMap < QString, QgsSqliteHandle * >::iterator i;
-  for ( i = handles.begin(); i != handles.end(); ++i )
+  for ( i = sHandles.begin(); i != sHandles.end(); ++i )
   {
     i.value()->sqliteClose();
     delete i.value();
   }
 
-  handles.clear();
+  sHandles.clear();
 }
 
 void QgsSqliteHandle::sqliteClose()

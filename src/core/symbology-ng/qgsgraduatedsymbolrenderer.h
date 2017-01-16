@@ -15,6 +15,7 @@
 #ifndef QGSGRADUATEDSYMBOLRENDERERV2_H
 #define QGSGRADUATEDSYMBOLRENDERERV2_H
 
+#include "qgis_core.h"
 #include "qgssymbol.h"
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
@@ -106,8 +107,8 @@ class CORE_EXPORT QgsRendererRangeLabelFormat
     void setFromDomElement( QDomElement &element );
     void saveToDomElement( QDomElement &element );
 
-    static int MaxPrecision;
-    static int MinPrecision;
+    static const int MAX_PRECISION;
+    static const int MIN_PRECISION;
 
   protected:
     QString mFormat;

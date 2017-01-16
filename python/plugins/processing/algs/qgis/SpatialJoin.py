@@ -102,7 +102,7 @@ class SpatialJoin(GeoAlgorithm):
                                              self.tr('Joined table'), self.keeps))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Joined layer')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         target = dataobjects.getObjectFromUri(
             self.getParameterValue(self.TARGET))
         join = dataobjects.getObjectFromUri(
@@ -237,7 +237,7 @@ class SpatialJoin(GeoAlgorithm):
                 if not none:
                     writer.addFeature(outFeat)
 
-            progress.setPercentage(int(c * total))
+            feedback.setProgress(int(c * total))
         del writer
 
     def _filterNull(self, values):

@@ -21,6 +21,7 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #ifndef QGSCONTRASTENHANCEMENT_H
 #define QGSCONTRASTENHANCEMENT_H
 
+#include "qgis_core.h"
 #include <limits>
 
 #include "qgis.h"
@@ -101,7 +102,7 @@ class CORE_EXPORT QgsContrastEnhancement
     //! \brief Set the contrast enhancement algorithm
     void setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm, bool generateTable = true );
 
-    //! \brief A public method that allows the user to set their own custom contrast enhancment function
+    //! \brief A public method that allows the user to set their own custom contrast enhancement function
     void setContrastEnhancementFunction( QgsContrastEnhancementFunction* );
 
     //! \brief Set the maximum value for the contrast enhancement range.
@@ -124,7 +125,7 @@ class CORE_EXPORT QgsContrastEnhancement
     //! \brief Flag indicating if the lookup table needs to be regenerated
     bool mEnhancementDirty;
 
-    //! \brief Scalar so that values can be used as array indicies
+    //! \brief Scalar so that values can be used as array indices
     double mLookupTableOffset;
 
     //! \brief Pointer to the lookup table

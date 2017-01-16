@@ -25,6 +25,7 @@
 #include "qgscollapsiblegroupbox.h"
 #include "qgsdualview.h"
 #include "qgsrelation.h"
+#include "qgis_gui.h"
 
 class QgsFeature;
 class QgsGenericFeatureSelectionManager;

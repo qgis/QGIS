@@ -17,6 +17,7 @@
 #ifndef QGSCOMPOSEROBJECT_H
 #define QGSCOMPOSEROBJECT_H
 
+#include "qgis_core.h"
 #include "qgsobjectcustomproperties.h"
 #include "qgsexpressioncontextgenerator.h"
 #include <QObject>

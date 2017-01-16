@@ -63,7 +63,7 @@ class TestQgsPoint: public QObject
 void TestQgsPoint::init()
 {
   //
-  // Reset / reinitialise the geometries before each test is run
+  // Reset / reinitialize the geometries before each test is run
   //
   mPoint1 = QgsPoint( 20.0, -20.0 );
   mPoint2 = QgsPoint( -80.0, 20.0 );

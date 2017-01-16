@@ -61,9 +61,10 @@
 #include "gdal.h"
 #include "cpl_conv.h"
 
-QgsComposition::QgsComposition( const QgsMapSettings& mapSettings )
+QgsComposition::QgsComposition( const QgsMapSettings& mapSettings, QgsProject* project )
     : QGraphicsScene( nullptr )
     , mMapSettings( mapSettings )
+    , mProject( project )
     , mAtlasComposition( this )
 {
   init();
@@ -171,6 +172,11 @@ QgsComposition::~QgsComposition()
   delete mItemsModel;
 }
 
+QgsProject* QgsComposition::project() const
+{
+  return mProject;
+}
+
 void QgsComposition::loadDefaults()
 {
   QSettings settings;
@@ -201,7 +207,7 @@ void QgsComposition::refreshItems()
 
 void QgsComposition::setSelectedItem( QgsComposerItem *item )
 {
-  setAllUnselected();
+  setAllDeselected();
   if ( item )
   {
     item->setSelected( true );
@@ -209,10 +215,10 @@ void QgsComposition::setSelectedItem( QgsComposerItem *item )
   }
 }
 
-void QgsComposition::setAllUnselected()
+void QgsComposition::setAllDeselected()
 {
   //we can't use QGraphicsScene::clearSelection, as that emits no signals
-  //and we don't know which items are being unselected
+  //and we don't know which items are being deselected
   //accordingly, we can't inform the composition model of selection changes
   //instead, do the clear selection manually...
   QList<QGraphicsItem *> selectedItemList = selectedItems();
@@ -367,7 +373,7 @@ void QgsComposition::setPaperSize( const double width, const double height, bool
     mPages.at( i )->setSceneRect( QRectF( 0, currentY, width, height ) );
     currentY += ( height + mSpaceBetweenPages );
   }
-  QgsProject::instance()->setDirty( true );
+  mProject->setDirty( true );
   updateBounds();
   emit paperSizeChanged();
 }
@@ -493,7 +499,7 @@ void QgsComposition::setNumPages( const int pages )
     }
   }
 
-  QgsProject::instance()->setDirty( true );
+  mProject->setDirty( true );
   updateBounds();
 
   emit nPagesChanged();
@@ -555,7 +561,7 @@ void QgsComposition::setPageStyleSymbol( QgsFillSymbol* symbol )
 {
   delete mPageStyleSymbol;
   mPageStyleSymbol = static_cast<QgsFillSymbol*>( symbol->clone() );
-  QgsProject::instance()->setDirty( true );
+  mProject->setDirty( true );
 }
 
 void QgsComposition::createDefaultPageStyleSymbol()
@@ -780,18 +786,35 @@ void QgsComposition::setPrintResolution( const int dpi )
 {
   mPrintResolution = dpi;
   emit printResolutionChanged();
-  QgsProject::instance()->setDirty( true );
+  mProject->setDirty( true );
 }
 
-QgsComposerMap* QgsComposition::worldFileMap() const
+QgsComposerMap* QgsComposition::referenceMap() const
 {
-  return dynamic_cast< QgsComposerMap* >( const_cast< QgsComposerItem* >( getComposerItemByUuid( mWorldFileMapId ) ) );
+  // prefer explicitly set reference map
+  if ( QgsComposerMap* map = dynamic_cast< QgsComposerMap* >( const_cast< QgsComposerItem* >( getComposerItemByUuid( mWorldFileMapId ) ) ) )
+    return map;
+
+  // else try to find largest map
+  QList< const QgsComposerMap* > maps = composerMapItems();
+  const QgsComposerMap* largestMap = nullptr;
+  double largestMapArea = 0;
+  Q_FOREACH ( const QgsComposerMap* map, maps )
+  {
+    double area = map->rect().width() * map->rect().height();
+    if ( area > largestMapArea )
+    {
+      largestMapArea = area;
+      largestMap = map;
+    }
+  }
+  return const_cast< QgsComposerMap* >( largestMap );
 }
 
-void QgsComposition::setWorldFileMap( QgsComposerMap* map )
+void QgsComposition::setReferenceMap( QgsComposerMap* map )
 {
   mWorldFileMapId = map ? map->uuid() : QString();
-  QgsProject::instance()->setDirty( true );
+  mProject->setDirty( true );
 }
 
 void QgsComposition::setUseAdvancedEffects( const bool effectsEnabled )
@@ -1078,12 +1101,6 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
   //addItemsFromXML
   addItemsFromXml( importDoc.documentElement(), importDoc, nullptr, addUndoCommands, nullptr );
 
-  //read atlas map parameters (for pre 2.2 templates)
-  //this can only be done after items have been added
-  if ( clearComposition )
-  {
-    atlasComposition().readXmlMapSettings( atlasElem, importDoc );
-  }
   return true;
 }
 
@@ -1139,7 +1156,7 @@ void QgsComposition::addItemsFromXml( const QDomElement& elem, const QDomDocumen
     pasteShiftPos = *pos - minItemPos;
 
     //since we are pasting items, clear the existing selection
-    setAllUnselected();
+    setAllDeselected();
 
     if ( pasteInPlace )
     {
@@ -1598,7 +1615,7 @@ void QgsComposition::selectNextByZOrder( ZValueDirection direction )
   }
 
   //ok, found a good target item
-  setAllUnselected();
+  setAllDeselected();
   selectedItem->setSelected( true );
   emit selectedItemChanged( selectedItem );
 }
@@ -1711,7 +1728,7 @@ void QgsComposition::alignSelectedItemsLeft()
     subcommand->saveAfterState();
   }
   mUndoStack->push( parentCommand );
-  QgsProject::instance()->setDirty( true );
+  mProject->setDirty( true );
 }
 
 void QgsComposition::alignSelectedItemsHCenter()
@@ -1741,7 +1758,7 @@ void QgsComposition::alignSelectedItemsHCenter()
     subcommand->saveAfterState();
   }
   mUndoStack->push( parentCommand );
-  QgsProject::instance()->setDirty( true );
+  mProject->setDirty( true );
 }
 
 void QgsComposition::alignSelectedItemsRight()
@@ -1771,7 +1788,7 @@ void QgsComposition::alignSelectedItemsRight()
     subcommand->saveAfterState();
   }
   mUndoStack->push( parentCommand );
-  QgsProject::instance()->setDirty( true );
+  mProject->setDirty( true );
 }
 
 void QgsComposition::alignSelectedItemsTop()
@@ -1800,7 +1817,7 @@ void QgsComposition::alignSelectedItemsTop()
     subcommand->saveAfterState();
   }
   mUndoStack->push( parentCommand );
-  QgsProject::instance()->setDirty( true );
+  mProject->setDirty( true );
 }
 
 void QgsComposition::alignSelectedItemsVCenter()
@@ -1828,7 +1845,7 @@ void QgsComposition::alignSelectedItemsVCenter()
     subcommand->saveAfterState();
   }
   mUndoStack->push( parentCommand );
-  QgsProject::instance()->setDirty( true );
+  mProject->setDirty( true );
 }
 
 void QgsComposition::alignSelectedItemsBottom()
@@ -1856,7 +1873,7 @@ void QgsComposition::alignSelectedItemsBottom()
     subcommand->saveAfterState();
   }
   mUndoStack->push( parentCommand );
-  QgsProject::instance()->setDirty( true );
+  mProject->setDirty( true );
 }
 
 void QgsComposition::lockSelectedItems()
@@ -1872,9 +1889,9 @@ void QgsComposition::lockSelectedItems()
     subcommand->saveAfterState();
   }
 
-  setAllUnselected();
+  setAllDeselected();
   mUndoStack->push( parentCommand );
-  QgsProject::instance()->setDirty( true );
+  mProject->setDirty( true );
 }
 
 void QgsComposition::unlockAllItems()
@@ -1884,7 +1901,7 @@ void QgsComposition::unlockAllItems()
   QUndoCommand* parentCommand = new QUndoCommand( tr( "Items unlocked" ) );
 
   //first, clear the selection
-  setAllUnselected();
+  setAllDeselected();
 
   QList<QGraphicsItem *> itemList = items();
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
@@ -1896,14 +1913,14 @@ void QgsComposition::unlockAllItems()
       QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( mypItem, QLatin1String( "" ), parentCommand );
       subcommand->savePreviousState();
       mypItem->setPositionLock( false );
-      //select unlocked items, same behaviour as illustrator
+      //select unlocked items, same behavior as illustrator
       mypItem->setSelected( true );
       emit selectedItemChanged( mypItem );
       subcommand->saveAfterState();
     }
   }
   mUndoStack->push( parentCommand );
-  QgsProject::instance()->setDirty( true );
+  mProject->setDirty( true );
 }
 
 QgsComposerItemGroup *QgsComposition::groupItems( QList<QgsComposerItem *> items )
@@ -1932,7 +1949,7 @@ QgsComposerItemGroup *QgsComposition::groupItems( QList<QgsComposerItem *> items
   QObject::connect( c, SIGNAL( itemAdded( QgsComposerItem* ) ), this, SLOT( sendItemAddedSignal( QgsComposerItem* ) ) );
 
   undoStack()->push( c );
-  QgsProject::instance()->setDirty( true );
+  mProject->setDirty( true );
   //QgsDebugMsg( QString( "itemgroup after pushAddRemove has %1" ) .arg( itemGroup->items().size() ) );
 
   emit composerItemGroupAdded( itemGroup );
@@ -1956,7 +1973,7 @@ QList<QgsComposerItem *> QgsComposition::ungroupItems( QgsComposerItemGroup* gro
   QObject::connect( c, SIGNAL( itemAdded( QgsComposerItem* ) ), this, SLOT( sendItemAddedSignal( QgsComposerItem* ) ) );
 
   undoStack()->push( c );
-  QgsProject::instance()->setDirty( true );
+  mProject->setDirty( true );
 
 
   QSet<QgsComposerItem*> groupedItems = group->items();
@@ -2007,7 +2024,7 @@ void QgsComposition::updateZValues( const bool addUndoCommands )
   if ( addUndoCommands )
   {
     mUndoStack->push( parentCommand );
-    QgsProject::instance()->setDirty( true );
+    mProject->setDirty( true );
   }
 }
 
@@ -2356,7 +2373,7 @@ void QgsComposition::endCommand()
     if ( mActiveItemCommand->containsChange() ) //protect against empty commands
     {
       mUndoStack->push( mActiveItemCommand );
-      QgsProject::instance()->setDirty( true );
+      mProject->setDirty( true );
     }
     else
     {
@@ -2401,7 +2418,7 @@ void QgsComposition::endMultiFrameCommand()
     if ( mActiveMultiFrameCommand->containsChange() )
     {
       mUndoStack->push( mActiveMultiFrameCommand );
-      QgsProject::instance()->setDirty( true );
+      mProject->setDirty( true );
     }
     else
     {
@@ -2476,7 +2493,7 @@ void QgsComposition::addComposerMap( QgsComposerMap* map, const bool setDefaultP
   addItem( map );
   if ( setDefaultPreviewStyle )
   {
-    //set default preview mode to cache. Must be done here between adding composer map to scene and emiting signal
+    //set default preview mode to cache. Must be done here between adding composer map to scene and emitting signal
     map->setPreviewMode( QgsComposerMap::Cache );
   }
 
@@ -2638,7 +2655,7 @@ void QgsComposition::pushAddRemoveCommand( QgsComposerItem* item, const QString&
   QgsAddRemoveItemCommand* c = new QgsAddRemoveItemCommand( state, item, this, text );
   connectAddRemoveCommandSignals( c );
   undoStack()->push( c );
-  QgsProject::instance()->setDirty( true );
+  mProject->setDirty( true );
 }
 
 void QgsComposition::connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c )
@@ -3047,7 +3064,7 @@ void QgsComposition::renderRect( QPainter* p, const QRectF& rect )
 double* QgsComposition::computeGeoTransform( const QgsComposerMap* map, const QRectF& region , double dpi ) const
 {
   if ( !map )
-    map = worldFileMap();
+    map = referenceMap();
 
   if ( !map )
     return nullptr;
@@ -3151,7 +3168,7 @@ QGraphicsView *QgsComposition::graphicsView() const
 
 void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c, double& d, double& e, double& f ) const
 {
-  const QgsComposerMap* map = worldFileMap();
+  const QgsComposerMap* map = referenceMap();
   if ( !map )
   {
     return;
@@ -3166,7 +3183,7 @@ void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c
 void QgsComposition::computeWorldFileParameters( const QRectF& exportRegion, double& a, double& b, double& c, double& d, double& e, double& f ) const
 {
   // World file parameters : affine transformation parameters from pixel coordinates to map coordinates
-  QgsComposerMap* map = worldFileMap();
+  QgsComposerMap* map = referenceMap();
   if ( !map )
   {
     return;
@@ -3569,7 +3586,7 @@ QgsExpressionContext QgsComposition::createExpressionContext() const
 {
   QgsExpressionContext context = QgsExpressionContext();
   context.appendScope( QgsExpressionContextUtils::globalScope() );
-  context.appendScope( QgsExpressionContextUtils::projectScope() );
+  context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
   context.appendScope( QgsExpressionContextUtils::compositionScope( this ) );
   if ( mAtlasComposition.enabled() )
   {

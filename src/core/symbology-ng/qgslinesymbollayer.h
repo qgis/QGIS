@@ -16,6 +16,7 @@
 #ifndef QGSLINESYMBOLLAYERV2_H
 #define QGSLINESYMBOLLAYERV2_H
 
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 
 #include <QPen>

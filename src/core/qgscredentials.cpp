@@ -18,22 +18,22 @@
 
 #include <QTextStream>
 
-QgsCredentials *QgsCredentials::smInstance = nullptr;
+QgsCredentials *QgsCredentials::sInstance = nullptr;
 
 void QgsCredentials::setInstance( QgsCredentials *theInstance )
 {
-  if ( smInstance )
+  if ( sInstance )
   {
     QgsDebugMsg( "already registered an instance of QgsCredentials" );
   }
 
-  smInstance = theInstance;
+  sInstance = theInstance;
 }
 
 QgsCredentials *QgsCredentials::instance()
 {
-  if ( smInstance )
-    return smInstance;
+  if ( sInstance )
+    return sInstance;
 
   return new QgsCredentialsNone();
 }

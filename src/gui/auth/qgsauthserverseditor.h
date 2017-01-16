@@ -21,6 +21,7 @@
 
 #include "ui_qgsauthserverseditor.h"
 #include "qgsauthmanager.h"
+#include "qgis_gui.h"
 
 class QgsMessageBar;
 

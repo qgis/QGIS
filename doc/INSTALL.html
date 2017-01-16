@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Monday November 07, 2016</H3>
+<H3>Monday January 09, 2017</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Monday November 07, 2016
-Last Change : Monday November 07, 2016
+Last Updated: Monday January 09, 2017
+Last Change : Monday January 09, 2017
 </P>
 <DIV CLASS="toc">
 
@@ -207,14 +207,17 @@ Required build dependencies:
 </P>
 
 <UL>
-<LI>Qt &gt;= 4.8.0
+<LI>Qt &gt;= 5.3.0
 <LI>Proj &gt;= 4.4.x
 <LI>GEOS &gt;= 3.4
 <LI>Sqlite3 &gt;= 3.0.0
-<LI>GDAL/OGR &gt;= 1.4.x
+<LI>SpatiaLite
+<LI>libspatialindex
+<LI>GDAL/OGR &gt;= 2.0
 <LI>Qwt &gt;= 5.0 &amp; (&lt; 6.1 with internal QwtPolar)
 <LI>expat &gt;= 1.95
 <LI>QScintilla2
+<LI>QCA
 </UL>
 
 <P>
@@ -229,8 +232,8 @@ Optional dependencies:
 <LI>for georeferencer - GSL &gt;= 1.8
 <LI>for postgis support and SPIT plugin - PostgreSQL &gt;= 8.0.x
 <LI>for gps plugin - gpsbabel
-<LI>for mapserver export and PyQGIS - Python &gt;= 2.3 (2.5+ preferred)
-<LI>for python support - SIP &gt;= 4.12, PyQt &gt;= 4.8.3 must match Qt version, Qscintilla2
+<LI>for mapserver export and PyQGIS - Python &gt;= 3.3
+<LI>for python support - SIP &gt;= 4.12, PyQt &gt;= 5.3 must match Qt version, Qscintilla2
 <LI>for qgis mapserver - FastCGI
 <LI>for oracle provider - Oracle OCI library
 </UL>
@@ -434,13 +437,29 @@ Now on with the build:
 </P>
 
 <div class="code"><PRE>
-make
-make install
+make -jX
 </PRE></div>
 
 <P>
-It may take a little while to build depending on your platform.
+where X is the number of available cores. Depending on your platform,
+this can speed up the build time considerably.
 </P>
+<P>
+Then you can directly run from the build directory:
+</P>
+
+<div class="code"><PRE>
+./output/bin/qgis
+</PRE></div>
+
+<P>
+Another option is to install to your system:
+</P>
+
+<div class="code"><PRE>
+make install
+</PRE></div>
+
 <P>
 After that you can try to run QGIS:
 </P>
@@ -451,7 +470,7 @@ $HOME/apps/bin/qgis
 
 <P>
 If all has worked properly the QGIS application should start up and appear
-on your screen.  If you get the error message "error while loading shared libraries",
+on your screen. If you get the error message "error while loading shared libraries",
 execute this command in your shell.
 </P>
 
@@ -459,12 +478,47 @@ execute this command in your shell.
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/apps/lib/
 </PRE></div>
 
+<P>
+Optionally, if you already know what aspects you want in your custom build
+then you can skip the interactive ccmake .. part by using the cmake -D
+option for each aspect, e.g.:
+</P>
+
+<div class="code"><PRE>
+cmake -D CMAKE_BUILD_TYPE=Debug -D CMAKE_INSTALL_PREFIX=${HOME}/apps ..
+</PRE></div>
+
+<P>
+Also, if you want to speed your build times, you can easily do it with ninja,
+an alternative to make with similar build options.
+</P>
+<P>
+For example, to configure your build you can do either one of:
+</P>
+
+<div class="code"><PRE>
+ccmake -G Ninja ..
+</PRE></div>
+
+<div class="code"><PRE>
+cmake -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_INSTALL_PREFIX=${HOME}/apps ..
+</PRE></div>
+
+<P>
+Build and install with ninja:
+</P>
+
+<div class="code"><PRE>
+ninja (uses all cores by default; also supports the above described -jX option)
+ninja install
+</PRE></div>
+
 <A NAME="toc11"></A>
 <H2>3.8. Building Debian packages</H2>
 
 <P>
 Instead of creating a personal installation as in the previous step you can
-also create debian package.  This is done from the QGIS root directory, where
+also create debian package. This is done from the QGIS root directory, where
 you'll find a debian directory.
 </P>
 <P>
@@ -549,7 +603,7 @@ subdirectory called `build` or `build-qt5` in it.
 <H3>3.10.1. Install build dependencies</H3>
 
 <div class="code"><PRE>
-apt-get install git build-essential cmake flex bison pyqt5-dev qttools5-dev qtpositioning5-dev libqt5svg5-dev libqt5webkit5-dev  libqt5gui5 libqt5scripttools5 qtscript5-dev libqca-qt5-2-dev grass-dev libgeos-dev libgdal-dev libqt5xmlpatterns5-dev libqt5scintilla2-dev pyqt5.qsci-dev python3-pyqt5.qsci libgsl-dev txt2tags libproj-dev libqwt-qt5-dev libspatialindex-dev pyqt5-dev-tools qttools5-dev-tools qt5-default python3-future python3-pyqt5.qtsql python3-psycopg2
+apt-get install git build-essential cmake flex bison pyqt5-dev qttools5-dev qtpositioning5-dev libqt5svg5-dev libqt5webkit5-dev  libqt5gui5 libqt5scripttools5 qtscript5-dev libqca-qt5-2-dev grass-dev libgeos-dev libgdal-dev libqt5xmlpatterns5-dev libqt5scintilla2-dev pyqt5.qsci-dev python3-pyqt5.qsci libgsl-dev txt2tags libproj-dev libqwt-qt5-dev libspatialindex-dev pyqt5-dev-tools qttools5-dev-tools qt5-default python3-future python3-pyqt5.qtsql python3-psycopg2 python3-sip-dev
 </PRE></div>
 
 <P>
@@ -1040,7 +1094,7 @@ make install
 
 <P>
 /!\ You can delete the directories with unpacked SIP and PyQt4 sources after a
-successfull install, they're not needed anymore.
+successful install, they're not needed anymore.
 </P>
 
 <H3>4.2.5. git</H3>

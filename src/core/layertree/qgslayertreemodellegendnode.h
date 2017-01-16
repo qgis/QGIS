@@ -19,6 +19,7 @@
 #ifndef QGSLAYERTREEMODELLEGENDNODE_H
 #define QGSLAYERTREEMODELLEGENDNODE_H
 
+#include "qgis_core.h"
 #include <QIcon>
 #include <QObject>
 
@@ -224,7 +225,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QSize mIconSize;
 
     // ident the symbol icon to make it look like a tree structure
-    static const int indentSize = 20;
+    static const int INDENT_SIZE = 20;
 
     // return a temporary context or null if legendMapViewData are not valid
     QgsRenderContext * createTemporaryRenderContext() const;
@@ -333,7 +334,7 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
   private:
 
     // Lazily initializes mImage
-    const QImage& getLegendGraphic() const;
+    QImage getLegendGraphic() const;
 
     QImage renderMessage( const QString& msg ) const;
 

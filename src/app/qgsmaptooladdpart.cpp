@@ -65,6 +65,10 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
     return;
   }
 
+  bool isGeometryEmpty = false;
+  if ( vlayer->selectedFeatures()[0].geometry().isEmpty() )
+    isGeometryEmpty = true;
+
   if ( !checkSelection() )
   {
     stopCapturing();
@@ -149,7 +153,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
         QgsCurvePolygon* cp = new QgsCurvePolygon();
         cp->setExteriorRing( curveToAdd );
         QgsGeometry* geom = new QgsGeometry( cp );
-        geom->avoidIntersections();
+        geom->avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
 
         const QgsCurvePolygon* cpGeom = dynamic_cast<const QgsCurvePolygon*>( geom->geometry() );
         if ( !cpGeom )
@@ -194,6 +198,12 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       vlayer->endEditCommand();
 
       vlayer->triggerRepaint();
+
+      if (( !isGeometryEmpty ) && QgsWkbTypes::isSingleType( vlayer->wkbType() ) )
+      {
+        emit messageEmitted( tr( "Add part: Feature geom is single part and you've added more than one" ), QgsMessageBar::WARNING );
+      }
+
       return;
     }
 

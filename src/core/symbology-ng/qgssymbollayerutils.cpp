@@ -626,7 +626,7 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( QgsSymbolLayer* layer, 
   QPainter painter;
   painter.begin( &picture );
   painter.setRenderHint( QPainter::Antialiasing );
-  QgsRenderContext renderContext = createRenderContext( &painter );
+  QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
   renderContext.setForceVectorOutput( true );
   QgsSymbolRenderContext symbolContext( renderContext, units, 1.0, false, 0, nullptr, QgsFields(), scale );
   layer->drawPreviewIcon( symbolContext, size );
@@ -641,7 +641,7 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( QgsSymbolLayer* layer, QgsUni
   QPainter painter;
   painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
-  QgsRenderContext renderContext = createRenderContext( &painter );
+  QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
   QgsSymbolRenderContext symbolContext( renderContext, u, 1.0, false, 0, nullptr, QgsFields(), scale );
   layer->drawPreviewIcon( symbolContext, size );
   painter.end();
@@ -2419,7 +2419,7 @@ void QgsSymbolLayerUtils::createGeometryElement( QDomDocument &doc, QDomElement 
   QDomElement geometryElem = doc.createElement( QStringLiteral( "Geometry" ) );
   element.appendChild( geometryElem );
 
-  /* About using a function withing the Geometry tag.
+  /* About using a function within the Geometry tag.
    *
    * The SLD specification <= 1.1 is vague:
    * "In principle, a fixed geometry could be defined using GML or
@@ -3305,7 +3305,8 @@ double QgsSymbolLayerUtils::lineWidthScaleFactor( const QgsRenderContext& c, Qgs
       }
     }
     case QgsUnitTypes::RenderPixels:
-      return 1.0 / c.rasterScaleFactor();
+      return 1.0;
+
     case QgsUnitTypes::RenderUnknownUnit:
     case QgsUnitTypes::RenderPercentage:
       //no sensible value
@@ -3343,7 +3344,7 @@ double QgsSymbolLayerUtils::convertToMapUnits( const QgsRenderContext &c, double
       double minSizeMU = -DBL_MAX;
       if ( scale.minSizeMMEnabled )
       {
-        minSizeMU = scale.minSizeMM * c.scaleFactor() * c.rasterScaleFactor() * mup;
+        minSizeMU = scale.minSizeMM * c.scaleFactor() * mup;
       }
       if ( !qgsDoubleNear( scale.minScale, 0.0 ) )
       {
@@ -3354,7 +3355,7 @@ double QgsSymbolLayerUtils::convertToMapUnits( const QgsRenderContext &c, double
       double maxSizeMU = DBL_MAX;
       if ( scale.maxSizeMMEnabled )
       {
-        maxSizeMU = scale.maxSizeMM * c.scaleFactor() * c.rasterScaleFactor() * mup;
+        maxSizeMU = scale.maxSizeMM * c.scaleFactor() * mup;
       }
       if ( !qgsDoubleNear( scale.maxScale, 0.0 ) )
       {
@@ -3366,11 +3367,11 @@ double QgsSymbolLayerUtils::convertToMapUnits( const QgsRenderContext &c, double
     }
     case QgsUnitTypes::RenderMillimeters:
     {
-      return size * c.scaleFactor() * c.rasterScaleFactor() * mup;
+      return size * c.scaleFactor() * mup;
     }
     case QgsUnitTypes::RenderPoints:
     {
-      return size * c.scaleFactor() * c.rasterScaleFactor() * mup / POINTS_TO_MM;
+      return size * c.scaleFactor() * mup / POINTS_TO_MM;
     }
     case QgsUnitTypes::RenderPixels:
     {
@@ -3397,11 +3398,11 @@ double QgsSymbolLayerUtils::convertFromMapUnits( const QgsRenderContext& context
     }
     case QgsUnitTypes::RenderMillimeters:
     {
-      return sizeInMapUnits / ( context.scaleFactor() * context.rasterScaleFactor() * mup );
+      return sizeInMapUnits / ( context.scaleFactor() * mup );
     }
     case QgsUnitTypes::RenderPoints:
     {
-      return sizeInMapUnits / ( context.scaleFactor() * context.rasterScaleFactor() * mup / POINTS_TO_MM );
+      return sizeInMapUnits / ( context.scaleFactor() * mup / POINTS_TO_MM );
     }
     case QgsUnitTypes::RenderPixels:
     {
@@ -3421,15 +3422,15 @@ double QgsSymbolLayerUtils::pixelSizeScaleFactor( const QgsRenderContext& c, Qgs
   switch ( u )
   {
     case QgsUnitTypes::RenderMillimeters:
-      return ( c.scaleFactor() * c.rasterScaleFactor() );
+      return c.scaleFactor();
     case QgsUnitTypes::RenderPoints:
-      return ( c.scaleFactor() * c.rasterScaleFactor() ) * POINTS_TO_MM;
+      return c.scaleFactor() * POINTS_TO_MM;
     case QgsUnitTypes::RenderMapUnits:
     {
       double mup = scale.computeMapUnitsPerPixel( c );
       if ( mup > 0 )
       {
-        return c.rasterScaleFactor() / mup;
+        return 1.0 / mup;
       }
       else
       {
@@ -3451,9 +3452,9 @@ double QgsSymbolLayerUtils::mapUnitScaleFactor( const QgsRenderContext &c, QgsUn
   switch ( u )
   {
     case QgsUnitTypes::RenderMillimeters:
-      return scale.computeMapUnitsPerPixel( c ) * c.scaleFactor() * c.rasterScaleFactor();
+      return scale.computeMapUnitsPerPixel( c ) * c.scaleFactor();
     case QgsUnitTypes::RenderPoints:
-      return scale.computeMapUnitsPerPixel( c ) * c.scaleFactor() * c.rasterScaleFactor() * POINTS_TO_MM;
+      return scale.computeMapUnitsPerPixel( c ) * c.scaleFactor() * POINTS_TO_MM;
     case QgsUnitTypes::RenderMapUnits:
     {
       return 1.0;
@@ -3466,22 +3467,6 @@ double QgsSymbolLayerUtils::mapUnitScaleFactor( const QgsRenderContext &c, QgsUn
       return 1.0;
   }
   return 1.0;
-}
-
-QgsRenderContext QgsSymbolLayerUtils::createRenderContext( QPainter* p )
-{
-  QgsRenderContext context;
-  context.setPainter( p );
-  context.setRasterScaleFactor( 1.0 );
-  if ( p && p->device() )
-  {
-    context.setScaleFactor( p->device()->logicalDpiX() / 25.4 );
-  }
-  else
-  {
-    context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
-  }
-  return context;
 }
 
 void QgsSymbolLayerUtils::multiplyImageOpacity( QImage* image, qreal alpha )
@@ -3771,7 +3756,7 @@ QString QgsSymbolLayerUtils::symbolPathToName( QString path )
 
   QStringList svgPaths = QgsApplication::svgPaths();
 
-  bool isInSvgPathes = false;
+  bool isInSvgPaths = false;
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
     QString dir = QFileInfo( svgPaths[i] ).canonicalFilePath();
@@ -3779,12 +3764,12 @@ QString QgsSymbolLayerUtils::symbolPathToName( QString path )
     if ( !dir.isEmpty() && path.startsWith( dir ) )
     {
       path = path.mid( dir.size() + 1 );
-      isInSvgPathes = true;
+      isInSvgPaths = true;
       break;
     }
   }
 
-  if ( isInSvgPathes )
+  if ( isInSvgPaths )
     return path;
 
   return QgsProject::instance()->writePath( path );

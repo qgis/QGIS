@@ -19,7 +19,7 @@
      <number>3</number>
     </property>
     <property name="margin">
-     <number>6</number>
+     <number>2</number>
     </property>
     <item>
      <widget class="QGraphicsView" name="view"/>
@@ -55,7 +55,7 @@
        <enum>Qt::WheelFocus</enum>
       </property>
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::NoFrame</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Plain</enum>
@@ -149,7 +149,7 @@
        <enum>Qt::WheelFocus</enum>
       </property>
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::NoFrame</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Plain</enum>
@@ -171,7 +171,7 @@
          <number>4</number>
         </property>
         <property name="margin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -179,7 +179,7 @@
            <number>4</number>
           </property>
           <property name="margin">
-           <number>6</number>
+           <number>0</number>
           </property>
           <item>
            <widget class="QTreeWidget" name="inputsTree">
@@ -219,7 +219,7 @@
      <number>0</number>
     </property>
     <property name="margin">
-     <number>0</number>
+     <number>2</number>
     </property>
     <item>
      <widget class="QScrollArea" name="scrollArea_3">
@@ -233,7 +233,7 @@
        <enum>Qt::WheelFocus</enum>
       </property>
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::NoFrame</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Plain</enum>
@@ -252,18 +252,18 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <property name="spacing">
-         <number>4</number>
+         <number>0</number>
         </property>
         <property name="margin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <property name="spacing">
-           <number>4</number>
+           <number>0</number>
           </property>
           <property name="margin">
-           <number>6</number>
+           <number>0</number>
           </property>
           <item>
            <widget class="QgsFilterLineEdit" name="searchBox">
@@ -308,6 +308,11 @@
    <addaction name="mActionOpen"/>
    <addaction name="mActionSave"/>
    <addaction name="mActionSaveAs"/>
+   <addaction name="separator"/>
+   <addaction name="mActionZoomIn"/>
+   <addaction name="mActionZoomOut"/>
+   <addaction name="mActionZoomActual"/>
+   <addaction name="mActionZoomToItems"/>
    <addaction name="separator"/>
    <addaction name="mActionExportImage"/>
    <addaction name="mActionExportPdf"/>
@@ -363,6 +368,51 @@
     <string>Ctrl+Shift+S</string>
    </property>
   </action>
+  <action name="mActionZoomActual">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomActual.svg</normaloff>:/images/themes/default/mActionZoomActual.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom to &amp;100%</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom to &amp;100%</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
+   </property>
+  </action>
+  <action name="mActionZoomIn">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomIn.svg</normaloff>:/images/themes/default/mActionZoomIn.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom in</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom in</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl++</string>
+   </property>
+  </action>
+  <action name="mActionZoomOut">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomOut.svg</normaloff>:/images/themes/default/mActionZoomOut.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom out</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom out</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
+   </property>
+  </action>
   <action name="mActionExportImage">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -373,6 +423,21 @@
    </property>
    <property name="toolTip">
     <string>Export as image</string>
+   </property>
+  </action>
+  <action name="mActionZoomToItems">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomFullExtent.svg</normaloff>:/images/themes/default/mActionZoomFullExtent.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom full</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom full</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+0</string>
    </property>
   </action>
   <action name="mActionExportPdf">

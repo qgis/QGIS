@@ -1,0 +1,89 @@
+<root>
+  <key>MultiImageSamplingRate</key>
+  <exec>otbcli_MultiImageSamplingRate</exec>
+  <longname>Multi-image sampling rate estimation</longname>
+  <group>Learning</group>
+  <description>Compute sampling rate for an input set of images.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputFilenameList">ParameterMultipleInput</parameter_type>
+    <key>il</key>
+    <name>Input statistics</name>
+    <description>List of statistics files for each input image.</description>
+    <datatype />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputFilename">OutputFile</parameter_type>
+    <key>out</key>
+    <name>Output sampling rates</name>
+    <description>Output filename storing sampling rates (CSV format with class name, required samples, total samples, and rate). The given filename will be used with a suffix to indicate the corresponding input index (for instance: rates.csv will give rates_1.csv, rates_2.csv, ...).</description>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>strategy</key>
+    <name>Sampling strategy</name>
+    <description />
+    <options>
+      <choices>
+        <choice>byclass</choice>
+        <choice>constant</choice>
+        <choice>smallest</choice>
+        <choice>percent</choice>
+        <choice>total</choice>
+        <choice>all</choice>
+      </choices>
+    </options>
+    <default>2</default>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputFilenameList">ParameterMultipleInput</parameter_type>
+    <key>strategy.byclass.in</key>
+    <name>Number of samples by class</name>
+    <description>Number of samples by class (CSV format with class name in 1st column and required samples in the 2nd).In the case of the custom multi-image mode, several inputs may be given for each image.</description>
+    <datatype />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_String">ParameterString</parameter_type>
+    <key>strategy.constant.nb</key>
+    <name>Number of samples for all classes</name>
+    <description>Number of samples for all classes.In the case of the custom multi-image mode, several values can be given for each image.</description>
+    <default />
+    <multiline />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_String">ParameterString</parameter_type>
+    <key>strategy.percent.p</key>
+    <name>The percentage(s) to use</name>
+    <description>The percentage(s) to use In the case of the custom multi-image mode, several values can be given for each image.</description>
+    <default />
+    <multiline />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_String">ParameterString</parameter_type>
+    <key>strategy.total.v</key>
+    <name>The number of samples to generate</name>
+    <description>The number of samples to generateIn the case of the custom multi-image mode, several values can be given for each image.</description>
+    <default />
+    <multiline />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>mim</key>
+    <name>Multi-Image Mode</name>
+    <description />
+    <options>
+      <choices>
+        <choice>proportional</choice>
+        <choice>equal</choice>
+        <choice>custom</choice>
+      </choices>
+    </options>
+    <default>0</default>
+    <optional>False</optional>
+  </parameter>
+</root>

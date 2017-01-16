@@ -15,6 +15,7 @@
 #ifndef QGSCOLORBREWERPALETTE_H
 #define QGSCOLORBREWERPALETTE_H
 
+#include "qgis_core.h"
 #include <QList>
 #include <QColor>
 
@@ -29,7 +30,7 @@ class CORE_EXPORT QgsColorBrewerPalette
     static QList<QColor> listSchemeColors( const QString& schemeName, int colors )
     {
       QList<QColor> pal;
-      QString palette( brewerString );
+      QString palette( BREWER_STRING );
       QStringList list = palette.split( QChar( '\n' ) );
       Q_FOREACH ( const QString& entry, list )
       {
@@ -49,7 +50,7 @@ class CORE_EXPORT QgsColorBrewerPalette
     {
       QStringList schemes;
 
-      QString palette( brewerString );
+      QString palette( BREWER_STRING );
       QStringList list = palette.split( QChar( '\n' ) );
       Q_FOREACH ( const QString& entry, list )
       {
@@ -66,7 +67,7 @@ class CORE_EXPORT QgsColorBrewerPalette
     {
       QList<int> variants;
 
-      QString palette( brewerString );
+      QString palette( BREWER_STRING );
       QStringList list = palette.split( QChar( '\n' ) );
       Q_FOREACH ( const QString& entry, list )
       {
@@ -80,7 +81,7 @@ class CORE_EXPORT QgsColorBrewerPalette
     }
 
     // extracted ColorBrewer data
-    static const char *brewerString;
+    static const char *BREWER_STRING;
 };
 
 #endif // QGSCOLORBREWERPALETTE_H

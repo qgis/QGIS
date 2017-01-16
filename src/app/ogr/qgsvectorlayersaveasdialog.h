@@ -23,6 +23,7 @@
 #include "qgscontexthelp.h"
 #include "qgsfields.h"
 #include "qgsvectorfilewriter.h"
+#include "qgis_app.h"
 
 class QgsVectorLayer;
 

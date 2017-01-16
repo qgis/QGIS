@@ -20,6 +20,7 @@
 
 #include <QSpinBox>
 #include <QDoubleSpinBox>
+#include "qgis_gui.h"
 
 class QAbstractSlider;
 class QSlider;

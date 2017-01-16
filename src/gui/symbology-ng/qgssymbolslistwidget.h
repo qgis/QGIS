@@ -21,6 +21,7 @@
 #include "qgssymbolwidgetcontext.h"
 
 #include <QWidget>
+#include "qgis_gui.h"
 
 class QgsSymbol;
 class QgsStyle;

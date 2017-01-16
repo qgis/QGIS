@@ -18,6 +18,7 @@
 #ifndef QGSCIRCULARSTRING_H
 #define QGSCIRCULARSTRING_H
 
+#include "qgis_core.h"
 #include "qgscurve.h"
 #include <QVector>
 

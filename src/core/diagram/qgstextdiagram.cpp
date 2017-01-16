@@ -47,7 +47,7 @@ QSizeF QgsTextDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCo
   }
   else
   {
-    attrVal = feature.attributes().at( is.classificationAttribute );
+    attrVal = feature.attribute( is.classificationField );
   }
 
   bool ok = false;

@@ -39,7 +39,7 @@
 #include "qgsnetworkdiskcache.h"
 #include "qgsauthmanager.h"
 
-QgsNetworkAccessManager *QgsNetworkAccessManager::smMainNAM = 0;
+QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = 0;
 
 /// @cond PRIVATE
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
@@ -97,7 +97,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
 ///@endcond
 
 //
-// Static calls to enforce singleton behaviour
+// Static calls to enforce singleton behavior
 //
 QgsNetworkAccessManager* QgsNetworkAccessManager::instance()
 {
@@ -105,7 +105,7 @@ QgsNetworkAccessManager* QgsNetworkAccessManager::instance()
   QgsNetworkAccessManager *nam = &sInstances.localData();
 
   if ( nam->thread() == qApp->thread() )
-    smMainNAM = nam;
+    sMainNAM = nam;
 
   if ( !nam->mInitialized )
     nam->setupDefaultProxyAndCache();
@@ -136,7 +136,7 @@ const QList<QNetworkProxyFactory *> QgsNetworkAccessManager::proxyFactories() co
   return mProxyFactories;
 }
 
-const QStringList &QgsNetworkAccessManager::excludeList() const
+QStringList QgsNetworkAccessManager::excludeList() const
 {
   return mExcludedURLs;
 }
@@ -285,24 +285,24 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
   mInitialized = true;
   mUseSystemProxy = false;
 
-  Q_ASSERT( smMainNAM );
+  Q_ASSERT( sMainNAM );
 
-  if ( smMainNAM != this )
+  if ( sMainNAM != this )
   {
     connect( this, SIGNAL( authenticationRequired( QNetworkReply *, QAuthenticator * ) ),
-             smMainNAM, SIGNAL( authenticationRequired( QNetworkReply *, QAuthenticator * ) ),
+             sMainNAM, SIGNAL( authenticationRequired( QNetworkReply *, QAuthenticator * ) ),
              Qt::BlockingQueuedConnection );
 
     connect( this, SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
-             smMainNAM, SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
+             sMainNAM, SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
              Qt::BlockingQueuedConnection );
 
     connect( this, SIGNAL( requestTimedOut( QNetworkReply* ) ),
-             smMainNAM, SIGNAL( requestTimedOut( QNetworkReply* ) ) );
+             sMainNAM, SIGNAL( requestTimedOut( QNetworkReply* ) ) );
 
 #ifndef QT_NO_SSL
     connect( this, SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
-             smMainNAM, SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
+             sMainNAM, SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
              Qt::BlockingQueuedConnection );
 #endif
   }

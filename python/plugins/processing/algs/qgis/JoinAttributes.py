@@ -62,7 +62,7 @@ class JoinAttributes(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Joined layer')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         input = self.getParameterValue(self.INPUT_LAYER)
         input2 = self.getParameterValue(self.INPUT_LAYER_2)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
@@ -88,7 +88,7 @@ class JoinAttributes(GeoAlgorithm):
             joinValue2 = str(attrs[joinField2Index])
             if joinValue2 not in cache:
                 cache[joinValue2] = attrs
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         # Create output vector layer with additional attribute
         outFeat = QgsFeature()
@@ -101,5 +101,5 @@ class JoinAttributes(GeoAlgorithm):
             attrs.extend(cache.get(joinValue1, []))
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
         del writer

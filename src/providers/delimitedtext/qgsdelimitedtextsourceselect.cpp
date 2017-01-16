@@ -3,7 +3,7 @@
  *   sherman at mrcc.com                                                   *
  *                                                                         *
  *   GUI for loading a delimited text file as a layer in QGIS              *
- *   This plugin works in conjuction with the delimited text data          *
+ *   This plugin works in conjunction with the delimited text data          *
  *   provider plugin                                                       *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -464,7 +464,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
           }
           if ( xyDms )
           {
-            ok = QgsDelimitedTextProvider::CrdDmsRegexp.indexIn( value ) == 0;
+            ok = QgsDelimitedTextProvider::sCrdDmsRegexp.indexIn( value ) == 0;
           }
           else
           {
@@ -474,7 +474,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
         }
         if ( isValidWkt[i] )
         {
-          value.remove( QgsDelimitedTextProvider::WktPrefixRegexp );
+          value.remove( QgsDelimitedTextProvider::sWktPrefixRegexp );
           isValidWkt[i] = value.contains( wktre );
         }
       }
@@ -620,7 +620,7 @@ bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList &fields, QList<boo
 void QgsDelimitedTextSourceSelect::getOpenFileName()
 {
   // Get a file to process, starting at the current directory
-  // Set inital dir to last used
+  // Set initial dir to last used
   QSettings settings;
   QString selectedFilter = settings.value( mPluginKey + "/file_filter", "" ).toString();
 

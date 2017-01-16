@@ -150,7 +150,8 @@ void QgsAttributeActionDialog::insertRow( int row, const QgsAction& action )
 
 void QgsAttributeActionDialog::insertRow( int row, QgsAction::ActionType type, const QString& name, const QString& actionText, const QString& iconPath, bool capture, const QString& shortTitle, const QSet<QString>& actionScopes )
 {
-  insertRow( row, QgsAction( type, name, actionText, iconPath, capture, shortTitle, actionScopes ) );
+  if ( uniqueName( name ) == name )
+    insertRow( row, QgsAction( type, name, actionText, iconPath, capture, shortTitle, actionScopes ) );
 }
 
 void QgsAttributeActionDialog::moveUp()
@@ -356,7 +357,7 @@ QString QgsAttributeActionDialog::uniqueName( QString name )
 
   for ( int i = 0; i < pos; ++i )
   {
-    if ( mAttributeActionTable->item( i, 0 )->text() == name )
+    if ( mAttributeActionTable->item( i, Description )->text() == name )
       unique = false;
   }
 

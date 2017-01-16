@@ -18,6 +18,7 @@
 #ifndef QGSLINESTRINGV2_H
 #define QGSLINESTRINGV2_H
 
+#include "qgis_core.h"
 #include "qgscurve.h"
 #include <QPolygonF>
 

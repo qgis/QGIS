@@ -19,6 +19,7 @@
 #include "ui_qgsphotoconfigdlgbase.h"
 
 #include "qgseditorconfigwidget.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsPhotoConfigDlg

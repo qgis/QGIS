@@ -61,7 +61,7 @@ class retile(GdalAlgorithm):
     ALGO = ['near', 'bilinear', 'cubic', 'cubicspline', 'lanczos']
 
     def commandLineName(self):
-        return "gdalogr:retile"
+        return "gdal:retile"
 
     def commandName(self):
         return "gdal_retile"

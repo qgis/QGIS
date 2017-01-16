@@ -18,6 +18,7 @@
 #ifndef QGSSINGLEBANDCOLORDATARENDERER_H
 #define QGSSINGLEBANDCOLORDATARENDERER_H
 
+#include "qgis_core.h"
 #include "qgsrasterrenderer.h"
 
 class QDomElement;

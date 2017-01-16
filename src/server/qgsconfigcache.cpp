@@ -29,12 +29,12 @@
 
 QgsConfigCache* QgsConfigCache::instance()
 {
-  static QgsConfigCache *instance = nullptr;
+  static QgsConfigCache *sInstance = nullptr;
 
-  if ( !instance )
-    instance = new QgsConfigCache();
+  if ( !sInstance )
+    sInstance = new QgsConfigCache();
 
-  return instance;
+  return sInstance;
 }
 
 QgsConfigCache::QgsConfigCache()

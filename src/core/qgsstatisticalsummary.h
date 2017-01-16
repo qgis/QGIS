@@ -19,6 +19,8 @@
 #include <QMap>
 #include <QVariant>
 
+#include "qgis_core.h"
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsstatisticalsummary.cpp.
@@ -199,7 +201,7 @@ class CORE_EXPORT QgsStatisticalSummary
      */
     int variety() const { return mValueCount.count(); }
 
-    /** Returns minority of values. The minority is the value with least occurances in the list
+    /** Returns minority of values. The minority is the value with least occurrences in the list
      * This is only calculated if Statistic::Minority has been specified in the constructor
      * or via setStatistics. A NaN value may be returned if the minority cannot
      * be calculated.
@@ -207,7 +209,7 @@ class CORE_EXPORT QgsStatisticalSummary
      */
     double minority() const { return mMinority; }
 
-    /** Returns majority of values. The majority is the value with most occurances in the list
+    /** Returns majority of values. The majority is the value with most occurrences in the list
      * This is only calculated if Statistic::Majority has been specified in the constructor
      * or via setStatistics. A NaN value may be returned if the majority cannot
      * be calculated.

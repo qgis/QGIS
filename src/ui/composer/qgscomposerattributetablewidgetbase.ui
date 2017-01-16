@@ -356,7 +356,7 @@
            <widget class="QComboBox" name="mEmptyModeComboBox"/>
           </item>
           <item row="10" column="1">
-           <widget class="QComboBox" name="mWrapBehaviourComboBox"/>
+           <widget class="QComboBox" name="mWrapBehaviorComboBox"/>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="mMarginLabel">
@@ -836,7 +836,7 @@
   <tabstop>mBackgroundColorButton</tabstop>
   <tabstop>mAdvancedCustomisationButton</tabstop>
   <tabstop>mWrapStringLineEdit</tabstop>
-  <tabstop>mWrapBehaviourComboBox</tabstop>
+  <tabstop>mWrapBehaviorComboBox</tabstop>
   <tabstop>mShowGridGroupCheckBox</tabstop>
   <tabstop>mGridStrokeWidthSpinBox</tabstop>
   <tabstop>mGridColorButton</tabstop>

@@ -33,7 +33,7 @@ class QgsComposerMultiFrame: QgsComposerObject
 
   public:
 
-    /** Specifies the behaviour for creating new frames to fit the multiframe's content
+    /** Specifies the behavior for creating new frames to fit the multiframe's content
      */
     enum ResizeMode
     {

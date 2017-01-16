@@ -18,6 +18,7 @@
 #ifndef QGSUNITTYPES_H
 #define QGSUNITTYPES_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 
 /***************************************************************************
@@ -46,7 +47,7 @@ class CORE_EXPORT QgsUnitTypes
       DistanceFeet, //!< Imperial feet
       DistanceNauticalMiles, //!< Nautical miles
       DistanceYards, //!< Imperial yards
-      DistanceMiles, //!< Terrestial miles
+      DistanceMiles, //!< Terrestrial miles
       DistanceDegrees, //!< Degrees, for planar geographic CRS distance measurements
       DistanceUnknownUnit, //!< Unknown distance unit
     };

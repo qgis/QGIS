@@ -28,11 +28,11 @@
 // QgsAuthMethodConfig
 //////////////////////////////////////////////
 
-const QString QgsAuthMethodConfig::mConfigSep = QStringLiteral( "|||" );
-const QString QgsAuthMethodConfig::mConfigKeySep = QStringLiteral( ":::" );
-const QString QgsAuthMethodConfig::mConfigListSep = QStringLiteral( "```" );
+const QString QgsAuthMethodConfig::CONFIG_SEP = QStringLiteral( "|||" );
+const QString QgsAuthMethodConfig::CONFIG_KEY_SEP = QStringLiteral( ":::" );
+const QString QgsAuthMethodConfig::CONFIG_LIST_SEP = QStringLiteral( "```" );
 
-const int QgsAuthMethodConfig::mConfigVersion = 1;
+const int QgsAuthMethodConfig::CONFIG_VERSION = 1;
 
 // get uniqueConfigId only on save
 QgsAuthMethodConfig::QgsAuthMethodConfig( const QString& method, int version )
@@ -77,10 +77,10 @@ const QString QgsAuthMethodConfig::configString() const
   QgsStringMap::const_iterator i = mConfigMap.constBegin();
   while ( i != mConfigMap.constEnd() )
   {
-    confstrs << i.key() + mConfigKeySep + i.value();
+    confstrs << i.key() + CONFIG_KEY_SEP + i.value();
     ++i;
   }
-  return confstrs.join( mConfigSep );
+  return confstrs.join( CONFIG_SEP );
 }
 
 void QgsAuthMethodConfig::loadConfigString( const QString &configstr )
@@ -91,13 +91,13 @@ void QgsAuthMethodConfig::loadConfigString( const QString &configstr )
     return;
   }
 
-  QStringList confs( configstr.split( mConfigSep ) );
+  QStringList confs( configstr.split( CONFIG_SEP ) );
 
   Q_FOREACH ( const QString& conf, confs )
   {
-    if ( conf.contains( mConfigKeySep ) )
+    if ( conf.contains( CONFIG_KEY_SEP ) )
     {
-      QStringList keyval( conf.split( mConfigKeySep ) );
+      QStringList keyval( conf.split( CONFIG_KEY_SEP ) );
       setConfig( keyval.at( 0 ), keyval.at( 1 ) );
     }
   }
@@ -115,7 +115,7 @@ void QgsAuthMethodConfig::setConfig( const QString &key, const QString &value )
 
 void QgsAuthMethodConfig::setConfigList( const QString &key, const QStringList &value )
 {
-  setConfig( key, value.join( mConfigListSep ) );
+  setConfig( key, value.join( CONFIG_LIST_SEP ) );
 }
 
 int QgsAuthMethodConfig::removeConfig( const QString &key )
@@ -130,7 +130,7 @@ QString QgsAuthMethodConfig::config( const QString &key, const QString& defaultv
 
 QStringList QgsAuthMethodConfig::configList( const QString &key ) const
 {
-  return config( key ).split( mConfigListSep );
+  return config( key ).split( CONFIG_LIST_SEP );
 }
 
 bool QgsAuthMethodConfig::hasConfig( const QString &key ) const
@@ -346,7 +346,7 @@ bool QgsPkiConfigBundle::isValid()
 // QgsAuthConfigSslServer
 //////////////////////////////////////////////
 
-const QString QgsAuthConfigSslServer::mConfSep = QStringLiteral( "|||" );
+const QString QgsAuthConfigSslServer::CONF_SEP = QStringLiteral( "|||" );
 
 QgsAuthConfigSslServer::QgsAuthConfigSslServer()
     : mSslHostPort( QString() )
@@ -389,7 +389,7 @@ const QString QgsAuthConfigSslServer::configString() const
 
   configlist << QStringLiteral( "%1~~%2" ).arg( static_cast< int >( mSslPeerVerifyMode ) ).arg( mSslPeerVerifyDepth );
 
-  return configlist.join( mConfSep );
+  return configlist.join( CONF_SEP );
 }
 
 void QgsAuthConfigSslServer::loadConfigString( const QString &config )
@@ -398,7 +398,7 @@ void QgsAuthConfigSslServer::loadConfigString( const QString &config )
   {
     return;
   }
-  QStringList configlist( config.split( mConfSep ) );
+  QStringList configlist( config.split( CONF_SEP ) );
 
   mVersion = configlist.at( 0 ).toInt();
   mQtVersion = configlist.at( 1 ).toInt();

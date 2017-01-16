@@ -17,6 +17,7 @@
 #ifndef QGSTEXTRENDERER_PRIVATE_H
 #define QGSTEXTRENDERER_PRIVATE_H
 
+#include "qgis_core.h"
 #include "qgstextrenderer.h"
 #include "qgsmapunitscale.h"
 #include "qgsunittypes.h"

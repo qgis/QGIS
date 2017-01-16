@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERTEXTTABLE_H
 #define QGSCOMPOSERTEXTTABLE_H
 
+#include "qgis_core.h"
 #include "qgscomposertablev2.h"
 
 /** \ingroup core

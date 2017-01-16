@@ -17,6 +17,7 @@
 
 #include <QItemDelegate>
 #include <QItemSelectionModel>
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QgsFeatureListModel;
@@ -31,7 +32,7 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    static int const sIconSize = 24;
+    static int const ICON_SIZE = 24;
 
     enum Element
     {

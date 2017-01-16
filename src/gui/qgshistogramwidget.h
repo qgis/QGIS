@@ -24,6 +24,7 @@
 #include "qgsgraduatedsymbolrenderer.h"
 #include <QPen>
 #include <QBrush>
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QgsGraduatedSymbolRenderer;

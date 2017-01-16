@@ -28,6 +28,7 @@
 #include "qgsconditionalstyle.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsvectorlayercache.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsMapLayerAction;

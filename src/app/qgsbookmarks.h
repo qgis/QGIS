@@ -22,6 +22,7 @@
 
 #include "ui_qgsbookmarksbase.h"
 #include "qgsdockwidget.h"
+#include "qgis_app.h"
 
 /*
  * Model for project bookmarks

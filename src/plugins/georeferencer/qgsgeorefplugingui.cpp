@@ -1522,7 +1522,7 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeor
   double paperHeight = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/HeightPDFMap" ), "420" ).toDouble();
 
   //create composition
-  QgsComposition* composition = new QgsComposition( mCanvas->mapSettings() );
+  QgsComposition* composition = new QgsComposition( mCanvas->mapSettings(), QgsProject::instance() );
   if ( mapRatio >= 1 )
   {
     composition->setPaperSize( paperHeight, paperWidth );
@@ -1589,7 +1589,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   }
 
   //create composition A4 with 300 dpi
-  QgsComposition* composition = new QgsComposition( mCanvas->mapSettings() );
+  QgsComposition* composition = new QgsComposition( mCanvas->mapSettings(), QgsProject::instance() );
   composition->setPaperSize( 210, 297 ); //A4
   composition->setPrintResolution( 300 );
   composition->setNumPages( 2 );
@@ -2097,7 +2097,7 @@ QString QgsGeorefPluginGui::guessWorldFileName( const QString &rasterFileName )
 }
 
 // Note this code is duplicated from qgisapp.cpp because
-// I didnt want to make plugins on qgsapplication [TS]
+// I didn't want to make plugins on qgsapplication [TS]
 QIcon QgsGeorefPluginGui::getThemeIcon( const QString &theName )
 {
   if ( QFile::exists( QgsApplication::activeThemePath() + theName ) )

@@ -33,7 +33,9 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QSettings
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QApplication, QMessageBox
 from qgis.PyQt.QtGui import QCursor
-from qgis.core import QgsExpressionContext, QgsExpressionContextUtils
+from qgis.core import (QgsExpressionContext,
+                       QgsExpressionContextUtils,
+                       QgsProcessingFeedback)
 from qgis.gui import QgsEncodingFileDialog
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -47,11 +49,29 @@ WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'DlgFieldsCalculator.ui'))
 
 
+class FieldCalculatorFeedback(QgsProcessingFeedback):
+    """
+    Directs algorithm feedback to an algorithm dialog
+    """
+
+    def __init__(self, dialog):
+        QgsProcessingFeedback.__init__(self)
+        self.dialog = dialog
+
+    def reportError(self, msg):
+        self.dialog.error(msg)
+
+    def setProgress(self, i):
+        self.dialog.setPercentage(i)
+
+
 class FieldsCalculatorDialog(BASE, WIDGET):
 
     def __init__(self, alg):
         super(FieldsCalculatorDialog, self).__init__(None)
         self.setupUi(self)
+
+        self.feedback = FieldCalculatorFeedback(self)
 
         self.executed = False
         self.alg = alg
@@ -95,9 +115,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
     def initContext(self):
         exp_context = self.builder.expressionContext()
-        exp_context.appendScope(QgsExpressionContextUtils.globalScope())
-        exp_context.appendScope(QgsExpressionContextUtils.projectScope())
-        exp_context.appendScope(QgsExpressionContextUtils.layerScope(self.layer))
+        exp_context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(self.layer))
         exp_context.lastScope().setVariable("row_number", 1)
         exp_context.setHighlightedVariables(["row_number"])
         self.builder.setExpressionContext(exp_context)
@@ -214,10 +232,10 @@ class FieldsCalculatorDialog(BASE, WIDGET):
                 ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM,
                                        self.alg.getAsCommand())
 
-                self.executed = runalg(self.alg, self)
+                self.executed = runalg(self.alg, self.feedback)
                 if self.executed:
                     handleAlgorithmResults(self.alg,
-                                           self,
+                                           self.feedback,
                                            not keepOpen)
                 if not keepOpen:
                     QDialog.reject(self)
@@ -230,9 +248,6 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
     def setPercentage(self, i):
         self.progressBar.setValue(i)
-
-    def setText(self, text):
-        pass
 
     def error(self, text):
         QMessageBox.critical(self, "Error", text)

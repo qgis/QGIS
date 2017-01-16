@@ -456,13 +456,13 @@ void QgsAttributeForm::pushSelectedFeaturesMessage()
   }
 }
 
-void QgsAttributeForm::runSearchSelect( QgsVectorLayer::SelectBehaviour behaviour )
+void QgsAttributeForm::runSearchSelect( QgsVectorLayer::SelectBehavior behavior )
 {
   QString filter = createFilterExpression();
   if ( filter.isEmpty() )
     return;
 
-  mLayer->selectByExpression( filter, behaviour );
+  mLayer->selectByExpression( filter, behavior );
   pushSelectedFeaturesMessage();
   if ( mContext.formMode() == QgsAttributeEditorContext::Embed )
     setMode( SingleEditMode );
@@ -818,7 +818,7 @@ bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields,
     {
       if ( ! eww->isValidConstraint() )
       {
-        invalidFields.append( eww->field().name() );
+        invalidFields.append( eww->field().displayName() );
 
         descriptions.append( eww->constraintFailureReason() );
 

@@ -22,6 +22,7 @@
 #include "qgseditorconfigwidget.h"
 #include "qgsfeature.h"
 #include "qgsvectordataprovider.h"
+#include "qgis_app.h"
 
 class QDialog;
 
@@ -71,7 +72,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     bool fieldEditable() const;
 
     /**
-     * Sets any provider side constraints which may affect this field's behaviour.
+     * Sets any provider side constraints which may affect this field's behavior.
      */
     void setProviderConstraints( QgsFieldConstraints::Constraints constraints );
 

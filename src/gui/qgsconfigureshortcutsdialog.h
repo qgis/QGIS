@@ -19,6 +19,7 @@
 #include <QDialog>
 
 #include "ui_qgsconfigureshortcutsdialog.h"
+#include "qgis_gui.h"
 
 class QShortcut;
 class QgsShortcutsManager;
@@ -54,6 +55,7 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     void setNoShortcut();
     void saveShortcuts();
     void loadShortcuts();
+    void on_mLeFilter_textChanged( const QString& text );
 
     void actionChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous );
 

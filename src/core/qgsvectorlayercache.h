@@ -19,6 +19,7 @@
 #ifndef QgsVectorLayerCache_H
 #define QgsVectorLayerCache_H
 
+#include "qgis_core.h"
 #include <QCache>
 
 #include "qgsvectorlayer.h"

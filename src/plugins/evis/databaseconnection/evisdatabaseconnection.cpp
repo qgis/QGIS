@@ -37,7 +37,7 @@
 * @param password - The password associate with the username needed to access the database or database server
 * @param type - The type of database being connected to
 */
-eVisDatabaseConnection::eVisDatabaseConnection( const QString& hostname, int port, const QString& databasename, const QString& username, const QString& password, DATABASE_TYPE type )
+eVisDatabaseConnection::eVisDatabaseConnection( const QString& hostname, int port, const QString& databasename, const QString& username, const QString& password, DatabaseType type )
 {
   mHostName = hostname;
   mPort = port;
@@ -60,19 +60,19 @@ bool eVisDatabaseConnection::connect()
   }
 
   //Add the correct database to the list of database connections, Reuse a connection if the connection exists in the list already.
-  if ( MSACCESS == databaseType() && !mDatabase.contains( QStringLiteral( "odbc" ) ) )
+  if ( MSAccess == databaseType() && !mDatabase.contains( QStringLiteral( "odbc" ) ) )
   {
     mDatabase = QSqlDatabase::addDatabase( QStringLiteral( "QODBC" ), QStringLiteral( "odbc" ) );
   }
-  else if ( MSACCESS == databaseType() )
+  else if ( MSAccess == databaseType() )
   {
     mDatabase = QSqlDatabase::database( QStringLiteral( "odbc" ) );
   }
-  else if ( QMYSQL == databaseType() && !mDatabase.contains( QStringLiteral( "mysql" ) ) )
+  else if ( QMySQL == databaseType() && !mDatabase.contains( QStringLiteral( "mysql" ) ) )
   {
     mDatabase = QSqlDatabase::addDatabase( QStringLiteral( "QMYSQL" ), QStringLiteral( "mysql" ) );
   }
-  else if ( QMYSQL == databaseType() )
+  else if ( QMySQL == databaseType() )
   {
     mDatabase = QSqlDatabase::database( QStringLiteral( "mysql" ) );
   }
@@ -92,11 +92,11 @@ bool eVisDatabaseConnection::connect()
   {
     mDatabase = QSqlDatabase::database( QStringLiteral( "postgres" ) );
   }
-  else if ( QSQLITE == databaseType() && !mDatabase.contains( QStringLiteral( "sqlite" ) ) )
+  else if ( QSqlite == databaseType() && !mDatabase.contains( QStringLiteral( "sqlite" ) ) )
   {
     mDatabase = QSqlDatabase::addDatabase( QStringLiteral( "QSQLITE" ), QStringLiteral( "sqlite" ) );
   }
-  else if ( QSQLITE == databaseType() )
+  else if ( QSqlite == databaseType() )
   {
     mDatabase = QSqlDatabase::database( QStringLiteral( "sqlite" ) );
   }
@@ -107,7 +107,7 @@ bool eVisDatabaseConnection::connect()
   }
 
   //Do a little extra validation of connection information
-  if ( mHostName.isEmpty() && ( QMYSQL == databaseType() || QPSQL == databaseType() ) )
+  if ( mHostName.isEmpty() && ( QMySQL == databaseType() || QPSQL == databaseType() ) )
   {
     setLastError( QStringLiteral( "Host name was empty" ) );
     return false;
@@ -127,7 +127,7 @@ bool eVisDatabaseConnection::connect()
     setLastError( QStringLiteral( "Database name was empty" ) );
     return false;
   }
-  else if ( MSACCESS == databaseType() )
+  else if ( MSAccess == databaseType() )
   {
     mDatabase.setDatabaseName( "DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=" + mDatabaseName );
   }
@@ -194,7 +194,7 @@ QSqlQuery* eVisDatabaseConnection::query( const QString& sqlStatement )
 * @param password - The password associate with the username needed to access the database or database server
 * @param type - The type of database being connected to
 */
-void eVisDatabaseConnection::resetConnectionParameters( const QString& hostname, int port, const QString& databasename, const QString& username, const QString& password, DATABASE_TYPE type )
+void eVisDatabaseConnection::resetConnectionParameters( const QString& hostname, int port, const QString& databasename, const QString& username, const QString& password, DatabaseType type )
 {
   mHostName = hostname;
   mPort = port;

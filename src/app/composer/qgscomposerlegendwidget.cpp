@@ -896,7 +896,7 @@ void QgsComposerLegendWidget::updateLegend()
   {
     mLegend->beginCommand( tr( "Legend updated" ) );
 
-    // this will reset the model completely, loosing any changes
+    // this will reset the model completely, losing any changes
     mLegend->setAutoUpdateModel( true );
     mLegend->setAutoUpdateModel( false );
     mLegend->updateItem();

@@ -54,7 +54,7 @@ QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridg
   connect( mModel, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SLOT( modelUpdated() ) );
   connect( mModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( modelUpdated() ) );
 
-  connect( bridge->rootGroup(), SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SLOT( nodeVisibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ) );
+  connect( bridge->rootGroup(), &QgsLayerTreeNode::visibilityChanged, this, &QgsCustomLayerOrderWidget::nodeVisibilityChanged );
 
   QVBoxLayout* l = new QVBoxLayout;
   l->setMargin( 0 );
@@ -76,9 +76,8 @@ void QgsCustomLayerOrderWidget::bridgeCustomLayerOrderChanged( const QStringList
   mModel->refreshModel( mBridge->hasCustomLayerOrder() ? mBridge->customLayerOrder() : mBridge->defaultLayerOrder() );
 }
 
-void QgsCustomLayerOrderWidget::nodeVisibilityChanged( QgsLayerTreeNode* node, Qt::CheckState state )
+void QgsCustomLayerOrderWidget::nodeVisibilityChanged( QgsLayerTreeNode* node )
 {
-  Q_UNUSED( state );
   if ( QgsLayerTree::isLayer( node ) )
   {
     mModel->updateLayerVisibility( QgsLayerTree::toLayer( node )->layerId() );
@@ -141,7 +140,7 @@ bool CustomLayerOrderModel::setData( const QModelIndex& index, const QVariant& v
     QgsLayerTreeLayer* nodeLayer = mBridge->rootGroup()->findLayer( id );
     if ( nodeLayer )
     {
-      nodeLayer->setVisible( static_cast< Qt::CheckState >( value.toInt() ) );
+      nodeLayer->setItemVisibilityChecked( static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked );
       return true;
     }
   }

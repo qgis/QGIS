@@ -101,7 +101,7 @@ void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError* error, int meth
   }
 }
 
-const QStringList& QgsGeometryContainedCheck::getResolutionMethods() const
+QStringList QgsGeometryContainedCheck::getResolutionMethods() const
 {
   static QStringList methods = QStringList()
                                << tr( "Delete feature" )

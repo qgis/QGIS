@@ -27,6 +27,7 @@ email                : sbr00pwb@users.sourceforge.net
 class QPainter;
 
 #include <QColor>
+#include "qgis_app.h"
 
 class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
 {

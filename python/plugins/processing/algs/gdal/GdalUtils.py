@@ -35,9 +35,12 @@ import platform
 from osgeo import gdal
 
 from qgis.PyQt.QtCore import QSettings
-from qgis.core import QgsApplication, QgsVectorFileWriter
+from qgis.core import (QgsApplication,
+                       QgsVectorFileWriter,
+                       QgsProcessingFeedback)
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.SilentProgress import SilentProgress
+from processing.tools.system import isWindows, isMac
 
 try:
     from osgeo import gdal
@@ -48,12 +51,14 @@ except:
 
 class GdalUtils(object):
 
+    GDAL_HELP_PATH = 'GDAL_HELP_PATH'
+
     supportedRasters = None
 
     @staticmethod
-    def runGdal(commands, progress=None):
-        if progress is None:
-            progress = SilentProgress()
+    def runGdal(commands, feedback=None):
+        if feedback is None:
+            feedback = QgsProcessingFeedback()
         envval = os.getenv('PATH')
         # We need to give some extra hints to get things picked up on OS X
         isDarwin = False
@@ -75,9 +80,9 @@ class GdalUtils(object):
 
         fused_command = ' '.join([str(c) for c in commands])
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, fused_command)
-        progress.setInfo('GDAL command:')
-        progress.setCommand(fused_command)
-        progress.setInfo('GDAL command output:')
+        feedback.pushInfo('GDAL command:')
+        feedback.pushCommandInfo(fused_command)
+        feedback.pushInfo('GDAL command output:')
         success = False
         retry_count = 0
         while success == False:
@@ -93,7 +98,7 @@ class GdalUtils(object):
                     universal_newlines=True,
                 ) as proc:
                     for line in proc.stdout:
-                        progress.setConsoleInfo(line)
+                        feedback.pushConsoleInfo(line)
                         loglines.append(line)
                     success = True
             except IOError as e:
@@ -186,3 +191,25 @@ class GdalUtils(object):
     @staticmethod
     def version():
         return int(gdal.VersionInfo('VERSION_NUM'))
+
+    @staticmethod
+    def readableVersion():
+        return gdal.VersionInfo('RELEASE_NAME')
+
+    @staticmethod
+    def gdalHelpPath():
+        helpPath = ProcessingConfig.getSetting(GdalUtils.GDAL_HELP_PATH)
+
+        if helpPath is None:
+            if isWindows():
+                pass
+            elif isMac():
+                pass
+            else:
+                searchPaths = ['/usr/share/doc/libgdal-doc/gdal']
+                for path in searchPaths:
+                    if os.path.exists(path):
+                        helpPath = os.path.abspath(path)
+                        break
+
+        return helpPath if helpPath is not None else 'http://www.gdal.org/'

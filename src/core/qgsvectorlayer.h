@@ -19,6 +19,7 @@
 #ifndef QGSVECTORLAYER_H
 #define QGSVECTORLAYER_H
 
+#include "qgis_core.h"
 #include <QMap>
 #include <QSet>
 #include <QList>
@@ -322,7 +323,7 @@ protected:
  *
  * - skipEmptyFields=(yes|no)
  *
- *   If yes then empty fields will be discarded (eqivalent to concatenating consecutive
+ *   If yes then empty fields will be discarded (equivalent to concatenating consecutive
  *   delimiters)
  *
  * - maxFields=#
@@ -429,8 +430,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
       InvalidLayer = 4, //!< Edit failed due to invalid layer
     };
 
-    //! Selection behaviour
-    enum SelectBehaviour
+    //! Selection behavior
+    enum SelectBehavior
     {
       SetSelection, //!< Set selection, removing any existing selection
       AddToSelection, //!< Add selection to current selection
@@ -520,7 +521,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool removeJoin( const QString& joinLayerId );
 
     /**
-     * Acccessor to the join buffer object
+     * Accessor to the join buffer object
      * @note added 2.14.7
      */
     QgsVectorLayerJoinBuffer* joinBuffer() { return mJoinBuffer; }
@@ -606,34 +607,34 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Select features found within the search rectangle (in layer's coordinates)
      * @param rect search rectangle
-     * @param behaviour selection type, allows adding to current selection, removing
+     * @param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
      * @see invertSelectionInRectangle(QgsRectangle & rect)
      * @see selectByExpression()
      * @see selectByIds()
      */
-    void selectByRect( QgsRectangle & rect, SelectBehaviour behaviour = SetSelection );
+    void selectByRect( QgsRectangle & rect, SelectBehavior behavior = SetSelection );
 
     /** Select matching features using an expression.
      * @param expression expression to evaluate to select features
-     * @param behaviour selection type, allows adding to current selection, removing
+     * @param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
      * @note added in QGIS 2.16
      * @see selectByRect()
      * @see selectByIds()
      */
-    void selectByExpression( const QString& expression, SelectBehaviour behaviour = SetSelection );
+    void selectByExpression( const QString& expression, SelectBehavior behavior = SetSelection );
 
     /** Select matching features using a list of feature IDs. Will emit the
      * selectionChanged() signal with the clearAndSelect flag set.
      * @param ids feature IDs to select
-     * @param behaviour selection type, allows adding to current selection, removing
+     * @param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
      * @note added in QGIS 2.16
      * @see selectByRect()
      * @see selectByExpression()
      */
-    void selectByIds( const QgsFeatureIds &ids, SelectBehaviour behaviour = SetSelection );
+    void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
 
     /**
      * Modifies the current selection on this layer
@@ -869,7 +870,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Set the string (typically sql) used to define a subset of the layer
      * @param subset The subset string. This may be the where clause of a sql statement
-     *               or other defintion string specific to the underlying dataprovider
+     *               or other definition string specific to the underlying dataprovider
      *               and data store.
      * @return true, when setting the subset string was successful, false otherwise
      */
@@ -1244,7 +1245,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
      */
-    const QSet<QString>& excludeAttributesWms() const { return mExcludeAttributesWMS; }
+    QSet<QString> excludeAttributesWms() const { return mExcludeAttributesWMS; }
 
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
@@ -1254,7 +1255,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * A set of attributes that are not advertised in WFS requests with QGIS server.
      */
-    const QSet<QString>& excludeAttributesWfs() const { return mExcludeAttributesWFS; }
+    QSet<QString> excludeAttributesWfs() const { return mExcludeAttributesWFS; }
 
     /**
      * A set of attributes that are not advertised in WFS requests with QGIS server.
@@ -1739,7 +1740,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Is emitted, when edited changes successfully have been written to the data provider
     void editingStopped();
 
-    //! Is emitted, before changes are commited to the data provider
+    //! Is emitted, before changes are committed to the data provider
     void beforeCommitChanges();
 
     //! Is emitted, before changes are rolled back
@@ -1957,7 +1958,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool setDataProvider( QString const & provider );
 
-    //! Goes through all features and finds a free id (e.g. to give it temporarily to a not-commited feature)
+    //! Goes through all features and finds a free id (e.g. to give it temporarily to a not-committed feature)
     QgsFeatureId findFreeId();
 
     /** Snaps to a geometry and adds the result to the multimap if it is within the snapping result

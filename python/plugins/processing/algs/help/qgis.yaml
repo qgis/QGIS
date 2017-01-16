@@ -114,6 +114,9 @@ qgis:createpointsalonglines: >
 
   Start and end points can be defined, so the first and last point do not fall on the line first and last node. Start and end points are defined as distances, mesaureed from the first and last nodes of the lines, in the units of the projection used by the lines layer.
 
+qgis:createspatialindex: >
+  Creates an index to speed up access to the features in a layer based on their spatial location. Support for spatial index creation is dependent on the layer's data provider.
+
 qgis:delaunaytriangulation: >
   This algorithm creates a polygon layer with the delaunay triangulation corresponding to a  points layer.
 
@@ -244,7 +247,7 @@ qgis:intersection: >
 qgis:joinattributesbylocation: >
   This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
 
-  The additional attributes and their values are taken from a second vector layer.  A spatial critera is applied to select the values from the second layer that are added to each feature from the first layer in the resulting one.
+  The additional attributes and their values are taken from a second vector layer.  A spatial criteria is applied to select the values from the second layer that are added to each feature from the first layer in the resulting one.
 
 
 qgis:joinattributestable: >
@@ -438,7 +441,7 @@ qgis:rasterlayerstatistics: >
 qgis:refactorfields: >
   This algorithms allows editing the structure of the attributes table of a vector layer. Fields can be modified in their type and name, using a fields mapping
 
-  The original layer is not modified. A new layer is generated, which contains a modified attributes table, accordint to the provided fields mapping
+  The original layer is not modified. A new layer is generated, which contains a modified attributes table, according to the provided fields mapping
 
 qgis:regularpoints:
 
@@ -537,6 +540,11 @@ qgis:texttofloat: >
 qgis:translate: >
   This algorithm moves the geometries within a layer, by offsetting them with a specified x and y displacement.
 
+qgis:truncatetable: >
+  This algorithm truncates a layer, by deleting all features from within the layer.
+
+  Warning - this algorithm modifies the layer in place, and deleted features cannot be restored!
+
 qgis:union: >
   This algorithm creates a layer containing all the features from both input layers. In the case of polygon layers, separate features are created for overlapping and non-overlapping features. The attribute table of the union layer contains attribute values from the respective input layer for non-overlapping features, and attribute values from both input layers for overlapping features.
 
@@ -572,7 +580,7 @@ qgis:rastercalculator: >
     
     The cell size is assumed to be the same in both X and Y axes.
     
-    Layers are refered by their name as displayed in the layer list and the number of the band to use (based on 1), using the pattern 'layer_name@band number'. For instance, the first band from a layer named DEM will be referred as DEM@1.
+    Layers are referred by their name as displayed in the layer list and the number of the band to use (based on 1), using the pattern 'layer_name@band number'. For instance, the first band from a layer named DEM will be referred as DEM@1.
     
-    When using the calculator in the batch interface or from the console, the files to use have to be specified. The corresponding layers are refered using the base name of the file (without the full path). For instance, is using a layer at path/to/my/rasterfile.tif, the first band of that layer will be refered as rasterfile.tif@1.
+    When using the calculator in the batch interface or from the console, the files to use have to be specified. The corresponding layers are referred using the base name of the file (without the full path). For instance, is using a layer at path/to/my/rasterfile.tif, the first band of that layer will be referred as rasterfile.tif@1.
     

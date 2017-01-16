@@ -63,7 +63,7 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition* lp, FeaturePart* obs
       break;
 
     case GEOS_POLYGON:
-      // behaviour depends on obstacle avoid type
+      // behavior depends on obstacle avoid type
       switch ( obstacle->layer()->obstacleType() )
       {
         case QgsPalLayerSettings::PolygonInterior:

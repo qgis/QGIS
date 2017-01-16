@@ -14,6 +14,8 @@ IF (ENABLE_TESTS)
    ADD_DEFINITIONS(-DENABLE_MS_TESTS=1)
 ENDIF (ENABLE_TESTS)
 
+ADD_SUBDIRECTORY(services)
+
 ########################################################
 # Files
 
@@ -21,15 +23,12 @@ SET ( qgis_mapserv_SRCS
   qgis_map_serv.cpp
   qgscapabilitiescache.cpp
   qgsconfigcache.cpp
-  qgshttprequesthandler.cpp
-#  qgshttptransaction.cpp
-  qgsgetrequesthandler.cpp
-  qgspostrequesthandler.cpp
+  qgsrequesthandler.cpp
   qgsowsserver.cpp
-  qgswmsserver.cpp
   qgswfsserver.cpp
   qgswcsserver.cpp
-  qgsmapserviceexception.cpp
+  qgsserversettings.cpp
+  qgsserverexception.cpp
   qgsmslayercache.cpp
   qgsmslayerbuilder.cpp
   qgshostedvdsbuilder.cpp
@@ -39,7 +38,6 @@ SET ( qgis_mapserv_SRCS
   qgsremotedatasourcebuilder.cpp
   qgssentdatasourcebuilder.cpp
   qgsserverlogger.cpp
-  qgsmapserverutils.cpp
   qgswcsprojectparser.cpp
   qgswfsprojectparser.cpp
   qgswmsconfigparser.cpp
@@ -49,6 +47,16 @@ SET ( qgis_mapserv_SRCS
   qgssldconfigparser.cpp
   qgsconfigparserutils.cpp
   qgsserver.cpp
+  qgsservice.cpp
+  qgsservicemodule.cpp
+  qgsservicenativeloader.cpp
+  qgsserviceregistry.cpp
+  qgsserverrequest.cpp
+  qgsserverresponse.cpp
+  qgsfcgiserverresponse.cpp
+  qgsbufferserverresponse.cpp
+  qgsfilterresponsedecorator.cpp
+#----------------------------
 )
 IF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
   SET (qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
@@ -67,6 +75,7 @@ SET (qgis_mapserv_MOC_HDRS
 #  qgshttptransaction.h
   qgsmslayercache.h
   qgsserverlogger.h
+  qgsserversettings.h
   qgsserverstreamingdevice.h
 )
 
@@ -101,10 +110,6 @@ SET(qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
 )
 ENDIF (WITH_SERVER_PLUGINS)
 
-REMOVE_DEFINITIONS("-DSERVER_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("\"-DSERVER_EXPORT=${DLLEXPORT}\"")
-
-
 QT5_WRAP_CPP(qgis_mapserv_MOC_SRCS ${qgis_mapserv_MOC_HDRS})
 
 IF(MSVC)
@@ -115,6 +120,12 @@ ENDIF(MSVC)
 
 
 ADD_LIBRARY(qgis_server SHARED ${qgis_mapserv_SRCS} ${qgis_mapserv_MOC_SRCS} ${qgis_mapserv_HDRS} ${qgis_mapserv_MOC_HDRS})
+
+GENERATE_EXPORT_HEADER(
+   qgis_server
+   BASE_NAME SERVER
+   EXPORT_FILE_NAME qgis_server.h
+ )
 
 #generate unversioned libs for android
 IF (NOT ANDROID)
@@ -194,6 +205,11 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QCA_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/python
+  ${CMAKE_BINARY_DIR}/src/analysis
+  ${CMAKE_BINARY_DIR}/src/server
   ../core
   ../core/auth
   ../core/dxf
@@ -221,6 +237,7 @@ TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
   ${QCA_LIBRARY}
 )
 
+
 ########################################################
 # Install
 
@@ -235,4 +252,3 @@ INSTALL(FILES
   schemaExtension.xsd
   DESTINATION ${QGIS_CGIBIN_DIR}
   )
-

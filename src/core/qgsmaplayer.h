@@ -18,6 +18,7 @@
 #ifndef QGSMAPLAYER_H
 #define QGSMAPLAYER_H
 
+#include "qgis_core.h"
 #include <QDateTime>
 #include <QDomNode>
 #include <QImage>
@@ -389,7 +390,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     static QDomDocument asLayerDefinition( const QList<QgsMapLayer*>& layers, const QString& relativeBasePath = QString::null );
 
-    /** Creates a new layer from a layer defininition document
+    /** Creates a new layer from a layer definition document
      */
     static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document, bool addToRegistry = false, bool addToLegend = false );
     static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString &qlrfile );
@@ -776,6 +777,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Emitted when dependencies are changed.
      */
     void dependenciesChanged();
+
+    /**
+     * Emitted in the destructor when the layer is about to be deleted,
+     * but it is still in a perfectly valid state: the last chance for
+     * other pieces of code for some cleanup if they use the layer.
+     * @note added in QGIS 3.0
+     */
+    void willBeDeleted();
 
   protected:
     //! Set the extent

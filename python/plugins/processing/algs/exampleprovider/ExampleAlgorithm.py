@@ -75,7 +75,7 @@ class ExampleAlgorithm(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Output layer with selected features')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         """Here is where the processing itself takes place."""
 
         # The first thing to do is retrieve the values of the parameters

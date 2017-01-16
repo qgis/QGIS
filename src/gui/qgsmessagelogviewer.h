@@ -22,6 +22,7 @@
 #include "qgsmessagelog.h"
 
 #include <QString>
+#include "qgis_gui.h"
 
 class QStatusBar;
 class QToolButton;

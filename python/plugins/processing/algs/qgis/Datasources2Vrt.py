@@ -31,7 +31,7 @@ import codecs
 import xml.sax.saxutils
 
 from osgeo import ogr
-
+from qgis.core import QgsProcessingFeedback
 from processing.tools import dataobjects
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -64,7 +64,7 @@ class Datasources2Vrt(GeoAlgorithm):
         self.addOutput(OutputString(self.VRT_STRING,
                                     self.tr('Virtual string')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         input_layers = self.getParameterValue(self.DATASOURCES)
         unioned = self.getParameterValue(self.UNIONED)
         vrtPath = self.getOutputValue(self.VRT_FILE)
@@ -76,12 +76,12 @@ class Datasources2Vrt(GeoAlgorithm):
                                               union=unioned,
                                               relative=False,
                                               schema=False,
-                                              progress=progress)
+                                              feedback=feedback)
 
         self.setOutputValue(self.VRT_STRING, vrtString)
 
     def mergeDataSources2Vrt(self, dataSources, outFile, union=False, relative=False,
-                             schema=False, progress=None):
+                             schema=False, feedback=None):
         '''Function to do the work of merging datasources in a single vrt format
 
         @param data_sources: Array of path strings
@@ -90,13 +90,16 @@ class Datasources2Vrt(GeoAlgorithm):
         @param schema: Schema flag
         @return: vrt in string format
         '''
+        if feedback is None:
+            feedback = QgsProcessingFeedback()
+
         vrt = '<OGRVRTDataSource>'
         if union:
             vrt += '<OGRVRTUnionLayer name="UnionedLayer">'
 
         total = 100.0 / len(dataSources)
         for current, inFile in enumerate(dataSources):
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
             srcDS = ogr.Open(inFile, 0)
             if srcDS is None:

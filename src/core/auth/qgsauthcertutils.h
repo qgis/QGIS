@@ -23,6 +23,8 @@
 #include <QSslCertificate>
 #include <QSslError>
 
+#include "qgis_core.h"
+
 class QgsAuthConfigSslServer;
 
 #define SSL_ISSUER_INFO( var, prop ) var.issuerInfo( prop ).value(0)
@@ -166,7 +168,7 @@ class CORE_EXPORT QgsAuthCertUtils
     //! Get the general name for certificate trust
     static QString getCertTrustName( QgsAuthCertUtils::CertTrustPolicy trust );
 
-    //! Get string with colon delimeters every 2 characters
+    //! Get string with colon delimiters every 2 characters
     static QString getColonDelimited( const QString& txt );
 
     /** Get the sha1 hash for certificate

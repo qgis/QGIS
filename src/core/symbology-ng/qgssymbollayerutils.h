@@ -17,6 +17,7 @@
 #ifndef QGSSYMBOLLAYERUTILS_H
 #define QGSSYMBOLLAYERUTILS_H
 
+#include "qgis_core.h"
 #include <QMap>
 #include <Qt>
 #include <QtCore>
@@ -349,7 +350,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /** Creates a color ramp from the settings encoded in an XML element
      * @param element DOM element
-     * @returns new color ramp. Caller takes responsiblity for deleting the returned value.
+     * @returns new color ramp. Caller takes responsibility for deleting the returned value.
      * @see saveColorRamp()
      */
     static QgsColorRamp* loadColorRamp( QDomElement& element );
@@ -506,9 +507,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     //! Returns scale factor painter units -> map units
     static double mapUnitScaleFactor( const QgsRenderContext& c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
-
-    //! Creates a render context for a pixel based device
-    static QgsRenderContext createRenderContext( QPainter* p );
 
     //! Multiplies opacity of image pixel values with a (global) transparency value
     static void multiplyImageOpacity( QImage* image, qreal alpha );

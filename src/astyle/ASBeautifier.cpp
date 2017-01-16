@@ -255,7 +255,7 @@ ASBeautifier::~ASBeautifier()
  *
  * init() should be called every time a ABeautifier object is to start
  * beautifying a NEW source file.
- * init() recieves a pointer to a DYNAMICALLY CREATED ASSourceIterator object
+ * init() receives a pointer to a DYNAMICALLY CREATED ASSourceIterator object
  * that will be used to iterate through the source code. This object will be
  * deleted during the ASBeautifier's destruction, and thus should not be
  * deleted elsewhere.
@@ -1649,7 +1649,7 @@ string ASBeautifier::beautify(const string &originalLine)
 			foundAssignmentOp = findHeader(line, i, assignmentOperators, true);
 		const string *foundNonAssignmentOp = findHeader(line, i, nonAssignmentOperators, false);
 
-		// Since findHeader's boundry checking was not used above, it is possible
+		// Since findHeader's boundary checking was not used above, it is possible
 		// that both an assignment op and a non-assignment op where found,
 		// e.g. '>>' and '>>='. If this is the case, treat the LONGER one as the
 		// found operator.

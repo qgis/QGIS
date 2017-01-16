@@ -18,6 +18,7 @@
 #ifndef QGSEXPRESSIONFIELDBUFFER_H
 #define QGSEXPRESSIONFIELDBUFFER_H
 
+#include "qgis_core.h"
 #include <QString>
 #include <QList>
 #include <QDomNode>
@@ -98,7 +99,7 @@ class CORE_EXPORT QgsExpressionFieldBuffer
      */
     void updateFields( QgsFields& flds );
 
-    const QList<ExpressionField>& expressions() const { return mExpressions; }
+    QList<ExpressionField> expressions() const { return mExpressions; }
 
   private:
     QList<ExpressionField> mExpressions;

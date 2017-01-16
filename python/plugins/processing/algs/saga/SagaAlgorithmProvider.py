@@ -54,7 +54,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                          "2.2.3": ("2.2.3", SagaAlgorithm214)}
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
         self.activate = True
 
     def initializeSettings(self):
@@ -72,7 +72,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.addSetting(Setting("SAGA",
                                             SagaUtils.SAGA_LOG_CONSOLE,
                                             self.tr('Log console output'), True))
-        ProcessingConfig.settingIcons["SAGA"] = self.getIcon()
+        ProcessingConfig.settingIcons["SAGA"] = self.icon()
         ProcessingConfig.addSetting(Setting("SAGA", "ACTIVATE_SAGA",
                                             self.tr('Activate'), self.activate))
 
@@ -86,7 +86,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def _loadAlgorithms(self):
         self.algs = []
-        version = SagaUtils.getSagaInstalledVersion(True)
+        version = SagaUtils.getInstalledVersion(True)
         if version is None:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                    self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'))
@@ -120,11 +120,11 @@ class SagaAlgorithmProvider(AlgorithmProvider):
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                    self.tr('Could not open SAGA algorithm: %s\n%s' % (descriptionFile, str(e))))
 
-    def getDescription(self):
-        version = SagaUtils.getSagaInstalledVersion()
-        return 'SAGA (%s)' % version if version is not None else 'SAGA'
+    def name(self):
+        version = SagaUtils.getInstalledVersion()
+        return 'SAGA ({})'.format(version) if version is not None else 'SAGA'
 
-    def getName(self):
+    def id(self):
         return 'saga'
 
     def getSupportedOutputVectorLayerExtensions(self):
@@ -136,5 +136,5 @@ class SagaAlgorithmProvider(AlgorithmProvider):
     def getSupportedOutputTableLayerExtensions(self):
         return ['dbf']
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))

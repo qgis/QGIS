@@ -18,6 +18,8 @@
 #ifndef QGSCURSORS_H
 #define QGSCURSORS_H
 
+#include "qgis_gui.h"
+
 /** \ingroup gui
  * Bitmap cursors for map operations.
  */

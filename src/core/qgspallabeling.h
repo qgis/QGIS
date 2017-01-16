@@ -21,6 +21,7 @@
 #ifndef QGSPALLABELING_H
 #define QGSPALLABELING_H
 
+#include "qgis_core.h"
 #include <QString>
 #include <QFont>
 #include <QFontDatabase>
@@ -168,7 +169,7 @@ class CORE_EXPORT QgsPalLayerSettings
       BottomRight, //!< Label on bottom right of point
     };
 
-    //! Behaviour modifier for label offset and distance, only applies in some
+    //! Behavior modifier for label offset and distance, only applies in some
     //! label placement modes.
     //TODO QGIS 3.0 - move to QgsLabelingEngine
     enum OffsetType
@@ -678,7 +679,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     QgsTextFormat mFormat;
 
-    static QVector< PredefinedPointPosition > DEFAULT_PLACEMENT_ORDER;
+    static const QVector< PredefinedPointPosition > DEFAULT_PLACEMENT_ORDER;
 };
 
 /** \ingroup core

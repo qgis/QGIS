@@ -24,6 +24,7 @@
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgis_app.h"
 
 class QgsPoint;
 class QgsMapLayer;
@@ -146,7 +147,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! \brief Flag to indicate if RGB minimum maximum values are actual minimum maximum values
     bool mRGBMinimumMaximumEstimated;
 
-    //! \brief Pointer to the raster layer that this property dilog changes the behaviour of.
+    //! \brief Pointer to the raster layer that this property dilog changes the behavior of.
     QgsRasterLayer * mRasterLayer;
 
     /** \brief If the underlying raster layer doesn't have a provider

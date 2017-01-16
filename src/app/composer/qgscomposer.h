@@ -104,7 +104,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     QAction* windowAction() {return mWindowAction;}
 
-    const QString& title() const {return mTitle;}
+    QString title() const {return mTitle;}
     void setTitle( const QString& title );
 
     /** Loads the contents of a template document into the composer's composition.

@@ -16,6 +16,7 @@
 #ifndef QGSSYMBOL_H
 #define QGSSYMBOL_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include <QList>
 #include <QMap>
@@ -81,7 +82,7 @@ class CORE_EXPORT QgsSymbol
     };
 
 
-    //! Flags controlling behaviour of symbols during rendering
+    //! Flags controlling behavior of symbols during rendering
     enum RenderHint
     {
       DynamicRotation = 2, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
@@ -274,7 +275,7 @@ class CORE_EXPORT QgsSymbol
     const QgsVectorLayer* layer() const { return mLayer; }
 
     /**
-     * Render a feature. Before calling this the startRender() method should be called to initialise
+     * Render a feature. Before calling this the startRender() method should be called to initialize
      * the rendering process. After rendering all features stopRender() must be called.
      */
     void renderFeature( const QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, int currentVertexMarkerSize = 0 );
@@ -382,7 +383,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * @param u
      * @param alpha
      * @param selected set to true if symbol should be drawn in a "selected" state
-     * @param renderHints flags controlling rendering behaviour
+     * @param renderHints flags controlling rendering behavior
      * @param f
      * @param fields
      * @param mapUnitScale

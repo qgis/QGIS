@@ -20,6 +20,7 @@
 #include <QStringList>
 
 #include "qgscoordinatereferencesystem.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsMapLayer;

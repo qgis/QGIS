@@ -17,6 +17,7 @@
 #ifndef QGSCOMPOSERLABEL_H
 #define QGSCOMPOSERLABEL_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include <QFont>
 

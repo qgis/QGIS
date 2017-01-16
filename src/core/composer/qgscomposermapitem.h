@@ -17,6 +17,7 @@
 #ifndef QGSCOMPOSERMAPITEM_H
 #define QGSCOMPOSERMAPITEM_H
 
+#include "qgis_core.h"
 #include "qgscomposerobject.h"
 
 class QgsComposerMap;

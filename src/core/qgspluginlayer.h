@@ -15,6 +15,7 @@
 #ifndef QGSPLUGINLAYER_H
 #define QGSPLUGINLAYER_H
 
+#include "qgis_core.h"
 #include "qgsmaplayer.h"
 
 typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
@@ -33,6 +34,7 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
 
   public:
     QgsPluginLayer( const QString& layerType, const QString& layerName = QString() );
+    ~QgsPluginLayer();
 
     //! Return plugin layer type (the same as used in QgsPluginLayerRegistry)
     QString pluginLayerType();
@@ -46,7 +48,7 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     void setSource( const QString& source );
 
     //! return a list of symbology items for the legend
-    //! (defult implementation returns nothing)
+    //! (default implementation returns nothing)
     //! @note Added in v2.1
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 

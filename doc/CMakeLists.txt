@@ -22,7 +22,7 @@ ELSE(TXT2TAGS_EXECUTABLE)
   )
 ENDIF(TXT2TAGS_EXECUTABLE)
 
-SET(QGIS_DOC_FILES ${QGIS_DOC_FILES} index.html news.html developersmap.html contributors.json favicon.ico style.css release-sponsors.html AUTHORS CONTRIBUTORS SPONSORS DONORS TRANSLATORS LICENSE)
+SET(QGIS_DOC_FILES ${QGIS_DOC_FILES} index.html news.html developersmap.html nohelp.html contributors.json favicon.ico style.css release-sponsors.html AUTHORS CONTRIBUTORS SPONSORS DONORS TRANSLATORS LICENSE)
 
 INSTALL(FILES ${QGIS_DOC_FILES} DESTINATION ${QGIS_DATA_DIR}/doc)
 INSTALL(FILES ../images/icons/qgis-icon-60x60.png DESTINATION ${QGIS_DATA_DIR}/doc/images)
@@ -53,10 +53,12 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/diagram
       ${CMAKE_SOURCE_DIR}/src/core/dxf
       ${CMAKE_SOURCE_DIR}/src/core/effects
+      ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
       ${CMAKE_SOURCE_DIR}/src/core/geometry
       ${CMAKE_SOURCE_DIR}/src/core/gps
       ${CMAKE_SOURCE_DIR}/src/core/layertree
       ${CMAKE_SOURCE_DIR}/src/core/pal
+      ${CMAKE_SOURCE_DIR}/src/core/processing
       ${CMAKE_SOURCE_DIR}/src/core/raster
       ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
       ${CMAKE_SOURCE_DIR}/src/gui

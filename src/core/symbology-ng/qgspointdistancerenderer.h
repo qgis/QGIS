@@ -18,6 +18,7 @@
 #ifndef QGSPOINTDISTANCERENDERER_H
 #define QGSPOINTDISTANCERENDERER_H
 
+#include "qgis_core.h"
 #include "qgsrenderer.h"
 #include <QFont>
 

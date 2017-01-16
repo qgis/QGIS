@@ -165,7 +165,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
                   "}";
   ss += style;
 
-  // Fix selection color on loosing focus (Windows)
+  // Fix selection color on losing focus (Windows)
   const QPalette palette = qApp->palette();
 
   ss += QString( "QTableView {"

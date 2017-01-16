@@ -32,8 +32,9 @@ import tempfile
 from qgis.core import (QgsVectorLayer, QgsFeatureRequest)
 from qgis.testing import start_app, unittest
 
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tests.TestData import testDataPath, points
+from processing.tests.TestData import testDataPath, points, invalid_geometries
 from processing.tools import vector
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
@@ -57,6 +58,10 @@ class VectorTest(unittest.TestCase):
 
         test_data = points()
         test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
+
+        # disable check for geometry validity
+        prevInvalidGeoms = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
+        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, 0)
 
         # test with all features
         features = vector.features(test_layer)
@@ -100,8 +105,21 @@ class VectorTest(unittest.TestCase):
 
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
 
+        # test exception is raised when filtering invalid geoms
+        #ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, 2)
+        #test_layer_invalid_geoms = QgsVectorLayer(invalid_geometries(), 'test', 'ogr')
+        #with self.assertRaises(GeoAlgorithmExecutionException):
+        #    features = vector.features(test_layer_invalid_geoms)
+        #    feats = [f for f in features]
+
+        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, prevInvalidGeoms)
+
     def testValues(self):
         ProcessingConfig.initialize()
+
+        # disable check for geometry validity
+        prevInvalidGeoms = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
+        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, 0)
 
         test_data = points()
         test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
@@ -137,9 +155,14 @@ class VectorTest(unittest.TestCase):
         self.assertEqual(set(res[1]), set([5, 7, 3]))
 
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
+        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, prevInvalidGeoms)
 
     def testUniqueValues(self):
         ProcessingConfig.initialize()
+
+        # disable check for geometry validity
+        prevInvalidGeoms = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
+        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, 0)
 
         test_data = points()
         test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
@@ -163,6 +186,7 @@ class VectorTest(unittest.TestCase):
         self.assertEqual(set(v), set([5, 7, 3]))
 
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
+        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, prevInvalidGeoms)
 
     def testOgrLayerNameExtraction(self):
         outdir = tempfile.mkdtemp()

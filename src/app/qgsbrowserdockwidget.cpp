@@ -122,12 +122,12 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem* item )
   QString layerMetadata = tr( "Error" );
   QgsCoordinateReferenceSystem layerCrs;
 
-  // temporarily override /Projections/defaultBehaviour to avoid dialog prompt
+  // temporarily override /Projections/defaultBehavior to avoid dialog prompt
   QSettings settings;
-  QString defaultProjectionOption = settings.value( QStringLiteral( "/Projections/defaultBehaviour" ), "prompt" ).toString();
-  if ( settings.value( QStringLiteral( "/Projections/defaultBehaviour" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
+  QString defaultProjectionOption = settings.value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString();
+  if ( settings.value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
   {
-    settings.setValue( QStringLiteral( "/Projections/defaultBehaviour" ), "useProject" );
+    settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), "useProject" );
   }
 
   // find root item
@@ -169,10 +169,10 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem* item )
     return;
   }
 
-  // restore /Projections/defaultBehaviour
+  // restore /Projections/defaultBehavior
   if ( defaultProjectionOption == QLatin1String( "prompt" ) )
   {
-    settings.setValue( QStringLiteral( "/Projections/defaultBehaviour" ), defaultProjectionOption );
+    settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), defaultProjectionOption );
   }
 
   mNameLabel->setText( layerItem->name() );
@@ -680,10 +680,10 @@ void QgsBrowserDockWidget::setCaseSensitive( bool caseSensitive )
 
 int QgsBrowserDockWidget::selectedItemsCount()
 {
-  QItemSelectionModel *selectonModel = mBrowserView->selectionModel();
-  if ( selectonModel )
+  QItemSelectionModel *selectionModel = mBrowserView->selectionModel();
+  if ( selectionModel )
   {
-    return selectonModel->selectedIndexes().size();
+    return selectionModel->selectedIndexes().size();
   }
   return 0;
 }
@@ -710,10 +710,10 @@ void QgsBrowserDockWidget::clearPropertiesWidget()
 void QgsBrowserDockWidget::setPropertiesWidget()
 {
   clearPropertiesWidget();
-  QItemSelectionModel *selectonModel = mBrowserView->selectionModel();
-  if ( selectonModel )
+  QItemSelectionModel *selectionModel = mBrowserView->selectionModel();
+  if ( selectionModel )
   {
-    QModelIndexList indexes = selectonModel->selectedIndexes();
+    QModelIndexList indexes = selectionModel->selectedIndexes();
     if ( indexes.size() == 1 )
     {
       QModelIndex index = mProxyModel->mapToSource( indexes.value( 0 ) );

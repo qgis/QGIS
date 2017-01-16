@@ -23,6 +23,7 @@
 #include "qgsspatialindex.h"
 #include "qgsabstractgeometry.h"
 #include "qgspointv2.h"
+#include "qgis_analysis.h"
 
 class QgsVectorLayer;
 

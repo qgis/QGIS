@@ -16,6 +16,7 @@
 #ifndef QGSRELATIONMANAGER_H
 #define QGSRELATIONMANAGER_H
 
+#include "qgis_core.h"
 #include <QObject>
 #include <QPair>
 #include <QDomNode>
@@ -52,7 +53,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * @return A QMap where the key is the relation id, the value the relation object.
      */
-    const QMap<QString, QgsRelation>& relations() const;
+    QMap<QString, QgsRelation> relations() const;
 
     /**
      * Add a relation.

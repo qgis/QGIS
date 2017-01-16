@@ -23,6 +23,7 @@
 #ifndef QGSRASTERDATAPROVIDER_H
 #define QGSRASTERDATAPROVIDER_H
 
+#include "qgis_core.h"
 #include <cmath>
 
 #include <QDateTime>
@@ -277,7 +278,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       return QStringLiteral( "FAILED_NOT_SUPPORTED" );
     }
 
-    /** \brief Accessor for ths raster layers pyramid list.
+    /** \brief Accessor for the raster layers pyramid list.
      * @param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
      * A pyramid list defines the
      * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
@@ -476,9 +477,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     QList< QgsRasterRangeList > mUserNoDataValue;
 
     mutable QgsRectangle mExtent;
-
-    static QStringList mPyramidResamplingListGdal;
-    static QgsStringMap mPyramidResamplingMapGdal;
 
 };
 #endif

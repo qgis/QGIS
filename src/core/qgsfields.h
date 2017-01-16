@@ -16,6 +16,7 @@
 #ifndef QGSFIELDS_H
 #define QGSFIELDS_H
 
+#include "qgis_core.h"
 #include "qgsfield.h"
 
 class QgsFieldsPrivate;

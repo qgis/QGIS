@@ -21,8 +21,6 @@
 
 #include "qgsserverinterface.h"
 #include "qgscapabilitiescache.h"
-#include "qgsgetrequesthandler.h"
-#include "qgspostrequesthandler.h"
 
 /**
  * QgsServerInterface
@@ -37,7 +35,9 @@ class QgsServerInterfaceImpl : public QgsServerInterface
   public:
 
     //! Constructor
-    explicit QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache );
+    explicit QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache,
+                                     QgsServiceRegistry* srvRegistry,
+                                     QgsServerSettings* serverSettings );
 
 
     ~QgsServerInterfaceImpl();
@@ -50,18 +50,23 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     void registerFilter( QgsServerFilter *filter, int priority = 0 ) override;
     QgsServerFiltersMap filters() override { return mFilters; }
     //! Register an access control filter
+    //
     void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 ) override;
 
     /** Gets the helper over all the registered access control filters
      * @return the access control helper
      */
-    const QgsAccessControl* accessControls() const override { return mAccessControls; }
+    QgsAccessControl* accessControls() const override { return mAccessControls; }
     QString getEnv( const QString& name ) const override;
     QString configFilePath() override { return mConfigFilePath; }
     void setConfigFilePath( const QString& configFilePath ) override;
     void setFilters( QgsServerFiltersMap *filters ) override;
     void removeConfigCacheEntry( const QString& path ) override;
     void removeProjectLayers( const QString& path ) override;
+
+    QgsServiceRegistry* serviceRegistry() override;
+
+    QgsServerSettings* serverSettings() override;
 
   private:
 
@@ -70,7 +75,8 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     QgsAccessControl* mAccessControls;
     QgsCapabilitiesCache* mCapabilitiesCache;
     QgsRequestHandler* mRequestHandler;
-
+    QgsServiceRegistry* mServiceRegistry;
+    QgsServerSettings* mServerSettings;
 };
 
 #endif // QGSSERVERINTERFACEIMPL_H

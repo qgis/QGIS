@@ -259,7 +259,7 @@ QPixmap QgsSvgSelectorListModel::createPreview( const QString& entry ) const
     outlineWidth = 0.2;
 
   bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-  const QImage& img = QgsApplication::svgCache()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
+  const QImage& img = QgsApplication::svgCache()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
   return QPixmap::fromImage( img );
 }
 
@@ -529,7 +529,7 @@ void QgsSvgSelectorWidget::populateList()
     mGroupsTreeView->setExpanded( g->indexFromItem( g->item( i ) ), true );
   }
 
-  // Initally load the icons in the List view without any grouping
+  // Initially load the icons in the List view without any grouping
   QAbstractItemModel* oldModel = mImagesListView->model();
   QgsSvgSelectorListModel* m = new QgsSvgSelectorListModel( mImagesListView );
   mImagesListView->setModel( m );

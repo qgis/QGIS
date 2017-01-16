@@ -1,7 +1,7 @@
 /***************************************************************************
     qgscredentials.h  -  interface for requesting credentials
     ----------------------
-    begin                : Feburary 2010
+    begin                : February 2010
     copyright            : (C) 2010 by Juergen E. Fischer
     email                : jef at norbit dot de
  ***************************************************************************
@@ -22,6 +22,8 @@
 #include <QPair>
 #include <QMap>
 #include <QMutex>
+
+#include "qgis_core.h"
 
 /** \ingroup core
  * Interface for requesting credentials in QGIS in GUI independent way.
@@ -87,7 +89,7 @@ class CORE_EXPORT QgsCredentials
     QMap< QString, QPair<QString, QString> > mCredentialCache;
 
     //! Pointer to the credential instance
-    static QgsCredentials *smInstance;
+    static QgsCredentials *sInstance;
 
     QMutex mMutex;
 };

@@ -205,8 +205,8 @@ void TestQgsLegendRenderer::init()
   }
   QgsProject::instance()->addMapLayer( mVL3 );
 
-  static char raster_array[] = { 1, 2, 2, 1 };
-  QString rasterUri = QStringLiteral( "MEM:::DATAPOINTER=%1,PIXELS=2,LINES=2" ).arg(( qulonglong ) raster_array );
+  static const char RASTER_ARRAY[] = { 1, 2, 2, 1 };
+  QString rasterUri = QStringLiteral( "MEM:::DATAPOINTER=%1,PIXELS=2,LINES=2" ).arg(( qulonglong ) RASTER_ARRAY );
   mRL = new QgsRasterLayer( rasterUri, QStringLiteral( "Raster Layer" ), QStringLiteral( "gdal" ) );
   QgsProject::instance()->addMapLayer( mRL );
 
@@ -661,7 +661,7 @@ void TestQgsLegendRenderer::testDiagramAttributeLegend()
   dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
   dr->setUpperValue( 10 );
   dr->setUpperSize( QSizeF( 40, 40 ) );
-  dr->setClassificationAttribute( 0 );
+  dr->setClassificationField( QString() );
   dr->setDiagram( new QgsPieDiagram() );
   dr->setDiagramSettings( ds );
   dr->setSizeLegend( false );
@@ -701,7 +701,7 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
   dr->setLowerSize( QSizeF( 1, 1 ) );
   dr->setUpperValue( 10 );
   dr->setUpperSize( QSizeF( 20, 20 ) );
-  dr->setClassificationAttribute( 0 );
+  dr->setClassificationField( QString( "a" ) );
   dr->setDiagram( new QgsPieDiagram() );
   dr->setDiagramSettings( ds );
   dr->setSizeLegend( true );

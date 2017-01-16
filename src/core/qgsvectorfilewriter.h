@@ -19,6 +19,7 @@
 #ifndef QGSVECTORFILEWRITER_H
 #define QGSVECTORFILEWRITER_H
 
+#include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgssymbol.h"
 #include <ogr_api.h>
@@ -540,9 +541,7 @@ class CORE_EXPORT QgsVectorFileWriter
 
     SymbologyExport mSymbologyExport;
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1700
     QMap< QgsSymbolLayer*, QString > mSymbolLayerTable;
-#endif
 
     //! Scale for symbology export (e.g. for symbols units in map units)
     double mSymbologyScaleDenominator;

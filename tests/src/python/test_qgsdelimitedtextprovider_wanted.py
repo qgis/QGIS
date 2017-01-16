@@ -1348,8 +1348,8 @@ def test_029_file_watcher():
         },
         5004: {
             'id': '3',
-            'description': 'tigger',
-            'name': 'tigger',
+            'description': 'tiger',
+            'name': 'tiger',
             '#fid': 4,
             '#geometry': 'None',
         },
@@ -1369,8 +1369,8 @@ def test_029_file_watcher():
         },
         6004: {
             'id': '3',
-            'description': 'tigger',
-            'name': 'tigger',
+            'description': 'tiger',
+            'name': 'tiger',
             '#fid': 4,
             '#geometry': 'None',
         },

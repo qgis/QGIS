@@ -200,7 +200,7 @@ void QgsAttributeActionPropertiesDialog::init( const QSet<QString>& actionScopes
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs().srsid() );
-  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
+  myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   mFieldExpression->setLayer( mLayer );

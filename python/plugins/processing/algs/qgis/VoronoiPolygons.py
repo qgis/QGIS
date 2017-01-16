@@ -64,7 +64,7 @@ class VoronoiPolygons(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Voronoi polygons'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
 
         buf = self.getParameterValue(self.BUFFER)
@@ -93,7 +93,7 @@ class VoronoiPolygons(GeoAlgorithm):
             pts.append((x, y))
             ptNdx += 1
             ptDict[ptNdx] = inFeat.id()
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         if len(pts) < 3:
             raise GeoAlgorithmExecutionException(
@@ -126,7 +126,7 @@ class VoronoiPolygons(GeoAlgorithm):
             writer.addFeature(outFeat)
 
             current += 1
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer
 

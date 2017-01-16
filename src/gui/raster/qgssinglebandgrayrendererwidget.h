@@ -20,6 +20,7 @@
 
 #include "qgsrasterrendererwidget.h"
 #include "ui_qgssinglebandgrayrendererwidgetbase.h"
+#include "qgis_gui.h"
 
 class QgsRasterMinMaxWidget;
 

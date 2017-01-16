@@ -1,7 +1,7 @@
 /***************************************************************************
                                qgsactionmanager.cpp
 
- A class that stores and controls the managment and execution of actions
+ A class that stores and controls the management and execution of actions
  associated. Actions are defined to be external programs that are run
  with user-specified inputs that can depend on the value of layer
  attributes.
@@ -156,7 +156,7 @@ QgsExpressionContext QgsActionManager::createExpressionContext() const
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
   if ( mLayer )
     context << QgsExpressionContextUtils::layerScope( mLayer );
 

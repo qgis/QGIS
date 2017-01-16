@@ -16,6 +16,7 @@
 #ifndef QGSRENDERERV2_H
 #define QGSRENDERERV2_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
@@ -375,7 +376,7 @@ class CORE_EXPORT QgsFeatureRenderer
     void setOrderByEnabled( bool enabled );
 
     /** Sets an embedded renderer (subrenderer) for this feature renderer. The base class implementation
-     * does nothing with subrenderers, but individual derived classes can use these to modify their behaviour.
+     * does nothing with subrenderers, but individual derived classes can use these to modify their behavior.
      * @param subRenderer the embedded renderer. Ownership will be transferred.
      * @see embeddedRenderer()
      * @note added in QGIS 2.16
@@ -435,12 +436,12 @@ class CORE_EXPORT QgsFeatureRenderer
 
     bool mForceRaster;
 
-    /** @note this function is used to convert old sizeScale expresssions to symbol
+    /** @note this function is used to convert old sizeScale expressions to symbol
      * level DataDefined size
      */
     static void convertSymbolSizeScale( QgsSymbol * symbol, QgsSymbol::ScaleMethod method, const QString & field );
 
-    /** @note this function is used to convert old rotations expresssions to symbol
+    /** @note this function is used to convert old rotations expressions to symbol
      * level DataDefined angle
      */
     static void convertSymbolRotation( QgsSymbol * symbol, const QString & field );

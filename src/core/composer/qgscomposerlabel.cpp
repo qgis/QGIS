@@ -165,7 +165,7 @@ void QgsComposerLabel::contentChanged()
     //set this to true after html is loaded.
     mHtmlLoaded = false;
 
-    const QUrl baseUrl = QUrl::fromLocalFile( QgsProject::instance()->fileInfo().absoluteFilePath() );
+    const QUrl baseUrl = QUrl::fromLocalFile( mComposition->project()->fileInfo().absoluteFilePath() );
     mWebPage->mainFrame()->setHtml( textToDraw, baseUrl );
 
     //For very basic html labels with no external assets, the html load will already be
@@ -264,8 +264,8 @@ void QgsComposerLabel::refreshExpressionContext()
     //set to composition's mapsettings' crs
     mDistanceArea->setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
   }
-  mDistanceArea->setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
-  mDistanceArea->setEllipsoid( QgsProject::instance()->ellipsoid() );
+  mDistanceArea->setEllipsoidalMode( true );
+  mDistanceArea->setEllipsoid( mComposition->project()->ellipsoid() );
   contentChanged();
 
   update();

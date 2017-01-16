@@ -235,20 +235,13 @@ void QgsSimpleFillSymbolLayer::startRender( QgsSymbolRenderContext& context )
   fillColor.setAlphaF( context.alpha() * mColor.alphaF() );
   mBrush = QBrush( fillColor, mBrushStyle );
 
-  // scale brush content for printout
-  double rasterScaleFactor = context.renderContext().rasterScaleFactor();
-  if ( rasterScaleFactor != 1.0 )
-  {
-    mBrush.setMatrix( QMatrix().scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor ) );
-  }
-
   QColor selColor = context.renderContext().selectionColor();
   QColor selPenColor = selColor == mColor ? selColor : mBorderColor;
-  if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
+  if ( ! SELECTION_IS_OPAQUE ) selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
   // N.B. unless a "selection line color" is implemented in addition to the "selection color" option
   // this would mean symbols with "no fill" look the same whether or not they are selected
-  if ( selectFillStyle )
+  if ( SELECT_FILL_STYLE )
     mSelBrush.setStyle( mBrushStyle );
 
   QColor borderColor = mBorderColor;
@@ -844,7 +837,7 @@ void QgsGradientFillSymbolLayer::applyGradient( const QgsSymbolRenderContext &co
 void QgsGradientFillSymbolLayer::startRender( QgsSymbolRenderContext& context )
 {
   QColor selColor = context.renderContext().selectionColor();
-  if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
+  if ( ! SELECTION_IS_OPAQUE ) selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
 }
 
@@ -1143,7 +1136,7 @@ void QgsShapeburstFillSymbolLayer::startRender( QgsSymbolRenderContext& context 
 {
   //TODO - check this
   QColor selColor = context.renderContext().selectionColor();
-  if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
+  if ( ! SELECTION_IS_OPAQUE ) selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
 }
 
@@ -1210,8 +1203,8 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF& points, QList
   //create a QImage to draw shapeburst in
   double imWidth = points.boundingRect().width() + ( sideBuffer * 2 );
   double imHeight = points.boundingRect().height() + ( sideBuffer * 2 );
-  QImage * fillImage = new QImage( imWidth * context.renderContext().rasterScaleFactor(),
-                                   imHeight * context.renderContext().rasterScaleFactor(), QImage::Format_ARGB32_Premultiplied );
+  QImage * fillImage = new QImage( imWidth,
+                                   imHeight, QImage::Format_ARGB32_Premultiplied );
   //Fill this image with black. Initially the distance transform is drawn in greyscale, where black pixels have zero distance from the
   //polygon boundary. Since we don't care about pixels which fall outside the polygon, we start with a black image and then draw over it the
   //polygon in white. The distance transform function then fills in the correct distance values for the white pixels.
@@ -1229,7 +1222,6 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF& points, QList
   imgPainter.setBrush( QBrush( Qt::white ) );
   imgPainter.setPen( QPen( Qt::black ) );
   imgPainter.translate( -points.boundingRect().left() + sideBuffer, - points.boundingRect().top() + sideBuffer );
-  imgPainter.scale( context.renderContext().rasterScaleFactor(), context.renderContext().rasterScaleFactor() );
   _renderPolygon( &imgPainter, points, rings, context );
   imgPainter.end();
 
@@ -1248,7 +1240,6 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF& points, QList
     imgPainter.setBrush( QBrush( Qt::white ) );
     imgPainter.setPen( QPen( Qt::black ) );
     imgPainter.translate( -points.boundingRect().left() + sideBuffer, - points.boundingRect().top() + sideBuffer );
-    imgPainter.scale( context.renderContext().rasterScaleFactor(), context.renderContext().rasterScaleFactor() );
     _renderPolygon( &imgPainter, points, nullptr, context );
   }
   imgPainter.end();
@@ -1292,7 +1283,6 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF& points, QList
     p->translate( offset );
   }
 
-  p->scale( 1 / context.renderContext().rasterScaleFactor(), 1 / context.renderContext().rasterScaleFactor() );
   p->drawImage( points.boundingRect().left() - sideBuffer, points.boundingRect().top() - sideBuffer, *fillImage );
 
   delete fillImage;
@@ -1624,13 +1614,13 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
   _renderPolygon( p, points, rings, context );
   if ( mOutline )
   {
-    mOutline->renderPolyline( points, context.feature(), context.renderContext(), -1, selectFillBorder && context.selected() );
+    mOutline->renderPolyline( points, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
     if ( rings )
     {
       QList<QPolygonF>::const_iterator ringIt = rings->constBegin();
       for ( ; ringIt != rings->constEnd(); ++ringIt )
       {
-        mOutline->renderPolyline( *ringIt, context.feature(), context.renderContext(), -1, selectFillBorder && context.selected() );
+        mOutline->renderPolyline( *ringIt, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
       }
     }
   }
@@ -1961,11 +1951,11 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush& brush, const QString& svgFileP
     bool fitsInCache = true;
     double outlineWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), svgOutlineWidth, svgOutlineWidthUnit, svgOutlineWidthMapUnitScale );
     const QImage& patternImage = QgsApplication::svgCache()->svgAsImage( svgFilePath, size, svgFillColor, svgOutlineColor, outlineWidth,
-                                 context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor(), fitsInCache );
+                                 context.renderContext().scaleFactor(), fitsInCache );
     if ( !fitsInCache )
     {
       const QPicture& patternPict = QgsApplication::svgCache()->svgAsPicture( svgFilePath, size, svgFillColor, svgOutlineColor, outlineWidth,
-                                    context.renderContext().scaleFactor(), 1.0 );
+                                    context.renderContext().scaleFactor() );
       double hwRatio = 1.0;
       if ( patternPict.width() > 0 )
       {
@@ -1979,7 +1969,6 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush& brush, const QString& svgFileP
     }
 
     QTransform brushTransform;
-    brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
     if ( !qgsDoubleNear( context.alpha(), 1.0 ) )
     {
       QImage transparentImage = fitsInCache ? patternImage.copy() : mSvgPattern->copy();
@@ -2778,9 +2767,8 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext& 
   // line rendering needs context for drawing on patternImage
   QgsRenderContext lineRenderContext;
   lineRenderContext.setPainter( &p );
-  lineRenderContext.setRasterScaleFactor( 1.0 );
-  lineRenderContext.setScaleFactor( context.renderContext().scaleFactor() * context.renderContext().rasterScaleFactor() );
-  QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() / context.renderContext().rasterScaleFactor() );
+  lineRenderContext.setScaleFactor( context.renderContext().scaleFactor() );
+  QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() );
   lineRenderContext.setMapToPixel( mtp );
   lineRenderContext.setForceVectorOutput( false );
   lineRenderContext.setExpressionContext( context.renderContext().expressionContext() );
@@ -2819,7 +2807,6 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext& 
   }
 
   QTransform brushTransform;
-  brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
   brush.setTransform( brushTransform );
 
   delete fillLineSymbol;
@@ -3207,9 +3194,8 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext&
     QgsRenderContext pointRenderContext;
     pointRenderContext.setRendererScale( context.renderContext().rendererScale() );
     pointRenderContext.setPainter( &p );
-    pointRenderContext.setRasterScaleFactor( 1.0 );
-    pointRenderContext.setScaleFactor( context.renderContext().scaleFactor() * context.renderContext().rasterScaleFactor() );
-    QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() / context.renderContext().rasterScaleFactor() );
+    pointRenderContext.setScaleFactor( context.renderContext().scaleFactor() );
+    QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() );
     pointRenderContext.setMapToPixel( mtp );
     pointRenderContext.setForceVectorOutput( false );
     pointRenderContext.setExpressionContext( context.renderContext().expressionContext() );
@@ -3245,7 +3231,6 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext&
     brush.setTextureImage( patternImage );
   }
   QTransform brushTransform;
-  brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
   brush.setTransform( brushTransform );
 }
 

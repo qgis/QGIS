@@ -469,7 +469,7 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
     return;
   }
 
-  QgsRectangle newExtent = mComposerMap->composition()->mapSettings().visibleExtent();
+  QgsRectangle newExtent = QgisApp::instance()->mapCanvas()->mapSettings().visibleExtent();
 
   mComposerMap->beginCommand( tr( "Map extent changed" ) );
   mComposerMap->zoomToExtent( newExtent );
@@ -828,7 +828,7 @@ void QgsComposerMapWidget::on_mKeepLayerListCheckBox_stateChanged( int state )
 
   if ( state == Qt::Checked )
   {
-    mComposerMap->storeCurrentLayerSet();
+    storeCurrentLayerSet();
     mComposerMap->setKeepLayerSet( true );
 
     // mutually exclusive with following a preset
@@ -1447,6 +1447,21 @@ void QgsComposerMapWidget::updateOverviewFrameSymbolMarker( const QgsComposerMap
     QgsFillSymbol* nonConstSymbol = const_cast<QgsFillSymbol*>( overview->frameSymbol() ); //bad
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( nonConstSymbol, mOverviewFrameStyleButton->iconSize() );
     mOverviewFrameStyleButton->setIcon( icon );
+  }
+}
+
+void QgsComposerMapWidget::storeCurrentLayerSet()
+{
+  if ( !mComposerMap )
+    return;
+
+  QList<QgsMapLayer*> layers = QgisApp::instance()->mapCanvas()->mapSettings().layers();
+  mComposerMap->setLayers( layers );
+
+  if ( mComposerMap->keepLayerStyles() )
+  {
+    // also store styles associated with the layers
+    mComposerMap->storeCurrentLayerStyles();
   }
 }
 

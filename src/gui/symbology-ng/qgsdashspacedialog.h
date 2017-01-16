@@ -17,6 +17,7 @@
 #define QGSDASHSPACEDIALOG_H
 
 #include "ui_qgsdashspacedialogbase.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A dialog to enter a custom dash space pattern for lines

@@ -18,6 +18,7 @@
 #define POINT3D_H
 
 #include <cmath>
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * Point3D is a class to represent a three dimensional point*/

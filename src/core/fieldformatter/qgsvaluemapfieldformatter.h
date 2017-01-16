@@ -16,8 +16,26 @@
 #ifndef QGSVALUEMAPFIELDKIT_H
 #define QGSVALUEMAPFIELDKIT_H
 
+#include "qgis_core.h"
 #include "qgsfieldformatter.h"
 
+/**
+ * \ingroup core
+ * Field formatter for a ValueMap field.
+ * A value relation field formatter looks up the values a map.
+ *
+ * The map is defined in the configuration as dictionary under the key "map".
+ *
+ * { "map": { 1: "one", 2: "two", 3: "three" } }
+ *
+ * Values that are not on the map will be wrapped in parentheses. So with the above
+ * configuration:
+ *
+ * - 3 => "three"
+ * - 5 => "(5)"
+ *
+ * \note Added in QGIS 3.0
+ */
 class CORE_EXPORT QgsValueMapFieldFormatter : public QgsFieldFormatter
 {
   public:
@@ -26,7 +44,7 @@ class CORE_EXPORT QgsValueMapFieldFormatter : public QgsFieldFormatter
      * Will be saved in the configuration when a value is NULL.
      * It's the magic UUID {2839923C-8B7D-419E-B84B-CA2FE9B80EC7}
      */
-    static const QString NullValue;
+    static const QString NULL_VALUE;
 
     virtual QString id() const override;
 

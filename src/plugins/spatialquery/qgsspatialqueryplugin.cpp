@@ -43,7 +43,7 @@ static const QString name_ = QObject::tr( "Spatial Query Plugin" );
 static const QString description_ = QObject::tr( "A plugin that makes spatial queries on vector layers" );
 static const QString category_ = QObject::tr( "Vector" );
 static const QString version_ = QObject::tr( "Version 0.1" );
-static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
+static const QgisPlugin::PluginType type_ = QgisPlugin::UI;
 static const QString icon_ = QStringLiteral( ":/icons/spatialquery.png" );
 
 /**

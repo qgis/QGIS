@@ -80,6 +80,10 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addAction( actions->actionMutuallyExclusiveGroup( menu ) );
 
+      menu->addAction( actions->actionCheckAndAllChildren( menu ) );
+
+      menu->addAction( actions->actionUncheckAndAllChildren( menu ) );
+
       if ( mView->selectedNodes( true ).count() >= 2 )
         menu->addAction( actions->actionGroupSelected( menu ) );
 
@@ -124,6 +128,8 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( !layer->isInScaleRange( mCanvas->scale() ) )
           menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), SLOT( zoomToLayerScale() ) );
+
+        menu->addAction( actions->actionCheckAndAllParents( menu ) );
 
         // set layer crs
         menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetCRS.png" ) ), tr( "Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCrs() ) );

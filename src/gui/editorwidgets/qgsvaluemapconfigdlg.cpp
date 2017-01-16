@@ -54,7 +54,7 @@ QVariantMap QgsValueMapConfigDlg::config()
 
     QString ks = ki->text();
     if (( ks == QgsApplication::nullRepresentation() ) && !( ki->flags() & Qt::ItemIsEditable ) )
-      ks = QgsValueMapFieldFormatter::NullValue;
+      ks = QgsValueMapFieldFormatter::NULL_VALUE;
 
     if ( !vi || vi->text().isNull() )
     {
@@ -137,7 +137,7 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
 
   if ( insertNull )
   {
-    setRow( row, QgsValueMapFieldFormatter::NullValue, QStringLiteral( "<NULL>" ) );
+    setRow( row, QgsValueMapFieldFormatter::NULL_VALUE, QStringLiteral( "<NULL>" ) );
     ++row;
   }
 
@@ -156,7 +156,7 @@ void QgsValueMapConfigDlg::setRow( int row, const QString& value, const QString&
   QTableWidgetItem* valueCell;
   QTableWidgetItem* descriptionCell = new QTableWidgetItem( description );
   tableWidget->insertRow( row );
-  if ( value == QgsValueMapFieldFormatter::NullValue )
+  if ( value == QgsValueMapFieldFormatter::NULL_VALUE )
   {
     QFont cellFont;
     cellFont.setItalic( true );
@@ -175,7 +175,7 @@ void QgsValueMapConfigDlg::setRow( int row, const QString& value, const QString&
 
 void QgsValueMapConfigDlg::addNullButtonPushed()
 {
-  setRow( tableWidget->rowCount() - 1, QgsValueMapFieldFormatter::NullValue, QStringLiteral( "<NULL>" ) );
+  setRow( tableWidget->rowCount() - 1, QgsValueMapFieldFormatter::NULL_VALUE, QStringLiteral( "<NULL>" ) );
 }
 
 void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
@@ -248,7 +248,7 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
     }
 
     if ( key == QgsApplication::nullRepresentation() )
-      key = QgsValueMapFieldFormatter::NullValue;
+      key = QgsValueMapFieldFormatter::NULL_VALUE;
 
     map[ key ] = val;
   }

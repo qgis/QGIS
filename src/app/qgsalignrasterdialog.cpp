@@ -393,13 +393,11 @@ QgsAlignRasterLayerConfigDialog::QgsAlignRasterLayerConfigDialog()
   cboResample->addItem( tr( "Lanczos (6x6 kernel)" ), QgsAlignRaster::RA_Lanczos );
   cboResample->addItem( tr( "Average" ), QgsAlignRaster::RA_Average );
   cboResample->addItem( tr( "Mode" ), QgsAlignRaster::RA_Mode );
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
   cboResample->addItem( tr( "Maximum" ), QgsAlignRaster::RA_Max );
   cboResample->addItem( tr( "Minimum" ), QgsAlignRaster::RA_Min );
   cboResample->addItem( tr( "Median" ), QgsAlignRaster::RA_Median );
   cboResample->addItem( tr( "First Quartile (Q1)" ), QgsAlignRaster::RA_Q1 );
   cboResample->addItem( tr( "Third Quartile (Q3)" ), QgsAlignRaster::RA_Q3 );
-#endif
 
   editOutput = new QLineEdit( this );
   btnBrowse = new QPushButton( tr( "Browse..." ), this );
@@ -465,7 +463,7 @@ void QgsAlignRasterLayerConfigDialog::browseOutputFilename()
 
   if ( !fileName.isEmpty() )
   {
-    // ensure the user never ommited the extension from the file name
+    // ensure the user never omitted the extension from the file name
     if ( !fileName.endsWith( QLatin1String( ".tif" ), Qt::CaseInsensitive ) && !fileName.endsWith( QLatin1String( ".tiff" ), Qt::CaseInsensitive ) )
     {
       fileName += QLatin1String( ".tif" );

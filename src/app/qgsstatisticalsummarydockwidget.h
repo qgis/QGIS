@@ -22,6 +22,7 @@
 #include "qgsstringstatisticalsummary.h"
 #include "qgsdatetimestatisticalsummary.h"
 #include "qgsdockwidget.h"
+#include "qgis_app.h"
 
 class QgsBrowserModel;
 class QModelIndex;
@@ -63,9 +64,9 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     QgsVectorLayer* mLayer;
 
     QMap< int, QAction* > mStatsActions;
-    static QList< QgsStatisticalSummary::Statistic > mDisplayStats;
-    static QList< QgsStringStatisticalSummary::Statistic > mDisplayStringStats;
-    static QList< QgsDateTimeStatisticalSummary::Statistic > mDisplayDateTimeStats;
+    static QList< QgsStatisticalSummary::Statistic > sDisplayStats;
+    static QList< QgsStringStatisticalSummary::Statistic > sDisplayStringStats;
+    static QList< QgsDateTimeStatisticalSummary::Statistic > sDisplayDateTimeStats;
 
     void updateNumericStatistics( bool selectedOnly );
     void updateStringStatistics( bool selectedOnly );

@@ -35,7 +35,7 @@
 //
 
 // Version string
-QString Qgis::QGIS_VERSION( QStringLiteral( VERSION ) );
+const QString Qgis::QGIS_VERSION( QStringLiteral( VERSION ) );
 
 // development version
 const char* Qgis::QGIS_DEV_VERSION = QGSVERSION;
@@ -45,13 +45,9 @@ const char* Qgis::QGIS_DEV_VERSION = QGSVERSION;
 const int Qgis::QGIS_VERSION_INT = VERSION_INT;
 
 // Release name
-QString Qgis::QGIS_RELEASE_NAME( QStringLiteral( RELEASE_NAME ) );
+const QString Qgis::QGIS_RELEASE_NAME( QStringLiteral( RELEASE_NAME ) );
 
-#if GDAL_VERSION_NUM >= 1800
 const QString GEOPROJ4 = QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" );
-#else
-const QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
-#endif
 
 const QString GEOWKT =
   "GEOGCS[\"WGS 84\", "
@@ -81,11 +77,11 @@ const float Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD = 1.0f;
 
 const QColor Qgis::DEFAULT_HIGHLIGHT_COLOR = QColor( 255, 0, 0, 128 );
 
-double Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM = 0.5;
+const double Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM = 0.5;
 
-double Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM = 1.0;
+const double Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM = 1.0;
 
-double Qgis::SCALE_PRECISION = 0.9999999999;
+const double Qgis::SCALE_PRECISION = 0.9999999999;
 
 
 double qgsPermissiveToDouble( QString string, bool &ok )

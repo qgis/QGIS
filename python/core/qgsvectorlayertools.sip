@@ -31,7 +31,7 @@ class QgsVectorLayerTools : QObject
     virtual bool startEditing( QgsVectorLayer* layer ) const = 0;
 
     /**
-     * Will be called, when an editing session is ended and the features should be commited.
+     * Will be called, when an editing session is ended and the features should be committed.
      * Appropriate dialogs should be shown like
      *
      * @param layer       The layer to commit
@@ -41,7 +41,7 @@ class QgsVectorLayerTools : QObject
     virtual bool stopEditing( QgsVectorLayer* layer, bool allowCancel = true ) const = 0;
 
     /**
-     * Should be called, when the features should be commited but the editing session is not ended.
+     * Should be called, when the features should be committed but the editing session is not ended.
      *
      * @param layer       The layer to commit
      * @return            True if successful

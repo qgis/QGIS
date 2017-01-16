@@ -20,6 +20,7 @@
 #include "ui_qgsrasterhistogramwidgetbase.h"
 
 #include "qgsmaplayerconfigwidget.h"
+#include "qgis_gui.h"
 
 class QgsRasterLayer;
 class QgsRasterRendererWidget;
@@ -102,7 +103,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
       ShowRGB = 2
     };
 
-    //! \brief Pointer to the raster layer that this property dilog changes the behaviour of.
+    //! \brief Pointer to the raster layer that this property dilog changes the behavior of.
     QgsRasterLayer * mRasterLayer;
     //! \brief Pointer to the renderer widget, to get/set min/max.
     QgsRasterRendererWidget* mRendererWidget;

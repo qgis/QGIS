@@ -88,7 +88,7 @@ class RasterCalculator(GeoAlgorithm):
                                           optional=True))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         expression = self.getParameterValue(self.EXPRESSION)
         layersValue = self.getParameterValue(self.LAYERS)
         layersDict = {}

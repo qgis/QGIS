@@ -20,6 +20,7 @@
 
 #include <QString>
 #include <QStringList>
+#include "qgis_core.h"
 
 /** \ingroup core
  * A class to describe the version of a project.

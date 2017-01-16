@@ -20,6 +20,8 @@
 
 #include <QtGlobal>
 
+#include "qgis_core.h"
+
 class QString;
 class QgsVectorLayer;
 class QgsFeatureRequest;

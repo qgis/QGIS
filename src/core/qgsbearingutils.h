@@ -21,6 +21,7 @@
 class QgsCoordinateReferenceSystem;
 class QgsPoint;
 
+#include "qgis_core.h"
 
 /**
  * \class QgsBearingUtils

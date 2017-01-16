@@ -23,6 +23,7 @@
 #include "ui_qgsauthauthoritieseditor.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
+#include "qgis_gui.h"
 
 class QgsMessageBar;
 class QMenu;

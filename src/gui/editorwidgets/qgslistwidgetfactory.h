@@ -17,6 +17,7 @@
 #define QGSLISTWIDGETFACTORY_H
 
 #include "qgseditorwidgetfactory.h"
+#include "qgis_gui.h"
 
 /** @ingroup gui
  * Factory for widgets for editing a QVariantList or a QStringList

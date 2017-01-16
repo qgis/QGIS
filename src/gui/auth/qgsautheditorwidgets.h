@@ -20,6 +20,7 @@
 #include <QWidget>
 #include "ui_qgsautheditorwidgets.h"
 #include "ui_qgsauthmethodplugins.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Dialog for viewing available authentication method plugins
@@ -72,7 +73,7 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     //! Clear the currently cached master password (not its hash in database)
     void clearCachedMasterPassword();
 
-    //! Reset the cached master password, updating its hash in authentication database and reseting all existing configs to use it
+    //! Reset the cached master password, updating its hash in authentication database and resetting all existing configs to use it
     void resetMasterPassword();
 
     //! Clear all cached authentication configs for session

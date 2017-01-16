@@ -38,21 +38,21 @@ class QgsField;
 //! Spatial column types
 enum QgsPostgresGeometryColumnType
 {
-  sctNone,
-  sctGeometry,
-  sctGeography,
-  sctTopoGeometry,
-  sctPcPatch
+  SctNone,
+  SctGeometry,
+  SctGeography,
+  SctTopoGeometry,
+  SctPcPatch
 };
 
 enum QgsPostgresPrimaryKeyType
 {
-  pktUnknown,
-  pktInt,
-  pktUint64,
-  pktTid,
-  pktOid,
-  pktFidMap
+  PktUnknown,
+  PktInt,
+  PktUint64,
+  PktTid,
+  PktOid,
+  PktFidMap
 };
 
 //! Schema properties structure
@@ -151,10 +151,10 @@ struct QgsPostgresLayerProperty
 class QgsPostgresResult
 {
   public:
-    explicit QgsPostgresResult( PGresult *theRes = nullptr ) : mRes( theRes ) {}
+    explicit QgsPostgresResult( PGresult *theResult = nullptr ) : mRes( theResult ) {}
     ~QgsPostgresResult();
 
-    QgsPostgresResult &operator=( PGresult *theRes );
+    QgsPostgresResult &operator=( PGresult *theResult );
     QgsPostgresResult &operator=( const QgsPostgresResult &src );
 
     ExecStatusType PQresultStatus();
@@ -310,7 +310,7 @@ class QgsPostgresConn : public QObject
 
     QString connInfo() const { return mConnInfo; }
 
-    static const int sGeomTypeSelectLimit;
+    static const int GEOM_TYPE_SELECT_LIMIT;
 
     static QString displayStringForWkbType( QgsWkbTypes::Type wkbType );
     static QString displayStringForGeomType( QgsPostgresGeometryColumnType geomType );

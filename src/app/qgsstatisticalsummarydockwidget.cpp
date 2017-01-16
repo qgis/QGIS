@@ -22,7 +22,7 @@
 #include <QAction>
 #include <QSettings>
 
-QList< QgsStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::mDisplayStats =
+QList< QgsStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::sDisplayStats =
   QList< QgsStatisticalSummary::Statistic > () << QgsStatisticalSummary::Count
   << QgsStatisticalSummary::Sum
   << QgsStatisticalSummary::Mean
@@ -39,7 +39,7 @@ QList< QgsStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::mDisp
   << QgsStatisticalSummary::ThirdQuartile
   << QgsStatisticalSummary::InterQuartileRange;
 
-QList< QgsStringStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::mDisplayStringStats =
+QList< QgsStringStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::sDisplayStringStats =
   QList< QgsStringStatisticalSummary::Statistic > () << QgsStringStatisticalSummary::Count
   << QgsStringStatisticalSummary::CountDistinct
   << QgsStringStatisticalSummary::CountMissing
@@ -48,7 +48,7 @@ QList< QgsStringStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget:
   << QgsStringStatisticalSummary::MinimumLength
   << QgsStringStatisticalSummary::MaximumLength;
 
-QList< QgsDateTimeStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::mDisplayDateTimeStats =
+QList< QgsDateTimeStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::sDisplayDateTimeStats =
   QList< QgsDateTimeStatisticalSummary::Statistic > () << QgsDateTimeStatisticalSummary::Count
   << QgsDateTimeStatisticalSummary::CountDistinct
   << QgsDateTimeStatisticalSummary::CountMissing
@@ -62,7 +62,7 @@ QgsExpressionContext QgsStatisticalSummaryDockWidget::createExpressionContext() 
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
   << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );
 
@@ -92,7 +92,7 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersRemoved( QStringList ) ) );
 
   QSettings settings;
-  Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
+  Q_FOREACH ( QgsStatisticalSummary::Statistic stat, sDisplayStats )
   {
     QAction* action = new QAction( QgsStatisticalSummary::displayName( stat ), mOptionsToolButton );
     action->setCheckable( true );
@@ -179,7 +179,7 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics( bool selectedOnly
 
   QList< QgsStatisticalSummary::Statistic > statsToDisplay;
   QgsStatisticalSummary::Statistics statsToCalc = 0;
-  Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
+  Q_FOREACH ( QgsStatisticalSummary::Statistic stat, sDisplayStats )
   {
     if ( mStatsActions.value( stat )->isChecked() )
     {
@@ -234,11 +234,11 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics( bool selectedOnly 
   stats.setStatistics( QgsStringStatisticalSummary::All );
   stats.calculateFromVariants( values );
 
-  mStatisticsTable->setRowCount( mDisplayStringStats.count() );
+  mStatisticsTable->setRowCount( sDisplayStringStats.count() );
   mStatisticsTable->setColumnCount( 2 );
 
   int row = 0;
-  Q_FOREACH ( QgsStringStatisticalSummary::Statistic stat, mDisplayStringStats )
+  Q_FOREACH ( QgsStringStatisticalSummary::Statistic stat, sDisplayStringStats )
   {
     addRow( row, QgsStringStatisticalSummary::displayName( stat ),
             stats.statistic( stat ).toString(),
@@ -322,11 +322,11 @@ void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics( bool selectedOnl
   stats.setStatistics( QgsDateTimeStatisticalSummary::All );
   stats.calculate( values );
 
-  mStatisticsTable->setRowCount( mDisplayDateTimeStats.count() );
+  mStatisticsTable->setRowCount( sDisplayDateTimeStats.count() );
   mStatisticsTable->setColumnCount( 2 );
 
   int row = 0;
-  Q_FOREACH ( QgsDateTimeStatisticalSummary::Statistic stat, mDisplayDateTimeStats )
+  Q_FOREACH ( QgsDateTimeStatisticalSummary::Statistic stat, sDisplayDateTimeStats )
   {
     QString value = ( stat == QgsDateTimeStatisticalSummary::Range
                       ? tr( "%1 seconds" ).arg( stats.range().seconds() )

@@ -74,7 +74,7 @@ class TestQgsFilterLineEdit(unittest.TestCase):
         # ND: I don't think this following logic is correct - should be a distinction between
         # the widget's representation of null and the actual value. Ie isNull()
         # should be false and value() should return 'null'
-        # in other words - if you break this test to match my desired behaviour, feel free to remove it!
+        # in other words - if you break this test to match my desired behavior, feel free to remove it!
         self.assertTrue(w.isNull())
         self.assertFalse(w.value())
 

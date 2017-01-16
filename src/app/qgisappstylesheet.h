@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QFont>
 #include <QMap>
+#include "qgis_app.h"
 
 /** @class QgisAppStyleSheet
  * @brief Adjustable stylesheet for the Qgis application

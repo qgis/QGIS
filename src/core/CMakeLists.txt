@@ -78,6 +78,9 @@ SET(QGIS_CORE_SRCS
   auth/qgsauthmethodmetadata.cpp
   auth/qgsauthmethodregistry.cpp
 
+  processing/qgsprocessingprovider.cpp
+  processing/qgsprocessingregistry.cpp
+
   qgis.cpp
   qgsapplication.cpp
   qgsaction.cpp
@@ -560,6 +563,9 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgsgroupungroupitemscommand.h
   composer/qgspaperitem.h
 
+  processing/qgsprocessingfeedback.h
+  processing/qgsprocessingregistry.h
+
   raster/qgsrasterlayer.h
   raster/qgsrasterdataprovider.h
 
@@ -790,6 +796,8 @@ SET(QGIS_CORE_HDRS
   composer/qgssingleboxscalebarstyle.h
   composer/qgsticksscalebarstyle.h
 
+  processing/qgsprocessingprovider.h
+
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h
   raster/qgscliptominmaxenhancement.h
@@ -903,6 +911,7 @@ ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
   auth
   composer
   dxf
@@ -911,6 +920,7 @@ INCLUDE_DIRECTORIES(
   geometry
   layertree
   pal
+  processing
   raster
   renderer
   symbology-ng
@@ -927,10 +937,6 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QCA_INCLUDE_DIR}
 )
 
-REMOVE_DEFINITIONS("-DCORE_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("\"-DCORE_EXPORT=${DLLEXPORT}\"")
-
-
 #for PAL classes
 IF (WIN32)
     ADD_DEFINITIONS("-D_HAVE_WINDOWS_H_")
@@ -945,6 +951,14 @@ ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
 # qgis_core library
 
 ADD_LIBRARY(qgis_core SHARED ${QGIS_CORE_SRCS} ${QGIS_CORE_MOC_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS})
+
+GENERATE_EXPORT_HEADER(
+  qgis_core
+  BASE_NAME CORE
+  EXPORT_FILE_NAME qgis_core.h
+)
+
+SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_core.h)
 
 IF(ENABLE_MODELTEST)
   TARGET_LINK_LIBRARIES(qgis_core ${QT_QTTEST_LIBRARY})

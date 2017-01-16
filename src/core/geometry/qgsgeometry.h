@@ -16,6 +16,7 @@ email                : morb at ozemail dot com dot au
 #ifndef QGSGEOMETRY_H
 #define QGSGEOMETRY_H
 
+#include "qgis_core.h"
 #include <QString>
 #include <QVector>
 #include <QDomDocument>
@@ -288,7 +289,7 @@ class CORE_EXPORT QgsGeometry
      *  (first number is index 0)
      *  Returns false if atVertex does not correspond to a valid vertex
      *  on this geometry (including if this geometry is a Point),
-     *  or if the number of remaining verticies in the linestring
+     *  or if the number of remaining vertices in the linestring
      *  would be less than two.
      *  It is up to the caller to distinguish between
      *  these error conditions.  (Or maybe we add another method to this
@@ -794,10 +795,12 @@ class CORE_EXPORT QgsGeometry
      *          1 if geometry is not of polygon type,
      *          2 if avoid intersection would change the geometry type,
      *          3 other error during intersection removal
+     *  @param avoidIntersectionsLayers list of layers to check for intersections
      *  @param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in python bindings)
      *  @note added in 1.5
      */
-    int avoidIntersections( const QHash<QgsVectorLayer*, QSet<QgsFeatureId> >& ignoreFeatures = ( QHash<QgsVectorLayer*, QSet<QgsFeatureId> >() ) );
+    int avoidIntersections( const QList<QgsVectorLayer*>& avoidIntersectionsLayers,
+                            const QHash<QgsVectorLayer*, QSet<QgsFeatureId> >& ignoreFeatures = ( QHash<QgsVectorLayer*, QSet<QgsFeatureId> >() ) );
 
     /** \ingroup core
      */
@@ -979,14 +982,14 @@ class CORE_EXPORT QgsGeometry
     }
 
     /** Returns true if the geometry is non empty (ie, isEmpty() returns false),
-     * or false if it is an empty, uninitialised geometry (ie, ieEmpty() returns true).
+     * or false if it is an empty, uninitialized geometry (ie, ieEmpty() returns true).
      * @note added in QGIS 3.0
      */
     operator bool() const;
 
   private:
 
-    QgsGeometryPrivate* d; //implicitely shared data pointer
+    QgsGeometryPrivate* d; //implicitly shared data pointer
 
     void detach( bool cloneGeom = true ); //make sure mGeometry only referenced from this instance
 

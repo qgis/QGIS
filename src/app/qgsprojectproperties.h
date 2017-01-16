@@ -23,6 +23,7 @@
 #include "qgsunittypes.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsRelationManagerDialog;
@@ -113,13 +114,13 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      * Slots to select/deselect all the WFS layers
      */
     void on_pbnWFSLayersSelectAll_clicked();
-    void on_pbnWFSLayersUnselectAll_clicked();
+    void on_pbnWFSLayersDeselectAll_clicked();
 
     /*!
      * Slots to select/deselect all the WCS layers
      */
     void on_pbnWCSLayersSelectAll_clicked();
-    void on_pbnWCSLayersUnselectAll_clicked();
+    void on_pbnWCSLayersDeselectAll_clicked();
 
     /*!
      * Slots to launch OWS test
@@ -172,7 +173,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Signal used to inform listeners that the mouse display precision may have changed
     void displayPrecisionChanged();
 
-    //! Signal used to inform listeners that project scale list may have chnaged
+    //! Signal used to inform listeners that project scale list may have changed
     void scalesChanged( const QStringList &scales = QStringList() );
 
     //! let listening canvases know to refresh

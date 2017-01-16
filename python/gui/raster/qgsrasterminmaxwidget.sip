@@ -46,7 +46,7 @@ class QgsRasterMinMaxWidget: QWidget
     //! Hide updated extent radio button
     void hideUpdatedExtent();
 
-    //! Load programmaticaly with current values
+    //! Load programmatically with current values
     void doComputations();
 
     //! Uncheck cumulative cut, min/max, std-dev radio buttons

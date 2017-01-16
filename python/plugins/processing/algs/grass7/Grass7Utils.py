@@ -49,12 +49,15 @@ class Grass7Utils(object):
     GRASS_FOLDER = 'GRASS7_FOLDER'
     GRASS_LOG_COMMANDS = 'GRASS7_LOG_COMMANDS'
     GRASS_LOG_CONSOLE = 'GRASS7_LOG_CONSOLE'
+    GRASS_HELP_PATH = 'GRASS_HELP_PATH'
 
     sessionRunning = False
     sessionLayers = {}
     projectionSet = False
 
     isGrass7Installed = False
+
+    version = None
 
     @staticmethod
     def grassBatchJobFilename():
@@ -74,11 +77,39 @@ class Grass7Utils(object):
         filename = os.path.join(userFolder(), filename)
         return filename
 
+    #~ @staticmethod
+    #~ def installedVersion():
+        #~ out = Grass7Utils.executeGrass7("grass -v")
+        #~ # FIXME: I do not know if this should be removed or let the user enter it
+        #~ # or something like that... This is just a temporary thing
+        #~ return '7.0.0'
+
     @staticmethod
-    def getGrassVersion():
-        # FIXME: I do not know if this should be removed or let the user enter it
-        # or something like that... This is just a temporary thing
-        return '7.0.0'
+    def installedVersion(run=False):
+        if Grass7Utils.isGrass7Installed and not run:
+            return Grass7Utils.version
+
+        if Grass7Utils.grassPath() is None:
+            return None
+        commands = ["grass70 -v"]
+        with subprocess.Popen(
+            commands,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stdin=subprocess.DEVNULL,
+            stderr=subprocess.STDOUT,
+            universal_newlines=True,
+        ) as proc:
+            try:
+                lines = proc.stdout.readlines()
+                for line in lines:
+                    if "GRASS GIS " in line:
+                        Grass7Utils.version = line.split(" ")[-1].strip()
+                        break
+            except:
+                pass
+
+        return Grass7Utils.version
 
     @staticmethod
     def grassPath():
@@ -140,7 +171,7 @@ class Grass7Utils(object):
             output.write('if "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n')
             output.write('if not "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%GRASS_ADDON_PATH%;%PATH%\n')
             output.write('\n')
-            output.write('set GRASS_VERSION=' + Grass7Utils.getGrassVersion() + '\n')
+            output.write('set GRASS_VERSION=' + Grass7Utils.installedVersion() + '\n')
             output.write('if not "%LANG%"=="" goto langset\n')
             output.write('FOR /F "usebackq delims==" %%i IN (`"%WINGISBASE%\\etc\\winlocale"`) DO @set LANG=%%i\n')
             output.write(':langset\n')
@@ -249,7 +280,7 @@ class Grass7Utils(object):
         return command, env
 
     @staticmethod
-    def executeGrass7(commands, progress, outputCommands=None):
+    def executeGrass7(commands, feedback, outputCommands=None):
         loglines = []
         loglines.append(Grass7Utils.tr('GRASS GIS 7 execution console output'))
         grassOutDone = False
@@ -266,14 +297,14 @@ class Grass7Utils(object):
             for line in iter(proc.stdout.readline, ''):
                 if 'GRASS_INFO_PERCENT' in line:
                     try:
-                        progress.setPercentage(int(line[len('GRASS_INFO_PERCENT') + 2:]))
+                        feedback.setProgress(int(line[len('GRASS_INFO_PERCENT') + 2:]))
                     except:
                         pass
                 else:
                     if 'r.out' in line or 'v.out' in line:
                         grassOutDone = True
                     loglines.append(line)
-                    progress.setConsoleInfo(line)
+                    feedback.pushConsoleInfo(line)
 
         # Some GRASS scripts, like r.mapcalculator or r.fillnulls, call
         # other GRASS scripts during execution. This may override any
@@ -295,13 +326,13 @@ class Grass7Utils(object):
                 for line in iter(proc.stdout.readline, ''):
                     if 'GRASS_INFO_PERCENT' in line:
                         try:
-                            progress.setPercentage(int(
+                            feedback.setProgress(int(
                                 line[len('GRASS_INFO_PERCENT') + 2:]))
                         except:
                             pass
                     else:
                         loglines.append(line)
-                        progress.setConsoleInfo(line)
+                        feedback.pushConsoleInfo(line)
 
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_CONSOLE):
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
@@ -395,3 +426,27 @@ class Grass7Utils(object):
         except TypeError:
             # Python 3
             output.write(command + '\n')
+
+    @staticmethod
+    def grassHelpPath():
+        helpPath = ProcessingConfig.getSetting(Grass7Utils.GRASS_HELP_PATH)
+
+        if helpPath is None:
+            if isWindows():
+                localPath = os.path.join(Grass7Utils.grassPath(), 'docs/html')
+                if os.path.exists(localPath):
+                    helpPath = os.path.abspath(localPath)
+            elif isMac():
+                localPath = '/Applications/GRASS-7.0.app/Contents/MacOS/docs/html'
+                if os.path.exists(localPath):
+                    helpPath = os.path.abspath(localPath)
+            else:
+                searchPaths = ['/usr/share/doc/grass-doc/html',
+                               '/opt/grass/docs/html',
+                               '/usr/share/doc/grass/docs/html']
+                for path in searchPaths:
+                    if os.path.exists(path):
+                        helpPath = os.path.abspath(path)
+                        break
+
+        return helpPath if helpPath is not None else 'http://grass.osgeo.org/grass70/manuals/'

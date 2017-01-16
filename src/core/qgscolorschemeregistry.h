@@ -18,6 +18,7 @@
 #ifndef QGSCOLORSCHEMEREGISTRY_H
 #define QGSCOLORSCHEMEREGISTRY_H
 
+#include "qgis_core.h"
 #include "qgscolorscheme.h"
 #include <QList>
 

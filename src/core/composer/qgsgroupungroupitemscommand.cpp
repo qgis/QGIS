@@ -92,5 +92,5 @@ void QgsGroupUngroupItemsCommand::switchState()
     mState = Grouped;
     emit itemAdded( mGroup );
   }
-  QgsProject::instance()->setDirty( true );
+  mComposition->project()->setDirty( true );
 }

@@ -19,6 +19,7 @@
 #define QGSMAPTOOLHTMLANNOTATION_H
 
 #include "qgsmaptoolannotation.h"
+#include "qgis_app.h"
 
 class APP_EXPORT QgsMapToolHtmlAnnotation: public QgsMapToolAnnotation
 {

@@ -30,12 +30,12 @@ import os
 import traceback
 from qgis.PyQt.QtWidgets import QApplication
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsProject
+from qgis.core import (QgsProject,
+                       QgsProcessingFeedback)
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingResults import ProcessingResults
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.SilentProgress import SilentProgress
 
 from processing.gui.ResultsDialog import ResultsDialog
 from processing.gui.RenderingStyles import RenderingStyles
@@ -48,15 +48,15 @@ from processing.core.outputs import OutputHTML
 from processing.tools import dataobjects
 
 
-def handleAlgorithmResults(alg, progress=None, showResults=True):
+def handleAlgorithmResults(alg, feedback=None, showResults=True):
     wrongLayers = []
     htmlResults = False
-    if progress is None:
-        progress = SilentProgress()
-    progress.setText(QCoreApplication.translate('Postprocessing', 'Loading resulting layers'))
+    if feedback is None:
+        feedback = QgsProcessingFeedback()
+    feedback.setProgressText(QCoreApplication.translate('Postprocessing', 'Loading resulting layers'))
     i = 0
     for out in alg.outputs:
-        progress.setPercentage(100 * i / float(len(alg.outputs)))
+        feedback.setProgress(100 * i / float(len(alg.outputs)))
         if out.hidden or not out.open:
             continue
         if isinstance(out, (OutputRaster, OutputVector, OutputTable)):
@@ -87,7 +87,7 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
         msg = "The following layers were not correctly generated.<ul>"
         msg += "".join(["<li>%s</li>" % lay for lay in wrongLayers]) + "</ul>"
         msg += "You can check the log messages to find more information about the execution of the algorithm"
-        progress.error(msg)
+        feedback.reportError(msg)
 
     if showResults and htmlResults and not wrongLayers:
         dlg = ResultsDialog()

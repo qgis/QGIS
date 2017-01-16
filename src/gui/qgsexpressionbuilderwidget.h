@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgisexpressionbuilderwidget.h - A genric expression string builder widget.
+    qgisexpressionbuilderwidget.h - A generic expression string builder widget.
      --------------------------------------
     Date                 :  29-May-2011
     Copyright            : (C) 2011 by Nathan Woodrow
@@ -26,6 +26,7 @@
 #include "QStandardItem"
 #include "QSortFilterProxyModel"
 #include "QStringListModel"
+#include "qgis_gui.h"
 
 class QgsFields;
 class QgsExpressionHighlighter;
@@ -52,7 +53,7 @@ class QgsExpressionItem : public QStandardItem
       mExpressionText = expressionText;
       mHelpText = helpText;
       mType = itemType;
-      setData( itemType, ItemTypeRole );
+      setData( itemType, ITEM_TYPE_ROLE );
     }
 
     QgsExpressionItem( const QString& label,
@@ -62,7 +63,7 @@ class QgsExpressionItem : public QStandardItem
     {
       mExpressionText = expressionText;
       mType = itemType;
-      setData( itemType, ItemTypeRole );
+      setData( itemType, ITEM_TYPE_ROLE );
     }
 
     QString getExpressionText() const { return mExpressionText; }
@@ -86,9 +87,9 @@ class QgsExpressionItem : public QStandardItem
     QgsExpressionItem::ItemType getItemType() const { return mType; }
 
     //! Custom sort order role
-    static const int CustomSortRole = Qt::UserRole + 1;
+    static const int CUSTOM_SORT_ROLE = Qt::UserRole + 1;
     //! Item type role
-    static const int ItemTypeRole = Qt::UserRole + 2;
+    static const int ITEM_TYPE_ROLE = Qt::UserRole + 2;
 
   private:
     QString mExpressionText;
@@ -119,7 +120,7 @@ class GUI_EXPORT QgsExpressionItemSearchProxy : public QSortFilterProxyModel
 
 /** \ingroup gui
  * A reusable widget that can be used to build a expression string.
-  * See QgsExpressionBuilderDialog for exmaple of usage.
+  * See QgsExpressionBuilderDialog for example of usage.
   */
 class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilderWidgetBase
 {
@@ -306,7 +307,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QSortFilterProxyModel *mProxyValues;
     QgsExpressionItemSearchProxy *mProxyModel;
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
-    QgsFeature mFeature;
     QgsExpressionHighlighter* highlighter;
     bool mExpressionValid;
     QgsDistanceArea mDa;

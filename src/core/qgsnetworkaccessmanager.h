@@ -24,6 +24,8 @@
 #include <QNetworkProxy>
 #include <QNetworkRequest>
 
+#include "qgis_core.h"
+
 /**
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
@@ -65,7 +67,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     const QNetworkProxy &fallbackProxy() const;
 
     //! retrieve exclude list (urls shouldn't use the fallback proxy)
-    const QStringList &excludeList() const;
+    QStringList excludeList() const;
 
     //! set fallback proxy and URL that shouldn't use it.
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
@@ -99,7 +101,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QStringList mExcludedURLs;
     bool mUseSystemProxy;
     bool mInitialized;
-    static QgsNetworkAccessManager *smMainNAM;
+    static QgsNetworkAccessManager *sMainNAM;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H

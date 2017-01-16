@@ -51,7 +51,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see setUrl
      * @see contentMode
      */
-    const QUrl& url() const;
+    QUrl url() const;
 
     /** Sets the HTML to display in the item when the item is using
      * the QgsComposerHtml::ManualHtml mode. Setting the HTML using this function

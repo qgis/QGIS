@@ -58,7 +58,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Load selected plugin
     void loadPlugin( const QString& id );
 
-    //! Unload unselected plugin
+    //! Unload deselected plugin
     void unloadPlugin( const QString& id );
 
     //! Save plugin enabled/disabled state to QSettings
@@ -85,7 +85,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Return metadata of given plugin
     const QMap<QString, QString> * pluginMetadata( const QString& key ) const;
 
-    //! Select one of the vertical tabs programatically
+    //! Select one of the vertical tabs programmatically
     void selectTabItem( int idx );
 
     //! Clear the repository listWidget
@@ -116,7 +116,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Load/unload plugin by double click
     void on_vwPlugins_doubleClicked( const QModelIndex & index );
 
-    //! Handle click in the web wiew
+    //! Handle click in the web view
     void on_wvDetails_linkClicked( const QUrl & url );
 
     //! Update the filter when user changes the filter expression

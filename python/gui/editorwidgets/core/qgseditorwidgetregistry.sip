@@ -110,7 +110,7 @@ class QgsEditorWidgetRegistry : QObject
      *
      * @return All ids and factories
      */
-    const QMap<QString, QgsEditorWidgetFactory*>& factories();
+    QMap<QString, QgsEditorWidgetFactory*> factories();
 
     /**
      * Get a factory for the given widget type id.
@@ -132,7 +132,7 @@ class QgsEditorWidgetRegistry : QObject
      /**
      * Register a new auto-conf plugin.
      *
-     * @param plugin The plugin (ownership is transfered)
+     * @param plugin The plugin (ownership is transferred)
      */
     void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin* plugin );
 };

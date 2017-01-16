@@ -21,6 +21,7 @@
 #include "qgsmessagebaritem.h"
 
 #include <ui_qgsadvanceddigitizingdockwidgetbase.h>
+#include "qgis_gui.h"
 
 
 class QgsAdvancedDigitizingCanvasItem;
@@ -31,14 +32,14 @@ class QgsPoint;
 
 // tolerances for soft constraints (last values, and common angles)
 // for angles, both tolerance in pixels and degrees are used for better performance
-static const double SoftConstraintTolerancePixel = 15;
-static const double SoftConstraintToleranceDegrees = 10;
+static const double SOFT_CONSTRAINT_TOLERANCE_PIXEL = 15;
+static const double SOFT_CONSTRAINT_TOLERANCE_DEGREES = 10;
 
 /** \ingroup gui
  * @brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
  * used to handle the CAD tools on top of a selection of map tools.
  * It handles both the UI and the constraints. Constraints are applied
- * by implemeting filters called from QgsMapToolAdvancedDigitizing.
+ * by implementing filters called from QgsMapToolAdvancedDigitizing.
  */
 class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private Ui::QgsAdvancedDigitizingDockWidgetBase
 {
@@ -314,7 +315,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
      * Snapped to a segment
      */
-    const QList<QgsPoint>& snappedSegment() const { return mSnappedSegment; }
+    QList<QgsPoint> snappedSegment() const { return mSnappedSegment; }
 
     //! return the action used to enable/disable the tools
     QAction* enableAction() { return mEnableAction; }
@@ -356,7 +357,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
   private slots:
     //! set the additional constraint by clicking on the perpendicular/parallel buttons
-    void addtionalConstraintClicked( bool activated );
+    void additionalConstraintClicked( bool activated );
 
     //! lock/unlock a constraint and set its value
     void lockConstraint( bool activate = true );
@@ -418,7 +419,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void clearPoints();
 
     //! filters key press
-    //! @note called by eventFilter (fitler on line edits), canvasKeyPressEvent (filter on map tool) and keyPressEvent (filter on dock)
+    //! @note called by eventFilter (filter on line edits), canvasKeyPressEvent (filter on map tool) and keyPressEvent (filter on dock)
     bool filterKeyPress( QKeyEvent* e );
 
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)

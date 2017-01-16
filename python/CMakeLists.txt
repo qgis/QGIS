@@ -106,6 +106,7 @@ INCLUDE_DIRECTORIES(
   ../src/core/geometry
   ../src/core/gps
   ../src/core/layertree
+  ../src/core/processing
   ../src/core/raster
   ../src/core/symbology-ng
 
@@ -120,6 +121,8 @@ INCLUDE_DIRECTORIES(
   sip_helpers
 
   ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/analysis
 )
 
 IF(NOT ANDROID)

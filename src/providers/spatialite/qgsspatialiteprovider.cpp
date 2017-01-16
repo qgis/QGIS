@@ -3970,7 +3970,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
         {
           // update feature id
-          feature->setFeatureId( sqlite3_last_insert_rowid( mSqliteHandle ) );
+          feature->setId( sqlite3_last_insert_rowid( mSqliteHandle ) );
           mNumberFeatures++;
         }
         else
@@ -5324,7 +5324,7 @@ static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString& errCause
 
   sqlite3_free_table( results );
 
-  // all right, it's empty: proceding to initialize
+  // all right, it's empty: proceeding to initialize
   char *errMsg = nullptr;
   ret = sqlite3_exec( sqlite_handle, above41 ? "SELECT InitSpatialMetadata(1)" : "SELECT InitSpatialMetadata()", nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )

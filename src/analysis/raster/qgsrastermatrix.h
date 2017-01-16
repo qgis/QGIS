@@ -18,6 +18,8 @@
 #ifndef QGSRASTERMATRIX_H
 #define QGSRASTERMATRIX_H
 
+#include "qgis_analysis.h"
+
 /** \ingroup analysis
  * \class QgsRasterMatrix
  */

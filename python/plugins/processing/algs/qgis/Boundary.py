@@ -57,7 +57,7 @@ class Boundary(GeoAlgorithm):
                                                                    dataobjects.TYPE_VECTOR_POLYGON]))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Boundary')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
 
@@ -92,6 +92,6 @@ class Boundary(GeoAlgorithm):
                 output_feature.setGeometry(output_geometry)
 
             writer.addFeature(output_feature)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

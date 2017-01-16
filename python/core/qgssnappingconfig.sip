@@ -52,7 +52,7 @@ class QgsSnappingConfig
         //! return if settings are valid
         bool valid() const;
 
-        //! return if snaping is enbaled
+        //! return if snapping is enabled
         bool enabled() const;
 
         //! enables the snapping
@@ -94,7 +94,7 @@ class QgsSnappingConfig
     //! reset to default values
     void reset();
 
-    //! return if snaping is enbaled
+    //! return if snapping is enabled
     bool enabled() const;
 
     //! enables the snapping

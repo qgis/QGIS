@@ -17,6 +17,7 @@
 #define QGSCUSTOMDROPHANDLER_H
 
 #include "qgsmimedatautils.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Abstract base class that may be implemented to handle new types of data to be dropped in QGIS.

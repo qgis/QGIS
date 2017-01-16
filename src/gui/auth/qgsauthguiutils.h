@@ -18,6 +18,7 @@
 #define QGSAUTHGUIUTILS_H
 
 #include <QColor>
+#include "qgis_gui.h"
 
 class QWidget;
 class QgsMessageBar;
@@ -62,7 +63,7 @@ class GUI_EXPORT QgsAuthGuiUtils
     //! Clear the currently cached master password (not its hash in database)
     static void clearCachedMasterPassword( QgsMessageBar *msgbar, int timeout = 0 );
 
-    //! Reset the cached master password, updating its hash in authentication database and reseting all existing configs to use it
+    //! Reset the cached master password, updating its hash in authentication database and resetting all existing configs to use it
     static void resetMasterPassword( QgsMessageBar *msgbar, int timeout = 0, QWidget *parent = nullptr );
 
     //! Clear all cached authentication configs for session

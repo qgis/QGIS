@@ -19,6 +19,7 @@
 #include "qgscomposeritem.h"
 #include "qgscomposerframe.h"
 #include "qgscomposermultiframe.h"
+#include "qgscomposition.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
 
@@ -114,7 +115,7 @@ void QgsComposerItemCommand::restoreState( QDomDocument& stateDoc ) const
 
   destItem->readXml( stateDoc.documentElement().firstChild().toElement(), stateDoc );
   destItem->repaint();
-  QgsProject::instance()->setDirty( true );
+  destItem->composition()->project()->setDirty( true );
 }
 
 //

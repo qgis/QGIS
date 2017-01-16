@@ -20,6 +20,7 @@
 
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
+#include "qgis_analysis.h"
 
 class QgsVectorFileWriter;
 class QProgressDialog;

@@ -35,6 +35,8 @@
 #include <QLinkedList>
 #include <geos_c.h>
 
+#include "qgis_core.h"
+
 namespace pal
 {
 

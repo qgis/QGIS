@@ -28,7 +28,7 @@
 #include <QDebug>
 #include <QBuffer>
 
-static int renderCounter = 0;
+static int sRenderCounter = 0;
 
 QgsRenderChecker::QgsRenderChecker()
     : mReport( QLatin1String( "" ) )
@@ -357,7 +357,7 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
                                  mRenderedImageFile,
                                  mExpectedImageFile )
                            .arg( imgWidth ).arg( imgHeight )
-                           .arg( renderCounter++ );
+                           .arg( sRenderCounter++ );
 
   QString prefix;
   if ( !mControlPathPrefix.isNull() )

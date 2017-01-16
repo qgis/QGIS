@@ -22,6 +22,7 @@
 #ifndef QGSOWSCONNECTION_H
 #define QGSOWSCONNECTION_H
 
+#include "qgis_core.h"
 #include "qgsdatasourceuri.h"
 
 #include <QStringList>
@@ -49,7 +50,7 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     //! Deletes the connection for the specified service with the specified name
     static void deleteConnection( const QString & theService, const QString & name );
 
-    //! Retreives the selected connection for the specified service
+    //! Retrieves the selected connection for the specified service
     static QString selectedConnection( const QString & theService );
     //! Marks the specified connection for the specified service as selected
     static void setSelectedConnection( const QString & theService, const QString & name );

@@ -17,6 +17,7 @@
 #define QGSBROWSERTREEVIEW_H
 
 #include <QTreeView>
+#include "qgis_gui.h"
 
 //class QgsBrowserModel;
 

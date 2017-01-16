@@ -17,6 +17,7 @@
 #define QGSNETWORKSPEEDSTRATEGY_H
 
 #include <qgsnetworkstrategy.h>
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * \class QgsNetworkSpeedStrategy

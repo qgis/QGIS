@@ -16,6 +16,7 @@
 #ifndef QGSDATETIMESTATISTICALSUMMARY_H
 #define QGSDATETIMESTATISTICALSUMMARY_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsinterval.h"
 #include <QSet>

@@ -32,8 +32,8 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, QByteArray, QSize, QSizeF, pyqtSignal
-from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem, QSizePolicy, QMainWindow
-from qgis.PyQt.QtGui import QIcon, QImage, QPainter
+from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem, QSizePolicy, QMainWindow, QShortcut
+from qgis.PyQt.QtGui import QIcon, QImage, QPainter, QKeySequence
 from qgis.PyQt.QtSvg import QSvgGenerator
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.core import QgsApplication
@@ -209,11 +209,19 @@ class ModelerDialog(BASE, WIDGET):
         self.searchBox.textChanged.connect(self.fillAlgorithmTree)
         self.algorithmTree.doubleClicked.connect(self.addAlgorithm)
 
+        # Ctrl+= should also trigger a zoom in action
+        ctrlEquals = QShortcut(QKeySequence("Ctrl+="), self)
+        ctrlEquals.activated.connect(self.zoomIn)
+
         iconSize = settings.value("iconsize", 24)
         self.mToolbar.setIconSize(QSize(iconSize, iconSize))
         self.mActionOpen.triggered.connect(self.openModel)
         self.mActionSave.triggered.connect(self.save)
         self.mActionSaveAs.triggered.connect(self.saveAs)
+        self.mActionZoomIn.triggered.connect(self.zoomIn)
+        self.mActionZoomOut.triggered.connect(self.zoomOut)
+        self.mActionZoomActual.triggered.connect(self.zoomActual)
+        self.mActionZoomToItems.triggered.connect(self.zoomToItems)
         self.mActionExportImage.triggered.connect(self.exportAsImage)
         self.mActionExportPdf.triggered.connect(self.exportAsPdf)
         self.mActionExportSvg.triggered.connect(self.exportAsSvg)
@@ -264,7 +272,7 @@ class ModelerDialog(BASE, WIDGET):
     def editHelp(self):
         if self.alg.provider is None:
             # Might happen if model is opened from modeler dialog
-            self.alg.provider = algList.getProviderFromName('model')
+            self.alg.provider = QgsApplication.processingRegistry().providerById('model')
         alg = self.alg.getCopy()
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
@@ -279,7 +287,7 @@ class ModelerDialog(BASE, WIDGET):
 
         if self.alg.provider is None:
             # Might happen if model is opened from modeler dialog
-            self.alg.provider = algList.getProviderFromName('model')
+            self.alg.provider = QgsApplication.processingRegistry().providerById('model')
         alg = self.alg.getCopy()
         dlg = AlgorithmDialog(alg)
         dlg.exec_()
@@ -289,6 +297,39 @@ class ModelerDialog(BASE, WIDGET):
 
     def saveAs(self):
         self.saveModel(True)
+
+    def zoomIn(self):
+        self.view.setTransformationAnchor(QGraphicsView.NoAnchor)
+        point = self.view.mapToScene(QPoint(self.view.viewport().width() / 2, self.view.viewport().height() / 2))
+
+        settings = QSettings()
+        factor = settings.value('/qgis/zoom_favor', 2.0)
+
+        self.view.scale(factor, factor)
+        self.view.centerOn(point)
+        self.repaintModel()
+
+    def zoomOut(self):
+        self.view.setTransformationAnchor(QGraphicsView.NoAnchor)
+        point = self.view.mapToScene(QPoint(self.view.viewport().width() / 2, self.view.viewport().height() / 2))
+
+        settings = QSettings()
+        factor = settings.value('/qgis/zoom_favor', 2.0)
+        factor = 1 / factor
+
+        self.view.scale(factor, factor)
+        self.view.centerOn(point)
+        self.repaintModel()
+
+    def zoomActual(self):
+        point = self.view.mapToScene(QPoint(self.view.viewport().width() / 2, self.view.viewport().height() / 2))
+        self.view.resetTransform()
+        self.view.centerOn(point)
+
+    def zoomToItems(self):
+        totalRect = self.scene.itemsBoundingRect()
+        totalRect.adjust(-10, -10, 10, 10)
+        self.view.fitInView(totalRect, Qt.KeepAspectRatio)
 
     def exportAsImage(self):
         self.repaintModel(controls=False)
@@ -564,12 +605,12 @@ class ModelerDialog(BASE, WIDGET):
         text = str(self.searchBox.text())
         search_strings = text.split(' ')
         allAlgs = algList.algs
-        for providerName in list(allAlgs.keys()):
-            name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
+        for provider_id in list(allAlgs.keys()):
+            name = 'ACTIVATE_' + provider_id.upper().replace(' ', '_')
             if not ProcessingConfig.getSetting(name):
                 continue
             groups = {}
-            algs = list(allAlgs[providerName].values())
+            algs = list(allAlgs[provider_id].values())
 
             # Add algorithms
             for alg in algs:
@@ -599,10 +640,10 @@ class ModelerDialog(BASE, WIDGET):
 
             if len(groups) > 0:
                 providerItem = QTreeWidgetItem()
-                provider = algList.getProviderFromName(providerName)
-                providerItem.setText(0, provider.getDescription())
-                providerItem.setToolTip(0, provider.getDescription())
-                providerItem.setIcon(0, provider.getIcon())
+                provider = QgsApplication.processingRegistry().providerById(provider_id)
+                providerItem.setText(0, provider.name())
+                providerItem.setToolTip(0, provider.name())
+                providerItem.setIcon(0, provider.icon())
                 for groupItem in list(groups.values()):
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)

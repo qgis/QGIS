@@ -99,7 +99,6 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
-    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
     def testMixOfPolygonCurvePolygon(self):
 
         datasource = os.path.join(self.basetestpath, 'testMixOfPolygonCurvePolygon.csv')
@@ -115,7 +114,6 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(len(vl.dataProvider().subLayers()), 1)
         self.assertEqual(vl.dataProvider().subLayers()[0], '0:testMixOfPolygonCurvePolygon:4:CurvePolygon')
 
-    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
     def testMixOfLineStringCompoundCurve(self):
 
         datasource = os.path.join(self.basetestpath, 'testMixOfLineStringCompoundCurve.csv')

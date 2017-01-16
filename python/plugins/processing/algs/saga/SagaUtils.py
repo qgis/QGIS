@@ -72,7 +72,7 @@ def findSagaFolder():
 
 def sagaPath():
     folder = ProcessingConfig.getSetting(SAGA_FOLDER)
-    if not os.path.isdir(folder):
+    if folder and not os.path.isdir(folder):
         folder = None
         ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
                                'Specified SAGA folder does not exist. Will try to find built-in binaries.')
@@ -112,7 +112,7 @@ _installedVersion = None
 _installedVersionFound = False
 
 
-def getSagaInstalledVersion(runSaga=False):
+def getInstalledVersion(runSaga=False):
     global _installedVersion
     global _installedVersionFound
 
@@ -157,7 +157,7 @@ def getSagaInstalledVersion(runSaga=False):
     return _installedVersion
 
 
-def executeSaga(progress):
+def executeSaga(feedback):
     if isWindows():
         command = ['cmd.exe', '/C ', sagaBatchJobFilename()]
     else:
@@ -179,14 +179,14 @@ def executeSaga(progress):
                 if '%' in line:
                     s = ''.join([x for x in line if x.isdigit()])
                     try:
-                        progress.setPercentage(int(s))
+                        feedback.setProgress(int(s))
                     except:
                         pass
                 else:
                     line = line.strip()
                     if line != '/' and line != '-' and line != '\\' and line != '|':
                         loglines.append(line)
-                        progress.setConsoleInfo(line)
+                        feedback.pushConsoleInfo(line)
         except:
             pass
 

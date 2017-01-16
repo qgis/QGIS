@@ -49,10 +49,7 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* laye
   mExpressionBuilder->loadFieldNames();
   mExpressionBuilder->loadRecent( QStringLiteral( "Selection" ) );
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
   mExpressionBuilder->setExpressionContext( context );
 
   // by default, zoom to features is hidden, shown only if canvas is set
@@ -129,10 +126,7 @@ void QgsExpressionSelectionDialog::on_mButtonZoomToFeatures_clicked()
 
   QgsFeatureIds ids;
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( mExpressionBuilder->expressionText() )
                               .setExpressionContext( context )

@@ -55,7 +55,7 @@ class MultipartToSingleparts(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Single parts')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         geomType = QgsWkbTypes.singleType(layer.wkbType())
 
@@ -78,6 +78,6 @@ class MultipartToSingleparts(GeoAlgorithm):
                 #input feature with null geometry
                 writer.addFeature(f)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

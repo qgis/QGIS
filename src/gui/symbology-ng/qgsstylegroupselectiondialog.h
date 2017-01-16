@@ -20,6 +20,7 @@
 #include <QDialog>
 #include <QStandardItem>
 #include "ui_qgsstylegroupselectiondialogbase.h"
+#include "qgis_gui.h"
 
 
 class QgsStyle;

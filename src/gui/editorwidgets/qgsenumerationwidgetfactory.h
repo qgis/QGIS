@@ -17,6 +17,7 @@
 #define QGSENUMERATIONWIDGETFACTORY_H
 
 #include "qgseditorwidgetfactory.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsEnumerationWidgetFactory

@@ -17,6 +17,8 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUALLAYERDEFINITION_UTILS_H
 #define QGSVIRTUALLAYERDEFINITION_UTILS_H
 
+#include "qgis_core.h"
+
 class QgsVectorLayer;
 class QgsVirtualLayerDefinition;
 

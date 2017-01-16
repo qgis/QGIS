@@ -25,6 +25,7 @@ class QgsField;
 
 #include "qgsattributeeditorcontext.h"
 #include "qgswidgetwrapper.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Manages an editor widget

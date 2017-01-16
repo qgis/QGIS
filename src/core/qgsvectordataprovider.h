@@ -17,6 +17,7 @@
 
 class QTextCodec;
 
+#include "qgis_core.h"
 #include <QList>
 #include <QSet>
 #include <QMap>
@@ -437,7 +438,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * Returns the names of the supported types
      */
-    const QList< NativeType > &nativeTypes() const;
+    QList< NativeType > nativeTypes() const;
 
     /**
      * Returns true if the provider is strict about the type of inserted features
@@ -593,7 +594,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     //! List of errors
     mutable QStringList mErrors;
 
-    static QStringList smEncodings;
+    static QStringList sEncodings;
 
     /**
      * Includes this data provider in the specified transaction. Ownership of transaction is not transferred.

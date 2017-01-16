@@ -36,6 +36,7 @@
 #include "gps/qgsgpsconnectionregistry.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsmessagelog.h"
+#include "processing/qgsprocessingregistry.h"
 
 #include <QDir>
 #include <QFile>
@@ -48,6 +49,7 @@
 #include <QIcon>
 #include <QPixmap>
 #include <QThreadPool>
+#include <QLocale>
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
@@ -103,7 +105,7 @@ const char* QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
   \brief The QgsApplication class manages application-wide information.
 
   This is a subclass of QApplication and should be instantiated in place of
-  QApplication. Most methods are static in keeping witn the design of QApplication.
+  QApplication. Most methods are static in keeping with the design of QApplication.
 
   This class hides platform-specific path information and provides
   a portable way of referencing specific files and directories.
@@ -113,20 +115,6 @@ const char* QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
 */
 QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath, const QString& platformName )
     : QApplication( argc, argv, GUIenabled )
-    , mActionScopeRegistry( nullptr )
-    , mProfiler( nullptr )
-    , mTaskManager( nullptr )
-    , mFieldFormatterRegistry( nullptr )
-    , mColorSchemeRegistry( nullptr )
-    , mPaintEffectRegistry( nullptr )
-    , mRendererRegistry( nullptr )
-    , mSvgCache( nullptr )
-    , mSymbolLayerRegistry( nullptr )
-    , mRasterRendererRegistry( nullptr )
-    , mGpsConnectionRegistry( nullptr )
-    , mDataItemProviderRegistry( nullptr )
-    , mPluginLayerRegistry( nullptr )
-    , mMessageLog( nullptr )
 {
   sPlatformName = platformName;
 
@@ -146,6 +134,7 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const
   mRasterRendererRegistry = new QgsRasterRendererRegistry();
   mGpsConnectionRegistry = new QgsGPSConnectionRegistry();
   mPluginLayerRegistry = new QgsPluginLayerRegistry();
+  mProcessingRegistry = new QgsProcessingRegistry();
 
   init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
 }
@@ -277,6 +266,7 @@ void QgsApplication::init( QString customConfigPath )
 
 QgsApplication::~QgsApplication()
 {
+  delete mProcessingRegistry;
   delete mActionScopeRegistry;
   delete mTaskManager;
   delete mFieldFormatterRegistry;
@@ -436,10 +426,10 @@ QString QgsApplication::prefixPath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
   {
-    static bool once = true;
-    if ( once )
+    static bool sOnce = true;
+    if ( sOnce )
       qWarning( "!!! prefix path was requested, but it is not valid - we do not run from installed path !!!" );
-    once = false;
+    sOnce = false;
   }
 
   return ABISYM( mPrefixPath );
@@ -494,7 +484,7 @@ QIcon QgsApplication::getThemeIcon( const QString &theName )
   else if ( QFile::exists( myDefaultPath ) )
   {
     //could still return an empty icon if it
-    //doesnt exist in the default theme either!
+    //doesn't exist in the default theme either!
     icon = QIcon( myDefaultPath );
   }
   else
@@ -519,7 +509,7 @@ QPixmap QgsApplication::getThemePixmap( const QString &theName )
   else
   {
     //could still return an empty icon if it
-    //doesnt exist in the default theme either!
+    //doesn't exist in the default theme either!
     return QPixmap( myDefaultPath );
   }
 }
@@ -900,6 +890,20 @@ QString QgsApplication::osName()
 QString QgsApplication::platform()
 {
   return sPlatformName;
+}
+
+QString QgsApplication::locale()
+{
+  QSettings settings;
+  bool overrideLocale = settings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
+  if ( overrideLocale )
+  {
+    return settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString();
+  }
+  else
+  {
+    return QLocale::system().name().left( 2 );
+  }
 }
 
 QString QgsApplication::userThemesFolder()
@@ -1413,7 +1417,7 @@ bool QgsApplication::createDB( QString *errorMessage )
   // first we look for ~/.qgis/qgis.db
   if ( !qgisPrivateDbFile.exists() )
   {
-    // if it doesnt exist we copy it in from the global resources dir
+    // if it doesn't exist we copy it in from the global resources dir
     QString qgisMasterDbFileName = QgsApplication::qgisMasterDbFilePath();
     QFile masterFile( qgisMasterDbFileName );
 
@@ -1591,6 +1595,11 @@ QgsPluginLayerRegistry*QgsApplication::pluginLayerRegistry()
 QgsMessageLog* QgsApplication::messageLog()
 {
   return instance()->mMessageLog;
+}
+
+QgsProcessingRegistry*QgsApplication::processingRegistry()
+{
+  return instance()->mProcessingRegistry;
 }
 
 QgsFieldFormatterRegistry* QgsApplication::fieldFormatterRegistry()

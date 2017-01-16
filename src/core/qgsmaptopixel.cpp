@@ -59,8 +59,8 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel )
 
 QgsMapToPixel QgsMapToPixel::fromScale( double scale, QgsUnitTypes::DistanceUnit mapUnits, double dpi )
 {
-  double metresPerPixel = 25.4 / dpi / 1000.0;
-  double mapUnitsPerPixel = metresPerPixel * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mapUnits );
+  double metersPerPixel = 25.4 / dpi / 1000.0;
+  double mapUnitsPerPixel = metersPerPixel * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mapUnits );
   return QgsMapToPixel( mapUnitsPerPixel / scale );
 }
 

@@ -20,11 +20,14 @@
 
 #include <QString>
 
-#include "qgsexception.h"
+#include "qgsserverexception.h"
+#include "qgis_server.h"
 
 /** \ingroup server
  * \class  QgsMapServiceException
- * \brief Exception class for WMS service exceptions.
+ * \brief Exception class for WMS service exceptions (for compatibility only).
+ *
+ * \deprecated Use QsgServerException
  *
  * The most important codes are:
  *  * "InvalidFormat"
@@ -33,15 +36,12 @@
  *  * "OperationNotSupported"
  */
 
-class SERVER_EXPORT QgsMapServiceException : public QgsException
+class SERVER_EXPORT QgsMapServiceException : public QgsOgcServiceException
 {
   public:
-    QgsMapServiceException( const QString& code, const QString& message );
-    QString code() const {return mCode;}
-    QString message() const {return mMessage;}
-  private:
-    QString mCode;
-    QString mMessage;
+    QgsMapServiceException( const QString& code, const QString& message )
+        : QgsOgcServiceException( code, message )
+    {}
 };
 
 #endif

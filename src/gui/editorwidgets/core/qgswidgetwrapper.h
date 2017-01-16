@@ -23,6 +23,7 @@
 class QgsVectorLayer;
 
 #include "qgsattributeeditorcontext.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Manages an editor widget
@@ -123,7 +124,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * Return true if the widget has been properly initialized.
      * This acts as hint for the calling party if this wrapper can be used
      * after initializing it.
-     * If it cannot be used this is a hint tothe caller that he may try to find
+     * If it cannot be used this is a hint to the caller that he may try to find
      * another suitable widget type instead.
      *
      * @return Validity status of this widget.

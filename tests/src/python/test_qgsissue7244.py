@@ -77,7 +77,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        # for the time beeing, keep the file to check with qgis
+        # for the time being, keep the file to check with qgis
         # if os.path.exists("test.sqlite") :
         #    os.remove("test.sqlite")
         pass

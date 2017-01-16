@@ -16,6 +16,7 @@
 #ifndef QGSVECTORLAYERUTILS_H
 #define QGSVECTORLAYERUTILS_H
 
+#include "qgis_core.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 
@@ -33,7 +34,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     /**
      * Returns true if the specified value already exists within a field. This method can be used to test for uniqueness
      * of values inside a layer's attributes. An optional list of ignored feature IDs can be provided, if so, any features
-     * with IDs within this list are ignored when testing for existance of the value.
+     * with IDs within this list are ignored when testing for existence of the value.
      * @see createUniqueValue()
      */
     static bool valueExists( const QgsVectorLayer* layer, int fieldIndex, const QVariant& value, const QgsFeatureIds& ignoreIds = QgsFeatureIds() );

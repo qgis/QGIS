@@ -55,7 +55,7 @@ class las2las_transform(LAStoolsAlgorithm):
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las.exe")]
         else:
@@ -74,4 +74,4 @@ class las2las_transform(LAStoolsAlgorithm):
         self.addParametersPointOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

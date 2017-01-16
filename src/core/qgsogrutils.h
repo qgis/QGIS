@@ -16,6 +16,7 @@
 #ifndef QGSOGRUTILS_H
 #define QGSOGRUTILS_H
 
+#include "qgis_core.h"
 #include "qgsfeature.h"
 
 #include <ogr_api.h>

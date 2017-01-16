@@ -39,7 +39,7 @@ class QgsSymbol
       ScaleDiameter  //!< Calculate scale by the diameter
     };
 
-    //! Flags controlling behaviour of symbols during rendering
+    //! Flags controlling behavior of symbols during rendering
     enum RenderHint
     {
       DynamicRotation, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
@@ -227,7 +227,7 @@ class QgsSymbol
     const QgsVectorLayer* layer() const;
 
     /**
-     * Render a feature. Before calling this the startRender() method should be called to initialise
+     * Render a feature. Before calling this the startRender() method should be called to initialize
      * the rendering process. After rendering all features stopRender() must be called.
      */
     void renderFeature( const QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, int currentVertexMarkerSize = 0 );
@@ -308,7 +308,7 @@ class QgsSymbolRenderContext
      * @param u
      * @param alpha
      * @param selected set to true if symbol should be drawn in a "selected" state
-     * @param renderHints flags controlling rendering behaviour
+     * @param renderHints flags controlling rendering behavior
      * @param f
      * @param fields
      * @param mapUnitScale

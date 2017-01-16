@@ -27,6 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 from qgis.PyQt.QtGui import QIcon
+
+from qgis.core import QgsApplication
+
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.core.alglist import algList
@@ -41,7 +44,7 @@ class CreateNewModelAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'model.svg'))
+        return QgsApplication.getThemeIcon("/processingModel.svg")
 
     def execute(self):
         dlg = ModelerDialog()

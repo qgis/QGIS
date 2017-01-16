@@ -63,7 +63,7 @@ class lasgroundPro(LAStoolsAlgorithm):
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
@@ -83,4 +83,4 @@ class lasgroundPro(LAStoolsAlgorithm):
         self.addParametersAdditionalCommands(commands)
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

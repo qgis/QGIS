@@ -134,11 +134,12 @@ class IdwInterpolation(GeoAlgorithm):
                                           self.tr('Cell Size Y'),
                                           0.0, 999999.000000, 0.0))
         self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Extent')))
+                                          self.tr('Extent'),
+                                          optional=False))
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Interpolated')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         interpolationData = self.getParameterValue(self.INTERPOLATION_DATA)
         coefficient = self.getParameterValue(self.DISTANCE_COEFFICIENT)
         columns = self.getParameterValue(self.COLUMNS)

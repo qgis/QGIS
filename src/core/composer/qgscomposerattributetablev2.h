@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERATTRIBUTETABLEV2_H
 #define QGSCOMPOSERATTRIBUTETABLEV2_H
 
+#include "qgis_core.h"
 #include "qgscomposertablev2.h"
 
 class QgsComposerMap;
@@ -272,7 +273,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      */
     QList<QPair<int, bool> > sortAttributes() const;
 
-    /** Sets a string to wrap the contents of the table cells by. Occurances of this string will
+    /** Sets a string to wrap the contents of the table cells by. Occurrences of this string will
      * be replaced by a line break.
      * @param wrapString string to replace with line break
      * @note added in QGIS 2.12
@@ -280,7 +281,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      */
     void setWrapString( const QString& wrapString );
 
-    /** Returns the string used to wrap the contents of the table cells by. Occurances of this string will
+    /** Returns the string used to wrap the contents of the table cells by. Occurrences of this string will
      * be replaced by a line break.
      * @returns string which will be replaced with line break
      * @note added in QGIS 2.12

@@ -20,6 +20,7 @@
 
 #include "qgsdockwidget.h"
 #include <QMap>
+#include "qgis_gui.h"
 
 class QFrame;
 class QBoxLayout;

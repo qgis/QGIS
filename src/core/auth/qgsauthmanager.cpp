@@ -46,26 +46,26 @@
 #include "qgscredentials.h"
 #include "qgslogger.h"
 
-QgsAuthManager *QgsAuthManager::smInstance = nullptr;
+QgsAuthManager *QgsAuthManager::sInstance = nullptr;
 
-const QString QgsAuthManager::smAuthConfigTable = QStringLiteral( "auth_configs" );
-const QString QgsAuthManager::smAuthPassTable = QStringLiteral( "auth_pass" );
-const QString QgsAuthManager::smAuthSettingsTable = QStringLiteral( "auth_settings" );
-const QString QgsAuthManager::smAuthIdentitiesTable = QStringLiteral( "auth_identities" );
-const QString QgsAuthManager::smAuthServersTable = QStringLiteral( "auth_servers" );
-const QString QgsAuthManager::smAuthAuthoritiesTable = QStringLiteral( "auth_authorities" );
-const QString QgsAuthManager::smAuthTrustTable = QStringLiteral( "auth_trust" );
-const QString QgsAuthManager::smAuthManTag = QObject::tr( "Authentication Manager" );
-const QString QgsAuthManager::smAuthCfgRegex = QStringLiteral( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
+const QString QgsAuthManager::AUTH_CONFIG_TABLE = QStringLiteral( "auth_configs" );
+const QString QgsAuthManager::AUTH_PASS_TABLE = QStringLiteral( "auth_pass" );
+const QString QgsAuthManager::AUTH_SETTINGS_TABLE = QStringLiteral( "auth_settings" );
+const QString QgsAuthManager::AUTH_IDENTITIES_TABLE = QStringLiteral( "auth_identities" );
+const QString QgsAuthManager::AUTH_SERVERS_TABLE = QStringLiteral( "auth_servers" );
+const QString QgsAuthManager::AUTH_AUTHORITIES_TABLE = QStringLiteral( "auth_authorities" );
+const QString QgsAuthManager::AUTH_TRUST_TABLE = QStringLiteral( "auth_trust" );
+const QString QgsAuthManager::AUTH_MAN_TAG = QObject::tr( "Authentication Manager" );
+const QString QgsAuthManager::AUTH_CFG_REGEX = QStringLiteral( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
 
 
 QgsAuthManager *QgsAuthManager::instance()
 {
-  if ( !smInstance )
+  if ( !sInstance )
   {
-    smInstance = new QgsAuthManager();
+    sInstance = new QgsAuthManager();
   }
-  return smInstance;
+  return sInstance;
 }
 
 QSqlDatabase QgsAuthManager::authDbConnection() const
@@ -819,7 +819,7 @@ bool QgsAuthManager::configIdUnique( const QString& id ) const
 
 bool QgsAuthManager::hasConfigId( const QString &txt ) const
 {
-  QRegExp rx( smAuthCfgRegex );
+  QRegExp rx( AUTH_CFG_REGEX );
   return rx.indexIn( txt ) != -1;
 }
 

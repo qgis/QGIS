@@ -23,7 +23,7 @@ feats = processing.features(layer)
 nFeats = len(feats)
 counts = defaultdict(int)
 for i, feat in enumerate(feats):
-    progress.setPercentage(int(100 * i / nFeats))
+    feedback.setProgress(int(100 * i / nFeats))
     attrs = feat.attributes()
     clazz = tuple([attrs[i] for i in fieldIdxs])
     counts[clazz] += 1

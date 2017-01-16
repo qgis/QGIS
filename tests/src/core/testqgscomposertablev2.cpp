@@ -128,7 +128,7 @@ void TestQgsComposerTableV2::cleanupTestCase()
 void TestQgsComposerTableV2::init()
 {
   //create composition with composer map
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 portrait
 
   mComposerAttributeTable = new QgsComposerAttributeTableV2( mComposition, false );
@@ -352,17 +352,17 @@ void TestQgsComposerTableV2::attributeTableEmpty()
   mComposerAttributeTable->setFeatureFilter( QStringLiteral( "1=2" ) );
   mComposerAttributeTable->setFilterFeatures( true );
 
-  mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::HeadersOnly );
+  mComposerAttributeTable->setEmptyTableBehavior( QgsComposerTableV2::HeadersOnly );
   QgsCompositionChecker checker( QStringLiteral( "composerattributetable_headersonly" ), mComposition );
   checker.setControlPathPrefix( QStringLiteral( "composer_table" ) );
   QVERIFY( checker.testComposition( mReport, 0 ) );
 
-  mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::HideTable );
+  mComposerAttributeTable->setEmptyTableBehavior( QgsComposerTableV2::HideTable );
   QgsCompositionChecker checker2( QStringLiteral( "composerattributetable_hidetable" ), mComposition );
   checker2.setControlPathPrefix( QStringLiteral( "composer_table" ) );
   QVERIFY( checker2.testComposition( mReport, 0 ) );
 
-  mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::ShowMessage );
+  mComposerAttributeTable->setEmptyTableBehavior( QgsComposerTableV2::ShowMessage );
   mComposerAttributeTable->setEmptyTableMessage( QStringLiteral( "no rows" ) );
   QgsCompositionChecker checker3( QStringLiteral( "composerattributetable_showmessage" ), mComposition );
   checker3.setControlPathPrefix( QStringLiteral( "composer_table" ) );
@@ -844,7 +844,7 @@ void TestQgsComposerTableV2::autoWrap()
 
   mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
   mComposerAttributeTable->setVectorLayer( multiLineLayer );
-  mComposerAttributeTable->setWrapBehaviour( QgsComposerTableV2::WrapText );
+  mComposerAttributeTable->setWrapBehavior( QgsComposerTableV2::WrapText );
 
   mComposerAttributeTable->columns()->at( 0 )->setWidth( 25 );
   mComposerAttributeTable->columns()->at( 1 )->setWidth( 25 );

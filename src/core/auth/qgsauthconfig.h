@@ -17,6 +17,7 @@
 #ifndef QGSAUTHCONFIG_H
 #define QGSAUTHCONFIG_H
 
+#include "qgis_core.h"
 #include <QHash>
 #include <QString>
 
@@ -153,7 +154,7 @@ class CORE_EXPORT QgsAuthMethodConfig
      * against the config's uri() for auto-selecting authentication configs to use
      * @note Essentially strips the URL query variables, and by default, strips the path as well
      * @param accessurl A URL to process
-     * @param resource Ouput variable for result
+     * @param resource Output variable for result
      * @param withpath Whether to include the URI's path in output
      */
     static bool uriToResource( const QString &accessurl, QString *resource, bool withpath = false );
@@ -167,11 +168,11 @@ class CORE_EXPORT QgsAuthMethodConfig
 
     QgsStringMap mConfigMap;
 
-    static const QString mConfigSep;
-    static const QString mConfigKeySep;
-    static const QString mConfigListSep;
+    static const QString CONFIG_SEP;
+    static const QString CONFIG_KEY_SEP;
+    static const QString CONFIG_LIST_SEP;
 
-    static const int mConfigVersion;
+    static const int CONFIG_VERSION;
 };
 
 typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;
@@ -366,7 +367,7 @@ class CORE_EXPORT QgsAuthConfigSslServer
     int mSslPeerVerifyDepth;
     int mVersion;
 
-    static const QString mConfSep;
+    static const QString CONF_SEP;
 };
 #endif
 

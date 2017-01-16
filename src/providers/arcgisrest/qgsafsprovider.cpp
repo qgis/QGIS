@@ -223,7 +223,7 @@ bool QgsAfsProvider::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeome
     QgsFeature feature;
 
     // Set FID
-    feature.setFeatureId( startId + i );
+    feature.setId( startId + i );
 
     // Set attributes
     if ( !fetchAttribIdx.isEmpty() )

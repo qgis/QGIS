@@ -304,7 +304,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature& feature )
       feature.setAttribute( mAttributesToFetch.at( i ), v );
     }
 
-    feature.setFeatureId( mQuery->record().value( mSource->mFidColName ).toLongLong() );
+    feature.setId( mQuery->record().value( mSource->mFidColName ).toLongLong() );
 
     if ( mSource->isSpatial() )
     {

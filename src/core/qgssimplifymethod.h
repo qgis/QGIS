@@ -16,6 +16,8 @@
 #ifndef QGSSIMPLIFYMETHOD_H
 #define QGSSIMPLIFYMETHOD_H
 
+#include "qgis_core.h"
+
 class QgsAbstractGeometrySimplifier;
 
 /** \ingroup core

@@ -112,16 +112,16 @@ QgsField QgsAddAttrDialog::field() const
   QgsDebugMsg( QString( "idx:%1 name:%2 type:%3 typeName:%4 length:%5 prec:%6 comment:%7" )
                .arg( mTypeBox->currentIndex() )
                .arg( mNameEdit->text() )
-               .arg( mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole ).toInt() )
-               .arg( mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole + 1 ).toString() )
+               .arg( mTypeBox->currentData( Qt::UserRole ).toInt() )
+               .arg( mTypeBox->currentData( Qt::UserRole + 1 ).toString() )
                .arg( mLength->value() )
                .arg( mPrec->value() )
                .arg( mCommentEdit->text() ) );
 
   return QgsField(
            mNameEdit->text(),
-           ( QVariant::Type ) mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole ).toInt(),
-           mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole + 1 ).toString(),
+           ( QVariant::Type ) mTypeBox->currentData( Qt::UserRole ).toInt(),
+           mTypeBox->currentData( Qt::UserRole + 1 ).toString(),
            mLength->value(),
            mPrec->value(),
            mCommentEdit->text() );

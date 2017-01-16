@@ -24,6 +24,7 @@ from builtins import str
 from builtins import range
 from builtins import object
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
@@ -36,19 +37,18 @@ import re
 import os
 import csv
 import uuid
-import codecs
-import io
 
 import psycopg2
 from osgeo import ogr
 
-from qgis.PyQt.QtCore import QVariant, QSettings
+from qgis.PyQt.QtCore import QVariant, QSettings, QCoreApplication
 from qgis.core import (Qgis, QgsFields, QgsField, QgsGeometry, QgsRectangle, QgsWkbTypes,
                        QgsSpatialIndex, QgsProject, QgsMapLayer, QgsVectorLayer,
                        QgsVectorFileWriter, QgsDistanceArea, QgsDataSourceUri, QgsCredentials,
                        QgsFeatureRequest, QgsWkbTypes)
 
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.tools import dataobjects, spatialite, postgis
 
@@ -91,9 +91,11 @@ def features(layer, request=QgsFeatureRequest()):
     or all of them.
 
     This should be used by algorithms instead of calling the Qgis API
-    directly, to ensure a consistent behaviour across algorithms.
+    directly, to ensure a consistent behavior across algorithms.
     """
     class Features(object):
+
+        DO_NOT_CHECK, IGNORE, RAISE_EXCEPTION = range(3)
 
         def __init__(self, layer, request):
             self.layer = layer
@@ -105,6 +107,27 @@ def features(layer, request=QgsFeatureRequest()):
             else:
                 self.iter = layer.getFeatures(request)
 
+            invalidFeaturesMethod = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
+
+            def filterFeature(f, ignoreInvalid):
+                geom = f.geometry()
+                if geom is None:
+                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
+                                           self.tr('Feature with NULL geometry found.'))
+                elif not geom.isGeosValid():
+                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                           self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
+                    if ignoreInvalid:
+                        return False
+                    else:
+                        raise GeoAlgorithmExecutionException(self.tr('Features with invalid geometries found. Please fix these geometries or specify the "Ignore invalid input features" flag'))
+                return True
+
+            if invalidFeaturesMethod == self.IGNORE:
+                self.iter = filter(lambda x: filterFeature(x, True), self.iter)
+            elif invalidFeaturesMethod == self.RAISE_EXCEPTION:
+                self.iter = filter(lambda x: filterFeature(x, False), self.iter)
+
         def __iter__(self):
             return self.iter
 
@@ -113,6 +136,9 @@ def features(layer, request=QgsFeatureRequest()):
                 return int(self.layer.selectedFeatureCount())
             else:
                 return int(self.layer.featureCount())
+
+        def tr(self, string):
+            return QCoreApplication.translate("FeatureIterator", string)
 
     return Features(layer, request)
 
@@ -740,42 +766,17 @@ class TableWriter(object):
         if self.encoding is None or encoding == 'System':
             self.encoding = 'utf-8'
 
-        with open(self.fileName, 'wb') as csvFile:
-            self.writer = UnicodeWriter(csvFile, encoding=self.encoding)
+        with open(self.fileName, 'w', newline='', encoding=self.encoding) as f:
+            self.writer = csv.writer(f)
             if len(fields) != 0:
                 self.writer.writerow(fields)
 
     def addRecord(self, values):
-        with open(self.fileName, 'ab') as csvFile:
-            self.writer = UnicodeWriter(csvFile, encoding=self.encoding)
+        with open(self.fileName, 'a', newline='', encoding=self.encoding) as f:
+            self.writer = csv.writer(f)
             self.writer.writerow(values)
 
     def addRecords(self, records):
-        with open(self.fileName, 'ab') as csvFile:
-            self.writer = UnicodeWriter(csvFile, encoding=self.encoding)
+        with open(self.fileName, 'a', newline='', encoding=self.encoding) as f:
+            self.writer = cvs.writer(f)
             self.writer.writerows(records)
-
-
-class UnicodeWriter(object):
-
-    def __init__(self, f, dialect=csv.excel, encoding='utf-8', **kwds):
-        self.queue = io.StringIO()
-        self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
-        self.stream = f
-        self.encoder = codecs.getincrementalencoder(encoding)()
-
-    def writerow(self, row):
-        row = list(map(str, row))
-        try:
-            self.writer.writerow([s.encode('utf-8') for s in row])
-        except:
-            self.writer.writerow(row)
-        data = self.queue.getvalue()
-        data = data.decode('utf-8')
-        data = self.encoder.encode(data)
-        self.stream.write(data)
-        self.queue.truncate(0)
-
-    def writerows(self, rows):
-        for row in rows:
-            self.writerow(row)

@@ -16,6 +16,7 @@
 #ifndef QGS25DRENDERER_H
 #define QGS25DRENDERER_H
 
+#include "qgis_core.h"
 #include "qgsrenderer.h"
 
 class QgsOuterGlowEffect;

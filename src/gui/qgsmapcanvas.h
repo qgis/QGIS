@@ -35,6 +35,7 @@
 
 #ifdef HAVE_TOUCH
 #include <QGestureEvent>
+#include "qgis_gui.h"
 #endif
 
 class QWheelEvent;
@@ -618,7 +619,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
        @note
 
-       Otherwise QScopedPointer would pass the object responsiblity on to the
+       Otherwise QScopedPointer would pass the object responsibility on to the
        copy like a hot potato leaving the copyer in a weird state.
      */
     QgsMapCanvas( QgsMapCanvas const & );

@@ -18,6 +18,7 @@
 
 #include <QWidget>
 #include "ui_qgsrelationmanagerdialogbase.h"
+#include "qgis_app.h"
 
 class QgsRelation;
 class QgsRelationManager;

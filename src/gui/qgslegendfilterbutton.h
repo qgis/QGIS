@@ -16,6 +16,7 @@
 #define QGS_LEGEND_FILTER_BUTTON_H
 
 #include <QToolButton>
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 

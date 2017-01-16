@@ -18,7 +18,7 @@ import qgis  # NOQA
 
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QFileInfo, QDate, QDateTime
-from qgis.core import QgsVectorLayer, QgsProject, QgsMapSettings, QgsComposition, QgsComposerLabel, QgsFeatureRequest, QgsFeature, QgsExpression
+from qgis.core import QgsVectorLayer, QgsProject, QgsMapSettings, QgsComposition, QgsComposerLabel, QgsFeatureRequest, QgsFeature, QgsExpression, QgsProject
 from utilities import unitTestDataPath
 
 start_app()
@@ -38,7 +38,7 @@ class TestQgsComposerLabel(unittest.TestCase):
         mapSettings.setLayers([mVectorLayer])
         mapSettings.setCrsTransformEnabled(False)
 
-        mComposition = QgsComposition(mapSettings)
+        mComposition = QgsComposition(mapSettings, QgsProject.instance())
         mComposition.setPaperSize(297, 210)
 
         mLabel = QgsComposerLabel(mComposition)

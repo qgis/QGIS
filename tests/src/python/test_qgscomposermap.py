@@ -57,7 +57,7 @@ class TestQgsComposerMap(unittest.TestCase):
         self.mMapSettings = QgsMapSettings()
         self.mMapSettings.setLayers([mRasterLayer])
         self.mMapSettings.setCrsTransformEnabled(False)
-        self.mComposition = QgsComposition(self.mMapSettings)
+        self.mComposition = QgsComposition(self.mMapSettings, QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
         self.mComposerMap = QgsComposerMap(self.mComposition, 20, 20, 200, 100)
         self.mComposerMap.setFrameEnabled(True)
@@ -161,7 +161,7 @@ class TestQgsComposerMap(unittest.TestCase):
         self.mComposerMap.setMapRotation(30.0)
 
         self.mComposition.setGenerateWorldFile(True)
-        self.mComposition.setWorldFileMap(self.mComposerMap)
+        self.mComposition.setReferenceMap(self.mComposerMap)
 
         p = self.mComposition.computeWorldFileParameters()
         pexpected = (4.180480199790922, 2.4133064516129026, 779443.7612381146,

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis_core.h"
 #include <QString>
 #include <QRegExp>
 #include <QList>

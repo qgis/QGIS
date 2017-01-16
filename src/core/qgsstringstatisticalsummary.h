@@ -19,6 +19,8 @@
 #include <QSet>
 #include <QVariantList>
 
+#include "qgis_core.h"
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in test_qgsstringstatisticalsummary.py.

@@ -15,6 +15,7 @@
 #ifndef QGSGMLSCHEMA_H
 #define QGSGMLSCHEMA_H
 
+#include "qgis_core.h"
 #include <expat.h>
 #include "qgis.h"
 #include "qgserror.h"
@@ -104,13 +105,13 @@ class CORE_EXPORT QgsGmlSchema : public QObject
 
     enum ParseMode
     {
-      none,
-      boundingBox,
-      featureMembers, // gml:featureMembers
-      featureMember, // gml:featureMember
-      feature,  // feature element containint attrs and geo (inside gml:featureMember)
-      attribute,
-      geometry
+      None,
+      BoundingBox,
+      FeatureMembers, // gml:featureMembers
+      FeatureMember, // gml:featureMember
+      Feature,  // feature element containint attrs and geo (inside gml:featureMember)
+      Attribute,
+      Geometry
     };
 
     //! XML handler methods
@@ -168,10 +169,10 @@ class CORE_EXPORT QgsGmlSchema : public QObject
 
 
     //! Get safely (if empty) top from mode stack
-    ParseMode modeStackTop() { return mParseModeStack.isEmpty() ? none : mParseModeStack.top(); }
+    ParseMode modeStackTop() { return mParseModeStack.isEmpty() ? None : mParseModeStack.top(); }
 
     //! Safely (if empty) pop from mode stack
-    ParseMode modeStackPop() { return mParseModeStack.isEmpty() ? none : mParseModeStack.pop(); }
+    ParseMode modeStackPop() { return mParseModeStack.isEmpty() ? None : mParseModeStack.pop(); }
 
     //! Keep track about the most important nested elements
     //std::stack<ParseMode> mParseModeStack;

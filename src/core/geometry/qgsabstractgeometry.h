@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSABSTRACTGEOMETRYV2
 #define QGSABSTRACTGEOMETRYV2
 
+#include "qgis_core.h"
 #include "qgscoordinatetransform.h"
 #include "qgswkbtypes.h"
 #include "qgswkbptr.h"

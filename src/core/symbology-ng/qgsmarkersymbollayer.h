@@ -16,6 +16,7 @@
 #ifndef QGSMARKERSYMBOLLAYERV2_H
 #define QGSMARKERSYMBOLLAYERV2_H
 
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 
 #define DEFAULT_SIMPLEMARKER_NAME         "circle"
@@ -378,7 +379,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     //! be used when data defined properties are present
     bool mUsingCache;
     //! Maximum width/height of cache image
-    static const int mMaximumCacheWidth = 3000;
+    static const int MAXIMUM_CACHE_WIDTH = 3000;
 
   private:
 

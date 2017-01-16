@@ -77,10 +77,12 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
   mXOffset = 0.0;
   mYOffset = 0.0;
 
+  QgsProject* project = mComposition->project();
+
   //get the color for map canvas background and set map background color accordingly
-  int bgRedInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
-  int bgGreenInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
-  int bgBlueInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
+  int bgRedInt = project->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
+  int bgGreenInt = project->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
+  int bgBlueInt = project->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
   setBackgroundColor( QColor( bgRedInt, bgGreenInt, bgBlueInt ) );
 
   //calculate mExtent based on width/height ratio and map canvas extent
@@ -239,7 +241,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   if ( mComposition->plotStyle() == QgsComposition::Print ||
        mComposition->plotStyle() == QgsComposition::Postscript )
   {
-    //if outputing composer, disable optimisations like layer simplification
+    //if outputting composer, disable optimisations like layer simplification
     jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, false );
   }
 
@@ -544,8 +546,8 @@ QList<QgsMapLayer*> QgsComposerMap::layersToRender( const QgsExpressionContext* 
       presetName = exprVal.toString();
     }
 
-    if ( QgsProject::instance()->mapThemeCollection()->hasMapTheme( presetName ) )
-      renderLayers = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
+    if ( mComposition->project()->mapThemeCollection()->hasMapTheme( presetName ) )
+      renderLayers = mComposition->project()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
     else  // fallback to using map canvas layers
       renderLayers = mComposition->mapSettings().layers();
   }
@@ -567,7 +569,7 @@ QList<QgsMapLayer*> QgsComposerMap::layersToRender( const QgsExpressionContext* 
     //need to convert layer names to layer ids
     Q_FOREACH ( const QString& name, layerNames )
     {
-      QList< QgsMapLayer* > matchingLayers = QgsProject::instance()->mapLayersByName( name );
+      QList< QgsMapLayer* > matchingLayers = mComposition->project()->mapLayersByName( name );
       Q_FOREACH ( QgsMapLayer* layer, matchingLayers )
       {
         renderLayers << layer;
@@ -605,8 +607,8 @@ QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender( const QgsExp
       presetName = exprVal.toString();
     }
 
-    if ( QgsProject::instance()->mapThemeCollection()->hasMapTheme( presetName ) )
-      return QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( presetName );
+    if ( mComposition->project()->mapThemeCollection()->hasMapTheme( presetName ) )
+      return mComposition->project()->mapThemeCollection()->mapThemeStyleOverrides( presetName );
     else
       return QMap<QString, QString>();
   }
@@ -711,7 +713,7 @@ void QgsComposerMap::zoomContent( const double factor, const QPointF point, cons
 
   if ( mAtlasDriven && mAtlasScalingMode == Fixed && mComposition->atlasMode() != QgsComposition::AtlasOff )
   {
-    //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanant
+    //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanent
     //and also apply to the map's original extent (see #9602)
     //we can't use the scaleRatio calculated earlier, as the scale can vary depending on extent for geographic coordinate systems
     QgsScaleCalculator calculator;
@@ -864,7 +866,7 @@ QgsRectangle* QgsComposerMap::currentMapExtent()
   }
   else
   {
-    //otherwise return permenant user set extent
+    //otherwise return permanent user set extent
     return &mExtent;
   }
 }
@@ -880,7 +882,7 @@ const QgsRectangle* QgsComposerMap::currentMapExtent() const
   }
   else
   {
-    //otherwise return permenant user set extent
+    //otherwise return permanent user set extent
     return &mExtent;
   }
 }
@@ -899,7 +901,7 @@ void QgsComposerMap::setNewScale( double scaleDenominator, bool forceUpdate )
 
   if ( mAtlasDriven && mAtlasScalingMode == Fixed && mComposition->atlasMode() != QgsComposition::AtlasOff )
   {
-    //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanant
+    //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanent
     //and also apply to the map's original extent (see #9602)
     //we can't use the scaleRatio calculated earlier, as the scale can vary depending on extent for geographic coordinate systems
     QgsScaleCalculator calculator;
@@ -1126,7 +1128,7 @@ void QgsComposerMap::updateItem()
 
 bool QgsComposerMap::containsWmsLayer() const
 {
-  Q_FOREACH ( QgsMapLayer* layer, mComposition->mapSettings().layers() )
+  Q_FOREACH ( QgsMapLayer* layer, layersToRender() )
   {
     if ( QgsRasterLayer* currentRasterLayer = qobject_cast<QgsRasterLayer *>( layer ) )
     {
@@ -1162,7 +1164,7 @@ bool QgsComposerMap::containsAdvancedEffects() const
   // check if map contains advanced effects like blend modes, or flattened layers for transparency
 
   QgsTextFormat layerFormat;
-  Q_FOREACH ( QgsMapLayer* layer, mComposition->mapSettings().layers() )
+  Q_FOREACH ( QgsMapLayer* layer, layersToRender() )
   {
     if ( layer )
     {
@@ -1186,6 +1188,7 @@ bool QgsComposerMap::containsAdvancedEffects() const
         if ( QgsPalLabeling::staticWillUseLayer( currentVectorLayer ) )
         {
           // Check all label blending properties
+
           layerFormat.readFromLayer( currentVectorLayer );
           if ( layerFormat.containsAdvancedEffects() )
             return true;
@@ -1200,7 +1203,7 @@ bool QgsComposerMap::containsAdvancedEffects() const
 void QgsComposerMap::connectUpdateSlot()
 {
   //connect signal from layer registry to update in case of new or deleted layers
-  QgsProject* project = QgsProject::instance();
+  QgsProject* project = mComposition->project();
   if ( project )
   {
     connect( project, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( layersChanged() ) );
@@ -1403,7 +1406,7 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
     for ( int i = 0; i < layerIdNodeList.size(); ++i )
     {
       QString layerId = layerIdNodeList.at( i ).toElement().text();
-      if ( QgsMapLayer* ml = QgsProject::instance()->mapLayer( layerId ) )
+      if ( QgsMapLayer* ml = mComposition->project()->mapLayer( layerId ) )
         mLayers << ml;
     }
   }
@@ -1558,17 +1561,6 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
   return true;
 }
 
-void QgsComposerMap::storeCurrentLayerSet()
-{
-  mLayers = _qgis_listRawToQPointer( mComposition->mapSettings().layers() );
-
-  if ( mKeepLayerStyles )
-  {
-    // also store styles associated with the layers
-    storeCurrentLayerStyles();
-  }
-}
-
 QList<QgsMapLayer*> QgsComposerMap::layers() const
 {
   return _qgis_listQPointerToRaw( mLayers );
@@ -1615,7 +1607,7 @@ void QgsComposerMap::syncLayerSet()
   QList<QgsMapLayer*> currentLayers;
   if ( mKeepLayerSet )
   {
-    currentLayers = QgsProject::instance()->mapLayers().values();
+    currentLayers = mComposition->project()->mapLayers().values();
   }
   else //only consider layers visible in the map
   {
@@ -1831,6 +1823,13 @@ QgsExpressionContext QgsComposerMap::createExpressionContext() const
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent_height" ), extent.height(), true ) );
   QgsGeometry centerPoint = QgsGeometry::fromPoint( extent.center() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent_center" ), QVariant::fromValue( centerPoint ), true ) );
+
+  if ( mComposition )
+  {
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs" ), mComposition->mapSettings().destinationCrs().authid(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_definition" ), mComposition->mapSettings().destinationCrs().toProj4(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_units" ), QgsUnitTypes::toString( mComposition->mapSettings().mapUnits() ), true ) );
+  }
 
   context.appendScope( scope );
 

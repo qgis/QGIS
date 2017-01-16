@@ -16,6 +16,7 @@
 #define QGSMAPCANVASSNAPPINGUTILS_H
 
 #include "qgssnappingutils.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 

@@ -40,7 +40,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
 
   OGRRegisterAll();
   OGRSFDriverH hDriver;
-  OGRDataSourceH hDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( mPath ), true, &hDriver );
+  OGRDataSourceH hDataSource = QgsOgrProviderUtils::OGROpenWrapper( mPath.toUtf8().constData(), true, &hDriver );
 
   if ( hDataSource )
   {
@@ -160,7 +160,7 @@ static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name,
   if ( name.isEmpty() )
   {
     // we are in a collection
-    name = FROM8( OGR_FD_GetName( hDef ) );
+    name = QString::fromUtf8( OGR_FD_GetName( hDef ) );
     QgsDebugMsg( "OGR layer name : " + name );
 
     layerUri += "|layerid=" + QString::number( layerId );
@@ -189,7 +189,7 @@ QVector<QgsDataItem*> QgsOgrDataCollectionItem::createChildren()
   QVector<QgsDataItem*> children;
 
   OGRSFDriverH hDriver;
-  OGRDataSourceH hDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( mPath ), false, &hDriver );
+  OGRDataSourceH hDataSource = QgsOgrProviderUtils::OGROpenWrapper( mPath.toUtf8().constData(), false, &hDriver );
   if ( !hDataSource )
     return children;
   int numLayers = OGR_DS_GetLayerCount( hDataSource );
@@ -263,7 +263,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   QStringList myExtensions = fileExtensions();
 
-  // skip *.aux.xml files (GDAL auxilary metadata files),
+  // skip *.aux.xml files (GDAL auxiliary metadata files),
   // *.shp.xml files (ESRI metadata) and *.tif.xml files (TIFF metadata)
   // unless that extension is in the list (*.xml might be though)
   if ( thePath.endsWith( QLatin1String( ".aux.xml" ), Qt::CaseInsensitive ) &&
@@ -357,7 +357,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  OGRDataSourceH hDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( thePath ), false, &hDriver );
+  OGRDataSourceH hDataSource = QgsOgrProviderUtils::OGROpenWrapper( thePath.toUtf8().constData(), false, &hDriver );
   CPLPopErrorHandler();
 
   if ( ! hDataSource )

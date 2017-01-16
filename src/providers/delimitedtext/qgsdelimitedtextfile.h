@@ -64,7 +64,7 @@ class QTextStream;
 *   For regexp type delimiters this specifies the reqular expression.
 *   The field is ignored for csv and whitespace
 * - quoteChar, optional, a single character used for quoting plain fields
-* - escapeChar, optional, a single characer used for escaping (may be the same as quoteChar)
+* - escapeChar, optional, a single character used for escaping (may be the same as quoteChar)
 */
 
 // Note: this has been implemented as a single class rather than a set of classes based

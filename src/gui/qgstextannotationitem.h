@@ -20,9 +20,10 @@
 
 #include "qgsannotationitem.h"
 #include <QTextDocument>
+#include "qgis_gui.h"
 
 /** \ingroup gui
- * An annotation item that displays formated text*/
+ * An annotation item that displays formatted text*/
 class GUI_EXPORT QgsTextAnnotationItem: public QgsAnnotationItem
 {
   public:

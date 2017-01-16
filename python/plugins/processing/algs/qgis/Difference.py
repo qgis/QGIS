@@ -58,16 +58,13 @@ class Difference(GeoAlgorithm):
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(Difference.OVERLAY,
                                           self.tr('Difference layer')))
-        self.addParameter(ParameterBoolean(Difference.IGNORE_INVALID,
-                                           self.tr('Ignore invalid input features'), False, True))
         self.addOutput(OutputVector(Difference.OUTPUT, self.tr('Difference')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layerA = dataobjects.getObjectFromUri(
             self.getParameterValue(Difference.INPUT))
         layerB = dataobjects.getObjectFromUri(
             self.getParameterValue(Difference.OVERLAY))
-        ignoreInvalid = self.getParameterValue(Difference.IGNORE_INVALID)
 
         geomType = QgsWkbTypes.multiType(layerA.wkbType())
         writer = self.getOutputFromName(
@@ -80,7 +77,6 @@ class Difference(GeoAlgorithm):
         selectionA = vector.features(layerA)
         total = 100.0 / len(selectionA)
         for current, inFeatA in enumerate(selectionA):
-            add = True
             geom = inFeatA.geometry()
             diff_geom = QgsGeometry(geom)
             attrs = inFeatA.attributes()
@@ -91,28 +87,16 @@ class Difference(GeoAlgorithm):
                 tmpGeom = inFeatB.geometry()
                 if diff_geom.intersects(tmpGeom):
                     diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))
-                    if diff_geom.isGeosEmpty():
-                        ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                               self.tr('Feature with NULL geometry found.'))
-                    if not diff_geom.isGeosValid():
-                        if ignoreInvalid:
-                            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                                   self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
-                            add = False
-                        else:
-                            raise GeoAlgorithmExecutionException(self.tr('Features with invalid geometries found. Please fix these errors or specify the "Ignore invalid input features" flag'))
-                        break
 
-            if add:
-                try:
-                    outFeat.setGeometry(diff_geom)
-                    outFeat.setAttributes(attrs)
-                    writer.addFeature(outFeat)
-                except:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                           self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
-                    continue
+            try:
+                outFeat.setGeometry(diff_geom)
+                outFeat.setAttributes(attrs)
+                writer.addFeature(outFeat)
+            except:
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
+                                       self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                continue
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

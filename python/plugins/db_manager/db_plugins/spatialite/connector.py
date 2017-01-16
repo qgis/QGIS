@@ -339,7 +339,7 @@ class SpatiaLiteDBConnector(DBConnector):
 
         for i, idx in enumerate(indexes):
             # sqlite has changed the number of columns returned by index_list since 3.8.9
-            # I am not using self.getInfo() here because this behaviour
+            # I am not using self.getInfo() here because this behavior
             # can be changed back without notice as done for index_info, see:
             # http://repo.or.cz/sqlite.git/commit/53555d6da78e52a430b1884b5971fef33e9ccca4
             if len(idx) == 3:

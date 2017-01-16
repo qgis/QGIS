@@ -30,10 +30,10 @@ import traceback
 import subprocess
 import copy
 
-from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication, QSettings
 
-from qgis.core import QgsVectorLayer, QgsRasterLayer
+from qgis.core import (QgsApplication,
+                       QgsProcessingFeedback)
 
 from builtins import str
 from builtins import object
@@ -41,7 +41,6 @@ from processing.gui.ParametersPanel import ParametersPanel
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.SilentProgress import SilentProgress
 from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter, ParameterExtent
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -52,7 +51,7 @@ from processing.algs.help import shortHelp
 class GeoAlgorithm(object):
 
     def __init__(self):
-        self._icon = QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
+        self._icon = QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         # Parameters needed by the algorithm
         self.parameters = list()
 
@@ -83,7 +82,7 @@ class GeoAlgorithm(object):
 
         # If the algorithm is run as part of a model, the parent model
         # can be set in this variable, to allow for customized
-        # behaviour, in case some operations should be run differently
+        # behavior, in case some operations should be run differently
         # when running as part of a model
         self.model = None
 
@@ -119,7 +118,7 @@ class GeoAlgorithm(object):
             text = self._formatHelp(text)
         return text
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         """Here goes the algorithm itself.
 
         There is no return value from this method.
@@ -194,7 +193,7 @@ class GeoAlgorithm(object):
 
     # =========================================================
 
-    def execute(self, progress=SilentProgress(), model=None):
+    def execute(self, feedback=None, model=None):
         """The method to use to call a processing algorithm.
 
         Although the body of the algorithm is in processAlgorithm(),
@@ -204,16 +203,20 @@ class GeoAlgorithm(object):
         Raises a GeoAlgorithmExecutionException in case anything goes
         wrong.
         """
+
+        if feedback is None:
+            feedback = QgsProcessingFeedback()
+
         self.model = model
         try:
             self.setOutputCRS()
             self.resolveOutputs()
             self.evaluateParameterValues()
-            self.runPreExecutionScript(progress)
-            self.processAlgorithm(progress)
-            progress.setPercentage(100)
-            self.convertUnsupportedFormats(progress)
-            self.runPostExecutionScript(progress)
+            self.runPreExecutionScript(feedback)
+            self.processAlgorithm(feedback)
+            feedback.setProgress(100)
+            self.convertUnsupportedFormats(feedback)
+            self.runPostExecutionScript(feedback)
         except GeoAlgorithmExecutionException as gaee:
             lines = [self.tr('Error while executing algorithm')]
             lines.append(traceback.format_exc())
@@ -242,23 +245,23 @@ class GeoAlgorithm(object):
                             return "Wrong parameter value: " + param.value
         return self.checkParameterValuesBeforeExecuting()
 
-    def runPostExecutionScript(self, progress):
+    def runPostExecutionScript(self, feedback):
         scriptFile = ProcessingConfig.getSetting(
             ProcessingConfig.POST_EXECUTION_SCRIPT)
-        self.runHookScript(scriptFile, progress)
+        self.runHookScript(scriptFile, feedback)
 
-    def runPreExecutionScript(self, progress):
+    def runPreExecutionScript(self, feedback):
         scriptFile = ProcessingConfig.getSetting(
             ProcessingConfig.PRE_EXECUTION_SCRIPT)
-        self.runHookScript(scriptFile, progress)
+        self.runHookScript(scriptFile, feedback)
 
-    def runHookScript(self, filename, progress):
+    def runHookScript(self, filename, feedback):
         if filename is None or not os.path.exists(filename):
             return
         try:
             script = 'import processing\n'
             ns = {}
-            ns['progress'] = progress
+            ns['feedback'] = feedback
             ns['alg'] = self
             with open(filename) as f:
                 lines = f.readlines()
@@ -272,9 +275,9 @@ class GeoAlgorithm(object):
             # all exceptions
             pass
 
-    def convertUnsupportedFormats(self, progress):
+    def convertUnsupportedFormats(self, feedback):
         i = 0
-        progress.setText(self.tr('Converting outputs'))
+        feedback.setProgressText(self.tr('Converting outputs'))
         for out in self.outputs:
             if isinstance(out, OutputVector):
                 if out.compatible is not None:
@@ -325,7 +328,7 @@ class GeoAlgorithm(object):
                     features = vector.features(layer)
                     for feature in features:
                         writer.addRecord(feature)
-            progress.setPercentage(100 * i / float(len(self.outputs)))
+            feedback.setProgress(100 * i / float(len(self.outputs)))
 
     def getFormatShortNameFromFilename(self, filename):
         ext = filename[filename.rfind('.') + 1:]
@@ -479,7 +482,7 @@ class GeoAlgorithm(object):
         return s
 
     def commandLineName(self):
-        name = self.provider.getName().lower() + ':' + self.name.lower()
+        name = self.provider.id().lower() + ':' + self.name.lower()
         validChars = \
             'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
         name = ''.join(c for c in name if c in validChars)

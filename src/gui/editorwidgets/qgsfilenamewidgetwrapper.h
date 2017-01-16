@@ -21,6 +21,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QLabel>
+#include "qgis_gui.h"
 
 
 /** \ingroup gui

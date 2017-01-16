@@ -32,7 +32,7 @@ from processing.tools.system import mkdir
 
 
 def baseHelpForAlgorithm(alg, folder):
-    baseDir = os.path.join(folder, alg.provider.getName().lower())
+    baseDir = os.path.join(folder, alg.provider.id().lower())
     mkdir(baseDir)
 
     groupName = alg.group.lower()
@@ -105,7 +105,7 @@ def baseHelpForAlgorithm(alg, folder):
 
 def createBaseHelpFiles(folder):
     for provider in Processing.providers:
-        if 'grass' in provider.getName():
+        if 'grass' in provider.id():
             continue
 
         for alg in provider.algs:

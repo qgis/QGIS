@@ -1671,7 +1671,7 @@ ErrorList topolTest::runTest( const QString& testName, QgsVectorLayer* layer1, Q
   mFeatureMap2.clear();
 
   //checking if new features are not
-  //being recognised due to indexing not being upto date
+  //being recognised due to indexing not being up to date
 
   mLayerIndexes.clear();
 

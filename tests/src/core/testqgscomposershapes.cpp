@@ -20,6 +20,7 @@
 #include "qgsmultirenderchecker.h"
 #include "qgscomposershape.h"
 #include "qgsmapsettings.h"
+#include "qgsproject.h"
 #include "qgssymbol.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsfillsymbollayer.h"
@@ -65,7 +66,7 @@ void TestQgsComposerShapes::initTestCase()
   mMapSettings = new QgsMapSettings();
 
   //create composition with two rectangles
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerShape = new QgsComposerShape( 20, 20, 150, 100, mComposition );
   mComposerShape->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );

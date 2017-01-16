@@ -21,6 +21,7 @@
 #include <QDialog>
 #include <QDomDocument>
 #include "ui_qgsmanageconnectionsdialogbase.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsManageConnectionsDialog

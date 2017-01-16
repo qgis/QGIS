@@ -22,6 +22,7 @@
 #include "qgsosmbase.h"
 
 #include "qgsgeometry.h"
+#include "qgis_analysis.h"
 
 class QgsOSMNodeIterator;
 class QgsOSMWayIterator;

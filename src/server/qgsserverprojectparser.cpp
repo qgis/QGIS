@@ -77,7 +77,7 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QStr
     }
   }
   // Setting the QgsProject instance fileName
-  // to help converting relative pathes to absolute
+  // to help converting relative paths to absolute
   if ( !mProjectPath.isEmpty() )
   {
     QgsProject::instance()->setFileName( mProjectPath );
@@ -171,10 +171,10 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
   QString uri = dataSourceElem.text();
   QString absoluteUri;
   // If QgsProject instance fileName is set,
-  // Is converting relative pathes to absolute still relevant ?
+  // Is converting relative paths to absolute still relevant ?
   if ( !dataSourceElem.isNull() )
   {
-    //convert relative pathes to absolute ones if necessary
+    //convert relative paths to absolute ones if necessary
     if ( uri.startsWith( QLatin1String( "dbname" ) ) ) //database
     {
       QgsDataSourceUri dsUri( uri );
@@ -1185,6 +1185,27 @@ QSet<QString> QgsServerProjectParser::findRestrictedLayers() const
         {
           // add layer id
           restrictedLayerSet.insert( layerfileList.at( 0 ).toElement().attribute( QStringLiteral( "layerid" ) ) );
+        }
+      }
+    }
+  }
+  // Add short name in restricted layers
+  else
+  {
+    QDomNodeList layerNodeList = mXMLDoc->elementsByTagName( "maplayer" );
+    for ( int i = 0; i < layerNodeList.size(); ++i )
+    {
+      QDomElement layerElem = layerNodeList.at( i ).toElement();
+      // get name
+      QString lName = layerName( layerElem );
+      if ( restrictedLayerSet.contains( lName ) )
+      {
+        // get short name
+        lName = layerShortName( layerElem );
+        if ( !lName.isEmpty() )
+        {
+          // add short name
+          restrictedLayerSet.insert( lName );
         }
       }
     }

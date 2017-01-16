@@ -22,6 +22,7 @@
 #include "qgsmessageoutput.h"
 
 #include <QString>
+#include "qgis_gui.h"
 
 
 /** \ingroup gui

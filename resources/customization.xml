@@ -945,7 +945,7 @@
       <widget objectName="mCircleRadiusLabel" class="QLabel" label="Circle radius modification:"/>
       <widget objectName="mDistanceToleranceLabel" class="QLabel" label="Point distance tolerance:"/>
     </widget>
-    <widget objectName="mLabellingGroupBox" class="QGroupBox" label="">
+    <widget objectName="mLabelingGroupBox" class="QGroupBox" label="">
       <widget objectName="mLabelAttributeLabel" class="QLabel" label="Label attribute:"/>
       <widget objectName="mLabelFieldComboBox" class="QComboBox" label=""/>
       <widget objectName="mLabelFontButton" class="QPushButton" label="Label font..."/>

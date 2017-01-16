@@ -27,7 +27,7 @@ class TriDecorator : Triangulation
     virtual double getXMin() const;
     virtual double getYMax() const;
     virtual double getYMin() const;
-    virtual void setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b );
+    virtual void setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b );
     virtual void setEdgeColor( int r, int g, int b );
     virtual void setForcedEdgeColor( int r, int g, int b );
     virtual void setBreakEdgeColor( int r, int g, int b );

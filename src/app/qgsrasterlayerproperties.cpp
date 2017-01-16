@@ -540,6 +540,16 @@ void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
 {
   QgsDebugMsg( "rendererName = " + rendererName );
   QgsRasterRendererWidget* oldWidget = mRendererWidget;
+  QgsRasterRenderer* oldRenderer = mRasterLayer->renderer();
+
+  int alphaBand = -1;
+  double opacity = 1;
+  if ( oldRenderer )
+  {
+    // Retain alpha band and opacity when switching renderer
+    alphaBand = oldRenderer->alphaBand();
+    opacity = oldRenderer->opacity();
+  }
 
   QgsRasterRendererRegistryEntry rendererEntry;
   if ( QgsApplication::rasterRendererRegistry()->rendererData( rendererName, rendererEntry ) )
@@ -562,6 +572,8 @@ void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
           whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
         }
       }
+      mRasterLayer->renderer()->setAlphaBand( alphaBand );
+      mRasterLayer->renderer()->setOpacity( opacity );
       mRendererWidget = rendererEntry.widgetCreateFunction( mRasterLayer, myExtent );
       mRendererWidget->setMapCanvas( mMapCanvas );
       mRendererStackedWidget->addWidget( mRendererWidget );

@@ -20,6 +20,8 @@
 #include <QString>
 #include <QDomElement>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * \class QgsFontUtils
  */
@@ -139,7 +141,7 @@ class CORE_EXPORT QgsFontUtils
      * @param pointToPixelMultiplier scaling factor to apply to convert point sizes to pixel font sizes.
      * The CSS returned by this function will always use pixels for font sizes, so this parameter
      * should be set to a suitable value to convert point sizes to pixels (e.g., taking into account
-     * desination DPI)
+     * destination DPI)
      * @returns partial CSS string, e.g., "font-family: Comic Sans; font-size: 12px;"
      * @note added in QGIS 2.16
      */

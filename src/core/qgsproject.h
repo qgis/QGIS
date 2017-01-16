@@ -21,6 +21,7 @@
 #ifndef QGSPROJECT_H
 #define QGSPROJECT_H
 
+#include "qgis_core.h"
 #include <memory>
 #include <QHash>
 #include <QList>
@@ -77,7 +78,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs )
     Q_PROPERTY( QgsMapThemeCollection* mapThemeCollection READ mapThemeCollection NOTIFY mapThemeCollectionChanged )
     Q_PROPERTY( QgsSnappingConfig snappingConfig READ snappingConfig WRITE setSnappingConfig NOTIFY snappingConfigChanged )
-    Q_PROPERTY( QStringList avoidIntersectionsList READ avoidIntersectionsList WRITE setAvoidIntersectionsList NOTIFY avoidIntersectionsListChanged )
+    Q_PROPERTY( QList<QgsVectorLayer*> avoidIntersectionsLayers READ avoidIntersectionsLayers WRITE setAvoidIntersectionsLayers NOTIFY avoidIntersectionsLayersChanged )
 
   public:
     //! Returns the QgsProject singleton instance
@@ -166,44 +167,26 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void clear();
 
-    /** Reads a project file.
-     * @param file name of project file to read
-     * @note Any current plug-in state is erased
-     * @note Calling read() performs the following operations:
-     *
-     * - Gets the extents
-     * - Creates maplayers
-     * - Registers maplayers
-     *
-     * @note it's presumed that the caller has already reset the map canvas, map registry, and legend
+    /** Reads given project file from the given file.
+     * @param filename name of project file to read
+     * @returns true if project file has been read successfully
      */
-    bool read( const QFileInfo& file );
+    bool read( const QString& filename );
 
-    /** Reads the current project file.
-     * @note Any current plug-in state is erased
-     * @note Calling read() performs the following operations:
-     *
-     * - Gets the extents
-     * - Creates maplayers
-     * - Registers maplayers
-     *
-     * @note it's presumed that the caller has already reset the map canvas, map registry, and legend
+    /** Reads the project from its currently associated file (see fileName() ).
+     * @returns true if project file has been read successfully
      */
     bool read();
 
     /** Reads the layer described in the associated DOM node.
      *
+     * @note This method is mainly for use by QgsProjectBadLayerHandler subclasses
+     * that may fix definition of bad layers with the user's help in GUI. Calling
+     * this method with corrected DOM node adds the layer back to the project.
+     *
      * @param layerNode represents a QgsProject DOM node that encodes a specific layer.
-     *
-     * QgsProject raises an exception when one of the QgsProject::read()
-     * implementations fails.  Since the read()s are invoked from qgisapp,
-     * then qgisapp handles the exception.  It prompts the user for the new
-     * location of the data, if any.  If there is a new location, the DOM
-     * node associated with the layer has its datasource tag corrected.
-     * Then that node is passed to this member function to be re-opened.
-     *
      */
-    bool read( QDomNode& layerNode );
+    bool readLayer( const QDomNode& layerNode );
 
     /**
      * Writes the project to a file.
@@ -215,14 +198,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note Added in QGIS 3.0
      */
     bool write( const QString& filename );
-
-    /** Writes the project to a file.
-     * @param file destination file
-     * @note calling this implicitly sets the project's filename (see setFileName() )
-     * @note isDirty() will be set to false if project is successfully written
-     * @returns true if project was written successfully
-     */
-    bool write( const QFileInfo& file );
 
     /** Writes the project to its current associated file (see fileName() ).
      * @note isDirty() will be set to false if project is successfully written
@@ -490,14 +465,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * @note Added in QGIS 3.0
      */
-    QStringList avoidIntersectionsList() const;
+    QList<QgsVectorLayer*> avoidIntersectionsLayers() const;
 
     /**
      * A list of layers with which intersections should be avoided.
      *
      * @note Added in QGIS 3.0
      */
-    void setAvoidIntersectionsList( const QStringList& avoidIntersectionsList );
+    void setAvoidIntersectionsLayers( const QList<QgsVectorLayer*>& layers );
 
     /**
      * A map of custom project variables.
@@ -785,11 +760,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void topologicalEditingChanged();
 
     /**
-     * Emitted whenever avoidIntersectionsList has changed.
+     * Emitted whenever avoidIntersectionsLayers has changed.
      *
      * @note Added in QGIS 3.0
      */
-    void avoidIntersectionsListChanged();
+    void avoidIntersectionsLayersChanged();
 
     /**
      * Emitted when the map theme collection changes.
@@ -975,7 +950,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsProjectBadLayerHandler* mBadLayerHandler;
 
-    /** Embeded layers which are defined in other projects. Key: layer id,
+    /** Embedded layers which are defined in other projects. Key: layer id,
      * value: pair< project file path, save layer yes / no (e.g. if the layer is part of an embedded group, loading/saving is done by the legend)
      *  If the project file path is empty, QgsProject is going to ignore the layer for saving (e.g. because it is part and managed by an embedded group)
      */
@@ -997,7 +972,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QVariantMap mCustomVariables;
 
     QFile mFile;                 // current physical project file
-    mutable QgsPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
+    mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
     QString mTitle;              // project title
     bool mAutoTransaction;       // transaction grouped editing
     bool mEvaluateDefaultValues; // evaluate default values immediately

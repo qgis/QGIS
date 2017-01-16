@@ -78,7 +78,7 @@ class FieldsCalculator(GeoAlgorithm):
         self.addParameter(ParameterString(self.FORMULA, self.tr('Formula')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldType = self.TYPES[self.getParameterValue(self.FIELD_TYPE)]
@@ -108,10 +108,7 @@ class FieldsCalculator(GeoAlgorithm):
         exp.setDistanceUnits(QgsProject.instance().distanceUnits())
         exp.setAreaUnits(QgsProject.instance().areaUnits())
 
-        exp_context = QgsExpressionContext()
-        exp_context.appendScope(QgsExpressionContextUtils.globalScope())
-        exp_context.appendScope(QgsExpressionContextUtils.projectScope())
-        exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+        exp_context = QgsExpressionContext(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
 
         if not exp.prepare(exp_context):
             raise GeoAlgorithmExecutionException(
@@ -144,7 +141,7 @@ class FieldsCalculator(GeoAlgorithm):
                 outFeature[fieldName] = value
                 writer.addFeature(outFeature)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
         del writer
 
         if not calculationSuccess:

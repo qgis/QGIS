@@ -18,6 +18,7 @@
 #ifndef QGSPOINTCLUSTERRENDERER_H
 #define QGSPOINTCLUSTERRENDERER_H
 
+#include "qgis_core.h"
 #include "qgspointdistancerenderer.h"
 
 /** \class QgsPointClusterRenderer

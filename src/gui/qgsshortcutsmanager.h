@@ -19,6 +19,7 @@
 #include <QHash>
 #include <QList>
 #include <QAction>
+#include "qgis_gui.h"
 
 class QShortcut;
 
@@ -229,7 +230,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     ActionsHash mActions;
     ShortcutsHash mShortcuts;
     QString mSettingsPath;
-    static QgsShortcutsManager* mInstance;
+    static QgsShortcutsManager* sInstance;
 };
 
 #endif // QGSSHORTCUTSMANAGER_H

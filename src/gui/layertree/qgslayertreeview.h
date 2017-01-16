@@ -17,6 +17,7 @@
 #define QGSLAYERTREEVIEW_H
 
 #include <QTreeView>
+#include "qgis_gui.h"
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
@@ -110,6 +111,9 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     void updateExpandedStateFromNode( QgsLayerTreeNode* node );
 
     QgsMapLayer* layerForIndex( const QModelIndex& index ) const;
+
+    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
   protected slots:
 

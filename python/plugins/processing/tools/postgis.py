@@ -411,7 +411,7 @@ class GeoDB(object):
 
     def get_table_indexes(self, table, schema=None):
         """Get info about table's indexes. ignore primary key and unique
-        index, they get listed in constaints.
+        index, they get listed in constraints.
         """
 
         c = self.con.cursor()
@@ -796,7 +796,7 @@ class GeoDB(object):
                            % srid)
             srtext = c.fetchone()[0]
 
-            # Try to extract just SR name (should be qouted in double
+            # Try to extract just SR name (should be quoted in double
             # quotes)
             x = re.search('"([^"]+)"', srtext)
             if x is not None:

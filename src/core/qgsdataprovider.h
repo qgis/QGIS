@@ -16,6 +16,7 @@
 #ifndef QQGSDATAPROVIDER_H
 #define QQGSDATAPROVIDER_H
 
+#include "qgis_core.h"
 #include <QDateTime>
 #include <QObject>
 #include <QString>

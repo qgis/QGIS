@@ -18,6 +18,7 @@
 
 #include "qgscolorramp.h"
 #include <QWidget>
+#include "qgis_gui.h"
 
 
 /** \ingroup gui
@@ -138,7 +139,7 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     /** Generates a checkboard pattern pixmap for use as a background to transparent colors
      * @returns checkerboard pixmap
      */
-    const QPixmap& transparentBackground();
+    QPixmap transparentBackground();
 
     /** Draws a stop marker on the specified painter.
      * @param painter destination painter

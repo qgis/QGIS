@@ -25,6 +25,7 @@ email                : ersts@amnh.org
  * typically used to render grayscale images as false color.
  */
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QPair>
 

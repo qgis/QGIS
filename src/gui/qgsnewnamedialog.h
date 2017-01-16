@@ -21,6 +21,7 @@ class QLabel;
 class QLineEdit;
 
 #include "qgsdialog.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * New name, for example new layer name dialog. If existing names are provided,

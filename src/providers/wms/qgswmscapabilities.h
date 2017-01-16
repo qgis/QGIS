@@ -467,11 +467,11 @@ enum QgsWmsTileAttribute
 
 enum QgsWmsDpiMode
 {
-  dpiNone = 0,
-  dpiQGIS = 1,
-  dpiUMN = 2,
-  dpiGeoServer = 4,
-  dpiAll = dpiQGIS | dpiUMN | dpiGeoServer,
+  DpiNone = 0,
+  DpiQGIS = 1,
+  DpiUMN = 2,
+  DpiGeoServer = 4,
+  DpiAll = DpiQGIS | DpiUMN | DpiGeoServer,
 };
 
 

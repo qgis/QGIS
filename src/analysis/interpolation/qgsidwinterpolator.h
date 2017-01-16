@@ -19,6 +19,7 @@
 #define QGSIDWINTERPOLATOR_H
 
 #include "qgsinterpolator.h"
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * \class QgsIDWInterpolator

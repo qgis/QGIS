@@ -38,9 +38,6 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
     //! @note added in 3.0
     void setName( const QString& n );
 
-    Qt::CheckState isVisible() const;
-    void setVisible( Qt::CheckState visible );
-
     static QgsLayerTreeLayer* readXml( QDomElement& element ) /Factory/;
     virtual void writeXml( QDomElement& parentElement );
 

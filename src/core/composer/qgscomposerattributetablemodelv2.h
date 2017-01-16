@@ -21,6 +21,8 @@
 #include <QAbstractTableModel>
 #include <QSortFilterProxyModel>
 
+#include "qgis_core.h"
+
 class QgsComposerAttributeTableV2;
 class QgsComposerTableColumn;
 

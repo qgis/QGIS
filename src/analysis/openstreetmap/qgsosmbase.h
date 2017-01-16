@@ -20,6 +20,7 @@
 #include "qgspoint.h"
 
 #include <sqlite3.h>
+#include "qgis_analysis.h"
 
 typedef qint64 QgsOSMId;
 

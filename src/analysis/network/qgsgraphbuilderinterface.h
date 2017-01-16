@@ -22,6 +22,7 @@
 #include <qgspoint.h>
 #include <qgscoordinatereferencesystem.h>
 #include <qgsdistancearea.h>
+#include "qgis_analysis.h"
 
 /**
 * \ingroup analysis

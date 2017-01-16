@@ -1024,29 +1024,7 @@ QStringList QgsGrassModuleGdalInput::options()
   if ( !mOgrLayerOption.isEmpty() && mOgrLayers[current].size() > 0 )
   {
     opt = mOgrLayerOption + "=";
-    // GDAL 1.4.0 supports schemas (r9998)
-#if GDAL_VERSION_NUM >= 1400
     opt += mOgrLayers[current];
-#else
-    // Handle older versions of gdal gracefully
-    // OGR does not support schemas !!!
-    if ( current >= 0 && current <  mUri.size() )
-    {
-      QStringList l = mOgrLayers[current].split( "." );
-      opt += l.at( 1 );
-
-      // Currently only PostGIS is using layer
-      //  -> layer -> PostGIS -> warning
-      if ( mOgrLayers[current].length() > 0 )
-      {
-        QMessageBox::warning( 0, tr( "Warning" ),
-                              tr( "PostGIS driver in OGR does not support schemas!<br>"
-                                  "Only the table name will be used.<br>"
-                                  "It can result in wrong input if more tables of the same name<br>"
-                                  "are present in the database." ) );
-      }
-    }
-#endif //GDAL_VERSION_NUM
     list.push_back( opt );
   }
 

@@ -21,6 +21,10 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/app
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/app/pluginmanager
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/test
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/python
+  ${CMAKE_BINARY_DIR}/src/app
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}

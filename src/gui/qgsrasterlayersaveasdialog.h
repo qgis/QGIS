@@ -19,6 +19,7 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterrange.h"
+#include "qgis_gui.h"
 
 class QgsRasterLayer;
 class QgsRasterDataProvider;

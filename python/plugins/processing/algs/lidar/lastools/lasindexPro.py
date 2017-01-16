@@ -49,7 +49,7 @@ class lasindexPro(LAStoolsAlgorithm):
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex.exe")]
         else:
@@ -66,4 +66,4 @@ class lasindexPro(LAStoolsAlgorithm):
         self.addParametersAdditionalCommands(commands)
         self.addParametersCoresCommands(commands)
 
-        LAStoolsUtils.runLAStools(commands, progress)
+        LAStoolsUtils.runLAStools(commands, feedback)

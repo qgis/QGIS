@@ -1,6 +1,7 @@
 #ifndef QGSCONDITIONALSTYLE_H
 #define QGSCONDITIONALSTYLE_H
 
+#include "qgis_core.h"
 #include <QFont>
 #include <QColor>
 #include <QPixmap>

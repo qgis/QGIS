@@ -44,16 +44,17 @@ pluginPath = os.path.normpath(os.path.join(
 class OTBAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
         self.activate = True
 
-    def getDescription(self):
-        return self.tr("Orfeo Toolbox (Image analysis)")
+    def name(self):
+        version = OTBUtils.getInstalledVersion()
+        return "Orfeo ToolBox ({})".format(version) if version is not None else "Orfeo ToolBox"
 
-    def getName(self):
+    def id(self):
         return "otb"
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'otb.png'))
 
     def _loadAlgorithms(self):
@@ -85,19 +86,19 @@ class OTBAlgorithmProvider(AlgorithmProvider):
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
+        ProcessingConfig.addSetting(Setting(self.name(),
                                             OTBUtils.OTB_FOLDER,
                                             self.tr("OTB command line tools folder"), OTBUtils.findOtbPath(),
                                             valuetype=Setting.FOLDER))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
+        ProcessingConfig.addSetting(Setting(self.name(),
                                             OTBUtils.OTB_LIB_FOLDER,
                                             self.tr("OTB applications folder"), OTBUtils.findOtbLibPath(),
                                             valuetype=Setting.FOLDER))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
+        ProcessingConfig.addSetting(Setting(self.name(),
                                             OTBUtils.OTB_SRTM_FOLDER,
                                             self.tr("SRTM tiles folder"), OTBUtils.otbSRTMPath(),
                                             valuetype=Setting.FOLDER))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
+        ProcessingConfig.addSetting(Setting(self.name(),
                                             OTBUtils.OTB_GEOID_FILE,
                                             self.tr("Geoid file"), OTBUtils.otbGeoidPath(),
                                             valuetype=Setting.FOLDER))

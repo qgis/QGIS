@@ -19,6 +19,7 @@
 #define QGSOVERLAYANALYZERH
 
 #include "qgsvectorlayer.h"
+#include "qgis_analysis.h"
 
 class QgsVectorFileWriter;
 class QProgressDialog;

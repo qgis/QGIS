@@ -20,6 +20,7 @@
 
 #include <qgsfeature.h>
 #include <qgsfeaturerequest.h>
+#include "qgis_analysis.h"
 
 /**
  * \ingroup analysis

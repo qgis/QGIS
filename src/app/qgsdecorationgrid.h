@@ -28,6 +28,7 @@ class QgsMarkerSymbol;
 #include <QColor>
 #include <QPen>
 #include <QFont>
+#include "qgis_app.h"
 
 class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
 {

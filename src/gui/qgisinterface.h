@@ -49,6 +49,7 @@ class QgsVectorLayerTools;
 
 #include "qgis.h"
 #include "qgsmaplayer.h"
+#include "qgis_gui.h"
 
 
 /** \ingroup gui
@@ -262,7 +263,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * @param composerView pointer to existing composer view
      * @param title window title for duplicated composer (one will be generated if empty)
      * @return pointer to duplicate composer's view
-     * @note dupicate composer window will be hidden until loaded, then shown and activated
+     * @note duplicate composer window will be hidden until loaded, then shown and activated
      */
     virtual QgsComposerView* duplicateComposer( QgsComposerView* composerView, const QString& title = QString() ) = 0;
 
@@ -589,8 +590,8 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QgsVectorLayerTools* vectorLayerTools() = 0;
 
     /** This method is only needed when using a UI form with a custom widget plugin and calling
-     * openFeatureForm or getFeatureForm from Python (PyQt4) and you havn't used the info tool first.
-     * Python will crash bringing QGIS wtih it
+     * openFeatureForm or getFeatureForm from Python (PyQt4) and you haven't used the info tool first.
+     * Python will crash bringing QGIS with it
      * if the custom form is not loaded from a C++ method call.
      *
      * This method uses a QTimer to call QUiLoader in order to load the form via C++

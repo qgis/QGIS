@@ -269,10 +269,7 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
   if ( mReadOnlySelector )
   {
     QgsExpression expr( mReferencedLayer->displayExpression() );
-    QgsExpressionContext context;
-    context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::layerScope( mReferencedLayer );
+    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mReferencedLayer ) );
     context.setFeature( mFeature );
     QString title = expr.evaluate( &context ).toString();
     if ( expr.hasEvalError() )
@@ -342,7 +339,7 @@ QgsFeature QgsRelationReferenceWidget::referencedFeature() const
     }
     else
     {
-      fid = mComboBox->itemData( mComboBox->currentIndex(), QgsAttributeTableModel::FeatureIdRole ).value<QgsFeatureId>();
+      fid = mComboBox->currentData( QgsAttributeTableModel::FeatureIdRole ).value<QgsFeatureId>();
     }
     mReferencedLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( f );
   }
@@ -742,10 +739,7 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature& feature )
   if ( mReadOnlySelector )
   {
     QgsExpression expr( mReferencedLayer->displayExpression() );
-    QgsExpressionContext context;
-    context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::layerScope( mReferencedLayer );
+    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mReferencedLayer ) );
     context.setFeature( feature );
     QString title = expr.evaluate( &context ).toString();
     if ( expr.hasEvalError() )

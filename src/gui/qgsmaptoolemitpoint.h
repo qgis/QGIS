@@ -17,13 +17,14 @@
 #define QGSMAPTOOLEMITPOINT_H
 
 #include "qgsmaptool.h"
+#include "qgis_gui.h"
 class QgsMapCanvas;
 
 
 /** \ingroup gui
  * A map tool that simply emits a point when clicking on the map.
  * Connecting a slot to its canvasClicked() signal will
- * let you implement custom behaviour for the passed in point.
+ * let you implement custom behavior for the passed in point.
  */
 class GUI_EXPORT QgsMapToolEmitPoint : public QgsMapTool
 {

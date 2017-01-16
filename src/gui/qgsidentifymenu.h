@@ -20,6 +20,7 @@
 
 #include "qgsmaplayeractionregistry.h"
 #include "qgsmaptoolidentify.h"
+#include "qgis_gui.h"
 
 /// @cond PRIVATE
 class CustomActionRegistry : public QgsMapLayerActionRegistry
@@ -123,12 +124,12 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     void setResultsIfExternalAction( bool resultsIfExternalAction ) {mResultsIfExternalAction = resultsIfExternalAction;}
     bool resultsIfExternalAction() {return mResultsIfExternalAction;}
 
-    //! Defines the maximimum number of layers displayed in the menu (default is 10).
+    //! Defines the maximum number of layers displayed in the menu (default is 10).
     //! @note 0 is unlimited.
     void setMaxLayerDisplay( int maxLayerDisplay );
     int maxLayerDisplay() {return mMaxLayerDisplay;}
 
-    //! Defines the maximimum number of features displayed in the menu for vector layers (default is 10).
+    //! Defines the maximum number of features displayed in the menu for vector layers (default is 10).
     //! @note 0 is unlimited.
     void setMaxFeatureDisplay( int maxFeatureDisplay );
     int maxFeatureDisplay() {return mMaxFeatureDisplay;}

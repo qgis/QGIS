@@ -59,7 +59,7 @@ class SymmetricalDifference(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Symmetrical difference')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layerA = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         layerB = dataobjects.getObjectFromUri(
@@ -83,7 +83,6 @@ class SymmetricalDifference(GeoAlgorithm):
         count = 0
 
         for featA in featuresA:
-            add = True
             geom = featA.geometry()
             diffGeom = QgsGeometry(geom)
             attrs = featA.attributes()
@@ -93,31 +92,22 @@ class SymmetricalDifference(GeoAlgorithm):
                 tmpGeom = featB.geometry()
                 if diffGeom.intersects(tmpGeom):
                     diffGeom = QgsGeometry(diffGeom.difference(tmpGeom))
-                    if not diffGeom.isGeosValid():
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('GEOS geoprocessing error: One or '
-                                                       'more input features have invalid '
-                                                       'geometry.'))
-                        add = False
-                        break
 
-            if add:
-                try:
-                    outFeat.setGeometry(diffGeom)
-                    outFeat.setAttributes(attrs)
-                    writer.addFeature(outFeat)
-                except:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                           self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
-                    continue
+            try:
+                outFeat.setGeometry(diffGeom)
+                outFeat.setAttributes(attrs)
+                writer.addFeature(outFeat)
+            except:
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
+                                       self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                continue
 
             count += 1
-            progress.setPercentage(int(count * total))
+            feedback.setProgress(int(count * total))
 
         length = len(layerA.fields())
 
         for featA in featuresB:
-            add = True
             geom = featA.geometry()
             diffGeom = QgsGeometry(geom)
             attrs = featA.attributes()
@@ -128,25 +118,17 @@ class SymmetricalDifference(GeoAlgorithm):
                 tmpGeom = featB.geometry()
                 if diffGeom.intersects(tmpGeom):
                     diffGeom = QgsGeometry(diffGeom.difference(tmpGeom))
-                    if not diffGeom.isGeosValid():
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('GEOS geoprocessing error: One or '
-                                                       'more input features have invalid '
-                                                       'geometry.'))
-                        add = False
-                        break
 
-            if add:
-                try:
-                    outFeat.setGeometry(diffGeom)
-                    outFeat.setAttributes(attrs)
-                    writer.addFeature(outFeat)
-                except:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                           self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
-                    continue
+            try:
+                outFeat.setGeometry(diffGeom)
+                outFeat.setAttributes(attrs)
+                writer.addFeature(outFeat)
+            except:
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
+                                       self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                continue
 
             count += 1
-            progress.setPercentage(int(count * total))
+            feedback.setProgress(int(count * total))
 
         del writer

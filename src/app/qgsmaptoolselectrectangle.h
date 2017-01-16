@@ -19,6 +19,7 @@
 
 #include <QRect>
 #include "qgsmaptool.h"
+#include "qgis_app.h"
 
 class QPoint;
 class QMouseEvent;
@@ -55,7 +56,7 @@ class APP_EXPORT QgsMapToolSelectFeatures : public QgsMapTool
 
     QColor mFillColor;
 
-    QColor mBorderColour;
+    QColor mBorderColor;
 };
 
 #endif

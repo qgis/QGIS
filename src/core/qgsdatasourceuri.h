@@ -19,6 +19,7 @@
 #ifndef QGSDATASOURCEURI_H
 #define QGSDATASOURCEURI_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 
 #include <QMap>

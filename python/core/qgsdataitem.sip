@@ -308,12 +308,12 @@ class QgsLayerItem : QgsDataItem
     virtual QString comments() const;
 
   public:
-    static const QIcon &iconPoint();
-    static const QIcon &iconLine();
-    static const QIcon &iconPolygon();
-    static const QIcon &iconTable();
-    static const QIcon &iconRaster();
-    static const QIcon &iconDefault();
+    static QIcon iconPoint();
+    static QIcon iconLine();
+    static QIcon iconPolygon();
+    static QIcon iconTable();
+    static QIcon iconRaster();
+    static QIcon iconDefault();
 
     virtual QString layerName() const;
 };
@@ -331,8 +331,8 @@ class QgsDataCollectionItem : QgsDataItem
 
     void addChild( QgsDataItem *item /Transfer/ );
 
-    static const QIcon &iconDir(); // shared icon: open/closed directory
-    static const QIcon &iconDataCollection(); // default icon for data collection
+    static QIcon iconDir(); // shared icon: open/closed directory
+    static QIcon iconDataCollection(); // default icon for data collection
 };
 
 /** A directory: contains subdirectories and layers */
@@ -477,7 +477,7 @@ class QgsFavoritesItem : QgsDataCollectionItem
     void removeDirectory( QgsDirectoryItem *item );
 
     //! Icon for favorites group
-    static const QIcon &iconFavorites();
+    static QIcon iconFavorites();
 };
 
 /** A zip file: contains layers, using GDAL/OGR VSIFILE mechanism */
@@ -492,11 +492,11 @@ class QgsZipItem : QgsDataCollectionItem
     ~QgsZipItem();
 
     QVector<QgsDataItem*> createChildren();
-    const QStringList & getZipFileList();
+    QStringList getZipFileList();
 
     //! @note not available via python bindings
     // static QVector<dataItem_t *> mDataItemPtr;
-    static QStringList mProviderNames;
+    static QStringList sProviderNames;
 
     static QString vsiPrefix( const QString& uri );
 
@@ -504,6 +504,6 @@ class QgsZipItem : QgsDataCollectionItem
     //! @note available in python as itemFromFilePath
     static QgsDataItem* itemFromPath( QgsDataItem* parent, const QString& filePath, const QString& name, const QString& path ) /Factory,PyName=itemFromFilePath/;
 
-    static const QIcon &iconZip();
+    static QIcon iconZip();
 
 };

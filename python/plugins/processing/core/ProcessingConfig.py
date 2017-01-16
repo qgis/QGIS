@@ -31,7 +31,7 @@ import os
 
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QObject, pyqtSignal
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import NULL
+from qgis.core import NULL, QgsApplication
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 
@@ -52,6 +52,7 @@ class ProcessingConfig(object):
     VECTOR_POLYGON_STYLE = 'VECTOR_POLYGON_STYLE'
     SHOW_RECENT_ALGORITHMS = 'SHOW_RECENT_ALGORITHMS'
     USE_SELECTED = 'USE_SELECTED'
+    FILTER_INVALID_GEOMETRIES = 'FILTER_INVALID_GEOMETRIES'
     USE_FILENAME_AS_LAYER_NAME = 'USE_FILENAME_AS_LAYER_NAME'
     KEEP_DIALOG_OPEN = 'KEEP_DIALOG_OPEN'
     SHOW_DEBUG_IN_DIALOG = 'SHOW_DEBUG_IN_DIALOG'
@@ -63,14 +64,15 @@ class ProcessingConfig(object):
     WARN_UNMATCHING_EXTENT_CRS = 'WARN_UNMATCHING_EXTENT_CRS'
     DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DEFAULT_OUTPUT_RASTER_LAYER_EXT'
     DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DEFAULT_OUTPUT_VECTOR_LAYER_EXT'
-    SHOW_PROVIDERS_TOOLTIP = "SHOW_PROVIDERS_TOOLTIP"
+    SHOW_PROVIDERS_TOOLTIP = 'SHOW_PROVIDERS_TOOLTIP'
+    MODELS_SCRIPTS_REPO = 'MODELS_SCRIPTS_REPO'
 
     settings = {}
     settingIcons = {}
 
     @staticmethod
     def initialize():
-        icon = QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
+        icon = QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         ProcessingConfig.settingIcons['General'] = icon
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
@@ -147,18 +149,40 @@ class ProcessingConfig(object):
             ProcessingConfig.tr('General'),
             ProcessingConfig.RECENT_ALGORITHMS,
             ProcessingConfig.tr('Recent algorithms'), '', hidden=True))
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.MODELS_SCRIPTS_REPO,
+            ProcessingConfig.tr('Scripts and models repository'),
+            'https://raw.githubusercontent.com/qgis/QGIS-Processing/master'))
+
+        invalidFeaturesOptions = [ProcessingConfig.tr('Do not filter (better performance'),
+                                  ProcessingConfig.tr('Ignore features with invalid geometries'),
+                                  ProcessingConfig.tr('Stop algorithm execution when a geometry is invalid')]
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.FILTER_INVALID_GEOMETRIES,
+            ProcessingConfig.tr('Invalid features filtering'),
+            invalidFeaturesOptions[2],
+            valuetype=Setting.SELECTION,
+            options=invalidFeaturesOptions))
+
         extensions = processing.tools.dataobjects.getSupportedOutputVectorLayerExtensions()
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
-            ProcessingConfig.tr('Default output vector layer extension'), extensions[0],
-            valuetype=Setting.SELECTION, options=extensions))
+            ProcessingConfig.tr('Default output vector layer extension'),
+            extensions[0],
+            valuetype=Setting.SELECTION,
+            options=extensions))
+
         extensions = processing.tools.dataobjects.getSupportedOutputRasterLayerExtensions()
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
-            ProcessingConfig.tr('Default output raster layer extension'), extensions[0],
-            valuetype=Setting.SELECTION, options=extensions))
+            ProcessingConfig.tr('Default output raster layer extension'),
+            extensions[0],
+            valuetype=Setting.SELECTION,
+            options=extensions))
 
     @staticmethod
     def setGroupIcon(group, icon):
@@ -167,11 +191,11 @@ class ProcessingConfig(object):
     @staticmethod
     def getGroupIcon(group):
         if group == ProcessingConfig.tr('General'):
-            return QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
+            return QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         if group in ProcessingConfig.settingIcons:
             return ProcessingConfig.settingIcons[group]
         else:
-            return QIcon(os.path.dirname(__file__) + '/../images/alg.svg')
+            return QgsApplication.getThemeIcon("/processingAlgorithm.svg")
 
     @staticmethod
     def addSetting(setting):
@@ -208,14 +232,20 @@ class ProcessingConfig(object):
                     v = None
             except:
                 pass
-            return v
+            if ProcessingConfig.settings[name].valuetype == Setting.SELECTION:
+                return ProcessingConfig.settings[name].options.index(v)
+            else:
+                return v
         else:
             return None
 
     @staticmethod
     def setSettingValue(name, value):
         if name in list(ProcessingConfig.settings.keys()):
-            ProcessingConfig.settings[name].setValue(value)
+            if ProcessingConfig.settings[name].valuetype == Setting.SELECTION:
+                ProcessingConfig.settings[name].setValue(ProcessingConfig.settings[name].options[value])
+            else:
+                ProcessingConfig.settings[name].setValue(value)
             ProcessingConfig.settings[name].save()
 
     @staticmethod
@@ -245,34 +275,36 @@ class Setting(object):
         self.description = description
         self.default = default
         self.hidden = hidden
-        if valuetype is None:
-            if isinstance(default, int):
-                valuetype = self.INT
-            elif isinstance(default, float):
-                valuetype = self.FLOAT
         self.valuetype = valuetype
         self.options = options
+
+        if self.valuetype is None:
+            if isinstance(default, int):
+                self.valuetype = self.INT
+            elif isinstance(default, float):
+                self.valuetype = self.FLOAT
+
         if validator is None:
-            if valuetype == self.FLOAT:
+            if self.valuetype == self.FLOAT:
                 def checkFloat(v):
                     try:
                         float(v)
                     except ValueError:
                         raise ValueError(self.tr('Wrong parameter value:\n%s') % str(v))
                 validator = checkFloat
-            elif valuetype == self.INT:
+            elif self.valuetype == self.INT:
                 def checkInt(v):
                     try:
                         int(v)
                     except ValueError:
                         raise ValueError(self.tr('Wrong parameter value:\n%s') % str(v))
                 validator = checkInt
-            elif valuetype in [self.FILE, self.FOLDER]:
+            elif self.valuetype in [self.FILE, self.FOLDER]:
                 def checkFileOrFolder(v):
                     if v and not os.path.exists(v):
                         raise ValueError(self.tr('Specified path does not exist:\n%s') % str(v))
                 validator = checkFileOrFolder
-            elif valuetype == self.MULTIPLE_FOLDERS:
+            elif self.valuetype == self.MULTIPLE_FOLDERS:
                 def checkMultipleFolders(v):
                     folders = v.split(';')
                     for f in folders:
@@ -289,16 +321,25 @@ class Setting(object):
         self.validator(value)
         self.value = value
 
-    def read(self):
-        qsettings = QSettings()
+    def read(self, qsettings=QSettings()):
         value = qsettings.value(self.qname, None)
         if value is not None:
             if isinstance(self.value, bool):
                 value = str(value).lower() == str(True).lower()
-            self.value = value
 
-    def save(self):
-        QSettings().setValue(self.qname, self.value)
+            if self.valuetype == self.SELECTION:
+                try:
+                    self.value = self.options[int(value)]
+                except:
+                    self.value = self.options[0]
+            else:
+                self.value = value
+
+    def save(self, qsettings=QSettings()):
+        if self.valuetype == self.SELECTION:
+            qsettings.setValue(self.qname, self.options.index(self.value))
+        else:
+            qsettings.setValue(self.qname, self.value)
 
     def __str__(self):
         return self.name + '=' + str(self.value)

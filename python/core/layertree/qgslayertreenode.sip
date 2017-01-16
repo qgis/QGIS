@@ -94,6 +94,34 @@ class QgsLayerTreeNode : QObject
     //! Create a copy of the node. Returns new instance
     virtual QgsLayerTreeNode *clone() const = 0 /Factory/;
 
+    //! Returns whether a node is really visible (ie checked and all its ancestors checked as well)
+    //! @note added in 3.0
+    bool isVisible() const;
+
+    //! Returns whether a node is checked (independently of its ancestors or children)
+    //! @note added in 3.0
+    bool itemVisibilityChecked() const;
+
+    //! Check or uncheck a node (independently of its ancestors or children)
+    //! @note added in 3.0
+    void setItemVisibilityChecked( bool checked );
+
+    //! Check or uncheck a node and all its children (taking into account exclusion rules)
+    //! @note added in 3.0
+    virtual void setItemVisibilityCheckedRecursive( bool checked );
+
+    //! Check or uncheck a node and all its parents
+    //! @note added in 3.0
+    void setItemVisibilityCheckedParentRecursive( bool checked );
+
+    //! Return whether this node is checked and all its children.
+    //! @note added in 3.0
+    bool isItemVisibilityCheckedRecursive() const;
+
+    //! Return whether this node is unchecked and all its children.
+    //! @note added in 3.0
+    bool isItemVisibilityUncheckedRecursive() const;
+
     //! Return whether the node should be shown as expanded or collapsed in GUI
     bool isExpanded() const;
     //! Set whether the node should be shown as expanded or collapsed in GUI
@@ -121,7 +149,7 @@ class QgsLayerTreeNode : QObject
     //! Emitted when one or more nodes has been removed from a node within the tree
     void removedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     //! Emitted when check state of a node within the tree has been changed
-    void visibilityChanged( QgsLayerTreeNode *node, Qt::CheckState state );
+    void visibilityChanged( QgsLayerTreeNode *node );
     //! Emitted when a custom property of a node within the tree has been changed or removed
     void customPropertyChanged( QgsLayerTreeNode *node, const QString& key );
     //! Emitted when the collapsed/expanded state of a node within the tree has been changed

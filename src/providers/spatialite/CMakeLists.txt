@@ -38,6 +38,8 @@ INCLUDE_DIRECTORIES(
   ../../core/geometry
   ../../gui
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${SQLITE3_INCLUDE_DIR}

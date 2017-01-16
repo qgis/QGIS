@@ -149,7 +149,7 @@ class TestQgsDiagram : public QObject
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
-      dr->setClassificationAttribute( 5 ); // Staff
+      dr->setClassificationField( "Staff" );
       dr->setDiagram( new QgsPieDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );

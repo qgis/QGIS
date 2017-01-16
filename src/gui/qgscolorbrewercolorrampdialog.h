@@ -20,6 +20,7 @@
 #include "qgspanelwidget.h"
 #include "qgscolorramp.h"
 #include "ui_qgscolorbrewercolorrampwidgetbase.h"
+#include "qgis_gui.h"
 
 class QgsColorBrewerColorRamp;
 

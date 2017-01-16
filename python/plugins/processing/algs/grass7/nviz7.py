@@ -85,7 +85,7 @@ class nviz7(GeoAlgorithm):
             self.tr('GRASS region cellsize (leave 0 for default)'),
             0, None, 0.0))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = []
         vector = self.getParameterValue(self.VECTOR)
         elevation = self.getParameterValue(self.ELEVATION)
@@ -132,7 +132,7 @@ class nviz7(GeoAlgorithm):
             command += ' -q'
         commands.append(command)
         Grass7Utils.createTempMapset()
-        Grass7Utils.executeGrass7(commands, progress)
+        Grass7Utils.executeGrass7(commands, feedback)
 
     def getTempFilename(self):
         filename = 'tmp' + str(time.time()).replace('.', '') \

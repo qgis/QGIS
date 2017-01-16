@@ -62,7 +62,7 @@ class QgsContrastEnhancement
     /** \brief Set the contrast enhancement algorithm */
     void setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm, bool generateTable = true );
 
-    /** \brief A public method that allows the user to set their own custom contrast enhancment function */
+    /** \brief A public method that allows the user to set their own custom contrast enhancement function */
     void setContrastEnhancementFunction( QgsContrastEnhancementFunction* );
 
     /** \brief Set the maximum value for the contrast enhancement range. */

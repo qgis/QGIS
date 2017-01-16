@@ -105,13 +105,13 @@ class TestQgsServer(unittest.TestCase):
         """Segfaults?"""
         for i in range(10):
             locals()["s%s" % i] = QgsServer()
-            locals()["s%s" % i].handleRequest()
+            locals()["s%s" % i].handleRequest("")
 
     def test_api(self):
         """Using an empty query string (returns an XML exception)
         we are going to test if headers and body are returned correctly"""
         # Test as a whole
-        header, body = [_v for _v in self.server.handleRequest()]
+        header, body = [_v for _v in self.server.handleRequest("")]
         response = self.strip_version_xmlns(header + body)
         expected = self.strip_version_xmlns(b'Content-Length: 206\nContent-Type: text/xml; charset=utf-8\n\n<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="Service configuration error">Service unknown or unsupported</ServiceException>\n</ServiceExceptionReport>\n')
         self.assertEqual(response, expected)
@@ -142,9 +142,8 @@ class TestQgsServer(unittest.TestCase):
                 params = request.parameterMap()
                 QgsMessageLog.logMessage("SimpleHelloFilter.responseComplete")
                 if params.get('SERVICE', '').upper() == 'SIMPLE':
-                    request.clearHeaders()
+                    request.clear()
                     request.setHeader('Content-type', 'text/plain')
-                    request.clearBody()
                     request.appendBody('Hello from SimpleServer!'.encode('utf-8'))
 
         serverIface = self.server.serverInterface()
@@ -180,7 +179,7 @@ class TestQgsServer(unittest.TestCase):
         self.assertEqual(filter2, serverIface.filters()[200][0])
         header, body = [_v for _v in self.server.handleRequest('service=simple')]
         response = header + body
-        expected = b'Content-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
+        expected = b'Content-Length: 62\nContent-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
         self.assertEqual(response, expected)
 
         # Test that the bindings for complex type QgsServerFiltersMap are working
@@ -192,7 +191,7 @@ class TestQgsServer(unittest.TestCase):
         self.assertEqual(filter2, serverIface.filters()[200][0])
         header, body = [_v for _v in self.server.handleRequest('service=simple')]
         response = header + body
-        expected = b'Content-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
+        expected = b'Content-Length: 62\nContent-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
         self.assertEqual(response, expected)
 
     # WMS tests
@@ -224,10 +223,6 @@ class TestQgsServer(unittest.TestCase):
         #"""
         response = re.sub(RE_STRIP_UNCHECKABLE, b'*****', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'*****', expected)
-
-        # for older GDAL versions (<2.0), id field will be integer type
-        if int(osgeo.gdal.VersionInfo()[:1]) < 2:
-            expected = expected.replace(b'typeName="Integer64" precision="0" length="10" editType="TextEdit" type="qlonglong"', b'typeName="Integer" precision="0" length="10" editType="TextEdit" type="int"')
 
         self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
 
@@ -316,10 +311,6 @@ class TestQgsServer(unittest.TestCase):
         """
         response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
-
-        # for older GDAL versions (<2.0), id field will be integer type
-        if int(osgeo.gdal.VersionInfo()[:1]) < 2:
-            expected = expected.replace(b'<element type="long" name="id"/>', b'<element type="integer" name="id"/>')
 
         self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
 
@@ -417,6 +408,80 @@ class TestQgsServer(unittest.TestCase):
 
         for id, req in tests:
             self.wfs_getfeature_post_compare(id, req)
+
+    def test_wms_getmap_basic(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Basic")
+
+    def test_wms_getmap_transparent(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "TRANSPARENT": "TRUE"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Transparent")
+
+    def test_wms_getmap_background(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "BGCOLOR": "green"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Background")
+
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "BGCOLOR": "0x008000"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Background_Hex")
 
     def test_wms_getmap_order(self):
         qs = "&".join(["%s=%s" % i for i in list({
@@ -707,6 +772,59 @@ class TestQgsServer(unittest.TestCase):
 
         r, h = self._result(self.server.handleRequest(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_Basic")
+
+    def test_wms_GetLegendGraphic_Transparent(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "LAYERTITLE": "FALSE",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "TRANSPARENT": "TRUE"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Transparent")
+
+    def test_wms_GetLegendGraphic_Background(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "LAYERTITLE": "FALSE",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "BGCOLOR": "green"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Background")
+
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "LAYERTITLE": "FALSE",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "BGCOLOR": "0x008000"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Background_Hex")
 
     def test_wms_GetLegendGraphic_BoxSpace(self):
         qs = "&".join(["%s=%s" % i for i in list({

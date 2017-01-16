@@ -16,8 +16,20 @@
 #ifndef QGSKEYVALUEFIELDKIT_H
 #define QGSKEYVALUEFIELDKIT_H
 
+#include "qgis_core.h"
 #include "qgsfieldformatter.h"
 
+/**
+ * \ingroup core
+ * Field formatter for a key value field.
+ * This represents a list type value.
+ * Values will be represented as a colon-delimited and
+ * comma-separated list.
+ *
+ * E.g. "color: yellow, amount: 5"
+ *
+ * \note Added in QGIS 3.0
+ */
 class CORE_EXPORT QgsKeyValueFieldFormatter : public QgsFieldFormatter
 {
   public:

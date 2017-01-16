@@ -50,7 +50,7 @@ class polygonize(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'polygonize.png'))
 
     def commandLineName(self):
-        return "gdalogr:polygonize"
+        return "gdal:polygonize"
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Polygonize (raster to vector)')
@@ -62,11 +62,12 @@ class polygonize(GdalAlgorithm):
         self.addOutput(OutputVector(polygonize.OUTPUT, self.tr('Vectorized')))
 
     def getConsoleCommands(self):
+        output = self.getOutputValue(polygonize.OUTPUT)
+
         arguments = []
         arguments.append(self.getParameterValue(polygonize.INPUT))
         arguments.append('-f')
-        arguments.append('ESRI Shapefile')
-        output = self.getOutputValue(polygonize.OUTPUT)
+        arguments.append(GdalUtils.getVectorDriverFromFileName(output))
         arguments.append(output)
         arguments.append(QFileInfo(output).baseName())
         arguments.append(self.getParameterValue(polygonize.FIELD))

@@ -100,11 +100,7 @@ void QgsComposerPolyline::_draw( QPainter *painter )
 {
   double dotsPerMM = painter->device()->logicalDpiX() / 25.4;
 
-  QgsMapSettings ms = mComposition->mapSettings();
-  ms.setOutputDpi( painter->device()->logicalDpiX() );
-
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  context.setPainter( painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, *painter );
   context.setForceVectorOutput( true );
 
   QgsExpressionContext expressionContext = createExpressionContext();

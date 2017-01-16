@@ -18,6 +18,8 @@
 #include <QMimeData>
 #include <QStringList>
 
+#include "qgis_core.h"
+
 class QgsLayerItem;
 class QgsLayerTreeNode;
 

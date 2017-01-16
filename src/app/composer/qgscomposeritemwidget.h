@@ -61,7 +61,7 @@ class QgsComposerConfigObject: public QObject
 
     /** Registers a data defined button, setting up its initial value, connections and description.
      * @param button button to register
-     * @param property correponding data defined property
+     * @param property corresponding data defined property
      * @param type valid data types for button
      * @param description user visible description for data defined property
      */
@@ -101,7 +101,7 @@ class QgsComposerItemBaseWidget: public QgsPanelWidget
 
     /** Registers a data defined button, setting up its initial value, connections and description.
      * @param button button to register
-     * @param property correponding data defined property
+     * @param property corresponding data defined property
      * @param type valid data types for button
      * @param description user visible description for data defined property
      */

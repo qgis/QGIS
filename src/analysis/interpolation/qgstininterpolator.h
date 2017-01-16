@@ -20,6 +20,7 @@
 
 #include "qgsinterpolator.h"
 #include <QString>
+#include "qgis_analysis.h"
 
 class Triangulation;
 class TriangleInterpolator;
@@ -31,12 +32,12 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
 {
   public:
     //describes the type of interpolation
-    enum TIN_INTERPOLATION
+    enum TINInterpolation
     {
       Linear,
       CloughTocher
     };
-    QgsTINInterpolator( const QList<LayerData>& inputData, TIN_INTERPOLATION interpolation = Linear, bool showProgressDialog = false );
+    QgsTINInterpolator( const QList<LayerData>& inputData, TINInterpolation interpolation = Linear, bool showProgressDialog = false );
     ~QgsTINInterpolator();
 
     /** Calculates interpolation value for map coordinates x, y
@@ -59,7 +60,7 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
     //! File path to export the triangulation
     QString mTriangulationFilePath;
     //! Type of interpolation
-    TIN_INTERPOLATION mInterpolation;
+    TINInterpolation mInterpolation;
 
     //! Create dual edge triangulation
     void initialize();

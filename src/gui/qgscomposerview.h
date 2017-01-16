@@ -20,6 +20,7 @@
 #include <QGraphicsView>
 #include "qgsprevieweffect.h" // for QgsPreviewEffect::PreviewMode
 #include <QGraphicsPolygonItem>
+#include "qgis_gui.h"
 
 class QDomDocument;
 class QDomElement;
@@ -225,7 +226,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void movePolygonNode( QPointF scenePoint );
     void displayNodes( const bool display = true );
     void setSelectedNode( QgsComposerNodesItem *shape, const int index );
-    void unselectNode();
+    void deselectNode();
 
     float mMoveContentSearchRadius;
     QgsComposerNodesItem* mNodesItem;

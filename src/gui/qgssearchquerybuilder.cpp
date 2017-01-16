@@ -195,10 +195,7 @@ long QgsSearchQueryBuilder::countRecords( const QString& searchString )
   int count = 0;
   QgsFeature feat;
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   if ( !search.prepare( &context ) )
   {

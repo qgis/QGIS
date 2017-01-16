@@ -18,6 +18,7 @@
 
 #include "ui_qgs25drendererwidgetbase.h"
 #include "qgsrendererwidget.h"
+#include "qgis_gui.h"
 
 class Qgs25DRenderer;
 

@@ -16,6 +16,7 @@
 #ifndef QGSMULTIRENDERCHECKER_H
 #define QGSMULTIRENDERCHECKER_H
 
+#include "qgis_core.h"
 #include "qgsrenderchecker.h"
 
 /** \ingroup core

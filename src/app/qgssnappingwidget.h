@@ -34,6 +34,7 @@ class QgsProject;
 
 #include <QWidget>
 #include <QSettings>
+#include "qgis_app.h"
 
 /**
   * A widget which lets the user defines settings for snapping on a project

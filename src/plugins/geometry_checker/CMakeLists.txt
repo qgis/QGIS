@@ -84,16 +84,18 @@ QT5_ADD_RESOURCES(geometrychecker_RCC_SRCS ${geometrychecker_RCCS})
 ADD_LIBRARY (geometrycheckerplugin   MODULE ${geometrychecker_HDRS} ${geometrychecker_SRCS} ${geometrychecker_MOC_SRCS} ${geometrychecker_RCC_SRCS} ${geometrychecker_UIS_H})
 
 INCLUDE_DIRECTORIES(
-     ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core
-     ../../core/geometry
-     ../../core/symbology-ng
-     ../../gui
-     ..
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ../../core
+  ../../core/geometry
+  ../../core/symbology-ng
+  ../../gui
+  ..
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 INCLUDE_DIRECTORIES(SYSTEM
-     ${GEOS_INCLUDE_DIR}
-     ${GDAL_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(geometrycheckerplugin

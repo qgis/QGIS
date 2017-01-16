@@ -16,6 +16,7 @@
 #ifndef QGSACTION_H
 #define QGSACTION_H
 
+#include "qgis_core.h"
 #include <QSet>
 #include <QString>
 #include <QIcon>

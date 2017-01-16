@@ -23,6 +23,7 @@
 
 #include "qgsfeaturemodel.h"
 #include "qgsfeature.h" // QgsFeatureId
+#include "qgis_gui.h"
 
 class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;
@@ -89,7 +90,7 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
 
     /**
      * @brief Returns a detailed message about errors while parsing a QgsExpression.
-     * @return A message containg information about the parser error.
+     * @return A message containing information about the parser error.
      */
     QString parserErrorString();
 

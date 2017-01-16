@@ -21,6 +21,7 @@
 #include "qgstaskmanager.h"
 #include <QStyledItemDelegate>
 #include <QToolButton>
+#include "qgis_gui.h"
 
 class QgsTaskManager;
 class QgsTask;
@@ -107,7 +108,7 @@ class GUI_EXPORT QgsTaskManagerStatusBarWidget : public QToolButton
   private slots:
 
     void toggleDisplay();
-    void overallProgressChanged( double progess );
+    void overallProgressChanged( double progress );
     void countActiveTasksChanged( int count );
     void allFinished();
     void showButton();

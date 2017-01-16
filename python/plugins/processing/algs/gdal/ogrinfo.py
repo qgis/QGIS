@@ -43,6 +43,9 @@ class OgrInfo(GdalAlgorithm):
     SUMMARY_ONLY = 'SUMMARY_ONLY'
     OUTPUT = 'OUTPUT'
 
+    def commandLineName(self):
+        return "gdal:ogrinfo"
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Information')
         self.group, self.i18n_group = self.trAlgorithm('[OGR] Miscellaneous')
@@ -64,8 +67,8 @@ class OgrInfo(GdalAlgorithm):
         arguments.append(conn)
         return arguments
 
-    def processAlgorithm(self, progress):
-        GdalUtils.runGdal(self.getConsoleCommands(), progress)
+    def processAlgorithm(self, feedback):
+        GdalUtils.runGdal(self.getConsoleCommands(), feedback)
         output = self.getOutputValue(self.OUTPUT)
         with open(output, 'w') as f:
             f.write('<pre>')

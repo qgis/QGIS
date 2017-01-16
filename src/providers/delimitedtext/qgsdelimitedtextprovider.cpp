@@ -53,8 +53,8 @@ static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Delimited text
 
 static const int SUBSET_ID_THRESHOLD_FACTOR = 10;
 
-QRegExp QgsDelimitedTextProvider::WktPrefixRegexp( "^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)", Qt::CaseInsensitive );
-QRegExp QgsDelimitedTextProvider::CrdDmsRegexp( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.]*([-+nsew])?\\s*$", Qt::CaseInsensitive );
+QRegExp QgsDelimitedTextProvider::sWktPrefixRegexp( "^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)", Qt::CaseInsensitive );
+QRegExp QgsDelimitedTextProvider::sCrdDmsRegexp( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.]*([-+nsew])?\\s*$", Qt::CaseInsensitive );
 
 QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
@@ -444,7 +444,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
         QString sWkt = parts[mWktFieldIndex];
         QgsGeometry geom;
-        if ( !mWktHasPrefix && sWkt.indexOf( WktPrefixRegexp ) >= 0 )
+        if ( !mWktHasPrefix && sWkt.indexOf( sWktPrefixRegexp ) >= 0 )
           mWktHasPrefix = true;
         geom = geomFromWkt( sWkt, mWktHasPrefix );
 
@@ -473,7 +473,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
               if ( buildSpatialIndex )
               {
                 QgsFeature f;
-                f.setFeatureId( mFile->recordId() );
+                f.setId( mFile->recordId() );
                 f.setGeometry( geom );
                 mSpatialIndex->insertFeature( f );
               }
@@ -528,7 +528,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
           if ( buildSpatialIndex && qIsFinite( pt.x() ) && qIsFinite( pt.y() ) )
           {
             QgsFeature f;
-            f.setFeatureId( mFile->recordId() );
+            f.setId( mFile->recordId() );
             f.setGeometry( QgsGeometry::fromPoint( pt ) );
             mSpatialIndex->insertFeature( f );
           }
@@ -552,7 +552,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     if ( buildSubsetIndex ) mSubsetIndex.append( mFile->recordId() );
 
 
-    // If we are going to use this record, then assess the potential types of each colum
+    // If we are going to use this record, then assess the potential types of each column
 
     for ( int i = 0; i < parts.size(); i++ )
     {
@@ -812,7 +812,7 @@ QgsGeometry QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPre
   {
     if ( wktHasPrefixRegexp )
     {
-      sWkt.remove( WktPrefixRegexp );
+      sWkt.remove( sWktPrefixRegexp );
     }
 
     geom = QgsGeometry::fromWkt( sWkt );
@@ -827,7 +827,7 @@ QgsGeometry QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPre
 double QgsDelimitedTextProvider::dmsStringToDouble( const QString &sX, bool *xOk )
 {
   static QString negative( QStringLiteral( "swSW-" ) );
-  QRegExp re( CrdDmsRegexp );
+  QRegExp re( sCrdDmsRegexp );
   double x = 0.0;
 
   *xOk = re.indexIn( sX ) == 0;

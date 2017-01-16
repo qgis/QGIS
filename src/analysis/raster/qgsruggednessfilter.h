@@ -19,6 +19,7 @@
 #define QGSRUGGEDNESSFILTER_H
 
 #include "qgsninecellfilter.h"
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * Calculates the ruggedness index based on a 3x3 moving window.

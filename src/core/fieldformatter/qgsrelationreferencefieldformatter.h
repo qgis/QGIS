@@ -16,8 +16,17 @@
 #ifndef QGSRELATIONREFERENCEFIELDKIT_H
 #define QGSRELATIONREFERENCEFIELDKIT_H
 
+#include "qgis_core.h"
 #include "qgsfieldformatter.h"
 
+/**
+ * \ingroup core
+ * Field formatter for a relation reference field.
+ * A value relation field formatter looks up the values from
+ * features on another layer.
+ *
+ * \note Added in QGIS 3.0
+ */
 class CORE_EXPORT QgsRelationReferenceFieldFormatter : public QgsFieldFormatter
 {
   public:

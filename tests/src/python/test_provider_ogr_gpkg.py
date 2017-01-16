@@ -76,7 +76,6 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         # The geometries must be binarily identical
         self.assertEqual(got_geom.exportToWkb(), reference.exportToWkb(), 'Expected {}, got {}'.format(reference.exportToWkt(), got_geom.exportToWkt()))
 
-    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
     def testCurveGeometryType(self):
 
         tmpfile = os.path.join(self.basetestpath, 'testCurveGeometryType.gpkg')
@@ -146,18 +145,15 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         ds = None
         self.assertEqual(res, 'delete')
 
-    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
     # We need GDAL 2.0 to issue PRAGMA journal_mode
     # Note: for that case, we don't strictly need turning on WAL
     def testBug15351_closeIter_commit_closeProvider(self):
         self.internalTestBug15351('closeIter_commit_closeProvider')
 
-    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
     # We need GDAL 2.0 to issue PRAGMA journal_mode
     def testBug15351_commit_closeProvider_closeIter(self):
         self.internalTestBug15351('commit_closeProvider_closeIter')
 
-    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
     # We need GDAL 2.0 to issue PRAGMA journal_mode
     def testBug15351_commit_closeIter_closeProvider(self):
         self.internalTestBug15351('commit_closeIter_closeProvider')
