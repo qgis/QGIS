@@ -291,7 +291,7 @@
             </property>
             <property name="icon">
              <iconset resource="../../../../images/images.qrc">
-              <normaloff>:/images/themes/default/mActionCheckQgisVersion.png</normaloff>:/images/themes/default/mActionCheckQgisVersion.png</iconset>
+              <normaloff>:/images/themes/default/mActionCheckQgisVersion.svg</normaloff>:/images/themes/default/mActionCheckQgisVersion.svg</iconset>
             </property>
            </widget>
           </item>
@@ -308,7 +308,7 @@
             </property>
             <property name="icon">
              <iconset resource="../../../../images/images.qrc">
-              <normaloff>:/images/themes/default/mActionCheckQgisVersion.png</normaloff>:/images/themes/default/mActionCheckQgisVersion.png</iconset>
+              <normaloff>:/images/themes/default/mActionCheckQgisVersion.svg</normaloff>:/images/themes/default/mActionCheckQgisVersion.svg</iconset>
             </property>
            </widget>
           </item>
