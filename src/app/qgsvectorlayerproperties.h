@@ -177,14 +177,14 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //! Fields dialog. If apply is pressed, options are applied to vector's diagrams
     QgsFieldsProperties* mFieldsPropertiesDialog;
 
-    //! List of joins of a layer at the time of creation of the dialog. Used to return joins to previous state if dialog is cancelled
+    //! List of joins of a layer at the time of creation of the dialog. Used to return joins to previous state if dialog is canceled
     QList< QgsVectorJoinInfo > mOldJoins;
 
     //! A list of additional pages provided by plugins
     QList<QgsMapLayerConfigWidget*> mLayerPropertiesPages;
 
     /** Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is cancelled */
+     * was loaded but dialog is canceled */
     QgsMapLayerStyle mOldStyle;
 
     void initDiagramTab();

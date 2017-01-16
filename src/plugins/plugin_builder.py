@@ -114,7 +114,7 @@ print "Create the plugin? [y/n]:",
 createIt = raw_input()
 
 if createIt.lower() != 'y':
-    print "Plugin creation cancelled, exiting"
+    print "Plugin creation canceled, exiting"
     sys.exit(2)
 
 # create the plugin and modify the build files

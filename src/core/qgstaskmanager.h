@@ -41,8 +41,8 @@ typedef QList< QgsTask* > QgsTaskList;
  * within the run() method. This method will be called when the
  * task commences (ie via calling run() ).
  *
- * Long running tasks should periodically check the isCancelled() flag to detect if the task
- * has been cancelled via some external event. If this flag is true then the task should
+ * Long running tasks should periodically check the isCanceled() flag to detect if the task
+ * has been canceled via some external event. If this flag is true then the task should
  * clean up and terminate at the earliest possible convenience.
  *
  * \note Added in version 3.0
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsTask : public QObject
     //! Task flags
     enum Flag
     {
-      CanCancel = 1 << 1, //!< Task can be cancelled
+      CanCancel = 1 << 1, //!< Task can be canceled
       AllFlags = CanCancel, //!< Task supports all flags
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -86,13 +86,13 @@ class CORE_EXPORT QgsTask : public QObject
     Flags flags() const { return mFlags; }
 
     /**
-     * Returns true if the task can be cancelled.
+     * Returns true if the task can be canceled.
      */
     bool canCancel() const { return mFlags & CanCancel; }
 
     /**
      * Returns true if the task is active, ie it is not complete and has
-     * not been cancelled.
+     * not been canceled.
      */
     bool isActive() const { return mOverallStatus == Running; }
 
@@ -113,10 +113,10 @@ class CORE_EXPORT QgsTask : public QObject
 
     /**
      * Notifies the task that it should terminate. Calling this is not guaranteed
-     * to immediately end the task, rather it sets the isCancelled() flag which
+     * to immediately end the task, rather it sets the isCanceled() flag which
      * task subclasses can check and terminate their operations at an appropriate
-     * time. Any subtasks owned by this task will also be cancelled.
-     * @see isCancelled()
+     * time. Any subtasks owned by this task will also be canceled.
+     * @see isCanceled()
      */
     void cancel();
 
@@ -169,14 +169,14 @@ class CORE_EXPORT QgsTask : public QObject
 
     /**
      * Sets a list of layer IDs on which the task depends. The task will automatically
-     * be cancelled if any of these layers are about to be removed.
+     * be canceled if any of these layers are about to be removed.
      * @see dependentLayerIds()
      */
     void setDependentLayers( const QStringList& dependentLayerIds );
 
     /**
      * Returns the list of layer IDs on which the task depends. The task will automatically
-     * be cancelled if any of these layers are about to be removed.
+     * be canceled if any of these layers are about to be removed.
      * @see setDependentLayers()
      */
     QStringList dependentLayerIds() const { return mDependentLayerIds; }
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsTask : public QObject
 
     /**
      * Will be emitted by task if it has terminated for any reason
-     * other then completion (e.g., when a task has been cancelled or encountered
+     * other then completion (e.g., when a task has been canceled or encountered
      * an internal error).
      * @note derived classes should not emit this signal directly, it will automatically
      * be emitted
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsTask : public QObject
      * flag, then derived classes' run() methods should periodically check this and
      * terminate in a safe manner.
      */
-    bool isCancelled() const { return mShouldTerminate; }
+    bool isCanceled() const { return mShouldTerminate; }
 
   protected slots:
 
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsTask : public QObject
     void completed();
 
     /**
-     * Called when the task has failed, as either a result of an internal failure or via cancellation.
+     * Called when the task has failed, as either a result of an internal failure or via cancelation.
      */
     void terminated();
 
@@ -366,7 +366,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
       /**
        * List of dependent tasks which must be completed before task can run. If any dependent tasks are
-       * cancelled this task will also be cancelled. Dependent tasks must also be added
+       * canceled this task will also be canceled. Dependent tasks must also be added
        * to the task manager for proper handling of dependencies.
        */
       QgsTaskList dependentTasks;
@@ -426,7 +426,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     QSet< long > dependencies( long taskId ) const;
 
     /** Returns a list of layers on which as task is dependent. The task will automatically
-     * be cancelled if any of these layers are above to be removed.
+     * be canceled if any of these layers are above to be removed.
      * @param taskId task ID
      * @returns list of layer IDs
      * @see tasksDependentOnLayer()

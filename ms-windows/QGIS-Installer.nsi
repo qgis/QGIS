@@ -413,7 +413,7 @@ Function DownloadDataSet
 	Goto end
 
 	cancel_download:
-	MessageBox MB_OK "Download Cancelled.$\r$\n${QGIS_BASE} will be installed without the $EXTENDED_ARCHIVE_NAME sample data set."
+	MessageBox MB_OK "Download Canceled.$\r$\n${QGIS_BASE} will be installed without the $EXTENDED_ARCHIVE_NAME sample data set."
 	Goto end
 
 	untar_failed:

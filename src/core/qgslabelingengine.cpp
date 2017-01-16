@@ -27,8 +27,8 @@
 
 
 
-// helper function for checking for job cancellation within PAL
-static bool _palIsCancelled( void* ctx )
+// helper function for checking for job cancelation within PAL
+static bool _palIsCancelled( void* ctx )  //#spellok
 {
   return ( reinterpret_cast< QgsRenderContext* >( ctx ) )->renderingStopped();
 }
@@ -230,7 +230,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
 
   QgsRectangle extent = extentGeom.boundingBox();
 
-  p.registerCancellationCallback( &_palIsCancelled, reinterpret_cast< void* >( &context ) );
+  p.registerCancellationCallback( &_palIsCancelled, reinterpret_cast< void* >( &context ) );  //#spellok
 
   QTime t;
   t.start();
@@ -255,7 +255,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
   if ( context.renderingStopped() )
   {
     delete problem;
-    return; // it has been cancelled
+    return; // it has been canceled
   }
 
 #if 1 // XXX strk

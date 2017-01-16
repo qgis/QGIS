@@ -37,7 +37,7 @@
 ///@cond PRIVATE
 QgsSvgSelectorLoader::QgsSvgSelectorLoader( QObject* parent )
     : QThread( parent )
-    , mCancelled( false )
+    , mCanceled( false )
     , mTimerThreshold( 0 )
 {
 }
@@ -49,7 +49,7 @@ QgsSvgSelectorLoader::~QgsSvgSelectorLoader()
 
 void QgsSvgSelectorLoader::run()
 {
-  mCancelled = false;
+  mCanceled = false;
   mQueuedSvgs.clear();
   mTraversedPaths.clear();
 
@@ -69,13 +69,13 @@ void QgsSvgSelectorLoader::run()
 
 void QgsSvgSelectorLoader::stop()
 {
-  mCancelled = true;
+  mCanceled = true;
   while ( isRunning() ) {}
 }
 
 void QgsSvgSelectorLoader::loadPath( const QString& path )
 {
-  if ( mCancelled )
+  if ( mCanceled )
     return;
 
   // QgsDebugMsg( QString( "loading path: %1" ).arg( path ) );
@@ -85,7 +85,7 @@ void QgsSvgSelectorLoader::loadPath( const QString& path )
     QStringList svgPaths = QgsApplication::svgPaths();
     Q_FOREACH ( const QString& svgPath, svgPaths )
     {
-      if ( mCancelled )
+      if ( mCanceled )
         return;
 
       loadPath( svgPath );
@@ -106,7 +106,7 @@ void QgsSvgSelectorLoader::loadPath( const QString& path )
 
     Q_FOREACH ( const QString& item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
     {
-      if ( mCancelled )
+      if ( mCanceled )
         return;
 
       QString newPath = dir.path() + '/' + item;
@@ -121,7 +121,7 @@ void QgsSvgSelectorLoader::loadImages( const QString& path )
   QDir dir( path );
   Q_FOREACH ( const QString& item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
   {
-    if ( mCancelled )
+    if ( mCanceled )
       return;
 
     // TODO test if it is correct SVG
@@ -155,7 +155,7 @@ void QgsSvgSelectorLoader::loadImages( const QString& path )
 
 QgsSvgGroupLoader::QgsSvgGroupLoader( QObject* parent )
     : QThread( parent )
-    , mCancelled( false )
+    , mCanceled( false )
 {
 
 }
@@ -167,10 +167,10 @@ QgsSvgGroupLoader::~QgsSvgGroupLoader()
 
 void QgsSvgGroupLoader::run()
 {
-  mCancelled = false;
+  mCanceled = false;
   mTraversedPaths.clear();
 
-  while ( !mCancelled && !mParentPaths.isEmpty() )
+  while ( !mCanceled && !mParentPaths.isEmpty() )
   {
     QString parentPath = mParentPaths.takeFirst();
     loadGroup( parentPath );
@@ -179,7 +179,7 @@ void QgsSvgGroupLoader::run()
 
 void QgsSvgGroupLoader::stop()
 {
-  mCancelled = true;
+  mCanceled = true;
   while ( isRunning() ) {}
 }
 
@@ -196,7 +196,7 @@ void QgsSvgGroupLoader::loadGroup( const QString& parentPath )
 
   Q_FOREACH ( const QString& item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
   {
-    if ( mCancelled )
+    if ( mCanceled )
       return;
 
     emit foundPath( parentPath, item );

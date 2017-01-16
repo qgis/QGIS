@@ -3536,11 +3536,11 @@ QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString& providerU
 {
   if ( feedback )
   {
-    connect( feedback, SIGNAL( cancelled() ), this, SLOT( cancelled() ), Qt::QueuedConnection );
+    connect( feedback, SIGNAL( canceled() ), this, SLOT( canceled() ), Qt::QueuedConnection );
 
-    // rendering could have been cancelled before we started to listen to cancelled() signal
+    // rendering could have been canceled before we started to listen to canceled() signal
     // so let's check before doing the download and maybe quit prematurely
-    if ( feedback->isCancelled() )
+    if ( feedback->isCanceled() )
       return;
   }
 
@@ -3561,7 +3561,7 @@ QgsWmsImageDownloadHandler::~QgsWmsImageDownloadHandler()
 
 void QgsWmsImageDownloadHandler::downloadBlocking()
 {
-  if ( mFeedback && mFeedback->isCancelled() )
+  if ( mFeedback && mFeedback->isCanceled() )
     return; // nothing to do
 
   mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
@@ -3648,7 +3648,7 @@ void QgsWmsImageDownloadHandler::cacheReplyFinished()
   }
   else
   {
-    // report any errors except for the one we have caused by cancelling the request
+    // report any errors except for the one we have caused by canceling the request
     if ( mCacheReply->error() != QNetworkReply::OperationCanceledError )
     {
       QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( mProviderUri );
@@ -3678,9 +3678,9 @@ void QgsWmsImageDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint6
   QgsDebugMsg( tr( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ) );
 }
 
-void QgsWmsImageDownloadHandler::cancelled()
+void QgsWmsImageDownloadHandler::canceled()
 {
-  QgsDebugMsg( "Caught cancelled() signal" );
+  QgsDebugMsg( "Caught canceled() signal" );
   if ( mCacheReply )
   {
     // abort the reply if it is still active
@@ -3705,11 +3705,11 @@ QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString&
 {
   if ( feedback )
   {
-    connect( feedback, SIGNAL( cancelled() ), this, SLOT( cancelled() ), Qt::QueuedConnection );
+    connect( feedback, SIGNAL( canceled() ), this, SLOT( canceled() ), Qt::QueuedConnection );
 
-    // rendering could have been cancelled before we started to listen to cancelled() signal
+    // rendering could have been canceled before we started to listen to canceled() signal
     // so let's check before doing the download and maybe quit prematurely
-    if ( feedback->isCancelled() )
+    if ( feedback->isCanceled() )
       return;
   }
 
@@ -3738,7 +3738,7 @@ QgsWmsTiledImageDownloadHandler::~QgsWmsTiledImageDownloadHandler()
 
 void QgsWmsTiledImageDownloadHandler::downloadBlocking()
 {
-  if ( mFeedback && mFeedback->isCancelled() )
+  if ( mFeedback && mFeedback->isCanceled() )
     return; // nothing to do
 
   mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
@@ -3946,7 +3946,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
   {
     if ( !( mFeedback && mFeedback->isPreviewOnly() ) )
     {
-      // report any errors except for the one we have caused by cancelling the request
+      // report any errors except for the one we have caused by canceling the request
       if ( reply->error() != QNetworkReply::OperationCanceledError )
       {
         QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( mProviderUri );
@@ -3973,9 +3973,9 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
 #endif
 }
 
-void QgsWmsTiledImageDownloadHandler::cancelled()
+void QgsWmsTiledImageDownloadHandler::canceled()
 {
-  QgsDebugMsg( "Caught cancelled() signal" );
+  QgsDebugMsg( "Caught canceled() signal" );
   Q_FOREACH ( QNetworkReply* reply, mReplies )
   {
     QgsDebugMsg( "Aborting tiled network request" );

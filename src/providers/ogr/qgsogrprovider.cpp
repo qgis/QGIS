@@ -2900,7 +2900,7 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString& sub
       results << textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) );
     OGR_F_Destroy( f );
 
-    if (( limit >= 0 && results.size() >= limit ) || ( feedback && feedback->isCancelled() ) )
+    if (( limit >= 0 && results.size() >= limit ) || ( feedback && feedback->isCanceled() ) )
       break;
   }
 

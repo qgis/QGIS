@@ -1067,6 +1067,12 @@ QgsEditorWidgetFactory         {#qgis_api_break_3_0_QgsEditorWidgetFactory}
 - `createCache` has been removed. Use QgsFieldFormatter::representValue() instead
 
 
+QgsFeedback            {#qgis_api_break_3_0_QgsFeedback}
+-----------
+
+- cancelled()  and isCancelled() has been renamed to canceled() and isCanceled(), respectively  <!--#spellok-->
+
+
 QgsGeometryUtils         {#qgis_api_break_3_0_QgsGeometryUtils}
 ----------------
 
@@ -1469,6 +1475,12 @@ QgsRasterCalcNode        {#qgis_api_break_3_0_QgsRasterCalcNode}
 - QgsRasterCalcNode::calculate has been removed, use method with QgsRasterBlocks instead.
 
 
+QgsRasterCalculator     {#qgis_api_break_3_0_QgsRasterCalcNode}
+-------------------
+
+- Cancelled (Result enum value) has been renamed to Canceled  <!--#spellok-->
+
+
 QgsRasterDataProvider        {#qgis_api_break_3_0_QgsRasterDataProvider}
 ---------------------
 
@@ -1836,6 +1848,7 @@ QgsVectorLayerImport        {#qgis_api_break_3_0_QgsVectorLayerImport}
 QgsCoordinateReferenceSystem is now implicitly shared, using references to QgsCoordinateReferenceSystem rather than
 pointers makes for more robust, safer code. Use an invalid (default constructed) QgsCoordinateReferenceSystem
 in code which previously passed a null pointer to QgsVectorLayerImport.
+- ErrUserCancelled (ImportError enum value) has been renamed to ErrUserCanceled  <!--#spellok-->
 
 
 QgsVectorLayerUndoCommand        {#qgis_api_break_3_0_QgsVectorLayerUndoCommand}

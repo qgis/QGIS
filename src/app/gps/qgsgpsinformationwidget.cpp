@@ -967,7 +967,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
     delete f;
     connectGpsSlot();
   } // layerWKBType == QgsWkbTypes::Point
-  mpCanvas->refresh();  // NOTE: cancelling feature add refreshes canvas, OK does not; this may change, however, so do it anyway
+  mpCanvas->refresh();  // NOTE: canceling feature add refreshes canvas, OK does not; this may change, however, so do it anyway
 
   // force focus back to GPS window/ Add Feature button for ease of use by keyboard
   activateWindow();

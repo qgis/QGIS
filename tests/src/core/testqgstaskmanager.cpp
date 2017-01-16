@@ -67,7 +67,7 @@ class ProgressReportingTask : public QgsTask
 
     bool run() override
     {
-      while ( !finished && !terminated && !isCancelled() ) {}
+      while ( !finished && !terminated && !isCanceled() ) {}
       return finished;
     }
 
@@ -89,7 +89,7 @@ class TestTerminationTask : public TestTask
 
     bool run() override
     {
-      while ( !isCancelled() )
+      while ( !isCanceled() )
         {}
       return false;
     }
@@ -112,7 +112,7 @@ class CancelableTask : public QgsTask
 
     bool run() override
     {
-      while ( !isCancelled() )
+      while ( !isCanceled() )
         {}
       return true;
     }
@@ -274,7 +274,7 @@ void TestQgsTaskManager::task()
   QCOMPARE( statusSpy3.count(), 2 );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy3.last().at( 0 ).toInt() ), QgsTask::Complete );
 
-  // test that cancelling tasks which have not begin immediately ends them
+  // test that canceling tasks which have not begin immediately ends them
   task.reset( new TestTask() );
   task->cancel(); // Queued task
   QCOMPARE( task->status(), QgsTask::Terminated );
@@ -519,7 +519,7 @@ void TestQgsTaskManager::subTask()
 
   delete parent;
 
-  // test that if a subtask terminates the parent task is cancelled
+  // test that if a subtask terminates the parent task is canceled
   parent = new ProgressReportingTask();
   subTask = new ProgressReportingTask();
   subsubTask = new ProgressReportingTask();
@@ -928,7 +928,7 @@ void TestQgsTaskManager::dependencies()
 {
   QgsTaskManager manager;
 
-  //test that cancelling tasks cancels all tasks which are dependent on them
+  //test that canceling tasks cancels all tasks which are dependent on them
   CancelableTask* task = new CancelableTask();
   task->hold();
   CancelableTask* childTask = new CancelableTask();
@@ -974,7 +974,7 @@ void TestQgsTaskManager::dependencies()
   flushEvents();
   QCOMPARE( childTask->status(), QgsTask::Running );
   QCOMPARE( task->status(), QgsTask::Queued );
-  childTask->cancel(); // Note: CancelableTask signals successful completion when cancelled!
+  childTask->cancel(); // Note: CancelableTask signals successful completion when canceled!
   //wait for childTask to complete
   while ( childTask->isActive() )
   {
@@ -990,7 +990,7 @@ void TestQgsTaskManager::dependencies()
   }
   flushEvents();
   QCOMPARE( task->status(), QgsTask::Running );
-  task->cancel(); // Note: CancelableTask signals successful completion when cancelled!
+  task->cancel(); // Note: CancelableTask signals successful completion when canceled!
 
 
   // test circular dependency detection

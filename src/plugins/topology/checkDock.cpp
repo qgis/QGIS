@@ -343,7 +343,7 @@ void checkDock::runTests( ValidateType type )
     QProgressDialog progress( testName, tr( "Abort" ), 0, layer1->featureCount(), this );
     progress.setWindowModality( Qt::WindowModal );
 
-    connect( &progress, SIGNAL( canceled() ), mTest, SLOT( setTestCancelled() ) );
+    connect( &progress, SIGNAL( canceled() ), mTest, SLOT( setTestCanceled() ) );
     connect( mTest, SIGNAL( progress( int ) ), &progress, SLOT( setValue( int ) ) );
     // run the test
 
@@ -372,7 +372,7 @@ void checkDock::runTests( ValidateType type )
       rb->show();
       mRbErrorMarkers << rb;
     }
-    disconnect( &progress, SIGNAL( canceled() ), mTest, SLOT( setTestCancelled() ) );
+    disconnect( &progress, SIGNAL( canceled() ), mTest, SLOT( setTestCanceled() ) );
     disconnect( mTest, SIGNAL( progress( int ) ), &progress, SLOT( setValue( int ) ) );
     mErrorList << errors;
   }

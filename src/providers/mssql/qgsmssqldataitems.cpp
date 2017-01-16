@@ -394,7 +394,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData* data, const QString& t
 
   QStringList importResults;
   bool hasError = false;
-  bool cancelled = false;
+  bool canceled = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
@@ -430,8 +430,8 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData* data, const QString& t
       err = QgsVectorLayerImport::importLayer( srcLayer, uri, QStringLiteral( "mssql" ), srcLayer->crs(), false, &importError, false, nullptr, progress );
       if ( err == QgsVectorLayerImport::NoError )
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
-      else if ( err == QgsVectorLayerImport::ErrUserCancelled )
-        cancelled = true;
+      else if ( err == QgsVectorLayerImport::ErrUserCanceled )
+        canceled = true;
       else
       {
         importResults.append( QStringLiteral( "%1: %2" ).arg( u.name, importError ) );
@@ -450,9 +450,9 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData* data, const QString& t
   delete progress;
   qApp->restoreOverrideCursor();
 
-  if ( cancelled )
+  if ( canceled )
   {
-    QMessageBox::information( nullptr, tr( "Import to MSSQL database" ), tr( "Import cancelled." ) );
+    QMessageBox::information( nullptr, tr( "Import to MSSQL database" ), tr( "Import canceled." ) );
     refresh();
   }
   else if ( hasError )

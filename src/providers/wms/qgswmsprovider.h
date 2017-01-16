@@ -479,7 +479,7 @@ class QgsWmsImageDownloadHandler : public QObject
   protected slots:
     void cacheReplyFinished();
     void cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal );
-    void cancelled();
+    void canceled();
 
   protected:
     void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
@@ -508,7 +508,7 @@ class QgsWmsTiledImageDownloadHandler : public QObject
 
   protected slots:
     void tileReplyFinished();
-    void cancelled();
+    void canceled();
 
   protected:
 

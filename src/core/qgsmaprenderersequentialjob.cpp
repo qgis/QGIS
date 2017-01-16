@@ -40,7 +40,7 @@ QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
   if ( isActive() )
   {
     // still running!
-    QgsDebugMsg( "SEQUENTIAL destruct -- still running! (cancelling)" );
+    QgsDebugMsg( "SEQUENTIAL destruct -- still running! (canceling)" );
     cancel();
   }
 

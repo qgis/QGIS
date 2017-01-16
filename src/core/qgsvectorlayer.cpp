@@ -3289,7 +3289,7 @@ QStringList QgsVectorLayer::uniqueStringsMatching( int index, const QString& sub
       {
         QgsFeatureMap added = mEditBuffer->addedFeatures();
         QMapIterator< QgsFeatureId, QgsFeature > addedIt( added );
-        while ( addedIt.hasNext() && ( limit < 0 || results.count() < limit ) && ( !feedback || !feedback->isCancelled() ) )
+        while ( addedIt.hasNext() && ( limit < 0 || results.count() < limit ) && ( !feedback || !feedback->isCanceled() ) )
         {
           addedIt.next();
           QVariant v = addedIt.value().attribute( index );
@@ -3304,7 +3304,7 @@ QStringList QgsVectorLayer::uniqueStringsMatching( int index, const QString& sub
         }
 
         QMapIterator< QgsFeatureId, QgsAttributeMap > it( mEditBuffer->changedAttributeValues() );
-        while ( it.hasNext() && ( limit < 0 || results.count() < limit ) && ( !feedback || !feedback->isCancelled() ) )
+        while ( it.hasNext() && ( limit < 0 || results.count() < limit ) && ( !feedback || !feedback->isCanceled() ) )
         {
           it.next();
           QVariant v = it.value().value( index );
@@ -3354,7 +3354,7 @@ QStringList QgsVectorLayer::uniqueStringsMatching( int index, const QString& sub
         if ( !results.contains( currentValue ) )
           results << currentValue;
 
-        if (( limit >= 0 && results.size() >= limit ) || ( feedback && feedback->isCancelled() ) )
+        if (( limit >= 0 && results.size() >= limit ) || ( feedback && feedback->isCanceled() ) )
         {
           break;
         }

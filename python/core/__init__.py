@@ -213,7 +213,7 @@ class QgsTaskWrapper(QgsTask):
             return
 
         if not result and self.exception is None:
-            self.exception = Exception('Task cancelled')
+            self.exception = Exception('Task canceled')
 
         try:
             if self.returned_values:

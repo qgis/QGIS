@@ -83,7 +83,7 @@ class QgsWFSProgressDialog: public QProgressDialog
     serializer to fill the case, and to the iterator that subscribed
     Instances of this class may be run in a dedicated thread (QgsWFSThreadedFeatureDownloader)
     A progress dialog may pop-up in GUI mode (if the download takes a certain time)
-    to allow cancelling the download.
+    to allow canceling the download.
 */
 class QgsWFSFeatureDownloader: public QgsWfsRequest
 {

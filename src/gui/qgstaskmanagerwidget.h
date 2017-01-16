@@ -188,7 +188,7 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
 /**
  * \ingroup gui
  * \class QgsTaskStatusWidget
- * A widget for showing task status within a view. Clicks on the widget will cause the task to be cancelled (via the model).
+ * A widget for showing task status within a view. Clicks on the widget will cause the task to be canceled (via the model).
  * \note added in QGIS 3.0
  */
 class GUI_EXPORT QgsTaskStatusWidget : public QWidget

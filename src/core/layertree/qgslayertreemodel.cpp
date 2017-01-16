@@ -45,7 +45,7 @@ class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
         : QgsLayerTreeModelLegendNode( nodeL )
     {
       // we need a valid rule key to allow the model to build a tree out of legend nodes
-      // if that's possible (if there is a node without a rule key, building of tree is cancelled)
+      // if that's possible (if there is a node without a rule key, building of tree is canceled)
       mRuleKey = QStringLiteral( "embedded-widget-" ) + QUuid::createUuid().toString();
     }
 

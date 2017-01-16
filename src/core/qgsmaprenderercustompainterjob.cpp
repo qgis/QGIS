@@ -110,7 +110,7 @@ void QgsMapRendererCustomPainterJob::cancel()
     return;
   }
 
-  QgsDebugMsg( "QPAINTER cancelling" );
+  QgsDebugMsg( "QPAINTER canceling" );
   disconnect( &mFutureWatcher, SIGNAL( finished() ), this, SLOT( futureFinished() ) );
 
   mLabelingRenderContext.setRenderingStopped( true );
@@ -130,7 +130,7 @@ void QgsMapRendererCustomPainterJob::cancel()
 
   futureFinished();
 
-  QgsDebugMsg( "QPAINTER cancelled" );
+  QgsDebugMsg( "QPAINTER canceled" );
 }
 
 void QgsMapRendererCustomPainterJob::waitForFinished()

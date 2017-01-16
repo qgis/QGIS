@@ -91,7 +91,7 @@ class QgsAlignRaster
     {
       //! Method to be overridden for progress reporting.
       //! @param complete Overall progress of the alignment operation
-      //! @return false if the execution should be cancelled, true otherwise
+      //! @return false if the execution should be canceled, true otherwise
       virtual bool progress( double complete ) = 0;
 
       virtual ~ProgressHandler();

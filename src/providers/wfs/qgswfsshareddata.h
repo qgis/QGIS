@@ -195,7 +195,7 @@ class QgsWFSSharedData : public QObject
     //! The background feature downloader
     QgsWFSThreadedFeatureDownloader* mDownloader;
 
-    //! Whether the downloader has finished (or been cancelled)
+    //! Whether the downloader has finished (or been canceled)
     bool mDownloadFinished;
 
     /** The generation counter. When a iterator is built or rewind, it gets the

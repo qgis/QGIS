@@ -107,7 +107,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent )
     , mLastExtentIndex( -1 )
     , mWheelZoomFactor( 2.0 )
     , mJob( nullptr )
-    , mJobCancelled( false )
+    , mJobCanceled( false )
     , mLabelingResults( nullptr )
     , mUseParallelRendering( false )
     , mDrawRenderingStats( false )
@@ -494,7 +494,7 @@ void QgsMapCanvas::refreshMap()
 
   // create the renderer job
   Q_ASSERT( !mJob );
-  mJobCancelled = false;
+  mJobCanceled = false;
   if ( mUseParallelRendering )
     mJob = new QgsMapRendererParallelJob( mSettings );
   else
@@ -531,7 +531,7 @@ void QgsMapCanvas::refreshMap()
 
 void QgsMapCanvas::rendererJobFinished()
 {
-  QgsDebugMsg( QString( "CANVAS finish! %1" ).arg( !mJobCancelled ) );
+  QgsDebugMsg( QString( "CANVAS finish! %1" ).arg( !mJobCanceled ) );
 
   mMapUpdateTimer.stop();
 
@@ -541,7 +541,7 @@ void QgsMapCanvas::rendererJobFinished()
     QgsMessageLog::logMessage( error.layerID + " :: " + error.message, tr( "Rendering" ) );
   }
 
-  if ( !mJobCancelled )
+  if ( !mJobCanceled )
   {
     // take labeling results before emitting renderComplete, so labeling map tools
     // connected to signal work with correct results
@@ -612,7 +612,7 @@ void QgsMapCanvas::stopRendering()
   if ( mJob )
   {
     QgsDebugMsg( "CANVAS stop rendering!" );
-    mJobCancelled = true;
+    mJobCanceled = true;
     mJob->cancel();
     Q_ASSERT( !mJob ); // no need to delete here: already deleted in finished()
   }

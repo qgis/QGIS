@@ -114,12 +114,12 @@ void QgsFieldValuesLineEdit::updateCompletionList( const QString &text )
 
 void QgsFieldValuesLineEdit::gathererThreadFinished()
 {
-  bool wasCancelled = mGatherer->wasCancelled();
+  bool wasCanceled = mGatherer->wasCanceled();
 
   delete mGatherer;
   mGatherer = nullptr;
 
-  if ( wasCancelled )
+  if ( wasCanceled )
   {
     QString text = mRequestedCompletionText;
     mRequestedCompletionText.clear();
