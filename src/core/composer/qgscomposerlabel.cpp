@@ -264,7 +264,7 @@ void QgsComposerLabel::refreshExpressionContext()
     //set to composition's mapsettings' crs
     mDistanceArea->setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
   }
-  mDistanceArea->setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
+  mDistanceArea->setEllipsoidalMode( true );
   mDistanceArea->setEllipsoid( mComposition->project()->ellipsoid() );
   contentChanged();
 

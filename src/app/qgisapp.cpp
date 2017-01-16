@@ -7513,7 +7513,7 @@ void QgisApp::selectByForm()
   QgsDistanceArea myDa;
 
   myDa.setSourceCrs( vlayer->crs().srsid() );
-  myDa.setEllipsoidalMode( mMapCanvas->mapSettings().hasCrsTransformEnabled() );
+  myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   QgsAttributeEditorContext context;

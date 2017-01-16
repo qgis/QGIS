@@ -419,7 +419,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
   if ( mComposerMap && mShowOnlyVisibleFeatures )
   {
     selectionRect = *mComposerMap->currentMapExtent();
-    if ( layer && mComposition->mapSettings().hasCrsTransformEnabled() )
+    if ( layer )
     {
       //transform back to layer CRS
       QgsCoordinateTransform coordTransform( layer->crs(), mComposition->mapSettings().destinationCrs() );
