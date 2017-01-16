@@ -385,7 +385,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement& layerElement )
   layerError = !readXml( layerElement );
 
   // overwrite CRS with what we read from project file before the raster/vector
-  // file readnig functions changed it. They will if projections is specified in the file.
+  // file reading functions changed it. They will if projections is specified in the file.
   // FIXME: is this necessary?
   QgsCoordinateReferenceSystem::setCustomCrsValidation( savedValidation );
   mCRS = savedCRS;

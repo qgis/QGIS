@@ -5553,7 +5553,7 @@ void QgisApp::saveMapAsImage( const QString& theImageFileNameQString, QPixmap * 
   }
   else
   {
-    //force the size of the canvase
+    //force the size of the canvas
     mMapCanvas->resize( theQPixmap->width(), theQPixmap->height() );
     //save the mapview to the selected file
     mMapCanvas->saveAsImage( theImageFileNameQString, theQPixmap );

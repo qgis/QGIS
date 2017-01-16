@@ -68,7 +68,7 @@ plugin is all set up to compile the resource file so all you need to do is add
 your additional icons etc using the simple xml file format. Note the namespace
 used for all your resources e.g. (":/[pluginname]/"). It is important to use
 this prefix for all your resources. We suggest you include any other images and
-run time data in this resurce file too.
+run time data in this resource file too.
 
 [pluginlcasename].png
 This is the icon that will be used for your plugin menu entry and toolbar icon.

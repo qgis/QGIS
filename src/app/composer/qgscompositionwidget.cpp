@@ -642,7 +642,7 @@ void QgsCompositionWidget::setNumberPages()
   mNumPagesSpinBox->blockSignals( false );
 }
 
-void QgsCompositionWidget::displaySnapingSettings()
+void QgsCompositionWidget::displaySnappingSettings()
 {
   if ( !mComposition )
   {

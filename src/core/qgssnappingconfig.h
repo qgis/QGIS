@@ -81,7 +81,7 @@ class CORE_EXPORT QgsSnappingConfig
         //! return if settings are valid
         bool valid() const;
 
-        //! return if snaping is enabled
+        //! return if snapping is enabled
         bool enabled() const;
 
         //! enables the snapping

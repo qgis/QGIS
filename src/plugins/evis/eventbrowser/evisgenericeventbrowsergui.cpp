@@ -116,7 +116,7 @@ eVisGenericEventBrowserGui::~eVisGenericEventBrowserGui()
   QSettings settings;
   settings.setValue( QStringLiteral( "/eVis/browser-geometry" ), saveGeometry() );
 
-  //Clean up, disconnect the highlighting routine and refresh the canvase to clear highlighting symbol
+  //Clean up, disconnect the highlighting routine and refresh the canvas to clear highlighting symbol
   if ( mCanvas )
   {
     disconnect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderSymbol( QPainter * ) ) );

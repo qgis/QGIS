@@ -757,7 +757,7 @@ int QgsMapToolNodeTool::insertSegmentVerticesForSnap( const QList<QgsSnappingRes
     return 1;
   }
 
-  //transform snaping coordinates to layer crs first
+  //transform snapping coordinates to layer crs first
   QList<QgsSnappingResult> transformedSnapResults;
   QgsFeatureIds addedFeatures;
   QList<QgsSnappingResult>::const_iterator it = snapResults.constBegin();
