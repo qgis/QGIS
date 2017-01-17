@@ -153,7 +153,7 @@ QgsDataSourceUri::QgsDataSourceUri( QString uri )
       {
         mAuthConfigId = pval;
       }
-      else if ( pname == QLatin1String( "user" ) )
+      else if ( pname == QLatin1String( "user" ) || pname == QLatin1String( "username" ) ) // Also accepts new WFS provider naming
       {
         mUsername = pval;
       }
