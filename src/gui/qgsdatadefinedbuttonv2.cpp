@@ -242,6 +242,7 @@ void QgsDataDefinedButtonV2::setToProperty( const QgsAbstractProperty *property 
     mExpressionString.clear();
   }
   setActive( property && property->isActive() );
+  updateGui();
 }
 
 void QgsDataDefinedButtonV2::aboutToShowMenu()

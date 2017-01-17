@@ -74,7 +74,7 @@ void QgsComposerConfigObject::updateDataDefinedButtons()
   }
 }
 
-void QgsComposerConfigObject::registerDataDefinedButton( QgsDataDefinedButtonV2* button, QgsComposerObject::DataDefinedProperty key,
+void QgsComposerConfigObject::initializeDataDefinedButton( QgsDataDefinedButtonV2* button, QgsComposerObject::DataDefinedProperty key,
     QgsDataDefinedButtonV2::DataType type, const QString& description )
 {
   button->blockSignals( true );
@@ -83,6 +83,18 @@ void QgsComposerConfigObject::registerDataDefinedButton( QgsDataDefinedButtonV2*
   connect( button, &QgsDataDefinedButtonV2::changed, this, &QgsComposerConfigObject::updateDataDefinedProperty );
   button->registerExpressionContextGenerator( mComposerObject );
   button->blockSignals( false );
+}
+
+void QgsComposerConfigObject::updateDataDefinedButton( QgsDataDefinedButtonV2* button )
+{
+  if ( !button )
+    return;
+
+  if ( !button->property( "propertyKey" ).isValid() )
+    return;
+
+  QgsComposerObject::DataDefinedProperty key = static_cast< QgsComposerObject::DataDefinedProperty >( button->property( "propertyKey" ).toInt() );
+  whileBlocking( button )->setToProperty( mComposerObject->dataDefinedProperties().property( key ) );
 }
 
 QgsAtlasComposition* QgsComposerConfigObject::atlasComposition() const
@@ -151,6 +163,8 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   buttonGroup->addButton( mLowerMiddleCheckBox );
   buttonGroup->addButton( mLowerRightCheckBox );
   buttonGroup->setExclusive( true );
+
+  initializeDataDefinedButtons();
 
   setValuesForGuiElements();
   connect( mItem->composition(), SIGNAL( paperSizeChanged() ), this, SLOT( setValuesForGuiPositionElements() ) );
@@ -523,28 +537,36 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mExcludeFromPrintsCheckBox->blockSignals( false );
 }
 
+void QgsComposerItemWidget::initializeDataDefinedButtons()
+{
+  mConfigObject->initializeDataDefinedButton( mXPositionDDBtn, QgsComposerObject::PositionX,
+      QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::doubleDesc() );
+  mConfigObject->initializeDataDefinedButton( mYPositionDDBtn, QgsComposerObject::PositionY,
+      QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::doubleDesc() );
+  mConfigObject->initializeDataDefinedButton( mWidthDDBtn, QgsComposerObject::ItemWidth,
+      QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::doubleDesc() );
+  mConfigObject->initializeDataDefinedButton( mHeightDDBtn, QgsComposerObject::ItemHeight,
+      QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::doubleDesc() );
+  mConfigObject->initializeDataDefinedButton( mItemRotationDDBtn, QgsComposerObject::ItemRotation,
+      QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::double180RotDesc() );
+  mConfigObject->initializeDataDefinedButton( mTransparencyDDBtn, QgsComposerObject::Transparency,
+      QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::intTranspDesc() );
+  mConfigObject->initializeDataDefinedButton( mBlendModeDDBtn, QgsComposerObject::BlendMode,
+      QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::blendModesDesc() );
+  mConfigObject->initializeDataDefinedButton( mExcludePrintsDDBtn, QgsComposerObject::ExcludeFromExports,
+      QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::boolDesc() );
+  mConfigObject->initializeDataDefinedButton( mItemFrameColorDDBtn, QgsComposerObject::FrameColor,
+      QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::colorAlphaDesc() );
+  mConfigObject->initializeDataDefinedButton( mItemBackgroundColorDDBtn, QgsComposerObject::BackgroundColor,
+      QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::colorAlphaDesc() );
+}
+
 void QgsComposerItemWidget::populateDataDefinedButtons()
 {
-  mConfigObject->registerDataDefinedButton( mXPositionDDBtn, QgsComposerObject::PositionX,
-      QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::doubleDesc() );
-  mConfigObject->registerDataDefinedButton( mYPositionDDBtn, QgsComposerObject::PositionY,
-      QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::doubleDesc() );
-  mConfigObject->registerDataDefinedButton( mWidthDDBtn, QgsComposerObject::ItemWidth,
-      QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::doubleDesc() );
-  mConfigObject->registerDataDefinedButton( mHeightDDBtn, QgsComposerObject::ItemHeight,
-      QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::doubleDesc() );
-  mConfigObject->registerDataDefinedButton( mItemRotationDDBtn, QgsComposerObject::ItemRotation,
-      QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::double180RotDesc() );
-  mConfigObject->registerDataDefinedButton( mTransparencyDDBtn, QgsComposerObject::Transparency,
-      QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::intTranspDesc() );
-  mConfigObject->registerDataDefinedButton( mBlendModeDDBtn, QgsComposerObject::BlendMode,
-      QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::blendModesDesc() );
-  mConfigObject->registerDataDefinedButton( mExcludePrintsDDBtn, QgsComposerObject::ExcludeFromExports,
-      QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::boolDesc() );
-  mConfigObject->registerDataDefinedButton( mItemFrameColorDDBtn, QgsComposerObject::FrameColor,
-      QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::colorAlphaDesc() );
-  mConfigObject->registerDataDefinedButton( mItemBackgroundColorDDBtn, QgsComposerObject::BackgroundColor,
-      QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::colorAlphaDesc() );
+  Q_FOREACH ( QgsDataDefinedButtonV2* button, findChildren< QgsDataDefinedButtonV2* >() )
+  {
+    mConfigObject->updateDataDefinedButton( button );
+  }
 }
 
 void QgsComposerItemWidget::setValuesForGuiElements()
@@ -773,7 +795,12 @@ QgsComposerItemBaseWidget::QgsComposerItemBaseWidget( QWidget* parent, QgsCompos
 
 void QgsComposerItemBaseWidget::registerDataDefinedButton( QgsDataDefinedButtonV2* button, QgsComposerObject::DataDefinedProperty property, QgsDataDefinedButtonV2::DataType type, const QString& description )
 {
-  mConfigObject->registerDataDefinedButton( button, property, type, description );
+  mConfigObject->initializeDataDefinedButton( button, property, type, description );
+}
+
+void QgsComposerItemBaseWidget::updateDataDefinedButton( QgsDataDefinedButtonV2* button )
+{
+  mConfigObject->updateDataDefinedButton( button );
 }
 
 QgsVectorLayer* QgsComposerItemBaseWidget::atlasCoverageLayer() const

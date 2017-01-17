@@ -84,6 +84,8 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
 
     QgsAbstractProperty* toProperty();
 
+    void setToProperty( const QgsAbstractProperty* property );
+
     /**
      * Returns true if the button has an active property.
      */
@@ -220,7 +222,7 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
   private:
 
     void updateFieldLists();
-    void setToProperty( const QgsAbstractProperty* property );
+
     void showDescriptionDialog();
     void showExpressionDialog();
     void updateGui();

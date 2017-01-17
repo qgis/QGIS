@@ -105,19 +105,6 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsComposerMapWidget::mapCrsChanged );
 
-  updateGuiElements();
-  loadGridEntries();
-  loadOverviewEntries();
-  populateDataDefinedButtons();
-  blockAllSignals( false );
-}
-
-QgsComposerMapWidget::~QgsComposerMapWidget()
-{
-}
-
-void QgsComposerMapWidget::populateDataDefinedButtons()
-{
   registerDataDefinedButton( mScaleDDBtn, QgsComposerObject::MapScale,
                              QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::doubleDesc() );
   registerDataDefinedButton( mMapRotationDDBtn, QgsComposerObject::MapRotation,
@@ -136,6 +123,29 @@ void QgsComposerMapWidget::populateDataDefinedButtons()
                              QgsDataDefinedButtonV2::String, tr( "string matching a style preset name" ) );
   registerDataDefinedButton( mLayersDDBtn, QgsComposerObject::MapLayers,
                              QgsDataDefinedButtonV2::String, tr( "list of map layer names separated by | characters" ) );
+
+  updateGuiElements();
+  loadGridEntries();
+  loadOverviewEntries();
+
+  blockAllSignals( false );
+}
+
+QgsComposerMapWidget::~QgsComposerMapWidget()
+{
+}
+
+void QgsComposerMapWidget::populateDataDefinedButtons()
+{
+  updateDataDefinedButton( mScaleDDBtn );
+  updateDataDefinedButton( mMapRotationDDBtn );
+  updateDataDefinedButton( mXMinDDBtn );
+  updateDataDefinedButton( mYMinDDBtn );
+  updateDataDefinedButton( mXMaxDDBtn );
+  updateDataDefinedButton( mYMaxDDBtn );
+  updateDataDefinedButton( mAtlasMarginDDBtn );
+  updateDataDefinedButton( mStylePresetsDDBtn );
+  updateDataDefinedButton( mLayersDDBtn );
 }
 
 void QgsComposerMapWidget::compositionAtlasToggled( bool atlasEnabled )
