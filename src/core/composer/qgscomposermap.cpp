@@ -203,8 +203,6 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, QSizeF
 
 QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF size, int dpi ) const
 {
-  const QgsMapSettings &ms = mComposition->mapSettings();
-
   QgsExpressionContext expressionContext = createExpressionContext();
 
   QgsMapSettings jobMapSettings;
@@ -215,7 +213,6 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   jobMapSettings.setOutputDpi( dpi );
   jobMapSettings.setMapUnits( mCrs.mapUnits() );
   jobMapSettings.setBackgroundColor( Qt::transparent );
-  jobMapSettings.setOutputImageFormat( ms.outputImageFormat() );
   jobMapSettings.setRotation( mEvaluatedMapRotation );
 
   //set layers to render
@@ -238,8 +235,6 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   }
   jobMapSettings.setLayers( layers );
   jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( expressionContext ) );
-  jobMapSettings.setFlags( ms.flags() );
-  jobMapSettings.setFlag( QgsMapSettings::DrawSelection, false );
 
   if ( mComposition->plotStyle() == QgsComposition::Print ||
        mComposition->plotStyle() == QgsComposition::Postscript )
@@ -252,8 +247,10 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   jobMapSettings.setExpressionContext( context );
 
   // composer-specific overrides of flags
-  jobMapSettings.setFlag( QgsMapSettings::ForceVectorOutput ); // force vector output (no caching of marker images etc.)
+  jobMapSettings.setFlag( QgsMapSettings::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
+  jobMapSettings.setFlag( QgsMapSettings::Antialiasing, true );
   jobMapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
+  jobMapSettings.setFlag( QgsMapSettings::DrawSelection, false );
   jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mComposition->useAdvancedEffects() ); // respect the composition's useAdvancedEffects flag
 
   jobMapSettings.datumTransformStore().setDestinationCrs( mCrs );
