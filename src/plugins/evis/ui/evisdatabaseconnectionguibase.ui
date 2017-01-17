@@ -72,7 +72,7 @@
          </property>
          <property name="icon" >
           <iconset>
-           <normaloff>../../../images/themes/default/mActionFolder.svg</normaloff>../../../images/themes/default/mActionFolder.svg</iconset>
+           <normaloff>:/images/themes/default/mActionFolder.svg</normaloff>:/images/themes/default/mActionFolder.svg</iconset>
          </property>
         </widget>
        </item>
@@ -331,7 +331,7 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="icon" >
           <iconset>
-           <normaloff>../../../images/themes/default/mActionFolder.svg</normaloff>../../../images/themes/default/mActionFolder.svg</iconset>
+           <normaloff>:/images/themes/default/mActionFolder.svg</normaloff>:/images/themes/default/mActionFolder.svg</iconset>
          </property>
         </widget>
        </item>
@@ -506,6 +506,7 @@ p, li { white-space: pre-wrap; }
  </tabstops>
  <resources>
   <include location="../resources/evis.qrc" />
+  <include location="../../../../images/images.qrc"/>
  </resources>
  <connections/>
 </ui>
