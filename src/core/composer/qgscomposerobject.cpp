@@ -63,6 +63,10 @@ const QgsPropertyDefinition QgsComposerObject::sPropertyNameMap
   { QgsComposerObject::PictureSvgOutlineWidth, "dataDefinedSvgOutlineWidth" },
   { QgsComposerObject::LegendTitle, "dataDefinedLegendTitle" },
   { QgsComposerObject::LegendColumnCount, "dataDefinedLegendColumns" },
+  { QgsComposerObject::ScalebarFillColor, "dataDefinedScalebarFill" },
+  { QgsComposerObject::ScalebarFillColor2, "dataDefinedScalebarFill2" },
+  { QgsComposerObject::ScalebarLineColor, "dataDefinedScalebarLineColor" },
+  { QgsComposerObject::ScalebarLineWidth, "dataDefinedScalebarLineWidth" },
 };
 
 

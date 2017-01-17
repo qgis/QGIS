@@ -81,6 +81,11 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
       //legend item
       LegendTitle, //!< Legend title
       LegendColumnCount, //!< Legend column count
+      //scalebar item
+      ScalebarFillColor, //!< Scalebar fill color
+      ScalebarFillColor2, //!< Scalebar secondary fill color
+      ScalebarLineColor, //!< Scalebar line color
+      ScalebarLineWidth, //!< Scalebar line width
     };
 
     static const QgsPropertyDefinition sPropertyNameMap;

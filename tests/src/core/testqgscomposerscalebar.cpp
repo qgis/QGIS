@@ -24,6 +24,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsfontutils.h"
+#include "qgsproperty.h"
 #include "qgsproject.h"
 
 #include <QLocale>
@@ -53,6 +54,7 @@ class TestQgsComposerScaleBar : public QObject
     void doubleBox();
     void numeric();
     void tick();
+    void dataDefined();
 
   private:
     QgsComposition* mComposition;
@@ -61,7 +63,6 @@ class TestQgsComposerScaleBar : public QObject
     QgsRasterLayer* mRasterLayer;
     QgsMapSettings *mMapSettings;
     QString mReport;
-    QPen mPrevPen;
 };
 
 void TestQgsComposerScaleBar::initTestCase()
@@ -110,9 +111,7 @@ void TestQgsComposerScaleBar::initTestCase()
   mComposerScaleBar->setNumSegmentsLeft( 0 );
   mComposerScaleBar->setNumSegments( 2 );
   mComposerScaleBar->setHeight( 5 );
-  QPen scalePen = mComposerScaleBar->pen();
-  scalePen.setWidthF( 1.0 );
-  mComposerScaleBar->setPen( scalePen );
+  mComposerScaleBar->setLineWidth( 1.0 );
 
   qWarning() << "scalebar font: " << mComposerScaleBar->font().toString() << " exactMatch:" << mComposerScaleBar->font().exactMatch();
 
@@ -158,12 +157,9 @@ void TestQgsComposerScaleBar::singleBox()
 void TestQgsComposerScaleBar::singleBoxAlpha()
 {
   mComposerScaleBar->setStyle( QStringLiteral( "Single Box" ) );
-  mComposerScaleBar->setBrush( QBrush( QColor( 255, 0, 0, 100 ) ) );
-  mComposerScaleBar->setBrush2( QBrush( QColor( 0, 255, 0, 50 ) ) );
-  mPrevPen = mComposerScaleBar->pen();
-  QPen newPen = mPrevPen;
-  newPen.setColor( QColor( 0, 0, 255, 150 ) );
-  mComposerScaleBar->setPen( newPen );
+  mComposerScaleBar->setFillColor( QColor( 255, 0, 0, 100 ) );
+  mComposerScaleBar->setFillColor2( QColor( 0, 255, 0, 50 ) );
+  mComposerScaleBar->setLineColor( QColor( 0, 0, 255, 150 ) );
   mComposerScaleBar->setFontColor( QColor( 255, 0, 255, 100 ) );
   QgsCompositionChecker checker( QStringLiteral( "composerscalebar_singlebox_alpha" ), mComposition );
   checker.setControlPathPrefix( QStringLiteral( "composer_scalebar" ) );
@@ -173,9 +169,10 @@ void TestQgsComposerScaleBar::singleBoxAlpha()
 void TestQgsComposerScaleBar::doubleBox()
 {
   // cleanup singleBoxAlpha
-  mComposerScaleBar->setBrush( QBrush( Qt::black ) );
-  mComposerScaleBar->setBrush2( QBrush( Qt::white ) );
-  mComposerScaleBar->setPen( mPrevPen );
+  mComposerScaleBar->setFillColor( Qt::black );
+  mComposerScaleBar->setFillColor2( Qt::white );
+  mComposerScaleBar->setLineColor( Qt::black );
+  mComposerScaleBar->setLineWidth( 0.3 );
   mComposerScaleBar->setFontColor( Qt::black );
   mComposerScaleBar->setStyle( QStringLiteral( "Double Box" ) );
 
@@ -199,6 +196,20 @@ void TestQgsComposerScaleBar::tick()
   QgsCompositionChecker checker( QStringLiteral( "composerscalebar_tick" ), mComposition );
   checker.setControlPathPrefix( QStringLiteral( "composer_scalebar" ) );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
+}
+
+void TestQgsComposerScaleBar::dataDefined()
+{
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarFillColor, new QgsExpressionBasedProperty( "'red'" ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarFillColor2, new QgsExpressionBasedProperty( "'blue'" ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarLineColor, new QgsExpressionBasedProperty( "'yellow'" ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarLineWidth, new QgsExpressionBasedProperty( "1.2" ) );
+  mComposerScaleBar->refreshDataDefinedProperty();
+  QCOMPARE( mComposerScaleBar->brush().color().name(), QColor( 255, 0, 0 ).name() );
+  QCOMPARE( mComposerScaleBar->brush2().color().name(), QColor( 0, 0, 255 ).name() );
+  QCOMPARE( mComposerScaleBar->pen().color().name(), QColor( 255, 255, 0 ).name() );
+  QCOMPARE( mComposerScaleBar->pen().widthF(), 1.2 );
+  mComposerScaleBar->setDataDefinedProperties( QgsPropertyCollection() );
 }
 
 QGSTEST_MAIN( TestQgsComposerScaleBar )

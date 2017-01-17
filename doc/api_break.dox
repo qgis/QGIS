@@ -610,6 +610,13 @@ QgsComposerObject::dataDefinedProperty instead.
 QgsComposerObject::setDataDefinedProperty() instead.
 - updatePictureExpression() was removed.
 
+QgsComposerScaleBar        {#qgis_api_break_3_0_QgsComposerScaleBar}
+-------------------
+
+- setBrush() was removed. Use setFillColor() instead.
+- setBrush2() was removed. Use setFillColor2() instead.
+- setPen() was removed. Use setLineColor() and setLineWidth() instead.
+
 
 QgsComposerTable        {#qgis_api_break_3_0_QgsComposerTable}
 ----------------

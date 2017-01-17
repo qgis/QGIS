@@ -91,6 +91,15 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
 
   connect( mMapItemComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( composerMapChanged( QgsComposerItem* ) ) );
 
+  registerDataDefinedButton( mFillColorDDBtn, QgsComposerObject::ScalebarFillColor,
+                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::colorAlphaDesc() );
+  registerDataDefinedButton( mFillColor2DDBtn, QgsComposerObject::ScalebarFillColor2,
+                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::colorAlphaDesc() );
+  registerDataDefinedButton( mLineColorDDBtn, QgsComposerObject::ScalebarLineColor,
+                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::colorAlphaDesc() );
+  registerDataDefinedButton( mLineWidthDDBtn, QgsComposerObject::ScalebarLineWidth,
+                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::doublePosDesc() );
+
   blockMemberSignals( false );
   setGuiElements(); //set the GUI elements to the state of scaleBar
 }
@@ -111,7 +120,7 @@ void QgsComposerScaleBarWidget::setGuiElements()
   mNumberOfSegmentsSpinBox->setValue( mComposerScaleBar->numSegments() );
   mSegmentsLeftSpinBox->setValue( mComposerScaleBar->numSegmentsLeft() );
   mSegmentSizeSpinBox->setValue( mComposerScaleBar->numUnitsPerSegment() );
-  mLineWidthSpinBox->setValue( mComposerScaleBar->pen().widthF() );
+  mLineWidthSpinBox->setValue( mComposerScaleBar->lineWidth() );
   mHeightSpinBox->setValue( mComposerScaleBar->height() );
   mMapUnitsPerBarUnitSpinBox->setValue( mComposerScaleBar->numMapUnitsPerScaleBarUnit() );
   mLabelBarSpaceSpinBox->setValue( mComposerScaleBar->labelBarSpace() );
@@ -120,9 +129,9 @@ void QgsComposerScaleBarWidget::setGuiElements()
   mLineJoinStyleCombo->setPenJoinStyle( mComposerScaleBar->lineJoinStyle() );
   mLineCapStyleCombo->setPenCapStyle( mComposerScaleBar->lineCapStyle() );
   mFontColorButton->setColor( mComposerScaleBar->fontColor() );
-  mFillColorButton->setColor( mComposerScaleBar->brush().color() );
-  mFillColor2Button->setColor( mComposerScaleBar->brush2().color() );
-  mStrokeColorButton->setColor( mComposerScaleBar->pen().color() );
+  mFillColorButton->setColor( mComposerScaleBar->fillColor() );
+  mFillColor2Button->setColor( mComposerScaleBar->fillColor2() );
+  mStrokeColorButton->setColor( mComposerScaleBar->lineColor() );
 
   //map combo box
   mMapItemComboBox->setItem( mComposerScaleBar->composerMap() );
@@ -154,7 +163,10 @@ void QgsComposerScaleBarWidget::setGuiElements()
   }
   mMinWidthSpinBox->setValue( mComposerScaleBar->minBarWidth() );
   mMaxWidthSpinBox->setValue( mComposerScaleBar->maxBarWidth() );
-
+  updateDataDefinedButton( mFillColorDDBtn );
+  updateDataDefinedButton( mFillColor2DDBtn );
+  updateDataDefinedButton( mLineColorDDBtn );
+  updateDataDefinedButton( mLineWidthDDBtn );
   blockMemberSignals( false );
 }
 
@@ -169,9 +181,7 @@ void QgsComposerScaleBarWidget::on_mLineWidthSpinBox_valueChanged( double d )
 
   mComposerScaleBar->beginCommand( tr( "Scalebar line width" ), QgsComposerMergeCommand::ScaleBarLineWidth );
   disconnectUpdateSignal();
-  QPen newPen = mComposerScaleBar->pen();
-  newPen.setWidthF( d );
-  mComposerScaleBar->setPen( newPen );
+  mComposerScaleBar->setLineWidth( d );
   mComposerScaleBar->update();
   connectUpdateSignal();
   mComposerScaleBar->endCommand();
@@ -280,9 +290,7 @@ void QgsComposerScaleBarWidget::on_mFillColorButton_colorChanged( const QColor& 
 
   mComposerScaleBar->beginCommand( tr( "Scalebar color changed" ), QgsComposerMergeCommand::ScaleBarFillColor );
   disconnectUpdateSignal();
-  QBrush newBrush = mComposerScaleBar->brush();
-  newBrush.setColor( newColor );
-  mComposerScaleBar->setBrush( newBrush );
+  mComposerScaleBar->setFillColor( newColor );
   mComposerScaleBar->update();
   connectUpdateSignal();
   mComposerScaleBar->endCommand();
@@ -297,9 +305,7 @@ void QgsComposerScaleBarWidget::on_mFillColor2Button_colorChanged( const QColor 
 
   mComposerScaleBar->beginCommand( tr( "Scalebar secondary color changed" ), QgsComposerMergeCommand::ScaleBarFill2Color );
   disconnectUpdateSignal();
-  QBrush newBrush = mComposerScaleBar->brush2();
-  newBrush.setColor( newColor );
-  mComposerScaleBar->setBrush2( newBrush );
+  mComposerScaleBar->setFillColor2( newColor );
   mComposerScaleBar->update();
   connectUpdateSignal();
   mComposerScaleBar->endCommand();
@@ -314,9 +320,7 @@ void QgsComposerScaleBarWidget::on_mStrokeColorButton_colorChanged( const QColor
 
   mComposerScaleBar->beginCommand( tr( "Scalebar line color changed" ), QgsComposerMergeCommand::ScaleBarStrokeColor );
   disconnectUpdateSignal();
-  QPen newPen = mComposerScaleBar->pen();
-  newPen.setColor( newColor );
-  mComposerScaleBar->setPen( newPen );
+  mComposerScaleBar->setLineColor( newColor );
   mComposerScaleBar->update();
   connectUpdateSignal();
   mComposerScaleBar->endCommand();
