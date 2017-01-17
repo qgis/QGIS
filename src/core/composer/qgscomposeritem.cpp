@@ -54,7 +54,6 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mFrame( false )
     , mBackground( true )
     , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
-    , mFrameJoinStyle( Qt::MiterJoin )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mItemRotation( 0 )
@@ -81,9 +80,9 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mHAlignSnapItem( nullptr )
     , mVAlignSnapItem( nullptr )
     , mFrame( false )
+    , mFrameColor( QColor( 0, 0, 0 ) )
     , mBackground( true )
     , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
-    , mFrameJoinStyle( Qt::MiterJoin )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mItemRotation( 0 )
@@ -107,9 +106,9 @@ void QgsComposerItem::init( const bool manageZValue )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   //set default pen and brush
-  setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
-  QPen defaultPen( QColor( 0, 0, 0 ) );
-  defaultPen.setWidthF( 0.3 );
+  setBrush( mBackgroundColor );
+  QPen defaultPen( mFrameColor );
+  defaultPen.setWidthF( mFrameWidth );
   defaultPen.setJoinStyle( mFrameJoinStyle );
   setPen( defaultPen );
   //let z-Value be managed by composition
@@ -192,7 +191,7 @@ bool QgsComposerItem::_writeXml( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( QStringLiteral( "height" ), QString::number( rect().height() ) );
   composerItemElem.setAttribute( QStringLiteral( "positionMode" ), QString::number( static_cast< int >( mLastUsedPositionMode ) ) );
   composerItemElem.setAttribute( QStringLiteral( "zValue" ), QString::number( zValue() ) );
-  composerItemElem.setAttribute( QStringLiteral( "outlineWidth" ), QString::number( pen().widthF() ) );
+  composerItemElem.setAttribute( QStringLiteral( "outlineWidth" ), QString::number( mFrameWidth ) );
   composerItemElem.setAttribute( QStringLiteral( "frameJoinStyle" ), QgsSymbolLayerUtils::encodePenJoinStyle( mFrameJoinStyle ) );
   composerItemElem.setAttribute( QStringLiteral( "itemRotation" ), QString::number( mItemRotation ) );
   composerItemElem.setAttribute( QStringLiteral( "uuid" ), mUuid );
@@ -212,20 +211,18 @@ bool QgsComposerItem::_writeXml( QDomElement& itemElem, QDomDocument& doc ) cons
 
   //frame color
   QDomElement frameColorElem = doc.createElement( QStringLiteral( "FrameColor" ) );
-  QColor frameColor = pen().color();
-  frameColorElem.setAttribute( QStringLiteral( "red" ), QString::number( frameColor.red() ) );
-  frameColorElem.setAttribute( QStringLiteral( "green" ), QString::number( frameColor.green() ) );
-  frameColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( frameColor.blue() ) );
-  frameColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( frameColor.alpha() ) );
+  frameColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mFrameColor.red() ) );
+  frameColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mFrameColor.green() ) );
+  frameColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mFrameColor.blue() ) );
+  frameColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mFrameColor.alpha() ) );
   composerItemElem.appendChild( frameColorElem );
 
   //background color
   QDomElement bgColorElem = doc.createElement( QStringLiteral( "BackgroundColor" ) );
-  QColor bgColor = brush().color();
-  bgColorElem.setAttribute( QStringLiteral( "red" ), QString::number( bgColor.red() ) );
-  bgColorElem.setAttribute( QStringLiteral( "green" ), QString::number( bgColor.green() ) );
-  bgColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( bgColor.blue() ) );
-  bgColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( bgColor.alpha() ) );
+  bgColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mBackgroundColor.red() ) );
+  bgColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mBackgroundColor.green() ) );
+  bgColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mBackgroundColor.blue() ) );
+  bgColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mBackgroundColor.alpha() ) );
   composerItemElem.appendChild( bgColorElem );
 
   //blend mode
@@ -335,6 +332,8 @@ bool QgsComposerItem::_readXml( const QDomElement& itemElem, const QDomDocument&
 
   setZValue( itemElem.attribute( QStringLiteral( "zValue" ) ).toDouble() );
 
+  QgsExpressionContext context = createExpressionContext();
+
   //pen
   QDomNodeList frameColorList = itemElem.elementsByTagName( QStringLiteral( "FrameColor" ) );
   if ( !frameColorList.isEmpty() )
@@ -353,10 +352,14 @@ bool QgsComposerItem::_readXml( const QDomElement& itemElem, const QDomDocument&
 
     if ( redOk && greenOk && blueOk && alphaOk && widthOk )
     {
-      QPen framePen( QColor( penRed, penGreen, penBlue, penAlpha ) );
-      framePen.setWidthF( penWidth );
+      mFrameColor = QColor( penRed, penGreen, penBlue, penAlpha );
+      mFrameWidth = penWidth;
+      QPen framePen( mFrameColor );
+      framePen.setWidthF( mFrameWidth );
       framePen.setJoinStyle( mFrameJoinStyle );
       setPen( framePen );
+      //apply any data defined settings
+      refreshFrameColor( false, context );
     }
   }
 
@@ -373,9 +376,11 @@ bool QgsComposerItem::_readXml( const QDomElement& itemElem, const QDomDocument&
     bgAlpha = bgColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      QColor brushColor( bgRed, bgGreen, bgBlue, bgAlpha );
-      setBackgroundColor( brushColor );
+      mBackgroundColor = QColor( bgRed, bgGreen, bgBlue, bgAlpha );
+      setBrush( QBrush( mBackgroundColor, Qt::SolidPattern ) );
     }
+    //apply any data defined settings
+    refreshBackgroundColor( false, context );
   }
 
   //blend mode
@@ -407,26 +412,31 @@ void QgsComposerItem::setFrameEnabled( const bool drawFrame )
 
 void QgsComposerItem::setFrameOutlineColor( const QColor &color )
 {
-  QPen itemPen = pen();
-  if ( itemPen.color() == color )
+  if ( mFrameColor == color )
   {
     //no change
     return;
   }
-  itemPen.setColor( color );
+  mFrameColor = color;
+  QPen itemPen = pen();
+  itemPen.setColor( mFrameColor );
   setPen( itemPen );
+  // apply any datadefined overrides
+  QgsExpressionContext context = createExpressionContext();
+  refreshFrameColor( true, context );
   emit frameChanged();
 }
 
 void QgsComposerItem::setFrameOutlineWidth( const double outlineWidth )
 {
-  QPen itemPen = pen();
-  if ( qgsDoubleNear( itemPen.widthF(), outlineWidth ) )
+  if ( qgsDoubleNear( mFrameWidth, outlineWidth ) )
   {
     //no change
     return;
   }
-  itemPen.setWidthF( outlineWidth );
+  mFrameWidth = outlineWidth;
+  QPen itemPen = pen();
+  itemPen.setWidthF( mFrameWidth );
   setPen( itemPen );
   emit frameChanged();
 }
@@ -844,6 +854,9 @@ void QgsComposerItem::setBackgroundColor( const QColor& backgroundColor )
 {
   mBackgroundColor = backgroundColor;
   setBrush( QBrush( mBackgroundColor, Qt::SolidPattern ) );
+  // apply any datadefined overrides
+  QgsExpressionContext context = createExpressionContext();
+  refreshBackgroundColor( true, context );
 }
 
 void QgsComposerItem::setBlendMode( const QPainter::CompositionMode blendMode )
@@ -891,6 +904,48 @@ void QgsComposerItem::refreshTransparency( const bool updateItem, const QgsExpre
   // Set the QGraphicItem's opacity
   setOpacity( 1. - ( transparency / 100. ) );
 
+  if ( updateItem )
+  {
+    update();
+  }
+}
+
+void QgsComposerItem::refreshFrameColor( const bool updateItem, const QgsExpressionContext& context )
+{
+  //data defined outline color set?
+  bool ok = false;
+  QColor frameColor = mProperties.valueAsColor( QgsComposerObject::FrameColor, context, mFrameColor, &ok );
+  if ( ok )
+  {
+    QPen itemPen = pen();
+    itemPen.setColor( frameColor );
+    setPen( itemPen );
+  }
+  else
+  {
+    QPen itemPen = pen();
+    itemPen.setColor( mFrameColor );
+    setPen( itemPen );
+  }
+  if ( updateItem )
+  {
+    update();
+  }
+}
+
+void QgsComposerItem::refreshBackgroundColor( const bool updateItem, const QgsExpressionContext& context )
+{
+  //data defined color set?
+  bool ok = false;
+  QColor backgroundColor = mProperties.valueAsColor( QgsComposerObject::BackgroundColor, context, mBackgroundColor, &ok );
+  if ( ok )
+  {
+    setBrush( QBrush( backgroundColor, Qt::SolidPattern ) );
+  }
+  else
+  {
+    setBrush( QBrush( mBackgroundColor, Qt::SolidPattern ) );
+  }
   if ( updateItem )
   {
     update();
@@ -1086,6 +1141,14 @@ void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataD
   if ( property == QgsComposerObject::BlendMode || property == QgsComposerObject::AllProperties )
   {
     refreshBlendMode( *evalContext );
+  }
+  if ( property == QgsComposerObject::FrameColor || property == QgsComposerObject::AllProperties )
+  {
+    refreshFrameColor( false, *evalContext );
+  }
+  if ( property == QgsComposerObject::BackgroundColor || property == QgsComposerObject::AllProperties )
+  {
+    refreshBackgroundColor( false, *evalContext );
   }
   if ( property == QgsComposerObject::ExcludeFromExports || property == QgsComposerObject::AllProperties )
   {

@@ -59,6 +59,8 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
       Transparency, //!< Item transparency
       BlendMode, //!< Item blend mode
       ExcludeFromExports, //!< Exclude item from exports
+      FrameColor, //!< Item frame color
+      BackgroundColor, //!< Item background color
       //composer map
       MapRotation, //!< Map rotation
       MapScale, //!< Map scale

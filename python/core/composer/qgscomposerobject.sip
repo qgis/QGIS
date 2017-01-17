@@ -32,6 +32,8 @@ class QgsComposerObject : QObject, QgsExpressionContextGenerator
       Transparency, /*!< item transparency */
       BlendMode, /*!< item blend mode */
       ExcludeFromExports, /*!< exclude item from exports */
+      FrameColor, //!< Item frame color
+      BackgroundColor, //!< Item background color
       //composer map
       MapRotation, /*!< map rotation */
       MapScale, /*!< map scale */

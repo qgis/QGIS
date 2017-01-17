@@ -541,6 +541,10 @@ void QgsComposerItemWidget::populateDataDefinedButtons()
       QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::blendModesDesc() );
   mConfigObject->registerDataDefinedButton( mExcludePrintsDDBtn, QgsComposerObject::ExcludeFromExports,
       QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::boolDesc() );
+  mConfigObject->registerDataDefinedButton( mItemFrameColorDDBtn, QgsComposerObject::FrameColor,
+      QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::colorAlphaDesc() );
+  mConfigObject->registerDataDefinedButton( mItemBackgroundColorDDBtn, QgsComposerObject::BackgroundColor,
+      QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::colorAlphaDesc() );
 }
 
 void QgsComposerItemWidget::setValuesForGuiElements()

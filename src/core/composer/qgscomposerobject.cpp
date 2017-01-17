@@ -40,6 +40,8 @@ const QgsPropertyDefinition QgsComposerObject::sPropertyNameMap
   { QgsComposerObject::Transparency, "dataDefinedTransparency" },
   { QgsComposerObject::BlendMode, "dataDefinedBlendMode" },
   { QgsComposerObject::ExcludeFromExports, "dataDefinedExcludeExports"},
+  { QgsComposerObject::FrameColor, "dataDefinedFrameColor"},
+  { QgsComposerObject::BackgroundColor, "dataDefinedBackgroundColor"},
   { QgsComposerObject::MapRotation, "dataDefinedMapRotation" },
   { QgsComposerObject::MapScale, "dataDefinedMapScale" },
   { QgsComposerObject::MapXMin, "dataDefinedMapXMin" },
