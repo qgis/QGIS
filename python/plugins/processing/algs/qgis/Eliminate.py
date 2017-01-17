@@ -3,6 +3,7 @@
 """
 ***************************************************************************
     Eliminate.py
+    Deprecated as of Jan 2017, use EliminateSelection instead
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2013 by Bernhard Ströbl
@@ -61,6 +62,12 @@ class Eliminate(GeoAlgorithm):
     MODE_LARGEST_AREA = 0
     MODE_SMALLEST_AREA = 1
     MODE_BOUNDARY = 2
+
+    def __init__(self):
+        GeoAlgorithm.__init__(self)
+        # this algorithm is deprecated - use EliminateSelection instead
+        self.showInToolbox = False
+        self.showInModeler = False
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'eliminate.png'))
