@@ -51,6 +51,9 @@ class QgsComposerObject : QObject, QgsExpressionContextGenerator
       PictureSvgOutlineWidth, //!< SVG outline width
       //html item
       SourceUrl /*!< html source url */
+      //legend item
+      LegendTitle, //!< Legend title
+      LegendColumnCount, //!< Legend column count
     };
 
     /** Specifies whether the value returned by a function should be the original, user

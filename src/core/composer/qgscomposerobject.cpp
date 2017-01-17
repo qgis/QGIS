@@ -61,6 +61,8 @@ const QgsPropertyDefinition QgsComposerObject::sPropertyNameMap
   { QgsComposerObject::PictureSvgBackgroundColor, "dataDefinedSvgBackgroundColor" },
   { QgsComposerObject::PictureSvgOutlineColor, "dataDefinedSvgOutlineColor" },
   { QgsComposerObject::PictureSvgOutlineWidth, "dataDefinedSvgOutlineWidth" },
+  { QgsComposerObject::LegendTitle, "dataDefinedLegendTitle" },
+  { QgsComposerObject::LegendColumnCount, "dataDefinedLegendColumns" },
 };
 
 

@@ -265,6 +265,7 @@ void QgsComposerLegend::setLegendFilterByMapEnabled( bool enabled )
 
 void QgsComposerLegend::setTitle( const QString& t )
 {
+  mTitle = t;
   mSettings.setTitle( t );
 
   if ( mComposition && id().isEmpty() )
@@ -273,7 +274,7 @@ void QgsComposerLegend::setTitle( const QString& t )
     mComposition->itemsModel()->updateItemDisplayName( this );
   }
 }
-QString QgsComposerLegend::title() const { return mSettings.title(); }
+QString QgsComposerLegend::title() const { return mTitle; }
 
 Qt::AlignmentFlag QgsComposerLegend::titleAlignment() const { return mSettings.titleAlignment(); }
 void QgsComposerLegend::setTitleAlignment( Qt::AlignmentFlag alignment ) { mSettings.setTitleAlignment( alignment ); }
@@ -315,8 +316,8 @@ void QgsComposerLegend::setWmsLegendHeight( double h ) { mSettings.setWmsLegendS
 void QgsComposerLegend::setWrapChar( const QString& t ) { mSettings.setWrapChar( t ); }
 QString QgsComposerLegend::wrapChar() const {return mSettings.wrapChar(); }
 
-int QgsComposerLegend::columnCount() const { return mSettings.columnCount(); }
-void QgsComposerLegend::setColumnCount( int c ) { mSettings.setColumnCount( c ); }
+int QgsComposerLegend::columnCount() const { return mColumnCount; }
+void QgsComposerLegend::setColumnCount( int c ) { mColumnCount = c; mSettings.setColumnCount( c ); }
 
 bool QgsComposerLegend::splitLayer() const { return mSettings.splitLayer(); }
 void QgsComposerLegend::setSplitLayer( bool s ) { mSettings.setSplitLayer( s ); }
@@ -362,9 +363,9 @@ bool QgsComposerLegend::writeXml( QDomElement& elem, QDomDocument & doc ) const
   elem.appendChild( composerLegendElem );
 
   //write general properties
-  composerLegendElem.setAttribute( QStringLiteral( "title" ), mSettings.title() );
+  composerLegendElem.setAttribute( QStringLiteral( "title" ), mTitle );
   composerLegendElem.setAttribute( QStringLiteral( "titleAlignment" ), QString::number( static_cast< int >( mSettings.titleAlignment() ) ) );
-  composerLegendElem.setAttribute( QStringLiteral( "columnCount" ), QString::number( mSettings.columnCount() ) );
+  composerLegendElem.setAttribute( QStringLiteral( "columnCount" ), QString::number( mColumnCount ) );
   composerLegendElem.setAttribute( QStringLiteral( "splitLayer" ), QString::number( mSettings.splitLayer() ) );
   composerLegendElem.setAttribute( QStringLiteral( "equalColumnWidth" ), QString::number( mSettings.equalColumnWidth() ) );
 
@@ -462,14 +463,16 @@ bool QgsComposerLegend::readXml( const QDomElement& itemElem, const QDomDocument
   }
 
   //read general properties
-  mSettings.setTitle( itemElem.attribute( QStringLiteral( "title" ) ) );
+  mTitle = itemElem.attribute( QStringLiteral( "title" ) );
+  mSettings.setTitle( mTitle );
   if ( !itemElem.attribute( QStringLiteral( "titleAlignment" ) ).isEmpty() )
   {
     mSettings.setTitleAlignment( static_cast< Qt::AlignmentFlag >( itemElem.attribute( QStringLiteral( "titleAlignment" ) ).toInt() ) );
   }
   int colCount = itemElem.attribute( QStringLiteral( "columnCount" ), QStringLiteral( "1" ) ).toInt();
   if ( colCount < 1 ) colCount = 1;
-  mSettings.setColumnCount( colCount );
+  mColumnCount = colCount;
+  mSettings.setColumnCount( mColumnCount );
   mSettings.setSplitLayer( itemElem.attribute( QStringLiteral( "splitLayer" ), QStringLiteral( "0" ) ).toInt() == 1 );
   mSettings.setEqualColumnWidth( itemElem.attribute( QStringLiteral( "equalColumnWidth" ), QStringLiteral( "0" ) ).toInt() == 1 );
 
@@ -640,6 +643,42 @@ void QgsComposerLegend::setComposerMap( const QgsComposerMap* map )
 void QgsComposerLegend::invalidateCurrentMap()
 {
   setComposerMap( nullptr );
+}
+
+void QgsComposerLegend::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext* context )
+{
+  QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext* evalContext = context ? context : &scopedContext;
+
+  bool forceUpdate = false;
+  //updates data defined properties and redraws item to match
+  if ( property == QgsComposerObject::LegendTitle || property == QgsComposerObject::AllProperties )
+  {
+    bool ok = false;
+    QString t = mProperties.valueAsString( QgsComposerObject::LegendTitle, *evalContext, mTitle, &ok );
+    if ( ok )
+    {
+      mSettings.setTitle( t );
+      forceUpdate = true;
+    }
+  }
+  if ( property == QgsComposerObject::LegendColumnCount || property == QgsComposerObject::AllProperties )
+  {
+    bool ok = false;
+    int cols = mProperties.valueAsInt( QgsComposerObject::LegendColumnCount, *evalContext, mColumnCount, &ok );
+    if ( ok && cols >= 0 )
+    {
+      mSettings.setColumnCount( cols );
+      forceUpdate = true;
+    }
+  }
+  if ( forceUpdate )
+  {
+    adjustBoxSize();
+    update();
+  }
+
+  QgsComposerObject::refreshDataDefinedProperty( property, context );
 }
 
 void QgsComposerLegend::mapLayerStyleOverridesChanged()

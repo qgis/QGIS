@@ -100,6 +100,11 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
     connect( &legend->composition()->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateFilterLegendByAtlasButton() ) );
   }
 
+  registerDataDefinedButton( mLegendTitleDDBtn, QgsComposerObject::LegendTitle,
+                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::anyStringDesc() );
+  registerDataDefinedButton( mColumnsDDBtn, QgsComposerObject::LegendColumnCount,
+                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::intPosOneDesc() );
+
   setGuiElements();
 
   connect( mItemTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
@@ -160,6 +165,8 @@ void QgsComposerLegendWidget::setGuiElements()
   blockAllSignals( false );
 
   on_mCheckBoxAutoUpdate_stateChanged( mLegend->autoUpdateModel() ? Qt::Checked : Qt::Unchecked );
+  updateDataDefinedButton( mLegendTitleDDBtn );
+  updateDataDefinedButton( mColumnsDDBtn );
 }
 
 void QgsComposerLegendWidget::on_mWrapCharLineEdit_textChanged( const QString &text )

@@ -24,7 +24,9 @@ from qgis.core import (QgsComposerLegend,
                        QgsMarkerSymbol,
                        QgsSingleSymbolRenderer,
                        QgsRectangle,
-                       QgsProject
+                       QgsProject,
+                       QgsComposerObject,
+                       QgsExpressionBasedProperty
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -199,6 +201,42 @@ class TestQgsComposerLegend(unittest.TestCase):
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
+
+    def testDataDefinedTitle(self):
+        mapSettings = QgsMapSettings()
+
+        composition = QgsComposition(mapSettings, QgsProject.instance())
+        composition.setPaperSize(297, 210)
+
+        legend = QgsComposerLegend(composition)
+        composition.addComposerLegend(legend)
+
+        legend.setTitle('original')
+        self.assertEqual(legend.title(), 'original')
+        self.assertEqual(legend.legendSettings().title(), 'original')
+
+        legend.dataDefinedProperties().setProperty(QgsComposerObject.LegendTitle, QgsExpressionBasedProperty("'new'"))
+        legend.refreshDataDefinedProperty()
+        self.assertEqual(legend.title(), 'original')
+        self.assertEqual(legend.legendSettings().title(), 'new')
+
+    def testDataDefinedColumnCount(self):
+        mapSettings = QgsMapSettings()
+
+        composition = QgsComposition(mapSettings, QgsProject.instance())
+        composition.setPaperSize(297, 210)
+
+        legend = QgsComposerLegend(composition)
+        composition.addComposerLegend(legend)
+
+        legend.setColumnCount(2)
+        self.assertEqual(legend.columnCount(), 2)
+        self.assertEqual(legend.legendSettings().columnCount(), 2)
+
+        legend.dataDefinedProperties().setProperty(QgsComposerObject.LegendColumnCount, QgsExpressionBasedProperty("5"))
+        legend.refreshDataDefinedProperty()
+        self.assertEqual(legend.columnCount(), 2)
+        self.assertEqual(legend.legendSettings().columnCount(), 5)
 
 if __name__ == '__main__':
     unittest.main()

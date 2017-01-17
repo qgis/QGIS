@@ -78,6 +78,9 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
       PictureSvgOutlineWidth, //!< SVG outline width
       //html item
       SourceUrl, //!< Html source url
+      //legend item
+      LegendTitle, //!< Legend title
+      LegendColumnCount, //!< Legend column count
     };
 
     static const QgsPropertyDefinition sPropertyNameMap;
