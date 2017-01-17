@@ -636,14 +636,8 @@ void QgsComposerMapGrid::draw( QPainter* p )
   p->scale( 1 / dotsPerMM, 1 / dotsPerMM ); //scale painter from mm to dots
 
   //setup render context
-  QgsMapSettings ms = mComposerMap->composition()->mapSettings();
-  //context units should be in dots
-  ms.setOutputSize( QSizeF( mComposerMap->rect().width() * dotsPerMM, mComposerMap->rect().height() * dotsPerMM ).toSize() );
-  ms.setExtent( *mComposerMap->currentMapExtent() );
-  ms.setOutputDpi( p->device()->logicalDpiX() );
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
+  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, *p );
   context.setForceVectorOutput( true );
-  context.setPainter( p );
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 
