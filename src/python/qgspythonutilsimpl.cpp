@@ -619,11 +619,11 @@ QString QgsPythonUtilsImpl::homePythonPath()
   QString settingsDir = QgsApplication::qgisSettingsDirPath();
   if ( QDir::cleanPath( settingsDir ) == QDir::homePath() + QStringLiteral( "/.qgis3" ) )
   {
-    return QStringLiteral( "b\"%1/.qgis3/python\".decode('utf-8')" ).arg( QDir::homePath() );
+    return QStringLiteral( "\"%1/.qgis3/python\"" ).arg( QDir::homePath() );
   }
   else
   {
-    return "b\"" + settingsDir.replace( '\\', QLatin1String( "\\\\" ) ) + "python\".decode('utf-8')";
+    return "\"" + settingsDir.replace( '\\', QLatin1String( "\\\\" ) ) + "python\"";
   }
 }
 
