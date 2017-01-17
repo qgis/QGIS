@@ -64,6 +64,9 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
   mPreviewModeComboBox->insertItem( 1, tr( "Render" ) );
   mPreviewModeComboBox->insertItem( 2, tr( "Rectangle" ) );
 
+  mCrsSelector->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
+  mCrsSelector->setNotSetText( tr( "Use project CRS" ) );
+
   // follow preset combo
   mFollowVisibilityPresetCombo->setModel( new QStringListModel( mFollowVisibilityPresetCombo ) );
   connect( mFollowVisibilityPresetCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( followVisibilityPresetSelected( int ) ) );
@@ -270,7 +273,7 @@ void QgsComposerMapWidget::mapCrsChanged( const QgsCoordinateReferenceSystem& cr
     return;
   }
 
-  if ( mComposerMap->crs() == crs )
+  if ( mComposerMap->presetCrs() == crs )
     return;
 
   // try to reproject to maintain extent
@@ -280,7 +283,7 @@ void QgsComposerMapWidget::mapCrsChanged( const QgsCoordinateReferenceSystem& cr
   QgsRectangle newExtent;
   try
   {
-    QgsCoordinateTransform xForm( oldCrs, crs );
+    QgsCoordinateTransform xForm( oldCrs, crs.isValid() ? crs : QgsProject::instance()->crs() );
     QgsRectangle prevExtent = *mComposerMap->currentMapExtent();
     newExtent = xForm.transformBoundingBox( prevExtent );
     updateExtent = true;
@@ -605,7 +608,7 @@ void QgsComposerMapWidget::updateGuiElements()
 
   blockAllSignals( true );
 
-  whileBlocking( mCrsSelector )->setCrs( mComposerMap->crs() );
+  whileBlocking( mCrsSelector )->setCrs( mComposerMap->presetCrs() );
 
   //width, height, scale
   double scale = mComposerMap->scale();

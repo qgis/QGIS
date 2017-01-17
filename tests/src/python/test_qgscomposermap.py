@@ -156,10 +156,12 @@ class TestQgsComposerMap(unittest.TestCase):
         composition.addComposerMap(map)
 
         self.assertEqual(map.crs().authid(), 'EPSG:4326')
+        self.assertFalse(map.presetCrs().isValid())
 
         # overwrite CRS
         map.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
         self.assertEqual(map.crs().authid(), 'EPSG:3857')
+        self.assertEqual(map.presetCrs().authid(), 'EPSG:3857')
         checker = QgsCompositionChecker('composermap_crs3857', composition)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testComposition()
@@ -167,13 +169,19 @@ class TestQgsComposerMap(unittest.TestCase):
 
         # overwrite CRS
         map.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(map.presetCrs().authid(), 'EPSG:4326')
+        self.assertEqual(map.crs().authid(), 'EPSG:4326')
         rectangle = QgsRectangle(-124, 17, -78, 52)
         map.zoomToExtent(rectangle)
-        self.assertEqual(map.crs().authid(), 'EPSG:4326')
         checker = QgsCompositionChecker('composermap_crs4326', composition)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testComposition()
         self.assertTrue(result, message)
+
+        # change back to project CRS
+        map.setCrs(QgsCoordinateReferenceSystem())
+        self.assertEqual(map.crs().authid(), 'EPSG:4326')
+        self.assertFalse(map.presetCrs().isValid())
 
     # Fails because addItemsFromXml has been commented out in sip
     @unittest.expectedFailure

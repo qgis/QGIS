@@ -128,6 +128,7 @@ class QgsComposerMap : QgsComposerItem
     // QgsRectangle* currentMapExtent();
 
     QgsCoordinateReferenceSystem crs() const;
+    QgsCoordinateReferenceSystem presetCrs() const;
     void setCrs( const QgsCoordinateReferenceSystem& crs );
 
     PreviewMode previewMode() const;

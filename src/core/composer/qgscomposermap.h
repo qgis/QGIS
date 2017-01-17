@@ -168,15 +168,33 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QgsRectangle* currentMapExtent();
 
     /**
-     * Returns the map's coordinate reference system.
+     * Returns coordinate reference system used for rendering the map.
+     * This will match the presetCrs() if that is set, or if a preset
+     * CRS is not set then the map's CRS will follow the composition's
+     * project's CRS.
      * @note added in QGIS 3.0
+     * @see presetCrs()
      * @see setCrs()
      */
     QgsCoordinateReferenceSystem crs() const;
 
     /**
-     * Sets the map's coordinate reference system.
+     * Returns the map's preset coordinate reference system. If set, this
+     * CRS will be used to render the map regardless of any project CRS
+     * setting. If the returned CRS is not valid then the project CRS
+     * will be used to render the map.
+     * @note added in QGIS 3.0
      * @see crs()
+     * @see setCrs()
+     */
+    QgsCoordinateReferenceSystem presetCrs() const { return mCrs; }
+
+    /**
+     * Sets the map's preset coordinate reference system. If a valid CRS is
+     * set, this CRS will be used to render the map regardless of any project CRS
+     * setting. If the CRS is not valid then the project CRS will be used to render the map.
+     * @see crs()
+     * @see presetCrs()
      * @note added in QGIS 3.0
      */
     void setCrs( const QgsCoordinateReferenceSystem& crs );

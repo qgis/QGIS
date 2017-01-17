@@ -124,9 +124,6 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
 
 void QgsComposerMap::init()
 {
-  if ( mComposition && mComposition->project() )
-    mCrs = mComposition->project()->crs();
-
   mGridStack = new QgsComposerMapGridStack( this );
   mOverviewStack = new QgsComposerMapOverviewStack( this );
   connectUpdateSlot();
@@ -204,14 +201,15 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, QSizeF
 QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF size, int dpi ) const
 {
   QgsExpressionContext expressionContext = createExpressionContext();
+  QgsCoordinateReferenceSystem renderCrs = crs();
 
   QgsMapSettings jobMapSettings;
-  jobMapSettings.setDestinationCrs( mCrs );
+  jobMapSettings.setDestinationCrs( renderCrs );
   jobMapSettings.setCrsTransformEnabled( true );
   jobMapSettings.setExtent( extent );
   jobMapSettings.setOutputSize( size.toSize() );
   jobMapSettings.setOutputDpi( dpi );
-  jobMapSettings.setMapUnits( mCrs.mapUnits() );
+  jobMapSettings.setMapUnits( renderCrs.mapUnits() );
   jobMapSettings.setBackgroundColor( Qt::transparent );
   jobMapSettings.setRotation( mEvaluatedMapRotation );
 
@@ -253,7 +251,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   jobMapSettings.setFlag( QgsMapSettings::DrawSelection, false );
   jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mComposition->useAdvancedEffects() ); // respect the composition's useAdvancedEffects flag
 
-  jobMapSettings.datumTransformStore().setDestinationCrs( mCrs );
+  jobMapSettings.datumTransformStore().setDestinationCrs( renderCrs );
 
   return jobMapSettings;
 }
@@ -873,7 +871,11 @@ QgsRectangle* QgsComposerMap::currentMapExtent()
 
 QgsCoordinateReferenceSystem QgsComposerMap::crs() const
 {
-  return mCrs;
+  if ( mCrs.isValid() )
+    return mCrs;
+  else if ( mComposition && mComposition->project() )
+    return mComposition->project()->crs();
+  return QgsCoordinateReferenceSystem();
 }
 
 void QgsComposerMap::setCrs( const QgsCoordinateReferenceSystem& crs )
@@ -1271,9 +1273,12 @@ bool QgsComposerMap::writeXml( QDomElement& elem, QDomDocument & doc ) const
   extentElem.setAttribute( QStringLiteral( "ymax" ), qgsDoubleToString( mExtent.yMaximum() ) );
   composerMapElem.appendChild( extentElem );
 
-  QDomElement crsElem = doc.createElement( QStringLiteral( "crs" ) );
-  mCrs.writeXml( crsElem, doc );
-  composerMapElem.appendChild( crsElem );
+  if ( mCrs.isValid() )
+  {
+    QDomElement crsElem = doc.createElement( QStringLiteral( "crs" ) );
+    mCrs.writeXml( crsElem, doc );
+    composerMapElem.appendChild( crsElem );
+  }
 
   // follow map theme
   composerMapElem.setAttribute( QStringLiteral( "followPreset" ), mFollowVisibilityPreset ? "true" : "false" );
@@ -1381,6 +1386,10 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
   {
     QDomElement crsElem = crsNodeList.at( 0 ).toElement();
     mCrs.readXml( crsElem );
+  }
+  else
+  {
+    mCrs = QgsCoordinateReferenceSystem();
   }
 
   //map rotation

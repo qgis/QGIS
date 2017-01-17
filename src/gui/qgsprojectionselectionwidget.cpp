@@ -223,6 +223,7 @@ void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
     }
     case QgsProjectionSelectionWidget::CrsNotSet:
       emit cleared();
+      emit crsChanged( QgsCoordinateReferenceSystem() );
       return;
   }
 }
