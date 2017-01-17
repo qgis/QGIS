@@ -52,9 +52,6 @@ QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
     , mNorthOffset( 0.0 )
     , mResizeMode( QgsComposerPicture::Zoom )
     , mPictureAnchor( UpperLeft )
-    , mSvgFillColor( QColor( 255, 255, 255 ) )
-    , mSvgBorderColor( QColor( 0, 0, 0 ) )
-    , mSvgBorderWidth( 0.2 )
     , mHasExpressionError( false )
     , mLoadingSvg( false )
 {
@@ -71,9 +68,6 @@ QgsComposerPicture::QgsComposerPicture()
     , mNorthOffset( 0.0 )
     , mResizeMode( QgsComposerPicture::Zoom )
     , mPictureAnchor( UpperLeft )
-    , mSvgFillColor( QColor( 255, 255, 255 ) )
-    , mSvgBorderColor( QColor( 0, 0, 0 ) )
-    , mSvgBorderWidth( 0.2 )
     , mHasExpressionError( false )
     , mLoadingSvg( false )
 {
@@ -369,7 +363,11 @@ void QgsComposerPicture::loadLocalPicture( const QString &path )
     if ( sourceFileSuffix.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
     {
       //try to open svg
-      const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( pic.fileName(), rect().width(), mSvgFillColor, mSvgBorderColor, mSvgBorderWidth,
+      QgsExpressionContext context = createExpressionContext();
+      QColor fillColor = mProperties.valueAsColor( QgsComposerObject::PictureSvgBackgroundColor, context, mSvgFillColor );
+      QColor outlineColor = mProperties.valueAsColor( QgsComposerObject::PictureSvgOutlineColor, context, mSvgBorderColor );
+      double outlineWidth = mProperties.valueAsDouble( QgsComposerObject::PictureSvgOutlineWidth, context, mSvgBorderWidth );
+      const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( pic.fileName(), rect().width(), fillColor, outlineColor, outlineWidth,
                                      1.0 );
       mSVG.load( svgContent );
       if ( mSVG.isValid() )
@@ -715,7 +713,9 @@ void QgsComposerPicture::refreshDataDefinedProperty( const QgsComposerObject::Da
   QgsExpressionContext scopedContext = createExpressionContext();
   const QgsExpressionContext* evalContext = context ? context : &scopedContext;
 
-  if ( property == QgsComposerObject::PictureSource || property == QgsComposerObject::AllProperties )
+  if ( property == QgsComposerObject::PictureSource || property == QgsComposerObject::PictureSvgBackgroundColor
+       || property == QgsComposerObject::PictureSvgOutlineColor || property == QgsComposerObject::PictureSvgOutlineWidth
+       || property == QgsComposerObject::AllProperties )
   {
     refreshPicture( evalContext );
   }

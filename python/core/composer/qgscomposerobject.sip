@@ -46,6 +46,9 @@ class QgsComposerObject : QObject, QgsExpressionContextGenerator
       MapStylePreset, /*!< layer and style visibility preset */
       //composer picture
       PictureSource, /*!< picture source url */
+      PictureSvgBackgroundColor, //!< SVG background color
+      PictureSvgOutlineColor, //!< SVG outline color
+      PictureSvgOutlineWidth, //!< SVG outline width
       //html item
       SourceUrl /*!< html source url */
     };

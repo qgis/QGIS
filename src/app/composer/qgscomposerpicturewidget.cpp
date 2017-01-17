@@ -77,7 +77,7 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   connect( mPicture, SIGNAL( pictureRotationChanged( double ) ), this, SLOT( setPicRotationSpinValue( double ) ) );
 
   //connections for data defined buttons
-  connect( mSourceDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPictureLineEdit, SLOT( setDisabled( bool ) ) );
+  connect( mSourceDDBtn, &QgsDataDefinedButtonV2::activated, mPictureLineEdit, &QLineEdit::setDisabled );
 }
 
 QgsComposerPictureWidget::~QgsComposerPictureWidget()
@@ -702,6 +702,18 @@ void QgsComposerPictureWidget::populateDataDefinedButtons()
 {
   registerDataDefinedButton( mSourceDDBtn, QgsComposerObject::PictureSource,
                              QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::anyStringDesc() );
+  mFillColorDDBtn->blockSignals( true );
+  registerDataDefinedButton( mFillColorDDBtn, QgsComposerObject::PictureSvgBackgroundColor,
+                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::colorAlphaDesc() );
+  mFillColorDDBtn->blockSignals( false );
+  mOutlineColorDDBtn->blockSignals( true );
+  registerDataDefinedButton( mOutlineColorDDBtn, QgsComposerObject::PictureSvgOutlineColor,
+                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::colorAlphaDesc() );
+  mOutlineColorDDBtn->blockSignals( false );
+  mOutlineWidthDDBtn->blockSignals( true );
+  registerDataDefinedButton( mOutlineWidthDDBtn, QgsComposerObject::PictureSvgOutlineWidth,
+                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::doublePosDesc() );
+  mOutlineWidthDDBtn->blockSignals( false );
 
   //initial state of controls - disable related controls when dd buttons are active
   mPictureLineEdit->setEnabled( !mSourceDDBtn->isActive() );

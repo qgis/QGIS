@@ -58,6 +58,9 @@ const QgsPropertyDefinition QgsComposerObject::sPropertyNameMap
   { QgsComposerObject::PaperHeight, "dataDefinedPaperHeight" },
   { QgsComposerObject::NumPages, "dataDefinedNumPages" },
   { QgsComposerObject::PaperOrientation, "dataDefinedPaperOrientation" },
+  { QgsComposerObject::PictureSvgBackgroundColor, "dataDefinedSvgBackgroundColor" },
+  { QgsComposerObject::PictureSvgOutlineColor, "dataDefinedSvgOutlineColor" },
+  { QgsComposerObject::PictureSvgOutlineWidth, "dataDefinedSvgOutlineWidth" },
 };
 
 

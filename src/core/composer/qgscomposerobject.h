@@ -73,8 +73,11 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
       MapStylePreset, //!< Layer and style map theme
       //composer picture
       PictureSource, //!< Picture source url
+      PictureSvgBackgroundColor, //!< SVG background color
+      PictureSvgOutlineColor, //!< SVG outline color
+      PictureSvgOutlineWidth, //!< SVG outline width
       //html item
-      SourceUrl //!< Html source url
+      SourceUrl, //!< Html source url
     };
 
     static const QgsPropertyDefinition sPropertyNameMap;
