@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include "qgsrectangle.h"
+#include "qgscoordinatereferencesystem.h"
 #include <QFont>
 #include <QGraphicsRectItem>
 
@@ -165,6 +166,12 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     //! @note not available in python bindings
     QgsRectangle* currentMapExtent();
+
+    /**
+     * Returns the map's coordinate reference system.
+     * @note added in QGIS 3.0
+     */
+    QgsCoordinateReferenceSystem crs() const;
 
     PreviewMode previewMode() const {return mPreviewMode;}
     void setPreviewMode( PreviewMode m );

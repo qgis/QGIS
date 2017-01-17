@@ -208,7 +208,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   jobMapSettings.setExtent( extent );
   jobMapSettings.setOutputSize( size.toSize() );
   jobMapSettings.setOutputDpi( dpi );
-  jobMapSettings.setMapUnits( ms.mapUnits() );
+  jobMapSettings.setMapUnits( crs().mapUnits() );
   jobMapSettings.setBackgroundColor( Qt::transparent );
   jobMapSettings.setOutputImageFormat( ms.outputImageFormat() );
   jobMapSettings.setRotation( mEvaluatedMapRotation );
@@ -233,7 +233,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   }
   jobMapSettings.setLayers( layers );
   jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( expressionContext ) );
-  jobMapSettings.setDestinationCrs( ms.destinationCrs() );
+  jobMapSettings.setDestinationCrs( crs() );
   jobMapSettings.setCrsTransformEnabled( ms.hasCrsTransformEnabled() );
   jobMapSettings.setFlags( ms.flags() );
   jobMapSettings.setFlag( QgsMapSettings::DrawSelection, false );
@@ -625,7 +625,7 @@ QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender( const QgsExp
 double QgsComposerMap::scale() const
 {
   QgsScaleCalculator calculator;
-  calculator.setMapUnits( mComposition->mapSettings().mapUnits() );
+  calculator.setMapUnits( crs().mapUnits() );
   calculator.setDpi( 25.4 );  //QGraphicsView units are mm
   return calculator.calculate( *currentMapExtent(), rect().width() );
 }
@@ -717,7 +717,7 @@ void QgsComposerMap::zoomContent( const double factor, const QPointF point, cons
     //and also apply to the map's original extent (see #9602)
     //we can't use the scaleRatio calculated earlier, as the scale can vary depending on extent for geographic coordinate systems
     QgsScaleCalculator calculator;
-    calculator.setMapUnits( mComposition->mapSettings().mapUnits() );
+    calculator.setMapUnits( crs().mapUnits() );
     calculator.setDpi( 25.4 );  //QGraphicsView units are mm
     double scaleRatio = scale() / calculator.calculate( mExtent, rect().width() );
     mExtent.scale( scaleRatio );
@@ -871,6 +871,18 @@ QgsRectangle* QgsComposerMap::currentMapExtent()
   }
 }
 
+QgsCoordinateReferenceSystem QgsComposerMap::crs() const
+{
+  if ( mComposition )
+  {
+    return mComposition->mapSettings().destinationCrs();
+  }
+  else
+  {
+    return QgsCoordinateReferenceSystem();
+  }
+}
+
 const QgsRectangle* QgsComposerMap::currentMapExtent() const
 {
   //const version
@@ -905,7 +917,7 @@ void QgsComposerMap::setNewScale( double scaleDenominator, bool forceUpdate )
     //and also apply to the map's original extent (see #9602)
     //we can't use the scaleRatio calculated earlier, as the scale can vary depending on extent for geographic coordinate systems
     QgsScaleCalculator calculator;
-    calculator.setMapUnits( mComposition->mapSettings().mapUnits() );
+    calculator.setMapUnits( crs().mapUnits() );
     calculator.setDpi( 25.4 );  //QGraphicsView units are mm
     scaleRatio = scaleDenominator / calculator.calculate( mExtent, rect().width() );
     mExtent.scale( scaleRatio );
@@ -1826,9 +1838,10 @@ QgsExpressionContext QgsComposerMap::createExpressionContext() const
 
   if ( mComposition )
   {
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs" ), mComposition->mapSettings().destinationCrs().authid(), true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_definition" ), mComposition->mapSettings().destinationCrs().toProj4(), true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_units" ), QgsUnitTypes::toString( mComposition->mapSettings().mapUnits() ), true ) );
+    QgsCoordinateReferenceSystem mapCrs = crs();
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs" ), mapCrs.authid(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_definition" ), mapCrs.toProj4(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_units" ), QgsUnitTypes::toString( mapCrs.mapUnits() ), true ) );
   }
 
   context.appendScope( scope );
@@ -1979,12 +1992,12 @@ QPointF QgsComposerMap::composerMapPosForItem( const QgsAnnotation* annotation )
 
   mapX = annotation->mapPosition().x();
   mapY = annotation->mapPosition().y();
-  QgsCoordinateReferenceSystem crs = annotation->mapPositionCrs();
+  QgsCoordinateReferenceSystem annotationCrs = annotation->mapPositionCrs();
 
-  if ( crs != mComposition->mapSettings().destinationCrs() )
+  if ( annotationCrs != crs() )
   {
     //need to reproject
-    QgsCoordinateTransform t( crs, mComposition->mapSettings().destinationCrs() );
+    QgsCoordinateTransform t( annotationCrs, crs() );
     double z = 0.0;
     t.transformInPlace( mapX, mapY, z );
   }

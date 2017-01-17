@@ -127,6 +127,8 @@ class QgsComposerMap : QgsComposerItem
     //! @note not available in python bindings
     // QgsRectangle* currentMapExtent();
 
+    QgsCoordinateReferenceSystem crs() const;
+
     PreviewMode previewMode() const;
     void setPreviewMode( PreviewMode m );
 

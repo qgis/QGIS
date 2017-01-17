@@ -704,7 +704,7 @@ void QgsComposerLegend::doUpdateFilterByMap()
     QgsGeometry filterPolygon;
     if ( mInAtlas )
     {
-      filterPolygon = composition()->atlasComposition().currentGeometry( composition()->mapSettings().destinationCrs() );
+      filterPolygon = composition()->atlasComposition().currentGeometry( mComposerMap->crs() );
     }
     mLegendModel->setLegendFilter( &ms, /* useExtent */ mInAtlas || mLegendFilterByMap, filterPolygon, /* useExpressions */ true );
   }

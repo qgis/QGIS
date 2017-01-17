@@ -651,7 +651,7 @@ void QgsComposerMapGrid::draw( QPainter* p )
   QList< QPair< double, QLineF > > horizontalLines;
 
   //is grid in a different crs than map?
-  if ( mGridUnit == MapUnit && mCRS.isValid() && mCRS != ms.destinationCrs() )
+  if ( mGridUnit == MapUnit && mCRS.isValid() && mCRS != mComposerMap->crs() )
   {
     drawGridCrsTransform( context, dotsPerMM, horizontalLines, verticalLines );
   }
@@ -1416,7 +1416,7 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
   }
   else if ( mComposerMap && mComposerMap->composition() )
   {
-    geographic = mComposerMap->composition()->mapSettings().destinationCrs().isGeographic();
+    geographic = mComposerMap->crs().isGeographic();
   }
 
   if ( geographic && coord == QgsComposerMapGrid::Longitude &&
@@ -2072,7 +2072,7 @@ void QgsComposerMapGrid::calculateMaxExtension( double& top, double& right, doub
   //collect grid lines
   QList< QPair< double, QLineF > > verticalLines;
   QList< QPair< double, QLineF > > horizontalLines;
-  if ( mGridUnit == MapUnit && mCRS.isValid() && mCRS != ms.destinationCrs() )
+  if ( mGridUnit == MapUnit && mCRS.isValid() && mCRS != mComposerMap->crs() )
   {
     drawGridCrsTransform( context, 0, horizontalLines, verticalLines, false );
   }
@@ -2340,7 +2340,7 @@ int QgsComposerMapGrid::crsGridParams( QgsRectangle& crsRect, QgsCoordinateTrans
 
   try
   {
-    QgsCoordinateTransform tr( mComposerMap->composition()->mapSettings().destinationCrs(), mCRS );
+    QgsCoordinateTransform tr( mComposerMap->crs(), mCRS );
     QPolygonF mapPolygon = mComposerMap->transformedMapPolygon();
     QRectF mbr = mapPolygon.boundingRect();
     QgsRectangle mapBoundingRect( mbr.left(), mbr.bottom(), mbr.right(), mbr.top() );
@@ -2372,7 +2372,7 @@ int QgsComposerMapGrid::crsGridParams( QgsRectangle& crsRect, QgsCoordinateTrans
     }
 
     inverseTransform.setSourceCrs( mCRS );
-    inverseTransform.setDestinationCrs( mComposerMap->composition()->mapSettings().destinationCrs() );
+    inverseTransform.setDestinationCrs( mComposerMap->crs() );
   }
   catch ( QgsCsException & cse )
   {

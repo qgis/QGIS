@@ -27,6 +27,7 @@
 #include "qgsdistancearea.h"
 #include "qgsjsonutils.h"
 #include "qgsmapsettings.h"
+#include "qgscomposermap.h"
 
 #include "qgswebpage.h"
 #include "qgswebframe.h"
@@ -542,7 +543,9 @@ void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVector
   else if ( mComposition )
   {
     //set to composition's mapsettings' crs
-    mDistanceArea->setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
+    QgsComposerMap* referenceMap = mComposition->referenceMap();
+    if ( referenceMap )
+      mDistanceArea->setSourceCrs( referenceMap->crs().srsid() );
   }
   if ( mComposition )
   {
