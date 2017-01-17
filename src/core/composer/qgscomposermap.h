@@ -170,8 +170,16 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**
      * Returns the map's coordinate reference system.
      * @note added in QGIS 3.0
+     * @see setCrs()
      */
     QgsCoordinateReferenceSystem crs() const;
+
+    /**
+     * Sets the map's coordinate reference system.
+     * @see crs()
+     * @note added in QGIS 3.0
+     */
+    void setCrs( const QgsCoordinateReferenceSystem& crs );
 
     PreviewMode previewMode() const {return mPreviewMode;}
     void setPreviewMode( PreviewMode m );
@@ -453,6 +461,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     // It can be the same as mUserExtent, but it can be bigger in on dimension if mCalculate==Scale,
     // so that full rectangle in paper is used.
     QgsRectangle mExtent;
+
+    //! Map CRS
+    QgsCoordinateReferenceSystem mCrs;
 
     // Current temporary map region in map units. This is overwritten when atlas feature changes. It's also
     // used when the user changes the map extent and an atlas preview is enabled. This allows the user

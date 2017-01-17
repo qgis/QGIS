@@ -37,6 +37,7 @@
 #include "qgsmapthemecollection.h"
 #include "qgsmapthemes.h"
 #include "qgisgui.h"
+#include "qgscsexception.h"
 
 #include <QMessageBox>
 
@@ -98,6 +99,8 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
     mOverviewFrameMapComboBox->setExceptedItemList( QList< QgsComposerItem* >() << composerMap );
     connect( mOverviewFrameMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( overviewMapChanged( QgsComposerItem* ) ) );
   }
+
+  connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsComposerMapWidget::mapCrsChanged );
 
   updateGuiElements();
   loadGridEntries();
@@ -258,6 +261,42 @@ void QgsComposerMapWidget::cleanUpOverviewFrameStyleSelector( QgsPanelWidget* co
 
   updateOverviewFrameSymbolMarker( overview );
   mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::mapCrsChanged( const QgsCoordinateReferenceSystem& crs )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  if ( mComposerMap->crs() == crs )
+    return;
+
+  // try to reproject to maintain extent
+  QgsCoordinateReferenceSystem oldCrs = mComposerMap->crs();
+
+  bool updateExtent = false;
+  QgsRectangle newExtent;
+  try
+  {
+    QgsCoordinateTransform xForm( oldCrs, crs );
+    QgsRectangle prevExtent = *mComposerMap->currentMapExtent();
+    newExtent = xForm.transformBoundingBox( prevExtent );
+    updateExtent = true;
+  }
+  catch ( QgsCsException & )
+  {
+    //transform failed, don't update extent
+  }
+
+  mComposerMap->beginCommand( tr( "Map CRS changed" ) );
+  mComposerMap->setCrs( crs );
+  if ( updateExtent )
+    mComposerMap->zoomToExtent( newExtent );
+  mComposerMap->endCommand();
+  mComposerMap->cache();
+  mComposerMap->update();
 }
 
 void QgsComposerMapWidget::on_mAtlasCheckBox_toggled( bool checked )
@@ -471,6 +510,23 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
 
   QgsRectangle newExtent = QgisApp::instance()->mapCanvas()->mapSettings().visibleExtent();
 
+  //transform?
+  if ( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs()
+       != mComposerMap->crs() )
+  {
+    try
+    {
+      QgsCoordinateTransform xForm( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(),
+                                    mComposerMap->crs() );
+      newExtent = xForm.transformBoundingBox( newExtent );
+    }
+    catch ( QgsCsException & )
+    {
+      //transform failed, better not proceed
+      return;
+    }
+  }
+
   mComposerMap->beginCommand( tr( "Map extent changed" ) );
   mComposerMap->zoomToExtent( newExtent );
   mComposerMap->endCommand();
@@ -487,6 +543,23 @@ void QgsComposerMapWidget::on_mViewExtentInCanvasButton_clicked()
 
   if ( !currentMapExtent.isEmpty() )
   {
+    //transform?
+    if ( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs()
+         != mComposerMap->crs() )
+    {
+      try
+      {
+        QgsCoordinateTransform xForm( mComposerMap->crs(),
+                                      QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs() );
+        currentMapExtent = xForm.transformBoundingBox( currentMapExtent );
+      }
+      catch ( QgsCsException & )
+      {
+        //transform failed, better not proceed
+        return;
+      }
+    }
+
     QgisApp::instance()->mapCanvas()->setExtent( currentMapExtent );
     QgisApp::instance()->mapCanvas()->refresh();
   }
@@ -531,6 +604,8 @@ void QgsComposerMapWidget::updateGuiElements()
   }
 
   blockAllSignals( true );
+
+  whileBlocking( mCrsSelector )->setCrs( mComposerMap->crs() );
 
   //width, height, scale
   double scale = mComposerMap->scale();

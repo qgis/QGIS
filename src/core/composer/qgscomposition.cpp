@@ -2832,6 +2832,12 @@ bool QgsComposition::exportAsPDF( const QString& file )
 void QgsComposition::georeferenceOutput( const QString& file, QgsComposerMap* map,
     const QRectF& exportRegion, double dpi ) const
 {
+  if ( !map )
+    map = referenceMap();
+
+  if ( !map )
+    return; // no reference map
+
   if ( dpi < 0 )
     dpi = printResolution();
 
