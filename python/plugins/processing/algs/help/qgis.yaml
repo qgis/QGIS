@@ -160,8 +160,9 @@ qgis:distancetonearesthub: >
 qgis:dropgeometries: >
   This algorithm removes any geometries from an input layer and returns a layer containing only the feature attributes.
 
-qgis:eliminatesliverpolygons: >
-  This algorithm combines selected polygons of the input layer with certain adjacent polygons by erasing their common boundary. Eliminate can either use an existing selection or a logical query based on one of the layer's fields to make the selection itself. The adjacent polygon can be either the one with the largest or smallest area or the one sharing the largest common boundary with the polygon to be eliminated. Eliminate is normally used to get rid of sliver polygons, i.e. tiny polygons that are a result of polygon intersection processes where boundaries of the inputs are similar but not identical.
+qgis:eliminateselectedpolygons: >
+  This algorithm combines selected polygons of the input layer with certain adjacent polygons by erasing their common boundary. The adjacent polygon can be either the one with the largest or smallest area or the one sharing the largest common boundary with the polygon to be eliminated. The selected features will always be eliminated whether the option "Use only selected features" is set or not.
+  Eliminate is normally used to get rid of sliver polygons, i.e. tiny polygons that are a result of polygon intersection processes where boundaries of the inputs are similar but not identical.
 
 qgis:explodelines: >
   This algorithm takes a lines layer and creates a new one in which each line is replaced is replaced by a set of lines representing the segments in the original line. Each line in the resulting layer contains only a start and an end point, with no intermediate nodes between them.
