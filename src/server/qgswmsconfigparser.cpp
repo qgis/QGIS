@@ -79,6 +79,10 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
       continue;
     }
 
+    // Change CRS of map to match requested CRS
+    if ( mapSettings.destinationCrs().isValid() )
+      currentMap->setCrs( mapSettings.destinationCrs() );
+
     QStringList coordList = extent.split( QStringLiteral( "," ) );
     if ( coordList.size() < 4 )
     {

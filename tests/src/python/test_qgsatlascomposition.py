@@ -46,13 +46,11 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mapSettings = QgsMapSettings()
         layerStringList = [mVectorLayer]
         self.mapSettings.setLayers(layerStringList)
-        self.mapSettings.setCrsTransformEnabled(True)
-        self.mapSettings.setMapUnits(QgsUnitTypes.DistanceMeters)
 
         # select epsg:2154
         crs = QgsCoordinateReferenceSystem()
         crs.createFromSrid(2154)
-        self.mapSettings.setDestinationCrs(crs)
+        QgsProject.instance().setCrs(crs)
 
         self.mComposition = QgsComposition(self.mapSettings, QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
