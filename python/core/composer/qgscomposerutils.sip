@@ -249,5 +249,5 @@ class QgsComposerUtils
      * QgsComposition::referenceMap().
      * @note added in QGIS 3.0
      */
-    static QgsRenderContext createRenderContext( QgsComposition* composition, QPainter& painter );
+    static QgsRenderContext createRenderContext( QgsComposition* composition, QPainter* painter );
 };

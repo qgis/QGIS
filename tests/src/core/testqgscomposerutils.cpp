@@ -712,18 +712,28 @@ void TestQgsComposerUtils::createRenderContext()
   QPainter p( &testImage );
 
   // no composition
-  QgsRenderContext rc = QgsComposerUtils::createRenderContext( nullptr, p );
+  QgsRenderContext rc = QgsComposerUtils::createRenderContext( nullptr, &p );
   QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
   QCOMPARE( rc.painter(), &p );
+
+  // no composition, no painter
+  rc = QgsComposerUtils::createRenderContext( nullptr, nullptr );
+  QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
+  QVERIFY( !rc.painter() );
 
   //create composition with no reference map
   QgsRectangle extent( 2000, 2800, 2500, 2900 );
   QgsMapSettings ms;
   ms.setExtent( extent );
   QgsComposition* composition = new QgsComposition( ms, QgsProject::instance() );
-  rc = QgsComposerUtils::createRenderContext( composition, p );
+  rc = QgsComposerUtils::createRenderContext( composition, &p );
   QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
   QCOMPARE( rc.painter(), &p );
+
+  // composition, no map, no painter
+  rc = QgsComposerUtils::createRenderContext( composition, nullptr );
+  QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
+  QVERIFY( !rc.painter() );
 
   // add a reference map
   QgsComposerMap* map = new QgsComposerMap( composition );
@@ -732,10 +742,16 @@ void TestQgsComposerUtils::createRenderContext()
   composition->addComposerMap( map );
   composition->setReferenceMap( map );
 
-  rc = QgsComposerUtils::createRenderContext( composition, p );
+  rc = QgsComposerUtils::createRenderContext( composition, &p );
   QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
-  QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 100000 );
+  QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
   QCOMPARE( rc.painter(), &p );
+
+  // composition, reference map, no painter
+  rc = QgsComposerUtils::createRenderContext( composition, nullptr );
+  QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
+  QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
+  QVERIFY( !rc.painter() );
 
   p.end();
 }

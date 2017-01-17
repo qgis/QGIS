@@ -156,7 +156,7 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
   double dotsPerMM = painter->device()->logicalDpiX() / 25.4;
 
   //setup render context
-  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, *painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, painter );
   context.setForceVectorOutput( true );
 
   QgsExpressionContext expressionContext = createExpressionContext();
