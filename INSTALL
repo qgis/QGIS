@@ -1,16 +1,16 @@
 QGIS
 Building QGIS from source - step by step
-Monday January 09, 2017
+Wednesday January 25, 2017
 
 
-Last Updated: Monday January 09, 2017
-Last Change : Monday January 09, 2017
+Last Updated: Wednesday January 25, 2017
+Last Change : Friday January 20, 2017
 
 
   1. Introduction
   2. Overview
   3. Building on GNU/Linux
-    3.1. Building QGIS with Qt 4.x
+    3.1. Building QGIS with Qt 5.x
     3.2. Prepare apt
     3.3. Install build dependencies
     3.4. Setup ccache (Optional)
@@ -18,9 +18,7 @@ Last Change : Monday January 09, 2017
     3.6. Check out the QGIS Source Code
     3.7. Starting the compile
     3.8. Building Debian packages
-    3.9. Building QGIS with Qt 5.x
-    3.10. On Debian Linux
-    3.11. On Fedora Linux
+    3.9. On Fedora Linux
   4. Building on Windows
     4.1. Building with Microsoft Visual Studio
     4.2. Building using MinGW
@@ -139,13 +137,13 @@ those formats in GDAL.
   ========================
 
 
-  3.1. Building QGIS with Qt 4.x
+  3.1. Building QGIS with Qt 5.x
   ==============================
 
 Requires: Ubuntu / Debian derived distro
 
 /!\ Note: Refer to the section Building Debian packages for building
-debian packages.  Unless you plan to develop on QGIS, that is probably the
+debian packages. Unless you plan to develop on QGIS, that is probably the
 easiest option to compile and install QGIS.
 
 These notes are for Ubuntu - other versions and Debian derived distros may
@@ -263,6 +261,11 @@ be pressed several times before the 'g' option becomes available.
 After the 'g' generation is complete, press 'q' to exit the ccmake
 interactive dialog.
 
+/!\ Warning: Make sure that your build directory is completely empty when you 
+enter the command. Do never try to "re-use" an existing Qt4 build directory.
+If you want to use `ccmake` or other interactive tools, run the command in
+the empty build directory once before starting to use the interactive tools.
+
 Now on with the build:
 
   make -jX
@@ -349,56 +352,15 @@ Install them using dpkg.  E.g.:
   sudo debi
 
 
-  3.9. Building QGIS with Qt 5.x
-  ==============================
-
-/!\ Warning: Qt 5 is not officially supported. Building against Qt 5
-libraries seems to work quite well already but be prepared that you are one
-of very few with this setup. We strongly recommend using QGIS with Qt 4 for
-production work.
-
-Python bindings in particular are not expected to be compatible. When Qt 5
-is enabled, the build system automatically activates Python 3 and PyQt5 as well.
-There are no plugins and not even the python code shipped along the QGIS source
-code is compatible with PyQt5.
-
-You have been warned.
-
-
-  3.10. On Debian Linux
-  =====================
-
-We assume that you have the source code of QGIS ready and created a new
-subdirectory called `build` or `build-qt5` in it.
-
-
-    3.10.1. Install build dependencies
-    ==================================
-
-  apt-get install git build-essential cmake flex bison pyqt5-dev qttools5-dev qtpositioning5-dev libqt5svg5-dev libqt5webkit5-dev  libqt5gui5 libqt5scripttools5 qtscript5-dev libqca-qt5-2-dev grass-dev libgeos-dev libgdal-dev libqt5xmlpatterns5-dev libqt5scintilla2-dev pyqt5.qsci-dev python3-pyqt5.qsci libgsl-dev txt2tags libproj-dev libqwt-qt5-dev libspatialindex-dev pyqt5-dev-tools qttools5-dev-tools qt5-default python3-future python3-pyqt5.qtsql python3-psycopg2 python3-sip-dev
-
-Make sure that your build directory is completely empty when you enter the
-following command. Do never try to "re-use" an existing Qt4 build directory.
-If you want to use `ccmake` or other interactive tools, run the following
-command in the empty build directory once before starting to use the
-interactive tools.
-
-  cmake
-
-If everything went ok you can finally start to compile. (As usual append a -jX where X is the number of available cores option to make to speed up your build process)
-
-  make
-
-
-  3.11. On Fedora Linux
-  =====================
+  3.9. On Fedora Linux
+  ====================
 
 We assume that you have the source code of QGIS ready and created a
 new subdirectory called `build` or `build-qt5` in it.
 
 
-    3.11.1. Install build dependencies
-    ==================================
+    3.9.1. Install build dependencies
+    =================================
 
   dnf install qt5-qtwebkit-devel qt5-qtlocation-devel qt5-qttools-static
   qt5-qtscript-devel qca-qt5-devel python3-qt5-devel python3-qscintilla-qt5-devel 
