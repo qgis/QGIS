@@ -322,10 +322,10 @@ bool QgsComposerUtils::decodePresetPaperSize( const QString& presetString, doubl
 
 void QgsComposerUtils::readOldDataDefinedPropertyMap( const QDomElement &itemElem, QgsPropertyCollection& dataDefinedProperties )
 {
-  QgsPropertyDefinition::const_iterator i = QgsComposerObject::sPropertyNameMap.constBegin();
-  for ( ; i != QgsComposerObject::sPropertyNameMap.constEnd(); ++i )
+  QgsPropertiesDefinition::const_iterator i = QgsComposerObject::PROPERTY_DEFINITIONS.constBegin();
+  for ( ; i != QgsComposerObject::PROPERTY_DEFINITIONS.constEnd(); ++i )
   {
-    QString elemName = i.value();
+    QString elemName = i.value().name();
     QDomNodeList ddNodeList = itemElem.elementsByTagName( elemName );
     if ( !ddNodeList.isEmpty() )
     {

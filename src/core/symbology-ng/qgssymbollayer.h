@@ -109,7 +109,8 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyArrowType, //!< Arrow type
     };
 
-    static const QgsPropertyDefinition sPropertyNameMap;
+    //! Property definitions
+    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
 
     virtual ~QgsSymbolLayer();
 

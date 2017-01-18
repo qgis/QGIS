@@ -260,7 +260,6 @@ class CORE_EXPORT QgsPalLayerSettings
     };
 
     //! Data definable properties.
-    // update sPropertyNameMap QMap in constructor when adding/deleting enum value
     enum Property
     {
       // text style
@@ -575,6 +574,9 @@ class CORE_EXPORT QgsPalLayerSettings
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
 
+    //! Property definitions
+    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
+
   private:
 
     /**
@@ -640,7 +642,6 @@ class CORE_EXPORT QgsPalLayerSettings
 
     QgsTextFormat mFormat;
 
-    static const QgsPropertyDefinition sPropertyNameMap;
     static const QVector< PredefinedPointPosition > DEFAULT_PLACEMENT_ORDER;
 };
 

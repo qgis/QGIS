@@ -100,10 +100,8 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
     connect( &legend->composition()->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateFilterLegendByAtlasButton() ) );
   }
 
-  registerDataDefinedButton( mLegendTitleDDBtn, QgsComposerObject::LegendTitle,
-                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::anyStringDesc() );
-  registerDataDefinedButton( mColumnsDDBtn, QgsComposerObject::LegendColumnCount,
-                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::intPosOneDesc() );
+  registerDataDefinedButton( mLegendTitleDDBtn, QgsComposerObject::LegendTitle );
+  registerDataDefinedButton( mColumnsDDBtn, QgsComposerObject::LegendColumnCount );
 
   setGuiElements();
 

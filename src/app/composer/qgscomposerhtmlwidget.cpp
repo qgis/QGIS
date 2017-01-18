@@ -66,8 +66,7 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
 
   //connections for data defined buttons
   connect( mUrlDDBtn, &QgsDataDefinedButtonV2::activated, mUrlLineEdit, &QLineEdit::setDisabled );
-  registerDataDefinedButton( mUrlDDBtn, QgsComposerObject::SourceUrl,
-                             QgsDataDefinedButtonV2::AnyType, tr( "url string" ) );
+  registerDataDefinedButton( mUrlDDBtn, QgsComposerObject::SourceUrl );
 }
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget()

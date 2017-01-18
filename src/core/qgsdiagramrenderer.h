@@ -274,6 +274,9 @@ class CORE_EXPORT QgsDiagramLayerSettings
      */
     void setProperties( const QgsPropertyCollection& collection ) { mProperties = collection; }
 
+    //! Property definitions
+    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
+
   private:
 
     //! Associated coordinate transform, or invalid transform for no transformation
@@ -308,7 +311,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
     //! Property collection for data defined diagram settings
     QgsPropertyCollection mProperties;
 
-    static const QgsPropertyDefinition sPropertyNameMap;
 };
 
 /** \ingroup core

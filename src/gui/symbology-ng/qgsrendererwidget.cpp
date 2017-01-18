@@ -17,6 +17,7 @@
 #include "qgsvectorlayer.h"
 #include "qgscolordialog.h"
 #include "qgssymbollevelsdialog.h"
+#include "qgssymbollayer.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsmapcanvas.h"
 #include "qgspanelwidget.h"
@@ -331,11 +332,11 @@ QgsExpressionContext QgsDataDefinedValueDialog::createExpressionContext() const
   return expContext;
 }
 
-void QgsDataDefinedValueDialog::init( const QString& description )
+void QgsDataDefinedValueDialog::init( int propertyKey )
 {
   QScopedPointer< QgsAbstractProperty > dd( symbolDataDefined() );
 
-  mDDBtn->init( mLayer, dd.data(), QgsDataDefinedButtonV2::Double, description );
+  mDDBtn->init( propertyKey, dd.data(), QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
   mDDBtn->registerExpressionContextGenerator( this );
 
   QgsSymbol* initialSymbol = nullptr;

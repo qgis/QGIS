@@ -289,7 +289,7 @@ bool QgsPropertyCollection::hasActiveDynamicProperties() const
   return mHasActiveDynamicProperties;
 }
 
-bool QgsPropertyCollection::writeXml( QDomElement &collectionElem, QDomDocument &doc, const QMap<int, QString> &propertyNameMap ) const
+bool QgsPropertyCollection::writeXml( QDomElement &collectionElem, QDomDocument &doc, const QgsPropertiesDefinition& definitions ) const
 {
   collectionElem.setAttribute( "name", name() );
   collectionElem.setAttribute( "type", "collection" );
@@ -298,7 +298,7 @@ bool QgsPropertyCollection::writeXml( QDomElement &collectionElem, QDomDocument 
   {
     QDomElement propertyElement = doc.createElement( "p" );
     int key = it.key();
-    QString propName = propertyNameMap.value( key );
+    QString propName = definitions.value( key ).name();
     propertyElement.setAttribute( "n", propName );
     propertyElement.setAttribute( "t", static_cast< int >( it.value()->propertyType() ) );
     it.value()->writeXml( propertyElement, doc );
@@ -307,7 +307,7 @@ bool QgsPropertyCollection::writeXml( QDomElement &collectionElem, QDomDocument 
   return true;
 }
 
-bool QgsPropertyCollection::readXml( const QDomElement &collectionElem, const QDomDocument &doc, const QMap<int, QString> &propertyNameMap )
+bool QgsPropertyCollection::readXml( const QDomElement &collectionElem, const QDomDocument &doc, const QgsPropertiesDefinition &definitions )
 {
   clear();
 
@@ -322,7 +322,17 @@ bool QgsPropertyCollection::readXml( const QDomElement &collectionElem, const QD
       continue;
 
     // match name to int key
-    int key = propertyNameMap.key( propName, -1 );
+    int key = -1;
+    QgsPropertiesDefinition::const_iterator it = definitions.constBegin();
+    for ( ; it != definitions.constEnd(); ++it )
+    {
+      if ( it->name() == propName )
+      {
+        key = it.key();
+        break;
+      }
+    }
+
     if ( key < 0 )
       continue;
 
@@ -531,7 +541,7 @@ bool QgsPropertyCollectionStack::hasProperty( int key ) const
   return false;
 }
 
-bool QgsPropertyCollectionStack::writeXml( QDomElement& collectionElem, QDomDocument& doc, const QMap<int, QString>& propertyNameMap ) const
+bool QgsPropertyCollectionStack::writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const
 {
   collectionElem.setAttribute( "type", "stack" );
   collectionElem.setAttribute( "name", name() );
@@ -539,14 +549,14 @@ bool QgsPropertyCollectionStack::writeXml( QDomElement& collectionElem, QDomDocu
   Q_FOREACH ( QgsPropertyCollection* child, mStack )
   {
     QDomElement childElement = doc.createElement( "props" );
-    if ( !child->writeXml( childElement, doc, propertyNameMap ) )
+    if ( !child->writeXml( childElement, doc, definitions ) )
       return false;
     collectionElem.appendChild( childElement );
   }
   return true;
 }
 
-bool QgsPropertyCollectionStack::readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QMap<int, QString>& propertyNameMap )
+bool QgsPropertyCollectionStack::readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition& definitions )
 {
   clear();
 
@@ -557,7 +567,7 @@ bool QgsPropertyCollectionStack::readXml( const QDomElement& collectionElem, con
   {
     QDomElement childElem = childNodeList.at( i ).toElement();
     QgsPropertyCollection* child = new QgsPropertyCollection();
-    child->readXml( childElem, doc, propertyNameMap );
+    child->readXml( childElem, doc, definitions );
     mStack.append( child );
   }
   mDirty = true;

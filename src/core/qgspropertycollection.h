@@ -20,13 +20,13 @@
 #include <QVariant>
 #include <QColor>
 #include "qgsexpressioncontext.h"
+#include "qgsproperty.h"
 
-class QgsAbstractProperty;
 class QDomElement;
 class QDomDocument;
 
 //! Definition of available properties
-typedef QMap< int, QString > QgsPropertyDefinition;
+typedef QMap< int, QgsPropertyDefinition > QgsPropertiesDefinition;
 
 /**
  * \ingroup core
@@ -197,14 +197,14 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 
     /**
      * Returns true if the collection has any active properties, or false if all properties
-     * within the collection are deactived.
+     * within the collection are deactivated.
      * @see hasActiveDynamicProperties()
      */
     virtual bool hasActiveProperties() const = 0;
 
     /**
      * Returns true if the collection has any active, non-static properties, or false if either all non-static properties
-     * within the collection are deactived or if the collection only contains static properties.
+     * within the collection are deactivated or if the collection only contains static properties.
      * @see hasActiveProperties()
      */
     virtual bool hasActiveDynamicProperties() const = 0;
@@ -213,21 +213,17 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * Writes the current state of the property collection into an XML element
      * @param collectionElem destination element for the property collection's state
      * @param doc DOM document
-     * @param propertyNameMap map of key integers to string to use for property name in XML elements. This map is used
-     * to avoid writing the raw integer key values to XML, for readability and future-proofness.
      * @see readXml()
     */
-    virtual bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertyDefinition& propertyNameMap ) const = 0;
+    virtual bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const = 0;
 
     /**
      * Reads property collection state from an XML element.
      * @param collectionElem source DOM element for property collection's state
      * @param doc DOM document
-     * @param propertyNameMap map of key integers to string to use for property name in XML elements. This map must match
-     * the propertyNameMap specified when writeXML() was called.
      * @see writeXml()
     */
-    virtual bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QMap<int, QString> &propertyNameMap ) = 0;
+    virtual bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition& definitions ) = 0;
 
   private:
 
@@ -278,8 +274,8 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     bool isActive( int key ) const override;
     bool hasActiveProperties() const override;
     bool hasActiveDynamicProperties() const override;
-    bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertyDefinition& propertyNameMap ) const override;
-    bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QMap<int, QString> &propertyNameMap ) override;
+    bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const override;
+    bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition& definitions ) override;
 
     /**
      * Adds a property to the collection and takes ownership of it.
@@ -374,7 +370,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
 
     /**
      * Returns true if the collection has any active properties, or false if all properties
-     * within the collection are deactived.
+     * within the collection are deactivated.
      * @see isActive()
      * @see hasActiveDynamicProperties()
      */
@@ -382,7 +378,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
 
     /**
      * Returns true if the collection has any active, non-static properties, or false if either all non-static properties
-     * within the collection are deactived or if the collection only contains static properties.
+     * within the collection are deactivated or if the collection only contains static properties.
      * @see hasActiveProperties()
      */
     bool hasActiveDynamicProperties() const override;
@@ -433,8 +429,8 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
 
     QSet<int> propertyKeys() const override;
     bool hasProperty( int key ) const override;
-    bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertyDefinition& propertyNameMap ) const override;
-    bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QMap<int, QString> &propertyNameMap ) override;
+    bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const override;
+    bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition& definitions ) override;
 
   private:
 

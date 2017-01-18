@@ -62,7 +62,8 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
     const QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 
   protected:
-    void registerDataDefinedButton( QgsDataDefinedButtonV2* button, QgsSymbolLayer::Property key, QgsDataDefinedButtonV2::DataType type, const QString& description );
+
+    void registerDataDefinedButton( QgsDataDefinedButtonV2* button, QgsSymbolLayer::Property key );
 
     QgsExpressionContext createExpressionContext() const override;
 

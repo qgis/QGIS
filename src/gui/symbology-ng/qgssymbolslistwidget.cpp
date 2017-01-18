@@ -511,10 +511,10 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     if ( mLayer )
     {
       QScopedPointer< QgsAbstractProperty > ddSize( markerSymbol->dataDefinedSize() );
-      mSizeDDBtn->init( mLayer, ddSize.data(), QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::doublePosDesc() );
+      mSizeDDBtn->init( QgsSymbolLayer::PropertySize, ddSize.data(), QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
       spinSize->setEnabled( !mSizeDDBtn->isActive() );
       QScopedPointer< QgsAbstractProperty > ddAngle( markerSymbol->dataDefinedAngle() );
-      mRotationDDBtn->init( mLayer, ddAngle.data(), QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::doubleDesc() );
+      mRotationDDBtn->init( QgsSymbolLayer::PropertyAngle, ddAngle.data(), QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
       spinAngle->setEnabled( !mRotationDDBtn->isActive() );
     }
     else
@@ -531,7 +531,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     if ( mLayer )
     {
       QScopedPointer< QgsAbstractProperty > dd( lineSymbol->dataDefinedWidth() );
-      mWidthDDBtn->init( mLayer, dd.data(), QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::doubleDesc() );
+      mWidthDDBtn->init( QgsSymbolLayer::PropertyOutlineWidth, dd.data(), QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
       spinWidth->setEnabled( !mWidthDDBtn->isActive() );
     }
     else

@@ -116,8 +116,4 @@ class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWid
     //! Sets a data defined property for the item from its current data defined button settings
     void setDataDefinedProperty( const QgsDataDefinedButtonV2 *ddBtn, QgsComposerObject::DataDefinedProperty property );
 
-    //! Returns the data defined property corresponding to a data defined button widget
-    virtual QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButtonV2* widget );
-
-
 };

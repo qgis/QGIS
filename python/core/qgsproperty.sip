@@ -1,3 +1,61 @@
+class QgsPropertyDefinition
+{
+%TypeHeaderCode
+#include <qgsproperty.h>
+%End
+  public:
+
+    enum StandardPropertyTemplate
+    {
+      Boolean,
+      Integer,
+      IntegerPositive,
+      IntegerPositiveGreaterZero,
+      Double,
+      DoublePositive,
+      Double0To1,
+      String,
+      Transparency,
+      RenderUnits,
+      ColorWithAlpha,
+      ColorNoAlpha,
+      PenJoinStyle,
+      BlendMode,
+      Point,
+      Size,
+      LineStyle,
+      FillStyle,
+      CapStyle,
+      HorizontalAnchor,
+      VerticalAnchor,
+      SvgPath,
+      Offset,
+      Custom,
+    };
+
+    enum DataType
+    {
+      DataTypeString,
+      DataTypeNumeric,
+      DataTypeBoolean,
+    };
+
+    QgsPropertyDefinition();
+
+    QgsPropertyDefinition( const QString& name, const QString& description, StandardPropertyTemplate type );
+
+    QgsPropertyDefinition( const QString& name, DataType dataTypes, const QString& description, const QString& helpText );
+
+    QString name() const;
+
+    QString description() const;
+
+    QString helpText() const;
+
+    DataType dataType() const;
+
+};
+
 /** \ingroup core
  * \class QgsAbstractProperty
  * \brief Abstract base class for properties.
@@ -209,7 +267,7 @@ class QgsStaticProperty : QgsAbstractProperty
 
     /** Constructor for QgsStaticProperty.
      * @param value initial static value to use for property
-     * @param isActive whether the property is intially active
+     * @param isActive whether the property is initially active
      */
     QgsStaticProperty( const QVariant& value = QVariant(), bool isActive = true );
 
@@ -255,7 +313,7 @@ class QgsFieldBasedProperty : QgsAbstractProperty
 
     /** Constructor for QgsFieldBasedProperty.
      * @param field field name
-     * @param isActive whether the property is intially active
+     * @param isActive whether the property is initially active
      */
     QgsFieldBasedProperty( const QString& field = QString(), bool isActive = true );
 
@@ -303,7 +361,7 @@ class QgsExpressionBasedProperty : QgsAbstractProperty
 
     /** Constructor for QgsExpressionBasedProperty.
      * @param expression expression string
-     * @param isActive whether the property is intially active
+     * @param isActive whether the property is initially active
      */
     QgsExpressionBasedProperty( const QString& expression = QString(), bool isActive = true );
 

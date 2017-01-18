@@ -91,14 +91,10 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
 
   connect( mMapItemComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( composerMapChanged( QgsComposerItem* ) ) );
 
-  registerDataDefinedButton( mFillColorDDBtn, QgsComposerObject::ScalebarFillColor,
-                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::colorAlphaDesc() );
-  registerDataDefinedButton( mFillColor2DDBtn, QgsComposerObject::ScalebarFillColor2,
-                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::colorAlphaDesc() );
-  registerDataDefinedButton( mLineColorDDBtn, QgsComposerObject::ScalebarLineColor,
-                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::colorAlphaDesc() );
-  registerDataDefinedButton( mLineWidthDDBtn, QgsComposerObject::ScalebarLineWidth,
-                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::doublePosDesc() );
+  registerDataDefinedButton( mFillColorDDBtn, QgsComposerObject::ScalebarFillColor );
+  registerDataDefinedButton( mFillColor2DDBtn, QgsComposerObject::ScalebarFillColor2 );
+  registerDataDefinedButton( mLineColorDDBtn, QgsComposerObject::ScalebarLineColor );
+  registerDataDefinedButton( mLineWidthDDBtn, QgsComposerObject::ScalebarLineWidth );
 
   blockMemberSignals( false );
   setGuiElements(); //set the GUI elements to the state of scaleBar

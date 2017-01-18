@@ -63,7 +63,7 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
     QgsExpressionContext createExpressionContext() const override;
 
     void populateDataDefinedButtons();
-    void registerDataDefinedButton( QgsDataDefinedButtonV2 *button, QgsPalLayerSettings::Property key, QgsDataDefinedButtonV2::DataType type, const QString &description );
+    void registerDataDefinedButton( QgsDataDefinedButtonV2 *button, QgsPalLayerSettings::Property key );
 
   private slots:
 

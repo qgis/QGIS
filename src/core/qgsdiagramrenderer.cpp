@@ -25,20 +25,20 @@
 #include <QDomElement>
 #include <QPainter>
 
-const QgsPropertyDefinition QgsDiagramLayerSettings::sPropertyNameMap
+const QgsPropertiesDefinition QgsDiagramLayerSettings::PROPERTY_DEFINITIONS
 {
-  { QgsDiagramLayerSettings::BackgroundColor, "backgroundColor" },
-  { QgsDiagramLayerSettings::OutlineColor, "outlineColor" },
-  { QgsDiagramLayerSettings::OutlineWidth, "outlineWidth" },
-  { QgsDiagramLayerSettings::PositionX, "positionX" },
-  { QgsDiagramLayerSettings::PositionY, "positionY" },
-  { QgsDiagramLayerSettings::Distance, "distance" },
-  { QgsDiagramLayerSettings::Priority, "priority" },
-  { QgsDiagramLayerSettings::ZIndex, "zIndex" },
-  { QgsDiagramLayerSettings::IsObstacle, "isObstacle" },
-  { QgsDiagramLayerSettings::Show, "show" },
-  { QgsDiagramLayerSettings::AlwaysShow, "alwaysShow" },
-  { QgsDiagramLayerSettings::StartAngle, "startAngle" }
+  { QgsDiagramLayerSettings::BackgroundColor, QgsPropertyDefinition( "backgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+  { QgsDiagramLayerSettings::OutlineColor, QgsPropertyDefinition( "outlineColor", QObject::tr( "Outline color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+  { QgsDiagramLayerSettings::OutlineWidth, QgsPropertyDefinition( "outlineWidth", QObject::tr( "Outline width" ), QgsPropertyDefinition::DoublePositive ) },
+  { QgsDiagramLayerSettings::PositionX, QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
+  { QgsDiagramLayerSettings::PositionY, QgsPropertyDefinition( "positionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
+  { QgsDiagramLayerSettings::Distance, QgsPropertyDefinition( "distance", QObject::tr( "Placement distance" ), QgsPropertyDefinition::DoublePositive ) },
+  { QgsDiagramLayerSettings::Priority, QgsPropertyDefinition( "priority", QObject::tr( "Placement priority" ), QgsPropertyDefinition::DoublePositive ) },
+  { QgsDiagramLayerSettings::ZIndex, QgsPropertyDefinition( "zIndex", QObject::tr( "Placement z-index" ), QgsPropertyDefinition::Double ) },
+  { QgsDiagramLayerSettings::IsObstacle, QgsPropertyDefinition( "isObstacle", QObject::tr( "Diagram is an obstacle" ), QgsPropertyDefinition::Boolean ) },
+  { QgsDiagramLayerSettings::Show, QgsPropertyDefinition( "show", QObject::tr( "Show diagram" ), QgsPropertyDefinition::Boolean ) },
+  { QgsDiagramLayerSettings::AlwaysShow, QgsPropertyDefinition( "alwaysShow", QObject::tr( "Always show diagram" ), QgsPropertyDefinition::Boolean ) },
+  { QgsDiagramLayerSettings::StartAngle, QgsPropertyDefinition( "startAngle", QObject::tr( "Pie chart start angle" ), QgsPropertyDefinition::Double ) },
 };
 
 QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh )
@@ -54,7 +54,7 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings&
     , mProperties( rh.mProperties )
 {}
 
-QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings & rh )
+QgsDiagramLayerSettings& QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings & rh )
 {
   mPlacement = rh.mPlacement;
   mPlacementFlags = rh.mPlacementFlags;
@@ -95,7 +95,7 @@ void QgsDiagramLayerSettings::readXml( const QDomElement& elem, const QgsVectorL
   QDomNodeList propertyElems = elem.elementsByTagName( "properties" );
   if ( !propertyElems.isEmpty() )
   {
-    ( void )mProperties.readXml( propertyElems.at( 0 ).toElement(), elem.ownerDocument(), sPropertyNameMap );
+    ( void )mProperties.readXml( propertyElems.at( 0 ).toElement(), elem.ownerDocument(), PROPERTY_DEFINITIONS );
   }
   else
   {
@@ -138,7 +138,7 @@ void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& do
 
   QDomElement diagramLayerElem = doc.createElement( QStringLiteral( "DiagramLayerSettings" ) );
   QDomElement propertiesElem = doc.createElement( "properties" );
-  ( void )mProperties.writeXml( propertiesElem, doc, sPropertyNameMap );
+  ( void )mProperties.writeXml( propertiesElem, doc, PROPERTY_DEFINITIONS );
   diagramLayerElem.appendChild( propertiesElem );
   diagramLayerElem.setAttribute( QStringLiteral( "placement" ), mPlacement );
   diagramLayerElem.setAttribute( QStringLiteral( "linePlacementFlags" ), mPlacementFlags );

@@ -405,29 +405,19 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   }
 
   connect( mAddAttributeExpression, &QPushButton::clicked, this, &QgsDiagramProperties::showAddAttributeExpressionDialog );
-  connect( mTransparencySlider, &QSlider::valueChanged, mTransparencySpinBox, &QgsSpinBox::setValue  );
-  connect( mTransparencySpinBox, static_cast<void (QgsSpinBox::*)(int)>(&QSpinBox::valueChanged), mTransparencySlider, &QSlider::setValue );
+  connect( mTransparencySlider, &QSlider::valueChanged, mTransparencySpinBox, &QgsSpinBox::setValue );
+  connect( mTransparencySpinBox, static_cast < void ( QgsSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mTransparencySlider, &QSlider::setValue );
 
-  registerDataDefinedButton( mBackgroundColorDDBtn, QgsDiagramLayerSettings::BackgroundColor,
-                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::colorAlphaDesc() );
-  registerDataDefinedButton( mLineColorDDBtn, QgsDiagramLayerSettings::OutlineColor,
-                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::colorAlphaDesc() );
-  registerDataDefinedButton( mLineWidthDDBtn, QgsDiagramLayerSettings::OutlineWidth,
-                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doublePosDesc() );
-  registerDataDefinedButton( mCoordXDDBtn, QgsDiagramLayerSettings::PositionX,
-                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doubleDesc() );
-  registerDataDefinedButton( mCoordYDDBtn, QgsDiagramLayerSettings::PositionY,
-                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doubleDesc() );
-  registerDataDefinedButton( mPriorityDDBtn, QgsDiagramLayerSettings::Priority,
-                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doubleDesc() );
-  registerDataDefinedButton( mZOrderDDBtn, QgsDiagramLayerSettings::ZIndex,
-                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doubleDesc() );
-  registerDataDefinedButton( mShowDiagramDDBtn, QgsDiagramLayerSettings::Show,
-                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doubleDesc() );
-  registerDataDefinedButton( mAlwaysShowDDBtn, QgsDiagramLayerSettings::AlwaysShow,
-                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doubleDesc() );
-  registerDataDefinedButton( mStartAngleDDBtn, QgsDiagramLayerSettings::StartAngle,
-                             QgsDataDefinedButtonV2::String, QgsDataDefinedButtonV2::doubleDesc() );
+  registerDataDefinedButton( mBackgroundColorDDBtn, QgsDiagramLayerSettings::BackgroundColor );
+  registerDataDefinedButton( mLineColorDDBtn, QgsDiagramLayerSettings::OutlineColor );
+  registerDataDefinedButton( mLineWidthDDBtn, QgsDiagramLayerSettings::OutlineWidth );
+  registerDataDefinedButton( mCoordXDDBtn, QgsDiagramLayerSettings::PositionX );
+  registerDataDefinedButton( mCoordYDDBtn, QgsDiagramLayerSettings::PositionY );
+  registerDataDefinedButton( mPriorityDDBtn, QgsDiagramLayerSettings::Priority );
+  registerDataDefinedButton( mZOrderDDBtn, QgsDiagramLayerSettings::ZIndex );
+  registerDataDefinedButton( mShowDiagramDDBtn, QgsDiagramLayerSettings::Show );
+  registerDataDefinedButton( mAlwaysShowDDBtn, QgsDiagramLayerSettings::AlwaysShow );
+  registerDataDefinedButton( mStartAngleDDBtn, QgsDiagramLayerSettings::StartAngle );
 }
 
 QgsDiagramProperties::~QgsDiagramProperties()
@@ -437,10 +427,9 @@ QgsDiagramProperties::~QgsDiagramProperties()
   settings.setValue( QStringLiteral( "/Windows/Diagrams/Tab" ), mDiagramOptionsListWidget->currentRow() );
 }
 
-void QgsDiagramProperties::registerDataDefinedButton( QgsDataDefinedButtonV2 * button, QgsDiagramLayerSettings::Property key, QgsDataDefinedButtonV2::DataType type, const QString & description )
+void QgsDiagramProperties::registerDataDefinedButton( QgsDataDefinedButtonV2 * button, QgsDiagramLayerSettings::Property key )
 {
-  button->init( mLayer, mProperties.property( key ), type, description );
-  button->setProperty( "propertyKey", key );
+  button->init( key, mProperties, QgsDiagramLayerSettings::PROPERTY_DEFINITIONS, mLayer );
   connect( button, &QgsDataDefinedButtonV2::changed, this, &QgsDiagramProperties::updateProperty );
   button->registerExpressionContextGenerator( this );
 }
@@ -448,7 +437,7 @@ void QgsDiagramProperties::registerDataDefinedButton( QgsDataDefinedButtonV2 * b
 void QgsDiagramProperties::updateProperty()
 {
   QgsDataDefinedButtonV2* button = qobject_cast<QgsDataDefinedButtonV2*>( sender() );
-  QgsDiagramLayerSettings::Property key = static_cast<  QgsDiagramLayerSettings::Property >( button->property( "propertyKey" ).toInt() );
+  QgsDiagramLayerSettings::Property key = static_cast<  QgsDiagramLayerSettings::Property >( button->propertyKey() );
   mProperties.setProperty( key, button->toProperty() );
 }
 

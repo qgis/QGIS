@@ -125,7 +125,7 @@ class QgsDataDefinedValueDialog : QDialog
      *
      * @note May be missing Python bindings depending on the platform.
      */
-    void init( const QString& description ); // needed in children ctor to call virtual
+    void init( int propertyKey ); // needed in children ctor to call virtual
 
   private:
     QgsAbstractProperty* symbolDataDefined() const /Factory/;

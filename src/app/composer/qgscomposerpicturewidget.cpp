@@ -78,14 +78,10 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
 
   //connections for data defined buttons
   connect( mSourceDDBtn, &QgsDataDefinedButtonV2::activated, mPictureLineEdit, &QLineEdit::setDisabled );
-  registerDataDefinedButton( mSourceDDBtn, QgsComposerObject::PictureSource,
-                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::anyStringDesc() );
-  registerDataDefinedButton( mFillColorDDBtn, QgsComposerObject::PictureSvgBackgroundColor,
-                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::colorAlphaDesc() );
-  registerDataDefinedButton( mOutlineColorDDBtn, QgsComposerObject::PictureSvgOutlineColor,
-                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::colorAlphaDesc() );
-  registerDataDefinedButton( mOutlineWidthDDBtn, QgsComposerObject::PictureSvgOutlineWidth,
-                             QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::doublePosDesc() );
+  registerDataDefinedButton( mSourceDDBtn, QgsComposerObject::PictureSource );
+  registerDataDefinedButton( mFillColorDDBtn, QgsComposerObject::PictureSvgBackgroundColor );
+  registerDataDefinedButton( mOutlineColorDDBtn, QgsComposerObject::PictureSvgOutlineColor );
+  registerDataDefinedButton( mOutlineWidthDDBtn, QgsComposerObject::PictureSvgOutlineWidth );
 }
 
 QgsComposerPictureWidget::~QgsComposerPictureWidget()

@@ -22,6 +22,156 @@
 #include "qgscolorramp.h"
 #include <qmath.h>
 
+
+QgsPropertyDefinition::QgsPropertyDefinition()
+    : mTypes( DataTypeString )
+{}
+
+QgsPropertyDefinition::QgsPropertyDefinition( const QString& name, const QString& description, QgsPropertyDefinition::StandardPropertyTemplate type )
+    : mName( name )
+    , mDescription( description )
+{
+  switch ( type )
+  {
+    case Boolean:
+      mTypes = DataTypeBoolean;
+      mHelpText = QObject::tr( "bool [<b>1</b>=True|<b>0</b>=False]" );
+      break;
+
+    case Integer:
+      mTypes = DataTypeNumeric;
+      mHelpText = QObject::tr( "int [&lt;= 0 =&gt;]" );
+      break;
+
+    case IntegerPositive:
+      mTypes = DataTypeNumeric;
+      mHelpText = QObject::tr( "int [&gt;= 0]" );
+      break;
+
+    case IntegerPositiveGreaterZero:
+      mTypes = DataTypeNumeric;
+      mHelpText = QObject::tr( "int [&gt;= 1]" );
+      break;
+
+    case Double:
+      mTypes = DataTypeNumeric;
+      mHelpText = QObject::tr( "double [&lt;= 0.0 =&gt;]" );
+      break;
+
+    case DoublePositive:
+      mTypes = DataTypeNumeric;
+      mHelpText = QObject::tr( "double [&gt;= 0.0]" );
+      break;
+
+    case Double0To1:
+      mTypes = DataTypeNumeric;
+      mHelpText = QObject::tr( "double [0.0-1.0]" );
+      break;
+
+    case String:
+      mTypes = DataTypeString;
+      mHelpText = QObject::tr( "string of variable length" );
+      break;
+
+    case Transparency:
+      mTypes = DataTypeNumeric;
+      mHelpText = QObject::tr( "int [0-100]" );
+      break;
+
+    case RenderUnits:
+      mTypes = DataTypeString;
+      mHelpText = trString() + QLatin1String( "[<b>MM</b>|<b>MapUnit</b>|<b>Pixel</b>|<b>Point</b>]" );
+      break;
+
+    case ColorWithAlpha:
+      mTypes = DataTypeString;
+      mHelpText = QObject::tr( "string [<b>r,g,b,a</b>] as int 0-255" );
+      break;
+
+    case ColorNoAlpha:
+      mTypes = DataTypeString;
+      mHelpText = QObject::tr( "string [<b>r,g,b</b>] as int 0-255" );
+      break;
+
+    case PenJoinStyle:
+      mTypes = DataTypeString;
+      mHelpText = trString() + QLatin1String( "[<b>bevel</b>|<b>miter</b>|<b>round</b>]" );
+      break;
+
+    case BlendMode:
+      mTypes = DataTypeString;
+      mHelpText = trString() + QLatin1String( "[<b>Normal</b>|<b>Lighten</b>|<b>Screen</b>|<b>Dodge</b>|<br>"
+                                              "<b>Addition</b>|<b>Darken</b>|<b>Multiply</b>|<b>Burn</b>|<b>Overlay</b>|<br>"
+                                              "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b>]" );
+      break;
+
+    case Point:
+      mTypes = DataTypeString;
+      mHelpText = QObject::tr( "double coord [<b>X,Y</b>]" );
+      break;
+
+    case Size:
+      mTypes = DataTypeString;
+      mHelpText = QObject::tr( "double size [<b>width,height</b>]" );
+      break;
+
+    case LineStyle:
+      mTypes = DataTypeString;
+      mHelpText = trString() + QLatin1String( "[<b>no</b>|<b>solid</b>|<b>dash</b>|<b>dot</b>|<b>dash dot</b>|<b>dash dot dot</b>]" );
+      break;
+
+    case FillStyle:
+      mTypes = DataTypeString;
+      mHelpText = trString() + QLatin1String( "[<b>solid</b>|<b>horizontal</b>|<b>vertical</b>|<b>cross</b>|<b>b_diagonal</b>|<b>f_diagonal"
+                                              "</b>|<b>diagonal_x</b>|<b>dense1</b>|<b>dense2</b>|<b>dense3</b>|<b>dense4</b>|<b>dense5"
+                                              "</b>|<b>dense6</b>|<b>dense7</b>|<b>no]" );
+      break;
+
+    case CapStyle:
+      mTypes = DataTypeString;
+      mHelpText = trString() + QLatin1String( "[<b>square</b>|<b>flat</b>|<b>round</b>]" );
+      break;
+
+    case HorizontalAnchor:
+      mTypes = DataTypeString;
+      mHelpText = trString() + QLatin1String( "[<b>left</b>|<b>center</b>|<b>right</b>]" );
+      break;
+
+    case VerticalAnchor:
+      mTypes = DataTypeString;
+      mHelpText = trString() + QLatin1String( "[<b>top</b>|<b>center</b>|<b>bottom</b>]" );
+      break;
+
+    case SvgPath:
+      mTypes = DataTypeString;
+      mHelpText = trString() + QLatin1String( "[<b>filepath</b>] as<br>"
+                                              "<b>''</b>=empty|absolute|search-paths-relative|<br>"
+                                              "project-relative|URL" );
+      break;
+
+    case Offset:
+      mTypes = DataTypeString;
+      mHelpText = QObject::tr( "double offset [<b>x,y</b>]" );
+      break;
+
+    case Custom:
+      mTypes = DataTypeString;
+  }
+}
+
+QgsPropertyDefinition::QgsPropertyDefinition( const QString& name, DataType dataTypes, const QString& description, const QString& helpText )
+    : mName( name )
+    , mDescription( description )
+    , mTypes( dataTypes )
+    , mHelpText( helpText )
+{}
+
+QString QgsPropertyDefinition::trString()
+{
+  // just something to reduce translation redundancy
+  return QObject::tr( "string " );
+}
+
 //
 // QgsAbstractProperty
 //

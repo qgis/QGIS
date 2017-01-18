@@ -23,50 +23,49 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
-const QgsPropertyDefinition QgsComposerObject::sPropertyNameMap
+const QgsPropertiesDefinition QgsComposerObject::PROPERTY_DEFINITIONS
 {
-  { QgsComposerObject::TestProperty, "dataDefinedProperty" },
-  { QgsComposerObject::PresetPaperSize, "dataDefinedPaperSize" },
-  { QgsComposerObject::PaperWidth, "dataDefinedPaperWidth"},
-  { QgsComposerObject::PaperHeight, "dataDefinedPaperHeight" },
-  { QgsComposerObject::NumPages, "dataDefinedNumPages" },
-  { QgsComposerObject::PaperOrientation, "dataDefinedPaperOrientation" },
-  { QgsComposerObject::PageNumber, "dataDefinedPageNumber" },
-  { QgsComposerObject::PositionX, "dataDefinedPositionX" },
-  { QgsComposerObject::PositionY, "dataDefinedPositionY" },
-  { QgsComposerObject::ItemWidth, "dataDefinedWidth" },
-  { QgsComposerObject::ItemHeight, "dataDefinedHeight" },
-  { QgsComposerObject::ItemRotation, "dataDefinedRotation" },
-  { QgsComposerObject::Transparency, "dataDefinedTransparency" },
-  { QgsComposerObject::BlendMode, "dataDefinedBlendMode" },
-  { QgsComposerObject::ExcludeFromExports, "dataDefinedExcludeExports"},
-  { QgsComposerObject::FrameColor, "dataDefinedFrameColor"},
-  { QgsComposerObject::BackgroundColor, "dataDefinedBackgroundColor"},
-  { QgsComposerObject::MapRotation, "dataDefinedMapRotation" },
-  { QgsComposerObject::MapScale, "dataDefinedMapScale" },
-  { QgsComposerObject::MapXMin, "dataDefinedMapXMin" },
-  { QgsComposerObject::MapYMin, "dataDefinedMapYMin" },
-  { QgsComposerObject::MapXMax, "dataDefinedMapXMax" },
-  { QgsComposerObject::MapYMax, "dataDefinedMapYMax" },
-  { QgsComposerObject::MapAtlasMargin, "dataDefinedMapAtlasMargin" },
-  { QgsComposerObject::MapLayers, "dataDefinedMapLayers" },
-  { QgsComposerObject::MapStylePreset, "dataDefinedMapStylePreset" },
-  { QgsComposerObject::PictureSource, "dataDefinedSource" },
-  { QgsComposerObject::SourceUrl, "dataDefinedSourceUrl" },
-  { QgsComposerObject::PresetPaperSize, "dataDefinedPaperSize" },
-  { QgsComposerObject::PaperWidth, "dataDefinedPaperWidth" },
-  { QgsComposerObject::PaperHeight, "dataDefinedPaperHeight" },
-  { QgsComposerObject::NumPages, "dataDefinedNumPages" },
-  { QgsComposerObject::PaperOrientation, "dataDefinedPaperOrientation" },
-  { QgsComposerObject::PictureSvgBackgroundColor, "dataDefinedSvgBackgroundColor" },
-  { QgsComposerObject::PictureSvgOutlineColor, "dataDefinedSvgOutlineColor" },
-  { QgsComposerObject::PictureSvgOutlineWidth, "dataDefinedSvgOutlineWidth" },
-  { QgsComposerObject::LegendTitle, "dataDefinedLegendTitle" },
-  { QgsComposerObject::LegendColumnCount, "dataDefinedLegendColumns" },
-  { QgsComposerObject::ScalebarFillColor, "dataDefinedScalebarFill" },
-  { QgsComposerObject::ScalebarFillColor2, "dataDefinedScalebarFill2" },
-  { QgsComposerObject::ScalebarLineColor, "dataDefinedScalebarLineColor" },
-  { QgsComposerObject::ScalebarLineWidth, "dataDefinedScalebarLineWidth" },
+  { QgsComposerObject::TestProperty, QgsPropertyDefinition( "dataDefinedProperty" , QgsPropertyDefinition::DataTypeString, "invalid property", QString() ) },
+  { QgsComposerObject::PresetPaperSize, QgsPropertyDefinition( "dataDefinedPaperSize" , QgsPropertyDefinition::DataTypeString, QObject::tr( "Paper size" ), QObject::tr( "string " ) + QLatin1String( "[<b>A5</b>|<b>A4</b>|<b>A3</b>|<b>A2</b>|<b>A1</b>|<b>A0</b>"
+      "<b>B5</b>|<b>B4</b>|<b>B3</b>|<b>B2</b>|<b>B1</b>|<b>B0</b>"
+      "<b>Legal</b>|<b>Ansi A</b>|<b>Ansi B</b>|<b>Ansi C</b>|<b>Ansi D</b>|<b>Ansi E</b>"
+      "<b>Arch A</b>|<b>Arch B</b>|<b>Arch C</b>|<b>Arch D</b>|<b>Arch E</b>|<b>Arch E1</b>]"
+                                                                                                                                                                                                    ) ) },
+  { QgsComposerObject::PaperWidth, QgsPropertyDefinition( "dataDefinedPaperWidth", QObject::tr( "Page width" ), QgsPropertyDefinition::DoublePositive ) },
+  { QgsComposerObject::PaperHeight, QgsPropertyDefinition( "dataDefinedPaperHeight" , QObject::tr( "Page height" ), QgsPropertyDefinition::DoublePositive ) },
+  { QgsComposerObject::NumPages, QgsPropertyDefinition( "dataDefinedNumPages" , QObject::tr( "Number of pages" ), QgsPropertyDefinition::IntegerPositive ) },
+  { QgsComposerObject::PaperOrientation, QgsPropertyDefinition( "dataDefinedPaperOrientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), QObject::tr( "string " ) + QLatin1String( "[<b>portrait</b>|<b>landscape</b>]" ) ) },
+  { QgsComposerObject::PageNumber, QgsPropertyDefinition( "dataDefinedPageNumber" , QObject::tr( "Page number" ), QgsPropertyDefinition::IntegerPositive ) },
+  { QgsComposerObject::PositionX, QgsPropertyDefinition( "dataDefinedPositionX" , QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
+  { QgsComposerObject::PositionY, QgsPropertyDefinition( "dataDefinedPositionY" , QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
+  { QgsComposerObject::ItemWidth, QgsPropertyDefinition( "dataDefinedWidth" , QObject::tr( "Width" ), QgsPropertyDefinition::DoublePositive ) },
+  { QgsComposerObject::ItemHeight, QgsPropertyDefinition( "dataDefinedHeight" , QObject::tr( "Height" ), QgsPropertyDefinition::DoublePositive ) },
+  { QgsComposerObject::ItemRotation, QgsPropertyDefinition( "dataDefinedRotation" , QObject::tr( "Rotation angle" ), QgsPropertyDefinition::Double ) },
+  { QgsComposerObject::Transparency, QgsPropertyDefinition( "dataDefinedTransparency" , QObject::tr( "Transparency" ), QgsPropertyDefinition::Transparency ) },
+  { QgsComposerObject::BlendMode, QgsPropertyDefinition( "dataDefinedBlendMode" , QObject::tr( "Blend mode" ), QgsPropertyDefinition::BlendMode ) },
+  { QgsComposerObject::ExcludeFromExports, QgsPropertyDefinition( "dataDefinedExcludeExports", QObject::tr( "Exclude item from exports" ), QgsPropertyDefinition::Boolean ) },
+  { QgsComposerObject::FrameColor, QgsPropertyDefinition( "dataDefinedFrameColor", QObject::tr( "Frame color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+  { QgsComposerObject::BackgroundColor, QgsPropertyDefinition( "dataDefinedBackgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+  { QgsComposerObject::MapRotation, QgsPropertyDefinition( "dataDefinedMapRotation" , QObject::tr( "Map rotation" ), QgsPropertyDefinition::Double ) },
+  { QgsComposerObject::MapScale, QgsPropertyDefinition( "dataDefinedMapScale" , QObject::tr( "Map scale" ), QgsPropertyDefinition::DoublePositive ) },
+  { QgsComposerObject::MapXMin, QgsPropertyDefinition( "dataDefinedMapXMin" , QObject::tr( "Extent minimum X" ), QgsPropertyDefinition::Double ) },
+  { QgsComposerObject::MapYMin, QgsPropertyDefinition( "dataDefinedMapYMin" , QObject::tr( "Extent minimum Y" ), QgsPropertyDefinition::Double ) },
+  { QgsComposerObject::MapXMax, QgsPropertyDefinition( "dataDefinedMapXMax" , QObject::tr( "Extent maximum X" ), QgsPropertyDefinition::Double ) },
+  { QgsComposerObject::MapYMax, QgsPropertyDefinition( "dataDefinedMapYMax" , QObject::tr( "Extent maximum Y" ), QgsPropertyDefinition::Double ) },
+  { QgsComposerObject::MapAtlasMargin, QgsPropertyDefinition( "dataDefinedMapAtlasMargin" , QObject::tr( "Atlas margin" ), QgsPropertyDefinition::DoublePositive ) },
+  { QgsComposerObject::MapLayers, QgsPropertyDefinition( "dataDefinedMapLayers", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), tr( "list of map layer names separated by | characters" ) ) },
+  { QgsComposerObject::MapStylePreset, QgsPropertyDefinition( "dataDefinedMapStylePreset", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), tr( "list of map layer names separated by | characters" ) ) },
+  { QgsComposerObject::PictureSource, QgsPropertyDefinition( "dataDefinedSource" , QObject::tr( "Picture source (URL)" ), QgsPropertyDefinition::String ) },
+  { QgsComposerObject::SourceUrl, QgsPropertyDefinition( "dataDefinedSourceUrl" , QObject::tr( "Source URL" ), QgsPropertyDefinition::String ) },
+  { QgsComposerObject::PictureSvgBackgroundColor, QgsPropertyDefinition( "dataDefinedSvgBackgroundColor" , QObject::tr( "SVG background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+  { QgsComposerObject::PictureSvgOutlineColor, QgsPropertyDefinition( "dataDefinedSvgOutlineColor" , QObject::tr( "SVG outline color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+  { QgsComposerObject::PictureSvgOutlineWidth, QgsPropertyDefinition( "dataDefinedSvgOutlineWidth" , QObject::tr( "SVG outline width" ), QgsPropertyDefinition::DoublePositive ) },
+  { QgsComposerObject::LegendTitle, QgsPropertyDefinition( "dataDefinedLegendTitle" , QObject::tr( "Legend title" ), QgsPropertyDefinition::String ) },
+  { QgsComposerObject::LegendColumnCount, QgsPropertyDefinition( "dataDefinedLegendColumns" , QObject::tr( "Number of columns" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) },
+  { QgsComposerObject::ScalebarFillColor, QgsPropertyDefinition( "dataDefinedScalebarFill" , QObject::tr( "Fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+  { QgsComposerObject::ScalebarFillColor2, QgsPropertyDefinition( "dataDefinedScalebarFill2" , QObject::tr( "Secondary fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+  { QgsComposerObject::ScalebarLineColor, QgsPropertyDefinition( "dataDefinedScalebarLineColor" , QObject::tr( "Line color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+  { QgsComposerObject::ScalebarLineWidth, QgsPropertyDefinition( "dataDefinedScalebarLineWidth" , QObject::tr( "Line width" ), QgsPropertyDefinition::DoublePositive ) },
 };
 
 
@@ -102,7 +101,7 @@ bool QgsComposerObject::writeXml( QDomElement &elem, QDomDocument &doc ) const
   }
 
   QDomElement ddPropsElement = doc.createElement( QStringLiteral( "dataDefinedProperties" ) );
-  mProperties.writeXml( ddPropsElement, doc, sPropertyNameMap );
+  mProperties.writeXml( ddPropsElement, doc, PROPERTY_DEFINITIONS );
   elem.appendChild( ddPropsElement );
 
   //custom properties
@@ -125,7 +124,7 @@ bool QgsComposerObject::readXml( const QDomElement &itemElem, const QDomDocument
   QDomNode propsNode = itemElem.namedItem( QStringLiteral( "dataDefinedProperties" ) );
   if ( !propsNode.isNull() )
   {
-    mProperties.readXml( propsNode.toElement(), doc, sPropertyNameMap );
+    mProperties.readXml( propsNode.toElement(), doc, PROPERTY_DEFINITIONS );
   }
 
   //custom properties

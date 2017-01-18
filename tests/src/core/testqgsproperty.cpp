@@ -85,7 +85,7 @@ class TestQgsProperty : public QObject
 
   private:
 
-    QMap< int, QString > mPropertyNameMap;
+    QgsPropertiesDefinition mDefinitions;
 
 };
 
@@ -93,10 +93,10 @@ void TestQgsProperty::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  mPropertyNameMap.insert( Property1, "p1" );
-  mPropertyNameMap.insert( Property2, "p2" );
-  mPropertyNameMap.insert( Property3, "p3" );
-  mPropertyNameMap.insert( Property4, "p4" );
+  mDefinitions.insert( Property1, QgsPropertyDefinition( "p1", QgsPropertyDefinition::DataTypeString, QString(), QString() ) );
+  mDefinitions.insert( Property2, QgsPropertyDefinition( "p2", QgsPropertyDefinition::DataTypeString, QString(), QString() ) );
+  mDefinitions.insert( Property3, QgsPropertyDefinition( "p3", QgsPropertyDefinition::DataTypeString, QString(), QString() ) );
+  mDefinitions.insert( Property4, QgsPropertyDefinition( "p4", QgsPropertyDefinition::DataTypeString, QString(), QString() ) );
 }
 
 void TestQgsProperty::cleanupTestCase()
@@ -891,10 +891,10 @@ void TestQgsProperty::propertyCollection()
       "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
   QDomDocument doc( documentType );
   QDomElement element = doc.createElement( "collection" );
-  collection.writeXml( element, doc, mPropertyNameMap );
+  collection.writeXml( element, doc, mDefinitions );
 
   QgsPropertyCollection restoredCollection;
-  restoredCollection.readXml( element, doc, mPropertyNameMap );
+  restoredCollection.readXml( element, doc, mDefinitions );
   QCOMPARE( restoredCollection.name(), QString( "collection" ) );
   QCOMPARE( restoredCollection.count(), 4 );
   QCOMPARE( restoredCollection.property( Property1 )->propertyType(), QgsAbstractProperty::StaticProperty );

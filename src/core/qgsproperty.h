@@ -31,6 +31,125 @@ class QgsColorRamp;
 
 /**
  * \ingroup core
+ * \class QgsPropertyDefinition
+ * \brief Definition for a property.
+ *
+ * QgsPropertyDefinition defines the type of values allowed for a property, and
+ * handles descriptive names and help text for using the property. Definitions
+ * can use one of the predefined standard templates to simplify definition of
+ * commonly used property types, such as colors and blend modes.
+ * \note Added in version 3.0
+ */
+class CORE_EXPORT QgsPropertyDefinition
+{
+  public:
+
+    //! Predefined standard property templates
+    enum StandardPropertyTemplate
+    {
+      Boolean = 0, //!< Boolean value
+      Integer, //!< Integer value (including negative values)
+      IntegerPositive, //!< Positive integer values (including 0)
+      IntegerPositiveGreaterZero, //!< Non-zero positive integer values
+      Double, //!< Double value (including negative values)
+      DoublePositive, //!< Positive double value (including 0)
+      Double0To1, //!< Double value between 0-1 (inclusive)
+      String, //!< Any string value
+      Transparency, //!< Transparency (0-100)
+      RenderUnits, //!< Render units (eg mm/pixels/map units)
+      ColorWithAlpha, //!< Color with alpha channel
+      ColorNoAlpha, //!< Color with no alpha channel
+      PenJoinStyle, //!< Pen join style
+      BlendMode, //!< Blend mode
+      Point, //!< 2D point
+      Size, //!< 2D size
+      LineStyle, //!< Line style (eg solid/dashed)
+      FillStyle, //!< Fill style (eg solid, lines)
+      CapStyle, //!< Line cap style (eg round)
+      HorizontalAnchor, //!< Horizontal anchor point
+      VerticalAnchor, //!< Vertical anchor point
+      SvgPath, //!< Path to an SVG file
+      Offset, //!< 2D offset
+      Custom = 3000, //!< Custom property types
+    };
+
+    //! Valid data types required by property
+    enum DataType
+    {
+
+      /**
+       * Property requires a string value. No numeric values are acceptable by the property.
+       * Use this for properties which require a string value such as 'dashed' which cannot
+       * be stored in a non-string field.
+       */
+      DataTypeString = 0,
+
+      /**
+       * Property requires a numeric value. Note that setting DataTypeNumeric as the required type
+       * means that the property also accepts string fields and inputs, as those may be convertible
+       * to a numeric value (Eg "1.0" -> 1.0)
+       */
+      DataTypeNumeric,
+
+      /**
+       * Property requires a boolean value. Note that setting DataTypeBoolean as the required type
+       * means that the property also accepts string and numeric fields, as those may be convertible
+       * to a boolean value (Eg "1.0" -> true)
+       */
+      DataTypeBoolean,
+    };
+
+    /**
+     * Constructs an empty property.
+     */
+    QgsPropertyDefinition();
+
+    /**
+     * Constructor for QgsPropertyDefinition, using a standard property template.
+     * The name is used internally and should be a unique, alphanumeric string.
+     */
+    QgsPropertyDefinition( const QString& name, const QString& description, StandardPropertyTemplate type );
+
+    /**
+     * Constructor for custom QgsPropertyDefinitions.
+     * The name is used internally and should be a unique, alphanumeric string.
+     */
+    QgsPropertyDefinition( const QString& name, DataType dataTypes, const QString& description, const QString& helpText );
+
+    /**
+     * Returns the name of the property. This is used internally and should be a unique, alphanumeric string.
+     */
+    QString name() const { return mName; }
+
+    /**
+     * Descriptive name of the property.
+     */
+    QString description() const { return mDescription; }
+
+    /**
+     * Helper text for using the property, including a description of the valid values for the property.
+     */
+    QString helpText() const { return mHelpText; }
+
+    /**
+     * Returns the allowable field/value data type for the property.
+     */
+    DataType dataType() const { return mTypes; }
+
+  private:
+
+    QString mName;
+    QString mDescription;
+    DataType mTypes;
+    QString mHelpText;
+    StandardPropertyTemplate mStandardType = Custom;
+
+    static QString trString();
+};
+
+
+/**
+ * \ingroup core
  * \class QgsAbstractProperty
  * \brief Abstract base class for properties.
  *
@@ -251,7 +370,7 @@ class CORE_EXPORT QgsStaticProperty : public QgsAbstractProperty
     /**
      * Constructor for QgsStaticProperty.
      * @param value initial static value to use for property
-     * @param isActive whether the property is intially active
+     * @param isActive whether the property is initially active
      */
     QgsStaticProperty( const QVariant& value = QVariant(), bool isActive = true );
 
@@ -301,7 +420,7 @@ class CORE_EXPORT QgsFieldBasedProperty : public QgsAbstractProperty
     /**
      * Constructor for QgsFieldBasedProperty.
      * @param field field name
-     * @param isActive whether the property is intially active
+     * @param isActive whether the property is initially active
      */
     QgsFieldBasedProperty( const QString& field = QString(), bool isActive = true );
 
@@ -360,7 +479,7 @@ class CORE_EXPORT QgsExpressionBasedProperty : public QgsAbstractProperty
     /**
      * Constructor for QgsExpressionBasedProperty.
      * @param expression expression string
-     * @param isActive whether the property is intially active
+     * @param isActive whether the property is initially active
      */
     QgsExpressionBasedProperty( const QString& expression = QString(), bool isActive = true );
 

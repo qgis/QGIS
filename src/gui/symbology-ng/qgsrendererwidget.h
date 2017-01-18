@@ -21,6 +21,7 @@
 #include "qgssymbol.h"
 #include "qgspanelwidget.h"
 #include "qgssymbolwidgetcontext.h"
+#include "qgssymbollayer.h"
 
 class QgsVectorLayer;
 class QgsStyle;
@@ -183,7 +184,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
      *
      * @note May be missing Python bindings depending on the platform.
      */
-    void init( const QString& description ); // needed in children ctor to call virtual
+    void init( int propertyKey ); // needed in children ctor to call virtual
 
   private:
     QgsAbstractProperty* symbolDataDefined() const;
@@ -210,7 +211,7 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
     QgsDataDefinedSizeDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer )
         : QgsDataDefinedValueDialog( symbolList, layer, tr( "Size" ) )
     {
-      init( tr( "Symbol size" ) );
+      init( QgsSymbolLayer::PropertySize );
       if ( !symbolList.isEmpty() && symbolList.at( 0 ) && vectorLayer() )
         mDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), static_cast<const QgsMarkerSymbol*>( symbolList.at( 0 ) ) ) );
     }
@@ -233,7 +234,7 @@ class GUI_EXPORT QgsDataDefinedRotationDialog : public QgsDataDefinedValueDialog
     QgsDataDefinedRotationDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer )
         : QgsDataDefinedValueDialog( symbolList, layer, tr( "Rotation" ) )
     {
-      init( tr( "Symbol rotation" ) );
+      init( QgsSymbolLayer::PropertyAngle );
     }
 
   protected:
@@ -254,7 +255,7 @@ class GUI_EXPORT QgsDataDefinedWidthDialog : public QgsDataDefinedValueDialog
     QgsDataDefinedWidthDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer )
         : QgsDataDefinedValueDialog( symbolList, layer, tr( "Width" ) )
     {
-      init( tr( "Symbol width" ) );
+      init( QgsSymbolLayer::PropertyOutlineWidth );
     }
 
   protected:

@@ -1,4 +1,4 @@
-typedef QMap< int, QString > QgsPropertyDefinition;
+typedef QMap< int, QgsPropertyDefinition > QgsPropertiesDefinition;
 
 /**
  * \ingroup core
@@ -198,7 +198,7 @@ class QgsAbstractPropertyCollection
      * to avoid writing the raw integer key values to XML, for readability and future-proofness.
      * @see readXML()
     */
-    virtual bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertyDefinition& propertyNameMap ) const = 0;
+    virtual bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const = 0;
 
     /**
      * Reads property collection state from an XML element.
@@ -208,7 +208,7 @@ class QgsAbstractPropertyCollection
      * the propertyNameMap specified when writeXML() was called.
      * @see writeXML()
     */
-    virtual bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertyDefinition &propertyNameMap ) = 0;
+    virtual bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition &definitions ) = 0;
 
 };
 
@@ -257,8 +257,8 @@ class QgsPropertyCollection : QgsAbstractPropertyCollection
     bool isActive( int key ) const;
     bool hasActiveProperties() const;
     bool hasActiveDynamicProperties() const;
-    bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertyDefinition& propertyNameMap ) const;
-    bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertyDefinition& propertyNameMap );
+    bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const;
+    bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition& definitions );
 
     /** Adds a property to the collection and takes ownership of it.
      * @param key integer key for property. Any existing property with the same key will be deleted
@@ -383,7 +383,7 @@ class QgsPropertyCollectionStack : QgsAbstractPropertyCollection
 
     QSet<int> propertyKeys() const;
     bool hasProperty( int key ) const;
-    bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertyDefinition& propertyNameMap ) const;
-    bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertyDefinition &propertyNameMap );
+    bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const;
+    bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition &definitions );
 };
 
