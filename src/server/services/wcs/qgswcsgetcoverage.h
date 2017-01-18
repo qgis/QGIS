@@ -1,12 +1,10 @@
 /***************************************************************************
-                              qgswmsgetcapabilities.h
+                              qgswcsgetcoverage.h
                               -------------------------
-  begin                : December 20 , 2016
-  copyright            : (C) 2007 by Marco Hugentobler  (original code)
-                         (C) 2014 by Alessandro Pasotti (original code)
-                         (C) 2016 by David Marteau
-  email                : marco dot hugentobler at karto dot baug dot ethz dot ch
-                         a dot pasotti at itopen dot it
+  begin                : January 16 , 2017
+  copyright            : (C) 2013 by René-Luc D'Hont  ( parts from qgswcsserver )
+                         (C) 2017 by David Marteau
+  email                : rldhont at 3liz dot com
                          david dot marteau at 3liz dot com
  ***************************************************************************/
 
@@ -18,21 +16,25 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSWMSGETCAPABILITIES_H
-#define QGSWMSGETCAPABILITIES_H
+#ifndef QGSWCSGETCOVERAGE_H
+#define QGSWCSGETCOVERAGE_H
 
-namespace QgsWms
+#include <QByteArray>
+
+namespace QgsWcs
 {
 
-  /** Output GetCapabilities response
+  /** Output WCS GetCoverage response
    */
-  void writeGetCapabilities( QgsServerInterface* serverIface, const QString& version,
-                             const QgsServerRequest& request, QgsServerResponse& response,
-                             bool projectSettings = false );
+  void writeGetCoverage( QgsServerInterface* serverIface, const QString& version,
+                         const QgsServerRequest& request, QgsServerResponse& response );
 
-} // samespace QgsWms
+  /**
+   * Compute coverage data
+   */
+  QByteArray getCoverageData( QgsServerInterface* serverIface, const QgsServerRequest& request );
 
+} // samespace QgsWcs
 
 #endif
-
 

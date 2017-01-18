@@ -27,6 +27,8 @@
  * \ingroup server
  * QgsServerRequest
  * Class defining request interface passed to services QgsService::executeRequest() method
+ *
+ * @note added in QGIS 3.0
  */
 
 // Note about design: this interface must be passed along to python and thus signatures methods must be
@@ -38,6 +40,9 @@ class SERVER_EXPORT QgsServerRequest
 
     typedef QMap<QString, QString> Parameters;
 
+    /**
+     * HTTP Method (or equivalent) used for the request
+     */
     enum Method
     {
       HeadMethod, PutMethod, GetMethod, PostMethod, DeleteMethod

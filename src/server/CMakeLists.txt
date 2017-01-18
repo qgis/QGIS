@@ -24,9 +24,6 @@ SET ( qgis_mapserv_SRCS
   qgscapabilitiescache.cpp
   qgsconfigcache.cpp
   qgsrequesthandler.cpp
-  qgsowsserver.cpp
-  qgswfsserver.cpp
-  qgswcsserver.cpp
   qgsserversettings.cpp
   qgsserverexception.cpp
   qgsmslayercache.cpp
@@ -43,7 +40,6 @@ SET ( qgis_mapserv_SRCS
   qgswmsconfigparser.cpp
   qgswmsprojectparser.cpp
   qgsserverprojectparser.cpp
-  qgsserverstreamingdevice.cpp
   qgssldconfigparser.cpp
   qgsconfigparserutils.cpp
   qgsserver.cpp
@@ -56,6 +52,7 @@ SET ( qgis_mapserv_SRCS
   qgsfcgiserverresponse.cpp
   qgsbufferserverresponse.cpp
   qgsfilterresponsedecorator.cpp
+  qgsfilterrestorer.cpp
 #----------------------------
 )
 IF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
@@ -76,7 +73,6 @@ SET (qgis_mapserv_MOC_HDRS
   qgsmslayercache.h
   qgsserverlogger.h
   qgsserversettings.h
-  qgsserverstreamingdevice.h
 )
 
 IF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")

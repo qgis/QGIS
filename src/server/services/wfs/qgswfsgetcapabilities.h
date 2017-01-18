@@ -1,10 +1,10 @@
 /***************************************************************************
-                              qgswmsgetcapabilities.h
+                              qgswfsgecapabilities.h
                               -------------------------
   begin                : December 20 , 2016
   copyright            : (C) 2007 by Marco Hugentobler  (original code)
                          (C) 2014 by Alessandro Pasotti (original code)
-                         (C) 2016 by David Marteau
+                         (C) 2017 by David Marteau
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
                          a dot pasotti at itopen dot it
                          david dot marteau at 3liz dot com
@@ -18,21 +18,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSWMSGETCAPABILITIES_H
-#define QGSWMSGETCAPABILITIES_H
+#ifndef QGSWFSGETCAPABILITIES_H
+#define QGSWFSGETCAPABILITIES_H
 
-namespace QgsWms
+#include <QDomDocument>
+
+namespace QgsWfs
 {
 
-  /** Output GetCapabilities response
+  /**
+   * Create get capabilities document
+   */
+  QDomDocument createGetCapabilitiesDocument( QgsServerInterface* serverIface, const QString& version,
+      const QgsServerRequest& request );
+
+  /**
+   * Output WFS  GetCapabilities response
    */
   void writeGetCapabilities( QgsServerInterface* serverIface, const QString& version,
-                             const QgsServerRequest& request, QgsServerResponse& response,
-                             bool projectSettings = false );
+                             const QgsServerRequest& request, QgsServerResponse& response );
 
-} // samespace QgsWms
-
+} // samespace QgsWfs
 
 #endif
-
 

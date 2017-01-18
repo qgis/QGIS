@@ -84,11 +84,16 @@ IF(WITH_APIDOC)
         ${DOXYGEN_INPUT}
         ${CMAKE_SOURCE_DIR}/src/server/qgsserver.h
         ${CMAKE_SOURCE_DIR}/src/server/qgscapabilitiescache.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsmapserviceexception.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsserverexception.h
         ${CMAKE_SOURCE_DIR}/src/server/qgsrequesthandler.h
         ${CMAKE_SOURCE_DIR}/src/server/qgsserverfilter.h
         ${CMAKE_SOURCE_DIR}/src/server/qgsaccesscontrolfilter.h
         ${CMAKE_SOURCE_DIR}/src/server/qgsserverinterface.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsserverrequest.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsserverresponse.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsserverrequest.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsservice.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsserviceregistry.h
       )
     ENDIF(WITH_SERVER_PLUGINS)
 

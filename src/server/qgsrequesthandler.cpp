@@ -53,20 +53,6 @@ QMap<QString, QString> QgsRequestHandler::parameterMap() const
   return mRequest.parameters();
 }
 
-void QgsRequestHandler::setHttpResponse( const QByteArray& ba, const QString &format )
-{
-  QgsMessageLog::logMessage( QStringLiteral( "Checking byte array is ok to set..." ) );
-
-  if ( ba.size() < 1 )
-  {
-    return;
-  }
-
-  QgsMessageLog::logMessage( QStringLiteral( "Byte array looks good, setting response..." ) );
-  appendBody( ba );
-  setInfoFormat( format );
-}
-
 bool QgsRequestHandler::exceptionRaised() const
 {
   return mExceptionRaised;
@@ -107,65 +93,10 @@ void QgsRequestHandler::appendBody( const QByteArray &body )
   mResponse.write( body );
 }
 
-void QgsRequestHandler::setInfoFormat( const QString &format )
-{
-  mInfoFormat = format;
-
-  // Update header
-  QString fmt = mInfoFormat;
-  if ( mInfoFormat.startsWith( QLatin1String( "text/" ) ) || mInfoFormat.startsWith( QLatin1String( "application/vnd.ogc.gml" ) ) )
-  {
-    fmt.append( "; charset=utf-8" );
-  }
-  setHeader( QStringLiteral( "Content-Type" ), fmt );
-
-}
-
 void QgsRequestHandler::sendResponse()
 {
   // Send data to output
   mResponse.flush();
-}
-
-
-
-QString QgsRequestHandler::formatToMimeType( const QString& format ) const
-{
-  if ( format.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 )
-  {
-    return QStringLiteral( "image/png" );
-  }
-  else if ( format.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0 )
-  {
-    return QStringLiteral( "image/jpeg" );
-  }
-  else if ( format.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
-  {
-    return QStringLiteral( "image/svg+xml" );
-  }
-  else if ( format.compare( QLatin1String( "pdf" ), Qt::CaseInsensitive ) == 0 )
-  {
-    return QStringLiteral( "application/pdf" );
-  }
-  return format;
-}
-
-void QgsRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc )
-{
-  QByteArray ba = doc.toByteArray();
-  setHttpResponse( ba, QStringLiteral( "text/xml" ) );
-}
-
-void QgsRequestHandler::setXmlResponse( const QDomDocument& doc )
-{
-  QByteArray ba = doc.toByteArray();
-  setHttpResponse( ba, QStringLiteral( "text/xml" ) );
-}
-
-void QgsRequestHandler::setXmlResponse( const QDomDocument& doc, const QString& mimeType )
-{
-  QByteArray ba = doc.toByteArray();
-  setHttpResponse( ba, mimeType );
 }
 
 void QgsRequestHandler::setServiceException( const QgsServerException& ex )
@@ -173,66 +104,6 @@ void QgsRequestHandler::setServiceException( const QgsServerException& ex )
   // Safety measure to avoid potential leaks if called repeatedly
   mExceptionRaised = true;
   mResponse.write( ex );
-}
-
-bool QgsRequestHandler::startGetFeatureResponse( QByteArray* ba, const QString& infoFormat )
-{
-  if ( !ba )
-  {
-    return false;
-  }
-
-  if ( ba->size() < 1 )
-  {
-    return false;
-  }
-
-  QString format;
-  if ( infoFormat == QLatin1String( "GeoJSON" ) )
-    format = QStringLiteral( "text/plain" );
-  else
-    format = QStringLiteral( "text/xml" );
-
-  setInfoFormat( format );
-  appendBody( *ba );
-  // Streaming
-  sendResponse();
-  return true;
-}
-
-void QgsRequestHandler::setGetFeatureResponse( QByteArray* ba )
-{
-  if ( !ba )
-  {
-    return;
-  }
-
-  if ( ba->size() < 1 )
-  {
-    return;
-  }
-  appendBody( *ba );
-  // Streaming
-  sendResponse();
-}
-
-void QgsRequestHandler::endGetFeatureResponse( QByteArray* ba )
-{
-  if ( !ba )
-  {
-    return;
-  }
-  appendBody( *ba );
-  // do NOT call sendResponse()
-  // finish will be called at the end of the transaction
-}
-
-void QgsRequestHandler::setGetCoverageResponse( QByteArray* ba )
-{
-  if ( ba )
-  {
-    setHttpResponse( *ba, QStringLiteral( "image/tiff" ) );
-  }
 }
 
 void QgsRequestHandler::setupParameters()

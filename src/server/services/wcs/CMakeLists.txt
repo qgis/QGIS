@@ -2,28 +2,18 @@
 ########################################################
 # Files
 
-SET (wms_SRCS
-  qgswms.cpp
-  qgswmsutils.cpp
-  qgsdxfwriter.cpp
-  qgswmsdescribelayer.cpp
-  qgswmsgetcapabilities.cpp
-  qgswmsgetcontext.cpp
-  qgswmsgetfeatureinfo.cpp
-  qgswmsgetlegendgraphics.cpp
-  qgswmsgetmap.cpp
-  qgswmsgetprint.cpp
-  qgswmsgetschemaextension.cpp
-  qgswmsgetstyle.cpp
-  qgswmsgetstyles.cpp
-  qgswmsservertransitional.cpp
-  qgsmaprendererjobproxy.cpp
+SET (wcs_SRCS
+  qgswcs.cpp
+  qgswcsutils.cpp
+  qgswcsgetcapabilities.cpp
+  qgswcsdescribecoverage.cpp
+  qgswcsgetcoverage.cpp
 )
 
 ########################################################
 # Build
 
-ADD_LIBRARY (wms MODULE ${wms_SRCS})
+ADD_LIBRARY (wcs MODULE ${wcs_SRCS})
 
 
 INCLUDE_DIRECTORIES(SYSTEM
@@ -35,21 +25,17 @@ INCLUDE_DIRECTORIES(SYSTEM
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/server
   ${CMAKE_CURRENT_BINARY_DIR}
-  ../../../core
+  ../../../core 
   ../../../core/dxf
-  ../../../core/geometry
+  ../../../core/geometry 
   ../../../core/raster
   ../../../core/symbology-ng
   ../../../core/composer
   ../../../core/layertree
-  ../../../gui
-  ../../../gui/editorwidgets
-  ../../../gui/editorwidgets/core
   ../..
   ..
   .
@@ -57,7 +43,7 @@ INCLUDE_DIRECTORIES(
 
 
 #endif
-TARGET_LINK_LIBRARIES(wms
+TARGET_LINK_LIBRARIES(wcs
   qgis_core
   qgis_server
 )
@@ -66,7 +52,7 @@ TARGET_LINK_LIBRARIES(wms
 ########################################################
 # Install
 
-INSTALL(TARGETS wms
+INSTALL(TARGETS wcs
     RUNTIME DESTINATION ${QGIS_SERVER_MODULE_DIR}
     LIBRARY DESTINATION ${QGIS_SERVER_MODULE_DIR}
 )

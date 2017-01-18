@@ -19,6 +19,7 @@
 #define QGSFILTERRESTORER_H
 
 #include "qgsaccesscontrol.h"
+#include "qgis_server.h"
 
 #include <QHash>
 
@@ -26,7 +27,7 @@ class QgsMapLayer;
 
 /** RAII class to restore layer filters on destruction
  */
-class QgsOWSServerFilterRestorer
+class SERVER_EXPORT QgsOWSServerFilterRestorer
 {
   public:
 
