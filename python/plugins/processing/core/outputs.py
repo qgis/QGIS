@@ -214,7 +214,7 @@ class OutputRaster(Output):
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self):
-        return ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT)
+        return ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT, True)
 
     def getCompatibleFileName(self, alg):
         """
@@ -232,7 +232,7 @@ class OutputRaster(Output):
         else:
             if self.compatible is None:
                 supported = alg.provider.getSupportedOutputRasterLayerExtensions()
-                default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT)
+                default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT, True)
                 ext = default if default in supported else supported[0]
                 self.compatible = getTempFilenameInTempFolder(self.name + '.' + ext)
             return self.compatible
@@ -329,7 +329,7 @@ class OutputVector(Output):
 
     def getDefaultFileExtension(self):
         if self.hasGeometry():
-            default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT)
+            default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT, True)
         else:
             default = 'dbf'
         return default

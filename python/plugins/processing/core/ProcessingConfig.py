@@ -224,7 +224,7 @@ class ProcessingConfig(object):
             setting.read()
 
     @staticmethod
-    def getSetting(name):
+    def getSetting(name, readable=False):
         if name in list(ProcessingConfig.settings.keys()):
             v = ProcessingConfig.settings[name].value
             try:
@@ -233,6 +233,8 @@ class ProcessingConfig(object):
             except:
                 pass
             if ProcessingConfig.settings[name].valuetype == Setting.SELECTION:
+                if readable:
+                    return v
                 return ProcessingConfig.settings[name].options.index(v)
             else:
                 return v
