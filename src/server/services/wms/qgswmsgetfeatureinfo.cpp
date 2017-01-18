@@ -20,7 +20,7 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsgetfeatureinfo.h"
-#include "qgswmsservertransitional.h"
+#include "qgswmsrenderer.h"
 
 namespace QgsWms
 {
@@ -160,12 +160,9 @@ namespace QgsWms
   {
     Q_UNUSED( version );
     QgsServerRequest::Parameters params = request.parameters();
-    QgsWmsServer server( serverIface->configFilePath(),
-                         *serverIface->serverSettings(), params,
-                         getConfigParser( serverIface ),
-                         serverIface->accessControls() );
+    QgsRenderer renderer( serverIface, params, getConfigParser( serverIface ) );
 
-    QDomDocument doc = server.getFeatureInfo( version );
+    QDomDocument doc = renderer.getFeatureInfo( version );
     QString outputFormat = params.value( QStringLiteral( "INFO_FORMAT" ), QStringLiteral( "text/plain" ) );
     writeInfoResponse( doc,  response, outputFormat );
   }

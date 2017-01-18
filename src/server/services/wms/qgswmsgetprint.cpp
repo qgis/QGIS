@@ -20,7 +20,7 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsgetprint.h"
-#include "qgswmsservertransitional.h"
+#include "qgswmsrenderer.h"
 
 namespace QgsWms
 {
@@ -31,10 +31,7 @@ namespace QgsWms
 
     Q_UNUSED( version );
 
-    QgsWmsServer server( serverIface->configFilePath(),
-                         *serverIface->serverSettings(), params,
-                         getConfigParser( serverIface ),
-                         serverIface->accessControls() );
+    QgsRenderer renderer( serverIface, params, getConfigParser( serverIface ) );
 
     QString format = params.value( "FORMAT" );
     QString contentType;
@@ -65,7 +62,7 @@ namespace QgsWms
                                  QString( "Output format %1 is not supported by the GetPrint request" ).arg( format ) );
     }
 
-    QScopedPointer<QByteArray> result( server.getPrint( format ) );
+    QScopedPointer<QByteArray> result( renderer.getPrint( format ) );
     response.setHeader( QStringLiteral( "Content-Type" ), contentType );
     response.write( *result );
   }

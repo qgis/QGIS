@@ -20,7 +20,6 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsgetstyle.h"
-#include "qgswmsservertransitional.h"
 
 namespace QgsWms
 {
@@ -28,19 +27,39 @@ namespace QgsWms
   void writeGetStyle( QgsServerInterface* serverIface, const QString& version,
                       const QgsServerRequest& request, QgsServerResponse& response )
   {
-    QgsServerRequest::Parameters params = request.parameters();
-
-    Q_UNUSED( version );
-
-    QgsWmsServer server( serverIface->configFilePath(),
-                         *serverIface->serverSettings(), params,
-                         getConfigParser( serverIface ),
-                         serverIface->accessControls() );
-
-    QDomDocument doc = server.getStyle();
+    QDomDocument doc = getStyle( serverIface, version, request );
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( doc.toByteArray() );
   }
+
+  QDomDocument getStyle( QgsServerInterface* serverIface, const QString& version,
+                         const QgsServerRequest& request )
+  {
+    Q_UNUSED( version );
+
+    QgsWmsConfigParser* configParser = getConfigParser( serverIface );
+    QgsServerRequest::Parameters parameters = request.parameters();
+
+    QDomDocument doc;
+
+    QString styleName = parameters.value( QStringLiteral( "STYLE" ) );
+    QString layerName = parameters.value( QStringLiteral( "LAYER" ) );
+
+    if ( styleName.isEmpty() )
+    {
+      throw QgsServiceException( QStringLiteral( "StyleNotSpecified" ),
+                                 QStringLiteral( "Style is mandatory for GetStyle operation" ), 400 );
+    }
+
+    if ( layerName.isEmpty() )
+    {
+      throw QgsServiceException( QStringLiteral( "LayerNotSpecified" ),
+                                 QStringLiteral( "Layer is mandatory for GetStyle operation" ), 400 );
+    }
+
+    return configParser->getStyle( styleName, layerName );
+  }
+
 
 } // samespace QgsWms
 

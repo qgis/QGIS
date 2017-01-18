@@ -23,9 +23,7 @@
 #include "qgslayertreegroup.h"
 #include "qgis_server.h"
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
 class QgsAccessControl;
-#endif
 
 class QTextDocument;
 class QSvgRenderer;
@@ -36,9 +34,7 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
   public:
     QgsWmsProjectParser(
       const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , const QgsAccessControl* accessControl
-#endif
     );
     virtual ~QgsWmsProjectParser();
 
@@ -133,9 +129,7 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
 
   private:
     QgsServerProjectParser* mProjectParser;
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
     const QgsAccessControl* mAccessControl;
-#endif
 
     mutable QFont mLegendLayerFont;
     mutable QFont mLegendItemFont;

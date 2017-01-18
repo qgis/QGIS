@@ -56,8 +56,9 @@ namespace QgsWfs
     QDomDocument doc;
 
     QgsWfsProjectParser* configParser = getConfigParser( serverIface );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl* accessControl = serverIface->accessControls();
-
+#endif
     const QString requestBody = request.getParameter( QStringLiteral( "REQUEST_BODY" ) );
 
     QString errorMsg;

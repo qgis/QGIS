@@ -20,7 +20,6 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsdescribelayer.h"
-#include "qgswmsservertransitional.h"
 
 namespace QgsWms
 {
@@ -28,20 +27,46 @@ namespace QgsWms
   void writeDescribeLayer( QgsServerInterface* serverIface, const QString& version,
                            const QgsServerRequest& request, QgsServerResponse& response )
   {
-    Q_UNUSED( version );
-    QgsServerRequest::Parameters params = request.parameters();
-
-    QgsWmsServer server( serverIface->configFilePath(),
-                         *serverIface->serverSettings(),
-                         params,
-                         getConfigParser( serverIface ),
-                         serverIface->accessControls() );
-    QDomDocument doc = server.describeLayer();
+    QDomDocument doc = describeLayer( serverIface, version, request );
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( doc.toByteArray() );
   }
 
+  // DescribeLayer is defined for WMS1.1.1/SLD1.0 and in WMS 1.3.0 SLD Extension
+  QDomDocument describeLayer( QgsServerInterface* serverIface, const QString& version,
+                              const QgsServerRequest& request )
+  {
+    Q_UNUSED( version );
 
+    QgsServerRequest::Parameters parameters = request.parameters();
+    QgsWmsConfigParser* configParser = getConfigParser( serverIface );
+
+    if ( !parameters.contains( QStringLiteral( "SLD_VERSION" ) ) )
+    {
+      throw QgsServiceException( QStringLiteral( "MissingParameterValue" ),
+                                 QStringLiteral( "SLD_VERSION is mandatory for DescribeLayer operation" ), 400 );
+    }
+    if ( parameters[ QStringLiteral( "SLD_VERSION" )] != QLatin1String( "1.1.0" ) )
+    {
+      throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ),
+                                 QStringLiteral( "SLD_VERSION = %1 is not supported" ).arg( parameters[ QStringLiteral( "SLD_VERSION" )] ), 400 );
+    }
+
+    if ( !parameters.contains( QStringLiteral( "LAYERS" ) ) )
+    {
+      throw QgsServiceException( QStringLiteral( "MissingParameterValue" ),
+                                 QStringLiteral( "LAYERS is mandatory for DescribeLayer operation" ), 400 );
+    }
+
+    QStringList layersList = parameters[ QStringLiteral( "LAYERS" )].split( QStringLiteral( "," ), QString::SkipEmptyParts );
+    if ( layersList.size() < 1 )
+    {
+      throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Layers is empty" ), 400 );
+    }
+
+    QString hrefString = serviceUrl( request, configParser ).toString( QUrl::FullyDecoded );
+    return configParser->describeLayer( layersList, hrefString );
+  }
 } // samespace QgsWms
 
 

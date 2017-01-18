@@ -27,16 +27,15 @@ namespace QgsWms
   QgsMapRendererJobProxy::QgsMapRendererJobProxy(
     bool parallelRendering
     , int maxThreads
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
     , QgsAccessControl* accessControl
-#endif
   )
       :
       mParallelRendering( parallelRendering )
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , mAccessControl( accessControl )
-#endif
   {
+#ifndef HAVE_SERVER_PYTHON_PLUGINS
+    Q_UNUSED( mAccessControl );
+#endif
     if ( mParallelRendering )
     {
       QgsApplication::setMaxThreads( maxThreads );

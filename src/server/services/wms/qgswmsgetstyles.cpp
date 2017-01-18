@@ -20,7 +20,6 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsgetstyles.h"
-#include "qgswmsservertransitional.h"
 
 namespace QgsWms
 {
@@ -28,16 +27,37 @@ namespace QgsWms
   void writeGetStyles( QgsServerInterface* serverIface, const QString& version,
                        const QgsServerRequest& request, QgsServerResponse& response )
   {
-    Q_UNUSED( version );
-    QgsServerRequest::Parameters params = request.parameters();
-    QgsWmsServer server( serverIface->configFilePath(),
-                         *serverIface->serverSettings(), params,
-                         getConfigParser( serverIface ),
-                         serverIface->accessControls() );
-
-    QDomDocument doc = server.getStyles();
+    QDomDocument doc = getStyles( serverIface, version, request );
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( doc.toByteArray() );
+  }
+
+  QDomDocument getStyles( QgsServerInterface* serverIface, const QString& version,
+                          const QgsServerRequest& request )
+  {
+    Q_UNUSED( version );
+
+    QgsWmsConfigParser* configParser = getConfigParser( serverIface );
+    QgsServerRequest::Parameters parameters = request.parameters();
+
+    QDomDocument doc;
+
+    QString layersName = parameters.value( "LAYERS" );
+
+    if ( layersName.isEmpty() )
+    {
+      throw QgsBadRequestException( QStringLiteral( "LayerNotSpecified" ),
+                                    QStringLiteral( "Layers is mandatory for GetStyles operation" ) );
+    }
+
+    QStringList layersList = layersName.split( QStringLiteral( "," ), QString::SkipEmptyParts );
+    if ( layersList.size() < 1 )
+    {
+      throw QgsBadRequestException( QStringLiteral( "LayerNotSpecified" ),
+                                    QStringLiteral( "Layers is mandatory for GetStyles operation" ) );
+    }
+
+    return configParser->getStyles( layersList );
   }
 
 

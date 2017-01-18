@@ -51,14 +51,10 @@
 
 QgsWmsProjectParser::QgsWmsProjectParser(
   const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* accessControl
-#endif
 )
     : QgsWmsConfigParser()
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
     , mAccessControl( accessControl )
-#endif
 {
   mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
   mLegendLayerFont.fromString( mProjectParser->firstComposerLegendElement().attribute( QStringLiteral( "layerFont" ) ) );
@@ -230,9 +226,7 @@ QList<QgsMapLayer*> QgsWmsProjectParser::mapLayerFromStyle( const QString& lName
       QString project = mProjectParser->convertToAbsolutePath( legendIt->attribute( QStringLiteral( "project" ) ) );
       QgsWmsProjectParser* p = dynamic_cast<QgsWmsProjectParser*>( QgsConfigCache::instance()->wmsConfiguration(
                                  project
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
                                  , mAccessControl
-#endif
                                ) );
       if ( p )
       {
@@ -279,9 +273,7 @@ void QgsWmsProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem
     QString project = mProjectParser->convertToAbsolutePath( legendGroupElem.attribute( QStringLiteral( "project" ) ) );
     QgsWmsProjectParser* p = dynamic_cast<QgsWmsProjectParser*>( QgsConfigCache::instance()->wmsConfiguration(
                                project
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
                                , mAccessControl
-#endif
                              ) );
     if ( p )
     {
@@ -1198,9 +1190,7 @@ void QgsWmsProjectParser::addLayers( QDomDocument &doc,
         QString embeddedGroupName = currentChildElem.attribute( QStringLiteral( "name" ) );
         QgsWmsProjectParser* p = dynamic_cast<QgsWmsProjectParser*>( QgsConfigCache::instance()->wmsConfiguration(
                                    project
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
                                    , mAccessControl
-#endif
                                  ) );
         if ( p )
         {
@@ -1542,9 +1532,7 @@ void QgsWmsProjectParser::addOWSLayers( QDomDocument &doc,
         QString embeddedGroupName = currentChildElem.attribute( QStringLiteral( "name" ) );
         QgsWmsProjectParser* p = dynamic_cast<QgsWmsProjectParser*>( QgsConfigCache::instance()->wmsConfiguration(
                                    project
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
                                    , mAccessControl
-#endif
                                  ) );
         if ( p )
         {

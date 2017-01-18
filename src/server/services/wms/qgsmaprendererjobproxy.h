@@ -39,9 +39,7 @@ namespace QgsWms
       QgsMapRendererJobProxy(
         bool parallelRendering
         , int maxThreads
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
         , QgsAccessControl* accessControl
-#endif
       );
 
       /** Sequential or parallel map rendering according to qsettings.
@@ -57,9 +55,7 @@ namespace QgsWms
 
     private:
       bool mParallelRendering;
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       QgsAccessControl* mAccessControl;
-#endif
       QScopedPointer<QPainter> mPainter;
   };
 

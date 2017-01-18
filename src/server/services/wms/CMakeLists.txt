@@ -16,8 +16,9 @@ SET (wms_SRCS
   qgswmsgetschemaextension.cpp
   qgswmsgetstyle.cpp
   qgswmsgetstyles.cpp
-  qgswmsservertransitional.cpp
   qgsmaprendererjobproxy.cpp
+  qgsmediancut.cpp
+  qgswmsrenderer.cpp
 )
 
 ########################################################

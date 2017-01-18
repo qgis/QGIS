@@ -42,6 +42,35 @@ namespace QgsWms
                            int responseCode = 200 )
           : QgsOgcServiceException( code, message, locator, responseCode, QStringLiteral( "1.3.0" ) )
       {}
+
+      QgsServiceException( const QString& code, const QString& message, int responseCode )
+          : QgsOgcServiceException( code, message, QString(), responseCode, QStringLiteral( "1.3.0" ) )
+      {}
+
+  };
+
+  /** \ingroup server
+   * \class  QgsSecurityException
+   * \brief Exception thrown when data access violates access controls
+   */
+  class QgsSecurityException: public QgsServiceException
+  {
+    public:
+      QgsSecurityException( const QString& message, const QString& locator = QString() )
+          : QgsServiceException( QStringLiteral( "Security" ), message, locator, 403 )
+      {}
+  };
+
+  /** \ingroup server
+   * \class  QgsBadRequestException
+   * \brief Exception thrown in case of malformed request
+   */
+  class QgsBadRequestException: public QgsServiceException
+  {
+    public:
+      QgsBadRequestException( const QString& code, const QString& message, const QString& locator = QString() )
+          : QgsServiceException( code, message, locator, 400 )
+      {}
   };
 
 

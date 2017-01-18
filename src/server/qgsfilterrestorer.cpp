@@ -20,7 +20,12 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-//! Apply filter from AccessControl
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+#include "qgsaccesscontrol.h"
+#endif
+
+//! Apply filter from AccessControal
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
 void QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( const QgsAccessControl* accessControl, QgsMapLayer* mapLayer,
     QHash<QgsMapLayer*, QString>& originalLayerFilters )
 {
@@ -45,6 +50,7 @@ void QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( const QgsAccess
     }
   }
 }
+#endif
 
 //! Restore layer filter as original
 void QgsOWSServerFilterRestorer::restoreLayerFilters( const QHash<QgsMapLayer*, QString>& filterMap )
