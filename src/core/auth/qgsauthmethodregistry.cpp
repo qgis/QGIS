@@ -228,7 +228,7 @@ QString QgsAuthMethodRegistry::pluginList( bool asHtml ) const
 
     if ( asHtml )
     {
-      list + "<br></li>";
+      list += "<br></li>";
     }
     else
     {

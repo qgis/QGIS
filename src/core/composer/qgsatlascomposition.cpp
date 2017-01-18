@@ -683,10 +683,10 @@ bool QgsAtlasComposition::setFilenamePattern( const QString& pattern )
 QgsExpressionContext QgsAtlasComposition::createExpressionContext()
 {
   QgsExpressionContext expressionContext;
-  expressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope( mComposition->project() );
+  expressionContext << QgsExpressionContextUtils::globalScope();
   if ( mComposition )
-    expressionContext << QgsExpressionContextUtils::compositionScope( mComposition );
+    expressionContext << QgsExpressionContextUtils::projectScope( mComposition->project() )
+    << QgsExpressionContextUtils::compositionScope( mComposition );
 
   expressionContext.appendScope( QgsExpressionContextUtils::atlasScope( this ) );
   if ( mCoverageLayer )

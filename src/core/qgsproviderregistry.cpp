@@ -308,7 +308,7 @@ QString QgsProviderRegistry::pluginList( bool asHTML ) const
     list += it->second->description();
 
     if ( asHTML )
-      list + "<br></li>";
+      list += "<br></li>";
     else
       list += '\n';
 
