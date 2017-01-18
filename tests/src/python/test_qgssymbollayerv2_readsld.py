@@ -28,12 +28,9 @@ import qgis  # NOQA
 import os
 from qgis.testing import start_app, unittest
 from qgis.core import (QgsVectorLayer,
-                       QgsProject,
-                       QgsRectangle,
-                       QgsMultiRenderChecker,
-                       QgsSingleSymbolRenderer,
-                       QgsFillSymbol,
-                       QgsFeatureRequest
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint
                        )
 from qgis.testing import unittest
 from qgis.testing.mocked import get_iface
@@ -43,33 +40,52 @@ start_app()
 
 TEST_DATA_DIR = unitTestDataPath()
 
+
+def createLayerWithOneLine():
+    # create a temporary layer
+    # linelayer = iface.addVectorLayer("LineString?crs=epsg:4326&field=gid:int&field=name:string", "simple_line", "memory")
+    linelayer = QgsVectorLayer("LineString?crs=epsg:4326&field=gid:int&field=name:string", "simple_line", "memory")
+    one = QgsFeature(linelayer.dataProvider().fields(), 0)
+    one.setAttributes([1, 'one'])
+    one.setGeometry(QgsGeometry.fromPolyline([QgsPoint(-7, 38), QgsPoint(-8, 42)]))
+    linelayer.dataProvider().addFeatures([one])
+    return linelayer
+
+
 class TestQgsSymbolLayerReadSld(unittest.TestCase):
 
     """
-    This class loads an SLD style and checks if the styling was properly applied
+    This class checks if SLD styles are properly applied
     """
 
     def setUp(self):
         self.iface = get_iface()
-        myShpFile = os.path.join(TEST_DATA_DIR, 'streams.shp')
-        self.layer = QgsVectorLayer(myShpFile, 'streams', 'ogr')
+
+    # test <CSSParameter>VALUE<CSSParameter/>
+    # test <CSSParameter><ogc:Literal>VALUE<ogc:Literal/><CSSParameter/>
+    def test_Literal_within_CSSParameter(self):
+        layer = createLayerWithOneLine()
         mFilePath = os.path.join(TEST_DATA_DIR, 'symbol_layer/external_sld/simple_streams.sld')
-        self.layer.loadSldStyle(mFilePath)
-        self.props = self.layer.rendererV2().symbol().symbolLayers()[0].properties()
+        layer.loadSldStyle(mFilePath)
+        props = layer.rendererV2().symbol().symbolLayers()[0].properties()
 
-    def testLineColor(self):
-        # stroke CSSParameter within ogc:Literal
-        # expected color is #003EBA, RGB 0,62,186
-        self.assertEqual(self.layer.rendererV2().symbol().symbolLayers()[0].color().name(), '#003eba')
+        def testLineColor():
+            # stroke CSSParameter within ogc:Literal
+            # expected color is #003EBA, RGB 0,62,186
+            self.assertEqual(layer.rendererV2().symbol().symbolLayers()[0].color().name(), '#003eba')
 
-    def testLineWidth(self):
-        # stroke-width CSSParameter within ogc:Literal
-        self.assertEqual(self.props['line_width'], '2')
+        def testLineWidth():
+            # stroke-width CSSParameter within ogc:Literal
+            self.assertEqual(props['line_width'], '2')
 
-    def testLineOpacity(self):
-        # stroke-opacity CSSParameter NOT within ogc:Literal
-        # stroke-opacity=0.1
-        self.assertEqual(self.props['line_color'], '0,62,186,25')
+        def testLineOpacity():
+            # stroke-opacity CSSParameter NOT within ogc:Literal
+            # stroke-opacity=0.1
+            self.assertEqual(props['line_color'], '0,62,186,25')
+
+        testLineColor()
+        testLineWidth()
+        testLineOpacity()
 
 if __name__ == '__main__':
     unittest.main()
