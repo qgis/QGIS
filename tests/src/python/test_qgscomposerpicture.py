@@ -119,10 +119,10 @@ class TestQgsComposerPicture(unittest.TestCase):
         """Test syncing picture to true north"""
 
         mapSettings = QgsMapSettings()
-        mapSettings.setDestinationCrs(QgsCoordinateReferenceSystem.fromEpsgId(3575))
         composition = QgsComposition(mapSettings, QgsProject.instance())
 
         composerMap = QgsComposerMap(composition)
+        composerMap.setCrs(QgsCoordinateReferenceSystem.fromEpsgId(3575))
         composerMap.setNewExtent(QgsRectangle(-2126029.962, -2200807.749, -119078.102, -757031.156))
         composition.addComposerMap(composerMap)
 

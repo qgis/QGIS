@@ -111,10 +111,10 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
     mSettings.setMmPerMapUnit( mComposerMap->mapUnitsToMM() );
 
     // use a temporary QgsMapSettings to find out real map scale
-    QgsMapSettings ms = mComposerMap->composition()->mapSettings();
-    ms.setOutputSize( QSizeF( mComposerMap->rect().width() * dotsPerMM, mComposerMap->rect().height() * dotsPerMM ).toSize() );
-    ms.setExtent( *mComposerMap->currentMapExtent() );
-    ms.setOutputDpi( dpi );
+    QSizeF mapSizePixels = QSizeF( mComposerMap->rect().width() * dotsPerMM, mComposerMap->rect().height() * dotsPerMM );
+    QgsRectangle mapExtent = *mComposerMap->currentMapExtent();
+
+    QgsMapSettings ms = mComposerMap->mapSettings( mapExtent, mapSizePixels, dpi );
     mSettings.setMapScale( ms.scale() );
   }
   mInitialMapScaleCalculated = true;
@@ -704,7 +704,7 @@ void QgsComposerLegend::doUpdateFilterByMap()
     QgsGeometry filterPolygon;
     if ( mInAtlas )
     {
-      filterPolygon = composition()->atlasComposition().currentGeometry( composition()->mapSettings().destinationCrs() );
+      filterPolygon = composition()->atlasComposition().currentGeometry( mComposerMap->crs() );
     }
     mLegendModel->setLegendFilter( &ms, /* useExtent */ mInAtlas || mLegendFilterByMap, filterPolygon, /* useExpressions */ true );
   }

@@ -121,6 +121,8 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void updateOverviewFrameStyleFromWidget();
     void cleanUpOverviewFrameStyleSelector( QgsPanelWidget* container );
 
+    void mapCrsChanged( const QgsCoordinateReferenceSystem& crs );
+
   private:
     QgsComposerMap* mComposerMap;
 

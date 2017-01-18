@@ -1035,7 +1035,7 @@ void QgsComposerMapGridWidget::on_mMapGridCRSButton_clicked()
 
   QgsGenericProjectionSelector crsDialog( this );
   QgsCoordinateReferenceSystem crs = mComposerMapGrid->crs();
-  QString currentAuthId = crs.isValid() ? crs.authid() : mComposerMap->composition()->mapSettings().destinationCrs().authid();
+  QString currentAuthId = crs.isValid() ? crs.authid() : mComposerMap->crs().authid();
   crsDialog.setSelectedAuthId( currentAuthId );
 
   if ( crsDialog.exec() == QDialog::Accepted )

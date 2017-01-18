@@ -146,7 +146,7 @@ void TestQgsAtlasComposition::init()
   // select epsg:2154
   QgsCoordinateReferenceSystem crs;
   crs.createFromSrid( 2154 );
-  mMapSettings->setDestinationCrs( crs );
+  QgsProject::instance()->setCrs( crs );
   mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 

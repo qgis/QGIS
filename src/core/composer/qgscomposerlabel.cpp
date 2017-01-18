@@ -27,6 +27,7 @@
 #include "qgsfontutils.h"
 #include "qgsexpressioncontext.h"
 #include "qgsmapsettings.h"
+#include "qgscomposermap.h"
 
 #include "qgswebview.h"
 #include "qgswebframe.h"
@@ -261,8 +262,10 @@ void QgsComposerLabel::refreshExpressionContext()
   }
   else
   {
-    //set to composition's mapsettings' crs
-    mDistanceArea->setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
+    //set to composition's reference map's crs
+    QgsComposerMap* referenceMap = mComposition->referenceMap();
+    if ( referenceMap )
+      mDistanceArea->setSourceCrs( referenceMap->crs().srsid() );
   }
   mDistanceArea->setEllipsoidalMode( true );
   mDistanceArea->setEllipsoid( mComposition->project()->ellipsoid() );

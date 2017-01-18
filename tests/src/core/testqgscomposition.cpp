@@ -618,6 +618,7 @@ void TestQgsComposition::itemVariablesFunction()
   QgsComposerMap* map = new QgsComposerMap( composition );
   map->setNewExtent( extent );
   map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
+  map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   composition->addComposerMap( map );
   map->setId( "map_id" );
 

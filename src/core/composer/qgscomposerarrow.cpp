@@ -182,7 +182,7 @@ void QgsComposerArrow::drawLine( QPainter *painter )
   painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); //scale painter from mm to dots
 
   //setup render context
-  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, *painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, painter );
   context.setForceVectorOutput( true );
 
   QgsExpressionContext expressionContext = createExpressionContext();

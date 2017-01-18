@@ -75,6 +75,10 @@ void TestQgsComposerScaleBar::initTestCase()
   // so we enforce C locale to make sure we get expected result
   QLocale::setDefault( QLocale::c() );
 
+  //reproject to WGS84
+  QgsCoordinateReferenceSystem destCRS;
+  destCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsProject::instance()->setCrs( destCRS );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
 
   mMapSettings = new QgsMapSettings();
@@ -88,12 +92,6 @@ void TestQgsComposerScaleBar::initTestCase()
 
   //create composition with composer map
   mMapSettings->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
-
-  //reproject to WGS84
-  QgsCoordinateReferenceSystem destCRS;
-  destCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
-  mMapSettings->setDestinationCrs( destCRS );
-  mMapSettings->setCrsTransformEnabled( true );
 
   mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape

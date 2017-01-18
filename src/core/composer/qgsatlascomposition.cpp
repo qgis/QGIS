@@ -439,7 +439,7 @@ void QgsAtlasComposition::computeExtent( QgsComposerMap* map )
   // QgsGeometry::boundingBox is expressed in the geometry"s native CRS
   // We have to transform the grometry to the destination CRS and ask for the bounding box
   // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
-  mTransformedFeatureBounds = currentGeometry( map->composition()->mapSettings().destinationCrs() ).boundingBox();
+  mTransformedFeatureBounds = currentGeometry( map->crs() ).boundingBox();
 }
 
 void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
@@ -481,7 +481,7 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
   if ( map->atlasScalingMode() == QgsComposerMap::Fixed || map->atlasScalingMode() == QgsComposerMap::Predefined || isPointLayer )
   {
     QgsScaleCalculator calc;
-    calc.setMapUnits( composition()->mapSettings().mapUnits() );
+    calc.setMapUnits( map->crs().mapUnits() );
     calc.setDpi( 25.4 );
     double originalScale = calc.calculate( mOrigExtent, map->rect().width() );
     double geomCenterX = ( xa1 + xa2 ) / 2.0;

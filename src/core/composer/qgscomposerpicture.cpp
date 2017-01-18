@@ -426,7 +426,7 @@ void QgsComposerPicture::updateMapRotation()
     case TrueNorth:
     {
       QgsPoint center = mRotationMap->currentMapExtent()->center();
-      QgsCoordinateReferenceSystem crs = mComposition->mapSettings().destinationCrs();
+      QgsCoordinateReferenceSystem crs = mRotationMap->crs();
 
       try
       {

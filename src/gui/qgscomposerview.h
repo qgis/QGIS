@@ -39,6 +39,7 @@ class QgsComposerScaleBar;
 class QgsComposerShape;
 class QgsComposerNodesItem;
 class QgsComposerAttributeTableV2;
+class QgsMapCanvas;
 
 /** \ingroup gui
  * Widget to display the composer items. Manages the composer tools and the
@@ -170,6 +171,20 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
      */
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 
+    /** Sets the map canvas associated with the view. This allows the
+     * view to retrieve map settings from the canvas.
+     * @note added in QGIS 3.0
+     * @see mapCanvas()
+     */
+    void setMapCanvas( QgsMapCanvas* canvas );
+
+    /**
+     * Returns the map canvas associated with the view.
+     * @see setMapCanvas()
+     * @note added in QGIS 3.0
+     */
+    QgsMapCanvas* mapCanvas() const;
+
   protected:
     void mousePressEvent( QMouseEvent* ) override;
     void mouseReleaseEvent( QMouseEvent* ) override;
@@ -217,6 +232,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     QgsComposerRuler* mHorizontalRuler;
     QgsComposerRuler* mVerticalRuler;
+
+    QgsMapCanvas* mCanvas = nullptr;
 
     //! Draw a shape on the canvas
     void addShape( Tool currentTool );

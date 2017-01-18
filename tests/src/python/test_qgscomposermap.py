@@ -23,10 +23,12 @@ from qgis.PyQt.QtGui import QPainter
 from qgis.core import (QgsComposerMap,
                        QgsRectangle,
                        QgsRasterLayer,
+                       QgsVectorLayer,
                        QgsComposition,
                        QgsMapSettings,
                        QgsProject,
                        QgsMultiBandColorRenderer,
+                       QgsCoordinateReferenceSystem
                        )
 
 from qgis.testing import start_app, unittest
@@ -44,18 +46,25 @@ class TestQgsComposerMap(unittest.TestCase):
         unittest.TestCase.__init__(self, methodName)
         myPath = os.path.join(TEST_DATA_DIR, 'rgb256x256.png')
         rasterFileInfo = QFileInfo(myPath)
-        mRasterLayer = QgsRasterLayer(rasterFileInfo.filePath(),
-                                      rasterFileInfo.completeBaseName())
+        self.raster_layer = QgsRasterLayer(rasterFileInfo.filePath(),
+                                           rasterFileInfo.completeBaseName())
         rasterRenderer = QgsMultiBandColorRenderer(
-            mRasterLayer.dataProvider(), 1, 2, 3)
-        mRasterLayer.setRenderer(rasterRenderer)
+            self.raster_layer.dataProvider(), 1, 2, 3)
+        self.raster_layer.setRenderer(rasterRenderer)
+
+        myPath = os.path.join(TEST_DATA_DIR, 'points.shp')
+        vector_file_info = QFileInfo(myPath)
+        self.vector_layer = QgsVectorLayer(vector_file_info.filePath(),
+                                           vector_file_info.completeBaseName(), 'ogr')
+        assert self.vector_layer.isValid()
+
         #pipe = mRasterLayer.pipe()
         #assert pipe.set(rasterRenderer), 'Cannot set pipe renderer'
-        QgsProject.instance().addMapLayers([mRasterLayer])
+        QgsProject.instance().addMapLayers([self.raster_layer, self.vector_layer])
 
         # create composition with composer map
         self.mMapSettings = QgsMapSettings()
-        self.mMapSettings.setLayers([mRasterLayer])
+        self.mMapSettings.setLayers([self.raster_layer])
         self.mMapSettings.setCrsTransformEnabled(False)
         self.mComposition = QgsComposition(self.mMapSettings, QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
@@ -130,6 +139,49 @@ class TestQgsComposerMap(unittest.TestCase):
         myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult, myMessage
+
+    def testMapCrs(self):
+        # create composition with composer map
+        map_settings = QgsMapSettings()
+        map_settings.setLayers([self.vector_layer])
+        composition = QgsComposition(map_settings, QgsProject.instance())
+        composition.setPaperSize(297, 210)
+
+        # check that new maps inherit project CRS
+        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsComposerMap(composition, 20, 20, 200, 100)
+        map.setFrameEnabled(True)
+        rectangle = QgsRectangle(-13838977, 2369660, -8672298, 6250909)
+        map.setNewExtent(rectangle)
+        composition.addComposerMap(map)
+
+        self.assertEqual(map.crs().authid(), 'EPSG:4326')
+        self.assertFalse(map.presetCrs().isValid())
+
+        # overwrite CRS
+        map.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        self.assertEqual(map.crs().authid(), 'EPSG:3857')
+        self.assertEqual(map.presetCrs().authid(), 'EPSG:3857')
+        checker = QgsCompositionChecker('composermap_crs3857', composition)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testComposition()
+        self.assertTrue(result, message)
+
+        # overwrite CRS
+        map.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(map.presetCrs().authid(), 'EPSG:4326')
+        self.assertEqual(map.crs().authid(), 'EPSG:4326')
+        rectangle = QgsRectangle(-124, 17, -78, 52)
+        map.zoomToExtent(rectangle)
+        checker = QgsCompositionChecker('composermap_crs4326', composition)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testComposition()
+        self.assertTrue(result, message)
+
+        # change back to project CRS
+        map.setCrs(QgsCoordinateReferenceSystem())
+        self.assertEqual(map.crs().authid(), 'EPSG:4326')
+        self.assertFalse(map.presetCrs().isValid())
 
     # Fails because addItemsFromXml has been commented out in sip
     @unittest.expectedFailure

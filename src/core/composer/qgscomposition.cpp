@@ -2832,6 +2832,12 @@ bool QgsComposition::exportAsPDF( const QString& file )
 void QgsComposition::georeferenceOutput( const QString& file, QgsComposerMap* map,
     const QRectF& exportRegion, double dpi ) const
 {
+  if ( !map )
+    map = referenceMap();
+
+  if ( !map )
+    return; // no reference map
+
   if ( dpi < 0 )
     dpi = printResolution();
 
@@ -2850,7 +2856,7 @@ void QgsComposition::georeferenceOutput( const QString& file, QgsComposerMap* ma
     //TODO - metadata can be set here, e.g.:
     GDALSetMetadataItem( outputDS, "AUTHOR", "me", nullptr );
 #endif
-    GDALSetProjection( outputDS, mMapSettings.destinationCrs().toWkt().toLocal8Bit().constData() );
+    GDALSetProjection( outputDS, map->crs().toWkt().toLocal8Bit().constData() );
     GDALClose( outputDS );
   }
   CPLSetConfigOption( "GDAL_PDF_DPI", nullptr );

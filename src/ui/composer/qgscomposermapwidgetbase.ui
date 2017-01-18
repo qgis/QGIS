@@ -64,8 +64,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>364</width>
-        <height>1248</height>
+        <width>366</width>
+        <height>1241</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -90,37 +90,6 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
-          <item row="0" column="0" colspan="2">
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QComboBox" name="mPreviewModeComboBox">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="mUpdatePreviewButton">
-              <property name="text">
-               <string>Update preview</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Scale</string>
-            </property>
-            <property name="buddy">
-             <cstring>mScaleLineEdit</cstring>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
@@ -167,10 +136,55 @@
             </item>
            </layout>
           </item>
-          <item row="3" column="0" colspan="2">
+          <item row="5" column="0" colspan="2">
            <widget class="QCheckBox" name="mDrawCanvasItemsCheckBox">
             <property name="text">
              <string>Draw map canvas items</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QComboBox" name="mPreviewModeComboBox">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mUpdatePreviewButton">
+              <property name="text">
+               <string>Update preview</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Scale</string>
+            </property>
+            <property name="buddy">
+             <cstring>mScaleLineEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mMapRotationLabel_2">
+            <property name="text">
+             <string>CRS</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
             </property>
            </widget>
           </item>
@@ -805,6 +819,12 @@
    <extends>QComboBox</extends>
    <header>qgscomposeritemcombobox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>groupBox</tabstop>
@@ -815,6 +835,7 @@
   <tabstop>mScaleDDBtn</tabstop>
   <tabstop>mMapRotationSpinBox</tabstop>
   <tabstop>mMapRotationDDBtn</tabstop>
+  <tabstop>mCrsSelector</tabstop>
   <tabstop>mDrawCanvasItemsCheckBox</tabstop>
   <tabstop>mFollowVisibilityPresetCheckBox</tabstop>
   <tabstop>mFollowVisibilityPresetCombo</tabstop>
@@ -858,6 +879,8 @@
   <tabstop>mOverviewBlendModeComboBox</tabstop>
   <tabstop>mOverviewInvertCheckbox</tabstop>
   <tabstop>mOverviewCenterCheckbox</tabstop>
+  <tabstop>mDrawGridCheckBox</tabstop>
+  <tabstop>mGridPropertiesButton</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>

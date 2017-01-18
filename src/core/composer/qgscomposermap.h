@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include "qgsrectangle.h"
+#include "qgscoordinatereferencesystem.h"
 #include <QFont>
 #include <QGraphicsRectItem>
 
@@ -165,6 +166,38 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     //! @note not available in python bindings
     QgsRectangle* currentMapExtent();
+
+    /**
+     * Returns coordinate reference system used for rendering the map.
+     * This will match the presetCrs() if that is set, or if a preset
+     * CRS is not set then the map's CRS will follow the composition's
+     * project's CRS.
+     * @note added in QGIS 3.0
+     * @see presetCrs()
+     * @see setCrs()
+     */
+    QgsCoordinateReferenceSystem crs() const;
+
+    /**
+     * Returns the map's preset coordinate reference system. If set, this
+     * CRS will be used to render the map regardless of any project CRS
+     * setting. If the returned CRS is not valid then the project CRS
+     * will be used to render the map.
+     * @note added in QGIS 3.0
+     * @see crs()
+     * @see setCrs()
+     */
+    QgsCoordinateReferenceSystem presetCrs() const { return mCrs; }
+
+    /**
+     * Sets the map's preset coordinate reference system. If a valid CRS is
+     * set, this CRS will be used to render the map regardless of any project CRS
+     * setting. If the CRS is not valid then the project CRS will be used to render the map.
+     * @see crs()
+     * @see presetCrs()
+     * @note added in QGIS 3.0
+     */
+    void setCrs( const QgsCoordinateReferenceSystem& crs );
 
     PreviewMode previewMode() const {return mPreviewMode;}
     void setPreviewMode( PreviewMode m );
@@ -446,6 +479,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     // It can be the same as mUserExtent, but it can be bigger in on dimension if mCalculate==Scale,
     // so that full rectangle in paper is used.
     QgsRectangle mExtent;
+
+    //! Map CRS
+    QgsCoordinateReferenceSystem mCrs;
 
     // Current temporary map region in map units. This is overwritten when atlas feature changes. It's also
     // used when the user changes the map extent and an atlas preview is enabled. This allows the user
