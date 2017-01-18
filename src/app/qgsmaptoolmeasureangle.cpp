@@ -44,7 +44,7 @@ QgsMapToolMeasureAngle::~QgsMapToolMeasureAngle()
 
 void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent* e )
 {
-  if ( !mRubberBand || mAnglePoints.size() < 1 || mAnglePoints.size() > 2 || !mRubberBand )
+  if ( !mRubberBand || mAnglePoints.size() < 1 || mAnglePoints.size() > 2 )
   {
     return;
   }

@@ -508,6 +508,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
         expression->prepare( &context );
         QVariant value = expression->evaluate( &context );
         currentRow << value;
+        delete expression;
       }
     }
 

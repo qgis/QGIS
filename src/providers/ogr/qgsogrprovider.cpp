@@ -739,7 +739,7 @@ QStringList QgsOgrProvider::subLayers() const
         fCount.remove( wkbCircularString );
       }
 
-      bool bIs25D = ( wkbHasZ( layerGeomType ) != 0 );
+      bool bIs25D = wkbHasZ( layerGeomType );
       QMap<OGRwkbGeometryType, int>::const_iterator countIt = fCount.constBegin();
       for ( ; countIt != fCount.constEnd(); ++countIt )
       {

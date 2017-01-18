@@ -418,7 +418,7 @@ QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry& fea
   else if ( geomType == QgsWkbTypes::MultiPolygon || geomType == QgsWkbTypes::MultiPolygon25D )
   {
     //iterate all polygons / rings
-    QgsMultiPolygon multiPoly = featureGeom.asMultiPolygon();
+    multiPoly = featureGeom.asMultiPolygon();
   }
   else
   {

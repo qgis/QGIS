@@ -71,7 +71,7 @@ void QgsGCPCanvasItem::paint( QPainter* p )
   }
   else if ( showIDs )
   {
-    msg = msg = QString::number( id );
+    msg = QString::number( id );
   }
   else if ( showCoords )
   {

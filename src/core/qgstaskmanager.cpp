@@ -669,7 +669,7 @@ void QgsTaskManager::layersWillBeRemoved( const QStringList& layerIds )
       }
 
       QgsTask* dependentTask = task( it.key() );
-      if ( dependentTask && ( dependentTask->status() != QgsTask::Complete || dependentTask->status() != QgsTask::Terminated ) )
+      if ( dependentTask && ( dependentTask->status() != QgsTask::Complete && dependentTask->status() != QgsTask::Terminated ) )
       {
         // incomplete task is dependent on this layer!
         dependentTask->cancel();
@@ -706,7 +706,7 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   mTasks.remove( id );
   mLayerDependencies.remove( id );
 
-  if ( task->status() != QgsTask::Complete || task->status() != QgsTask::Terminated )
+  if ( task->status() != QgsTask::Complete && task->status() != QgsTask::Terminated )
   {
     if ( isParent )
     {

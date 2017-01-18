@@ -3653,7 +3653,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
 
   QColor penColor;
   QColor brushColor;
-  if ( mSymbologyExport != NoSymbology )
+  if ( mSymbologyExport != NoSymbology && symbolLayer )
   {
     penColor = colorFromSymbolLayer( symbolLayer, ctx );
     brushColor = symbolLayer->dxfBrushColor( ctx );
