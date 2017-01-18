@@ -5575,7 +5575,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                                    ",f_table_schema varchar(256)"
                                    ",f_table_name varchar(256)"
                                    ",f_geometry_column varchar(256)"
-                                   ",styleName varchar(30)"
+                                   ",styleName text"
                                    ",styleQML text"
                                    ",styleSLD text"
                                    ",useAsDefault boolean"
