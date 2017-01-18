@@ -178,50 +178,6 @@ QgsRasterInterface * QgsGrassRasterProvider::clone() const
   return provider;
 }
 
-QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight )
-{
-  QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );
-  QgsDebugMsg( "pixelHeight = "  + QString::number( pixelHeight ) );
-  QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
-  clearLastError();
-
-  QImage *image = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
-  image->fill( QColor( Qt::gray ).rgb() );
-
-  QStringList arguments;
-  arguments.append( "map=" +  mMapName + "@" + mMapset );
-
-  arguments.append(( QStringLiteral( "window=%1,%2,%3,%4,%5,%6" )
-                     .arg( QgsRasterBlock::printValue( viewExtent.xMinimum() ),
-                           QgsRasterBlock::printValue( viewExtent.yMinimum() ),
-                           QgsRasterBlock::printValue( viewExtent.xMaximum() ),
-                           QgsRasterBlock::printValue( viewExtent.yMaximum() ) )
-                     .arg( pixelWidth ).arg( pixelHeight ) ) );
-  QString cmd = QgsApplication::libexecPath() + "grass/modules/qgis.d.rast";
-  QByteArray data;
-  try
-  {
-    data = QgsGrass::runModule( mGisdbase, mLocation, mMapset, cmd, arguments );
-  }
-  catch ( QgsGrass::Exception &e )
-  {
-    QString error = tr( "Cannot draw raster" ) + " : " + e.what();
-    QgsDebugMsg( error );
-    appendError( error );
-    // We don't set mValid to false, because the raster can be recreated and work next time
-    return image;
-  }
-  QgsDebugMsg( QString( "%1 bytes read from modules stdout" ).arg( data.size() ) );
-  uchar * ptr = image->bits();
-  // byteCount() in Qt >= 4.6
-  //int size = image->byteCount() < data.size() ? image->byteCount() : data.size();
-  int size = pixelWidth * pixelHeight * 4 < data.size() ? pixelWidth * pixelHeight * 4 : data.size();
-  memcpy( ptr, data.data(), size );
-
-  return image;
-}
-
-
 void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block )
 {
   Q_UNUSED( xBlock );

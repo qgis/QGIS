@@ -497,11 +497,6 @@ void QgsWmsProvider::setFormatQueryItem( QUrl &url )
     setQueryItem( url, QStringLiteral( "FORMAT" ), mSettings.mImageMimeType );
 }
 
-QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, int pixelHeight )
-{
-  return draw( viewExtent, pixelWidth, pixelHeight, nullptr );
-}
-
 
 static bool _fuzzyContainsRect( const QRectF& r1, const QRectF& r2 )
 {

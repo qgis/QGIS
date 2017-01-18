@@ -142,21 +142,6 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     // TODO: Document this better.
 
-    /** \brief   Renders the layer as an image
-     *
-     *  \return  A QImage - if the attempt to retrieve data for the draw was unsuccessful, returns 0
-     *           and more information can be found in lastError() and lastErrorTitle()
-     *
-     *  \todo    Add pixel depth parameter (intended to match the display or printer device)
-     *
-     *  \note    Ownership of the returned QImage remains with this provider and its lifetime
-     *           is guaranteed only until the next call to draw() or destruction of this provider.
-     *
-     *  \warning A pointer to an QImage is used, as a plain QImage seems to have difficulty being
-     *           shared across library boundaries
-     */
-    QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight ) override;
-
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     void readBlock( int theBandNo, int xBlock, int yBlock, void *block ) override;

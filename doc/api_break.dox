@@ -1495,6 +1495,7 @@ QgsRasterDataProvider        {#qgis_api_break_3_0_QgsRasterDataProvider}
 - useSrcNoDataValue() has been renamed to useSourceNoDataValue()
 - setUseSrcNoDataValue() has been renamed to setUseSourceNoDataValue()
 - srcNoDataValue() has been renamed to sourceNoDataValue()
+- draw() has been removed from the interface as it was not used anywhere.
 
 
 QgsRasterInterface        {#qgis_api_break_3_0_QgsRasterInterface}

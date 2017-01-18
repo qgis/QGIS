@@ -1598,21 +1598,6 @@ QMap<QString, QString> QgsWcsProvider::supportedMimes()
   return mimes;
 }
 
-// Not supported by WCS
-// TODO: remove from QgsRasterDataProvider?
-QImage* QgsWcsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight )
-{
-  Q_UNUSED( viewExtent );
-  QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );
-  QgsDebugMsg( "pixelHeight = "  + QString::number( pixelHeight ) );
-  QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
-
-  QImage *image = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
-  image->fill( QColor( Qt::gray ).rgb() );
-
-  return image;
-}
-
 QGISEXTERN QgsWcsProvider * classFactory( const QString *uri )
 {
   return new QgsWcsProvider( *uri );
