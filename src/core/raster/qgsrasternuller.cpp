@@ -85,8 +85,7 @@ QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & exten
     return inputBlock;
   }
 
-  QgsRasterBlock *outputBlock = nullptr;
-
+  QgsRasterBlock *outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height );
   if ( mHasOutputNoData.value( bandNo - 1 ) || inputBlock->hasNoDataValue() )
   {
     double noDataValue;
@@ -98,11 +97,7 @@ QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & exten
     {
       noDataValue = inputBlock->noDataValue();
     }
-    outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height, noDataValue );
-  }
-  else
-  {
-    outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height );
+    outputBlock->setNoDataValue( noDataValue );
   }
 
   for ( int i = 0; i < height; i++ )

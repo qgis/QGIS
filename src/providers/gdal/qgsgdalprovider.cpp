@@ -389,15 +389,10 @@ QImage* QgsGdalProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth,
 
 QgsRasterBlock* QgsGdalProvider::block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback )
 {
-  //QgsRasterBlock *block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, noDataValue( theBandNo ) );
-  QgsRasterBlock *block;
+  QgsRasterBlock *block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight );
   if ( sourceHasNoDataValue( theBandNo ) && useSourceNoDataValue( theBandNo ) )
   {
-    block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, sourceNoDataValue( theBandNo ) );
-  }
-  else
-  {
-    block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight );
+    block->setNoDataValue( sourceNoDataValue( theBandNo ) );
   }
 
   if ( block->isEmpty() )

@@ -1469,6 +1469,12 @@ QgsRaster        {#qgis_api_break_3_0_QgsRaster}
 - QgsRaster::contrastEnhancementLimitsFromString() has been removed, use QgsRasterMinMaxOrigin::limitsFromString()
 
 
+QgsRasterBlock        {#qgis_api_break_3_0_QgsRasterBlock}
+--------------
+
+- The constructor and reset() do not take no data value as the fourth argument anymore. There is new call setNoDataValue() to set it.
+
+
 QgsRasterCalcNode        {#qgis_api_break_3_0_QgsRasterCalcNode}
 -----------------
 

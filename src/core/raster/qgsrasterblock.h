@@ -40,17 +40,8 @@ class CORE_EXPORT QgsRasterBlock
      *  @param theDataType raster data type
      *  @param theWidth width of data matrix
      *  @param theHeight height of data matrix
-     *  @note not available in python bindings (use variant with theNoDataValue)
      */
     QgsRasterBlock( Qgis::DataType theDataType, int theWidth, int theHeight );
-
-    /** \brief Constructor which allocates data block in memory
-     *  @param theDataType raster data type
-     *  @param theWidth width of data matrix
-     *  @param theHeight height of data matrix
-     *  @param theNoDataValue the value representing no data (NULL)
-     */
-    QgsRasterBlock( Qgis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
 
     virtual ~QgsRasterBlock();
 
@@ -59,18 +50,8 @@ class CORE_EXPORT QgsRasterBlock
      *  @param theWidth width of data matrix
      *  @param theHeight height of data matrix
      *  @return true on success
-     *  @note not available in python bindings (use variant with theNoDataValue)
      */
     bool reset( Qgis::DataType theDataType, int theWidth, int theHeight );
-
-    /** \brief Reset block
-     *  @param theDataType raster data type
-     *  @param theWidth width of data matrix
-     *  @param theHeight height of data matrix
-     *  @param theNoDataValue the value representing no data (NULL)
-     *  @return true on success
-     */
-    bool reset( Qgis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
 
     // TODO: consider if use isValid() at all, isEmpty() should be sufficient
     // and works also if block is valid but empty - difference between valid and empty?
@@ -145,7 +126,9 @@ class CORE_EXPORT QgsRasterBlock
     static Qgis::DataType typeWithNoDataValue( Qgis::DataType dataType, double *noDataValue );
 
     /** True if the block has no data value.
-     * @return true if the block has no data value */
+     * @return true if the block has no data value
+     * @see noDataValue(), setNoDataValue(), resetNoDataValue()
+     */
     bool hasNoDataValue() const { return mHasNoDataValue; }
 
     /** Returns true if the block may contain no data. It does not guarantee
@@ -154,9 +137,24 @@ class CORE_EXPORT QgsRasterBlock
      * @return true if the block may contain no data */
     bool hasNoData() const;
 
+    /** Sets cell value that will be considered as "no data".
+     * @note added in QGIS 3.0
+     * @see noDataValue(), hasNoDataValue(), resetNoDataValue()
+     */
+    void setNoDataValue( double noDataValue );
+
+    /** Reset no data value: if there was a no data value previously set,
+     * it will be discarded.
+     * @note added in QGIS 3.0
+     * @see noDataValue(), hasNoDataValue(), setNoDataValue()
+     */
+    void resetNoDataValue();
+
     /** Return no data value. If the block does not have a no data value the
      *  returned value is undefined.
-     * @return No data value */
+     * @return No data value
+     * @see hasNoDataValue(), setNoDataValue(), resetNoDataValue()
+     */
     double noDataValue() const { return mNoDataValue; }
 
     /** Get byte array representing a value.
@@ -261,6 +259,16 @@ class CORE_EXPORT QgsRasterBlock
      *  @param index data matrix index (long type in Python)
      *  @note added in QGIS 2.10 */
     void setIsData( qgssize index );
+
+    /** Get access to raw data.
+     * The returned QByteArray instance is not a copy of the data: it only refers to the array
+     * owned by the QgsRasterBlock, therefore it is only valid while the QgsRasterBlock object
+     * still exists. Writing to the returned QByteArray will not affect the original data:
+     * a deep copy of the data will be made and only the local copy will be modified.
+     * @note in Python the method returns ordinary bytes object as the
+     * @note added in QGIS 3.0
+     */
+    QByteArray data() const;
 
     /** \brief Get pointer to data
      *  @param row row index
