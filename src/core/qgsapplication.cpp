@@ -533,11 +533,14 @@ void QgsApplication::setUITheme( const QString &themeName )
 {
   // Loop all style sheets, find matching name, load it.
   QHash<QString, QString> themes = QgsApplication::uiThemes();
-  QString themename = themeName;
-  if ( !themes.contains( themename ) )
-    themename = QStringLiteral( "default" );
+  if ( themeName == QStringLiteral( "default" ) || !themes.contains( themeName ) )
+  {
+    setThemeName( QStringLiteral( "default" ) );
+    qApp->setStyleSheet( QString() );
+    return;
+  }
 
-  QString path = themes[themename];
+  QString path = themes.value( themeName );
   QString stylesheetname = path + "/style.qss";
   QString autostylesheet = stylesheetname + ".auto";
 
@@ -554,7 +557,6 @@ void QgsApplication::setUITheme( const QString &themeName )
       return;
     }
 
-    QHash<QString, QString> variables;
     QString styledata = file.readAll();
     QTextStream in( &variablesfile );
     while ( !in.atEnd() )
@@ -580,7 +582,7 @@ void QgsApplication::setUITheme( const QString &themeName )
   QString styleSheet = QStringLiteral( "file:///" );
   styleSheet.append( stylesheetname );
   qApp->setStyleSheet( styleSheet );
-  setThemeName( themename );
+  setThemeName( themeName );
 }
 
 QHash<QString, QString> QgsApplication::uiThemes()
