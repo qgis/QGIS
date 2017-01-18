@@ -550,7 +550,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
   fontTemp.setItalic( true );
   fontTemp.setBold( true );
   mGeoList->setFont( 0, fontTemp );
-  mGeoList->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/geographic.png" ) ) );
+  mGeoList->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconProjectionEnabled.svg" ) ) );
 
   // Projected coordinate system node
   mProjList = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "Projected Coordinate Systems" ) ) );

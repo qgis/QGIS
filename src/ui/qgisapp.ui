@@ -1654,7 +1654,7 @@
   <action name="mActionCheckQgisVersion">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCheckQgisVersion.png</normaloff>:/images/themes/default/mActionCheckQgisVersion.png</iconset>
+     <normaloff>:/images/themes/default/mActionCheckQgisVersion.svg</normaloff>:/images/themes/default/mActionCheckQgisVersion.svg</iconset>
    </property>
    <property name="text">
     <string>Check QGIS Version</string>
@@ -1805,7 +1805,7 @@ Ctrl (Cmd) increments by 15 deg.</string>
   <action name="mActionDecorationCopyright">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/copyright_label.png</normaloff>:/images/themes/default/copyright_label.png</iconset>
+     <normaloff>:/images/themes/default/copyright_label.svg</normaloff>:/images/themes/default/copyright_label.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Copyright Label</string>
@@ -1829,7 +1829,7 @@ Ctrl (Cmd) increments by 15 deg.</string>
   <action name="mActionDecorationScaleBar">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/scale_bar.png</normaloff>:/images/themes/default/scale_bar.png</iconset>
+     <normaloff>:/images/themes/default/mActionScaleBar.svg</normaloff>:/images/themes/default/scale_bar.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Scale Bar</string>

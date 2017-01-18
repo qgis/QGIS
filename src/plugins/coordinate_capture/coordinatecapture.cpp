@@ -288,7 +288,7 @@ void CoordinateCapture::setCurrentTheme( const QString& theThemeName )
   {
     mpTrackMouseButton->setIcon( QIcon( getIconPath( "tracking.svg" ) ) );
     mpCaptureButton->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );
-    mypUserCrsToolButton->setIcon( QIcon( getIconPath( "geographic.png" ) ) );
+    mypUserCrsToolButton->setIcon( QIcon( getIconPath( "mIconProjectionEnabled.svg" ) ) );
     mypCRSLabel->setPixmap( QPixmap( getIconPath( QStringLiteral( "transformed.svg" ) ) ) );
   }
 }
