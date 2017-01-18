@@ -1362,11 +1362,11 @@ void QgsRuleBasedRenderer::convertToDataDefinedSymbology( QgsSymbol* symbol, con
         if ( ! sizeScaleField.isEmpty() )
         {
           sizeExpression = QStringLiteral( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField );
-          msl->setDataDefinedProperty( QgsSymbolLayer::PropertySize, new QgsExpressionBasedProperty( sizeExpression ) );
+          msl->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( sizeExpression ) );
         }
         if ( ! rotationField.isEmpty() )
         {
-          msl->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, new QgsFieldBasedProperty( rotationField ) );
+          msl->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromField( rotationField ) );
         }
       }
       break;
@@ -1379,7 +1379,7 @@ void QgsRuleBasedRenderer::convertToDataDefinedSymbology( QgsSymbol* symbol, con
           {
             QgsLineSymbolLayer* lsl = static_cast<QgsLineSymbolLayer*>( symbol->symbolLayer( j ) );
             sizeExpression = QStringLiteral( "%1*(%2)" ).arg( lsl->width() ).arg( sizeScaleField );
-            lsl->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, new QgsExpressionBasedProperty( sizeExpression ) );
+            lsl->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, QgsProperty::fromExpression( sizeExpression ) );
           }
           if ( symbol->symbolLayer( j )->layerType() == QLatin1String( "MarkerLine" ) )
           {
@@ -1388,7 +1388,7 @@ void QgsRuleBasedRenderer::convertToDataDefinedSymbology( QgsSymbol* symbol, con
             {
               QgsMarkerSymbolLayer* msl = static_cast<QgsMarkerSymbolLayer*>( marker->symbolLayer( k ) );
               sizeExpression = QStringLiteral( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField );
-              msl->setDataDefinedProperty( QgsSymbolLayer::PropertySize, new QgsExpressionBasedProperty( sizeExpression ) );
+              msl->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( sizeExpression ) );
             }
           }
         }

@@ -147,7 +147,7 @@ void TestQgsComposerObject::writeReadXml()
 void TestQgsComposerObject::writeRetrieveDDProperty()
 {
   QgsComposerObject* object = new QgsComposerObject( mComposition );
-  object->dataDefinedProperties().setProperty( QgsComposerObject::TestProperty, new QgsExpressionBasedProperty( QStringLiteral( "10 + 40" ) ) );
+  object->dataDefinedProperties().setProperty( QgsComposerObject::TestProperty, QgsProperty::fromExpression( QStringLiteral( "10 + 40" ) ) );
   object->prepareProperties();
 
   //test writing object with dd settings
@@ -170,14 +170,14 @@ void TestQgsComposerObject::writeRetrieveDDProperty()
   QVERIFY( readObject->readXml( composerObjectElem, doc ) );
 
   //test getting not set dd from restored object
-  QgsAbstractProperty* dd = readObject->dataDefinedProperties().property( QgsComposerObject::BlendMode );
+  QgsProperty dd = readObject->dataDefinedProperties().property( QgsComposerObject::BlendMode );
   QVERIFY( !dd );
 
   //test getting good property
   dd = readObject->dataDefinedProperties().property( QgsComposerObject::TestProperty );
   QVERIFY( dd );
-  QVERIFY( dd->isActive() );
-  QCOMPARE( dd->propertyType(), QgsAbstractProperty::ExpressionBasedProperty );
+  QVERIFY( dd.isActive() );
+  QCOMPARE( dd.propertyType(), QgsProperty::ExpressionBasedProperty );
 
   delete object;
   delete readObject;

@@ -396,7 +396,7 @@ void TestQgsComposerPicture::pictureExpression()
   mComposition->addComposerPicture( mComposerPicture );
 
   QString expr = QStringLiteral( "'%1' || '/sample_svg.svg'" ).arg( TEST_DATA_DIR );
-  mComposerPicture->dataDefinedProperties().setProperty( QgsComposerObject::PictureSource, new QgsExpressionBasedProperty( expr ) );
+  mComposerPicture->dataDefinedProperties().setProperty( QgsComposerObject::PictureSource, QgsProperty::fromExpression( expr ) );
   mComposerPicture->refreshPicture();
 
   QgsCompositionChecker checker( QStringLiteral( "composerpicture_expression" ), mComposition );
@@ -404,7 +404,7 @@ void TestQgsComposerPicture::pictureExpression()
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
-  mComposerPicture->dataDefinedProperties().setProperty( QgsComposerObject::PictureSource, nullptr );
+  mComposerPicture->dataDefinedProperties().setProperty( QgsComposerObject::PictureSource, QgsProperty() );
 }
 
 void TestQgsComposerPicture::pictureInvalidExpression()
@@ -413,7 +413,7 @@ void TestQgsComposerPicture::pictureInvalidExpression()
   mComposition->addComposerPicture( mComposerPicture );
 
   QString expr = QStringLiteral( "bad expression" );
-  mComposerPicture->dataDefinedProperties().setProperty( QgsComposerObject::PictureSource, new QgsExpressionBasedProperty( expr ) );
+  mComposerPicture->dataDefinedProperties().setProperty( QgsComposerObject::PictureSource, QgsProperty::fromExpression( expr ) );
   mComposerPicture->refreshPicture();
 
   QgsCompositionChecker checker( QStringLiteral( "composerpicture_badexpression" ), mComposition );
@@ -421,7 +421,7 @@ void TestQgsComposerPicture::pictureInvalidExpression()
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
-  mComposerPicture->dataDefinedProperties().setProperty( QgsComposerObject::PictureSource, nullptr );
+  mComposerPicture->dataDefinedProperties().setProperty( QgsComposerObject::PictureSource, QgsProperty() );
 }
 
 QGSTEST_MAIN( TestQgsComposerPicture )

@@ -1,8 +1,8 @@
 /***************************************************************************
      qgsproperty.cpp
      ---------------
-    Date                 : April 2015
-    Copyright            : (C) 2015 by Nyall Dawson
+    Date                 : January 2017
+    Copyright            : (C) 2017 by Nyall Dawson
     Email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
@@ -173,60 +173,270 @@ QString QgsPropertyDefinition::trString()
 }
 
 //
-// QgsAbstractProperty
+// QgsProperty
 //
 
-QgsAbstractProperty *QgsAbstractProperty::create( QgsAbstractProperty::Type type )
+QgsProperty::QgsProperty()
 {
-  QgsAbstractProperty* prop = nullptr;
-  switch ( type )
-  {
-    case QgsAbstractProperty::StaticProperty:
-      prop = new QgsStaticProperty();
-      break;
-    case QgsAbstractProperty::FieldBasedProperty:
-      prop = new QgsFieldBasedProperty();
-      break;
-    case QgsAbstractProperty::ExpressionBasedProperty:
-      prop = new QgsExpressionBasedProperty();
-      break;
-  }
-  return prop;
+  d = new QgsPropertyPrivate();
 }
 
-QgsAbstractProperty::QgsAbstractProperty( bool active )
-    : mActive( active )
+QgsProperty QgsProperty::fromExpression( const QString& expression, bool isActive )
 {
-
+  QgsProperty p;
+  p.setExpressionString( expression );
+  p.setActive( isActive );
+  return p;
 }
 
-QgsAbstractProperty::QgsAbstractProperty( const QgsAbstractProperty& other )
-    : mActive( other.mActive )
-    , mTransformer( other.mTransformer ? other.mTransformer->clone() : nullptr )
+QgsProperty QgsProperty::fromField( const QString& fieldName, bool isActive )
 {
-
+  QgsProperty p;
+  p.setField( fieldName );
+  p.setActive( isActive );
+  return p;
 }
 
-QgsAbstractProperty &QgsAbstractProperty::operator=( const QgsAbstractProperty & other )
+QgsProperty QgsProperty::fromValue( const QVariant& value, bool isActive )
 {
-  mActive = other.mActive;
-  mTransformer.reset( other.mTransformer ? other.mTransformer->clone() : nullptr );
+  QgsProperty p;
+  p.setStaticValue( value );
+  p.setActive( isActive );
+  return p;
+}
+
+QgsProperty::QgsProperty( const QgsProperty& other )
+    : d( other.d )
+{}
+
+QgsProperty &QgsProperty::operator=( const QgsProperty & other )
+{
+  d = other.d;
   return *this;
 }
 
-QVariant QgsAbstractProperty::value( const QgsExpressionContext& context, const QVariant& defaultValue ) const
+QgsProperty::Type QgsProperty::propertyType() const
+{
+  return static_cast< Type >( d->type );
+}
+
+bool QgsProperty::isActive() const
+{
+  return d->type != InvalidProperty && d->active;
+}
+
+void QgsProperty::setActive( bool active )
+{
+  d.detach();
+  d->active = active;
+}
+
+void QgsProperty::setStaticValue( const QVariant& value )
+{
+  d.detach();
+  d->type = StaticProperty;
+  d->staticData.value = value;
+}
+
+QVariant QgsProperty::staticValue() const
+{
+  if ( d->type != StaticProperty )
+    return QVariant();
+
+  return d->staticData.value;
+}
+
+void QgsProperty::setField( const QString& field )
+{
+  d.detach();
+  d->type = FieldBasedProperty;
+  d->fieldData.fieldName = field;
+  d->fieldData.cachedFieldIdx = -1;
+}
+
+QString QgsProperty::field() const
+{
+  if ( d->type != FieldBasedProperty )
+    return QString();
+
+  return d->fieldData.fieldName;
+}
+
+QgsProperty::operator bool() const
+{
+  return d->type != InvalidProperty;
+}
+
+void QgsProperty::setExpressionString( const QString& expression )
+{
+  d.detach();
+  d->type = ExpressionBasedProperty;
+  d->expressionData.expressionString = expression;
+  d->expressionData.expression = QgsExpression( expression );
+  d->expressionData.prepared = false;
+}
+
+QString QgsProperty::expressionString() const
+{
+  if ( d->type != ExpressionBasedProperty )
+    return QString();
+
+  return d->expressionData.expressionString;
+}
+
+
+QString QgsProperty::asExpression() const
+{
+  switch ( d->type )
+  {
+    case StaticProperty:
+      return QgsExpression::quotedValue( d->staticData.value );
+
+    case FieldBasedProperty:
+      return QgsExpression::quotedColumnRef( d->fieldData.fieldName );
+
+    case ExpressionBasedProperty:
+      return d->expressionData.expressionString;
+
+    case InvalidProperty:
+      return QString();
+  }
+  return QString();
+}
+
+bool QgsProperty::prepare( const QgsExpressionContext& context ) const
+{
+  if ( !d->active )
+    return true;
+
+  switch ( d->type )
+  {
+    case StaticProperty:
+      return true;
+
+    case FieldBasedProperty:
+    {
+      d.detach();
+      // cache field index to avoid subsequent lookups
+      QgsFields f = context.fields();
+      d->fieldData.cachedFieldIdx = f.lookupField( d->fieldData.fieldName );
+      return true;
+    }
+
+    case ExpressionBasedProperty:
+    {
+      d.detach();
+      if ( !d->expressionData.expression.prepare( &context ) )
+      {
+        d->expressionData.referencedCols.clear();
+        d->expressionData.prepared = false;
+        return false;
+      }
+
+      d->expressionData.prepared = true;
+      d->expressionData.referencedCols = d->expressionData.expression.referencedColumns();
+      return true;
+    }
+
+    case InvalidProperty:
+      return true;
+
+  }
+
+  return false;
+}
+
+QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext& context ) const
+{
+  if ( !d->active )
+    return QSet<QString>();
+
+  switch ( d->type )
+  {
+    case StaticProperty:
+    case InvalidProperty:
+      return QSet<QString>();
+
+    case FieldBasedProperty:
+    {
+      QSet< QString > fields;
+      if ( !d->fieldData.fieldName.isEmpty() )
+        fields.insert( d->fieldData.fieldName );
+      return fields;
+    }
+
+    case ExpressionBasedProperty:
+    {
+      d.detach();
+      if ( !d->expressionData.prepared && !prepare( context ) )
+        return QSet< QString >();
+
+      return d->expressionData.referencedCols;
+    }
+
+  }
+  return QSet<QString>();
+}
+
+QVariant QgsProperty::propertyValue( const QgsExpressionContext& context, const QVariant& defaultValue ) const
+{
+  if ( !d->active )
+    return defaultValue;
+
+  switch ( d->type )
+  {
+    case StaticProperty:
+      return d->staticData.value;
+
+    case FieldBasedProperty:
+    {
+      QgsFeature f = context.feature();
+      if ( !f.isValid() )
+        return defaultValue;
+
+      //shortcut the field lookup
+      if ( d->fieldData.cachedFieldIdx >= 0 )
+        return f.attribute( d->fieldData.cachedFieldIdx );
+
+      int fieldIdx = f.fieldNameIndex( d->fieldData.fieldName );
+      if ( fieldIdx < 0 )
+        return defaultValue;
+
+      return f.attribute( fieldIdx );
+    }
+
+    case ExpressionBasedProperty:
+    {
+      d.detach();
+      if ( !d->expressionData.prepared && !prepare( context ) )
+        return defaultValue;
+
+      QVariant result = d->expressionData.expression.evaluate( &context );
+      return result.isValid() ? result : defaultValue;
+    }
+
+    case InvalidProperty:
+      return defaultValue;
+
+  };
+
+  return QVariant();
+}
+
+
+QVariant QgsProperty::value( const QgsExpressionContext& context, const QVariant& defaultValue ) const
 {
   QVariant val = propertyValue( context, defaultValue );
 
-  if ( mTransformer )
+  if ( d->transformer )
   {
-    val = mTransformer->transform( context, val );
+    val = d->transformer->transform( context, val );
   }
 
   return val;
 }
 
-QString QgsAbstractProperty::valueAsString( const QgsExpressionContext& context, const QString& defaultString, bool* ok ) const
+QString QgsProperty::valueAsString( const QgsExpressionContext& context, const QString& defaultString, bool* ok ) const
 {
   QVariant val = value( context, defaultString );
 
@@ -244,7 +454,7 @@ QString QgsAbstractProperty::valueAsString( const QgsExpressionContext& context,
   }
 }
 
-QColor QgsAbstractProperty::valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor, bool* ok ) const
+QColor QgsProperty::valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor, bool* ok ) const
 {
   if ( ok )
     *ok = false;
@@ -274,7 +484,7 @@ QColor QgsAbstractProperty::valueAsColor( const QgsExpressionContext &context, c
   }
 }
 
-double QgsAbstractProperty::valueAsDouble( const QgsExpressionContext &context, double defaultValue, bool* ok ) const
+double QgsProperty::valueAsDouble( const QgsExpressionContext &context, double defaultValue, bool* ok ) const
 {
   if ( ok )
     *ok = false;
@@ -296,7 +506,7 @@ double QgsAbstractProperty::valueAsDouble( const QgsExpressionContext &context, 
   }
 }
 
-int QgsAbstractProperty::valueAsInt( const QgsExpressionContext &context, int defaultValue, bool* ok ) const
+int QgsProperty::valueAsInt( const QgsExpressionContext &context, int defaultValue, bool* ok ) const
 {
   if ( ok )
     *ok = false;
@@ -331,7 +541,7 @@ int QgsAbstractProperty::valueAsInt( const QgsExpressionContext &context, int de
   }
 }
 
-bool QgsAbstractProperty::valueAsBool( const QgsExpressionContext& context, bool defaultValue, bool* ok ) const
+bool QgsProperty::valueAsBool( const QgsExpressionContext& context, bool defaultValue, bool* ok ) const
 {
   if ( ok )
     *ok = false;
@@ -346,28 +556,79 @@ bool QgsAbstractProperty::valueAsBool( const QgsExpressionContext& context, bool
   return val.toBool();
 }
 
-bool QgsAbstractProperty::writeXml( QDomElement &propertyElem, QDomDocument &doc ) const
+bool QgsProperty::writeXml( QDomElement &propertyElem, QDomDocument &doc ) const
 {
-  Q_UNUSED( doc );
-  propertyElem.setAttribute( "active", mActive ? "1" : "0" );
+  propertyElem.setAttribute( "active", d->active ? "1" : "0" );
+  propertyElem.setAttribute( "type", d->type );
 
-  if ( mTransformer )
+  switch ( d->type )
+  {
+    case StaticProperty:
+      propertyElem.setAttribute( "valType", d->staticData.value.typeName() );
+      propertyElem.setAttribute( "val", d->staticData.value.toString() );
+      break;
+
+    case FieldBasedProperty:
+      propertyElem.setAttribute( "field", d->fieldData.fieldName );
+      break;
+
+    case ExpressionBasedProperty:
+      propertyElem.setAttribute( "expression", d->expressionData.expressionString );
+      break;
+
+    case InvalidProperty:
+      break;
+  }
+
+  if ( d->transformer )
   {
     QDomElement transformerElem = doc.createElement( "transformer" );
-    transformerElem.setAttribute( "t", static_cast< int >( mTransformer->transformerType() ) );
-    if ( mTransformer->writeXml( transformerElem, doc ) )
+    transformerElem.setAttribute( "t", static_cast< int >( d->transformer->transformerType() ) );
+    if ( d->transformer->writeXml( transformerElem, doc ) )
       propertyElem.appendChild( transformerElem );
   }
 
   return true;
 }
 
-bool QgsAbstractProperty::readXml( const QDomElement &propertyElem, const QDomDocument &doc )
+bool QgsProperty::readXml( const QDomElement &propertyElem, const QDomDocument &doc )
 {
-  mActive = static_cast< bool >( propertyElem.attribute( "active", "1" ).toInt() );
+  d.detach();
+  d->active = static_cast< bool >( propertyElem.attribute( "active", "1" ).toInt() );
+  d->type = static_cast< Type >( propertyElem.attribute( "type", "0" ).toInt() );
+
+  switch ( d->type )
+  {
+    case StaticProperty:
+      d->staticData.value = QVariant( propertyElem.attribute( "val", "" ) );
+      d->staticData.value.convert( QVariant::nameToType( propertyElem.attribute( "valType", "QString" ).toLocal8Bit().constData() ) );
+      break;
+
+    case FieldBasedProperty:
+      d->fieldData.fieldName = propertyElem.attribute( "field" );
+      if ( d->fieldData.fieldName.isEmpty() )
+        d->active = false;
+      break;
+
+    case ExpressionBasedProperty:
+      d->expressionData.expressionString = propertyElem.attribute( "expression" );
+      if ( d->expressionData.expressionString.isEmpty() )
+        d->active = false;
+
+      d->expressionData.expression = QgsExpression( d->expressionData.expressionString );
+      d->expressionData.prepared = false;
+      d->expressionData.referencedCols.clear();
+      break;
+
+    case InvalidProperty:
+      break;
+
+  }
 
   //restore transformer if present
-  mTransformer.reset( nullptr );
+  if ( d->transformer )
+    delete d->transformer;
+  d->transformer = nullptr;
   QDomNodeList transformerNodeList = propertyElem.elementsByTagName( "transformer" );
   if ( !transformerNodeList.isEmpty() )
   {
@@ -377,7 +638,7 @@ bool QgsAbstractProperty::readXml( const QDomElement &propertyElem, const QDomDo
     if ( transformer )
     {
       if ( transformer->readXml( transformerElem, doc ) )
-        mTransformer.reset( transformer.take() );
+        d->transformer = transformer.take();
     }
   }
 
@@ -385,494 +646,16 @@ bool QgsAbstractProperty::readXml( const QDomElement &propertyElem, const QDomDo
 }
 
 
-void QgsAbstractProperty::setTransformer( QgsPropertyTransformer* transformer )
+void QgsProperty::setTransformer( QgsPropertyTransformer* transformer )
 {
-  mTransformer.reset( transformer );
+  d.detach();
+  d->transformer = transformer;
 }
 
-//
-// QgsStaticProperty
-//
-
-QgsStaticProperty::QgsStaticProperty( const QVariant& value, bool active )
-    : QgsAbstractProperty( active )
-    , mValue( value )
+const QgsPropertyTransformer* QgsProperty::transformer() const
 {
-
-}
-
-QgsStaticProperty* QgsStaticProperty::clone() const
-{
-  return new QgsStaticProperty( *this );
-}
-
-QVariant QgsStaticProperty::propertyValue( const QgsExpressionContext& context, const QVariant& defaultValue ) const
-{
-  Q_UNUSED( context );
-  return mActive ? mValue : defaultValue;
-}
-
-bool QgsStaticProperty::writeXml( QDomElement &propertyElem, QDomDocument &doc ) const
-{
-  if ( !QgsAbstractProperty::writeXml( propertyElem, doc ) )
-    return false;
-
-  propertyElem.setAttribute( "type", mValue.typeName() );
-  propertyElem.setAttribute( "val", mValue.toString() );
-  return true;
-}
-
-bool QgsStaticProperty::readXml( const QDomElement &propertyElem, const QDomDocument &doc )
-{
-  if ( !QgsAbstractProperty::readXml( propertyElem, doc ) )
-    return false;
-
-  mValue =  QVariant( propertyElem.attribute( "val", "1" ) );
-  mValue.convert( QVariant::nameToType( propertyElem.attribute( "type", "QString" ).toLocal8Bit().constData() ) );
-  return true;
-}
-
-//
-// QgsFieldBasedProperty
-//
-
-QgsFieldBasedProperty::QgsFieldBasedProperty( const QString& field, bool isActive )
-    : QgsAbstractProperty( isActive )
-    , mField( field )
-{}
-
-QgsFieldBasedProperty::QgsFieldBasedProperty( const QgsFieldBasedProperty& other )
-    : QgsAbstractProperty( other )
-    , mField( other.mField )
-    // don't copy cached field index!
-{}
-
-QgsFieldBasedProperty& QgsFieldBasedProperty::operator=( const QgsFieldBasedProperty & other )
-{
-  QgsAbstractProperty::operator=( other );
-  mActive = other.mActive;
-  mField = other.mField;
-  mCachedFieldIdx = -1;
-  return *this;
-}
-
-QgsFieldBasedProperty* QgsFieldBasedProperty::clone() const
-{
-  return new QgsFieldBasedProperty( *this );
-}
-
-bool QgsFieldBasedProperty::prepare( const QgsExpressionContext& context ) const
-{
-  if ( !mActive )
-    return true;
-
-  // cache field index to avoid subsequent lookups
-  QgsFields f = context.fields();
-  mCachedFieldIdx = f.lookupField( mField );
-  return true;
-}
-
-QVariant QgsFieldBasedProperty::propertyValue( const QgsExpressionContext& context, const QVariant& defaultValue ) const
-{
-  if ( !mActive )
-    return defaultValue;
-
-  QgsFeature f = context.feature();
-  if ( !f.isValid() )
-    return defaultValue;
-
-  //shortcut the field lookup
-  if ( mCachedFieldIdx >= 0 )
-    return f.attribute( mCachedFieldIdx );
-
-  int fieldIdx = f.fieldNameIndex( mField );
-  if ( fieldIdx < 0 )
-    return defaultValue;
-
-  return f.attribute( fieldIdx );
-}
-
-QSet< QString > QgsFieldBasedProperty::referencedFields( const QgsExpressionContext &context ) const
-{
-  Q_UNUSED( context );
-  QSet< QString > fields;
-  if ( mActive && !mField.isEmpty() )
-    fields.insert( mField );
-  return fields;
-}
-
-bool QgsFieldBasedProperty::writeXml( QDomElement& propertyElem, QDomDocument& doc ) const
-{
-  if ( !QgsAbstractProperty::writeXml( propertyElem, doc ) )
-    return false;
-
-  propertyElem.setAttribute( "field", mField );
-  return true;
-}
-
-bool QgsFieldBasedProperty::readXml( const QDomElement& propertyElem, const QDomDocument& doc )
-{
-  if ( !QgsAbstractProperty::readXml( propertyElem, doc ) )
-    return false;
-
-  mField = propertyElem.attribute( "field" );
-  if ( mField.isEmpty() )
-    mActive = false;
-
-  return true;
+  return d->transformer;
 }
 
 
-//
-// QgsExpressionBasedProperty
-//
-
-QgsExpressionBasedProperty::QgsExpressionBasedProperty( const QString& expression, bool isActive )
-    : QgsAbstractProperty( isActive )
-    , mExpressionString( expression )
-    , mExpression( expression )
-{
-
-}
-
-QgsExpressionBasedProperty* QgsExpressionBasedProperty::clone() const
-{
-  // make sure we do the clone in a way to take advantage of implicit sharing of QgsExpression
-  QgsExpressionBasedProperty* clone = new QgsExpressionBasedProperty();
-  clone->mActive = mActive;
-  clone->mExpression = mExpression;
-  clone->mExpressionString = mExpressionString;
-  clone->mPrepared = mPrepared;
-  clone->mReferencedCols = mReferencedCols;
-  clone->setTransformer( mTransformer ? mTransformer->clone() : nullptr );
-  return clone;
-}
-
-void QgsExpressionBasedProperty::setExpressionString( const QString& expression )
-{
-  mExpressionString = expression;
-  mExpression = QgsExpression( expression );
-  mPrepared = false;
-}
-
-QVariant QgsExpressionBasedProperty::propertyValue( const QgsExpressionContext& context, const QVariant& defaultValue ) const
-{
-  if ( !mActive )
-    return defaultValue;
-
-  if ( !mPrepared && !prepare( context ) )
-    return defaultValue;
-
-  QVariant result = mExpression.evaluate( &context );
-  return result.isValid() ? result : defaultValue;
-}
-
-QSet< QString > QgsExpressionBasedProperty::referencedFields( const QgsExpressionContext &context ) const
-{
-  if ( !mActive )
-    return QSet< QString >();
-
-  if ( !mPrepared && !prepare( context ) )
-    return QSet< QString >();
-
-  return mReferencedCols;
-}
-
-bool QgsExpressionBasedProperty::writeXml( QDomElement& propertyElem, QDomDocument& doc ) const
-{
-  if ( !QgsAbstractProperty::writeXml( propertyElem, doc ) )
-    return false;
-
-  propertyElem.setAttribute( "expression", mExpressionString );
-  return true;
-}
-
-bool QgsExpressionBasedProperty::readXml( const QDomElement& propertyElem, const QDomDocument& doc )
-{
-  if ( !QgsAbstractProperty::readXml( propertyElem, doc ) )
-    return false;
-
-  mExpressionString = propertyElem.attribute( "expression" );
-  if ( mExpressionString.isEmpty() )
-    mActive = false;
-
-  mExpression = QgsExpression( mExpressionString );
-  mPrepared = false;
-  mReferencedCols.clear();
-  return true;
-}
-
-bool QgsExpressionBasedProperty::prepare( const QgsExpressionContext &context ) const
-{
-  if ( !mExpression.prepare( &context ) )
-  {
-    mReferencedCols.clear();
-    mPrepared = false;
-    return false;
-  }
-
-  mPrepared = true;
-  mReferencedCols = mExpression.referencedColumns();
-  return true;
-}
-
-//
-// QgsPropertyTransformer
-//
-
-QgsPropertyTransformer* QgsPropertyTransformer::create( QgsPropertyTransformer::Type type )
-{
-  QgsPropertyTransformer* transformer = nullptr;
-  switch ( type )
-  {
-    case SizeScaleTransformer:
-      transformer = new QgsSizeScaleTransformer();
-      break;
-    case ColorRampTransformer:
-      transformer = new QgsColorRampTransformer();
-      break;
-  }
-  return transformer;
-}
-
-QgsPropertyTransformer::QgsPropertyTransformer( double minValue, double maxValue )
-    : mMinValue( minValue )
-    , mMaxValue( maxValue )
-{}
-
-bool QgsPropertyTransformer::writeXml( QDomElement& transformerElem, QDomDocument& doc ) const
-{
-  Q_UNUSED( doc );
-  transformerElem.setAttribute( "minValue", QString::number( mMinValue ) );
-  transformerElem.setAttribute( "maxValue", QString::number( mMaxValue ) );
-  return true;
-}
-
-bool QgsPropertyTransformer::readXml( const QDomElement &transformerElem, const QDomDocument &doc )
-{
-  Q_UNUSED( doc );
-  mMinValue = transformerElem.attribute( "minValue", "0.0" ).toDouble();
-  mMaxValue = transformerElem.attribute( "maxValue", "1.0" ).toDouble();
-  return true;
-}
-
-//
-// QgsSizeScaleProperty
-//
-QgsSizeScaleTransformer::QgsSizeScaleTransformer( ScaleType type, double minValue, double maxValue, double minSize, double maxSize, double nullSize, double exponent )
-    : QgsPropertyTransformer( minValue, maxValue )
-    , mType( Linear )
-    , mMinSize( minSize )
-    , mMaxSize( maxSize )
-    , mNullSize( nullSize )
-    , mExponent( exponent )
-{
-  setType( type );
-}
-
-QgsSizeScaleTransformer *QgsSizeScaleTransformer::clone()
-{
-  return new QgsSizeScaleTransformer( mType,
-                                      mMinValue,
-                                      mMaxValue,
-                                      mMinSize,
-                                      mMaxSize,
-                                      mNullSize,
-                                      mExponent );
-}
-
-bool QgsSizeScaleTransformer::writeXml( QDomElement &transformerElem, QDomDocument &doc ) const
-{
-  if ( !QgsPropertyTransformer::writeXml( transformerElem, doc ) )
-    return false;
-
-  transformerElem.setAttribute( "scaleType", QString::number( static_cast< int >( mType ) ) );
-  transformerElem.setAttribute( "minSize", QString::number( mMinSize ) );
-  transformerElem.setAttribute( "maxSize", QString::number( mMaxSize ) );
-  transformerElem.setAttribute( "nullSize", QString::number( mNullSize ) );
-  transformerElem.setAttribute( "exponent", QString::number( mExponent ) );
-
-  return true;
-}
-
-bool QgsSizeScaleTransformer::readXml( const QDomElement &transformerElem, const QDomDocument &doc )
-{
-  if ( !QgsPropertyTransformer::readXml( transformerElem, doc ) )
-    return false;
-
-  mType = static_cast< ScaleType >( transformerElem.attribute( "scaleType", "0" ).toInt() );
-  mMinSize = transformerElem.attribute( "minSize", "0.0" ).toDouble();
-  mMaxSize = transformerElem.attribute( "maxSize", "1.0" ).toDouble();
-  mNullSize = transformerElem.attribute( "nullSize", "0.0" ).toDouble();
-  mExponent = transformerElem.attribute( "exponent", "1.0" ).toDouble();
-  return true;
-}
-
-double QgsSizeScaleTransformer::size( double value ) const
-{
-  switch ( mType )
-  {
-    case Linear:
-      return mMinSize + ( qBound( mMinValue, value, mMaxValue ) - mMinValue ) * ( mMaxSize - mMinSize ) / ( mMaxValue - mMinValue );
-
-    case Area:
-    case Flannery:
-    case Exponential:
-      return mMinSize + qPow( qBound( mMinValue, value, mMaxValue ) - mMinValue, mExponent ) * ( mMaxSize - mMinSize ) / qPow( mMaxValue - mMinValue, mExponent );
-
-  }
-  return 0;
-}
-
-void QgsSizeScaleTransformer::setType( QgsSizeScaleTransformer::ScaleType type )
-{
-  mType = type;
-  switch ( mType )
-  {
-    case Linear:
-      mExponent = 1.0;
-      break;
-    case Area:
-      mExponent = 0.5;
-      break;
-    case Flannery:
-      mExponent = 0.57;
-      break;
-    case Exponential:
-      //no change
-      break;
-  }
-}
-
-QVariant QgsSizeScaleTransformer::transform( const QgsExpressionContext& context, const QVariant& value ) const
-{
-  Q_UNUSED( context );
-
-  if ( value.isNull() )
-    return mNullSize;
-
-  bool ok;
-  double dblValue = value.toDouble( &ok );
-
-  if ( ok )
-  {
-    //apply scaling to value
-    return size( dblValue );
-  }
-  else
-  {
-    return value;
-  }
-}
-
-
-//
-// QgsColorRampTransformer
-//
-
-QgsColorRampTransformer::QgsColorRampTransformer( double minValue, double maxValue,
-    QgsColorRamp* ramp,
-    const QColor &nullColor )
-    : QgsPropertyTransformer( minValue, maxValue )
-    , mGradientRamp( ramp )
-    , mNullColor( nullColor )
-{
-
-}
-
-QgsColorRampTransformer::QgsColorRampTransformer( const QgsColorRampTransformer &other )
-    : QgsPropertyTransformer( other )
-    , mGradientRamp( other.mGradientRamp ? other.mGradientRamp->clone() : nullptr )
-    , mNullColor( other.mNullColor )
-{
-
-}
-
-QgsColorRampTransformer &QgsColorRampTransformer::operator=( const QgsColorRampTransformer & other )
-{
-  mMinValue = other.mMinValue;
-  mMaxValue = other.mMaxValue;
-  mGradientRamp.reset( other.mGradientRamp ? other.mGradientRamp->clone() : nullptr );
-  mNullColor = other.mNullColor;
-  return *this;
-}
-
-QgsColorRampTransformer* QgsColorRampTransformer::clone()
-{
-  return new QgsColorRampTransformer( mMinValue, mMaxValue,
-                                      mGradientRamp ? mGradientRamp->clone() : nullptr,
-                                      mNullColor );
-}
-
-bool QgsColorRampTransformer::writeXml( QDomElement &transformerElem, QDomDocument &doc ) const
-{
-  if ( !QgsPropertyTransformer::writeXml( transformerElem, doc ) )
-    return false;
-
-  if ( mGradientRamp )
-  {
-    QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( "[source]", mGradientRamp.data(), doc );
-    transformerElem.appendChild( colorRampElem );
-  }
-  transformerElem.setAttribute( "nullColor", QgsSymbolLayerUtils::encodeColor( mNullColor ) );
-
-  return true;
-}
-
-bool QgsColorRampTransformer::readXml( const QDomElement &transformerElem, const QDomDocument &doc )
-{
-  if ( !QgsPropertyTransformer::readXml( transformerElem, doc ) )
-    return false;
-
-  mGradientRamp.reset( nullptr );
-  QDomElement sourceColorRampElem = transformerElem.firstChildElement( "colorramp" );
-  if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( "name" ) == "[source]" )
-  {
-    setColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ) );
-  }
-
-  mNullColor = QgsSymbolLayerUtils::decodeColor( transformerElem.attribute( "nullColor", "0,0,0,0" ) );
-  return true;
-}
-
-QVariant QgsColorRampTransformer::transform( const QgsExpressionContext &context, const QVariant &value ) const
-{
-  Q_UNUSED( context );
-
-  if ( value.isNull() )
-    return mNullColor;
-
-  bool ok;
-  double dblValue = value.toDouble( &ok );
-
-  if ( ok )
-  {
-    //apply scaling to value
-    return color( dblValue );
-  }
-  else
-  {
-    return value;
-  }
-}
-
-QColor QgsColorRampTransformer::color( double value ) const
-{
-  double scaledVal = qBound( 0.0, ( value - mMinValue ) / ( mMaxValue - mMinValue ), 1.0 );
-
-  if ( !mGradientRamp )
-    return mNullColor;
-
-  return mGradientRamp->color( scaledVal );
-}
-
-QgsColorRamp *QgsColorRampTransformer::colorRamp() const
-{
-  return mGradientRamp.data();
-}
-
-void QgsColorRampTransformer::setColorRamp( QgsColorRamp* ramp )
-{
-  mGradientRamp.reset( ramp );
-}
 

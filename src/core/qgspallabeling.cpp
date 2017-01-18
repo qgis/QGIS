@@ -445,11 +445,11 @@ void QgsPalLayerSettings::readOldDataDefinedProperty( QgsVectorLayer* layer, Qgs
     bool active = ddv.at( 0 ).toInt();
     if ( ddv.at( 1 ).toInt() )
     {
-      mProperties.setProperty( p, new QgsExpressionBasedProperty( ddv.at( 2 ), active ) );
+      mProperties.setProperty( p, QgsProperty::fromExpression( ddv.at( 2 ), active ) );
     }
     else
     {
-      mProperties.setProperty( p, new QgsFieldBasedProperty( ddv.at( 3 ), active ) );
+      mProperties.setProperty( p, QgsProperty::fromField( ddv.at( 3 ), active ) );
     }
   }
   else
@@ -484,11 +484,11 @@ void QgsPalLayerSettings::readOldDataDefinedPropertyMap( QgsVectorLayer* layer, 
         bool isExpression = e.attribute( QStringLiteral( "useExpr" ) ).compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
         if ( isExpression )
         {
-          mProperties.setProperty( i.key(), new QgsExpressionBasedProperty( e.attribute( QStringLiteral( "expr" ) ), active ) );
+          mProperties.setProperty( i.key(), QgsProperty::fromExpression( e.attribute( QStringLiteral( "expr" ) ), active ) );
         }
         else
         {
-          mProperties.setProperty( i.key(), new QgsFieldBasedProperty( e.attribute( QStringLiteral( "field" ) ), active ) );
+          mProperties.setProperty( i.key(), QgsProperty::fromField( e.attribute( QStringLiteral( "field" ) ), active ) );
         }
       }
     }

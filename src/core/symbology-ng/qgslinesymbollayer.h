@@ -329,7 +329,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
 
     QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
 
-    void setDataDefinedProperty( Property key, QgsAbstractProperty* property ) override;
+    void setDataDefinedProperty( Property key, const QgsProperty& property ) override;
 
 
   protected:

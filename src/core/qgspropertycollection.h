@@ -39,18 +39,22 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 {
   public:
 
+    /**
+     * Constructor for QgsAbstractPropertyCollection. The name
+     * parameter should be set to a descriptive name for the collection.
+     */
     QgsAbstractPropertyCollection( const QString& name = QString() );
 
     virtual ~QgsAbstractPropertyCollection() = default;
 
     /**
-     * Returns the name of the property collection.
+     * Returns the descriptive name of the property collection.
      * @see setName()
      */
     QString name() const { return mName; }
 
     /**
-     * Sets the name for the property collection.
+     * Sets the descriptive name for the property collection.
      * @see name()
      */
     void setName( const QString& name ) { mName = name; }
@@ -80,16 +84,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * @returns matching property, or null if no matching, active property found.
      * @see hasProperty()
      */
-    virtual QgsAbstractProperty* property( int key ) = 0;
-
-    /**
-     * Returns a matching property from the collection, if one exists.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
-     * int and used for the key value.
-     * @returns matching property, or null if no matching, active property found.
-     * @see hasProperty()
-     */
-    virtual const QgsAbstractProperty* property( int key ) const { Q_UNUSED( key ); return nullptr; } // ideally should be pure virtual but causes issues with SIP
+    virtual QgsProperty property( int key ) const = 0;
 
     /**
      * Returns the calculated value of the property with the specified key from within the collection.
@@ -99,9 +94,11 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * @param defaultValue default value to return if no matching, active property found or if the property value
      * cannot be calculated
      * @returns calculated property value, or default value if property could not be evaluated
+     * @see valueAsString()
      * @see valueAsColor()
      * @see valueAsDouble()
      * @see valueAsInt()
+     * @see valueAsBool()
      */
     virtual QVariant value( int key, const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const = 0;
 
@@ -114,8 +111,10 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * @param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to string
      * @see value()
-     * @see valueAsInteger()
      * @see valueAsColor()
+     * @see valueAsDouble()
+     * @see valueAsInt()
+     * @see valueAsBool()
      */
     QString valueAsString( int key, const QgsExpressionContext& context, const QString& defaultString = QString(), bool* ok = nullptr ) const;
 
@@ -128,8 +127,10 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * @param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to color
      * @see value()
+     * @see valueAsString()
      * @see valueAsDouble()
-     * @see valueAsInteger()
+     * @see valueAsInt()
+     * @see valueAsBool()
      */
     QColor valueAsColor( int key, const QgsExpressionContext& context, const QColor& defaultColor = QColor(), bool* ok = nullptr ) const;
 
@@ -142,8 +143,10 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * @param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to double
      * @see value()
-     * @see valueAsInteger()
+     * @see valueAsString()
      * @see valueAsColor()
+     * @see valueAsInt()
+     * @see valueAsBool()
      */
     double valueAsDouble( int key, const QgsExpressionContext& context, double defaultValue = 0.0, bool* ok = nullptr ) const;
 
@@ -156,8 +159,10 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * @param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to integer
      * @see value()
-     * @see valueAsDouble()
+     * @see valueAsString()
      * @see valueAsColor()
+     * @see valueAsDouble()
+     * @see valueAsBool()
      */
     int valueAsInt( int key, const QgsExpressionContext& context, int defaultValue = 0, bool* ok = nullptr ) const;
 
@@ -170,8 +175,10 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * @param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to bool
      * @see value()
-     * @see valueAsDouble()
+     * @see valueAsString()
      * @see valueAsColor()
+     * @see valueAsDouble()
+     * @see valueAsInt()
      */
     bool valueAsBool( int key, const QgsExpressionContext& context, bool defaultValue = false, bool* ok = nullptr ) const;
 
@@ -228,12 +235,13 @@ class CORE_EXPORT QgsAbstractPropertyCollection
   private:
 
     QString mName;
+    int mCount = 0;
 };
 
 /**
  * \ingroup core
  * \class QgsPropertyCollection
- * \brief A grouped map of multiple QgsAbstractProperty objects, each referenced by a integer key value.
+ * \brief A grouped map of multiple QgsProperty objects, each referenced by a integer key value.
  *
  * Properties within a collection are referenced by an integer key. This is done to avoid the cost of
  * string creation and comparisons which would be required by a string key. The intended use case is that
@@ -251,13 +259,6 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      */
     QgsPropertyCollection( const QString& name = QString() );
 
-    ~QgsPropertyCollection();
-
-    //! Copy constructor
-    QgsPropertyCollection( const QgsPropertyCollection& other );
-
-    QgsPropertyCollection& operator=( const QgsPropertyCollection& other );
-
     /**
      * Returns the number of properties contained within the collection.
      */
@@ -266,8 +267,17 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     QSet<int> propertyKeys() const override;
     void clear() override;
     bool hasProperty( int key ) const override;
-    QgsAbstractProperty* property( int key ) override;
-    const QgsAbstractProperty* property( int key ) const override;
+    QgsProperty property( int key ) const override;
+
+    /**
+     * Returns a reference to a matching property from the collection, if one exists.
+     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
+     * int and used for the key value.
+     * @returns matching property, or null if no matching, active property found.
+     * @see hasProperty()
+     */
+
+    virtual QgsProperty& property( int key );
     QVariant value( int key, const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const override;
     virtual bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
     QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
@@ -279,13 +289,13 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
 
     /**
      * Adds a property to the collection and takes ownership of it.
-     * @param key integer key for property. Any existing property with the same key will be deleted
+     * @param key integer key for property. Any existing property with the same key will be removed
      * and replaced by this property. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
-     * @param property property to add. Ownership is transferred to the collection. Setting a property
-     * to null will remove the property from the collection.
+     * @param property property to add. Ownership is transferred to the collection. Setting an invalid property
+     * will remove the property from the collection.
      */
-    void setProperty( int key, QgsAbstractProperty* property );
+    void setProperty( int key, const QgsProperty& property );
 
     /**
      * Convience method, creates a QgsStaticProperty and stores it within the collection.
@@ -298,7 +308,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
 
   private:
 
-    QHash<int, QgsAbstractProperty*> mProperties;
+    QHash<int, QgsProperty> mProperties;
 
     mutable bool mDirty;
     mutable bool mHasActiveProperties;
@@ -398,16 +408,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * @returns matching property, or null if no matching, active property found.
      * @see hasActiveProperty()
      */
-    const QgsAbstractProperty* property( int key ) const override;
-
-    /**
-     * Returns the highest priority property with a matching key from within the stack.
-     * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
-     * int and used for the key value.
-     * @returns matching property, or null if no matching, active property found.
-     * @see hasActiveProperty()
-     */
-    QgsAbstractProperty* property( int key ) override;
+    QgsProperty property( int key ) const override;
 
     /**
      * Returns the calculated value of the highest priority property with the specified key from within the stack.

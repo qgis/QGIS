@@ -447,7 +447,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see dataDefinedAngle
      */
-    void setDataDefinedAngle( QgsAbstractProperty* property /Transfer/ );
+    void setDataDefinedAngle( const QgsProperty& property );
 
     /** Returns data defined angle for whole symbol (including all symbol layers).
      * @returns data defined angle, or empty data defined if angle is not set
@@ -455,7 +455,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see setDataDefinedAngle
      */
-    QgsAbstractProperty* dataDefinedAngle() const /Factory/;
+    QgsProperty dataDefinedAngle() const;
 
     /** Sets the line angle modification for the symbol's angle. This angle is added to
      * the marker's rotation and data defined rotation before rendering the symbol, and
@@ -524,7 +524,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see dataDefinedSize
      */
-    void setDataDefinedSize( QgsAbstractProperty* property /Transfer/ );
+    void setDataDefinedSize( const QgsProperty& property );
 
     /** Returns data defined size for whole symbol (including all symbol layers).
      * @returns data defined size, or empty data defined if size is not set
@@ -532,7 +532,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see setDataDefinedSize
      */
-    QgsAbstractProperty* dataDefinedSize() const /Factory/;
+    QgsProperty dataDefinedSize() const;
 
     void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
     ScaleMethod scaleMethod();
@@ -578,7 +578,7 @@ class QgsLineSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see dataDefinedWidth
      */
-    void setDataDefinedWidth( QgsAbstractProperty* dd /Transfer/ );
+    void setDataDefinedWidth( const QgsProperty& dd );
 
     /** Returns data defined size for whole symbol (including all symbol layers).
      * @returns data defined size, or empty data defined if size is not set
@@ -586,7 +586,7 @@ class QgsLineSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see setDataDefinedWidth
      */
-    QgsAbstractProperty* dataDefinedWidth() const /Factory/;
+    QgsProperty dataDefinedWidth() const;
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 

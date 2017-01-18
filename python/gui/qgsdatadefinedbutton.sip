@@ -13,7 +13,7 @@ class QgsDataDefinedAssistant: QDialog
   public:
     QgsDataDefinedAssistant();
 
-    virtual QgsAbstractProperty* property() const = 0 /Factory/;
+    virtual QgsProperty property() const = 0;
 
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.

@@ -6,7 +6,7 @@ class QgsSizeScaleWidget : QgsDataDefinedAssistant
   public:
     QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsMarkerSymbol * symbol );
 
-    virtual QgsAbstractProperty* property() const /Factory/;
+    virtual QgsProperty property() const;
 
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12

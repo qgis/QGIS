@@ -74,7 +74,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     /**
      * Get wall shading enabled
      */
-    bool wallShadingEnabled();
+    bool wallShadingEnabled() const;
 
     /**
      * Get the shadow's color

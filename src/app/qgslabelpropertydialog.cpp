@@ -348,13 +348,13 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer* vlayer )
   //this can only be done for properties which are assigned to fields
   Q_FOREACH ( int key, mDataDefinedProperties.propertyKeys() )
   {
-    QgsAbstractProperty* prop = mDataDefinedProperties.property( key );
-    if ( !prop || !prop->isActive() || prop->propertyType() != QgsAbstractProperty::FieldBasedProperty )
+    QgsProperty prop = mDataDefinedProperties.property( key );
+    if ( !prop || !prop.isActive() || prop.propertyType() != QgsProperty::FieldBasedProperty )
     {
       continue; // can only modify attributes with an active data definition of a mapped field
     }
 
-    QString ddField = static_cast< QgsFieldBasedProperty*>( prop )->field();
+    QString ddField = prop.field();
     if ( ddField.isEmpty() )
     {
       continue;
@@ -652,10 +652,10 @@ void QgsLabelPropertyDialog::insertChangedValue( QgsPalLayerSettings::Property p
 {
   if ( mDataDefinedProperties.isActive( p ) )
   {
-    QgsAbstractProperty* prop = mDataDefinedProperties.property( p );
-    if ( prop->propertyType() == QgsAbstractProperty::FieldBasedProperty )
+    QgsProperty prop = mDataDefinedProperties.property( p );
+    if ( prop.propertyType() == QgsProperty::FieldBasedProperty )
     {
-      mChangedProperties.insert( mCurLabelFeat.fieldNameIndex( static_cast< QgsFieldBasedProperty* >( prop )->field() ), value );
+      mChangedProperties.insert( mCurLabelFeat.fieldNameIndex( prop.field() ), value );
     }
   }
 }

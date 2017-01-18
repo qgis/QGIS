@@ -146,7 +146,7 @@ void TestQgsSvgMarkerSymbol::bounds()
   mSvgMarkerLayer->setOutlineColor( Qt::black );
   mSvgMarkerLayer->setColor( Qt::blue );
   mSvgMarkerLayer->setOutlineWidth( 0.5 );
-  mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, new QgsExpressionBasedProperty( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
+  mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
 
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
   bool result = imageCheck( QStringLiteral( "svgmarker_bounds" ) );

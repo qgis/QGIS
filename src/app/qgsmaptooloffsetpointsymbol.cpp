@@ -92,8 +92,8 @@ bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbol* mar
     if ( !layer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertyOffset ) )
       continue;
 
-    QgsAbstractProperty* p = layer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
-    if ( p->propertyType() != QgsAbstractProperty::FieldBasedProperty )
+    QgsProperty p = layer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
+    if ( p.propertyType() != QgsProperty::FieldBasedProperty )
       continue;
 
     ok = true;
@@ -186,8 +186,8 @@ QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( c
     if ( !layer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertyOffset ) )
       continue;
 
-    QgsAbstractProperty* ddOffset = layer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
-    if ( ddOffset->propertyType() != QgsAbstractProperty::FieldBasedProperty )
+    QgsProperty ddOffset = layer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
+    if ( ddOffset.propertyType() != QgsProperty::FieldBasedProperty )
       continue;
 
     QgsMarkerSymbolLayer* ml = dynamic_cast< QgsMarkerSymbolLayer* >( layer );
@@ -195,7 +195,7 @@ QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( c
       continue;
 
     QPointF offset = calculateOffset( startPoint, endPoint, ml->offsetUnit() );
-    int fieldIdx = mActiveLayer->fields().indexFromName( static_cast< QgsFieldBasedProperty* >( ddOffset )->field() );
+    int fieldIdx = mActiveLayer->fields().indexFromName( ddOffset.field() );
     if ( fieldIdx >= 0 )
       newAttrValues[ fieldIdx ] = QgsSymbolLayerUtils::encodePoint( offset );
   }

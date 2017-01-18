@@ -50,24 +50,24 @@
 #include <map>
 
 inline
-QgsAbstractProperty* rotateWholeSymbol( double additionalRotation, const QgsAbstractProperty* property )
+QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty& property )
 {
-  QString exprString = property->asExpression();
-  return new QgsExpressionBasedProperty( QString::number( additionalRotation ) + " + (" + exprString + ')' );
+  QString exprString = property.asExpression();
+  return QgsProperty::fromExpression( QString::number( additionalRotation ) + " + (" + exprString + ')' );
 }
 
 inline
-QgsAbstractProperty* scaleWholeSymbol( double scaleFactor, const QgsAbstractProperty* property )
+QgsProperty scaleWholeSymbol( double scaleFactor, const QgsProperty& property )
 {
-  QString exprString = property->asExpression();
-  return new QgsExpressionBasedProperty( QString::number( scaleFactor ) + "*(" + exprString + ')' );
+  QString exprString = property.asExpression();
+  return QgsProperty::fromExpression( QString::number( scaleFactor ) + "*(" + exprString + ')' );
 }
 
 inline
-QgsAbstractProperty* scaleWholeSymbol( double scaleFactorX, double scaleFactorY, const QgsAbstractProperty* property )
+QgsProperty scaleWholeSymbol( double scaleFactorX, double scaleFactorY, const QgsProperty& property )
 {
-  QString exprString = property->asExpression();
-  return new QgsExpressionBasedProperty(
+  QString exprString = property.asExpression();
+  return QgsProperty::fromExpression(
            ( !qgsDoubleNear( scaleFactorX, 0.0 ) ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : QStringLiteral( "'0'" ) ) +
            "|| ',' || " +
            ( !qgsDoubleNear( scaleFactorY, 0.0 ) ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : QStringLiteral( "'0'" ) ) );
@@ -1104,7 +1104,7 @@ void QgsMarkerSymbol::setLineAngle( double lineAng )
   }
 }
 
-void QgsMarkerSymbol::setDataDefinedAngle( QgsAbstractProperty* property )
+void QgsMarkerSymbol::setDataDefinedAngle( const QgsProperty& property )
 {
   const double symbolRotation = angle();
 
@@ -1115,28 +1115,27 @@ void QgsMarkerSymbol::setDataDefinedAngle( QgsAbstractProperty* property )
     const QgsMarkerSymbolLayer* markerLayer = static_cast<const QgsMarkerSymbolLayer*>( layer );
     if ( !property )
     {
-      layer->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, nullptr );
+      layer->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty() );
     }
     else
     {
       if ( qgsDoubleNear( markerLayer->angle(), symbolRotation ) )
       {
-        layer->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, property->clone() );
+        layer->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, property );
       }
       else
       {
-        QgsAbstractProperty* rotatedDD = rotateWholeSymbol( markerLayer->angle() - symbolRotation, property );
+        QgsProperty rotatedDD = rotateWholeSymbol( markerLayer->angle() - symbolRotation, property );
         layer->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, rotatedDD );
       }
     }
   }
-  delete property;
 }
 
-QgsAbstractProperty* QgsMarkerSymbol::dataDefinedAngle() const
+QgsProperty QgsMarkerSymbol::dataDefinedAngle() const
 {
   const double symbolRotation = angle();
-  const QgsAbstractProperty* symbolDD = nullptr;
+  QgsProperty symbolDD;
 
   // find the base of the "en masse" pattern
   Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
@@ -1152,7 +1151,7 @@ QgsAbstractProperty* QgsMarkerSymbol::dataDefinedAngle() const
   }
 
   if ( !symbolDD )
-    return nullptr;
+    return QgsProperty();
 
   // check that all layer's angle expressions match the "en masse" pattern
   Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
@@ -1161,21 +1160,21 @@ QgsAbstractProperty* QgsMarkerSymbol::dataDefinedAngle() const
       continue;
     const QgsMarkerSymbolLayer* markerLayer = static_cast<const QgsMarkerSymbolLayer*>( layer );
 
-    const QgsAbstractProperty* layerAngleDD = markerLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyAngle );
+    QgsProperty layerAngleDD = markerLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyAngle );
 
     if ( qgsDoubleNear( markerLayer->angle(), symbolRotation ) )
     {
-      if ( !layerAngleDD || layerAngleDD->asExpression() != symbolDD->asExpression() )
-        return nullptr;
+      if ( !layerAngleDD || layerAngleDD != symbolDD )
+        return QgsProperty();
     }
     else
     {
-      QScopedPointer< QgsAbstractProperty > rotatedDD( rotateWholeSymbol( markerLayer->angle() - symbolRotation, symbolDD ) );
-      if ( !layerAngleDD || layerAngleDD->asExpression() != rotatedDD->asExpression() )
-        return nullptr;
+      QgsProperty rotatedDD( rotateWholeSymbol( markerLayer->angle() - symbolRotation, symbolDD ) );
+      if ( !layerAngleDD || layerAngleDD != rotatedDD )
+        return QgsProperty();
     }
   }
-  return symbolDD->clone();
+  return symbolDD;
 }
 
 
@@ -1279,7 +1278,7 @@ QgsMapUnitScale QgsMarkerSymbol::sizeMapUnitScale() const
   return QgsMapUnitScale();
 }
 
-void QgsMarkerSymbol::setDataDefinedSize( QgsAbstractProperty* property )
+void QgsMarkerSymbol::setDataDefinedSize( const QgsProperty& property )
 {
   const double symbolSize = size();
 
@@ -1291,14 +1290,14 @@ void QgsMarkerSymbol::setDataDefinedSize( QgsAbstractProperty* property )
 
     if ( !property )
     {
-      markerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, nullptr );
-      markerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOffset, nullptr );
+      markerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty() );
+      markerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOffset, QgsProperty() );
     }
     else
     {
       if ( qgsDoubleNear( symbolSize, 0.0 ) || qgsDoubleNear( markerLayer->size(), symbolSize ) )
       {
-        markerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, property->clone() );
+        markerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, property );
       }
       else
       {
@@ -1313,14 +1312,13 @@ void QgsMarkerSymbol::setDataDefinedSize( QgsAbstractProperty* property )
       }
     }
   }
-  delete property;
 }
 
-QgsAbstractProperty* QgsMarkerSymbol::dataDefinedSize() const
+QgsProperty QgsMarkerSymbol::dataDefinedSize() const
 {
   const double symbolSize = size();
 
-  const QgsAbstractProperty* symbolDD = nullptr;
+  QgsProperty symbolDD;
 
   // find the base of the "en masse" pattern
   Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
@@ -1336,7 +1334,7 @@ QgsAbstractProperty* QgsMarkerSymbol::dataDefinedSize() const
   }
 
   if ( !symbolDD )
-    return nullptr;
+    return QgsProperty();
 
   // check that all layers size expressions match the "en masse" pattern
   Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
@@ -1345,30 +1343,30 @@ QgsAbstractProperty* QgsMarkerSymbol::dataDefinedSize() const
       continue;
     const QgsMarkerSymbolLayer* markerLayer = static_cast<const QgsMarkerSymbolLayer*>( layer );
 
-    const QgsAbstractProperty* layerSizeDD = markerLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertySize );
-    const QgsAbstractProperty* layerOffsetDD = markerLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
+    QgsProperty layerSizeDD = markerLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertySize );
+    QgsProperty layerOffsetDD = markerLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
 
     if ( qgsDoubleNear( markerLayer->size(), symbolSize ) )
     {
-      if ( !layerSizeDD || layerSizeDD->asExpression() != symbolDD->asExpression() )
-        return nullptr;
+      if ( !layerSizeDD || layerSizeDD != symbolDD )
+        return QgsProperty();
     }
     else
     {
       if ( qgsDoubleNear( symbolSize, 0.0 ) )
-        return nullptr;
+        return QgsProperty();
 
-      QScopedPointer< QgsAbstractProperty > scaledDD( scaleWholeSymbol( markerLayer->size() / symbolSize, symbolDD ) );
-      if ( !layerSizeDD || layerSizeDD->asExpression() != scaledDD->asExpression() )
-        return nullptr;
+      QgsProperty scaledDD( scaleWholeSymbol( markerLayer->size() / symbolSize, symbolDD ) );
+      if ( !layerSizeDD || layerSizeDD != scaledDD )
+        return QgsProperty();
     }
 
-    QScopedPointer< QgsAbstractProperty > scaledOffsetDD( scaleWholeSymbol( markerLayer->offset().x() / symbolSize, markerLayer->offset().y() / symbolSize, symbolDD ) );
-    if ( layerOffsetDD && layerOffsetDD->asExpression() != scaledOffsetDD->asExpression() )
-      return nullptr;
+    QgsProperty scaledOffsetDD( scaleWholeSymbol( markerLayer->offset().x() / symbolSize, markerLayer->offset().y() / symbolSize, symbolDD ) );
+    if ( layerOffsetDD && layerOffsetDD != scaledOffsetDD )
+      return QgsProperty();
   }
 
-  return symbolDD->clone();
+  return symbolDD;
 }
 
 void QgsMarkerSymbol::setScaleMethod( QgsSymbol::ScaleMethod scaleMethod )
@@ -1538,7 +1536,7 @@ double QgsLineSymbol::width() const
   return maxWidth;
 }
 
-void QgsLineSymbol::setDataDefinedWidth( QgsAbstractProperty* dd )
+void QgsLineSymbol::setDataDefinedWidth( const QgsProperty& property )
 {
   const double symbolWidth = width();
 
@@ -1548,37 +1546,36 @@ void QgsLineSymbol::setDataDefinedWidth( QgsAbstractProperty* dd )
 
     if ( lineLayer )
     {
-      if ( !dd )
+      if ( !property )
       {
-        lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyWidth, nullptr );
-        lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOffset, nullptr );
+        lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyWidth, QgsProperty() );
+        lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOffset, QgsProperty() );
       }
       else
       {
         if ( qgsDoubleNear( symbolWidth, 0.0 ) || qgsDoubleNear( lineLayer->width(), symbolWidth ) )
         {
-          lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, dd->clone() );
+          lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, property );
         }
         else
         {
-          lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, scaleWholeSymbol( lineLayer->width() / symbolWidth, dd ) );
+          lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, scaleWholeSymbol( lineLayer->width() / symbolWidth, property ) );
         }
 
         if ( !qgsDoubleNear( lineLayer->offset(), 0.0 ) )
         {
-          lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOffset, scaleWholeSymbol( lineLayer->offset() / symbolWidth, dd ) );
+          lineLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOffset, scaleWholeSymbol( lineLayer->offset() / symbolWidth, property ) );
         }
       }
     }
   }
-  delete dd;
 }
 
-QgsAbstractProperty* QgsLineSymbol::dataDefinedWidth() const
+QgsProperty QgsLineSymbol::dataDefinedWidth() const
 {
   const double symbolWidth = width();
 
-  const QgsAbstractProperty* symbolDD = nullptr;
+  QgsProperty symbolDD;
 
   // find the base of the "en masse" pattern
   for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
@@ -1592,7 +1589,7 @@ QgsAbstractProperty* QgsLineSymbol::dataDefinedWidth() const
   }
 
   if ( !symbolDD )
-    return nullptr;
+    return QgsProperty();
 
   // check that all layers width expressions match the "en masse" pattern
   Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
@@ -1601,30 +1598,30 @@ QgsAbstractProperty* QgsLineSymbol::dataDefinedWidth() const
       continue;
     const QgsLineSymbolLayer* lineLayer = static_cast<const QgsLineSymbolLayer*>( layer );
 
-    const QgsAbstractProperty* layerWidthDD = lineLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOutlineWidth );
-    const QgsAbstractProperty* layerOffsetDD = lineLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
+    QgsProperty layerWidthDD = lineLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOutlineWidth );
+    QgsProperty layerOffsetDD = lineLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
 
     if ( qgsDoubleNear( lineLayer->width(), symbolWidth ) )
     {
-      if ( !layerWidthDD || layerWidthDD->asExpression() != symbolDD->asExpression() )
-        return nullptr;
+      if ( !layerWidthDD || layerWidthDD != symbolDD )
+        return QgsProperty();
     }
     else
     {
       if ( qgsDoubleNear( symbolWidth, 0.0 ) )
-        return nullptr;
+        return QgsProperty();
 
-      QScopedPointer< QgsAbstractProperty > scaledDD( scaleWholeSymbol( lineLayer->width() / symbolWidth, symbolDD ) );
-      if ( !layerWidthDD || layerWidthDD->asExpression() != scaledDD->asExpression() )
-        return nullptr;
+      QgsProperty scaledDD( scaleWholeSymbol( lineLayer->width() / symbolWidth, symbolDD ) );
+      if ( !layerWidthDD || layerWidthDD != scaledDD )
+        return QgsProperty();
     }
 
-    QScopedPointer< QgsAbstractProperty > scaledOffsetDD( scaleWholeSymbol( lineLayer->offset() / symbolWidth, symbolDD ) );
-    if ( layerOffsetDD && layerOffsetDD->asExpression() != scaledOffsetDD->asExpression() )
-      return nullptr;
+    QgsProperty scaledOffsetDD( scaleWholeSymbol( lineLayer->offset() / symbolWidth, symbolDD ) );
+    if ( layerOffsetDD && layerOffsetDD != scaledOffsetDD )
+      return QgsProperty();
   }
 
-  return symbolDD->clone();
+  return symbolDD;
 }
 
 void QgsLineSymbol::renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layerIdx, bool selected )

@@ -139,11 +139,11 @@ void TestQgsComposerDD::cleanup()
 void TestQgsComposerDD::ddEvaluate()
 {
   //set a data defined property
-  mAtlasMap->dataDefinedProperties().setProperty( QgsComposerItem::PositionY, new QgsExpressionBasedProperty( QStringLiteral( "20+30" ) ) );
+  mAtlasMap->dataDefinedProperties().setProperty( QgsComposerItem::PositionY, QgsProperty::fromExpression( QStringLiteral( "20+30" ) ) );
   //evaluate property
   mAtlasMap->refreshDataDefinedProperty( QgsComposerItem::PositionY );
   QCOMPARE( mAtlasMap->pos().y(), 50.0 );
-  mAtlasMap->dataDefinedProperties().setProperty( QgsComposerItem::PositionY, nullptr );
+  mAtlasMap->dataDefinedProperties().setProperty( QgsComposerItem::PositionY, QgsProperty() );
 }
 
 QGSTEST_MAIN( TestQgsComposerDD )

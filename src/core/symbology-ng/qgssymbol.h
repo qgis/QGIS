@@ -25,6 +25,7 @@
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsrendercontext.h"
+#include "qgsproperty.h"
 
 class QColor;
 class QImage;
@@ -50,7 +51,6 @@ class QgsFeatureRenderer;
 class QgsCurve;
 class QgsPolygonV2;
 class QgsExpressionContext;
-class QgsAbstractProperty;
 
 typedef QList<QgsSymbolLayer*> QgsSymbolLayerList;
 
@@ -534,19 +534,18 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     double angle() const;
 
     /** Set data defined angle for whole symbol (including all symbol layers).
-     * Ownership of property is transferred to the symbol.
      * @note added in QGIS 3.0
      * @see dataDefinedAngle()
      */
-    void setDataDefinedAngle( QgsAbstractProperty* property );
+    void setDataDefinedAngle( const QgsProperty& property );
 
     /** Returns data defined angle for whole symbol (including all symbol layers).
-     * @returns data defined angle, or empty nullptr if angle is not set
-     * at the marker level. Caller takes responsibility for deleting the returned object.
+     * @returns data defined angle, or invalid property if angle is not set
+     * at the marker level.
      * @note added in QGIS 3.0
      * @see setDataDefinedAngle()
      */
-    QgsAbstractProperty* dataDefinedAngle() const;
+    QgsProperty dataDefinedAngle() const;
 
     /** Sets the line angle modification for the symbol's angle. This angle is added to
      * the marker's rotation and data defined rotation before rendering the symbol, and
@@ -611,19 +610,18 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     QgsMapUnitScale sizeMapUnitScale() const;
 
     /** Set data defined size for whole symbol (including all symbol layers).
-     * Ownership of property is transferred to the symbol.
      * @note added in QGIS 3.0
      * @see dataDefinedSize()
      */
-    void setDataDefinedSize( QgsAbstractProperty* property );
+    void setDataDefinedSize( const QgsProperty& property );
 
     /** Returns data defined size for whole symbol (including all symbol layers).
-     * @returns data defined size, or empty nullptr if size is not set
-     * at the marker level. Caller takes responsibility for deleting the returned object.
+     * @returns data defined size, or invalid property if size is not set
+     * at the marker level.
      * @note added in QGIS 3.0
      * @see setDataDefinedSize
      */
-    QgsAbstractProperty* dataDefinedSize() const;
+    QgsProperty dataDefinedSize() const;
 
     void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
     ScaleMethod scaleMethod();
@@ -669,19 +667,18 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
     double width() const;
 
     /** Set data defined width for whole symbol (including all symbol layers).
-     * Ownership of data defined width is transferred to the symbol.
      * @see dataDefinedWidth()
      * @note added in QGIS 3.0
      */
-    void setDataDefinedWidth( QgsAbstractProperty* dd );
+    void setDataDefinedWidth( const QgsProperty& property );
 
     /** Returns data defined width for whole symbol (including all symbol layers).
-     * @returns data defined width, or empty nullptr if size is not set
+     * @returns data defined width, or invalid property if size is not set
      * at the line level. Caller takes responsibility for deleting the returned object.
      * @note added in QGIS 3.0
      * @see setDataDefinedWidth
      */
-    QgsAbstractProperty* dataDefinedWidth() const;
+    QgsProperty dataDefinedWidth() const;
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 

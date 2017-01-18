@@ -413,11 +413,11 @@ QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p,
   if ( !labelSettings.properties().isActive( p ) )
     return QString();
 
-  const QgsAbstractProperty* prop = labelSettings.properties().property( p );
-  if ( prop->propertyType() != QgsAbstractProperty::FieldBasedProperty )
+  QgsProperty prop = labelSettings.properties().property( p );
+  if ( prop.propertyType() != QgsProperty::FieldBasedProperty )
     return QString();
 
-  return static_cast< const QgsFieldBasedProperty* >( prop )->field();
+  return prop.field();
 }
 
 int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::Property p, const QgsPalLayerSettings& labelSettings, const QgsVectorLayer* vlayer ) const
@@ -568,19 +568,19 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer* vlayer, int& xCol, int& y
     if ( dls )
     {
       xCol = -1;
-      if ( const QgsFieldBasedProperty* ddX = dynamic_cast< const QgsFieldBasedProperty* >( dls->properties().property( QgsDiagramLayerSettings::PositionX ) ) )
+      if ( QgsProperty ddX = dls->properties().property( QgsDiagramLayerSettings::PositionX ) )
       {
-        if ( ddX->isActive() )
+        if ( ddX.propertyType() == QgsProperty::FieldBasedProperty && ddX.isActive() )
         {
-          xCol = vlayer->fields().lookupField( ddX->field() );
+          xCol = vlayer->fields().lookupField( ddX.field() );
         }
       }
       yCol = -1;
-      if ( const QgsFieldBasedProperty* ddY = dynamic_cast< const QgsFieldBasedProperty* >( dls->properties().property( QgsDiagramLayerSettings::PositionY ) ) )
+      if ( QgsProperty ddY = dls->properties().property( QgsDiagramLayerSettings::PositionY ) )
       {
-        if ( ddY->isActive() )
+        if ( ddY.propertyType() == QgsProperty::FieldBasedProperty && ddY.isActive() )
         {
-          yCol = vlayer->fields().lookupField( ddY->field() );
+          yCol = vlayer->fields().lookupField( ddY.field() );
         }
       }
       return xCol >= 0 && yCol >= 0;
@@ -672,11 +672,11 @@ bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer* vlayer, int& showCol )
   {
     if ( const QgsDiagramLayerSettings *dls = vlayer->diagramLayerSettings() )
     {
-      if ( const QgsFieldBasedProperty* ddShow = dynamic_cast< const QgsFieldBasedProperty* >( dls->properties().property( QgsDiagramLayerSettings::Show ) ) )
+      if ( QgsProperty ddShow = dls->properties().property( QgsDiagramLayerSettings::Show ) )
       {
-        if ( ddShow->isActive() )
+        if ( ddShow.propertyType() == QgsProperty::FieldBasedProperty && ddShow.isActive() )
         {
-          showCol = vlayer->fields().lookupField( ddShow->field() );
+          showCol = vlayer->fields().lookupField( ddShow.field() );
         }
       }
     }

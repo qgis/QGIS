@@ -77,7 +77,7 @@ QgsDataDefinedButtonV2::QgsDataDefinedButtonV2( QWidget* parent,
   mDefineMenu->addAction( mActionAssistant );
 }
 
-void QgsDataDefinedButtonV2::init( int propertyKey, const QgsAbstractProperty* property, const QgsPropertiesDefinition& definitions, const QgsVectorLayer* layer )
+void QgsDataDefinedButtonV2::init( int propertyKey, const QgsProperty& property, const QgsPropertiesDefinition& definitions, const QgsVectorLayer* layer )
 {
   mVectorLayer = layer;
   setToProperty( property );
@@ -180,16 +180,16 @@ void QgsDataDefinedButtonV2::updateFieldLists()
   }
 }
 
-QgsAbstractProperty* QgsDataDefinedButtonV2::toProperty()
+QgsProperty QgsDataDefinedButtonV2::toProperty() const
 {
-  QgsAbstractProperty* p = nullptr;
+  QgsProperty p;
   if ( mUseExpression )
   {
-    p = new QgsExpressionBasedProperty( mExpressionString, mActive );
+    p = QgsProperty::fromExpression( mExpressionString, mActive );
   }
   else if ( !mFieldName.isEmpty() )
   {
-    p = new QgsFieldBasedProperty( mFieldName, mActive );
+    p = QgsProperty::fromField( mFieldName, mActive );
   }
   return p;
 }
@@ -225,25 +225,24 @@ void QgsDataDefinedButtonV2::mouseReleaseEvent( QMouseEvent *event )
   QToolButton::mousePressEvent( event );
 }
 
-void QgsDataDefinedButtonV2::setToProperty( const QgsAbstractProperty *property )
+void QgsDataDefinedButtonV2::setToProperty( const QgsProperty& property )
 {
   if ( property )
   {
-    switch ( property->propertyType() )
+    switch ( property.propertyType() )
     {
-      case QgsAbstractProperty::StaticProperty:
+      case QgsProperty::StaticProperty:
+      case QgsProperty::InvalidProperty:
         break;
-      case QgsAbstractProperty::FieldBasedProperty:
+      case QgsProperty::FieldBasedProperty:
       {
-        const QgsFieldBasedProperty* p = static_cast< const QgsFieldBasedProperty* >( property );
-        mFieldName = p->field();
+        mFieldName = property.field();
         mUseExpression = false;
         break;
       }
-      case QgsAbstractProperty::ExpressionBasedProperty:
+      case QgsProperty::ExpressionBasedProperty:
       {
-        const QgsExpressionBasedProperty* p = static_cast< const QgsExpressionBasedProperty* >( property );
-        mExpressionString = p->expressionString();
+        mExpressionString = property.expressionString();
         mUseExpression = true;
         break;
       }
@@ -255,7 +254,7 @@ void QgsDataDefinedButtonV2::setToProperty( const QgsAbstractProperty *property 
     mUseExpression = false;
     mExpressionString.clear();
   }
-  setActive( property && property->isActive() );
+  setActive( property && property.isActive() );
   updateGui();
 }
 

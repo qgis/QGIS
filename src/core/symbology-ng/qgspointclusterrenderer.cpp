@@ -40,7 +40,7 @@ QgsPointClusterRenderer::QgsPointClusterRenderer()
   fm->setColor( QColor( 255, 255, 255 ) );
   fm->setSize( 3.2 );
   fm->setOffset( QPointF( 0, -0.4 ) );
-  fm->setDataDefinedProperty( QgsSymbolLayer::PropertyCharacter, new QgsExpressionBasedProperty( QStringLiteral( "@cluster_size" ) ) );
+  fm->setDataDefinedProperty( QgsSymbolLayer::PropertyCharacter, QgsProperty::fromExpression( QStringLiteral( "@cluster_size" ) ) );
   mClusterSymbol->insertSymbolLayer( 1, fm );
 }
 

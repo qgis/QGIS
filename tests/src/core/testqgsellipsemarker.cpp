@@ -191,7 +191,7 @@ void TestQgsEllipseMarkerSymbol::bounds()
   mEllipseMarkerLayer->setSymbolName( QStringLiteral( "circle" ) );
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
-  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, new QgsExpressionBasedProperty( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
   mEllipseMarkerLayer->setOutlineWidth( 0.5 );
 
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );

@@ -816,7 +816,7 @@ bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocumen
       expressionActive = false;
     }
 
-    mProperties.setProperty( QgsComposerObject::PictureSource, new QgsExpressionBasedProperty( sourceExpression, expressionActive ) );
+    mProperties.setProperty( QgsComposerObject::PictureSource, QgsProperty::fromExpression( sourceExpression, expressionActive ) );
   }
 
   mSourcePath = mComposition->project()->readPath( itemElem.attribute( QStringLiteral( "file" ) ) );

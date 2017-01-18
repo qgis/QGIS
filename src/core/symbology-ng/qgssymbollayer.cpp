@@ -85,7 +85,7 @@ const QgsPropertiesDefinition QgsSymbolLayer::PROPERTY_DEFINITIONS
 
 };
 
-void QgsSymbolLayer::setDataDefinedProperty( QgsSymbolLayer::Property key, QgsAbstractProperty* property )
+void QgsSymbolLayer::setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty& property )
 {
   dataDefinedProperties().setProperty( key, property );
 }
@@ -200,7 +200,7 @@ QSet<QString> QgsSymbolLayer::usedAttributes( const QgsRenderContext& context ) 
   return columns;
 }
 
-QgsAbstractProperty* propertyFromMap( const QgsStringMap &map, const QString &baseName )
+QgsProperty propertyFromMap( const QgsStringMap &map, const QString &baseName )
 {
   QString prefix;
   if ( !baseName.isEmpty() )
@@ -211,7 +211,7 @@ QgsAbstractProperty* propertyFromMap( const QgsStringMap &map, const QString &ba
   if ( !map.contains( QStringLiteral( "%1expression" ).arg( prefix ) ) )
   {
     //requires at least the expression value
-    return nullptr;
+    return QgsProperty();
   }
 
   bool active = ( map.value( QStringLiteral( "%1active" ).arg( prefix ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
@@ -220,9 +220,9 @@ QgsAbstractProperty* propertyFromMap( const QgsStringMap &map, const QString &ba
   QString field = map.value( QStringLiteral( "%1field" ).arg( prefix ), QString() );
 
   if ( useExpression )
-    return new QgsExpressionBasedProperty( expression, active );
+    return QgsProperty::fromExpression( expression, active );
   else
-    return new QgsFieldBasedProperty( field, active );
+    return QgsProperty::fromField( field, active );
 }
 
 // property string to type upgrade map
@@ -306,7 +306,7 @@ void QgsSymbolLayer::restoreOldDataDefinedProperties( const QgsStringMap &string
   QgsStringMap::const_iterator propIt = stringMap.constBegin();
   for ( ; propIt != stringMap.constEnd(); ++propIt )
   {
-    QScopedPointer< QgsAbstractProperty > prop;
+    QgsProperty prop;
     QString propertyName;
 
     if ( propIt.key().endsWith( QLatin1String( "_dd_expression" ) ) )
@@ -316,7 +316,7 @@ void QgsSymbolLayer::restoreOldDataDefinedProperties( const QgsStringMap &string
       //get data defined property name by stripping "_dd_expression" from property key
       propertyName = propIt.key().left( propIt.key().length() - 14 );
 
-      prop.reset( propertyFromMap( stringMap, propertyName ) );
+      prop = propertyFromMap( stringMap, propertyName );
     }
     else if ( propIt.key().endsWith( QLatin1String( "_expression" ) ) )
     {
@@ -325,7 +325,7 @@ void QgsSymbolLayer::restoreOldDataDefinedProperties( const QgsStringMap &string
       //get data defined property name by stripping "_expression" from property key
       propertyName = propIt.key().left( propIt.key().length() - 11 );
 
-      prop.reset( new QgsExpressionBasedProperty( propIt.value() ) );
+      prop = QgsProperty::fromExpression( propIt.value() );
     }
 
     if ( !prop || !OLD_PROPS.contains( propertyName ) )
@@ -342,7 +342,7 @@ void QgsSymbolLayer::restoreOldDataDefinedProperties( const QgsStringMap &string
         key = QgsSymbolLayer::PropertyOutlineColor;
     }
 
-    setDataDefinedProperty( key, prop.take() );
+    setDataDefinedProperty( key, prop );
   }
 }
 

@@ -376,23 +376,23 @@ void QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
   QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, mSymbolName, mColor, mOutlineColor, mOutlineStyle, outlineWidth, symbolWidth );
 
   // <Rotation>
-  const QgsAbstractProperty* ddRotation = mProperties.property( QgsSymbolLayer::PropertyAngle );
+  QgsProperty ddRotation = mProperties.property( QgsSymbolLayer::PropertyAngle );
 
   QString angleFunc = props.value( QStringLiteral( "angle" ), QLatin1String( "" ) );
   if ( angleFunc.isEmpty() )  // symbol has no angle set
   {
-    if ( ddRotation && ddRotation->isActive() )
+    if ( ddRotation && ddRotation.isActive() )
     {
-      angleFunc = ddRotation->asExpression();
+      angleFunc = ddRotation.asExpression();
     }
     else if ( !qgsDoubleNear( mAngle, 0.0 ) )
       angleFunc = QString::number( mAngle );
   }
-  else if ( ddRotation && ddRotation->isActive() )
+  else if ( ddRotation && ddRotation.isActive() )
   {
     // the symbol has an angle and the symbol layer have a rotation
     // property set
-    angleFunc = QStringLiteral( "%1 + %2" ).arg( angleFunc, ddRotation->asExpression() );
+    angleFunc = QStringLiteral( "%1 + %2" ).arg( angleFunc, ddRotation.asExpression() );
   }
   else if ( !qgsDoubleNear( mAngle, 0.0 ) )
   {

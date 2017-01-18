@@ -200,10 +200,10 @@ void TestQgsComposerScaleBar::tick()
 
 void TestQgsComposerScaleBar::dataDefined()
 {
-  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarFillColor, new QgsExpressionBasedProperty( "'red'" ) );
-  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarFillColor2, new QgsExpressionBasedProperty( "'blue'" ) );
-  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarLineColor, new QgsExpressionBasedProperty( "'yellow'" ) );
-  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarLineWidth, new QgsExpressionBasedProperty( "1.2" ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarFillColor, QgsProperty::fromExpression( "'red'" ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarFillColor2, QgsProperty::fromExpression( "'blue'" ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarLineColor, QgsProperty::fromExpression( "'yellow'" ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarLineWidth, QgsProperty::fromExpression( "1.2" ) );
   mComposerScaleBar->refreshDataDefinedProperty();
   QCOMPARE( mComposerScaleBar->brush().color().name(), QColor( 255, 0, 0 ).name() );
   QCOMPARE( mComposerScaleBar->brush2().color().name(), QColor( 0, 0, 255 ).name() );

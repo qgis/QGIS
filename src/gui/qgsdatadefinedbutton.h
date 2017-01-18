@@ -22,12 +22,12 @@
 #include <QToolButton>
 #include <QScopedPointer>
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsproperty.h"
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
-class QgsAbstractProperty;
-class QgsDataDefined;
 class QgsMapCanvas;
+class QgsDataDefined;
 
 /** \ingroup gui
  * \class QgsDataDefinedAssistant
@@ -45,9 +45,8 @@ class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
 
     /**
      * Returns the property which was defined by this assistant.
-     * The caller takes responsibility for deleting the returned object.
      */
-    virtual QgsAbstractProperty* property() const = 0;
+    virtual QgsProperty property() const = 0;
 
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.

@@ -194,6 +194,7 @@ SET(QGIS_CORE_SRCS
   qgsprojectversion.cpp
   qgsproperty.cpp
   qgspropertycollection.cpp
+  qgspropertytransformer.cpp
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
   qgspythonrunner.cpp
@@ -720,6 +721,7 @@ SET(QGIS_CORE_HDRS
   qgsprojectversion.h
   qgsproperty.h
   qgspropertycollection.h
+  qgspropertytransformer.h
   qgsprovidermetadata.h
   qgsproviderregistry.h
   qgspythonrunner.h

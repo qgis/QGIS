@@ -113,21 +113,21 @@ void QgsDiagramLayerSettings::readXml( const QDomElement& elem, const QgsVectorL
     // upgrade old project
     int xPosColumn = elem.attribute( QStringLiteral( "xPosColumn" ) ).toInt();
     if ( xPosColumn >= 0 && xPosColumn < layer->fields().count() )
-      mProperties.setProperty( PositionX, new QgsFieldBasedProperty( layer->fields().at( xPosColumn ).name(), true ) );
+      mProperties.setProperty( PositionX, QgsProperty::fromField( layer->fields().at( xPosColumn ).name(), true ) );
   }
   if ( elem.hasAttribute( QStringLiteral( "yPosColumn" ) ) )
   {
     // upgrade old project
     int yPosColumn = elem.attribute( QStringLiteral( "yPosColumn" ) ).toInt();
     if ( yPosColumn >= 0 && yPosColumn < layer->fields().count() )
-      mProperties.setProperty( PositionY, new QgsFieldBasedProperty( layer->fields().at( yPosColumn ).name(), true ) );
+      mProperties.setProperty( PositionY, QgsProperty::fromField( layer->fields().at( yPosColumn ).name(), true ) );
   }
   if ( elem.hasAttribute( QStringLiteral( "showColumn" ) ) )
   {
     // upgrade old project
     int showColumn = elem.attribute( QStringLiteral( "showColumn" ) ).toInt();
     if ( showColumn >= 0 && showColumn < layer->fields().count() )
-      mProperties.setProperty( Show, new QgsFieldBasedProperty( layer->fields().at( showColumn ).name(), true ) );
+      mProperties.setProperty( Show, QgsProperty::fromField( layer->fields().at( showColumn ).name(), true ) );
   }
   mShowAll = ( elem.attribute( QStringLiteral( "showAll" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
 }

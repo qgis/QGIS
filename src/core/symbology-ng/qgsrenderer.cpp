@@ -415,18 +415,18 @@ void QgsFeatureRenderer::convertSymbolSizeScale( QgsSymbol * symbol, QgsSymbol::
     QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( symbol );
     if ( QgsSymbol::ScaleArea == QgsSymbol::ScaleMethod( method ) )
     {
-      s->setDataDefinedSize( new QgsExpressionBasedProperty( "coalesce(sqrt(" + QString::number( s->size() ) + " * (" + field + ")),0)" ) );
+      s->setDataDefinedSize( QgsProperty::fromExpression( "coalesce(sqrt(" + QString::number( s->size() ) + " * (" + field + ")),0)" ) );
     }
     else
     {
-      s->setDataDefinedSize( new QgsExpressionBasedProperty( "coalesce(" + QString::number( s->size() ) + " * (" + field + "),0)" ) );
+      s->setDataDefinedSize( QgsProperty::fromExpression( "coalesce(" + QString::number( s->size() ) + " * (" + field + "),0)" ) );
     }
     s->setScaleMethod( QgsSymbol::ScaleDiameter );
   }
   else if ( symbol->type() == QgsSymbol::Line )
   {
     QgsLineSymbol * s = static_cast<QgsLineSymbol *>( symbol );
-    s->setDataDefinedWidth( new QgsExpressionBasedProperty( "coalesce(" + QString::number( s->width() ) + " * (" + field + "),0)" ) );
+    s->setDataDefinedWidth( QgsProperty::fromExpression( "coalesce(" + QString::number( s->width() ) + " * (" + field + "),0)" ) );
   }
 }
 
@@ -435,9 +435,9 @@ void QgsFeatureRenderer::convertSymbolRotation( QgsSymbol * symbol, const QStrin
   if ( symbol->type() == QgsSymbol::Marker )
   {
     QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( symbol );
-    QgsExpressionBasedProperty* dd = new QgsExpressionBasedProperty(( s->angle()
-        ? QString::number( s->angle() ) + " + "
-        : QString() ) + field );
+    QgsProperty dd = QgsProperty::fromExpression(( s->angle()
+                     ? QString::number( s->angle() ) + " + "
+                     : QString() ) + field );
     s->setDataDefinedAngle( dd );
   }
 }

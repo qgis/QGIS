@@ -243,8 +243,8 @@ class TestQgsDiagram : public QObject
       dls.setShowAllDiagrams( true );
 
       //Set data defined position
-      dls.properties().setProperty( QgsDiagramLayerSettings::PositionX, new QgsExpressionBasedProperty( "$x + -5", true ) );
-      dls.properties().setProperty( QgsDiagramLayerSettings::PositionY, new QgsExpressionBasedProperty( "$y + 5", true ) );
+      dls.properties().setProperty( QgsDiagramLayerSettings::PositionX, QgsProperty::fromExpression( "$x + -5", true ) );
+      dls.properties().setProperty( QgsDiagramLayerSettings::PositionY, QgsProperty::fromExpression( "$y + 5", true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -280,8 +280,8 @@ class TestQgsDiagram : public QObject
       dls.setShowAllDiagrams( true );
 
       //setup data defined outline
-      dls.properties().setProperty( QgsDiagramLayerSettings::OutlineColor, new QgsExpressionBasedProperty( "if(\"Pilots\">1,'0,0,0,255','255,0,0,255')", true ) );
-      dls.properties().setProperty( QgsDiagramLayerSettings::OutlineWidth, new QgsExpressionBasedProperty( "\"Staff\" / 2.0", true ) );
+      dls.properties().setProperty( QgsDiagramLayerSettings::OutlineColor, QgsProperty::fromExpression( "if(\"Pilots\">1,'0,0,0,255','255,0,0,255')", true ) );
+      dls.properties().setProperty( QgsDiagramLayerSettings::OutlineWidth, QgsProperty::fromExpression( "\"Staff\" / 2.0", true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -317,7 +317,7 @@ class TestQgsDiagram : public QObject
       dls.setShowAllDiagrams( true );
 
       //setup data defined start angle
-      dls.properties().setProperty( QgsDiagramLayerSettings::StartAngle, new QgsExpressionBasedProperty( "\"Importance\"/20.0 * 360.0", true ) );
+      dls.properties().setProperty( QgsDiagramLayerSettings::StartAngle, QgsProperty::fromExpression( "\"Importance\"/20.0 * 360.0", true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -353,7 +353,7 @@ class TestQgsDiagram : public QObject
       dls.setShowAllDiagrams( true );
 
       //setup data defined distance
-      dls.properties().setProperty( QgsDiagramLayerSettings::Distance, new QgsExpressionBasedProperty( "\"Staff\"*2", true ) );
+      dls.properties().setProperty( QgsDiagramLayerSettings::Distance, QgsProperty::fromExpression( "\"Staff\"*2", true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -389,7 +389,7 @@ class TestQgsDiagram : public QObject
       dls.setShowAllDiagrams( true );
 
       //setup data defined show
-      dls.properties().setProperty( QgsDiagramLayerSettings::Show, new QgsExpressionBasedProperty( "\"Pilots\"=1", true ) );
+      dls.properties().setProperty( QgsDiagramLayerSettings::Show, QgsProperty::fromExpression( "\"Pilots\"=1", true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -425,7 +425,7 @@ class TestQgsDiagram : public QObject
       dls.setShowAllDiagrams( false );
 
       //setup data defined priority
-      dls.properties().setProperty( QgsDiagramLayerSettings::Priority, new QgsExpressionBasedProperty( "\"importance\"/2", true ) );
+      dls.properties().setProperty( QgsDiagramLayerSettings::Priority, QgsProperty::fromExpression( "\"importance\"/2", true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -459,7 +459,7 @@ class TestQgsDiagram : public QObject
       dls.setShowAllDiagrams( true );
 
       //setup data defined z index
-      dls.properties().setProperty( QgsDiagramLayerSettings::ZIndex, new QgsExpressionBasedProperty( "\"importance\"/2", true ) );
+      dls.properties().setProperty( QgsDiagramLayerSettings::ZIndex, QgsProperty::fromExpression( "\"importance\"/2", true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -495,9 +495,9 @@ class TestQgsDiagram : public QObject
       dls.setShowAllDiagrams( false );
 
       //setup data defined priority (required to only show certain diagrams)
-      dls.properties().setProperty( QgsDiagramLayerSettings::Priority, new QgsExpressionBasedProperty( "\"importance\"/2", true ) );
+      dls.properties().setProperty( QgsDiagramLayerSettings::Priority, QgsProperty::fromExpression( "\"importance\"/2", true ) );
       //setup data defined "always show"
-      dls.properties().setProperty( QgsDiagramLayerSettings::AlwaysShow, new QgsExpressionBasedProperty( "\"Staff\">=6", true ) );
+      dls.properties().setProperty( QgsDiagramLayerSettings::AlwaysShow, QgsProperty::fromExpression( "\"Staff\">=6", true ) );
 
 
       mPointsLayer->setDiagramLayerSettings( dls );
@@ -536,7 +536,7 @@ class TestQgsDiagram : public QObject
       dls.setShowAllDiagrams( true );
 
       //setup data defined outline
-      dls.properties().setProperty( QgsDiagramLayerSettings::BackgroundColor, new QgsExpressionBasedProperty( "if(\"Pilots\">1,'0,0,255,150','255,0,0,150')", true ) );
+      dls.properties().setProperty( QgsDiagramLayerSettings::BackgroundColor, QgsProperty::fromExpression( "if(\"Pilots\">1,'0,0,255,150','255,0,0,150')", true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 

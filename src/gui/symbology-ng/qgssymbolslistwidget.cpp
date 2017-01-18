@@ -294,18 +294,18 @@ void QgsSymbolsListWidget::setMarkerAngle( double angle )
 void QgsSymbolsListWidget::updateDataDefinedMarkerAngle()
 {
   QgsMarkerSymbol* markerSymbol = static_cast<QgsMarkerSymbol*>( mSymbol );
-  QScopedPointer< QgsAbstractProperty > dd( mRotationDDBtn->toProperty() );
+  QgsProperty dd( mRotationDDBtn->toProperty() );
 
   spinAngle->setEnabled( !mRotationDDBtn->isActive() );
 
-  QScopedPointer< QgsAbstractProperty > symbolDD( markerSymbol->dataDefinedAngle() );
+  QgsProperty symbolDD( markerSymbol->dataDefinedAngle() );
 
   if ( // shall we remove datadefined expressions for layers ?
     ( !symbolDD && !dd )
     // shall we set the "en masse" expression for properties ?
     || dd )
   {
-    markerSymbol->setDataDefinedAngle( dd.take() );
+    markerSymbol->setDataDefinedAngle( dd );
     emit changed();
   }
 }
@@ -322,18 +322,18 @@ void QgsSymbolsListWidget::setMarkerSize( double size )
 void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
 {
   QgsMarkerSymbol* markerSymbol = static_cast<QgsMarkerSymbol*>( mSymbol );
-  QScopedPointer< QgsAbstractProperty > dd( mSizeDDBtn->toProperty() );
+  QgsProperty dd( mSizeDDBtn->toProperty() );
 
   spinSize->setEnabled( !mSizeDDBtn->isActive() );
 
-  QScopedPointer< QgsAbstractProperty > symbolDD( markerSymbol->dataDefinedSize() );
+  QgsProperty symbolDD( markerSymbol->dataDefinedSize() );
 
   if ( // shall we remove datadefined expressions for layers ?
     ( !symbolDD && !dd )
     // shall we set the "en masse" expression for properties ?
     || dd )
   {
-    markerSymbol->setDataDefinedSize( dd.take() );
+    markerSymbol->setDataDefinedSize( dd );
     markerSymbol->setScaleMethod( QgsSymbol::ScaleDiameter );
     emit changed();
   }
@@ -351,18 +351,18 @@ void QgsSymbolsListWidget::setLineWidth( double width )
 void QgsSymbolsListWidget::updateDataDefinedLineWidth()
 {
   QgsLineSymbol* lineSymbol = static_cast<QgsLineSymbol*>( mSymbol );
-  QScopedPointer< QgsAbstractProperty > dd( mWidthDDBtn->toProperty() );
+  QgsProperty dd( mWidthDDBtn->toProperty() );
 
   spinWidth->setEnabled( !mWidthDDBtn->isActive() );
 
-  QScopedPointer< QgsAbstractProperty > symbolDD( lineSymbol->dataDefinedWidth() );
+  QgsProperty symbolDD( lineSymbol->dataDefinedWidth() );
 
   if ( // shall we remove datadefined expressions for layers ?
     ( !symbolDD && !dd )
     // shall we set the "en masse" expression for properties ?
     || dd )
   {
-    lineSymbol->setDataDefinedWidth( dd.take() );
+    lineSymbol->setDataDefinedWidth( dd );
     emit changed();
   }
 }
@@ -510,11 +510,11 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
     if ( mLayer )
     {
-      QScopedPointer< QgsAbstractProperty > ddSize( markerSymbol->dataDefinedSize() );
-      mSizeDDBtn->init( QgsSymbolLayer::PropertySize, ddSize.data(), QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
+      QgsProperty ddSize( markerSymbol->dataDefinedSize() );
+      mSizeDDBtn->init( QgsSymbolLayer::PropertySize, ddSize, QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
       spinSize->setEnabled( !mSizeDDBtn->isActive() );
-      QScopedPointer< QgsAbstractProperty > ddAngle( markerSymbol->dataDefinedAngle() );
-      mRotationDDBtn->init( QgsSymbolLayer::PropertyAngle, ddAngle.data(), QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
+      QgsProperty ddAngle( markerSymbol->dataDefinedAngle() );
+      mRotationDDBtn->init( QgsSymbolLayer::PropertyAngle, ddAngle, QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
       spinAngle->setEnabled( !mRotationDDBtn->isActive() );
     }
     else
@@ -530,8 +530,8 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
     if ( mLayer )
     {
-      QScopedPointer< QgsAbstractProperty > dd( lineSymbol->dataDefinedWidth() );
-      mWidthDDBtn->init( QgsSymbolLayer::PropertyOutlineWidth, dd.data(), QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
+      QgsProperty dd( lineSymbol->dataDefinedWidth() );
+      mWidthDDBtn->init( QgsSymbolLayer::PropertyOutlineWidth, dd, QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
       spinWidth->setEnabled( !mWidthDDBtn->isActive() );
     }
     else

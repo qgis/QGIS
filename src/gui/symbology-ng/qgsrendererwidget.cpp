@@ -334,9 +334,9 @@ QgsExpressionContext QgsDataDefinedValueDialog::createExpressionContext() const
 
 void QgsDataDefinedValueDialog::init( int propertyKey )
 {
-  QScopedPointer< QgsAbstractProperty > dd( symbolDataDefined() );
+  QgsProperty dd( symbolDataDefined() );
 
-  mDDBtn->init( propertyKey, dd.data(), QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
+  mDDBtn->init( propertyKey, dd, QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
   mDDBtn->registerExpressionContextGenerator( this );
 
   QgsSymbol* initialSymbol = nullptr;
@@ -351,71 +351,71 @@ void QgsDataDefinedValueDialog::init( int propertyKey )
   mSpinBox->setEnabled( !mDDBtn->isActive() );
 }
 
-QgsAbstractProperty* QgsDataDefinedValueDialog::symbolDataDefined() const
+QgsProperty QgsDataDefinedValueDialog::symbolDataDefined() const
 {
   if ( mSymbolList.isEmpty() || !mSymbolList.back() )
-    return nullptr;
+    return QgsProperty();
 
   // check that all symbols share the same size expression
-  QgsAbstractProperty* dd = symbolDataDefined( mSymbolList.back() );
+  QgsProperty dd = symbolDataDefined( mSymbolList.back() );
   Q_FOREACH ( QgsSymbol * it, mSymbolList )
   {
-    QScopedPointer< QgsAbstractProperty > symbolDD( symbolDataDefined( it ) );
-    if ( !it || !dd || !symbolDD || symbolDD->asExpression() != dd->asExpression() )
-      return nullptr;
+    QgsProperty symbolDD( symbolDataDefined( it ) );
+    if ( !it || !dd || !symbolDD || symbolDD != dd )
+      return QgsProperty();
   }
   return dd;
 }
 
 void QgsDataDefinedValueDialog::dataDefinedChanged()
 {
-  QScopedPointer< QgsAbstractProperty > dd( mDDBtn->toProperty() );
-  mSpinBox->setEnabled( !dd->isActive() );
+  QgsProperty dd( mDDBtn->toProperty() );
+  mSpinBox->setEnabled( !dd.isActive() );
 
-  QScopedPointer< QgsAbstractProperty > symbolDD( symbolDataDefined() );
+  QgsProperty symbolDD( symbolDataDefined() );
 
   if ( // shall we remove datadefined expressions for layers ?
-    ( symbolDD && symbolDD->isActive() && !dd->isActive() )
+    ( symbolDD && symbolDD.isActive() && !dd.isActive() )
     // shall we set the "en masse" expression for properties ?
-    || dd->isActive() )
+    || dd.isActive() )
   {
     Q_FOREACH ( QgsSymbol * it, mSymbolList )
-      setDataDefined( it, dd ? dd->clone() : nullptr );
+      setDataDefined( it, dd );
   }
 }
 
-QgsAbstractProperty* QgsDataDefinedSizeDialog::symbolDataDefined( const QgsSymbol *symbol ) const
+QgsProperty QgsDataDefinedSizeDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
   const QgsMarkerSymbol* marker = static_cast<const QgsMarkerSymbol*>( symbol );
   return marker->dataDefinedSize();
 }
 
-void QgsDataDefinedSizeDialog::setDataDefined( QgsSymbol* symbol, QgsAbstractProperty* dd )
+void QgsDataDefinedSizeDialog::setDataDefined( QgsSymbol* symbol, const QgsProperty& dd )
 {
   static_cast<QgsMarkerSymbol*>( symbol )->setDataDefinedSize( dd );
   static_cast<QgsMarkerSymbol*>( symbol )->setScaleMethod( QgsSymbol::ScaleDiameter );
 }
 
 
-QgsAbstractProperty* QgsDataDefinedRotationDialog::symbolDataDefined( const QgsSymbol *symbol ) const
+QgsProperty QgsDataDefinedRotationDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
   const QgsMarkerSymbol* marker = static_cast<const QgsMarkerSymbol*>( symbol );
   return marker->dataDefinedAngle();
 }
 
-void QgsDataDefinedRotationDialog::setDataDefined( QgsSymbol *symbol, QgsAbstractProperty* dd )
+void QgsDataDefinedRotationDialog::setDataDefined( QgsSymbol *symbol, const QgsProperty& dd )
 {
   static_cast<QgsMarkerSymbol*>( symbol )->setDataDefinedAngle( dd );
 }
 
 
-QgsAbstractProperty* QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbol *symbol ) const
+QgsProperty QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
   const QgsLineSymbol* line = static_cast<const QgsLineSymbol*>( symbol );
   return line->dataDefinedWidth();
 }
 
-void QgsDataDefinedWidthDialog::setDataDefined( QgsSymbol *symbol, QgsAbstractProperty* dd )
+void QgsDataDefinedWidthDialog::setDataDefined( QgsSymbol *symbol, const QgsProperty& dd )
 {
   static_cast<QgsLineSymbol*>( symbol )->setDataDefinedWidth( dd );
 }

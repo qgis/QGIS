@@ -96,7 +96,7 @@ Qgs25DRenderer::Qgs25DRenderer()
   setRoofColor( QColor( "#b1a97c" ) );
   setWallColor( QColor( "#777777" ) );
 
-  wallLayer()->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, new QgsExpressionBasedProperty( QString( WALL_SHADING_EXPRESSION ) ) );
+  wallLayer()->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QString( WALL_SHADING_EXPRESSION ) ) );
 
   setShadowSpread( 4 );
   setShadowColor( QColor( "#111111" ) );
@@ -232,12 +232,12 @@ void Qgs25DRenderer::setWallColor( const QColor& wallColor )
 
 void Qgs25DRenderer::setWallShadingEnabled( bool enabled )
 {
-  wallLayer()->dataDefinedProperties().property( QgsSymbolLayer::PropertyFillColor )->setActive( enabled );
+  wallLayer()->dataDefinedProperties().property( QgsSymbolLayer::PropertyFillColor ).setActive( enabled );
 }
 
-bool Qgs25DRenderer::wallShadingEnabled()
+bool Qgs25DRenderer::wallShadingEnabled() const
 {
-  return wallLayer()->dataDefinedProperties().property( QgsSymbolLayer::PropertyFillColor )->isActive();
+  return wallLayer()->dataDefinedProperties().property( QgsSymbolLayer::PropertyFillColor ).isActive();
 }
 
 QColor Qgs25DRenderer::roofColor() const

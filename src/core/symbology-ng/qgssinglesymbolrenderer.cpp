@@ -305,10 +305,10 @@ QgsLegendSymbolListV2 QgsSingleSymbolRenderer::legendSymbolItemsV2() const
   if ( mSymbol->type() == QgsSymbol::Marker )
   {
     const QgsMarkerSymbol * symbol = static_cast<const QgsMarkerSymbol *>( mSymbol.data() );
-    QScopedPointer< QgsAbstractProperty > sizeDD( symbol->dataDefinedSize() );
-    if ( sizeDD && sizeDD->isActive() && sizeDD->propertyType() == QgsAbstractProperty::ExpressionBasedProperty )
+    QgsProperty sizeDD( symbol->dataDefinedSize() );
+    if ( sizeDD && sizeDD.isActive() && sizeDD.propertyType() == QgsProperty::ExpressionBasedProperty )
     {
-      QgsScaleExpression scaleExp( sizeDD->asExpression() );
+      QgsScaleExpression scaleExp( sizeDD.asExpression() );
       if ( scaleExp.type() != QgsScaleExpression::Unknown )
       {
         QgsLegendSymbolItem title( nullptr, scaleExp.baseExpression(), QString() );
@@ -317,7 +317,7 @@ QgsLegendSymbolListV2 QgsSingleSymbolRenderer::legendSymbolItemsV2() const
         {
           QgsLegendSymbolItem si( mSymbol.data(), QString::number( v ), QString() );
           QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( si.symbol() );
-          s->setDataDefinedSize( 0 );
+          s->setDataDefinedSize( QgsProperty() );
           s->setSize( scaleExp.size( v ) );
           lst << si;
         }

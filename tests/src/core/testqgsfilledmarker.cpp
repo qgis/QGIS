@@ -151,9 +151,9 @@ void TestQgsFilledMarkerSymbol::dataDefinedShape()
 {
   mFilledMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Circle );
   mFilledMarkerLayer->setSize( 10 );
-  mFilledMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyName, new QgsExpressionBasedProperty( QStringLiteral( "if(\"class\"='Jet','square','star')" ) ) );
+  mFilledMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyName, QgsProperty::fromExpression( QStringLiteral( "if(\"class\"='Jet','square','star')" ) ) );
   bool result = imageCheck( QStringLiteral( "filledmarker_datadefinedshape" ) );
-  mFilledMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyName, nullptr );
+  mFilledMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyName, QgsProperty() );
   QVERIFY( result );
 }
 
@@ -162,12 +162,12 @@ void TestQgsFilledMarkerSymbol::bounds()
   mFilledMarkerLayer->setColor( QColor( 200, 200, 200 ) );
   mFilledMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Circle );
   mFilledMarkerLayer->setSize( 5 );
-  mFilledMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, new QgsExpressionBasedProperty( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
+  mFilledMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
 
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
   bool result = imageCheck( QStringLiteral( "filledmarker_bounds" ) );
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
-  mFilledMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, nullptr );
+  mFilledMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty() );
   QVERIFY( result );
 }
 

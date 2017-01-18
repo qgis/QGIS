@@ -1533,11 +1533,11 @@ void QgsMarkerLineSymbolLayer::setWidth( double width )
   mMarker->setSize( width );
 }
 
-void QgsMarkerLineSymbolLayer::setDataDefinedProperty( QgsSymbolLayer::Property key, QgsAbstractProperty* property )
+void QgsMarkerLineSymbolLayer::setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty& property )
 {
   if ( key == QgsSymbolLayer::PropertyWidth && mMarker && property )
   {
-    mMarker->setDataDefinedSize( property->clone() );
+    mMarker->setDataDefinedSize( property );
   }
   QgsLineSymbolLayer::setDataDefinedProperty( key, property );
 }

@@ -72,8 +72,7 @@ class TestQgsProperty : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
-    void factory();
-    void conversions(); //test QgsAbstractProperty static conversion methods
+    void conversions(); //test QgsProperty static conversion methods
     void staticProperty(); //test for QgsStaticProperty
     void fieldBasedProperty(); //test for QgsFieldBasedProperty
     void expressionBasedProperty(); //test for QgsExpressionBasedProperty
@@ -114,20 +113,6 @@ void TestQgsProperty::cleanup()
 
 }
 
-void TestQgsProperty::factory()
-{
-  //test creating properties using factory method
-  QgsAbstractProperty* prop = QgsAbstractProperty::create( QgsAbstractProperty::StaticProperty );
-  QCOMPARE( prop->propertyType(), QgsAbstractProperty::StaticProperty );
-  delete prop;
-  prop = QgsAbstractProperty::create( QgsAbstractProperty::ExpressionBasedProperty );
-  QCOMPARE( prop->propertyType(), QgsAbstractProperty::ExpressionBasedProperty );
-  delete prop;
-  prop = QgsAbstractProperty::create( QgsAbstractProperty::FieldBasedProperty );
-  QCOMPARE( prop->propertyType(), QgsAbstractProperty::FieldBasedProperty );
-  delete prop;
-}
-
 void TestQgsProperty::conversions()
 {
   QgsExpressionContext context;
@@ -138,112 +123,131 @@ void TestQgsProperty::conversions()
   //test color conversions
 
   //no color, should return defaultColor
-  QgsStaticProperty* c1 = new QgsStaticProperty( QVariant(), true );
+  QgsProperty c1 = QgsProperty::fromValue( QVariant(), true );
   collection.setProperty( 0, c1 );
-  QCOMPARE( c1->valueAsColor( context , QColor( 200, 210, 220 ) ), QColor( 200, 210, 220 ) );
+  QCOMPARE( c1.valueAsColor( context , QColor( 200, 210, 220 ) ), QColor( 200, 210, 220 ) );
   QCOMPARE( collection.valueAsColor( 0, context , QColor( 200, 210, 220 ) ), QColor( 200, 210, 220 ) );
-  c1->setStaticValue( QColor( 255, 200, 100, 50 ) ); //color in qvariant
-  QCOMPARE( c1->valueAsColor( context , QColor( 200, 210, 220 ) ), QColor( 255, 200, 100, 50 ) );
+  c1.setStaticValue( QColor( 255, 200, 100, 50 ) ); //color in qvariant
+  collection.property( 0 ).setStaticValue( QColor( 255, 200, 100, 50 ) ); //color in qvariant
+  QCOMPARE( c1.valueAsColor( context , QColor( 200, 210, 220 ) ), QColor( 255, 200, 100, 50 ) );
   QCOMPARE( collection.valueAsColor( 0, context , QColor( 200, 210, 220 ) ), QColor( 255, 200, 100, 50 ) );
-  c1->setStaticValue( QColor( ) );  //invalid color in qvariant, should return default color
-  QCOMPARE( c1->valueAsColor( context , QColor( 200, 210, 220 ) ), QColor( 200, 210, 220 ) );
+  c1.setStaticValue( QColor( ) );  //invalid color in qvariant, should return default color
+  collection.property( 0 ).setStaticValue( QColor( ) );  //invalid color in qvariant, should return default color
+  QCOMPARE( c1.valueAsColor( context , QColor( 200, 210, 220 ) ), QColor( 200, 210, 220 ) );
   QCOMPARE( collection.valueAsColor( 0, context , QColor( 200, 210, 220 ) ), QColor( 200, 210, 220 ) );
-  c1->setStaticValue( QgsSymbolLayerUtils::encodeColor( QColor( 255, 200, 100, 50 ) ) ); //encoded color
-  QCOMPARE( c1->valueAsColor( context , QColor( 200, 210, 220 ) ), QColor( 255, 200, 100, 50 ) );
+  c1.setStaticValue( QgsSymbolLayerUtils::encodeColor( QColor( 255, 200, 100, 50 ) ) ); //encoded color
+  collection.property( 0 ).setStaticValue( QgsSymbolLayerUtils::encodeColor( QColor( 255, 200, 100, 50 ) ) ); //encoded color
+  QCOMPARE( c1.valueAsColor( context , QColor( 200, 210, 220 ) ), QColor( 255, 200, 100, 50 ) );
   QCOMPARE( collection.valueAsColor( 0, context , QColor( 200, 210, 220 ) ), QColor( 255, 200, 100, 50 ) );
-  c1->setStaticValue( "i am not a color" ); //badly encoded color, should return default color
-  QCOMPARE( c1->valueAsColor( context, QColor( 200, 210, 220 ) ), QColor( 200, 210, 220 ) );
+  c1.setStaticValue( "i am not a color" ); //badly encoded color, should return default color
+  collection.property( 0 ).setStaticValue( "i am not a color" ); //badly encoded color, should return default color
+  QCOMPARE( c1.valueAsColor( context, QColor( 200, 210, 220 ) ), QColor( 200, 210, 220 ) );
   QCOMPARE( collection.valueAsColor( 0, context, QColor( 200, 210, 220 ) ), QColor( 200, 210, 220 ) );
 
   // test double conversions
-  QgsStaticProperty* d1 = new QgsStaticProperty( QVariant(), true );
+  QgsProperty d1 = QgsProperty::fromValue( QVariant(), true );
   collection.setProperty( 1, d1 );
-  QCOMPARE( d1->valueAsDouble( context , -1.2 ), -1.2 );
+  QCOMPARE( d1.valueAsDouble( context , -1.2 ), -1.2 );
   QCOMPARE( collection.valueAsDouble( 1, context , -1.2 ), -1.2 );
-  d1->setStaticValue( 12.3 ); //double in qvariant
-  QCOMPARE( d1->valueAsDouble( context , -1.2 ), 12.3 );
+  d1.setStaticValue( 12.3 ); //double in qvariant
+  collection.property( 1 ).setStaticValue( 12.3 ); //double in qvariant
+  QCOMPARE( d1.valueAsDouble( context , -1.2 ), 12.3 );
   QCOMPARE( collection.valueAsDouble( 1, context , -1.2 ), 12.3 );
-  d1->setStaticValue( "15.6" ); //double as string
-  QCOMPARE( d1->valueAsDouble( context , -1.2 ), 15.6 );
+  d1.setStaticValue( "15.6" ); //double as string
+  collection.property( 1 ).setStaticValue( "15.6" ); //double as string
+  QCOMPARE( d1.valueAsDouble( context , -1.2 ), 15.6 );
   QCOMPARE( collection.valueAsDouble( 1, context , -1.2 ), 15.6 );
-  d1->setStaticValue( "i am not a double" ); //not a double, should return default value
-  QCOMPARE( d1->valueAsDouble( context, -1.2 ), -1.2 );
+  d1.setStaticValue( "i am not a double" ); //not a double, should return default value
+  collection.property( 1 ).setStaticValue( "i am not a double" ); //not a double, should return default value
+  QCOMPARE( d1.valueAsDouble( context, -1.2 ), -1.2 );
   QCOMPARE( collection.valueAsDouble( 1, context, -1.2 ), -1.2 );
 
   // test integer conversions
-  QgsStaticProperty* i1 = new QgsStaticProperty( QVariant(), true );
+  QgsProperty i1 = QgsProperty::fromValue( QVariant(), true );
   collection.setProperty( 2, i1 );
-  QCOMPARE( i1->valueAsInt( context , -11 ), -11 );
+  QCOMPARE( i1.valueAsInt( context , -11 ), -11 );
   QCOMPARE( collection.valueAsInt( 2, context , -11 ), -11 );
-  i1->setStaticValue( 13 ); //integer in qvariant
-  QCOMPARE( i1->valueAsInt( context , -11 ), 13 );
+  i1.setStaticValue( 13 ); //integer in qvariant
+  collection.property( 2 ).setStaticValue( 13 ); //integer in qvariant
+  QCOMPARE( i1.valueAsInt( context , -11 ), 13 );
   QCOMPARE( collection.valueAsInt( 2, context , -11 ), 13 );
-  i1->setStaticValue( 13.9 ); //double in qvariant, should be rounded
-  QCOMPARE( i1->valueAsInt( context , -11 ), 14 );
+  i1.setStaticValue( 13.9 ); //double in qvariant, should be rounded
+  collection.property( 2 ).setStaticValue( 13.9 ); //double in qvariant, should be rounded
+  QCOMPARE( i1.valueAsInt( context , -11 ), 14 );
   QCOMPARE( collection.valueAsInt( 2, context , -11 ), 14 );
-  i1->setStaticValue( "15" ); //integer as string
-  QCOMPARE( i1->valueAsInt( context, -11 ), 15 );
+  i1.setStaticValue( "15" ); //integer as string
+  collection.property( 2 ).setStaticValue( "15" ); //integer as string
+  QCOMPARE( i1.valueAsInt( context, -11 ), 15 );
   QCOMPARE( collection.valueAsInt( 2, context, -11 ), 15 );
-  i1->setStaticValue( "15.9" ); //double as string, should be rounded
-  QCOMPARE( i1->valueAsInt( context, -11 ), 16 );
+  i1.setStaticValue( "15.9" ); //double as string, should be rounded
+  collection.property( 2 ).setStaticValue( "15.9" ); //double as string, should be rounded
+  QCOMPARE( i1.valueAsInt( context, -11 ), 16 );
   QCOMPARE( collection.valueAsInt( 2, context, -11 ), 16 );
-  i1->setStaticValue( "i am not a int" ); //not a int, should return default value
-  QCOMPARE( i1->valueAsInt( context, -11 ), -11 );
+  i1.setStaticValue( "i am not a int" ); //not a int, should return default value
+  collection.property( 2 ).setStaticValue( "i am not a int" ); //not a int, should return default value
+  QCOMPARE( i1.valueAsInt( context, -11 ), -11 );
   QCOMPARE( collection.valueAsInt( 2, context, -11 ), -11 );
 
   // test boolean conversions
-  QgsStaticProperty* b1 = new QgsStaticProperty( QVariant(), true );
+  QgsProperty b1 = QgsProperty::fromValue( QVariant(), true );
   collection.setProperty( 3, b1 );
-  QCOMPARE( b1->valueAsBool( context , false ), false );
-  QCOMPARE( b1->valueAsBool( context , true ), true );
+  QCOMPARE( b1.valueAsBool( context , false ), false );
+  QCOMPARE( b1.valueAsBool( context , true ), true );
   QCOMPARE( collection.valueAsBool( 3, context , false ), false );
   QCOMPARE( collection.valueAsBool( 3, context , true ), true );
-  b1->setStaticValue( true );
-  QCOMPARE( b1->valueAsBool( context , false ), true );
-  QCOMPARE( b1->valueAsBool( context , true ), true );
+  b1.setStaticValue( true );
+  collection.property( 3 ).setStaticValue( true );
+  QCOMPARE( b1.valueAsBool( context , false ), true );
+  QCOMPARE( b1.valueAsBool( context , true ), true );
   QCOMPARE( collection.valueAsBool( 3, context , false ), true );
   QCOMPARE( collection.valueAsBool( 3, context , true ), true );
-  b1->setStaticValue( false );
-  QCOMPARE( b1->valueAsBool( context , false ), false );
-  QCOMPARE( b1->valueAsBool( context , true ), false );
-  QCOMPARE( collection.valueAsBool( 3, context , false ), false );
-  QCOMPARE( collection.valueAsBool( 3, context , true ), false );
-  b1->setStaticValue( 1 );
-  QCOMPARE( b1->valueAsBool( context , false ), true );
-  QCOMPARE( b1->valueAsBool( context , true ), true );
-  QCOMPARE( collection.valueAsBool( 3, context , false ), true );
-  QCOMPARE( collection.valueAsBool( 3, context , true ), true );
-  b1->setStaticValue( 0 );
-  QCOMPARE( b1->valueAsBool( context , false ), false );
-  QCOMPARE( b1->valueAsBool( context , true ), false );
+  b1.setStaticValue( false );
+  collection.property( 3 ).setStaticValue( false );
+  QCOMPARE( b1.valueAsBool( context , false ), false );
+  QCOMPARE( b1.valueAsBool( context , true ), false );
   QCOMPARE( collection.valueAsBool( 3, context , false ), false );
   QCOMPARE( collection.valueAsBool( 3, context , true ), false );
-  b1->setStaticValue( "true" );
-  QCOMPARE( b1->valueAsBool( context , false ), true );
-  QCOMPARE( b1->valueAsBool( context , true ), true );
+  b1.setStaticValue( 1 );
+  collection.property( 3 ).setStaticValue( 1 );
+  QCOMPARE( b1.valueAsBool( context , false ), true );
+  QCOMPARE( b1.valueAsBool( context , true ), true );
   QCOMPARE( collection.valueAsBool( 3, context , false ), true );
   QCOMPARE( collection.valueAsBool( 3, context , true ), true );
-  b1->setStaticValue( "" );
-  QCOMPARE( b1->valueAsBool( context , false ), false );
-  QCOMPARE( b1->valueAsBool( context , true ), false );
+  b1.setStaticValue( 0 );
+  collection.property( 3 ).setStaticValue( 0 );
+  QCOMPARE( b1.valueAsBool( context , false ), false );
+  QCOMPARE( b1.valueAsBool( context , true ), false );
+  QCOMPARE( collection.valueAsBool( 3, context , false ), false );
+  QCOMPARE( collection.valueAsBool( 3, context , true ), false );
+  b1.setStaticValue( "true" );
+  collection.property( 3 ).setStaticValue( "true" );
+  QCOMPARE( b1.valueAsBool( context , false ), true );
+  QCOMPARE( b1.valueAsBool( context , true ), true );
+  QCOMPARE( collection.valueAsBool( 3, context , false ), true );
+  QCOMPARE( collection.valueAsBool( 3, context , true ), true );
+  b1.setStaticValue( "" );
+  collection.property( 3 ).setStaticValue( "" );
+  QCOMPARE( b1.valueAsBool( context , false ), false );
+  QCOMPARE( b1.valueAsBool( context , true ), false );
   QCOMPARE( collection.valueAsBool( 3, context , false ), false );
   QCOMPARE( collection.valueAsBool( 3, context , true ), false );
 
   // test string conversions
-  QgsStaticProperty* s1 = new QgsStaticProperty( QVariant(), true );
+  QgsProperty s1 = QgsProperty::fromValue( QVariant(), true );
   collection.setProperty( 4, s1 );
-  QCOMPARE( s1->valueAsString( context , "n" ), QString( "n" ) );
+  QCOMPARE( s1.valueAsString( context , "n" ), QString( "n" ) );
   QCOMPARE( collection.valueAsString( 4, context , "y" ), QString( "y" ) );
-  s1->setStaticValue( "s" );
-  QCOMPARE( s1->valueAsString( context , "n" ), QString( "s" ) );
-  QCOMPARE( collection.valueAsString( 1, context , "y" ), QString( "s" ) );
+  s1.setStaticValue( "s" );
+  collection.property( 4 ).setStaticValue( "s" );
+  QCOMPARE( s1.valueAsString( context , "n" ), QString( "s" ) );
+  QCOMPARE( collection.valueAsString( 4, context , "y" ), QString( "s" ) );
 }
 
 void TestQgsProperty::staticProperty()
 {
   QgsExpressionContext context;
-  QgsStaticProperty property( QString( "test" ), true );
-  QCOMPARE( property.propertyType(), QgsAbstractProperty::StaticProperty );
+  QgsProperty property = QgsProperty::fromValue( QString( "test" ), true );
+  QCOMPARE( property.propertyType(), QgsProperty::StaticProperty );
   QVERIFY( property.isActive() );
   QVERIFY( property.referencedFields( context ).isEmpty() );
   QCOMPARE( property.value( context, QString( "default" ) ).toString(), QString( "test" ) );
@@ -264,7 +268,7 @@ void TestQgsProperty::staticProperty()
       "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
   QDomDocument doc( documentType );
 
-  QgsStaticProperty p1;
+  QgsProperty p1;
   p1.setActive( true );
   p1.setStaticValue( "test" );
   p1.setTransformer( new TestTransformer( 10, 20 ) );
@@ -272,7 +276,7 @@ void TestQgsProperty::staticProperty()
   QDomElement element = doc.createElement( "prop" );
   p1.writeXml( element, doc );
 
-  QgsStaticProperty r1;
+  QgsProperty r1;
   r1.readXml( element, doc );
   QVERIFY( r1.isActive() );
   QVERIFY( r1.transformer() );
@@ -301,23 +305,25 @@ void TestQgsProperty::staticProperty()
   r1.readXml( element, doc );
   QCOMPARE( r1.staticValue(), p1.staticValue() );
 
-  // test cloning a static property
-  QgsStaticProperty p2;
+  // test copying a static property
+  QgsProperty p2;
   p2.setActive( true );
   p2.setStaticValue( "test" );
   p2.setTransformer( new TestTransformer( 10, 20 ) );
-  QScopedPointer< QgsStaticProperty > p3( p2.clone() );
-  QVERIFY( p3->isActive() );
-  QCOMPARE( p3->staticValue().toString(), QString( "test" ) );
-  QVERIFY( p3->transformer() );
+  // copy assign
+  QgsProperty p3;
+  p3 = p2;;
+  QVERIFY( p3.isActive() );
+  QCOMPARE( p3.staticValue().toString(), QString( "test" ) );
+  QVERIFY( p3.transformer() );
   p2.setActive( false );
   p2.setStaticValue( 5.9 );
-  p3.reset( p2.clone() );
-  QVERIFY( !p3->isActive() );
-  QCOMPARE( p3->staticValue().toDouble(), 5.9 );
+  p3 = p2;
+  QVERIFY( !p3.isActive() );
+  QCOMPARE( p3.staticValue().toDouble(), 5.9 );
 
   // copy constructor
-  QgsStaticProperty p4( p2 );
+  QgsProperty p4( p2 );
   QVERIFY( !p4.isActive() );
   QCOMPARE( p4.staticValue().toDouble(), 5.9 );
   QVERIFY( p4.transformer() );
@@ -341,8 +347,8 @@ void TestQgsProperty::fieldBasedProperty()
   context.setFeature( ft );
   context.setFields( fields );
 
-  QgsFieldBasedProperty property( QString( "field1" ), true );
-  QCOMPARE( property.propertyType(), QgsAbstractProperty::FieldBasedProperty );
+  QgsProperty property = QgsProperty::fromField( QString( "field1" ), true );
+  QCOMPARE( property.propertyType(), QgsProperty::FieldBasedProperty );
   QVERIFY( property.isActive() );
   QCOMPARE( property.value( context, -1 ).toInt(), 5 );
   QCOMPARE( property.referencedFields( context ), QSet< QString >() << "field1" );
@@ -358,7 +364,7 @@ void TestQgsProperty::fieldBasedProperty()
   property.setField( "bad_field" );
   QCOMPARE( property.value( context, -1 ).toInt(), -1 );
   // unset field name
-  QgsFieldBasedProperty defaultProperty;
+  QgsProperty defaultProperty = QgsProperty::fromField( QString() );
   QCOMPARE( defaultProperty.value( context, -1 ).toInt(), -1 );
   QVERIFY( defaultProperty.referencedFields( context ).isEmpty() );
   defaultProperty.setActive( true );
@@ -366,7 +372,7 @@ void TestQgsProperty::fieldBasedProperty()
   QVERIFY( defaultProperty.referencedFields( context ).isEmpty() );
 
   //test preparation
-  QgsFieldBasedProperty property3( QString( "field1" ), true );
+  QgsProperty property3 = QgsProperty::fromField( QString( "field1" ), true );
   QVERIFY( property3.prepare( context ) );
   QCOMPARE( property3.value( context, -1 ).toInt(), 5 );
 
@@ -379,12 +385,12 @@ void TestQgsProperty::fieldBasedProperty()
       "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
   QDomDocument doc( documentType );
 
-  QgsFieldBasedProperty p1;
+  QgsProperty p1;
   p1.setActive( true );
   p1.setField( "test_field" );
 
   QDomElement element = doc.createElement( "prop" );
-  QgsFieldBasedProperty r1;
+  QgsProperty r1;
   //try reading from an empty element
   r1.readXml( element, doc );
   QVERIFY( !r1.isActive() );
@@ -401,18 +407,25 @@ void TestQgsProperty::fieldBasedProperty()
   r1.readXml( element, doc );
   QVERIFY( !r1.isActive() );
 
-  // test cloning a field based property
-  QgsFieldBasedProperty p2;
+  // test copying a field based property
+  QgsProperty p2;
   p2.setActive( true );
   p2.setField( "test" );
   p2.setTransformer( new TestTransformer( 10, 20 ) );
-  QScopedPointer< QgsFieldBasedProperty > p3( p2.clone() );
-  QVERIFY( p3->isActive() );
-  QCOMPARE( p3->field(), QString( "test" ) );
-  QVERIFY( p3->transformer() );
+
+  // copy constructor
+  QgsProperty p3( p2 );
+  QVERIFY( p3.isActive() );
+  QCOMPARE( p3.field(), QString( "test" ) );
+  QVERIFY( p3.transformer() );
   p2.setActive( false );
-  p3.reset( p2.clone() );
-  QVERIFY( !p3->isActive() );
+
+  // assignment operator
+  QgsProperty p4;
+  p4 = p2;
+  QVERIFY( !p4.isActive() );
+  QCOMPARE( p4.field(), QString( "test" ) );
+  QVERIFY( p4.transformer() );
 }
 
 void TestQgsProperty::expressionBasedProperty()
@@ -433,8 +446,8 @@ void TestQgsProperty::expressionBasedProperty()
   context.setFeature( ft );
   context.setFields( fields );
 
-  QgsExpressionBasedProperty property( QString( "\"field1\" + \"field2\"" ), true );
-  QCOMPARE( property.propertyType(), QgsAbstractProperty::ExpressionBasedProperty );
+  QgsProperty property = QgsProperty::fromExpression( QString( "\"field1\" + \"field2\"" ), true );
+  QCOMPARE( property.propertyType(), QgsProperty::ExpressionBasedProperty );
   QVERIFY( property.isActive() );
   QCOMPARE( property.value( context, -1 ).toInt(), 12 );
   QCOMPARE( property.referencedFields( context ).count(), 2 );
@@ -456,7 +469,7 @@ void TestQgsProperty::expressionBasedProperty()
   QCOMPARE( property.value( context, -1 ).toInt(), -1 );
   QVERIFY( property.referencedFields( context ).isEmpty() );
   // unset expression
-  QgsExpressionBasedProperty defaultProperty;
+  QgsProperty defaultProperty = QgsProperty::fromExpression( QString() );
   QCOMPARE( defaultProperty.value( context, -1 ).toInt(), -1 );
   QVERIFY( defaultProperty.referencedFields( context ).isEmpty() );
   defaultProperty.setActive( true );
@@ -464,10 +477,10 @@ void TestQgsProperty::expressionBasedProperty()
   QVERIFY( defaultProperty.referencedFields( context ).isEmpty() );
 
   //preparation
-  QgsExpressionBasedProperty property3( QString( "\"field1\" + \"field2\"" ), true );
+  QgsProperty property3 = QgsProperty::fromExpression( QString( "\"field1\" + \"field2\"" ), true );
   QVERIFY( property3.prepare( context ) );
   QCOMPARE( property3.value( context, -1 ).toInt(), 12 );
-  QgsExpressionBasedProperty property4( QString( "\"field1\" + " ), true );
+  QgsProperty property4 = QgsProperty::fromExpression( QString( "\"field1\" + " ), true );
   QVERIFY( !property4.prepare( context ) );
 
   //saving and restoring
@@ -479,12 +492,12 @@ void TestQgsProperty::expressionBasedProperty()
       "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
   QDomDocument doc( documentType );
 
-  QgsExpressionBasedProperty p1;
+  QgsProperty p1;
   p1.setActive( true );
   p1.setExpressionString( "4+5" );
 
   QDomElement element = doc.createElement( "prop" );
-  QgsExpressionBasedProperty r1;
+  QgsProperty r1;
   //try reading from an empty element
   r1.readXml( element, doc );
   QVERIFY( !r1.isActive() );
@@ -504,22 +517,26 @@ void TestQgsProperty::expressionBasedProperty()
   QVERIFY( !r1.isActive() );
   QCOMPARE( r1.value( context, -1 ).toInt(), -1 );
 
-  // test cloning an expression based property
-  QgsExpressionBasedProperty p2;
+  // test copying an expression based property
+  QgsProperty p2;
   p2.setActive( true );
   p2.setExpressionString( "1+6" );
 
-  QScopedPointer< QgsExpressionBasedProperty > p3( p2.clone() );
-  QVERIFY( p3->isActive() );
-  QCOMPARE( p3->expressionString(), QString( "1+6" ) );
-  QCOMPARE( p3->value( context, -1 ).toInt(), 7 );
+  // copy constructor
+  QgsProperty p3( p2 );
+  QVERIFY( p3.isActive() );
+  QCOMPARE( p3.expressionString(), QString( "1+6" ) );
+  QCOMPARE( p3.value( context, -1 ).toInt(), 7 );
+
+  // assignment operator
+  QgsProperty p4;
   p2.setActive( false );
-  p3.reset( p2.clone() );
-  QVERIFY( !p3->isActive() );
-  QCOMPARE( p3->value( context, -1 ).toInt(), -1 );
+  p4 = p2;
+  QVERIFY( !p4.isActive() );
+  QCOMPARE( p4.value( context, -1 ).toInt(), -1 );
   p2.setTransformer( new TestTransformer( 10, 20 ) );
-  p3.reset( p2.clone() );
-  QVERIFY( p3->transformer() );
+  p4 = p2;
+  QVERIFY( p4.transformer() );
 }
 
 void TestQgsProperty::propertyTransformer()
@@ -551,7 +568,7 @@ void TestQgsProperty::propertyTransformer()
   QCOMPARE( r1.maxValue(), 6.0 );
 
   //install into property and test evaluation
-  QgsStaticProperty p1;
+  QgsProperty p1;
   p1.setTransformer( new TestTransformer( 10, 20 ) );
   QCOMPARE( dynamic_cast< const TestTransformer* >( p1.transformer() )->minValue(), 10.0 );
   QCOMPARE( dynamic_cast< const TestTransformer* >( p1.transformer() )->maxValue(), 20.0 );
@@ -562,7 +579,7 @@ void TestQgsProperty::propertyTransformer()
 
   //test that transform is saved/restored with property
   QDomElement propElement = doc.createElement( "property" );
-  QgsStaticProperty p2;
+  QgsProperty p2;
   QVERIFY( !p2.transformer() );
   QVERIFY( p1.writeXml( propElement, doc ) );
   QVERIFY( p2.readXml( propElement, doc ) );
@@ -570,20 +587,14 @@ void TestQgsProperty::propertyTransformer()
   QCOMPARE( p2.transformer()->minValue(), 10.0 );
   QCOMPARE( p2.transformer()->maxValue(), 20.0 );
 
-  //test that transform is cloned with property
-  QScopedPointer< QgsStaticProperty > p3( p1.clone() );
-  QVERIFY( p3->transformer() );
-  QCOMPARE( p3->transformer()->minValue(), 10.0 );
-  QCOMPARE( p3->transformer()->maxValue(), 20.0 );
-
   //test that copy constructor copies transformer
-  QgsStaticProperty p4( p1 );
+  QgsProperty p4( p1 );
   QVERIFY( p4.transformer() );
   QCOMPARE( p4.transformer()->minValue(), 10.0 );
   QCOMPARE( p4.transformer()->maxValue(), 20.0 );
 
   //test that assignment operator copies transformer
-  QgsStaticProperty p5;
+  QgsProperty p5;
   p5 = p1;
   QVERIFY( p5.transformer() );
   QCOMPARE( p5.transformer()->minValue(), 10.0 );
@@ -824,13 +835,13 @@ void TestQgsProperty::propertyCollection()
   QVERIFY( !collection.hasActiveDynamicProperties() );
   QVERIFY( !collection.hasActiveProperties() );
 
-  QgsStaticProperty* property = new QgsStaticProperty( "value", true );
+  QgsProperty property = QgsProperty::fromValue( "value", true );
   collection.setProperty( Property1, property );
   QVERIFY( collection.hasProperty( Property1 ) );
   QCOMPARE( collection.count(), 1 );
   QCOMPARE( collection.propertyKeys(), QSet< int >() << Property1 );
-  QCOMPARE( collection.property( Property1 )->value( context ), property->value( context ) );
-  QCOMPARE( collection.value( Property1, context ), property->value( context ) );
+  QCOMPARE( collection.property( Property1 ).value( context ), property.value( context ) );
+  QCOMPARE( collection.value( Property1, context ), property.value( context ) );
   QVERIFY( collection.isActive( Property1 ) );
   QVERIFY( collection.hasActiveProperties() );
   QVERIFY( !collection.hasActiveDynamicProperties() );
@@ -839,32 +850,34 @@ void TestQgsProperty::propertyCollection()
   QVERIFY( collection.prepare( context ) );
 
   //test bad property
-  QVERIFY( !collection.property( Property2 ) );
+  QVERIFY( !const_cast< const QgsPropertyCollection* >( &collection )->property( Property2 ) );
   QVERIFY( !collection.value( Property2, context ).isValid() );
   QCOMPARE( collection.value( Property2, context, QString( "default" ) ).toString(), QString( "default" ) );
   QVERIFY( !collection.isActive( Property2 ) );
 
   //test replacing property
-  QgsStaticProperty* property2 = new QgsStaticProperty( "value2", true );
+  QgsProperty property2 = QgsProperty::fromValue( "value2", true );
   collection.setProperty( Property1, property2 );
   QCOMPARE( collection.count(), 1 );
   QCOMPARE( collection.propertyKeys(), QSet< int >() << Property1 );
-  QCOMPARE( collection.property( Property1 )->value( context ), property2->value( context ) );
+  QCOMPARE( collection.property( Property1 ).value( context ), property2.value( context ) );
   QVERIFY( collection.hasActiveProperties() );
   QVERIFY( !collection.hasActiveDynamicProperties() );
 
   //implicit conversion
   collection.setProperty( Property3, 5 );
-  QCOMPARE( collection.property( Property3 )->value( context ).toInt(), 5 );
-  QVERIFY( collection.property( Property3 )->isActive() );
+  QCOMPARE( collection.property( Property3 ).value( context ).toInt(), 5 );
+  QVERIFY( collection.property( Property3 ).isActive() );
   QCOMPARE( collection.count(), 2 );
   QCOMPARE( collection.propertyKeys(), QSet<int>() << Property1 << Property3 );
 
   //test removing a property
-  collection.setProperty( Property1, nullptr );
-  QVERIFY( !collection.property( Property1 ) );
+  collection.setProperty( Property1, QgsProperty() );
+  QVERIFY( !const_cast< const QgsPropertyCollection* >( &collection )->property( Property1 ) );
   QVERIFY( !collection.hasProperty( Property1 ) );
   QCOMPARE( collection.propertyKeys(), QSet<int>() << Property3 );
+  QVERIFY( !collection.property( Property1 ) ); // should insert a default created invalid property in internal hash
+  QVERIFY( !collection.hasProperty( Property1 ) );
 
   //clear
   collection.clear();
@@ -873,10 +886,10 @@ void TestQgsProperty::propertyCollection()
   QVERIFY( !collection.hasActiveProperties() );
   QVERIFY( !collection.hasActiveDynamicProperties() );
 
-  collection.setProperty( Property1, new QgsStaticProperty( "v1", true ) );
-  collection.setProperty( Property2, new QgsStaticProperty( "v2", false ) );
-  collection.setProperty( Property3, new QgsFieldBasedProperty( "field1", true ) );
-  collection.setProperty( Property4, new QgsExpressionBasedProperty( "\"field1\" + \"field2\"", true ) );
+  collection.setProperty( Property1, QgsProperty::fromValue( "v1", true ) );
+  collection.setProperty( Property2, QgsProperty::fromValue( "v2", false ) );
+  collection.setProperty( Property3, QgsProperty::fromField( "field1", true ) );
+  collection.setProperty( Property4, QgsProperty::fromExpression( "\"field1\" + \"field2\"", true ) );
 
   // test referenced fields
   QCOMPARE( collection.referencedFields( context ).count(), 2 );
@@ -897,18 +910,18 @@ void TestQgsProperty::propertyCollection()
   restoredCollection.readXml( element, doc, mDefinitions );
   QCOMPARE( restoredCollection.name(), QString( "collection" ) );
   QCOMPARE( restoredCollection.count(), 4 );
-  QCOMPARE( restoredCollection.property( Property1 )->propertyType(), QgsAbstractProperty::StaticProperty );
-  QVERIFY( restoredCollection.property( Property1 )->isActive() );
-  QCOMPARE( static_cast< QgsStaticProperty* >( restoredCollection.property( Property1 ) )->staticValue(), QVariant( "v1" ) );
-  QCOMPARE( restoredCollection.property( Property2 )->propertyType(), QgsAbstractProperty::StaticProperty );
-  QVERIFY( !restoredCollection.property( Property2 )->isActive() );
-  QCOMPARE( static_cast< QgsStaticProperty* >( restoredCollection.property( Property2 ) )->staticValue(), QVariant( "v2" ) );
-  QCOMPARE( restoredCollection.property( Property3 )->propertyType(), QgsAbstractProperty::FieldBasedProperty );
-  QVERIFY( restoredCollection.property( Property3 )->isActive() );
-  QCOMPARE( static_cast< QgsFieldBasedProperty* >( restoredCollection.property( Property3 ) )->field(), QString( "field1" ) );
-  QCOMPARE( restoredCollection.property( Property4 )->propertyType(), QgsAbstractProperty::ExpressionBasedProperty );
-  QVERIFY( restoredCollection.property( Property4 )->isActive() );
-  QCOMPARE( static_cast< QgsExpressionBasedProperty* >( restoredCollection.property( Property4 ) )->expressionString(), QString( "\"field1\" + \"field2\"" ) );
+  QCOMPARE( restoredCollection.property( Property1 ).propertyType(), QgsProperty::StaticProperty );
+  QVERIFY( restoredCollection.property( Property1 ).isActive() );
+  QCOMPARE( restoredCollection.property( Property1 ).staticValue(), QVariant( "v1" ) );
+  QCOMPARE( restoredCollection.property( Property2 ).propertyType(), QgsProperty::StaticProperty );
+  QVERIFY( !restoredCollection.property( Property2 ).isActive() );
+  QCOMPARE( restoredCollection.property( Property2 ).staticValue(), QVariant( "v2" ) );
+  QCOMPARE( restoredCollection.property( Property3 ).propertyType(), QgsProperty::FieldBasedProperty );
+  QVERIFY( restoredCollection.property( Property3 ).isActive() );
+  QCOMPARE( restoredCollection.property( Property3 ).field(), QString( "field1" ) );
+  QCOMPARE( restoredCollection.property( Property4 ).propertyType(), QgsProperty::ExpressionBasedProperty );
+  QVERIFY( restoredCollection.property( Property4 ).isActive() );
+  QCOMPARE( restoredCollection.property( Property4 ).expressionString(), QString( "\"field1\" + \"field2\"" ) );
   QVERIFY( restoredCollection.hasActiveProperties() );
   QVERIFY( restoredCollection.hasActiveDynamicProperties() );
 
@@ -916,63 +929,63 @@ void TestQgsProperty::propertyCollection()
   QgsPropertyCollection collection2( collection );
   QCOMPARE( collection2.name(), QString( "collection" ) );
   QCOMPARE( collection2.count(), 4 );
-  QCOMPARE( collection2.property( Property1 )->propertyType(), QgsAbstractProperty::StaticProperty );
-  QVERIFY( collection2.property( Property1 )->isActive() );
-  QCOMPARE( static_cast< QgsStaticProperty* >( collection2.property( Property1 ) )->staticValue(), QVariant( "v1" ) );
-  QCOMPARE( collection2.property( Property2 )->propertyType(), QgsAbstractProperty::StaticProperty );
-  QVERIFY( !collection2.property( Property2 )->isActive() );
-  QCOMPARE( static_cast< QgsStaticProperty* >( collection2.property( Property2 ) )->staticValue(), QVariant( "v2" ) );
-  QCOMPARE( collection2.property( Property3 )->propertyType(), QgsAbstractProperty::FieldBasedProperty );
-  QVERIFY( collection2.property( Property3 )->isActive() );
-  QCOMPARE( static_cast< QgsFieldBasedProperty* >( collection2.property( Property3 ) )->field(), QString( "field1" ) );
-  QCOMPARE( collection2.property( Property4 )->propertyType(), QgsAbstractProperty::ExpressionBasedProperty );
-  QVERIFY( collection2.property( Property4 )->isActive() );
-  QCOMPARE( static_cast< QgsExpressionBasedProperty* >( collection2.property( Property4 ) )->expressionString(), QString( "\"field1\" + \"field2\"" ) );
+  QCOMPARE( collection2.property( Property1 ).propertyType(), QgsProperty::StaticProperty );
+  QVERIFY( collection2.property( Property1 ).isActive() );
+  QCOMPARE( collection2.property( Property1 ).staticValue(), QVariant( "v1" ) );
+  QCOMPARE( collection2.property( Property2 ).propertyType(), QgsProperty::StaticProperty );
+  QVERIFY( !collection2.property( Property2 ).isActive() );
+  QCOMPARE( collection2.property( Property2 ).staticValue(), QVariant( "v2" ) );
+  QCOMPARE( collection2.property( Property3 ).propertyType(), QgsProperty::FieldBasedProperty );
+  QVERIFY( collection2.property( Property3 ).isActive() );
+  QCOMPARE( collection2.property( Property3 ).field(), QString( "field1" ) );
+  QCOMPARE( collection2.property( Property4 ).propertyType(), QgsProperty::ExpressionBasedProperty );
+  QVERIFY( collection2.property( Property4 ).isActive() );
+  QCOMPARE( collection2.property( Property4 ).expressionString(), QString( "\"field1\" + \"field2\"" ) );
   QVERIFY( collection2.hasActiveProperties() );
   QVERIFY( collection2.hasActiveDynamicProperties() );
 
   // assignment operator
   QgsPropertyCollection collection3;
-  collection3.setProperty( Property1, new QgsStaticProperty( "aaaa", false ) );
+  collection3.setProperty( Property1, QgsProperty::fromValue( "aaaa", false ) );
   collection3 = collection;
   QCOMPARE( collection3.name(), QString( "collection" ) );
   QCOMPARE( collection3.count(), 4 );
-  QCOMPARE( collection3.property( Property1 )->propertyType(), QgsAbstractProperty::StaticProperty );
-  QVERIFY( collection3.property( Property1 )->isActive() );
-  QCOMPARE( static_cast< QgsStaticProperty* >( collection3.property( Property1 ) )->staticValue(), QVariant( "v1" ) );
-  QCOMPARE( collection3.property( Property2 )->propertyType(), QgsAbstractProperty::StaticProperty );
-  QVERIFY( !collection3.property( Property2 )->isActive() );
-  QCOMPARE( static_cast< QgsStaticProperty* >( collection3.property( Property2 ) )->staticValue(), QVariant( "v2" ) );
-  QCOMPARE( collection3.property( Property3 )->propertyType(), QgsAbstractProperty::FieldBasedProperty );
-  QVERIFY( collection3.property( Property3 )->isActive() );
-  QCOMPARE( static_cast< QgsFieldBasedProperty* >( collection3.property( Property3 ) )->field(), QString( "field1" ) );
-  QCOMPARE( collection3.property( Property4 )->propertyType(), QgsAbstractProperty::ExpressionBasedProperty );
-  QVERIFY( collection3.property( Property4 )->isActive() );
-  QCOMPARE( static_cast< QgsExpressionBasedProperty* >( collection3.property( Property4 ) )->expressionString(), QString( "\"field1\" + \"field2\"" ) );
+  QCOMPARE( collection3.property( Property1 ).propertyType(), QgsProperty::StaticProperty );
+  QVERIFY( collection3.property( Property1 ).isActive() );
+  QCOMPARE( collection3.property( Property1 ).staticValue(), QVariant( "v1" ) );
+  QCOMPARE( collection3.property( Property2 ).propertyType(), QgsProperty::StaticProperty );
+  QVERIFY( !collection3.property( Property2 ).isActive() );
+  QCOMPARE( collection3.property( Property2 ).staticValue(), QVariant( "v2" ) );
+  QCOMPARE( collection3.property( Property3 ).propertyType(), QgsProperty::FieldBasedProperty );
+  QVERIFY( collection3.property( Property3 ).isActive() );
+  QCOMPARE( collection3.property( Property3 ).field(), QString( "field1" ) );
+  QCOMPARE( collection3.property( Property4 ).propertyType(), QgsProperty::ExpressionBasedProperty );
+  QVERIFY( collection3.property( Property4 ).isActive() );
+  QCOMPARE( collection3.property( Property4 ).expressionString(), QString( "\"field1\" + \"field2\"" ) );
   QVERIFY( collection3.hasActiveProperties() );
   QVERIFY( collection3.hasActiveDynamicProperties() );
 
   //test hasActiveProperties() and hasActiveDynamicProperties()
-  collection3.property( Property1 )->setActive( false );
-  collection3.property( Property2 )->setActive( false );
-  collection3.property( Property3 )->setActive( false );
-  collection3.property( Property4 )->setActive( false );
+  collection3.property( Property1 ).setActive( false );
+  collection3.property( Property2 ).setActive( false );
+  collection3.property( Property3 ).setActive( false );
+  collection3.property( Property4 ).setActive( false );
   QVERIFY( !collection3.hasActiveProperties() );
   QVERIFY( !collection3.hasActiveDynamicProperties() );
-  collection3.property( Property4 )->setActive( true );
+  collection3.property( Property4 ).setActive( true );
   QVERIFY( collection3.hasActiveDynamicProperties() );
   QVERIFY( collection3.hasActiveProperties() );
-  collection3.property( Property4 )->setActive( false );
-  collection3.property( Property2 )->setActive( true );
+  collection3.property( Property4 ).setActive( false );
+  collection3.property( Property2 ).setActive( true );
   QVERIFY( !collection3.hasActiveDynamicProperties() );
   QVERIFY( collection3.hasActiveProperties() );
-  collection3.property( Property2 )->setActive( false );
+  collection3.property( Property2 ).setActive( false );
   QVERIFY( !collection3.hasActiveProperties() );
   collection3.setProperty( Property1, "5" );
   QVERIFY( collection3.hasActiveProperties() );
-  collection3.setProperty( Property1, new QgsStaticProperty( "6", true ) );
+  collection3.setProperty( Property1, QgsProperty::fromValue( "6", true ) );
   QVERIFY( collection3.hasActiveProperties() );
-  collection3.setProperty( Property1, new QgsStaticProperty( "7", false ) );
+  collection3.setProperty( Property1, QgsProperty::fromValue( "7", false ) );
   QVERIFY( !collection3.hasActiveProperties() );
   collection3.setProperty( Property3, QVariant( "val" ) );
   QVERIFY( collection3.hasActiveProperties() );
@@ -1027,15 +1040,15 @@ void TestQgsProperty::collectionStack()
   QVERIFY( stack.referencedFields( context ).isEmpty() );
 
   //now add a property to the collection
-  QgsStaticProperty* property = new QgsStaticProperty( "value", true );
+  QgsProperty property = QgsProperty::fromValue( "value", true );
   collection->setProperty( Property1, property );
   QVERIFY( stack.isActive( Property1 ) );
-  QCOMPARE( stack.property( Property1 )->value( context ), property->value( context ) );
-  QCOMPARE( stack.value( Property1, context ), property->value( context ) );
+  QCOMPARE( stack.property( Property1 ).value( context ), property.value( context ) );
+  QCOMPARE( stack.value( Property1, context ), property.value( context ) );
   QVERIFY( !stack.hasActiveDynamicProperties() );
   QVERIFY( stack.hasActiveProperties() );
   QVERIFY( !stack.isActive( Property2 ) );
-  collection->setProperty( Property2, new QgsStaticProperty( "value1", true ) );
+  collection->setProperty( Property2, QgsProperty::fromValue( "value1", true ) );
   QVERIFY( stack.isActive( Property2 ) );
   QVERIFY( !stack.hasActiveDynamicProperties() );
   QVERIFY( stack.hasActiveProperties() );
@@ -1049,11 +1062,11 @@ void TestQgsProperty::collectionStack()
   QCOMPARE( stack.collection( "collection2" ), collection2 );
   QVERIFY( !stack.hasActiveDynamicProperties() );
   QVERIFY( stack.hasActiveProperties() );
-  QgsStaticProperty* property2 = new QgsStaticProperty( "value2", true );
+  QgsProperty property2 = QgsProperty::fromValue( "value2", true );
   collection2->setProperty( Property2, property2 );
   QVERIFY( stack.isActive( Property2 ) );
-  QCOMPARE( stack.property( Property2 )->value( context ), property2->value( context ) );
-  QCOMPARE( stack.value( Property2, context ), property2->value( context ) );
+  QCOMPARE( stack.property( Property2 ).value( context ), property2.value( context ) );
+  QCOMPARE( stack.value( Property2, context ), property2.value( context ) );
   QVERIFY( !stack.hasActiveDynamicProperties() );
   QVERIFY( stack.hasActiveProperties() );
 
@@ -1061,22 +1074,22 @@ void TestQgsProperty::collectionStack()
   QVERIFY( stack.prepare( context ) );
 
   //test adding active property later in the stack
-  QgsStaticProperty* property3 = new QgsStaticProperty( "value3", true );
+  QgsProperty property3 = QgsProperty::fromValue( "value3", true );
   collection2->setProperty( Property1, property3 );
   QVERIFY( stack.isActive( Property1 ) );
-  QCOMPARE( stack.property( Property1 )->value( context, "default" ), property3->value( context ) );
-  QCOMPARE( stack.value( Property1, context ), property3->value( context ) );
-  property3->setActive( false );
-  QCOMPARE( stack.value( Property1, context ), property->value( context ) );
+  QCOMPARE( stack.property( Property1 ).value( context, "default" ), property3.value( context ) );
+  QCOMPARE( stack.value( Property1, context ), property3.value( context ) );
+  collection2->property( Property1 ).setActive( false );
+  QCOMPARE( stack.value( Property1, context ), property.value( context ) );
 
   //test overriding a property
-  QgsStaticProperty* property4 = new QgsStaticProperty( "value4", true );
+  QgsProperty property4 = QgsProperty::fromValue( "value4", true );
   collection2->setProperty( Property2, property4 );
   QVERIFY( stack.isActive( Property2 ) );
-  QCOMPARE( stack.property( Property2 )->value( context ), property4->value( context ) );
-  QCOMPARE( stack.value( Property2, context ), property4->value( context ) );
-  property4->setActive( false );
-  QCOMPARE( stack.property( Property2 )->value( context ), QVariant( "value1" ) );
+  QCOMPARE( stack.property( Property2 ).value( context ), property4.value( context ) );
+  QCOMPARE( stack.value( Property2, context ), property4.value( context ) );
+  collection2->property( Property2 ).setActive( false );
+  QCOMPARE( stack.property( Property2 ).value( context ), QVariant( "value1" ) );
   QCOMPARE( stack.value( Property2, context ), QVariant( "value1" ) );
 
   //clearing
@@ -1097,9 +1110,9 @@ void TestQgsProperty::collectionStack()
   QCOMPARE( stack3.count(), 2 );
   QCOMPARE( stack3.at( 0 )->name(), QString( "collection1" ) );
   QCOMPARE( stack3.at( 1 )->name(), QString( "collection2" ) );
-  QCOMPARE( static_cast< QgsStaticProperty* >( stack3.at( 0 )->property( Property1 ) )->staticValue(), QVariant( "val1" ) );
-  QCOMPARE( static_cast< QgsStaticProperty* >( stack3.at( 0 )->property( Property2 ) )->staticValue(), QVariant( "val2" ) );
-  QCOMPARE( static_cast< QgsStaticProperty* >( stack3.at( 1 )->property( Property3 ) )->staticValue(), QVariant( "val3" ) );
+  QCOMPARE( stack3.at( 0 )->property( Property1 ).staticValue(), QVariant( "val1" ) );
+  QCOMPARE( stack3.at( 0 )->property( Property2 ).staticValue(), QVariant( "val2" ) );
+  QCOMPARE( stack3.at( 1 )->property( Property3 ).staticValue(), QVariant( "val3" ) );
   QVERIFY( !stack3.hasActiveDynamicProperties() );
   QVERIFY( stack3.hasActiveProperties() );
   //assignment operator
@@ -1109,9 +1122,9 @@ void TestQgsProperty::collectionStack()
   QCOMPARE( stack3.count(), 2 );
   QCOMPARE( stack3.at( 0 )->name(), QString( "collection1" ) );
   QCOMPARE( stack3.at( 1 )->name(), QString( "collection2" ) );
-  QCOMPARE( static_cast< QgsStaticProperty* >( stack3.at( 0 )->property( Property1 ) )->staticValue(), QVariant( "val1" ) );
-  QCOMPARE( static_cast< QgsStaticProperty* >( stack3.at( 0 )->property( Property2 ) )->staticValue(), QVariant( "val2" ) );
-  QCOMPARE( static_cast< QgsStaticProperty* >( stack3.at( 1 )->property( Property3 ) )->staticValue(), QVariant( "val3" ) );
+  QCOMPARE( stack3.at( 0 )->property( Property1 ).staticValue(), QVariant( "val1" ) );
+  QCOMPARE( stack3.at( 0 )->property( Property2 ).staticValue(), QVariant( "val2" ) );
+  QCOMPARE( stack3.at( 1 )->property( Property3 ).staticValue(), QVariant( "val3" ) );
   QVERIFY( !stack3.hasActiveDynamicProperties() );
   QVERIFY( stack3.hasActiveProperties() );
 
@@ -1121,18 +1134,18 @@ void TestQgsProperty::collectionStack()
   stack4.at( 0 )->setProperty( Property1, "val1" );
   QVERIFY( !stack4.hasActiveDynamicProperties() );
   QVERIFY( stack4.hasActiveProperties() );
-  stack4.at( 0 )->property( Property1 )->setActive( false );
+  stack4.at( 0 )->property( Property1 ).setActive( false );
   QVERIFY( !stack4.hasActiveProperties() );
   stack4.at( 0 )->setProperty( Property1, "6" );
   QVERIFY( stack4.hasActiveProperties() );
-  stack4.at( 0 )->setProperty( Property2, new QgsExpressionBasedProperty( "\"field1\" + \"field2\"", true ) );
+  stack4.at( 0 )->setProperty( Property2, QgsProperty::fromExpression( "\"field1\" + \"field2\"", true ) );
   QVERIFY( stack4.hasActiveProperties() );
   QVERIFY( stack4.hasActiveDynamicProperties() );
   QCOMPARE( stack4.referencedFields( context ), QSet< QString>() << "field1" << "field2" );
-  stack4.at( 0 )->property( Property1 )->setActive( false );
+  stack4.at( 0 )->property( Property1 ).setActive( false );
   QVERIFY( stack4.hasActiveProperties() );
   QVERIFY( stack4.hasActiveDynamicProperties() );
-  stack4.at( 0 )->property( Property2 )->setActive( false );
+  stack4.at( 0 )->property( Property2 ).setActive( false );
   QVERIFY( !stack4.hasActiveProperties() );
   QVERIFY( !stack4.hasActiveDynamicProperties() );
 }

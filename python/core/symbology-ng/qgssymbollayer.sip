@@ -247,7 +247,7 @@ class QgsSymbolLayer
      * @see getDataDefinedProperty
      * @see removeDataDefinedProperty
      */
-    virtual void setDataDefinedProperty( Property key, QgsAbstractProperty* property /Transfer/ );
+    virtual void setDataDefinedProperty( Property key, const QgsProperty& property );
 
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 

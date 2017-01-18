@@ -61,7 +61,7 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
      * @param layer associated vector layer
      */
     void init( int propertyKey,
-               const QgsAbstractProperty* property,
+               const QgsProperty& property,
                const QgsPropertiesDefinition& definitions,
                const QgsVectorLayer* layer = nullptr );
 
@@ -77,9 +77,9 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
                const QgsPropertiesDefinition& definitions,
                const QgsVectorLayer* layer = nullptr );
 
-    QgsAbstractProperty* toProperty();
+    QgsProperty toProperty() const;
 
-    void setToProperty( const QgsAbstractProperty* property );
+    void setToProperty( const QgsProperty& property );
 
     int propertyKey() const { return mPropertyKey; }
 

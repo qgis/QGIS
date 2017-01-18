@@ -120,6 +120,7 @@
 %Include qgsprojectversion.sip
 %Include qgsproperty.sip
 %Include qgspropertycollection.sip
+%Include qgspropertytransformer.sip
 %Include qgsprovidermetadata.sip
 %Include qgsproviderregistry.sip
 %Include qgspythonrunner.sip

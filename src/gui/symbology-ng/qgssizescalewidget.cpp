@@ -40,20 +40,20 @@ void QgsSizeScaleWidget::setFromSymbol()
     return;
   }
 
-  QScopedPointer< QgsAbstractProperty> ddSize;
+  QgsProperty ddSize;
   if ( dynamic_cast< const QgsMarkerSymbol*>( mSymbol ) )
   {
-    ddSize.reset( static_cast< const QgsMarkerSymbol*>( mSymbol )->dataDefinedSize() );
+    ddSize = static_cast< const QgsMarkerSymbol*>( mSymbol )->dataDefinedSize();
   }
   else if ( dynamic_cast< const QgsLineSymbol*>( mSymbol ) )
   {
-    ddSize.reset( dynamic_cast< const QgsLineSymbol*>( mSymbol )->dataDefinedWidth() );
+    ddSize = static_cast< const QgsLineSymbol*>( mSymbol )->dataDefinedWidth();
   }
 
   if ( !ddSize )
     return;
 
-  QgsScaleExpression expr( ddSize->asExpression() );
+  QgsScaleExpression expr( ddSize.asExpression() );
   if ( expr )
   {
     for ( int i = 0; i < scaleMethodComboBox->count(); i++ )
@@ -182,10 +182,10 @@ QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsS
   connect( scaleMethodComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
 }
 
-QgsAbstractProperty* QgsSizeScaleWidget::property() const
+QgsProperty QgsSizeScaleWidget::property() const
 {
   QScopedPointer<QgsScaleExpression> exp( createExpression() );
-  return new QgsExpressionBasedProperty( exp->expression() );
+  return QgsProperty::fromExpression( exp->expression() );
 }
 
 void QgsSizeScaleWidget::showEvent( QShowEvent* )
@@ -228,15 +228,15 @@ void QgsSizeScaleWidget::updatePreview()
     if ( dynamic_cast<const QgsMarkerSymbol*>( mSymbol ) )
     {
       QScopedPointer< QgsMarkerSymbol > symbol( static_cast<QgsMarkerSymbol*>( mSymbol->clone() ) );
-      symbol->setDataDefinedSize( nullptr );
-      symbol->setDataDefinedAngle( nullptr ); // to avoid symbol not being drawn
+      symbol->setDataDefinedSize( QgsProperty() );
+      symbol->setDataDefinedAngle( QgsProperty() ); // to avoid symbol not being drawn
       symbol->setSize( expr->size( breaks[i] ) );
       node.reset( new QgsSymbolLegendNode( mLayerTreeLayer, QgsLegendSymbolItem( symbol.data(), QString::number( i ), QString() ) ) );
     }
     else if ( dynamic_cast<const QgsLineSymbol*>( mSymbol ) )
     {
       QScopedPointer< QgsLineSymbol > symbol( static_cast<QgsLineSymbol*>( mSymbol->clone() ) );
-      symbol->setDataDefinedWidth( nullptr );
+      symbol->setDataDefinedWidth( QgsProperty() );
       symbol->setWidth( expr->size( breaks[i] ) );
       node.reset( new QgsSymbolLegendNode( mLayerTreeLayer, QgsLegendSymbolItem( symbol.data(), QString::number( i ), QString() ) ) );
 

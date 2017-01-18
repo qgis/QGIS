@@ -304,7 +304,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
   if ( l )
   {
     QgsSimpleFillSymbolLayer *sfl = new QgsSimpleFillSymbolLayer();
-    sfl->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, new QgsFieldBasedProperty( "color" ) );
+    sfl->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromField( "color" ) );
     sfl->setBorderStyle( Qt::NoPen );
     sym = new QgsFillSymbol();
     sym->changeSymbolLayer( 0, sfl );
@@ -315,9 +315,9 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
   if ( l )
   {
     QgsSimpleLineSymbolLayer *sll = new QgsSimpleLineSymbolLayer();
-    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineColor, new QgsFieldBasedProperty( "color" ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineColor, QgsProperty::fromField( "color" ) );
     sll->setPenJoinStyle( Qt::MiterJoin );
-    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, new QgsFieldBasedProperty( "linewidth" ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, QgsProperty::fromField( "linewidth" ) );
     // sll->setUseCustomDashPattern( true );
     // sll->setCustomDashPatternUnit( QgsSymbolV2::MapUnit );
     // sll->setDataDefinedProperty( "customdash", new QgsDataDefined( true, false, "", "linetype" ) );
@@ -331,9 +331,9 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
   if ( l )
   {
     QgsSimpleLineSymbolLayer *sll = new QgsSimpleLineSymbolLayer();
-    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineColor, new QgsFieldBasedProperty( "color" ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineColor, QgsProperty::fromField( "color" ) );
     sll->setPenJoinStyle( Qt::MiterJoin );
-    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, new QgsFieldBasedProperty( "width" ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, QgsProperty::fromField( "width" ) );
     // sll->setUseCustomDashPattern( true );
     // sll->setCustomDashPatternUnit( QgsSymbolV2::MapUnit );
     // sll->setDataDefinedProperty( "customdash", new QgsDataDefined( true, false, "", "linetype" ) );
@@ -359,12 +359,12 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
     pls.fieldName = "text";
     pls.wrapChar = "\\P";
 
-    pls.properties().setProperty( QgsPalLayerSettings::Size, new QgsFieldBasedProperty( QStringLiteral( "height" ) ) );
-    pls.properties().setProperty( QgsPalLayerSettings::Color, new QgsFieldBasedProperty( QStringLiteral( "color" ) ) );
-    pls.properties().setProperty( QgsPalLayerSettings::MultiLineHeight, new QgsExpressionBasedProperty( QStringLiteral( "CASE WHEN interlin<0 THEN 1 ELSE interlin*1.5 END" ) ) );
-    pls.properties().setProperty( QgsPalLayerSettings::PositionX, new QgsExpressionBasedProperty( QStringLiteral( "$x" ) ) );
-    pls.properties().setProperty( QgsPalLayerSettings::PositionY, new QgsExpressionBasedProperty( QStringLiteral( "$y" ) ) );
-    pls.properties().setProperty( QgsPalLayerSettings::Hali, new QgsExpressionBasedProperty( QStringLiteral( "CASE"
+    pls.properties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromField( QStringLiteral( "height" ) ) );
+    pls.properties().setProperty( QgsPalLayerSettings::Color, QgsProperty::fromField( QStringLiteral( "color" ) ) );
+    pls.properties().setProperty( QgsPalLayerSettings::MultiLineHeight, QgsProperty::fromExpression( QStringLiteral( "CASE WHEN interlin<0 THEN 1 ELSE interlin*1.5 END" ) ) );
+    pls.properties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromExpression( QStringLiteral( "$x" ) ) );
+    pls.properties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromExpression( QStringLiteral( "$y" ) ) );
+    pls.properties().setProperty( QgsPalLayerSettings::Hali, QgsProperty::fromExpression( QStringLiteral( "CASE"
                                   " WHEN etype=%1 THEN"
                                   " CASE"
                                   " WHEN alignv IN (1,4,7) THEN 'Left'"
@@ -380,7 +380,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
                                   " WHEN alignh=4 THEN 'Left'"
                                   " END "
                                   " END" ).arg( DRW::MTEXT ) ) );
-    pls.properties().setProperty( QgsPalLayerSettings::Vali, new QgsExpressionBasedProperty( QStringLiteral( "CASE"
+    pls.properties().setProperty( QgsPalLayerSettings::Vali, QgsProperty::fromExpression( QStringLiteral( "CASE"
                                   " WHEN etype=%1 THEN"
                                   " CASE"
                                   " WHEN alignv < 4 THEN 'Top'"
@@ -395,7 +395,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
                                   " WHEN alignv=3 THEN 'Top'"
                                   " END"
                                   " END" ).arg( DRW::MTEXT ) ) );
-    pls.properties().setProperty( QgsPalLayerSettings::Rotation, new QgsExpressionBasedProperty( QStringLiteral( "angle*180.0/pi()" ) ) );
+    pls.properties().setProperty( QgsPalLayerSettings::Rotation, QgsProperty::fromExpression( QStringLiteral( "angle*180.0/pi()" ) ) );
 
     pls.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
     pls.writeToLayer( l );

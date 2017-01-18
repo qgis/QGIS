@@ -287,9 +287,9 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   double ddPosX = 0.0;
   double ddPosY = 0.0;
   if ( mSettings.properties().hasProperty( QgsDiagramLayerSettings::PositionX )
-       && mSettings.properties().property( QgsDiagramLayerSettings::PositionX )->isActive()
+       && mSettings.properties().property( QgsDiagramLayerSettings::PositionX ).isActive()
        && mSettings.properties().hasProperty( QgsDiagramLayerSettings::PositionY )
-       && mSettings.properties().property( QgsDiagramLayerSettings::PositionY )->isActive() )
+       && mSettings.properties().property( QgsDiagramLayerSettings::PositionY ).isActive() )
   {
     ddPosX = mSettings.properties().valueAsDouble( QgsDiagramLayerSettings::PositionX, context.expressionContext(), std::numeric_limits<double>::quiet_NaN() );
     ddPosY = mSettings.properties().valueAsDouble( QgsDiagramLayerSettings::PositionY, context.expressionContext(), std::numeric_limits<double>::quiet_NaN() );
@@ -330,7 +330,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
 
   // data defined priority?
   if ( mSettings.properties().hasProperty( QgsDiagramLayerSettings::Priority )
-       && mSettings.properties().property( QgsDiagramLayerSettings::Priority )->isActive() )
+       && mSettings.properties().property( QgsDiagramLayerSettings::Priority ).isActive() )
   {
     context.expressionContext().setOriginalValueVariable( mSettings.priority() );
     double priorityD = mSettings.properties().valueAsDouble( QgsDiagramLayerSettings::Priority, context.expressionContext(), mSettings.priority() );
@@ -342,7 +342,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   // z-Index
   double zIndex = mSettings.zIndex();
   if ( mSettings.properties().hasProperty( QgsDiagramLayerSettings::ZIndex )
-       && mSettings.properties().property( QgsDiagramLayerSettings::ZIndex )->isActive() )
+       && mSettings.properties().property( QgsDiagramLayerSettings::ZIndex ).isActive() )
   {
     context.expressionContext().setOriginalValueVariable( zIndex );
     zIndex = mSettings.properties().valueAsDouble( QgsDiagramLayerSettings::ZIndex, context.expressionContext(), zIndex );
@@ -355,7 +355,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   double dist = mSettings.distance();
 
   if ( mSettings.properties().hasProperty( QgsDiagramLayerSettings::Distance )
-       && mSettings.properties().property( QgsDiagramLayerSettings::Distance )->isActive() )
+       && mSettings.properties().property( QgsDiagramLayerSettings::Distance ).isActive() )
   {
     context.expressionContext().setOriginalValueVariable( dist );
     dist = mSettings.properties().valueAsDouble( QgsDiagramLayerSettings::Distance, context.expressionContext(), dist );

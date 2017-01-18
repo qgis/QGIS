@@ -445,26 +445,26 @@ void TestQgsComposerUtils::readOldDataDefinedProperty()
   QVERIFY( !QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::AllProperties, ddElem ) );
 
   //read into valid property
-  QScopedPointer< QgsAbstractProperty > p( QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::TestProperty, ddElem ) );
+  QgsProperty p( QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::TestProperty, ddElem ) );
   QVERIFY( p );
-  QVERIFY( p->isActive() );
-  QCOMPARE( p->propertyType(), QgsAbstractProperty::ExpressionBasedProperty );
-  QCOMPARE( static_cast< QgsExpressionBasedProperty* >( p.data() )->expressionString(), QString( "test expression" ) );
+  QVERIFY( p.isActive() );
+  QCOMPARE( p.propertyType(), QgsProperty::ExpressionBasedProperty );
+  QCOMPARE( p.expressionString(), QString( "test expression" ) );
 
   ddElem.setAttribute( QStringLiteral( "useExpr" ), QStringLiteral( "false" ) );
-  p.reset( QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::TestProperty, ddElem ) );
+  p = QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::TestProperty, ddElem );
   QVERIFY( p );
-  QVERIFY( p->isActive() );
-  QCOMPARE( p->propertyType(), QgsAbstractProperty::FieldBasedProperty );
-  QCOMPARE( static_cast< QgsFieldBasedProperty* >( p.data() )->field(), QString( "test field" ) );
+  QVERIFY( p.isActive() );
+  QCOMPARE( p.propertyType(), QgsProperty::FieldBasedProperty );
+  QCOMPARE( p.field(), QString( "test field" ) );
 
   //reading false parameters
   QDomElement ddElem2 = doc.createElement( QStringLiteral( "dataDefinedProperty2" ) );
   ddElem2.setAttribute( QStringLiteral( "active" ), QStringLiteral( "false" ) );
   itemElem.appendChild( ddElem2 );
-  p.reset( QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::TestProperty, ddElem2 ) );
+  p = QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::TestProperty, ddElem2 );
   QVERIFY( p );
-  QVERIFY( !p->isActive() );
+  QVERIFY( !p.isActive() );
 }
 
 void TestQgsComposerUtils::readOldDataDefinedPropertyMap()
@@ -505,15 +505,15 @@ void TestQgsComposerUtils::readOldDataDefinedPropertyMap()
   QgsComposerUtils::readOldDataDefinedPropertyMap( itemElem, dataDefinedProperties );
   //check returned values
   QCOMPARE( dataDefinedProperties.count(), 3 );
-  QVERIFY(( dataDefinedProperties.property( QgsComposerObject::BlendMode ) )->isActive() );
-  QCOMPARE(( dataDefinedProperties.property( QgsComposerObject::BlendMode ) )->propertyType(), QgsAbstractProperty::ExpressionBasedProperty );
-  QCOMPARE( static_cast< QgsExpressionBasedProperty* >( dataDefinedProperties.property( QgsComposerObject::BlendMode ) )->expressionString(), QString( "test expression" ) );
-  QVERIFY( !( dataDefinedProperties.property( QgsComposerObject::Transparency ) )->isActive() );
-  QCOMPARE(( dataDefinedProperties.property( QgsComposerObject::Transparency ) )->propertyType(), QgsAbstractProperty::FieldBasedProperty );
-  QCOMPARE( static_cast< QgsFieldBasedProperty* >( dataDefinedProperties.property( QgsComposerObject::Transparency ) )->field(), QString( "test field 2" ) );
-  QVERIFY(( dataDefinedProperties.property( QgsComposerObject::TestProperty ) )->isActive() );
-  QCOMPARE(( dataDefinedProperties.property( QgsComposerObject::TestProperty ) )->propertyType(), QgsAbstractProperty::FieldBasedProperty );
-  QCOMPARE( static_cast< QgsFieldBasedProperty* >( dataDefinedProperties.property( QgsComposerObject::TestProperty ) )->field(), QString( "test field 3" ) );
+  QVERIFY(( dataDefinedProperties.property( QgsComposerObject::BlendMode ) ).isActive() );
+  QCOMPARE(( dataDefinedProperties.property( QgsComposerObject::BlendMode ) ).propertyType(), QgsProperty::ExpressionBasedProperty );
+  QCOMPARE( dataDefinedProperties.property( QgsComposerObject::BlendMode ).expressionString(), QString( "test expression" ) );
+  QVERIFY( !( dataDefinedProperties.property( QgsComposerObject::Transparency ) ).isActive() );
+  QCOMPARE(( dataDefinedProperties.property( QgsComposerObject::Transparency ) ).propertyType(), QgsProperty::FieldBasedProperty );
+  QCOMPARE( dataDefinedProperties.property( QgsComposerObject::Transparency ).field(), QString( "test field 2" ) );
+  QVERIFY(( dataDefinedProperties.property( QgsComposerObject::TestProperty ) ).isActive() );
+  QCOMPARE(( dataDefinedProperties.property( QgsComposerObject::TestProperty ) ).propertyType(), QgsProperty::FieldBasedProperty );
+  QCOMPARE( dataDefinedProperties.property( QgsComposerObject::TestProperty ).field(), QString( "test field 3" ) );
 }
 
 void TestQgsComposerUtils::scaledFontPixelSize()

@@ -96,10 +96,10 @@ void QgsMapToolRotatePointSymbols::canvasPressOnFeature( QgsMapMouseEvent *e, co
 bool QgsMapToolRotatePointSymbols::checkSymbolCompatibility( QgsMarkerSymbol* markerSymbol, QgsRenderContext& )
 {
   bool ok = false;
-  QScopedPointer< QgsAbstractProperty > ddAngle( markerSymbol->dataDefinedAngle() );
-  if ( ddAngle && ddAngle->isActive() && ddAngle->propertyType() == QgsAbstractProperty::FieldBasedProperty )
+  QgsProperty ddAngle( markerSymbol->dataDefinedAngle() );
+  if ( ddAngle && ddAngle.isActive() && ddAngle.propertyType() == QgsProperty::FieldBasedProperty )
   {
-    mCurrentRotationAttributes << mActiveLayer->fields().indexFromName( static_cast< QgsFieldBasedProperty* >( ddAngle.data() )->field() );
+    mCurrentRotationAttributes << mActiveLayer->fields().indexFromName( ddAngle.field() );
     ok = true;
     if ( mMarkerSymbol.isNull() )
     {
@@ -225,7 +225,7 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsMarkerSymbol* markerSymb
   {
     QgsSymbol* clone = markerSymbol->clone();
     QgsMarkerSymbol* markerClone = static_cast<QgsMarkerSymbol*>( clone );
-    markerClone->setDataDefinedAngle( nullptr );
+    markerClone->setDataDefinedAngle( QgsProperty() );
     pointImage = markerClone->bigSymbolPreviewImage();
     delete clone;
   }

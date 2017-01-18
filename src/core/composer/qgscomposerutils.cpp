@@ -330,19 +330,19 @@ void QgsComposerUtils::readOldDataDefinedPropertyMap( const QDomElement &itemEle
     if ( !ddNodeList.isEmpty() )
     {
       QDomElement ddElem = ddNodeList.at( 0 ).toElement();
-      QgsAbstractProperty* prop = readOldDataDefinedProperty( static_cast< QgsComposerObject::DataDefinedProperty >( i.key() ), ddElem );
+      QgsProperty prop = readOldDataDefinedProperty( static_cast< QgsComposerObject::DataDefinedProperty >( i.key() ), ddElem );
       if ( prop )
         dataDefinedProperties.setProperty( i.key(), prop );
     }
   }
 }
 
-QgsAbstractProperty* QgsComposerUtils::readOldDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem )
+QgsProperty QgsComposerUtils::readOldDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem )
 {
   if ( property == QgsComposerObject::AllProperties || property == QgsComposerObject::NoProperty )
   {
     //invalid property
-    return nullptr;
+    return QgsProperty();
   }
 
   //set values for QgsDataDefined
@@ -363,9 +363,9 @@ QgsAbstractProperty* QgsComposerUtils::readOldDataDefinedProperty( const QgsComp
   }
 
   if ( isExpression )
-    return new QgsExpressionBasedProperty( expr, isActive );
+    return QgsProperty::fromExpression( expr, isActive );
   else
-    return new QgsFieldBasedProperty( field, isActive );
+    return QgsProperty::fromField( field, isActive );
 }
 
 QFont QgsComposerUtils::scaledFontPixelSize( const QFont &font )

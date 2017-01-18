@@ -275,7 +275,7 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
 
     QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
-    void setDataDefinedProperty( QgsSymbolLayer::Property key, QgsAbstractProperty* property /Transfer/ );
+    void setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty& property );
 
   protected:
 

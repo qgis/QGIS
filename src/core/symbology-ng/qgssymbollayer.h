@@ -233,12 +233,12 @@ class CORE_EXPORT QgsSymbolLayer
     virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     /** Sets a data defined property for the layer. Any existing property with the same key
-     * will be deleted and overridden. Ownership of the property is transferred to the symbol layer.
+     * will be overwritten.
      * @note added in QGIS 3.0
      * @see getDataDefinedProperty
      * @see removeDataDefinedProperty
      */
-    virtual void setDataDefinedProperty( Property key, QgsAbstractProperty* property );
+    virtual void setDataDefinedProperty( Property key, const QgsProperty& property );
 
     //! write as DXF
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;

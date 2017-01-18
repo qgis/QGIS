@@ -62,14 +62,14 @@ class DataDefinedRestorer: public QObject
     double mSize;
     double mAngle;
     QPointF mMarkerOffset;
-    QScopedPointer< QgsAbstractProperty > mDDSize;
-    QScopedPointer< QgsAbstractProperty > mDDAngle;
+    QgsProperty mDDSize;
+    QgsProperty mDDAngle;
 
     QgsLineSymbol* mLine;
     const QgsLineSymbolLayer* mLineSymbolLayer;
     double mWidth;
     double mLineOffset;
-    QScopedPointer< QgsAbstractProperty > mDDWidth;
+    QgsProperty mDDWidth;
 
     void save();
 };

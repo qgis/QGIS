@@ -137,7 +137,7 @@ class CORE_EXPORT QgsComposerUtils
      * @note this method was added in version 3.0
      * @see readDataDefinedPropertyMap
      */
-    static QgsAbstractProperty* readOldDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem );
+    static QgsProperty readOldDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem );
 
     /** Returns a font where size is set in pixels and the size has been upscaled with FONT_WORKAROUND_SCALE
      * to workaround QT font rendering bugs
