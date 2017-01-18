@@ -778,11 +778,20 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::legendLayerSelectionChanged, this, QStringLiteral( "Legend layer selection changed" ) );
   mSaveRollbackInProgress = false;
 
-  QFileSystemWatcher* projectsTemplateWatcher = new QFileSystemWatcher( this );
   QString templateDirName = settings.value( QStringLiteral( "/qgis/projectTemplateDir" ),
                             QgsApplication::qgisSettingsDirPath() + "project_templates" ).toString();
-  projectsTemplateWatcher->addPath( templateDirName );
-  connect( projectsTemplateWatcher, SIGNAL( directoryChanged( QString ) ), this, SLOT( updateProjectFromTemplates() ) );
+  if ( !QFileInfo::exists( templateDirName ) )
+  {
+    // create default template directory
+    if ( !QDir().mkdir( QgsApplication::qgisSettingsDirPath() + "project_templates" ) )
+      templateDirName.clear();
+  }
+  if ( !templateDirName.isEmpty() ) // template directory exists, so watch it!
+  {
+    QFileSystemWatcher* projectsTemplateWatcher = new QFileSystemWatcher( this );
+    projectsTemplateWatcher->addPath( templateDirName );
+    connect( projectsTemplateWatcher, &QFileSystemWatcher::directoryChanged, this, [this] { updateProjectFromTemplates(); } );
+  }
 
   // initialize the plugin manager
   startProfile( QStringLiteral( "Plugin manager" ) );
