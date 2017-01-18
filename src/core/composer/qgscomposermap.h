@@ -458,13 +458,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr ) override;
 
-  protected slots:
-
-    /** Called when layers are added or removed from the layer registry. Updates the maps
-     * layer set and redraws the map if required.
-     * @note added in QGIS 2.9
-     */
-    void layersChanged();
+  private slots:
+    void layersAboutToBeRemoved( QList<QgsMapLayer*> layers );
 
   private:
 

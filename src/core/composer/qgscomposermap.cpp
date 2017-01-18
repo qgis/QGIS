@@ -501,7 +501,7 @@ void QgsComposerMap::updateCachedImage()
 {
   mCacheUpdated = false;
   cache();
-  QGraphicsRectItem::update();
+  update();
 }
 
 void QgsComposerMap::renderModeUpdateCachedImage()
@@ -510,12 +510,6 @@ void QgsComposerMap::renderModeUpdateCachedImage()
   {
     updateCachedImage();
   }
-}
-
-void QgsComposerMap::layersChanged()
-{
-  syncLayerSet();
-  renderModeUpdateCachedImage();
 }
 
 void QgsComposerMap::setCacheUpdated( bool u )
@@ -1220,8 +1214,12 @@ void QgsComposerMap::connectUpdateSlot()
   QgsProject* project = mComposition->project();
   if ( project )
   {
-    connect( project, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( layersChanged() ) );
-    connect( project, SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layersChanged() ) );
+    // handles updating the stored layer state BEFORE the layers are removed
+    connect( project, static_cast < void ( QgsProject::* )( const QList<QgsMapLayer*>& layers ) > ( &QgsProject::layersWillBeRemoved ),
+             this, &QgsComposerMap::layersAboutToBeRemoved );
+    // redraws the map AFTER layers are removed
+    connect( project, &QgsProject::layersRemoved, this, &QgsComposerMap::renderModeUpdateCachedImage );
+    connect( project, &QgsProject::legendLayersAdded, this, &QgsComposerMap::renderModeUpdateCachedImage );
   }
 }
 
@@ -1628,33 +1626,14 @@ void QgsComposerMap::storeCurrentLayerStyles()
   }
 }
 
-void QgsComposerMap::syncLayerSet()
+void QgsComposerMap::layersAboutToBeRemoved( QList< QgsMapLayer* > layers )
 {
-  if ( mLayers.size() < 1 )
+  if ( !mLayers.isEmpty() || mLayerStyleOverrides.isEmpty() )
   {
-    return;
-  }
-
-  //if layer set is fixed, do a lookup in the layer registry to also find the non-visible layers
-  QList<QgsMapLayer*> currentLayers;
-  if ( mKeepLayerSet )
-  {
-    currentLayers = mComposition->project()->mapLayers().values();
-  }
-  else //only consider layers visible in the map
-  {
-    currentLayers = mComposition->mapSettings().layers();
-  }
-
-  for ( int i = mLayers.size() - 1; i >= 0; --i )
-  {
-    if ( QgsMapLayer* layer = mLayers.at( i ).data() )
+    Q_FOREACH ( QgsMapLayer* layer, layers )
     {
-      if ( !currentLayers.contains( layer ) )
-      {
-        mLayerStyleOverrides.remove( layer->id() );
-        mLayers.removeAt( i );
-      }
+      mLayerStyleOverrides.remove( layer->id() );
+      mLayers.removeAll( layer );
     }
   }
 }

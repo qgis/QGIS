@@ -570,6 +570,7 @@ instead.
 - atlasFixedScale() and setAtlasFixedScale() were removed. Use atlasScalingMode()
 and setAtlasScalingMode() instead.
 - storeCurrentLayerSet() was removed. Use setLayers() instead.
+- The layersChanged() slot was removed.
 
 QgsComposerMapGrid        {#qgis_api_break_3_0_QgsComposerMapGrid}
 ------------------
