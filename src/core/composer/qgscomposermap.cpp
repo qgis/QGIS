@@ -85,9 +85,6 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
   int bgBlueInt = project->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
   setBackgroundColor( QColor( bgRedInt, bgGreenInt, bgBlueInt ) );
 
-  //calculate mExtent based on width/height ratio and map canvas extent
-  mExtent = mComposition->mapSettings().visibleExtent();
-
   init();
 
   setSceneRect( QRectF( x, y, width, height ) );
@@ -775,9 +772,14 @@ void QgsComposerMap::setNewExtent( const QgsRectangle& extent )
 void QgsComposerMap::zoomToExtent( const QgsRectangle &extent )
 {
   QgsRectangle newExtent = extent;
+  QgsRectangle currentExtent = *currentMapExtent();
   //Make sure the width/height ratio is the same as the current composer map extent.
   //This is to keep the map item frame size fixed
-  double currentWidthHeightRatio = currentMapExtent()->width() / currentMapExtent()->height();
+  double currentWidthHeightRatio = 1.0;
+  if ( !currentExtent.isNull() )
+    currentWidthHeightRatio = currentExtent.width() / currentExtent.height();
+  else
+    currentWidthHeightRatio = rect().width() / rect().height();
   double newWidthHeightRatio = newExtent.width() / newExtent.height();
 
   if ( currentWidthHeightRatio < newWidthHeightRatio )

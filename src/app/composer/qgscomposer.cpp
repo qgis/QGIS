@@ -4027,6 +4027,7 @@ void QgsComposer::createComposerView()
 
   delete mView;
   mView = new QgsComposerView();
+  mView->setMapCanvas( mQgis->mapCanvas() );
   mView->setContentsMargins( 0, 0, 0, 0 );
   mView->setHorizontalRuler( mHorizontalRuler );
   mView->setVerticalRuler( mVerticalRuler );

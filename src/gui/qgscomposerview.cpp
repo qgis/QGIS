@@ -44,7 +44,7 @@
 #include "qgscomposerattributetablev2.h"
 #include "qgsaddremovemultiframecommand.h"
 #include "qgspaperitem.h"
-#include "qgsmapcanvas.h" //for QgsMapCanvas::WheelAction
+#include "qgsmapcanvas.h"
 #include "qgscursors.h"
 #include "qgscomposerutils.h"
 
@@ -997,6 +997,9 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       else
       {
         QgsComposerMap* composerMap = new QgsComposerMap( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
+        if ( mCanvas )
+          composerMap->zoomToExtent( mCanvas->mapSettings().visibleExtent() );
+
         composition()->addComposerMap( composerMap );
 
         composition()->setAllDeselected();
@@ -2101,6 +2104,16 @@ void QgsComposerView::setPreviewMode( QgsPreviewEffect::PreviewMode mode )
   }
 
   mPreviewEffect->setMode( mode );
+}
+
+void QgsComposerView::setMapCanvas( QgsMapCanvas* canvas )
+{
+  mCanvas = canvas;
+}
+
+QgsMapCanvas*QgsComposerView::mapCanvas() const
+{
+  return mCanvas;
 }
 
 void QgsComposerView::paintEvent( QPaintEvent* event )
