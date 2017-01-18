@@ -106,10 +106,6 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 
     QgsRasterInterface * clone() const override;
 
-    /** \brief   Renders the layer as an image
-     */
-    QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight ) override;
-
     /** Return a provider name
      *
      * Essentially just returns the provider key.  Should be used to build file

@@ -76,7 +76,6 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     QgsGdalProvider * clone() const override;
 
-    QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight ) override;
     QString name() const override;
     QString description() const override;
     virtual QgsCoordinateReferenceSystem crs() const override;

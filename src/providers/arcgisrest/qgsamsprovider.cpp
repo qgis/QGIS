@@ -238,11 +238,11 @@ QString QgsAmsProvider::metadata()
   return dumpVariantMap( mServiceInfo, tr( "Service Info" ) ) + dumpVariantMap( mLayerInfo, tr( "Layer Info" ) );
 }
 
-QImage* QgsAmsProvider::draw( const QgsRectangle & viewExtent, int pixelWidth, int pixelHeight )
+void QgsAmsProvider::draw( const QgsRectangle & viewExtent, int pixelWidth, int pixelHeight )
 {
   if ( !mCachedImage.isNull() && mCachedImageExtent == viewExtent )
   {
-    return &mCachedImage;
+    return;
   }
   QgsDataSourceUri dataSource( dataSourceUri() );
 
@@ -269,7 +269,7 @@ QImage* QgsAmsProvider::draw( const QgsRectangle & viewExtent, int pixelWidth, i
     {
       mCachedImage = QImage();
       mCachedImage.fill( Qt::transparent );
-      return &mCachedImage;
+      return;
     }
     int level = 0;
     double resolution = lodEntries.front().toMap()[QStringLiteral( "resolution" )].toDouble();
@@ -343,7 +343,7 @@ QImage* QgsAmsProvider::draw( const QgsRectangle & viewExtent, int pixelWidth, i
       mCachedImage = mCachedImage.convertToFormat( QImage::Format_ARGB32 );
     }
   }
-  return &mCachedImage;
+  return;
 }
 
 QImage QgsAmsProvider::getLegendGraphic( double /*scale*/, bool forceRefresh, const QgsRectangle * /*visibleExtent*/ )
@@ -442,12 +442,11 @@ void QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle & viewExtent,
   Q_UNUSED( feedback );  // TODO: make use of the feedback object
 
   // TODO: optimize to avoid writing to QImage
-  // returned image is actually mCachedImage, no need to delete
-  QImage *image = draw( viewExtent, width, height );
-  if ( image->width() != width || image->height() != height )
+  draw( viewExtent, width, height );
+  if ( mCachedImage.width() != width || mCachedImage.height() != height )
   {
     QgsDebugMsg( "Unexpected image size for block" );
     return;
   }
-  std::memcpy( data, image->bits(), image->bytesPerLine() * image->height() );
+  std::memcpy( data, mCachedImage.constBits(), mCachedImage.bytesPerLine() * mCachedImage.height() );
 }
