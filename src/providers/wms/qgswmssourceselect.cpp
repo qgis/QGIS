@@ -1090,10 +1090,8 @@ QString QgsWMSSourceSelect::descriptionForAuthId( const QString& authId )
 void QgsWMSSourceSelect::addDefaultServers()
 {
   QMap<QString, QString> exampleServers;
-  exampleServers[QStringLiteral( "DM Solutions GMap" )] = QStringLiteral( "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap" );
-  exampleServers[QStringLiteral( "Lizardtech server" )] =  QStringLiteral( "http://wms.lizardtech.com/lizardtech/iserv/ows" );
-  // Nice to have the qgis users map, but I'm not sure of the URL at the moment.
-  //  exampleServers["Qgis users map"] = "http://qgis.org/wms.cgi";
+  exampleServers[QStringLiteral( "QGIS Server Demo - Alaska" )] = QStringLiteral( "http://demo.qgis.org/cgi-bin/qgis_mapserv.fcgi?map=/web/demos/alaska/alaska_map.qgs" );
+  exampleServers[QStringLiteral( "GeoServer Demo - World" )] = QStringLiteral( "http://tiles.boundlessgeo.com/" );
 
   QSettings settings;
   settings.beginGroup( QStringLiteral( "/Qgis/connections-wms" ) );
