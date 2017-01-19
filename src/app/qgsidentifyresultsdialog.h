@@ -19,7 +19,7 @@
 #define QGSIDENTIFYRESULTSDIALOG_H
 
 #include "ui_qgsidentifyresultsbase.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
@@ -205,7 +205,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, QgsAttributeMap &attributes, int &currentIdx );
 
-    void helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#identify" ) ); }
 
     void on_cmbIdentifyMode_currentIndexChanged( int index );
 

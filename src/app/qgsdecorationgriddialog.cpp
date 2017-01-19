@@ -20,7 +20,7 @@
 #include "qgsdecorationgrid.h"
 
 #include "qgslogger.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
@@ -178,7 +178,7 @@ QgsDecorationGridDialog::~QgsDecorationGridDialog()
 
 void QgsDecorationGridDialog::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#id56" ) );
 }
 
 void QgsDecorationGridDialog::on_buttonBox_accepted()

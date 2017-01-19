@@ -20,7 +20,7 @@
 #include "qgisgui.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsspatialitetablemodel.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include <QThread>
 #include <QMap>
@@ -91,7 +91,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString & regexp );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#spatialite-layers" ) ); }
 
   signals:
     void connectionsChanged();

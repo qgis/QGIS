@@ -20,7 +20,7 @@
 #include "ui_qgswmssourceselectbase.h"
 #include "qgsdatasourceuri.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include "qgswmsprovider.h"
 
@@ -95,7 +95,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     //! Add some default wms servers to the list
     void on_btnAddDefault_clicked();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html#id5" ) ); }
 
   private:
     //! Populate the connection list combo box

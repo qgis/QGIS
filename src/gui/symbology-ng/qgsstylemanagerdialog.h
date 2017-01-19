@@ -22,7 +22,7 @@
 #include <QMenu>
 
 #include "ui_qgsstylemanagerdialogbase.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
 class QgsStyle;
@@ -58,7 +58,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! called when the dialog is going to be closed
     void onFinished();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#id2" ) ); }
 
     void itemChanged( QStandardItem* item );
 

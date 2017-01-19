@@ -22,7 +22,7 @@
 #include "qgsoptionsdialogbase.h"
 #include "ui_qgsrasterlayerpropertiesbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgis_app.h"
 
@@ -100,7 +100,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! Save a style when appriate button is pressed.
     void saveStyleAs_clicked();
     //! Help button
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_properties.html" ) ); }
 
     //! Slot to reset all color rendering options to default
     void on_mResetColorRenderingBtn_clicked();

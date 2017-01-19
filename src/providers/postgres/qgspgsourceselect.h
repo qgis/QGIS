@@ -22,7 +22,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgspgtablemodel.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include <QMap>
 #include <QPair>
@@ -116,7 +116,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString& regexp );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#id14" ) ); }
 
     void columnThreadFinished();
 
