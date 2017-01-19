@@ -184,15 +184,22 @@ void TestQgsRasterBlock::testWrite()
   res = rlayer->dataProvider()->writeBlock( block4, 1 );
   QVERIFY( !res );
 
-  // make the provider editable
+  // some sanity checks
   QVERIFY( !rlayer->dataProvider()->isEditable() );
-  rlayer->dataProvider()->setEditable( true );
+  res = rlayer->dataProvider()->setEditable( false );
+  QVERIFY( !res );
+
+  // make the provider editable
+  res = rlayer->dataProvider()->setEditable( true );
+  QVERIFY( res );
   QVERIFY( rlayer->dataProvider()->isEditable() );
 
   res = rlayer->dataProvider()->writeBlock( block4, 1 );
   QVERIFY( res );
 
-  rlayer->dataProvider()->setEditable( false );
+  // finish the editing session
+  res = rlayer->dataProvider()->setEditable( false );
+  QVERIFY( res );
   QVERIFY( !rlayer->dataProvider()->isEditable() );
 
   // verify the change is there

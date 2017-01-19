@@ -242,13 +242,14 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
     /** Turns on/off editing mode of the provider. When in editing mode, it is possible
      * to overwrite data of the provider using writeBlock() calls.
-     * @note Only some providers support editing mode and even those may fail to turn turn
-     * the underlying data source into editing mode, so it is necessery to check afterwards
-     * with isEditable() whether the operation was successful.
+     * @note Only some providers support editing mode and even those may fail to turn
+     * the underlying data source into editing mode, so it is necessery to check the return
+     * value whether the operation was successful.
+     * @returns true if the switch to/from editing mode was successful
      * @see isEditable(), writeBlock()
      * @note added in QGIS 3.0
      */
-    virtual void setEditable( bool enabled );
+    virtual bool setEditable( bool enabled );
 
     /** Writes into the provider datasource*/
     // TODO: add data type (may be defferent from band type)

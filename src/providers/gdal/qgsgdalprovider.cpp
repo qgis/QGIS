@@ -2933,16 +2933,16 @@ bool QgsGdalProvider::isEditable() const
   return mUpdate;
 }
 
-void QgsGdalProvider::setEditable( bool enabled )
+bool QgsGdalProvider::setEditable( bool enabled )
 {
   if ( enabled == mUpdate )
-    return;
+    return false;
 
   if ( !mValid )
-    return;
+    return false;
 
   if ( mGdalDataset != mGdalBaseDataset )
-    return;  // ignore the case of warped VRT for now (more complicated setup)
+    return false;  // ignore the case of warped VRT for now (more complicated setup)
 
   closeDataset();
 
@@ -2954,12 +2954,13 @@ void QgsGdalProvider::setEditable( bool enabled )
   {
     QString msg = QStringLiteral( "Cannot reopen GDAL dataset %1:\n%2" ).arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
     appendError( ERRMSG( msg ) );
-    return;
+    return false;
   }
 
   //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
   mGdalDataset = mGdalBaseDataset;
   mValid = true;
+  return true;
 }
 
 // pyramids resampling
