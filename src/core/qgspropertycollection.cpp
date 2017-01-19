@@ -93,7 +93,7 @@ QgsPropertyCollection::QgsPropertyCollection( const QString& name )
     : QgsAbstractPropertyCollection( name )
     , mDirty( false )
     , mHasActiveProperties( false )
-    , mHasActiveDynamicProperties( false )
+    , mHasDynamicProperties( false )
 {}
 
 int QgsPropertyCollection::count() const
@@ -122,7 +122,7 @@ void QgsPropertyCollection::clear()
   mProperties.clear();
   mDirty = false;
   mHasActiveProperties = false;
-  mHasActiveDynamicProperties = false;
+  mHasDynamicProperties = false;
 }
 
 void QgsPropertyCollection::setProperty( int key, const QgsProperty& property )
@@ -214,7 +214,7 @@ bool QgsPropertyCollection::isActive( int key ) const
 void QgsPropertyCollection::rescan() const
 {
   mHasActiveProperties = false;
-  mHasActiveDynamicProperties = false;
+  mHasDynamicProperties = false;
   mCount = 0;
   if ( !mProperties.isEmpty() )
   {
@@ -226,7 +226,7 @@ void QgsPropertyCollection::rescan() const
         mHasActiveProperties = true;
         if ( it.value().propertyType() != QgsProperty::StaticProperty )
         {
-          mHasActiveDynamicProperties = true;
+          mHasDynamicProperties = true;
           break;
         }
       }
@@ -245,12 +245,12 @@ bool QgsPropertyCollection::hasActiveProperties() const
   return mHasActiveProperties;
 }
 
-bool QgsPropertyCollection::hasActiveDynamicProperties() const
+bool QgsPropertyCollection::hasDynamicProperties() const
 {
   if ( mDirty )
     rescan();
 
-  return mHasActiveDynamicProperties;
+  return mHasDynamicProperties;
 }
 
 bool QgsPropertyCollection::writeXml( QDomElement &collectionElem, QDomDocument &doc, const QgsPropertiesDefinition& definitions ) const
@@ -309,10 +309,10 @@ bool QgsPropertyCollection::readXml( const QDomElement &collectionElem, const QD
 
     mCount++;
     mHasActiveProperties = mHasActiveProperties || prop.isActive();
-    mHasActiveDynamicProperties = mHasActiveDynamicProperties ||
-                                  ( prop.isActive() &&
-                                    ( prop.propertyType() == QgsProperty::FieldBasedProperty ||
-                                      prop.propertyType() == QgsProperty::ExpressionBasedProperty ) );
+    mHasDynamicProperties = mHasDynamicProperties ||
+                            ( prop.isActive() &&
+                              ( prop.propertyType() == QgsProperty::FieldBasedProperty ||
+                                prop.propertyType() == QgsProperty::ExpressionBasedProperty ) );
   }
   return true;
 }
@@ -324,7 +324,7 @@ bool QgsPropertyCollection::readXml( const QDomElement &collectionElem, const QD
 QgsPropertyCollectionStack::QgsPropertyCollectionStack()
     : mDirty( false )
     , mHasActiveProperties( false )
-    , mHasActiveDynamicProperties( false )
+    , mhasDynamicProperties( false )
 {
 
 }
@@ -338,7 +338,7 @@ QgsPropertyCollectionStack::QgsPropertyCollectionStack( const QgsPropertyCollect
     : QgsAbstractPropertyCollection( other )
     , mDirty( false )
     , mHasActiveProperties( false )
-    , mHasActiveDynamicProperties( false )
+    , mhasDynamicProperties( false )
 {
   clear();
 
@@ -346,7 +346,7 @@ QgsPropertyCollectionStack::QgsPropertyCollectionStack( const QgsPropertyCollect
   {
     mStack << new QgsPropertyCollection( *collection );
     mHasActiveProperties |= collection->hasActiveProperties();
-    mHasActiveDynamicProperties |= collection->hasActiveDynamicProperties();
+    mhasDynamicProperties |= collection->hasDynamicProperties();
   }
 }
 
@@ -359,7 +359,7 @@ QgsPropertyCollectionStack &QgsPropertyCollectionStack::operator=( const QgsProp
   {
     mStack << new QgsPropertyCollection( *collection );
     mHasActiveProperties |= collection->hasActiveProperties();
-    mHasActiveDynamicProperties |= collection->hasActiveDynamicProperties();
+    mhasDynamicProperties |= collection->hasDynamicProperties();
   }
 
   return *this;
@@ -375,7 +375,7 @@ void QgsPropertyCollectionStack::clear()
   qDeleteAll( mStack );
   mStack.clear();
   mHasActiveProperties = false;
-  mHasActiveDynamicProperties = false;
+  mhasDynamicProperties = false;
   mDirty = false;
 }
 
@@ -415,12 +415,12 @@ bool QgsPropertyCollectionStack::hasActiveProperties() const
   return mHasActiveProperties;
 }
 
-bool QgsPropertyCollectionStack::hasActiveDynamicProperties() const
+bool QgsPropertyCollectionStack::hasDynamicProperties() const
 {
   if ( mDirty )
     rescan();
 
-  return mHasActiveDynamicProperties;
+  return mhasDynamicProperties;
 }
 
 bool QgsPropertyCollectionStack::isActive( int key ) const
@@ -531,12 +531,12 @@ bool QgsPropertyCollectionStack::readXml( const QDomElement& collectionElem, con
 void QgsPropertyCollectionStack::rescan() const
 {
   mHasActiveProperties = false;
-  mHasActiveDynamicProperties = false;
+  mhasDynamicProperties = false;
   Q_FOREACH ( const QgsPropertyCollection* collection, mStack )
   {
     mHasActiveProperties |= collection->hasActiveProperties();
-    mHasActiveDynamicProperties |= collection->hasActiveDynamicProperties();
-    if ( mHasActiveProperties && mHasActiveDynamicProperties )
+    mhasDynamicProperties |= collection->hasDynamicProperties();
+    if ( mHasActiveProperties && mhasDynamicProperties )
       break;
   }
   mDirty = false;

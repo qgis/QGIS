@@ -51,7 +51,7 @@ class QgsAbstractPropertyCollection
 
     virtual bool hasActiveProperties() const = 0;
 
-    virtual bool hasActiveDynamicProperties() const = 0;
+    virtual bool hasDynamicProperties() const = 0;
 
     virtual bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const = 0;
 
@@ -87,7 +87,7 @@ class QgsPropertyCollection : QgsAbstractPropertyCollection
     QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
     bool isActive( int key ) const;
     bool hasActiveProperties() const;
-    bool hasActiveDynamicProperties() const;
+    bool hasDynamicProperties() const;
     bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const;
     bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition& definitions );
 
@@ -123,7 +123,7 @@ class QgsPropertyCollectionStack : QgsAbstractPropertyCollection
 
     bool hasActiveProperties() const;
 
-    bool hasActiveDynamicProperties() const;
+    bool hasDynamicProperties() const;
 
     bool isActive( int key ) const;
 

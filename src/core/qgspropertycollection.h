@@ -205,7 +205,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     /**
      * Returns true if the collection has any active properties, or false if all properties
      * within the collection are deactivated.
-     * @see hasActiveDynamicProperties()
+     * @see hasDynamicProperties()
      */
     virtual bool hasActiveProperties() const = 0;
 
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * within the collection are deactivated or if the collection only contains static properties.
      * @see hasActiveProperties()
      */
-    virtual bool hasActiveDynamicProperties() const = 0;
+    virtual bool hasDynamicProperties() const = 0;
 
     /**
      * Writes the current state of the property collection into an XML element
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
     bool isActive( int key ) const override;
     bool hasActiveProperties() const override;
-    bool hasActiveDynamicProperties() const override;
+    bool hasDynamicProperties() const override;
     bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const override;
     bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition& definitions ) override;
 
@@ -313,7 +313,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
 
     mutable bool mDirty;
     mutable bool mHasActiveProperties;
-    mutable bool mHasActiveDynamicProperties;
+    mutable bool mHasDynamicProperties;
     mutable int mCount = 0;
 
     //! Scans through properties and updates cached values
@@ -384,7 +384,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * Returns true if the collection has any active properties, or false if all properties
      * within the collection are deactivated.
      * @see isActive()
-     * @see hasActiveDynamicProperties()
+     * @see hasDynamicProperties()
      */
     bool hasActiveProperties() const override;
 
@@ -393,7 +393,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * within the collection are deactivated or if the collection only contains static properties.
      * @see hasActiveProperties()
      */
-    bool hasActiveDynamicProperties() const override;
+    bool hasDynamicProperties() const override;
 
     /**
      * Returns true if the stack contains an active property with the specified key.
@@ -441,7 +441,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
 
     mutable bool mDirty;
     mutable bool mHasActiveProperties;
-    mutable bool mHasActiveDynamicProperties;
+    mutable bool mhasDynamicProperties;
 
     //! Scans through properties and updates cached values
     void rescan() const;

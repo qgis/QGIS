@@ -832,7 +832,7 @@ void TestQgsProperty::propertyCollection()
   QVERIFY( collection.referencedFields( context ).isEmpty() );
   QCOMPARE( collection.count(), 0 );
   QCOMPARE( collection.propertyKeys(), QSet< int >() );
-  QVERIFY( !collection.hasActiveDynamicProperties() );
+  QVERIFY( !collection.hasDynamicProperties() );
   QVERIFY( !collection.hasActiveProperties() );
 
   QgsProperty property = QgsProperty::fromValue( "value", true );
@@ -844,7 +844,7 @@ void TestQgsProperty::propertyCollection()
   QCOMPARE( collection.value( Property1, context ), property.value( context ) );
   QVERIFY( collection.isActive( Property1 ) );
   QVERIFY( collection.hasActiveProperties() );
-  QVERIFY( !collection.hasActiveDynamicProperties() );
+  QVERIFY( !collection.hasDynamicProperties() );
 
   //preparation
   QVERIFY( collection.prepare( context ) );
@@ -862,7 +862,7 @@ void TestQgsProperty::propertyCollection()
   QCOMPARE( collection.propertyKeys(), QSet< int >() << Property1 );
   QCOMPARE( collection.property( Property1 ).value( context ), property2.value( context ) );
   QVERIFY( collection.hasActiveProperties() );
-  QVERIFY( !collection.hasActiveDynamicProperties() );
+  QVERIFY( !collection.hasDynamicProperties() );
 
   //implicit conversion
   collection.setProperty( Property3, 5 );
@@ -884,7 +884,7 @@ void TestQgsProperty::propertyCollection()
   QCOMPARE( collection.count(), 0 );
   QCOMPARE( collection.propertyKeys(), QSet<int>() );
   QVERIFY( !collection.hasActiveProperties() );
-  QVERIFY( !collection.hasActiveDynamicProperties() );
+  QVERIFY( !collection.hasDynamicProperties() );
 
   collection.setProperty( Property1, QgsProperty::fromValue( "v1", true ) );
   collection.setProperty( Property2, QgsProperty::fromValue( "v2", false ) );
@@ -923,7 +923,7 @@ void TestQgsProperty::propertyCollection()
   QVERIFY( restoredCollection.property( Property4 ).isActive() );
   QCOMPARE( restoredCollection.property( Property4 ).expressionString(), QString( "\"field1\" + \"field2\"" ) );
   QVERIFY( restoredCollection.hasActiveProperties() );
-  QVERIFY( restoredCollection.hasActiveDynamicProperties() );
+  QVERIFY( restoredCollection.hasDynamicProperties() );
 
   // copy constructor
   QgsPropertyCollection collection2( collection );
@@ -942,7 +942,7 @@ void TestQgsProperty::propertyCollection()
   QVERIFY( collection2.property( Property4 ).isActive() );
   QCOMPARE( collection2.property( Property4 ).expressionString(), QString( "\"field1\" + \"field2\"" ) );
   QVERIFY( collection2.hasActiveProperties() );
-  QVERIFY( collection2.hasActiveDynamicProperties() );
+  QVERIFY( collection2.hasDynamicProperties() );
 
   // assignment operator
   QgsPropertyCollection collection3;
@@ -963,21 +963,21 @@ void TestQgsProperty::propertyCollection()
   QVERIFY( collection3.property( Property4 ).isActive() );
   QCOMPARE( collection3.property( Property4 ).expressionString(), QString( "\"field1\" + \"field2\"" ) );
   QVERIFY( collection3.hasActiveProperties() );
-  QVERIFY( collection3.hasActiveDynamicProperties() );
+  QVERIFY( collection3.hasDynamicProperties() );
 
-  //test hasActiveProperties() and hasActiveDynamicProperties()
+  //test hasActiveProperties() and hasDynamicProperties()
   collection3.property( Property1 ).setActive( false );
   collection3.property( Property2 ).setActive( false );
   collection3.property( Property3 ).setActive( false );
   collection3.property( Property4 ).setActive( false );
   QVERIFY( !collection3.hasActiveProperties() );
-  QVERIFY( !collection3.hasActiveDynamicProperties() );
+  QVERIFY( !collection3.hasDynamicProperties() );
   collection3.property( Property4 ).setActive( true );
-  QVERIFY( collection3.hasActiveDynamicProperties() );
+  QVERIFY( collection3.hasDynamicProperties() );
   QVERIFY( collection3.hasActiveProperties() );
   collection3.property( Property4 ).setActive( false );
   collection3.property( Property2 ).setActive( true );
-  QVERIFY( !collection3.hasActiveDynamicProperties() );
+  QVERIFY( !collection3.hasDynamicProperties() );
   QVERIFY( collection3.hasActiveProperties() );
   collection3.property( Property2 ).setActive( false );
   QVERIFY( !collection3.hasActiveProperties() );
@@ -1020,7 +1020,7 @@ void TestQgsProperty::collectionStack()
   QVERIFY( !stack.isActive( Property1 ) );
   QVERIFY( stack.referencedFields( context ).isEmpty() );
   QCOMPARE( stack.count(), 0 );
-  QVERIFY( !stack.hasActiveDynamicProperties() );
+  QVERIFY( !stack.hasDynamicProperties() );
   QVERIFY( !stack.hasActiveProperties() );
 
   //add a collection to the stack
@@ -1035,7 +1035,7 @@ void TestQgsProperty::collectionStack()
   QVERIFY( !stack.value( Property1, context ).isValid() );
   QCOMPARE( stack.value( Property1, context, "default" ).toString(), QString( "default" ) );
   QVERIFY( !stack.isActive( Property1 ) );
-  QVERIFY( !stack.hasActiveDynamicProperties() );
+  QVERIFY( !stack.hasDynamicProperties() );
   QVERIFY( !stack.hasActiveProperties() );
   QVERIFY( stack.referencedFields( context ).isEmpty() );
 
@@ -1045,12 +1045,12 @@ void TestQgsProperty::collectionStack()
   QVERIFY( stack.isActive( Property1 ) );
   QCOMPARE( stack.property( Property1 ).value( context ), property.value( context ) );
   QCOMPARE( stack.value( Property1, context ), property.value( context ) );
-  QVERIFY( !stack.hasActiveDynamicProperties() );
+  QVERIFY( !stack.hasDynamicProperties() );
   QVERIFY( stack.hasActiveProperties() );
   QVERIFY( !stack.isActive( Property2 ) );
   collection->setProperty( Property2, QgsProperty::fromValue( "value1", true ) );
   QVERIFY( stack.isActive( Property2 ) );
-  QVERIFY( !stack.hasActiveDynamicProperties() );
+  QVERIFY( !stack.hasDynamicProperties() );
   QVERIFY( stack.hasActiveProperties() );
 
   //add a second collection
@@ -1060,14 +1060,14 @@ void TestQgsProperty::collectionStack()
   QCOMPARE( stack.at( 1 ), collection2 );
   QCOMPARE( const_cast< const QgsPropertyCollectionStack* >( &stack )->at( 1 ), collection2 );
   QCOMPARE( stack.collection( "collection2" ), collection2 );
-  QVERIFY( !stack.hasActiveDynamicProperties() );
+  QVERIFY( !stack.hasDynamicProperties() );
   QVERIFY( stack.hasActiveProperties() );
   QgsProperty property2 = QgsProperty::fromValue( "value2", true );
   collection2->setProperty( Property2, property2 );
   QVERIFY( stack.isActive( Property2 ) );
   QCOMPARE( stack.property( Property2 ).value( context ), property2.value( context ) );
   QCOMPARE( stack.value( Property2, context ), property2.value( context ) );
-  QVERIFY( !stack.hasActiveDynamicProperties() );
+  QVERIFY( !stack.hasDynamicProperties() );
   QVERIFY( stack.hasActiveProperties() );
 
   //preparation
@@ -1095,7 +1095,7 @@ void TestQgsProperty::collectionStack()
   //clearing
   stack.clear();
   QCOMPARE( stack.count(), 0 );
-  QVERIFY( !stack.hasActiveDynamicProperties() );
+  QVERIFY( !stack.hasDynamicProperties() );
   QVERIFY( !stack.hasActiveProperties() );
 
   // test copying a stack
@@ -1113,7 +1113,7 @@ void TestQgsProperty::collectionStack()
   QCOMPARE( stack3.at( 0 )->property( Property1 ).staticValue(), QVariant( "val1" ) );
   QCOMPARE( stack3.at( 0 )->property( Property2 ).staticValue(), QVariant( "val2" ) );
   QCOMPARE( stack3.at( 1 )->property( Property3 ).staticValue(), QVariant( "val3" ) );
-  QVERIFY( !stack3.hasActiveDynamicProperties() );
+  QVERIFY( !stack3.hasDynamicProperties() );
   QVERIFY( stack3.hasActiveProperties() );
   //assignment operator
   stack3.clear();
@@ -1125,14 +1125,14 @@ void TestQgsProperty::collectionStack()
   QCOMPARE( stack3.at( 0 )->property( Property1 ).staticValue(), QVariant( "val1" ) );
   QCOMPARE( stack3.at( 0 )->property( Property2 ).staticValue(), QVariant( "val2" ) );
   QCOMPARE( stack3.at( 1 )->property( Property3 ).staticValue(), QVariant( "val3" ) );
-  QVERIFY( !stack3.hasActiveDynamicProperties() );
+  QVERIFY( !stack3.hasDynamicProperties() );
   QVERIFY( stack3.hasActiveProperties() );
 
-  //check hasActiveDynamicProperties() and hasActiveProperties()
+  //check hasDynamicProperties() and hasActiveProperties()
   QgsPropertyCollectionStack stack4;
   stack4.appendCollection( new QgsPropertyCollection( "collection1" ) );
   stack4.at( 0 )->setProperty( Property1, "val1" );
-  QVERIFY( !stack4.hasActiveDynamicProperties() );
+  QVERIFY( !stack4.hasDynamicProperties() );
   QVERIFY( stack4.hasActiveProperties() );
   stack4.at( 0 )->property( Property1 ).setActive( false );
   QVERIFY( !stack4.hasActiveProperties() );
@@ -1140,14 +1140,14 @@ void TestQgsProperty::collectionStack()
   QVERIFY( stack4.hasActiveProperties() );
   stack4.at( 0 )->setProperty( Property2, QgsProperty::fromExpression( "\"field1\" + \"field2\"", true ) );
   QVERIFY( stack4.hasActiveProperties() );
-  QVERIFY( stack4.hasActiveDynamicProperties() );
+  QVERIFY( stack4.hasDynamicProperties() );
   QCOMPARE( stack4.referencedFields( context ), QSet< QString>() << "field1" << "field2" );
   stack4.at( 0 )->property( Property1 ).setActive( false );
   QVERIFY( stack4.hasActiveProperties() );
-  QVERIFY( stack4.hasActiveDynamicProperties() );
+  QVERIFY( stack4.hasDynamicProperties() );
   stack4.at( 0 )->property( Property2 ).setActive( false );
   QVERIFY( !stack4.hasActiveProperties() );
-  QVERIFY( !stack4.hasActiveDynamicProperties() );
+  QVERIFY( !stack4.hasDynamicProperties() );
 }
 
 QGSTEST_MAIN( TestQgsProperty )
