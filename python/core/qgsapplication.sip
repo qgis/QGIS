@@ -91,7 +91,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 %End
 
     virtual ~QgsApplication();
-
+    static QgsApplication* instance();
     //! Set the FileOpen event receiver
     static void setFileOpenEventReceiver( QObject * receiver );
 
