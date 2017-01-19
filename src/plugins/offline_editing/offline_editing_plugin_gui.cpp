@@ -18,7 +18,7 @@
 
 #include "offline_editing_plugin_gui.h"
 
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgsmaplayer.h"
@@ -167,7 +167,7 @@ void QgsOfflineEditingPluginGui::on_buttonBox_rejected()
 // TODO: help
 void QgsOfflineEditingPluginGui::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_offline_editing.html" ) );
 }
 
 void QgsOfflineEditingPluginGui::restoreState()

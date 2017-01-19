@@ -246,6 +246,7 @@
 #include "qgstransaction.h"
 #include "qgstransactiongroup.h"
 #include "qgsvectorlayerutils.h"
+#include "qgshelp.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -9301,12 +9302,7 @@ void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
 
 void QgisApp::helpContents()
 {
-  // We should really ship the HTML version of the docs local too.
-  openURL( QStringLiteral( "https://docs.qgis.org/%1.%2/%3/docs/user_manual/" )
-           .arg( Qgis::QGIS_VERSION_INT / 10000 )
-           .arg( Qgis::QGIS_VERSION_INT / 100 % 100 )
-           .arg( tr( "en", "documentation language" ) ),
-           false );
+  QgsHelp::openHelp( QStringLiteral( "index.html" ) );
 }
 
 void QgisApp::apiDocumentation()

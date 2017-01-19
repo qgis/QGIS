@@ -22,7 +22,7 @@
 #include "qgsoptionsdialogbase.h"
 #include "ui_qgsvectorlayerpropertiesbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayer.h"
 #include "layertree/qgslayertreemodel.h"
@@ -104,7 +104,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void loadStyle_clicked();
     void saveStyleAs_clicked();
     void mOptionsStackedWidget_CurrentChanged( int indx );
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html" ) ); }
     void on_pbnUpdateExtents_clicked();
 
     void on_mButtonAddJoin_clicked();

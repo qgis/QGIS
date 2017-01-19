@@ -19,7 +19,6 @@
 #include "qgsmeasuretool.h"
 
 #include "qgslogger.h"
-#include "qgscontexthelp.h"
 #include "qgsdistancearea.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"

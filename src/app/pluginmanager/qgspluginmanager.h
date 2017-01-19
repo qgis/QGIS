@@ -26,7 +26,7 @@
 #include "ui_qgspluginmanagerbase.h"
 #include "qgsoptionsdialogbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgsmessagebar.h"
 #include "qgspythonutils.h"
 
@@ -156,7 +156,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void on_ckbDeprecated_toggled( bool state );
 
     //! Open help browser
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "plugins/plugins.html#the-plugins-dialog" ) ); }
 
     //! Reimplement QgsOptionsDialogBase method to prevent modifying the tab list by signals from the stacked widget
     void optionsStackedWidget_CurrentChanged( int indx ) { Q_UNUSED( indx ) }

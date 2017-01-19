@@ -21,7 +21,7 @@
 #include <QModelIndex>
 #include "ui_qgsquerybuilderbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
@@ -79,7 +79,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
     void on_btnNot_clicked();
     void on_btnOr_clicked();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#query-builder" ) ); }
 
     /** Test the constructed sql statement to see if the vector layer data provider likes it.
      * The number of rows that would be returned is displayed in a message box.

@@ -13,7 +13,7 @@
 #include "qgsdecorationcopyrightdialog.h"
 #include "qgsdecorationcopyright.h"
 
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 //qt includes
 #include <QColorDialog>
@@ -100,5 +100,5 @@ void QgsDecorationCopyrightDialog::apply()
 
 void QgsDecorationCopyrightDialog::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#id57" ) );
 }
