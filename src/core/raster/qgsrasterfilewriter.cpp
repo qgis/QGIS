@@ -29,19 +29,16 @@
 #include <QTextStream>
 #include <QMessageBox>
 
-bool QgsRasterFileWriter::createOneBandRaster( Qgis::DataType dataType, int width, int height, const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs )
+QgsRasterDataProvider* QgsRasterFileWriter::createOneBandRaster( Qgis::DataType dataType, int width, int height, const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs )
 {
   if ( mTiledMode )
-    return false;  // does not make sense with tiled mode
+    return nullptr;  // does not make sense with tiled mode
 
   double pixelSize;
   double geoTransform[6];
   globalOutputParameters( extent, width, height, geoTransform, pixelSize );
 
-  QgsRasterDataProvider* destProvider = initOutput( width, height, crs, geoTransform, 1, dataType, QList<bool>(), QList<double>() );
-  bool res = destProvider != nullptr;
-  delete destProvider;
-  return res;
+  return initOutput( width, height, crs, geoTransform, 1, dataType, QList<bool>(), QList<double>() );
 }
 
 QgsRasterFileWriter::QgsRasterFileWriter( const QString& outputUrl )

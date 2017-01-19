@@ -191,8 +191,15 @@ void TestQgsRasterFileWriter::testCreateOneBandRaster()
   int width = 200, height = 100;
 
   QgsRasterFileWriter writer( filename );
-  bool res = writer.createOneBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
-  QVERIFY( res );
+  QgsRasterDataProvider* dp = writer.createOneBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QVERIFY( dp );
+  QCOMPARE( dp->xSize(), width );
+  QCOMPARE( dp->ySize(), height );
+  QCOMPARE( dp->extent(), extent );
+  QCOMPARE( dp->bandCount(), 1 );
+  QCOMPARE( dp->dataType( 1 ), Qgis::Byte );
+  QVERIFY( dp->isEditable() );
+  delete dp;
 
   QgsRasterLayer* rlayer = new QgsRasterLayer( filename, "tmp", "gdal" );
   QVERIFY( rlayer->isValid() );
@@ -201,6 +208,7 @@ void TestQgsRasterFileWriter::testCreateOneBandRaster()
   QCOMPARE( rlayer->extent(), extent );
   QCOMPARE( rlayer->bandCount(), 1 );
   QCOMPARE( rlayer->dataProvider()->dataType( 1 ), Qgis::Byte );
+  delete rlayer;
 }
 
 
