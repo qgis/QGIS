@@ -339,6 +339,18 @@ QString QgsRasterDataProvider::lastErrorFormat()
   return QStringLiteral( "text/plain" );
 }
 
+bool QgsRasterDataProvider::writeBlock( QgsRasterBlock* block, int band, int xOffset, int yOffset )
+{
+  if ( !block )
+    return false;
+  if ( !isEditable() )
+  {
+    QgsDebugMsg( "writeBlock() called on read-only provider." );
+    return false;
+  }
+  return write( block->bits(), band, block->width(), block->height(), xOffset, yOffset );
+}
+
 typedef QList<QPair<QString, QString> > *pyramidResamplingMethods_t();
 QList<QPair<QString, QString> > QgsRasterDataProvider::pyramidResamplingMethods( const QString& providerKey )
 {

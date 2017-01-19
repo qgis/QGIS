@@ -233,9 +233,43 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Current time stamp of data source */
     virtual QDateTime dataTimestamp() const;
 
+    /** Checks whether the provider is in editing mode, i.e. raster write operations will be accepted.
+     * By default providers are not editable. Use setEditable() method to enable/disable editing.
+     * @see setEditable(), writeBlock()
+     * @note added in QGIS 3.0
+     */
+    virtual bool isEditable() const;
+
+    /** Turns on/off editing mode of the provider. When in editing mode, it is possible
+     * to overwrite data of the provider using writeBlock() calls.
+     * @note Only some providers support editing mode and even those may fail to turn turn
+     * the underlying data source into editing mode, so it is necessery to check afterwards
+     * with isEditable() whether the operation was successful.
+     * @see isEditable(), writeBlock()
+     * @note added in QGIS 3.0
+     */
+    virtual void setEditable( bool enabled );
+
     /** Writes into the provider datasource*/
     // TODO: add data type (may be defferent from band type)
     virtual bool write( void* data, int band, int width, int height, int xOffset, int yOffset );
+
+    /** Writes pixel data from a raster block into the provider data source.
+     *
+     * This will override previously stored pixel values. It is assumed that cells in the passed
+     * raster block are aligned with the cells of the data source. If raster block does not cover
+     * the whole area of the data source, only a subset of pixels covered by the raster block
+     * will be overwritten. By default, writing of raster data starts from the first cell
+     * of the raster - it is possible to set offset in pixels by specifying non-zero
+     * xOffset and yOffset values.
+     *
+     * Writing is supported only by some data providers. Provider has to be in editing mode
+     * in order to allow write operations.
+     * @see isEditable(), setEditable()
+     * @returns true on success
+     * @note added in QGIS 3.0
+     */
+    bool writeBlock( QgsRasterBlock* block, int band, int xOffset = 0, int yOffset = 0 );
 
     /** Creates a new dataset with mDataSourceURI */
     static QgsRasterDataProvider* create( const QString &providerKey,

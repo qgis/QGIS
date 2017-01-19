@@ -2928,6 +2928,40 @@ QString QgsGdalProvider::validatePyramidsConfigOptions( QgsRaster::RasterPyramid
   return QString();
 }
 
+bool QgsGdalProvider::isEditable() const
+{
+  return mUpdate;
+}
+
+void QgsGdalProvider::setEditable( bool enabled )
+{
+  if ( enabled == mUpdate )
+    return;
+
+  if ( !mValid )
+    return;
+
+  if ( mGdalDataset != mGdalBaseDataset )
+    return;  // ignore the case of warped VRT for now (more complicated setup)
+
+  closeDataset();
+
+  mUpdate = enabled;
+
+  // reopen the dataset
+  mGdalBaseDataset = gdalOpen( dataSourceUri().toUtf8().constData(), mUpdate ? GA_Update : GA_ReadOnly );
+  if ( !mGdalBaseDataset )
+  {
+    QString msg = QStringLiteral( "Cannot reopen GDAL dataset %1:\n%2" ).arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    appendError( ERRMSG( msg ) );
+    return;
+  }
+
+  //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
+  mGdalDataset = mGdalBaseDataset;
+  mValid = true;
+}
+
 // pyramids resampling
 
 // see http://www.gdal.org/gdaladdo.html
