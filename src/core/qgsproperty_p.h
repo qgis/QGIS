@@ -85,5 +85,6 @@ class QgsPropertyPrivate : public QSharedData
 
 };
 
+///@endcond PRIVATE
 
 #endif // QGSPROPERTYPRIVATE_H

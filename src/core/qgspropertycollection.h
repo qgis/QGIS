@@ -107,7 +107,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * @param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * @param context QgsExpressionContext to evaluate the property for.
-     * @param defaultValue default string to return if the property cannot be calculated as a string
+     * @param defaultString default string to return if the property cannot be calculated as a string
      * @param ok if specified, will be set to true if conversion was successful
      * @returns value parsed to string
      * @see value()
@@ -220,6 +220,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * Writes the current state of the property collection into an XML element
      * @param collectionElem destination element for the property collection's state
      * @param doc DOM document
+     * @param definitions property definitions
      * @see readXml()
     */
     virtual bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const = 0;
@@ -228,6 +229,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * Reads property collection state from an XML element.
      * @param collectionElem source DOM element for property collection's state
      * @param doc DOM document
+     * @param definitions property definitions
      * @see writeXml()
     */
     virtual bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition& definitions ) = 0;
