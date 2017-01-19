@@ -1763,6 +1763,74 @@ tests:
           geometry:
             precision: 7
 
+  - algorithm: qgis:creategridlines
+    name: Create grid (lines with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HOVERLAY: 2.0
+      HSPACING: 5.0
+      VOVERLAY: 1.0
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_lines_overlay.gml
+        type: vector
+         
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (rectangle with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HOVERLAY: 2.0
+      HSPACING: 5.0
+      TYPE: '0'
+      VOVERLAY: 1.0
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_rectangle_overlay.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+        
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (diamond with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HOVERLAY: 2.0
+      HSPACING: 5.0
+      TYPE: '1'
+      VOVERLAY: 1.0
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_diamond_overlay.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+            
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (hexagon with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HOVERLAY: 2.0
+      HSPACING: 5.0
+      TYPE: '2'
+      VOVERLAY: 1.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/grid_hexagon_overlay.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          
   - algorithm: qgis:deleteholes
     name: Delete holes (no min)
     params:
