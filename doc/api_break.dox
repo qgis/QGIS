@@ -1386,6 +1386,11 @@ QgsPalettedRasterRenderer        {#qgis_api_break_3_0_QgsPalettedRasterRenderer}
 
 - The rgbArray() method was made private
 
+QgsPalettedRasterRenderer        {#qgis_api_break_3_0_QgsPalettedRasterRenderer}
+-------------------------
+
+- The rgbArray() method was made private
+
 QgsPalLabeling        {#qgis_api_break_3_0_QgsPalLabeling}
 --------------
 
