@@ -180,13 +180,6 @@ bool eVisGenericEventBrowserGui::initBrowser()
 
   chkboxUseOnlyFilename->setChecked( false );
 
-  QString myThemePath = QgsApplication::activeThemePath();
-  pbtnResetEventImagePathData->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.svg" ) ) );
-  pbtnResetCompassBearingData->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.svg" ) ) );
-  pbtnResetCompassOffsetData->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.svg" ) ) );
-  pbtnResetBasePathData->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.svg" ) ) );
-  pbtnResetUseOnlyFilenameData->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.svg" ) ) );
-  pbtnResetApplyPathRulesToDocs->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.svg" ) ) );
 
   chkboxSaveEventImagePathData->setChecked( false );
   chkboxSaveCompassBearingData->setChecked( false );
@@ -194,9 +187,6 @@ bool eVisGenericEventBrowserGui::initBrowser()
   chkboxSaveBasePathData->setChecked( false );
   chkboxSaveUseOnlyFilenameData->setChecked( false );
 
-  //Set up Configure External Application buttons
-  pbtnAddFileType->setIcon( QIcon( QPixmap( myThemePath + "/mActionNewAttribute.svg" ) ) );
-  pbtnDeleteFileType->setIcon( QIcon( QPixmap( myThemePath + "/mActionDeleteAttribute.svg" ) ) );
 
   //Check to for interface, not null when launched from plugin toolbar, otherwise expect map canvas
   if ( mInterface )
