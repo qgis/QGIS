@@ -195,6 +195,7 @@ class QgsDiagramLayerSettings
 
     void readXml( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+    bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
     /** Returns the set of any fields referenced by the layer's diagrams.
      * @param context expression context the diagrams will be drawn using

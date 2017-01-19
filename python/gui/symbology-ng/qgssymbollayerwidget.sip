@@ -30,7 +30,7 @@ class QgsSymbolLayerWidget : QWidget
     const QgsVectorLayer* vectorLayer() const;
 
   protected:
-    //void registerDataDefinedButton( QgsDataDefinedButtonV2* button, QgsSymbolLayer::Property key, QgsDataDefinedButtonV2::DataType type, const QString& description );
+    void registerDataDefinedButton( QgsPropertyOverrideButton* button, QgsSymbolLayer::Property key );
 
     QgsExpressionContext createExpressionContext() const;
 
