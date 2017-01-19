@@ -54,11 +54,6 @@ class EliminateSelection(GeoAlgorithm):
     MODE_SMALLEST_AREA = 1
     MODE_BOUNDARY = 2
 
-    def __init__(self):
-        GeoAlgorithm.__init__(self)
-        self.showInToolbox = True
-        self.showInModeler = True
-
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'eliminate.png'))
 
