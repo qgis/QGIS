@@ -299,7 +299,9 @@ void QgsMapLayerStyleManagerWidget::loadStyle()
   QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), myLastUsedDir,
-                       tr( "QGIS Layer Style File" ) + " (*.qml);;" + tr( "SLD File" ) + " (*.sld)" );
+                       tr( "QGIS Layer Properties File" ) + " (*.qlp);;" +
+                       tr( "QGIS Layer Style File" ) + " (*.qml);;" +
+                       tr( "SLD File" ) + " (*.sld)" );
   if ( myFileName.isNull() )
   {
     return;

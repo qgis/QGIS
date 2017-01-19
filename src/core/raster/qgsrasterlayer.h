@@ -167,7 +167,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *
      * The main tasks carried out by the constructor are:
      *
-     * -Load the rasters default style (.qml) file if it exists
+     * -Load the rasters default style (.qlp) file if it exists
      *
      * -Populate the RasterStatsVector with initial values for each band.
      *

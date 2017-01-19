@@ -429,7 +429,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     static QString capitalizeLayerName( const QString& name );
 
     /** Retrieve the style URI for this layer
-     * (either as a .qml file on disk or as a
+     * (either as a .qlp file on disk or as a
      * record in the users style table in their personal qgis.db)
      * @return a QString with the style file name
      * @see also loadNamedStyle () and saveNamedStyle ();
@@ -437,7 +437,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QString styleURI() const;
 
     /** Retrieve the default style for this layer if one
-     * exists (either as a .qml file on disk or as a
+     * exists (either as a .qlp file on disk or as a
      * record in the users style table in their personal qgis.db)
      * @param resultFlag a reference to a flag that will be set to false if
      * we did not manage to load the default style.
@@ -447,7 +447,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QString loadDefaultStyle( bool & resultFlag );
 
     /** Retrieve a named style for this layer if one
-     * exists (either as a .qml file on disk or as a
+     * exists (either as a .qlp file on disk or as a
      * record in the users style table in their personal qgis.db)
      * @param uri - the file name or other URI for the
      * style file. First an attempt will be made to see if this
@@ -464,10 +464,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Retrieve a named style for this layer from a sqlite database.
      * @param db path to sqlite database
      * @param uri uri for table
-     * @param qml will be set to QML style content from database
+     * @param qlp will be set to QLP style content from database
      * @returns true if style was successfully loaded
      */
-    virtual bool loadNamedStyleFromDb( const QString &db, const QString &uri, QString &qml );
+    virtual bool loadNamedStyleFromDb( const QString &db, const QString &uri, QString &qlp );
 
     /**
      * Import the properties of this layer from a QDomDocument
@@ -497,7 +497,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg ) const;
 
     /** Save the properties of this layer as the default style
-     * (either as a .qml file on disk or as a
+     * (either as a .qlp file on disk or as a
      * record in the users style table in their personal qgis.db)
      * @param resultFlag a reference to a flag that will be set to false if
      * we did not manage to save the default style.
@@ -507,7 +507,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QString saveDefaultStyle( bool & resultFlag );
 
     /** Save the properties of this layer as a named style
-     * (either as a .qml file on disk or as a
+     * (either as a .qlp file on disk or as a
      * record in the users style table in their personal qgis.db)
      * @param uri the file name or other URI for the
      * style file. First an attempt will be made to see if this

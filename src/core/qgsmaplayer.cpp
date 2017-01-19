@@ -1021,7 +1021,7 @@ QString QgsMapLayer::styleURI() const
   else if ( myURI.startsWith( QLatin1String( "/vsizip/" ), Qt::CaseInsensitive ) &&
             myURI.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
   {
-    // ideally we should look for .qml file inside zip file
+    // ideally we should look for .qlp file inside zip file
     myURI.remove( 0, 8 );
   }
   else if ( myURI.startsWith( QLatin1String( "/vsitar/" ), Qt::CaseInsensitive ) &&
@@ -1029,7 +1029,7 @@ QString QgsMapLayer::styleURI() const
               myURI.endsWith( QLatin1String( ".tar.gz" ), Qt::CaseInsensitive ) ||
               myURI.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) ) )
   {
-    // ideally we should look for .qml file inside tar file
+    // ideally we should look for .qlp file inside tar file
     myURI.remove( 0, 8 );
   }
 
@@ -1050,8 +1050,12 @@ QString QgsMapLayer::styleURI() const
     else if ( myURI.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) )
       myURI.chop( 4 );
     myFileInfo.setFile( myURI );
-    // get the file name for our .qml style file
-    key = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".qml";
+    // get the file name for our .qlp style file
+    key = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".qlp";
+    if ( !QFileInfo::exists( key ) )
+    {
+      key = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".qml";
+    }
   }
   else
   {
@@ -1066,7 +1070,7 @@ QString QgsMapLayer::loadDefaultStyle( bool & resultFlag )
   return loadNamedStyle( styleURI(), resultFlag );
 }
 
-bool QgsMapLayer::loadNamedStyleFromDb( const QString &db, const QString &uri, QString &qml )
+bool QgsMapLayer::loadNamedStyleFromDb( const QString &db, const QString &uri, QString &qlp )
 {
   QgsDebugMsg( QString( "db = %1 uri = %2" ).arg( db, uri ) );
 
@@ -1098,7 +1102,7 @@ bool QgsMapLayer::loadNamedStyleFromDb( const QString &db, const QString &uri, Q
     if ( sqlite3_bind_text( myPreparedStatement, 1, param.data(), param.length(), SQLITE_STATIC ) == SQLITE_OK &&
          sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
-      qml = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
+      qlp = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
       theResultFlag = true;
     }
 
@@ -1138,9 +1142,9 @@ QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag )
     QgsDebugMsg( QString( "project fileName: %1" ).arg( project.absoluteFilePath() ) );
 
     QString qml;
-    if ( loadNamedStyleFromDb( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ), uri, qml ) ||
-         ( project.exists() && loadNamedStyleFromDb( project.absoluteDir().absoluteFilePath( project.baseName() + ".qmldb" ), uri, qml ) ) ||
-         loadNamedStyleFromDb( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/qgis.qmldb" ) ), uri, qml ) )
+    if ( loadNamedStyleFromDb( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qlpdb" ) ), uri, qml ) ||
+         ( project.exists() && loadNamedStyleFromDb( project.absoluteDir().absoluteFilePath( project.baseName() + ".qlpdb" ), uri, qml ) ) ||
+         loadNamedStyleFromDb( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/qgis.qlpdb" ) ), uri, qml ) )
     {
       resultFlag = myDocument.setContent( qml, &myErrorMessage, &line, &column );
       if ( !resultFlag )
@@ -1278,7 +1282,7 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
   QDomDocument myDocument;
   exportNamedStyle( myDocument, myErrorMessage );
 
-  // check if the uri is a file or ends with .qml,
+  // check if the uri is a file or ends with .qlp,
   // which indicates that it should become one
   // everything else goes to the database
   QString filename;
@@ -1297,7 +1301,7 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
   else if ( vlayer && vlayer->providerType() == QLatin1String( "delimitedtext" ) )
   {
     filename = QUrl::fromEncoded( uri.toLatin1() ).toLocalFile();
-    // toLocalFile() returns an empty string if theURI is a plain Windows-path, e.g. "C:/style.qml"
+    // toLocalFile() returns an empty string if theURI is a plain Windows-path, e.g. "C:/style.qlp"
     if ( filename.isEmpty() )
       filename = uri;
   }
@@ -1307,7 +1311,7 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
   }
 
   QFileInfo myFileInfo( filename );
-  if ( myFileInfo.exists() || filename.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
+  if ( myFileInfo.exists() || filename.endsWith( QLatin1String( ".qlp" ), Qt::CaseInsensitive ) )
   {
     QFileInfo myDirInfo( myFileInfo.path() );  //excludes file name
     if ( !myDirInfo.isWritable() )
@@ -1315,8 +1319,8 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
       return tr( "The directory containing your dataset needs to be writable!" );
     }
 
-    // now construct the file name for our .qml style file
-    QString myFileName = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".qml";
+    // now construct the file name for our .qlp style file
+    QString myFileName = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".qlp";
 
     QFile myFile( myFileName );
     if ( myFile.open( QFile::WriteOnly | QFile::Truncate ) )
@@ -1344,7 +1348,7 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
     const char *myTail;
     int myResult;
 
-    myResult = sqlite3_open( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ).toUtf8().data(), &myDatabase );
+    myResult = sqlite3_open( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qlpdb" ) ).toUtf8().data(), &myDatabase );
     if ( myResult != SQLITE_OK )
     {
       return tr( "User database could not be opened." );
@@ -1489,7 +1493,7 @@ QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
   else if ( vlayer->providerType() == QLatin1String( "delimitedtext" ) )
   {
     filename = QUrl::fromEncoded( uri.toLatin1() ).toLocalFile();
-    // toLocalFile() returns an empty string if theURI is a plain Windows-path, e.g. "C:/style.qml"
+    // toLocalFile() returns an empty string if theURI is a plain Windows-path, e.g. "C:/style.qlp"
     if ( filename.isEmpty() )
       filename = uri;
   }
