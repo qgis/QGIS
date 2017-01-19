@@ -141,6 +141,12 @@ class CORE_EXPORT QgsPropertyDefinition
      */
     DataType dataType() const { return mTypes; }
 
+    /**
+     * Returns the property's standard template, if applicable. Non standard
+     * types will return the Custom template.
+     */
+    StandardPropertyTemplate standardTemplate() const { return mStandardType; }
+
   private:
 
     QString mName;

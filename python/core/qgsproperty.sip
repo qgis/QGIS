@@ -54,6 +54,8 @@ class QgsPropertyDefinition
 
     DataType dataType() const;
 
+    StandardPropertyTemplate standardTemplate() const;
+
 };
 
 class QgsProperty

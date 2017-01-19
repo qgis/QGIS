@@ -32,7 +32,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString& name, const QString
     , mDescription( description )
     , mStandardType( type )
 {
-  switch ( type )
+  switch ( mStandardType )
   {
     case Boolean:
       mTypes = DataTypeBoolean;
