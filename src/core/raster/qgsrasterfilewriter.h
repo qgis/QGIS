@@ -55,6 +55,16 @@ class CORE_EXPORT QgsRasterFileWriter
 
     QgsRasterFileWriter( const QString& outputUrl );
 
+    /** Create a raster file with one band without initializing the pixel data.
+     * @note Does not work with tiled mode enabled.
+     * @returns true when the raster has been created successfully
+     * @note added in QGIS 3.0
+     */
+    bool createOneBandRaster( Qgis::DataType dataType,
+                              int width, int height,
+                              const QgsRectangle& extent,
+                              const QgsCoordinateReferenceSystem& crs );
+
     /** Write raster file
         @param pipe raster pipe
         @param nCols number of output columns
