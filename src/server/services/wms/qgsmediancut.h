@@ -1,9 +1,11 @@
 /***************************************************************************
-                              qgswmsgetstyle.h
-                              -------------------------
+                              qgsmediancut.h
+
+  Median cut color reduction implementation
+  -----------------------------------------
   begin                : December 20 , 2016
-  copyright            : (C) 2007 by Marco Hugentobler  (original code)
-                         (C) 2014 by Alessandro Pasotti (original code)
+  copyright            : (C) 2007 by Marco Hugentobler  ( parts fron qgswmshandler)
+                         (C) 2014 by Alessandro Pasotti ( parts from qgswmshandler)
                          (C) 2016 by David Marteau
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
                          a dot pasotti at itopen dot it
@@ -18,22 +20,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef QGSMEDIANCUT_H
+#define QGSMEDIANCUT_H
+
+#include <QVector>
+#include <QImage>
+
+/**
+ * \ingroup server
+ * Median cut implementation
+ */
 
 namespace QgsWms
 {
 
-  /** Output GetStyle response
+  /**
+   * Median cut implementation used when reducing RGB colors to palletized colors
    */
-  void writeGetStyle( QgsServerInterface* serverIface, const QString& version,
-                      const QgsServerRequest& request, QgsServerResponse& response );
+  void medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage );
 
-  /** Returns an SLD file with the style of the requested layer
-   */
-  QDomDocument getStyle( QgsServerInterface* serverIface, const QString& version,
-                         const QgsServerRequest& request );
+} // namespace QgsWms
 
-} // samespace QgsWms
-
-
+#endif
 
 

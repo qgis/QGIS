@@ -18,12 +18,12 @@
 #ifndef QGSFILTERRESTORER_H
 #define QGSFILTERRESTORER_H
 
-#include "qgsaccesscontrol.h"
 #include "qgis_server.h"
 
 #include <QHash>
 
 class QgsMapLayer;
+class QgsAccessControl;
 
 /** RAII class to restore layer filters on destruction
  */

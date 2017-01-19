@@ -20,7 +20,7 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsgetmap.h"
-#include "qgswmsservertransitional.h"
+#include "qgswmsrenderer.h"
 
 namespace QgsWms
 {
@@ -32,17 +32,13 @@ namespace QgsWms
     Q_UNUSED( version );
 
     QgsServerRequest::Parameters params = request.parameters();
-    QgsWmsConfigParser* parser = getConfigParser( serverIface );
+    QgsRenderer renderer( serverIface, params, getConfigParser( serverIface ) );
 
-    QgsWmsServer server( serverIface->configFilePath(),
-                         *serverIface->serverSettings(), params, parser,
-                         serverIface->accessControls() );
-
-    QScopedPointer<QImage> result( server.getMap() );
+    QScopedPointer<QImage> result( renderer.getMap() );
     if ( !result.isNull() )
     {
       QString format = params.value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
-      writeImage( response, *result, format, server.getImageQuality() );
+      writeImage( response, *result, format, renderer.getImageQuality() );
     }
     else
     {

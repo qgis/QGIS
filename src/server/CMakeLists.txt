@@ -52,6 +52,8 @@ SET ( qgis_mapserv_SRCS
   qgsfcgiserverresponse.cpp
   qgsbufferserverresponse.cpp
   qgsfilterresponsedecorator.cpp
+  qgsserverinterface.cpp
+  qgsserverinterfaceimpl.cpp
   qgsfilterrestorer.cpp
 #----------------------------
 )
@@ -98,11 +100,9 @@ SET(qgis_mapserv_MOC_HDRS ${qgis_mapserv_MOC_HDRS})
 IF (WITH_SERVER_PLUGINS)
 SET(qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
     qgsserverplugins.cpp
-    qgsserverinterface.cpp
     qgsserverfilter.cpp
     qgsaccesscontrolfilter.cpp
     qgsaccesscontrol.cpp
-    qgsserverinterfaceimpl.cpp
 )
 ENDIF (WITH_SERVER_PLUGINS)
 

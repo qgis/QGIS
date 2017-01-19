@@ -44,9 +44,9 @@ namespace QgsWcs
   QByteArray getCoverageData( QgsServerInterface* serverIface, const QgsServerRequest& request )
   {
     QgsWCSProjectParser* configParser = getConfigParser( serverIface );
-
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl* accessControl = serverIface->accessControls();
-
+#endif
     QStringList wcsLayersId = configParser->wcsLayers();
 
     QList<QgsMapLayer*> layerList;

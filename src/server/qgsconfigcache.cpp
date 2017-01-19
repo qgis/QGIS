@@ -79,9 +79,7 @@ QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& file
 
 QgsWCSProjectParser *QgsConfigCache::wcsConfiguration(
   const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* accessControl
-#endif
 )
 {
   QgsWCSProjectParser *p = mWCSConfigCache.object( filePath );
@@ -94,9 +92,7 @@ QgsWCSProjectParser *QgsConfigCache::wcsConfiguration(
     }
     p = new QgsWCSProjectParser(
       filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , accessControl
-#endif
     );
     mWCSConfigCache.insert( filePath, p );
     p = mWCSConfigCache.object( filePath );
@@ -109,9 +105,7 @@ QgsWCSProjectParser *QgsConfigCache::wcsConfiguration(
 
 QgsWfsProjectParser *QgsConfigCache::wfsConfiguration(
   const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* accessControl
-#endif
 )
 {
   QgsWfsProjectParser *p = mWFSConfigCache.object( filePath );
@@ -124,9 +118,7 @@ QgsWfsProjectParser *QgsConfigCache::wfsConfiguration(
     }
     p = new QgsWfsProjectParser(
       filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , accessControl
-#endif
     );
     mWFSConfigCache.insert( filePath, p );
     p = mWFSConfigCache.object( filePath );
@@ -139,9 +131,7 @@ QgsWfsProjectParser *QgsConfigCache::wfsConfiguration(
 
 QgsWmsConfigParser *QgsConfigCache::wmsConfiguration(
   const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* accessControl
-#endif
   , const QMap<QString, QString>& parameterMap
 )
 {
@@ -165,9 +155,7 @@ QgsWmsConfigParser *QgsConfigCache::wmsConfiguration(
     {
       p = new QgsWmsProjectParser(
         filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
         , accessControl
-#endif
       );
     }
     mWMSConfigCache.insert( filePath, p );

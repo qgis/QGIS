@@ -17,7 +17,6 @@ email                : david dot marteau at 3liz dot com
 #include "qgsmodule.h"
 #include "qgsdxfwriter.h"
 #include "qgswmsutils.h"
-#include "qgswmsservertransitional.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsdxfexport.h"
@@ -33,8 +32,7 @@ namespace QgsWms
       QMap<QString, QString> options;
 
       QStringList optionsList = optionString.split( QStringLiteral( ";" ) );
-      QStringList::const_iterator optionsIt = optionsList.constBegin();
-      for ( ; optionsIt != optionsList.constEnd(); ++optionsIt )
+      for ( auto optionsIt = optionsList.constBegin(); optionsIt != optionsList.constEnd(); ++optionsIt )
       {
         int equalIdx = optionsIt->indexOf( QLatin1String( ":" ) );
         if ( equalIdx > 0 && equalIdx < ( optionsIt->length() - 1 ) )
@@ -46,7 +44,7 @@ namespace QgsWms
       return options;
     }
 
-    void readDxfLayerSettings( QgsWmsServer& server, QgsWmsConfigParser* configParser,
+    void readDxfLayerSettings( const QgsServerRequest::Parameters& parameters, QgsWmsConfigParser* configParser,
                                QList< QPair<QgsVectorLayer *, int > >& layers,
                                const QMap<QString, QString>& options )
     {
@@ -61,7 +59,7 @@ namespace QgsWms
 
       //LAYERS and STYLES
       QStringList layerList, styleList;
-      server.readLayersAndStyles( layerList, styleList );
+      readLayersAndStyles( parameters, layerList, styleList );
 
       for ( int i = 0; i < layerList.size(); ++i )
       {
@@ -73,8 +71,7 @@ namespace QgsWms
         }
 
         QList<QgsMapLayer*> layerList = configParser->mapLayerFromStyle( layerName, styleName );
-        QList<QgsMapLayer*>::const_iterator layerIt = layerList.constBegin();
-        for ( ; layerIt != layerList.constEnd(); ++layerIt )
+        for ( auto layerIt = layerList.constBegin(); layerIt != layerList.constEnd(); ++layerIt )
         {
           if ( !( *layerIt ) )
           {
@@ -122,14 +119,8 @@ namespace QgsWms
 
     QMap<QString, QString> formatOptionsMap = parseFormatOptions( params.value( QStringLiteral( "FORMAT_OPTIONS" ) ) );
 
-    QgsWmsServer server( serverIface->configFilePath(),
-                         *serverIface->serverSettings(),
-                         params,
-                         configParser,
-                         serverIface->accessControls() );
-
     QList< QPair<QgsVectorLayer *, int > > layers;
-    readDxfLayerSettings( server, configParser, layers, formatOptionsMap );
+    readDxfLayerSettings( params, configParser, layers, formatOptionsMap );
     dxf.addLayers( layers );
 
     dxf.setLayerTitleAsName( formatOptionsMap.contains( QStringLiteral( "USE_TITLE_AS_LAYERNAME" ) ) );
