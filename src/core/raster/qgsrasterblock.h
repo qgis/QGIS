@@ -270,6 +270,16 @@ class CORE_EXPORT QgsRasterBlock
      */
     QByteArray data() const;
 
+    /** Rewrite raw pixel data.
+     * If the data array is shorter than the internal array within the raster block object,
+     * pixels at the end will stay untouched. If the data array is longer than the internal
+     * array, only the initial data from the input array will be used.
+     * Optionally it is possible to set non-zero offset (in bytes) if the input data should
+     * overwrite data somewhere in the middle of the internal buffer.
+     * @note added in QGIS 3.0
+     */
+    void setData( const QByteArray& data, int offset = 0 );
+
     /** \brief Get pointer to data
      *  @param row row index
      *  @param column column index

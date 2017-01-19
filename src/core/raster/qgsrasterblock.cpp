@@ -653,6 +653,23 @@ QByteArray QgsRasterBlock::data() const
     return QByteArray();
 }
 
+void QgsRasterBlock::setData( const QByteArray& data, int offset )
+{
+  if ( offset < 0 )
+    return;  // negative offsets not allowed
+
+  if ( mData )
+  {
+    int len = qMin( data.size(), typeSize( mDataType ) * mWidth * mHeight - offset );
+    ::memcpy( static_cast<char *>( mData ) + offset, data.constData(), len );
+  }
+  else if ( mImage && mImage->constBits() )
+  {
+    int len = qMin( data.size(), mImage->byteCount() - offset );
+    ::memcpy( mImage->bits() + offset, data.constData(), len );
+  }
+}
+
 char * QgsRasterBlock::bits( qgssize index )
 {
   // Not testing type to avoid too much overhead because this method is called per pixel
