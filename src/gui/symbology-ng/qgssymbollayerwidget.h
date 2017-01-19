@@ -63,6 +63,12 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
 
   protected:
 
+    /**
+     * Registers a data defined override button. Handles setting up connections
+     * for the button and initializing the button to show the correct descriptions
+     * and help text for the associated property.
+     * @note added in QGIS 3.0
+     */
     void registerDataDefinedButton( QgsPropertyOverrideButton* button, QgsSymbolLayer::Property key );
 
     QgsExpressionContext createExpressionContext() const override;

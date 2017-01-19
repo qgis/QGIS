@@ -95,6 +95,9 @@ class CORE_EXPORT QgsDiagramLayerSettings
       StartAngle, //! Angle offset for pie diagram
     };
 
+    /**
+     * Constructor for QgsDiagramLayerSettings.
+     */
     QgsDiagramLayerSettings() = default;
 
     //! Copy constructor
@@ -238,7 +241,16 @@ class CORE_EXPORT QgsDiagramLayerSettings
      */
     void setShowAllDiagrams( bool showAllDiagrams ) { mShowAll = showAllDiagrams; }
 
+    /**
+     * Reads the diagram settings from a DOM element.
+     * @see writeXml()
+     */
     void readXml( const QDomElement& elem, const QgsVectorLayer* layer );
+
+    /**
+     * Writes the diagram settings to a DOM element.
+     * @see readXml()
+     */
     void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 
     /**

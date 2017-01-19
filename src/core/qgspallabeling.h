@@ -786,23 +786,23 @@ class CORE_EXPORT QgsPalLabeling
     static QStringList splitToGraphemes( const QString& text );
 
   protected:
-    // update temporary QgsPalLayerSettings with any data defined text style values
+    //! Update temporary QgsPalLayerSettings with any data defined text style values
     static void dataDefinedTextStyle( QgsPalLayerSettings& tmpLyr,
                                       const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
-    // update temporary QgsPalLayerSettings with any data defined text formatting values
+    //! Update temporary QgsPalLayerSettings with any data defined text formatting values
     static void dataDefinedTextFormatting( QgsPalLayerSettings& tmpLyr,
                                            const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
-    // update temporary QgsPalLayerSettings with any data defined text buffer values
+    //! Update temporary QgsPalLayerSettings with any data defined text buffer values
     static void dataDefinedTextBuffer( QgsPalLayerSettings& tmpLyr,
                                        const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
-    // update temporary QgsPalLayerSettings with any data defined shape background values
+    //! Update temporary QgsPalLayerSettings with any data defined shape background values
     static void dataDefinedShapeBackground( QgsPalLayerSettings& tmpLyr,
                                             const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 
-    // update temporary QgsPalLayerSettings with any data defined drop shadow values
+    //! Update temporary QgsPalLayerSettings with any data defined drop shadow values
     static void dataDefinedDropShadow( QgsPalLayerSettings& tmpLyr,
                                        const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues );
 

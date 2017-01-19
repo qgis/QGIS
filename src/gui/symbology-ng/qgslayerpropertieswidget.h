@@ -78,6 +78,12 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, protected Qgs
 
     QgsExpressionContext createExpressionContext() const override;
 
+    /**
+     * Registers a data defined override button. Handles setting up connections
+     * for the button and initializing the button to show the correct descriptions
+     * and help text for the associated property.
+     * @note added in QGIS 3.0
+     */
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 
   protected: // data
@@ -86,12 +92,10 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, protected Qgs
     const QgsSymbol* mSymbol;
     const QgsVectorLayer* mVectorLayer;
 
-  protected slots:
-    void updateProperty();
-
   private slots:
     void reloadLayer();
     void on_mEnabledCheckBox_toggled( bool enabled );
+    void updateProperty();
 
   private:
 
