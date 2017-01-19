@@ -1385,10 +1385,6 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
     return false;
   }
 
-  QDomElement mapLayerNode = layer_node.toElement();
-  if ( mapLayerNode.attribute( QStringLiteral( "readOnly" ), QStringLiteral( "0" ) ).toInt() == 1 )
-    mReadOnly = true;
-
   QDomElement pkeyElem = pkeyNode.toElement();
   if ( !pkeyElem.isNull() )
   {
@@ -1418,79 +1414,11 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
 
   readStyleManager( layer_node );
 
-  // default expressions
-  mDefaultExpressionMap.clear();
-  QDomNode defaultsNode = layer_node.namedItem( QStringLiteral( "defaults" ) );
-  if ( !defaultsNode.isNull() )
-  {
-    QDomNodeList defaultNodeList = defaultsNode.toElement().elementsByTagName( QStringLiteral( "default" ) );
-    for ( int i = 0; i < defaultNodeList.size(); ++i )
-    {
-      QDomElement defaultElem = defaultNodeList.at( i ).toElement();
-
-      QString field = defaultElem.attribute( QStringLiteral( "field" ), QString() );
-      QString expression = defaultElem.attribute( QStringLiteral( "expression" ), QString() );
-      if ( field.isEmpty() || expression.isEmpty() )
-        continue;
-
-      mDefaultExpressionMap.insert( field, expression );
-    }
-  }
-
-  // constraints
-  mFieldConstraints.clear();
-  mFieldConstraintStrength.clear();
-  QDomNode constraintsNode = layer_node.namedItem( "constraints" );
-  if ( !constraintsNode.isNull() )
-  {
-    QDomNodeList constraintNodeList = constraintsNode.toElement().elementsByTagName( "constraint" );
-    for ( int i = 0; i < constraintNodeList.size(); ++i )
-    {
-      QDomElement constraintElem = constraintNodeList.at( i ).toElement();
-
-      QString field = constraintElem.attribute( "field", QString() );
-      int constraints = constraintElem.attribute( "constraints", QString( "0" ) ).toInt();
-      if ( field.isEmpty() || constraints == 0 )
-        continue;
-
-      mFieldConstraints.insert( field, static_cast< QgsFieldConstraints::Constraints >( constraints ) );
-
-      int uniqueStrength = constraintElem.attribute( "unique_strength", QString( "1" ) ).toInt();
-      int notNullStrength = constraintElem.attribute( "notnull_strength", QString( "1" ) ).toInt();
-      int expStrength = constraintElem.attribute( "exp_strength", QString( "1" ) ).toInt();
-
-      mFieldConstraintStrength.insert( qMakePair( field, QgsFieldConstraints::ConstraintUnique ), static_cast< QgsFieldConstraints::ConstraintStrength >( uniqueStrength ) );
-      mFieldConstraintStrength.insert( qMakePair( field, QgsFieldConstraints::ConstraintNotNull ), static_cast< QgsFieldConstraints::ConstraintStrength >( notNullStrength ) );
-      mFieldConstraintStrength.insert( qMakePair( field, QgsFieldConstraints::ConstraintExpression ), static_cast< QgsFieldConstraints::ConstraintStrength >( expStrength ) );
-    }
-  }
-  mFieldConstraintExpressions.clear();
-  QDomNode constraintExpressionsNode = layer_node.namedItem( "constraintExpressions" );
-  if ( !constraintExpressionsNode.isNull() )
-  {
-    QDomNodeList constraintNodeList = constraintExpressionsNode.toElement().elementsByTagName( "constraint" );
-    for ( int i = 0; i < constraintNodeList.size(); ++i )
-    {
-      QDomElement constraintElem = constraintNodeList.at( i ).toElement();
-
-      QString field = constraintElem.attribute( "field", QString() );
-      QString exp = constraintElem.attribute( "exp", QString() );
-      QString desc = constraintElem.attribute( "desc", QString() );
-      if ( field.isEmpty() || exp.isEmpty() )
-        continue;
-
-      mFieldConstraintExpressions.insert( field, qMakePair( exp, desc ) );
-    }
-  }
-
-  updateFields();
-
   QDomNode depsNode = layer_node.namedItem( QStringLiteral( "dataDependencies" ) );
   QDomNodeList depsNodes = depsNode.childNodes();
   QSet<QgsMapLayerDependency> sources;
   for ( int i = 0; i < depsNodes.count(); i++ )
   {
-    QDomNode node = depsNodes.at( i );
     QString source = depsNodes.at( i ).toElement().attribute( QStringLiteral( "id" ) );
     sources << QgsMapLayerDependency( source );
   }
@@ -1678,44 +1606,6 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   }
   layer_node.appendChild( dependenciesElement );
 
-  //default expressions
-  QDomElement defaultsElem = document.createElement( QStringLiteral( "defaults" ) );
-  Q_FOREACH ( const QgsField& field, mFields )
-  {
-    QDomElement defaultElem = document.createElement( QStringLiteral( "default" ) );
-    defaultElem.setAttribute( QStringLiteral( "field" ), field.name() );
-    defaultElem.setAttribute( QStringLiteral( "expression" ), field.defaultValueExpression() );
-    defaultsElem.appendChild( defaultElem );
-  }
-  layer_node.appendChild( defaultsElem );
-
-  // constraints
-  QDomElement constraintsElem = document.createElement( "constraints" );
-  Q_FOREACH ( const QgsField& field, mFields )
-  {
-    QDomElement constraintElem = document.createElement( "constraint" );
-    constraintElem.setAttribute( "field", field.name() );
-    constraintElem.setAttribute( "constraints", field.constraints().constraints() );
-    constraintElem.setAttribute( "unique_strength", field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
-    constraintElem.setAttribute( "notnull_strength", field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
-    constraintElem.setAttribute( "exp_strength", field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
-    constraintsElem.appendChild( constraintElem );
-  }
-  layer_node.appendChild( constraintsElem );
-
-  // constraint expressions
-  QDomElement constraintExpressionsElem = document.createElement( "constraintExpressions" );
-  Q_FOREACH ( const QgsField& field, mFields )
-  {
-    QDomElement constraintExpressionElem = document.createElement( "constraint" );
-    constraintExpressionElem.setAttribute( "field", field.name() );
-    constraintExpressionElem.setAttribute( "exp", field.constraints().constraintExpression() );
-    constraintExpressionElem.setAttribute( "desc", field.constraints().constraintDescription() );
-    constraintExpressionsElem.appendChild( constraintExpressionElem );
-  }
-  layer_node.appendChild( constraintExpressionsElem );
-
-
   // change dependencies
   QDomElement dataDependenciesElement = document.createElement( QStringLiteral( "dataDependencies" ) );
   Q_FOREACH ( const QgsMapLayerDependency& dep, dependencies() )
@@ -1804,6 +1694,72 @@ bool QgsVectorLayer::readSymbology( const QDomNode& layerNode, QString& errorMes
       mAttributeAliasMap.insert( field, aliasElem.attribute( QStringLiteral( "name" ) ) );
     }
   }
+
+  // default expressions
+  mDefaultExpressionMap.clear();
+  QDomNode defaultsNode = layerNode.namedItem( QStringLiteral( "defaults" ) );
+  if ( !defaultsNode.isNull() )
+  {
+    QDomNodeList defaultNodeList = defaultsNode.toElement().elementsByTagName( QStringLiteral( "default" ) );
+    for ( int i = 0; i < defaultNodeList.size(); ++i )
+    {
+      QDomElement defaultElem = defaultNodeList.at( i ).toElement();
+
+      QString field = defaultElem.attribute( QStringLiteral( "field" ), QString() );
+      QString expression = defaultElem.attribute( QStringLiteral( "expression" ), QString() );
+      if ( field.isEmpty() || expression.isEmpty() )
+        continue;
+
+      mDefaultExpressionMap.insert( field, expression );
+    }
+  }
+
+  // constraints
+  mFieldConstraints.clear();
+  mFieldConstraintStrength.clear();
+  QDomNode constraintsNode = layerNode.namedItem( "constraints" );
+  if ( !constraintsNode.isNull() )
+  {
+    QDomNodeList constraintNodeList = constraintsNode.toElement().elementsByTagName( "constraint" );
+    for ( int i = 0; i < constraintNodeList.size(); ++i )
+    {
+      QDomElement constraintElem = constraintNodeList.at( i ).toElement();
+
+      QString field = constraintElem.attribute( "field", QString() );
+      int constraints = constraintElem.attribute( "constraints", QString( "0" ) ).toInt();
+      if ( field.isEmpty() || constraints == 0 )
+        continue;
+
+      mFieldConstraints.insert( field, static_cast< QgsFieldConstraints::Constraints >( constraints ) );
+
+      int uniqueStrength = constraintElem.attribute( "unique_strength", QString( "1" ) ).toInt();
+      int notNullStrength = constraintElem.attribute( "notnull_strength", QString( "1" ) ).toInt();
+      int expStrength = constraintElem.attribute( "exp_strength", QString( "1" ) ).toInt();
+
+      mFieldConstraintStrength.insert( qMakePair( field, QgsFieldConstraints::ConstraintUnique ), static_cast< QgsFieldConstraints::ConstraintStrength >( uniqueStrength ) );
+      mFieldConstraintStrength.insert( qMakePair( field, QgsFieldConstraints::ConstraintNotNull ), static_cast< QgsFieldConstraints::ConstraintStrength >( notNullStrength ) );
+      mFieldConstraintStrength.insert( qMakePair( field, QgsFieldConstraints::ConstraintExpression ), static_cast< QgsFieldConstraints::ConstraintStrength >( expStrength ) );
+    }
+  }
+  mFieldConstraintExpressions.clear();
+  QDomNode constraintExpressionsNode = layerNode.namedItem( "constraintExpressions" );
+  if ( !constraintExpressionsNode.isNull() )
+  {
+    QDomNodeList constraintNodeList = constraintExpressionsNode.toElement().elementsByTagName( "constraint" );
+    for ( int i = 0; i < constraintNodeList.size(); ++i )
+    {
+      QDomElement constraintElem = constraintNodeList.at( i ).toElement();
+
+      QString field = constraintElem.attribute( "field", QString() );
+      QString exp = constraintElem.attribute( "exp", QString() );
+      QString desc = constraintElem.attribute( "desc", QString() );
+      if ( field.isEmpty() || exp.isEmpty() )
+        continue;
+
+      mFieldConstraintExpressions.insert( field, qMakePair( exp, desc ) );
+    }
+  }
+
   updateFields();
 
   //Attributes excluded from WMS and WFS
@@ -1856,6 +1812,10 @@ bool QgsVectorLayer::readSymbology( const QDomNode& layerNode, QString& errorMes
   mConditionalStyles->readXml( layerNode );
 
   readCustomProperties( layerNode, QStringLiteral( "variable" ) );
+
+  QDomElement mapLayerNode = layerNode.toElement();
+  if ( mapLayerNode.attribute( QStringLiteral( "readOnly" ), QStringLiteral( "0" ) ).toInt() == 1 )
+    mReadOnly = true;
 
   return true;
 }
@@ -2040,6 +2000,43 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     excludeWFSElem.appendChild( attrElem );
   }
   node.appendChild( excludeWFSElem );
+
+  //default expressions
+  QDomElement defaultsElem = doc.createElement( QStringLiteral( "defaults" ) );
+  Q_FOREACH ( const QgsField& field, mFields )
+  {
+    QDomElement defaultElem = doc.createElement( QStringLiteral( "default" ) );
+    defaultElem.setAttribute( QStringLiteral( "field" ), field.name() );
+    defaultElem.setAttribute( QStringLiteral( "expression" ), field.defaultValueExpression() );
+    defaultsElem.appendChild( defaultElem );
+  }
+  node.appendChild( defaultsElem );
+
+  // constraints
+  QDomElement constraintsElem = doc.createElement( "constraints" );
+  Q_FOREACH ( const QgsField& field, mFields )
+  {
+    QDomElement constraintElem = doc.createElement( "constraint" );
+    constraintElem.setAttribute( "field", field.name() );
+    constraintElem.setAttribute( "constraints", field.constraints().constraints() );
+    constraintElem.setAttribute( "unique_strength", field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
+    constraintElem.setAttribute( "notnull_strength", field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
+    constraintElem.setAttribute( "exp_strength", field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
+    constraintsElem.appendChild( constraintElem );
+  }
+  node.appendChild( constraintsElem );
+
+  // constraint expressions
+  QDomElement constraintExpressionsElem = doc.createElement( "constraintExpressions" );
+  Q_FOREACH ( const QgsField& field, mFields )
+  {
+    QDomElement constraintExpressionElem = doc.createElement( "constraint" );
+    constraintExpressionElem.setAttribute( "field", field.name() );
+    constraintExpressionElem.setAttribute( "exp", field.constraints().constraintExpression() );
+    constraintExpressionElem.setAttribute( "desc", field.constraints().constraintDescription() );
+    constraintExpressionsElem.appendChild( constraintExpressionElem );
+  }
+  node.appendChild( constraintExpressionsElem );
 
   // add attribute actions
   mActions->writeXml( node );
