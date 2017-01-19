@@ -83,10 +83,7 @@ class EliminateSelection(GeoAlgorithm):
                                    self.tr('%s: (No selection in input layer "%s")' % (self.commandLineName(), self.getParameterValue(self.INPUT))))
 
         # Keep references to the features to eliminate
-        featToEliminate = []
-
-        for aFeat in inLayer.selectedFeatures():
-            featToEliminate.append(aFeat)
+        featToEliminate = inLayer.selectedFeatures()
 
         # select and delete the features in ProcessLayer that are selected in inLayer
         idsToEliminate = []
