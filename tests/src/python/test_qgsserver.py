@@ -362,6 +362,323 @@ class TestQgsServer(unittest.TestCase):
         for id, req in tests:
             self.wfs_getfeature_post_compare(id, req)
 
+    def test_wms_getmap_basic(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Basic")
+
+    def test_wms_getmap_transparent(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "TRANSPARENT": "TRUE"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Transparent")
+
+    def test_wms_getmap_background(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "BGCOLOR": "green"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Background")
+
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "BGCOLOR": "0x008000"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Background_Hex")
+
+    def test_wms_getmap_order(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Hello,Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_LayerOrder")
+
+    def test_wms_getmap_srs(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Hello",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-151.7,-38.9,51.0,78.0",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_SRS")
+
+    def test_wms_getmap_style(self):
+      # default style
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country_Labels",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_StyleDefault")
+
+      # custom style
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country_Labels",
+            "STYLES": "custom",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_StyleCustom")
+
+    def test_wms_getmap_filter(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Hello",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "FILTER": "Country:\"name\" = 'eurasia'"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Filter")
+
+    def test_wms_getmap_selection(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Hello",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:3857",
+            "SELECTION": "Country: 4"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Selection")
+
+    def test_wms_getmap_opacities(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Hello",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "OPACITIES": "125, 50"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Opacities")
+
+    def test_wms_getprint_basic(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Hello,Country",  # inverted
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_Basic")
+
+    def test_wms_getprint_srs(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-309.015,-133.011,312.179,133.949",
+            "map0:LAYERS": "Hello,Country",  # inverted
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_SRS")
+
+    def test_wms_getprint_scale(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Hello,Country",  # inverted
+            "map0:SCALE": "36293562",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_Scale")
+
+    def test_wms_getprint_grid(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Hello,Country",  # inverted
+            "map0:GRID_INTERVAL_X": "1000000",
+            "map0:GRID_INTERVAL_Y": "2000000",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_Grid")
+
+    def test_wms_getprint_rotation(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Hello,Country",  # inverted
+            "map0:ROTATION": "45",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_Rotation")
+
+    def test_wms_getprint_selection(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Hello,Country",  # inverted
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "SELECTION": "Country: 4"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_Selection")
+
     def test_getLegendGraphics(self):
         """Test that does not return an exception but an image"""
         parms = {
