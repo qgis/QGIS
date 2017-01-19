@@ -47,6 +47,7 @@ class TestQgsRasterFileWriter: public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void writeTest();
+    void testCreateOneBandRaster();
   private:
     bool writeTest( const QString& rasterName );
     void log( const QString& msg );
@@ -177,6 +178,31 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
 
   return ok;
 }
+
+void TestQgsRasterFileWriter::testCreateOneBandRaster()
+{
+  // generate unique filename (need to open the file first to generate it)
+  QTemporaryFile tmpFile;
+  tmpFile.open();
+  tmpFile.close();
+  QString filename = tmpFile.fileName();
+
+  QgsRectangle extent( 106.7, -6.2, 106.9, -6.1 );
+  int width = 200, height = 100;
+
+  QgsRasterFileWriter writer( filename );
+  bool res = writer.createOneBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QVERIFY( res );
+
+  QgsRasterLayer* rlayer = new QgsRasterLayer( filename, "tmp", "gdal" );
+  QVERIFY( rlayer->isValid() );
+  QCOMPARE( rlayer->width(), width );
+  QCOMPARE( rlayer->height(), height );
+  QCOMPARE( rlayer->extent(), extent );
+  QCOMPARE( rlayer->bandCount(), 1 );
+  QCOMPARE( rlayer->dataProvider()->dataType( 1 ), Qgis::Byte );
+}
+
 
 void TestQgsRasterFileWriter::log( const QString& msg )
 {
