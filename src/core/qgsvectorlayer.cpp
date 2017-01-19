@@ -1630,10 +1630,6 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
     return false;
   }
 
-  QDomElement mapLayerNode = layer_node.toElement();
-  if ( mapLayerNode.attribute( "readOnly", "0" ).toInt() == 1 )
-    mReadOnly = true;
-
   QDomElement pkeyElem = pkeyNode.toElement();
   if ( !pkeyElem.isNull() )
   {
@@ -1679,24 +1675,6 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
 
   readStyleManager( layer_node );
 
-  // default expressions
-  mDefaultExpressionMap.clear();
-  QDomNode defaultsNode = layer_node.namedItem( "defaults" );
-  if ( !defaultsNode.isNull() )
-  {
-    QDomNodeList defaultNodeList = defaultsNode.toElement().elementsByTagName( "default" );
-    for ( int i = 0; i < defaultNodeList.size(); ++i )
-    {
-      QDomElement defaultElem = defaultNodeList.at( i ).toElement();
-
-      QString field = defaultElem.attribute( "field", QString() );
-      QString expression = defaultElem.attribute( "expression", QString() );
-      if ( field.isEmpty() || expression.isEmpty() )
-        continue;
-
-      mDefaultExpressionMap.insert( field, expression );
-    }
-  }
   updateFields();
 
   setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
@@ -1874,9 +1852,6 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
     layer_node.appendChild( provider );
   }
 
-  // save readonly state
-  mapLayerNode.setAttribute( "readOnly", mReadOnly );
-
   // save preview expression
   QDomElement prevExpElem = document.createElement( "previewExpression" );
   QDomText prevExpText = document.createTextNode( mDisplayExpression );
@@ -1898,17 +1873,6 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
   // save expression fields
   mExpressionFieldBuffer->writeXml( layer_node, document );
-
-  //default expressions
-  QDomElement defaultsElem = document.createElement( "defaults" );
-  Q_FOREACH ( const QgsField& field, mUpdatedFields )
-  {
-    QDomElement defaultElem = document.createElement( "default" );
-    defaultElem.setAttribute( "field", field.name() );
-    defaultElem.setAttribute( "expression", field.defaultValueExpression() );
-    defaultsElem.appendChild( defaultElem );
-  }
-  layer_node.appendChild( defaultsElem );
 
   writeStyleManager( layer_node, document );
 
@@ -1963,6 +1927,24 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       mAttributeAliasMap.insert( field, aliasElem.attribute( "name" ) );
     }
   }
+  // default expressions
+  mDefaultExpressionMap.clear();
+  QDomNode defaultsNode = node.namedItem( "defaults" );
+  if ( !defaultsNode.isNull() )
+  {
+    QDomNodeList defaultNodeList = defaultsNode.toElement().elementsByTagName( "default" );
+    for ( int i = 0; i < defaultNodeList.size(); ++i )
+    {
+      QDomElement defaultElem = defaultNodeList.at( i ).toElement();
+
+      QString field = defaultElem.attribute( "field", QString() );
+      QString expression = defaultElem.attribute( "expression", QString() );
+      if ( field.isEmpty() || expression.isEmpty() )
+        continue;
+
+      mDefaultExpressionMap.insert( field, expression );
+    }
+  }
   updateFields();
 
   //Attributes excluded from WMS and WFS
@@ -1995,6 +1977,11 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   mConditionalStyles->readXml( node );
 
   readCustomProperties( node, "variable" );
+
+  QDomElement mapLayerNode = node.toElement();
+  if ( mapLayerNode.attribute( "readOnly", "0" ).toInt() == 1 )
+    mReadOnly = true;
+
 
   return true;
 }
@@ -2101,7 +2088,6 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
 
     if ( !labelattributesnode.isNull() && mLabel )
     {
-      QgsDebugMsg( "calling readXML" );
       mLabel->readXML( labelattributesnode );
     }
 
@@ -2192,6 +2178,20 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   mAttributeTableConfig.writeXml( node );
   mEditFormConfig->writeXml( node );
   mConditionalStyles->writeXml( node, doc );
+
+  // save readonly state
+  node.toElement().setAttribute( "readOnly", mReadOnly );
+
+  //default expressions
+  QDomElement defaultsElem = node.ownerDocument().createElement( "defaults" );
+  Q_FOREACH ( const QgsField& field, mUpdatedFields )
+  {
+    QDomElement defaultElem = doc.createElement( "default" );
+    defaultElem.setAttribute( "field", field.name() );
+    defaultElem.setAttribute( "expression", field.defaultValueExpression() );
+    defaultsElem.appendChild( defaultElem );
+  }
+  node.appendChild( defaultsElem );
 
   return true;
 }
