@@ -588,7 +588,7 @@ class TestQgsServer(unittest.TestCase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "SRS": "EPSG:3857",
-            "SELECTION": "Country_Labels: 4"
+            "SELECTION": "Country: 4"
         }.items())])
 
         r, h = self._result(self.server.handleRequest(qs))
@@ -706,6 +706,25 @@ class TestQgsServer(unittest.TestCase):
 
         r, h = self._result(self.server.handleRequest(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Rotation")
+
+    def test_wms_getprint_selection(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Country,Hello",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "SELECTION": "Country: 4"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_Selection")
 
     def test_getLegendGraphics(self):
         """Test that does not return an exception but an image"""
