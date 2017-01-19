@@ -202,7 +202,7 @@ void QgsPropertyOverrideButton::setVectorLayer( const QgsVectorLayer* layer )
 
 void QgsPropertyOverrideButton::registerCheckedWidget( QWidget* widget )
 {
-  Q_FOREACH( const QPointer<QWidget>& w, mCheckedWidgets )
+  Q_FOREACH ( const QPointer<QWidget>& w, mCheckedWidgets )
   {
     if ( widget == w.data() )
       return;
@@ -620,26 +620,26 @@ void QgsPropertyOverrideButton::setActivePrivate( bool active )
 
 void QgsPropertyOverrideButton::checkCheckedWidgets( bool check )
 {
-    // don't uncheck, only set to checked
-    if ( !check )
-    {
-      return;
-    }
+  // don't uncheck, only set to checked
+  if ( !check )
+  {
+    return;
+  }
 
-    Q_FOREACH( const QPointer< QWidget >& w, mCheckedWidgets )
+  Q_FOREACH ( const QPointer< QWidget >& w, mCheckedWidgets )
+  {
+    QAbstractButton *btn = qobject_cast< QAbstractButton * >( w.data() );
+    if ( btn && btn->isCheckable() )
     {
-      QAbstractButton *btn = qobject_cast< QAbstractButton * >( w.data() );
-      if ( btn && btn->isCheckable() )
-      {
-        btn->setChecked( true );
-        continue;
-      }
-      QGroupBox *grpbx = qobject_cast< QGroupBox * >( w.data() );
-      if ( grpbx && grpbx->isCheckable() )
-      {
-        grpbx->setChecked( true );
-      }
+      btn->setChecked( true );
+      continue;
     }
+    QGroupBox *grpbx = qobject_cast< QGroupBox * >( w.data() );
+    if ( grpbx && grpbx->isCheckable() )
+    {
+      grpbx->setChecked( true );
+    }
+  }
 }
 
 void QgsPropertyOverrideButton::setActive( bool active )

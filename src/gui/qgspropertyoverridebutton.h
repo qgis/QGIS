@@ -59,7 +59,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * @param layer associated vector layer
      */
     QgsPropertyOverrideButton( QWidget* parent = nullptr,
-                            const QgsVectorLayer* layer = nullptr );
+                               const QgsVectorLayer* layer = nullptr );
 
     /**
      * Initialize a newly constructed property button (useful if button was included in a UI layout).
