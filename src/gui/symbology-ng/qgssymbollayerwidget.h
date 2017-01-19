@@ -17,7 +17,7 @@
 #ifndef QGSSYMBOLLAYERWIDGET_H
 #define QGSSYMBOLLAYERWIDGET_H
 
-#include "qgsdatadefinedbuttonv2.h"
+#include "qgspropertyoverridebutton.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgssymbollayer.h"
 #include <QWidget>
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
 
   protected:
 
-    void registerDataDefinedButton( QgsDataDefinedButtonV2* button, QgsSymbolLayer::Property key );
+    void registerDataDefinedButton( QgsPropertyOverrideButton* button, QgsSymbolLayer::Property key );
 
     QgsExpressionContext createExpressionContext() const override;
 

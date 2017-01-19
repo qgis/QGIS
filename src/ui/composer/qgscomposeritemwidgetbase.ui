@@ -79,28 +79,28 @@
          </widget>
         </item>
         <item row="1" column="3">
-         <widget class="QgsDataDefinedButtonV2" name="mXPositionDDBtn">
+         <widget class="QgsPropertyOverrideButton" name="mXPositionDDBtn">
           <property name="text">
            <string>...</string>
           </property>
          </widget>
         </item>
         <item row="2" column="3">
-         <widget class="QgsDataDefinedButtonV2" name="mYPositionDDBtn">
+         <widget class="QgsPropertyOverrideButton" name="mYPositionDDBtn">
           <property name="text">
            <string>...</string>
           </property>
          </widget>
         </item>
         <item row="3" column="3">
-         <widget class="QgsDataDefinedButtonV2" name="mWidthDDBtn">
+         <widget class="QgsPropertyOverrideButton" name="mWidthDDBtn">
           <property name="text">
            <string>...</string>
           </property>
          </widget>
         </item>
         <item row="4" column="3">
-         <widget class="QgsDataDefinedButtonV2" name="mHeightDDBtn">
+         <widget class="QgsPropertyOverrideButton" name="mHeightDDBtn">
           <property name="text">
            <string>...</string>
           </property>
@@ -380,7 +380,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QgsDataDefinedButtonV2" name="mItemRotationDDBtn">
+         <widget class="QgsPropertyOverrideButton" name="mItemRotationDDBtn">
           <property name="text">
            <string>...</string>
           </property>
@@ -454,7 +454,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QgsDataDefinedButtonV2" name="mItemFrameColorDDBtn">
+         <widget class="QgsPropertyOverrideButton" name="mItemFrameColorDDBtn">
           <property name="text">
            <string>...</string>
           </property>
@@ -580,7 +580,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QgsDataDefinedButtonV2" name="mItemBackgroundColorDDBtn">
+         <widget class="QgsPropertyOverrideButton" name="mItemBackgroundColorDDBtn">
           <property name="text">
            <string>...</string>
           </property>
@@ -647,7 +647,7 @@
          <widget class="QgsBlendModeComboBox" name="mBlendModeCombo"/>
         </item>
         <item>
-         <widget class="QgsDataDefinedButtonV2" name="mBlendModeDDBtn">
+         <widget class="QgsPropertyOverrideButton" name="mBlendModeDDBtn">
           <property name="text">
            <string>...</string>
           </property>
@@ -688,7 +688,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QgsDataDefinedButtonV2" name="mTransparencyDDBtn">
+         <widget class="QgsPropertyOverrideButton" name="mTransparencyDDBtn">
           <property name="text">
            <string>...</string>
           </property>
@@ -706,7 +706,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QgsDataDefinedButtonV2" name="mExcludePrintsDDBtn">
+         <widget class="QgsPropertyOverrideButton" name="mExcludePrintsDDBtn">
           <property name="text">
            <string>...</string>
           </property>
@@ -762,9 +762,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButtonV2</class>
+   <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbuttonv2.h</header>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>

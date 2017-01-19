@@ -259,16 +259,16 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
   return expContext;
 }
 
-void QgsLayerPropertiesWidget::registerDataDefinedButton( QgsDataDefinedButtonV2* button, QgsSymbolLayer::Property key )
+void QgsLayerPropertiesWidget::registerDataDefinedButton( QgsPropertyOverrideButton* button, QgsSymbolLayer::Property key )
 {
   button->init( key, mLayer->dataDefinedProperties(), QgsSymbolLayer::PROPERTY_DEFINITIONS, mVectorLayer );
-  connect( button, &QgsDataDefinedButtonV2::changed, this, &QgsLayerPropertiesWidget::updateProperty );
+  connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLayerPropertiesWidget::updateProperty );
   button->registerExpressionContextGenerator( this );
 }
 
 void QgsLayerPropertiesWidget::updateProperty()
 {
-  QgsDataDefinedButtonV2* button = qobject_cast<QgsDataDefinedButtonV2*>( sender() );
+  QgsPropertyOverrideButton* button = qobject_cast<QgsPropertyOverrideButton*>( sender() );
   QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
   mLayer->setDataDefinedProperty( key, button->toProperty() );
   emit changed();

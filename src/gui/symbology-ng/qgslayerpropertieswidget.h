@@ -78,7 +78,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, protected Qgs
 
     QgsExpressionContext createExpressionContext() const override;
 
-    void registerDataDefinedButton( QgsDataDefinedButtonV2 *button, QgsSymbolLayer::Property key );
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 
   protected: // data
     QgsSymbolLayer* mLayer;

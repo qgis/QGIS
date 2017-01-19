@@ -235,7 +235,6 @@ class CORE_EXPORT QgsAbstractPropertyCollection
   private:
 
     QString mName;
-    int mCount = 0;
 };
 
 /**
@@ -313,6 +312,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     mutable bool mDirty;
     mutable bool mHasActiveProperties;
     mutable bool mHasActiveDynamicProperties;
+    mutable int mCount = 0;
 
     //! Scans through properties and updates cached values
     void rescan() const;

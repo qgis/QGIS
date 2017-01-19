@@ -141,7 +141,7 @@ void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget *>& w
 {
   Q_FOREACH ( QWidget* widget, widgets )
   {
-    if ( QgsDataDefinedButtonV2* w = qobject_cast<QgsDataDefinedButtonV2*>( widget ) )
+    if ( QgsPropertyOverrideButton* w = qobject_cast<QgsPropertyOverrideButton*>( widget ) )
     {
       connect( w, SIGNAL( changed ), this, slot );
     }

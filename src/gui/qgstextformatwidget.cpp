@@ -518,7 +518,7 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
 
 void QgsTextFormatWidget::toggleDDButtons( bool visible )
 {
-  Q_FOREACH ( QgsDataDefinedButtonV2* button, findChildren< QgsDataDefinedButtonV2* >() )
+  Q_FOREACH ( QgsPropertyOverrideButton* button, findChildren< QgsPropertyOverrideButton* >() )
   {
     button->setVisible( visible );
   }
@@ -544,7 +544,7 @@ void QgsTextFormatWidget::connectValueChanged( const QList<QWidget *>& widgets, 
 {
   Q_FOREACH ( QWidget* widget, widgets )
   {
-    if ( QgsDataDefinedButtonV2* w = qobject_cast<QgsDataDefinedButtonV2*>( widget ) )
+    if ( QgsPropertyOverrideButton* w = qobject_cast<QgsPropertyOverrideButton*>( widget ) )
     {
       connect( w, SIGNAL( changed() ), this, slot );
     }

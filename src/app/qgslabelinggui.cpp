@@ -42,16 +42,16 @@ QgsExpressionContext QgsLabelingGui::createExpressionContext() const
   return expContext;
 }
 
-void QgsLabelingGui::registerDataDefinedButton( QgsDataDefinedButtonV2* button, QgsPalLayerSettings::Property key )
+void QgsLabelingGui::registerDataDefinedButton( QgsPropertyOverrideButton* button, QgsPalLayerSettings::Property key )
 {
   button->init( key, mProperties, QgsPalLayerSettings::PROPERTY_DEFINITIONS, mLayer );
-  connect( button, &QgsDataDefinedButtonV2::changed, this, &QgsLabelingGui::updateProperty );
+  connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLabelingGui::updateProperty );
   button->registerExpressionContextGenerator( this );
 }
 
 void QgsLabelingGui::updateProperty()
 {
-  QgsDataDefinedButtonV2* button = qobject_cast<QgsDataDefinedButtonV2*>( sender() );
+  QgsPropertyOverrideButton* button = qobject_cast<QgsPropertyOverrideButton*>( sender() );
   QgsPalLayerSettings::Property key = static_cast< QgsPalLayerSettings::Property >( button->propertyKey() );
   mProperties.setProperty( key, button->toProperty() );
 }
@@ -552,7 +552,7 @@ void QgsLabelingGui::populateDataDefinedButtons()
 
   // TODO: is this necessary? maybe just use the data defined-only rotation?
   //mPointAngleDDBtn, QgsPalLayerSettings::OffsetRotation,
-  //                        QgsDataDefinedButtonV2::AnyType, QgsDataDefinedButtonV2::double180RotDesc() );
+  //                        QgsPropertyOverrideButton::AnyType, QgsPropertyOverrideButton::double180RotDesc() );
   registerDataDefinedButton( mMaxCharAngleDDBtn, QgsPalLayerSettings::CurvedCharAngleInOut );
   registerDataDefinedButton( mRepeatDistanceDDBtn, QgsPalLayerSettings::RepeatDistance );
   registerDataDefinedButton( mRepeatDistanceUnitDDBtn, QgsPalLayerSettings::RepeatDistanceUnit );
@@ -596,7 +596,7 @@ void QgsLabelingGui::populateDataDefinedButtons()
   registerDataDefinedButton( mZIndexDDBtn, QgsPalLayerSettings::ZIndex );
 }
 
-void QgsLabelingGui::syncDefinedCheckboxFrame( QgsDataDefinedButtonV2* ddBtn, QCheckBox* chkBx, QFrame* f )
+void QgsLabelingGui::syncDefinedCheckboxFrame( QgsPropertyOverrideButton* ddBtn, QCheckBox* chkBx, QFrame* f )
 {
   if ( ddBtn->isActive() && !chkBx->isChecked() )
   {

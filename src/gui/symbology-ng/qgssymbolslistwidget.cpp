@@ -100,16 +100,18 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, 
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( setLineWidth( double ) ) );
 
   registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
-  connect( mRotationDDBtn, &QgsDataDefinedButtonV2::changed, this, &QgsSymbolsListWidget::updateDataDefinedMarkerAngle );
+  connect( mRotationDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedMarkerAngle );
   registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::PropertySize );
-  connect( mSizeDDBtn, &QgsDataDefinedButtonV2::changed, this, &QgsSymbolsListWidget::updateDataDefinedMarkerSize );
+  connect( mSizeDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedMarkerSize );
   registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyOutlineWidth );
-  connect( mWidthDDBtn, &QgsDataDefinedButtonV2::changed, this, &QgsSymbolsListWidget::updateDataDefinedLineWidth );
+  connect( mWidthDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedLineWidth );
 
+#if 0
   if ( mSymbol->type() == QgsSymbol::Marker && mLayer )
     mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, mSymbol ) );
   else if ( mSymbol->type() == QgsSymbol::Line && mLayer )
     mWidthDDBtn->setAssistant( tr( "Width Assistant..." ), new QgsSizeScaleWidget( mLayer, mSymbol ) );
+#endif
 
   // Live color updates are not undoable to child symbol layers
   btnColor->setAcceptLiveUpdates( false );
@@ -127,7 +129,7 @@ QgsSymbolsListWidget::~QgsSymbolsListWidget()
   btnAdvanced->menu()->removeAction( mClipFeaturesAction );
 }
 
-void QgsSymbolsListWidget::registerDataDefinedButton( QgsDataDefinedButtonV2 * button, QgsSymbolLayer::Property key )
+void QgsSymbolsListWidget::registerDataDefinedButton( QgsPropertyOverrideButton * button, QgsSymbolLayer::Property key )
 {
   button->setProperty( "propertyKey", key );
   button->registerExpressionContextGenerator( this );
@@ -140,11 +142,13 @@ void QgsSymbolsListWidget::setContext( const QgsSymbolWidgetContext& context )
   {
     unitWidget->setMapCanvas( mContext.mapCanvas() );
   }
-  Q_FOREACH ( QgsDataDefinedButtonV2* ddButton, findChildren<QgsDataDefinedButtonV2*>() )
+#if 0
+  Q_FOREACH ( QgsPropertyOverrideButton* ddButton, findChildren<QgsPropertyOverrideButton*>() )
   {
     if ( ddButton->assistant() )
       ddButton->assistant()->setMapCanvas( mContext.mapCanvas() );
   }
+#endif
 }
 
 QgsSymbolWidgetContext QgsSymbolsListWidget::context() const
@@ -497,7 +501,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 {
   updateSymbolColor();
 
-  Q_FOREACH ( QgsDataDefinedButtonV2* button, findChildren< QgsDataDefinedButtonV2* >() )
+  Q_FOREACH ( QgsPropertyOverrideButton* button, findChildren< QgsPropertyOverrideButton* >() )
   {
     button->registerExpressionContextGenerator( this );
   }

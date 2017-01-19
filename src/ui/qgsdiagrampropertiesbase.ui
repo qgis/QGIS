@@ -734,7 +734,7 @@
                           </widget>
                          </item>
                          <item>
-                          <widget class="QgsDataDefinedButtonV2" name="mBackgroundColorDDBtn">
+                          <widget class="QgsPropertyOverrideButton" name="mBackgroundColorDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -777,7 +777,7 @@
                           </widget>
                          </item>
                          <item>
-                          <widget class="QgsDataDefinedButtonV2" name="mLineColorDDBtn">
+                          <widget class="QgsPropertyOverrideButton" name="mLineColorDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -821,7 +821,7 @@
                           </widget>
                          </item>
                          <item>
-                          <widget class="QgsDataDefinedButtonV2" name="mLineWidthDDBtn">
+                          <widget class="QgsPropertyOverrideButton" name="mLineWidthDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -848,7 +848,7 @@
                           <widget class="QComboBox" name="mAngleOffsetComboBox"/>
                          </item>
                          <item>
-                          <widget class="QgsDataDefinedButtonV2" name="mStartAngleDDBtn">
+                          <widget class="QgsPropertyOverrideButton" name="mStartAngleDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -968,14 +968,14 @@
                       </spacer>
                      </item>
                      <item row="1" column="2">
-                      <widget class="QgsDataDefinedButtonV2" name="mShowDiagramDDBtn">
+                      <widget class="QgsPropertyOverrideButton" name="mShowDiagramDDBtn">
                        <property name="text">
                         <string>...</string>
                        </property>
                       </widget>
                      </item>
                      <item row="1" column="5">
-                      <widget class="QgsDataDefinedButtonV2" name="mAlwaysShowDDBtn">
+                      <widget class="QgsPropertyOverrideButton" name="mAlwaysShowDDBtn">
                        <property name="text">
                         <string>...</string>
                        </property>
@@ -1499,7 +1499,7 @@
                         <widget class="QgsDoubleSpinBox" name="mDiagramDistanceSpinBox"/>
                        </item>
                        <item>
-                        <widget class="QgsDataDefinedButtonV2" name="mDistanceDDBtn">
+                        <widget class="QgsPropertyOverrideButton" name="mDistanceDDBtn">
                          <property name="text">
                           <string>...</string>
                          </property>
@@ -1556,7 +1556,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QgsDataDefinedButtonV2" name="mPriorityDDBtn">
+                     <widget class="QgsPropertyOverrideButton" name="mPriorityDDBtn">
                       <property name="text">
                        <string>...</string>
                       </property>
@@ -1600,7 +1600,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QgsDataDefinedButtonV2" name="mZOrderDDBtn">
+                     <widget class="QgsPropertyOverrideButton" name="mZOrderDDBtn">
                       <property name="text">
                        <string>...</string>
                       </property>
@@ -1754,7 +1754,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QgsDataDefinedButtonV2" name="mCoordXDDBtn">
+                        <widget class="QgsPropertyOverrideButton" name="mCoordXDDBtn">
                          <property name="text">
                           <string>...</string>
                          </property>
@@ -1774,7 +1774,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QgsDataDefinedButtonV2" name="mCoordYDDBtn">
+                        <widget class="QgsPropertyOverrideButton" name="mCoordYDDBtn">
                          <property name="text">
                           <string>...</string>
                          </property>
@@ -2178,9 +2178,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButtonV2</class>
+   <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbuttonv2.h</header>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

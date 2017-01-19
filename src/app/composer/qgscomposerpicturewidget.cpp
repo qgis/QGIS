@@ -77,7 +77,7 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   connect( mPicture, SIGNAL( pictureRotationChanged( double ) ), this, SLOT( setPicRotationSpinValue( double ) ) );
 
   //connections for data defined buttons
-  connect( mSourceDDBtn, &QgsDataDefinedButtonV2::activated, mPictureLineEdit, &QLineEdit::setDisabled );
+  connect( mSourceDDBtn, &QgsPropertyOverrideButton::activated, mPictureLineEdit, &QLineEdit::setDisabled );
   registerDataDefinedButton( mSourceDDBtn, QgsComposerObject::PictureSource );
   registerDataDefinedButton( mFillColorDDBtn, QgsComposerObject::PictureSvgBackgroundColor );
   registerDataDefinedButton( mOutlineColorDDBtn, QgsComposerObject::PictureSvgOutlineColor );

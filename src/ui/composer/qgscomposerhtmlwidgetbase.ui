@@ -96,7 +96,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsDataDefinedButtonV2" name="mUrlDDBtn">
+             <widget class="QgsPropertyOverrideButton" name="mUrlDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -282,9 +282,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDataDefinedButtonV2</class>
+   <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbuttonv2.h</header>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>

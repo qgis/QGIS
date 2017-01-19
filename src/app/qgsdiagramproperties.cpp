@@ -427,16 +427,16 @@ QgsDiagramProperties::~QgsDiagramProperties()
   settings.setValue( QStringLiteral( "/Windows/Diagrams/Tab" ), mDiagramOptionsListWidget->currentRow() );
 }
 
-void QgsDiagramProperties::registerDataDefinedButton( QgsDataDefinedButtonV2 * button, QgsDiagramLayerSettings::Property key )
+void QgsDiagramProperties::registerDataDefinedButton( QgsPropertyOverrideButton * button, QgsDiagramLayerSettings::Property key )
 {
   button->init( key, mProperties, QgsDiagramLayerSettings::PROPERTY_DEFINITIONS, mLayer );
-  connect( button, &QgsDataDefinedButtonV2::changed, this, &QgsDiagramProperties::updateProperty );
+  connect( button, &QgsPropertyOverrideButton::changed, this, &QgsDiagramProperties::updateProperty );
   button->registerExpressionContextGenerator( this );
 }
 
 void QgsDiagramProperties::updateProperty()
 {
-  QgsDataDefinedButtonV2* button = qobject_cast<QgsDataDefinedButtonV2*>( sender() );
+  QgsPropertyOverrideButton* button = qobject_cast<QgsPropertyOverrideButton*>( sender() );
   QgsDiagramLayerSettings::Property key = static_cast<  QgsDiagramLayerSettings::Property >( button->propertyKey() );
   mProperties.setProperty( key, button->toProperty() );
 }

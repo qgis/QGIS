@@ -108,7 +108,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QgsSymbolWidgetContext mContext;
 
     QgsExpressionContext createExpressionContext() const override;
-    void registerDataDefinedButton( QgsDataDefinedButtonV2* button, QgsSymbolLayer::Property key );
+    void registerDataDefinedButton( QgsPropertyOverrideButton* button, QgsSymbolLayer::Property key );
 };
 
 #endif //QGSSYMBOLSLISTWIDGET_H

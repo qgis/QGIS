@@ -212,8 +212,10 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
         : QgsDataDefinedValueDialog( symbolList, layer, tr( "Size" ) )
     {
       init( QgsSymbolLayer::PropertySize );
+#if 0
       if ( !symbolList.isEmpty() && symbolList.at( 0 ) && vectorLayer() )
         mDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), static_cast<const QgsMarkerSymbol*>( symbolList.at( 0 ) ) ) );
+#endif
     }
 
   protected:

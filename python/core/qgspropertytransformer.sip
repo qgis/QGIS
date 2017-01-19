@@ -5,9 +5,9 @@ class QgsPropertyTransformer
 %End
 
 %ConvertToSubClassCode
-  if (sipCpp->transformType() == QgsPropertyTransformer::SizeScaleTransformer)
+  if (sipCpp->transformerType() == QgsPropertyTransformer::SizeScaleTransformer)
 	sipType = sipType_QgsSizeScaleTransformer;
-  else if (sipCpp->transformType() == QgsPropertyTransformer::ColorRampTransformer)
+  else if (sipCpp->transformerType() == QgsPropertyTransformer::ColorRampTransformer)
 	sipType = sipType_QgsColorRampTransformer;
   else
 	sipType = sipType_QgsPropertyTransformer;

@@ -95,11 +95,13 @@ void QgsSymbolLayerWidget::setContext( const QgsSymbolWidgetContext& context )
   {
     unitWidget->setMapCanvas( mContext.mapCanvas() );
   }
-  Q_FOREACH ( QgsDataDefinedButtonV2* ddButton, findChildren<QgsDataDefinedButtonV2*>() )
+#if 0
+  Q_FOREACH ( QgsPropertyOverrideButton* ddButton, findChildren<QgsPropertyOverrideButton*>() )
   {
     if ( ddButton->assistant() )
       ddButton->assistant()->setMapCanvas( mContext.mapCanvas() );
   }
+#endif
 }
 
 QgsSymbolWidgetContext QgsSymbolLayerWidget::context() const
@@ -107,17 +109,17 @@ QgsSymbolWidgetContext QgsSymbolLayerWidget::context() const
   return mContext;
 }
 
-void QgsSymbolLayerWidget::registerDataDefinedButton( QgsDataDefinedButtonV2 * button, QgsSymbolLayer::Property key )
+void QgsSymbolLayerWidget::registerDataDefinedButton( QgsPropertyOverrideButton * button, QgsSymbolLayer::Property key )
 {
   button->init( key, symbolLayer()->dataDefinedProperties(), QgsSymbolLayer::PROPERTY_DEFINITIONS, mVectorLayer );
-  connect( button, &QgsDataDefinedButtonV2::changed, this, &QgsSymbolLayerWidget::updateDataDefinedProperty );
+  connect( button, &QgsPropertyOverrideButton::changed, this, &QgsSymbolLayerWidget::updateDataDefinedProperty );
 
   button->registerExpressionContextGenerator( this );
 }
 
 void QgsSymbolLayerWidget::updateDataDefinedProperty()
 {
-  QgsDataDefinedButtonV2* button = qobject_cast<QgsDataDefinedButtonV2*>( sender() );
+  QgsPropertyOverrideButton* button = qobject_cast<QgsPropertyOverrideButton*>( sender() );
   QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
   symbolLayer()->setDataDefinedProperty( key, button->toProperty() );
   emit changed();
@@ -151,9 +153,10 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( const QgsVectorL
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol = new QgsLineSymbol();
 
+#if 0
   if ( vectorLayer() )
     mPenWidthDDBtn->setAssistant( tr( "Width Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
-
+#endif
 
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( penWidthChanged() ) );
   connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( colorChanged( const QColor& ) ) );
@@ -401,8 +404,10 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( const QgsVec
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol = new QgsMarkerSymbol();
 
+#if 0
   if ( vectorLayer() )
     mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
+#endif
 
   QSize size = lstNames->iconSize();
   double markerSize = DEFAULT_POINT_SIZE * 2;
@@ -818,8 +823,10 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( const QgsVec
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol = new QgsMarkerSymbol();
 
+#if 0
   if ( vectorLayer() )
     mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
+#endif
 
   QSize size = lstNames->iconSize();
   double markerSize = DEFAULT_POINT_SIZE * 2;
@@ -1762,10 +1769,12 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( const QgsVectorLay
   connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
   connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
 
+#if 0
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol = new QgsMarkerSymbol();
   if ( vectorLayer() )
     mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
+#endif
 }
 
 QgsSvgMarkerSymbolLayerWidget::~QgsSvgMarkerSymbolLayerWidget()
@@ -2681,8 +2690,10 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( const QgsVectorL
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol = new QgsMarkerSymbol();
 
+#if 0
   if ( vectorLayer() )
     mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
+#endif
 
   connect( cboFont, SIGNAL( currentFontChanged( const QFont & ) ), this, SLOT( setFontFamily( const QFont& ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize( double ) ) );

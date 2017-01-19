@@ -196,7 +196,6 @@ SET(QGIS_GUI_SRCS
   qgscursors.cpp
   qgscustomdrophandler.cpp
   qgsdatadefinedbutton.cpp
-  qgsdatadefinedbuttonv2.cpp
   qgsdatumtransformdialog.cpp
   qgsdetaileditemdata.cpp
   qgsdetaileditemdelegate.cpp
@@ -286,6 +285,7 @@ SET(QGIS_GUI_SRCS
   qgsprevieweffect.cpp
   qgsprojectionselectionwidget.cpp
   qgsprojectionselector.cpp
+  qgspropertyoverridebutton.cpp
   qgsquerybuilder.cpp
   qgsrasterformatsaveoptionswidget.cpp
   qgsrasterlayersaveasdialog.cpp
@@ -367,7 +367,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgsconfigureshortcutsdialog.h
   qgscredentialdialog.h
   qgsdatadefinedbutton.h
-  qgsdatadefinedbuttonv2.h
   qgsdatumtransformdialog.h
   qgsdetaileditemdelegate.h
   qgsdetaileditemwidget.h
@@ -449,6 +448,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsprevieweffect.h
   qgsprojectionselectionwidget.h
   qgsprojectionselector.h
+  qgspropertyoverridebutton.h
   qgsquerybuilder.h
   qgsrasterformatsaveoptionswidget.h
   qgsrasterlayersaveasdialog.h

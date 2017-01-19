@@ -113,7 +113,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsDataDefinedButtonV2" name="mSourceDDBtn">
+             <widget class="QgsPropertyOverrideButton" name="mSourceDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -375,7 +375,7 @@
            </widget>
           </item>
           <item row="0" column="3">
-           <widget class="QgsDataDefinedButtonV2" name="mFillColorDDBtn">
+           <widget class="QgsPropertyOverrideButton" name="mFillColorDDBtn">
             <property name="text">
              <string>...</string>
             </property>
@@ -453,14 +453,14 @@
            </widget>
           </item>
           <item row="1" column="3">
-           <widget class="QgsDataDefinedButtonV2" name="mOutlineColorDDBtn">
+           <widget class="QgsPropertyOverrideButton" name="mOutlineColorDDBtn">
             <property name="text">
              <string>...</string>
             </property>
            </widget>
           </item>
           <item row="2" column="3">
-           <widget class="QgsDataDefinedButtonV2" name="mOutlineWidthDDBtn">
+           <widget class="QgsPropertyOverrideButton" name="mOutlineWidthDDBtn">
             <property name="text">
              <string>...</string>
             </property>
@@ -555,9 +555,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButtonV2</class>
+   <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbuttonv2.h</header>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>

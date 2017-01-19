@@ -87,7 +87,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
 
     QgsExpressionContext createExpressionContext() const override;
 
-    void registerDataDefinedButton( QgsDataDefinedButtonV2 *button, QgsDiagramLayerSettings::Property key );
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsDiagramLayerSettings::Property key );
 
   private slots:
 

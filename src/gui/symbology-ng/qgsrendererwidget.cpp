@@ -286,17 +286,20 @@ QgsDataDefinedValueDialog::QgsDataDefinedValueDialog( const QList<QgsSymbol*>& s
   setupUi( this );
   setWindowFlags( Qt::WindowStaysOnTopHint );
   mLabel->setText( label );
-  connect( mDDBtn, &QgsDataDefinedButtonV2::changed, this, &QgsDataDefinedValueDialog::dataDefinedChanged );
+  connect( mDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsDataDefinedValueDialog::dataDefinedChanged );
 }
 
 void QgsDataDefinedValueDialog::setContext( const QgsSymbolWidgetContext& context )
 {
   mContext = context;
-  Q_FOREACH ( QgsDataDefinedButtonV2* ddButton, findChildren<QgsDataDefinedButtonV2*>() )
+#if 0
+  Q_FOREACH ( QgsPropertyOverrideButton* ddButton, findChildren<QgsPropertyOverrideButton*>() )
   {
+
     if ( ddButton->assistant() )
       ddButton->assistant()->setMapCanvas( context.mapCanvas() );
   }
+#endif
 }
 
 QgsSymbolWidgetContext QgsDataDefinedValueDialog::context() const

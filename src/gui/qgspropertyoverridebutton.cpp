@@ -1,8 +1,8 @@
 /***************************************************************************
-     qgsdatadefinedbuttonv2.cpp
-     --------------------------
-    Date                 : March 2016
-    Copyright            : (C) 2016 by Nyall Dawson
+     qgspropertyoverridebutton.cpp
+     -----------------------------
+    Date                 : January 2017
+    Copyright            : (C) 2017 by Nyall Dawson
     Email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
@@ -13,10 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdatadefinedbuttonv2.h"
+#include "qgspropertyoverridebutton.h"
 
 #include <qgsapplication.h>
-#include <qgsdatadefined.h>
 #include <qgsexpressionbuilderdialog.h>
 #include <qgsexpression.h>
 #include <qgsmessageviewer.h>
@@ -28,7 +27,7 @@
 #include <QPointer>
 #include <QGroupBox>
 
-QgsDataDefinedButtonV2::QgsDataDefinedButtonV2( QWidget* parent,
+QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget* parent,
     const QgsVectorLayer* layer )
     : QToolButton( parent )
     , mVectorLayer( layer )
@@ -44,9 +43,11 @@ QgsDataDefinedButtonV2::QgsDataDefinedButtonV2( QWidget* parent,
   setIconSize( QSize( 24, 24 ) );
   setPopupMode( QToolButton::InstantPopup );
 
+  connect( this, &QgsPropertyOverrideButton::activated, this, &QgsPropertyOverrideButton::checkCheckedWidgets );
+
   mDefineMenu = new QMenu( this );
-  connect( mDefineMenu, &QMenu::aboutToShow, this, &QgsDataDefinedButtonV2::aboutToShowMenu );
-  connect( mDefineMenu, &QMenu::triggered, this, &QgsDataDefinedButtonV2::menuActionTriggered );
+  connect( mDefineMenu, &QMenu::aboutToShow, this, &QgsPropertyOverrideButton::aboutToShowMenu );
+  connect( mDefineMenu, &QMenu::triggered, this, &QgsPropertyOverrideButton::menuActionTriggered );
   setMenu( mDefineMenu );
 
   mFieldsMenu = new QMenu( this );
@@ -77,7 +78,7 @@ QgsDataDefinedButtonV2::QgsDataDefinedButtonV2( QWidget* parent,
   mDefineMenu->addAction( mActionAssistant );
 }
 
-void QgsDataDefinedButtonV2::init( int propertyKey, const QgsProperty& property, const QgsPropertiesDefinition& definitions, const QgsVectorLayer* layer )
+void QgsPropertyOverrideButton::init( int propertyKey, const QgsProperty& property, const QgsPropertiesDefinition& definitions, const QgsVectorLayer* layer )
 {
   mVectorLayer = layer;
   setToProperty( property );
@@ -120,13 +121,13 @@ void QgsDataDefinedButtonV2::init( int propertyKey, const QgsProperty& property,
   updateGui();
 }
 
-void QgsDataDefinedButtonV2::init( int propertyKey, const QgsAbstractPropertyCollection& collection, const QgsPropertiesDefinition& definitions , const QgsVectorLayer* layer )
+void QgsPropertyOverrideButton::init( int propertyKey, const QgsAbstractPropertyCollection& collection, const QgsPropertiesDefinition& definitions , const QgsVectorLayer* layer )
 {
   init( propertyKey, collection.property( propertyKey ), definitions, layer );
 }
 
 
-void QgsDataDefinedButtonV2::updateFieldLists()
+void QgsPropertyOverrideButton::updateFieldLists()
 {
   mFieldNameList.clear();
   mFieldTypeList.clear();
@@ -180,7 +181,7 @@ void QgsDataDefinedButtonV2::updateFieldLists()
   }
 }
 
-QgsProperty QgsDataDefinedButtonV2::toProperty() const
+QgsProperty QgsPropertyOverrideButton::toProperty() const
 {
   QgsProperty p;
   if ( mUseExpression )
@@ -194,21 +195,22 @@ QgsProperty QgsDataDefinedButtonV2::toProperty() const
   return p;
 }
 
-void QgsDataDefinedButtonV2::setVectorLayer( const QgsVectorLayer* layer )
+void QgsPropertyOverrideButton::setVectorLayer( const QgsVectorLayer* layer )
 {
   mVectorLayer = layer;
 }
 
-void QgsDataDefinedButtonV2::registerCheckedWidget( QWidget* widget )
+void QgsPropertyOverrideButton::registerCheckedWidget( QWidget* widget )
 {
-  //TODO
+  Q_FOREACH( const QPointer<QWidget>& w, mCheckedWidgets )
+  {
+    if ( widget == w.data() )
+      return;
+  }
+  mCheckedWidgets.append( QPointer<QWidget>( widget ) );
 }
 
-void QgsDataDefinedButtonV2::setAssistant( const QString& title, QgsDataDefinedAssistant* assistant ) {}
-
-QgsDataDefinedAssistant*QgsDataDefinedButtonV2::assistant() { return nullptr; }
-
-void QgsDataDefinedButtonV2::mouseReleaseEvent( QMouseEvent *event )
+void QgsPropertyOverrideButton::mouseReleaseEvent( QMouseEvent *event )
 {
   // Ctrl-click to toggle activated state
   if (( event->modifiers() & ( Qt::ControlModifier ) )
@@ -225,7 +227,7 @@ void QgsDataDefinedButtonV2::mouseReleaseEvent( QMouseEvent *event )
   QToolButton::mousePressEvent( event );
 }
 
-void QgsDataDefinedButtonV2::setToProperty( const QgsProperty& property )
+void QgsPropertyOverrideButton::setToProperty( const QgsProperty& property )
 {
   if ( property )
   {
@@ -258,7 +260,7 @@ void QgsDataDefinedButtonV2::setToProperty( const QgsProperty& property )
   updateGui();
 }
 
-void QgsDataDefinedButtonV2::aboutToShowMenu()
+void QgsPropertyOverrideButton::aboutToShowMenu()
 {
   mDefineMenu->clear();
   // update fields so that changes made to layer's fields are reflected
@@ -415,7 +417,7 @@ void QgsDataDefinedButtonV2::aboutToShowMenu()
   }
 }
 
-void QgsDataDefinedButtonV2::menuActionTriggered( QAction* action )
+void QgsPropertyOverrideButton::menuActionTriggered( QAction* action )
 {
   if ( action == mActionActive )
   {
@@ -497,7 +499,7 @@ void QgsDataDefinedButtonV2::menuActionTriggered( QAction* action )
   }
 }
 
-void QgsDataDefinedButtonV2::showDescriptionDialog()
+void QgsPropertyOverrideButton::showDescriptionDialog()
 {
   QgsMessageViewer* mv = new QgsMessageViewer( this );
   mv->setWindowTitle( tr( "Data definition description" ) );
@@ -506,7 +508,7 @@ void QgsDataDefinedButtonV2::showDescriptionDialog()
 }
 
 
-void QgsDataDefinedButtonV2::showExpressionDialog()
+void QgsPropertyOverrideButton::showExpressionDialog()
 {
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : QgsExpressionContext();
 
@@ -525,7 +527,7 @@ void QgsDataDefinedButtonV2::showExpressionDialog()
   activateWindow(); // reset focus to parent window
 }
 
-void QgsDataDefinedButtonV2::updateGui()
+void QgsPropertyOverrideButton::updateGui()
 {
   bool hasExp = !mExpressionString.isEmpty();
   bool hasField = !mFieldName.isEmpty();
@@ -607,7 +609,7 @@ void QgsDataDefinedButtonV2::updateGui()
 
 }
 
-void QgsDataDefinedButtonV2::setActivePrivate( bool active )
+void QgsPropertyOverrideButton::setActivePrivate( bool active )
 {
   if ( mActive != active )
   {
@@ -616,7 +618,31 @@ void QgsDataDefinedButtonV2::setActivePrivate( bool active )
   }
 }
 
-void QgsDataDefinedButtonV2::setActive( bool active )
+void QgsPropertyOverrideButton::checkCheckedWidgets( bool check )
+{
+    // don't uncheck, only set to checked
+    if ( !check )
+    {
+      return;
+    }
+
+    Q_FOREACH( const QPointer< QWidget >& w, mCheckedWidgets )
+    {
+      QAbstractButton *btn = qobject_cast< QAbstractButton * >( w.data() );
+      if ( btn && btn->isCheckable() )
+      {
+        btn->setChecked( true );
+        continue;
+      }
+      QGroupBox *grpbx = qobject_cast< QGroupBox * >( w.data() );
+      if ( grpbx && grpbx->isCheckable() )
+      {
+        grpbx->setChecked( true );
+      }
+    }
+}
+
+void QgsPropertyOverrideButton::setActive( bool active )
 {
   if ( mActive != active )
   {
@@ -626,7 +652,7 @@ void QgsDataDefinedButtonV2::setActive( bool active )
   }
 }
 
-void QgsDataDefinedButtonV2::registerExpressionContextGenerator( QgsExpressionContextGenerator* generator )
+void QgsPropertyOverrideButton::registerExpressionContextGenerator( QgsExpressionContextGenerator* generator )
 {
   mExpressionContextGenerator = generator;
 }

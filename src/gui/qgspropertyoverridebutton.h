@@ -1,8 +1,8 @@
 /***************************************************************************
-     qgsdatadefinedbuttonv2.h
-     ------------------------
-    Date                 : March 2016
-    Copyright            : (C) 2016 by Nyall Dawson
+     qgspropertyoverridebutton.h
+     ---------------------------
+    Date                 : January 2017
+    Copyright            : (C) 2017 by Nyall Dawson
     Email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSDATADEFINEDBUTTONV2_H
-#define QGSDATADEFINEDBUTTONV2_H
+#ifndef QGSPROPERTYOVERRIDEBUTTON_H
+#define QGSPROPERTYOVERRIDEBUTTON_H
 
 #include "qgis_gui.h"
 #include <QDialog>
@@ -28,16 +28,24 @@
 #include "qgsexpressioncontextgenerator.h"
 
 class QgsVectorLayer;
-class QgsDataDefined;
 class QgsMapCanvas;
-class QgsDataDefinedAssistant;
 
 /** \ingroup gui
- * \class QgsDataDefinedButtonV2
- * A button for defining data source field mappings or expressions.
+ * \class QgsPropertyOverrideButton
+ * A button for controlling property overrides which may apply to a widget.
+ *
+ * QgsPropertyOverrideButton is designed to be used alongside the QGIS
+ * properties framework (QgsProperty, QgsPropertyDefinition
+ * and QgsPropertyCollection).
+ *
+ * It allows users to specify field or expression based overrides
+ * which should be applied to a property of an object. Eg, this widget
+ * is used for controlling data defined overrides in symbology, labeling
+ * and composer.
+ * \note added in QGIS 3.0
  */
 
-class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
+class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 {
     Q_OBJECT
     Q_PROPERTY( QString usageInfo READ usageInfo WRITE setUsageInfo )
@@ -46,18 +54,18 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
   public:
 
     /**
-     * Constructor for QgsDataDefinedButtonV2.
+     * Constructor for QgsPropertyOverrideButton.
      * @param parent parent widget
      * @param layer associated vector layer
      */
-    QgsDataDefinedButtonV2( QWidget* parent = nullptr,
+    QgsPropertyOverrideButton( QWidget* parent = nullptr,
                             const QgsVectorLayer* layer = nullptr );
 
     /**
-     * Initialize a newly constructed property button (useful if button was included in a form layout).
+     * Initialize a newly constructed property button (useful if button was included in a UI layout).
      * @param propertyKey key for corresponding property
-     * @param property associated property
-     * @param definitions properties definitions for collection
+     * @param property initial value of associated property to show in widget
+     * @param definitions properties definitions for corresponding collection
      * @param layer associated vector layer
      */
     void init( int propertyKey,
@@ -66,7 +74,7 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
                const QgsVectorLayer* layer = nullptr );
 
     /**
-     * Initialize a newly constructed property button (useful if button was included in a form layout).
+     * Initialize a newly constructed property button (useful if button was included in a UI layout).
      * @param propertyKey key for corresponding property
      * @param collection associated property collection
      * @param definitions properties definitions for collection
@@ -77,10 +85,21 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
                const QgsPropertiesDefinition& definitions,
                const QgsVectorLayer* layer = nullptr );
 
+    /**
+     * Returns a QgsProperty object encapsulating the current state of the
+     * widget.
+     * @see setToProperty()
+     */
     QgsProperty toProperty() const;
 
+    /**
+     * Sets the widget to reflect the current state of a QgsProperty.
+     */
     void setToProperty( const QgsProperty& property );
 
+    /**
+     * Returns the property key linked to the button.
+     */
     int propertyKey() const { return mPropertyKey; }
 
     /**
@@ -89,23 +108,27 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
     bool isActive() const { return mActive; }
 
     /**
-     * The valid data types that will work for the definition (QVariant-coercible to expected type)
-     * Compared against the variant type of the QgsField from data source and expression result
+     * Returns the data type which the widget will accept. This is used to filter
+     * out fields from the associated vector layer to only show fields which
+     * are compatible with the property.
      */
     QgsPropertyDefinition::DataType validDataType() const { return mDataTypes; }
 
     /**
-     * The full definition description and current definition (internally generated on a contextual basis)
+     * Returns the full definition description and current definition
+     * (internally generated on a contextual basis).
      */
     QString fullDescription() const { return mFullDescription; }
 
     /**
-     * The usage information about this data definition
+     * Returns usage information for the property.
+     * @see setUsageInfo()
      */
     QString usageInfo() const { return mUsageInfo; }
 
     /**
-     * Set the usage information about this data definition
+     * Set the usage information for the property.
+     * @see usageInfo()
      */
     void setUsageInfo( const QString& info ) { mUsageInfo = info; updateGui(); }
 
@@ -123,42 +146,21 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
      */
     const QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 
-    //TODO
-
     /**
-     * Register a sibling widget that get checked when data definition or expression is active
+     * Register a sibling widget that get checked when the property is active.
      */
     void registerCheckedWidget( QWidget* widget );
 
     /**
-     * Sets an assistant used to define the data defined object properties.
-     * Ownership of the assistant is transferred to the widget.
-     * @param title menu title for the assistant
-     * @param assistant data defined assistant. Set to null to remove the assistant
-     * option from the button.
-     * @note added in 2.10
-     * @see assistant()
-     */
-    void setAssistant( const QString& title, QgsDataDefinedAssistant * assistant );
-
-    /** Returns the assistant used to defined the data defined object properties, if set.
-     * @see setAssistant()
-     * @note added in QGIS 2.12
-     */
-    QgsDataDefinedAssistant* assistant();
-
-    /**
      * Register an expression context generator class that will be used to retrieve
-     * an expression context for the button.
-     * @param generator A QgsExpressionContextGenerator class that will be used to
-     *                  create an expression context when required.
+     * an expression context for the button when required.
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator* generator );
 
   public slots:
 
     /**
-     * Set whether the current data definition or expression is to be used
+     * Set whether the current property override definition is to be used
      */
     void setActive( bool active );
 
@@ -186,6 +188,7 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
      * Call this when you know you'll later be emitting the changed signal and want to avoid duplicate signals.
      */
     void setActivePrivate( bool active );
+
 
     int mPropertyKey = -1;
 
@@ -222,10 +225,14 @@ class GUI_EXPORT QgsDataDefinedButtonV2: public QToolButton
 
     QgsExpressionContextGenerator* mExpressionContextGenerator;
 
+    QList< QPointer<QWidget> > mCheckedWidgets;
+
   private slots:
     void aboutToShowMenu();
     void menuActionTriggered( QAction* action );
+
+    void checkCheckedWidgets( bool checked );
 };
 
 
-#endif // QGSDATADEFINEDBUTTONV2_H
+#endif // QGSPROPERTYOVERRIDEBUTTON_H
