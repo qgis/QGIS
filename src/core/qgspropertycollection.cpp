@@ -123,6 +123,7 @@ void QgsPropertyCollection::clear()
   mDirty = false;
   mHasActiveProperties = false;
   mHasDynamicProperties = false;
+  mCount = 0;
 }
 
 void QgsPropertyCollection::setProperty( int key, const QgsProperty& property )

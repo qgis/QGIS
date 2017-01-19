@@ -19,7 +19,7 @@ from qgis.core import (QgsProject,
                        QgsComposition,
                        QgsComposerLabel,
                        QgsComposerObject,
-                       QgsExpressionBasedProperty)
+                       QgsProperty)
 from qgis.PyQt.QtGui import (QColor)
 start_app()
 
@@ -39,7 +39,7 @@ class TestQgsComposerItem(unittest.TestCase):
         self.assertEqual(item.frameOutlineColor(), QColor(255, 0, 0))
         self.assertEqual(item.pen().color().name(), QColor(255, 0, 0).name())
 
-        item.dataDefinedProperties().setProperty(QgsComposerObject.FrameColor, QgsExpressionBasedProperty("'blue'"))
+        item.dataDefinedProperties().setProperty(QgsComposerObject.FrameColor, QgsProperty.fromExpression("'blue'"))
         item.refreshDataDefinedProperty()
         self.assertEqual(item.frameOutlineColor(), QColor(255, 0, 0)) # should not change
         self.assertEqual(item.pen().color().name(), QColor(0, 0, 255).name())
@@ -57,7 +57,7 @@ class TestQgsComposerItem(unittest.TestCase):
         self.assertEqual(item.backgroundColor(), QColor(255, 0, 0))
         self.assertEqual(item.brush().color().name(), QColor(255, 0, 0).name())
 
-        item.dataDefinedProperties().setProperty(QgsComposerObject.BackgroundColor, QgsExpressionBasedProperty("'blue'"))
+        item.dataDefinedProperties().setProperty(QgsComposerObject.BackgroundColor, QgsProperty.fromExpression("'blue'"))
         item.refreshDataDefinedProperty()
         self.assertEqual(item.backgroundColor(), QColor(255, 0, 0)) # should not change
         self.assertEqual(item.brush().color().name(), QColor(0, 0, 255).name())

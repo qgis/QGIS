@@ -26,7 +26,7 @@ from qgis.core import (QgsComposerLegend,
                        QgsRectangle,
                        QgsProject,
                        QgsComposerObject,
-                       QgsExpressionBasedProperty
+                       QgsProperty
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -215,7 +215,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         self.assertEqual(legend.title(), 'original')
         self.assertEqual(legend.legendSettings().title(), 'original')
 
-        legend.dataDefinedProperties().setProperty(QgsComposerObject.LegendTitle, QgsExpressionBasedProperty("'new'"))
+        legend.dataDefinedProperties().setProperty(QgsComposerObject.LegendTitle, QgsProperty.fromExpression("'new'"))
         legend.refreshDataDefinedProperty()
         self.assertEqual(legend.title(), 'original')
         self.assertEqual(legend.legendSettings().title(), 'new')
@@ -233,7 +233,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         self.assertEqual(legend.columnCount(), 2)
         self.assertEqual(legend.legendSettings().columnCount(), 2)
 
-        legend.dataDefinedProperties().setProperty(QgsComposerObject.LegendColumnCount, QgsExpressionBasedProperty("5"))
+        legend.dataDefinedProperties().setProperty(QgsComposerObject.LegendColumnCount, QgsProperty.fromExpression("5"))
         legend.refreshDataDefinedProperty()
         self.assertEqual(legend.columnCount(), 2)
         self.assertEqual(legend.legendSettings().columnCount(), 5)
