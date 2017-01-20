@@ -208,7 +208,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   mRadAutodetect->setChecked( true );
 #endif
 
-  //auto digitising behavior
+  //auto digitizing behavior
   mCbxAutoAddVertices->setChecked( mySettings.value( QStringLiteral( "/gps/autoAddVertices" ), "false" ).toBool() );
 
   mCbxAutoCommit->setChecked( mySettings.value( QStringLiteral( "/gps/autoCommit" ), "false" ).toBool() );

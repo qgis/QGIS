@@ -74,9 +74,9 @@ This release has following new features:
 - Rendering: New options for on the fly simplification
 - Rendering: Quantile based classification for raster layers
 - Rendering: Live hillshade renderer
-- Digitising: "Repeating" locking mode for constraints
-- Digitising: Extend linestring geometries with reshape tool
-- Digitising: Segmentation tolerance
+- Digitizing: "Repeating" locking mode for constraints
+- Digitizing: Extend linestring geometries with reshape tool
+- Digitizing: Segmentation tolerance
 - Data management: New configuration options for attribute table
 - Data management: Multiple columns in attribute forms
 - Data management: Control over attributes to export when saving a vector layer
@@ -163,9 +163,9 @@ This release has following new features:
 - Data management : Vector joins are now saved within QLR layer-definition-files
 - Data management : N:M relation editing
 - Data management : External Resource widget
-- Digitising : Configurable rubber band color
-- Digitising : Autotrace
-- Digitising : Trace digitising tool
+- Digitizing : Configurable rubber band color
+- Digitizing : Autotrace
+- Digitizing : Trace digitizing tool
 - General : Changed behavior of strpos function
 - General : Field calculator can be used to update feature's geometry
 - General : Virtual layers
@@ -230,7 +230,7 @@ This release has following new features:
 - Data management : DBManager Improvements
 - Data management : Conditional formatting for attribute table cells
 - Data management : Support for relative paths in widgets
-- Digitising : Digitising improvements
+- Digitizing : Digitizing improvements
 - General : New welcome screen
 - General : Ongoing improvements to code quality
 - General : Advanced settings editor
@@ -427,7 +427,7 @@ This is the minor release sports a number of great new features:
 - When pasting a selection, it is now possible to create a new layer on the fly
   from the pasted features.
 - WMS Legend is now available via a getLegendGraphic request.
-- It is now possible to digitise a new feature as an interior ring of an
+- It is now possible to digitize a new feature as an interior ring of an
   existing feature.
 - Recent expressions are saved in the expression builder for quick re-use.
 - You can now set the color for the zebra map border style in composer.
@@ -571,7 +571,7 @@ key new features.
 - Heatmap tool - a new core plugin has been added for generating raster heatmaps from point data. You may need to activate this plugin using the plugin manager.
 - GPS Tracking - The GPS live tracking user interface was overhauled and many fixes and improvements were added to it.
 - Menu Re-organisation - The menus were re-organised a little - we now have separate menus for Vector and Raster and many plugins were updated to place their menus in the new Vector and Raster top level menus.
-- Offset Curves - a new digitising tool for creating offset curves was added.
+- Offset Curves - a new digitizing tool for creating offset curves was added.
 - Terrain Analysis Plugin - a new core plugin was added for doing terrain analysis - and it can make really good looking colored relief maps.
 - Ellipse renderer - symbollayer to render ellipse shapes (and also rectangles, triangles, crosses by specifying width and height). Moreover, the symbol layer allows setting all parameters (width, height, colors, rotation, outline with) from data fields, in mm or map units
 - New scale selector with predefined scales
@@ -1376,7 +1376,7 @@ This release includes over 120 bug fixes and enhancements
 over the QGIS 0.9.1 release. In addition we have added 
 the following new features:
 
-- Improvements to digitising capabilities.
+- Improvements to digitizing capabilities.
 - Supporting default and defined styles (.qml) files for file based 
 vector layers. With styles you can save the symbolisation 
 and other settings associated with a vector layer and they 
@@ -1396,7 +1396,7 @@ improvements 'under the hood'.
 - This release candidate includes over 40 bug fixes and enhancements 
 over the QGIS 0.9.1 release. In addition we have added 
 the following new features:
-- Imrovements to digitising capabilities.
+- Imrovements to digitizing capabilities.
 - Supporting default and defined styles (.qml) files for file based 
 vector layers. With styles you can save the symbolisation 
 and other settings associated with a vector layer and they 
@@ -2012,7 +2012,7 @@ Implemented a new map cursor type : Capture Point (little pencil icon on your to
    are placed into the system clipboard. 
 
   In release 0.5 this will be extended to provide simple point vector file data capture / 
-  digitising facility. This will be implemented by means of a plugin which will utilise the 
+  digitizing facility. This will be implemented by means of a plugin which will utilise the 
   aforementioned xyClickCoordinate(QgsPoint) signal.
 
 2004-06-12 [gsherman] 0.3.0devel30

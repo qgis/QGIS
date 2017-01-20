@@ -197,7 +197,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/digitising.png</normaloff>:/images/themes/default/propertyicons/digitising.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/digitizing.png</normaloff>:/images/themes/default/propertyicons/digitizing.png</iconset>
           </property>
          </item>
          <item>

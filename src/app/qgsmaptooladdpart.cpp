@@ -252,7 +252,7 @@ bool QgsMapToolAddPart::checkSelection()
     return false;
   }
 
-  //inform user at the begin of the digitising action that the island tool only works if exactly one feature is selected
+  //inform user at the begin of the digitizing action that the island tool only works if exactly one feature is selected
   int nSelectedFeatures = vlayer->selectedFeatureCount();
   QString selectionErrorMsg;
   if ( nSelectedFeatures < 1 )

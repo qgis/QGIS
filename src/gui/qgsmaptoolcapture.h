@@ -190,7 +190,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! Temporary rubber band for polylines and polygons. this connects the last added point to the mouse cursor position
     QgsRubberBand* mTempRubberBand;
 
-    //! List to store the points of digitised lines and polygons (in layer coordinates)
+    //! List to store the points of digitized lines and polygons (in layer coordinates)
     QgsCompoundCurve mCaptureCurve;
 
     void validateGeometry();
