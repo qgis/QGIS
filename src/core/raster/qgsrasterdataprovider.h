@@ -361,7 +361,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Turns on/off editing mode of the provider. When in editing mode, it is possible
      * to overwrite data of the provider using writeBlock() calls.
      * @note Only some providers support editing mode and even those may fail to turn
-     * the underlying data source into editing mode, so it is necessery to check the return
+     * the underlying data source into editing mode, so it is necessary to check the return
      * value whether the operation was successful.
      * @returns true if the switch to/from editing mode was successful
      * @see isEditable(), writeBlock()
