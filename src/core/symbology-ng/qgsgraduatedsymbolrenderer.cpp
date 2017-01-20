@@ -1615,7 +1615,7 @@ QgsGraduatedSymbolRenderer* QgsGraduatedSymbolRenderer::convertFromRenderer( con
   }
 
   // If not one of the specifically handled renderers, then just grab the symbol from the renderer
-  // Could have applied this to specific renderer types (singleSymboll, graduatedSymbol)
+  // Could have applied this to specific renderer types (singleSymbol, graduatedSymbol)
 
   if ( !r )
   {
