@@ -213,7 +213,15 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
   // for each provider: get labels and register them in PAL
   Q_FOREACH ( QgsAbstractLabelProvider* provider, mProviders )
   {
+    bool appendedLayerScope = false;
+    if ( QgsMapLayer* ml = QgsProject::instance()->mapLayer( provider->layerId() ) )
+    {
+      appendedLayerScope = true;
+      context.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( ml ) );
+    }
     processProvider( provider, context, p );  //#spellok
+    if ( appendedLayerScope )
+      delete context.expressionContext().popScope();
   }
 
 
