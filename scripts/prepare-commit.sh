@@ -41,15 +41,13 @@ set -e
 
 # determine changed files
 MODIFIED=$(git status --porcelain| sed -ne "s/^ *[MA]  *//p" | sort -u)
-if  [ "$MODIFIED" != "" ]; then
-    ${TOPLEVEL}/scripts/spell_check/check_spelling.sh $MODIFIED
-fi
-
 
 if [ -z "$MODIFIED" ]; then
   echo nothing was modified
   exit 0
 fi
+
+${TOPLEVEL}/scripts/spell_check/check_spelling.sh $MODIFIED
 
 # save original changes
 REV=$(git log -n1 --pretty=%H)

@@ -10,6 +10,7 @@ python/ext-libs/
 python/plugins/processing/algs/otb/
 python/plugins/processing/algs/saga/
 python/qsci_apis/
+src/astyle
 src/app/dwg/libdxfrw/
 src/app/gps/qwtpolar-1.0/
 src/app/gps/qwtpolar-1.1.1/
@@ -34,6 +35,9 @@ debian/qgis-plugin-grass.lintian-overrides
 debian/qgis-provider-grass.lintian-overrides
 doc/contributors.json
 Exception_to_GPL_for_Qt.txt
+images/svg/symbol/blue-marker.svg
+images/svg/symbol/red-marker.svg
+images/themes/default/propertyicons/diagram.svg
 images/themes/default/propertyicons/general.svg
 images/themes/default/svgbase/hammer.svg
 LexerR.py
@@ -50,6 +54,7 @@ resources/cpt-city-qgis-min/selections/div.xml
 resources/cpt-city-qgis-min/selections/reds.xml
 resources/cpt-city-qgis-min/wkp/schwarzwald/COPYING.xml
 scripts/spell_check/spelling.dat
+scripts/spell_check/test.sh
 src/server/qgis_wms.xmi
 tests/testdata/qgis_server_accesscontrol/Hello.qml
 tests/testdata/qgis_server_accesscontrol/project.qgs
