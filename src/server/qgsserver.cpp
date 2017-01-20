@@ -149,58 +149,6 @@ void QgsServer::printRequestParameters( const QMap< QString, QString>& parameter
 }
 
 /**
- * @brief QgsServer::printRequestInfos prints debug information about the request
- */
-void QgsServer::printRequestInfos()
-{
-  QgsMessageLog::logMessage( QStringLiteral( "******************** New request ***************" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  if ( getenv( "REMOTE_ADDR" ) )
-  {
-    QgsMessageLog::logMessage( "REMOTE_ADDR: " + QString( getenv( "REMOTE_ADDR" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  }
-  if ( getenv( "REMOTE_HOST" ) )
-  {
-    QgsMessageLog::logMessage( "REMOTE_HOST: " + QString( getenv( "REMOTE_HOST" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  }
-  if ( getenv( "REMOTE_USER" ) )
-  {
-    QgsMessageLog::logMessage( "REMOTE_USER: " + QString( getenv( "REMOTE_USER" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  }
-  if ( getenv( "REMOTE_IDENT" ) )
-  {
-    QgsMessageLog::logMessage( "REMOTE_IDENT: " + QString( getenv( "REMOTE_IDENT" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  }
-  if ( getenv( "CONTENT_TYPE" ) )
-  {
-    QgsMessageLog::logMessage( "CONTENT_TYPE: " + QString( getenv( "CONTENT_TYPE" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  }
-  if ( getenv( "AUTH_TYPE" ) )
-  {
-    QgsMessageLog::logMessage( "AUTH_TYPE: " + QString( getenv( "AUTH_TYPE" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  }
-  if ( getenv( "HTTP_USER_AGENT" ) )
-  {
-    QgsMessageLog::logMessage( "HTTP_USER_AGENT: " + QString( getenv( "HTTP_USER_AGENT" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  }
-  if ( getenv( "HTTP_PROXY" ) )
-  {
-    QgsMessageLog::logMessage( "HTTP_PROXY: " + QString( getenv( "HTTP_PROXY" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  }
-  if ( getenv( "HTTPS_PROXY" ) )
-  {
-    QgsMessageLog::logMessage( "HTTPS_PROXY: " + QString( getenv( "HTTPS_PROXY" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  }
-  if ( getenv( "NO_PROXY" ) )
-  {
-    QgsMessageLog::logMessage( "NO_PROXY: " + QString( getenv( "NO_PROXY" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  }
-  if ( getenv( "HTTP_AUTHORIZATION" ) )
-  {
-    QgsMessageLog::logMessage( "HTTP_AUTHORIZATION: " + QString( getenv( "HTTP_AUTHORIZATION" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  }
-}
-
-/**
  * @brief QgsServer::configPath
  * @param defaultConfigPath
  * @param parameters
@@ -366,7 +314,6 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
   if ( logLevel == QgsMessageLog::INFO )
   {
     time.start();
-    printRequestInfos();
   }
 
   //Pass the filters to the requestHandler, this is needed for the following reasons:

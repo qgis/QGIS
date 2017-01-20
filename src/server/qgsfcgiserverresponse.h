@@ -92,6 +92,11 @@ class QgsFcgiServerRequest: public QgsServerRequest
   private:
     void readData();
 
+    // Log request info: print debug infos
+    // about the request
+    void printRequestInfos();
+
+
     QByteArray mData;
     bool       mHasError;
 };

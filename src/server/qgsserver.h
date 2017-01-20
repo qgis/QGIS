@@ -100,10 +100,6 @@ class SERVER_EXPORT QgsServer
     // static methods of this class
     static QString configPath( const QString& defaultConfigPath,
                                const QMap<QString, QString>& parameters );
-    // Mainly for debug
-    static void dummyMessageHandler( QtMsgType type, const char *msg );
-    // Mainly for debug
-    static void printRequestInfos();
 
     /**
      * @brief QgsServer::printRequestParameters prints the request parameters
