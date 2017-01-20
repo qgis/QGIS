@@ -114,8 +114,6 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsexternalresourceconfigdlg.cpp
   editorwidgets/qgsexternalresourcewidgetwrapper.cpp
   editorwidgets/qgsexternalresourcewidgetfactory.cpp
-  editorwidgets/qgsfilenamewidgetwrapper.cpp
-  editorwidgets/qgsfilenamewidgetfactory.cpp
   editorwidgets/qgshiddenwidgetwrapper.cpp
   editorwidgets/qgshiddenwidgetfactory.cpp
   editorwidgets/qgskeyvaluewidgetfactory.cpp
@@ -123,9 +121,6 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgslistwidgetfactory.cpp
   editorwidgets/qgslistwidgetwrapper.cpp
   editorwidgets/qgsmultiedittoolbutton.cpp
-  editorwidgets/qgsphotoconfigdlg.cpp
-  editorwidgets/qgsphotowidgetwrapper.cpp
-  editorwidgets/qgsphotowidgetfactory.cpp
   editorwidgets/qgsrangeconfigdlg.cpp
   editorwidgets/qgsrangewidgetwrapper.cpp
   editorwidgets/qgsrangewidgetfactory.cpp
@@ -586,13 +581,10 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsenumerationwidgetwrapper.h
   editorwidgets/qgsexternalresourceconfigdlg.h
   editorwidgets/qgsexternalresourcewidgetwrapper.h
-  editorwidgets/qgsfilenamewidgetwrapper.h
   editorwidgets/qgshiddenwidgetwrapper.h
   editorwidgets/qgskeyvaluewidgetwrapper.h
   editorwidgets/qgslistwidgetwrapper.h
   editorwidgets/qgsmultiedittoolbutton.h
-  editorwidgets/qgsphotoconfigdlg.h
-  editorwidgets/qgsphotowidgetwrapper.h
   editorwidgets/qgsrangeconfigdlg.h
   editorwidgets/qgsrangewidgetwrapper.h
   editorwidgets/qgsrelationreferenceconfigdlg.h
@@ -703,11 +695,9 @@ SET(QGIS_GUI_HDRS
   editorwidgets/qgsdatetimeeditfactory.h
   editorwidgets/qgsenumerationwidgetfactory.h
   editorwidgets/qgsexternalresourcewidgetfactory.h
-  editorwidgets/qgsfilenamewidgetfactory.h
   editorwidgets/qgshiddenwidgetfactory.h
   editorwidgets/qgskeyvaluewidgetfactory.h
   editorwidgets/qgslistwidgetfactory.h
-  editorwidgets/qgsphotowidgetfactory.h
   editorwidgets/qgsrangewidgetfactory.h
   editorwidgets/qgsrelationreferencefactory.h
   editorwidgets/qgstexteditwidgetfactory.h
