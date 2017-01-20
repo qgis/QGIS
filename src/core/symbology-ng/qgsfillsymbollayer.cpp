@@ -2818,6 +2818,7 @@ QgsLinePatternFillSymbolLayer* QgsLinePatternFillSymbolLayer::clone() const
     clonedLayer->setSubSymbol( mFillLineSymbol->clone() );
   }
   copyPaintEffect( clonedLayer );
+  copyDataDefinedProperties( clonedLayer );
   return clonedLayer;
 }
 
@@ -3227,6 +3228,7 @@ QgsPointPatternFillSymbolLayer* QgsPointPatternFillSymbolLayer::clone() const
   {
     clonedLayer->setSubSymbol( mMarkerSymbol->clone() );
   }
+  copyDataDefinedProperties( clonedLayer );
   copyPaintEffect( clonedLayer );
   return clonedLayer;
 }

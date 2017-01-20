@@ -1596,6 +1596,7 @@ QgsFilledMarkerSymbolLayer *QgsFilledMarkerSymbolLayer::clone() const
 {
   QgsFilledMarkerSymbolLayer* m = static_cast< QgsFilledMarkerSymbolLayer* >( QgsFilledMarkerSymbolLayer::create( properties() ) );
   copyPaintEffect( m );
+  copyDataDefinedProperties( m );
   m->setSubSymbol( mFill->clone() );
   return m;
 }

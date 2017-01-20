@@ -890,6 +890,7 @@ void TestQgsProperty::propertyCollection()
   collection.setProperty( Property2, QgsProperty::fromValue( "v2", false ) );
   collection.setProperty( Property3, QgsProperty::fromField( "field1", true ) );
   collection.setProperty( Property4, QgsProperty::fromExpression( "\"field1\" + \"field2\"", true ) );
+  QCOMPARE( collection.count(), 4 );
 
   // test referenced fields
   QCOMPARE( collection.referencedFields( context ).count(), 2 );
@@ -1041,7 +1042,7 @@ void TestQgsProperty::collectionStack()
 
   //now add a property to the collection
   QgsProperty property = QgsProperty::fromValue( "value", true );
-  collection->setProperty( Property1, property );
+  stack.at( 0 )->setProperty( Property1, property );
   QVERIFY( stack.isActive( Property1 ) );
   QCOMPARE( stack.property( Property1 ).value( context ), property.value( context ) );
   QCOMPARE( stack.value( Property1, context ), property.value( context ) );

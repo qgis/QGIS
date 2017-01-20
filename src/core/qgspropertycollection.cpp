@@ -222,17 +222,16 @@ void QgsPropertyCollection::rescan() const
     QHash<int, QgsProperty>::const_iterator it = mProperties.constBegin();
     for ( ; it != mProperties.constEnd(); ++it )
     {
+      if ( it.value() )
+        mCount++;
       if ( it.value().isActive() )
       {
         mHasActiveProperties = true;
         if ( it.value().propertyType() != QgsProperty::StaticProperty )
         {
           mHasDynamicProperties = true;
-          break;
         }
       }
-      if ( it.value() )
-        mCount++;
     }
   }
   mDirty = false;

@@ -210,6 +210,7 @@ void TestQgsComposerScaleBar::dataDefined()
   QCOMPARE( mComposerScaleBar->pen().color().name(), QColor( 255, 255, 0 ).name() );
   QCOMPARE( mComposerScaleBar->pen().widthF(), 1.2 );
   mComposerScaleBar->setDataDefinedProperties( QgsPropertyCollection() );
+  mComposerScaleBar->setLineWidth( 1.0 );
 }
 
 QGSTEST_MAIN( TestQgsComposerScaleBar )
