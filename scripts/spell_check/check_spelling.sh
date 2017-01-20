@@ -77,6 +77,7 @@ declare -A GLOBREP_CURRENTFILE=()
 declare -A GLOBREP_IGNORE=()
 
 for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
+  printf "Progress: %d/%d\n" $I $SPLIT
   SPELLFILE=spelling$I~
 
   # if correction contains an uppercase letter and is the same as the error character wise, this means that the error is searched as a full word and case sensitive (not incorporated in a bigger one)
