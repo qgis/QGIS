@@ -1817,6 +1817,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode& layerNode, QString& errorMes
   if ( mapLayerNode.attribute( QStringLiteral( "readOnly" ), QStringLiteral( "0" ) ).toInt() == 1 )
     mReadOnly = true;
 
+  updateFields();
+
   return true;
 }
 
