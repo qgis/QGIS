@@ -83,11 +83,17 @@ void QgsVectorLayerLabelProvider::init()
   mPlacement = mSettings.placement;
   mLinePlacementFlags = mSettings.placementFlags;
   mFlags = Flags();
-  if ( mSettings.drawLabels ) mFlags |= DrawLabels;
-  if ( mSettings.displayAll ) mFlags |= DrawAllLabels;
-  if ( mSettings.mergeLines ) mFlags |= MergeConnectedLines;
-  if ( mSettings.centroidInside ) mFlags |= CentroidMustBeInside;
-  if ( mSettings.labelPerPart ) mFlags |= LabelPerFeaturePart;
+  if ( mSettings.drawLabels )
+    mFlags |= DrawLabels;
+  if ( mSettings.displayAll )
+    mFlags |= DrawAllLabels;
+  if ( mSettings.mergeLines && !mSettings.addDirectionSymbol )
+    mFlags |= MergeConnectedLines;
+  if ( mSettings.centroidInside )
+    mFlags |= CentroidMustBeInside;
+  if ( mSettings.labelPerPart )
+    mFlags |= LabelPerFeaturePart;
+
   mPriority = 1 - mSettings.priority / 10.0; // convert 0..10 --> 1..0
 
   if ( mLayerGeometryType == QgsWkbTypes::PointGeometry && mRenderer )

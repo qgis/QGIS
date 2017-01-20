@@ -351,7 +351,7 @@ QgsPalLayerSettings& QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   upsidedownLabels = s.upsidedownLabels;
 
   labelPerPart = s.labelPerPart;
-  mergeLines = s.mergeLines;
+  mergeLines = s.mergeLines && !s.addDirectionSymbol;
   minFeatureSize = s.minFeatureSize;
   limitNumLabels = s.limitNumLabels;
   maxNumLabels = s.maxNumLabels;
