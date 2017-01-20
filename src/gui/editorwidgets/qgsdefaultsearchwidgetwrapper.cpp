@@ -265,6 +265,7 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
     mLineEdit = new QgsFilterLineEdit();
   }
   mContainer->layout()->addWidget( mLineEdit );
+  mContainer->setFocusProxy( mLineEdit );
 
   if ( fldType == QVariant::String )
   {

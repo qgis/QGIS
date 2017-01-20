@@ -527,6 +527,7 @@ void QgsAttributeTableDialog::replaceSearchWidget( QWidget* oldw, QWidget* neww 
   oldw->setVisible( false );
   mFilterLayout->addWidget( neww, 0, 0, 0 );
   neww->setVisible( true );
+  neww->setFocus();
 }
 
 void QgsAttributeTableDialog::layerActionTriggered()
@@ -574,7 +575,6 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   }
 
   replaceSearchWidget( mFilterQuery, mCurrentSearchWidgetWrapper->widget() );
-
 }
 
 void QgsAttributeTableDialog::filterExpressionBuilder()
