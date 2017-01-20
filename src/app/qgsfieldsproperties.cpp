@@ -996,27 +996,27 @@ void QgsFieldsProperties::apply()
 
     if ( cfg.mConstraints & QgsFieldConstraints::ConstraintNotNull )
     {
-      mLayer->setFieldConstraint( i, QgsFieldConstraints::ConstraintNotNull, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintStrengthHard ) );
+      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintNotNull, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintStrengthHard ) );
     }
     else
     {
-      mLayer->removeFieldConstraint( i, QgsFieldConstraints::ConstraintNotNull );
+      mLayer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintNotNull );
     }
     if ( cfg.mConstraints & QgsFieldConstraints::ConstraintUnique )
     {
-      mLayer->setFieldConstraint( i, QgsFieldConstraints::ConstraintUnique, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthHard ) );
+      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintUnique, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthHard ) );
     }
     else
     {
-      mLayer->removeFieldConstraint( i, QgsFieldConstraints::ConstraintUnique );
+      mLayer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintUnique );
     }
     if ( cfg.mConstraints & QgsFieldConstraints::ConstraintExpression )
     {
-      mLayer->setFieldConstraint( i, QgsFieldConstraints::ConstraintExpression, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard ) );
+      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintExpression, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard ) );
     }
     else
     {
-      mLayer->removeFieldConstraint( i, QgsFieldConstraints::ConstraintExpression );
+      mLayer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintExpression );
     }
 
     if ( mFieldsList->item( i, AttrWMSCol )->checkState() == Qt::Unchecked )
