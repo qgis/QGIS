@@ -41,6 +41,9 @@ shift $(expr $OPTIND - 1)
 if [ ! $# -eq 0 ]; then
   EXCLUDE=$(cat $AGIGNORE | sed -e 's/\s*#.*$//' -e '/^\s*$/d' | tr '\n' '|' | sed -e 's/|$//')
   INPUTFILES=$(echo $@ | tr -s '[[:blank:]]' '\n' | egrep -iv "$EXCLUDE" | tr '\n' ' ' )
+  if [ "$INPUTFILES" == "" ]; then
+    exit 0
+  fi
   echo "Running spell check on files: $INPUTFILES"
 else
   INPUTFILES="."
