@@ -853,6 +853,16 @@ void QgsLabelingGui::updateUi()
   syncDefinedCheckboxFrame( mFormatNumDDBtn, mFormatNumChkBx, mFormatNumFrame );
   syncDefinedCheckboxFrame( mScaleBasedVisibilityDDBtn, mScaleBasedVisibilityChkBx, mScaleBasedVisibilityFrame );
   syncDefinedCheckboxFrame( mFontLimitPixelDDBtn, mFontLimitPixelChkBox, mFontLimitPixelFrame );
+
+  chkMergeLines->setEnabled( !mDirectSymbChkBx->isChecked() );
+  if ( mDirectSymbChkBx->isChecked() )
+  {
+    chkMergeLines->setToolTip( tr( "This option is not compatible with line direction symbols." ) );
+  }
+  else
+  {
+    chkMergeLines->setToolTip( QString() );
+  }
 }
 
 
