@@ -240,6 +240,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
        </widget>
       </item>
       <item>
@@ -651,6 +654,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>mFieldCombo</tabstop>
+  <tabstop>mUpdateExpressionText</tabstop>
   <tabstop>mRunFieldCalc</tabstop>
   <tabstop>mRunFieldCalcSelected</tabstop>
   <tabstop>mFilterButton</tabstop>

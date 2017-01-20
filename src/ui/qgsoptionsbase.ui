@@ -2771,7 +2771,11 @@
                    </widget>
                   </item>
                   <item row="0" column="0" rowspan="8">
-                   <widget class="QgsColorSchemeList" name="mTreeCustomColors" native="true"/>
+                   <widget class="QgsColorSchemeList" name="mTreeCustomColors" native="true">
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -5466,6 +5470,7 @@
  <tabstops>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>mOptionsScrollArea_01</tabstop>
+  <tabstop>groupBox</tabstop>
   <tabstop>cmbStyle</tabstop>
   <tabstop>cmbUITheme</tabstop>
   <tabstop>cmbIconSize</tabstop>
@@ -5476,9 +5481,11 @@
   <tabstop>mMessageTimeoutSpnBx</tabstop>
   <tabstop>cbxHideSplash</tabstop>
   <tabstop>cbxShowTips</tabstop>
+  <tabstop>cbxCheckVersion</tabstop>
   <tabstop>mCustomGroupBoxChkBx</tabstop>
   <tabstop>mNativeColorDialogsChkBx</tabstop>
   <tabstop>mLiveColorDialogsChkBx</tabstop>
+  <tabstop>groupBox_11</tabstop>
   <tabstop>mProjectOnLaunchCmbBx</tabstop>
   <tabstop>mProjectOnLaunchLineEdit</tabstop>
   <tabstop>mProjectOnLaunchPushBtn</tabstop>
@@ -5493,26 +5500,39 @@
   <tabstop>chbWarnOldProjectVersion</tabstop>
   <tabstop>cmbEnableMacros</tabstop>
   <tabstop>mOptionsScrollArea_03</tabstop>
+  <tabstop>groupBox_2</tabstop>
   <tabstop>mBtnAddSVGPath</tabstop>
   <tabstop>mBtnRemoveSVGPath</tabstop>
   <tabstop>mListSVGPaths</tabstop>
+  <tabstop>groupBox_4</tabstop>
   <tabstop>mBtnAddPluginPath</tabstop>
   <tabstop>mBtnRemovePluginPath</tabstop>
   <tabstop>mListPluginPaths</tabstop>
+  <tabstop>groupBox_29</tabstop>
+  <tabstop>mBtnAddHelpPath</tabstop>
+  <tabstop>mBtnRemoveHelpPath</tabstop>
+  <tabstop>mBtnMoveHelpUp</tabstop>
+  <tabstop>mBtnMoveHelpDown</tabstop>
+  <tabstop>mHelpPathTreeWidget</tabstop>
+  <tabstop>mQSettingsGrpBx</tabstop>
   <tabstop>mRestoreDefaultWindowStateBtn</tabstop>
+  <tabstop>mEnvironmentGrpBx</tabstop>
   <tabstop>mCustomVariablesChkBx</tabstop>
   <tabstop>mAddCustomVarBtn</tabstop>
   <tabstop>mRemoveCustomVarBtn</tabstop>
   <tabstop>mCustomVariablesTable</tabstop>
+  <tabstop>mCurrentVariablesGrpBx</tabstop>
   <tabstop>mCurrentVariablesTable</tabstop>
-  <tabstop>mComboCopyFeatureFormat</tabstop>
   <tabstop>mCurrentVariablesQGISChxBx</tabstop>
   <tabstop>mOptionsScrollArea_11</tabstop>
+  <tabstop>groupBox_18</tabstop>
   <tabstop>cbxAttributeTableDocked</tabstop>
+  <tabstop>mComboCopyFeatureFormat</tabstop>
   <tabstop>cmbAttrTableBehavior</tabstop>
   <tabstop>mAttrTableViewComboBox</tabstop>
   <tabstop>spinBoxAttrTableRowCache</tabstop>
   <tabstop>leNullValue</tabstop>
+  <tabstop>groupBox_19</tabstop>
   <tabstop>cmbScanItemsInBrowser</tabstop>
   <tabstop>cmbScanZipInBrowser</tabstop>
   <tabstop>cmbPromptRasterSublayers</tabstop>
@@ -5520,9 +5540,11 @@
   <tabstop>cbxAddPostgisDC</tabstop>
   <tabstop>cbxAddOracleDC</tabstop>
   <tabstop>cbxCompileExpressions</tabstop>
+  <tabstop>groupBox_28</tabstop>
   <tabstop>mBtnRemoveHiddenPath</tabstop>
   <tabstop>mListHiddenBrowserPaths</tabstop>
   <tabstop>mOptionsScrollArea_04</tabstop>
+  <tabstop>groupBox_5</tabstop>
   <tabstop>chkAddedVisibility</tabstop>
   <tabstop>chkUseRenderCaching</tabstop>
   <tabstop>chkParallelRendering</tabstop>
@@ -5534,25 +5556,41 @@
   <tabstop>mSimplifyAlgorithmComboBox</tabstop>
   <tabstop>mSimplifyDrawingAtProvider</tabstop>
   <tabstop>mSimplifyMaximumScaleComboBox</tabstop>
+  <tabstop>doubleSpinBoxMagnifierDefault</tabstop>
+  <tabstop>groupBox_8</tabstop>
   <tabstop>chkAntiAliasing</tabstop>
+  <tabstop>mSegmentationGroupBox</tabstop>
+  <tabstop>mSegmentationToleranceSpinBox</tabstop>
+  <tabstop>mToleranceTypeComboBox</tabstop>
+  <tabstop>groupBox_14</tabstop>
   <tabstop>spnRed</tabstop>
   <tabstop>spnGreen</tabstop>
   <tabstop>spnBlue</tabstop>
   <tabstop>cboxContrastEnhancementAlgorithmSingleBand</tabstop>
+  <tabstop>cboxContrastEnhancementLimitsSingleBand</tabstop>
+  <tabstop>cboxContrastEnhancementAlgorithmMultiBandSingleByte</tabstop>
+  <tabstop>cboxContrastEnhancementLimitsMultiBandSingleByte</tabstop>
+  <tabstop>cboxContrastEnhancementAlgorithmMultiBandMultiByte</tabstop>
+  <tabstop>cboxContrastEnhancementLimitsMultiBandMultiByte</tabstop>
   <tabstop>mRasterCumulativeCutLowerDoubleSpinBox</tabstop>
   <tabstop>mRasterCumulativeCutUpperDoubleSpinBox</tabstop>
   <tabstop>spnThreeBandStdDev</tabstop>
+  <tabstop>groupBox_22</tabstop>
   <tabstop>mLogCanvasRefreshChkBx</tabstop>
   <tabstop>scrollArea</tabstop>
+  <tabstop>groupBox_7</tabstop>
   <tabstop>mButtonAddColor</tabstop>
   <tabstop>mButtonRemoveColor</tabstop>
   <tabstop>mButtonCopyColors</tabstop>
   <tabstop>mButtonPasteColors</tabstop>
   <tabstop>mButtonImportColors</tabstop>
   <tabstop>mButtonExportColors</tabstop>
+  <tabstop>mTreeCustomColors</tabstop>
   <tabstop>mOptionsScrollArea_06</tabstop>
+  <tabstop>groupBox_9</tabstop>
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
+  <tabstop>mLegendGrpBx</tabstop>
   <tabstop>cmbLegendDoubleClickAction</tabstop>
   <tabstop>capitalizeCheckBox</tabstop>
   <tabstop>mLegendLayersBoldChkBx</tabstop>
@@ -5561,17 +5599,21 @@
   <tabstop>cbxCreateRasterLegendIcons</tabstop>
   <tabstop>mLegendGraphicResolutionSpinBox</tabstop>
   <tabstop>mOptionsScrollArea_05</tabstop>
+  <tabstop>mIdentifyGroupBox</tabstop>
   <tabstop>spinBoxIdentifyValue</tabstop>
   <tabstop>mIdentifyHighlightColorButton</tabstop>
   <tabstop>mIdentifyHighlightBufferSpinBox</tabstop>
   <tabstop>mIdentifyHighlightMinWidthSpinBox</tabstop>
+  <tabstop>groupBox_6</tabstop>
   <tabstop>pbnMeasureColor</tabstop>
   <tabstop>mDecimalPlacesSpinBox</tabstop>
   <tabstop>mKeepBaseUnitCheckBox</tabstop>
   <tabstop>mDistanceUnitsComboBox</tabstop>
   <tabstop>mAreaUnitsComboBox</tabstop>
   <tabstop>mAngleUnitsComboBox</tabstop>
+  <tabstop>groupBox_10</tabstop>
   <tabstop>spinZoomFactor</tabstop>
+  <tabstop>groupBox_15</tabstop>
   <tabstop>mListGlobalScales</tabstop>
   <tabstop>pbnAddScale</tabstop>
   <tabstop>pbnRemoveScale</tabstop>
@@ -5579,32 +5621,43 @@
   <tabstop>pbnImportScales</tabstop>
   <tabstop>pbnExportScales</tabstop>
   <tabstop>mOptionsScrollArea_12</tabstop>
+  <tabstop>groupBox_3</tabstop>
   <tabstop>mComposerFontComboBox</tabstop>
+  <tabstop>groupBox_23</tabstop>
   <tabstop>mGridStyleComboBox</tabstop>
   <tabstop>mGridColorButton</tabstop>
+  <tabstop>groupBox_24</tabstop>
   <tabstop>mGridResolutionSpinBox</tabstop>
   <tabstop>mOffsetXSpinBox</tabstop>
   <tabstop>mOffsetYSpinBox</tabstop>
   <tabstop>mSnapToleranceSpinBox</tabstop>
+  <tabstop>groupBox_27</tabstop>
   <tabstop>mBtnAddTemplatePath</tabstop>
   <tabstop>mBtnRemoveTemplatePath</tabstop>
   <tabstop>mListComposerTemplatePaths</tabstop>
   <tabstop>mOptionsScrollArea_07</tabstop>
+  <tabstop>mEnterAttributeValuesGroupBox</tabstop>
   <tabstop>chkDisableAttributeValuesDlg</tabstop>
   <tabstop>chkReuseLastValues</tabstop>
   <tabstop>mValidateGeometries</tabstop>
+  <tabstop>mRubberBandGroupBox</tabstop>
   <tabstop>mLineWidthSpinBox</tabstop>
   <tabstop>mLineColorToolButton</tabstop>
   <tabstop>mFillColorToolButton</tabstop>
   <tabstop>mLineGhostCheckBox</tabstop>
+  <tabstop>mSnappingGroupBox</tabstop>
+  <tabstop>mSnappingEnabledDefault</tabstop>
   <tabstop>mDefaultSnapModeComboBox</tabstop>
   <tabstop>mDefaultSnappingToleranceSpinBox</tabstop>
   <tabstop>mDefaultSnappingToleranceComboBox</tabstop>
   <tabstop>mSearchRadiusVertexEditSpinBox</tabstop>
   <tabstop>mSearchRadiusVertexEditComboBox</tabstop>
+  <tabstop>mSnappingMainDialogComboBox</tabstop>
+  <tabstop>mVertexMarkerGroupBox</tabstop>
   <tabstop>mMarkersOnlyForSelectedCheckBox</tabstop>
   <tabstop>mMarkerStyleComboBox</tabstop>
   <tabstop>mMarkerSizeSpinBox</tabstop>
+  <tabstop>groupBox_21</tabstop>
   <tabstop>mOffsetJoinStyleComboBox</tabstop>
   <tabstop>mOffsetQuadSegSpinBox</tabstop>
   <tabstop>mCurveOffsetMiterLimitComboBox</tabstop>
@@ -5614,6 +5667,7 @@
   <tabstop>pbnEditPyramidsOptions</tabstop>
   <tabstop>lstGdalDrivers</tabstop>
   <tabstop>mOptionsScrollArea_08</tabstop>
+  <tabstop>grpOtfTransform</tabstop>
   <tabstop>radOtfNone</tabstop>
   <tabstop>radOtfAuto</tabstop>
   <tabstop>radOtfTransform</tabstop>
@@ -5622,6 +5676,7 @@
   <tabstop>radUseProjectProjection</tabstop>
   <tabstop>radUseGlobalProjection</tabstop>
   <tabstop>leLayerGlobalCrs</tabstop>
+  <tabstop>mDefaultDatumTransformGroupBox</tabstop>
   <tabstop>chkShowDatumTransformDialog</tabstop>
   <tabstop>mAddDefaultTransformButton</tabstop>
   <tabstop>mRemoveDefaultTransformButton</tabstop>
@@ -5630,6 +5685,7 @@
   <tabstop>grpLocale</tabstop>
   <tabstop>cboLocale</tabstop>
   <tabstop>mAuthConfigsGrpBx</tabstop>
+  <tabstop>mOptionsScrollArea_10</tabstop>
   <tabstop>leWmsSearch</tabstop>
   <tabstop>mNetworkTimeoutSpinBox</tabstop>
   <tabstop>mDefaultCapabilitiesExpirySpinBox</tabstop>
@@ -5646,12 +5702,11 @@
   <tabstop>leProxyPort</tabstop>
   <tabstop>leProxyUser</tabstop>
   <tabstop>leProxyPassword</tabstop>
-  <tabstop>mRemoveUrlPushButton</tabstop>
-  <tabstop>mAdvancedSettingsEnableButton</tabstop>
-  <tabstop>cbxCheckVersion</tabstop>
-  <tabstop>mOptionsScrollArea_10</tabstop>
   <tabstop>mAddUrlPushButton</tabstop>
+  <tabstop>mRemoveUrlPushButton</tabstop>
   <tabstop>mExcludeUrlListWidget</tabstop>
+  <tabstop>mAdvancedSettingsEnableButton</tabstop>
+  <tabstop>grpProjectionBehavior</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

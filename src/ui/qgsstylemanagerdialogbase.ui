@@ -98,11 +98,11 @@
        </item>
        <item row="3" column="0">
         <widget class="QPushButton" name="btnManageGroups">
-         <property name="text">
-          <string>Modify group</string>
-         </property>
          <property name="toolTip">
           <string>Modify selected tag or smart group</string>
+         </property>
+         <property name="text">
+          <string>Modify group</string>
          </property>
          <property name="autoDefault">
           <bool>false</bool>
@@ -496,9 +496,9 @@
  </customwidgets>
  <tabstops>
   <tabstop>groupTree</tabstop>
-  <tabstop>btnManageGroups</tabstop>
   <tabstop>btnAddTag</tabstop>
   <tabstop>btnAddSmartgroup</tabstop>
+  <tabstop>btnManageGroups</tabstop>
   <tabstop>btnShare</tabstop>
   <tabstop>tabItemType</tabstop>
   <tabstop>listItems</tabstop>

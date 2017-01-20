@@ -345,6 +345,16 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>btnHistoActions</tabstop>
+  <tabstop>mSaveAsImageButton</tabstop>
+  <tabstop>cboHistoBand</tabstop>
+  <tabstop>leHistoMin</tabstop>
+  <tabstop>btnHistoMin</tabstop>
+  <tabstop>leHistoMax</tabstop>
+  <tabstop>btnHistoMax</tabstop>
+  <tabstop>btnHistoCompute</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

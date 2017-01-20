@@ -265,16 +265,18 @@
  <tabstops>
   <tabstop>txtName</tabstop>
   <tabstop>txtUrl</tabstop>
+  <tabstop>tabAuth</tabstop>
   <tabstop>txtUserName</tabstop>
   <tabstop>txtPassword</tabstop>
   <tabstop>txtReferer</tabstop>
   <tabstop>cmbDpiMode</tabstop>
+  <tabstop>cmbVersion</tabstop>
+  <tabstop>txtMaxNumFeatures</tabstop>
   <tabstop>cbxIgnoreGetMapURI</tabstop>
   <tabstop>cbxIgnoreGetFeatureInfoURI</tabstop>
   <tabstop>cbxIgnoreAxisOrientation</tabstop>
   <tabstop>cbxInvertAxisOrientation</tabstop>
   <tabstop>cbxSmoothPixmapTransform</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

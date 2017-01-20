@@ -768,7 +768,7 @@
      <item row="1" column="1">
       <widget class="QStackedWidget" name="swFileFormat">
        <property name="currentIndex">
-        <number>2</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="swpCSVOptions">
         <layout class="QVBoxLayout" name="verticalLayout_4"/>
@@ -1112,6 +1112,14 @@
   <tabstop>delimiterChars</tabstop>
   <tabstop>delimiterRegexp</tabstop>
   <tabstop>txtDelimiterRegexp</tabstop>
+  <tabstop>cbxDelimComma</tabstop>
+  <tabstop>cbxDelimTab</tabstop>
+  <tabstop>cbxDelimSpace</tabstop>
+  <tabstop>cbxDelimColon</tabstop>
+  <tabstop>cbxDelimSemicolon</tabstop>
+  <tabstop>txtDelimiterOther</tabstop>
+  <tabstop>txtQuoteChars</tabstop>
+  <tabstop>txtEscapeChars</tabstop>
   <tabstop>rowCounter</tabstop>
   <tabstop>cbxUseHeader</tabstop>
   <tabstop>cbxTrimFields</tabstop>
@@ -1123,21 +1131,12 @@
   <tabstop>cmbXField</tabstop>
   <tabstop>cmbYField</tabstop>
   <tabstop>cbxXyDms</tabstop>
+  <tabstop>cmbWktField</tabstop>
+  <tabstop>cmbGeometryType</tabstop>
   <tabstop>cbxSpatialIndex</tabstop>
   <tabstop>cbxSubsetIndex</tabstop>
   <tabstop>cbxWatchFile</tabstop>
   <tabstop>tblSample</tabstop>
-  <tabstop>buttonBox</tabstop>
-  <tabstop>cbxDelimTab</tabstop>
-  <tabstop>cbxDelimSpace</tabstop>
-  <tabstop>cbxDelimColon</tabstop>
-  <tabstop>cmbWktField</tabstop>
-  <tabstop>cmbGeometryType</tabstop>
-  <tabstop>cbxDelimSemicolon</tabstop>
-  <tabstop>txtDelimiterOther</tabstop>
-  <tabstop>txtQuoteChars</tabstop>
-  <tabstop>txtEscapeChars</tabstop>
-  <tabstop>cbxDelimComma</tabstop>
  </tabstops>
  <resources/>
  <connections>

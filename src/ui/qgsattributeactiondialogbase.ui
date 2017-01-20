@@ -255,11 +255,15 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mAttributeActionTable</tabstop>
+  <tabstop>groupBoxActionList</tabstop>
   <tabstop>mMoveUpButton</tabstop>
   <tabstop>mMoveDownButton</tabstop>
   <tabstop>mRemoveButton</tabstop>
+  <tabstop>mAddButton</tabstop>
   <tabstop>mAddDefaultActionsButton</tabstop>
+  <tabstop>mShowInAttributeTable</tabstop>
+  <tabstop>mAttributeTableWidgetType</tabstop>
+  <tabstop>mAttributeActionTable</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

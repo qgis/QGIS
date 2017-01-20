@@ -46,7 +46,7 @@
      <item>
       <widget class="QPushButton" name="btnChangeShortcut">
        <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
+        <enum>Qt::StrongFocus</enum>
        </property>
        <property name="text">
         <string>Change</string>
@@ -125,12 +125,13 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mLeFilter</tabstop>
   <tabstop>treeActions</tabstop>
+  <tabstop>btnChangeShortcut</tabstop>
   <tabstop>btnSetNoShortcut</tabstop>
   <tabstop>btnResetShortcut</tabstop>
   <tabstop>btnLoadShortcuts</tabstop>
   <tabstop>btnSaveShortcuts</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

@@ -2583,15 +2583,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsProjectionSelector</class>
-   <extends>QWidget</extends>
-   <header>qgsprojectionselector.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2601,15 +2601,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorSchemeList</class>
-   <extends>QTreeView</extends>
-   <header>qgscolorschemelist.h</header>
+   <class>QgsProjectionSelector</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselector.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsColorSchemeList</class>
+   <extends>QWidget</extends>
+   <header location="global">qgscolorschemelist.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2622,32 +2622,36 @@
  <tabstops>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>scrollArea_2</tabstop>
+  <tabstop>titleBox</tabstop>
   <tabstop>mProjectFileLineEdit</tabstop>
   <tabstop>titleEdit</tabstop>
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cbxAbsolutePath</tabstop>
   <tabstop>mMapTileRenderingCheckBox</tabstop>
+  <tabstop>btnGrpMeasureEllipsoid</tabstop>
   <tabstop>cmbEllipsoid</tabstop>
   <tabstop>leSemiMajor</tabstop>
   <tabstop>leSemiMinor</tabstop>
   <tabstop>mDistanceUnitsCombo</tabstop>
   <tabstop>mAreaUnitsCombo</tabstop>
+  <tabstop>mCoordinateDisplayGroup</tabstop>
   <tabstop>mCoordinateDisplayComboBox</tabstop>
   <tabstop>radAutomatic</tabstop>
   <tabstop>radManual</tabstop>
   <tabstop>spinBoxDP</tabstop>
   <tabstop>grpProjectScales</tabstop>
-  <tabstop>lstScales</tabstop>
   <tabstop>pbnAddScale</tabstop>
   <tabstop>pbnRemoveScale</tabstop>
   <tabstop>pbnImportScales</tabstop>
   <tabstop>pbnExportScales</tabstop>
+  <tabstop>lstScales</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>cbxProjectionEnabled</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>twIdentifyLayers</tabstop>
   <tabstop>scrollArea_4</tabstop>
+  <tabstop>groupBox</tabstop>
   <tabstop>cboStyleMarker</tabstop>
   <tabstop>pbtnStyleMarker</tabstop>
   <tabstop>cboStyleLine</tabstop>
@@ -2656,10 +2660,12 @@
   <tabstop>pbtnStyleFill</tabstop>
   <tabstop>cboStyleColorRamp</tabstop>
   <tabstop>pbtnStyleColorRamp</tabstop>
+  <tabstop>groupBox_2</tabstop>
   <tabstop>mTransparencySlider</tabstop>
   <tabstop>mTransparencySpinBox</tabstop>
   <tabstop>cbxStyleRandomColors</tabstop>
   <tabstop>pbtnStyleManager</tabstop>
+  <tabstop>groupBox_7</tabstop>
   <tabstop>mButtonAddColor</tabstop>
   <tabstop>mButtonRemoveColor</tabstop>
   <tabstop>mButtonCopyColors</tabstop>
@@ -2668,17 +2674,19 @@
   <tabstop>mButtonExportColors</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>grpOWSServiceCapabilities</tabstop>
+  <tabstop>mWMSName</tabstop>
   <tabstop>mWMSTitle</tabstop>
   <tabstop>mWMSContactOrganization</tabstop>
   <tabstop>mWMSOnlineResourceLineEdit</tabstop>
   <tabstop>mWMSContactPerson</tabstop>
+  <tabstop>mWMSContactPositionCb</tabstop>
   <tabstop>mWMSContactMail</tabstop>
   <tabstop>mWMSContactPhone</tabstop>
-  <tabstop>mWMSContactPositionCb</tabstop>
   <tabstop>mWMSAbstract</tabstop>
   <tabstop>mWMSFeesCb</tabstop>
   <tabstop>mWMSAccessConstraintsCb</tabstop>
   <tabstop>mWMSKeywordList</tabstop>
+  <tabstop>grpWMSCapabilities</tabstop>
   <tabstop>grpWMSExt</tabstop>
   <tabstop>mWMSExtMinX</tabstop>
   <tabstop>mWMSExtMinY</tabstop>
@@ -2698,34 +2706,38 @@
   <tabstop>mLayerRestrictionsListWidget</tabstop>
   <tabstop>mAddLayerRestrictionButton</tabstop>
   <tabstop>mRemoveLayerRestrictionButton</tabstop>
+  <tabstop>mWMSInspire</tabstop>
+  <tabstop>mWMSInspireLanguage</tabstop>
+  <tabstop>mWMSInspireScenario1</tabstop>
+  <tabstop>mWMSInspireMetadataUrl</tabstop>
+  <tabstop>mWMSInspireMetadataUrlType</tabstop>
+  <tabstop>mWMSInspireScenario2</tabstop>
+  <tabstop>mWMSInspireTemporalReference</tabstop>
+  <tabstop>mWMSInspireMetadataDate</tabstop>
   <tabstop>mWmsUseLayerIDs</tabstop>
   <tabstop>mAddWktGeometryCheckBox</tabstop>
+  <tabstop>mAllowRequestDefinedDataSourcesBox</tabstop>
+  <tabstop>mSegmentizeFeatureInfoGeometryCheckBox</tabstop>
   <tabstop>mWMSPrecisionSpinBox</tabstop>
   <tabstop>mWMSUrlLineEdit</tabstop>
   <tabstop>mMaxWidthLineEdit</tabstop>
   <tabstop>mMaxHeightLineEdit</tabstop>
   <tabstop>mWMSImageQualitySpinBox</tabstop>
+  <tabstop>grpWFSCapabilities</tabstop>
   <tabstop>twWFSLayers</tabstop>
   <tabstop>pbnWFSLayersSelectAll</tabstop>
   <tabstop>pbnWFSLayersDeselectAll</tabstop>
   <tabstop>mWFSUrlLineEdit</tabstop>
+  <tabstop>grpWCSCapabilities</tabstop>
   <tabstop>twWCSLayers</tabstop>
   <tabstop>pbnWCSLayersSelectAll</tabstop>
   <tabstop>pbnWCSLayersDeselectAll</tabstop>
   <tabstop>mWCSUrlLineEdit</tabstop>
-  <tabstop>grpPythonMacros</tabstop>
-  <tabstop>scrollArea_6</tabstop>
-  <tabstop>mWMSName</tabstop>
-  <tabstop>mWMSInspire</tabstop>
-  <tabstop>mWMSInspireLanguage</tabstop>
-  <tabstop>mWMSInspireScenario2</tabstop>
-  <tabstop>mWMSInspireTemporalReference</tabstop>
-  <tabstop>mWMSInspireMetadataDate</tabstop>
-  <tabstop>mWMSInspireScenario1</tabstop>
-  <tabstop>mWMSInspireMetadataUrl</tabstop>
-  <tabstop>mWMSInspireMetadataUrlType</tabstop>
+  <tabstop>mOWSCheckerGroupBox</tabstop>
   <tabstop>pbnLaunchOWSChecker</tabstop>
   <tabstop>teOWSChecker</tabstop>
+  <tabstop>scrollArea_6</tabstop>
+  <tabstop>grpPythonMacros</tabstop>
   <tabstop>mAutoTransaction</tabstop>
   <tabstop>mEvaluateDefaultValues</tabstop>
  </tabstops>

@@ -456,18 +456,19 @@
   <tabstop>scrollArea</tabstop>
   <tabstop>mEncodingComboBox</tabstop>
   <tabstop>mSelectedOnly</tabstop>
-  <tabstop>mAttributesSelection</tabstop>
-  <tabstop>mAttributeTable</tabstop>
   <tabstop>mSelectAllAttributes</tabstop>
   <tabstop>mDeselectAllAttributes</tabstop>
   <tabstop>mAddToCanvas</tabstop>
   <tabstop>mSymbologyExportComboBox</tabstop>
   <tabstop>mScaleSpinBox</tabstop>
+  <tabstop>mGeometryGroupBox</tabstop>
   <tabstop>mGeometryTypeComboBox</tabstop>
   <tabstop>mForceMultiCheckBox</tabstop>
   <tabstop>mIncludeZCheckBox</tabstop>
-  <tabstop>mOgrDatasourceOptions</tabstop>
-  <tabstop>mOgrLayerOptions</tabstop>
+  <tabstop>mExtentGroupBox</tabstop>
+  <tabstop>mDatasourceOptionsGroupBox</tabstop>
+  <tabstop>mLayerOptionsGroupBox</tabstop>
+  <tabstop>mOgrOptionsGroupBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

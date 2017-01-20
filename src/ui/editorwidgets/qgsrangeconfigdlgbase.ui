@@ -227,13 +227,14 @@
  </customwidgets>
  <tabstops>
   <tabstop>rangeWidget</tabstop>
-  <tabstop>minimumDoubleSpinBox</tabstop>
-  <tabstop>maximumDoubleSpinBox</tabstop>
-  <tabstop>stepDoubleSpinBox</tabstop>
   <tabstop>minimumSpinBox</tabstop>
   <tabstop>maximumSpinBox</tabstop>
   <tabstop>stepSpinBox</tabstop>
+  <tabstop>minimumDoubleSpinBox</tabstop>
+  <tabstop>maximumDoubleSpinBox</tabstop>
+  <tabstop>stepDoubleSpinBox</tabstop>
   <tabstop>allowNullCheckBox</tabstop>
+  <tabstop>groupBox</tabstop>
   <tabstop>suffixLineEdit</tabstop>
  </tabstops>
  <resources/>

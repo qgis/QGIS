@@ -40,6 +40,10 @@
    </item>
    <item row="0" column="1">
     <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true"/>
+     <property name="focusPolicy">
+      <enum>Qt::TabFocus</enum>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
@@ -100,7 +104,7 @@
          <string>...</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../images/images.qrc">
+         <iconset>
           <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
         </property>
        </widget>
@@ -172,12 +176,14 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mExpressionWidget</tabstop>
   <tabstop>mComboRelation</tabstop>
   <tabstop>mCbxAllowNull</tabstop>
   <tabstop>mCbxOrderByValue</tabstop>
   <tabstop>mCbxShowForm</tabstop>
   <tabstop>mCbxMapIdentification</tabstop>
   <tabstop>mCbxReadOnly</tabstop>
+  <tabstop>mCbxAllowAddFeatures</tabstop>
   <tabstop>mFilterGroupBox</tabstop>
   <tabstop>mAvailableFieldsList</tabstop>
   <tabstop>mAddFilterButton</tabstop>

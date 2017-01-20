@@ -1208,6 +1208,12 @@ gray = no data
   <tabstop>mTxtStatus</tabstop>
   <tabstop>mTxtSatellitesUsed</tabstop>
   <tabstop>mBtnRefreshDevices</tabstop>
+  <tabstop>mGPSPlainTextEdit</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mRadAutodetect</tabstop>
+  <tabstop>mRadInternal</tabstop>
+  <tabstop>mRadUserPath</tabstop>
+  <tabstop>mCboDevices</tabstop>
   <tabstop>mRadGpsd</tabstop>
   <tabstop>mGpsdHost</tabstop>
   <tabstop>mGpsdPort</tabstop>
@@ -1225,12 +1231,6 @@ gray = no data
   <tabstop>mLogFileGroupBox</tabstop>
   <tabstop>mTxtLogFile</tabstop>
   <tabstop>mBtnLogFile</tabstop>
-  <tabstop>mGPSPlainTextEdit</tabstop>
-  <tabstop>mRadUserPath</tabstop>
-  <tabstop>mCboDevices</tabstop>
-  <tabstop>mRadAutodetect</tabstop>
-  <tabstop>scrollArea</tabstop>
-  <tabstop>mRadInternal</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

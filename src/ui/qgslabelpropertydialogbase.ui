@@ -37,9 +37,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-319</y>
-        <width>415</width>
-        <height>619</height>
+        <y>0</y>
+        <width>431</width>
+        <height>622</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mLabelPropertiesLayout">
@@ -624,6 +624,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
@@ -639,19 +645,16 @@
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
   </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mLabelTextLineEdit</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mDisplayGroupBox</tabstop>
   <tabstop>mShowLabelChkbx</tabstop>
   <tabstop>mMinScaleSpinBox</tabstop>
   <tabstop>mMaxScaleSpinBox</tabstop>
   <tabstop>mAlwaysShowChkbx</tabstop>
+  <tabstop>mFontGroupBox</tabstop>
   <tabstop>mFontFamilyCmbBx</tabstop>
   <tabstop>mFontStyleCmbBx</tabstop>
   <tabstop>mFontUnderlineBtn</tabstop>
@@ -660,15 +663,16 @@
   <tabstop>mFontItalicBtn</tabstop>
   <tabstop>mFontSizeSpinBox</tabstop>
   <tabstop>mFontColorButton</tabstop>
+  <tabstop>mBufferGroupBox</tabstop>
   <tabstop>mBufferSizeSpinBox</tabstop>
   <tabstop>mBufferColorButton</tabstop>
+  <tabstop>mPositionGroupBlox</tabstop>
   <tabstop>mLabelDistanceSpinBox</tabstop>
   <tabstop>mXCoordSpinBox</tabstop>
   <tabstop>mYCoordSpinBox</tabstop>
   <tabstop>mHaliComboBox</tabstop>
   <tabstop>mValiComboBox</tabstop>
   <tabstop>mRotationSpinBox</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

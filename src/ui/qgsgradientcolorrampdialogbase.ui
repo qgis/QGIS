@@ -331,14 +331,26 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QwtPlot</class>
+   <extends>QFrame</extends>
+   <header>qwt_plot.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -353,28 +365,23 @@
    <header>qgscompoundcolorwidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QwtPlot</class>
-   <extends>QFrame</extends>
-   <header>qwt_plot.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>btnColor1</tabstop>
   <tabstop>btnColor2</tabstop>
   <tabstop>cboType</tabstop>
   <tabstop>mStopEditor</tabstop>
+  <tabstop>groupBox_2</tabstop>
   <tabstop>mPositionSpinBox</tabstop>
   <tabstop>mDeleteStopButton</tabstop>
   <tabstop>mColorWidget</tabstop>
+  <tabstop>mPlotGroupBox</tabstop>
+  <tabstop>mPlotHueCheckbox</tabstop>
+  <tabstop>mPlotSaturationCheckbox</tabstop>
+  <tabstop>mPlotLightnessCheckbox</tabstop>
+  <tabstop>mPlotAlphaCheckbox</tabstop>
   <tabstop>btnInformation</tabstop>
+  <tabstop>scrollArea</tabstop>
  </tabstops>
  <resources/>
  <connections>

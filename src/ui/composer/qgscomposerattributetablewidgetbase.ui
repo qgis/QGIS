@@ -17,16 +17,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -840,6 +831,8 @@
   <tabstop>mShowGridGroupCheckBox</tabstop>
   <tabstop>mGridStrokeWidthSpinBox</tabstop>
   <tabstop>mGridColorButton</tabstop>
+  <tabstop>mDrawHorizontalGrid</tabstop>
+  <tabstop>mDrawVerticalGrid</tabstop>
   <tabstop>groupBox_3</tabstop>
   <tabstop>mHeaderFontPushButton</tabstop>
   <tabstop>mHeaderFontColorButton</tabstop>
