@@ -238,7 +238,7 @@ class TestPointPlacement(TestPlacementBase):
         self.lyr.properties().setProperty(QgsPalLayerSettings.PredefinedPositionOrder, QgsProperty.fromExpression("'T,B'"))
         self.checkTest()
         self.removeMapLayer(self.layer)
-        self.lyr.removeDataDefinedProperty(QgsPalLayerSettings.PredefinedPositionOrder)
+        self.lyr.properties().setProperty(QgsPalLayerSettings.PredefinedPositionOrder, QgsProperty())
         self.layer = None
 
     def test_point_dd_ordered_placement1(self):
@@ -252,7 +252,7 @@ class TestPointPlacement(TestPlacementBase):
         self.checkTest()
         self.removeMapLayer(obstacleLayer)
         self.removeMapLayer(self.layer)
-        self.lyr.removeDataDefinedProperty(QgsPalLayerSettings.PredefinedPositionOrder)
+        self.lyr.properties().setProperty(QgsPalLayerSettings.PredefinedPositionOrder, QgsProperty())
         self.layer = None
 
     def test_point_ordered_symbol_bound_offset(self):

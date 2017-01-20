@@ -379,15 +379,22 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext& context
   return QSet<QString>();
 }
 
-QVariant QgsProperty::propertyValue( const QgsExpressionContext& context, const QVariant& defaultValue ) const
+QVariant QgsProperty::propertyValue( const QgsExpressionContext& context, const QVariant& defaultValue, bool* ok ) const
 {
+  if ( ok )
+    *ok = false;
+
   if ( !d->active )
     return defaultValue;
 
   switch ( d->type )
   {
     case StaticProperty:
+    {
+      if ( ok )
+        *ok = true;
       return d->staticData.value;
+    }
 
     case FieldBasedProperty:
     {
@@ -397,12 +404,18 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext& context, const 
 
       //shortcut the field lookup
       if ( d->fieldData.cachedFieldIdx >= 0 )
+      {
+        if ( ok )
+          *ok = true;
         return f.attribute( d->fieldData.cachedFieldIdx );
+      }
 
       int fieldIdx = f.fieldNameIndex( d->fieldData.fieldName );
       if ( fieldIdx < 0 )
         return defaultValue;
 
+      if ( ok )
+        *ok = true;
       return f.attribute( fieldIdx );
     }
 
@@ -413,7 +426,16 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext& context, const 
         return defaultValue;
 
       QVariant result = d->expressionData.expression.evaluate( &context );
-      return result.isValid() ? result : defaultValue;
+      if ( result.isValid() )
+      {
+        if ( ok )
+          *ok = true;
+        return result;
+      }
+      else
+      {
+        return defaultValue;
+      }
     }
 
     case InvalidProperty:
@@ -425,23 +447,33 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext& context, const 
 }
 
 
-QVariant QgsProperty::value( const QgsExpressionContext& context, const QVariant& defaultValue ) const
+QVariant QgsProperty::value( const QgsExpressionContext& context, const QVariant& defaultValue, bool* ok ) const
 {
-  QVariant val = propertyValue( context, defaultValue );
+  if ( ok )
+    *ok = false;
+
+  bool valOk = false;
+  QVariant val = propertyValue( context, defaultValue, &valOk );
+  if ( !valOk )
+    return defaultValue;
 
   if ( d->transformer )
   {
     val = d->transformer->transform( context, val );
   }
 
+  if ( ok )
+    *ok = true;
+
   return val;
 }
 
 QString QgsProperty::valueAsString( const QgsExpressionContext& context, const QString& defaultString, bool* ok ) const
 {
-  QVariant val = value( context, defaultString );
+  bool valOk = false;
+  QVariant val = value( context, defaultString, &valOk );
 
-  if ( !val.isValid() )
+  if ( !valOk || !val.isValid() )
   {
     if ( ok )
       *ok = false;
@@ -460,9 +492,10 @@ QColor QgsProperty::valueAsColor( const QgsExpressionContext &context, const QCo
   if ( ok )
     *ok = false;
 
-  QVariant val = value( context, defaultColor );
+  bool valOk = false;
+  QVariant val = value( context, defaultColor, &valOk );
 
-  if ( !val.isValid() )
+  if ( !valOk || !val.isValid() )
     return defaultColor;
 
   QColor color;
@@ -490,9 +523,10 @@ double QgsProperty::valueAsDouble( const QgsExpressionContext &context, double d
   if ( ok )
     *ok = false;
 
-  QVariant val = value( context, defaultValue );
+  bool valOk = false;
+  QVariant val = value( context, defaultValue, &valOk );
 
-  if ( !val.isValid() )
+  if ( !valOk || !val.isValid() )
     return defaultValue;
 
   bool convertOk = false;
@@ -512,9 +546,10 @@ int QgsProperty::valueAsInt( const QgsExpressionContext &context, int defaultVal
   if ( ok )
     *ok = false;
 
-  QVariant val = value( context, defaultValue );
+  bool valOk = false;
+  QVariant val = value( context, defaultValue, &valOk );
 
-  if ( !val.isValid() )
+  if ( !valOk || !val.isValid() )
     return defaultValue;
 
   bool convertOk = false;
@@ -547,9 +582,10 @@ bool QgsProperty::valueAsBool( const QgsExpressionContext& context, bool default
   if ( ok )
     *ok = false;
 
-  QVariant val = value( context, defaultValue );
+  bool valOk = false;
+  QVariant val = value( context, defaultValue, &valOk );
 
-  if ( !val.isValid() )
+  if ( !valOk || !val.isValid() )
     return defaultValue;
 
   if ( ok )

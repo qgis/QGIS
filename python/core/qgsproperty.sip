@@ -108,7 +108,7 @@ class QgsProperty
 
     virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
-    QVariant value( const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const;
+    QVariant value( const QgsExpressionContext& context, const QVariant& defaultValue = QVariant(), bool* ok /Out/ = nullptr  ) const;
 
     QString valueAsString( const QgsExpressionContext& context, const QString& defaultString = QString(), bool* ok /Out/ = nullptr ) const;
 

@@ -300,6 +300,7 @@ class CORE_EXPORT QgsProperty
      * in the expression context can be used to alter the calculated value for the property, so that a property
      * is able to respond to the current environment, layers and features within QGIS.
      * @param defaultValue default value to return if the property is not active or cannot be calculated
+     * @param ok if specified, will be set to true if conversion was successful
      * @returns calculated value for property
      * @see valueAsString()
      * @see valueAsColor()
@@ -307,7 +308,7 @@ class CORE_EXPORT QgsProperty
      * @see valueAsInt()
      * @see valueAsBool()
      */
-    QVariant value( const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const;
+    QVariant value( const QgsExpressionContext& context, const QVariant& defaultValue = QVariant(), bool* ok = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a string.
@@ -417,7 +418,7 @@ class CORE_EXPORT QgsProperty
      * Calculates the current value of the property, before any transformations or
      * conversions are applied.
      */
-    QVariant propertyValue( const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const;
+    QVariant propertyValue( const QgsExpressionContext& context, const QVariant& defaultValue = QVariant(), bool* ok = nullptr ) const;
 
 };
 

@@ -161,6 +161,7 @@ void TestQgsComposerScaleBar::singleBoxAlpha()
   mComposerScaleBar->setFillColor2( QColor( 0, 255, 0, 50 ) );
   mComposerScaleBar->setLineColor( QColor( 0, 0, 255, 150 ) );
   mComposerScaleBar->setFontColor( QColor( 255, 0, 255, 100 ) );
+  mComposerScaleBar->setLineWidth( 1.0 );
   QgsCompositionChecker checker( QStringLiteral( "composerscalebar_singlebox_alpha" ), mComposition );
   checker.setControlPathPrefix( QStringLiteral( "composer_scalebar" ) );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
@@ -172,7 +173,7 @@ void TestQgsComposerScaleBar::doubleBox()
   mComposerScaleBar->setFillColor( Qt::black );
   mComposerScaleBar->setFillColor2( Qt::white );
   mComposerScaleBar->setLineColor( Qt::black );
-  mComposerScaleBar->setLineWidth( 0.3 );
+  mComposerScaleBar->setLineWidth( 1.0 );
   mComposerScaleBar->setFontColor( Qt::black );
   mComposerScaleBar->setStyle( QStringLiteral( "Double Box" ) );
 
@@ -193,6 +194,7 @@ void TestQgsComposerScaleBar::numeric()
 void TestQgsComposerScaleBar::tick()
 {
   mComposerScaleBar->setStyle( QStringLiteral( "Line Ticks Up" ) );
+  mComposerScaleBar->setLineWidth( 1.0 );
   QgsCompositionChecker checker( QStringLiteral( "composerscalebar_tick" ), mComposition );
   checker.setControlPathPrefix( QStringLiteral( "composer_scalebar" ) );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
