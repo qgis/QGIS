@@ -353,9 +353,9 @@ void TestQgsFields::indexFromName()
   QCOMPARE( fields.lookupField( QString( "teStFiEld2" ) ), 1 );
 
   //test that fieldNameIndex prefers exact case matches over case insensitive matches
-  QgsField sameNameDifferentCase( QStringLiteral( "teStFielD" ) );
+  QgsField sameNameDifferentCase( QStringLiteral( "teStFielD" ) );  //#spellok
   fields.append( sameNameDifferentCase );
-  QCOMPARE( fields.lookupField( QString( "teStFielD" ) ), 3 );
+  QCOMPARE( fields.lookupField( QString( "teStFielD" ) ), 3 );  //#spellok
 
   //test that the alias is only matched with fieldNameIndex
   QCOMPARE( fields.indexFromName( "testfieldAlias" ), -1 );

@@ -108,7 +108,7 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
   // this is not a problem - nobody is listening to our signals yet
   syncToLayer( mRasterLayer );
 
-  connect( mRasterLayer, SIGNAL( styleChanged() ), this, SLOT( refreshAfterSyleChanged() ) );
+  connect( mRasterLayer, SIGNAL( styleChanged() ), this, SLOT( refreshAfterStyleChanged() ) );
 }
 
 void QgsRendererRasterPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
@@ -390,7 +390,7 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
 
 }
 
-void QgsRendererRasterPropertiesWidget::refreshAfterSyleChanged()
+void QgsRendererRasterPropertiesWidget::refreshAfterStyleChanged()
 {
   if ( mRendererWidget )
   {

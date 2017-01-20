@@ -274,7 +274,7 @@ class QgsRasterBlock
 
     QString toString() const;
 
-    /** \brief For theExtent and theWidht, theHeight find rectangle covered by subextent.
+    /** \brief For theExtent and theWidth, theHeight find rectangle covered by subextent.
      * The output rect has x oriented from left to right and y from top to bottom
      * (upper-left to lower-right orientation).
      * @param theExtent extent, usually the larger

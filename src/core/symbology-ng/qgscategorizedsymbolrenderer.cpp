@@ -941,7 +941,7 @@ QgsCategorizedSymbolRenderer* QgsCategorizedSymbolRenderer::convertFromRenderer(
   }
 
   // If not one of the specifically handled renderers, then just grab the symbol from the renderer
-  // Could have applied this to specific renderer types (singleSymbol, graduatedSymbo)
+  // Could have applied this to specific renderer types (singleSymboll, graduatedSymbol)
 
   if ( !r )
   {

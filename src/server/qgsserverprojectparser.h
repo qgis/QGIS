@@ -116,7 +116,7 @@ class SERVER_EXPORT QgsServerProjectParser
     void addJoinLayersForElement( const QDomElement& layerElem ) const;
 
     void addValueRelationLayersForLayer( const QgsVectorLayer *vl ) const;
-    //! Add layers which are necessary for the evaluation of the expression function 'getFeature( layer, attributField, value)'
+    //! Add layers which are necessary for the evaluation of the expression function 'getFeature( layer, attributeField, value)'
     void addGetFeatureLayers( const QDomElement& layerElem ) const;
 
     /** Returns the text of the <id> element for a layer element

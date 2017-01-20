@@ -82,7 +82,7 @@ class SERVER_EXPORT QgsOgcServiceException : public QgsServerException
     //!return exception version
     QString version() const { return mVersion; }
 
-    //! Overrided from QgsServerException
+    //! Overridden from QgsServerException
     virtual QByteArray formatResponse( QString& responseFormat ) const override;
 
   private:

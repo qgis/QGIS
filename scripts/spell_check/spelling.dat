@@ -796,6 +796,7 @@ atttribute:attribute
 atttributes:attributes
 audeince:audience
 auromated:automated
+australia:Australia
 austrailia:Australia
 austrailian:Australian
 autenticate:authenticate
@@ -1229,6 +1230,7 @@ chcek:check
 chceked:checked
 chceking:checking
 chceks:checks
+checkk:check
 checksuming:checksumming
 cheif:chief
 cheifs:chiefs
@@ -1806,6 +1808,7 @@ could't:couldn't
 coult:could
 councellor:councillor
 councellors:councillors
+cound:could
 counries:countries
 countains:contains
 countires:countries
@@ -6377,7 +6380,7 @@ specif:specify
 speciman:specimen
 spectauclar:spectacular
 spectaulars:spectaculars
-spects:aspects
+spects:aspects:*
 spectum:spectrum
 speficied:specified
 spefic:specific:*

@@ -258,12 +258,12 @@ class Editor(QsciScintilla):
             self.lexer.setPaper(paperColor, style)
 
         self.api = QsciAPIs(self.lexer)
-        chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
-        chekBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
-        if chekBoxAPI:
+        checkBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
+        checkBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
+        if checkBoxAPI:
             pap = os.path.join(QgsApplication.pkgDataPath(), "python", "qsci_apis", "pyqgis.pap")
             self.api.loadPrepared(pap)
-        elif chekBoxPreparedAPI:
+        elif checkBoxPreparedAPI:
             self.api.loadPrepared(self.settings.value("pythonConsole/preparedAPIFile"))
         else:
             apiPath = self.settings.value("pythonConsole/userAPI", [])
