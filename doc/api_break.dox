@@ -102,7 +102,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsGraduatedSymbolRendererV2ViewStyle<td>QgsGraduatedSymbolRendererViewStyle
 <tr><td>QgsGraduatedSymbolRendererV2Widget<td>QgsGraduatedSymbolRendererWidget
 <tr><td>QgsLabelingEngineV2<td>QgsLabelingEngine
-<td><td>QgsLegendModelV2<td>QgsLegendModel
+<tr><td>QgsLegendModelV2<td>QgsLegendModel
 <tr><td>QgsLegendSymbolItemV2<td>QgsLegendSymbolItem
 <tr><td>QgsLineStringV2<td>QgsLineString
 <tr><td>QgsLineSymbolLayerV2<td>QgsLineSymbolLayer
@@ -184,10 +184,10 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsVectorRandomColorRampV2<td>QgsLimitedRandomColorRamp
 <tr><td>QgsVectorRandomColorRampV2Dialog<td>QgsLimitedRandomColorRampDialog
 <tr><td>QgsVectorRandomColorRampV2DialogBase<td>QgsLimitedRandomColorRampDialogBase
-<tr><th>QgsSymbolV2<th>QgsSymbol
-<tr><th>QgsArcProperter<th>QgsStrategy
-<tr><th>QgsDistanceArcProperter<th>QgsDistanceStrategy
-<tr><th>QgsGraphArc<th>QgsGraphEdge
+<tr><td>QgsSymbolV2<td>QgsSymbol
+<tr><td>QgsArcProperter<td>QgsStrategy
+<tr><td>QgsDistanceArcProperter<td>QgsDistanceStrategy
+<tr><td>QgsGraphArc<td>QgsGraphEdge
 </table>
 
 <table>
@@ -1932,6 +1932,17 @@ Triangulation        {#qgis_api_break_3_0_Triangulation}
 
 
 
+QGIS 2.6        {#qgis_api_break_2_6}
+========
+
+Legend Refactoring        {#qgis_api_break_legend_refactoring}
+------------------
+
+- QgsComposerLegend::model() - not being used anymore. The model was replaced by one based on QgsLayerTreeModel class
+and is available in QgsComposerLegend::modelV2()
+
+
+
 QGIS 2.4        {#qgis_api_break_2_4}
 ========
 
@@ -1944,18 +1955,6 @@ When map canvas does actual rendering, it will first emit renderStarting() signa
 The client code doing refresh() in order to later save map image should be updated to use new QgsMapRendererJob API which is better suited for such task.
 - QgsPluginLayer::draw() is now run in a background thread. It is recommended to implement newly added QgsPluginLayer::createMapRenderer()
 method instead of using QgsPluginLayer::draw().
-
-
-
-
-QGIS 2.6        {#qgis_api_break_2_6}
-========
-
-Legend Refactoring        {#qgis_api_break_legend_refactoring}
-------------------
-
-- QgsComposerLegend::model() - not being used anymore. The model was replaced by one based on QgsLayerTreeModel class
-and is available in QgsComposerLegend::modelV2()
 
 
 */
