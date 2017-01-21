@@ -76,34 +76,28 @@ class EliminateSelection(GeoAlgorithm):
         inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         boundary = self.getParameterValue(self.MODE) == self.MODE_BOUNDARY
         smallestArea = self.getParameterValue(self.MODE) == self.MODE_SMALLEST_AREA
-        processLayer = vector.duplicateInMemory(inLayer)
 
         if inLayer.selectedFeatureCount() == 0:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
                                    self.tr('%s: (No selection in input layer "%s")' % (self.commandLineName(), self.getParameterValue(self.INPUT))))
 
-        # Keep references to the features to eliminate
-        featToEliminate = inLayer.selectedFeatures()
+        featToEliminate = []
+        selFeatIds = inLayer.selectedFeatureIds()
+        output = self.getOutputFromName(self.OUTPUT)
+        writer = output.getVectorWriter(inLayer.fields(),
+                                        inLayer.wkbType(), inLayer.crs())
 
-        # select and delete the features in ProcessLayer that are selected in inLayer
-        idsToEliminate = []
-
-        for aFeat in featToEliminate:
-            bbox = aFeat.geometry().boundingBox()
-            fit = processLayer.getFeatures(
-                    QgsFeatureRequest().setFilterRect(bbox).setSubsetOfAttributes([]))
-
-            selFeat = QgsFeature()
-
-            while fit.nextFeature(selFeat):
-                if aFeat.geometry().equals(selFeat.geometry()):
-                    idsToEliminate.append(selFeat.id())
-                    break
+        for aFeat in inLayer.getFeatures():
+            if aFeat.id() in selFeatIds:
+                # Keep references to the features to eliminate
+                featToEliminate.append(aFeat)
+            else:
+                # write the others to output
+                writer.addFeature(aFeat)
 
         # Delete all features to eliminate in processLayer
-        processLayer.select(idsToEliminate)
+        processLayer = output.layer
         processLayer.startEditing()
-        processLayer.deleteSelectedFeatures()
 
         # ANALYZE
         if len(featToEliminate) > 0:  # Prevent zero division
@@ -201,19 +195,9 @@ class EliminateSelection(GeoAlgorithm):
             featToEliminate = featNotEliminated
 
         # End while
-
-        # Create output
-        output = self.getOutputFromName(self.OUTPUT)
-        writer = output.getVectorWriter(processLayer.fields(),
-                                        processLayer.wkbType(), processLayer.crs())
-
-        # Write all features that are left over to output layer
-        iterator = processLayer.getFeatures()
-        for feature in iterator:
-            writer.addFeature(feature)
-
-        # Leave processLayer untouched
-        processLayer.rollBack()
+        if not processLayer.commitChanges():
+            raise GeoAlgorithmExecutionException(
+                            self.tr('Could not commit changes'))
 
         for feature in featNotEliminated:
             writer.addFeature(feature)
