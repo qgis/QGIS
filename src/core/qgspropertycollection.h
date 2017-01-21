@@ -439,13 +439,6 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
 
     QList< QgsPropertyCollection* > mStack;
 
-    mutable bool mDirty;
-    mutable bool mHasActiveProperties;
-    mutable bool mhasDynamicProperties;
-
-    //! Scans through properties and updates cached values
-    void rescan() const;
-
 };
 
 #endif // QGSPROPERTYCOLLECTION_H
