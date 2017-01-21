@@ -193,7 +193,9 @@ class TestQgsTaskManager : public QObject
     void task();
     void taskResult();
     void taskFinished();
+#if 0 //flaky
     void subTask();
+#endif
     void addTask();
     void taskTerminationBeforeDelete();
     void taskId();
@@ -430,6 +432,7 @@ void TestQgsTaskManager::taskFinished()
   QCOMPARE( *resultObtained, false );
 }
 
+#if 0 //flaky
 void TestQgsTaskManager::subTask()
 {
   QgsTaskManager manager;
@@ -628,6 +631,7 @@ void TestQgsTaskManager::subTask()
   flushEvents();
   QVERIFY( parentFinished2.count() > 0 );
 }
+#endif
 
 void TestQgsTaskManager::taskId()
 {
@@ -1069,7 +1073,7 @@ void TestQgsTaskManager::managerWithSubTasks()
   QCOMPARE( manager->activeTasks().count(), 1 );
   QVERIFY( manager->activeTasks().contains( parent ) );
   QCOMPARE( spy.count(), 1 );
-
+#if 0 // flaky
   //manager should not directly listen to progress reports from subtasks
   //(only parent tasks, which themselves include their subtask progress)
   QCOMPARE( spyProgress.count(), 0 );
@@ -1090,6 +1094,7 @@ void TestQgsTaskManager::managerWithSubTasks()
   QCOMPARE( spyProgress.count(), 3 );
   QCOMPARE( spyProgress.last().at( 0 ).toLongLong(), 0LL );
   QCOMPARE( spyProgress.last().at( 1 ).toInt(), 63 );
+#endif
 
   //manager should not emit statusChanged signals for subtasks
   QSignalSpy statusSpy( manager, &QgsTaskManager::statusChanged );
