@@ -8502,6 +8502,15 @@ void QgisApp::removeLayer()
   }
 
   bool promptConfirmation = QSettings().value( QStringLiteral( "qgis/askToDeleteLayers" ), true ).toBool();
+
+  // Don't show prompt to remove a empty group.
+  if ( selectedNodes.count() == 1
+       && selectedNodes.at( 0 )->nodeType() == QgsLayerTreeNode::NodeGroup
+       && selectedNodes.at( 0 )->children().count() == 0 )
+  {
+    promptConfirmation = false;
+  }
+
   bool shiftHeld = QApplication::queryKeyboardModifiers().testFlag( Qt::ShiftModifier );
   //display a warning
   if ( !shiftHeld && promptConfirmation && QMessageBox::warning( this, tr( "Remove layers and groups" ), tr( "Remove %n legend entries?", "number of legend items to remove", selectedNodes.count() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
