@@ -143,7 +143,7 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) co
   {
     case Qt::DisplayRole:
     case TitleRole:
-      return mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QFileInfo( mRecentProjects.at( index.row() ).path ).baseName();
+      return mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QFileInfo( mRecentProjects.at( index.row() ).path ).completeBaseName();
     case PathRole:
       return mRecentProjects.at( index.row() ).path;
     case CrsRole:
