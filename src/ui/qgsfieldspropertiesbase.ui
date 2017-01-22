@@ -619,6 +619,9 @@ Reference in function name: my_form_open
   <tabstop>mInitFunctionLineEdit</tabstop>
   <tabstop>mInitFilePathLineEdit</tabstop>
   <tabstop>pbtnSelectInitFilePath</tabstop>
+  <tabstop>mEditFormLineEdit</tabstop>
+  <tabstop>pbnSelectEditForm</tabstop>
+  <tabstop>mFieldsGroupBox</tabstop>
   <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mDeleteAttributeButton</tabstop>
   <tabstop>mToggleEditingButton</tabstop>
@@ -628,9 +631,9 @@ Reference in function name: my_form_open
   <tabstop>mAddItemButton</tabstop>
   <tabstop>mMoveUpItem</tabstop>
   <tabstop>mMoveDownItem</tabstop>
+  <tabstop>mRelationsFrame</tabstop>
+  <tabstop>mPythonInitCodeGroupBox</tabstop>
   <tabstop>mFormSuppressCmbBx</tabstop>
-  <tabstop>pbnSelectEditForm</tabstop>
-  <tabstop>mEditFormLineEdit</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

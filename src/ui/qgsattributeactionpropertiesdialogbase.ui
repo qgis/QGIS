@@ -136,7 +136,11 @@
       <item row="1" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QgsFieldExpressionWidget" name="mFieldExpression"/>
+         <widget class="QgsFieldExpressionWidget" name="mFieldExpression">
+          <property name="focusPolicy">
+           <enum>Qt::TabFocus</enum>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QPushButton" name="mInsertFieldOrExpression">
@@ -252,6 +256,9 @@
    </item>
    <item row="4" column="0" colspan="3">
     <widget class="QGroupBox" name="mActionScopesGroupBox">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
      <property name="title">
       <string>Action Scopes</string>
      </property>
@@ -281,7 +288,9 @@
   <tabstop>mShortTitle</tabstop>
   <tabstop>mActionIcon</tabstop>
   <tabstop>mChooseIconButton</tabstop>
+  <tabstop>mActionScopesGroupBox</tabstop>
   <tabstop>mBrowseButton</tabstop>
+  <tabstop>mFieldExpression</tabstop>
   <tabstop>mInsertFieldOrExpression</tabstop>
  </tabstops>
  <resources>

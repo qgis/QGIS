@@ -327,6 +327,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>btnSampleValues</tabstop>
   <tabstop>btnGetAllValues</tabstop>
   <tabstop>mUseUnfilteredLayer</tabstop>
+  <tabstop>groupBox4</tabstop>
   <tabstop>btnEqual</tabstop>
   <tabstop>btnLessThan</tabstop>
   <tabstop>btnGreaterThan</tabstop>
@@ -341,7 +342,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>btnAnd</tabstop>
   <tabstop>btnOr</tabstop>
   <tabstop>btnNot</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

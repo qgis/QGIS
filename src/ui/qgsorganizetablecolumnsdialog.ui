@@ -63,6 +63,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mFieldsList</tabstop>
+  <tabstop>mShowAllButton</tabstop>
+  <tabstop>mHideAllButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

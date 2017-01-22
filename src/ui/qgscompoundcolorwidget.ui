@@ -964,6 +964,38 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mTabWidget</tabstop>
+  <tabstop>mSchemeComboBox</tabstop>
+  <tabstop>mSchemeToolButton</tabstop>
+  <tabstop>mAddColorToSchemeButton</tabstop>
+  <tabstop>mRemoveColorsFromSchemeButton</tabstop>
+  <tabstop>mSpinBoxRadius</tabstop>
+  <tabstop>mSampleButton</tabstop>
+  <tabstop>mHueRadio</tabstop>
+  <tabstop>mSaturationRadio</tabstop>
+  <tabstop>mValueRadio</tabstop>
+  <tabstop>mRedRadio</tabstop>
+  <tabstop>mGreenRadio</tabstop>
+  <tabstop>mBlueRadio</tabstop>
+  <tabstop>mAddCustomColorButton</tabstop>
+  <tabstop>mSwatchButton1</tabstop>
+  <tabstop>mSwatchButton9</tabstop>
+  <tabstop>mSwatchButton2</tabstop>
+  <tabstop>mSwatchButton10</tabstop>
+  <tabstop>mSwatchButton3</tabstop>
+  <tabstop>mSwatchButton11</tabstop>
+  <tabstop>mSwatchButton4</tabstop>
+  <tabstop>mSwatchButton12</tabstop>
+  <tabstop>mSwatchButton5</tabstop>
+  <tabstop>mSwatchButton13</tabstop>
+  <tabstop>mSwatchButton6</tabstop>
+  <tabstop>mSwatchButton14</tabstop>
+  <tabstop>mSwatchButton7</tabstop>
+  <tabstop>mSwatchButton15</tabstop>
+  <tabstop>mSwatchButton8</tabstop>
+  <tabstop>mSwatchButton16</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

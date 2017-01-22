@@ -161,6 +161,14 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mBandsCombo</tabstop>
+  <tabstop>mLightAngle</tabstop>
+  <tabstop>mLightAzimuthDial</tabstop>
+  <tabstop>mLightAzimuth</tabstop>
+  <tabstop>mZFactor</tabstop>
+  <tabstop>mMultiDirection</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

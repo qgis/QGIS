@@ -24,11 +24,11 @@
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QPushButton" name="btnConnect">
-          <property name="toolTip">
-           <string>Connect to selected database</string>
-          </property>
           <property name="enabled">
            <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Connect to selected database</string>
           </property>
           <property name="text">
            <string>C&amp;onnect</string>
@@ -47,11 +47,11 @@
         </item>
         <item>
          <widget class="QPushButton" name="btnEdit">
-          <property name="toolTip">
-           <string>Edit selected database connection</string>
-          </property>
           <property name="enabled">
            <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Edit selected database connection</string>
           </property>
           <property name="text">
            <string>Edit</string>
@@ -60,11 +60,11 @@
         </item>
         <item>
          <widget class="QPushButton" name="btnDelete">
-          <property name="toolTip">
-           <string>Remove connection to selected database</string>
-          </property>
           <property name="enabled">
            <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Remove connection to selected database</string>
           </property>
           <property name="text">
            <string>Remove</string>
@@ -263,8 +263,8 @@
   <tabstop>lineFilter</tabstop>
   <tabstop>treeView</tabstop>
   <tabstop>cbxUseTitleLayerName</tabstop>
+  <tabstop>cbxFeatureCurrentViewExtent</tabstop>
   <tabstop>btnChangeSpatialRefSys</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

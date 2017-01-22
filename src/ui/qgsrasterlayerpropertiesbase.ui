@@ -2195,20 +2195,15 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsBlendModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsblendmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2223,6 +2218,11 @@ p, li { white-space: pre-wrap; }
    <header>qgsscalerangewidget.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsLayerTreeEmbeddedConfigWidget</class>
    <extends>QWidget</extends>
    <header>qgslayertreeembeddedconfigwidget.h</header>
@@ -2232,13 +2232,17 @@ p, li { white-space: pre-wrap; }
  <tabstops>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>scrollArea_3</tabstop>
+  <tabstop>mLayerInfoGrpBx</tabstop>
   <tabstop>mLayerOrigNameLineEd</tabstop>
   <tabstop>leDisplayName</tabstop>
   <tabstop>leLayerSource</tabstop>
+  <tabstop>grpSRS</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>chkUseScaleDependentRendering</tabstop>
   <tabstop>scrollArea</tabstop>
+  <tabstop>mBandRenderingGrpBx</tabstop>
   <tabstop>mRenderTypeComboBox</tabstop>
+  <tabstop>mColorRenderingGrpBox</tabstop>
   <tabstop>mBlendModeComboBox</tabstop>
   <tabstop>mResetColorRenderingBtn</tabstop>
   <tabstop>mSliderBrightness</tabstop>
@@ -2256,17 +2260,20 @@ p, li { white-space: pre-wrap; }
   <tabstop>mZoomedOutResamplingComboBox</tabstop>
   <tabstop>mMaximumOversamplingSpinBox</tabstop>
   <tabstop>scrollArea_2</tabstop>
+  <tabstop>gboxGlobalTransp</tabstop>
   <tabstop>sliderTransparency</tabstop>
+  <tabstop>gboxNoDataValue</tabstop>
   <tabstop>mSrcNoDataValueCheckBox</tabstop>
   <tabstop>leNoDataValue</tabstop>
+  <tabstop>gboxCustomTransparency</tabstop>
   <tabstop>cboxTransparencyBand</tabstop>
-  <tabstop>tableTransparency</tabstop>
   <tabstop>pbnAddValuesManually</tabstop>
   <tabstop>pbnAddValuesFromDisplay</tabstop>
   <tabstop>pbnRemoveSelectedRow</tabstop>
   <tabstop>pbnDefaultValues</tabstop>
   <tabstop>pbnImportTransparentPixelValues</tabstop>
   <tabstop>pbnExportTransparentPixelValues</tabstop>
+  <tabstop>tableTransparency</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>tePyramidDescription</tabstop>
   <tabstop>lbxPyramidResolutions</tabstop>
@@ -2275,19 +2282,24 @@ p, li { white-space: pre-wrap; }
   <tabstop>buttonBuildPyramids</tabstop>
   <tabstop>scrollArea_6</tabstop>
   <tabstop>scrollArea_4</tabstop>
+  <tabstop>mMetaDescriptionGrpBx</tabstop>
   <tabstop>mLayerShortNameLineEdit</tabstop>
   <tabstop>mLayerTitleLineEdit</tabstop>
   <tabstop>mLayerAbstractTextEdit</tabstop>
   <tabstop>mLayerKeywordListLineEdit</tabstop>
   <tabstop>mLayerDataUrlLineEdit</tabstop>
   <tabstop>mLayerDataUrlFormatComboBox</tabstop>
+  <tabstop>mMetaAttributionGrpBx</tabstop>
   <tabstop>mLayerAttributionLineEdit</tabstop>
   <tabstop>mLayerAttributionUrlLineEdit</tabstop>
+  <tabstop>mMetaMetaUrlGrpBx</tabstop>
   <tabstop>mLayerMetadataUrlLineEdit</tabstop>
   <tabstop>mLayerMetadataUrlTypeComboBox</tabstop>
   <tabstop>mLayerMetadataUrlFormatComboBox</tabstop>
+  <tabstop>mMetaLegendGrpBx</tabstop>
   <tabstop>mLayerLegendUrlLineEdit</tabstop>
   <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
+  <tabstop>mMetaPropertiesGrpBx</tabstop>
   <tabstop>txtbMetadata</tabstop>
  </tabstops>
  <resources>

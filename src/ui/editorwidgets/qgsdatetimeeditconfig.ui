@@ -242,12 +242,26 @@
        <property name="enabled">
         <bool>false</bool>
        </property>
+       <property name="focusPolicy">
+        <enum>Qt::ClickFocus</enum>
+       </property>
       </widget>
      </item>
     </layout>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mFieldFormatComboBox</tabstop>
+  <tabstop>mFieldFormatEdit</tabstop>
+  <tabstop>mFieldHelpToolButton</tabstop>
+  <tabstop>mDisplayFormatComboBox</tabstop>
+  <tabstop>mDisplayFormatEdit</tabstop>
+  <tabstop>mDisplayHelpToolButton</tabstop>
+  <tabstop>mCalendarPopupCheckBox</tabstop>
+  <tabstop>mAllowNullCheckBox</tabstop>
+  <tabstop>mHelpScrollArea</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

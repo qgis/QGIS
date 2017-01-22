@@ -237,6 +237,7 @@
   <tabstop>mViewLayers</tabstop>
   <tabstop>mCboReferenceLayer</tabstop>
   <tabstop>mChkCustomCRS</tabstop>
+  <tabstop>mCrsSelector</tabstop>
   <tabstop>mChkCustomCellSize</tabstop>
   <tabstop>mSpinCellSizeX</tabstop>
   <tabstop>mSpinCellSizeY</tabstop>

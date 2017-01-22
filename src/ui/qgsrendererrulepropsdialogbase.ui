@@ -125,6 +125,15 @@
    <header>qgsscalerangewidget.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>editLabel</tabstop>
+  <tabstop>editFilter</tabstop>
+  <tabstop>btnExpressionBuilder</tabstop>
+  <tabstop>btnTestFilter</tabstop>
+  <tabstop>editDescription</tabstop>
+  <tabstop>groupScale</tabstop>
+  <tabstop>groupSymbol</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

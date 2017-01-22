@@ -23,16 +23,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -827,8 +818,8 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>groupBox</tabstop>
   <tabstop>scrollArea</tabstop>
+  <tabstop>groupBox</tabstop>
   <tabstop>mPreviewModeComboBox</tabstop>
   <tabstop>mUpdatePreviewButton</tabstop>
   <tabstop>mScaleLineEdit</tabstop>
@@ -867,6 +858,8 @@
   <tabstop>mGridUpButton</tabstop>
   <tabstop>mGridDownButton</tabstop>
   <tabstop>mGridListWidget</tabstop>
+  <tabstop>mDrawGridCheckBox</tabstop>
+  <tabstop>mGridPropertiesButton</tabstop>
   <tabstop>mOverviewsGroupBox</tabstop>
   <tabstop>mAddOverviewPushButton</tabstop>
   <tabstop>mRemoveOverviewPushButton</tabstop>

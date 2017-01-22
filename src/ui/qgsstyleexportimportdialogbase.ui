@@ -154,8 +154,10 @@
   <tabstop>importTypeCombo</tabstop>
   <tabstop>locationLineEdit</tabstop>
   <tabstop>btnBrowse</tabstop>
+  <tabstop>mFavorite</tabstop>
+  <tabstop>mIgnoreXMLTags</tabstop>
+  <tabstop>mSymbolTags</tabstop>
   <tabstop>listItems</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

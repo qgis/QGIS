@@ -224,6 +224,13 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mLayerCombo</tabstop>
+  <tabstop>mOptionsListWidget</tabstop>
+  <tabstop>mUndoButton</tabstop>
+  <tabstop>mRedoButton</tabstop>
+  <tabstop>mLiveApplyCheck</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>
