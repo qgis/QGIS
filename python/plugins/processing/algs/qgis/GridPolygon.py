@@ -140,8 +140,8 @@ class GridPolygon(GeoAlgorithm):
                        hSpacing, vSpacing, hOverlay, vOverlay, feedback):
         ft = QgsFeature()
 
-        columns = int(math.ceil(float(width) / (hSpacing-hOverlay)))
-        rows = int(math.ceil(float(height) / (vSpacing-vOverlay)))
+        columns = int(math.ceil(float(width) / (hSpacing - hOverlay)))
+        rows = int(math.ceil(float(height) / (vSpacing - vOverlay)))
 
         cells = rows * columns
         count_update = cells * 0.05
@@ -193,13 +193,13 @@ class GridPolygon(GeoAlgorithm):
         count = 0
 
         for col in range(columns):
-            x =  originX - (col * halfHOverlay)
+            x = originX - (col * halfHOverlay)
             x1 = x + ((col + 0) * halfHSpacing)
             x2 = x + ((col + 1) * halfHSpacing)
             x3 = x + ((col + 2) * halfHSpacing)
 
             for row in range(rows):
-                y =  originY + (row * halfVOverlay)
+                y = originY + (row * halfVOverlay)
                 if (col % 2) == 0:
                     y1 = y - (((row * 2) + 0) * halfVSpacing)
                     y2 = y - (((row * 2) + 1) * halfVSpacing)

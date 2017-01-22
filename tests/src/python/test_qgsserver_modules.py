@@ -5,28 +5,28 @@ from qgis.PyQt.QtCore import QBuffer, QIODevice, QTextStream
 from qgis.testing import unittest
 from qgis.core import QgsApplication
 from qgis.server import (QgsServer,
-                         QgsServiceRegistry, 
+                         QgsServiceRegistry,
                          QgsService,
                          QgsServerRequest,
                          QgsServerResponse)
 
 from utilities import unitTestDataPath
 
+
 class Response(QgsServerResponse):
 
-    def __init__( self ):
+    def __init__(self):
         QgsServerResponse.__init__(self)
         self._buffer = QBuffer()
         self._buffer.open(QIODevice.ReadWrite)
 
-
-    def setReturnCode( self, code ):
+    def setReturnCode(self, code):
         pass
 
-    def setHeader( self, key, val ):
+    def setHeader(self, key, val):
         pass
 
-    def sendError( self, code, message ):
+    def sendError(self, code, message):
         pass
 
     def io(self):
@@ -34,12 +34,12 @@ class Response(QgsServerResponse):
 
 
 class MyService(QgsService):
-    
+
     def __init__(self, name, version, response):
         QgsService.__init__(self)
         self._response = response
-        self._name     = name
-        self._version  = version
+        self._name = name
+        self._version = version
 
     def name(self):
         return self._name
@@ -47,8 +47,8 @@ class MyService(QgsService):
     def version(self):
         return self._version
 
-    def executeRequest( self, request, response ):
-        
+    def executeRequest(self, request, response):
+
         url = request.url()
 
         response.setReturnCode(201)
@@ -65,7 +65,7 @@ class TestModules(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.app.exitQgis() 
+        cls.app.exitQgis()
 
     def setUp(self):
         """Create the server instance"""
@@ -82,16 +82,15 @@ class TestModules(unittest.TestCase):
             except KeyError:
                 pass
         self.server = QgsServer()
-        
+
     def test_modules(self):
         """ Tests that modules are loaded """
 
         # Check that our 'SampleService is registered
-        iface   = self.server.serverInterface()
+        iface = self.server.serverInterface()
         service = iface.serviceRegistry().getService('SampleService')
-        
-        self.assertIsNotNone(service)
 
+        self.assertIsNotNone(service)
 
 
 if __name__ == '__main__':

@@ -631,7 +631,7 @@ ACCEPTABLE_MISSING_DOCS = {
     "QgsZipItem": ["QgsZipItem(QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path)", "itemFromPath(QgsDataItem *parent, QString path, QString name)", "getZipFileList()", "QgsZipItem(QgsDataItem *parent, const QString &name, const QString &path)", "iconZip()", "vsiPrefix(const QString &uri)"],
     "NormVecDecorator": ["NormVecDecorator(Triangulation *tin)"],
     "QgsVectorLayerJoinBuffer": ["vectorJoins() const ", "QgsVectorLayerJoinBuffer(QgsVectorLayer *layer=nullptr)"],
-    "pal::Pal": ["solveProblem(Problem *prob, bool displayAll)", "extractProblem(double bbox[4])", "FnIsCancelled)(void *ctx)"],  #spellok
+    "pal::Pal": ["solveProblem(Problem *prob, bool displayAll)", "extractProblem(double bbox[4])", "FnIsCancelled)(void *ctx)"],  # spellok
     "QgsSearchWidgetWrapper": ["setExpression(QString value)=0"],
     "QgsRasterFillSymbolLayer": ["create(const QgsStringMap &properties=QgsStringMap())", "QgsRasterFillSymbolLayer(const QString &imageFilePath=QString())", "FillCoordinateMode"],
     "QgsExpression::NodeInOperator": ["NodeInOperator(Node *node, NodeList *list, bool notin=false)", "node() const ", "isNotIn() const ", "list() const "],
