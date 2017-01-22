@@ -424,7 +424,7 @@ QSizeF QgsDiagramRenderer::sizeMapUnits( const QgsFeature& feature, const QgsRen
   QSizeF size = diagramSize( feature, c );
   if ( size.isValid() )
   {
-    double width = QgsSymbolLayerUtils::convertToMapUnits( c, size.width(), s.sizeType, s.sizeScale );
+    double width = c.convertToMapUnits( size.width(), s.sizeType, s.sizeScale );
     size.rheight() *= width / size.width();
     size.setWidth( width );
   }

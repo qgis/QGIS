@@ -24,7 +24,7 @@
 #include "layer.h"
 #include "pal.h"
 #include "problem.h"
-
+#include "qgsrendercontext.h"
 
 
 // helper function for checking for job cancelation within PAL

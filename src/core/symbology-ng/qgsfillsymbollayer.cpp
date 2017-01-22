@@ -110,7 +110,7 @@ void QgsSimpleFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   {
     context.setOriginalValueVariable( mBorderWidth );
     double width = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_WIDTH_BORDER, context, mBorderWidth ).toDouble();
-    width = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), width, mBorderWidthUnit, mBorderWidthMapUnitScale );
+    width = context.renderContext().convertToPainterUnits( width, mBorderWidthUnit, mBorderWidthMapUnitScale );
     pen.setWidthF( width );
     selPen.setWidthF( width );
   }
@@ -249,7 +249,7 @@ void QgsSimpleFillSymbolLayer::startRender( QgsSymbolRenderContext& context )
   mPen = QPen( borderColor );
   mSelPen = QPen( selPenColor );
   mPen.setStyle( mBorderStyle );
-  mPen.setWidthF( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mBorderWidth, mBorderWidthUnit, mBorderWidthMapUnitScale ) );
+  mPen.setWidthF( context.renderContext().convertToPainterUnits( mBorderWidth, mBorderWidthUnit, mBorderWidthMapUnitScale ) );
   mPen.setJoinStyle( mPenJoinStyle );
 }
 
@@ -274,8 +274,8 @@ void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPo
   QPointF offset;
   if ( !mOffset.isNull() )
   {
-    offset.setX( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOffset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
-    offset.setY( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOffset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
+    offset.setX( context.renderContext().convertToPainterUnits( mOffset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
+    offset.setY( context.renderContext().convertToPainterUnits( mOffset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
     p->translate( offset );
   }
 
@@ -862,8 +862,8 @@ void QgsGradientFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<Q
   QPointF offset;
   if ( !mOffset.isNull() )
   {
-    offset.setX( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOffset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
-    offset.setY( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOffset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
+    offset.setX( context.renderContext().convertToPainterUnits( mOffset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
+    offset.setY( context.renderContext().convertToPainterUnits( mOffset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
     p->translate( offset );
   }
 
@@ -1160,8 +1160,8 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF& points, QList
     QPointF offset;
     if ( !mOffset.isNull() )
     {
-      offset.setX( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOffset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
-      offset.setY( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOffset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
+      offset.setX( context.renderContext().convertToPainterUnits( mOffset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
+      offset.setY( context.renderContext().convertToPainterUnits( mOffset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
       p->translate( offset );
     }
     _renderPolygon( p, points, rings, context );
@@ -1185,8 +1185,7 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF& points, QList
   if ( !useWholeShape && !qgsDoubleNear( maxDistance, 0.0 ) )
   {
     //convert max distance to pixels
-    const QgsRenderContext& ctx = context.renderContext();
-    outputPixelMaxDist = maxDistance * QgsSymbolLayerUtils::pixelSizeScaleFactor( ctx, mDistanceUnit, mDistanceMapUnitScale );
+    outputPixelMaxDist = context.renderContext().convertToPainterUnits( maxDistance, mDistanceUnit, mDistanceMapUnitScale );
   }
 
   //if we are using the two color mode, create a gradient ramp
@@ -1278,8 +1277,8 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF& points, QList
   QPointF offset;
   if ( !mOffset.isNull() )
   {
-    offset.setX( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOffset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
-    offset.setY( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOffset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
+    offset.setX( context.renderContext().convertToPainterUnits( mOffset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
+    offset.setY( context.renderContext().convertToPainterUnits( mOffset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
     p->translate( offset );
   }
 
@@ -1939,7 +1938,7 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush& brush, const QString& svgFileP
 
   delete mSvgPattern;
   mSvgPattern = nullptr;
-  double size = patternWidth * QgsSymbolLayerUtils::pixelSizeScaleFactor( context.renderContext(), patternWidthUnit, patternWidthMapUnitScale );
+  double size = context.renderContext().convertToPainterUnits( patternWidth, patternWidthUnit, patternWidthMapUnitScale );
 
   if ( static_cast< int >( size ) < 1.0 || 10000.0 < size )
   {
@@ -1949,7 +1948,7 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush& brush, const QString& svgFileP
   else
   {
     bool fitsInCache = true;
-    double outlineWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), svgOutlineWidth, svgOutlineWidthUnit, svgOutlineWidthMapUnitScale );
+    double outlineWidth = context.renderContext().convertToPainterUnits( svgOutlineWidth, svgOutlineWidthUnit, svgOutlineWidthMapUnitScale );
     const QImage& patternImage = QgsApplication::svgCache()->svgAsImage( svgFilePath, size, svgFillColor, svgOutlineColor, outlineWidth,
                                  context.renderContext().scaleFactor(), fitsInCache );
     if ( !fitsInCache )
@@ -2545,8 +2544,8 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext& 
 
   const QgsRenderContext& ctx = context.renderContext();
   //double outlinePixelWidth = lineWidth * QgsSymbolLayerUtils::pixelSizeScaleFactor( ctx,  mLineWidthUnit, mLineWidthMapUnitScale );
-  double outputPixelDist = distance * QgsSymbolLayerUtils::pixelSizeScaleFactor( ctx, mDistanceUnit, mDistanceMapUnitScale );
-  double outputPixelOffset = mOffset * QgsSymbolLayerUtils::pixelSizeScaleFactor( ctx,  mOffsetUnit, mOffsetMapUnitScale );
+  double outputPixelDist = ctx.convertToPainterUnits( distance, mDistanceUnit, mDistanceMapUnitScale );
+  double outputPixelOffset = ctx.convertToPainterUnits( mOffset, mOffsetUnit, mOffsetMapUnitScale );
 
   // To get all patterns into image, we have to consider symbols size (estimateMaxBleed()).
   // For marker lines we have to get markers interval.
@@ -2562,13 +2561,13 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext& 
     // offset regardless units. This has to be fixed especially
     // in estimateMaxBleed(), context probably has to be used.
     // For now, we only support millimeters
-    double outputPixelLayerBleed = layerBleed * QgsSymbolLayerUtils::pixelSizeScaleFactor( ctx, QgsUnitTypes::RenderMillimeters );
+    double outputPixelLayerBleed = ctx.convertToPainterUnits( layerBleed, QgsUnitTypes::RenderMillimeters );
     outputPixelBleed = qMax( outputPixelBleed, outputPixelLayerBleed );
 
     QgsMarkerLineSymbolLayer *markerLineLayer = dynamic_cast<QgsMarkerLineSymbolLayer *>( layer );
     if ( markerLineLayer )
     {
-      double outputPixelLayerInterval = markerLineLayer->interval() * QgsSymbolLayerUtils::pixelSizeScaleFactor( ctx, markerLineLayer->intervalUnit(), markerLineLayer->intervalMapUnitScale() );
+      double outputPixelLayerInterval = ctx.convertToPainterUnits( markerLineLayer->interval(), markerLineLayer->intervalUnit(), markerLineLayer->intervalMapUnitScale() );
 
       // There may be multiple marker lines with different intervals.
       // In theory we should find the least common multiple, but that could be too
@@ -3173,8 +3172,8 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext&
 {
   //render 3 rows and columns in one go to easily incorporate displacement
   const QgsRenderContext& ctx = context.renderContext();
-  double width = distanceX * QgsSymbolLayerUtils::pixelSizeScaleFactor( ctx, mDistanceXUnit, mDistanceXMapUnitScale ) * 2.0;
-  double height = distanceY * QgsSymbolLayerUtils::pixelSizeScaleFactor( ctx, mDistanceYUnit, mDisplacementYMapUnitScale ) * 2.0;
+  double width = ctx.convertToPainterUnits( distanceX, mDistanceXUnit, mDistanceXMapUnitScale ) * 2.0;
+  double height = ctx.convertToPainterUnits( distanceY, mDistanceYUnit, mDisplacementYMapUnitScale ) * 2.0;
 
   if ( width > 10000 || height > 10000 ) //protect symbol layer from eating too much memory
   {
@@ -3209,8 +3208,8 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext&
     mMarkerSymbol->renderPoint( QPointF( width, height ), context.feature(), pointRenderContext );
 
     //render displaced points
-    double displacementPixelX = displacementX * QgsSymbolLayerUtils::pixelSizeScaleFactor( ctx, mDisplacementXUnit, mDisplacementXMapUnitScale );
-    double displacementPixelY = displacementY * QgsSymbolLayerUtils::pixelSizeScaleFactor( ctx, mDisplacementYUnit, mDisplacementYMapUnitScale );
+    double displacementPixelX = ctx.convertToPainterUnits( displacementX, mDisplacementXUnit, mDisplacementXMapUnitScale );
+    double displacementPixelY = ctx.convertToPainterUnits( displacementY, mDisplacementYUnit, mDisplacementYMapUnitScale );
     mMarkerSymbol->renderPoint( QPointF( width / 2.0, -displacementPixelY ), context.feature(), pointRenderContext );
     mMarkerSymbol->renderPoint( QPointF( displacementPixelX, height / 2.0 ), context.feature(), pointRenderContext );
     mMarkerSymbol->renderPoint( QPointF( width / 2.0 + displacementPixelX, height / 2.0 - displacementPixelY ), context.feature(), pointRenderContext );
@@ -3723,8 +3722,8 @@ void QgsRasterFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPo
   QPointF offset;
   if ( !mOffset.isNull() )
   {
-    offset.setX( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOffset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
-    offset.setY( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOffset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
+    offset.setX( context.renderContext().convertToPainterUnits( mOffset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
+    offset.setY( context.renderContext().convertToPainterUnits( mOffset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
     p->translate( offset );
   }
   if ( mCoordinateMode == Feature )
@@ -3871,7 +3870,7 @@ void QgsRasterFillSymbolLayer::applyPattern( QBrush &brush, const QString &image
   double pixelWidth;
   if ( width > 0 )
   {
-    pixelWidth = width * QgsSymbolLayerUtils::pixelSizeScaleFactor( context.renderContext(), mWidthUnit, mWidthMapUnitScale );
+    pixelWidth = context.renderContext().convertToPainterUnits( width, mWidthUnit, mWidthMapUnitScale );
   }
   else
   {

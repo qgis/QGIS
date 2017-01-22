@@ -59,7 +59,7 @@ void QgsHeatmapRenderer::initializeValues( QgsRenderContext& context )
   mValues.fill( 0 );
   mCalculatedMaxValue = 0;
   mFeaturesRendered = 0;
-  mRadiusPixels = qRound( mRadius * QgsSymbolLayerUtils::pixelSizeScaleFactor( context, mRadiusUnit, mRadiusMapUnitScale ) / mRenderQuality );
+  mRadiusPixels = qRound( context.convertToPainterUnits( mRadius, mRadiusUnit, mRadiusMapUnitScale ) / mRenderQuality );
   mRadiusSquared = mRadiusPixels * mRadiusPixels;
 }
 
@@ -300,20 +300,7 @@ void QgsHeatmapRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderCon
 {
   //we need to expand out the request extent so that it includes points which are up to the heatmap radius outside of the
   //actual visible extent
-  double extension = 0.0;
-  if ( mRadiusUnit == QgsUnitTypes::RenderPixels )
-  {
-    extension = mRadius / QgsSymbolLayerUtils::pixelSizeScaleFactor( context, QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
-  }
-  else if ( mRadiusUnit == QgsUnitTypes::RenderMillimeters )
-  {
-    double pixelSize = mRadius * QgsSymbolLayerUtils::pixelSizeScaleFactor( context, QgsUnitTypes::RenderMillimeters, QgsMapUnitScale() );
-    extension = pixelSize / QgsSymbolLayerUtils::pixelSizeScaleFactor( context, QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
-  }
-  else
-  {
-    extension = mRadius;
-  }
+  double extension = context.convertToMapUnits( mRadius, mRadiusUnit, mRadiusMapUnitScale );
   extent.setXMinimum( extent.xMinimum() - extension );
   extent.setXMaximum( extent.xMaximum() + extension );
   extent.setYMinimum( extent.yMinimum() - extension );

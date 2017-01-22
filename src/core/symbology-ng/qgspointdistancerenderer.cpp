@@ -89,7 +89,7 @@ bool QgsPointDistanceRenderer::renderFeature( QgsFeature& feature, QgsRenderCont
     transformedFeature.setGeometry( geom );
   }
 
-  double searchDistance = mTolerance * QgsSymbolLayerUtils::mapUnitScaleFactor( context, mToleranceUnit, mToleranceMapUnitScale );
+  double searchDistance = context.convertToMapUnits( mTolerance, mToleranceUnit, mToleranceMapUnitScale );
   QgsPoint point = transformedFeature.geometry().asPoint();
   QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( point, searchDistance ) );
   if ( intersectList.empty() )

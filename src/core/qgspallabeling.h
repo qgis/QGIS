@@ -66,7 +66,7 @@ class QgsPalLayerSettings;
 class QgsVectorLayerLabelProvider;
 class QgsDxfExport;
 class QgsVectorLayerDiagramProvider;
-
+class QgsExpressionContext;
 
 
 /** \ingroup core

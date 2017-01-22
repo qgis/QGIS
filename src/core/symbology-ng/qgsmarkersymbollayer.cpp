@@ -144,7 +144,7 @@ void QgsSimpleMarkerSymbolLayerBase::startRender( QgsSymbolRenderContext &contex
   // scale the shape (if the size is not going to be modified)
   if ( !hasDataDefinedSize )
   {
-    double scaledSize = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mSize, mSizeUnit, mSizeMapUnitScale );
+    double scaledSize = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
     double half = scaledSize / 2.0;
     transform.scale( half, half );
   }
@@ -223,7 +223,7 @@ void QgsSimpleMarkerSymbolLayerBase::renderPoint( QPointF point, QgsSymbolRender
   // resize if necessary
   if ( hasDataDefinedSize || createdNewPath )
   {
-    double s = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), scaledSize, mSizeUnit, mSizeMapUnitScale );
+    double s = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
     double half = s / 2.0;
     transform.scale( half, half );
   }
@@ -256,7 +256,7 @@ QRectF QgsSimpleMarkerSymbolLayerBase::bounds( QPointF point, QgsSymbolRenderCon
   double angle = 0;
   calculateOffsetAndRotation( context, scaledSize, hasDataDefinedRotation, offset, angle );
 
-  scaledSize = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), scaledSize, mSizeUnit, mSizeMapUnitScale );
+  scaledSize = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
 
   QTransform transform;
 
@@ -807,7 +807,7 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext& context )
   mPen = QPen( penColor );
   mPen.setStyle( mOutlineStyle );
   mPen.setJoinStyle( mPenJoinStyle );
-  mPen.setWidthF( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
+  mPen.setWidthF( context.renderContext().convertToPainterUnits( mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
 
   QColor selBrushColor = context.renderContext().selectionColor();
   QColor selPenColor = selBrushColor == mColor ? selBrushColor : mBorderColor;
@@ -819,7 +819,7 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext& context )
   mSelBrush = QBrush( selBrushColor );
   mSelPen = QPen( selPenColor );
   mSelPen.setStyle( mOutlineStyle );
-  mSelPen.setWidthF( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
+  mSelPen.setWidthF( context.renderContext().convertToPainterUnits( mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
 
   bool hasDataDefinedRotation = context.renderHints() & QgsSymbol::DynamicRotation || hasDataDefinedProperty( QgsSymbolLayer::EXPR_ANGLE );
   bool hasDataDefinedSize = hasDataDefinedProperty( QgsSymbolLayer::EXPR_SIZE );
@@ -857,7 +857,7 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext& context )
 
 bool QgsSimpleMarkerSymbolLayer::prepareCache( QgsSymbolRenderContext& context )
 {
-  double scaledSize = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mSize, mSizeUnit, mSizeMapUnitScale );
+  double scaledSize = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
 
   // calculate necessary image size for the cache
   double pw = qRound((( qgsDoubleNear( mPen.widthF(), 0.0 ) ? 1 : mPen.widthF() * 4 ) + 1 ) ) / 2 * 2; // make even (round up); handle cosmetic pen
@@ -952,8 +952,8 @@ void QgsSimpleMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpl
     double outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_OUTLINE_WIDTH, context, QVariant(), &ok ).toDouble();
     if ( ok )
     {
-      mPen.setWidthF( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
-      mSelPen.setWidthF( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
+      mPen.setWidthF( context.renderContext().convertToPainterUnits( outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
+      mSelPen.setWidthF( context.renderContext().convertToPainterUnits( outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
     }
   }
   if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_OUTLINE_STYLE ) )
@@ -1248,7 +1248,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScal
       }
     }
 
-    size = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), size, mSizeUnit, mSizeMapUnitScale );
+    size = context.renderContext().convertToPainterUnits( size, mSizeUnit, mSizeMapUnitScale );
   }
   if ( mSizeUnit == QgsUnitTypes::RenderMillimeters )
   {
@@ -1454,7 +1454,7 @@ QRectF QgsSimpleMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
     double outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_OUTLINE_WIDTH, context, QVariant(), &ok ).toDouble();
     if ( ok )
     {
-      penWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
+      penWidth = context.renderContext().convertToPainterUnits( outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
     }
   }
   if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_OUTLINE_STYLE ) )
@@ -1912,7 +1912,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
 
   bool hasDataDefinedSize = false;
   double scaledSize = calculateSize( context, hasDataDefinedSize );
-  double size = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), scaledSize, mSizeUnit, mSizeMapUnitScale );
+  double size = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
 
   //don't render symbols with size below one or above 10,000 pixels
   if ( static_cast< int >( size ) < 1 || 10000.0 < size )
@@ -1945,7 +1945,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
     context.setOriginalValueVariable( mOutlineWidth );
     outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_OUTLINE_WIDTH, context, mOutlineWidth ).toDouble();
   }
-  outlineWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
+  outlineWidth = context.renderContext().convertToPainterUnits( outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
 
   QColor fillColor = mColor;
   bool ok = false;
@@ -2011,7 +2011,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   if ( context.selected() )
   {
     QPen pen( context.renderContext().selectionColor() );
-    double penWidth = QgsSymbolLayerUtils::lineWidthScaleFactor( context.renderContext(), QgsUnitTypes::RenderMillimeters );
+    double penWidth = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
     if ( penWidth > size / 20 )
     {
       // keep the pen width from covering symbol
@@ -2327,7 +2327,7 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
     context.setOriginalValueVariable( mOutlineWidth );
     outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_OUTLINE_WIDTH, context, mOutlineWidth ).toDouble();
   }
-  outlineWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
+  outlineWidth = context.renderContext().convertToPainterUnits( outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
 
   QColor fillColor = mColor;
   if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_FILL ) )
@@ -2382,7 +2382,7 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext& c
 {
   bool hasDataDefinedSize = false;
   double scaledSize = calculateSize( context, hasDataDefinedSize );
-  scaledSize = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), scaledSize, mSizeUnit, mSizeMapUnitScale );
+  scaledSize = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
 
   //don't render symbols with size below one or above 10,000 pixels
   if ( static_cast< int >( scaledSize ) < 1 || 10000.0 < scaledSize )
@@ -2407,7 +2407,7 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext& c
     context.setOriginalValueVariable( mOutlineWidth );
     outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_OUTLINE_WIDTH, context, mOutlineWidth ).toDouble();
   }
-  outlineWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
+  outlineWidth = context.renderContext().convertToPainterUnits( outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
 
   //need to get colors to take advantage of cached SVGs
   QColor fillColor = mColor;
@@ -2551,10 +2551,10 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext& context )
   mBrush = QBrush( brushColor );
   mPen = QPen( penColor );
   mPen.setJoinStyle( mPenJoinStyle );
-  mPen.setWidthF( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
+  mPen.setWidthF( context.renderContext().convertToPainterUnits( mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
 
   mFont = QFont( mFontFamily );
-  mFont.setPixelSize( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mSize, mSizeUnit, mSizeMapUnitScale ) );
+  mFont.setPixelSize( context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale ) );
   delete mFontMetrics;
   mFontMetrics = new QFontMetrics( mFont );
   mChrWidth =  mFontMetrics->width( mChr );
@@ -2687,14 +2687,14 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
   }
   penColor.setAlphaF( penColor.alphaF() * context.alpha() );
 
-  double penWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
+  double penWidth = context.renderContext().convertToPainterUnits( mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
   if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_OUTLINE_WIDTH ) )
   {
     context.setOriginalValueVariable( mOutlineWidth );
     double outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_OUTLINE_WIDTH, context, QVariant(), &ok ).toDouble();
     if ( ok )
     {
-      penWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
+      penWidth = context.renderContext().convertToPainterUnits( outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
     }
   }
 
@@ -2846,7 +2846,7 @@ QRectF QgsFontMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext& 
   QPointF offset;
   double angle = 0;
   calculateOffsetAndRotation( context, scaledSize, hasDataDefinedRotation, offset, angle );
-  scaledSize = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), scaledSize, mSizeUnit, mSizeMapUnitScale );
+  scaledSize = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
 
   QMatrix transform;
 

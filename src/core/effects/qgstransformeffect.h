@@ -21,6 +21,7 @@
 #include "qgspainteffect.h"
 #include "qgis.h"
 #include "qgsmapunitscale.h"
+#include "qgsunittypes.h"
 #include <QPainter>
 
 /** \ingroup core

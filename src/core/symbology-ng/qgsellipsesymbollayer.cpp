@@ -211,7 +211,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext& 
   {
     context.setOriginalValueVariable( mOutlineWidth );
     double width = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_OUTLINE_WIDTH, context, mOutlineWidth ).toDouble();
-    width = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), width, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
+    width = context.renderContext().convertToPainterUnits( width, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
     mPen.setWidthF( width );
   }
   if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_OUTLINE_STYLE ) )
@@ -347,7 +347,7 @@ void QgsEllipseSymbolLayer::startRender( QgsSymbolRenderContext& context )
   mPen.setColor( mOutlineColor );
   mPen.setStyle( mOutlineStyle );
   mPen.setJoinStyle( mPenJoinStyle );
-  mPen.setWidthF( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
+  mPen.setWidthF( context.renderContext().convertToPainterUnits( mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
   mBrush.setColor( mColor );
 }
 
@@ -553,7 +553,7 @@ QSizeF QgsEllipseSymbolLayer::calculateSize( QgsSymbolRenderContext& context, do
   {
     *scaledWidth = width;
   }
-  width = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), width, mSymbolWidthUnit, mSymbolHeightMapUnitScale );
+  width = context.renderContext().convertToPainterUnits( width, mSymbolWidthUnit, mSymbolHeightMapUnitScale );
 
   double height = 0;
   if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_HEIGHT ) ) //1. priority: data defined setting on symbol layer level
@@ -569,7 +569,7 @@ QSizeF QgsEllipseSymbolLayer::calculateSize( QgsSymbolRenderContext& context, do
   {
     *scaledHeight = height;
   }
-  height = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), height, mSymbolHeightUnit, mSymbolHeightMapUnitScale );
+  height = context.renderContext().convertToPainterUnits( height, mSymbolHeightUnit, mSymbolHeightMapUnitScale );
   return QSizeF( width, height );
 }
 
@@ -692,7 +692,7 @@ QRectF QgsEllipseSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext& con
     double outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_OUTLINE_WIDTH, context, QVariant(), &ok ).toDouble();
     if ( ok )
     {
-      penWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
+      penWidth = context.renderContext().convertToPainterUnits( outlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale );
     }
   }
   if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_OUTLINE_STYLE ) )

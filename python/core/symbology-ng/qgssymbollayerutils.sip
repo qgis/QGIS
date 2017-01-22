@@ -380,56 +380,6 @@ class QgsSymbolLayerUtils
      */
     static QColor parseColorWithAlpha( const QString& colorStr, bool &containsAlpha, bool strictEval = false );
 
-    /** Returns the line width scale factor depending on the unit and the paint device.
-     * Consider using convertToPainterUnits() instead, as convertToPainterUnits() respects the size limits specified by the scale
-     * parameter.
-     * @param c render context
-     * @param u units to convert from
-     * @param scale map unit scale, specifying limits for the map units to convert from
-     * @see convertToPainterUnits()
-     */
-    static double lineWidthScaleFactor( const QgsRenderContext& c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
-
-    /** Converts a size from the specied units to painter units. The conversion respects the limits
-     * specified by the optional scale parameter.
-     * @param c render context
-     * @param size size to convert
-     * @param unit units for specified size
-     * @param scale map unit scale
-     * @note added in QGIS 2.12
-     * @see lineWidthScaleFactor()
-     * @see convertToMapUnits()
-     */
-    static double convertToPainterUnits( const QgsRenderContext&c, double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
-
-    /** Converts a size from the specied units to map units. The conversion respects the limits
-     * specified by the optional scale parameter.
-     * @param c render context
-     * @param size size to convert
-     * @param unit units for specified size
-     * @param scale map unit scale
-     * @note added in QGIS 2.16
-     * @see convertFromMapUnits()
-     * @see convertToPainterUnits()
-     */
-    static double convertToMapUnits( const QgsRenderContext&c, double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
-
-    /** Converts a size from map units to the specied units.
-     * @param context render context
-     * @param sizeInMapUnits size (in map units) to convert
-     * @param outputUnit output units
-     * @note added in QGIS 3.0
-     * @see convertToMapUnits()
-     */
-    static double convertFromMapUnits( const QgsRenderContext& context, double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit );
-
-
-    /** Returns scale factor painter units -> pixel dimensions*/
-    static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
-
-    /** Returns scale factor painter units -> map units*/
-    static double mapUnitScaleFactor( const QgsRenderContext& c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
-
     /** Multiplies opacity of image pixel values with a (global) transparency value*/
     static void multiplyImageOpacity( QImage* image, qreal alpha );
 

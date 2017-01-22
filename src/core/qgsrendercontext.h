@@ -28,6 +28,7 @@
 #include "qgsvectorsimplifymethod.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeaturefilterprovider.h"
+#include "qgsmapunitscale.h"
 
 class QPainter;
 class QgsAbstractGeometry;
@@ -269,6 +270,31 @@ class CORE_EXPORT QgsRenderContext
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
     //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
+
+    // Conversions
+
+    /**
+     * Converts a size from the specified units to painter units (pixels). The conversion respects the limits
+     * specified by the optional scale parameter.
+     * @note added in QGIS 3.0
+     * @see convertToMapUnits()
+     */
+    double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() ) const;
+
+    /**
+     * Converts a size from the specified units to map units. The conversion respects the limits
+     * specified by the optional scale parameter.
+     * @note added in QGIS 3.0
+     * @see convertToPainterUnits()
+     */
+    double convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() ) const;
+
+    /**
+     * Converts a size from map units to the specified units.
+     * @note added in QGIS 3.0
+     * @see convertToMapUnits()
+     */
+    double convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const;
 
   private:
 

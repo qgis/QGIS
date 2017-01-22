@@ -1718,6 +1718,11 @@ QgsSymbolLayerUtils (renamed from QgsSymbolLayerUtilsV2)        {#qgis_api_break
 - The signatures for wellKnownMarkerToSld() and wellKnownMarkerFromSld() were changed.
 - The symbolPreviewPixmap() customContext is now the fourth parameter
 - createRenderContext() was moved to QgsRenderContext::fromQPainter()
+- lineWidthScaleFactor() and convertToPainterUnits() were moved to QgsRenderContext::convertToPainterUnits()
+- convertToMapUnits() was moved to QgsRenderContext::convertToMapUnits()
+- convertFromMapUnits() was moved to QgsRenderContext::convertFromMapUnits()
+- pixelSizeScaleFactor() was removed. Use QgsRenderContext::convertToPainterUnits() instead.
+- mapUnitScaleFactor() was removed. Use QgsRenderContext::convertToMapUnits() instead.
 
 
 QgsSymbolSelectorWidget        {#qgis_api_break_3_0_QgsSymbolSelectorWidget}

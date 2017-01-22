@@ -98,7 +98,7 @@ class CORE_EXPORT QgsDiagram
      *
      *  @return The converted length for rendering
      */
-    float sizePainterUnits( float l, const QgsDiagramSettings& s, const QgsRenderContext& c );
+    double sizePainterUnits( double l, const QgsDiagramSettings& s, const QgsRenderContext& c );
 
     /** Calculates a size to match the current settings and rendering context
      *  @param s    The settings that contain the font size and size type

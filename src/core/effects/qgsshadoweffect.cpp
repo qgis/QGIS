@@ -54,8 +54,7 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
   QgsImageOperation::overlayColor( colorisedIm, mColor );
   QgsImageOperation::stackBlur( colorisedIm, mBlurLevel );
 
-  double offsetDist = mOffsetDist *
-                      QgsSymbolLayerUtils::pixelSizeScaleFactor( context, mOffsetUnit, mOffsetMapUnitScale );
+  double offsetDist = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
 
   double   angleRad = mOffsetAngle * M_PI / 180; // to radians
   QPointF transPt( -offsetDist * cos( angleRad + M_PI / 2 ),
@@ -145,7 +144,7 @@ void QgsShadowEffect::readProperties( const QgsStringMap &props )
 QRectF QgsShadowEffect::boundingRect( const QRectF &rect, const QgsRenderContext& context ) const
 {
   //offset distance
-  double spread = mOffsetDist * QgsSymbolLayerUtils::pixelSizeScaleFactor( context, mOffsetUnit, mOffsetMapUnitScale );
+  double spread = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
   //plus possible extension due to blur, with a couple of extra pixels thrown in for safety
   spread += mBlurLevel * 2 + 10;
   return rect.adjusted( -spread, -spread, spread, spread );
