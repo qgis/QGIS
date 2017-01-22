@@ -49,7 +49,7 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer* la
   }
   setupUi( this );
   mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                 << QgsUnitTypes::RenderPoints );
+                                 << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   if ( renderer )
   {

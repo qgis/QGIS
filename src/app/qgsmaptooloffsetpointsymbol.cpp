@@ -240,6 +240,10 @@ QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPoint& startPoint
       factor = 2.83464567 * 25.4 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel() ;
       break;
 
+    case QgsUnitTypes::RenderInches:
+      factor = 1.0 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel() ;
+      break;
+
     case QgsUnitTypes::RenderPixels:
       factor = 1.0 / mCanvas->mapSettings().mapUnitsPerPixel();
       break;

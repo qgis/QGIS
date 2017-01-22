@@ -69,6 +69,7 @@ class QgsUnitTypes
       RenderPixels, //!< pixels
       RenderPercentage, //!< percentage of another measurement (e.g., canvas size, feature size)
       RenderPoints, //! points (e.g., for font sizes)
+      RenderInches,
       RenderUnknownUnit, //!< mixed or unknown units
     };
 

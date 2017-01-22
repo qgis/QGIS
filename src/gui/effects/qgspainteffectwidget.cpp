@@ -256,7 +256,7 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
   mShadowColorBtn->setContext( QStringLiteral( "symbology" ) );
 
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
-                               << QgsUnitTypes::RenderPoints );
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   initGui();
 }
@@ -422,7 +422,7 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
   mColorBtn->setContext( QStringLiteral( "symbology" ) );
 
   mSpreadUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
-                               << QgsUnitTypes::RenderPoints );
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   btnColorRamp->setShowGradientOnly( true );
 
@@ -612,7 +612,7 @@ QgsTransformWidget::QgsTransformWidget( QWidget *parent )
   setupUi( this );
 
   mTranslateUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
-                                  << QgsUnitTypes::RenderPoints );
+                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mSpinTranslateX->setClearValue( 0 );
   mSpinTranslateY->setClearValue( 0 );
   mSpinShearX->setClearValue( 0 );

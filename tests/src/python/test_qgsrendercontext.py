@@ -70,6 +70,8 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(sf, 11.8110236, places=5)
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPoints, c)
         self.assertAlmostEqual(sf, 4.166666665625, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(sf, 300.0, places=5)
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
 
@@ -82,6 +84,8 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(sf, 11.8110236, places=5)
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPoints, c)
         self.assertAlmostEqual(sf, 4.166666665625, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(sf, 300.0, places=5)
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
         c.minScale = 0
@@ -95,6 +99,8 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(sf, 11.8110236, places=5)
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPoints, c)
         self.assertAlmostEqual(sf, 4.166666665625, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(sf, 300.0, places=5)
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
 
@@ -117,6 +123,8 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(size, 23.622047, places=5)
         size = r.convertToPainterUnits(2, QgsUnitTypes.RenderPoints, c)
         self.assertAlmostEqual(size, 8.33333333125, places=5)
+        size = r.convertToPainterUnits(2, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(size, 600.0, places=5)
         size = r.convertToPainterUnits(2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 2.0, places=5)
 
@@ -130,6 +138,8 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(size, 23.622047, places=5)
         size = r.convertToPainterUnits(2, QgsUnitTypes.RenderPoints, c)
         self.assertAlmostEqual(size, 8.33333333125, places=5)
+        size = r.convertToPainterUnits(2, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(size, 600.0, places=5)
         size = r.convertToPainterUnits(2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 2.0, places=5)
         c.minSizeMMEnabled = False
@@ -144,6 +154,8 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(size, 23.622047, places=5)
         size = r.convertToPainterUnits(2, QgsUnitTypes.RenderPoints, c)
         self.assertAlmostEqual(size, 8.33333333125, places=5)
+        size = r.convertToPainterUnits(2, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(size, 600.0, places=5)
         size = r.convertToPainterUnits(2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 2.0, places=5)
 
@@ -165,6 +177,8 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(size, 47.244094, places=5)
         size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderPoints, c)
         self.assertAlmostEqual(size, 47.2440833, places=5)
+        size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(size, 3401.574, places=5)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0, places=5)
 
@@ -178,6 +192,8 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(size, 47.244094, places=5)
         size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderPoints, c)
         self.assertAlmostEqual(size, 47.2440833, places=5)
+        size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(size, 3401.574, places=5)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0, places=5)
         c.minSizeMMEnabled = False
@@ -192,6 +208,8 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(size, 47.244094, places=5)
         size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderPoints, c)
         self.assertAlmostEqual(size, 47.2440833, places=5)
+        size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(size, 3401.574, places=5)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0, places=5)
         c.maxSizeMMEnabled = False
@@ -205,6 +223,8 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(size, 47.244094, places=5)
         size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderPoints, c)
         self.assertAlmostEqual(size, 47.2440833, places=5)
+        size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(size, 3401.574, places=5)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0, places=5)
         c.minScale = 0
@@ -218,10 +238,11 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(size, 47.244094, places=5)
         size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderPoints, c)
         self.assertAlmostEqual(size, 47.2440833, places=5)
+        size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(size, 3401.574, places=5)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0, places=5)
         c.maxScale = 0
-
 
     def testPixelSizeScaleFactor(self):
 
@@ -242,6 +263,8 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(sf, 11.8110236, places=5)
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPoints, c)
         self.assertAlmostEqual(sf, 4.166666665625, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(sf, 300.0, places=5)
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
 
@@ -254,6 +277,8 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(sf, 11.811023, places=5)
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPoints, c)
         self.assertAlmostEqual(sf, 4.166666665625, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(sf, 300.0, places=5)
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
         c.minScale = 0
@@ -267,6 +292,8 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(sf, 11.8110236, places=5)
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPoints, c)
         self.assertAlmostEqual(sf, 4.166666665625, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(sf, 300.0, places=5)
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
 
@@ -288,6 +315,8 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(sf, 23.622047, places=5)
         sf = r.convertToMapUnits(1, QgsUnitTypes.RenderPoints, c)
         self.assertAlmostEqual(sf, 8.33333324723, places=5)
+        sf = r.convertToMapUnits(1, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(sf, 600.0, places=5)
         sf = r.convertToMapUnits(1, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 2.0, places=5)
 

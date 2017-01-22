@@ -1081,9 +1081,12 @@ QString QgsUnitTypes::encodeUnit( RenderUnit unit )
       return QStringLiteral( "Percentage" );
     case RenderPoints:
       return QStringLiteral( "Point" );
-    default:
-      return QStringLiteral( "MM" );
+    case RenderInches:
+      return QStringLiteral( "Inch" );
+    case RenderUnknownUnit:
+      return QString();
   }
+  return QString();
 }
 
 QgsUnitTypes::RenderUnit QgsUnitTypes::decodeRenderUnit( const QString& string, bool* ok )
@@ -1109,6 +1112,8 @@ QgsUnitTypes::RenderUnit QgsUnitTypes::decodeRenderUnit( const QString& string, 
     return RenderPoints;
   if ( normalized == QLatin1String( "points" ) )
     return RenderPoints;
+  if ( normalized == encodeUnit( RenderInches ).toLower() )
+    return RenderInches;
 
   if ( ok )
     *ok = false;
