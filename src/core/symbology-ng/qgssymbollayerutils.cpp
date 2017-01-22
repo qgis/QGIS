@@ -3308,7 +3308,7 @@ double QgsSymbolLayerUtils::lineWidthScaleFactor( const QgsRenderContext& c, Qgs
     case QgsUnitTypes::RenderMillimeters:
       return c.scaleFactor();
     case QgsUnitTypes::RenderPoints:
-      return c.scaleFactor() * POINTS_TO_MM;
+      return c.scaleFactor() / POINTS_TO_MM;
     case QgsUnitTypes::RenderMapUnits:
     {
       double mup = scale.computeMapUnitsPerPixel( c );
