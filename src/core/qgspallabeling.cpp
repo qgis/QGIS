@@ -1895,11 +1895,10 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     positionOrder = QgsPalLayerSettings::DEFAULT_PLACEMENT_ORDER;
 
   context.expressionContext().setOriginalValueVariable( QgsLabelingUtils::encodePredefinedPositionOrder( predefinedPositionOrder ) );
-  exprVal = mProperties.value( QgsPalLayerSettings::PredefinedPositionOrder, context.expressionContext() );
-  if ( exprVal.isValid() )
+  QString dataDefinedOrder = mProperties.valueAsString( QgsPalLayerSettings::PredefinedPositionOrder, context.expressionContext() );
+  if ( !dataDefinedOrder.isEmpty() )
   {
-    QString orderD = exprVal.toString();
-    positionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( orderD );
+    positionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( dataDefinedOrder );
   }
   ( *labelFeature )->setPredefinedPositionOrder( positionOrder );
 
