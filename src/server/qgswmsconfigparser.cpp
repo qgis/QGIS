@@ -209,6 +209,7 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
     //grid space x / y
     currentMap->grid()->setIntervalX( parameterMap.value( mapId + ":GRID_INTERVAL_X" ).toDouble() );
     currentMap->grid()->setIntervalY( parameterMap.value( mapId + ":GRID_INTERVAL_Y" ).toDouble() );
+    currentMap->grid()->setEnabled( currentMap->grid()->intervalX() != 0.0 && currentMap->grid()->intervalY() != 0.0 );
   }
 //update legend
 // if it has an auto-update model
