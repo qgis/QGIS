@@ -40,6 +40,7 @@ start_app()
 
 TEST_DATA_DIR = unitTestDataPath()
 
+
 def createLayerWithOneLine():
     # create a temporary layer
     # linelayer = iface.addVectorLayer("LineString?crs=epsg:4326&field=gid:int&field=name:string", "simple_line", "memory")
@@ -49,6 +50,7 @@ def createLayerWithOneLine():
     one.setGeometry(QgsGeometry.fromPolyline([QgsPoint(-7, 38), QgsPoint(-8, 42)]))
     linelayer.dataProvider().addFeatures([one])
     return linelayer
+
 
 class TestQgsSymbolLayerReadSld(unittest.TestCase):
 
