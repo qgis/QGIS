@@ -36,16 +36,24 @@ class QgsPropertyPrivate : public QSharedData
 {
   public:
 
-    QgsPropertyPrivate() = default;
+    QgsPropertyPrivate()
+        : type( 0 )
+        , active( true )
+        , transformer( nullptr )
+    {}
 
     QgsPropertyPrivate( const QgsPropertyPrivate& other )
         : QSharedData( other )
         , type( other.type )
         , active( other.active )
         , transformer( other.transformer ? other.transformer->clone() : nullptr )
-        , staticData( other.staticData )
-        , fieldData( other.fieldData )
-        , expressionData( other.expressionData )
+        , staticValue( other.staticValue )
+        , fieldName( other.fieldName )
+        , cachedFieldIdx( other.cachedFieldIdx )
+        , expressionString( other.expressionString )
+        , expressionPrepared( other.expressionPrepared )
+        , expression( other.expression )
+        , expressionReferencedCols( other.expressionReferencedCols )
     {}
 
     ~QgsPropertyPrivate()
@@ -61,27 +69,19 @@ class QgsPropertyPrivate : public QSharedData
     //! Optional transfomer
     QgsPropertyTransformer* transformer = nullptr;
 
-    struct StaticData
-    {
-      QVariant value;
-    };
-    struct FieldData
-    {
-      QString fieldName;
-      mutable int cachedFieldIdx = -1;
-    };
-    struct ExpressionData
-    {
-      QString expressionString;
-      mutable bool prepared = false;
-      mutable QgsExpression expression;
-      //! Cached set of referenced columns
-      mutable QSet< QString > referencedCols;
-    };
+    // StaticData
+    QVariant staticValue;
 
-    StaticData staticData;
-    FieldData fieldData;
-    ExpressionData expressionData;
+    // FieldData
+    QString fieldName;
+    mutable int cachedFieldIdx = -1;
+
+    // ExpressionData
+    QString expressionString;
+    mutable bool expressionPrepared = false;
+    mutable QgsExpression expression;
+    //! Cached set of referenced columns
+    mutable QSet< QString > expressionReferencedCols;
 
 };
 

@@ -129,7 +129,7 @@ void QgsPropertyCollection::clear()
 void QgsPropertyCollection::setProperty( int key, const QgsProperty& property )
 {
   if ( property )
-    mProperties[ key ] = property;
+    mProperties.insert( key, property );
   else
     mProperties.remove( key );
 

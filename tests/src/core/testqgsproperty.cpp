@@ -73,6 +73,7 @@ class TestQgsProperty : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void conversions(); //test QgsProperty static conversion methods
+    void invalid(); //test invalid properties
     void staticProperty(); //test for QgsStaticProperty
     void fieldBasedProperty(); //test for QgsFieldBasedProperty
     void expressionBasedProperty(); //test for QgsExpressionBasedProperty
@@ -241,6 +242,18 @@ void TestQgsProperty::conversions()
   collection.property( 4 ).setStaticValue( "s" );
   QCOMPARE( s1.valueAsString( context , "n" ), QString( "s" ) );
   QCOMPARE( collection.valueAsString( 4, context , "y" ), QString( "s" ) );
+}
+
+void TestQgsProperty::invalid()
+{
+  QgsProperty p; //invalid property
+  QCOMPARE( p.propertyType(), QgsProperty::InvalidProperty );
+  QgsProperty p2( p );
+  QCOMPARE( p2.propertyType(), QgsProperty::InvalidProperty );
+  QgsProperty p3 = QgsProperty::fromValue( 5 );
+  p3 = p;
+  QCOMPARE( p3.propertyType(), QgsProperty::InvalidProperty );
+
 }
 
 void TestQgsProperty::staticProperty()

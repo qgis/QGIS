@@ -235,10 +235,10 @@ class TestPointPlacement(TestPlacementBase):
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
         self.lyr.dist = 2
-        self.lyr.properties().setProperty(QgsPalLayerSettings.PredefinedPositionOrder, QgsProperty.fromExpression("'T,B'"))
+        #self.lyr.properties().setProperty(QgsPalLayerSettings.PredefinedPositionOrder, QgsProperty.fromExpression("'T,B'"))
         self.checkTest()
         self.removeMapLayer(self.layer)
-        self.lyr.properties().setProperty(QgsPalLayerSettings.PredefinedPositionOrder, QgsProperty())
+        #self.lyr.properties().setProperty(QgsPalLayerSettings.PredefinedPositionOrder, QgsProperty())
         self.layer = None
 
     def test_point_dd_ordered_placement1(self):

@@ -236,7 +236,7 @@ void QgsProperty::setStaticValue( const QVariant& value )
 {
   d.detach();
   d->type = StaticProperty;
-  d->staticData.value = value;
+  d->staticValue = value;
 }
 
 QVariant QgsProperty::staticValue() const
@@ -244,15 +244,15 @@ QVariant QgsProperty::staticValue() const
   if ( d->type != StaticProperty )
     return QVariant();
 
-  return d->staticData.value;
+  return d->staticValue;
 }
 
 void QgsProperty::setField( const QString& field )
 {
   d.detach();
   d->type = FieldBasedProperty;
-  d->fieldData.fieldName = field;
-  d->fieldData.cachedFieldIdx = -1;
+  d->fieldName = field;
+  d->cachedFieldIdx = -1;
 }
 
 QString QgsProperty::field() const
@@ -260,7 +260,7 @@ QString QgsProperty::field() const
   if ( d->type != FieldBasedProperty )
     return QString();
 
-  return d->fieldData.fieldName;
+  return d->fieldName;
 }
 
 QgsProperty::operator bool() const
@@ -272,9 +272,9 @@ void QgsProperty::setExpressionString( const QString& expression )
 {
   d.detach();
   d->type = ExpressionBasedProperty;
-  d->expressionData.expressionString = expression;
-  d->expressionData.expression = QgsExpression( expression );
-  d->expressionData.prepared = false;
+  d->expressionString = expression;
+  d->expression = QgsExpression( expression );
+  d->expressionPrepared = false;
 }
 
 QString QgsProperty::expressionString() const
@@ -282,7 +282,7 @@ QString QgsProperty::expressionString() const
   if ( d->type != ExpressionBasedProperty )
     return QString();
 
-  return d->expressionData.expressionString;
+  return d->expressionString;
 }
 
 
@@ -291,13 +291,13 @@ QString QgsProperty::asExpression() const
   switch ( d->type )
   {
     case StaticProperty:
-      return QgsExpression::quotedValue( d->staticData.value );
+      return QgsExpression::quotedValue( d->staticValue );
 
     case FieldBasedProperty:
-      return QgsExpression::quotedColumnRef( d->fieldData.fieldName );
+      return QgsExpression::quotedColumnRef( d->fieldName );
 
     case ExpressionBasedProperty:
-      return d->expressionData.expressionString;
+      return d->expressionString;
 
     case InvalidProperty:
       return QString();
@@ -320,22 +320,22 @@ bool QgsProperty::prepare( const QgsExpressionContext& context ) const
       d.detach();
       // cache field index to avoid subsequent lookups
       QgsFields f = context.fields();
-      d->fieldData.cachedFieldIdx = f.lookupField( d->fieldData.fieldName );
+      d->cachedFieldIdx = f.lookupField( d->fieldName );
       return true;
     }
 
     case ExpressionBasedProperty:
     {
       d.detach();
-      if ( !d->expressionData.expression.prepare( &context ) )
+      if ( !d->expression.prepare( &context ) )
       {
-        d->expressionData.referencedCols.clear();
-        d->expressionData.prepared = false;
+        d->expressionReferencedCols.clear();
+        d->expressionPrepared = false;
         return false;
       }
 
-      d->expressionData.prepared = true;
-      d->expressionData.referencedCols = d->expressionData.expression.referencedColumns();
+      d->expressionPrepared = true;
+      d->expressionReferencedCols = d->expression.referencedColumns();
       return true;
     }
 
@@ -361,18 +361,18 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext& context
     case FieldBasedProperty:
     {
       QSet< QString > fields;
-      if ( !d->fieldData.fieldName.isEmpty() )
-        fields.insert( d->fieldData.fieldName );
+      if ( !d->fieldName.isEmpty() )
+        fields.insert( d->fieldName );
       return fields;
     }
 
     case ExpressionBasedProperty:
     {
       d.detach();
-      if ( !d->expressionData.prepared && !prepare( context ) )
+      if ( !d->expressionPrepared && !prepare( context ) )
         return QSet< QString >();
 
-      return d->expressionData.referencedCols;
+      return d->expressionReferencedCols;
     }
 
   }
@@ -393,7 +393,7 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext& context, const 
     {
       if ( ok )
         *ok = true;
-      return d->staticData.value;
+      return d->staticValue;
     }
 
     case FieldBasedProperty:
@@ -403,14 +403,14 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext& context, const 
         return defaultValue;
 
       //shortcut the field lookup
-      if ( d->fieldData.cachedFieldIdx >= 0 )
+      if ( d->cachedFieldIdx >= 0 )
       {
         if ( ok )
           *ok = true;
-        return f.attribute( d->fieldData.cachedFieldIdx );
+        return f.attribute( d->cachedFieldIdx );
       }
 
-      int fieldIdx = f.fieldNameIndex( d->fieldData.fieldName );
+      int fieldIdx = f.fieldNameIndex( d->fieldName );
       if ( fieldIdx < 0 )
         return defaultValue;
 
@@ -422,10 +422,10 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext& context, const 
     case ExpressionBasedProperty:
     {
       d.detach();
-      if ( !d->expressionData.prepared && !prepare( context ) )
+      if ( !d->expressionPrepared && !prepare( context ) )
         return defaultValue;
 
-      QVariant result = d->expressionData.expression.evaluate( &context );
+      QVariant result = d->expression.evaluate( &context );
       if ( result.isValid() )
       {
         if ( ok )
@@ -601,16 +601,16 @@ bool QgsProperty::writeXml( QDomElement &propertyElem, QDomDocument &doc ) const
   switch ( d->type )
   {
     case StaticProperty:
-      propertyElem.setAttribute( "valType", d->staticData.value.typeName() );
-      propertyElem.setAttribute( "val", d->staticData.value.toString() );
+      propertyElem.setAttribute( "valType", d->staticValue.typeName() );
+      propertyElem.setAttribute( "val", d->staticValue.toString() );
       break;
 
     case FieldBasedProperty:
-      propertyElem.setAttribute( "field", d->fieldData.fieldName );
+      propertyElem.setAttribute( "field", d->fieldName );
       break;
 
     case ExpressionBasedProperty:
-      propertyElem.setAttribute( "expression", d->expressionData.expressionString );
+      propertyElem.setAttribute( "expression", d->expressionString );
       break;
 
     case InvalidProperty:
@@ -637,24 +637,24 @@ bool QgsProperty::readXml( const QDomElement &propertyElem, const QDomDocument &
   switch ( d->type )
   {
     case StaticProperty:
-      d->staticData.value = QVariant( propertyElem.attribute( "val", "" ) );
-      d->staticData.value.convert( QVariant::nameToType( propertyElem.attribute( "valType", "QString" ).toLocal8Bit().constData() ) );
+      d->staticValue = QVariant( propertyElem.attribute( "val", "" ) );
+      d->staticValue.convert( QVariant::nameToType( propertyElem.attribute( "valType", "QString" ).toLocal8Bit().constData() ) );
       break;
 
     case FieldBasedProperty:
-      d->fieldData.fieldName = propertyElem.attribute( "field" );
-      if ( d->fieldData.fieldName.isEmpty() )
+      d->fieldName = propertyElem.attribute( "field" );
+      if ( d->fieldName.isEmpty() )
         d->active = false;
       break;
 
     case ExpressionBasedProperty:
-      d->expressionData.expressionString = propertyElem.attribute( "expression" );
-      if ( d->expressionData.expressionString.isEmpty() )
+      d->expressionString = propertyElem.attribute( "expression" );
+      if ( d->expressionString.isEmpty() )
         d->active = false;
 
-      d->expressionData.expression = QgsExpression( d->expressionData.expressionString );
-      d->expressionData.prepared = false;
-      d->expressionData.referencedCols.clear();
+      d->expression = QgsExpression( d->expressionString );
+      d->expressionPrepared = false;
+      d->expressionReferencedCols.clear();
       break;
 
     case InvalidProperty:
