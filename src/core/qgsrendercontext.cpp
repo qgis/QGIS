@@ -23,6 +23,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsfeaturefilterprovider.h"
 
+#define POINTS_TO_MM 2.83464567
+
 QgsRenderContext::QgsRenderContext()
     : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
 {
@@ -207,4 +209,140 @@ void QgsRenderContext::setFeatureFilterProvider( const QgsFeatureFilterProvider*
 const QgsFeatureFilterProvider* QgsRenderContext::featureFilterProvider() const
 {
   return mFeatureFilterProvider.data();
+}
+
+double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale ) const
+{
+  double conversionFactor = 1.0;
+  switch ( unit )
+  {
+    case QgsUnitTypes::RenderMillimeters:
+      conversionFactor = mScaleFactor;
+      break;
+
+    case QgsUnitTypes::RenderPoints:
+      conversionFactor = mScaleFactor / POINTS_TO_MM;
+      break;
+
+    case QgsUnitTypes::RenderMapUnits:
+    {
+      double mup = scale.computeMapUnitsPerPixel( *this );
+      if ( mup > 0 )
+      {
+        conversionFactor = 1.0 / mup;
+      }
+      else
+      {
+        conversionFactor = 1.0;
+      }
+      break;
+    }
+    case QgsUnitTypes::RenderPixels:
+      conversionFactor = 1.0;
+      break;
+
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
+      //no sensible value
+      conversionFactor = 1.0;
+      break;
+  }
+
+  double convertedSize = size * conversionFactor;
+
+  if ( unit == QgsUnitTypes::RenderMapUnits )
+  {
+    //check max/min size
+    if ( scale.minSizeMMEnabled )
+      convertedSize = qMax( convertedSize, scale.minSizeMM * mScaleFactor );
+    if ( scale.maxSizeMMEnabled )
+      convertedSize = qMin( convertedSize, scale.maxSizeMM * mScaleFactor );
+  }
+
+  return convertedSize;
+}
+
+double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale ) const
+{
+  double mup = mMapToPixel.mapUnitsPerPixel();
+
+  switch ( unit )
+  {
+    case QgsUnitTypes::RenderMapUnits:
+    {
+      // check scale
+      double minSizeMU = -DBL_MAX;
+      if ( scale.minSizeMMEnabled )
+      {
+        minSizeMU = scale.minSizeMM * mScaleFactor * mup;
+      }
+      if ( !qgsDoubleNear( scale.minScale, 0.0 ) )
+      {
+        minSizeMU = qMax( minSizeMU, size * ( scale.minScale * mRendererScale ) );
+      }
+      size = qMax( size, minSizeMU );
+
+      double maxSizeMU = DBL_MAX;
+      if ( scale.maxSizeMMEnabled )
+      {
+        maxSizeMU = scale.maxSizeMM * mScaleFactor * mup;
+      }
+      if ( !qgsDoubleNear( scale.maxScale, 0.0 ) )
+      {
+        maxSizeMU = qMin( maxSizeMU, size * ( scale.maxScale * mRendererScale ) );
+      }
+      size = qMin( size, maxSizeMU );
+
+      return size;
+    }
+    case QgsUnitTypes::RenderMillimeters:
+    {
+      return size * mScaleFactor * mup;
+    }
+    case QgsUnitTypes::RenderPoints:
+    {
+      return size * mScaleFactor * mup / POINTS_TO_MM;
+    }
+    case QgsUnitTypes::RenderPixels:
+    {
+      return size * mup;
+    }
+
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
+      //no sensible value
+      return 0.0;
+  }
+  return 0.0;
+}
+
+double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const
+{
+  double mup = mMapToPixel.mapUnitsPerPixel();
+
+  switch ( outputUnit )
+  {
+    case QgsUnitTypes::RenderMapUnits:
+    {
+      return sizeInMapUnits;
+    }
+    case QgsUnitTypes::RenderMillimeters:
+    {
+      return sizeInMapUnits / ( mScaleFactor * mup );
+    }
+    case QgsUnitTypes::RenderPoints:
+    {
+      return sizeInMapUnits / ( mScaleFactor * mup / POINTS_TO_MM );
+    }
+    case QgsUnitTypes::RenderPixels:
+    {
+      return sizeInMapUnits / mup;
+    }
+
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
+      //no sensible value
+      return 0.0;
+  }
+  return 0.0;
 }

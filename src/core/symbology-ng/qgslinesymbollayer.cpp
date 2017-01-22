@@ -191,7 +191,7 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext& context )
   QColor penColor = mColor;
   penColor.setAlphaF( mColor.alphaF() * context.alpha() );
   mPen.setColor( penColor );
-  double scaledWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mWidth, mWidthUnit, mWidthMapUnitScale );
+  double scaledWidth = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
   mPen.setWidthF( scaledWidth );
   if ( mUseCustomDashPattern && !qgsDoubleNear( scaledWidth, 0 ) )
   {
@@ -212,7 +212,7 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext& context )
     for ( ; it != mCustomDashVector.constEnd(); ++it )
     {
       //the dash is specified in terms of pen widths, therefore the division
-      scaledVector << QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), ( *it ), mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv;
+      scaledVector << context.renderContext().convertToPainterUnits(( *it ), mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv;
     }
     mPen.setDashPattern( scaledVector );
   }
@@ -326,7 +326,7 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbo
   }
   else
   {
-    double scaledOffset = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), offset, mOffsetUnit, mOffsetMapUnitScale );
+    double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
     QList<QPolygonF> mline = ::offsetLine( points, scaledOffset, context.feature() ? context.feature()->geometry().type() : QgsWkbTypes::LineGeometry );
     for ( int part = 0; part < mline.count(); ++part )
     {
@@ -481,9 +481,9 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_WIDTH ) )
   {
     context.setOriginalValueVariable( mWidth );
-    double scaledWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(),
-                         evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_WIDTH, context, mWidth ).toDouble(),
-                         mWidthUnit, mWidthMapUnitScale );
+    double scaledWidth = context.renderContext().convertToPainterUnits(
+                           evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_WIDTH, context, mWidth ).toDouble(),
+                           mWidthUnit, mWidthMapUnitScale );
     pen.setWidthF( scaledWidth );
     selPen.setWidthF( scaledWidth );
     hasStrokeWidthExpression = true;
@@ -509,7 +509,7 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   //dash dot vector
   if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_CUSTOMDASH ) )
   {
-    double scaledWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mWidth, mWidthUnit, mWidthMapUnitScale );
+    double scaledWidth = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
     double dashWidthDiv = mPen.widthF();
 
     if ( hasStrokeWidthExpression )
@@ -534,7 +534,7 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
       QStringList::const_iterator dashIt = dashList.constBegin();
       for ( ; dashIt != dashList.constEnd(); ++dashIt )
       {
-        dashVector.push_back( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), dashIt->toDouble(), mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv );
+        dashVector.push_back( context.renderContext().convertToPainterUnits( dashIt->toDouble(), mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv );
       }
       pen.setDashPattern( dashVector );
     }
@@ -879,7 +879,7 @@ void QgsMarkerLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbo
   else
   {
     context.renderContext().setGeometry( nullptr ); //always use segmented geometry with offset
-    QList<QPolygonF> mline = ::offsetLine( points, QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), offset, mOffsetUnit, mOffsetMapUnitScale ), context.feature() ? context.feature()->geometry().type() : QgsWkbTypes::LineGeometry );
+    QList<QPolygonF> mline = ::offsetLine( points, context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale ), context.feature() ? context.feature()->geometry().type() : QgsWkbTypes::LineGeometry );
 
     for ( int part = 0; part < mline.count(); ++part )
     {
@@ -951,8 +951,8 @@ void QgsMarkerLineSymbolLayer::renderPolylineInterval( const QPolygonF& points, 
     offsetAlongLine = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_OFFSET_ALONG_LINE, context, mOffsetAlongLine ).toDouble();
   }
 
-  double painterUnitInterval = QgsSymbolLayerUtils::convertToPainterUnits( rc, interval, mIntervalUnit, mIntervalMapUnitScale );
-  lengthLeft = painterUnitInterval - QgsSymbolLayerUtils::convertToPainterUnits( rc, offsetAlongLine, mIntervalUnit, mIntervalMapUnitScale );
+  double painterUnitInterval = rc.convertToPainterUnits( interval, mIntervalUnit, mIntervalMapUnitScale );
+  lengthLeft = painterUnitInterval - rc.convertToPainterUnits( offsetAlongLine, mIntervalUnit, mIntervalMapUnitScale );
 
   int pointNum = 0;
   for ( int i = 1; i < points.count(); ++i )
@@ -1030,7 +1030,7 @@ void QgsMarkerLineSymbolLayer::renderPolylineVertex( const QPolygonF& points, Qg
   if ( !qgsDoubleNear( offsetAlongLine, 0.0 ) )
   {
     //scale offset along line
-    offsetAlongLine = QgsSymbolLayerUtils::convertToPainterUnits( rc, offsetAlongLine, mOffsetAlongLineUnit, mOffsetAlongLineMapUnitScale );
+    offsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, mOffsetAlongLineUnit, mOffsetAlongLineMapUnitScale );
   }
 
   if ( qgsDoubleNear( offsetAlongLine, 0.0 ) && context.renderContext().geometry()

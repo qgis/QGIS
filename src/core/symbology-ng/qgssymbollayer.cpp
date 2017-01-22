@@ -459,8 +459,8 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext& context, double
     offsetY = offset.y();
   }
 
-  offsetX = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), offsetX, mOffsetUnit, mOffsetMapUnitScale );
-  offsetY = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), offsetY, mOffsetUnit, mOffsetMapUnitScale );
+  offsetX = context.renderContext().convertToPainterUnits( offsetX, mOffsetUnit, mOffsetMapUnitScale );
+  offsetY = context.renderContext().convertToPainterUnits( offsetY, mOffsetUnit, mOffsetMapUnitScale );
 
   HorizontalAnchorPoint horizontalAnchorPoint = mHorizontalAnchorPoint;
   VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
@@ -479,8 +479,8 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext& context, double
     return;
   }
 
-  double anchorPointCorrectionX = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), width, widthUnit, widthMapUnitScale ) / 2.0;
-  double anchorPointCorrectionY = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), height, heightUnit, heightMapUnitScale ) / 2.0;
+  double anchorPointCorrectionX = context.renderContext().convertToPainterUnits( width, widthUnit, widthMapUnitScale ) / 2.0;
+  double anchorPointCorrectionY = context.renderContext().convertToPainterUnits( height, heightUnit, heightMapUnitScale ) / 2.0;
   if ( horizontalAnchorPoint == Left )
   {
     offsetX += anchorPointCorrectionX;

@@ -1054,15 +1054,6 @@ class QgsTextRenderer
      */
     static int sizeToPixel( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
 
-    /** Calculates size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
-     * @param size size to convert
-     * @param c rendercontext
-     * @param unit size units
-     * @param mapUnitScale a mapUnitScale clamper
-     * @return size that will render, as double
-     */
-    static double scaleToPixelContext( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
-
     /** Draws text within a rectangle using the specified settings.
      * @param rect destination rectangle for text
      * @param rotation text rotation

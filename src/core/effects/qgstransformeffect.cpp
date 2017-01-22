@@ -122,10 +122,8 @@ QTransform QgsTransformEffect::createTransform( const QgsRenderContext& context 
   //remember that the below operations are effectively performed in the opposite order
   //so, first the reflection applies, then scale, shear, rotate and lastly translation
 
-  double translateX = mTranslateX *
-                      QgsSymbolLayerUtils::pixelSizeScaleFactor( context, mTranslateUnit, mTranslateMapUnitScale );
-  double translateY = mTranslateY *
-                      QgsSymbolLayerUtils::pixelSizeScaleFactor( context, mTranslateUnit, mTranslateMapUnitScale );
+  double translateX = context.convertToPainterUnits( mTranslateX, mTranslateUnit, mTranslateMapUnitScale );
+  double translateY = context.convertToPainterUnits( mTranslateY, mTranslateUnit, mTranslateMapUnitScale );
 
   t.translate( translateX + left + width / 2.0,
                translateY + top + height / 2.0 );

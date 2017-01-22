@@ -79,7 +79,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
   }
 
   QgsImageOperation::DistanceTransformProperties dtProps;
-  dtProps.spread = mSpread * QgsSymbolLayerUtils::pixelSizeScaleFactor( context, mSpreadUnit, mSpreadMapUnitScale );
+  dtProps.spread = context.convertToPainterUnits( mSpread, mSpreadUnit, mSpreadMapUnitScale );
   dtProps.useMaxDistance = false;
   dtProps.shadeExterior = shadeExterior();
   dtProps.ramp = ramp;
@@ -213,7 +213,7 @@ QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect & rhs )
 QRectF QgsGlowEffect::boundingRect( const QRectF &rect, const QgsRenderContext& context ) const
 {
   //spread size
-  double spread = mSpread * QgsSymbolLayerUtils::pixelSizeScaleFactor( context, mSpreadUnit, mSpreadMapUnitScale );
+  double spread = context.convertToPainterUnits( mSpread, mSpreadUnit, mSpreadMapUnitScale );
   //plus possible extension due to blur, with a couple of extra pixels thrown in for safety
   spread += mBlurLevel * 2 + 10;
   return rect.adjusted( -spread, -spread, spread, spread );

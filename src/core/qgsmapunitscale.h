@@ -19,8 +19,10 @@
 #define QGSMAPUNITSCALE_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QtCore>
-#include "qgsrendercontext.h"
+
+class QgsRenderContext;
 
 /** \ingroup core
  * \class QgsMapUnitScale
@@ -67,20 +69,7 @@ class CORE_EXPORT QgsMapUnitScale
      * @param c render context
      * @returns map units per pixel, limited between minimum and maximum scales
      */
-    double computeMapUnitsPerPixel( const QgsRenderContext& c ) const
-    {
-      double mup = c.mapToPixel().mapUnitsPerPixel();
-      double renderScale = c.rendererScale(); // Note: this value is 1 / scale
-      if ( !qgsDoubleNear( minScale, 0 ) )
-      {
-        mup = qMin( mup / ( minScale * renderScale ), mup );
-      }
-      if ( !qgsDoubleNear( maxScale, 0 ) )
-      {
-        mup = qMax( mup / ( maxScale * renderScale ), mup );
-      }
-      return mup;
-    }
+    double computeMapUnitsPerPixel( const QgsRenderContext& c ) const;
 
     bool operator==( const QgsMapUnitScale& other ) const
     {

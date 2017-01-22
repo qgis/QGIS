@@ -184,11 +184,11 @@ QSet<QString> QgsArrowSymbolLayer::usedAttributes() const
 void QgsArrowSymbolLayer::startRender( QgsSymbolRenderContext& context )
 {
   mExpressionScope.reset( new QgsExpressionContextScope() );
-  mScaledArrowWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), arrowWidth(), arrowWidthUnit(), arrowWidthUnitScale() );
-  mScaledArrowStartWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), arrowStartWidth(), arrowStartWidthUnit(), arrowStartWidthUnitScale() );
-  mScaledHeadLength = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), headLength(), headLengthUnit(), headLengthUnitScale() );
-  mScaledHeadThickness = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), headThickness(), headThicknessUnit(), headThicknessUnitScale() );
-  mScaledOffset = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), offset(), offsetUnit(), offsetMapUnitScale() );
+  mScaledArrowWidth = context.renderContext().convertToPainterUnits( arrowWidth(), arrowWidthUnit(), arrowWidthUnitScale() );
+  mScaledArrowStartWidth = context.renderContext().convertToPainterUnits( arrowStartWidth(), arrowStartWidthUnit(), arrowStartWidthUnitScale() );
+  mScaledHeadLength = context.renderContext().convertToPainterUnits( headLength(), headLengthUnit(), headLengthUnitScale() );
+  mScaledHeadThickness = context.renderContext().convertToPainterUnits( headThickness(), headThicknessUnit(), headThicknessUnitScale() );
+  mScaledOffset = context.renderContext().convertToPainterUnits( offset(), offsetUnit(), offsetMapUnitScale() );
   mComputedHeadType = headType();
   mComputedArrowType = arrowType();
 
@@ -620,7 +620,7 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext& context )
     double w = evaluateDataDefinedProperty( QStringLiteral( "arrow_width" ), context, QVariant(), &ok ).toDouble();
     if ( ok )
     {
-      mScaledArrowWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), w, arrowWidthUnit(), arrowWidthUnitScale() );
+      mScaledArrowWidth = context.renderContext().convertToPainterUnits( w, arrowWidthUnit(), arrowWidthUnitScale() );
     }
   }
   if ( hasDataDefinedProperty( QStringLiteral( "arrow_start_width" ) ) )
@@ -629,7 +629,7 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext& context )
     double w = evaluateDataDefinedProperty( QStringLiteral( "arrow_start_width" ), context, QVariant(), &ok ).toDouble();
     if ( ok )
     {
-      mScaledArrowStartWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), w, arrowStartWidthUnit(), arrowStartWidthUnitScale() );
+      mScaledArrowStartWidth = context.renderContext().convertToPainterUnits( w, arrowStartWidthUnit(), arrowStartWidthUnitScale() );
     }
   }
   if ( hasDataDefinedProperty( QStringLiteral( "head_length" ) ) )
@@ -638,7 +638,7 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext& context )
     double w = evaluateDataDefinedProperty( QStringLiteral( "head_length" ), context, QVariant(), &ok ).toDouble();
     if ( ok )
     {
-      mScaledHeadLength = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), w, headLengthUnit(), headLengthUnitScale() );
+      mScaledHeadLength = context.renderContext().convertToPainterUnits( w, headLengthUnit(), headLengthUnitScale() );
     }
   }
   if ( hasDataDefinedProperty( QStringLiteral( "head_thickness" ) ) )
@@ -647,7 +647,7 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext& context )
     double w = evaluateDataDefinedProperty( QStringLiteral( "head_thickness" ), context, QVariant(), &ok ).toDouble();
     if ( ok )
     {
-      mScaledHeadThickness = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), w, headThicknessUnit(), headThicknessUnitScale() );
+      mScaledHeadThickness = context.renderContext().convertToPainterUnits( w, headThicknessUnit(), headThicknessUnitScale() );
     }
   }
   if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_OFFSET ) )
@@ -656,7 +656,7 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext& context )
     double w = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_OFFSET, context, QVariant(), &ok ).toDouble();
     if ( ok )
     {
-      mScaledOffset = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), w, offsetUnit(), offsetMapUnitScale() );
+      mScaledOffset = context.renderContext().convertToPainterUnits( w, offsetUnit(), offsetMapUnitScale() );
     }
   }
 

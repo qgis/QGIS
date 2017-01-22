@@ -164,6 +164,7 @@ SET(QGIS_CORE_SRCS
   qgsmapsettings.cpp
   qgsmaptopixel.cpp
   qgsmaptopixelgeometrysimplifier.cpp
+  qgsmapunitscale.cpp
   qgsmessagelog.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp

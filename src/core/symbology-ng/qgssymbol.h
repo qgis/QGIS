@@ -24,6 +24,7 @@
 #include "qgspointv2.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
+#include "qgsrendercontext.h"
 
 class QColor;
 class QImage;
@@ -49,6 +50,7 @@ class QgsSymbolRenderContext;
 class QgsFeatureRenderer;
 class QgsCurve;
 class QgsPolygonV2;
+class QgsExpressionContext;
 
 typedef QList<QgsSymbolLayer*> QgsSymbolLayerList;
 

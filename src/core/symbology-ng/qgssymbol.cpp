@@ -1011,12 +1011,12 @@ void QgsSymbolRenderContext::setOriginalValueVariable( const QVariant& value )
 
 double QgsSymbolRenderContext::outputLineWidth( double width ) const
 {
-  return QgsSymbolLayerUtils::convertToPainterUnits( mRenderContext, width, mOutputUnit, mMapUnitScale );
+  return mRenderContext.convertToPainterUnits( width, mOutputUnit, mMapUnitScale );
 }
 
 double QgsSymbolRenderContext::outputPixelSize( double size ) const
 {
-  return size * QgsSymbolLayerUtils::pixelSizeScaleFactor( mRenderContext, mOutputUnit, mMapUnitScale );
+  return mRenderContext.convertToPainterUnits( size, mOutputUnit, mMapUnitScale );
 }
 
 QgsSymbolRenderContext& QgsSymbolRenderContext::operator=( const QgsSymbolRenderContext& )
