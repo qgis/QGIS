@@ -53,43 +53,6 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         s2 = QgsSymbolLayerUtils.decodePoint('')
         self.assertEqual(s2, QPointF())
 
-    def testConvertToMapUnits(self):
-        # test QgsSymbolLayerUtils::convertToMapUnits() without QgsMapUnitScale
-
-        ms = QgsMapSettings()
-        ms.setExtent(QgsRectangle(0, 0, 100, 100))
-        ms.setOutputSize(QSize(100, 50))
-        ms.setOutputDpi(300)
-        r = QgsRenderContext.fromMapSettings(ms)
-
-        # renderer scale should be about 1:291937841
-        size = QgsSymbolLayerUtils.convertToMapUnits(r, 2, QgsUnitTypes.RenderMapUnits)
-        self.assertEqual(size, 2.0)
-        size = QgsSymbolLayerUtils.convertToMapUnits(r, 2, QgsUnitTypes.RenderMillimeters)
-        self.assertAlmostEqual(size, 47.244094, places=5)
-        size = QgsSymbolLayerUtils.convertToMapUnits(r, 5.66929, QgsUnitTypes.RenderPoints)
-        self.assertAlmostEqual(size, 47.2440833, places=5)
-        size = QgsSymbolLayerUtils.convertToMapUnits(r, 2, QgsUnitTypes.RenderPixels)
-        self.assertAlmostEqual(size, 4.0, places=5)
-
-    def testConvertFromMapUnits(self):
-        # test QgsSymbolLayerUtils::convertToMapUnits() without QgsMapUnitScale
-
-        ms = QgsMapSettings()
-        ms.setExtent(QgsRectangle(0, 0, 100, 100))
-        ms.setOutputSize(QSize(100, 50))
-        ms.setOutputDpi(300)
-        r = QgsRenderContext.fromMapSettings(ms)
-
-        # renderer scale should be about 1:291937841
-        size = QgsSymbolLayerUtils.convertFromMapUnits(r, 2, QgsUnitTypes.RenderMapUnits)
-        self.assertEqual(size, 2.0)
-        size = QgsSymbolLayerUtils.convertFromMapUnits(r, 50, QgsUnitTypes.RenderMillimeters)
-        self.assertAlmostEqual(size, 2.1166666666, places=5)
-        size = QgsSymbolLayerUtils.convertFromMapUnits(r, 50, QgsUnitTypes.RenderPoints)
-        self.assertAlmostEqual(size, 6.0000000015, places=5)
-        size = QgsSymbolLayerUtils.convertFromMapUnits(r, 4, QgsUnitTypes.RenderPixels)
-        self.assertAlmostEqual(size, 2.0, places=5)
 
 if __name__ == '__main__':
     unittest.main()
