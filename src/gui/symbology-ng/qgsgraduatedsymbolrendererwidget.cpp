@@ -446,7 +446,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   mExpressionWidget->setLayer( mLayer );
 
   mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                             << QgsUnitTypes::RenderPoints );
+                             << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   spinPrecision->setMinimum( QgsRendererRangeLabelFormat::MIN_PRECISION );
   spinPrecision->setMaximum( QgsRendererRangeLabelFormat::MAX_PRECISION );

@@ -96,6 +96,7 @@ class CORE_EXPORT QgsUnitTypes
       RenderPixels, //!< Pixels
       RenderPercentage, //!< Percentage of another measurement (e.g., canvas size, feature size)
       RenderPoints, //! points (e.g., for font sizes)
+      RenderInches, //! Inches
       RenderUnknownUnit, //!< Mixed or unknown units
     };
 

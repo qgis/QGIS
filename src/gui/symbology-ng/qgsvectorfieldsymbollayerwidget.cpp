@@ -21,7 +21,7 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVecto
   setupUi( this );
 
   mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                 << QgsUnitTypes::RenderPoints );
+                                 << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   if ( vectorLayer() )
   {

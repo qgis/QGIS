@@ -75,28 +75,28 @@ void QgsTextFormatWidget::initWidget()
     unitWidget->setMapCanvas( mMapCanvas );
   }
   mFontSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderMapUnits
-                                 << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels );
+                                 << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderInches );
   mBufferUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                               << QgsUnitTypes::RenderPoints );
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mShapeSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                  << QgsUnitTypes::RenderPoints );
+                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mShapeOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                    << QgsUnitTypes::RenderPoints );
+                                    << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mShapeRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits
                                     << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderPercentage
-                                    << QgsUnitTypes::RenderPoints );
+                                    << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mShapeBorderWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                         << QgsUnitTypes::RenderPoints );
+                                         << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mShadowOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                     << QgsUnitTypes::RenderPoints );
+                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mShadowRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                     << QgsUnitTypes::RenderPoints );
+                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mPointOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                    << QgsUnitTypes::RenderPoints );
+                                    << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mLineDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                     << QgsUnitTypes::RenderPoints );
+                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mRepeatDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                       << QgsUnitTypes::RenderPoints );
+                                       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   mFontLineHeightSpinBox->setClearValue( 1.0 );
   mShapeRotationDblSpnBx->setClearValue( 0.0 );

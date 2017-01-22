@@ -24,6 +24,7 @@
 #include "qgsfeaturefilterprovider.h"
 
 #define POINTS_TO_MM 2.83464567
+#define INCH_TO_MM 25.4
 
 QgsRenderContext::QgsRenderContext()
     : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
@@ -224,6 +225,10 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       conversionFactor = mScaleFactor / POINTS_TO_MM;
       break;
 
+    case QgsUnitTypes::RenderInches:
+      conversionFactor = mScaleFactor * INCH_TO_MM;
+      break;
+
     case QgsUnitTypes::RenderMapUnits:
     {
       double mup = scale.computeMapUnitsPerPixel( *this );
@@ -303,6 +308,10 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
     {
       return size * mScaleFactor * mup / POINTS_TO_MM;
     }
+    case QgsUnitTypes::RenderInches:
+    {
+      return size * mScaleFactor * mup * INCH_TO_MM;
+    }
     case QgsUnitTypes::RenderPixels:
     {
       return size * mup;
@@ -333,6 +342,10 @@ double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitType
     case QgsUnitTypes::RenderPoints:
     {
       return sizeInMapUnits / ( mScaleFactor * mup / POINTS_TO_MM );
+    }
+    case QgsUnitTypes::RenderInches:
+    {
+      return sizeInMapUnits / ( mScaleFactor * mup * INCH_TO_MM );
     }
     case QgsUnitTypes::RenderPixels:
     {
