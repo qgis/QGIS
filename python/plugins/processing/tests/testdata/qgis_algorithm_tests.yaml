@@ -583,3 +583,22 @@ tests:
       OUTPUT_LAYER:
         name: expected/point_on_line.gml
         type: vector
+
+  - algorithm: qgis:union
+    name: Test Union (basic)
+    params:
+      INPUT:
+        name: custom/union1_a.geojson
+        type: vector
+      INPUT2:
+        name: custom/union1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/union1.gml
+        type: vector
+        # TODO: may need improvements to comparison
+        # - unordered comparison
+        #   (features could be written in different order and still being correct output)
+        # - geometry equality comparison instead of WKT string comparison
+        #   (geometries could different order of coordinate but still being correct output)
