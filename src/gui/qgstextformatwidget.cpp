@@ -983,13 +983,21 @@ void QgsTextFormatWidget::populateFontCapitalsComboBox()
 void QgsTextFormatWidget::populateFontStyleComboBox()
 {
   mFontStyleComboBox->clear();
-  Q_FOREACH ( const QString &style, mFontDB.styles( mRefFont.family() ) )
+  QStringList styles = mFontDB.styles( mRefFont.family() );
+  Q_FOREACH ( const QString &style, styles )
   {
     mFontStyleComboBox->addItem( style );
   }
 
+  QString targetStyle = mFontDB.styleString( mRefFont );
+  if ( !styles.contains( targetStyle ) )
+  {
+    QFont f = QFont( mRefFont.family() );
+    targetStyle = QFontInfo( f ).styleName();
+    mRefFont.setStyleName( targetStyle );
+  }
   int curIndx = 0;
-  int stylIndx = mFontStyleComboBox->findText( mFontDB.styleString( mRefFont ) );
+  int stylIndx = mFontStyleComboBox->findText( targetStyle );
   if ( stylIndx > -1 )
   {
     curIndx = stylIndx;
