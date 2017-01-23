@@ -217,12 +217,9 @@ class GeoAlgorithm:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
             try:
                 message = unicode(e)
-            except Exception:
-                # Encoding the error message failed. Try with the 'replace' mode.
-                try:
-                    message = unicode(e.message, 'utf-8', 'replace')
-                except Exception:
-                    message = self.tr('Unknown error')
+            except UnicodeDecodeError:
+                # Try with the 'replace' mode (requires e.message instead of e!)
+                message = unicode(e.message, 'utf-8', 'replace')
             raise GeoAlgorithmExecutionException(
                 message + self.tr(' \nSee log for more details'), lines, e)
 
