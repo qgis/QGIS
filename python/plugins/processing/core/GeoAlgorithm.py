@@ -219,7 +219,7 @@ class GeoAlgorithm:
                 # Try with the 'replace' mode (requires e.message instead of e!)
                 message = unicode(e.message, 'utf-8', 'replace')
             raise GeoAlgorithmExecutionException(
-                message + self.tr(' \nSee log for more details'), lines, e)
+                message + self.tr(' \nSee log for more details'))
 
     def _checkParameterValuesBeforeExecuting(self):
         for param in self.parameters:
