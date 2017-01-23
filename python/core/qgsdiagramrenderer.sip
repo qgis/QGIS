@@ -34,6 +34,25 @@ class QgsDiagramLayerSettings
     };
     typedef QFlags<QgsDiagramLayerSettings::LinePlacementFlag> LinePlacementFlags;
 
+    /** Data definable properties.
+     * @note added in QGIS 2.16
+     */
+    enum Property
+    {
+      BackgroundColor, /*!< Diagram background color */
+      OutlineColor, /*!< Outline color */
+      OutlineWidth, /*!< Outline width */
+      PositionX, /*! x-coordinate data defined diagram position */
+      PositionY, /*! y-coordinate data defined diagram position */
+      Distance, /*! Distance to diagram from feature */
+      Priority, /*! Diagram priority (between 0 and 10) */
+      ZIndex, /*! Z-index for diagram ordering */
+      IsObstacle, /*! Whether diagram features act as obstacles for other diagrams/labels */
+      Show, /*! Whether to show the diagram */
+      AlwaysShow, /*! Whether the diagram should always be shown, even if it overlaps other diagrams/labels */
+      StartAngle, /*! Angle offset for pie diagram */
+    };
+
     QgsDiagramLayerSettings();
 
     //! Copy constructor
@@ -161,12 +180,6 @@ class QgsDiagramLayerSettings
      */
     void setCoordinateTransform( const QgsCoordinateTransform& transform );
 
-    //! Attribute index for x coordinate (or -1 if position not data defined)
-    int xPosColumn;
-
-    //! Attribute index for y coordinate (or -1 if position not data defined)
-    int yPosColumn;
-
     /** Returns whether the layer should show all diagrams, including overlapping diagrams
      * @see setShowAllDiagrams()
      * @note added in QGIS 2.16
@@ -182,14 +195,21 @@ class QgsDiagramLayerSettings
 
     void readXml( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+    bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
     /** Returns the set of any fields referenced by the layer's diagrams.
      * @param context expression context the diagrams will be drawn using
-     * @param fields layer fields
      * @note added in QGIS 2.16
      */
-    //TODO QGIS 3.0 - remove need for fields parameter
-    QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const;
+    QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
+
+    QgsPropertyCollection& dataDefinedProperties();
+
+    //const dataDefinedProperties& properties() const;
+
+    void setDataDefinedProperties( const QgsPropertyCollection& collection );
+
+    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
 
 };
 
@@ -332,7 +352,7 @@ class QgsDiagramRenderer
      */
     virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
-    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos );
+    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos, const QgsPropertyCollection& properties = QgsPropertyCollection() );
 
     void setDiagram( QgsDiagram* d /Transfer/ );
     QgsDiagram* diagram() const;

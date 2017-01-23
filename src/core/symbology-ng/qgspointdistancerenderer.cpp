@@ -204,7 +204,7 @@ QString QgsPointDistanceRenderer::filter( const QgsFields& fields )
     return mRenderer->filter( fields );
 }
 
-QSet<QString> QgsPointDistanceRenderer::usedAttributes() const
+QSet<QString> QgsPointDistanceRenderer::usedAttributes( const QgsRenderContext& context ) const
 {
   QSet<QString> attributeList;
   if ( !mLabelAttributeName.isEmpty() )
@@ -213,7 +213,7 @@ QSet<QString> QgsPointDistanceRenderer::usedAttributes() const
   }
   if ( mRenderer )
   {
-    attributeList += mRenderer->usedAttributes();
+    attributeList += mRenderer->usedAttributes( context );
   }
   return attributeList;
 }

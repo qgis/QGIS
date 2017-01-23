@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsmaptoollabel.h"
-#include "qgsdatadefined.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -409,23 +408,19 @@ bool QgsMapToolLabel::hasDataDefinedColumn( QgsPalLayerSettings::DataDefinedProp
 }
 #endif
 
-QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::DataDefinedProperties p, const QgsPalLayerSettings& labelSettings ) const
+QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings& labelSettings ) const
 {
-  //QgsDebugMsg( QString( "dataDefinedProperties count:%1" ).arg( labelSettings.dataDefinedProperties.size() ) );
+  if ( !labelSettings.dataDefinedProperties().isActive( p ) )
+    return QString();
 
-  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator dIt = labelSettings.dataDefinedProperties.constFind( p );
-  if ( dIt != labelSettings.dataDefinedProperties.constEnd() )
-  {
-    QgsDataDefined* dd = dIt.value();
+  QgsProperty prop = labelSettings.dataDefinedProperties().property( p );
+  if ( prop.propertyType() != QgsProperty::FieldBasedProperty )
+    return QString();
 
-    // can only modify attributes that are data defined with a mapped field
-    if ( dd->isActive() && !dd->useExpression() && !dd->field().isEmpty() )
-      return dd->field();
-  }
-  return QString();
+  return prop.field();
 }
 
-int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::DataDefinedProperties p, const QgsPalLayerSettings& labelSettings, const QgsVectorLayer* vlayer ) const
+int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::Property p, const QgsPalLayerSettings& labelSettings, const QgsVectorLayer* vlayer ) const
 {
   QString fieldname = dataDefinedColumnName( p, labelSettings );
   if ( !fieldname.isEmpty() )
@@ -570,11 +565,25 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer* vlayer, int& xCol, int& y
   if ( vlayer && vlayer->diagramsEnabled() )
   {
     const QgsDiagramLayerSettings *dls = vlayer->diagramLayerSettings();
-    if ( dls && dls->xPosColumn >= 0 && dls->yPosColumn >= 0 )
+    if ( dls )
     {
-      xCol = dls->xPosColumn;
-      yCol = dls->yPosColumn;
-      return true;
+      xCol = -1;
+      if ( QgsProperty ddX = dls->dataDefinedProperties().property( QgsDiagramLayerSettings::PositionX ) )
+      {
+        if ( ddX.propertyType() == QgsProperty::FieldBasedProperty && ddX.isActive() )
+        {
+          xCol = vlayer->fields().lookupField( ddX.field() );
+        }
+      }
+      yCol = -1;
+      if ( QgsProperty ddY = dls->dataDefinedProperties().property( QgsDiagramLayerSettings::PositionY ) )
+      {
+        if ( ddY.propertyType() == QgsProperty::FieldBasedProperty && ddY.isActive() )
+        {
+          yCol = vlayer->fields().lookupField( ddY.field() );
+        }
+      }
+      return xCol >= 0 && yCol >= 0;
     }
   }
   return false;
@@ -657,20 +666,23 @@ bool QgsMapToolLabel::isPinned()
 
 bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer* vlayer, int& showCol ) const
 {
-  bool rc = false;
+  showCol = -1;
 
   if ( vlayer && vlayer->isEditable() && vlayer->diagramsEnabled() )
   {
-    const QgsDiagramLayerSettings *dls = vlayer->diagramLayerSettings();
-
-    if ( dls && dls->showColumn >= 0 )
+    if ( const QgsDiagramLayerSettings *dls = vlayer->diagramLayerSettings() )
     {
-      showCol = dls->showColumn;
-      rc = true;
+      if ( QgsProperty ddShow = dls->dataDefinedProperties().property( QgsDiagramLayerSettings::Show ) )
+      {
+        if ( ddShow.propertyType() == QgsProperty::FieldBasedProperty && ddShow.isActive() )
+        {
+          showCol = vlayer->fields().lookupField( ddShow.field() );
+        }
+      }
     }
   }
 
-  return rc;
+  return showCol >= 0;
 }
 
 //

@@ -534,7 +534,7 @@ void QgsRuleBasedRendererWidget::countFeatures()
   // QgsRuleBasedRenderer::filter must be called after startRender
   QgsFeatureRequest req = QgsFeatureRequest().setFilterExpression( mRenderer->filter( mLayer->fields() ) );
   req.setExpressionContext( context );
-  req.setSubsetOfAttributes( mRenderer->usedAttributes(), mLayer->fields() );
+  req.setSubsetOfAttributes( mRenderer->usedAttributes( renderContext ), mLayer->fields() );
   QgsFeatureIterator fit = mLayer->getFeatures( req );
 
   int nFeatures = mLayer->featureCount();

@@ -25,19 +25,24 @@
 #include <QDomElement>
 #include <QPainter>
 
-QgsDiagramLayerSettings::QgsDiagramLayerSettings()
-    : xPosColumn( -1 )
-    , yPosColumn( -1 )
-    , showColumn( -1 )
-    , mRenderer( nullptr )
+const QgsPropertiesDefinition QgsDiagramLayerSettings::PROPERTY_DEFINITIONS
 {
-}
+  { QgsDiagramLayerSettings::BackgroundColor, QgsPropertyDefinition( "backgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+  { QgsDiagramLayerSettings::OutlineColor, QgsPropertyDefinition( "outlineColor", QObject::tr( "Outline color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+  { QgsDiagramLayerSettings::OutlineWidth, QgsPropertyDefinition( "outlineWidth", QObject::tr( "Outline width" ), QgsPropertyDefinition::DoublePositive ) },
+  { QgsDiagramLayerSettings::PositionX, QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
+  { QgsDiagramLayerSettings::PositionY, QgsPropertyDefinition( "positionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
+  { QgsDiagramLayerSettings::Distance, QgsPropertyDefinition( "distance", QObject::tr( "Placement distance" ), QgsPropertyDefinition::DoublePositive ) },
+  { QgsDiagramLayerSettings::Priority, QgsPropertyDefinition( "priority", QObject::tr( "Placement priority" ), QgsPropertyDefinition::DoublePositive ) },
+  { QgsDiagramLayerSettings::ZIndex, QgsPropertyDefinition( "zIndex", QObject::tr( "Placement z-index" ), QgsPropertyDefinition::Double ) },
+  { QgsDiagramLayerSettings::IsObstacle, QgsPropertyDefinition( "isObstacle", QObject::tr( "Diagram is an obstacle" ), QgsPropertyDefinition::Boolean ) },
+  { QgsDiagramLayerSettings::Show, QgsPropertyDefinition( "show", QObject::tr( "Show diagram" ), QgsPropertyDefinition::Boolean ) },
+  { QgsDiagramLayerSettings::AlwaysShow, QgsPropertyDefinition( "alwaysShow", QObject::tr( "Always show diagram" ), QgsPropertyDefinition::Boolean ) },
+  { QgsDiagramLayerSettings::StartAngle, QgsPropertyDefinition( "startAngle", QObject::tr( "Pie chart start angle" ), QgsPropertyDefinition::Double ) },
+};
 
 QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh )
-    : xPosColumn( rh.xPosColumn )
-    , yPosColumn( rh.yPosColumn )
-    , showColumn( rh.showColumn )
-    , mCt( rh.mCt )
+    : mCt( rh.mCt )
     , mPlacement( rh.mPlacement )
     , mPlacementFlags( rh.mPlacementFlags )
     , mPriority( rh.mPriority )
@@ -46,10 +51,10 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings&
     , mDistance( rh.mDistance )
     , mRenderer( rh.mRenderer ? rh.mRenderer->clone() : nullptr )
     , mShowAll( rh.mShowAll )
-{
-}
+    , mDataDefinedProperties( rh.mDataDefinedProperties )
+{}
 
-QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings & rh )
+QgsDiagramLayerSettings& QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings & rh )
 {
   mPlacement = rh.mPlacement;
   mPlacementFlags = rh.mPlacementFlags;
@@ -59,10 +64,8 @@ QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLaye
   mDistance = rh.mDistance;
   mRenderer = rh.mRenderer ? rh.mRenderer->clone() : nullptr;
   mCt = rh.mCt;
-  xPosColumn = rh.xPosColumn;
-  yPosColumn = rh.yPosColumn;
-  showColumn = rh.showColumn;
   mShowAll = rh.mShowAll;
+  mDataDefinedProperties = rh.mDataDefinedProperties;
   return *this;
 }
 
@@ -89,15 +92,43 @@ void QgsDiagramLayerSettings::readXml( const QDomElement& elem, const QgsVectorL
 {
   Q_UNUSED( layer )
 
+  QDomNodeList propertyElems = elem.elementsByTagName( "properties" );
+  if ( !propertyElems.isEmpty() )
+  {
+    ( void )mDataDefinedProperties.readXml( propertyElems.at( 0 ).toElement(), elem.ownerDocument(), PROPERTY_DEFINITIONS );
+  }
+  else
+  {
+    mDataDefinedProperties.clear();
+  }
+
   mPlacement = static_cast< Placement >( elem.attribute( QStringLiteral( "placement" ) ).toInt() );
   mPlacementFlags = static_cast< LinePlacementFlag >( elem.attribute( QStringLiteral( "linePlacementFlags" ) ).toInt() );
   mPriority = elem.attribute( QStringLiteral( "priority" ) ).toInt();
   mZIndex = elem.attribute( QStringLiteral( "zIndex" ) ).toDouble();
   mObstacle = elem.attribute( QStringLiteral( "obstacle" ) ).toInt();
   mDistance = elem.attribute( QStringLiteral( "dist" ) ).toDouble();
-  xPosColumn = elem.attribute( QStringLiteral( "xPosColumn" ) ).toInt();
-  yPosColumn = elem.attribute( QStringLiteral( "yPosColumn" ) ).toInt();
-  showColumn = elem.attribute( QStringLiteral( "showColumn" ) ).toInt();
+  if ( elem.hasAttribute( QStringLiteral( "xPosColumn" ) ) )
+  {
+    // upgrade old project
+    int xPosColumn = elem.attribute( QStringLiteral( "xPosColumn" ) ).toInt();
+    if ( xPosColumn >= 0 && xPosColumn < layer->fields().count() )
+      mDataDefinedProperties.setProperty( PositionX, QgsProperty::fromField( layer->fields().at( xPosColumn ).name(), true ) );
+  }
+  if ( elem.hasAttribute( QStringLiteral( "yPosColumn" ) ) )
+  {
+    // upgrade old project
+    int yPosColumn = elem.attribute( QStringLiteral( "yPosColumn" ) ).toInt();
+    if ( yPosColumn >= 0 && yPosColumn < layer->fields().count() )
+      mDataDefinedProperties.setProperty( PositionY, QgsProperty::fromField( layer->fields().at( yPosColumn ).name(), true ) );
+  }
+  if ( elem.hasAttribute( QStringLiteral( "showColumn" ) ) )
+  {
+    // upgrade old project
+    int showColumn = elem.attribute( QStringLiteral( "showColumn" ) ).toInt();
+    if ( showColumn >= 0 && showColumn < layer->fields().count() )
+      mDataDefinedProperties.setProperty( Show, QgsProperty::fromField( layer->fields().at( showColumn ).name(), true ) );
+  }
   mShowAll = ( elem.attribute( QStringLiteral( "showAll" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
 }
 
@@ -106,34 +137,32 @@ void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& do
   Q_UNUSED( layer )
 
   QDomElement diagramLayerElem = doc.createElement( QStringLiteral( "DiagramLayerSettings" ) );
+  QDomElement propertiesElem = doc.createElement( "properties" );
+  ( void )mDataDefinedProperties.writeXml( propertiesElem, doc, PROPERTY_DEFINITIONS );
+  diagramLayerElem.appendChild( propertiesElem );
   diagramLayerElem.setAttribute( QStringLiteral( "placement" ), mPlacement );
   diagramLayerElem.setAttribute( QStringLiteral( "linePlacementFlags" ), mPlacementFlags );
   diagramLayerElem.setAttribute( QStringLiteral( "priority" ), mPriority );
   diagramLayerElem.setAttribute( QStringLiteral( "zIndex" ), mZIndex );
   diagramLayerElem.setAttribute( QStringLiteral( "obstacle" ), mObstacle );
   diagramLayerElem.setAttribute( QStringLiteral( "dist" ), QString::number( mDistance ) );
-  diagramLayerElem.setAttribute( QStringLiteral( "xPosColumn" ), xPosColumn );
-  diagramLayerElem.setAttribute( QStringLiteral( "yPosColumn" ), yPosColumn );
-  diagramLayerElem.setAttribute( QStringLiteral( "showColumn" ), showColumn );
   diagramLayerElem.setAttribute( QStringLiteral( "showAll" ), mShowAll );
   layerElem.appendChild( diagramLayerElem );
 }
 
-QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionContext &context, const QgsFields& fieldsParameter ) const
+bool QgsDiagramLayerSettings::prepare( const QgsExpressionContext& context ) const
+{
+  return mDataDefinedProperties.prepare( context );
+}
+
+QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionContext &context ) const
 {
   QSet< QString > referenced;
   if ( mRenderer )
     referenced = mRenderer->referencedFields( context );
 
-  //and the ones needed for data defined diagram positions
-  if ( xPosColumn >= 0 && xPosColumn < fieldsParameter.count() )
-    referenced << fieldsParameter.at( xPosColumn ).name();
-  if ( yPosColumn >= 0 && yPosColumn < fieldsParameter.count() )
-    referenced << fieldsParameter.at( yPosColumn ).name();
-
-  // and the ones needed for data defined diagram visibility
-  if ( showColumn >= 0 && showColumn < fieldsParameter.count() )
-    referenced << fieldsParameter.at( showColumn ).name();
+  //add the ones needed for data defined settings
+  referenced.unite( mDataDefinedProperties.referencedFields( context ) );
 
   return referenced;
 }
@@ -397,7 +426,7 @@ QgsDiagramRenderer &QgsDiagramRenderer::operator=( const QgsDiagramRenderer & ot
   return *this;
 }
 
-void QgsDiagramRenderer::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos ) const
+void QgsDiagramRenderer::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, QPointF pos, const QgsPropertyCollection &properties ) const
 {
   if ( !mDiagram )
   {
@@ -408,6 +437,18 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature& feature, QgsRenderCont
   if ( !diagramSettings( feature, c, s ) )
   {
     return;
+  }
+
+  if ( properties.hasActiveProperties() )
+  {
+    c.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( s.backgroundColor ) );
+    s.backgroundColor = properties.valueAsColor( QgsDiagramLayerSettings::BackgroundColor, c.expressionContext(), s.backgroundColor );
+    c.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( s.penColor ) );
+    s.penColor = properties.valueAsColor( QgsDiagramLayerSettings::OutlineColor, c.expressionContext(), s.penColor );
+    c.expressionContext().setOriginalValueVariable( s.penWidth );
+    s.penWidth = properties.valueAsDouble( QgsDiagramLayerSettings::OutlineWidth, c.expressionContext(), s.penWidth );
+    c.expressionContext().setOriginalValueVariable( s.angleOffset / 16.0 );
+    s.angleOffset = 16.0 * properties.valueAsDouble( QgsDiagramLayerSettings::StartAngle, c.expressionContext(), s.angleOffset / 16.0 );
   }
 
   mDiagram->renderDiagram( feature, c, s, pos );

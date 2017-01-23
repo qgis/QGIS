@@ -29,7 +29,6 @@ class QDomDocument;
 class QDomElement;
 class QGraphicsLineItem;
 class QgsComposerItemGroup;
-class QgsDataDefined;
 class QgsComposition;
 class QgsExpressionContext;
 class QgsComposerEffect;
@@ -261,7 +260,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see frameJoinStyle
      * @see setFrameOutlineColor
      */
-    QColor frameOutlineColor() const { return pen().color(); }
+    QColor frameOutlineColor() const { return mFrameColor; }
 
     /** Sets frame outline width
      * @param outlineWidth new width for outline frame
@@ -281,7 +280,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see frameJoinStyle
      * @see frameOutlineColor
      */
-    double frameOutlineWidth() const { return pen().widthF(); }
+    double frameOutlineWidth() const { return mFrameWidth; }
 
     /** Returns the join style used for drawing the item's frame
      * @returns Join style for outline frame
@@ -565,12 +564,17 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     //! True if item fram needs to be painted
     bool mFrame;
+    //! Item frame color
+    QColor mFrameColor;
+    //! Item frame width
+    double mFrameWidth = 0.3;
+    //! Frame join style
+    Qt::PenJoinStyle mFrameJoinStyle = Qt::MiterJoin;
+
     //! True if item background needs to be painted
     bool mBackground;
     //! Background color
     QColor mBackgroundColor;
-    //! Frame join style
-    Qt::PenJoinStyle mFrameJoinStyle;
 
     /** True if item position  and size cannot be changed with mouse move
      */
@@ -706,6 +710,20 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
       * @note this method was added in version 2.5
      */
     void refreshTransparency( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
+
+    /** Refresh item's frame color, considering data defined transparency
+      * @param updateItem set to false to prevent the item being automatically updated
+      * after the frame color is set
+      * @param context expression context for evaulating data defined transparency
+     */
+    void refreshFrameColor( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
+
+    /** Refresh item's transparency, considering data defined transparency
+      * @param updateItem set to false to prevent the item being automatically updated
+      * after the background color is set
+      * @param context expression context for evaulating data defined transparency
+     */
+    void refreshBackgroundColor( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
 
     /** Refresh item's blend mode, considering data defined blend mode
      * @note this method was added in version 2.5

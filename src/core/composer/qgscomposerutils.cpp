@@ -17,7 +17,7 @@
 
 #include "qgscomposerutils.h"
 #include "qgscomposition.h"
-#include "qgsdatadefined.h"
+#include "qgsproperty.h"
 #include "qgsmapsettings.h"
 #include "qgscomposermap.h"
 #include <QPainter>
@@ -320,112 +320,52 @@ bool QgsComposerUtils::decodePresetPaperSize( const QString& presetString, doubl
   return false;
 }
 
-void QgsComposerUtils::readDataDefinedPropertyMap( const QDomElement &itemElem, QMap<QgsComposerObject::DataDefinedProperty, QString> *dataDefinedNames, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties )
+void QgsComposerUtils::readOldDataDefinedPropertyMap( const QDomElement &itemElem, QgsPropertyCollection& dataDefinedProperties )
 {
-  QMap<QgsComposerObject::DataDefinedProperty, QString>::const_iterator i = dataDefinedNames->constBegin();
-  for ( ; i != dataDefinedNames->constEnd(); ++i )
+  QgsPropertiesDefinition::const_iterator i = QgsComposerObject::PROPERTY_DEFINITIONS.constBegin();
+  for ( ; i != QgsComposerObject::PROPERTY_DEFINITIONS.constEnd(); ++i )
   {
-    QString elemName = i.value();
+    QString elemName = i.value().name();
     QDomNodeList ddNodeList = itemElem.elementsByTagName( elemName );
     if ( !ddNodeList.isEmpty() )
     {
       QDomElement ddElem = ddNodeList.at( 0 ).toElement();
-      readDataDefinedProperty( i.key(), ddElem, dataDefinedProperties );
+      QgsProperty prop = readOldDataDefinedProperty( static_cast< QgsComposerObject::DataDefinedProperty >( i.key() ), ddElem );
+      if ( prop )
+        dataDefinedProperties.setProperty( i.key(), prop );
     }
   }
 }
 
-void QgsComposerUtils::readDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties )
+QgsProperty QgsComposerUtils::readOldDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem )
 {
   if ( property == QgsComposerObject::AllProperties || property == QgsComposerObject::NoProperty )
   {
     //invalid property
-    return;
-  }
-
-  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = dataDefinedProperties->constFind( property );
-
-  QgsDataDefined* dd = nullptr;
-  if ( it != dataDefinedProperties->constEnd() )
-  {
-    dd = it.value();
-  }
-  else
-  {
-    //QgsDataDefined for property doesn't currently exist, need to add new
-    dd = new QgsDataDefined();
-    dataDefinedProperties->insert( property, dd );
+    return QgsProperty();
   }
 
   //set values for QgsDataDefined
   QString active = ddElem.attribute( QStringLiteral( "active" ) );
+  bool isActive = false;
   if ( active.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
   {
-    dd->setActive( true );
+    isActive = true;
   }
-  else
-  {
-    dd->setActive( false );
-  }
-  dd->setField( ddElem.attribute( QStringLiteral( "field" ) ) );
-  dd->setExpressionString( ddElem.attribute( QStringLiteral( "expr" ) ) );
+  QString field = ddElem.attribute( QStringLiteral( "field" ) );
+  QString expr = ddElem.attribute( QStringLiteral( "expr" ) );
+
   QString useExpr = ddElem.attribute( QStringLiteral( "useExpr" ) );
+  bool isExpression = false;
   if ( useExpr.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
   {
-    dd->setUseExpression( true );
+    isExpression = true;
   }
+
+  if ( isExpression )
+    return QgsProperty::fromExpression( expr, isActive );
   else
-  {
-    dd->setUseExpression( false );
-  }
-}
-
-void QgsComposerUtils::writeDataDefinedPropertyMap( QDomElement &itemElem, QDomDocument &doc, const QMap<QgsComposerObject::DataDefinedProperty, QString> *dataDefinedNames, const QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties )
-{
-  QMap<QgsComposerObject::DataDefinedProperty, QString >::const_iterator i = dataDefinedNames->constBegin();
-  for ( ; i != dataDefinedNames->constEnd(); ++i )
-  {
-    QString newElemName = i.value();
-
-    QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = dataDefinedProperties->find( i.key() );
-    if ( it != dataDefinedProperties->constEnd() )
-    {
-      QgsDataDefined* dd = it.value();
-      if ( dd )
-      {
-        bool active = dd->isActive();
-        bool useExpr = dd->useExpression();
-        QString expr = dd->expressionString();
-        QString field = dd->field();
-
-        bool defaultVals = ( !active && !useExpr && expr.isEmpty() && field.isEmpty() );
-
-        if ( !defaultVals )
-        {
-          QDomElement ddElem = doc.createElement( newElemName );
-          if ( active )
-          {
-            ddElem.setAttribute( QStringLiteral( "active" ), QStringLiteral( "true" ) );
-          }
-          else
-          {
-            ddElem.setAttribute( QStringLiteral( "active" ), QStringLiteral( "false" ) );
-          }
-          if ( useExpr )
-          {
-            ddElem.setAttribute( QStringLiteral( "useExpr" ), QStringLiteral( "true" ) );
-          }
-          else
-          {
-            ddElem.setAttribute( QStringLiteral( "useExpr" ), QStringLiteral( "false" ) );
-          }
-          ddElem.setAttribute( QStringLiteral( "expr" ), expr );
-          ddElem.setAttribute( QStringLiteral( "field" ), field );
-          itemElem.appendChild( ddElem );
-        }
-      }
-    }
-  }
+    return QgsProperty::fromField( field, isActive );
 }
 
 QFont QgsComposerUtils::scaledFontPixelSize( const QFont &font )

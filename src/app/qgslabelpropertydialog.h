@@ -74,7 +74,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     //! Block / unblock all input element signals
     void blockElementSignals( bool block );
 
-    void setDataDefinedValues( const QgsPalLayerSettings &layerSettings, QgsVectorLayer* vlayer );
+    void setDataDefinedValues( QgsVectorLayer* vlayer );
     void enableDataDefinedWidgets( QgsVectorLayer* vlayer );
 
     //! Updates font when family or style is updated
@@ -87,10 +87,10 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     void fillValiComboBox();
 
     //! Insert changed value into mChangedProperties
-    void insertChangedValue( QgsPalLayerSettings::DataDefinedProperties p, const QVariant& value );
+    void insertChangedValue( QgsPalLayerSettings::Property p, const QVariant& value );
 
     QgsAttributeMap mChangedProperties;
-    QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > mDataDefinedProperties;
+    QgsPropertyCollection mDataDefinedProperties;
     QFont mLabelFont;
 
     QFontDatabase mFontDB;

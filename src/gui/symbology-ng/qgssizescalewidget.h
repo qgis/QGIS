@@ -28,7 +28,7 @@ class QgsVectorLayer;
 class QgsSymbol;
 class QgsLayerTreeLayer;
 class QgsScaleExpression;
-class QgsDataDefined;
+class QgsAbstractProperty;
 class QgsMapCanvas;
 
 /** \ingroup gui
@@ -41,7 +41,7 @@ class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui
   public:
     QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsSymbol * symbol );
 
-    QgsDataDefined dataDefined() const override;
+    QgsProperty property() const override;
 
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12

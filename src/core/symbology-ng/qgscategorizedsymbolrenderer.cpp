@@ -24,11 +24,11 @@
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
 #include "qgsscaleexpression.h"
-#include "qgsdatadefined.h"
 #include "qgssymbollayer.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgsproperty.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -425,7 +425,7 @@ void QgsCategorizedSymbolRenderer::stopRender( QgsRenderContext& context )
   mExpression.reset();
 }
 
-QSet<QString> QgsCategorizedSymbolRenderer::usedAttributes() const
+QSet<QString> QgsCategorizedSymbolRenderer::usedAttributes( const QgsRenderContext& context ) const
 {
   QSet<QString> attributes;
 
@@ -445,7 +445,7 @@ QSet<QString> QgsCategorizedSymbolRenderer::usedAttributes() const
     QgsSymbol* catSymbol = catIt->symbol();
     if ( catSymbol )
     {
-      attributes.unite( catSymbol->usedAttributes() );
+      attributes.unite( catSymbol->usedAttributes( context ) );
     }
   }
   return attributes;
@@ -769,14 +769,18 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRenderer::legendSymbolItemsV2() const
   if ( mSourceSymbol.data() && mSourceSymbol->type() == QgsSymbol::Marker )
   {
     // check that all symbols that have the same size expression
-    QgsDataDefined ddSize;
+    QgsProperty ddSize;
     Q_FOREACH ( const QgsRendererCategory& category, mCategories )
     {
       const QgsMarkerSymbol * symbol = static_cast<const QgsMarkerSymbol *>( category.symbol() );
-      if ( !ddSize.hasDefaultValues() && symbol->dataDefinedSize() != ddSize )
+      if ( ddSize )
       {
-        // no common size expression
-        return QgsFeatureRenderer::legendSymbolItemsV2();
+        QgsProperty sSize( symbol->dataDefinedSize() );
+        if ( sSize != ddSize )
+        {
+          // no common size expression
+          return QgsFeatureRenderer::legendSymbolItemsV2();
+        }
       }
       else
       {
@@ -784,12 +788,12 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRenderer::legendSymbolItemsV2() const
       }
     }
 
-    if ( !ddSize.isActive() || !ddSize.useExpression() )
+    if ( !ddSize || !ddSize.isActive() )
     {
       return QgsFeatureRenderer::legendSymbolItemsV2();
     }
 
-    QgsScaleExpression exp( ddSize.expressionString() );
+    QgsScaleExpression exp( ddSize.asExpression() );
     if ( exp.type() != QgsScaleExpression::Unknown )
     {
       QgsLegendSymbolItem title( nullptr, exp.baseExpression(), QLatin1String( "" ) );
@@ -798,7 +802,7 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRenderer::legendSymbolItemsV2() const
       {
         QgsLegendSymbolItem si( mSourceSymbol.data(), QString::number( v ), QLatin1String( "" ) );
         QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( si.symbol() );
-        s->setDataDefinedSize( QgsDataDefined() );
+        s->setDataDefinedSize( QgsProperty() );
         s->setSize( exp.size( v ) );
         lst << si;
       }

@@ -102,7 +102,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
 
   mContext.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
 
-  mAttrNames = mRenderer->usedAttributes();
+  mAttrNames = mRenderer->usedAttributes( context );
 
   //register label and diagram layer to the labeling engine
   prepareLabeling( layer, mAttrNames );

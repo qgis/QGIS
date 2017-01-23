@@ -71,9 +71,6 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands )
     QObject::connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( handleFrameRemoval( QgsComposerItem* ) ) );
   }
 
-  // data defined strings
-  mDataDefinedNames.insert( QgsComposerObject::SourceUrl, QStringLiteral( "dataDefinedSourceUrl" ) );
-
   if ( mComposition && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
     //a html item added while atlas preview is enabled needs to have the expression context set,
@@ -145,10 +142,11 @@ void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext 
       QString currentUrl = mUrl.toString();
 
       //data defined url set?
-      QVariant exprVal;
-      if ( dataDefinedEvaluate( QgsComposerObject::SourceUrl, exprVal, *evalContext ) )
+      bool ok = false;
+      currentUrl = mDataDefinedProperties.valueAsString( QgsComposerObject::SourceUrl, *evalContext, currentUrl, &ok );
+      if ( ok )
       {
-        currentUrl = exprVal.toString().trimmed();
+        currentUrl = currentUrl.trimmed();
         QgsDebugMsg( QString( "exprVal Source Url:%1" ).arg( currentUrl ) );
       }
       if ( currentUrl.isEmpty() )

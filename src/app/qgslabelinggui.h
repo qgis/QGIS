@@ -20,6 +20,7 @@
 
 #include "qgspallabeling.h"
 #include "qgstextformatwidget.h"
+#include "qgspropertyoverridebutton.h"
 #include "qgis_app.h"
 
 class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpressionContextGenerator
@@ -51,17 +52,22 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
 
   protected:
     void blockInitSignals( bool block );
-    void syncDefinedCheckboxFrame( QgsDataDefinedButton* ddBtn, QCheckBox* chkBx, QFrame* f );
-    void populateDataDefinedButtons( QgsPalLayerSettings& s );
-    //! Sets data defined property attribute to map
-    void setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsPalLayerSettings::DataDefinedProperties p, QgsPalLayerSettings& lyr );
+    void syncDefinedCheckboxFrame( QgsPropertyOverrideButton* ddBtn, QCheckBox* chkBx, QFrame* f );
 
   private:
     QgsVectorLayer* mLayer;
     const QgsPalLayerSettings* mSettings;
+    QgsPropertyCollection mDataDefinedProperties;
     LabelMode mMode;
 
     QgsExpressionContext createExpressionContext() const override;
+
+    void populateDataDefinedButtons();
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key );
+
+  private slots:
+
+    void updateProperty();
 
 };
 

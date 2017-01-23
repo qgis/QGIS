@@ -20,10 +20,10 @@
 #include "qgscomposition.h"
 #include "qgscomposermap.h"
 #include "qgsmultirenderchecker.h"
-#include "qgsdatadefined.h"
 #include "qgsfontutils.h"
 #include "qgsproject.h"
 #include "qgstestutils.h"
+#include "qgsproperty.h"
 #include <QObject>
 #include "qgstest.h"
 #include <QMap>
@@ -51,9 +51,8 @@ class TestQgsComposerUtils : public QObject
     void relativeResizeRect(); //test relative resize of rectangle function
     void decodePaperOrientation(); //test decoding paper orientation
     void decodePaperSize(); //test decoding paper size
-    void readDataDefinedProperty(); //test reading a data defined property
-    void readDataDefinedPropertyMap(); //test reading a whole data defined property map
-    void writeDataDefinedPropertyMap(); //test reading a whole data defined property map
+    void readOldDataDefinedProperty(); //test reading a data defined property
+    void readOldDataDefinedPropertyMap(); //test reading a whole data defined property map
     void scaledFontPixelSize(); //test creating a scaled font
     void fontAscentMM(); //test calculating font ascent in mm
     void fontDescentMM(); //test calculating font descent in mm
@@ -419,7 +418,7 @@ void TestQgsComposerUtils::decodePaperSize()
   QCOMPARE( height, 355.6 );
 }
 
-void TestQgsComposerUtils::readDataDefinedProperty()
+void TestQgsComposerUtils::readOldDataDefinedProperty()
 {
   //create a test dom element
   QDomImplementation DomImplementation;
@@ -431,7 +430,7 @@ void TestQgsComposerUtils::readDataDefinedProperty()
   QDomElement itemElem = doc.createElement( QStringLiteral( "item" ) );
 
   //dd element
-  QDomElement ddElem = doc.createElement( QStringLiteral( "dataDefinedProperty" ) );
+  QDomElement ddElem = doc.createElement( QStringLiteral( "dataDefinedTestProperty" ) );
   ddElem.setAttribute( QStringLiteral( "active" ), QStringLiteral( "true" ) );
   ddElem.setAttribute( QStringLiteral( "useExpr" ), QStringLiteral( "true" ) );
   ddElem.setAttribute( QStringLiteral( "expr" ), QStringLiteral( "test expression" ) );
@@ -440,38 +439,35 @@ void TestQgsComposerUtils::readDataDefinedProperty()
   rootNode.appendChild( itemElem );
 
   //try reading dd elements
-  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > dataDefinedProperties;
 
   //bad data defined properties - should not be read into dataDefinedProperties map
-  QgsComposerUtils::readDataDefinedProperty( QgsComposerObject::NoProperty, ddElem, &dataDefinedProperties );
-  QCOMPARE( dataDefinedProperties.count(), 0 );
-  QgsComposerUtils::readDataDefinedProperty( QgsComposerObject::AllProperties, ddElem, &dataDefinedProperties );
-  QCOMPARE( dataDefinedProperties.count(), 0 );
+  QVERIFY( !QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::NoProperty, ddElem ) );
+  QVERIFY( !QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::AllProperties, ddElem ) );
 
   //read into valid property
-  QgsComposerUtils::readDataDefinedProperty( QgsComposerObject::TestProperty, ddElem, &dataDefinedProperties );
-  QCOMPARE( dataDefinedProperties.count(), 1 );
-  QVERIFY(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->isActive() );
-  QVERIFY(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->useExpression() );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->expressionString(), QString( "test expression" ) );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->field(), QString( "test field" ) );
+  QgsProperty p( QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::TestProperty, ddElem ) );
+  QVERIFY( p );
+  QVERIFY( p.isActive() );
+  QCOMPARE( p.propertyType(), QgsProperty::ExpressionBasedProperty );
+  QCOMPARE( p.expressionString(), QString( "test expression" ) );
+
+  ddElem.setAttribute( QStringLiteral( "useExpr" ), QStringLiteral( "false" ) );
+  p = QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::TestProperty, ddElem );
+  QVERIFY( p );
+  QVERIFY( p.isActive() );
+  QCOMPARE( p.propertyType(), QgsProperty::FieldBasedProperty );
+  QCOMPARE( p.field(), QString( "test field" ) );
 
   //reading false parameters
   QDomElement ddElem2 = doc.createElement( QStringLiteral( "dataDefinedProperty2" ) );
   ddElem2.setAttribute( QStringLiteral( "active" ), QStringLiteral( "false" ) );
-  ddElem2.setAttribute( QStringLiteral( "useExpr" ), QStringLiteral( "false" ) );
   itemElem.appendChild( ddElem2 );
-  QgsComposerUtils::readDataDefinedProperty( QgsComposerObject::TestProperty, ddElem2, &dataDefinedProperties );
-  QCOMPARE( dataDefinedProperties.count(), 1 );
-  QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->isActive() );
-  QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->useExpression() );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->expressionString(), QString() );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->field(), QString() );
-
-  qDeleteAll( dataDefinedProperties );
+  p = QgsComposerUtils::readOldDataDefinedProperty( QgsComposerObject::TestProperty, ddElem2 );
+  QVERIFY( p );
+  QVERIFY( !p.isActive() );
 }
 
-void TestQgsComposerUtils::readDataDefinedPropertyMap()
+void TestQgsComposerUtils::readOldDataDefinedPropertyMap()
 {
   //create a test dom element
   QDomImplementation DomImplementation;
@@ -483,19 +479,19 @@ void TestQgsComposerUtils::readDataDefinedPropertyMap()
   QDomElement itemElem = doc.createElement( QStringLiteral( "item" ) );
 
   //dd elements
-  QDomElement ddElem = doc.createElement( QStringLiteral( "dataDefinedProperty" ) );
+  QDomElement ddElem = doc.createElement( QStringLiteral( "dataDefinedBlendMode" ) );
   ddElem.setAttribute( QStringLiteral( "active" ), QStringLiteral( "true" ) );
   ddElem.setAttribute( QStringLiteral( "useExpr" ), QStringLiteral( "true" ) );
   ddElem.setAttribute( QStringLiteral( "expr" ), QStringLiteral( "test expression" ) );
   ddElem.setAttribute( QStringLiteral( "field" ), QStringLiteral( "test field" ) );
   itemElem.appendChild( ddElem );
-  QDomElement ddElem2 = doc.createElement( QStringLiteral( "dataDefinedProperty2" ) );
+  QDomElement ddElem2 = doc.createElement( QStringLiteral( "dataDefinedTransparency" ) );
   ddElem2.setAttribute( QStringLiteral( "active" ), QStringLiteral( "false" ) );
   ddElem2.setAttribute( QStringLiteral( "useExpr" ), QStringLiteral( "false" ) );
   ddElem2.setAttribute( QStringLiteral( "expr" ), QStringLiteral( "test expression 2" ) );
   ddElem2.setAttribute( QStringLiteral( "field" ), QStringLiteral( "test field 2" ) );
   itemElem.appendChild( ddElem2 );
-  QDomElement ddElem3 = doc.createElement( QStringLiteral( "dataDefinedProperty3" ) );
+  QDomElement ddElem3 = doc.createElement( QStringLiteral( "dataDefinedProperty" ) );
   ddElem3.setAttribute( QStringLiteral( "active" ), QStringLiteral( "true" ) );
   ddElem3.setAttribute( QStringLiteral( "useExpr" ), QStringLiteral( "false" ) );
   ddElem3.setAttribute( QStringLiteral( "expr" ), QStringLiteral( "test expression 3" ) );
@@ -504,79 +500,20 @@ void TestQgsComposerUtils::readDataDefinedPropertyMap()
   rootNode.appendChild( itemElem );
 
   //try reading dd elements
-  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > dataDefinedProperties;
-  QMap<QgsComposerObject::DataDefinedProperty, QString> dataDefinedNames;
-  dataDefinedNames[ QgsComposerObject::BlendMode ] = QStringLiteral( "dataDefinedProperty" );
-  dataDefinedNames[ QgsComposerObject::Transparency ] = QStringLiteral( "dataDefinedProperty2" );
-  dataDefinedNames[ QgsComposerObject::TestProperty ] = QStringLiteral( "dataDefinedProperty3" );
+  QgsPropertyCollection dataDefinedProperties;
 
-  QgsComposerUtils::readDataDefinedPropertyMap( itemElem, &dataDefinedNames, &dataDefinedProperties );
+  QgsComposerUtils::readOldDataDefinedPropertyMap( itemElem, dataDefinedProperties );
   //check returned values
   QCOMPARE( dataDefinedProperties.count(), 3 );
-  QVERIFY(( dataDefinedProperties.value( QgsComposerObject::BlendMode ) )->isActive() );
-  QVERIFY(( dataDefinedProperties.value( QgsComposerObject::BlendMode ) )->useExpression() );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::BlendMode ) )->expressionString(), QString( "test expression" ) );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::BlendMode ) )->field(), QString( "test field" ) );
-  QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::Transparency ) )->isActive() );
-  QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::Transparency ) )->useExpression() );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::Transparency ) )->expressionString(), QString( "test expression 2" ) );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::Transparency ) )->field(), QString( "test field 2" ) );
-  QVERIFY(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->isActive() );
-  QVERIFY( !( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->useExpression() );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->expressionString(), QString( "test expression 3" ) );
-  QCOMPARE(( dataDefinedProperties.value( QgsComposerObject::TestProperty ) )->field(), QString( "test field 3" ) );
-  qDeleteAll( dataDefinedProperties );
-}
-
-void TestQgsComposerUtils::writeDataDefinedPropertyMap()
-{
-  //create a test dom element
-  QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
-    DomImplementation.createDocumentType(
-      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
-  QDomDocument doc( documentType );
-  QDomElement itemElem = doc.createElement( QStringLiteral( "item" ) );
-
-  //create some data defined properties
-  QMap<QgsComposerObject::DataDefinedProperty, QString> dataDefinedNames;
-  dataDefinedNames[ QgsComposerObject::BlendMode ] = QStringLiteral( "dataDefinedProperty" );
-  dataDefinedNames[ QgsComposerObject::Transparency ] = QStringLiteral( "dataDefinedProperty2" );
-  dataDefinedNames[ QgsComposerObject::TestProperty ] = QStringLiteral( "dataDefinedProperty3" );
-
-  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > dataDefinedProperties;
-  dataDefinedProperties[ QgsComposerObject::BlendMode ] = new QgsDataDefined( true, true, QStringLiteral( "expression 1" ), QStringLiteral( "field 1" ) );
-  dataDefinedProperties[ QgsComposerObject::Transparency ] = new QgsDataDefined( false, false, QStringLiteral( "expression 2" ), QStringLiteral( "field 2" ) );
-  dataDefinedProperties[ QgsComposerObject::TestProperty ] = new QgsDataDefined( false, true, QStringLiteral( "expression 3" ), QStringLiteral( "field 3" ) );
-
-  //write the property map
-  QgsComposerUtils::writeDataDefinedPropertyMap( itemElem, doc, &dataDefinedNames, &dataDefinedProperties );
-
-  //now check it
-  QDomNodeList dd1NodeList = itemElem.elementsByTagName( QStringLiteral( "dataDefinedProperty" ) );
-  QCOMPARE( dd1NodeList.count(), 1 );
-  QDomElement dd1Elem = dd1NodeList.at( 0 ).toElement();
-  QCOMPARE( dd1Elem.attribute( "active", "bad" ), QString( "true" ) );
-  QCOMPARE( dd1Elem.attribute( "useExpr", "bad" ), QString( "true" ) );
-  QCOMPARE( dd1Elem.attribute( "expr", "bad" ), QString( "expression 1" ) );
-  QCOMPARE( dd1Elem.attribute( "field", "bad" ), QString( "field 1" ) );
-
-  QDomNodeList dd2NodeList = itemElem.elementsByTagName( QStringLiteral( "dataDefinedProperty2" ) );
-  QCOMPARE( dd2NodeList.count(), 1 );
-  QDomElement dd2Elem = dd2NodeList.at( 0 ).toElement();
-  QCOMPARE( dd2Elem.attribute( "active", "bad" ), QString( "false" ) );
-  QCOMPARE( dd2Elem.attribute( "useExpr", "bad" ), QString( "false" ) );
-  QCOMPARE( dd2Elem.attribute( "expr", "bad" ), QString( "expression 2" ) );
-  QCOMPARE( dd2Elem.attribute( "field", "bad" ), QString( "field 2" ) );
-
-  QDomNodeList dd3NodeList = itemElem.elementsByTagName( QStringLiteral( "dataDefinedProperty3" ) );
-  QCOMPARE( dd3NodeList.count(), 1 );
-  QDomElement dd3Elem = dd3NodeList.at( 0 ).toElement();
-  QCOMPARE( dd3Elem.attribute( "active", "bad" ), QString( "false" ) );
-  QCOMPARE( dd3Elem.attribute( "useExpr", "bad" ), QString( "true" ) );
-  QCOMPARE( dd3Elem.attribute( "expr", "bad" ), QString( "expression 3" ) );
-  QCOMPARE( dd3Elem.attribute( "field", "bad" ), QString( "field 3" ) );
-  qDeleteAll( dataDefinedProperties );
+  QVERIFY(( dataDefinedProperties.property( QgsComposerObject::BlendMode ) ).isActive() );
+  QCOMPARE(( dataDefinedProperties.property( QgsComposerObject::BlendMode ) ).propertyType(), QgsProperty::ExpressionBasedProperty );
+  QCOMPARE( dataDefinedProperties.property( QgsComposerObject::BlendMode ).expressionString(), QString( "test expression" ) );
+  QVERIFY( !( dataDefinedProperties.property( QgsComposerObject::Transparency ) ).isActive() );
+  QCOMPARE(( dataDefinedProperties.property( QgsComposerObject::Transparency ) ).propertyType(), QgsProperty::FieldBasedProperty );
+  QCOMPARE( dataDefinedProperties.property( QgsComposerObject::Transparency ).field(), QString( "test field 2" ) );
+  QVERIFY(( dataDefinedProperties.property( QgsComposerObject::TestProperty ) ).isActive() );
+  QCOMPARE(( dataDefinedProperties.property( QgsComposerObject::TestProperty ) ).propertyType(), QgsProperty::FieldBasedProperty );
+  QCOMPARE( dataDefinedProperties.property( QgsComposerObject::TestProperty ).field(), QString( "test field 3" ) );
 }
 
 void TestQgsComposerUtils::scaledFontPixelSize()

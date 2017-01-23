@@ -25,6 +25,7 @@
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsrendercontext.h"
+#include "qgsproperty.h"
 
 class QColor;
 class QImage;
@@ -45,7 +46,6 @@ class QgsPaintEffect;
 class QgsMarkerSymbolLayer;
 class QgsLineSymbolLayer;
 class QgsFillSymbolLayer;
-class QgsDataDefined;
 class QgsSymbolRenderContext;
 class QgsFeatureRenderer;
 class QgsCurve;
@@ -265,7 +265,7 @@ class CORE_EXPORT QgsSymbol
      * This should include any attributes required by the symbology including
      * the ones required by expressions.
      */
-    QSet<QString> usedAttributes() const;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     /** Returns whether the symbol utilises any data defined properties.
      * @note added in QGIS 2.12
@@ -534,19 +534,18 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     double angle() const;
 
     /** Set data defined angle for whole symbol (including all symbol layers).
-     * @param dd data defined angle
-     * @note added in QGIS 2.9
-     * @see dataDefinedAngle
+     * @note added in QGIS 3.0
+     * @see dataDefinedAngle()
      */
-    void setDataDefinedAngle( const QgsDataDefined& dd );
+    void setDataDefinedAngle( const QgsProperty& property );
 
     /** Returns data defined angle for whole symbol (including all symbol layers).
-     * @returns data defined angle, or empty data defined if angle is not set
-     * at the marker level
-     * @note added in QGIS 2.9
-     * @see setDataDefinedAngle
+     * @returns data defined angle, or invalid property if angle is not set
+     * at the marker level.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedAngle()
      */
-    QgsDataDefined dataDefinedAngle() const;
+    QgsProperty dataDefinedAngle() const;
 
     /** Sets the line angle modification for the symbol's angle. This angle is added to
      * the marker's rotation and data defined rotation before rendering the symbol, and
@@ -611,19 +610,18 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     QgsMapUnitScale sizeMapUnitScale() const;
 
     /** Set data defined size for whole symbol (including all symbol layers).
-     * @param dd data defined size
-     * @note added in QGIS 2.9
-     * @see dataDefinedSize
+     * @note added in QGIS 3.0
+     * @see dataDefinedSize()
      */
-    void setDataDefinedSize( const QgsDataDefined& dd );
+    void setDataDefinedSize( const QgsProperty& property );
 
     /** Returns data defined size for whole symbol (including all symbol layers).
-     * @returns data defined size, or empty data defined if size is not set
-     * at the marker level
-     * @note added in QGIS 2.9
+     * @returns data defined size, or invalid property if size is not set
+     * at the marker level.
+     * @note added in QGIS 3.0
      * @see setDataDefinedSize
      */
-    QgsDataDefined dataDefinedSize() const;
+    QgsProperty dataDefinedSize() const;
 
     void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
     ScaleMethod scaleMethod();
@@ -669,19 +667,18 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
     double width() const;
 
     /** Set data defined width for whole symbol (including all symbol layers).
-     * @param dd data defined width
-     * @note added in QGIS 2.9
-     * @see dataDefinedWidth
+     * @see dataDefinedWidth()
+     * @note added in QGIS 3.0
      */
-    void setDataDefinedWidth( const QgsDataDefined& dd );
+    void setDataDefinedWidth( const QgsProperty& property );
 
-    /** Returns data defined size for whole symbol (including all symbol layers).
-     * @returns data defined size, or empty data defined if size is not set
-     * at the line level
-     * @note added in QGIS 2.9
+    /** Returns data defined width for whole symbol (including all symbol layers).
+     * @returns data defined width, or invalid property if size is not set
+     * at the line level. Caller takes responsibility for deleting the returned object.
+     * @note added in QGIS 3.0
      * @see setDataDefinedWidth
      */
-    QgsDataDefined dataDefinedWidth() const;
+    QgsProperty dataDefinedWidth() const;
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 

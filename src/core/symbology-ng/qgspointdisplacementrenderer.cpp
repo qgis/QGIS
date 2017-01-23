@@ -214,11 +214,11 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument& doc )
   return rendererElement;
 }
 
-QSet<QString> QgsPointDisplacementRenderer::usedAttributes() const
+QSet<QString> QgsPointDisplacementRenderer::usedAttributes( const QgsRenderContext& context ) const
 {
-  QSet<QString> attr = QgsPointDistanceRenderer::usedAttributes();
+  QSet<QString> attr = QgsPointDistanceRenderer::usedAttributes( context );
   if ( mCenterSymbol )
-    attr.unite( mCenterSymbol->usedAttributes() );
+    attr.unite( mCenterSymbol->usedAttributes( context ) );
   return attr;
 }
 

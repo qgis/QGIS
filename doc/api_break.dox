@@ -596,6 +596,13 @@ QgsComposerNodesItem        {#qgis_api_break_3_0_QgsComposerNodesItem}
 - _writeXMLStyle() has been renamed to _writeXMLStyle()
 - unselectNode() has been renamed to deselectNode() <!--#spellok-->
 
+QgsComposerObject        {#qgis_api_break_3_0_QgsComposerObject}
+-----------------
+
+- dataDefinedProperty() and setDataDefinedProperty() no longer use QgsDataDefined objects.
+Instead these methods have been ported to the QgsProperty framework.
+- dataDefinedEvaluate() was removed. Use the QgsProperty evaluation methods instead.
+
 
 QgsComposerPicture        {#qgis_api_break_3_0_QgsComposerPicture}
 ------------------
@@ -609,6 +616,13 @@ QgsComposerObject::dataDefinedProperty instead.
 - setUsePictureExpression() was removed. Use
 QgsComposerObject::setDataDefinedProperty() instead.
 - updatePictureExpression() was removed.
+
+QgsComposerScaleBar        {#qgis_api_break_3_0_QgsComposerScaleBar}
+-------------------
+
+- setBrush() was removed. Use setFillColor() instead.
+- setBrush2() was removed. Use setFillColor2() instead.
+- setPen() was removed. Use setLineColor() and setLineWidth() instead.
 
 
 QgsComposerTable        {#qgis_api_break_3_0_QgsComposerTable}
@@ -633,6 +647,16 @@ QgsComposerTableV2        {#qgis_api_break_3_0_QgsComposerTableV2}
 - unselectNode() has been renamed to deselectNode() <!--#spellok-->
 
 
+ QgsComposerUtils       {#qgis_api_break_3_0_QgsComposerUtils}
+-----------------
+
+- readDataDefinedPropertyMap() was renamed to readOldDataDefinedPropertyMap() and the signature has changed
+to use a QgsPropertyCollection object.
+- readDataDefinedProperty() was renamed to readOldDataDefinedProperty() and the signature has changed
+to use the QgsProperty framework objects.
+- writeDataDefinedPropertyMap() was removed. This is now handled by QgsPropertyCollection::writeXml()
+
+
 QgsComposition        {#qgis_api_break_3_0_QgsComposition}
 --------------
 
@@ -648,6 +672,8 @@ were removed. Use setSnapTolerance() and snapTolerance() instead.
 - addComposerTable(), composerTableAdded() were removed.
 - setAllUnselected() has been renamed to setAllDeselected. <!--#spellok-->
 - worldFileMap() and setWorldFileMap() have been renamed to referenceMap() and setReferenceMap()
+- dataDefinedProperty() and setDataDefinedProperty() now use the QgsProperty framework instead
+of QgsDataDefined objects.
 
 
 QgsCoordinateReferenceSystem        {#qgis_api_break_3_0_QgsCoordinateReferenceSystem}
@@ -751,12 +777,17 @@ QgsDataDefinedButton        {#qgis_api_break_3_0_QgsDataDefinedButton}
 - registerGetExpressionContextCallback has been removed in favor of registerExpressionContextGenerator
 
 
-
 QgsDataDefinedSymbolDialog        {#qgis_api_break_3_0_QgsDataDefinedSymbolDialog}
 --------------------------
 
 - QgsDataDefinedSymbolDialog was removed. Code using this dialog should be reworked to use QgsDataDefinedButton
 instead.
+
+
+QgsDataDefinedValueDialog        {#qgis_api_break_3_0_QgsDataDefinedValueDialog}
+--------------------------
+
+- These classes and subclasses now use QgsProperty objects instead of QgsDataDefined.
 
 
 QgsDataItem        {#qgis_api_break_3_0_QgsDataItem}
@@ -813,6 +844,7 @@ QgsDiagramRenderer        {#qgis_api_break_3_0_QgsDiagramRenderer}
 ------------------
 - xform, fields were no longer required and are removed.
 - referencedFields() no longer takes a QgsFields argument.
+- renderDiagram() now takes an optional data defined overrides collection argument.
 
 
 QgsDiagramLayerSettings        {#qgis_api_break_3_0_QgsDiagramLayerSettings}
@@ -832,6 +864,18 @@ place of a null pointer.
 - The dist member variable was removed. setDistance() and distance() should be used instead.
 - The renderer member variable was removed, and getRenderer() was renamed to renderer()
 - The showAll member variable was removed. setShowAllDiagrams() and showAllDiagrams() should be used instead.
+- The xPosColumn, yPosColumn and showColumn attributes were removed. Use setDataDefinedProperties() for
+setting data defined properties instead.
+- The LinePlacementFlags enum was renamed to LinePlacementFlag
+- The placement member variable was removed, and getPlacement() was renamed to placement()
+- The placementFlags member variable was removed
+- The priority member variable was removed, and getPriority() was renamed to priority()
+- The zIndex member variable was removed, and getZIndex() was renamed to zIndex()
+- The obstacle member variable was removed. setIsObstacle() and isObstacle() should be used instead.
+- The dist member variable was removed. setDistance() and distance() should be used instead.
+- The renderer member variable was removed, and getRenderer() was renamed to renderer()
+- The showAll member variable was removed. setShowAllDiagrams() and showAllDiagrams() should be used instead.
+- referencedFields() no longer requires a QgsFields argument.
 
 QgsDiagramSettings        {#qgis_api_break_3_0_QgsDiagramSettings}
 ------------------
@@ -957,6 +1001,8 @@ QgsFeatureRendererV2        {#qgis_api_break_3_0_QgsFeatureRendererV2}
 - symbolsForFeature( QgsFeature& feat ) has been removed. The symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) method should be used instead (previously available as symbolsForFeature2 in PyQGIS bindings).
 - originalSymbolsForFeature( QgsFeature& feat ) has been removed. The originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) method should be used instead (previously available as originalSymbolsForFeature2 in PyQGIS bindings).
 - copyPaintEffect() was removed. copyRendererData() should be used instead.
+- usedAttributes() now requires a QgsRenderContext argument.
+
 
 QgsFeatureRequest        {#qgis_api_break_3_0_QgsFeatureRequest}
 -----------------
@@ -1406,6 +1452,13 @@ QgsPalLayerSettings        {#qgis_api_break_3_0_QgsPalLayerSettings}
 - ct is now a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
 be used instead of a null pointer if no transformation is required.
 - prepareGeometry() and geometryRequiresPreparation() now take a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should be used instead of a null pointer if no transformation is required.
+- The DataDefinedProperties enum was renamed to Property
+- dataDefinedProperty(), setDataDefinedProperty(), removeDataDefinedProperty(),
+removeAllDataDefinedProperties(), updateDataDefinedString(), dataDefinedMap(),
+dataDefinedValue(), dataDefinedEvaluate(), dataDefinedIsActive(),
+dataDefinedUseExpression(), dataDefinedProperties() and dataDefinedNames()
+members were removed. Use the QgsProperty framework through dataDefinedProperties()
+and setDataDefinedProperties() instead.
 
 
 QgsPanelWidgetStack        {#qgis_api_break_3_0_QgsPanelWidgetStack}
@@ -1678,6 +1731,9 @@ parameters or QgsSymbol::OutputUnitList parameters now take QgsUnitTypes::Render
 data defined rotation.
 - setRenderHints() and renderHints() now accept and return a QgsSymbol::RenderHints flag rather
 than an integer value
+- usedAttributes() now requires a QgsRenderContext argument.
+- setDataDefinedAngle(), dataDefinedAngle(), setDataDefinedSize(), dataDefinedSize(), setDataDefinedWidth() and dataDefinedWidth()
+now work with QgsProperty objects instead of QgsDataDefined.
 
 
 QgsSymbolLayer (renamed from QgsSymbolLayerV2)        {#qgis_api_break_3_0_QgsSymbolLayer}
@@ -1685,10 +1741,16 @@ QgsSymbolLayer (renamed from QgsSymbolLayerV2)        {#qgis_api_break_3_0_QgsSy
 
 - The deprecated prepareExpressions( const QgsFields* fields, double scale = -1.0 ) method has been removed. Use
 the variant which takes QgsSymbolRenderContext instead.
-- The deprecated methods dataDefinedProperty( const QString& property ) and dataDefinedPropertyString() were removed. Use getDataDefinedProperty() instead.
-- setDataDefinedProperty( const QString& property, const QString& expressionString ) was removed. Use setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined ) instead.
-- evaluateDataDefinedProperty( const QString& property, const QgsFeature* feature ) was removed. Use the variant which takes QgsSymbolRenderContext instead.
-- expression() was removed. Use getDataDefinedProperty or evaluateDataDefinedProperty instead.
+- The deprecated methods dataDefinedProperty( const QString& property ) and dataDefinedPropertyString() were removed. Use dataDefinedProperties() instead.
+- setDataDefinedProperty now requires a QgsSymbolLayer.Property argument instead of the string based key.
+- removeDataDefinedProperty(), removeDataDefinedProperties(), hasDataDefinedProperties(), hasDataDefinedProperty(), evaluateDataDefinedProperty()
+were removed. Use the QgsProperty/QgsPropertyCollection methods instead.
+- getDataDefinedProperty() was removed. Use dataDefinedProperties() instead.
+- expression() was removed.
+- usedAttributes() now requires a QgsRenderContext argument
+- saveDataDefinedProperties() was removed. This is no longer required.
+- restoreDataDefinedProperties() was renamed to restoreOldDataDefinedProperties()
+
 
 QgsSymbolLayerRegistry        {#qgis_api_break_3_0_QgsSymbolLayerRegistry}
 ----------------------
@@ -1729,6 +1791,7 @@ QgsSymbolSelectorWidget        {#qgis_api_break_3_0_QgsSymbolSelectorWidget}
 -----------------------
 
 - saveSymbol() was removed.
+- registerDataDefinedButton now works with QgsPropertyOverrideButton and QgsProperty keys
 
 
 QgsSymbolSelectorDialog        {#qgis_api_break_3_0_QgsSymbolSelectorDialog}

@@ -125,13 +125,13 @@ class QgsDataDefinedValueDialog : QDialog
      *
      * @note May be missing Python bindings depending on the platform.
      */
-    void init( const QString& description ); // needed in children ctor to call virtual
+    void init( int propertyKey ); // needed in children ctor to call virtual
 
   private:
-    QgsDataDefined symbolDataDefined() const;
-    virtual QgsDataDefined symbolDataDefined( const QgsSymbol* ) const = 0;
+    QgsProperty symbolDataDefined() const;
+    virtual QgsProperty symbolDataDefined( const QgsSymbol* ) const = 0;
     virtual double value( const QgsSymbol* ) const = 0;
-    virtual void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) = 0;
+    virtual void setDataDefined( QgsSymbol* symbol, const QgsProperty& dd ) = 0;
 };
 
 class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog
@@ -144,11 +144,11 @@ class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog
     QgsDataDefinedSizeDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer );
 
   protected:
-    QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const;
+    virtual QgsProperty symbolDataDefined( const QgsSymbol* ) const;
 
     double value( const QgsSymbol * symbol ) const;
 
-    void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd );
+    void setDataDefined( QgsSymbol* symbol, const QgsProperty& dd );
 };
 
 class QgsDataDefinedRotationDialog : QgsDataDefinedValueDialog
@@ -161,11 +161,11 @@ class QgsDataDefinedRotationDialog : QgsDataDefinedValueDialog
     QgsDataDefinedRotationDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer );
 
   protected:
-    QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const;
+    virtual QgsProperty symbolDataDefined( const QgsSymbol* ) const;
 
     double value( const QgsSymbol * symbol ) const;
 
-    void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd );
+    void setDataDefined( QgsSymbol* symbol, const QgsProperty& dd );
 };
 
 
@@ -179,9 +179,9 @@ class QgsDataDefinedWidthDialog : QgsDataDefinedValueDialog
     QgsDataDefinedWidthDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer );
 
   protected:
-    QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const;
+    virtual QgsProperty symbolDataDefined( const QgsSymbol* ) const;
 
     double value( const QgsSymbol * symbol ) const;
 
-    void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd );
+    void setDataDefined( QgsSymbol* symbol, const QgsProperty& dd );
 };

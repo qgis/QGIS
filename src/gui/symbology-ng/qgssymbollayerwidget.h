@@ -17,12 +17,12 @@
 #ifndef QGSSYMBOLLAYERWIDGET_H
 #define QGSSYMBOLLAYERWIDGET_H
 
-#include "qgsdatadefinedbutton.h"
+#include "qgspropertyoverridebutton.h"
 #include "qgssymbolwidgetcontext.h"
+#include "qgssymbollayer.h"
 #include <QWidget>
 #include <QStandardItemModel>
 
-class QgsSymbolLayer;
 class QgsVectorLayer;
 class QgsMapCanvas;
 
@@ -62,7 +62,14 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
     const QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 
   protected:
-    void registerDataDefinedButton( QgsDataDefinedButton* button, const QString& propertyName, QgsDataDefinedButton::DataType type, const QString& description );
+
+    /**
+     * Registers a data defined override button. Handles setting up connections
+     * for the button and initializing the button to show the correct descriptions
+     * and help text for the associated property.
+     * @note added in QGIS 3.0
+     */
+    void registerDataDefinedButton( QgsPropertyOverrideButton* button, QgsSymbolLayer::Property key );
 
     QgsExpressionContext createExpressionContext() const override;
 

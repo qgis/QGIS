@@ -324,9 +324,9 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     ResizeMode mResizeMode;
     QgsComposerItem::ItemPositionMode mPictureAnchor;
 
-    QColor mSvgFillColor;
-    QColor mSvgBorderColor;
-    double mSvgBorderWidth;
+    QColor mSvgFillColor = QColor( 255, 255, 255 );
+    QColor mSvgBorderColor = QColor( 0, 0, 0 );
+    double mSvgBorderWidth = 0.2;
 
     bool mHasExpressionError;
     bool mLoaded;

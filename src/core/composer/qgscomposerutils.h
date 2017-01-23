@@ -125,40 +125,19 @@ class CORE_EXPORT QgsComposerUtils
      */
     static bool decodePresetPaperSize( const QString& presetString, double &width, double &height );
 
-    /** Reads all data defined properties from xml
-     * @param itemElem dom element containing data defined properties
-     * @param dataDefinedNames map of data defined property to name used within xml
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined in which to store properties from xml
-     * @note this method was added in version 2.5
+    /** Reads all pre 3.0 data defined properties from an XML element.
+     * @note this method was added in version 3.0
      * @see readDataDefinedProperty
      * @see writeDataDefinedPropertyMap
      */
-    static void readDataDefinedPropertyMap( const QDomElement &itemElem,
-                                            QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
-                                            QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties
-                                          );
+    static void readOldDataDefinedPropertyMap( const QDomElement &itemElem,
+        QgsPropertyCollection& dataDefinedProperties );
 
-    /** Reads a single data defined property from xml DOM element
-     * @param property data defined property to read
-     * @param ddElem dom element containing settings for data defined property
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined in which to store properties from xml
-     * @note this method was added in version 2.5
+    /** Reads a pre 3.0 data defined property from an XML DOM element.
+     * @note this method was added in version 3.0
      * @see readDataDefinedPropertyMap
      */
-    static void readDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem,
-                                         QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
-
-    /** Writes data defined properties to xml
-     * @param itemElem DOM element in which to store data defined properties
-     * @param doc DOM document
-     * @param dataDefinedNames map of data defined property to name used within xml
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined for storing in xml
-     * @note this method was added in version 2.5
-     * @see readDataDefinedPropertyMap
-     */
-    static void writeDataDefinedPropertyMap( QDomElement &itemElem, QDomDocument &doc,
-        const QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
-        const QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
+    static QgsProperty readOldDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem );
 
     /** Returns a font where size is set in pixels and the size has been upscaled with FONT_WORKAROUND_SCALE
      * to workaround QT font rendering bugs

@@ -65,7 +65,8 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
   }
 
   //connections for data defined buttons
-  connect( mUrlDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mUrlLineEdit, SLOT( setDisabled( bool ) ) );
+  connect( mUrlDDBtn, &QgsPropertyOverrideButton::activated, mUrlLineEdit, &QLineEdit::setDisabled );
+  registerDataDefinedButton( mUrlDDBtn, QgsComposerObject::SourceUrl );
 }
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget()
@@ -465,8 +466,7 @@ void QgsComposerHtmlWidget::setGuiElementValues()
 
 void QgsComposerHtmlWidget::populateDataDefinedButtons()
 {
-  registerDataDefinedButton( mUrlDDBtn, QgsComposerObject::SourceUrl,
-                             QgsDataDefinedButton::AnyType, tr( "url string" ) );
+  updateDataDefinedButton( mUrlDDBtn );
 
   //initial state of controls - disable related controls when dd buttons are active
   mUrlLineEdit->setEnabled( !mUrlDDBtn->isActive() );

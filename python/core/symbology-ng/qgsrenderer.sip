@@ -120,7 +120,7 @@ class QgsFeatureRenderer
     /**
      * Returns a set of attributes required for this renderer.
      */
-    virtual QSet<QString> usedAttributes() const = 0;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const = 0;
 
     /**
      * Returns true if this renderer requires the geometry to apply the filter.

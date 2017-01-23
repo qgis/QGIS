@@ -32,4 +32,6 @@ class QgsLayerPropertiesWidget : QgsPanelWidget, QgsExpressionContextGenerator
   protected:
     void populateLayerTypes();
     void updateSymbolLayerWidget( QgsSymbolLayer* layer );
+
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 };

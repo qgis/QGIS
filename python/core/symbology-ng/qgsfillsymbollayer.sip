@@ -482,7 +482,7 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayer
     virtual QColor dxfColor( QgsSymbolRenderContext& context ) const;
     virtual Qt::PenStyle dxfPenStyle() const;
 
-    QSet<QString> usedAttributes() const;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
   protected:
 
@@ -842,7 +842,7 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     bool setSubSymbol( QgsSymbol* symbol /Transfer/ );
     QgsSymbol* subSymbol();
 
-    QSet<QString> usedAttributes() const;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
 };
 
@@ -938,7 +938,7 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    virtual QSet<QString> usedAttributes() const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     void setColor( const QColor& c );
     virtual QColor color() const;
@@ -990,7 +990,7 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
     void setMapUnitScale(const QgsMapUnitScale &scale);
     QgsMapUnitScale mapUnitScale() const;
 
-    virtual QSet<QString> usedAttributes() const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     void setPointOnSurface( bool pointOnSurface );
     bool pointOnSurface() const;

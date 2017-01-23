@@ -23,7 +23,10 @@ import sys
 
 from qgis.PyQt.QtCore import QThreadPool, qDebug
 
-from qgis.core import QgsPalLayerSettings, QgsSingleSymbolRenderer, QgsMarkerSymbol
+from qgis.core import (QgsPalLayerSettings,
+                       QgsSingleSymbolRenderer,
+                       QgsMarkerSymbol,
+                       QgsProperty)
 from utilities import getTempfilePath, renderMapToImage, mapSettingsString
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
@@ -232,10 +235,10 @@ class TestPointPlacement(TestPlacementBase):
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
         self.lyr.dist = 2
-        self.lyr.setDataDefinedProperty(QgsPalLayerSettings.PredefinedPositionOrder, True, True, "'T,B'", None)
+        self.lyr.dataDefinedProperties().setProperty(QgsPalLayerSettings.PredefinedPositionOrder, QgsProperty.fromExpression("'T,B'"))
         self.checkTest()
         self.removeMapLayer(self.layer)
-        self.lyr.removeDataDefinedProperty(QgsPalLayerSettings.PredefinedPositionOrder)
+        self.lyr.dataDefinedProperties().setProperty(QgsPalLayerSettings.PredefinedPositionOrder, QgsProperty())
         self.layer = None
 
     def test_point_dd_ordered_placement1(self):
@@ -245,11 +248,11 @@ class TestPointPlacement(TestPlacementBase):
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
         self.lyr.dist = 2
-        self.lyr.setDataDefinedProperty(QgsPalLayerSettings.PredefinedPositionOrder, True, True, "'T,B'", None)
+        self.lyr.dataDefinedProperties().setProperty(QgsPalLayerSettings.PredefinedPositionOrder, QgsProperty.fromExpression("'T,B'"))
         self.checkTest()
         self.removeMapLayer(obstacleLayer)
         self.removeMapLayer(self.layer)
-        self.lyr.removeDataDefinedProperty(QgsPalLayerSettings.PredefinedPositionOrder)
+        self.lyr.dataDefinedProperties().setProperty(QgsPalLayerSettings.PredefinedPositionOrder, QgsProperty())
         self.layer = None
 
     def test_point_ordered_symbol_bound_offset(self):

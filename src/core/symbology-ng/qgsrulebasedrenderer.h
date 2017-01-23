@@ -140,7 +140,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * Return the attributes used to evaluate the expression of this rule
          * @return A set of attribute names
          */
-        QSet<QString> usedAttributes() const;
+        QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
         /**
          * Returns true if this rule or one of its chilren needs the geometry to be applied.
@@ -424,7 +424,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     virtual QString filter( const QgsFields& fields = QgsFields() ) override;
 
-    virtual QSet<QString> usedAttributes() const override;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
 
     virtual bool filterNeedsGeometry() const override;
 

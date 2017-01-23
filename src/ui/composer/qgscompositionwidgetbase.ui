@@ -94,7 +94,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mNumPagesDDBtn">
+             <widget class="QgsPropertyOverrideButton" name="mNumPagesDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -241,7 +241,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mPaperHeightDDBtn">
+             <widget class="QgsPropertyOverrideButton" name="mPaperHeightDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -274,7 +274,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mPaperWidthDDBtn">
+             <widget class="QgsPropertyOverrideButton" name="mPaperWidthDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -298,7 +298,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mPaperSizeDDBtn">
+             <widget class="QgsPropertyOverrideButton" name="mPaperSizeDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -332,7 +332,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsDataDefinedButton" name="mPaperOrientationDDBtn">
+             <widget class="QgsPropertyOverrideButton" name="mPaperOrientationDDBtn">
               <property name="text">
                <string>...</string>
               </property>
@@ -697,9 +697,9 @@
    <header>qgscomposeritemcombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

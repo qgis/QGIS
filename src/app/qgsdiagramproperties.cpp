@@ -100,8 +100,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mDiagramAttributesTreeWidget->setItemDelegateForColumn( ColumnAttributeExpression, new EditBlockerDelegate( this ) );
   mDiagramAttributesTreeWidget->setItemDelegateForColumn( ColumnColor, new EditBlockerDelegate( this ) );
 
-  connect( mFixedSizeRadio, SIGNAL( toggled( bool ) ), this, SLOT( scalingTypeChanged() ) );
-  connect( mAttributeBasedScalingRadio, SIGNAL( toggled( bool ) ), this, SLOT( scalingTypeChanged() ) );
+  connect( mFixedSizeRadio, &QRadioButton::toggled, this, &QgsDiagramProperties::scalingTypeChanged );
+  connect( mAttributeBasedScalingRadio, &QRadioButton::toggled, this, &QgsDiagramProperties::scalingTypeChanged );
 
   mDiagramUnitComboBox->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                   << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
@@ -147,15 +147,10 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mScaleDependencyComboBox->addItem( tr( "Area" ), true );
   mScaleDependencyComboBox->addItem( tr( "Diameter" ), false );
 
-  mDataDefinedXComboBox->addItem( tr( "None" ), -1 );
-  mDataDefinedYComboBox->addItem( tr( "None" ), -1 );
-
   mAngleOffsetComboBox->addItem( tr( "Top" ), 90 * 16 );
   mAngleOffsetComboBox->addItem( tr( "Right" ), 0 );
   mAngleOffsetComboBox->addItem( tr( "Bottom" ), 270 * 16 );
   mAngleOffsetComboBox->addItem( tr( "Left" ), 180 * 16 );
-
-  mDataDefinedVisibilityComboBox->addItem( tr( "None" ), -1 );
 
   QSettings settings;
 
@@ -192,10 +187,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     newItem->setText( 0, name );
     newItem->setData( 0, RoleAttributeExpression, name );
     newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
-
-    mDataDefinedXComboBox->addItem( layerFields.at( idx ).name(), idx );
-    mDataDefinedYComboBox->addItem( layerFields.at( idx ).name(), idx );
-    mDataDefinedVisibilityComboBox->addItem( layerFields.at( idx ).name(), idx );
   }
 
   const QgsDiagramRenderer* dr = layer->diagramRenderer();
@@ -217,7 +208,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     mScaleVisibilityGroupBox->setChecked( layer->hasScaleBasedVisibility() );
     mScaleRangeWidget->setScaleRange( 1.0 / layer->maximumScale(), 1.0 / layer->minimumScale() ); // caution: layer uses scale denoms, widget uses true scales
     mShowAllCheckBox->setChecked( true );
-    mDataDefinedVisibilityGroupBox->setChecked( false );
     mCheckBoxAttributeLegend->setChecked( true );
     mCheckBoxSizeLegend->setChecked( false );
     mSizeLegendSymbol.reset( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
@@ -383,12 +373,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       mDiagramDistanceSpinBox->setValue( dls->distance() );
       mPrioritySlider->setValue( dls->priority() );
       mZIndexSpinBox->setValue( dls->zIndex() );
-      mDataDefinedXComboBox->setCurrentIndex( mDataDefinedXComboBox->findData( dls->xPosColumn ) );
-      mDataDefinedYComboBox->setCurrentIndex( mDataDefinedYComboBox->findData( dls->yPosColumn ) );
-      if ( dls->xPosColumn != -1 || dls->yPosColumn != -1 )
-      {
-        mDataDefinedPositionGroupBox->setChecked( true );
-      }
       mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( dls->placement() ) );
 
       chkLineAbove->setChecked( dls->linePlacementFlags() & QgsDiagramLayerSettings::AboveLine );
@@ -398,11 +382,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
         chkLineOrientationDependent->setChecked( true );
 
       mShowAllCheckBox->setChecked( dls->showAllDiagrams() );
-      mDataDefinedVisibilityComboBox->setCurrentIndex( mDataDefinedVisibilityComboBox->findData( dls->showColumn ) );
-      if ( dls->showColumn != -1 )
-      {
-        mDataDefinedVisibilityGroupBox->setChecked( true );
-      }
+
+      mDataDefinedProperties = dls->dataDefinedProperties();
     }
 
     if ( dr->diagram() )
@@ -421,11 +402,22 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
         mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( DIAGRAM_NAME_PIE ) );
       }
     }
-  } // if ( !dr )
+  }
 
-  connect( mAddAttributeExpression, SIGNAL( clicked() ), this, SLOT( showAddAttributeExpressionDialog() ) );
-  connect( mTransparencySlider, SIGNAL( valueChanged( int ) ), mTransparencySpinBox, SLOT( setValue( int ) ) );
-  connect( mTransparencySpinBox, SIGNAL( valueChanged( int ) ), mTransparencySlider, SLOT( setValue( int ) ) );
+  connect( mAddAttributeExpression, &QPushButton::clicked, this, &QgsDiagramProperties::showAddAttributeExpressionDialog );
+  connect( mTransparencySlider, &QSlider::valueChanged, mTransparencySpinBox, &QgsSpinBox::setValue );
+  connect( mTransparencySpinBox, static_cast < void ( QgsSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mTransparencySlider, &QSlider::setValue );
+
+  registerDataDefinedButton( mBackgroundColorDDBtn, QgsDiagramLayerSettings::BackgroundColor );
+  registerDataDefinedButton( mLineColorDDBtn, QgsDiagramLayerSettings::OutlineColor );
+  registerDataDefinedButton( mLineWidthDDBtn, QgsDiagramLayerSettings::OutlineWidth );
+  registerDataDefinedButton( mCoordXDDBtn, QgsDiagramLayerSettings::PositionX );
+  registerDataDefinedButton( mCoordYDDBtn, QgsDiagramLayerSettings::PositionY );
+  registerDataDefinedButton( mPriorityDDBtn, QgsDiagramLayerSettings::Priority );
+  registerDataDefinedButton( mZOrderDDBtn, QgsDiagramLayerSettings::ZIndex );
+  registerDataDefinedButton( mShowDiagramDDBtn, QgsDiagramLayerSettings::Show );
+  registerDataDefinedButton( mAlwaysShowDDBtn, QgsDiagramLayerSettings::AlwaysShow );
+  registerDataDefinedButton( mStartAngleDDBtn, QgsDiagramLayerSettings::StartAngle );
 }
 
 QgsDiagramProperties::~QgsDiagramProperties()
@@ -433,6 +425,20 @@ QgsDiagramProperties::~QgsDiagramProperties()
   QSettings settings;
   settings.setValue( QStringLiteral( "/Windows/Diagrams/OptionsSplitState" ), mDiagramOptionsSplitter->saveState() );
   settings.setValue( QStringLiteral( "/Windows/Diagrams/Tab" ), mDiagramOptionsListWidget->currentRow() );
+}
+
+void QgsDiagramProperties::registerDataDefinedButton( QgsPropertyOverrideButton * button, QgsDiagramLayerSettings::Property key )
+{
+  button->init( key, mDataDefinedProperties, QgsDiagramLayerSettings::PROPERTY_DEFINITIONS, mLayer );
+  connect( button, &QgsPropertyOverrideButton::changed, this, &QgsDiagramProperties::updateProperty );
+  button->registerExpressionContextGenerator( this );
+}
+
+void QgsDiagramProperties::updateProperty()
+{
+  QgsPropertyOverrideButton* button = qobject_cast<QgsPropertyOverrideButton*>( sender() );
+  QgsDiagramLayerSettings::Property key = static_cast<  QgsDiagramLayerSettings::Property >( button->propertyKey() );
+  mDataDefinedProperties.setProperty( key, button->toProperty() );
 }
 
 void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int index )
@@ -815,28 +821,11 @@ void QgsDiagramProperties::apply()
   mLayer->setDiagramRenderer( renderer );
 
   QgsDiagramLayerSettings dls;
+  dls.setDataDefinedProperties( mDataDefinedProperties );
   dls.setDistance( mDiagramDistanceSpinBox->value() );
   dls.setPriority( mPrioritySlider->value() );
   dls.setZIndex( mZIndexSpinBox->value() );
   dls.setShowAllDiagrams( mShowAllCheckBox->isChecked() );
-  if ( mDataDefinedVisibilityGroupBox->isChecked() )
-  {
-    dls.showColumn = mDataDefinedVisibilityComboBox->currentData().toInt();
-  }
-  else
-  {
-    dls.showColumn = -1;
-  }
-  if ( mDataDefinedPositionGroupBox->isChecked() )
-  {
-    dls.xPosColumn = mDataDefinedXComboBox->currentData().toInt();
-    dls.yPosColumn = mDataDefinedYComboBox->currentData().toInt();
-  }
-  else
-  {
-    dls.xPosColumn = -1;
-    dls.yPosColumn = -1;
-  }
   dls.setPlacement(( QgsDiagramLayerSettings::Placement )mPlacementComboBox->currentData().toInt() );
 
   QgsDiagramLayerSettings::LinePlacementFlags flags = 0;

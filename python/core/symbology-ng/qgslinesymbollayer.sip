@@ -273,9 +273,9 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    QSet<QString> usedAttributes() const;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
-    void setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined /Transfer/ );
+    void setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty& property );
 
   protected:
 

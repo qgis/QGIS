@@ -44,7 +44,7 @@ QgsSymbolLayer* QgsGeometryGeneratorSymbolLayer::create( const QgsStringMap& pro
   {
     symbolLayer->setSubSymbol( QgsFillSymbol::createSimple( properties ) );
   }
-  symbolLayer->restoreDataDefinedProperties( properties );
+  symbolLayer->restoreOldDataDefinedProperties( properties );
 
   return symbolLayer;
 }
@@ -140,8 +140,6 @@ QgsStringMap QgsGeometryGeneratorSymbolLayer::properties() const
       props.insert( QStringLiteral( "SymbolType" ), QStringLiteral( "Fill" ) );
       break;
   }
-  saveDataDefinedProperties( props );
-
   return props;
 }
 
@@ -181,10 +179,10 @@ bool QgsGeometryGeneratorSymbolLayer::setSubSymbol( QgsSymbol* symbol )
   return true;
 }
 
-QSet<QString> QgsGeometryGeneratorSymbolLayer::usedAttributes() const
+QSet<QString> QgsGeometryGeneratorSymbolLayer::usedAttributes( const QgsRenderContext& context ) const
 {
-  return QgsSymbolLayer::usedAttributes()
-         + mSymbol->usedAttributes()
+  return QgsSymbolLayer::usedAttributes( context )
+         + mSymbol->usedAttributes( context )
          + mExpression->referencedColumns();
 }
 

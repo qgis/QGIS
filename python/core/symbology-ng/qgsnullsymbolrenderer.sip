@@ -24,7 +24,7 @@ class QgsNullSymbolRenderer : QgsFeatureRenderer
     virtual void stopRender( QgsRenderContext& context );
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context );
 
-    virtual QSet<QString> usedAttributes() const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
     virtual QString dump() const;
     virtual QgsFeatureRenderer* clone() const /Factory/;
     virtual QgsSymbolList symbols( QgsRenderContext& context );

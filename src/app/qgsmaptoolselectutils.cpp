@@ -240,7 +240,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
   request.setFilterRect( selectGeomTrans.boundingBox() );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
   if ( r )
-    request.setSubsetOfAttributes( r->usedAttributes(), vlayer->fields() );
+    request.setSubsetOfAttributes( r->usedAttributes( context ), vlayer->fields() );
   else
     request.setSubsetOfAttributes( QgsAttributeList() );
 

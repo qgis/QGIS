@@ -421,7 +421,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     virtual QgsSymbol* subSymbol() override;
     virtual bool setSubSymbol( QgsSymbol* symbol ) override;
     virtual double estimateMaxBleed() const override;
-    QSet<QString> usedAttributes() const override;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
     void setColor( const QColor& c ) override;
     virtual QColor color() const override;
 

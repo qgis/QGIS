@@ -225,6 +225,41 @@ void QgsComposerScaleBar::invalidateCurrentMap()
   mComposerMap = nullptr;
 }
 
+void QgsComposerScaleBar::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext* context )
+{
+  QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext* evalContext = context ? context : &scopedContext;
+
+  bool forceUpdate = false;
+  //updates data defined properties and redraws item to match
+  if ( property == QgsComposerObject::ScalebarFillColor || property == QgsComposerObject::AllProperties )
+  {
+    mBrush.setColor( mDataDefinedProperties.valueAsColor( QgsComposerObject::ScalebarFillColor, *evalContext, mFillColor ) );
+    forceUpdate = true;
+  }
+  if ( property == QgsComposerObject::ScalebarFillColor2 || property == QgsComposerObject::AllProperties )
+  {
+    mBrush2.setColor( mDataDefinedProperties.valueAsColor( QgsComposerObject::ScalebarFillColor2, *evalContext, mFillColor2 ) );
+    forceUpdate = true;
+  }
+  if ( property == QgsComposerObject::ScalebarLineColor || property == QgsComposerObject::AllProperties )
+  {
+    mPen.setColor( mDataDefinedProperties.valueAsColor( QgsComposerObject::ScalebarLineColor, *evalContext, mLineColor ) );
+    forceUpdate = true;
+  }
+  if ( property == QgsComposerObject::ScalebarLineWidth || property == QgsComposerObject::AllProperties )
+  {
+    mPen.setWidthF( mDataDefinedProperties.valueAsDouble( QgsComposerObject::ScalebarLineWidth, *evalContext, mLineWidth ) );
+    forceUpdate = true;
+  }
+  if ( forceUpdate )
+  {
+    update();
+  }
+
+  QgsComposerObject::refreshDataDefinedProperty( property, context );
+}
+
 // nextNiceNumber(4573.23, d) = 5000 (d=1) -> 4600 (d=10) -> 4580 (d=100) -> 4574 (d=1000) -> etc
 inline double nextNiceNumber( double a, double d = 1 )
 {
@@ -385,15 +420,15 @@ void QgsComposerScaleBar::applyDefaultSettings()
   //default to no background
   setBackgroundEnabled( false );
 
-  mPen = QPen( Qt::black );
+  mPen = QPen( mLineColor );
   mPen.setJoinStyle( mLineJoinStyle );
   mPen.setCapStyle( mLineCapStyle );
-  mPen.setWidthF( 0.3 );
+  mPen.setWidthF( mLineWidth );
 
-  mBrush.setColor( Qt::black );
+  mBrush.setColor( mFillColor );
   mBrush.setStyle( Qt::SolidPattern );
 
-  mBrush2.setColor( Qt::white );
+  mBrush2.setColor( mFillColor2 );
   mBrush2.setStyle( Qt::SolidPattern );
 
   //get default composer font from settings
@@ -681,7 +716,7 @@ bool QgsComposerScaleBar::writeXml( QDomElement& elem, QDomDocument & doc ) cons
   composerScaleBarElem.setAttribute( QStringLiteral( "segmentMillimeters" ), QString::number( mSegmentMillimeters ) );
   composerScaleBarElem.setAttribute( QStringLiteral( "numMapUnitsPerScaleBarUnit" ), QString::number( mNumMapUnitsPerScaleBarUnit ) );
   composerScaleBarElem.appendChild( QgsFontUtils::toXmlElement( mFont, doc, QStringLiteral( "scaleBarFont" ) ) );
-  composerScaleBarElem.setAttribute( QStringLiteral( "outlineWidth" ), QString::number( mPen.widthF() ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "outlineWidth" ), QString::number( mLineWidth ) );
   composerScaleBarElem.setAttribute( QStringLiteral( "unitLabel" ), mUnitLabeling );
   composerScaleBarElem.setAttribute( QStringLiteral( "units" ), mUnits );
   composerScaleBarElem.setAttribute( QStringLiteral( "lineJoinStyle" ), QgsSymbolLayerUtils::encodePenJoinStyle( mLineJoinStyle ) );
@@ -703,29 +738,26 @@ bool QgsComposerScaleBar::writeXml( QDomElement& elem, QDomDocument & doc ) cons
 
   //fill color
   QDomElement fillColorElem = doc.createElement( QStringLiteral( "fillColor" ) );
-  QColor fillColor = mBrush.color();
-  fillColorElem.setAttribute( QStringLiteral( "red" ), QString::number( fillColor.red() ) );
-  fillColorElem.setAttribute( QStringLiteral( "green" ), QString::number( fillColor.green() ) );
-  fillColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( fillColor.blue() ) );
-  fillColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( fillColor.alpha() ) );
+  fillColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mFillColor.red() ) );
+  fillColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mFillColor.green() ) );
+  fillColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mFillColor.blue() ) );
+  fillColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mFillColor.alpha() ) );
   composerScaleBarElem.appendChild( fillColorElem );
 
   //fill color 2
   QDomElement fillColor2Elem = doc.createElement( QStringLiteral( "fillColor2" ) );
-  QColor fillColor2 = mBrush2.color();
-  fillColor2Elem.setAttribute( QStringLiteral( "red" ), QString::number( fillColor2.red() ) );
-  fillColor2Elem.setAttribute( QStringLiteral( "green" ), QString::number( fillColor2.green() ) );
-  fillColor2Elem.setAttribute( QStringLiteral( "blue" ), QString::number( fillColor2.blue() ) );
-  fillColor2Elem.setAttribute( QStringLiteral( "alpha" ), QString::number( fillColor2.alpha() ) );
+  fillColor2Elem.setAttribute( QStringLiteral( "red" ), QString::number( mFillColor2.red() ) );
+  fillColor2Elem.setAttribute( QStringLiteral( "green" ), QString::number( mFillColor2.green() ) );
+  fillColor2Elem.setAttribute( QStringLiteral( "blue" ), QString::number( mFillColor2.blue() ) );
+  fillColor2Elem.setAttribute( QStringLiteral( "alpha" ), QString::number( mFillColor2.alpha() ) );
   composerScaleBarElem.appendChild( fillColor2Elem );
 
   //pen color
   QDomElement strokeColorElem = doc.createElement( QStringLiteral( "strokeColor" ) );
-  QColor strokeColor = mPen.color();
-  strokeColorElem.setAttribute( QStringLiteral( "red" ), QString::number( strokeColor.red() ) );
-  strokeColorElem.setAttribute( QStringLiteral( "green" ), QString::number( strokeColor.green() ) );
-  strokeColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( strokeColor.blue() ) );
-  strokeColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( strokeColor.alpha() ) );
+  strokeColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mLineColor.red() ) );
+  strokeColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mLineColor.green() ) );
+  strokeColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mLineColor.blue() ) );
+  strokeColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mLineColor.alpha() ) );
   composerScaleBarElem.appendChild( strokeColorElem );
 
   //font color
@@ -761,7 +793,8 @@ bool QgsComposerScaleBar::readXml( const QDomElement& itemElem, const QDomDocume
   mMaxBarWidth = itemElem.attribute( QStringLiteral( "maxBarWidth" ), QStringLiteral( "150" ) ).toInt();
   mSegmentMillimeters = itemElem.attribute( QStringLiteral( "segmentMillimeters" ), QStringLiteral( "0.0" ) ).toDouble();
   mNumMapUnitsPerScaleBarUnit = itemElem.attribute( QStringLiteral( "numMapUnitsPerScaleBarUnit" ), QStringLiteral( "1.0" ) ).toDouble();
-  mPen.setWidthF( itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "0.3" ) ).toDouble() );
+  mLineWidth = itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "0.3" ) ).toDouble();
+  mPen.setWidthF( mLineWidth );
   mUnitLabeling = itemElem.attribute( QStringLiteral( "unitLabel" ) );
   mLineJoinStyle = QgsSymbolLayerUtils::decodePenJoinStyle( itemElem.attribute( QStringLiteral( "lineJoinStyle" ), QStringLiteral( "miter" ) ) );
   mPen.setJoinStyle( mLineJoinStyle );
@@ -788,12 +821,14 @@ bool QgsComposerScaleBar::readXml( const QDomElement& itemElem, const QDomDocume
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      mBrush.setColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
+      mFillColor = QColor( fillRed, fillGreen, fillBlue, fillAlpha );
+      mBrush.setColor( mFillColor );
     }
   }
   else
   {
-    mBrush.setColor( QColor( itemElem.attribute( QStringLiteral( "brushColor" ), QStringLiteral( "#000000" ) ) ) );
+    mFillColor = QColor( itemElem.attribute( QStringLiteral( "brushColor" ), QStringLiteral( "#000000" ) ) );
+    mBrush.setColor( mFillColor );
   }
 
   //fill color 2
@@ -811,12 +846,14 @@ bool QgsComposerScaleBar::readXml( const QDomElement& itemElem, const QDomDocume
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      mBrush2.setColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
+      mFillColor2 = QColor( fillRed, fillGreen, fillBlue, fillAlpha );
+      mBrush2.setColor( mFillColor2 );
     }
   }
   else
   {
-    mBrush2.setColor( QColor( itemElem.attribute( QStringLiteral( "brush2Color" ), QStringLiteral( "#ffffff" ) ) ) );
+    mFillColor2 = QColor( itemElem.attribute( QStringLiteral( "brush2Color" ), QStringLiteral( "#ffffff" ) ) );
+    mBrush2.setColor( mFillColor2 );
   }
 
   //stroke color
@@ -834,12 +871,14 @@ bool QgsComposerScaleBar::readXml( const QDomElement& itemElem, const QDomDocume
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      mPen.setColor( QColor( strokeRed, strokeGreen, strokeBlue, strokeAlpha ) );
+      mLineColor = QColor( strokeRed, strokeGreen, strokeBlue, strokeAlpha );
+      mPen.setColor( mLineColor );
     }
   }
   else
   {
-    mPen.setColor( QColor( itemElem.attribute( QStringLiteral( "penColor" ), QStringLiteral( "#000000" ) ) ) );
+    mLineColor = QColor( itemElem.attribute( QStringLiteral( "penColor" ), QStringLiteral( "#000000" ) ) );
+    mPen.setColor( mLineColor );
   }
 
   //font color

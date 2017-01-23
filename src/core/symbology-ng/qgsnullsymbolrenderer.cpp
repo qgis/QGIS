@@ -80,7 +80,7 @@ bool QgsNullSymbolRenderer::willRenderFeature( QgsFeature&, QgsRenderContext& )
   return true;
 }
 
-QSet<QString> QgsNullSymbolRenderer::usedAttributes() const
+QSet<QString> QgsNullSymbolRenderer::usedAttributes( const QgsRenderContext& ) const
 {
   return QSet<QString>();
 }

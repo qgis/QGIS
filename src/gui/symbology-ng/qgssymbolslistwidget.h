@@ -19,6 +19,7 @@
 #include "ui_widget_symbolslist.h"
 
 #include "qgssymbolwidgetcontext.h"
+#include "qgssymbollayer.h"
 
 #include <QWidget>
 #include "qgis_gui.h"
@@ -107,6 +108,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QgsSymbolWidgetContext mContext;
 
     QgsExpressionContext createExpressionContext() const override;
+    void registerDataDefinedButton( QgsPropertyOverrideButton* button, QgsSymbolLayer::Property key );
 };
 
 #endif //QGSSYMBOLSLISTWIDGET_H

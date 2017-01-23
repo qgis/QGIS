@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslabelpropertydialog.h"
-#include <qgsdatadefined.h>
 #include <qgsfontutils.h>
 #include <qgslogger.h>
 #include "qgsfeatureiterator.h"
@@ -25,7 +24,7 @@
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayerlabeling.h"
-
+#include "qgsproperty.h"
 #include <QColorDialog>
 #include <QFontDatabase>
 #include <QSettings>
@@ -49,8 +48,6 @@ QgsLabelPropertyDialog::~QgsLabelPropertyDialog()
 {
   QSettings settings;
   settings.setValue( QStringLiteral( "/Windows/ChangeLabelProps/geometry" ), saveGeometry() );
-
-  qDeleteAll( mDataDefinedProperties );
 }
 
 void QgsLabelPropertyDialog::on_buttonBox_clicked( QAbstractButton *button )
@@ -153,14 +150,10 @@ void QgsLabelPropertyDialog::init( const QString& layerId, const QString& provid
 
   disableGuiElements();
 
-  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator it = layerSettings.dataDefinedProperties.constBegin();
-  for ( ; it != layerSettings.dataDefinedProperties.constEnd(); ++it )
-  {
-    mDataDefinedProperties.insert( it.key(), it.value() ? new QgsDataDefined( *it.value() ) : nullptr );
-  }
+  mDataDefinedProperties = layerSettings.dataDefinedProperties();
 
   //set widget values from data defined results
-  setDataDefinedValues( layerSettings, vlayer );
+  setDataDefinedValues( vlayer );
   //enable widgets connected to data defined fields
   enableDataDefinedWidgets( vlayer );
 
@@ -215,7 +208,7 @@ void QgsLabelPropertyDialog::blockElementSignals( bool block )
   mRotationSpinBox->blockSignals( block );
 }
 
-void QgsLabelPropertyDialog::setDataDefinedValues( const QgsPalLayerSettings &layerSettings, QgsVectorLayer* vlayer )
+void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer* vlayer )
 {
   //loop through data defined properties and set all the GUI widget values. We can do this
   //even if the data defined property is set to an expression, as it's useful to show
@@ -229,22 +222,13 @@ void QgsLabelPropertyDialog::setDataDefinedValues( const QgsPalLayerSettings &la
   << QgsExpressionContextUtils::layerScope( vlayer );
   context.setFeature( mCurLabelFeat );
 
-  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator propIt = mDataDefinedProperties.constBegin();
-  for ( ; propIt != mDataDefinedProperties.constEnd(); ++propIt )
+  Q_FOREACH ( int key, mDataDefinedProperties.propertyKeys() )
   {
-    QgsDataDefined* dd = propIt.value();
-    if ( !dd || !dd->isActive() )
-    {
+    if ( !mDataDefinedProperties.isActive( key ) )
       continue;
-    }
-
-    if ( !dd->expressionIsPrepared() )
-    {
-      dd->prepareExpression( context );
-    }
 
     //TODO - pass expression context
-    QVariant result = layerSettings.dataDefinedValue( propIt.key(), mCurLabelFeat, vlayer->fields(), &context );
+    QVariant result = mDataDefinedProperties.value( key, context );
     if ( !result.isValid() || result.isNull() )
     {
       //could not evaluate data defined value
@@ -252,7 +236,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( const QgsPalLayerSettings &la
     }
 
     bool ok = false;
-    switch ( propIt.key() )
+    switch ( key )
     {
       case QgsPalLayerSettings::Show:
       {
@@ -362,18 +346,18 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer* vlayer )
 {
   //loop through data defined properties, this time setting whether or not the widgets are enabled
   //this can only be done for properties which are assigned to fields
-  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator propIt = mDataDefinedProperties.constBegin();
-  for ( ; propIt != mDataDefinedProperties.constEnd(); ++propIt )
+  Q_FOREACH ( int key, mDataDefinedProperties.propertyKeys() )
   {
-    QgsDataDefined* dd = propIt.value();
-    if ( !dd )
-    {
-      continue;
-    }
-    QString ddField = dd->field();
-    if ( !dd->isActive() || dd->useExpression() || ddField.isEmpty() )
+    QgsProperty prop = mDataDefinedProperties.property( key );
+    if ( !prop || !prop.isActive() || prop.propertyType() != QgsProperty::FieldBasedProperty )
     {
       continue; // can only modify attributes with an active data definition of a mapped field
+    }
+
+    QString ddField = prop.field();
+    if ( ddField.isEmpty() )
+    {
+      continue;
     }
 
     int ddIndx = vlayer->fields().lookupField( ddField );
@@ -384,7 +368,7 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer* vlayer )
 
     QgsDebugMsg( QString( "ddField: %1" ).arg( ddField ) );
 
-    switch ( propIt.key() )
+    switch ( key )
     {
       case QgsPalLayerSettings::Show:
         mShowLabelChkbx->setEnabled( true );
@@ -664,16 +648,14 @@ void QgsLabelPropertyDialog::on_mLabelTextLineEdit_textChanged( const QString& t
   }
 }
 
-void QgsLabelPropertyDialog::insertChangedValue( QgsPalLayerSettings::DataDefinedProperties p, const QVariant& value )
+void QgsLabelPropertyDialog::insertChangedValue( QgsPalLayerSettings::Property p, const QVariant& value )
 {
-  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator ddIt = mDataDefinedProperties.constFind( p );
-  if ( ddIt != mDataDefinedProperties.constEnd() )
+  if ( mDataDefinedProperties.isActive( p ) )
   {
-    QgsDataDefined* dd = ddIt.value();
-
-    if ( dd && dd->isActive() && !dd->useExpression() && !dd->field().isEmpty() )
+    QgsProperty prop = mDataDefinedProperties.property( p );
+    if ( prop.propertyType() == QgsProperty::FieldBasedProperty )
     {
-      mChangedProperties.insert( mCurLabelFeat.fieldNameIndex( dd->field() ), value );
+      mChangedProperties.insert( mCurLabelFeat.fieldNameIndex( prop.field() ), value );
     }
   }
 }

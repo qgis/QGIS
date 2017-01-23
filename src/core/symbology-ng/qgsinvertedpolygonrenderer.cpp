@@ -464,13 +464,13 @@ QgsFeatureRenderer::Capabilities QgsInvertedPolygonRenderer::capabilities()
   return mSubRenderer->capabilities();
 }
 
-QSet<QString> QgsInvertedPolygonRenderer::usedAttributes() const
+QSet<QString> QgsInvertedPolygonRenderer::usedAttributes( const QgsRenderContext& context ) const
 {
   if ( !mSubRenderer )
   {
     return QSet<QString>();
   }
-  return mSubRenderer->usedAttributes();
+  return mSubRenderer->usedAttributes( context );
 }
 
 QgsLegendSymbologyList QgsInvertedPolygonRenderer::legendSymbologyItems( QSize iconSize )

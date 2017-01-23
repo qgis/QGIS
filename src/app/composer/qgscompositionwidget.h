@@ -114,10 +114,6 @@ class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWid
     void blockSignals( bool block );
 
     //! Sets a data defined property for the item from its current data defined button settings
-    void setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty property );
-
-    //! Returns the data defined property corresponding to a data defined button widget
-    virtual QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton* widget );
-
+    void setDataDefinedProperty( const QgsPropertyOverrideButton *ddBtn, QgsComposerObject::DataDefinedProperty property );
 
 };

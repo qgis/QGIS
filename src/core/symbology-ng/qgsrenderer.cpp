@@ -17,7 +17,6 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgsrulebasedrenderer.h"
-#include "qgsdatadefined.h"
 
 #include "qgssinglesymbolrenderer.h" // for default renderer
 
@@ -35,6 +34,7 @@
 #include "qgspainteffectregistry.h"
 #include "qgswkbptr.h"
 #include "qgspointv2.h"
+#include "qgsproperty.h"
 
 #include <QDomElement>
 #include <QDomDocument>
@@ -415,21 +415,18 @@ void QgsFeatureRenderer::convertSymbolSizeScale( QgsSymbol * symbol, QgsSymbol::
     QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( symbol );
     if ( QgsSymbol::ScaleArea == QgsSymbol::ScaleMethod( method ) )
     {
-      const QgsDataDefined dd( "coalesce(sqrt(" + QString::number( s->size() ) + " * (" + field + ")),0)" );
-      s->setDataDefinedSize( dd );
+      s->setDataDefinedSize( QgsProperty::fromExpression( "coalesce(sqrt(" + QString::number( s->size() ) + " * (" + field + ")),0)" ) );
     }
     else
     {
-      const QgsDataDefined dd( "coalesce(" + QString::number( s->size() ) + " * (" + field + "),0)" );
-      s->setDataDefinedSize( dd );
+      s->setDataDefinedSize( QgsProperty::fromExpression( "coalesce(" + QString::number( s->size() ) + " * (" + field + "),0)" ) );
     }
     s->setScaleMethod( QgsSymbol::ScaleDiameter );
   }
   else if ( symbol->type() == QgsSymbol::Line )
   {
     QgsLineSymbol * s = static_cast<QgsLineSymbol *>( symbol );
-    const QgsDataDefined dd( "coalesce(" + QString::number( s->width() ) + " * (" + field + "),0)" );
-    s->setDataDefinedWidth( dd );
+    s->setDataDefinedWidth( QgsProperty::fromExpression( "coalesce(" + QString::number( s->width() ) + " * (" + field + "),0)" ) );
   }
 }
 
@@ -438,9 +435,9 @@ void QgsFeatureRenderer::convertSymbolRotation( QgsSymbol * symbol, const QStrin
   if ( symbol->type() == QgsSymbol::Marker )
   {
     QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( symbol );
-    const QgsDataDefined dd(( s->angle()
-                              ? QString::number( s->angle() ) + " + "
-                              : QString() ) + field );
+    QgsProperty dd = QgsProperty::fromExpression(( s->angle()
+                     ? QString::number( s->angle() ) + " + "
+                     : QString() ) + field );
     s->setDataDefinedAngle( dd );
   }
 }
