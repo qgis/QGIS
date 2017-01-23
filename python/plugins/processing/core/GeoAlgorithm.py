@@ -213,8 +213,16 @@ class GeoAlgorithm:
             lines = [self.tr('Uncaught error while executing algorithm')]
             lines.append(traceback.format_exc())
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
+            try:
+                message = unicode(e)
+            except Exception:
+                # Encoding the error message failed. Try with the 'replace' mode.
+                try:
+                    message = unicode(e.message, 'utf-8', 'replace')
+                except Exception:
+                    message = self.tr('Unknown error')
             raise GeoAlgorithmExecutionException(
-                unicode(e.message, errors='replace') + self.tr(u'\nSee log for more details'))
+                message + self.tr(' \nSee log for more details'), lines, e)
 
     def _checkParameterValuesBeforeExecuting(self):
         for param in self.parameters:
