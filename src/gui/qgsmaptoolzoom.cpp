@@ -83,6 +83,10 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent* e )
   if ( e->button() != Qt::LeftButton )
     return;
 
+  bool zoomOut = mZoomOut;
+  if ( e->modifiers() & Qt::ShiftModifier )
+    zoomOut = !zoomOut;
+
   // We are not really dragging in this case. This is sometimes caused by
   // a pen based computer reporting a press, move, and release, all the
   // one point.
@@ -117,14 +121,14 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent* e )
     const QgsMapToPixel* m2p = mCanvas->getCoordinateTransform();
     QgsPoint c = m2p->toMapCoordinates( mZoomRect.center() );
 
-    mCanvas->zoomByFactor( mZoomOut ? 1.0 / sf : sf, &c );
+    mCanvas->zoomByFactor( zoomOut ? 1.0 / sf : sf, &c );
 
     mCanvas->refresh();
   }
   else // not dragging
   {
     // change to zoom in/out by the default multiple
-    mCanvas->zoomWithCenter( e->x(), e->y(), !mZoomOut );
+    mCanvas->zoomWithCenter( e->x(), e->y(), !zoomOut );
   }
 }
 
