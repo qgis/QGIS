@@ -177,7 +177,9 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
 
     //page area
     painter->setBrush( QColor( 215, 215, 215 ) );
-    painter->setPen( QPen( QColor( 100, 100, 100 ) ) );
+    QPen pagePen = QPen( QColor( 100, 100, 100 ), 0 );
+    pagePen.setCosmetic( true );
+    painter->setPen( pagePen );
     painter->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
   }
 
