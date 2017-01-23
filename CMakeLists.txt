@@ -502,8 +502,6 @@ ELSE (WIN32)
     ELSE ()
         SET (OSX_HAVE_LOADERPATH 0)
     ENDIF ()
-    #this will define ${APP_SERVICES_LIBRARY}
-    FIND_LIBRARY(APP_SERVICES_LIBRARY ApplicationServices )
 
     SET (DEFAULT_BIN_SUBDIR      bin)
     SET (QGIS_BIN_SUBDIR_REV     ..)

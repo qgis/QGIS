@@ -85,6 +85,7 @@
 //
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
+#include "qgsmacnative.h"
 
 // check macro breaks QItemDelegate
 #ifdef check
@@ -1120,6 +1121,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 #endif
 
+#ifdef Q_OS_MAC
+  mNative = new QgsMacNative();
+#else
+  mNative = new QgsNative();
+#endif
+
 } // QgisApp ctor
 
 QgisApp::QgisApp()
@@ -1131,7 +1138,7 @@ QgisApp::QgisApp()
     , mMapToolGroup( nullptr )
     , mPreviewGroup( nullptr )
 #ifdef Q_OS_MAC
-    , mWindowMenu( 0 )
+    , mWindowMenu( nullptr )
 #endif
     , mPanelMenu( nullptr )
     , mToolbarMenu( nullptr )
@@ -5708,12 +5715,7 @@ void QgisApp::activate()
 
 void QgisApp::bringAllToFront()
 {
-#ifdef Q_OS_MAC
-  // Bring forward all open windows while maintaining layering order
-  ProcessSerialNumber psn;
-  GetCurrentProcess( &psn );
-  SetFrontProcess( &psn );
-#endif
+  mNative->currentAppActivateIgnoringOtherApps();
 }
 
 void QgisApp::addWindow( QAction *action )
