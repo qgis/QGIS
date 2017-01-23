@@ -57,7 +57,7 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
   private:
     QgsVectorLayer* mLayer;
     const QgsPalLayerSettings* mSettings;
-    QgsPropertyCollection mProperties;
+    QgsPropertyCollection mDataDefinedProperties;
     LabelMode mMode;
 
     QgsExpressionContext createExpressionContext() const override;

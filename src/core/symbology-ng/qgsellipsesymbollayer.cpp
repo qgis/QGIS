@@ -179,11 +179,11 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext& 
   double scaledWidth = mSymbolWidth;
   double scaledHeight = mSymbolHeight;
 
-  if ( mProperties.hasActiveProperties() )
+  if ( mDataDefinedProperties.hasActiveProperties() )
   {
     bool ok;
     context.setOriginalValueVariable( mOutlineWidth );
-    QVariant exprVal = mProperties.value( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext() );
     if ( exprVal.isValid() )
     {
       double width = exprVal.toDouble( &ok );
@@ -195,30 +195,30 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext& 
     }
 
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mOutlineStyle ) );
-    exprVal = mProperties.value( QgsSymbolLayer::PropertyOutlineStyle, context.renderContext().expressionContext() );
+    exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOutlineStyle, context.renderContext().expressionContext() );
     if ( exprVal.isValid() )
     {
       mPen.setStyle( QgsSymbolLayerUtils::decodePenStyle( exprVal.toString() ) );
     }
 
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
-    exprVal = mProperties.value( QgsSymbolLayer::PropertyJoinStyle, context.renderContext().expressionContext() );
+    exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyJoinStyle, context.renderContext().expressionContext() );
     if ( exprVal.isValid() )
     {
       mPen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( exprVal.toString() ) );
     }
 
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
-    mBrush.setColor( mProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor ) );
+    mBrush.setColor( mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor ) );
 
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mOutlineColor ) );
-    mPen.setColor( mProperties.valueAsColor( QgsSymbolLayer::PropertyOutlineColor, context.renderContext().expressionContext(), mOutlineColor ) );
+    mPen.setColor( mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyOutlineColor, context.renderContext().expressionContext(), mOutlineColor ) );
 
-    if ( mProperties.isActive( QgsSymbolLayer::PropertyWidth ) || mProperties.isActive( QgsSymbolLayer::PropertyHeight ) || mProperties.isActive( QgsSymbolLayer::PropertyName ) )
+    if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
     {
       QString symbolName =  mSymbolName;
       context.setOriginalValueVariable( mSymbolName );
-      exprVal = mProperties.value( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext() );
+      exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext() );
       if ( exprVal.isValid() )
       {
         symbolName = exprVal.toString();
@@ -268,10 +268,10 @@ void QgsEllipseSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContext& 
   bool ok = true;
   angle = mAngle + mLineAngle;
   bool usingDataDefinedRotation = false;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
   {
     context.setOriginalValueVariable( angle );
-    angle = mProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), 0 ) + mLineAngle;
+    angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), 0 ) + mLineAngle;
     usingDataDefinedRotation = ok;
   }
 
@@ -376,7 +376,7 @@ void QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
   QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, mSymbolName, mColor, mOutlineColor, mOutlineStyle, outlineWidth, symbolWidth );
 
   // <Rotation>
-  QgsProperty ddRotation = mProperties.property( QgsSymbolLayer::PropertyAngle );
+  QgsProperty ddRotation = mDataDefinedProperties.property( QgsSymbolLayer::PropertyAngle );
 
   QString angleFunc = props.value( QStringLiteral( "angle" ), QLatin1String( "" ) );
   if ( angleFunc.isEmpty() )  // symbol has no angle set
@@ -506,10 +506,10 @@ QSizeF QgsEllipseSymbolLayer::calculateSize( QgsSymbolRenderContext& context, do
 {
   double width = 0;
 
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyWidth ) ) //1. priority: data defined setting on symbol layer le
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) ) //1. priority: data defined setting on symbol layer le
   {
     context.setOriginalValueVariable( mSymbolWidth );
-    width = mProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), mSymbolWidth );
+    width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), mSymbolWidth );
   }
   else //2. priority: global width setting
   {
@@ -522,10 +522,10 @@ QSizeF QgsEllipseSymbolLayer::calculateSize( QgsSymbolRenderContext& context, do
   width = context.renderContext().convertToPainterUnits( width, mSymbolWidthUnit, mSymbolHeightMapUnitScale );
 
   double height = 0;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyHeight ) ) //1. priority: data defined setting on symbol layer level
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight ) ) //1. priority: data defined setting on symbol layer level
   {
     context.setOriginalValueVariable( mSymbolHeight );
-    height = mProperties.valueAsDouble( QgsSymbolLayer::PropertyHeight, context.renderContext().expressionContext(), mSymbolHeight );
+    height = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyHeight, context.renderContext().expressionContext(), mSymbolHeight );
   }
   else //2. priority: global height setting
   {
@@ -651,10 +651,10 @@ QRectF QgsEllipseSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext& con
     transform.rotate( angle );
 
   double penWidth = 0.0;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) )
   {
     context.setOriginalValueVariable( mOutlineWidth );
-    QVariant exprVal = mProperties.value( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext() );
 
     if ( exprVal.isValid() )
     {
@@ -666,10 +666,10 @@ QRectF QgsEllipseSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext& con
       }
     }
   }
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyOutlineStyle ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mOutlineStyle ) );
-    QVariant exprVal = mProperties.value( QgsSymbolLayer::PropertyOutlineStyle, context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOutlineStyle, context.renderContext().expressionContext() );
     if ( exprVal.isValid() && exprVal.toString() == QLatin1String( "no" ) )
     {
       penWidth = 0.0;
@@ -696,10 +696,10 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFact
   //width
   double symbolWidth = mSymbolWidth;
 
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyWidth ) ) //1. priority: data defined setting on symbol layer le
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) ) //1. priority: data defined setting on symbol layer le
   {
     context.setOriginalValueVariable( mSymbolWidth );
-    symbolWidth = mProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), mSymbolWidth );
+    symbolWidth = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), mSymbolWidth );
   }
   if ( mSymbolWidthUnit == QgsUnitTypes::RenderMillimeters )
   {
@@ -708,10 +708,10 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFact
 
   //height
   double symbolHeight = mSymbolHeight;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyHeight ) ) //1. priority: data defined setting on symbol layer level
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight ) ) //1. priority: data defined setting on symbol layer level
   {
     context.setOriginalValueVariable( mSymbolHeight );
-    symbolWidth = mProperties.valueAsDouble( QgsSymbolLayer::PropertyHeight, context.renderContext().expressionContext(), mSymbolHeight );
+    symbolWidth = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyHeight, context.renderContext().expressionContext(), mSymbolHeight );
   }
   if ( mSymbolHeightUnit == QgsUnitTypes::RenderMillimeters )
   {
@@ -721,10 +721,10 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFact
   //outline width
   double outlineWidth = mOutlineWidth;
 
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) )
   {
     context.setOriginalValueVariable( mOutlineWidth );
-    outlineWidth = mProperties.valueAsDouble( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext(), mOutlineWidth );
+    outlineWidth = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext(), mOutlineWidth );
   }
   if ( mOutlineWidthUnit == QgsUnitTypes::RenderMillimeters )
   {
@@ -733,26 +733,26 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFact
 
   //fill color
   QColor fc = mColor;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
-    fc = mProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor );
+    fc = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor );
   }
 
   //outline color
   QColor oc = mOutlineColor;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyOutlineColor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mOutlineColor ) );
-    oc = mProperties.valueAsColor( QgsSymbolLayer::PropertyOutlineColor, context.renderContext().expressionContext(), mOutlineColor );
+    oc = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyOutlineColor, context.renderContext().expressionContext(), mOutlineColor );
   }
 
   //symbol name
   QString symbolName = mSymbolName;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyName ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
   {
     context.setOriginalValueVariable( mSymbolName );
-    symbolName = mProperties.valueAsString( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext(), mSymbolName );
+    symbolName = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext(), mSymbolName );
   }
 
   //offset
@@ -763,10 +763,10 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFact
 
   //priority for rotation: 1. data defined symbol level, 2. symbol layer rotation (mAngle)
   double rotation = 0.0;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
   {
     context.setOriginalValueVariable( mAngle );
-    rotation = mProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle ) + mLineAngle;
+    rotation = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle ) + mLineAngle;
   }
   else if ( !qgsDoubleNear( mAngle + mLineAngle, 0.0 ) )
   {

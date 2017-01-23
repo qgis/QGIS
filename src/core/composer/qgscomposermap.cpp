@@ -518,7 +518,7 @@ QList<QgsMapLayer*> QgsComposerMap::layersToRender( const QgsExpressionContext* 
     QString presetName = mFollowVisibilityPresetName;
 
     // preset name can be overridden by data-defined one
-    presetName = mProperties.valueAsString( QgsComposerObject::MapStylePreset, *evalContext, presetName );
+    presetName = mDataDefinedProperties.valueAsString( QgsComposerObject::MapStylePreset, *evalContext, presetName );
 
     if ( mComposition->project()->mapThemeCollection()->hasMapTheme( presetName ) )
       renderLayers = mComposition->project()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
@@ -535,7 +535,7 @@ QList<QgsMapLayer*> QgsComposerMap::layersToRender( const QgsExpressionContext* 
   }
 
   bool ok = false;
-  QString ddLayers = mProperties.valueAsString( QgsComposerObject::MapLayers, *evalContext, QString(), &ok );
+  QString ddLayers = mDataDefinedProperties.valueAsString( QgsComposerObject::MapLayers, *evalContext, QString(), &ok );
   if ( ok )
   {
     renderLayers.clear();
@@ -577,7 +577,7 @@ QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender( const QgsExp
     QString presetName = mFollowVisibilityPresetName;
 
     // data defined preset name?
-    presetName = mProperties.valueAsString( QgsComposerObject::MapStylePreset, context, presetName );
+    presetName = mDataDefinedProperties.valueAsString( QgsComposerObject::MapStylePreset, context, presetName );
 
     if ( mComposition->project()->mapThemeCollection()->hasMapTheme( presetName ) )
       return mComposition->project()->mapThemeCollection()->mapThemeStyleOverrides( presetName );
@@ -957,25 +957,25 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext* context )
   double maxYD = 0;
 
   bool ok = false;
-  minXD = mProperties.valueAsDouble( QgsComposerObject::MapXMin, *evalContext, 0.0, &ok );
+  minXD = mDataDefinedProperties.valueAsDouble( QgsComposerObject::MapXMin, *evalContext, 0.0, &ok );
   if ( ok )
   {
     useDdXMin = true;
     newExtent.setXMinimum( minXD );
   }
-  minYD = mProperties.valueAsDouble( QgsComposerObject::MapYMin, *evalContext, 0.0, &ok );
+  minYD = mDataDefinedProperties.valueAsDouble( QgsComposerObject::MapYMin, *evalContext, 0.0, &ok );
   if ( ok )
   {
     useDdYMin = true;
     newExtent.setYMinimum( minYD );
   }
-  maxXD = mProperties.valueAsDouble( QgsComposerObject::MapXMax, *evalContext, 0.0, &ok );
+  maxXD = mDataDefinedProperties.valueAsDouble( QgsComposerObject::MapXMax, *evalContext, 0.0, &ok );
   if ( ok )
   {
     useDdXMax = true;
     newExtent.setXMaximum( maxXD );
   }
-  maxYD = mProperties.valueAsDouble( QgsComposerObject::MapYMax, *evalContext, 0.0, &ok );
+  maxYD = mDataDefinedProperties.valueAsDouble( QgsComposerObject::MapYMax, *evalContext, 0.0, &ok );
   if ( ok )
   {
     useDdYMax = true;
@@ -1014,7 +1014,7 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext* context )
   //now refresh scale, as this potentially overrides extents
 
   //data defined map scale set?
-  double scaleD = mProperties.valueAsDouble( QgsComposerObject::MapScale, *evalContext, 0.0, &ok );
+  double scaleD = mDataDefinedProperties.valueAsDouble( QgsComposerObject::MapScale, *evalContext, 0.0, &ok );
   if ( ok )
   {
     setNewScale( scaleD, false );
@@ -1060,7 +1060,7 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext* context )
   double mapRotation = mMapRotation;
 
   //data defined map rotation set?
-  mapRotation = mProperties.valueAsDouble( QgsComposerObject::MapRotation, *evalContext, mapRotation );
+  mapRotation = mDataDefinedProperties.valueAsDouble( QgsComposerObject::MapRotation, *evalContext, mapRotation );
 
   if ( !qgsDoubleNear( mEvaluatedMapRotation, mapRotation ) )
   {
@@ -2004,7 +2004,7 @@ double QgsComposerMap::atlasMargin( const QgsComposerObject::PropertyValueType v
     QgsExpressionContext context = createExpressionContext();
 
     bool ok = false;
-    double ddMargin = mProperties.valueAsDouble( QgsComposerObject::MapAtlasMargin, context, 0.0, &ok );
+    double ddMargin = mDataDefinedProperties.valueAsDouble( QgsComposerObject::MapAtlasMargin, context, 0.0, &ok );
     if ( ok )
     {
       //divide by 100 to convert to 0 -> 1.0 range

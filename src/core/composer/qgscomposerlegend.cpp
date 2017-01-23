@@ -655,7 +655,7 @@ void QgsComposerLegend::refreshDataDefinedProperty( const QgsComposerObject::Dat
   if ( property == QgsComposerObject::LegendTitle || property == QgsComposerObject::AllProperties )
   {
     bool ok = false;
-    QString t = mProperties.valueAsString( QgsComposerObject::LegendTitle, *evalContext, mTitle, &ok );
+    QString t = mDataDefinedProperties.valueAsString( QgsComposerObject::LegendTitle, *evalContext, mTitle, &ok );
     if ( ok )
     {
       mSettings.setTitle( t );
@@ -665,7 +665,7 @@ void QgsComposerLegend::refreshDataDefinedProperty( const QgsComposerObject::Dat
   if ( property == QgsComposerObject::LegendColumnCount || property == QgsComposerObject::AllProperties )
   {
     bool ok = false;
-    int cols = mProperties.valueAsInt( QgsComposerObject::LegendColumnCount, *evalContext, mColumnCount, &ok );
+    int cols = mDataDefinedProperties.valueAsInt( QgsComposerObject::LegendColumnCount, *evalContext, mColumnCount, &ok );
     if ( ok && cols >= 0 )
     {
       mSettings.setColumnCount( cols );

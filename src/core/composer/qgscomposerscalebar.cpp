@@ -234,22 +234,22 @@ void QgsComposerScaleBar::refreshDataDefinedProperty( const QgsComposerObject::D
   //updates data defined properties and redraws item to match
   if ( property == QgsComposerObject::ScalebarFillColor || property == QgsComposerObject::AllProperties )
   {
-    mBrush.setColor( mProperties.valueAsColor( QgsComposerObject::ScalebarFillColor, *evalContext, mFillColor ) );
+    mBrush.setColor( mDataDefinedProperties.valueAsColor( QgsComposerObject::ScalebarFillColor, *evalContext, mFillColor ) );
     forceUpdate = true;
   }
   if ( property == QgsComposerObject::ScalebarFillColor2 || property == QgsComposerObject::AllProperties )
   {
-    mBrush2.setColor( mProperties.valueAsColor( QgsComposerObject::ScalebarFillColor2, *evalContext, mFillColor2 ) );
+    mBrush2.setColor( mDataDefinedProperties.valueAsColor( QgsComposerObject::ScalebarFillColor2, *evalContext, mFillColor2 ) );
     forceUpdate = true;
   }
   if ( property == QgsComposerObject::ScalebarLineColor || property == QgsComposerObject::AllProperties )
   {
-    mPen.setColor( mProperties.valueAsColor( QgsComposerObject::ScalebarLineColor, *evalContext, mLineColor ) );
+    mPen.setColor( mDataDefinedProperties.valueAsColor( QgsComposerObject::ScalebarLineColor, *evalContext, mLineColor ) );
     forceUpdate = true;
   }
   if ( property == QgsComposerObject::ScalebarLineWidth || property == QgsComposerObject::AllProperties )
   {
-    mPen.setWidthF( mProperties.valueAsDouble( QgsComposerObject::ScalebarLineWidth, *evalContext, mLineWidth ) );
+    mPen.setWidthF( mDataDefinedProperties.valueAsDouble( QgsComposerObject::ScalebarLineWidth, *evalContext, mLineWidth ) );
     forceUpdate = true;
   }
   if ( forceUpdate )

@@ -143,7 +143,7 @@ void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext 
 
       //data defined url set?
       bool ok = false;
-      currentUrl = mProperties.valueAsString( QgsComposerObject::SourceUrl, *evalContext, currentUrl, &ok );
+      currentUrl = mDataDefinedProperties.valueAsString( QgsComposerObject::SourceUrl, *evalContext, currentUrl, &ok );
       if ( ok )
       {
         currentUrl = currentUrl.trimmed();

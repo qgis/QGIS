@@ -443,7 +443,7 @@ void QgsComposition::setNumPages( const int pages )
 
   //data defined num pages set?
   QgsExpressionContext context = createExpressionContext();
-  desiredPages = mProperties.valueAsInt( QgsComposerObject::NumPages, context, desiredPages );
+  desiredPages = mDataDefinedProperties.valueAsInt( QgsComposerObject::NumPages, context, desiredPages );
 
   int diff = desiredPages - currentPages;
   if ( diff >= 0 )
@@ -903,7 +903,7 @@ bool QgsComposition::writeXml( QDomElement& composerElem, QDomDocument& doc )
 
   //data defined properties
   QDomElement ddPropsElement = doc.createElement( QStringLiteral( "dataDefinedProperties" ) );
-  mProperties.writeXml( ddPropsElement, doc, QgsComposerObject::PROPERTY_DEFINITIONS );
+  mDataDefinedProperties.writeXml( ddPropsElement, doc, QgsComposerObject::PROPERTY_DEFINITIONS );
   compositionElem.appendChild( ddPropsElement );
 
   composerElem.appendChild( compositionElem );
@@ -985,12 +985,12 @@ bool QgsComposition::readXml( const QDomElement& compositionElem, const QDomDocu
 
   //data defined properties
   //read old (pre 3.0) style data defined properties
-  QgsComposerUtils::readOldDataDefinedPropertyMap( compositionElem, mProperties );
+  QgsComposerUtils::readOldDataDefinedPropertyMap( compositionElem, mDataDefinedProperties );
 
   QDomNode propsNode = compositionElem.namedItem( QStringLiteral( "dataDefinedProperties" ) );
   if ( !propsNode.isNull() )
   {
-    mProperties.readXml( propsNode.toElement(), doc, QgsComposerObject::PROPERTY_DEFINITIONS );
+    mDataDefinedProperties.readXml( propsNode.toElement(), doc, QgsComposerObject::PROPERTY_DEFINITIONS );
   }
 
   //custom properties
@@ -3269,10 +3269,10 @@ bool QgsComposition::setAtlasMode( const AtlasMode mode )
 bool QgsComposition::ddPageSizeActive() const
 {
   //check if any data defined page settings are active
-  return mProperties.isActive( QgsComposerObject::PresetPaperSize ) ||
-         mProperties.isActive( QgsComposerObject::PaperWidth ) ||
-         mProperties.isActive( QgsComposerObject::PaperHeight ) ||
-         mProperties.isActive( QgsComposerObject::PaperOrientation );
+  return mDataDefinedProperties.isActive( QgsComposerObject::PresetPaperSize ) ||
+         mDataDefinedProperties.isActive( QgsComposerObject::PaperWidth ) ||
+         mDataDefinedProperties.isActive( QgsComposerObject::PaperHeight ) ||
+         mDataDefinedProperties.isActive( QgsComposerObject::PaperOrientation );
 }
 
 void QgsComposition::refreshPageSize( const QgsExpressionContext* context )
@@ -3286,7 +3286,7 @@ void QgsComposition::refreshPageSize( const QgsExpressionContext* context )
   QVariant exprVal;
   //in order of precedence - first consider predefined page size
   bool ok = false;
-  QString presetString = mProperties.valueAsString( QgsComposerObject::PresetPaperSize, *evalContext, QString(), &ok );
+  QString presetString = mDataDefinedProperties.valueAsString( QgsComposerObject::PresetPaperSize, *evalContext, QString(), &ok );
   if ( ok && !presetString.isEmpty() )
   {
     double widthD = 0;
@@ -3299,11 +3299,11 @@ void QgsComposition::refreshPageSize( const QgsExpressionContext* context )
   }
 
   //which is overwritten by data defined width/height
-  pageWidth = mProperties.valueAsDouble( QgsComposerObject::PaperWidth, *evalContext, pageWidth );
-  pageHeight = mProperties.valueAsDouble( QgsComposerObject::PaperHeight, *evalContext, pageHeight );
+  pageWidth = mDataDefinedProperties.valueAsDouble( QgsComposerObject::PaperWidth, *evalContext, pageWidth );
+  pageHeight = mDataDefinedProperties.valueAsDouble( QgsComposerObject::PaperHeight, *evalContext, pageHeight );
 
   //which is finally overwritten by data defined orientation
-  QString orientationString = mProperties.valueAsString( QgsComposerObject::PaperOrientation, *evalContext, QString(), &ok );
+  QString orientationString = mDataDefinedProperties.valueAsString( QgsComposerObject::PaperOrientation, *evalContext, QString(), &ok );
   if ( ok && !orientationString.isEmpty() )
   {
     orientationString = orientationString.trimmed();
@@ -3369,6 +3369,6 @@ QgsExpressionContext QgsComposition::createExpressionContext() const
 void QgsComposition::prepareAllDataDefinedExpressions()
 {
   QgsExpressionContext context = createExpressionContext();
-  mProperties.prepare( context );
+  mDataDefinedProperties.prepare( context );
 }
 

@@ -410,10 +410,10 @@ bool QgsMapToolLabel::hasDataDefinedColumn( QgsPalLayerSettings::DataDefinedProp
 
 QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings& labelSettings ) const
 {
-  if ( !labelSettings.properties().isActive( p ) )
+  if ( !labelSettings.dataDefinedProperties().isActive( p ) )
     return QString();
 
-  QgsProperty prop = labelSettings.properties().property( p );
+  QgsProperty prop = labelSettings.dataDefinedProperties().property( p );
   if ( prop.propertyType() != QgsProperty::FieldBasedProperty )
     return QString();
 
@@ -568,7 +568,7 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer* vlayer, int& xCol, int& y
     if ( dls )
     {
       xCol = -1;
-      if ( QgsProperty ddX = dls->properties().property( QgsDiagramLayerSettings::PositionX ) )
+      if ( QgsProperty ddX = dls->dataDefinedProperties().property( QgsDiagramLayerSettings::PositionX ) )
       {
         if ( ddX.propertyType() == QgsProperty::FieldBasedProperty && ddX.isActive() )
         {
@@ -576,7 +576,7 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer* vlayer, int& xCol, int& y
         }
       }
       yCol = -1;
-      if ( QgsProperty ddY = dls->properties().property( QgsDiagramLayerSettings::PositionY ) )
+      if ( QgsProperty ddY = dls->dataDefinedProperties().property( QgsDiagramLayerSettings::PositionY ) )
       {
         if ( ddY.propertyType() == QgsProperty::FieldBasedProperty && ddY.isActive() )
         {
@@ -672,7 +672,7 @@ bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer* vlayer, int& showCol )
   {
     if ( const QgsDiagramLayerSettings *dls = vlayer->diagramLayerSettings() )
     {
-      if ( QgsProperty ddShow = dls->properties().property( QgsDiagramLayerSettings::Show ) )
+      if ( QgsProperty ddShow = dls->dataDefinedProperties().property( QgsDiagramLayerSettings::Show ) )
       {
         if ( ddShow.propertyType() == QgsProperty::FieldBasedProperty && ddShow.isActive() )
         {

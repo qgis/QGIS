@@ -383,7 +383,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
       mShowAllCheckBox->setChecked( dls->showAllDiagrams() );
 
-      mProperties = dls->properties();
+      mDataDefinedProperties = dls->dataDefinedProperties();
     }
 
     if ( dr->diagram() )
@@ -429,7 +429,7 @@ QgsDiagramProperties::~QgsDiagramProperties()
 
 void QgsDiagramProperties::registerDataDefinedButton( QgsPropertyOverrideButton * button, QgsDiagramLayerSettings::Property key )
 {
-  button->init( key, mProperties, QgsDiagramLayerSettings::PROPERTY_DEFINITIONS, mLayer );
+  button->init( key, mDataDefinedProperties, QgsDiagramLayerSettings::PROPERTY_DEFINITIONS, mLayer );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsDiagramProperties::updateProperty );
   button->registerExpressionContextGenerator( this );
 }
@@ -438,7 +438,7 @@ void QgsDiagramProperties::updateProperty()
 {
   QgsPropertyOverrideButton* button = qobject_cast<QgsPropertyOverrideButton*>( sender() );
   QgsDiagramLayerSettings::Property key = static_cast<  QgsDiagramLayerSettings::Property >( button->propertyKey() );
-  mProperties.setProperty( key, button->toProperty() );
+  mDataDefinedProperties.setProperty( key, button->toProperty() );
 }
 
 void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int index )
@@ -821,7 +821,7 @@ void QgsDiagramProperties::apply()
   mLayer->setDiagramRenderer( renderer );
 
   QgsDiagramLayerSettings dls;
-  dls.setProperties( mProperties );
+  dls.setDataDefinedProperties( mDataDefinedProperties );
   dls.setDistance( mDiagramDistanceSpinBox->value() );
   dls.setPriority( mPrioritySlider->value() );
   dls.setZIndex( mZIndexSpinBox->value() );

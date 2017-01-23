@@ -842,20 +842,20 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @note added in QGIS 3.0
      * @see setDataDefinedProperties()
      */
-    QgsPropertyCollection& dataDefinedProperties() { return mProperties; }
+    QgsPropertyCollection& dataDefinedProperties() { return mDataDefinedProperties; }
 
     /** Returns a reference to the composition's property collection, used for data defined overrides.
      * @note added in QGIS 3.0
      * @see setDataDefinedProperties()
      */
-    const QgsPropertyCollection& dataDefinedProperties() const { return mProperties; }
+    const QgsPropertyCollection& dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the composition's property collection, used for data defined overrides.
      * @param collection property collection. Existing properties will be replaced.
      * @note added in QGIS 3.0
      * @see dataDefinedProperties()
      */
-    void setDataDefinedProperties( const QgsPropertyCollection& collection ) { mProperties = collection; }
+    void setDataDefinedProperties( const QgsPropertyCollection& collection ) { mDataDefinedProperties = collection; }
 
   protected:
     void init();
@@ -937,7 +937,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     QgsComposerModel * mItemsModel;
 
-    QgsPropertyCollection mProperties;
+    QgsPropertyCollection mDataDefinedProperties;
 
     QgsObjectCustomProperties mCustomProperties;
 

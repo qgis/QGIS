@@ -85,27 +85,27 @@ void QgsSimpleFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
 
   bool ok;
 
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
-    brush.setColor( mProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor ) );
+    brush.setColor( mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor ) );
   }
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyFillStyle ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeBrushStyle( mBrushStyle ) );
-    QVariant exprVal = mProperties.value( QgsSymbolLayer::PropertyFillStyle, context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyFillStyle, context.renderContext().expressionContext() );
     if ( exprVal.isValid() )
       brush.setStyle( QgsSymbolLayerUtils::decodeBrushStyle( exprVal.toString() ) );
   }
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyOutlineColor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mBorderColor ) );
-    pen.setColor( mProperties.valueAsColor( QgsSymbolLayer::PropertyOutlineColor, context.renderContext().expressionContext(), mBorderColor ) );
+    pen.setColor( mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyOutlineColor, context.renderContext().expressionContext(), mBorderColor ) );
   }
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) )
   {
     context.setOriginalValueVariable( mBorderWidth );
-    QVariant exprVal = mProperties.value( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext() );
     double width = exprVal.toDouble( &ok );
     if ( ok )
     {
@@ -114,20 +114,20 @@ void QgsSimpleFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
       selPen.setWidthF( width );
     }
   }
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyOutlineStyle ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mBorderStyle ) );
-    QString style = mProperties.valueAsString( QgsSymbolLayer::PropertyOutlineStyle, context.renderContext().expressionContext(), QString(), &ok );
+    QString style = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyOutlineStyle, context.renderContext().expressionContext(), QString(), &ok );
     if ( ok )
     {
       pen.setStyle( QgsSymbolLayerUtils::decodePenStyle( style ) );
       selPen.setStyle( QgsSymbolLayerUtils::decodePenStyle( style ) );
     }
   }
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyJoinStyle ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyJoinStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
-    QString style = mProperties.valueAsString( QgsSymbolLayer::PropertyJoinStyle, context.renderContext().expressionContext(), QString(), &ok );
+    QString style = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyJoinStyle, context.renderContext().expressionContext(), QString(), &ok );
     if ( ok )
     {
       pen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( style ) );
@@ -396,10 +396,10 @@ double QgsSimpleFillSymbolLayer::estimateMaxBleed() const
 double QgsSimpleFillSymbolLayer::dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext &context ) const
 {
   double width = mBorderWidth;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) )
   {
     context.setOriginalValueVariable( mBorderWidth );
-    width = mProperties.valueAsDouble( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext(), mBorderWidth );
+    width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext(), mBorderWidth );
   }
   return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mBorderWidthUnit, e.mapUnits() );
 }
@@ -407,10 +407,10 @@ double QgsSimpleFillSymbolLayer::dxfWidth( const QgsDxfExport& e, QgsSymbolRende
 QColor QgsSimpleFillSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) const
 {
   QColor c = mBorderColor;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyOutlineColor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mBorderColor ) );
-    c = mProperties.valueAsColor( QgsSymbolLayer::PropertyOutlineColor, context.renderContext().expressionContext(), c );
+    c = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyOutlineColor, context.renderContext().expressionContext(), c );
   }
   return c;
 }
@@ -418,10 +418,10 @@ QColor QgsSimpleFillSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) con
 double QgsSimpleFillSymbolLayer::dxfAngle( QgsSymbolRenderContext &context ) const
 {
   double angle = mAngle;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
   {
     context.setOriginalValueVariable( mAngle );
-    angle = mProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle );
+    angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle );
   }
   return angle;
 }
@@ -434,9 +434,9 @@ Qt::PenStyle QgsSimpleFillSymbolLayer::dxfPenStyle() const
 QColor QgsSimpleFillSymbolLayer::dxfBrushColor( QgsSymbolRenderContext& context ) const
 {
   QColor c = mColor;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
   {
-    c = mProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), c );
+    c = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), c );
   }
   return c;
 }
@@ -580,33 +580,33 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
 
   //first gradient color
   QColor color = mColor;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
-    color = mProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor );
+    color = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor );
   }
 
   //second gradient color
   QColor color2 = mColor2;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertySecondaryColor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertySecondaryColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor2 ) );
-    color2 = mProperties.valueAsColor( QgsSymbolLayer::PropertySecondaryColor, context.renderContext().expressionContext(), mColor2 );
+    color2 = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertySecondaryColor, context.renderContext().expressionContext(), mColor2 );
   }
 
   //gradient rotation angle
   double angle = mAngle;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
   {
     context.setOriginalValueVariable( mAngle );
-    angle = mProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle );
+    angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle );
   }
 
   //gradient type
   QgsGradientFillSymbolLayer::GradientType gradientType = mGradientType;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyGradientType ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyGradientType ) )
   {
-    QString currentType = mProperties.valueAsString( QgsSymbolLayer::PropertyGradientType, context.renderContext().expressionContext(), QString(), &ok );
+    QString currentType = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyGradientType, context.renderContext().expressionContext(), QString(), &ok );
     if ( ok )
     {
       if ( currentType == QObject::tr( "linear" ) )
@@ -626,9 +626,9 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
 
   //coordinate mode
   GradientCoordinateMode coordinateMode = mCoordinateMode;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyCoordinateMode ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCoordinateMode ) )
   {
-    QString currentCoordMode =  mProperties.valueAsString( QgsSymbolLayer::PropertyCoordinateMode, context.renderContext().expressionContext(), QString(), &ok );
+    QString currentCoordMode =  mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyCoordinateMode, context.renderContext().expressionContext(), QString(), &ok );
     if ( ok )
     {
       if ( currentCoordMode == QObject::tr( "feature" ) )
@@ -644,9 +644,9 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
 
   //gradient spread
   GradientSpread spread = mGradientSpread;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyGradientSpread ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyGradientSpread ) )
   {
-    QString currentSpread = mProperties.valueAsString( QgsSymbolLayer::PropertyGradientSpread, context.renderContext().expressionContext(), QString(), &ok );
+    QString currentSpread = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyGradientSpread, context.renderContext().expressionContext(), QString(), &ok );
     if ( ok )
     {
       if ( currentSpread == QObject::tr( "pad" ) )
@@ -666,42 +666,42 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
 
   //reference point 1 x & y
   double refPoint1X = mReferencePoint1.x();
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyGradientReference1X ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyGradientReference1X ) )
   {
     context.setOriginalValueVariable( refPoint1X );
-    refPoint1X = mProperties.valueAsDouble( QgsSymbolLayer::PropertyGradientReference1X, context.renderContext().expressionContext(), refPoint1X );
+    refPoint1X = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyGradientReference1X, context.renderContext().expressionContext(), refPoint1X );
   }
   double refPoint1Y = mReferencePoint1.y();
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyGradientReference1Y ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyGradientReference1Y ) )
   {
     context.setOriginalValueVariable( refPoint1Y );
-    refPoint1Y = mProperties.valueAsDouble( QgsSymbolLayer::PropertyGradientReference1Y, context.renderContext().expressionContext(), refPoint1Y );
+    refPoint1Y = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyGradientReference1Y, context.renderContext().expressionContext(), refPoint1Y );
   }
   bool refPoint1IsCentroid = mReferencePoint1IsCentroid;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyGradientReference1IsCentroid ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyGradientReference1IsCentroid ) )
   {
     context.setOriginalValueVariable( refPoint1IsCentroid );
-    refPoint1IsCentroid = mProperties.valueAsBool( QgsSymbolLayer::PropertyGradientReference1IsCentroid, context.renderContext().expressionContext(), refPoint1IsCentroid );
+    refPoint1IsCentroid = mDataDefinedProperties.valueAsBool( QgsSymbolLayer::PropertyGradientReference1IsCentroid, context.renderContext().expressionContext(), refPoint1IsCentroid );
   }
 
   //reference point 2 x & y
   double refPoint2X = mReferencePoint2.x();
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyGradientReference2X ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyGradientReference2X ) )
   {
     context.setOriginalValueVariable( refPoint2X );
-    refPoint2X = mProperties.valueAsDouble( QgsSymbolLayer::PropertyGradientReference2X, context.renderContext().expressionContext(), refPoint2X );
+    refPoint2X = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyGradientReference2X, context.renderContext().expressionContext(), refPoint2X );
   }
   double refPoint2Y = mReferencePoint2.y();
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyGradientReference2Y ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyGradientReference2Y ) )
   {
     context.setOriginalValueVariable( refPoint2Y );
-    refPoint2Y = mProperties.valueAsDouble( QgsSymbolLayer::PropertyGradientReference2Y, context.renderContext().expressionContext(), refPoint2Y );
+    refPoint2Y = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyGradientReference2Y, context.renderContext().expressionContext(), refPoint2Y );
   }
   bool refPoint2IsCentroid = mReferencePoint2IsCentroid;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyGradientReference2IsCentroid ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyGradientReference2IsCentroid ) )
   {
     context.setOriginalValueVariable( refPoint2IsCentroid );
-    refPoint2IsCentroid = mProperties.valueAsBool( QgsSymbolLayer::PropertyGradientReference2IsCentroid, context.renderContext().expressionContext(), refPoint2IsCentroid );
+    refPoint2IsCentroid = mDataDefinedProperties.valueAsBool( QgsSymbolLayer::PropertyGradientReference2IsCentroid, context.renderContext().expressionContext(), refPoint2IsCentroid );
   }
 
   if ( refPoint1IsCentroid || refPoint2IsCentroid )
@@ -1067,50 +1067,50 @@ void QgsShapeburstFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderCon
 {
   //first gradient color
   color = mColor;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
-    color = mProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor );
+    color = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor );
   }
 
   //second gradient color
   color2 = mColor2;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertySecondaryColor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertySecondaryColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor2 ) );
-    color =  mProperties.valueAsColor( QgsSymbolLayer::PropertySecondaryColor, context.renderContext().expressionContext(), mColor2 );
+    color =  mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertySecondaryColor, context.renderContext().expressionContext(), mColor2 );
   }
 
   //blur radius
   blurRadius = mBlurRadius;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyBlurRadius ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyBlurRadius ) )
   {
     context.setOriginalValueVariable( mBlurRadius );
-    blurRadius = mProperties.valueAsInt( QgsSymbolLayer::PropertyBlurRadius, context.renderContext().expressionContext(), mBlurRadius );
+    blurRadius = mDataDefinedProperties.valueAsInt( QgsSymbolLayer::PropertyBlurRadius, context.renderContext().expressionContext(), mBlurRadius );
   }
 
   //use whole shape
   useWholeShape = mUseWholeShape;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyShapeburstUseWholeShape ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyShapeburstUseWholeShape ) )
   {
     context.setOriginalValueVariable( mUseWholeShape );
-    useWholeShape = mProperties.valueAsBool( QgsSymbolLayer::PropertyShapeburstUseWholeShape, context.renderContext().expressionContext(), mUseWholeShape );
+    useWholeShape = mDataDefinedProperties.valueAsBool( QgsSymbolLayer::PropertyShapeburstUseWholeShape, context.renderContext().expressionContext(), mUseWholeShape );
   }
 
   //max distance
   maxDistance = mMaxDistance;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyShapeburstMaxDistance ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyShapeburstMaxDistance ) )
   {
     context.setOriginalValueVariable( mMaxDistance );
-    maxDistance = mProperties.valueAsDouble( QgsSymbolLayer::PropertyShapeburstMaxDistance, context.renderContext().expressionContext(), mMaxDistance );
+    maxDistance = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyShapeburstMaxDistance, context.renderContext().expressionContext(), mMaxDistance );
   }
 
   //ignore rings
   ignoreRings = mIgnoreRings;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyShapeburstIgnoreRings ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyShapeburstIgnoreRings ) )
   {
     context.setOriginalValueVariable( mIgnoreRings );
-    ignoreRings = mProperties.valueAsBool( QgsSymbolLayer::PropertyShapeburstIgnoreRings, context.renderContext().expressionContext(), mIgnoreRings );
+    ignoreRings = mDataDefinedProperties.valueAsBool( QgsSymbolLayer::PropertyShapeburstIgnoreRings, context.renderContext().expressionContext(), mIgnoreRings );
   }
 
 }
@@ -1667,10 +1667,10 @@ double QgsImageFillSymbolLayer::estimateMaxBleed() const
 double QgsImageFillSymbolLayer::dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext &context ) const
 {
   double width = mOutlineWidth;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) )
   {
     context.setOriginalValueVariable( mOutlineWidth );
-    width = mProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), mOutlineWidth );
+    width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), mOutlineWidth );
   }
   return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mOutlineWidthUnit, e.mapUnits() );
 }
@@ -2159,48 +2159,48 @@ QgsSymbolLayer* QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
 
 void QgsSVGFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext &context )
 {
-  if ( !mProperties.isActive( QgsSymbolLayer::PropertyWidth ) && !mProperties.isActive( QgsSymbolLayer::PropertyFile )
-       && !mProperties.isActive( QgsSymbolLayer::PropertyFillColor ) && !mProperties.isActive( QgsSymbolLayer::PropertyOutlineColor )
-       && !mProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) && !mProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
+  if ( !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFile )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillColor ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineColor )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
   {
     return; //no data defined settings
   }
 
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
   {
     context.setOriginalValueVariable( mAngle );
-    mNextAngle = mProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mNextAngle );
+    mNextAngle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mNextAngle );
   }
 
   double width = mPatternWidth;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) )
   {
     context.setOriginalValueVariable( mPatternWidth );
-    width = mProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), mPatternWidth );
+    width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), mPatternWidth );
   }
   QString svgFile = mSvgFilePath;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyFile ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFile ) )
   {
     context.setOriginalValueVariable( mSvgFilePath );
-    svgFile = mProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), mSvgFilePath );
+    svgFile = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), mSvgFilePath );
   }
   QColor svgFillColor = mColor;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
-    svgFillColor = mProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor );
+    svgFillColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor );
   }
   QColor svgOutlineColor = mSvgOutlineColor;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyOutlineColor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mSvgOutlineColor ) );
-    svgOutlineColor = mProperties.valueAsColor( QgsSymbolLayer::PropertyOutlineColor, context.renderContext().expressionContext(), mSvgOutlineColor );
+    svgOutlineColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyOutlineColor, context.renderContext().expressionContext(), mSvgOutlineColor );
   }
   double outlineWidth = mSvgOutlineWidth;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOutlineWidth ) )
   {
     context.setOriginalValueVariable( mSvgOutlineWidth );
-    outlineWidth = mProperties.valueAsDouble( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext(), mSvgOutlineWidth );
+    outlineWidth = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOutlineWidth, context.renderContext().expressionContext(), mSvgOutlineWidth );
   }
   applyPattern( mBrush, svgFile, width, mPatternWidthUnit, svgFillColor, svgOutlineColor, outlineWidth,
                 mSvgOutlineWidthUnit, context, mPatternWidthMapUnitScale, mSvgOutlineWidthMapUnitScale );
@@ -2885,23 +2885,23 @@ QString QgsLinePatternFillSymbolLayer::ogrFeatureStyleWidth( double widthScaleFa
 
 void QgsLinePatternFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext &context )
 {
-  if ( !mProperties.isActive( QgsSymbolLayer::PropertyLineAngle ) && !mProperties.isActive( QgsSymbolLayer::PropertyLineDistance )
+  if ( !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyLineAngle ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyLineDistance )
        && ( !mFillLineSymbol || !mFillLineSymbol->hasDataDefinedProperties() ) )
   {
     return; //no data defined settings
   }
 
   double lineAngle = mLineAngle;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyLineAngle ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyLineAngle ) )
   {
     context.setOriginalValueVariable( mLineAngle );
-    lineAngle = mProperties.valueAsDouble( QgsSymbolLayer::PropertyLineAngle, context.renderContext().expressionContext(), mLineAngle );
+    lineAngle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyLineAngle, context.renderContext().expressionContext(), mLineAngle );
   }
   double distance = mDistance;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyLineDistance ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyLineDistance ) )
   {
     context.setOriginalValueVariable( mDistance );
-    distance = mProperties.valueAsDouble( QgsSymbolLayer::PropertyLineDistance, context.renderContext().expressionContext(), mDistance );
+    distance = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyLineDistance, context.renderContext().expressionContext(), mDistance );
   }
   applyPattern( context, mBrush, lineAngle, distance );
 }
@@ -3296,36 +3296,36 @@ bool QgsPointPatternFillSymbolLayer::setSubSymbol( QgsSymbol* symbol )
 
 void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext &context )
 {
-  if ( !mProperties.isActive( QgsSymbolLayer::PropertyDistanceX ) && !mProperties.isActive( QgsSymbolLayer::PropertyDistanceY )
-       && !mProperties.isActive( QgsSymbolLayer::PropertyDisplacementX ) && !mProperties.isActive( QgsSymbolLayer::PropertyDisplacementY )
+  if ( !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDistanceX ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDistanceY )
+       && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDisplacementX ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDisplacementY )
        && ( !mMarkerSymbol || !mMarkerSymbol->hasDataDefinedProperties() ) )
   {
     return;
   }
 
   double distanceX = mDistanceX;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyDistanceX ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDistanceX ) )
   {
     context.setOriginalValueVariable( mDistanceX );
-    distanceX = mProperties.valueAsDouble( QgsSymbolLayer::PropertyDistanceX, context.renderContext().expressionContext(), mDistanceX );
+    distanceX = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyDistanceX, context.renderContext().expressionContext(), mDistanceX );
   }
   double distanceY = mDistanceY;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyDistanceY ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDistanceY ) )
   {
     context.setOriginalValueVariable( mDistanceY );
-    distanceY = mProperties.valueAsDouble( QgsSymbolLayer::PropertyDistanceY, context.renderContext().expressionContext(), mDistanceY );
+    distanceY = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyDistanceY, context.renderContext().expressionContext(), mDistanceY );
   }
   double displacementX = mDisplacementX;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyDisplacementX ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDisplacementX ) )
   {
     context.setOriginalValueVariable( mDisplacementX );
-    displacementX = mProperties.valueAsDouble( QgsSymbolLayer::PropertyDisplacementX, context.renderContext().expressionContext(), mDisplacementX );
+    displacementX = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyDisplacementX, context.renderContext().expressionContext(), mDisplacementX );
   }
   double displacementY = mDisplacementY;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyDisplacementY ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDisplacementY ) )
   {
     context.setOriginalValueVariable( mDisplacementY );
-    displacementY = mProperties.valueAsDouble( QgsSymbolLayer::PropertyDisplacementY, context.renderContext().expressionContext(), mDisplacementY );
+    displacementY = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyDisplacementY, context.renderContext().expressionContext(), mDisplacementY );
   }
   applyPattern( context, mBrush, distanceX, distanceY, displacementX, displacementY );
 }
@@ -3757,10 +3757,10 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext 
   if ( !dataDefinedProperties().hasActiveProperties() )
     return; // shortcut
 
-  bool hasWidthExpression = mProperties.isActive( QgsSymbolLayer::PropertyWidth );
-  bool hasFileExpression = mProperties.isActive( QgsSymbolLayer::PropertyFile );
-  bool hasAlphaExpression = mProperties.isActive( QgsSymbolLayer::PropertyAlpha );
-  bool hasAngleExpression = mProperties.isActive( QgsSymbolLayer::PropertyAngle );
+  bool hasWidthExpression = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth );
+  bool hasFileExpression = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFile );
+  bool hasAlphaExpression = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAlpha );
+  bool hasAngleExpression = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle );
 
   if ( !hasWidthExpression && !hasAngleExpression && !hasAlphaExpression && !hasFileExpression )
   {
@@ -3771,7 +3771,7 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext 
   if ( hasAngleExpression )
   {
     context.setOriginalValueVariable( mAngle );
-    double nextAngle = mProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), 0, &ok );
+    double nextAngle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), 0, &ok );
     if ( ok )
       mNextAngle = nextAngle;
   }
@@ -3785,19 +3785,19 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext 
   if ( hasWidthExpression )
   {
     context.setOriginalValueVariable( mWidth );
-    width = mProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), width );
+    width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), width );
   }
   double alpha = mAlpha;
   if ( hasAlphaExpression )
   {
     context.setOriginalValueVariable( mAlpha );
-    alpha = mProperties.valueAsDouble( QgsSymbolLayer::PropertyAlpha, context.renderContext().expressionContext(), alpha );
+    alpha = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAlpha, context.renderContext().expressionContext(), alpha );
   }
   QString file = mImageFilePath;
   if ( hasFileExpression )
   {
     context.setOriginalValueVariable( mImageFilePath );
-    file = mProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), file );
+    file = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), file );
   }
   applyPattern( mBrush, file, width, alpha, context );
 }

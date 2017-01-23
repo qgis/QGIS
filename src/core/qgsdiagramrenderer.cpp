@@ -51,7 +51,7 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings&
     , mDistance( rh.mDistance )
     , mRenderer( rh.mRenderer ? rh.mRenderer->clone() : nullptr )
     , mShowAll( rh.mShowAll )
-    , mProperties( rh.mProperties )
+    , mDataDefinedProperties( rh.mDataDefinedProperties )
 {}
 
 QgsDiagramLayerSettings& QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings & rh )
@@ -65,7 +65,7 @@ QgsDiagramLayerSettings& QgsDiagramLayerSettings::operator=( const QgsDiagramLay
   mRenderer = rh.mRenderer ? rh.mRenderer->clone() : nullptr;
   mCt = rh.mCt;
   mShowAll = rh.mShowAll;
-  mProperties = rh.mProperties;
+  mDataDefinedProperties = rh.mDataDefinedProperties;
   return *this;
 }
 
@@ -95,11 +95,11 @@ void QgsDiagramLayerSettings::readXml( const QDomElement& elem, const QgsVectorL
   QDomNodeList propertyElems = elem.elementsByTagName( "properties" );
   if ( !propertyElems.isEmpty() )
   {
-    ( void )mProperties.readXml( propertyElems.at( 0 ).toElement(), elem.ownerDocument(), PROPERTY_DEFINITIONS );
+    ( void )mDataDefinedProperties.readXml( propertyElems.at( 0 ).toElement(), elem.ownerDocument(), PROPERTY_DEFINITIONS );
   }
   else
   {
-    mProperties.clear();
+    mDataDefinedProperties.clear();
   }
 
   mPlacement = static_cast< Placement >( elem.attribute( QStringLiteral( "placement" ) ).toInt() );
@@ -113,21 +113,21 @@ void QgsDiagramLayerSettings::readXml( const QDomElement& elem, const QgsVectorL
     // upgrade old project
     int xPosColumn = elem.attribute( QStringLiteral( "xPosColumn" ) ).toInt();
     if ( xPosColumn >= 0 && xPosColumn < layer->fields().count() )
-      mProperties.setProperty( PositionX, QgsProperty::fromField( layer->fields().at( xPosColumn ).name(), true ) );
+      mDataDefinedProperties.setProperty( PositionX, QgsProperty::fromField( layer->fields().at( xPosColumn ).name(), true ) );
   }
   if ( elem.hasAttribute( QStringLiteral( "yPosColumn" ) ) )
   {
     // upgrade old project
     int yPosColumn = elem.attribute( QStringLiteral( "yPosColumn" ) ).toInt();
     if ( yPosColumn >= 0 && yPosColumn < layer->fields().count() )
-      mProperties.setProperty( PositionY, QgsProperty::fromField( layer->fields().at( yPosColumn ).name(), true ) );
+      mDataDefinedProperties.setProperty( PositionY, QgsProperty::fromField( layer->fields().at( yPosColumn ).name(), true ) );
   }
   if ( elem.hasAttribute( QStringLiteral( "showColumn" ) ) )
   {
     // upgrade old project
     int showColumn = elem.attribute( QStringLiteral( "showColumn" ) ).toInt();
     if ( showColumn >= 0 && showColumn < layer->fields().count() )
-      mProperties.setProperty( Show, QgsProperty::fromField( layer->fields().at( showColumn ).name(), true ) );
+      mDataDefinedProperties.setProperty( Show, QgsProperty::fromField( layer->fields().at( showColumn ).name(), true ) );
   }
   mShowAll = ( elem.attribute( QStringLiteral( "showAll" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
 }
@@ -138,7 +138,7 @@ void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& do
 
   QDomElement diagramLayerElem = doc.createElement( QStringLiteral( "DiagramLayerSettings" ) );
   QDomElement propertiesElem = doc.createElement( "properties" );
-  ( void )mProperties.writeXml( propertiesElem, doc, PROPERTY_DEFINITIONS );
+  ( void )mDataDefinedProperties.writeXml( propertiesElem, doc, PROPERTY_DEFINITIONS );
   diagramLayerElem.appendChild( propertiesElem );
   diagramLayerElem.setAttribute( QStringLiteral( "placement" ), mPlacement );
   diagramLayerElem.setAttribute( QStringLiteral( "linePlacementFlags" ), mPlacementFlags );
@@ -152,7 +152,7 @@ void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& do
 
 bool QgsDiagramLayerSettings::prepare( const QgsExpressionContext& context ) const
 {
-  return mProperties.prepare( context );
+  return mDataDefinedProperties.prepare( context );
 }
 
 QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionContext &context ) const
@@ -162,7 +162,7 @@ QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionCont
     referenced = mRenderer->referencedFields( context );
 
   //add the ones needed for data defined settings
-  referenced.unite( mProperties.referencedFields( context ) );
+  referenced.unite( mDataDefinedProperties.referencedFields( context ) );
 
   return referenced;
 }

@@ -292,20 +292,20 @@ class CORE_EXPORT QgsSymbolLayer
      * @note added in QGIS 3.0
      * @see setProperties()
      */
-    QgsPropertyCollection& dataDefinedProperties() { return mProperties; }
+    QgsPropertyCollection& dataDefinedProperties() { return mDataDefinedProperties; }
 
     /** Returns a reference to the symbol layer's property collection, used for data defined overrides.
      * @note added in QGIS 3.0
      * @see setProperties()
      */
-    const QgsPropertyCollection& dataDefinedProperties() const { return mProperties; }
+    const QgsPropertyCollection& dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the symbol layer's property collection, used for data defined overrides.
      * @param collection property collection. Existing properties will be replaced.
      * @note added in QGIS 3.0
      * @see properties()
      */
-    void setDataDefinedProperties( const QgsPropertyCollection& collection ) { mProperties = collection; }
+    void setDataDefinedProperties( const QgsPropertyCollection& collection ) { mDataDefinedProperties = collection; }
 
   protected:
     QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked = false );
@@ -319,7 +319,7 @@ class CORE_EXPORT QgsSymbolLayer
     QColor mColor;
     int mRenderingPass;
 
-    QgsPropertyCollection mProperties;
+    QgsPropertyCollection mDataDefinedProperties;
 
     QgsPaintEffect* mPaintEffect;
     QgsFields mFields;

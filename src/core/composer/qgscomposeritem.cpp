@@ -718,13 +718,13 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOn
 
   //data defined position or size set? if so, update rect with data defined values
   bool ok = false;
-  double ddWidth = mProperties.valueAsDouble( QgsComposerObject::ItemWidth, *evalContext, 0, &ok );
+  double ddWidth = mDataDefinedProperties.valueAsDouble( QgsComposerObject::ItemWidth, *evalContext, 0, &ok );
   //evaulate width and height first, since they may affect position if non-top-left reference point set
   if ( ok )
   {
     result.setWidth( ddWidth );
   }
-  double ddHeight = mProperties.valueAsDouble( QgsComposerObject::ItemHeight, *evalContext, 0, &ok );
+  double ddHeight = mDataDefinedProperties.valueAsDouble( QgsComposerObject::ItemHeight, *evalContext, 0, &ok );
   if ( ok )
   {
     result.setHeight( ddHeight );
@@ -755,7 +755,7 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOn
       x += rect().width();
     }
   }
-  double ddPosX = mProperties.valueAsDouble( QgsComposerObject::PositionX, *evalContext, 0.0, &ok );
+  double ddPosX = mDataDefinedProperties.valueAsDouble( QgsComposerObject::PositionX, *evalContext, 0.0, &ok );
   if ( ok )
   {
     x = ddPosX;
@@ -786,7 +786,7 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOn
       y += rect().height();
     }
   }
-  double ddPosY = mProperties.valueAsDouble( QgsComposerObject::PositionY, *evalContext, 0, &ok );
+  double ddPosY = mDataDefinedProperties.valueAsDouble( QgsComposerObject::PositionY, *evalContext, 0, &ok );
   if ( ok )
   {
     y = ddPosY;
@@ -873,7 +873,7 @@ void QgsComposerItem::refreshBlendMode( const QgsExpressionContext& context )
 
   //data defined blend mode set?
   bool ok = false;
-  QString blendStr = mProperties.valueAsString( QgsComposerObject::BlendMode, context, QString(), &ok );
+  QString blendStr = mDataDefinedProperties.valueAsString( QgsComposerObject::BlendMode, context, QString(), &ok );
   if ( ok && !blendStr.isEmpty() )
   {
     QString blendstr = blendStr.trimmed();
@@ -899,7 +899,7 @@ void QgsComposerItem::refreshTransparency( const bool updateItem, const QgsExpre
   int transparency = mTransparency;
 
   //data defined transparency set?
-  transparency = mProperties.valueAsInt( QgsComposerObject::Transparency, context, mTransparency );
+  transparency = mDataDefinedProperties.valueAsInt( QgsComposerObject::Transparency, context, mTransparency );
 
   // Set the QGraphicItem's opacity
   setOpacity( 1. - ( transparency / 100. ) );
@@ -914,7 +914,7 @@ void QgsComposerItem::refreshFrameColor( const bool updateItem, const QgsExpress
 {
   //data defined outline color set?
   bool ok = false;
-  QColor frameColor = mProperties.valueAsColor( QgsComposerObject::FrameColor, context, mFrameColor, &ok );
+  QColor frameColor = mDataDefinedProperties.valueAsColor( QgsComposerObject::FrameColor, context, mFrameColor, &ok );
   if ( ok )
   {
     QPen itemPen = pen();
@@ -937,7 +937,7 @@ void QgsComposerItem::refreshBackgroundColor( const bool updateItem, const QgsEx
 {
   //data defined color set?
   bool ok = false;
-  QColor backgroundColor = mProperties.valueAsColor( QgsComposerObject::BackgroundColor, context, mBackgroundColor, &ok );
+  QColor backgroundColor = mDataDefinedProperties.valueAsColor( QgsComposerObject::BackgroundColor, context, mBackgroundColor, &ok );
   if ( ok )
   {
     setBrush( QBrush( backgroundColor, Qt::SolidPattern ) );
@@ -1016,7 +1016,7 @@ void QgsComposerItem::refreshRotation( const bool updateItem, const bool adjustP
   double rotation = mItemRotation;
 
   //data defined rotation set?
-  rotation = mProperties.valueAsDouble( QgsComposerObject::ItemRotation, context, rotation );
+  rotation = mDataDefinedProperties.valueAsDouble( QgsComposerObject::ItemRotation, context, rotation );
 
   if ( qgsDoubleNear( rotation, mEvaluatedItemRotation ) )
   {
@@ -1154,7 +1154,7 @@ void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataD
   {
     bool exclude = mExcludeFromExports;
     //data defined exclude from exports set?
-    exclude = mProperties.valueAsBool( QgsComposerObject::ExcludeFromExports, *evalContext, exclude );
+    exclude = mDataDefinedProperties.valueAsBool( QgsComposerObject::ExcludeFromExports, *evalContext, exclude );
     mEvaluatedExcludeFromExports = exclude;
   }
 

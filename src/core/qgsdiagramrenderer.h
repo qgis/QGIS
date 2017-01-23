@@ -269,22 +269,22 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     /** Returns a reference to the diagram's property collection, used for data defined overrides.
      * @note added in QGIS 3.0
-     * @see setProperties()
+     * @see setDataDefinedProperties()
      */
-    QgsPropertyCollection& properties() { return mProperties; }
+    QgsPropertyCollection& dataDefinedProperties() { return mDataDefinedProperties; }
 
     /** Returns a reference to the diagram's property collection, used for data defined overrides.
      * @note added in QGIS 3.0
      * @see setProperties()
      */
-    const QgsPropertyCollection& properties() const { return mProperties; }
+    const QgsPropertyCollection& dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the diagram's property collection, used for data defined overrides.
      * @param collection property collection. Existing properties will be replaced.
      * @note added in QGIS 3.0
-     * @see properties()
+     * @see dataDefinedProperties()
      */
-    void setProperties( const QgsPropertyCollection& collection ) { mProperties = collection; }
+    void setDataDefinedProperties( const QgsPropertyCollection& collection ) { mDataDefinedProperties = collection; }
 
     //! Property definitions
     static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
@@ -321,7 +321,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     bool mShowAll = true;
 
     //! Property collection for data defined diagram settings
-    QgsPropertyCollection mProperties;
+    QgsPropertyCollection mDataDefinedProperties;
 
 };
 

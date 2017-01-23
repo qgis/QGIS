@@ -530,22 +530,22 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /** Returns a reference to the label's property collection, used for data defined overrides.
      * @note added in QGIS 3.0
-     * @see setProperties()
+     * @see setDataDefinedProperties()
      */
-    QgsPropertyCollection& properties() { return mProperties; }
+    QgsPropertyCollection& dataDefinedProperties() { return mDataDefinedProperties; }
 
     /** Returns a reference to the label's property collection, used for data defined overrides.
      * @note added in QGIS 3.0
-     * @see setProperties()
+     * @see setDataDefinedProperties()
      */
-    const QgsPropertyCollection& properties() const { return mProperties; }
+    const QgsPropertyCollection& dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the label's property collection, used for data defined overrides.
      * @param collection property collection. Existing properties will be replaced.
      * @note added in QGIS 3.0
-     * @see properties()
+     * @see dataDefinedProperties()
      */
-    void setProperties( const QgsPropertyCollection& collection ) { mProperties = collection; }
+    void setDataDefinedProperties( const QgsPropertyCollection& collection ) { mDataDefinedProperties = collection; }
 
     /** Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
      * @see setFormat()
@@ -634,7 +634,7 @@ class CORE_EXPORT QgsPalLayerSettings
     QMap<Property, QVariant> dataDefinedValues;
 
     //! Property collection for data defined label settings
-    QgsPropertyCollection mProperties;
+    QgsPropertyCollection mDataDefinedProperties;
 
     QgsExpression* expression;
 

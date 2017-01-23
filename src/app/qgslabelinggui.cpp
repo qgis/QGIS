@@ -44,7 +44,7 @@ QgsExpressionContext QgsLabelingGui::createExpressionContext() const
 
 void QgsLabelingGui::registerDataDefinedButton( QgsPropertyOverrideButton* button, QgsPalLayerSettings::Property key )
 {
-  button->init( key, mProperties, QgsPalLayerSettings::PROPERTY_DEFINITIONS, mLayer );
+  button->init( key, mDataDefinedProperties, QgsPalLayerSettings::PROPERTY_DEFINITIONS, mLayer );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLabelingGui::updateProperty );
   button->registerExpressionContextGenerator( this );
 }
@@ -53,7 +53,7 @@ void QgsLabelingGui::updateProperty()
 {
   QgsPropertyOverrideButton* button = qobject_cast<QgsPropertyOverrideButton*>( sender() );
   QgsPalLayerSettings::Property key = static_cast< QgsPalLayerSettings::Property >( button->propertyKey() );
-  mProperties.setProperty( key, button->toProperty() );
+  mDataDefinedProperties.setProperty( key, button->toProperty() );
 }
 
 QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsPalLayerSettings* layerSettings, QWidget* parent )
@@ -264,7 +264,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer* mapLayer )
 
   mZIndexSpinBox->setValue( lyr.zIndex );
 
-  mProperties = lyr.properties();
+  mDataDefinedProperties = lyr.dataDefinedProperties();
 
   updatePlacementWidgets();
   updateLinePlacementOptions();
@@ -452,7 +452,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   lyr.zIndex = mZIndexSpinBox->value();
 
-  lyr.setProperties( mProperties );
+  lyr.setDataDefinedProperties( mDataDefinedProperties );
 
   return lyr;
 }

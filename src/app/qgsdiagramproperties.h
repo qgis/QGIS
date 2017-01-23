@@ -76,7 +76,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
 
     QString showExpressionBuilder( const QString& initialExpression );
 
-    QgsPropertyCollection mProperties;
+    QgsPropertyCollection mDataDefinedProperties;
 
     // Keeps track of the diagram type to properly save / restore settings when the diagram type combo box is set to no diagram.
     QString mDiagramType;

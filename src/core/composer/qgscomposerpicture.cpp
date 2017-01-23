@@ -298,10 +298,10 @@ void QgsComposerPicture::refreshPicture( const QgsExpressionContext *context )
 
   //data defined source set?
   mHasExpressionError = false;
-  if ( mProperties.isActive( QgsComposerObject::PictureSource ) )
+  if ( mDataDefinedProperties.isActive( QgsComposerObject::PictureSource ) )
   {
     bool ok = false;
-    source = mProperties.valueAsString( QgsComposerObject::PictureSource, *evalContext, source, &ok );
+    source = mDataDefinedProperties.valueAsString( QgsComposerObject::PictureSource, *evalContext, source, &ok );
     if ( ok )
     {
       source = source.trimmed();
@@ -364,9 +364,9 @@ void QgsComposerPicture::loadLocalPicture( const QString &path )
     {
       //try to open svg
       QgsExpressionContext context = createExpressionContext();
-      QColor fillColor = mProperties.valueAsColor( QgsComposerObject::PictureSvgBackgroundColor, context, mSvgFillColor );
-      QColor outlineColor = mProperties.valueAsColor( QgsComposerObject::PictureSvgOutlineColor, context, mSvgBorderColor );
-      double outlineWidth = mProperties.valueAsDouble( QgsComposerObject::PictureSvgOutlineWidth, context, mSvgBorderWidth );
+      QColor fillColor = mDataDefinedProperties.valueAsColor( QgsComposerObject::PictureSvgBackgroundColor, context, mSvgFillColor );
+      QColor outlineColor = mDataDefinedProperties.valueAsColor( QgsComposerObject::PictureSvgOutlineColor, context, mSvgBorderColor );
+      double outlineWidth = mDataDefinedProperties.valueAsDouble( QgsComposerObject::PictureSvgOutlineWidth, context, mSvgBorderWidth );
       const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( pic.fileName(), rect().width(), fillColor, outlineColor, outlineWidth,
                                      1.0 );
       mSVG.load( svgContent );
@@ -816,7 +816,7 @@ bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocumen
       expressionActive = false;
     }
 
-    mProperties.setProperty( QgsComposerObject::PictureSource, QgsProperty::fromExpression( sourceExpression, expressionActive ) );
+    mDataDefinedProperties.setProperty( QgsComposerObject::PictureSource, QgsProperty::fromExpression( sourceExpression, expressionActive ) );
   }
 
   mSourcePath = mComposition->project()->readPath( itemElem.attribute( QStringLiteral( "file" ) ) );

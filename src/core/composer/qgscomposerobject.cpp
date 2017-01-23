@@ -101,7 +101,7 @@ bool QgsComposerObject::writeXml( QDomElement &elem, QDomDocument &doc ) const
   }
 
   QDomElement ddPropsElement = doc.createElement( QStringLiteral( "dataDefinedProperties" ) );
-  mProperties.writeXml( ddPropsElement, doc, PROPERTY_DEFINITIONS );
+  mDataDefinedProperties.writeXml( ddPropsElement, doc, PROPERTY_DEFINITIONS );
   elem.appendChild( ddPropsElement );
 
   //custom properties
@@ -119,12 +119,12 @@ bool QgsComposerObject::readXml( const QDomElement &itemElem, const QDomDocument
   }
 
   //old (pre 3.0) data defined properties
-  QgsComposerUtils::readOldDataDefinedPropertyMap( itemElem, mProperties );
+  QgsComposerUtils::readOldDataDefinedPropertyMap( itemElem, mDataDefinedProperties );
 
   QDomNode propsNode = itemElem.namedItem( QStringLiteral( "dataDefinedProperties" ) );
   if ( !propsNode.isNull() )
   {
-    mProperties.readXml( propsNode.toElement(), doc, PROPERTY_DEFINITIONS );
+    mDataDefinedProperties.readXml( propsNode.toElement(), doc, PROPERTY_DEFINITIONS );
   }
 
   //custom properties
@@ -149,7 +149,7 @@ void QgsComposerObject::refreshDataDefinedProperty( const DataDefinedProperty pr
 void QgsComposerObject::prepareProperties() const
 {
   QgsExpressionContext context = createExpressionContext();
-  mProperties.prepare( context );
+  mDataDefinedProperties.prepare( context );
 }
 
 void QgsComposerObject::setCustomProperty( const QString& key, const QVariant& value )

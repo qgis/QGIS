@@ -176,9 +176,9 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QSet
       attributeNames.insert( lyr.fieldName );
     }
 
-    lyr.properties().prepare( context.expressionContext() );
+    lyr.dataDefinedProperties().prepare( context.expressionContext() );
     // add field indices of data defined expression or field
-    attributeNames.unite( lyr.properties().referencedFields( context.expressionContext() ) );
+    attributeNames.unite( lyr.dataDefinedProperties().referencedFields( context.expressionContext() ) );
   }
 
   // NOW INITIALIZE QgsPalLayerSettings

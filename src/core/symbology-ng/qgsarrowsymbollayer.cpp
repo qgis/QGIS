@@ -614,49 +614,49 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext& context )
 
   QVariant exprVal;
   bool ok;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyArrowWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyArrowWidth ) )
   {
-    exprVal = mProperties.value( QgsSymbolLayer::PropertyArrowWidth, context.renderContext().expressionContext() );
+    exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyArrowWidth, context.renderContext().expressionContext() );
     double w = exprVal.toDouble( &ok );
     if ( ok )
     {
       mScaledArrowWidth = context.renderContext().convertToPainterUnits( w, arrowWidthUnit(), arrowWidthUnitScale() );
     }
   }
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyArrowStartWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyArrowStartWidth ) )
   {
     context.setOriginalValueVariable( arrowStartWidth() );
-    exprVal = mProperties.value( QgsSymbolLayer::PropertyArrowStartWidth, context.renderContext().expressionContext() );
+    exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyArrowStartWidth, context.renderContext().expressionContext() );
     double w = exprVal.toDouble( &ok );
     if ( ok )
     {
       mScaledArrowStartWidth = context.renderContext().convertToPainterUnits( w, arrowStartWidthUnit(), arrowStartWidthUnitScale() );
     }
   }
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyArrowHeadLength ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyArrowHeadLength ) )
   {
     context.setOriginalValueVariable( headLength() );
-    exprVal = mProperties.value( QgsSymbolLayer::PropertyArrowHeadLength, context.renderContext().expressionContext() );
+    exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyArrowHeadLength, context.renderContext().expressionContext() );
     double w = exprVal.toDouble( &ok );
     if ( ok )
     {
       mScaledHeadLength = context.renderContext().convertToPainterUnits( w, headLengthUnit(), headLengthUnitScale() );
     }
   }
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyArrowHeadThickness ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyArrowHeadThickness ) )
   {
     context.setOriginalValueVariable( headThickness() );
-    exprVal = mProperties.value( QgsSymbolLayer::PropertyArrowHeadThickness, context.renderContext().expressionContext() );
+    exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyArrowHeadThickness, context.renderContext().expressionContext() );
     double w = exprVal.toDouble( &ok );
     if ( ok )
     {
       mScaledHeadThickness = context.renderContext().convertToPainterUnits( w, headThicknessUnit(), headThicknessUnitScale() );
     }
   }
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
   {
     context.setOriginalValueVariable( offset() );
-    exprVal = mProperties.value( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext() );
+    exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext() );
     double w = exprVal.toDouble( &ok );
     if ( ok )
     {
@@ -664,10 +664,10 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext& context )
     }
   }
 
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyArrowHeadType ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyArrowHeadType ) )
   {
     context.setOriginalValueVariable( headType() );
-    exprVal = mProperties.value( QgsSymbolLayer::PropertyArrowHeadType, context.renderContext().expressionContext() );
+    exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyArrowHeadType, context.renderContext().expressionContext() );
     int h = exprVal.toInt( &ok );
     if ( ok )
     {
@@ -675,10 +675,10 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext& context )
     }
   }
 
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyArrowType ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyArrowType ) )
   {
     context.setOriginalValueVariable( arrowType() );
-    exprVal = mProperties.value( QgsSymbolLayer::PropertyArrowType, context.renderContext().expressionContext() );
+    exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyArrowType, context.renderContext().expressionContext() );
     int h = exprVal.toInt( &ok );
     if ( ok )
     {

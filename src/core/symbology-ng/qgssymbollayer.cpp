@@ -172,7 +172,7 @@ QgsSymbolLayer::QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked )
 
 void QgsSymbolLayer::prepareExpressions( const QgsSymbolRenderContext& context )
 {
-  mProperties.prepare( context.renderContext().expressionContext() );
+  mDataDefinedProperties.prepare( context.renderContext().expressionContext() );
 
   if ( !context.fields().isEmpty() )
   {
@@ -196,7 +196,7 @@ bool QgsSymbolLayer::isCompatibleWithSymbol( QgsSymbol* symbol ) const
 
 QSet<QString> QgsSymbolLayer::usedAttributes( const QgsRenderContext& context ) const
 {
-  QSet<QString> columns = mProperties.referencedFields( context.expressionContext() );
+  QSet<QString> columns = mDataDefinedProperties.referencedFields( context.expressionContext() );
   return columns;
 }
 
@@ -351,7 +351,7 @@ void QgsSymbolLayer::copyDataDefinedProperties( QgsSymbolLayer* destLayer ) cons
   if ( !destLayer )
     return;
 
-  destLayer->setDataDefinedProperties( mProperties );
+  destLayer->setDataDefinedProperties( mDataDefinedProperties );
 }
 
 void QgsSymbolLayer::copyPaintEffect( QgsSymbolLayer *destLayer ) const
@@ -429,10 +429,10 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext& context, double
   offsetX = mOffset.x();
   offsetY = mOffset.y();
 
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePoint( mOffset ) );
-    QVariant exprVal = mProperties.value( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext() );
     if ( exprVal.isValid() )
     {
       QPointF offset = QgsSymbolLayerUtils::decodePoint( exprVal.toString() );
@@ -446,17 +446,17 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext& context, double
 
   HorizontalAnchorPoint horizontalAnchorPoint = mHorizontalAnchorPoint;
   VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyHorizontalAnchor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHorizontalAnchor ) )
   {
-    QVariant exprVal = mProperties.value( QgsSymbolLayer::PropertyHorizontalAnchor, context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyHorizontalAnchor, context.renderContext().expressionContext() );
     if ( exprVal.isValid() )
     {
       horizontalAnchorPoint = decodeHorizontalAnchorPoint( exprVal.toString() );
     }
   }
-  if ( mProperties.isActive( QgsSymbolLayer::PropertyVerticalAnchor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyVerticalAnchor ) )
   {
-    QVariant exprVal = mProperties.value( QgsSymbolLayer::PropertyVerticalAnchor, context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyVerticalAnchor, context.renderContext().expressionContext() );
     if ( exprVal.isValid() )
     {
       verticalAnchorPoint = decodeVerticalAnchorPoint( exprVal.toString() );

@@ -150,7 +150,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, const QString& provid
 
   disableGuiElements();
 
-  mDataDefinedProperties = layerSettings.properties();
+  mDataDefinedProperties = layerSettings.dataDefinedProperties();
 
   //set widget values from data defined results
   setDataDefinedValues( vlayer );
