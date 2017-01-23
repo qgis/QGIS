@@ -395,16 +395,16 @@ class Grass7Algorithm(GeoAlgorithm):
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 value = param.value
                 if value in self.exportedLayers.keys():
-                    command += ' ' + param.name + '=' \
-                        + self.exportedLayers[value]
+                    command += ' ' + param.name + '="' \
+                        + self.exportedLayers[value] + '"'
                 else:
-                    command += ' ' + param.name + '=' + value
+                    command += ' ' + param.name + '="' + value + '"'
             elif isinstance(param, ParameterMultipleInput):
                 s = param.value
                 for layer in self.exportedLayers.keys():
                     s = s.replace(layer, self.exportedLayers[layer])
                 s = s.replace(';', ',')
-                command += ' ' + param.name + '=' + s
+                command += ' ' + param.name + '="' + s + '"'
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     command += ' ' + param.name
