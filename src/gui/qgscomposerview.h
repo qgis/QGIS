@@ -240,7 +240,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     //! Point based shape stuff
     void addPolygonNode( QPointF scenePoint );
-    void movePolygonNode( QPointF scenePoint );
+    void movePolygonNode( QPointF scenePoint, bool constrainAngle );
     void displayNodes( const bool display = true );
     void setSelectedNode( QgsComposerNodesItem *shape, const int index );
     void deselectNode();

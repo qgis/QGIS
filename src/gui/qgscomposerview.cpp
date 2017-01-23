@@ -1246,7 +1246,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       case AddPolygon:
       {
         if ( ! mPolygonItem.isNull() )
-          movePolygonNode( scenePoint );
+          movePolygonNode( scenePoint, shiftModifier );
 
         break;
       }
@@ -1255,7 +1255,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       {
         if ( ! mPolygonItem.isNull() && ! mPolylineItem.isNull() )
         {
-          movePolygonNode( scenePoint );
+          movePolygonNode( scenePoint, shiftModifier );
 
           // rebuild a new qpainter path
           QPainterPath path;
@@ -2257,15 +2257,26 @@ void QgsComposerView::addPolygonNode( QPointF scenePoint )
   mPolygonItem.data()->setPolygon( polygon );
 }
 
-void QgsComposerView::movePolygonNode( QPointF scenePoint )
+void QgsComposerView::movePolygonNode( QPointF scenePoint, bool constrainAngle )
 {
   QPolygonF polygon = mPolygonItem.data()->polygon();
 
-  if ( polygon.size() > 0 )
+  if ( polygon.isEmpty() )
+    return;
+
+  if ( polygon.size() > 1 && constrainAngle )
   {
-    polygon.replace( polygon.size() - 1, scenePoint );
-    mPolygonItem.data()->setPolygon( polygon );
+    QPointF start = polygon.at( polygon.size() - 2 );
+    QLineF newLine = QLineF( start, scenePoint );
+
+    //movement is contrained to 45 degree angles
+    double angle = QgsComposerUtils::snappedAngle( newLine.angle() );
+    newLine.setAngle( angle );
+    scenePoint = newLine.p2();
   }
+
+  polygon.replace( polygon.size() - 1, scenePoint );
+  mPolygonItem.data()->setPolygon( polygon );
 }
 
 void QgsComposerView::displayNodes( const bool display )
