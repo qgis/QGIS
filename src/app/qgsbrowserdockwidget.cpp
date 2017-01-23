@@ -49,8 +49,8 @@ QgsBrowserPropertiesWrapLabel::QgsBrowserPropertiesWrapLabel( const QString& tex
   setPalette( pal );
   setLineWrapMode( QTextEdit::WidgetWidth );
   setWordWrapMode( QTextOption::WrapAnywhere );
-  connect( qobject_cast<QObject*>( document()->documentLayout() ), SIGNAL( documentSizeChanged( QSizeF ) ),
-           this, SLOT( adjustHeight( QSizeF ) ) );
+  connect( qobject_cast<QAbstractTextDocumentLayout*>( document()->documentLayout() ), &QAbstractTextDocumentLayout::documentSizeChanged,
+           this, &QgsBrowserPropertiesWrapLabel::adjustHeight );
   setMaximumHeight( 20 );
 }
 
@@ -289,7 +289,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString& name, QWidget * paren
   action->setData( "case" );
   action->setCheckable( true );
   action->setChecked( false );
-  connect( action, SIGNAL( toggled( bool ) ), this, SLOT( setCaseSensitive( bool ) ) );
+  connect( action, &QAction::toggled, this, &QgsBrowserDockWidget::setCaseSensitive );
   menu->addAction( action );
   QActionGroup* group = new QActionGroup( menu );
   action = new QAction( tr( "Filter Pattern Syntax" ), group );
@@ -309,18 +309,18 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString& name, QWidget * paren
   action->setCheckable( true );
   menu->addAction( action );
 
-  connect( mActionRefresh, SIGNAL( triggered( bool ) ), this, SLOT( refresh() ) );
-  connect( mActionAddLayers, SIGNAL( triggered( bool ) ), this, SLOT( addSelectedLayers() ) );
-  connect( mActionCollapse, SIGNAL( triggered( bool ) ), mBrowserView, SLOT( collapseAll() ) );
-  connect( mActionShowFilter, SIGNAL( triggered( bool ) ), this, SLOT( showFilterWidget( bool ) ) );
-  connect( mActionPropertiesWidget, SIGNAL( triggered( bool ) ), this, SLOT( enablePropertiesWidget( bool ) ) );
-  connect( mLeFilter, SIGNAL( returnPressed() ), this, SLOT( setFilter() ) );
-  connect( mLeFilter, SIGNAL( cleared() ), this, SLOT( setFilter() ) );
-  connect( mLeFilter, SIGNAL( textChanged( const QString & ) ), this, SLOT( setFilter() ) );
-  connect( group, SIGNAL( triggered( QAction * ) ), this, SLOT( setFilterSyntax( QAction * ) ) );
-  connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
-  connect( mBrowserView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( addLayerAtIndex( const QModelIndex& ) ) );
-  connect( mSplitter, SIGNAL( splitterMoved( int, int ) ), this, SLOT( splitterMoved() ) );
+  connect( mActionRefresh, &QAction::triggered, this, &QgsBrowserDockWidget::refresh );
+  connect( mActionAddLayers, &QAction::triggered, this, &QgsBrowserDockWidget::addSelectedLayers );
+  connect( mActionCollapse, &QAction::triggered, mBrowserView, &QgsDockBrowserTreeView::collapseAll );
+  connect( mActionShowFilter, &QAction::triggered, this, &QgsBrowserDockWidget::showFilterWidget );
+  connect( mActionPropertiesWidget, &QAction::triggered, this, &QgsBrowserDockWidget::enablePropertiesWidget );
+  connect( mLeFilter, &QgsFilterLineEdit::returnPressed, this, &QgsBrowserDockWidget::setFilter );
+  connect( mLeFilter, &QgsFilterLineEdit::cleared, this, &QgsBrowserDockWidget::setFilter );
+  connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsBrowserDockWidget::setFilter );
+  connect( group, &QActionGroup::triggered, this, &QgsBrowserDockWidget::setFilterSyntax );
+  connect( mBrowserView, &QgsDockBrowserTreeView::customContextMenuRequested, this, &QgsBrowserDockWidget::showContextMenu );
+  connect( mBrowserView, &QgsDockBrowserTreeView::doubleClicked, this, &QgsBrowserDockWidget::addLayerAtIndex );
+  connect( mSplitter, &QSplitter::splitterMoved, this, &QgsBrowserDockWidget::splitterMoved );
 }
 
 QgsBrowserDockWidget::~QgsBrowserDockWidget()
@@ -338,7 +338,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
   {
     mModel = new QgsBrowserModel( mBrowserView );
 
-    connect( QgisApp::instance(), SIGNAL( newProject() ), mModel, SLOT( updateProjectHome() ) );
+    connect( QgisApp::instance(), &QgisApp::newProject, mModel, &QgsBrowserModel::updateProjectHome );
 
     mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
@@ -350,8 +350,8 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     mBrowserView->header()->setStretchLastSection( false );
 
     // selectionModel is created when model is set on tree
-    connect( mBrowserView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ),
-             this, SLOT( selectionChanged( const QItemSelection &, const QItemSelection & ) ) );
+    connect( mBrowserView->selectionModel(), &QItemSelectionModel::selectionChanged,
+             this, &QgsBrowserDockWidget::selectionChanged );
 
     // objectName used by settingsSection() is not yet set in constructor
     QSettings settings;
@@ -389,29 +389,28 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
     if ( item->parent() && !inFavDirs )
     {
       // only non-root directories can be added as favorites
-      menu->addAction( tr( "Add as a Favorite" ), this, SLOT( addFavorite() ) );
+      menu->addAction( tr( "Add as a Favorite" ), this, &QgsBrowserDockWidget::addFavorite );
     }
     else if ( inFavDirs )
     {
       // only favorites can be removed
-      menu->addAction( tr( "Remove Favorite" ), this, SLOT( removeFavorite() ) );
+      menu->addAction( tr( "Remove Favorite" ), this, &QgsBrowserDockWidget::removeFavorite );
     }
-    menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
-    menu->addAction( tr( "Hide from Browser" ), this, SLOT( hideItem() ) );
-    QAction *action = menu->addAction( tr( "Fast Scan this Directory" ), this, SLOT( toggleFastScan() ) );
+    menu->addAction( tr( "Properties..." ), this, &QgsBrowserDockWidget::showProperties );
+    menu->addAction( tr( "Hide from Browser" ), this, &QgsBrowserDockWidget::hideItem );
+    QAction *action = menu->addAction( tr( "Fast Scan this Directory" ), this, &QgsBrowserDockWidget::toggleFastScan );
     action->setCheckable( true );
     action->setChecked( settings.value( QStringLiteral( "/qgis/scanItemsFastScanUris" ),
                                         QStringList() ).toStringList().contains( item->path() ) );
   }
   else if ( item->type() == QgsDataItem::Layer )
   {
-    menu->addAction( tr( "Add Selected Layer(s)" ), this, SLOT( addSelectedLayers() ) );
-    menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
+    menu->addAction( tr( "Add Selected Layer(s)" ), this, &QgsBrowserDockWidget::addSelectedLayers );
+    menu->addAction( tr( "Properties..." ), this, &QgsBrowserDockWidget::showProperties );
   }
   else if ( item->type() == QgsDataItem::Favorites )
   {
-    menu->addAction( tr( "Add a Directory..." ), this, SLOT( addFavoriteDirectory() ) );
-
+    menu->addAction( tr( "Add a Directory..." ), this, [this] { addFavoriteDirectory(); } );
   }
 
   QList<QAction*> actions = item->actions();
