@@ -209,6 +209,8 @@ class QgsDiagramLayerSettings
 
     void setDataDefinedProperties( const QgsPropertyCollection& collection );
 
+    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
+
 };
 
 /** \ingroup core

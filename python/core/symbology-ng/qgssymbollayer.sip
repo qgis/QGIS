@@ -122,6 +122,8 @@ class QgsSymbolLayer
       PropertyArrowType, //!< Arrow type
     };
 
+    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
+
     virtual ~QgsSymbolLayer();
 
     /**

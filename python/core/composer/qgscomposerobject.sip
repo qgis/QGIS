@@ -54,7 +54,13 @@ class QgsComposerObject : QObject, QgsExpressionContextGenerator
       //legend item
       LegendTitle, //!< Legend title
       LegendColumnCount, //!< Legend column count
+      ScalebarFillColor, //!< Scalebar fill color
+      ScalebarFillColor2, //!< Scalebar secondary fill color
+      ScalebarLineColor, //!< Scalebar line color
+      ScalebarLineWidth, //!< Scalebar line width
     };
+
+    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
 
     /** Specifies whether the value returned by a function should be the original, user
      * set value, or the current evaluated value for the property. This may differ if
