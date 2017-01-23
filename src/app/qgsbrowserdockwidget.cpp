@@ -405,8 +405,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
   }
   else if ( item->type() == QgsDataItem::Layer )
   {
-    menu->addAction( tr( "Add Layer" ), this, SLOT( addCurrentLayer() ) );
-    menu->addAction( tr( "Add Selected Layers" ), this, SLOT( addSelectedLayers() ) );
+    menu->addAction( tr( "Add Selected Layer(s)" ), this, SLOT( addSelectedLayers() ) );
     menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
   }
   else if ( item->type() == QgsDataItem::Favorites )
@@ -545,11 +544,6 @@ void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex& index )
       QApplication::restoreOverrideCursor();
     }
   }
-}
-
-void QgsBrowserDockWidget::addCurrentLayer()
-{
-  addLayerAtIndex( mBrowserView->currentIndex() );
 }
 
 void QgsBrowserDockWidget::addSelectedLayers()
