@@ -84,7 +84,7 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent* e )
     return;
 
   bool zoomOut = mZoomOut;
-  if ( e->modifiers() & Qt::ShiftModifier )
+  if ( e->modifiers() & Qt::AltModifier )
     zoomOut = !zoomOut;
 
   // We are not really dragging in this case. This is sometimes caused by
