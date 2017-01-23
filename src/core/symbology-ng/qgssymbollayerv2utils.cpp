@@ -2655,6 +2655,7 @@ QDomElement QgsSymbolLayerV2Utils::createSvgParameterElement( QDomDocument &doc,
 QgsStringMap QgsSymbolLayerV2Utils::getSvgParameterList( QDomElement &element )
 {
   QgsStringMap params;
+  QString value;
 
   QDomElement paramElem = element.firstChildElement();
   while ( !paramElem.isNull() )
@@ -2662,7 +2663,23 @@ QgsStringMap QgsSymbolLayerV2Utils::getSvgParameterList( QDomElement &element )
     if ( paramElem.localName() == "SvgParameter" || paramElem.localName() == "CssParameter" )
     {
       QString name = paramElem.attribute( "name" );
-      QString value = paramElem.firstChild().nodeValue();
+      if ( paramElem.firstChild().nodeType() == QDomNode::TextNode )
+      {
+        value = paramElem.firstChild().nodeValue();
+      }
+      else
+      {
+        if ( paramElem.firstChild().nodeType() == QDomNode::ElementNode &&
+             paramElem.firstChild().localName() == "Literal" )
+        {
+          QgsDebugMsg( paramElem.firstChild().localName() );
+          value = paramElem.firstChild().firstChild().nodeValue();
+        }
+        else
+        {
+          QgsDebugMsg( QString( "unexpected child of %1" ).arg( paramElem.localName() ) );
+        }
+      }
 
       if ( !name.isEmpty() && !value.isEmpty() )
         params[ name ] = value;
