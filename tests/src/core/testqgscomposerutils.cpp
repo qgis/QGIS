@@ -67,7 +67,6 @@ class TestQgsComposerUtils : public QObject
   private:
     bool renderCheck( const QString& testName, QImage &image, int mismatchCount = 0 );
     QgsComposition* mComposition;
-    QgsMapSettings *mMapSettings;
     QString mReport;
     QFont mTestFont;
 
@@ -75,7 +74,6 @@ class TestQgsComposerUtils : public QObject
 
 TestQgsComposerUtils::TestQgsComposerUtils()
     : mComposition( 0 )
-    , mMapSettings( 0 )
 {
 }
 
@@ -85,8 +83,7 @@ void TestQgsComposerUtils::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis(); //for access to test font
 
-  mMapSettings = new QgsMapSettings();
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = QStringLiteral( "<h1>Composer Utils Tests</h1>\n" );
@@ -100,7 +97,6 @@ void TestQgsComposerUtils::initTestCase()
 void TestQgsComposerUtils::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapSettings;
 
   QgsApplication::exitQgis();
 
@@ -660,9 +656,7 @@ void TestQgsComposerUtils::createRenderContext()
 
   //create composition with no reference map
   QgsRectangle extent( 2000, 2800, 2500, 2900 );
-  QgsMapSettings ms;
-  ms.setExtent( extent );
-  QgsComposition* composition = new QgsComposition( ms, QgsProject::instance() );
+  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
   rc = QgsComposerUtils::createRenderContext( composition, &p );
   QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
   QCOMPARE( rc.painter(), &p );

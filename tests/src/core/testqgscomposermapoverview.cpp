@@ -36,7 +36,6 @@ class TestQgsComposerMapOverview : public QObject
     TestQgsComposerMapOverview()
         : mComposition( 0 )
         , mComposerMap( 0 )
-        , mMapSettings( 0 )
         , mRasterLayer( 0 )
     {}
 
@@ -55,7 +54,6 @@ class TestQgsComposerMapOverview : public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerMap* mComposerMap;
-    QgsMapSettings *mMapSettings;
     QgsRasterLayer* mRasterLayer;
     QString mReport;
 };
@@ -65,8 +63,6 @@ void TestQgsComposerMapOverview::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mMapSettings = new QgsMapSettings();
-
   //create maplayers from testdata and add to layer registry
   QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/rgb256x256.png" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
@@ -75,12 +71,11 @@ void TestQgsComposerMapOverview::initTestCase()
   mRasterLayer->setRenderer( rasterRenderer );
 
   //create composition with composer map
-  mMapSettings->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
-  mMapSettings->setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
+  mComposerMap->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
   mComposition->addComposerMap( mComposerMap );
 
   mReport = QStringLiteral( "<h1>Composer Map Overview Tests</h1>\n" );
@@ -89,7 +84,6 @@ void TestQgsComposerMapOverview::initTestCase()
 void TestQgsComposerMapOverview::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapSettings;
   delete mRasterLayer;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
@@ -116,6 +110,7 @@ void TestQgsComposerMapOverview::overviewMap()
 {
   QgsComposerMap* overviewMap =  new QgsComposerMap( mComposition, 20, 130, 70, 70 );
   overviewMap->setFrameEnabled( true );
+  overviewMap->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
   mComposition->addComposerMap( overviewMap );
   mComposerMap->setNewExtent( QgsRectangle( 96, -152, 160, -120 ) ); //zoom in
   overviewMap->setNewExtent( QgsRectangle( 0, -256, 256, 0 ) );
@@ -132,6 +127,7 @@ void TestQgsComposerMapOverview::overviewMapRotated()
 {
   QgsComposerMap* overviewMap = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
   overviewMap->setFrameEnabled( true );
+  overviewMap->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
   mComposition->addComposerMap( overviewMap );
   mComposerMap->setNewExtent( QgsRectangle( 96, -144, 160, -112 ) ); //zoom in
   mComposerMap->setMapRotation( 30 );
@@ -150,6 +146,7 @@ void TestQgsComposerMapOverview::overviewMapRotated2()
 {
   QgsComposerMap* overviewMap = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
   overviewMap->setFrameEnabled( true );
+  overviewMap->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
   mComposition->addComposerMap( overviewMap );
   mComposerMap->setNewExtent( QgsRectangle( 96, -152, 160, -120 ) ); //zoom in
   overviewMap->setMapRotation( 30 );
@@ -167,6 +164,7 @@ void TestQgsComposerMapOverview::overviewMapBlending()
 {
   QgsComposerMap* overviewMapBlend = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
   overviewMapBlend->setFrameEnabled( true );
+  overviewMapBlend->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
   mComposition->addComposerMap( overviewMapBlend );
   mComposerMap->setNewExtent( QgsRectangle( 96, -152, 160, -120 ) ); //zoom in
   overviewMapBlend->setNewExtent( QgsRectangle( 0, -256, 256, 0 ) );
@@ -185,6 +183,7 @@ void TestQgsComposerMapOverview::overviewMapInvert()
 {
   QgsComposerMap* overviewMapInvert = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
   overviewMapInvert->setFrameEnabled( true );
+  overviewMapInvert->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
   mComposition->addComposerMap( overviewMapInvert );
   mComposerMap->setNewExtent( QgsRectangle( 96, -152, 160, -120 ) ); //zoom in
   overviewMapInvert->setNewExtent( QgsRectangle( 0, -256, 256, 0 ) );
@@ -203,6 +202,7 @@ void TestQgsComposerMapOverview::overviewMapCenter()
 {
   QgsComposerMap* overviewMapCenter = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
   overviewMapCenter->setFrameEnabled( true );
+  overviewMapCenter->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
   mComposition->addComposerMap( overviewMapCenter );
   mComposerMap->setNewExtent( QgsRectangle( 192, -288, 320, -224 ) );
   overviewMapCenter->setNewExtent( QgsRectangle( 0, -256, 256, 0 ) );

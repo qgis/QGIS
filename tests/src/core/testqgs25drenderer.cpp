@@ -126,10 +126,11 @@ void TestQgs25DRenderer::render()
 
 void TestQgs25DRenderer::renderComposition()
 {
-  QgsComposition* composition = new QgsComposition( mMapSettings, QgsProject::instance() );
+  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
   composition->setPaperSize( 297, 210 ); //A4 landscape
   QgsComposerMap* map = new QgsComposerMap( composition, 20, 20, 200, 100 );
   map->setFrameEnabled( true );
+  map->setLayers( QList< QgsMapLayer* >() << mpPolysLayer );
   composition->addComposerMap( map );
 
   map->setNewExtent( mpPolysLayer->extent() );

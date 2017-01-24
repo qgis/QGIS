@@ -35,10 +35,8 @@ class TestQgsComposerShapes(unittest.TestCase):
         """Run once on class initialization."""
         unittest.TestCase.__init__(self, methodName)
 
-        self.mapSettings = QgsMapSettings()
-
         # create composition
-        self.mComposition = QgsComposition(self.mapSettings, QgsProject.instance())
+        self.mComposition = QgsComposition(QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
 
         self.mComposerShape = QgsComposerShape(20, 20, 150, 100, self.mComposition)

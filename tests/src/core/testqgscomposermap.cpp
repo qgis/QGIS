@@ -38,7 +38,6 @@ class TestQgsComposerMap : public QObject
     TestQgsComposerMap()
         : mComposition( 0 )
         , mComposerMap( 0 )
-        , mMapSettings( 0 )
         , mRasterLayer( 0 )
         , mPointsLayer( 0 )
         , mPolysLayer( 0 )
@@ -60,7 +59,6 @@ class TestQgsComposerMap : public QObject
   private:
     QgsComposition *mComposition;
     QgsComposerMap *mComposerMap;
-    QgsMapSettings *mMapSettings;
     QgsRasterLayer* mRasterLayer;
     QgsVectorLayer* mPointsLayer;
     QgsVectorLayer* mPolysLayer;
@@ -112,15 +110,12 @@ void TestQgsComposerMap::cleanupTestCase()
 
 void TestQgsComposerMap::init()
 {
-  mMapSettings = new QgsMapSettings();
-
   //create composition with composer map
-  mMapSettings->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
-  mMapSettings->setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
+  mComposerMap->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
   mComposition->addComposerMap( mComposerMap );
 
   mReport = QStringLiteral( "<h1>Composer Map Tests</h1>\n" );
@@ -129,7 +124,6 @@ void TestQgsComposerMap::init()
 void TestQgsComposerMap::cleanup()
 {
   delete mComposition;
-  delete mMapSettings;
 }
 
 void TestQgsComposerMap::render()
@@ -262,7 +256,7 @@ void TestQgsComposerMap::dataDefinedLayers()
   ms.setLayers( QList<QgsMapLayer*>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer );
   ms.setCrsTransformEnabled( true );
 
-  mComposition = new QgsComposition( ms, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
@@ -338,14 +332,14 @@ void TestQgsComposerMap::dataDefinedLayers()
 void TestQgsComposerMap::dataDefinedStyles()
 {
   delete mComposition;
-  QgsMapSettings ms;
-  ms.setLayers( QList<QgsMapLayer*>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer );
-  ms.setCrsTransformEnabled( true );
 
-  mComposition = new QgsComposition( ms, QgsProject::instance() );
+  QList<QgsMapLayer*> layers = QList<QgsMapLayer*>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
+
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
+  mComposerMap->setLayers( layers );
   mComposition->addComposerMap( mComposerMap );
 
   QgsMapThemeCollection::MapThemeRecord rec;
@@ -366,7 +360,7 @@ void TestQgsComposerMap::dataDefinedStyles()
   //test malformed style string
   mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "5" ) ) );
   result = mComposerMap->layersToRender().toSet();
-  QCOMPARE( result, ms.layers().toSet() );
+  QCOMPARE( result, layers.toSet() );
 
   //test valid preset
   mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "'test preset'" ) ) );
@@ -378,7 +372,7 @@ void TestQgsComposerMap::dataDefinedStyles()
   //test non-existent preset
   mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "'bad preset'" ) ) );
   result = mComposerMap->layersToRender().toSet();
-  QCOMPARE( result, ms.layers().toSet() );
+  QCOMPARE( result, layers.toSet() );
 
   //test that dd layer set overrides style layers
   mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "'test preset'" ) ) );

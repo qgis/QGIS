@@ -81,7 +81,7 @@ void TestQgsComposerGroup::initTestCase()
   QgsApplication::initQgis();
 
   mMapSettings = new QgsMapSettings();
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   //create some items

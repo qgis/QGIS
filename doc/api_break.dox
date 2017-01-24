@@ -660,7 +660,10 @@ to use the QgsProperty framework objects.
 QgsComposition        {#qgis_api_break_3_0_QgsComposition}
 --------------
 
-- constructor requires QgsProject instance as the second argument
+- The constructor no longer takes a reference to a QgsMapSettings object. This is no longer
+used by compositions. To set the layers to show in composer maps, the QgsComposerMap::setLayers()
+method should be used instead.
+- constructor requires QgsProject instance
 - addItemsFromXML() has been renamed to addItemsFromXml()
 - Constructor with QgsMapRenderer parameter has been removed. Use the variant with QgsMapSettings parameter.
 - mapRenderer() has been removed. Use mapSettings() instead.
@@ -674,6 +677,7 @@ were removed. Use setSnapTolerance() and snapTolerance() instead.
 - worldFileMap() and setWorldFileMap() have been renamed to referenceMap() and setReferenceMap()
 - dataDefinedProperty() and setDataDefinedProperty() now use the QgsProperty framework instead
 of QgsDataDefined objects.
+- mapSettings() was removed. Use QgsComposerMap::mapSettings() instead.
 
 
 QgsCoordinateReferenceSystem        {#qgis_api_break_3_0_QgsCoordinateReferenceSystem}

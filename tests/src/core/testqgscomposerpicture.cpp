@@ -67,7 +67,6 @@ class TestQgsComposerPicture : public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerPicture* mComposerPicture;
-    QgsMapSettings *mMapSettings;
     QString mReport;
     QString mPngImage;
     QString mSvgImage;
@@ -77,7 +76,6 @@ class TestQgsComposerPicture : public QObject
 TestQgsComposerPicture::TestQgsComposerPicture()
     : mComposition( 0 )
     , mComposerPicture( 0 )
-    , mMapSettings( 0 )
 {
 
 }
@@ -87,13 +85,11 @@ void TestQgsComposerPicture::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mMapSettings = new QgsMapSettings();
-
   mPngImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_image.png";
   mSvgImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_svg.svg";
   mSvgParamsImage = QStringLiteral( TEST_DATA_DIR ) + "/svg_params.svg";
 
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mComposerPicture = new QgsComposerPicture( mComposition );
@@ -108,7 +104,6 @@ void TestQgsComposerPicture::cleanupTestCase()
 {
   delete mComposerPicture;
   delete mComposition;
-  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

@@ -59,8 +59,7 @@ class TestQgsComposerPicture(unittest.TestCase):
         self.pngImage = TEST_DATA_DIR + "/sample_image.png"
 
         # create composition
-        self.mapSettings = QgsMapSettings()
-        self.composition = QgsComposition(self.mapSettings, QgsProject.instance())
+        self.composition = QgsComposition(QgsProject.instance())
         self.composition.setPaperSize(297, 210)
 
         self.composerPicture = QgsComposerPicture(self.composition)
@@ -94,8 +93,7 @@ class TestQgsComposerPicture(unittest.TestCase):
     def testGridNorth(self):
         """Test syncing picture to grid north"""
 
-        mapSettings = QgsMapSettings()
-        composition = QgsComposition(mapSettings, QgsProject.instance())
+        composition = QgsComposition(QgsProject.instance())
 
         composerMap = QgsComposerMap(composition)
         composerMap.setNewExtent(QgsRectangle(0, -256, 256, 0))
@@ -118,8 +116,7 @@ class TestQgsComposerPicture(unittest.TestCase):
     def testTrueNorth(self):
         """Test syncing picture to true north"""
 
-        mapSettings = QgsMapSettings()
-        composition = QgsComposition(mapSettings, QgsProject.instance())
+        composition = QgsComposition(QgsProject.instance())
 
         composerMap = QgsComposerMap(composition)
         composerMap.setCrs(QgsCoordinateReferenceSystem.fromEpsgId(3575))

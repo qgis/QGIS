@@ -864,7 +864,6 @@ void TestQgsPaintEffect::composer()
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   lineLayer->setSimplifyMethod( simplifyMethod );
 
-  QgsMapSettings ms;
   QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
   line->setColor( QColor( 255, 0, 0 ) );
   line->setWidth( 1.0 );
@@ -878,15 +877,14 @@ void TestQgsPaintEffect::composer()
   renderer->setPaintEffect( effect );
 
   lineLayer->setRenderer( renderer );
-  ms.setLayers( QList<QgsMapLayer*>() << lineLayer );
-  ms.setCrsTransformEnabled( false );
 
-  QgsComposition* composition = new QgsComposition( ms, QgsProject::instance() );
+  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
   composition->setPaperSize( 50, 50 );
   QgsComposerMap* composerMap = new QgsComposerMap( composition, 1, 1, 48, 48 );
   composerMap->setFrameEnabled( true );
   composition->addComposerMap( composerMap );
   composerMap->setNewExtent( lineLayer->extent() );
+  composerMap->setLayers( QList<QgsMapLayer*>() << lineLayer );
 
   QImage outputImage( 591, 591, QImage::Format_RGB32 );
   composition->setPlotStyle( QgsComposition::Print );
