@@ -104,7 +104,7 @@ class GrassAlgorithm(GeoAlgorithm):
         if os.path.exists(helpPath):
             return False, QUrl.fromLocalFile(os.path.join(helpPath, '{}.html'.format(self.grassName))).toString()
         else:
-            return False, helpPath + '{}.html'.format(self.grass7Name)
+            return False, '{}{}.html'.format(helpPath, self.grassName)
 
     def getParameterDescriptions(self):
         descs = {}
