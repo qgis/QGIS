@@ -545,3 +545,37 @@ tests:
       OUTPUT:
         hash: f468bb08cbede2b606018a7a45a51cc221307a8421a11daefabeac12
         type: rasterhash
+
+  - algorithm: gdal:colorrelief
+    name: Standard Color Relief
+    params:
+      BAND: 1
+      COLOR_TABLE:
+        name: custom/color_relief.txt
+        type: file
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      MATCH_MODE: '0'
+    results:
+      OUTPUT:
+        hash: f714597fadc9cfc3f5263dc0e35f7c6ba285de238dce439e4988faac
+        type: rasterhash
+
+  - algorithm: gdal:colorrelief
+    name: Color Relief with edges
+    params:
+      BAND: 1
+      COLOR_TABLE:
+        name: custom/color_relief.txt
+        type: file
+      COMPUTE_EDGES: true
+      INPUT:
+        name: dem.tif
+        type: raster
+      MATCH_MODE: '0'
+    results:
+      OUTPUT:
+        hash: f714597fadc9cfc3f5263dc0e35f7c6ba285de238dce439e4988faac
+        type: rasterhash
