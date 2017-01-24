@@ -257,6 +257,7 @@ SET(QGIS_CORE_SRCS
   qgsvirtuallayerdefinitionutils.cpp
   qgsmapthemecollection.cpp
   qgsxmlutils.cpp
+  qgssettings.cpp
 
   composer/qgsaddremoveitemcommand.cpp
   composer/qgsaddremovemultiframecommand.cpp

@@ -78,6 +78,7 @@ typedef SInt32 SRefCon;
 #endif
 
 #include "qgscustomization.h"
+#include "qgssettings.h"
 #include "qgsfontutils.h"
 #include "qgspluginregistry.h"
 #include "qgsmessagelog.h"
@@ -119,7 +120,8 @@ void usage( const QString& appName )
   << QStringLiteral( "\t[--noversioncheck]\tdon't check for new version of QGIS at startup\n" )
   << QStringLiteral( "\t[--noplugins]\tdon't restore plugins on startup\n" )
   << QStringLiteral( "\t[--nocustomization]\tdon't apply GUI customization\n" )
-  << QStringLiteral( "\t[--customizationfile]\tuse the given ini file as GUI customization\n" )
+  << QStringLiteral( "\t[--customizationfile path]\tuse the given ini file as GUI customization\n" )
+  << QStringLiteral( "\t[--globalsettingsfile path]\tuse the given ini file as Global Settings (defaults)\n" )
   << QStringLiteral( "\t[--optionspath path]\tuse the given QSettings path\n" )
   << QStringLiteral( "\t[--configpath path]\tuse the given path for all user configuration\n" )
   << QStringLiteral( "\t[--authdbdirectory path] use the given directory for authentication database\n" )
@@ -556,6 +558,7 @@ int main( int argc, char *argv[] )
   QString pythonfile;
 
   QString customizationfile;
+  QString globalsettingsfile;
 
 #if defined(ANDROID)
   QgsDebugMsg( QString( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
@@ -641,6 +644,10 @@ int main( int argc, char *argv[] )
       else if ( i + 1 < argc && ( arg == QLatin1String( "--customizationfile" ) || arg == QLatin1String( "-z" ) ) )
       {
         customizationfile = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+      }
+      else if ( i + 1 < argc && ( arg == QLatin1String( "--globalsettingsfile" ) || arg == QLatin1String( "-g" ) ) )
+      {
+        globalsettingsfile = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
       }
       else if ( arg == QLatin1String( "--defaultui" ) || arg == QLatin1String( "-d" ) )
       {
@@ -813,24 +820,52 @@ int main( int argc, char *argv[] )
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
 
-  QSettings* customizationsettings = nullptr;
+  // SetUp the QgsSettings Global Settings:
+  // - use the path specified with --globalsettings path,
+  // - use the environment if not found
+  // - use a default location as a fallback
+  if ( globalsettingsfile.isEmpty( ) )
+  {
+    globalsettingsfile = getenv( "QGIS_GLOBAL_SETTINGS_FILE" );
+  }
+  if ( globalsettingsfile.isEmpty( ) )
+  {
+    QString default_globalsettingsfile = QgsApplication::pkgDataPath( ) + "/qgis_global_settings.ini";
+    if ( QFile::exists( default_globalsettingsfile ) )
+    {
+      globalsettingsfile = default_globalsettingsfile;
+    }
+  }
+  if ( !globalsettingsfile.isEmpty() )
+  {
+    if ( ! QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
+    {
+      QgsMessageLog::logMessage( QString( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QString( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+    }
+  }
+
+  QgsSettings* customizationsettings = nullptr;
   if ( !optionpath.isEmpty() || !configpath.isEmpty() )
   {
     // tell QSettings to use INI format and save the file in custom config path
     QSettings::setDefaultFormat( QSettings::IniFormat );
     QString path = optionpath.isEmpty() ? configpath : optionpath;
     QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, path );
-    customizationsettings = new QSettings( QSettings::IniFormat, QSettings::UserScope, QStringLiteral( "QGIS" ), QStringLiteral( "QGISCUSTOMIZATION2" ) );
+    customizationsettings = new QgsSettings( QSettings::IniFormat, QSettings::UserScope, QStringLiteral( "QGIS" ), QStringLiteral( "QGISCUSTOMIZATION2" ) );
   }
   else
   {
-    customizationsettings = new QSettings( QStringLiteral( "QGIS" ), QStringLiteral( "QGISCUSTOMIZATION2" ) );
+    customizationsettings = new QgsSettings( QStringLiteral( "QGIS" ), QStringLiteral( "QGISCUSTOMIZATION2" ) );
   }
 
   // Using the customizationfile option always overrides the option and config path options.
   if ( !customizationfile.isEmpty() )
   {
-    customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
+    customizationsettings = new QgsSettings( customizationfile, QSettings::IniFormat );
     QgsCustomization::instance()->setEnabled( true );
   }
 
@@ -866,7 +901,8 @@ int main( int argc, char *argv[] )
   }
 #endif
 
-  QSettings mySettings;
+
+  QgsSettings mySettings;
 
   // update any saved setting for older themes to new default 'gis' theme (2013-04-15)
   if ( mySettings.contains( QStringLiteral( "/Themes" ) ) )
@@ -879,7 +915,6 @@ int main( int argc, char *argv[] )
       mySettings.setValue( QStringLiteral( "/Themes" ), QStringLiteral( "default" ) );
     }
   }
-
 
   // custom environment variables
   QMap<QString, QString> systemEnvVars = QgsApplication::systemEnvVars();
@@ -1072,7 +1107,7 @@ int main( int argc, char *argv[] )
 
   // set max. thread count
   // this should be done in QgsApplication::init() but it doesn't know the settings dir.
-  QgsApplication::setMaxThreads( QSettings().value( QStringLiteral( "/qgis/max_threads" ), -1 ).toInt() );
+  QgsApplication::setMaxThreads( mySettings.value( QStringLiteral( "/qgis/max_threads" ), -1 ).toInt() );
 
   QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipVersionCheck ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );

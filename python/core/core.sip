@@ -15,6 +15,7 @@
 
 %Include qgsapplication.sip
 %Include qgsaction.sip
+%Include qgssettings.sip
 %Include qgsactionmanager.sip
 %Include qgsactionscope.sip
 %Include qgsactionscoperegistry.sip
