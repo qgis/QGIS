@@ -257,7 +257,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Show all labels and features for all layers</string>
+        <string>Show all labels for all layers</string>
        </property>
       </widget>
      </item>
@@ -287,7 +287,7 @@
      <item row="1" column="0" colspan="3">
       <widget class="QCheckBox" name="chkShowPartialsLabels">
        <property name="text">
-        <string>Show partials labels</string>
+        <string>Show partial labels</string>
        </property>
       </widget>
      </item>
