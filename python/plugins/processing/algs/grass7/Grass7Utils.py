@@ -55,6 +55,9 @@ class Grass7Utils:
 
     isGrass7Installed = False
 
+    version = None
+    command = None
+
     @staticmethod
     def grassBatchJobFilename():
         '''This is used in Linux. This is the batch job that we assign to
@@ -74,10 +77,33 @@ class Grass7Utils:
         return filename
 
     @staticmethod
-    def getGrassVersion():
-        # FIXME: I do not know if this should be removed or let the user enter it
-        # or something like that... This is just a temporary thing
-        return '7.0.0'
+    def installedVersion(run=False):
+        if Grass7Utils.isGrass7Installed and not run:
+            return Grass7Utils.version
+
+        if Grass7Utils.grassPath() is None:
+            return None
+
+        for command in ["grass73", "grass72", "grass71", "grass70", "grass"]:
+            proc = subprocess.Popen(
+                ["{} -v".format(command)],
+                shell=True,
+                stdout=subprocess.PIPE,
+                stdin=open(os.devnull),
+                stderr=subprocess.STDOUT,
+                universal_newlines=True,
+            )
+            if proc:
+                lines = proc.stdout.readlines()
+                for line in lines:
+                    if "GRASS GIS " in line:
+                        line = line.split(" ")[-1].strip()
+                        if line.startswith("7."):
+                            Grass7Utils.version = line
+                            Grass7Utils.command = command
+                            return Grass7Utils.version
+
+        return Grass7Utils.version
 
     @staticmethod
     def grassPath():
@@ -98,6 +124,16 @@ class Grass7Utils:
                     for subfolder in os.listdir(testfolder):
                         if subfolder.startswith('grass-7'):
                             folder = os.path.join(testfolder, subfolder)
+                            fn = os.path.join(folder, "etc", "VERSIONNUMBER")
+                            if not os.path.isfile(fn):
+                                continue
+
+                            f = open(fn, "r")
+                            Grass7Utils.version = f.read().split(' ')[0]
+                            f.close()
+
+                            major, minor, patch = Grass7Utils.version.split('.')
+                            Grass7Utils.command = "grass{}{}".format(major, minor)
                             break
             else:
                 folder = os.path.join(unicode(QgsApplication.prefixPath()), 'grass7')
@@ -141,7 +177,7 @@ class Grass7Utils:
         output.write('if "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n')
         output.write('if not "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%GRASS_ADDON_PATH%;%PATH%\n')
         output.write('\n')
-        output.write('set GRASS_VERSION=' + Grass7Utils.getGrassVersion() + '\n')
+        output.write('set GRASS_VERSION=' + Grass7Utils.installedVersion() + '\n')
         output.write('if not "%LANG%"=="" goto langset\n')
         output.write('FOR /F "usebackq delims==" %%i IN (`"%WINGISBASE%\\etc\\winlocale"`) DO @set LANG=%%i\n')
         output.write(':langset\n')
@@ -251,8 +287,9 @@ class Grass7Utils:
                 command = Grass7Utils.grassPath() + os.sep + 'grass.sh ' \
                     + Grass7Utils.grassMapsetFolder() + '/PERMANENT'
             else:
-                command = 'grass70 ' + Grass7Utils.grassMapsetFolder() \
-                    + '/PERMANENT'
+                if Grass7Utils.command is None:
+                    Grass7Utils.installedVersion()
+                command = Grass7Utils.command + ' ' + os.path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT')
 
         return command, env
 
@@ -417,4 +454,4 @@ class Grass7Utils:
                         helpPath = os.path.abspath(path)
                         break
 
-        return helpPath if helpPath is not None else 'http://grass.osgeo.org/grass70/manuals/'
+        return helpPath if helpPath is not None else 'http://grass.osgeo.org/{}/manuals/'.format(Grass7Utils.command)
