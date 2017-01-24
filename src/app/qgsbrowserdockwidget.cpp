@@ -389,28 +389,28 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
     if ( item->parent() && !inFavDirs )
     {
       // only non-root directories can be added as favorites
-      menu->addAction( tr( "Add as a Favorite" ), this, &QgsBrowserDockWidget::addFavorite );
+      menu->addAction( tr( "Add as a Favorite" ), this, SLOT( addFavorite() ) );
     }
     else if ( inFavDirs )
     {
       // only favorites can be removed
-      menu->addAction( tr( "Remove Favorite" ), this, &QgsBrowserDockWidget::removeFavorite );
+      menu->addAction( tr( "Remove Favorite" ), this, SLOT( removeFavorite() ) );
     }
-    menu->addAction( tr( "Properties..." ), this, &QgsBrowserDockWidget::showProperties );
-    menu->addAction( tr( "Hide from Browser" ), this, &QgsBrowserDockWidget::hideItem );
-    QAction *action = menu->addAction( tr( "Fast Scan this Directory" ), this, &QgsBrowserDockWidget::toggleFastScan );
+    menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
+    menu->addAction( tr( "Hide from Browser" ), this, SLOT( hideItem() ) );
+    QAction *action = menu->addAction( tr( "Fast Scan this Directory" ), this, SLOT( toggleFastScan() ) );
     action->setCheckable( true );
     action->setChecked( settings.value( QStringLiteral( "/qgis/scanItemsFastScanUris" ),
                                         QStringList() ).toStringList().contains( item->path() ) );
   }
   else if ( item->type() == QgsDataItem::Layer )
   {
-    menu->addAction( tr( "Add Selected Layer(s)" ), this, &QgsBrowserDockWidget::addSelectedLayers );
-    menu->addAction( tr( "Properties..." ), this, &QgsBrowserDockWidget::showProperties );
+    menu->addAction( tr( "Add Selected Layer(s)" ), this, SLOT( addSelectedLayers() ) );
+    menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
   }
   else if ( item->type() == QgsDataItem::Favorites )
   {
-    menu->addAction( tr( "Add a Directory..." ), this, [this] { addFavoriteDirectory(); } );
+    menu->addAction( tr( "Add a Directory..." ), this, SLOT( addFavoriteDirectory() ) );
   }
 
   QList<QAction*> actions = item->actions();
