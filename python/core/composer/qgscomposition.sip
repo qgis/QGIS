@@ -40,7 +40,7 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
       Landscape
     };
 
-    explicit QgsComposition( const QgsMapSettings& mapSettings, QgsProject* project );
+    explicit QgsComposition( QgsProject* project );
 
     /** Composition atlas modes*/
     enum AtlasMode
@@ -365,10 +365,6 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
     bool useAdvancedEffects() const;
     /** Used to enable or disable advanced effects such as blend modes in a composition */
     void setUseAdvancedEffects( const bool effectsEnabled );
-
-    //! Return setting of QGIS map canvas
-    //! @note added in 2.4
-    const QgsMapSettings& mapSettings() const;
 
     QgsComposition::PlotStyle plotStyle() const;
     void setPlotStyle( const QgsComposition::PlotStyle style );

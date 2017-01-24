@@ -101,7 +101,7 @@ void TestQgsComposerMapGrid::init()
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
   mMapSettings->setDestinationCrs( crs );
   mMapSettings->setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );

@@ -37,7 +37,6 @@ class TestQgsComposerPaper : public QObject
   public:
     TestQgsComposerPaper()
         : mComposition( 0 )
-        , mMapSettings( 0 )
     {}
 
   private slots:
@@ -54,7 +53,6 @@ class TestQgsComposerPaper : public QObject
   private:
     QgsComposition* mComposition;
     QString mReport;
-    QgsMapSettings *mMapSettings;
     // QgsSingleSymbolRenderer* mSymbolRenderer;
 
 };
@@ -65,8 +63,7 @@ void TestQgsComposerPaper::initTestCase()
   QgsApplication::initQgis();
 
   //create empty composition
-  mMapSettings = new QgsMapSettings();
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = QStringLiteral( "<h1>Composer Paper Tests</h1>\n" );
@@ -75,7 +72,6 @@ void TestQgsComposerPaper::initTestCase()
 void TestQgsComposerPaper::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

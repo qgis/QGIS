@@ -37,7 +37,6 @@ class TestQgsComposerShapes : public QObject
     TestQgsComposerShapes()
         : mComposition( 0 )
         , mComposerShape( 0 )
-        , mMapSettings( 0 )
     {}
 
   private slots:
@@ -54,7 +53,6 @@ class TestQgsComposerShapes : public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerShape* mComposerShape;
-    QgsMapSettings *mMapSettings;
     QString mReport;
 };
 
@@ -63,10 +61,8 @@ void TestQgsComposerShapes::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mMapSettings = new QgsMapSettings();
-
   //create composition with two rectangles
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerShape = new QgsComposerShape( 20, 20, 150, 100, mComposition );
   mComposerShape->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );
@@ -78,7 +74,6 @@ void TestQgsComposerShapes::initTestCase()
 void TestQgsComposerShapes::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

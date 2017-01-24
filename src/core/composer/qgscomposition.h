@@ -104,8 +104,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
       Landscape
     };
 
-    //! Construct a composition, using given map settings and project
-    explicit QgsComposition( const QgsMapSettings& mapSettings, QgsProject* project );
+    /**
+     * Construct a new composition linked to the specified project.
+     */
+    explicit QgsComposition( QgsProject* project );
 
     //! Composition atlas modes
     enum AtlasMode
@@ -442,10 +444,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     bool useAdvancedEffects() const {return mUseAdvancedEffects;}
     //! Used to enable or disable advanced effects such as blend modes in a composition
     void setUseAdvancedEffects( const bool effectsEnabled );
-
-    //! Return setting of QGIS map canvas
-    //! @note added in 2.4
-    const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
     QgsComposition::PlotStyle plotStyle() const { return mPlotStyle; }
     void setPlotStyle( const QgsComposition::PlotStyle style ) { mPlotStyle = style; }
@@ -862,8 +860,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
 
   private:
-    //! Reference to map settings of QGIS main map
-    const QgsMapSettings& mMapSettings;
 
     //! Pointer to associated project (not null)
     QgsProject* mProject;

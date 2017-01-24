@@ -63,18 +63,17 @@ class TestQgsComposerMap(unittest.TestCase):
         QgsProject.instance().addMapLayers([self.raster_layer, self.vector_layer])
 
         # create composition with composer map
-        self.mMapSettings = QgsMapSettings()
-        self.mMapSettings.setLayers([self.raster_layer])
-        self.mMapSettings.setCrsTransformEnabled(False)
-        self.mComposition = QgsComposition(self.mMapSettings, QgsProject.instance())
+        self.mComposition = QgsComposition(QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
         self.mComposerMap = QgsComposerMap(self.mComposition, 20, 20, 200, 100)
         self.mComposerMap.setFrameEnabled(True)
+        self.mComposerMap.setLayers([self.raster_layer])
         self.mComposition.addComposerMap(self.mComposerMap)
 
     def testOverviewMap(self):
         overviewMap = QgsComposerMap(self.mComposition, 20, 130, 70, 70)
         overviewMap.setFrameEnabled(True)
+        overviewMap.setLayers([self.raster_layer])
         self.mComposition.addComposerMap(overviewMap)
         # zoom in
         myRectangle = QgsRectangle(96, -152, 160, -120)
@@ -91,6 +90,7 @@ class TestQgsComposerMap(unittest.TestCase):
     def testOverviewMapBlend(self):
         overviewMap = QgsComposerMap(self.mComposition, 20, 130, 70, 70)
         overviewMap.setFrameEnabled(True)
+        overviewMap.setLayers([self.raster_layer])
         self.mComposition.addComposerMap(overviewMap)
         # zoom in
         myRectangle = QgsRectangle(96, -152, 160, -120)
@@ -108,6 +108,7 @@ class TestQgsComposerMap(unittest.TestCase):
     def testOverviewMapInvert(self):
         overviewMap = QgsComposerMap(self.mComposition, 20, 130, 70, 70)
         overviewMap.setFrameEnabled(True)
+        overviewMap.setLayers([self.raster_layer])
         self.mComposition.addComposerMap(overviewMap)
         # zoom in
         myRectangle = QgsRectangle(96, -152, 160, -120)
@@ -125,6 +126,7 @@ class TestQgsComposerMap(unittest.TestCase):
     def testOverviewMapCenter(self):
         overviewMap = QgsComposerMap(self.mComposition, 20, 130, 70, 70)
         overviewMap.setFrameEnabled(True)
+        overviewMap.setLayers([self.raster_layer])
         self.mComposition.addComposerMap(overviewMap)
         # zoom in
         myRectangle = QgsRectangle(192, -288, 320, -224)
@@ -144,7 +146,7 @@ class TestQgsComposerMap(unittest.TestCase):
         # create composition with composer map
         map_settings = QgsMapSettings()
         map_settings.setLayers([self.vector_layer])
-        composition = QgsComposition(map_settings, QgsProject.instance())
+        composition = QgsComposition(QgsProject.instance())
         composition.setPaperSize(297, 210)
 
         # check that new maps inherit project CRS
@@ -153,6 +155,7 @@ class TestQgsComposerMap(unittest.TestCase):
         map.setFrameEnabled(True)
         rectangle = QgsRectangle(-13838977, 2369660, -8672298, 6250909)
         map.setNewExtent(rectangle)
+        map.setLayers([self.vector_layer])
         composition.addComposerMap(map)
 
         self.assertEqual(map.crs().authid(), 'EPSG:4326')

@@ -41,7 +41,6 @@ class TestQgsComposerScaleBar : public QObject
         , mComposerMap( 0 )
         , mComposerScaleBar( 0 )
         , mRasterLayer( 0 )
-        , mMapSettings( 0 )
     {}
 
   private slots:
@@ -61,7 +60,6 @@ class TestQgsComposerScaleBar : public QObject
     QgsComposerMap* mComposerMap;
     QgsComposerScaleBar* mComposerScaleBar;
     QgsRasterLayer* mRasterLayer;
-    QgsMapSettings *mMapSettings;
     QString mReport;
 };
 
@@ -82,8 +80,6 @@ void TestQgsComposerScaleBar::initTestCase()
   QgsProject::instance()->setCrs( destCRS );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
 
-  mMapSettings = new QgsMapSettings();
-
   //create maplayers from testdata and add to layer registry
   QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
@@ -92,14 +88,14 @@ void TestQgsComposerScaleBar::initTestCase()
   mRasterLayer->setRenderer( rasterRenderer );
 
   //create composition with composer map
-  mMapSettings->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 150, 150 );
   mComposerMap->setFrameEnabled( true );
   mComposition->addComposerMap( mComposerMap );
   mComposerMap->setNewExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
+  mComposerMap->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
   mComposerScaleBar = new QgsComposerScaleBar( mComposition );
   mComposerScaleBar->setSceneRect( QRectF( 20, 180, 50, 20 ) );
@@ -121,7 +117,6 @@ void TestQgsComposerScaleBar::initTestCase()
 void TestQgsComposerScaleBar::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapSettings;
   delete mRasterLayer;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";

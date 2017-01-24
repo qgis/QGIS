@@ -34,9 +34,9 @@ QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup *roo
     , mAutoEnableCrsTransform( true )
     , mLastLayerCount( !root->findLayers().isEmpty() )
 {
-  connect( root, SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeAddedChildren( QgsLayerTreeNode*, int, int ) ) );
-  connect( root, SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode*, QString ) ) );
-  connect( root, SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeRemovedChildren() ) );
+  connect( root, &QgsLayerTreeGroup::addedChildren, this, &QgsLayerTreeMapCanvasBridge::nodeAddedChildren );
+  connect( root, &QgsLayerTreeGroup::customPropertyChanged, this, &QgsLayerTreeMapCanvasBridge::nodeCustomPropertyChanged );
+  connect( root, &QgsLayerTreeGroup::removedChildren, this, &QgsLayerTreeMapCanvasBridge::nodeRemovedChildren );
   connect( root, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeMapCanvasBridge::nodeVisibilityChanged );
 
   setCanvasLayers();
@@ -205,6 +205,8 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
     mFirstCRS = QgsCoordinateReferenceSystem();
 
   mPendingCanvasUpdate = false;
+
+  emit canvasLayersChanged( canvasLayers );
 }
 
 void QgsLayerTreeMapCanvasBridge::readProject( const QDomDocument& doc )

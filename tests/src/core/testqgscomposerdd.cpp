@@ -38,7 +38,6 @@ class TestQgsComposerDD : public QObject
   public:
     TestQgsComposerDD()
         : mComposition( 0 )
-        , mMapSettings( 0 )
         , mVectorLayer( 0 )
         , mAtlasMap( 0 )
         , mAtlas( 0 )
@@ -54,7 +53,6 @@ class TestQgsComposerDD : public QObject
 
   private:
     QgsComposition *mComposition;
-    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsComposerMap* mAtlasMap;
     QgsAtlasComposition* mAtlas;
@@ -65,8 +63,6 @@ void TestQgsComposerDD::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  mMapSettings = new QgsMapSettings();
 
   //create maplayers from testdata and add to layer registry
   QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/france_parts.shp" );
@@ -79,15 +75,11 @@ void TestQgsComposerDD::initTestCase()
   mVectorLayer->setSimplifyMethod( simplifyMethod );
 
   //create composition with composer map
-  mMapSettings->setLayers( QList<QgsMapLayer*>() << mVectorLayer );
-  mMapSettings->setCrsTransformEnabled( true );
-  mMapSettings->setMapUnits( QgsUnitTypes::DistanceMeters );
 
   // select epsg:2154
   QgsCoordinateReferenceSystem crs;
   crs.createFromSrid( 2154 );
-  mMapSettings->setDestinationCrs( crs );
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   // fix the renderer, fill with green
@@ -114,7 +106,6 @@ void TestQgsComposerDD::initTestCase()
 void TestQgsComposerDD::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapSettings;
   delete mVectorLayer;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";

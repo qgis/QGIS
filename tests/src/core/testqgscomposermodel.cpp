@@ -33,7 +33,6 @@ class TestQgsComposerModel : public QObject
   public:
     TestQgsComposerModel()
         : mComposition( 0 )
-        , mMapSettings( 0 )
         , mItem1( 0 )
         , mItem2( 0 )
         , mItem3( 0 )
@@ -66,7 +65,6 @@ class TestQgsComposerModel : public QObject
 
   private:
     QgsComposition *mComposition;
-    QgsMapSettings *mMapSettings;
     QgsComposerLabel *mItem1;
     QgsComposerLabel *mItem2;
     QgsComposerLabel *mItem3;
@@ -77,8 +75,7 @@ void TestQgsComposerModel::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mMapSettings = new QgsMapSettings();
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
 
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 }
@@ -89,7 +86,6 @@ void TestQgsComposerModel::cleanupTestCase()
   delete mItem2;
   delete mItem3;
   delete mComposition;
-  delete mMapSettings;
   QgsApplication::exitQgis();
 }
 

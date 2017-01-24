@@ -60,9 +60,8 @@
 #include "gdal.h"
 #include "cpl_conv.h"
 
-QgsComposition::QgsComposition( const QgsMapSettings& mapSettings, QgsProject* project )
+QgsComposition::QgsComposition( QgsProject* project )
     : QGraphicsScene( nullptr )
-    , mMapSettings( mapSettings )
     , mProject( project )
     , mAtlasComposition( this )
 {

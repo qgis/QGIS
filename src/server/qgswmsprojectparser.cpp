@@ -26,6 +26,7 @@
 #include "qgspallabeling.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgsmapsettings.h"
 
 #include "qgscomposition.h"
 #include "qgscomposerarrow.h"
@@ -475,7 +476,7 @@ QgsComposition* QgsWmsProjectParser::initComposition( const QString& composerTem
     return nullptr;
   }
 
-  QgsComposition* composition = new QgsComposition( mapSettings, QgsProject::instance() ); //set resolution, paper size from composer element attributes
+  QgsComposition* composition = new QgsComposition( QgsProject::instance() ); //set resolution, paper size from composer element attributes
   if ( !composition->readXml( compositionElem, *( mProjectParser->xmlDocument() ) ) )
   {
     delete composition;
@@ -503,6 +504,8 @@ QgsComposition* QgsWmsProjectParser::initComposition( const QString& composerTem
     QgsComposerMap* map = qobject_cast< QgsComposerMap *>( *itemIt );
     if ( map )
     {
+      if ( !map->keepLayerSet() )
+        map->setLayers( mapSettings.layers() );
       mapList.push_back( map );
       continue;
     }

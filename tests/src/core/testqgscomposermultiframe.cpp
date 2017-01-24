@@ -46,13 +46,11 @@ class TestQgsComposerMultiFrame : public QObject
 
   private:
     QgsComposition *mComposition;
-    QgsMapSettings *mMapSettings;
     QString mReport;
 };
 
 TestQgsComposerMultiFrame::TestQgsComposerMultiFrame()
     : mComposition( 0 )
-    , mMapSettings( 0 )
 {
 }
 
@@ -61,8 +59,7 @@ void TestQgsComposerMultiFrame::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mMapSettings = new QgsMapSettings();
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = QStringLiteral( "<h1>Composer MultiFrame Tests</h1>\n" );
@@ -71,7 +68,6 @@ void TestQgsComposerMultiFrame::initTestCase()
 void TestQgsComposerMultiFrame::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

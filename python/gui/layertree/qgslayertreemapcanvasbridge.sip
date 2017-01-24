@@ -63,6 +63,7 @@ class QgsLayerTreeMapCanvasBridge : QObject
   signals:
     void hasCustomLayerOrderChanged( bool );
     void customLayerOrderChanged( const QStringList& order );
+    void canvasLayersChanged( const QList< QgsMapLayer* >& layers );
 
   protected:
 

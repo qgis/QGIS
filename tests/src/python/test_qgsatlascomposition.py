@@ -41,18 +41,16 @@ class TestQgsAtlasComposition(unittest.TestCase):
         mVectorLayer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
 
         QgsProject.instance().addMapLayers([mVectorLayer])
+        self.layers = [mVectorLayer]
 
         # create composition with composer map
-        self.mapSettings = QgsMapSettings()
-        layerStringList = [mVectorLayer]
-        self.mapSettings.setLayers(layerStringList)
 
         # select epsg:2154
         crs = QgsCoordinateReferenceSystem()
         crs.createFromSrid(2154)
         QgsProject.instance().setCrs(crs)
 
-        self.mComposition = QgsComposition(self.mapSettings, QgsProject.instance())
+        self.mComposition = QgsComposition(QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
 
         # fix the renderer, fill with green
@@ -64,6 +62,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         # the atlas map
         self.mAtlasMap = QgsComposerMap(self.mComposition, 20, 20, 130, 130)
         self.mAtlasMap.setFrameEnabled(True)
+        self.mAtlasMap.setLayers([mVectorLayer])
         self.mComposition.addComposerMap(self.mAtlasMap)
 
         # the atlas
@@ -73,17 +72,18 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mComposition.setAtlasMode(QgsComposition.ExportAtlas)
 
         # an overview
-        mOverview = QgsComposerMap(self.mComposition, 180, 20, 50, 50)
-        mOverview.setFrameEnabled(True)
-        mOverview.overview().setFrameMap(self.mAtlasMap.id())
-        self.mComposition.addComposerMap(mOverview)
+        self.mOverview = QgsComposerMap(self.mComposition, 180, 20, 50, 50)
+        self.mOverview.setFrameEnabled(True)
+        self.mOverview.overview().setFrameMap(self.mAtlasMap.id())
+        self.mOverview.setLayers([mVectorLayer])
+        self.mComposition.addComposerMap(self.mOverview)
         nextent = QgsRectangle(49670.718, 6415139.086, 699672.519, 7065140.887)
-        mOverview.setNewExtent(nextent)
+        self.mOverview.setNewExtent(nextent)
 
         # set the fill symbol of the overview map
         props2 = {"color": "127,0,0,127"}
         fillSymbol2 = QgsFillSymbol.createSimple(props2)
-        mOverview.overview().setFrameSymbol(fillSymbol2)
+        self.mOverview.overview().setFrameSymbol(fillSymbol2)
 
         # header label
         self.mLabel1 = QgsComposerLabel(self.mComposition)
@@ -282,9 +282,10 @@ class TestQgsAtlasComposition(unittest.TestCase):
         QgsProject.instance().addMapLayer(ptLayer)
 
         # add the point layer to the map settings
-        layers = self.mapSettings.layers()
+        layers = self.layers
         layers = [ptLayer] + layers
-        self.mapSettings.setLayers(layers)
+        self.mAtlasMap.setLayers(layers)
+        self.mOverview.setLayers(layers)
 
         # add a legend
         legend = QgsComposerLegend(self.mComposition)
@@ -306,7 +307,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mAtlas.endRender()
 
         # restore state
-        self.mapSettings.setLayers([layers[1]])
+        self.mAtlasMap.setLayers([layers[1]])
         self.mComposition.removeComposerItem(legend)
         QgsProject.instance().removeMapLayer(ptLayer.id())
 

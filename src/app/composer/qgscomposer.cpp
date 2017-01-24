@@ -547,7 +547,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   connect( mActionShowRulers, SIGNAL( triggered( bool ) ), this, SLOT( toggleRulers( bool ) ) );
 
   //init undo/redo buttons
-  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings(), QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
 
   mActionUndo->setEnabled( false );
   mActionRedo->setEnabled( false );
@@ -932,6 +932,23 @@ bool QgsComposer::loadFromTemplate( const QDomDocument& templateDoc, bool clearE
   }
 
   return result;
+}
+
+void QgsComposer::onCanvasLayersChanged( const QList<QgsMapLayer*>& layers )
+{
+  if ( !mComposition )
+    return;
+
+  QList< QgsComposerMap* > maps;
+  mComposition->composerItems( maps );
+
+  Q_FOREACH ( QgsComposerMap* map, maps )
+  {
+    if ( map->keepLayerSet() )
+      continue;
+
+    map->setLayers( layers );
+  }
 }
 
 void QgsComposer::updateStatusCursorPos( QPointF cursorPosition )
@@ -3543,7 +3560,7 @@ void QgsComposer::readXml( const QDomElement& composerElem, const QDomDocument& 
   createComposerView();
 
   //read composition settings
-  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings(), QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   QDomNodeList compositionNodeList = composerElem.elementsByTagName( QStringLiteral( "Composition" ) );
   if ( compositionNodeList.size() > 0 )
   {

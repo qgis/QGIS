@@ -92,6 +92,13 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     void hasCustomLayerOrderChanged( bool );
     void customLayerOrderChanged( const QStringList& order );
 
+    /**
+     * Emitted when the set of layers (or order of layers) visible in the
+     * canvas changes.
+     * @note added in QGIS 3.0
+     */
+    void canvasLayersChanged( const QList< QgsMapLayer* >& layers );
+
   protected:
 
     void defaultLayerOrder( QgsLayerTreeNode* node, QStringList& order ) const;
