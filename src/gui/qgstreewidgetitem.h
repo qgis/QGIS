@@ -117,8 +117,16 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
      */
     int alwaysOnTopPriority() const;
 
+    /**
+     * Returns true if this item should appear before another item when sorting
+     * a list of items.
+     */
     virtual bool operator<( const QTreeWidgetItem &other ) const override;
 
+    /**
+     * Returns true if this item should appear after another item when sorting
+     * a list of items.
+     */
     bool operator>=( const QTreeWidgetItem &other ) const { return !( *this < other ); }
 
   private:
