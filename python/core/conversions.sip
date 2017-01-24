@@ -24,13 +24,6 @@ which are not wrapped by PyQt:
 
 %ModuleHeaderCode
 
-// From Python 2.5, some functions use Py_ssize_t instead of int
-// thus this typedef is for maintaining backward compatibility
-// for older versions of Python
-#if (PY_VERSION_HEX < 0x02050000)
-typedef int Py_ssize_t;
-#endif
-
 %End
 
 
@@ -766,9 +759,6 @@ template<TYPE>
 
 
 
-
-
-
 %MappedType QMap<QString, QVariant::Type>
 {
 %TypeHeaderCode
@@ -820,12 +810,7 @@ template<TYPE>
 
 %ConvertToTypeCode
     PyObject *t1obj, *t2obj;
-#if PY_VERSION_HEX >= 0x02050000
     Py_ssize_t i = 0;
-#else
-    int i = 0;
-#endif
-
 
     // Check the type if that is all that is required.
     if (sipIsErr == NULL)
@@ -922,12 +907,7 @@ template<TYPE>
 
 %ConvertToTypeCode
     PyObject *t1obj, *t2obj;
-#if PY_VERSION_HEX >= 0x02050000
     Py_ssize_t i = 0;
-#else
-    int i = 0;
-#endif
-
 
     // Check the type if that is all that is required.
     if (sipIsErr == NULL)
@@ -1026,11 +1006,7 @@ template<TYPE1, TYPE2>
 
 %ConvertToTypeCode
     PyObject *t1obj, *t2obj;
-#if PY_VERSION_HEX >= 0x02050000
     Py_ssize_t i = 0;
-#else
-    int i = 0;
-#endif
 
     // Check the type if that is all that is required.
     if (sipIsErr == NULL)
@@ -1127,11 +1103,7 @@ template<double, TYPE>
 
 %ConvertToTypeCode
     PyObject *t1obj, *t2obj;
-#if PY_VERSION_HEX >= 0x02050000
     Py_ssize_t i = 0;
-#else
-    int i = 0;
-#endif
 
     // Check the type if that is all that is required.
     if (sipIsErr == NULL)
@@ -1240,11 +1212,7 @@ template<double, TYPE2>
 
 %ConvertToTypeCode
     PyObject *t1obj, *t2obj;
-#if PY_VERSION_HEX >= 0x02050000
     Py_ssize_t i = 0;
-#else
-    int i = 0;
-#endif
 
     // Check the type if that is all that is required.
     if (sipIsErr == NULL)
@@ -1323,11 +1291,7 @@ template<int, TYPE2*>
 
       const int t1 = i.key();
       TYPE2 * t2 = i.value();
-#if (PY_VERSION_HEX < 0x03000000)
-      PyObject *t1obj = PyInt_FromSize_t(t1);
-#else
       PyObject *t1obj = PyLong_FromSize_t(t1);
-#endif
       PyObject *t2obj = sipConvertFromType(t2, sipType_TYPE2, sipTransferObj);
       if (PyDict_GetItem(d, t1obj) == NULL)
       {
@@ -1367,11 +1331,7 @@ template<int, TYPE2*>
 %ConvertToTypeCode
     // Convert from Python:
     PyObject *t1obj, *t2obj;
-#if PY_VERSION_HEX >= 0x02050000
     Py_ssize_t i = 0;
-#else
-    int i = 0;
-#endif
 
     // Check the type if that is all that is required.
     if (sipIsErr == NULL)
@@ -1473,12 +1433,10 @@ template<int, TYPE2*>
 
     return d;
 %End
+
 %ConvertToTypeCode
-#if PY_VERSION_HEX >= 0x02050000
     Py_ssize_t i = 0;
-#else
-    int i = 0;
-#endif
+
     QList < QPair< QString, QList<QString> > > *qm = new QList < QPair< QString, QList<QString> > >;
 
     for ( i = 0; i < PyList_GET_SIZE(sipPy); i++ )
@@ -1542,12 +1500,10 @@ template<int, TYPE2*>
 
     return d;
 %End
+
 %ConvertToTypeCode
-#if PY_VERSION_HEX >= 0x02050000
     Py_ssize_t i = 0;
-#else
-    int i = 0;
-#endif
+
     QList < QPair< QString, double > > *qm = new QList< QPair< QString, double > >;
 
     for ( i = 0; i < PyList_GET_SIZE(sipPy); i++ )
@@ -1603,12 +1559,10 @@ template<int, TYPE2*>
 
     return d;
 %End
+
 %ConvertToTypeCode
-#if PY_VERSION_HEX >= 0x02050000
     Py_ssize_t i = 0;
-#else
-    int i = 0;
-#endif
+
     QList < QPair< QgsVectorLayer *, int > > *qm = new QList< QPair< QgsVectorLayer *, int > >;
 
     for ( i = 0; i < PyList_GET_SIZE(sipPy); i++ )
@@ -1755,13 +1709,10 @@ template <TYPE>
     return d;
 
 %End
+
 %ConvertToTypeCode
  PyObject *t1obj, *t2obj;
-#if PY_VERSION_HEX >= 0x02050000
     Py_ssize_t i = 0;
-#else
-    int i = 0;
-#endif
 
     QMap<qint64, QgsFeature*> *qm = new QMap<qint64, QgsFeature*>;
 
