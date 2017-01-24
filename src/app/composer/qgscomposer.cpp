@@ -934,6 +934,23 @@ bool QgsComposer::loadFromTemplate( const QDomDocument& templateDoc, bool clearE
   return result;
 }
 
+void QgsComposer::onCanvasLayersChanged( const QList<QgsMapLayer*>& layers )
+{
+  if ( !mComposition )
+    return;
+
+  QList< QgsComposerMap* > maps;
+  mComposition->composerItems( maps );
+
+  Q_FOREACH ( QgsComposerMap* map, maps )
+  {
+    if ( map->keepLayerSet() )
+      continue;
+
+    map->setLayers( layers );
+  }
+}
+
 void QgsComposer::updateStatusCursorPos( QPointF cursorPosition )
 {
   if ( !mComposition )

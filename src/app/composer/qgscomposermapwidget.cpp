@@ -905,20 +905,20 @@ void QgsComposerMapWidget::on_mKeepLayerListCheckBox_stateChanged( int state )
     return;
   }
 
+  // update map
+  storeCurrentLayerSet();
+  mComposerMap->setKeepLayerSet( state == Qt::Checked );
+
+  // update gui
   if ( state == Qt::Checked )
   {
-    storeCurrentLayerSet();
-    mComposerMap->setKeepLayerSet( true );
-
     // mutually exclusive with following a preset
     mFollowVisibilityPresetCheckBox->setCheckState( Qt::Unchecked );
   }
   else
   {
-    mComposerMap->setLayers( QList<QgsMapLayer*>() );
-    mComposerMap->setKeepLayerSet( false );
-
     mKeepLayerStylesCheckBox->setChecked( Qt::Unchecked );
+    mComposerMap->updateCachedImage();
   }
 
   mKeepLayerStylesCheckBox->setEnabled( state == Qt::Checked );

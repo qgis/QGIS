@@ -202,14 +202,36 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     PreviewMode previewMode() const {return mPreviewMode;}
     void setPreviewMode( PreviewMode m );
 
-    //! Getter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
+    /**
+     * Getter for flag that determines if a stored layer set should be used
+     * or the current layer set of the QGIS map canvas.
+     * @see setKeepLayerSet()
+     * @see layers()
+     */
     bool keepLayerSet() const {return mKeepLayerSet;}
-    //! Setter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
+
+    /**
+     * Setter for flag that determines if the stored layer set should be used
+     * or the current layer set of the QGIS map canvas.
+     * @see keepLayerSet()
+     * @see layers()
+     */
     void setKeepLayerSet( bool enabled ) {mKeepLayerSet = enabled;}
 
-    //! Getter for stored layer set that is used if mKeepLayerSet is true
+    /**
+     * Getter for stored layer set. This will usually be synchronized with the main app canvas
+     * layer set (and layer order), unless the keepLayerSet() flag is true.
+     * @see setLayers()
+     * @see keepLayerSet()
+     */
     QList<QgsMapLayer*> layers() const;
-    //! Setter for stored layer set that is used if mKeepLayerSet is true
+
+    /**
+     * Setter for stored layer set.  This will usually be synchronized with the main app canvas
+     * layer set (and layer order), unless the keepLayerSet() flag is true.
+     * @see layers()
+     * @see keepLayerSet()
+     */
     void setLayers( const QList<QgsMapLayer*> layers );
 
     //! Getter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8
