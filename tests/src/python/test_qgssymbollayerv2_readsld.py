@@ -93,14 +93,14 @@ class TestQgsSymbolLayerReadSld(unittest.TestCase):
 
     def testSimpleMarkerRotation(self):
         """
-        Test if pointMarker property sld:Rotation value can be read if rormat is:
+        Test if pointMarker property sld:Rotation value can be read if format is:
         <sld:Rotation>50.0</sld:Rotation>
         or
         <se:Rotation><ogc:Literal>50</ogc:Literal></se:Rotation>
         """
         # technically it's not necessary to use a real shape, but a empty memory
         # layer. In case these tests will upgrate to a rendering where to
-        # compare also rendering no only properties
+        # compare also rendering not only properties
         #myShpFile = os.path.join(unitTestDataPath(), 'points.shp')
         #layer = QgsVectorLayer(myShpFile, 'points', 'ogr')
         layer = QgsVectorLayer("Point", "addfeat", "memory")
