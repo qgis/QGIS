@@ -47,13 +47,13 @@ QgsLayerTreeNode::~QgsLayerTreeNode()
   qDeleteAll( mChildren );
 }
 
-QgsLayerTreeNode* QgsLayerTreeNode::readXML( QDomElement& element )
+QgsLayerTreeNode* QgsLayerTreeNode::readXML( QDomElement& element, bool looseMatch )
 {
   QgsLayerTreeNode* node = nullptr;
   if ( element.tagName() == "layer-tree-group" )
-    node = QgsLayerTreeGroup::readXML( element );
+    node = QgsLayerTreeGroup::readXML( element, looseMatch );
   else if ( element.tagName() == "layer-tree-layer" )
-    node = QgsLayerTreeLayer::readXML( element );
+    node = QgsLayerTreeLayer::readXML( element, looseMatch );
 
   return node;
 }

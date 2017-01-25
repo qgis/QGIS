@@ -25,6 +25,14 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
   public:
     explicit QgsLayerTreeLayer( QgsMapLayer* layer );
 
+    /**
+     * Creates a layer node which will attach to a layer with a matching
+     * QgsMapLayer::publicSource(). This can be used for "looser" layer matching,
+     * avoiding the usual layer id check in favour of attaching to any layer
+     * with an equal source.
+     */
+    static QgsLayerTreeLayer* createLayerFromSource( const QString& source ) /Factory/;
+
     explicit QgsLayerTreeLayer( const QString& layerId, const QString& name = QString() );
 
     QString layerId() const;
@@ -38,13 +46,27 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
     //! @note added in 2.18.1
     void setName( const QString& n );
 
+    /**
+     * Attempts to attach this layer node to a layer with a matching
+     * QgsMapLayer::publicSource(). This can be used for "looser" layer matching,
+     * avoiding the usual layer id check in favour of attaching to any layer
+     * with an equal source.
+     */
+    void attachToSource( const QString& source );
+
     QString layerName() const;
     void setLayerName( const QString& n );
 
     Qt::CheckState isVisible() const;
     void setVisible( Qt::CheckState visible );
 
-    static QgsLayerTreeLayer* readXML( QDomElement& element ) /Factory/;
+    /**
+     * Creates a new layer from an XML definition. If the looseMatch
+     * parameter is true then legend layers will use looser matching criteria,
+     * eg testing layer source instead of layer IDs.
+     */
+    static QgsLayerTreeLayer* readXML( QDomElement& element, bool looseMatch = false ) /Factory/;
+
     virtual void writeXML( QDomElement& parentElement );
 
     virtual QString dump() const;

@@ -83,8 +83,13 @@ class QgsLayerTreeNode : QObject
     //! @note added in 2.18.1
     virtual void setName( const QString& name ) = 0;
 
-    //! Read layer tree from XML. Returns new instance
-    static QgsLayerTreeNode *readXML( QDomElement &element );
+    /**
+     * Read layer tree from XML. Returns new instance. If the looseMatch
+     * parameter is true then child legend layers will use looser matching criteria,
+     * eg testing layer source instead of layer IDs.
+     */
+    static QgsLayerTreeNode *readXML( QDomElement &element, bool looseMatch = false ) /Factory/;
+
     //! Write layer tree to XML
     virtual void writeXML( QDomElement &parentElement ) = 0;
 

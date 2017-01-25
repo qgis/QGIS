@@ -45,6 +45,14 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     explicit QgsLayerTreeLayer( QgsMapLayer* layer );
     QgsLayerTreeLayer( const QgsLayerTreeLayer& other );
 
+    /**
+     * Creates a layer node which will attach to a layer with a matching
+     * QgsMapLayer::publicSource(). This can be used for "looser" layer matching,
+     * avoiding the usual layer id check in favour of attaching to any layer
+     * with an equal source.
+     */
+    static QgsLayerTreeLayer* createLayerFromSource( const QString& source );
+
     explicit QgsLayerTreeLayer( const QString& layerId, const QString& name = QString() );
 
     QString layerId() const { return mLayerId; }
@@ -58,13 +66,27 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     //! @note added in 2.18.1
     void setName( const QString& n ) override;
 
+    /**
+     * Attempts to attach this layer node to a layer with a matching
+     * QgsMapLayer::publicSource(). This can be used for "looser" layer matching,
+     * avoiding the usual layer id check in favour of attaching to any layer
+     * with an equal source.
+     */
+    void attachToSource( const QString& source );
+
     QString layerName() const;
     void setLayerName( const QString& n );
 
     Qt::CheckState isVisible() const { return mVisible; }
     void setVisible( Qt::CheckState visible );
 
-    static QgsLayerTreeLayer* readXML( QDomElement& element );
+    /**
+     * Creates a new layer from an XML definition. If the looseMatch
+     * parameter is true then legend layers will use looser matching criteria,
+     * eg testing layer source instead of layer IDs.
+     */
+    static QgsLayerTreeLayer* readXML( QDomElement& element, bool looseMatch = false );
+
     virtual void writeXML( QDomElement& parentElement ) override;
 
     virtual QString dump() const override;
@@ -90,6 +112,9 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 
     QString mLayerId;
     QString mLayerName; // only used if layer does not exist
+    //! Only used when loosely matching to layers - eg when creating a composer legend from template
+    //! If set this will attach to the first matching layer with an equal source
+    QString mLayerSource;
     QgsMapLayer* mLayer; // not owned! may be null
     Qt::CheckState mVisible;
 };

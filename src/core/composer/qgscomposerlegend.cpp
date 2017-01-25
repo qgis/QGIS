@@ -535,7 +535,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   {
     // QGIS >= 2.6
     QDomElement layerTreeElem = itemElem.firstChildElement( "layer-tree-group" );
-    setCustomLayerTree( QgsLayerTreeGroup::readXML( layerTreeElem ) );
+    setCustomLayerTree( QgsLayerTreeGroup::readXML( layerTreeElem, true ) );
   }
 
   //restore general composer item properties
