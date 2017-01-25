@@ -63,8 +63,3 @@ QList<QDesignerCustomWidgetInterface*> QgisCustomWidgets::customWidgets() const
 {
   return mWidgets;
 }
-
-Q_EXPORT_PLUGIN2( customwidgetsplugin, QgisCustomWidgets )
-
-
-

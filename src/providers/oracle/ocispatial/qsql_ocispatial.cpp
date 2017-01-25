@@ -94,10 +94,8 @@
 #define QOCISPATIAL_THREADED
 
 
-#if QT_VERSION >= 0x050000
 Q_DECLARE_OPAQUE_POINTER( OCIEnv* )
 Q_DECLARE_OPAQUE_POINTER( OCIStmt* )
-#endif
 Q_DECLARE_METATYPE( OCIEnv* )
 Q_DECLARE_METATYPE( OCIStmt* )
 
@@ -3255,23 +3253,6 @@ QVariant QOCISpatialResult::lastInsertId() const
   return QVariant();
 }
 
-void QOCISpatialResult::virtual_hook( int id, void *data )
-{
-  ENTER
-  Q_ASSERT( data );
-
-  switch ( id )
-  {
-#if QT_VERSION < 0x050000
-    case QSqlResult::BatchOperation:
-      QOCISpatialCols::execBatch( d, boundValues(), *reinterpret_cast<bool *>( data ) );
-      break;
-#endif
-    default:
-      QSqlCachedResult::virtual_hook( id, data );
-  }
-}
-
 ////////////////////////////////////////////////////////////////////////////
 
 
@@ -3356,9 +3337,7 @@ bool QOCISpatialDriver::hasFeature( DriverFeature f ) const
     case EventNotifications:
     case FinishQuery:
     case MultipleResultSets:
-#if QT_VERSION >= 0x050000
     case CancelQuery:
-#endif
       return false;
     case Unicode:
       return d->serverVersion >= 9;

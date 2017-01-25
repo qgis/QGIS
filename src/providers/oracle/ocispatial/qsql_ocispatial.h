@@ -83,7 +83,6 @@ class Q_EXPORT_SQLDRIVER_OCISPATIAL QOCISpatialResult : public QSqlCachedResult
     int numRowsAffected();
     QSqlRecord record() const;
     QVariant lastInsertId() const;
-    void virtual_hook( int id, void *data );
 
   private:
     QOCISpatialResultPrivate *d;

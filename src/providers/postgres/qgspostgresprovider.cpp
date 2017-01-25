@@ -333,7 +333,7 @@ QString QgsPostgresProvider::storageType() const
   return QStringLiteral( "PostgreSQL database with PostGIS extension" );
 }
 
-#if QT_VERSION >= 0x050000 && QT_VERSION < 0x050600
+#if QT_VERSION < 0x050600
 #include <algorithm>
 template <typename T>
 bool operator<( const QList<T> &lhs, const QList<T> &rhs )

@@ -19,10 +19,6 @@
 
 #include "qgis.h"
 #include "qgsrequesthandler.h"
-#if QT_VERSION < 0x050000
-#include "qgsftptransaction.h"
-#include "qgshttptransaction.h"
-#endif
 #include "qgsmessagelog.h"
 #include "qgsserverexception.h"
 #include "qgsserverrequest.h"
@@ -234,5 +230,3 @@ void QgsRequestHandler::removeParameter( const QString &key )
 {
   mRequest.removeParameter( key );
 }
-
-
