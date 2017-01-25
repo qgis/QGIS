@@ -68,6 +68,7 @@ class CORE_EXPORT QgsWkbTypes
       Point = 1,
       LineString = 2,
       Polygon = 3,
+      Triangle = 17,
       MultiPoint = 4,
       MultiLineString = 5,
       MultiPolygon = 6,
@@ -81,6 +82,7 @@ class CORE_EXPORT QgsWkbTypes
       PointZ = 1001,
       LineStringZ = 1002,
       PolygonZ = 1003,
+      TriangleZ = 1017,
       MultiPointZ = 1004,
       MultiLineStringZ = 1005,
       MultiPolygonZ = 1006,
@@ -93,6 +95,7 @@ class CORE_EXPORT QgsWkbTypes
       PointM = 2001,
       LineStringM = 2002,
       PolygonM = 2003,
+      TriangleM = 2017,
       MultiPointM = 2004,
       MultiLineStringM = 2005,
       MultiPolygonM = 2006,
@@ -114,9 +117,11 @@ class CORE_EXPORT QgsWkbTypes
       CurvePolygonZM = 3010,
       MultiCurveZM = 3011,
       MultiSurfaceZM = 3012,
+      TriangleZM = 3017,
       Point25D = 0x80000001,
       LineString25D,
       Polygon25D,
+      Triangle25D,
       MultiPoint25D,
       MultiLineString25D,
       MultiPolygon25D
@@ -201,6 +206,22 @@ class CORE_EXPORT QgsWkbTypes
         case MultiPolygonZM:
           return PolygonZM;
 
+        case Triangle:
+        // case MultiTriangle:
+          return Triangle;
+
+        case TriangleZ:
+        // case MultiTriangleZ:
+          return TriangleZ;
+
+        case TriangleM:
+        // case MultiTriangleM:
+          return TriangleM;
+
+        case TriangleZM:
+        // case MultiTriangleZM:
+          return TriangleZM;
+
         case CircularString:
           return CircularString;
 
@@ -259,6 +280,10 @@ class CORE_EXPORT QgsWkbTypes
         case Polygon25D:
         case MultiPolygon25D:
           return Polygon25D;
+
+        case Triangle25D:
+        // case MultiTriangle25D:
+          return Triangle25D;
       }
       return Unknown;
     }
@@ -273,6 +298,11 @@ class CORE_EXPORT QgsWkbTypes
       switch ( type )
       {
         case Unknown:
+        case Triangle:
+        case TriangleZ:
+        case TriangleM:
+        case TriangleZM:
+        case Triangle25D:
           return Unknown;
 
         case GeometryCollection:
@@ -422,6 +452,13 @@ class CORE_EXPORT QgsWkbTypes
         case Polygon25D:
           return Polygon;
 
+        case Triangle:
+        case TriangleZ:
+        case TriangleM:
+        case TriangleZM:
+        case Triangle25D:
+          return Triangle;
+
         case MultiPoint:
         case MultiPointZ:
         case MultiPointM:
@@ -523,6 +560,7 @@ class CORE_EXPORT QgsWkbTypes
         case Point:
         case LineString:
         case Polygon:
+        case Triangle:
         case CircularString:
         case CompoundCurve:
         case CurvePolygon:
@@ -530,24 +568,28 @@ class CORE_EXPORT QgsWkbTypes
         case PointZ:
         case LineStringZ:
         case PolygonZ:
+        case TriangleZ:
         case CircularStringZ:
         case CompoundCurveZ:
         case CurvePolygonZ:
         case PointM:
         case LineStringM:
         case PolygonM:
+        case TriangleM:
         case CircularStringM:
         case CompoundCurveM:
         case CurvePolygonM:
         case PointZM:
         case LineStringZM:
         case PolygonZM:
+        case TriangleZM:
         case CircularStringZM:
         case CompoundCurveZM:
         case CurvePolygonZM:
         case Point25D:
         case LineString25D:
         case Polygon25D:
+        case Triangle25D:
           return false;
 
         default:
@@ -662,13 +704,18 @@ class CORE_EXPORT QgsWkbTypes
 
         case Polygon:
         case MultiPolygon:
+        case Triangle:
         case PolygonZ:
+        case TriangleZ:
         case MultiPolygonZ:
         case PolygonM:
+        case TriangleM:
         case MultiPolygonM:
         case PolygonZM:
         case MultiPolygonZM:
+        case TriangleZM:
         case Polygon25D:
+        case Triangle25D:
         case MultiPolygon25D:
         case CurvePolygon:
         case MultiSurface:
@@ -719,6 +766,7 @@ class CORE_EXPORT QgsWkbTypes
         case PointZ:
         case LineStringZ:
         case PolygonZ:
+        case TriangleZ:
         case MultiPointZ:
         case MultiLineStringZ:
         case MultiPolygonZ:
@@ -731,6 +779,7 @@ class CORE_EXPORT QgsWkbTypes
         case PointZM:
         case LineStringZM:
         case PolygonZM:
+        case TriangleZM:
         case MultiPointZM:
         case MultiLineStringZM:
         case MultiPolygonZM:
@@ -743,6 +792,7 @@ class CORE_EXPORT QgsWkbTypes
         case Point25D:
         case LineString25D:
         case Polygon25D:
+        case Triangle25D:
         case MultiPoint25D:
         case MultiLineString25D:
         case MultiPolygon25D:
@@ -766,6 +816,7 @@ class CORE_EXPORT QgsWkbTypes
         case PointM:
         case LineStringM:
         case PolygonM:
+        case TriangleM:
         case MultiPointM:
         case MultiLineStringM:
         case MultiPolygonM:
@@ -778,6 +829,7 @@ class CORE_EXPORT QgsWkbTypes
         case PointZM:
         case LineStringZM:
         case PolygonZM:
+        case TriangleZM:
         case MultiPointZM:
         case MultiLineStringZM:
         case MultiPolygonZM:
@@ -837,6 +889,7 @@ class CORE_EXPORT QgsWkbTypes
       else if ( type == Point25D ||
                 type == LineString25D ||
                 type == Polygon25D ||
+                type == Triangle25D ||
                 type == MultiPoint25D ||
                 type == MultiLineString25D ||
                 type == MultiPolygon25D )

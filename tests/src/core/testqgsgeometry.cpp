@@ -34,6 +34,7 @@
 #include "qgspointv2.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
+#include "qgstriangle.h"
 #include "qgsmultipoint.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
@@ -70,6 +71,7 @@ class TestQgsGeometry : public QObject
     void point(); //test QgsPointV2
     void lineString(); //test QgsLineString
     void polygon(); //test QgsPolygonV2
+    void triangle();
     void compoundCurve(); //test QgsCompoundCurve
     void multiPoint();
     void multiLineString();
@@ -3091,6 +3093,122 @@ void TestQgsGeometry::polygon()
   // remove ring with no size filter
   removeRings1.removeInteriorRings();
   QCOMPARE( removeRings1.numInteriorRings(), 0 );
+
+}
+
+void TestQgsGeometry::triangle()
+{
+  //test constructor
+  QgsTriangle t1;
+  QVERIFY( t1.isEmpty() );
+  QCOMPARE( t1.numInteriorRings(), 0 );
+  QCOMPARE( t1.nCoordinates(), 0 );
+  QCOMPARE( t1.ringCount(), 0 );
+  QCOMPARE( t1.partCount(), 0 );
+  QVERIFY( !t1.is3D() );
+  QVERIFY( !t1.isMeasure() );
+  QCOMPARE( t1.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t1.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t1.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t1.dimension(), 2 );
+  QVERIFY( !t1.hasCurvedSegments() );
+  QCOMPARE( t1.area(), 0.0 );
+  QCOMPARE( t1.perimeter(), 0.0 );
+  QVERIFY( !t1.exteriorRing() );
+  QVERIFY( !t1.interiorRing( 0 ) );
+
+  //set exterior ring
+
+  //try with no ring
+  QgsLineString* ext = 0;
+  t1.setExteriorRing( ext );
+  QVERIFY( t1.isEmpty() );
+  QCOMPARE( t1.numInteriorRings(), 0 );
+  QCOMPARE( t1.nCoordinates(), 0 );
+  QCOMPARE( t1.ringCount(), 0 );
+  QCOMPARE( t1.partCount(), 0 );
+  QVERIFY( !t1.exteriorRing() );
+  QVERIFY( !t1.interiorRing( 0 ) );
+  QCOMPARE( t1.wkbType(), QgsWkbTypes::Triangle );
+
+  //valid exterior ring
+  ext = new QgsLineString();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 10 ) << QgsPointV2( 10, 10 )
+                  << QgsPointV2( 0, 0 ) );
+  QVERIFY( ext->isClosed() );
+  t1.setExteriorRing( ext );
+  QVERIFY( !t1.isEmpty() );
+  QCOMPARE( t1.numInteriorRings(), 0 );
+  QCOMPARE( t1.nCoordinates(), 4 );
+  QCOMPARE( t1.ringCount(), 1 );
+  QCOMPARE( t1.partCount(), 1 );
+  QVERIFY( !t1.is3D() );
+  QVERIFY( !t1.isMeasure() );
+  QCOMPARE( t1.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t1.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t1.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t1.dimension(), 2 );
+  QVERIFY( !t1.hasCurvedSegments() );
+  QCOMPARE( t1.area(), 50.0 );
+  QGSCOMPARENEAR( t1.perimeter(), 34.1421, 0.001 );
+  QVERIFY( t1.exteriorRing() );
+  QVERIFY( !t1.interiorRing( 0 ) );
+
+  //retrieve exterior ring and check
+  QCOMPARE( *( static_cast< const QgsLineString* >( t1.exteriorRing() ) ), *ext );
+
+  //set new ExteriorRing
+  ext = new QgsLineString();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( 0, 10 ) << QgsPointV2( 5, 5 ) << QgsPointV2( 10, 10 )
+                  << QgsPointV2( 0, 10 ) );
+  QVERIFY( ext->isClosed() );
+  t1.setExteriorRing( ext );
+  QVERIFY( !t1.isEmpty() );
+  QCOMPARE( t1.numInteriorRings(), 0 );
+  QCOMPARE( t1.nCoordinates(), 4 );
+  QCOMPARE( t1.ringCount(), 1 );
+  QCOMPARE( t1.partCount(), 1 );
+  QVERIFY( !t1.is3D() );
+  QVERIFY( !t1.isMeasure() );
+  QCOMPARE( t1.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t1.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t1.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t1.dimension(), 2 );
+  QVERIFY( !t1.hasCurvedSegments() );
+  QCOMPARE( t1.area(), 25.0 );
+  QGSCOMPARENEAR( t1.perimeter(), 24.1421, 0.001 );
+  QVERIFY( t1.exteriorRing() );
+  QVERIFY( !t1.interiorRing( 0 ) );
+  QCOMPARE( *( static_cast< const QgsLineString* >( t1.exteriorRing() ) ), *ext );
+
+  //test that a non closed exterior ring will be automatically closed
+  QgsTriangle t2;
+  ext = new QgsLineString();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 10 ) << QgsPointV2( 10, 10 ) );
+  QVERIFY( !ext->isClosed() );
+  t2.setExteriorRing( ext );
+  QVERIFY( !t2.isEmpty() );
+  QVERIFY( t2.exteriorRing()->isClosed() );
+  QCOMPARE( t2.nCoordinates(), 4 );
+
+  //constructor with 3 points
+  QgsTriangle t3( QgsPointV2( 0, 0 ), QgsPointV2( 0, 10 ), QgsPointV2( 10, 10 ) );
+  QVERIFY( !t3.isEmpty() );
+  QCOMPARE( t3.numInteriorRings(), 0 );
+  QCOMPARE( t3.nCoordinates(), 4 );
+  QCOMPARE( t3.ringCount(), 1 );
+  QCOMPARE( t3.partCount(), 1 );
+  QVERIFY( !t3.is3D() );
+  QVERIFY( !t3.isMeasure() );
+  QCOMPARE( t3.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t3.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t3.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t3.dimension(), 2 );
+  QVERIFY( !t3.hasCurvedSegments() );
+  QCOMPARE( t3.area(), 50.0 );
+  QGSCOMPARENEAR( t3.perimeter(), 34.1421, 0.001 );
+  QVERIFY( t3.exteriorRing() );
+  QVERIFY( !t3.interiorRing( 0 ) );
 
 }
 
