@@ -37,7 +37,7 @@ QgsEffectDrawModeComboBox::QgsEffectDrawModeComboBox( QWidget* parent )
 
 QgsPaintEffect::DrawMode QgsEffectDrawModeComboBox::drawMode() const
 {
-  return ( QgsPaintEffect::DrawMode ) itemData( currentIndex() ).toInt();
+  return ( QgsPaintEffect::DrawMode ) currentData().toInt();
 }
 
 void QgsEffectDrawModeComboBox::setDrawMode( QgsPaintEffect::DrawMode drawMode )
