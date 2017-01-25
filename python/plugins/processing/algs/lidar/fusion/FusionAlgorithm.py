@@ -48,7 +48,7 @@ class FusionAlgorithm(GeoAlgorithm):
 
     def addAdvancedModifiers(self):
         param = ParameterString(
-            self.ADVANCED_MODIFIERS, self.tr('Additional modifiers'), '')
+            self.ADVANCED_MODIFIERS, self.tr('Additional modifiers'), '', optional=True)
         param.isAdvanced = True
         self.addParameter(param)
 
