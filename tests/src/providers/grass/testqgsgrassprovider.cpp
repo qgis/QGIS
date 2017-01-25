@@ -62,7 +62,7 @@ class TestQgsGrassFeature : public QgsFeature
 };
 
 // Command which can be composed of more GRASS features, e.g. boundaries + centroid equivalent
-// of simple fature polygon
+// of simple feature polygon
 class TestQgsGrassCommand
 {
   public:
