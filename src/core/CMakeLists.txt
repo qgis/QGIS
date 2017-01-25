@@ -361,6 +361,7 @@ SET(QGIS_CORE_SRCS
   geometry/qgsgeometrycollection.cpp
   geometry/qgsgeometryeditutils.cpp
   geometry/qgsgeometryfactory.cpp
+  geometry/qgsgeometrymakevalid.cpp
   geometry/qgsgeometryutils.cpp
   geometry/qgsgeos.cpp
   geometry/qgsinternalgeometryengine.cpp

@@ -113,6 +113,8 @@ class TestQgsGeometry : public QObject
     void segmentizeCircularString();
     void poleOfInaccessibility();
 
+    void makeValid();
+
   private:
     //! A helper method to do a render check to see if the geometry op is as expected
     bool renderCheck( const QString& theTestName, const QString& theComment = QLatin1String( QLatin1String( "" ) ), int mismatchCount = 0 );
@@ -4069,6 +4071,39 @@ void TestQgsGeometry::poleOfInaccessibility()
   point = curved.poleOfInaccessibility( 0.01 ).asPoint();
   QGSCOMPARENEAR( point.x(), -0.4324, 0.0001 );
   QGSCOMPARENEAR( point.y(), -0.2434, 0.0001 );
+}
+
+void TestQgsGeometry::makeValid()
+{
+  typedef QPair<QString, QString> InputAndExpectedWktPair;
+  QList<InputAndExpectedWktPair> geoms;
+  // dimension collapse
+  geoms << qMakePair( QString( "LINESTRING(0 0)" ),
+                      QString( "POINT(0 0)" ) );
+  // unclosed ring
+  geoms << qMakePair( QString( "POLYGON((10 22,10 32,20 32,20 22))" ),
+                      QString( "POLYGON((10 22,10 32,20 32,20 22,10 22))" ) );
+  // butterfly polygon (self-intersecting ring)
+  geoms << qMakePair( QString( "POLYGON((0 0, 10 10, 10 0, 0 10, 0 0))" ),
+                      QString( "MULTIPOLYGON(((5 5, 0 0, 0 10, 5 5)),((5 5, 10 10, 10 0, 5 5)))" ) );
+  // polygon with extra tail (a part of the ring does not form any area)
+  geoms << qMakePair( QString( "POLYGON((0 0, 1 0, 1 1, 0 1, 0 0, -1 0, 0 0))" ),
+                      QString( "GEOMETRYCOLLECTION(POLYGON((0 0, 0 1, 1 1, 1 0, 0 0)), LINESTRING(0 0, -1 0))" ) );
+  // collection with invalid geometries
+  geoms << qMakePair( QString( "GEOMETRYCOLLECTION(LINESTRING(0 0, 0 0), POLYGON((0 0, 10 10, 10 0, 0 10, 0 0)), LINESTRING(10 0, 10 10))" ),
+                      QString( "GEOMETRYCOLLECTION(POINT(0 0), MULTIPOLYGON(((5 5, 0 0, 0 10, 5 5)),((5 5, 10 10, 10 0, 5 5))), LINESTRING(10 0, 10 10)))" ) );
+
+  Q_FOREACH ( const InputAndExpectedWktPair& pair, geoms )
+  {
+    QgsGeometry gInput = QgsGeometry::fromWkt( pair.first );
+    QgsGeometry gExp = QgsGeometry::fromWkt( pair.second );
+    QVERIFY( !gInput.isEmpty() );
+    QVERIFY( !gExp.isEmpty() );
+
+    QgsGeometry gValid = gInput.makeValid();
+    QVERIFY( gValid.isGeosValid() );
+    QVERIFY( gValid.isGeosEqual( gExp ) );
+  }
 }
 
 QGSTEST_MAIN( TestQgsGeometry )

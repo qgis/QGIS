@@ -22,6 +22,7 @@ email                : morb at ozemail dot com dot au
 #include "qgsgeometry.h"
 #include "qgsgeometryeditutils.h"
 #include "qgsgeometryfactory.h"
+#include "qgsgeometrymakevalid.h"
 #include "qgsgeometryutils.h"
 #include "qgsinternalgeometryengine.h"
 #include "qgsgeos.h"
@@ -1886,6 +1887,21 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer*>& avoidIntersec
   }
   return 0;
 }
+
+
+QgsGeometry QgsGeometry::makeValid()
+{
+  if ( !d->geometry )
+    return QgsGeometry();
+
+  QString errorMsg;
+  QgsAbstractGeometry* g = _qgis_lwgeom_make_valid( *d->geometry, errorMsg );
+  if ( !g )
+    return QgsGeometry();
+
+  return QgsGeometry( g );
+}
+
 
 void QgsGeometry::validateGeometry( QList<Error> &errors )
 {
