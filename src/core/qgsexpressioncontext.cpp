@@ -27,6 +27,8 @@
 #include "qgsatlascomposition.h"
 #include "qgsapplication.h"
 #include "qgsmapsettings.h"
+#include "qgsmaplayerlistutils.h"
+
 #include <QSettings>
 #include <QDir>
 
@@ -644,6 +646,43 @@ class GetComposerItemVariables : public QgsScopedExpressionFunction
 
 };
 
+class GetLayerVisibility : public QgsScopedExpressionFunction
+{
+  public:
+    GetLayerVisibility( QList<QgsMapLayer*> layers )
+        : QgsScopedExpressionFunction( QStringLiteral( "is_layer_visible" ), QgsExpression::ParameterList() << QgsExpression::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "General" ) )
+        , mLayers( layers )
+    {}
+
+    virtual QVariant func( const QVariantList& values, const QgsExpressionContext*, QgsExpression* ) override
+    {
+      if ( mLayers.isEmpty() )
+      {
+        return QVariant( false );
+      }
+
+      QgsMapLayer* layer = _qgis_findLayer( mLayers, values.at( 0 ).toString() );
+      if ( layer )
+      {
+        return QVariant( true );
+      }
+      else
+      {
+        return QVariant( false );
+      }
+    }
+
+    QgsScopedExpressionFunction* clone() const override
+    {
+      return new GetLayerVisibility( mLayers );
+    }
+
+  private:
+
+    const QList<QgsMapLayer*> mLayers;
+
+};
+
 ///@endcond
 
 QgsExpressionContextScope* QgsExpressionContextUtils::projectScope( const QgsProject* project )
@@ -806,6 +845,8 @@ QgsExpressionContextScope* QgsExpressionContextUtils::mapSettingsScope( const Qg
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs" ), mapSettings.destinationCrs().authid(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_definition" ), mapSettings.destinationCrs().toProj4(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_units" ), QgsUnitTypes::toString( mapSettings.mapUnits() ), true ) );
+
+  scope->addFunction( QStringLiteral( "is_layer_visible" ), new GetLayerVisibility( mapSettings.layers() ) );
 
   return scope;
 }
@@ -1013,6 +1054,7 @@ void QgsExpressionContextUtils::registerContextFunctions()
 {
   QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );
   QgsExpression::registerFunction( new GetComposerItemVariables( nullptr ) );
+  QgsExpression::registerFunction( new GetLayerVisibility( QList<QgsMapLayer*>() ) );
 }
 
 bool QgsScopedExpressionFunction::usesGeometry( const QgsExpression::NodeFunction* node ) const
