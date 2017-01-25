@@ -4321,7 +4321,7 @@ QString QgsVectorLayer::getStyleFromDatabase( const QString& styleId, QString &m
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
-    return QObject::tr( "" );
+    return QString();
   }
   getStyleById_t* getStyleByIdMethod = reinterpret_cast< getStyleById_t * >( cast_to_fptr( myLib->resolve( "getStyleById" ) ) );
 
@@ -4329,7 +4329,7 @@ QString QgsVectorLayer::getStyleFromDatabase( const QString& styleId, QString &m
   {
     delete myLib;
     msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "getStyleById" ) );
-    return QObject::tr( "" );
+    return QString();
   }
 
   return getStyleByIdMethod( mDataSource, styleId, msgError );

@@ -19,7 +19,7 @@
 #include <QDomDocument>
 #include <QPainter>
 
-QgsTextAnnotationItem::QgsTextAnnotationItem( QgsMapCanvas* canvas ): QgsAnnotationItem( canvas ), mDocument( new QTextDocument( QObject::tr( "" ) ) )
+QgsTextAnnotationItem::QgsTextAnnotationItem( QgsMapCanvas* canvas ): QgsAnnotationItem( canvas ), mDocument( new QTextDocument( QString() ) )
 {
   mDocument->setUseDesignMetrics( true );
 }
@@ -101,7 +101,7 @@ void QgsTextAnnotationItem::readXml( const QDomDocument& doc, const QDomElement&
 {
   delete mDocument;
   mDocument = new QTextDocument;
-  mDocument->setHtml( itemElem.attribute( QStringLiteral( "document" ), QObject::tr( "" ) ) );
+  mDocument->setHtml( itemElem.attribute( QStringLiteral( "document" ), QString() ) );
   QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {
