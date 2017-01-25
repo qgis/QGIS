@@ -175,7 +175,7 @@ void TestQgsMapSettings::testIsLayerVisible()
   r = e2.evaluate( &context );
   QCOMPARE( r.toBool(), true );
 
-  // test checking for non-existant layer
+  // test checking for non-existent layer
   QgsExpression e3( QString( "is_layer_visible( 'non matching name' )" ) );
   r = e3.evaluate( &context );
   QCOMPARE( r.toBool(), false );

@@ -76,6 +76,8 @@ declare -A GLOBREP_ALLFILES=()
 declare -A GLOBREP_CURRENTFILE=()
 declare -A GLOBREP_IGNORE=()
 
+ERRORFOUND=NO
+
 for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
   printf "Progress: %d/%d\n" $I $SPLIT
   SPELLFILE=spelling$I~
@@ -125,8 +127,7 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
   CASEMATCH=$(echo "(${CASEMATCH_FIXCASE}|${MATCHCASE_INWORD})" |${GP}sed -r 's/\(\|/(/' |${GP}sed -r 's/\|\|/|/g' |${GP}sed -r 's/\|\)/)/')'(?!.*'"${SPELLOKRX}"')'
 
   FILE=$INPUTFILES  # init with input files (if ag is run with single file, file path is now in output)
-  COMMANDS=""
-  ERRORFOUND=NO
+
   while read -u 3 -r LINE; do
     echo "$LINE"
     ERRORFOUND=YES
