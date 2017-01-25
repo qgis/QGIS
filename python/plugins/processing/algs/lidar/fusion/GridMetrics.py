@@ -52,6 +52,7 @@ class GridMetrics(FusionAlgorithm):
     CELLSIZE = 'CELLSIZE'
     OUTLIER = 'OUTLIER'
     FIRST = 'FIRST'
+    FUEL = 'FUEL'
     MINHT = 'MINHT'
     CLASS = 'CLASS'
 
@@ -59,13 +60,19 @@ class GridMetrics(FusionAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Grid Metrics')
         self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input LAS layer')))
+            self.INPUT, self.tr('Input LAS layer'),
+            optional=False))
         self.addParameter(ParameterFile(
-            self.GROUND, self.tr('Input ground DTM layer')))
+            self.GROUND, self.tr('Input ground PLANS DTM layer'),
+            optional=False))
         self.addParameter(ParameterNumber(
             self.HEIGHT, self.tr('Height break')))
         self.addParameter(ParameterNumber(
             self.CELLSIZE, self.tr('Cell Size')))
+        self.addParameter(ParameterBoolean(
+            self.FIRST, self.tr('Use only first returns'), False))
+        self.addParameter(ParameterBoolean(
+            self.FUEL, self.tr('Apply fuel parameter models (cannot be used with /first switch)'), False))
 
         self.addOutput(OutputFile(
             self.OUTPUT_CSV_ELEVATION, self.tr('Output table with grid metrics')))
@@ -89,9 +96,6 @@ class GridMetrics(FusionAlgorithm):
             self.OUTLIER, self.tr('Outlier:low,high'), '', False, True)
         outlier.isAdvanced = True
         self.addParameter(outlier)
-        first = ParameterBoolean(self.FIRST, self.tr('First'), False)
-        first.isAdvanced = True
-        self.addParameter(first)
         minht = ParameterString(self.MINHT, self.tr('Htmin'), '', False, True)
         minht.isAdvanced = True
         self.addParameter(minht)
@@ -99,6 +103,7 @@ class GridMetrics(FusionAlgorithm):
             self.CLASS, self.tr('Class (set blank if not used)'), '', False, True)
         class_var.isAdvanced = True
         self.addParameter(class_var)
+        self.addAdvancedModifiers()
 
     def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'GridMetrics.exe')]
@@ -109,13 +114,22 @@ class GridMetrics(FusionAlgorithm):
         first = self.getParameterValue(self.FIRST)
         if first:
             commands.append('/first')
+        fuel = self.getParameterValue(self.FUEL)
+        if fuel:
+            commands.append('/fuel')
         minht = self.getParameterValue(self.MINHT)
         if str(minht).strip() != '':
             commands.append('/minht:' + str(minht))
         class_var = self.getParameterValue(self.CLASS)
         if str(class_var).strip() != '':
             commands.append('/class:' + str(class_var))
-        commands.append(self.getParameterValue(self.GROUND))
+        self.addAdvancedModifiersToCommand(commands)
+        ground = self.getParameterValue(self.GROUND).split(';')
+        if len(ground) == 1:
+            commands.append(self.getParameterValue(self.GROUND))
+        else:
+            FusionUtils.createGroundList(ground)
+            commands.append(FusionUtils.tempGroundListFilepath())
         commands.append(str(self.getParameterValue(self.HEIGHT)))
         commands.append(str(self.getParameterValue(self.CELLSIZE)))
         commands.append(self.getOutputValue(self.OUTPUT_CSV_ELEVATION))

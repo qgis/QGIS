@@ -43,7 +43,8 @@ class DTM2ASCII(FusionAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('DTM to ASCII')
         self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input canopy surface (.dtm)')))
+            self.INPUT, self.tr('Input canopy surface (.dtm)'),
+            optional=False))
         self.addParameter(ParameterSelection(
             self.SWITCH, self.tr('Output format'), ['raster (ASCII)', 'csv']))
 

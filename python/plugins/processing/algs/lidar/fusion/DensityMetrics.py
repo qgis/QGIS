@@ -2,9 +2,9 @@
 
 """
 ***************************************************************************
-    ImageCreate.py
+    DensityMetrics.py
     ---------------------
-    Date                 : January 2016
+    Date                 : August 2016
     Copyright            : (C) 2016 by Niccolo' Marchi
     Email                : sciurusurbanus at hotmail dot it
 ***************************************************************************
@@ -16,12 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
 
 __author__ = "Niccolo' Marchi"
-__date__ = 'January 2016'
+__date__ = 'August 2016'
 __copyright__ = "(C) 2016 by Niccolo' Marchi"
 
 # This will get replaced with a git SHA1 when you do a git archive
@@ -29,71 +26,72 @@ __copyright__ = "(C) 2016 by Niccolo' Marchi"
 __revision__ = '$Format:%H$'
 
 import os
+import subprocess
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterFile
-from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputFile
 from .FusionAlgorithm import FusionAlgorithm
 from .FusionUtils import FusionUtils
 
 
-class ImageCreate(FusionAlgorithm):
+class DensityMetrics(FusionAlgorithm):
 
     INPUT = 'INPUT'
-    COLOROPTION = 'COLOROPTION'
-    GROUND = 'GROUND'
-    PIXEL = 'PIXEL'
-    RGB = 'RGB'
-    SWITCH = 'SWITCH'
     OUTPUT = 'OUTPUT'
+    CELLSIZE = 'CELLSIZE'
+    SLICE = 'SLICE'
+    GROUND = 'GROUND'
+    FIRST = 'FIRST'
+    NOCSV = 'NOCSV'
+    HTLIM = 'HTLIM'
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('ImageCreate')
+        self.name, self.i18n_name = self.trAlgorithm('Density Metrics')
         self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input LAS'),
-            optional=False))
-        self.addParameter(ParameterSelection(
-            self.COLOROPTION, self.tr('Method to assign color'),
-            ['Intensity', 'Elevation', 'Height']))
+            self.INPUT, self.tr('Input LAS layer'), optional=False))
         self.addParameter(ParameterFile(
-            self.GROUND, self.tr("Ground file (used with 'Height' method)"), 'dtm'))
-        self.addParameter(ParameterBoolean(
-            self.RGB, self.tr('Use RGB color model to create the color ramp'), False))
+            self.GROUND, self.tr('Input ground PLANS DTM layer'), optional=False))
         self.addParameter(ParameterNumber(
-            self.PIXEL, self.tr('Pixel size'), 0, None, 1.0))
-        self.addParameter(ParameterSelection(
-            self.SWITCH, self.tr('Output format'), ['JPEG', 'Bitmap']))
-        self.addOutput(OutputFile(self.OUTPUT, 'Output image'))
+            self.CELLSIZE, self.tr('Cellsize'), 0, None, 5.0))
+        self.addParameter(ParameterNumber(
+            self.SLICE, self.tr('Slice thickness'), 0, None, 2.0))
+        self.addParameter(ParameterNumber(
+            self.HTLIM, self.tr('Maximum height limit'), 0, None, 50.0))
+        self.addParameter(ParameterBoolean(
+            self.FIRST, self.tr('Use only first returns'), False))
+        self.addParameter(ParameterBoolean(
+            self.NOCSV, self.tr('Do not create a CSV output file for cell metrics'), False))
+        self.addOutput(OutputFile(
+            self.OUTPUT, self.tr('Base name for output files')))
         self.addAdvancedModifiers()
 
-    def processAlgorithm(self, feedback):
-        commands = [os.path.join(FusionUtils.FusionPath(), 'ImageCreate.exe')]
+    def processAlgorithm(self, progress):
+        commands = [os.path.join(FusionUtils.FusionPath(), 'DensityMetrics.exe')]
         commands.append('/verbose')
-        commands.append('/coloroption:' + str(self.getParameterValue(self.COLOROPTION)))
-        ground = self.getParameterValue(self.GROUND)
-        if ground:
-            gfiles = self.getParameterValue(self.GROUND).split(';')
-            if len(gfiles) == 1:
-                commands.append('/ground:' + str(ground))
-            else:
-                FusionUtils.createGroundList(gfiles)
-                commands.append('/ground:' + str(FusionUtils.tempGroundListFilepath()))
-        if self.getParameterValue(self.RGB):
-            commands.append('/rgb')
-        if self.getParameterValue(self.SWITCH) == 0:
-            commands.append('/jpg')
-        else:
-            commands.append('/bmp')
+        first = self.getParameterValue(self.FIRST)
+        if first:
+            commands.append('/first')
+        nocsv = self.getParameterValue(self.NOCSV)
+        if nocsv:
+            commands.append('/nocsv')
+        commands.append('/maxsliceht:' + unicode(self.getParameterValue(self.HTLIM)))
         self.addAdvancedModifiersToCommand(commands)
+        ground = self.getParameterValue(self.GROUND).split(';')
+        if len(ground) == 1:
+            commands.append(self.getParameterValue(self.GROUND))
+        else:
+            FusionUtils.createGroundList(ground)
+            commands.append(FusionUtils.tempGroundListFilepath())
+        commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
+        commands.append(unicode(self.getParameterValue(self.SLICE)))
         outFile = self.getOutputValue(self.OUTPUT)
         commands.append(outFile)
-        commands.append(str(self.getParameterValue(self.PIXEL)))
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))
         else:
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
-        FusionUtils.runFusion(commands, feedback)
+        FusionUtils.runFusion(commands, progress)

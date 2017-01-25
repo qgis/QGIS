@@ -45,6 +45,7 @@ class CanopyModel(FusionAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT_DTM = 'OUTPUT_DTM'
+    ASPECT = 'ASPECT'
     CELLSIZE = 'CELLSIZE'
     XYUNITS = 'XYUNITS'
     ZUNITS = 'ZUNITS'
@@ -54,13 +55,15 @@ class CanopyModel(FusionAlgorithm):
     SMOOTH = 'SMOOTH'
     SLOPE = 'SLOPE'
     CLASS = 'CLASS'
+    RETURN = 'RETURN'
     ASCII = 'ASCII'
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Canopy Model')
         self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input LAS layer')))
+            self.INPUT, self.tr('Input LAS layer'),
+            optional=False))
         self.addParameter(ParameterNumber(
             self.CELLSIZE, self.tr('Cell Size'), 0, None, 10.0))
         self.addParameter(ParameterSelection(
@@ -70,7 +73,7 @@ class CanopyModel(FusionAlgorithm):
         self.addOutput(OutputFile(
             self.OUTPUT_DTM, self.tr('.dtm output surface'), 'dtm'))
         ground = ParameterFile(
-            self.GROUND, self.tr('Input ground DTM layer'), False, True)
+            self.GROUND, self.tr('Input ground PLANS DTM layer'), False, True)
         ground.isAdvanced = True
         self.addParameter(ground)
         median = ParameterString(
@@ -82,13 +85,21 @@ class CanopyModel(FusionAlgorithm):
         smooth.isAdvanced = True
         self.addParameter(smooth)
         class_var = ParameterString(
-            self.CLASS, self.tr('Class'), '', False, True)
+            self.CLASS, self.tr('Select specific class'), '', False, True)
         class_var.isAdvanced = True
         self.addParameter(class_var)
+        ret_num = ParameterString(
+            self.RETURN, self.tr('Select specific return'), '', False, True)
+        ret_num.isAdvanced = True
+        self.addParameter(ret_num)
         slope = ParameterBoolean(
             self.SLOPE, self.tr('Calculate slope'), False)
         slope.isAdvanced = True
         self.addParameter(slope)
+        aspec = ParameterBoolean(
+            self.ASPECT, self.tr('Calculate aspect'), False)
+        aspec.isAdvanced = True
+        self.addParameter(aspect)
         self.addParameter(ParameterBoolean(
             self.ASCII, self.tr('Add an ASCII output'), False))
         self.addAdvancedModifiers()
@@ -98,7 +109,12 @@ class CanopyModel(FusionAlgorithm):
         commands.append('/verbose')
         ground = self.getParameterValue(self.GROUND)
         if str(ground).strip():
-            commands.append('/ground:' + str(ground))
+            gfiles = self.getParameterValue(self.GROUND).split(';')
+            if len(gfiles) == 1:
+                commands.append('/ground:' + str(ground))
+            else:
+                FusionUtils.createGroundList(gfiles)
+                commands.append('/ground:' + str(FusionUtils.tempGroundListFilepath()))
         median = self.getParameterValue(self.MEDIAN)
         if str(median).strip():
             commands.append('/median:' + str(median))
@@ -108,11 +124,17 @@ class CanopyModel(FusionAlgorithm):
         slope = self.getParameterValue(self.SLOPE)
         if slope:
             commands.append('/slope')
+        aspect = self.getParameterValue(self.ASPECT)
+        if aspect:
+            commands.append('/aspect')
         class_var = self.getParameterValue(self.CLASS)
         if str(class_var).strip():
             commands.append('/class:' + str(class_var))
-        ascii = self.getParameterValue(self.ASCII)
-        if ascii:
+        ret_num = self.getParameterValue(self.RETURN)
+        if str(ret_num).strip():
+            commands.append('/return:' + str(ret_num))
+        use_ascii = self.getParameterValue(self.ASCII)
+        if use_ascii:
             commands.append('/ascii')
         self.addAdvancedModifiersToCommand(commands)
         commands.append(self.getOutputValue(self.OUTPUT_DTM))

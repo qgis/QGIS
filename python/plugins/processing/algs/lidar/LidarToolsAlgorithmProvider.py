@@ -140,6 +140,15 @@ from .fusion.FilterData import FilterData
 from .fusion.PolyClipData import PolyClipData
 from .fusion.ImageCreate import ImageCreate
 from .fusion.IntensityImage import IntensityImage
+from .fusion.DensityMetrics import DensityMetrics
+from .fusion.MergeDTM import MergeDTM
+from .fusion.TopoMetrics import TopoMetrics
+from .fusion.TreeSeg import TreeSeg
+from .fusion.SplitDTM import SplitDTM
+from .fusion.MergeRaster import MergeRaster
+from .fusion.SurfaceStats import SurfaceStats
+from .fusion.ReturnDensity import ReturnDensity  # spellok
+from .fusion.GridSurfaceStats import GridSurfaceStats
 from .fusion.FusionUtils import FusionUtils
 
 
@@ -213,7 +222,8 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 Csv2Grid(), Cover(), FilterData(), GridMetrics(), GroundFilter(),
                 GridSurfaceCreate(), MergeData(), TinSurfaceCreate(), PolyClipData(),
                 DTM2TIF(), DTM2ASCII(), FirstLastReturn(), ASCII2DTM(), ImageCreate(),
-                IntensityImage()
+                IntensityImage(), DensityMetrics(), MergeDTM(), TopoMetrics(), TreeSeg(),
+                SplitDTM(), MergeRaster(), SurfaceStats(), ReturnDensity(), GridSurfaceStats()  # spellok
             ]
             for alg in fusiontools:
                 alg.group, alg.i18n_group = alg.trAlgorithm('Fusion')

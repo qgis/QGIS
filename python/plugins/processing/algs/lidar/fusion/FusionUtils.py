@@ -75,3 +75,15 @@ class FusionUtils(object):
         for line in iter(proc.readline, ''):
             loglines.append(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+
+    @staticmethod
+    def tempGroundListFilepath():
+        filename = 'fusion_groundFiles_list.txt'
+        filepath = os.path.join(userFolder(), filename)
+        return filepath
+
+    @staticmethod
+    def createGroundList(gfiles):
+        with open(FusionUtils.tempGroundListFilepath(), 'w') as outg:
+            for f in gfiles:
+                outg.write(f + '\n')

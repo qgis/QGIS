@@ -31,6 +31,7 @@ __revision__ = '$Format:%H$'
 import os
 import subprocess
 from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputRaster
@@ -45,6 +46,8 @@ class Cover(FusionAlgorithm):
     CELLSIZE = 'CELLSIZE'
     HEIGHTBREAK = 'HEIGHTREAK'
     GROUND = 'GROUND'
+    ALLRETS = 'ALLRETS'
+    PENETRATION = 'PENETRATION'
     XYUNITS = 'XYUNITS'
     ZUNITS = 'ZUNITS'
     UNITS = ['Meter', 'Feet']
@@ -53,27 +56,42 @@ class Cover(FusionAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Cover')
         self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input LAS layer')))
+            self.INPUT, self.tr('Input LAS layer'),
+            optional=False))
         self.addParameter(ParameterFile(
-            self.GROUND, self.tr('Input ground DTM layer')))
+            self.GROUND, self.tr('Input ground PLANS DTM layer'),
+            optional=False))
         self.addParameter(ParameterNumber(
             self.CELLSIZE, self.tr('Cell Size'), 0, None, 10.0))
         self.addParameter(ParameterNumber(
-            self.HEIGHTBREAK, self.tr('Heightbreak'), 0, None, 10.0))
+            self.HEIGHTBREAK, self.tr('Heightbreak for the cover calculation (see help)'), 0, None, 10.0))
         self.addParameter(ParameterSelection(
             self.XYUNITS, self.tr('XY Units'), self.UNITS))
         self.addParameter(ParameterSelection(
             self.ZUNITS, self.tr('Z Units'), self.UNITS))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Cover')))
+        self.addParameter(ParameterBoolean(
+            self.ALLRETS, self.tr('Use all returns instead of only first'), False))
+        self.addParameter(ParameterBoolean(
+            self.PENETRATION, self.tr('Compute the proportion of returns close to the ground surface'), False))
+        self.addOutput(OutputFile(self.OUTPUT, self.tr('Cover output file')))
         self.addAdvancedModifiers()
 
     def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'Cover.exe')]
         commands.append('/verbose')
+        allrets = self.getParameterValue(self.ALLRETS)
+        if str(allrets).strip() != '':
+            commands.append('/all')
+        penetration = self.getParameterValue(self.PENETRATION)
+        if penetration:
+            commands.append('/penetration')
         self.addAdvancedModifiersToCommand(commands)
-        ground = self.getParameterValue(self.GROUND)
-        if str(ground).strip() != '':
-            commands.append('/ground:' + str(ground))
+        ground = self.getParameterValue(self.GROUND).split(';')
+        if len(ground) == 1:
+            commands.append(self.getParameterValue(self.GROUND))
+        else:
+            FusionUtils.createGroundList(ground)
+            commands.append(FusionUtils.tempGroundListFilepath())
         outFile = self.getOutputValue(self.OUTPUT) + '.dtm'
         commands.append(outFile)
         commands.append(str(self.getParameterValue(self.HEIGHTBREAK)))

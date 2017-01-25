@@ -2,11 +2,11 @@
 
 """
 ***************************************************************************
-    GroundFilter.py
+    MergeDTM.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    Date                 : August 2016
+    Copyright            : (C) 2016 by Niccolo' Marchi
+    Email                : sciurusurbanus at hotmail dot it
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -16,13 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Niccolo' Marchi"
+__date__ = 'August 2016'
+__copyright__ = "(C) 2016 by Niccolo' Marchi"
 
 # This will get replaced with a git SHA1 when you do a git archive
 
@@ -33,45 +30,63 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputFile
-from .FusionUtils import FusionUtils
 from .FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
 
 
-class GroundFilter(FusionAlgorithm):
+class MergeDTM(FusionAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     CELLSIZE = 'CELLSIZE'
-    SURFACE = 'SURFACE'
+    EXTENT = 'EXTENT'
+    DISK = 'DISK'
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Ground Filter')
+        self.name, self.i18n_name = self.trAlgorithm('Merge PLANS DTM files')
         self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input LAS layer'),
-            optional=False))
-        self.addParameter(ParameterNumber(self.CELLSIZE,
-                                          self.tr('Cell size for intermediate surfaces'), 0, None, 10))
+            self.INPUT, self.tr('Input PLANS DTM files'), optional=False))
         self.addOutput(OutputFile(
-            self.OUTPUT, self.tr('Output ground LAS file')))
-        self.addParameter(ParameterBoolean(
-            self.SURFACE, self.tr('Create .dtm surface'), False))
+            self.OUTPUT, self.tr('Output merged file')))
+
+        cellsize = ParameterNumber(
+            self.CELLSIZE, self.tr('Resample the input DTM data to the following cellsize'), 0, None, 0.0)
+        cellsize.isAdvanced = True
+        self.addParameter(cellsize)
+
+        extent = ParameterBoolean(
+            self.EXTENT, self.tr('Preserve the exact extent of the input models'), False)
+        extent.isAdvanced = True
+        self.addParameter(extent)
+
+        disk = ParameterBoolean(
+            self.DISK, self.tr('Merge the files to a disk file. USE ONLY IF DEFAULT METHOD FAILS'), False)
+        disk.isAdvanced = True
+        self.addParameter(disk)
+
         self.addAdvancedModifiers()
 
-    def processAlgorithm(self, feedback):
-        commands = [os.path.join(FusionUtils.FusionPath(), 'GroundFilter.exe')]
+    def processAlgorithm(self, progress):
+        commands = [os.path.join(FusionUtils.FusionPath(), 'MergeDTM.exe')]
         commands.append('/verbose')
+
+        cellsize = self.getParameterValue(self.CELLSIZE)
+        if cellsize != 0.0:
+            commands.append('/cellsize:' + unicode(self.getParameterValue(self.CELLSIZE)))
+        extent = self.getParameterValue(self.EXTENT)
+        if extent:
+            commands.append('/exactextent')
+        disk = self.getParameterValue(self.DISK)
+        if disk:
+            commands.append('/disk')
         self.addAdvancedModifiersToCommand(commands)
-        surface = self.getParameterValue(self.SURFACE)
-        if surface:
-            commands.append('/surface')
         outFile = self.getOutputValue(self.OUTPUT)
         commands.append(outFile)
-        commands.append(str(self.getParameterValue(self.CELLSIZE)))
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))
         else:
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
-        FusionUtils.runFusion(commands, feedback)
+        FusionUtils.runFusion(commands, progress)
