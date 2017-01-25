@@ -1448,6 +1448,8 @@ QgsPalLabeling        {#qgis_api_break_3_0_QgsPalLabeling}
 - labelsAtPosition() was removed. Use takeResults() and methods of QgsLabelingResults instead.
 - labelsWithinRect() was removed. Use takeResults() and methods of QgsLabelingResults instead.
 - isStoredWithProject() and setStoredWithProject() had no effect and were removed.
+- staticWillUseLayer(QString) was removed. Use the variant with QgsVectorLayer argument.
+- clearEngineSettings() was replaced by QgsLabelingEngine::clearSettingsInProject().
 
 
 QgsPalLayerSettings        {#qgis_api_break_3_0_QgsPalLayerSettings}

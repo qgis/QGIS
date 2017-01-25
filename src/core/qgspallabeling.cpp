@@ -2740,15 +2740,6 @@ QgsPalLabeling::~QgsPalLabeling()
   mEngine = nullptr;
 }
 
-bool QgsPalLabeling::staticWillUseLayer( const QString& layerID )
-{
-  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerID ) );
-  if ( !layer )
-    return false;
-  return staticWillUseLayer( layer );
-}
-
-
 bool QgsPalLabeling::staticWillUseLayer( QgsVectorLayer* layer )
 {
   // don't do QgsPalLayerSettings::readFromLayer( layer ) if not needed
@@ -3485,26 +3476,16 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* p
     drawLabelCandidateRect( lp->getNextPart(), painter, xform, candidates );
 }
 
+// TODO: remove once not used in labeling tests
 void QgsPalLabeling::loadEngineSettings()
 {
-  mEngine->readSettingsFromProject();
+  mEngine->readSettingsFromProject( QgsProject::instance() );
 }
 
+// TODO: remove once not used in labeling tests
 void QgsPalLabeling::saveEngineSettings()
 {
-  mEngine->writeSettingsToProject();
-}
-
-void QgsPalLabeling::clearEngineSettings()
-{
-  QgsProject::instance()->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ) );
-  QgsProject::instance()->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ) );
-  QgsProject::instance()->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLine" ) );
-  QgsProject::instance()->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygon" ) );
-  QgsProject::instance()->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ) );
-  QgsProject::instance()->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ) );
-  QgsProject::instance()->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ) );
-  QgsProject::instance()->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ) );
+  mEngine->writeSettingsToProject( QgsProject::instance() );
 }
 
 QgsLabelingResults::QgsLabelingResults()

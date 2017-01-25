@@ -20,6 +20,7 @@
 #include "qgslogger.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgspallabeling.h"
+#include "qgsproject.h"
 
 #include <QtConcurrentMap>
 
@@ -57,7 +58,7 @@ void QgsMapRendererParallelJob::start()
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
     mLabelingEngineV2 = new QgsLabelingEngine();
-    mLabelingEngineV2->readSettingsFromProject();
+    mLabelingEngineV2->readSettingsFromProject( QgsProject::instance() );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
