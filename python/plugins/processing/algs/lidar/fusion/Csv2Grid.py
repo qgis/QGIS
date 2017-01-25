@@ -43,7 +43,7 @@ class Csv2Grid(FusionAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Csv2Grid')
         self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(self.INPUT, self.tr('CSV Files'), optional=False))
-        self.addParameter(ParameterNumber(self.COLUMN, self.tr('Column'), 0, None, 0z))
+        self.addParameter(ParameterNumber(self.COLUMN, self.tr('Column'), 0, None, 0))
         self.addOutput(OutputFile(self.OUTPUT, self.tr('Raster Output file'), 'asc'))
 
     def processAlgorithm(self, feedback):

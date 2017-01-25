@@ -131,7 +131,7 @@ class GridMetrics(FusionAlgorithm):
             FusionUtils.createGroundList(ground)
             commands.append(FusionUtils.tempGroundListFilepath())
         commands.append(str(self.getParameterValue(self.HEIGHT)))
-            commands.append(str(self.getParameterValue(self.CELLSIZE)))
+        commands.append(str(self.getParameterValue(self.CELLSIZE)))
         commands.append(self.getOutputValue(self.OUTPUT_CSV_ELEVATION))
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
