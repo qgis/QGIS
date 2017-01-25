@@ -30,7 +30,7 @@ if [[ "$OSTYPE" =~ darwin* ]]; then
 fi
 
 # ARGUMENTS
-INTERACTIVE=YES
+INTERACTIVE=$(tty -s && echo YES || echo NO)
 DEBUG=NO
 OUTPUTLOG=""
 while getopts ":rdl:" opt; do
@@ -79,7 +79,7 @@ declare -A GLOBREP_IGNORE=()
 ERRORFOUND=NO
 
 for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
-  printf "Progress: %d/%d\n" $I $SPLIT
+  [[ "$INTERACTIVE" =~ YES ]] && printf "Progress: %d/%d\n" $I $SPLIT
   SPELLFILE=spelling$I~
 
   # if correction contains an uppercase letter and is the same as the error character wise, this means that the error is searched as a full word and case sensitive (not incorporated in a bigger one)
@@ -268,8 +268,10 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
         FILE=""
       fi
     fi
-  done 3< <(unbuffer ag --all-text --nopager --color-match "30;43" --numbers --nomultiline --ignore-case    -p $AGIGNORE "${IGNORECASE}" $INPUTFILES ; \
-            unbuffer ag --all-text --nopager --color-match "30;43" --numbers --nomultiline --case-sensitive -p $AGIGNORE "${CASEMATCH}"  $INPUTFILES )
+  done 3< <(
+    unbuffer ag --all-text --nopager --color-match "30;43" --numbers --nomultiline --ignore-case    -p $AGIGNORE "${IGNORECASE}" $INPUTFILES
+    unbuffer ag --all-text --nopager --color-match "30;43" --numbers --nomultiline --case-sensitive -p $AGIGNORE "${CASEMATCH}"  $INPUTFILES
+  )
 
   rm -f $SPELLFILE
 done

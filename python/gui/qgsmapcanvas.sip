@@ -88,9 +88,9 @@ class QgsMapCanvas : QGraphicsView
     //! Returns the mapUnitsPerPixel (map units per pixel) for the canvas
     double mapUnitsPerPixel() const;
 
-    //! Returns the current zoom exent of the map canvas
+    //! Returns the current zoom extent of the map canvas
     QgsRectangle extent() const;
-    //! Returns the combined exent for all layers on the map canvas
+    //! Returns the combined extent for all layers on the map canvas
     QgsRectangle fullExtent() const;
 
     //! Set the extent of the map canvas
