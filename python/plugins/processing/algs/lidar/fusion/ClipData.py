@@ -51,10 +51,11 @@ class ClipData(FusionAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Clip Data')
         self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input LAS layer')))
+            self.INPUT, self.tr('Input LAS layer'),
+            optional=False))
         self.addParameter(ParameterExtent(self.EXTENT, self.tr('Extent'), optional=False))
         self.addParameter(ParameterSelection(
-            self.SHAPE, self.tr('Shape'), ['Rectangle', 'Circle']))
+            self.SHAPE, self.tr('Shape of the sample area'), ['Rectangle', 'Circle']))
         self.addOutput(OutputFile(
             self.OUTPUT, self.tr('Output clipped LAS file')))
         dtm = ParameterFile(
@@ -74,7 +75,12 @@ class ClipData(FusionAlgorithm):
         commands.append('/shape:' + str(self.getParameterValue(self.SHAPE)))
         dtm = self.getParameterValue(self.DTM)
         if dtm:
-            commands.append('/dtm:' + str(dtm))
+            gfiles = self.getParameterValue(self.DTM).split(';')
+            if len(gfiles) == 1:
+                commands.append('/ground:' + str(dtm))
+            else:
+                FusionUtils.createGroundList(gfiles)
+                commands.append('/ground:' + str(FusionUtils.tempGroundListFilepath()))
         height = self.getParameterValue(self.HEIGHT)
         if height:
             commands.append('/height')

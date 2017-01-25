@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 from processing.core.parameters import ParameterFile
-from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputFile
 from .FusionAlgorithm import FusionAlgorithm
 from .FusionUtils import FusionUtils
@@ -42,8 +42,8 @@ class Csv2Grid(FusionAlgorithm):
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Csv2Grid')
         self.group, self.i18n_group = self.trAlgorithm('Points')
-        self.addParameter(ParameterFile(self.INPUT, self.tr('CSV Files')))
-        self.addParameter(ParameterString(self.COLUMN, self.tr('Column')))
+        self.addParameter(ParameterFile(self.INPUT, self.tr('CSV Files'), optional=False))
+        self.addParameter(ParameterNumber(self.COLUMN, self.tr('Column'), 0, None, 0z))
         self.addOutput(OutputFile(self.OUTPUT, self.tr('Raster Output file'), 'asc'))
 
     def processAlgorithm(self, feedback):

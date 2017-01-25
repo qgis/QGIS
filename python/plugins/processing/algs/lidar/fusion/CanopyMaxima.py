@@ -32,7 +32,7 @@ import os
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
-from processing.core.outputs import OutputTable
+from processing.core.outputs import OutputFile
 from .FusionUtils import FusionUtils
 from .FusionAlgorithm import FusionAlgorithm
 
@@ -46,43 +46,53 @@ class CanopyMaxima(FusionAlgorithm):
     SUMMARY = 'SUMMARY'
     PARAM_A = 'PARAM_A'
     PARAM_C = 'PARAM_C'
+    SHAPE = 'SHAPE'
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Canopy Maxima')
         self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input FUSION canopy height model')))
+            self.INPUT, self.tr('Input PLANS DTM canopy height model'),
+            optional=False))
         self.addParameter(ParameterFile(
-            self.GROUND, self.tr('Input ground .dtm layer [optional]')))
+            self.GROUND, self.tr('Input ground PLANS DTM layer [optional]')))
         self.addParameter(ParameterNumber(
-            self.THRESHOLD, self.tr('Height threshold'), 0, None, 10.0))
-        # begin
+            self.THRESHOLD, self.tr('Limit analysis to areas above this height threshold'), 0, None, 10.0))
+
         self.addParameter(ParameterNumber(
             self.PARAM_A, self.tr('Variable window size: parameter A'), 0, None, 2.51503))
         self.addParameter(ParameterNumber(
             self.PARAM_C, self.tr('Parameter C'), 0, None, 0.00901))
-        self.addParameter(ParameterBoolean(
-            self.SUMMARY, self.tr('Summary (tree height summary statistics)'), False))
-        # end
-        self.addOutput(OutputTable(
-            self.OUTPUT, self.tr('Output file with maxima')))
+        summary = ParameterBoolean(
+            self.SUMMARY, self.tr('Tree height summary statistics'), False)
+        summary.isAdvanced = True
+        self.addParameter(summary)
+        shape = ParameterBoolean(
+            self.SHAPE, self.tr('Create output shapefiles'), False)
+        shape.isAdvanced = True
+        self.addParameter(shape)
+
+        self.addOutput(OutputFile(
+            self.OUTPUT, self.tr('Output file with maxima'), 'csv'))
+
         self.addAdvancedModifiers()
 
     def processAlgorithm(self, feedback):
         commands = [os.path.join(FusionUtils.FusionPath(), 'CanopyMaxima.exe')]
         commands.append('/verbose')
-        ### begin
-        commands.append('/wse:' + str(self.getParameterValue(self.PARAM_A)) + ',0,' + str(self.getParameterValue(self.PARAM_C)) + ',0')
+        commands.append('/wse:' + unicode(self.getParameterValue(self.PARAM_A)) + ',0,' + unicode(self.getParameterValue(self.PARAM_C)) + ',0')
+        ground = self.getParameterValue(self.GROUND)
+        if ground:
+            gfiles = self.getParameterValue(self.GROUND).split(';')
+            if len(gfiles) == 1:
+                commands.append('/ground:' + str(ground))
+            else:
+                FusionUtils.createGroundList(gfiles)
+                commands.append('/ground:' + str(FusionUtils.tempGroundListFilepath()))
+        commands.append('/threshold:' + str(self.getParameterValue(self.THRESHOLD)))
         if self.getParameterValue(self.SUMMARY):
             commands.append('/summary')
-        ### end
         self.addAdvancedModifiersToCommand(commands)
-        ground = self.getParameterValue(self.GROUND)
-        ## here it's necessary to have the support for multiple files like for INPUT.
-        if str(ground).strip():
-            commands.append('/ground:' + str(ground))
-        commands.append('/threshold:'
-                        + str(self.getParameterValue(self.THRESHOLD)))
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))
