@@ -30,6 +30,7 @@
 #include "qgsdxfpallabeling.h"
 #include "qgsvectordataprovider.h"
 #include "qgspoint.h"
+#include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgssymbollayer.h"
 #include "qgsfillsymbollayer.h"
@@ -941,7 +942,7 @@ void QgsDxfExport::writeEntities()
 
   // label engine
   QgsLabelingEngine engine;
-  engine.readSettingsFromProject();
+  engine.readSettingsFromProject( QgsProject::instance() );
   engine.setMapSettings( mMapSettings );
 
   // iterate through the maplayers

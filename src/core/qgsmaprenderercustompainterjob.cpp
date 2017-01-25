@@ -79,7 +79,7 @@ void QgsMapRendererCustomPainterJob::start()
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
     mLabelingEngineV2 = new QgsLabelingEngine();
-    mLabelingEngineV2->readSettingsFromProject();
+    mLabelingEngineV2->readSettingsFromProject( QgsProject::instance() );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 

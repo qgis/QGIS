@@ -737,7 +737,6 @@ class CORE_EXPORT QgsPalLabeling
     //! called to find out whether the layer is used for labeling
     //! @note added in 2.4
     static bool staticWillUseLayer( QgsVectorLayer* layer );
-    static bool staticWillUseLayer( const QString& layerID );
 
     //! @note not available in python bindings
     static void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform, QList<QgsLabelCandidate>* candidates = nullptr );
@@ -745,7 +744,6 @@ class CORE_EXPORT QgsPalLabeling
     //! load/save engine settings to project file
     void loadEngineSettings();
     void saveEngineSettings();
-    void clearEngineSettings();
 
     /** Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
      * @param geometry geometry to prepare
