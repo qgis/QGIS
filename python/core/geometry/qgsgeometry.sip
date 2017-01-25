@@ -747,6 +747,19 @@ class QgsGeometry
      */
     int avoidIntersections( const QList<QgsVectorLayer*>& avoidIntersectionsLayers );
 
+    /**
+     * Attempts to make an invalid geometry valid without losing vertices.
+     *
+     * @note Ported from PostGIS ST_MakeValid() and it should return equivalent results.
+     * Already-valid geometries are returned without further intervention.
+     * In case of full or partial dimensional collapses, the output geometry may be a collection
+     * of lower-to-equal dimension geometries or a geometry of lower dimension.
+     * Single polygons may become multi-geometries in case of self-intersections.
+     * @return new valid QgsGeometry or null geometry on error
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry makeValid();
+
     class Error
     {
       public:
