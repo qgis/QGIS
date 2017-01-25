@@ -56,19 +56,19 @@ cleanup() {
 
 PATH=$QTDIR/bin:$PATH
 
-if type qmake-qt4 >/dev/null 2>&1; then
-	QMAKE=qmake-qt4
+if type qmake-qt5 >/dev/null 2>&1; then
+	QMAKE=qmake-qt5
 else
 	QMAKE=qmake
 fi
 
-if ! type pylupdate4 >/dev/null 2>&1; then
-      echo "pylupdate4 not found"
+if ! type pylupdate5 >/dev/null 2>&1; then
+      echo "pylupdate5 not found"
       exit 1
 fi
 
-if type lupdate-qt4 >/dev/null 2>&1; then
-	LUPDATE=lupdate-qt4
+if type lupdate-qt5 >/dev/null 2>&1; then
+	LUPDATE=lupdate-qt5
 else
 	LUPDATE=lupdate
 fi
@@ -118,13 +118,13 @@ fi
 
 echo Updating python translations
 cd python
-pylupdate4 utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
+pylupdate5 utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
 perl ../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
 rm python-i18n.ts
 cd ..
 for i in python/plugins/*/CMakeLists.txt; do
 	cd ${i%/*}
-	pylupdate4 $(find . -name "*.py" -o -name "*.ui") -ts python-i18n.ts
+	pylupdate5 $(find . -name "*.py" -o -name "*.ui") -ts python-i18n.ts
 	perl ../../../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
 	rm python-i18n.ts
 	cd ../../..

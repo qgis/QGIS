@@ -111,41 +111,10 @@ void QgsRequestHandler::setupParameters()
   const QgsServerRequest::Parameters parameters = mRequest.parameters();
 
   // SLD
-
   QString value = parameters.value( QStringLiteral( "SLD" ) );
   if ( !value.isEmpty() )
   {
-    // XXX Why keeping this ????
-#if QT_VERSION < 0x050000
-    QByteArray fileContents;
-    if ( value.startsWith( "http", Qt::CaseInsensitive ) )
-    {
-      QgsHttpTransaction http( value );
-      if ( !http.getSynchronously( fileContents ) )
-      {
-        fileContents.clear();
-      }
-    }
-    else if ( value.startsWith( "ftp", Qt::CaseInsensitive ) )
-    {
-      Q_NOWARN_DEPRECATED_PUSH;
-      QgsFtpTransaction ftp;
-      if ( !ftp.get( value, fileContents ) )
-      {
-        fileContents.clear();
-      }
-      value = QUrl::fromPercentEncoding( fileContents );
-      Q_NOWARN_DEPRECATED_POP;
-    }
-
-    if fileContents.size() > 0 )
-    {
-      mRequest.setParameter( QStringLiteral( "SLD" ),  QUrl::fromPercentEncoding( fileContents ) );
-    }
-#else
     QgsMessageLog::logMessage( QStringLiteral( "http and ftp methods not supported with Qt5." ) );
-#endif
-
   }
 
   // SLD_BODY
