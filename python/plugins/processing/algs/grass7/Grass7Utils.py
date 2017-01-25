@@ -115,7 +115,6 @@ class Grass7Utils(object):
 
         return None
 
-
     @staticmethod
     def grassPath():
         if not isWindows() and not isMac():
