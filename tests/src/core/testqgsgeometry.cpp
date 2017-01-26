@@ -840,21 +840,27 @@ void TestQgsGeometry::point()
   // 2D
   QgsPointV2 p33 = QgsPointV2( 1, 2 );
   QCOMPARE( p33.project( 1, 0 ), QgsPointV2( 1, 3 ) );
-  QCOMPARE( p33.project( 1, 0, 0 ), QgsPointV2( 1, 3 ) );
+  QCOMPARE( p33.project( 1, 0, 0 ), QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 1 ) );
   QCOMPARE( p33.project( 1.5, 90 ), QgsPointV2( 2.5, 2 ) );
-  QCOMPARE( p33.project( 1.5, 90, 90 ), QgsPointV2( 2.5, 2 ) );
+  QCOMPARE( p33.project( 1.5, 90, 90 ), QgsPointV2( 2.5, 2 ) ); // stay QgsWkbTypes::Point
   QCOMPARE( p33.project( 2, 180 ), QgsPointV2( 1, 0 ) );
-  QCOMPARE( p33.project( 2, 180, 180 ), QgsPointV2( 1, 0 ) );
+  QCOMPARE( p33.project( 2, 180, 180 ), QgsPointV2( QgsWkbTypes::PointZ,  1, 2, -2 ) );
   QCOMPARE( p33.project( 5, 270 ), QgsPointV2( -4, 2 ) );
-  QCOMPARE( p33.project( 5, 270, 270 ), QgsPointV2( -4, 2 ) );
+  QCOMPARE( p33.project( 5, 270, 270 ), QgsPointV2( QgsWkbTypes::PointZ,  6, 2, 0 ) );
   QCOMPARE( p33.project( 6, 360 ), QgsPointV2( 1, 8 ) );
-  QCOMPARE( p33.project( 6, 360, 360 ), QgsPointV2( 1, 8 ) );
+  QCOMPARE( p33.project( 6, 360, 360 ), QgsPointV2( QgsWkbTypes::PointZ,  1, 2, 6 ) );
   QCOMPARE( p33.project( 5, 450 ), QgsPointV2( 6, 2 ) );
-  QCOMPARE( p33.project( 5, 450, 450 ), QgsPointV2( 6, 2 ) );
+  QCOMPARE( p33.project( 5, 450, 450 ), QgsPointV2( 6, 2 ) );  // stay QgsWkbTypes::Point
   QCOMPARE( p33.project( -1, 0 ), QgsPointV2( 1, 1 ) );
-  QCOMPARE( p33.project( -1, 0, 0 ), QgsPointV2( 1, 1 ) );
+  QCOMPARE( p33.project( -1, 0, 0 ), QgsPointV2( QgsWkbTypes::PointZ, 1, 2, -1 ) );
   QCOMPARE( p33.project( 1.5, -90 ), QgsPointV2( -0.5, 2 ) );
-  QCOMPARE( p33.project( 1.5, -90, -90 ), QgsPointV2( -0.5, 2 ) );
+  QCOMPARE( p33.project( 1.5, -90, -90 ), QgsPointV2( QgsWkbTypes::PointZ, 2.5, 2, 0 ) );
+  // PointM
+  p33.addMValue( 5.0 );
+  QCOMPARE( p33.project( 1, 0 ), QgsPointV2( QgsWkbTypes::PointM, 1, 3, 0, 5 ) );
+  QCOMPARE( p33.project( 1, 0, 0 ), QgsPointV2( QgsWkbTypes::PointZM, 1, 2, 1, 5 ) );
+  QCOMPARE( p33.project( 5, 450, 450 ), QgsPointV2( QgsWkbTypes::PointM, 6, 2, 0, 5 ) );
+
   // 3D
   QgsPointV2 p34 = QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 );
   QCOMPARE( p34.project( 1, 0 ), QgsPointV2(QgsWkbTypes::PointZ, 1, 3, 2 ) );
@@ -873,6 +879,12 @@ void TestQgsGeometry::point()
   QCOMPARE( p34.project( -1, 0, 0 ), QgsPointV2(QgsWkbTypes::PointZ, 1, 2, 1  ) );
   QCOMPARE( p34.project( 1.5, -90 ), QgsPointV2(QgsWkbTypes::PointZ, -0.5, 2, 2  ) );
   QCOMPARE( p34.project( 1.5, -90, -90 ), QgsPointV2(QgsWkbTypes::PointZ, 2.5, 2, 2  ) );
+  // PointM
+  p34.addMValue( 5.0 );
+  QCOMPARE( p34.project( 1, 0 ), QgsPointV2(QgsWkbTypes::PointZM, 1, 3, 2, 5 ) );
+  QCOMPARE( p34.project( 1, 0, 0 ), QgsPointV2(QgsWkbTypes::PointZM, 1, 2, 3, 5  ) );
+  QCOMPARE( p34.project( 5, 450 ), QgsPointV2(QgsWkbTypes::PointZM, 6, 2, 2, 5 ) );
+  QCOMPARE( p34.project( 5, 450, 450 ), QgsPointV2(QgsWkbTypes::PointZM, 6, 2, 2, 5  ) );
 
 }
 
