@@ -26,6 +26,8 @@
 
 class QgsGeometry;
 class QgsVectorLayer;
+class QgsRasterLayer;
+class QgsRasterDataProvider;
 class QProgressDialog;
 class QgsRectangle;
 class QgsField;
@@ -57,7 +59,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     /**
      * Constructor for QgsZonalStatistics.
      */
-    QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix = "", int rasterBand = 1,
+    QgsZonalStatistics( QgsVectorLayer* polygonLayer, QgsRasterLayer* rasterLayer, const QString& attributePrefix = "", int rasterBand = 1,
                         Statistics stats = Statistics( Count | Sum | Mean ) );
 
     /** Starts the calculation
@@ -114,11 +116,11 @@ class ANALYSIS_EXPORT QgsZonalStatistics
                          int& offsetX, int& offsetY, int& nCellsX, int& nCellsY ) const;
 
     //! Returns statistics by considering the pixels where the center point is within the polygon (fast)
-    void statisticsFromMiddlePointTest( void* band, const QgsGeometry& poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
+    void statisticsFromMiddlePointTest( const QgsGeometry& poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
                                         double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats& stats );
 
     //! Returns statistics with precise pixel - polygon intersection test (slow)
-    void statisticsFromPreciseIntersection( void* band, const QgsGeometry& poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
+    void statisticsFromPreciseIntersection( const QgsGeometry& poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
                                             double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats& stats );
 
     //! Tests whether a pixel's value should be included in the result
@@ -126,7 +128,8 @@ class ANALYSIS_EXPORT QgsZonalStatistics
 
     QString getUniqueFieldName( const QString& fieldName, const QList<QgsField>& newFields );
 
-    QString mRasterFilePath;
+    QgsRasterLayer* mRasterLayer;
+    QgsRasterDataProvider* mRasterProvider;
     //! Raster band to calculate statistics from (defaults to 1)
     int mRasterBand;
     QgsVectorLayer* mPolygonLayer;

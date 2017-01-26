@@ -20,16 +20,17 @@
 #include "qgsgeometry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterblock.h"
 #include "qmath.h"
-#include "gdal.h"
-#include "cpl_string.h"
 #include "qgslogger.h"
 
 #include <QProgressDialog>
 #include <QFile>
 
-QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix, int rasterBand, Statistics stats )
-    : mRasterFilePath( rasterFile )
+QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, QgsRasterLayer* rasterLayer, const QString& attributePrefix, int rasterBand, Statistics stats )
+    : mRasterLayer( rasterLayer )
     , mRasterBand( rasterBand )
     , mPolygonLayer( polygonLayer )
     , mAttributePrefix( attributePrefix )
@@ -40,7 +41,8 @@ QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QStr
 }
 
 QgsZonalStatistics::QgsZonalStatistics()
-    : mRasterBand( 0 )
+    : mRasterLayer( nullptr )
+    , mRasterBand( 0 )
     , mPolygonLayer( nullptr )
     , mInputNodataValue( -1 )
     , mStatistics( QgsZonalStatistics::All )
@@ -61,49 +63,33 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
     return 2;
   }
 
-  //open the raster layer and the raster band
-  GDALAllRegister();
-  GDALDatasetH inputDataset = GDALOpen( mRasterFilePath.toUtf8().constData(), GA_ReadOnly );
-  if ( !inputDataset )
+  if ( !mRasterLayer )
   {
     return 3;
   }
 
-  if ( GDALGetRasterCount( inputDataset ) < ( mRasterBand - 1 ) )
+  if ( mRasterLayer->bandCount() < mRasterBand )
   {
-    GDALClose( inputDataset );
     return 4;
   }
 
-  GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset, mRasterBand );
-  if ( !rasterBand )
-  {
-    GDALClose( inputDataset );
-    return 5;
-  }
-  mInputNodataValue = GDALGetRasterNoDataValue( rasterBand, nullptr );
+  mRasterProvider = mRasterLayer->dataProvider();
+  mInputNodataValue = mRasterProvider->sourceNoDataValue( mRasterBand );
 
   //get geometry info about raster layer
-  int nCellsXGDAL = GDALGetRasterXSize( inputDataset );
-  int nCellsYGDAL = GDALGetRasterYSize( inputDataset );
-  double geoTransform[6];
-  if ( GDALGetGeoTransform( inputDataset, geoTransform ) != CE_None )
-  {
-    GDALClose( inputDataset );
-    return 6;
-  }
-  double cellsizeX = geoTransform[1];
+  int nCellsXProvider = mRasterProvider->xSize();
+  int nCellsYProvider = mRasterProvider->ySize();
+  double cellsizeX = mRasterLayer->rasterUnitsPerPixelX();
   if ( cellsizeX < 0 )
   {
     cellsizeX = -cellsizeX;
   }
-  double cellsizeY = geoTransform[5];
+  double cellsizeY = mRasterLayer->rasterUnitsPerPixelY();
   if ( cellsizeY < 0 )
   {
     cellsizeY = -cellsizeY;
   }
-  QgsRectangle rasterBBox( geoTransform[0], geoTransform[3] - ( nCellsYGDAL * cellsizeY ),
-                           geoTransform[0] + ( nCellsXGDAL * cellsizeX ), geoTransform[3] );
+  QgsRectangle rasterBBox = mRasterProvider->extent();
 
   //add the new fields to the provider
   QList<QgsField> newFieldList;
@@ -223,7 +209,6 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
     p->setMaximum( featureCount );
   }
 
-
   //iterate over each polygon
   QgsFeatureRequest request;
   request.setSubsetOfAttributes( QgsAttributeList() );
@@ -273,22 +258,22 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
     }
 
     //avoid access to cells outside of the raster (may occur because of rounding)
-    if (( offsetX + nCellsX ) > nCellsXGDAL )
+    if (( offsetX + nCellsX ) > nCellsXProvider )
     {
-      nCellsX = nCellsXGDAL - offsetX;
+      nCellsX = nCellsXProvider - offsetX;
     }
-    if (( offsetY + nCellsY ) > nCellsYGDAL )
+    if (( offsetY + nCellsY ) > nCellsYProvider )
     {
-      nCellsY = nCellsYGDAL - offsetY;
+      nCellsY = nCellsYProvider - offsetY;
     }
 
-    statisticsFromMiddlePointTest( rasterBand, featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY,
+    statisticsFromMiddlePointTest( featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY,
                                    rasterBBox, featureStats );
 
     if ( featureStats.count <= 1 )
     {
       //the cell resolution is probably larger than the polygon area. We switch to precise pixel - polygon intersection in this case
-      statisticsFromPreciseIntersection( rasterBand, featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY,
+      statisticsFromPreciseIntersection( featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY,
                                          rasterBBox, featureStats );
     }
 
@@ -366,7 +351,6 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
     p->setValue( featureCount );
   }
 
-  GDALClose( inputDataset );
   mPolygonLayer->updateFields();
 
   if ( p && p->wasCanceled() )
@@ -404,12 +388,11 @@ int QgsZonalStatistics::cellInfoForBBox( const QgsRectangle& rasterBBox, const Q
   return 0;
 }
 
-void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, const QgsGeometry& poly, int pixelOffsetX,
+void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry& poly, int pixelOffsetX,
     int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats &stats )
 {
   double cellCenterX, cellCenterY;
 
-  float* scanLine = ( float * ) CPLMalloc( sizeof( float ) * nCellsX );
   cellCenterY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
   stats.reset();
 
@@ -430,17 +413,16 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, const QgsGeo
   GEOSCoordSequence* cellCenterCoords = nullptr;
   GEOSGeometry* currentCellCenter = nullptr;
 
+  QgsRectangle featureBBox = poly.boundingBox().intersect( &rasterBBox );
+  QgsRectangle intersectBBox = rasterBBox.intersect( &featureBBox );
+
+  QgsRasterBlock* block = mRasterProvider->block( mRasterBand, intersectBBox, nCellsX, nCellsY );
   for ( int i = 0; i < nCellsY; ++i )
   {
-    if ( GDALRasterIO( band, GF_Read, pixelOffsetX, pixelOffsetY + i, nCellsX, 1, scanLine, nCellsX, 1, GDT_Float32, 0, 0 )
-         != CPLE_None )
-    {
-      continue;
-    }
     cellCenterX = rasterBBox.xMinimum() + pixelOffsetX * cellSizeX + cellSizeX / 2;
     for ( int j = 0; j < nCellsX; ++j )
     {
-      if ( validPixel( scanLine[j] ) )
+      if ( validPixel( block->value( i, j ) ) )
       {
         GEOSGeom_destroy_r( geosctxt, currentCellCenter );
         cellCenterCoords = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
@@ -449,26 +431,26 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, const QgsGeo
         currentCellCenter = GEOSGeom_createPoint_r( geosctxt, cellCenterCoords );
         if ( GEOSPreparedContains_r( geosctxt, polyGeosPrepared, currentCellCenter ) )
         {
-          stats.addValue( scanLine[j] );
+          stats.addValue( block->value( i, j ) );
         }
       }
       cellCenterX += cellSizeX;
     }
     cellCenterY -= cellSizeY;
   }
+
   GEOSGeom_destroy_r( geosctxt, currentCellCenter );
-  CPLFree( scanLine );
   GEOSPreparedGeom_destroy_r( geosctxt, polyGeosPrepared );
   GEOSGeom_destroy_r( geosctxt, polyGeos );
+  delete block;
 }
 
-void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const QgsGeometry& poly, int pixelOffsetX,
+void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry& poly, int pixelOffsetX,
     int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats &stats )
 {
   stats.reset();
 
   double currentY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
-  float* pixelData = ( float * ) CPLMalloc( sizeof( float ) );
   QgsGeometry pixelRectGeometry;
 
   double hCellSizeX = cellSizeX / 2.0;
@@ -476,18 +458,19 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const Qg
   double pixelArea = cellSizeX * cellSizeY;
   double weight = 0;
 
-  for ( int row = 0; row < nCellsY; ++row )
+  QgsRectangle featureBBox = poly.boundingBox().intersect( &rasterBBox );
+  QgsRectangle intersectBBox = rasterBBox.intersect( &featureBBox );
+
+  QgsRasterBlock* block = mRasterProvider->block( mRasterBand, intersectBBox, nCellsX, nCellsY );
+  for ( int i = 0; i < nCellsY; ++i )
   {
     double currentX = rasterBBox.xMinimum() + cellSizeX / 2.0 + pixelOffsetX * cellSizeX;
-    for ( int col = 0; col < nCellsX; ++col )
+    for ( int j = 0; j < nCellsX; ++j )
     {
-      if ( GDALRasterIO( band, GF_Read, pixelOffsetX + col, pixelOffsetY + row, nCellsX, 1, pixelData, 1, 1, GDT_Float32, 0, 0 ) != CE_None )
+      if ( !validPixel( block->value( i, j ) ) )
       {
-        QgsDebugMsg( "Raster IO Error" );
-      }
-
-      if ( !validPixel( *pixelData ) )
         continue;
+      }
 
       pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - hCellSizeX, currentY - hCellSizeY, currentX + hCellSizeX, currentY + hCellSizeY ) );
       if ( !pixelRectGeometry.isEmpty() )
@@ -500,7 +483,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const Qg
           if ( intersectionArea >= 0.0 )
           {
             weight = intersectionArea / pixelArea;
-            stats.addValue( *pixelData, weight );
+            stats.addValue( block->value( i, j ), weight );
           }
         }
         pixelRectGeometry = QgsGeometry();
@@ -509,7 +492,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const Qg
     }
     currentY -= cellSizeY;
   }
-  CPLFree( pixelData );
+  delete block;
 }
 
 bool QgsZonalStatistics::validPixel( float value ) const
