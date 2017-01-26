@@ -221,7 +221,8 @@ void QgsBench::render()
   mLogMap.insert( QStringLiteral( "revision" ), QGSVERSION );
 
   // Calc stats: user, sys, total
-  double min[4], max[4];
+  double min[4] = {DBL_MAX};
+  double max[4] = { -DBL_MAX};
   double stdev[4] = {0.};
   double maxdev[4] = {0.};
   double avg[4] = {0.};

@@ -1647,7 +1647,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mCircularStringCurvePoint;
         QgsMapTool *mCircularStringRadius;
         QgsMapTool *mMoveFeature;
-        QgsMapTool *mMoveFeatureCopy;
+        QgsMapTool *mMoveFeatureCopy = nullptr;
         QgsMapTool *mOffsetCurve;
         QgsMapTool *mReshapeFeatures;
         QgsMapTool *mSplitFeatures;

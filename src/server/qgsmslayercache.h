@@ -111,10 +111,10 @@ class QgsMSLayerCache: public QObject
     QFileSystemWatcher mFileSystemWatcher;
 
     //! Maximum number of layers in the cache
-    int mDefaultMaxLayers;
+    int mDefaultMaxLayers = 100;
 
     //! Maximum number of layers in the cache, overrides DEFAULT_MAX_N_LAYERS if larger
-    int mProjectMaxLayers;
+    int mProjectMaxLayers = 100;
 
   private slots:
 

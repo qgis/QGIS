@@ -36,12 +36,11 @@ class QgsServiceNativeModuleEntry
   public:
     QgsServiceNativeModuleEntry( const QString& location )
         : mLocation( location )
-        , mModule( nullptr )
     {}
 
-    QString           mLocation;
-    QgsServiceModule* mModule;
-    unloadHook_t*     mUnloadHook;
+    QString mLocation;
+    QgsServiceModule* mModule = nullptr;
+    unloadHook_t* mUnloadHook = nullptr;
 };
 
 //! Constructor
