@@ -2014,6 +2014,9 @@ Triangulation        {#qgis_api_break_3_0_Triangulation}
 
 - forcedCrossBehaviour enum and its setter and getter have been renamed to ForcedCrossBehavior. Its members have been renamed: SnappingType_VERTICE: SnappingTypeVertex, DELETE_FIRST: DeleteFirst, INSERT_VERTEX: InsertVertex. <!--#spellok-->
 
+QgsZonalStatistics        {#qgis_api_break_3_0_QgsZonalStatistics}
+------------------
+- QgsZonalStatistics() сonstructor now accepts pointer to the QgsRasterLayer instance instead of path to the raster file
 
 
 QGIS 2.6        {#qgis_api_break_2_6}
