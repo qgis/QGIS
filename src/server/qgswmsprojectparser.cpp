@@ -2362,7 +2362,7 @@ QgsLayerTreeGroup* QgsWmsProjectParser::projectLayerTreeGroup() const
     QgsLayerTreeUtils::readOldLegend( rootGroup, mProjectParser->legendElem() );
     return rootGroup;
   }
-  return QgsLayerTreeGroup::readXml( layerTreeElem );
+  return QgsLayerTreeGroup::readXml( layerTreeElem, QgsProject::instance() );
 }
 
 bool QgsWmsProjectParser::annotationPosition( const QDomElement& elem, double scaleFactor, double& xPos, double& yPos )

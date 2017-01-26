@@ -1253,6 +1253,7 @@ QList<QDomElement> QgsServerProjectParser::findLegendGroupElements() const
   QDomElement layerTreeElem = mXMLDoc->documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
+    // this is apparently only used to retrieve groups - layers do not need to be resolved
     rootLayerTreeGroup = QgsLayerTreeGroup::readXml( layerTreeElem );
   }
 

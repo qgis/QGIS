@@ -348,20 +348,20 @@ void QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup* grou
 }
 
 
-void QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group )
+void QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group, const QgsProject* project )
 {
   Q_FOREACH ( QgsLayerTreeNode* node, group->children() )
   {
     if ( !node->customProperty( QStringLiteral( "embedded_project" ) ).toString().isEmpty() )
     {
       // may change from absolute path to relative path
-      QString newPath = QgsProject::instance()->writePath( node->customProperty( QStringLiteral( "embedded_project" ) ).toString() );
+      QString newPath = project->writePath( node->customProperty( QStringLiteral( "embedded_project" ) ).toString() );
       node->setCustomProperty( QStringLiteral( "embedded_project" ), newPath );
     }
 
     if ( QgsLayerTree::isGroup( node ) )
     {
-      updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( node ) );
+      updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( node ), project );
     }
   }
 }

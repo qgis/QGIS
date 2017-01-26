@@ -29,6 +29,7 @@ class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
 class QgsMapLayer;
+class QgsProject;
 
 /** \ingroup core
  * Assorted functions for dealing with layer trees.
@@ -63,7 +64,7 @@ class CORE_EXPORT QgsLayerTreeUtils
     static void replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup* group );
 
     //! @note not available in python bindings
-    static void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group );
+    static void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group, const QgsProject* project );
 
     //! get invisible layers
     static QStringList invisibleLayerList( QgsLayerTreeNode *node );

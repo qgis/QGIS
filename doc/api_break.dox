@@ -1194,6 +1194,7 @@ QgsLayerTreeGroup        {#qgis_api_break_3_0_QgsLayerTreeGroup}
 - isVisible() is moved to QgsLayerTreeNode
 - setVisible() is replaced by QgsLayerTreeNode::setItemVisibilityChecked()
 - protected methods updateVisibilityFromChildren() and updateChildVisibility() removed
+- readXml() and readChildrenFromXml() do not resolve layers from the layer IDs anymore. Call resolveReferences() or use readXml() override with QgsProject as the second argument.
 
 QgsLayerTreeLayer        {#qgis_api_break_3_0_QgsLayerTreeLayer}
 -----------------
@@ -1201,6 +1202,12 @@ QgsLayerTreeLayer        {#qgis_api_break_3_0_QgsLayerTreeLayer}
 - setLayerName(), layerName() were renamed to setName(), name()
 - isVisible() is moved to QgsLayerTreeNode
 - setVisible() is replaced by QgsLayerTreeNode::setItemVisibilityChecked()
+- readXml() does not resolve layer from the layer ID anymore. Call resolveReferences() or use readXml() override with QgsProject as the second argument.
+
+QgsLayerTreeNode        {#qgis_api_break_3_0_QgsLayerTreeNode}
+----------------
+
+- readXml() does not resolve layers from the layer IDs anymore. Call resolveReferences() or use readXml() override with QgsProject as the second argument.
 
 
 QgsLayerTreeModel        {#qgis_api_break_3_0_QgsLayerTreeMode}

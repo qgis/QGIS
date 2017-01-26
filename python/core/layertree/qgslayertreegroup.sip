@@ -58,11 +58,18 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
     //! Find group node with specified name. Searches recursively the whole sub-tree.
     QgsLayerTreeGroup* findGroup( const QString& name );
 
-    //! Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error)
+    //! Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
+    //! Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
     static QgsLayerTreeGroup* readXml( QDomElement& element ) /Factory/;
+    //! Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
+    //! Also resolves textual references to layers from the project (calls resolveReferences() internally).
+    //! @note added in 3.0
+    static QgsLayerTreeGroup* readXml( QDomElement& element, const QgsProject* project ) /Factory/;
+
     //! Write group (tree) as XML element <layer-tree-group> and add it to the given parent element
     virtual void writeXml( QDomElement& parentElement );
     //! Read children from XML and append them to the group.
+    //! Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
     void readChildrenFromXml( QDomElement& element );
 
     //! Return text representation of the tree. For debugging purposes only.
@@ -70,6 +77,10 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
 
     //! Return a clone of the group. The children are cloned too.
     virtual QgsLayerTreeGroup* clone() const /Factory/;
+
+    //! Calls resolveReferences() on child tree nodes
+    //! @note added in 3.0
+    virtual void resolveReferences( const QgsProject* project );
 
     //! Return whether the group is mutually exclusive (only one child can be checked at a time)
     //! @note added in 2.12
