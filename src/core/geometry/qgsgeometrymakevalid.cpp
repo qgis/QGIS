@@ -494,7 +494,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QStr
   }
 
   // NOTE: the noding process may drop lines collapsing to points.
-  //       We want to retrive any of those
+  //       We want to retrieve any of those
   {
     GEOSGeometry* pi;
     GEOSGeometry* po;
