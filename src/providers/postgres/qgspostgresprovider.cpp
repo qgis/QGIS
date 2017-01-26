@@ -4648,13 +4648,13 @@ void QgsPostgresProvider::deleteStyleById( const QString &uri, QString styleId, 
   else
   {
     QString deleteStyleQuery = QStringLiteral( "DELETE FROM layer_styles WHERE id=%1" ).arg(
-            QgsPostgresConn::quotedValue( styleId ) );
+                                 QgsPostgresConn::quotedValue( styleId ) );
     QgsPostgresResult result( conn->PQexec( deleteStyleQuery ) );
     if ( result.PQresultStatus() != PGRES_COMMAND_OK )
     {
       QgsDebugMsg(
-              QString( "PQexec of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
-                      .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ).arg( deleteStyleQuery ) );
+        QString( "PQexec of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
+        .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ).arg( deleteStyleQuery ) );
       QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( deleteStyleQuery ) );
       errCause = QObject::tr( "Error executing the delete query. The query was logged" );
     }
