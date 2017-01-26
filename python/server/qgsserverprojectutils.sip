@@ -18,7 +18,7 @@
 
 /** \ingroup server
  * The QgsServerProjectUtils class provides a way to retrieve specific entries
- * a QgsProject.
+ * from a QgsProject.
  * @note added in QGIS 3.0
  */
 class QgsServerProjectUtils
