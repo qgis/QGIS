@@ -810,6 +810,7 @@ class CORE_EXPORT QgsGeometry
      * In case of full or partial dimensional collapses, the output geometry may be a collection
      * of lower-to-equal dimension geometries or a geometry of lower dimension.
      * Single polygons may become multi-geometries in case of self-intersections.
+     * It preserves Z values, but M values will be dropped.
      * @return new valid QgsGeometry or null geometry on error
      * @note added in QGIS 3.0
      */
