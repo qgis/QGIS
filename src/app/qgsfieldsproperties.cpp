@@ -1300,7 +1300,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
   baseData->setLayout( baseLayout );
   QCheckBox* showLabelCheckbox = new QCheckBox( "Show label" );
   showLabelCheckbox->setChecked( itemData.showLabel() );
-  baseLayout->addWidget( showLabelCheckbox );
+  baseLayout->addRow( showLabelCheckbox );
   QWidget* baseWidget = new QWidget();
   baseWidget->setLayout( baseLayout );
 
@@ -1310,12 +1310,12 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
     dlg.setWindowTitle( tr( "Configure container" ) );
     QFormLayout* layout = new QFormLayout() ;
     dlg.setLayout( layout );
-    layout->addWidget( baseWidget );
+    layout->addRow( baseWidget );
 
     QCheckBox* showAsGroupBox = nullptr;
     QLineEdit* title = new QLineEdit( itemData.name() );
     QSpinBox* columnCount = new QSpinBox();
-    QGroupBox* visibilityExpressionGroupBox = new QGroupBox( tr( "Control visibility by expression " ) );
+    QGroupBox* visibilityExpressionGroupBox = new QGroupBox( tr( "Control visibility by expression" ) );
     visibilityExpressionGroupBox->setCheckable( true );
     visibilityExpressionGroupBox->setChecked( itemData.visibilityExpression().enabled() );
     visibilityExpressionGroupBox->setLayout( new QGridLayout );
@@ -1330,13 +1330,13 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
 
     layout->addRow( tr( "Title" ), title );
     layout->addRow( tr( "Column count" ), columnCount );
-    layout->addWidget( visibilityExpressionGroupBox );
+    layout->addRow( visibilityExpressionGroupBox );
 
     if ( !item->parent() )
     {
       showAsGroupBox = new QCheckBox( tr( "Show as group box" ) );
       showAsGroupBox->setChecked( itemData.showAsGroupBox() );
-      layout->addRow( tr( "Show as group box" ), showAsGroupBox );
+      layout->addRow( showAsGroupBox );
     }
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
