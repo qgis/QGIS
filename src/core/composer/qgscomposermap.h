@@ -22,6 +22,7 @@
 #include "qgscomposeritem.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsrendercontext.h"
 #include <QFont>
 #include <QGraphicsRectItem>
 
@@ -605,8 +606,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
         @param yShift in: shift in y direction (in item units), out: yShift in map units*/
     void transformShift( double& xShift, double& yShift ) const;
 
-    void drawCanvasItems( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle );
-    void drawCanvasItem( const QgsAnnotation* item, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle );
+    void drawCanvasItems( QPainter* painter );
+    void drawCanvasItem( const QgsAnnotation* item, QgsRenderContext& context );
     QPointF composerMapPosForItem( const QgsAnnotation* item ) const;
 
     enum PartType

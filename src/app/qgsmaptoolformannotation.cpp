@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolformannotation.h"
-#include "qgsformannotationitem.h"
+#include "qgsformannotation.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
@@ -32,7 +32,7 @@ QgsMapToolFormAnnotation::~QgsMapToolFormAnnotation()
 
 }
 
-QgsAnnotationItem* QgsMapToolFormAnnotation::createItem( QMouseEvent* e )
+QgsAnnotation* QgsMapToolFormAnnotation::createItem() const
 {
   //try to associate the current vector layer and a feature to the form item
   QgsVectorLayer* currentVectorLayer = nullptr;
@@ -45,11 +45,6 @@ QgsAnnotationItem* QgsMapToolFormAnnotation::createItem( QMouseEvent* e )
     }
   }
 
-  QgsFormAnnotationItem* formItem = new QgsFormAnnotationItem( mCanvas, currentVectorLayer );
-  formItem->setMapPosition( toMapCoordinates( e->pos() ) );
-  formItem->setSelected( true );
-  formItem->setFrameSize( QSizeF( 200, 100 ) );
-  QgsProject::instance()->setDirty( true );
-  return formItem;
+  return new QgsFormAnnotation( currentVectorLayer );
 }
 

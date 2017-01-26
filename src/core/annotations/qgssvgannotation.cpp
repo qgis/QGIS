@@ -1,6 +1,6 @@
 /***************************************************************************
-                              qgssvgannotationitem.cpp
-                              ------------------------
+                              qgssvgannotation.cpp
+                              --------------------
   begin                : November, 2012
   copyright            : (C) 2012 by Marco Hugentobler
   email                : marco dot hugentobler at sourcepole dot ch
@@ -15,85 +15,72 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssvgannotationitem.h"
+#include "qgssvgannotation.h"
 #include "qgsproject.h"
 #include <QDomDocument>
 #include <QDomElement>
 
 
-QgsSvgAnnotationItem::QgsSvgAnnotationItem( QgsMapCanvas* canvas ): QgsAnnotationItem( canvas )
+QgsSvgAnnotation::QgsSvgAnnotation( QObject* parent )
+  : QgsAnnotation( parent )
 {
 
 }
 
-void QgsSvgAnnotationItem::writeXml( QDomDocument& doc ) const
+void QgsSvgAnnotation::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
-  QDomElement documentElem = doc.documentElement();
-  if ( documentElem.isNull() )
-  {
-    return;
-  }
-
   QDomElement svgAnnotationElem = doc.createElement( QStringLiteral( "SVGAnnotationItem" ) );
   svgAnnotationElem.setAttribute( QStringLiteral( "file" ), QgsProject::instance()->writePath( mFilePath ) );
-  _writeXml( doc, svgAnnotationElem );
-  documentElem.appendChild( svgAnnotationElem );
+  _writeXml( svgAnnotationElem, doc );
+  elem.appendChild( svgAnnotationElem );
 }
 
-void QgsSvgAnnotationItem::readXml( const QDomDocument& doc, const QDomElement& itemElem )
+void QgsSvgAnnotation::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   QString filePath = QgsProject::instance()->readPath( itemElem.attribute( QStringLiteral( "file" ) ) );
   setFilePath( filePath );
   QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {
-    _readXml( doc, annotationElem );
+    _readXml( annotationElem, doc );
   }
 }
 
-void QgsSvgAnnotationItem::paint( QPainter* painter )
+void QgsSvgAnnotation::renderAnnotation( QgsRenderContext& context, QSizeF size ) const
 {
+  QPainter* painter = context.painter();
   if ( !painter )
   {
     return;
-  }
-
-  drawFrame( painter );
-  if ( mMapPositionFixed )
-  {
-    drawMarkerSymbol( painter );
   }
 
   //keep width/height ratio of svg
   QRect viewBox = mSvgRenderer.viewBox();
   if ( viewBox.isValid() )
   {
-    double widthRatio = mFrameSize.width() / viewBox.width();
-    double heightRatio = mFrameSize.height() / viewBox.height();
+    double widthRatio = size.width() / viewBox.width();
+    double heightRatio = size.height() / viewBox.height();
     double renderWidth = 0;
     double renderHeight = 0;
     if ( widthRatio <= heightRatio )
     {
-      renderWidth = mFrameSize.width();
-      renderHeight = viewBox.height() * mFrameSize.width() / viewBox.width();
+      renderWidth = size.width();
+      renderHeight = viewBox.height() * widthRatio;
     }
     else
     {
-      renderHeight = mFrameSize.height();
-      renderWidth = viewBox.width() * mFrameSize.height() / viewBox.height();
+      renderHeight = size.height();
+      renderWidth = viewBox.width() * heightRatio;
     }
 
-    mSvgRenderer.render( painter, QRectF( mOffsetFromReferencePoint.x(), mOffsetFromReferencePoint.y(), renderWidth,
+    mSvgRenderer.render( painter, QRectF( 0, 0, renderWidth,
                                           renderHeight ) );
-  }
-  if ( isSelected() )
-  {
-    drawSelectionBoxes( painter );
   }
 }
 
-void QgsSvgAnnotationItem::setFilePath( const QString& file )
+void QgsSvgAnnotation::setFilePath( const QString& file )
 {
   mFilePath = file;
   mSvgRenderer.load( mFilePath );
+  emit appearanceChanged();
 }

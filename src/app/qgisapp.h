@@ -39,7 +39,7 @@ class QValidator;
 
 class QgisAppInterface;
 class QgisAppStyleSheet;
-class QgsAnnotationItem;
+class QgsMapCanvasAnnotationItem;
 class QgsAuthManager;
 class QgsBookmarks;
 class QgsClipboard;
@@ -1506,7 +1506,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsVectorLayer * pasteToNewMemoryVector();
 
     //! Returns all annotation items in the canvas
-    QList<QgsAnnotationItem*> annotationItems();
+    QList<QgsMapCanvasAnnotationItem*> annotationItems();
     //! Removes annotation items in the canvas
     void removeAnnotationItems();
 

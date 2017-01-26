@@ -17,13 +17,16 @@
 
 #include "qgssvgannotationdialog.h"
 #include "qgsannotationwidget.h"
-#include "qgssvgannotationitem.h"
+#include "qgssvgannotation.h"
+#include "qgsmapcanvasannotationitem.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
 
-QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ):
-    QDialog( parent, f ), mItem( item ), mEmbeddedWidget( nullptr )
+QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
+    : QDialog( parent, f )
+    , mItem( item )
+    , mEmbeddedWidget( nullptr )
 {
   setupUi( this );
   setWindowTitle( tr( "SVG annotation" ) );
@@ -31,18 +34,22 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWid
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
-  if ( mItem )
+  if ( mItem && mItem->annotation() )
   {
-    mFileLineEdit->setText( mItem->filePath() );
+    QgsSvgAnnotation* annotation = static_cast< QgsSvgAnnotation* >( mItem->annotation() );
+    mFileLineEdit->setText( annotation->filePath() );
   }
 
-  QObject::connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( applySettingsToItem() ) );
+  QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsSvgAnnotationDialog::applySettingsToItem );
   QPushButton* deleteButton = new QPushButton( tr( "Delete" ) );
-  QObject::connect( deleteButton, SIGNAL( clicked() ), this, SLOT( deleteItem() ) );
+  QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsSvgAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
 }
 
-QgsSvgAnnotationDialog::QgsSvgAnnotationDialog(): QDialog(), mItem( nullptr ), mEmbeddedWidget( nullptr )
+QgsSvgAnnotationDialog::QgsSvgAnnotationDialog()
+    : QDialog()
+    , mItem( nullptr )
+    , mEmbeddedWidget( nullptr )
 {
 
 }
@@ -71,9 +78,10 @@ void QgsSvgAnnotationDialog::applySettingsToItem()
     mEmbeddedWidget->apply();
   }
 
-  if ( mItem )
+  if ( mItem && mItem->annotation() )
   {
-    mItem->setFilePath( mFileLineEdit->text() );
+    QgsSvgAnnotation* annotation = static_cast< QgsSvgAnnotation* >( mItem->annotation() );
+    annotation->setFilePath( mFileLineEdit->text() );
     mItem->update();
   }
 

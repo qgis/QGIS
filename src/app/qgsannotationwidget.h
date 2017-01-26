@@ -21,16 +21,16 @@
 #include "ui_qgsannotationwidgetbase.h"
 #include "qgis_app.h"
 
-class QgsAnnotationItem;
+class QgsMapCanvasAnnotationItem;
 class QgsMarkerSymbol;
 
-/** A configuration widget to configure the annotation item properties. Usually embedded by QgsAnnotationItem
+/** A configuration widget to configure the annotation item properties. Usually embedded by QgsAnnotation
 subclass configuration dialogs*/
 class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationWidgetBase
 {
     Q_OBJECT
   public:
-    QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsAnnotationWidget( QgsMapCanvasAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsAnnotationWidget();
 
     void apply();
@@ -44,7 +44,7 @@ class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationW
     void on_mMapMarkerButton_clicked();
 
   private:
-    QgsAnnotationItem* mItem;
+    QgsMapCanvasAnnotationItem* mItem = nullptr;
     QScopedPointer< QgsMarkerSymbol > mMarkerSymbol;
 
     void blockAllSignals( bool block );

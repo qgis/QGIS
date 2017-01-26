@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgshtmlannotationitem.h
+                              qgshtmlannotation.h
                               ------------------------
   begin                : February 26, 2010
   copyright            : (C) 2010 by Marco Hugentobler
@@ -15,17 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshtmlannotationitem.h"
+#include "qgshtmlannotation.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
-#include "qgsmapcanvas.h"
 #include "qgsproject.h"
-#include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpression.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgswebview.h"
+#include "qgswebpage.h"
 #include "qgswebframe.h"
 
 #include <QDomElement>
@@ -38,38 +36,36 @@
 #include <QWidget>
 
 
-QgsHtmlAnnotationItem::QgsHtmlAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer, bool hasFeature, int feature )
-    : QgsAnnotationItem( canvas )
-    , mWidgetContainer( nullptr )
-    , mWebView( nullptr )
+QgsHtmlAnnotation::QgsHtmlAnnotation(QObject* parent, QgsVectorLayer* vlayer, bool hasFeature, int feature )
+    : QgsAnnotation( parent )
+    , mWebPage( nullptr )
     , mVectorLayer( vlayer )
     , mHasAssociatedFeature( hasFeature )
     , mFeatureId( feature )
 {
-  mWebView = new QgsWebView();
-  mWebView->page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
+  mWebPage = new QgsWebPage();
+  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
+  mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
 
-  mWidgetContainer = new QGraphicsProxyWidget( this );
-  mWidgetContainer->setWidget( mWebView );
+  connect( mWebPage->mainFrame(), &QWebFrame::javaScriptWindowObjectCleared, this, &QgsHtmlAnnotation::javascript );
 
-  QObject::connect( mWebView->page()->mainFrame(), SIGNAL( javaScriptWindowObjectCleared() ), this, SLOT( javascript() ) );
-
-  if ( mVectorLayer && mMapCanvas )
+  if ( mVectorLayer )
   {
-    QObject::connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( setFeatureForMapPosition() ) );
+    connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( setFeatureForMapPosition() ) );
+#if 0
     QObject::connect( mMapCanvas, SIGNAL( renderComplete( QPainter* ) ), this, SLOT( setFeatureForMapPosition() ) );
     QObject::connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( updateVisibility() ) );
+#endif
   }
 
   setFeatureForMapPosition();
 }
 
-QgsHtmlAnnotationItem::~QgsHtmlAnnotationItem()
-{
-  delete mWebView;
-}
+QgsHtmlAnnotation::~QgsHtmlAnnotation()
+{}
 
-void QgsHtmlAnnotationItem::setHTMLPage( const QString& htmlFile )
+void QgsHtmlAnnotation::setSourceFile( const QString& htmlFile )
 {
   QFile file( htmlFile );
   mHtmlFile = htmlFile;
@@ -86,54 +82,32 @@ void QgsHtmlAnnotationItem::setHTMLPage( const QString& htmlFile )
 
   file.close();
   setFeatureForMapPosition();
+  emit appearanceChanged();
 }
-
-void QgsHtmlAnnotationItem::setMapPosition( const QgsPoint& pos )
+#if 0
+void QgsHtmlAnnotation::setMapPosition( const QgsPoint& pos )
 {
   QgsAnnotationItem::setMapPosition( pos );
   setFeatureForMapPosition();
 }
-
-void QgsHtmlAnnotationItem::paint( QPainter * painter )
+#endif
+void QgsHtmlAnnotation::renderAnnotation( QgsRenderContext& context, QSizeF size ) const
 {
-  Q_UNUSED( painter );
-}
-
-void QgsHtmlAnnotationItem::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
-{
-  Q_UNUSED( option );
-  Q_UNUSED( widget );
-  if ( !painter || !mWidgetContainer )
+  if ( !context.painter() )
   {
     return;
   }
 
-  drawFrame( painter );
-  if ( mMapPositionFixed )
-  {
-    drawMarkerSymbol( painter );
-  }
-
-  mWidgetContainer->setGeometry( QRectF( mOffsetFromReferencePoint.x() + mFrameBorderWidth / 2.0, mOffsetFromReferencePoint.y()
-                                         + mFrameBorderWidth / 2.0, mFrameSize.width() - mFrameBorderWidth, mFrameSize.height()
-                                         - mFrameBorderWidth ) );
-  if ( data( 1 ).toString() == QLatin1String( "composer" ) )
-  {
-    mWidgetContainer->widget()->render( painter, mOffsetFromReferencePoint.toPoint() );
-  }
-
-  if ( isSelected() )
-  {
-    drawSelectionBoxes( painter );
-  }
+  mWebPage->setViewportSize( size.toSize() );
+  mWebPage->mainFrame()->render( context.painter() );
 }
 
-QSizeF QgsHtmlAnnotationItem::minimumFrameSize() const
+QSizeF QgsHtmlAnnotation::minimumFrameSize() const
 {
-  if ( mWebView )
+  if ( mWebPage )
   {
-    QSizeF widgetMinSize = mWebView->minimumSize();
-    return QSizeF( 2 * mFrameBorderWidth + widgetMinSize.width(), 2 * mFrameBorderWidth + widgetMinSize.height() );
+    QSizeF widgetMinSize = QSizeF( 0, 0 ); // mWebPage->minimumSize();
+    return QSizeF( 2 * frameBorderWidth() + widgetMinSize.width(), 2 * frameBorderWidth() + widgetMinSize.height() );
   }
   else
   {
@@ -141,14 +115,8 @@ QSizeF QgsHtmlAnnotationItem::minimumFrameSize() const
   }
 }
 
-void QgsHtmlAnnotationItem::writeXml( QDomDocument& doc ) const
+void QgsHtmlAnnotation::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
-  QDomElement documentElem = doc.documentElement();
-  if ( documentElem.isNull() )
-  {
-    return;
-  }
-
   QDomElement formAnnotationElem = doc.createElement( QStringLiteral( "HtmlAnnotationItem" ) );
   if ( mVectorLayer )
   {
@@ -156,13 +124,13 @@ void QgsHtmlAnnotationItem::writeXml( QDomDocument& doc ) const
   }
   formAnnotationElem.setAttribute( QStringLiteral( "hasFeature" ), mHasAssociatedFeature );
   formAnnotationElem.setAttribute( QStringLiteral( "feature" ), mFeatureId );
-  formAnnotationElem.setAttribute( QStringLiteral( "htmlfile" ), htmlPage() );
+  formAnnotationElem.setAttribute( QStringLiteral( "htmlfile" ), sourceFile() );
 
-  _writeXml( doc, formAnnotationElem );
-  documentElem.appendChild( formAnnotationElem );
+  _writeXml( formAnnotationElem, doc );
+  elem.appendChild( formAnnotationElem );
 }
 
-void QgsHtmlAnnotationItem::readXml( const QDomDocument& doc, const QDomElement& itemElem )
+void QgsHtmlAnnotation::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   mVectorLayer = nullptr;
   if ( itemElem.hasAttribute( QStringLiteral( "vectorLayer" ) ) )
@@ -170,9 +138,11 @@ void QgsHtmlAnnotationItem::readXml( const QDomDocument& doc, const QDomElement&
     mVectorLayer = dynamic_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( itemElem.attribute( QStringLiteral( "vectorLayer" ), QLatin1String( "" ) ) ) );
     if ( mVectorLayer )
     {
-      QObject::connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( setFeatureForMapPosition() ) );
+      connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( setFeatureForMapPosition() ) );
+#if 0
       QObject::connect( mMapCanvas, SIGNAL( renderComplete( QPainter* ) ), this, SLOT( setFeatureForMapPosition() ) );
       QObject::connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( updateVisibility() ) );
+#endif
     }
   }
   mHasAssociatedFeature = itemElem.attribute( QStringLiteral( "hasFeature" ), QStringLiteral( "0" ) ).toInt();
@@ -181,24 +151,24 @@ void QgsHtmlAnnotationItem::readXml( const QDomDocument& doc, const QDomElement&
   QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {
-    _readXml( doc, annotationElem );
+    _readXml( annotationElem, doc );
   }
 
-  if ( mWebView )
+  if ( mWebPage )
   {
-    setHTMLPage( mHtmlFile );
+    setSourceFile( mHtmlFile );
   }
   updateVisibility();
 }
 
-void QgsHtmlAnnotationItem::setFeatureForMapPosition()
+void QgsHtmlAnnotation::setFeatureForMapPosition()
 {
   QString newText;
-  if ( mVectorLayer && mMapCanvas )
+  if ( mVectorLayer )
   {
-    double halfIdentifyWidth = QgsMapTool::searchRadiusMU( mMapCanvas );
-    QgsRectangle searchRect( mMapPosition.x() - halfIdentifyWidth, mMapPosition.y() - halfIdentifyWidth,
-                             mMapPosition.x() + halfIdentifyWidth, mMapPosition.y() + halfIdentifyWidth );
+    double halfIdentifyWidth = 0; // QgsMapTool::searchRadiusMU( mMapCanvas );
+    QgsRectangle searchRect( mapPosition().x() - halfIdentifyWidth, mapPosition().y() - halfIdentifyWidth,
+                             mapPosition().x() + halfIdentifyWidth, mapPosition().y() + halfIdentifyWidth );
 
     QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( searchRect ).setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect ) );
 
@@ -218,8 +188,6 @@ void QgsHtmlAnnotationItem::setFeatureForMapPosition()
     mFeature = currentFeature;
 
     QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
-    if ( mMapCanvas )
-      context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() ) );
     context.setFeature( mFeature );
     newText = QgsExpression::replaceExpressionText( mHtmlSource, &context );
   }
@@ -227,23 +195,25 @@ void QgsHtmlAnnotationItem::setFeatureForMapPosition()
   {
     newText = mHtmlSource;
   }
-  mWebView->setHtml( newText );
+  mWebPage->mainFrame()->setHtml( newText );
+  emit appearanceChanged();
 }
 
-void QgsHtmlAnnotationItem::updateVisibility()
+void QgsHtmlAnnotation::updateVisibility()
 {
   bool visible = true;
+#if 0
   if ( mVectorLayer && mMapCanvas )
   {
     visible = mMapCanvas->layers().contains( mVectorLayer );
   }
+#endif
   setVisible( visible );
 }
 
-void QgsHtmlAnnotationItem::javascript()
+void QgsHtmlAnnotation::javascript()
 {
-  QWebFrame *frame = mWebView->page()->mainFrame();
-  frame->addToJavaScriptWindowObject( QStringLiteral( "canvas" ), mMapCanvas );
+  QWebFrame *frame = mWebPage->mainFrame();
   frame->addToJavaScriptWindowObject( QStringLiteral( "layer" ), mVectorLayer );
 }
 

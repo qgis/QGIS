@@ -488,10 +488,9 @@ void QgsComposerUtils::drawText( QPainter *painter, const QRectF &rect, const QS
   painter->restore();
 }
 
-QgsRenderContext QgsComposerUtils::createRenderContext( QgsComposition* composition, QPainter* painter )
+QgsRenderContext QgsComposerUtils::createRenderContextForMap( QgsComposerMap* map, QPainter* painter )
 {
-  QgsComposerMap* referenceMap = composition ? composition->referenceMap() : nullptr;
-  if ( !referenceMap )
+  if ( !map )
   {
     return QgsRenderContext::fromQPainter( painter );
   }
@@ -501,12 +500,18 @@ QgsRenderContext QgsComposerUtils::createRenderContext( QgsComposition* composit
   double dotsPerMM = dpi / 25.4;
 
   // get map settings from reference map
-  QgsRectangle extent = *( referenceMap->currentMapExtent() );
-  QSizeF mapSizeMM = referenceMap->rect().size();
-  QgsMapSettings ms = referenceMap->mapSettings( extent, mapSizeMM * dotsPerMM, dpi );
+  QgsRectangle extent = *( map->currentMapExtent() );
+  QSizeF mapSizeMM = map->rect().size();
+  QgsMapSettings ms = map->mapSettings( extent, mapSizeMM * dotsPerMM, dpi );
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
   if ( painter )
     context.setPainter( painter );
   return context;
+}
+
+QgsRenderContext QgsComposerUtils::createRenderContextForComposition( QgsComposition* composition, QPainter* painter )
+{
+  QgsComposerMap* referenceMap = composition ? composition->referenceMap() : nullptr;
+  return createRenderContextForMap( referenceMap, painter );
 }

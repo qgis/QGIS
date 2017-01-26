@@ -312,7 +312,7 @@ void QgsComposerMap::cache()
   mDrawing = false;
 }
 
-void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* pWidget )
 {
   Q_UNUSED( pWidget );
 
@@ -360,7 +360,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     painter->restore();
 
     //draw canvas items
-    drawCanvasItems( painter, itemStyle );
+    drawCanvasItems( painter );
   }
   else if ( mComposition->plotStyle() == QgsComposition::Print ||
             mComposition->plotStyle() == QgsComposition::Postscript )
@@ -399,7 +399,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     painter->restore();
 
     //draw canvas items
-    drawCanvasItems( painter, itemStyle );
+    drawCanvasItems( painter );
 
     mDrawing = false;
   }
@@ -1864,7 +1864,7 @@ QPointF QgsComposerMap::mapToItemCoords( QPointF mapCoords ) const
   return QPointF( xItem, yItem );
 }
 
-void QgsComposerMap::drawCanvasItems( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle )
+void QgsComposerMap::drawCanvasItems( QPainter* painter )
 {
   if ( !mMapCanvas || !mDrawCanvasItems )
   {
@@ -1878,6 +1878,9 @@ void QgsComposerMap::drawCanvasItems( QPainter* painter, const QStyleOptionGraph
   }
   QGraphicsItem* currentItem = nullptr;
 
+  QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( this, painter );
+  rc.setForceVectorOutput( true );
+  rc.setExpressionContext( createExpressionContext() );
   for ( int i = itemList.size() - 1; i >= 0; --i )
   {
     currentItem = itemList.at( i );
@@ -1887,21 +1890,19 @@ void QgsComposerMap::drawCanvasItems( QPainter* painter, const QStyleOptionGraph
     {
       continue;
     }
-    drawCanvasItem( annotation, painter, itemStyle );
+    drawCanvasItem( annotation, rc );
   }
 }
 
-void QgsComposerMap::drawCanvasItem( const QgsAnnotation* annotation, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle )
+void QgsComposerMap::drawCanvasItem( const QgsAnnotation* annotation, QgsRenderContext& context )
 {
-  if ( !annotation || !annotation->showItem() )
+  if ( !annotation || !annotation->isVisible() || !context.painter() || !context.painter()->device() )
   {
     return;
   }
 
-  painter->save();
-  painter->setRenderHint( QPainter::Antialiasing );
-
-  double scaleFactor = annotation->scaleFactor();
+  context.painter()->save();
+  context.painter()->setRenderHint( QPainter::Antialiasing, context.flags() & QgsRenderContext::Antialiasing );
 
   double itemX, itemY;
   if ( annotation->hasFixedMapPosition() )
@@ -1915,16 +1916,14 @@ void QgsComposerMap::drawCanvasItem( const QgsAnnotation* annotation, QPainter* 
     itemX = annotation->relativePosition().x() * rect().width();
     itemY = annotation->relativePosition().y() * rect().height();
   }
+  context.painter()->translate( itemX, itemY );
 
-  painter->translate( itemX, itemY );
-  painter->scale( scaleFactor, scaleFactor );
+  //setup painter scaling to dots so that symbology is drawn to scale
+  double dotsPerMM = context.painter()->device()->logicalDpiX() / 25.4;
+  context.painter()->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
 
-  //a little trick to let the item know that the paint request comes from the composer
-  const_cast< QgsAnnotation* >( annotation )->setItemData( 1, "composer" );
-  const_cast< QgsAnnotation* >( annotation )->paint( painter, itemStyle, nullptr );
-  const_cast< QgsAnnotation* >( annotation )->setItemData( 1, "" );
-
-  painter->restore();
+  annotation->render( context );
+  context.painter()->restore();
 }
 
 QPointF QgsComposerMap::composerMapPosForItem( const QgsAnnotation* annotation ) const

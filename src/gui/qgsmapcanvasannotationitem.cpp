@@ -1,0 +1,228 @@
+/***************************************************************************
+                              qgsmapcanvasannotationitem.cpp
+                              ------------------------------
+  begin                : January 2017
+  copyright            : (C) 2017 by Nyall Dawson
+  email                : nyall dot dawson at gmail dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsmapcanvasannotationitem.h"
+#include "qgsannotation.h"
+#include "qgsmapcanvas.h"
+#include <QPainter>
+
+
+QgsMapCanvasAnnotationItem::QgsMapCanvasAnnotationItem( QgsAnnotation* annotation, QgsMapCanvas* mapCanvas )
+    : QgsMapCanvasItem( mapCanvas )
+    , mAnnotation( annotation )
+{
+  setFlag( QGraphicsItem::ItemIsSelectable, true );
+  connect( mAnnotation, &QgsAnnotation::appearanceChanged, this, [this] { update(); } );
+  connect( mAnnotation, &QgsAnnotation::moved, this, [this] { updatePosition(); } );
+  connect( mAnnotation, &QgsAnnotation::appearanceChanged, this, &QgsMapCanvasAnnotationItem::updateBoundingRect );
+
+  updatePosition();
+}
+
+QgsMapCanvasAnnotationItem::~QgsMapCanvasAnnotationItem()
+{
+  delete mAnnotation;
+}
+
+void QgsMapCanvasAnnotationItem::updatePosition()
+{
+  if ( !mAnnotation )
+    return;
+
+  if ( mAnnotation->hasFixedMapPosition() )
+  {
+    QgsCoordinateTransform t( mAnnotation->mapPositionCrs(), mMapCanvas->mapSettings().destinationCrs() );
+    setPos( toCanvasCoordinates( t.transform( mAnnotation->mapPosition() ) ) );
+  }
+  else
+  {
+    //relative position
+
+    double x = mAnnotation->relativePosition().x() * mMapCanvas->width();
+    double y = mAnnotation->relativePosition().y() * mMapCanvas->height();
+    setPos( x, y );
+  }
+  updateBoundingRect();
+}
+
+QRectF QgsMapCanvasAnnotationItem::boundingRect() const
+{
+  return mBoundingRect;
+}
+
+void QgsMapCanvasAnnotationItem::updateBoundingRect()
+{
+  prepareGeometryChange();
+  double frameBorderWidth = mAnnotation ? mAnnotation->frameBorderWidth() : 0.0;
+  if ( mAnnotation && !mAnnotation->hasFixedMapPosition() )
+  {
+    mBoundingRect = QRectF( - frameBorderWidth / 2.0, -frameBorderWidth / 2.0, mAnnotation->frameSize().width() + frameBorderWidth, mAnnotation->frameSize().height() + frameBorderWidth );
+  }
+  else
+  {
+    double halfSymbolSize = 0.0;
+    if ( mAnnotation && mAnnotation->markerSymbol() )
+    {
+      halfSymbolSize = scaledSymbolSize() / 2.0;
+    }
+
+    QPointF offset = mAnnotation ? mAnnotation->frameOffsetFromReferencePoint() : QPointF( 0, 0 );
+
+    QSizeF frameSize = mAnnotation ? mAnnotation->frameSize() : QSizeF( 0.0, 0.0 );
+
+    double xMinPos = qMin( -halfSymbolSize, offset.x() - frameBorderWidth );
+    double xMaxPos = qMax( halfSymbolSize, offset.x() + frameSize.width() + frameBorderWidth );
+    double yMinPos = qMin( -halfSymbolSize, offset.y() - frameBorderWidth );
+    double yMaxPos = qMax( halfSymbolSize, offset.y() + frameSize.height() + frameBorderWidth );
+    mBoundingRect = QRectF( xMinPos, yMinPos, xMaxPos - xMinPos, yMaxPos - yMinPos );
+  }
+}
+
+void QgsMapCanvasAnnotationItem::drawSelectionBoxes( QPainter* p ) const
+{
+  if ( !p )
+  {
+    return;
+  }
+
+  double handlerSize = 10;
+  p->setPen( Qt::NoPen );
+  p->setBrush( QColor( 200, 200, 210, 120 ) );
+  p->drawRect( QRectF( mBoundingRect.left(), mBoundingRect.top(), handlerSize, handlerSize ) );
+  p->drawRect( QRectF( mBoundingRect.right() - handlerSize, mBoundingRect.top(), handlerSize, handlerSize ) );
+  p->drawRect( QRectF( mBoundingRect.right() - handlerSize, mBoundingRect.bottom() - handlerSize, handlerSize, handlerSize ) );
+  p->drawRect( QRectF( mBoundingRect.left(), mBoundingRect.bottom() - handlerSize, handlerSize, handlerSize ) );
+}
+
+QgsMapCanvasAnnotationItem::MouseMoveAction QgsMapCanvasAnnotationItem::moveActionForPosition( QPointF pos ) const
+{
+  QPointF itemPos = mapFromScene( pos );
+
+  int cursorSensitivity = 7;
+
+  if ( mAnnotation && mAnnotation->hasFixedMapPosition() &&
+       qAbs( itemPos.x() ) < cursorSensitivity && qAbs( itemPos.y() ) < cursorSensitivity ) //move map point if position is close to the origin
+  {
+    return MoveMapPosition;
+  }
+
+  QPointF offset = mAnnotation && mAnnotation->hasFixedMapPosition() ? mAnnotation->frameOffsetFromReferencePoint() : QPointF( 0, 0 );
+  QSizeF frameSize = mAnnotation ? mAnnotation->frameSize() : QSizeF( 0, 0 );
+
+  bool left, right, up, down;
+  left = qAbs( itemPos.x() - offset.x() ) < cursorSensitivity;
+  right = qAbs( itemPos.x() - ( offset.x() + frameSize.width() ) ) < cursorSensitivity;
+  up = qAbs( itemPos.y() - offset.y() ) < cursorSensitivity;
+  down = qAbs( itemPos.y() - ( offset.y() + frameSize.height() ) ) < cursorSensitivity;
+
+  if ( left && up )
+  {
+    return ResizeFrameLeftUp;
+  }
+  else if ( right && up )
+  {
+    return ResizeFrameRightUp;
+  }
+  else if ( left && down )
+  {
+    return ResizeFrameLeftDown;
+  }
+  else if ( right && down )
+  {
+    return ResizeFrameRightDown;
+  }
+  if ( left )
+  {
+    return ResizeFrameLeft;
+  }
+  if ( right )
+  {
+    return ResizeFrameRight;
+  }
+  if ( up )
+  {
+    return ResizeFrameUp;
+  }
+  if ( down )
+  {
+    return ResizeFrameDown;
+  }
+
+  //finally test if pos is in the frame area
+  if ( itemPos.x() >= offset.x() && itemPos.x() <= ( offset.x() + frameSize.width() )
+       && itemPos.y() >= offset.y() && itemPos.y() <= ( offset.y() + frameSize.height() ) )
+  {
+    return MoveFramePosition;
+  }
+  return NoAction;
+}
+
+Qt::CursorShape QgsMapCanvasAnnotationItem::cursorShapeForAction( MouseMoveAction moveAction ) const
+{
+  switch ( moveAction )
+  {
+    case NoAction:
+      return Qt::ArrowCursor;
+    case MoveMapPosition:
+    case MoveFramePosition:
+      return Qt::SizeAllCursor;
+    case ResizeFrameUp:
+    case ResizeFrameDown:
+      return Qt::SizeVerCursor;
+    case ResizeFrameLeft:
+    case ResizeFrameRight:
+      return Qt::SizeHorCursor;
+    case ResizeFrameLeftUp:
+    case ResizeFrameRightDown:
+      return Qt::SizeFDiagCursor;
+    case ResizeFrameRightUp:
+    case ResizeFrameLeftDown:
+      return Qt::SizeBDiagCursor;
+    default:
+      return Qt::ArrowCursor;
+  }
+}
+
+double QgsMapCanvasAnnotationItem::scaledSymbolSize() const
+{
+  if ( !mAnnotation || !mAnnotation->markerSymbol() )
+  {
+    return 0.0;
+  }
+
+  if ( !mMapCanvas )
+  {
+    return mAnnotation->markerSymbol()->size();
+  }
+
+  double dpmm = mMapCanvas->logicalDpiX() / 25.4;
+  return dpmm * mAnnotation->markerSymbol()->size();
+}
+
+void QgsMapCanvasAnnotationItem::paint( QPainter* painter )
+{
+  QgsRenderContext rc = QgsRenderContext::fromQPainter( painter );
+  rc.setFlag( QgsRenderContext::Antialiasing, true );
+
+  if ( mAnnotation )
+    mAnnotation->render( rc );
+
+  if ( isSelected() )
+  {
+    drawSelectionBoxes( painter );
+  }
+}

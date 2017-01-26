@@ -179,7 +179,7 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
   double dotsPerMM = p->device()->logicalDpiX() / 25.4;
 
   //setup render context
-  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, p );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, p );
   context.setForceVectorOutput( true );
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );

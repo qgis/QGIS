@@ -16,7 +16,8 @@
  ***************************************************************************/
 
 #include "qgsannotationwidget.h"
-#include "qgsannotationitem.h"
+#include "qgsmapcanvasannotationitem.h"
+#include "qgsannotation.h"
 #include "qgsstyle.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
@@ -24,15 +25,19 @@
 #include <QColorDialog>
 
 
-QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): QWidget( parent, f ), mItem( item ), mMarkerSymbol( nullptr )
+QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
+    : QWidget( parent, f )
+    , mItem( item )
+    , mMarkerSymbol( nullptr )
 {
   setupUi( this );
 
-  if ( mItem )
+  if ( mItem && mItem->annotation() )
   {
+    QgsAnnotation* annotation = mItem->annotation();
     blockAllSignals( true );
 
-    if ( mItem->hasFixedMapPosition() )
+    if ( annotation->hasFixedMapPosition() )
     {
       mMapPositionFixedCheckBox->setCheckState( Qt::Checked );
     }
@@ -40,23 +45,23 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * par
     {
       mMapPositionFixedCheckBox->setCheckState( Qt::Unchecked );
     }
-    mFrameWidthSpinBox->setValue( mItem->frameBorderWidth() );
-    mFrameColorButton->setColor( mItem->frameColor() );
+    mFrameWidthSpinBox->setValue( annotation->frameBorderWidth() );
+    mFrameColorButton->setColor( annotation->frameColor() );
     mFrameColorButton->setColorDialogTitle( tr( "Select frame color" ) );
     mFrameColorButton->setAllowAlpha( true );
     mFrameColorButton->setContext( QStringLiteral( "symbology" ) );
     mFrameColorButton->setNoColorString( tr( "Transparent frame" ) );
     mFrameColorButton->setShowNoColor( true );
-    mBackgroundColorButton->setColor( mItem->frameBackgroundColor() );
+    mBackgroundColorButton->setColor( annotation->frameBackgroundColor() );
     mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
     mBackgroundColorButton->setAllowAlpha( true );
     mBackgroundColorButton->setContext( QStringLiteral( "symbology" ) );
     mBackgroundColorButton->setNoColorString( tr( "Transparent" ) );
     mBackgroundColorButton->setShowNoColor( true );
 
-    connect( mBackgroundColorButton, SIGNAL( colorChanged( QColor ) ), this, SIGNAL( backgroundColorChanged( QColor ) ) );
+    connect( mBackgroundColorButton, &QgsColorButton::colorChanged, this, &QgsAnnotationWidget::backgroundColorChanged );
 
-    const QgsMarkerSymbol* symbol = mItem->markerSymbol();
+    const QgsMarkerSymbol* symbol = annotation->markerSymbol();
     if ( symbol )
     {
       mMarkerSymbol.reset( symbol->clone() );
@@ -75,11 +80,15 @@ void QgsAnnotationWidget::apply()
 {
   if ( mItem )
   {
-    mItem->setMapPositionFixed( mMapPositionFixedCheckBox->checkState() == Qt::Checked );
-    mItem->setFrameBorderWidth( mFrameWidthSpinBox->value() );
-    mItem->setFrameColor( mFrameColorButton->color() );
-    mItem->setFrameBackgroundColor( mBackgroundColorButton->color() );
-    mItem->setMarkerSymbol( mMarkerSymbol->clone() );
+    QgsAnnotation* annotation = mItem->annotation();
+    if ( annotation )
+    {
+      annotation->setHasFixedMapPosition( mMapPositionFixedCheckBox->checkState() == Qt::Checked );
+      annotation->setFrameBorderWidth( mFrameWidthSpinBox->value() );
+      annotation->setFrameColor( mFrameColorButton->color() );
+      annotation->setFrameBackgroundColor( mBackgroundColorButton->color() );
+      annotation->setMarkerSymbol( mMarkerSymbol->clone() );
+    }
     mItem->update();
   }
 }

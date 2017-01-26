@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgstextannotationitem.cpp
+                              qgstextannotation.cpp
                               ------------------------
   begin                : February 9, 2010
   copyright            : (C) 2010 by Marco Hugentobler
@@ -15,56 +15,42 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstextannotationitem.h"
+#include "qgstextannotation.h"
 #include <QDomDocument>
 #include <QPainter>
 
-QgsTextAnnotationItem::QgsTextAnnotationItem( QgsMapCanvas* canvas ): QgsAnnotationItem( canvas ), mDocument( new QTextDocument( QString() ) )
+QgsTextAnnotation::QgsTextAnnotation(QObject* parent)
+    : QgsAnnotation( parent )
+    , mDocument( new QTextDocument( QString() ) )
 {
   mDocument->setUseDesignMetrics( true );
 }
 
-QgsTextAnnotationItem::~QgsTextAnnotationItem()
+const QTextDocument* QgsTextAnnotation::document() const
 {
-  delete mDocument;
+  return mDocument.data();
 }
 
-QTextDocument* QgsTextAnnotationItem::document() const
+void QgsTextAnnotation::setDocument( const QTextDocument* doc )
 {
+  if ( doc )
+    mDocument.reset( doc->clone() );
+  else
+    mDocument.reset();
+  emit appearanceChanged();
+}
+
+void QgsTextAnnotation::renderAnnotation( QgsRenderContext& context, QSizeF size ) const
+{
+  QPainter* painter = context.painter();
   if ( !mDocument )
-  {
-    return nullptr;
-  }
-
-  return mDocument->clone();
-}
-
-void QgsTextAnnotationItem::setDocument( const QTextDocument* doc )
-{
-  delete mDocument;
-  mDocument = doc->clone();
-}
-
-void QgsTextAnnotationItem::paint( QPainter * painter )
-{
-  if ( !painter || !mDocument )
   {
     return;
   }
 
-  drawFrame( painter );
-  if ( mMapPositionFixed )
-  {
-    drawMarkerSymbol( painter );
-  }
-  double frameWidth = mFrameBorderWidth;
-  mDocument->setTextWidth( mFrameSize.width() );
+  mDocument->setTextWidth( size.width() );
 
-  painter->save();
-  painter->translate( mOffsetFromReferencePoint.x() + frameWidth / 2.0,
-                      mOffsetFromReferencePoint.y() + frameWidth / 2.0 );
-
-  QRectF clipRect = QRectF( 0, 0, mFrameSize.width() - frameWidth / 2.0, mFrameSize.height() - frameWidth / 2.0 );
+  QRectF clipRect = QRectF( 0, 0, size.width(), size.height() );
   if ( painter->hasClipping() )
   {
     //QTextDocument::drawContents will draw text outside of the painter's clip region
@@ -74,37 +60,26 @@ void QgsTextAnnotationItem::paint( QPainter * painter )
   }
   //draw text document
   mDocument->drawContents( painter, clipRect );
-  painter->restore();
-  if ( isSelected() )
-  {
-    drawSelectionBoxes( painter );
-  }
 }
 
-void QgsTextAnnotationItem::writeXml( QDomDocument& doc ) const
+void QgsTextAnnotation::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
-  QDomElement documentElem = doc.documentElement();
-  if ( documentElem.isNull() )
-  {
-    return;
-  }
   QDomElement annotationElem = doc.createElement( QStringLiteral( "TextAnnotationItem" ) );
   if ( mDocument )
   {
     annotationElem.setAttribute( QStringLiteral( "document" ), mDocument->toHtml() );
   }
-  _writeXml( doc, annotationElem );
-  documentElem.appendChild( annotationElem );
+  _writeXml( annotationElem, doc );
+  elem.appendChild( annotationElem );
 }
 
-void QgsTextAnnotationItem::readXml( const QDomDocument& doc, const QDomElement& itemElem )
+void QgsTextAnnotation::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
-  delete mDocument;
-  mDocument = new QTextDocument;
+  mDocument.reset( new QTextDocument );
   mDocument->setHtml( itemElem.attribute( QStringLiteral( "document" ), QString() ) );
   QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {
-    _readXml( doc, annotationElem );
+    _readXml( annotationElem, doc );
   }
 }

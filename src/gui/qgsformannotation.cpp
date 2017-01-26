@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsformannotationitem.h
+                              qgsformannotation.cpp
                               ------------------------
   begin                : February 26, 2010
   copyright            : (C) 2010 by Marco Hugentobler
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsformannotationitem.h"
+#include "qgsformannotation.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgseditorwidgetwrapper.h"
@@ -36,47 +36,46 @@
 #include <QUiLoader>
 #include <QWidget>
 
-QgsFormAnnotationItem::QgsFormAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer, bool hasFeature, int feature )
-    : QgsAnnotationItem( canvas )
-    , mWidgetContainer( nullptr )
+QgsFormAnnotation::QgsFormAnnotation(QgsVectorLayer* vlayer, bool hasFeature, int feature )
+    : QgsAnnotation()
     , mDesignerWidget( nullptr )
     , mVectorLayer( vlayer )
     , mHasAssociatedFeature( hasFeature )
     , mFeature( feature )
 {
-  mWidgetContainer = new QGraphicsProxyWidget( this );
-  mWidgetContainer->setData( 0, "AnnotationItem" ); //mark embedded widget as belonging to an annotation item (composer knows it needs to be printed)
-  if ( mVectorLayer && mMapCanvas ) //default to the layers edit form
+  if ( mVectorLayer ) //default to the layers edit form
   {
     mDesignerForm = mVectorLayer->annotationForm();
     QObject::connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( setFeatureForMapPosition() ) );
+#if 0
     QObject::connect( mMapCanvas, SIGNAL( renderComplete( QPainter* ) ), this, SLOT( setFeatureForMapPosition() ) );
     QObject::connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( updateVisibility() ) );
+#endif
   }
 
   setFeatureForMapPosition();
 }
 
-QgsFormAnnotationItem::~QgsFormAnnotationItem()
+QgsFormAnnotation::~QgsFormAnnotation()
 {
   delete mDesignerWidget;
 }
 
-void QgsFormAnnotationItem::setDesignerForm( const QString& uiFile )
+void QgsFormAnnotation::setDesignerForm( const QString& uiFile )
 {
   mDesignerForm = uiFile;
-  mWidgetContainer->setWidget( nullptr );
   delete mDesignerWidget;
   mDesignerWidget = createDesignerWidget( uiFile );
   if ( mDesignerWidget )
   {
-    mFrameBackgroundColor = mDesignerWidget->palette().color( QPalette::Window );
-    mWidgetContainer->setWidget( mDesignerWidget );
+    mMinimumSize = mDesignerWidget->minimumSize();
+    setFrameBackgroundColor( mDesignerWidget->palette().color( QPalette::Window ) );
     setFrameSize( preferredFrameSize() );
   }
+  emit appearanceChanged();
 }
 
-QWidget* QgsFormAnnotationItem::createDesignerWidget( const QString& filePath )
+QWidget* QgsFormAnnotation::createDesignerWidget( const QString& filePath )
 {
   QFile file( filePath );
   if ( !file.open( QFile::ReadOnly ) )
@@ -119,48 +118,31 @@ QWidget* QgsFormAnnotationItem::createDesignerWidget( const QString& filePath )
   return widget;
 }
 
-void QgsFormAnnotationItem::setMapPosition( const QgsPoint& pos )
+#if 0
+void QgsFormAnnotation::setMapPosition( const QgsPoint& pos )
 {
   QgsAnnotationItem::setMapPosition( pos );
   setFeatureForMapPosition();
 }
+#endif
 
-void QgsFormAnnotationItem::paint( QPainter * painter )
+void QgsFormAnnotation::renderAnnotation( QgsRenderContext& context, QSizeF size ) const
 {
-  Q_UNUSED( painter );
-}
-
-void QgsFormAnnotationItem::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
-{
-  Q_UNUSED( option );
-  Q_UNUSED( widget );
-  if ( !painter || !mWidgetContainer )
-  {
+  if ( !mDesignerWidget )
     return;
-  }
 
-  drawFrame( painter );
-  if ( mMapPositionFixed )
-  {
-    drawMarkerSymbol( painter );
-  }
-
-  mWidgetContainer->setGeometry( QRectF( mOffsetFromReferencePoint.x() + mFrameBorderWidth / 2.0, mOffsetFromReferencePoint.y()
-                                         + mFrameBorderWidth / 2.0, mFrameSize.width() - mFrameBorderWidth, mFrameSize.height()
-                                         - mFrameBorderWidth ) );
-
-  if ( isSelected() )
-  {
-    drawSelectionBoxes( painter );
-  }
+  mDesignerWidget->setFixedSize( size.toSize() );
+  context.painter()->setBrush( Qt::NoBrush );
+  context.painter()->setPen( Qt::NoPen );
+  mDesignerWidget->render( context.painter(), QPoint( 0, 0 ) );
 }
 
-QSizeF QgsFormAnnotationItem::minimumFrameSize() const
+QSizeF QgsFormAnnotation::minimumFrameSize() const
 {
   if ( mDesignerWidget )
   {
-    QSizeF widgetMinSize = mDesignerWidget->minimumSize();
-    return QSizeF( 2 * mFrameBorderWidth + widgetMinSize.width(), 2 * mFrameBorderWidth + widgetMinSize.height() );
+    QSizeF widgetMinSize = mMinimumSize;
+    return QSizeF( 2 * frameBorderWidth() + widgetMinSize.width(), 2 * frameBorderWidth() + widgetMinSize.height() );
   }
   else
   {
@@ -168,7 +150,7 @@ QSizeF QgsFormAnnotationItem::minimumFrameSize() const
   }
 }
 
-QSizeF QgsFormAnnotationItem::preferredFrameSize() const
+QSizeF QgsFormAnnotation::preferredFrameSize() const
 {
   if ( mDesignerWidget )
   {
@@ -180,14 +162,8 @@ QSizeF QgsFormAnnotationItem::preferredFrameSize() const
   }
 }
 
-void QgsFormAnnotationItem::writeXml( QDomDocument& doc ) const
+void QgsFormAnnotation::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
-  QDomElement documentElem = doc.documentElement();
-  if ( documentElem.isNull() )
-  {
-    return;
-  }
-
   QDomElement formAnnotationElem = doc.createElement( QStringLiteral( "FormAnnotationItem" ) );
   if ( mVectorLayer )
   {
@@ -196,11 +172,11 @@ void QgsFormAnnotationItem::writeXml( QDomDocument& doc ) const
   formAnnotationElem.setAttribute( QStringLiteral( "hasFeature" ), mHasAssociatedFeature );
   formAnnotationElem.setAttribute( QStringLiteral( "feature" ), mFeature );
   formAnnotationElem.setAttribute( QStringLiteral( "designerForm" ), mDesignerForm );
-  _writeXml( doc, formAnnotationElem );
-  documentElem.appendChild( formAnnotationElem );
+  _writeXml( formAnnotationElem, doc );
+  elem.appendChild( formAnnotationElem );
 }
 
-void QgsFormAnnotationItem::readXml( const QDomDocument& doc, const QDomElement& itemElem )
+void QgsFormAnnotation::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   mVectorLayer = nullptr;
   if ( itemElem.hasAttribute( QStringLiteral( "vectorLayer" ) ) )
@@ -209,8 +185,10 @@ void QgsFormAnnotationItem::readXml( const QDomDocument& doc, const QDomElement&
     if ( mVectorLayer )
     {
       QObject::connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( setFeatureForMapPosition() ) );
+#if 0
       QObject::connect( mMapCanvas, SIGNAL( renderComplete( QPainter* ) ), this, SLOT( setFeatureForMapPosition() ) );
       QObject::connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( updateVisibility() ) );
+#endif
     }
   }
   mHasAssociatedFeature = itemElem.attribute( QStringLiteral( "hasFeature" ), QStringLiteral( "0" ) ).toInt();
@@ -219,28 +197,27 @@ void QgsFormAnnotationItem::readXml( const QDomDocument& doc, const QDomElement&
   QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {
-    _readXml( doc, annotationElem );
+    _readXml( annotationElem, doc );
   }
 
   mDesignerWidget = createDesignerWidget( mDesignerForm );
   if ( mDesignerWidget )
   {
-    mFrameBackgroundColor = mDesignerWidget->palette().color( QPalette::Window );
-    mWidgetContainer->setWidget( mDesignerWidget );
+    setFrameBackgroundColor( mDesignerWidget->palette().color( QPalette::Window ) );
   }
   updateVisibility();
 }
 
-void QgsFormAnnotationItem::setFeatureForMapPosition()
+void QgsFormAnnotation::setFeatureForMapPosition()
 {
-  if ( !mVectorLayer || !mMapCanvas )
+  if ( !mVectorLayer)
   {
     return;
   }
 
-  double halfIdentifyWidth = QgsMapTool::searchRadiusMU( mMapCanvas );
-  QgsRectangle searchRect( mMapPosition.x() - halfIdentifyWidth, mMapPosition.y() - halfIdentifyWidth,
-                           mMapPosition.x() + halfIdentifyWidth, mMapPosition.y() + halfIdentifyWidth );
+  double halfIdentifyWidth = 0; //QgsMapTool::searchRadiusMU( mMapCanvas );
+  QgsRectangle searchRect( mapPosition().x() - halfIdentifyWidth, mapPosition().y() - halfIdentifyWidth,
+                           mapPosition().x() + halfIdentifyWidth, mapPosition().y() + halfIdentifyWidth );
 
   QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( searchRect ).setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect ).setSubsetOfAttributes( QgsAttributeList() ) );
 
@@ -259,23 +236,24 @@ void QgsFormAnnotationItem::setFeatureForMapPosition()
   mFeature = currentFeatureId;
 
   //create new embedded widget
-  mWidgetContainer->setWidget( nullptr );
   delete mDesignerWidget;
   mDesignerWidget = createDesignerWidget( mDesignerForm );
   if ( mDesignerWidget )
   {
-    mFrameBackgroundColor = mDesignerWidget->palette().color( QPalette::Window );
-    mWidgetContainer->setWidget( mDesignerWidget );
+    setFrameBackgroundColor( mDesignerWidget->palette().color( QPalette::Window ) );
   }
+  emit appearanceChanged();
 }
 
-void QgsFormAnnotationItem::updateVisibility()
+void QgsFormAnnotation::updateVisibility()
 {
   bool visible = true;
+#if 0
   if ( mVectorLayer && mMapCanvas )
   {
     visible = mMapCanvas->layers().contains( mVectorLayer );
   }
+#endif
   setVisible( visible );
 }
 

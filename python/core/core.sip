@@ -13,7 +13,6 @@
 
 %Include qgis.sip
 
-%Include qgsannotation.sip
 %Include qgsapplication.sip
 %Include qgsaction.sip
 %Include qgsactionmanager.sip
@@ -173,6 +172,11 @@
 %Include qgsvirtuallayerdefinitionutils.sip
 %Include qgsmapthemecollection.sip
 %Include qgsxmlutils.sip
+
+%Include annotations/qgsannotation.sip
+%Include annotations/qgshtmlannotation.sip
+%Include annotations/qgssvgannotation.sip
+%Include annotations/qgstextannotation.sip
 
 %Include auth/qgsauthcertutils.sip
 %Include auth/qgsauthconfig.sip
