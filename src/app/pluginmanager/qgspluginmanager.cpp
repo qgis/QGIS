@@ -774,7 +774,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
   {
     html += QString( "<table bgcolor=\"#90EE90\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#660000\">"
-                     "    <img src=\"qrc:/images/themes/default/mIconSuccess.png\" width=\"32\"><b>%1</b>"
+                     "    <img src=\"qrc:/images/themes/default/mIconSuccess.svg\" width=\"32\"><b>%1</b>"
                      "  </td></tr>"
                      "</table>" ).arg( tr( "This plugin is trusted" ) );
   }

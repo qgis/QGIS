@@ -31,7 +31,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
     , mIsEmpty( false )
 {
   mClearButton = new QToolButton( this );
-  mClearButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClear.svg" ) ) );
+  mClearButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClearText.svg" ) ) );
   mClearButton->setCursor( Qt::ArrowCursor );
   mClearButton->setStyleSheet( QStringLiteral( "position: absolute; border: none; padding: 0px;" ) );
   mClearButton->hide();
