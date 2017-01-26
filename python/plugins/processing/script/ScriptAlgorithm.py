@@ -321,9 +321,9 @@ class ScriptAlgorithm(GeoAlgorithm):
             out = OutputHTML()
         elif token.lower().strip().startswith('file'):
             out = OutputFile()
-            subtokens = token.split(' ')
-            if len(subtokens) > 2:
-                out.ext = subtokens[2]
+            ext = token.strip()[len('file') + 1:]
+            if ext:
+                out.ext = ext
         elif token.lower().strip().startswith('directory'):
             out = OutputDirectory()
         elif token.lower().strip().startswith('number'):
