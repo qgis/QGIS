@@ -3997,7 +3997,8 @@ QString  QgsPostgresProvider::description() const
 
 static void jumpSpace( const QString& txt, int& i )
 {
-  while ( i < txt.length() && txt.at( i ).isSpace() ) ++i;
+  while ( i < txt.length() && txt.at( i ).isSpace() )
+    ++i;
 }
 
 static QString getNextString( const QString& txt, int& i, const QString& sep )
@@ -4092,7 +4093,8 @@ static QVariant parseArray( const QString& txt, QVariant::Type type, QVariant::T
 {
   if ( !txt.startsWith( '{' ) || !txt.endsWith( '}' ) )
   {
-    QgsLogger::warning( "Error parsing array, missing curly braces: " + txt );
+    if( !txt.isEmpty() )
+      QgsLogger::warning( "Error parsing array, missing curly braces: " + txt );
     return QVariant( type );
   }
   QString inner = txt.mid( 1, txt.length() - 2 );
