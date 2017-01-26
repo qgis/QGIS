@@ -998,7 +998,10 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       {
         QgsComposerMap* composerMap = new QgsComposerMap( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
         if ( mCanvas )
+        {
           composerMap->zoomToExtent( mCanvas->mapSettings().visibleExtent() );
+          composerMap->setLayers( mCanvas->mapSettings().layers() );
+        }
 
         composition()->addComposerMap( composerMap );
 
