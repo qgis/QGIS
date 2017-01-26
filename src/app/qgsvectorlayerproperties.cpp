@@ -163,7 +163,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     //for loading
     mLoadStyleMenu = new QMenu( this );
     mLoadStyleMenu->addAction( tr( "Load from file..." ) );
-    mLoadStyleMenu->addAction( tr( "Load from database" ) );
+    mLoadStyleMenu->addAction( tr( "Saved styles manager" ) );
     //mActionLoadStyle->setContextMenuPolicy( Qt::PreventContextMenu );
     mActionLoadStyle->setMenu( mLoadStyleMenu );
 
@@ -1022,6 +1022,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
   }
 
   QgsLoadStyleFromDBDialog dialog;
+  dialog.setLayer( mLayer );
   dialog.initializeLists( ids, names, descriptions, sectionLimit );
 
   if ( dialog.exec() == QDialog::Accepted )
