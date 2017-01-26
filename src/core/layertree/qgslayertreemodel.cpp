@@ -18,6 +18,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgsproject.h"
 
 #include <QMimeData>
 #include <QTextStream>
@@ -1057,7 +1058,7 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData* data, Qt::DropAction acti
   QDomElement elem = rootElem.firstChildElement();
   while ( !elem.isNull() )
   {
-    QgsLayerTreeNode* node = QgsLayerTreeNode::readXml( elem );
+    QgsLayerTreeNode* node = QgsLayerTreeNode::readXml( elem, QgsProject::instance() );
     if ( node )
       nodes << node;
 

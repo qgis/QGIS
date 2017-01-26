@@ -341,6 +341,7 @@ QgsProject::~QgsProject()
 {
   delete mBadLayerHandler;
   delete mRelationManager;
+  delete mLayerTreeRegistryBridge;
   delete mRootGroup;
 
   removeAllMapLayers();
@@ -867,6 +868,7 @@ bool QgsProject::read()
   QDomElement layerTreeElem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
+    // read the tree but do not resolve the references (we have not loaded the layers yet)
     mRootGroup->readChildrenFromXml( layerTreeElem );
   }
   else
@@ -896,6 +898,9 @@ bool QgsProject::read()
     // (default implementation ignores them, there's also a GUI handler that lets user choose correct path)
     mBadLayerHandler->handleBadLayers( brokenNodes );
   }
+
+  // now that layers are loaded, we can resolve layer tree's references to the layers
+  mRootGroup->resolveReferences( this );
 
   mLayerTreeRegistryBridge->setEnabled( true );
 
@@ -1211,7 +1216,7 @@ bool QgsProject::write()
   // write layer tree - make sure it is without embedded subgroups
   QgsLayerTreeNode *clonedRoot = mRootGroup->clone();
   QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
-  QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( clonedRoot ) ); // convert absolute paths to relative paths if required
+  QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( clonedRoot ), this ); // convert absolute paths to relative paths if required
   clonedRoot->writeXml( qgisNode );
   delete clonedRoot;
 

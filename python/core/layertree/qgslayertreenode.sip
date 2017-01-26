@@ -83,8 +83,14 @@ class QgsLayerTreeNode : QObject
     //! @note added in 3.0
     virtual void setName( const QString& name ) = 0;
 
-    //! Read layer tree from XML. Returns new instance
-    static QgsLayerTreeNode* readXml( QDomElement& element ) /Factory/;
+    //! Read layer tree from XML. Returns new instance.
+    //! Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+    static QgsLayerTreeNode *readXml( QDomElement &element ) /Factory/;
+    //! Read layer tree from XML. Returns new instance.
+    //! Also resolves textual references to layers from the project (calls resolveReferences() internally).
+    //! @note added in 3.0
+    static QgsLayerTreeNode* readXml( QDomElement& element, const QgsProject* project ) /Factory/;
+
     //! Write layer tree to XML
     virtual void writeXml( QDomElement &parentElement ) = 0;
 
@@ -93,6 +99,11 @@ class QgsLayerTreeNode : QObject
 
     //! Create a copy of the node. Returns new instance
     virtual QgsLayerTreeNode *clone() const = 0 /Factory/;
+
+    //! Turn textual references to layers into map layer object from project.
+    //! This method should be called after readXml()
+    //! @note added in 3.0
+    virtual void resolveReferences( const QgsProject* project ) = 0;
 
     //! Returns whether a node is really visible (ie checked and all its ancestors checked as well)
     //! @note added in 3.0

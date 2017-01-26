@@ -60,6 +60,14 @@ QgsLayerTreeNode* QgsLayerTreeNode::readXml( QDomElement& element )
   return node;
 }
 
+QgsLayerTreeNode* QgsLayerTreeNode::readXml( QDomElement& element, const QgsProject* project )
+{
+  QgsLayerTreeNode* node = readXml( element );
+  if ( node )
+    node->resolveReferences( project );
+  return node;
+}
+
 
 void QgsLayerTreeNode::setItemVisibilityChecked( bool checked )
 {

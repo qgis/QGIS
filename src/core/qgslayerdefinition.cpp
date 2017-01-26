@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgslayertree.h"
 #include "qgslayerdefinition.h"
+#include "qgsproject.h"
 
 bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsLayerTreeGroup *rootGroup, QString &errorMessage )
 {
@@ -148,6 +149,8 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
       vlayer->updateFields();
     }
   }
+
+  root->resolveReferences( QgsProject::instance() );
 
   QList<QgsLayerTreeNode*> nodes = root->children();
   Q_FOREACH ( QgsLayerTreeNode *node, nodes )
