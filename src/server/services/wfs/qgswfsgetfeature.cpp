@@ -913,6 +913,8 @@ namespace QgsWfs
     {
       QString fcString;
 
+      QScopedPointer< QgsRectangle > transformedRect;
+
       if ( format == QLatin1String( "GeoJSON" ) )
       {
         response.setHeader( "Content-Type", "application/json; charset=utf-8" );
@@ -926,7 +928,10 @@ namespace QgsWfs
           try
           {
             if ( exportGeom.transform( transform ) == 0 )
-              rect = new QgsRectangle( exportGeom.boundingBox() );
+            {
+              transformedRect.reset( new QgsRectangle( exportGeom.boundingBox() ) );
+              rect = transformedRect.data();
+            }
           }
           catch ( QgsException &cse )
           {
