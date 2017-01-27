@@ -366,7 +366,6 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
         else
         {
           throw QgsServerException( QStringLiteral( "Project file error" ) );
-          // theRequestHandler.setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ), QStringLiteral( "Error reading the project file" ) ) );
         }
       }
 
