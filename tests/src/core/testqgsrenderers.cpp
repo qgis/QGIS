@@ -152,29 +152,6 @@ void TestQgsRenderers::singleSymbol()
   QVERIFY( imageCheck( "single" ) );
 }
 
-// TODO: update tests and enable
-/*
-void TestQgsRenderers::uniqueValue()
-{
-  mReport += "<h2>Unique value symbol renderer test</h2>\n";
-  QVERIFY( setQml( "uniquevalue" ) );
-  QVERIFY( imageCheck( "uniquevalue" ) );
-}
-
-void TestQgsRenderers::graduatedSymbol()
-{
-  mReport += "<h2>Graduated symbol renderer test</h2>\n";
-  QVERIFY( setQml( "graduated" ) );
-  QVERIFY( imageCheck( "graduated" ) );
-}
-
-void TestQgsRenderers::continuousSymbol()
-{
-  mReport += "<h2>Continuous symbol renderer test</h2>\n";
-  QVERIFY( setQml( "continuous" ) );
-  QVERIFY( imageCheck( "continuous" ) );
-}
-*/
 //
 // Private helper functions not called directly by CTest
 //

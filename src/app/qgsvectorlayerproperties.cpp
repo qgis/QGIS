@@ -67,7 +67,6 @@
 
 #include "qgsrendererpropertiesdialog.h"
 #include "qgsstyle.h"
-#include "qgssymbologyconversion.h"
 
 QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsVectorLayer *lyr,
