@@ -158,7 +158,7 @@ class SERVER_EXPORT QgsWmsConfigParser
                                      QStringList& labelFont, QStringList& labelSize, QStringList& labelWeight, QStringList& labelColor,
                                      QStringList& labelBufferColor, QStringList &labelBufferSize );
 
-    static QgsVectorLayer* createHighlightLayer( int i, const QString& crsString, QgsGeometry* geom, const QString& labelString, const QStringList& labelSizeSplit, const QStringList& labelColorSplit,
+    static QgsVectorLayer* createHighlightLayer( int i, const QString& crsString, const QgsGeometry& geom, const QString& labelString, const QStringList& labelSizeSplit, const QStringList& labelColorSplit,
         const QStringList& labelWeightSplit, const QStringList& labelFontSplit, const QStringList& labelBufferSizeSplit,
         const QStringList& labelBufferColorSplit );
 

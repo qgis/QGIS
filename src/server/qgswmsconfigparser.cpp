@@ -342,7 +342,7 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
       labelString = labelSplit.at( i );
     }
 
-    QScopedPointer<QgsVectorLayer> layer( createHighlightLayer( i, crsString, &geom, labelString, labelSizeSplit, labelColorSplit, labelWeightSplit, labelFontSplit,
+    QScopedPointer<QgsVectorLayer> layer( createHighlightLayer( i, crsString, geom, labelString, labelSizeSplit, labelColorSplit, labelWeightSplit, labelFontSplit,
                                           labelBufferSizeSplit, labelBufferColorSplit ) );
     if ( !layer.data() )
     {
@@ -357,7 +357,7 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
   return highlightLayers;
 }
 
-QgsVectorLayer* QgsWmsConfigParser::createHighlightLayer( int i, const QString& crsString, QgsGeometry* geom, const QString& labelString, const QStringList& labelSizeSplit, const QStringList& labelColorSplit,
+QgsVectorLayer* QgsWmsConfigParser::createHighlightLayer( int i, const QString& crsString, const QgsGeometry& geom, const QString& labelString, const QStringList& labelSizeSplit, const QStringList& labelColorSplit,
     const QStringList& labelWeightSplit, const QStringList& labelFontSplit, const QStringList& labelBufferSizeSplit,
     const QStringList& labelBufferColorSplit )
 {
@@ -366,8 +366,8 @@ QgsVectorLayer* QgsWmsConfigParser::createHighlightLayer( int i, const QString& 
     return 0;
   }
 
-  QgsWkbTypes::GeometryType geomType = geom->type();
-  QString typeName = QString( QgsWkbTypes::displayString( geom->wkbType() ) ).replace( QLatin1String( "WKB" ), QLatin1String( "" ) );
+  QgsWkbTypes::GeometryType geomType = geom.type();
+  QString typeName = QString( QgsWkbTypes::displayString( geom.wkbType() ) ).replace( QLatin1String( "WKB" ), QLatin1String( "" ) );
   QString url = typeName + "?crs=" + crsString;
   if ( !labelString.isEmpty() )
   {
@@ -391,7 +391,7 @@ QgsVectorLayer* QgsWmsConfigParser::createHighlightLayer( int i, const QString& 
     fet.setAttribute( 0, labelString );
     if ( geomType == QgsWkbTypes::PolygonGeometry )
     {
-      QgsGeometry point = geom->pointOnSurface();
+      QgsGeometry point = geom.pointOnSurface();
       if ( point )
       {
         QgsPoint pt = point.asPoint();
@@ -472,8 +472,7 @@ QgsVectorLayer* QgsWmsConfigParser::createHighlightLayer( int i, const QString& 
     layer->setCustomProperty( QStringLiteral( "labeling/placement" ), placement );
   }
 
-  fet.setGeometry( *geom );
-  delete geom;
+  fet.setGeometry( geom );
   layer->dataProvider()->addFeatures( QgsFeatureList() << fet );
   return layer;
 }
