@@ -2300,6 +2300,17 @@ tests:
         name: expected/zonal_statistics.gml
         type: vector
 
+  - algorithm: qgis:fixgeometries
+    name: Fix geometries
+    params:
+      INPUT:
+        name: invalidgeometries.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/valid.gml
+        type: vector
+
   - algorithm: qgis:polygonize
     name: Polygonize
     params:
