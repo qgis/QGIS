@@ -1769,9 +1769,9 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( const QgsVectorLay
   connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
   connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
 
-#if 0
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol = new QgsMarkerSymbol();
+#if 0
   if ( vectorLayer() )
     mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
 #endif
