@@ -469,7 +469,16 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Must be implemented by providers that support saving and loading styles to db returning true
      */
     virtual bool isSaveAndLoadStyleToDBSupported() const;
+
+    /**
+     * It returns false by default.
+     * Must be implemented by providers that support delete styles from db returning true
+     */
     virtual bool isDeleteStyleFromDBSupported() const;
+
+    /**
+     * Deletes an existing style from the provider
+     */
     virtual void deleteStyleById( const QString& uri, QString styleId, QString& errCause );
 
     static QVariant convertValue( QVariant::Type type, const QString& value );
