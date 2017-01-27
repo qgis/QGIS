@@ -1576,6 +1576,9 @@ QgsRasterInterface        {#qgis_api_break_3_0_QgsRasterInterface}
 QgsRasterLayer        {#qgis_api_break_3_0_QgsRasterLayer}
 --------------
 
+- The constructor variant with loadDefaultStyleFlag as the 3rd parameter was removed. Use the
+constructor variant which accepts a data provider string and loadDefaultStyleFlag as the
+4th parameter instead.
 - setDrawingStyle() was removed. Use setRendererForDrawingStyle() or setRenderer() instead.
 - previewAsPixmap() was removed. Use previewAsImage() instead.
 - updateProgress() had no effect and was removed.

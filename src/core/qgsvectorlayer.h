@@ -453,7 +453,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      */
     QgsVectorLayer( const QString& path = QString::null, const QString& baseName = QString::null,
-                    const QString& providerLib = QString::null, bool loadDefaultStyleFlag = true );
+                    const QString& providerLib = "ogr", bool loadDefaultStyleFlag = true );
 
 
     virtual ~QgsVectorLayer();

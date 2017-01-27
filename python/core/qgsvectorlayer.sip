@@ -357,7 +357,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      *
      */
     QgsVectorLayer( const QString& path = QString::null, const QString& baseName = QString::null,
-                    const QString& providerLib = QString::null, bool loadDefaultStyleFlag = true );
+                    const QString& providerLib = "ogr", bool loadDefaultStyleFlag = true );
 
     /** Destructor */
     virtual ~QgsVectorLayer();
