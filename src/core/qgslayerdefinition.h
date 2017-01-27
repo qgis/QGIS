@@ -17,10 +17,17 @@
 
 
 #include "qgis_core.h"
+
 #include <QString>
+#include <QVector>
+
+class QDomNode;
+class QDomDocument;
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
+class QgsMapLayer;
+class QgsProject;
 
 /** \ingroup core
  * @brief The QgsLayerDefinition class holds generic methods for loading/exporting QLR files.
@@ -32,14 +39,33 @@ class QgsLayerTreeNode;
 class CORE_EXPORT QgsLayerDefinition
 {
   public:
-    //! Loads the QLR at path into QGIS.  New layers are added to rootGroup and the map layer registry
-    static bool loadLayerDefinition( const QString & path, QgsLayerTreeGroup* rootGroup, QString &errorMessage );
-    //! Loads the QLR from the XML document.  New layers are added to rootGroup and the map layer registry
-    static bool loadLayerDefinition( QDomDocument doc, QgsLayerTreeGroup* rootGroup, QString &errorMessage );
+    //! Loads the QLR at path into QGIS.  New layers are added to given project into layer tree specified by rootGroup
+    static bool loadLayerDefinition( const QString & path, QgsProject* project, QgsLayerTreeGroup* rootGroup, QString &errorMessage );
+    //! Loads the QLR from the XML document.  New layers are added to given project into layer tree specified by rootGroup
+    static bool loadLayerDefinition( QDomDocument doc, QgsProject* project, QgsLayerTreeGroup* rootGroup, QString &errorMessage );
     //! Export the selected layer tree nodes to a QLR file
     static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage );
     //! Export the selected layer tree nodes to a QLR-XML document
     static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage, const QString& relativeBasePath = QString::null );
+
+    /** Returns the given layer as a layer definition document
+     *  Layer definitions store the data source as well as styling and custom properties.
+     *
+     *  Layer definitions can be used to load a layer and styling all from a single file.
+     *
+     *  This is a low-level routine that does not write layer tree.
+     *  @see exportLayerDefinition()
+     */
+    static QDomDocument exportLayerDefinitionLayers( const QList<QgsMapLayer*>& layers, const QString& relativeBasePath = QString::null );
+
+    //! Creates new layers from a layer definition document.
+    //! This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins
+    //! @see loadLayerDefinition()
+    static QList<QgsMapLayer*> loadLayerDefinitionLayers( QDomDocument& document );
+    //! Creates new layers from a layer definition file (.QLR)
+    //! This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins
+    //! @see loadLayerDefinition()
+    static QList<QgsMapLayer*> loadLayerDefinitionLayers( const QString &qlrfile );
 
     /**
      * \ingroup core

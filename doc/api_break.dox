@@ -1181,6 +1181,12 @@ QgsLabelingEngineInterface        {#qgis_api_break_3_0_QgsLabelingEngineInterfac
 - labelsWithinRect() was removed. Use takeResults() and methods of QgsLabelingResults.
 
 
+QgsLayerDefinition        {#qgis_api_break_3_0_QgsLayerDefinition}
+------------------
+
+- loadLayerDefinition() now also requires QgsProject as the second argument
+
+
 QgsLayerPropertiesWidget        {#qgis_api_break_3_0_QgsLayerPropertiesWidget}
 ------------------------
 
@@ -1298,6 +1304,7 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 - readLayerXML() was renamed to readLayerXml()
 - writeLayerXML() was renamed to writeLayerXml()
 - capitaliseLayerName() was renamed to capitalizeLayerName() <!--#spellok-->
+- asLayerDefinition(), fromLayerDefinition(), fromLayerDefinitionFile() were moved to QgsLayerDefinition class and renamed to exportLayerDefinitionLayers() resp. loadLayerDefinitionLayers()
 
 
 QgsMapLayerRegistry        {#qgis_api_break_3_0_QgsMapLayerRegistry}
