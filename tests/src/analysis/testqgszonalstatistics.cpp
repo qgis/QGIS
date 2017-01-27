@@ -143,14 +143,14 @@ void TestQgsZonalStatistics::testStatistics()
   QVERIFY( fetched );
   QCOMPARE( f.attribute( "myqgis2_co" ).toDouble(), 12.0 );
   QCOMPARE( f.attribute( "myqgis2_su" ).toDouble(), 8.0 );
-  //QCOMPARE( f.attribute( "myqgis2_me" ).toDouble(), 0.666666666666667 );
-  //QCOMPARE( f.attribute( "myqgis2__1" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2_me" ).toDouble(), 0.666666666666667 );
+  QCOMPARE( f.attribute( "myqgis2__1" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "myqgis2_st" ).toDouble(), 0.47140452079103201 );
-  //QCOMPARE( f.attribute( "myqgis2_mi" ).toDouble(), 0.0 );
-  //QCOMPARE( f.attribute( "myqgis2_ma" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2_mi" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "myqgis2_ma" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "myqgis2_ra" ).toDouble(), 1.0 );
-  //QCOMPARE( f.attribute( "myqgis2__2" ).toDouble(), 0.0 );
-  //QCOMPARE( f.attribute( "myqgis2__3" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2__2" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "myqgis2__3" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "myqgis2_va" ).toDouble(), 2.0 );
 
   request.setFilterFid( 1 );
@@ -158,14 +158,14 @@ void TestQgsZonalStatistics::testStatistics()
   QVERIFY( fetched );
   QCOMPARE( f.attribute( "myqgis2_co" ).toDouble(), 9.0 );
   QCOMPARE( f.attribute( "myqgis2_su" ).toDouble(), 5.0 );
-  //QCOMPARE( f.attribute( "myqgis2_me" ).toDouble(), 0.555555555555556 );
-  //QCOMPARE( f.attribute( "myqgis2__1" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2_me" ).toDouble(), 0.555555555555556 );
+  QCOMPARE( f.attribute( "myqgis2__1" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "myqgis2_st" ).toDouble(), 0.49690399499995302 );
-  //QCOMPARE( f.attribute( "myqgis2_mi" ).toDouble(), 0.0 );
-  //QCOMPARE( f.attribute( "myqgis2_ma" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2_mi" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "myqgis2_ma" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "myqgis2_ra" ).toDouble(), 1.0 );
-  //QCOMPARE( f.attribute( "myqgis2__2" ).toDouble(), 0.0 );
-  //QCOMPARE( f.attribute( "myqgis2__3" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2__2" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "myqgis2__3" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "myqgis2_va" ).toDouble(), 2.0 );
 
   request.setFilterFid( 2 );
@@ -173,14 +173,14 @@ void TestQgsZonalStatistics::testStatistics()
   QVERIFY( fetched );
   QCOMPARE( f.attribute( "myqgis2_co" ).toDouble(), 6.0 );
   QCOMPARE( f.attribute( "myqgis2_su" ).toDouble(), 5.0 );
-  //QCOMPARE( f.attribute( "myqgis2_me" ).toDouble(), 0.833333333333333 );
-  //QCOMPARE( f.attribute( "myqgis2__1" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2_me" ).toDouble(), 0.833333333333333 );
+  QCOMPARE( f.attribute( "myqgis2__1" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "myqgis2_st" ).toDouble(), 0.372677996249965 );
-  //QCOMPARE( f.attribute( "myqgis2_mi" ).toDouble(), 0.0 );
-  //QCOMPARE( f.attribute( "myqgis2_ma" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2_mi" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "myqgis2_ma" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "myqgis2_ra" ).toDouble(), 1.0 );
-  //QCOMPARE( f.attribute( "myqgis2__2" ).toDouble(), 0.0 );
-  //QCOMPARE( f.attribute( "myqgis2__3" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2__2" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "myqgis2__3" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "myqgis2_va" ).toDouble(), 2.0 );
 }
 

@@ -28,6 +28,7 @@ class QgsGeometry;
 class QgsVectorLayer;
 class QProgressDialog;
 class QgsRectangle;
+class QgsField;
 
 /** \ingroup analysis
  *  A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes*/
@@ -123,7 +124,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     //! Tests whether a pixel's value should be included in the result
     bool validPixel( float value ) const;
 
-    QString getUniqueFieldName( const QString& fieldName );
+    QString getUniqueFieldName( const QString& fieldName, const QList<QgsField>& newFields );
 
     QString mRasterFilePath;
     //! Raster band to calculate statistics from (defaults to 1)
