@@ -10,7 +10,6 @@ ENDIF (WITH_SERVER)
 
 ADD_PYTHON_TEST(PyQgsActionManager test_qgsactionmanager.py)
 ADD_PYTHON_TEST(PyQgsAggregateCalculator test_qgsaggregatecalculator.py)
-ADD_PYTHON_TEST(PyQgsAnalysis test_qgsanalysis.py)
 ADD_PYTHON_TEST(PyQgsApplication test_qgsapplication.py)
 ADD_PYTHON_TEST(PyQgsAtlasComposition test_qgsatlascomposition.py)
 ADD_PYTHON_TEST(PyQgsAttributeFormEditorWidget test_qgsattributeformeditorwidget.py)

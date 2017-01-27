@@ -84,7 +84,7 @@ void TestQgsZonalStatistics::cleanupTestCase()
 
 void TestQgsZonalStatistics::testStatistics()
 {
-  QgsZonalStatistics zs( mVectorLayer, mRasterPath, QLatin1String( "" ), 1 );
+  QgsZonalStatistics zs( mVectorLayer, mRasterPath, QLatin1String( "" ), 1, QgsZonalStatistics::All );
   zs.calculateStatistics( nullptr );
 
   QgsFeature f;
@@ -95,6 +95,14 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "count" ).toDouble(), 12.0 );
   QCOMPARE( f.attribute( "sum" ).toDouble(), 8.0 );
   QCOMPARE( f.attribute( "mean" ).toDouble(), 0.666666666666667 );
+  QCOMPARE( f.attribute( "median" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "stdev" ).toDouble(), 0.47140452079103201 );
+  QCOMPARE( f.attribute( "min" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "max" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "range" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "minority" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "majority" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "variety" ).toDouble(), 2.0 );
 
   request.setFilterFid( 1 );
   fetched = mVectorLayer->getFeatures( request ).nextFeature( f );
@@ -102,6 +110,14 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "count" ).toDouble(), 9.0 );
   QCOMPARE( f.attribute( "sum" ).toDouble(), 5.0 );
   QCOMPARE( f.attribute( "mean" ).toDouble(), 0.555555555555556 );
+  QCOMPARE( f.attribute( "median" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "stdev" ).toDouble(), 0.49690399499995302 );
+  QCOMPARE( f.attribute( "min" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "max" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "range" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "minority" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "majority" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "variety" ).toDouble(), 2.0 );
 
   request.setFilterFid( 2 );
   fetched = mVectorLayer->getFeatures( request ).nextFeature( f );
@@ -109,9 +125,17 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "count" ).toDouble(), 6.0 );
   QCOMPARE( f.attribute( "sum" ).toDouble(), 5.0 );
   QCOMPARE( f.attribute( "mean" ).toDouble(), 0.833333333333333 );
+  QCOMPARE( f.attribute( "median" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "stdev" ).toDouble(), 0.372677996249965 );
+  QCOMPARE( f.attribute( "min" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "max" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "range" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "minority" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "majority" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "variety" ).toDouble(), 2.0 );
 
   // same with long prefix to ensure that field name truncation handled correctly
-  QgsZonalStatistics zsl( mVectorLayer, mRasterPath, QStringLiteral( "myqgis2_" ), 1 );
+  QgsZonalStatistics zsl( mVectorLayer, mRasterPath, QStringLiteral( "myqgis2_" ), 1, QgsZonalStatistics::All );
   zsl.calculateStatistics( nullptr );
 
   request.setFilterFid( 0 );
@@ -120,6 +144,14 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "myqgis2_co" ).toDouble(), 12.0 );
   QCOMPARE( f.attribute( "myqgis2_su" ).toDouble(), 8.0 );
   QCOMPARE( f.attribute( "myqgis2_me" ).toDouble(), 0.666666666666667 );
+  QCOMPARE( f.attribute( "myqgis2__1" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2_st" ).toDouble(), 0.47140452079103201 );
+  QCOMPARE( f.attribute( "myqgis2_mi" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "myqgis2_ma" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2_ra" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2__2" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "myqgis2__3" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2_va" ).toDouble(), 2.0 );
 
   request.setFilterFid( 1 );
   fetched = mVectorLayer->getFeatures( request ).nextFeature( f );
@@ -127,6 +159,14 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "myqgis2_co" ).toDouble(), 9.0 );
   QCOMPARE( f.attribute( "myqgis2_su" ).toDouble(), 5.0 );
   QCOMPARE( f.attribute( "myqgis2_me" ).toDouble(), 0.555555555555556 );
+  QCOMPARE( f.attribute( "myqgis2__1" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2_st" ).toDouble(), 0.49690399499995302 );
+  QCOMPARE( f.attribute( "myqgis2_mi" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "myqgis2_ma" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2_ra" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2__2" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "myqgis2__3" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2_va" ).toDouble(), 2.0 );
 
   request.setFilterFid( 2 );
   fetched = mVectorLayer->getFeatures( request ).nextFeature( f );
@@ -134,6 +174,14 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "myqgis2_co" ).toDouble(), 6.0 );
   QCOMPARE( f.attribute( "myqgis2_su" ).toDouble(), 5.0 );
   QCOMPARE( f.attribute( "myqgis2_me" ).toDouble(), 0.833333333333333 );
+  QCOMPARE( f.attribute( "myqgis2__1" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2_st" ).toDouble(), 0.372677996249965 );
+  QCOMPARE( f.attribute( "myqgis2_mi" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "myqgis2_ma" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2_ra" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2__2" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "myqgis2__3" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "myqgis2_va" ).toDouble(), 2.0 );
 }
 
 QGSTEST_MAIN( TestQgsZonalStatistics )
