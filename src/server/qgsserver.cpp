@@ -353,15 +353,15 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
       QString configFilePath = configPath( *sConfigFilePath, parameterMap );
 
       // load the project if needed and not empty
-      auto projectIt = mProjectStore.find( configFilePath );
-      if ( projectIt == mProjectStore.constEnd() )
+      auto projectIt = mProjectRegistry.find( configFilePath );
+      if ( projectIt == mProjectRegistry.constEnd() )
       {
         // load the project
         QgsProject* project = new QgsProject();
         project->setFileName( configFilePath );
         if ( project->read() )
         {
-          projectIt = mProjectStore.insert( configFilePath, project );
+          projectIt = mProjectRegistry.insert( configFilePath, project );
         }
         else
         {

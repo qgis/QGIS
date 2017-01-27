@@ -133,7 +133,7 @@ class SERVER_EXPORT QgsServer
     static QgsServerSettings sSettings;
 
     // map of QgsProject
-    QMap<QString, const QgsProject*> mProjectStore;
+    QMap<QString, const QgsProject*> mProjectRegistry;
 };
 #endif // QGSSERVER_H
 
