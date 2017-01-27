@@ -242,7 +242,7 @@ class QgsWmsServer: public QgsOWSServer
 
     void appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats );
 
-    /** Checks WIDTH/HEIGHT values agains MaxWidth and MaxHeight
+    /** Checks WIDTH/HEIGHT values against MaxWidth and MaxHeight
       @return true if width/height values are okay*/
     bool checkMaximumWidthHeight() const;
 
@@ -265,7 +265,7 @@ class QgsWmsServer: public QgsOWSServer
 
     bool mOwnsConfigParser; //delete config parser after request (e.g. sent SLD)
 
-    // speficy if layer or rule item labels should be drawn in the legend graphic with GetLegendGraphics
+    // specify if layer or rule item labels should be drawn in the legend graphic with GetLegendGraphics
     bool mDrawLegendLayerLabel;
     bool mDrawLegendItemLabel;
 
