@@ -267,7 +267,7 @@ class BatchPanel(BASE, WIDGET):
                         self.parent.lblProgress.setText(
                             self.tr('<b>Missing parameter value: %s (row %d)</b>') % (param.description, row + 1))
                         return
-                    algParams[param.name] = unicode(param.value())
+                    algParams[param.name] = unicode(param.value)
                 col += 1
             for out in alg.outputs:
                 if out.hidden:
