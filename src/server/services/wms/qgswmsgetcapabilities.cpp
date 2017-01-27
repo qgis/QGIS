@@ -275,7 +275,7 @@ namespace QgsWms
     //add the xml content for the individual layers/styles
     QString wmsServiceUrl = QgsServerProjectUtils::wmsServiceUrl( *project );
     configParser->layersAndStylesCapabilities( capabilityElement, doc, version,
-                                               wmsServiceUrl, projectSettings );
+        wmsServiceUrl, projectSettings );
 
     return doc;
   }
