@@ -231,7 +231,9 @@ bool QgsComposerTableV2::readXml( const QDomElement &itemElem, const QDomDocumen
       if ( !styleList.isEmpty() )
       {
         QDomElement styleElem = styleList.at( 0 ).toElement();
-        mCellStyles.value( it.key() )->readXml( styleElem );
+        QgsComposerTableStyle* style = mCellStyles.value( it.key() );
+        if ( style )
+          style->readXml( styleElem );
       }
     }
   }
@@ -1225,24 +1227,33 @@ QString QgsComposerTableV2::wrappedText( const QString &value, double columnWidt
 QColor QgsComposerTableV2::backgroundColor( int row, int column ) const
 {
   QColor color = mBackgroundColor;
-  if ( mCellStyles.value( OddColumns )->enabled && column % 2 == 0 )
-    color = mCellStyles.value( OddColumns )->cellBackgroundColor;
-  if ( mCellStyles.value( EvenColumns )->enabled && column % 2 == 1 )
-    color = mCellStyles.value( EvenColumns )->cellBackgroundColor;
-  if ( mCellStyles.value( OddRows )->enabled && row % 2 == 0 )
-    color = mCellStyles.value( OddRows )->cellBackgroundColor;
-  if ( mCellStyles.value( EvenRows )->enabled && row % 2 == 1 )
-    color = mCellStyles.value( EvenRows )->cellBackgroundColor;
-  if ( mCellStyles.value( FirstColumn )->enabled && column == 0 )
-    color = mCellStyles.value( FirstColumn )->cellBackgroundColor;
-  if ( mCellStyles.value( LastColumn )->enabled && column == mColumns.count() - 1 )
-    color = mCellStyles.value( LastColumn )->cellBackgroundColor;
-  if ( mCellStyles.value( HeaderRow )->enabled && row == -1 )
-    color = mCellStyles.value( HeaderRow )->cellBackgroundColor;
-  if ( mCellStyles.value( FirstRow )->enabled && row == 0 )
-    color = mCellStyles.value( FirstRow )->cellBackgroundColor;
-  if ( mCellStyles.value( LastRow )->enabled && row == mTableContents.count() - 1 )
-    color = mCellStyles.value( LastRow )->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( OddColumns ) )
+    if ( style->enabled && column % 2 == 0 )
+      color = style->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( EvenColumns ) )
+    if ( style->enabled && column % 2 == 1 )
+      color = style->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( OddRows ) )
+    if ( style->enabled && row % 2 == 0 )
+      color = style->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( EvenRows ) )
+    if ( style->enabled && row % 2 == 1 )
+      color = style->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( FirstColumn ) )
+    if ( style->enabled && column == 0 )
+      color = style->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( LastColumn ) )
+    if ( style->enabled && column == mColumns.count() - 1 )
+      color = style->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( HeaderRow ) )
+    if ( style->enabled && row == -1 )
+      color = style->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( FirstRow ) )
+    if ( style->enabled && row == 0 )
+      color = style->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( LastRow ) )
+    if ( style->enabled && row == mTableContents.count() - 1 )
+      color = style->cellBackgroundColor;
 
   return color;
 }

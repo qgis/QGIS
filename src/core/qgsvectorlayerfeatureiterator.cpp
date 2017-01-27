@@ -746,10 +746,17 @@ void QgsVectorLayerFeatureIterator::addVirtualAttributes( QgsFeature& f )
 void QgsVectorLayerFeatureIterator::addExpressionAttribute( QgsFeature& f, int attrIndex )
 {
   QgsExpression* exp = mExpressionFieldInfo.value( attrIndex );
-  mExpressionContext->setFeature( f );
-  QVariant val = exp->evaluate( mExpressionContext.data() );
-  mSource->mFields.at( attrIndex ).convertCompatible( val );
-  f.setAttribute( attrIndex, val );
+  if ( exp )
+  {
+    mExpressionContext->setFeature( f );
+    QVariant val = exp->evaluate( mExpressionContext.data() );
+    mSource->mFields.at( attrIndex ).convertCompatible( val );
+    f.setAttribute( attrIndex, val );
+  }
+  else
+  {
+    f.setAttribute( attrIndex, QVariant() );
+  }
 }
 
 bool QgsVectorLayerFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )

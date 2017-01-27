@@ -2925,11 +2925,12 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
           params.insert( QStringLiteral( "featureType" ), featureTypeName );
           params.insert( QStringLiteral( "getFeatureInfoUrl" ), requestUrl.toString() );
           featureStore.setParams( params );
-          Q_FOREACH ( QgsFeatureId id, features.keys() )
+          QMap<QgsFeatureId, QgsFeature* >::const_iterator featIt = features.constBegin();
+          for ( ; featIt != features.constEnd(); ++featIt )
           {
-            QgsFeature * feature = features.value( id );
+            QgsFeature * feature = featIt.value();
 
-            QgsDebugMsg( QString( "feature id = %1 : %2 attributes" ).arg( id ).arg( feature->attributes().size() ) );
+            QgsDebugMsg( QString( "feature id = %1 : %2 attributes" ).arg( featIt.key() ).arg( feature->attributes().size() ) );
 
             if ( coordinateTransform.isValid() && feature->hasGeometry() )
             {

@@ -948,6 +948,10 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
     myRasterRenderer = myPseudoColorRenderer;
     myMinMaxOrigin = myPseudoColorRenderer->minMaxOrigin();
   }
+  else
+  {
+    return;
+  }
 
   Q_FOREACH ( int myBand, myBands )
   {

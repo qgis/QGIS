@@ -858,6 +858,10 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
       QgsGrassObject vectorObject( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset(), destName, QgsGrassObject::Vector );
       import = new QgsGrassVectorImport( vectorProvider, vectorObject ); // takes provider ownership
     }
+    else
+    {
+      return false;
+    }
 
     connect( import, SIGNAL( finished( QgsGrassImport* ) ), SLOT( onImportFinished( QgsGrassImport* ) ) );
 

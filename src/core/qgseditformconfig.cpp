@@ -520,10 +520,13 @@ QgsAttributeEditorElement* QgsEditFormConfig::attributeEditorElementFromDomEleme
     newElement = relElement;
   }
 
-  if ( elem.hasAttribute( QStringLiteral( "showLabel" ) ) )
-    newElement->setShowLabel( elem.attribute( QStringLiteral( "showLabel" ) ).toInt() );
-  else
-    newElement->setShowLabel( true );
+  if ( newElement )
+  {
+    if ( elem.hasAttribute( QStringLiteral( "showLabel" ) ) )
+      newElement->setShowLabel( elem.attribute( QStringLiteral( "showLabel" ) ).toInt() );
+    else
+      newElement->setShowLabel( true );
+  }
 
   return newElement;
 }

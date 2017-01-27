@@ -1216,6 +1216,7 @@ void TestQgsGrassProvider::edit()
         grassLayer->startEditing();
         grassProvider->startEditing( grassLayer );
 
+        Q_ASSERT( expectedLayer );
         expectedLayer->startEditing();
       }
 
@@ -1582,7 +1583,9 @@ bool TestQgsGrassProvider::compare( QMap<QString, QgsVectorLayer *> layers, bool
 {
   Q_FOREACH ( const QString & grassUri, layers.keys() )
   {
-    if ( !compare( grassUri, layers.value( grassUri ), ok ) )
+    QgsVectorLayer* layer = layers.value( grassUri );
+    Q_ASSERT( layer );
+    if ( !compare( grassUri, layer, ok ) )
     {
       reportRow( "comparison failed: " + grassUri );
     }

@@ -344,12 +344,8 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope* sc
 
   Q_FOREACH ( const QString& name, scope->filteredVariableNames() )
   {
-    QTreeWidgetItem* item;
-    if ( mVariableToItem.contains( qMakePair( scopeIndex, name ) ) )
-    {
-      item = mVariableToItem.value( qMakePair( scopeIndex, name ) );
-    }
-    else
+    QTreeWidgetItem* item = mVariableToItem.value( qMakePair( scopeIndex, name ) );
+    if ( !item )
     {
       item = new QTreeWidgetItem( scopeItem );
       mVariableToItem.insert( qMakePair( scopeIndex, name ), item );
