@@ -104,38 +104,6 @@ QgsRasterLayer::QgsRasterLayer()
   mValid = false;
 }
 
-QgsRasterLayer::QgsRasterLayer(
-  const QString& path,
-  const QString& baseName,
-  bool loadDefaultStyleFlag )
-    : QgsMapLayer( RasterLayer, baseName, path )
-    , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
-    , TRSTRING_NOT_SET( tr( "Not Set" ) )
-    , mDataProvider( nullptr )
-{
-  QgsDebugMsgLevel( "Entered", 4 );
-
-  // TODO, call constructor with provider key
-  init();
-  setDataProvider( QStringLiteral( "gdal" ) );
-  if ( !mValid ) return;
-
-  bool defaultLoadedFlag = false;
-  if ( mValid && loadDefaultStyleFlag )
-  {
-    loadDefaultStyle( defaultLoadedFlag );
-  }
-  if ( !defaultLoadedFlag )
-  {
-    setDefaultContrastEnhancement();
-  }
-  return;
-} // QgsRasterLayer ctor
-
-/**
- * @todo Rename into a general constructor when the old raster interface is retired
- * parameter dummy is just there to distinguish this function signature from the old non-provider one.
- */
 QgsRasterLayer::QgsRasterLayer( const QString & uri,
                                 const QString & baseName,
                                 const QString & providerKey,
