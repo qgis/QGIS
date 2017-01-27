@@ -78,7 +78,8 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
   mRasterBorderColorButton->setAllowAlpha( true );
   mRasterBorderColorButton->setContext( QStringLiteral( "composer " ) );
 
-  mMapComboBox->setComposition( legend->composition() );
+  if ( legend )
+    mMapComboBox->setComposition( legend->composition() );
   mMapComboBox->setItemType( QgsComposerItem::ComposerMap );
   connect( mMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( composerMapChanged( QgsComposerItem* ) ) );
 

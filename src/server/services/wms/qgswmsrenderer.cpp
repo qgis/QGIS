@@ -1013,7 +1013,7 @@ namespace QgsWms
         {
           layerElement = result.createElement( QStringLiteral( "Layer" ) );
           QString layerName =  currentLayer->name();
-          if ( mConfigParser && mConfigParser->useLayerIds() )
+          if ( mConfigParser->useLayerIds() )
             layerName = currentLayer->id();
           else if ( !currentLayer->shortName().isEmpty() )
             layerName = currentLayer->shortName();
@@ -1792,7 +1792,7 @@ namespace QgsWms
         if ( theMapLayer )
         {
           QString lName =  theMapLayer->name();
-          if ( mConfigParser && mConfigParser->useLayerIds() )
+          if ( mConfigParser->useLayerIds() )
             lName = theMapLayer->id();
           else if ( !theMapLayer->shortName().isEmpty() )
             lName = theMapLayer->shortName();

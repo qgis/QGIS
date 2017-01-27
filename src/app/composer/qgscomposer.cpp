@@ -3917,28 +3917,26 @@ void QgsComposer::cleanupAfterTemplateRead()
     {
       //test if composer map extent intersects extent of all layers
       bool intersects = false;
+      QgsMapCanvas* canvas = mQgis && mQgis->mapCanvas() ? mQgis->mapCanvas() : nullptr;
+
       QgsRectangle composerMapExtent = mapItem->extent();
-      if ( mQgis )
+      if ( canvas )
       {
-        QgsMapCanvas* canvas = mQgis->mapCanvas();
-        if ( canvas )
+        QgsRectangle mapCanvasExtent = mQgis->mapCanvas()->fullExtent();
+        if ( composerMapExtent.intersects( mapCanvasExtent ) )
         {
-          QgsRectangle mapCanvasExtent = mQgis->mapCanvas()->fullExtent();
-          if ( composerMapExtent.intersects( mapCanvasExtent ) )
-          {
-            intersects = true;
-          }
+          intersects = true;
         }
       }
 
       //if not: apply current canvas extent
-      if ( !intersects )
+      if ( canvas && !intersects )
       {
         double currentWidth = mapItem->rect().width();
         double currentHeight = mapItem->rect().height();
         if ( currentWidth - 0 > 0.0 ) //don't divide through zero
         {
-          QgsRectangle canvasExtent = mQgis->mapCanvas()->mapSettings().visibleExtent();
+          QgsRectangle canvasExtent = canvas->mapSettings().visibleExtent();
           //adapt min y of extent such that the size of the map item stays the same
           double newCanvasExtentHeight = currentHeight / currentWidth * canvasExtent.width();
           canvasExtent.setYMinimum( canvasExtent.yMaximum() - newCanvasExtentHeight );

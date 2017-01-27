@@ -106,10 +106,7 @@ namespace QgsWcs
     /*
      * Adding layer list in contentMetadataElement
      */
-    if ( configParser )
-    {
-      configParser->wcsContentMetadata( contentMetadataElement, doc );
-    }
+    configParser->wcsContentMetadata( contentMetadataElement, doc );
 
     return doc;
 

@@ -1248,7 +1248,7 @@ void QgsWmsProjectParser::addLayers( QDomDocument &doc,
       }
 
       QString layerName =  currentLayer->name();
-      if ( mProjectParser && mProjectParser->useLayerIds() )
+      if ( mProjectParser->useLayerIds() )
         layerName = currentLayer->id();
       else if ( !currentLayer->shortName().isEmpty() )
         layerName = currentLayer->shortName();
@@ -1626,7 +1626,7 @@ void QgsWmsProjectParser::addOWSLayers( QDomDocument &doc,
       layerElem.setAttribute( QStringLiteral( "opacity" ), 1 );
 
       QString lyrname =  currentLayer->name();
-      if ( mProjectParser && mProjectParser->useLayerIds() )
+      if ( mProjectParser->useLayerIds() )
         lyrname = currentLayer->id();
       else if ( !currentLayer->shortName().isEmpty() )
         lyrname = currentLayer->shortName();

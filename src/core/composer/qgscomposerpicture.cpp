@@ -819,7 +819,8 @@ bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocumen
     mDataDefinedProperties.setProperty( QgsComposerObject::PictureSource, QgsProperty::fromExpression( sourceExpression, expressionActive ) );
   }
 
-  mSourcePath = mComposition->project()->readPath( itemElem.attribute( QStringLiteral( "file" ) ) );
+  mSourcePath = mComposition ? mComposition->project()->readPath( itemElem.attribute( QStringLiteral( "file" ) ) )
+                : itemElem.attribute( QStringLiteral( "file" ) );
 
   //picture rotation
   if ( !qgsDoubleNear( itemElem.attribute( QStringLiteral( "pictureRotation" ), QStringLiteral( "0" ) ).toDouble(), 0.0 ) )

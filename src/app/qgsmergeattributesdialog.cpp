@@ -160,8 +160,9 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
       if ( eww )
       {
         eww->setValue( attrs.at( idx ) );
+        mTableWidget->setCellWidget( i + 1, j, eww->widget() );
+        mTableWidget->setCellWidget( i + 1, j, eww->widget() );
       }
-      mTableWidget->setCellWidget( i + 1, j, eww->widget() );
     }
   }
 
