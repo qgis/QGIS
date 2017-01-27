@@ -38,8 +38,7 @@ namespace QgsWms
    * @param projectSettings If true: add extended project information (does not validate against WMS schema)
    */
   QDomDocument getCapabilities( QgsServerInterface* serverIface, const QgsProject* project,
-                                const QString& version, const QgsServerRequest& request,
-                                bool projectSettings );
+                                const QString& version, const QgsServerRequest& request, bool projectSettings );
 
 
 } // samespace QgsWms
