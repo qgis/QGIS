@@ -473,7 +473,7 @@ QgsPointV2 QgsPointV2::project( double distance, double azimuth, double inclinat
 
     inclination = fmod( inclination, 360.0 );
 
-    if ( !is3D() && inclination == 90.0 )
+    if ( !is3D() && qgsDoubleNear(inclination, 90.0) )
     {
         dx = distance * sin( rads_xy );
         dy = distance * cos( rads_xy );
