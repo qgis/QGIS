@@ -809,12 +809,12 @@ QString QgsDataDefinedButton::unitsMmMuPercentDesc()
 
 QString QgsDataDefinedButton::colorNoAlphaDesc()
 {
-  return tr( "string [<b>r,g,b</b>] as int 0-255" );
+  return tr( "string [<b>r,g,b</b>] as int 0-255 or #<b>RRGGBB</b> as hex or <b>color</b> as color's name" );
 }
 
 QString QgsDataDefinedButton::colorAlphaDesc()
 {
-  return tr( "string [<b>r,g,b,a</b>] as int 0-255" );
+  return tr( "string [<b>r,g,b,a</b>] as int 0-255 or #<b>RRGGBBAA</b> as hex or <b>color</b> as color's name" );
 }
 
 QString QgsDataDefinedButton::textHorzAlignDesc()

@@ -86,12 +86,12 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString& name, const QString
 
     case ColorWithAlpha:
       mTypes = DataTypeString;
-      mHelpText = QObject::tr( "string [<b>r,g,b,a</b>] as int 0-255" );
+      mHelpText = QObject::tr( "string [<b>r,g,b,a</b>] as int 0-255 or #<b>RRGGBBAA</b> as hex or <b>color</b> as color's name" );
       break;
 
     case ColorNoAlpha:
       mTypes = DataTypeString;
-      mHelpText = QObject::tr( "string [<b>r,g,b</b>] as int 0-255" );
+      mHelpText = QObject::tr( "string [<b>r,g,b</b>] as int 0-255 or #<b>RRGGBB</b> as hex or <b>color</b> as color's name" );
       break;
 
     case PenJoinStyle:
