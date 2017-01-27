@@ -38,8 +38,6 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgspluginlayer.h"
-#include "qgspluginlayerregistry.h"
 #include "qgsprojectfiletransform.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
@@ -782,84 +780,6 @@ bool QgsMapLayer::writeLayerXml( QDomElement& layerElement, QDomDocument& docume
   return writeXml( layerElement, document );
 
 } // bool QgsMapLayer::writeXml
-
-QDomDocument QgsMapLayer::asLayerDefinition( const QList<QgsMapLayer *>& layers, const QString& relativeBasePath )
-{
-  QDomDocument doc( QStringLiteral( "qgis-layer-definition" ) );
-  QDomElement qgiselm = doc.createElement( QStringLiteral( "qlr" ) );
-  doc.appendChild( qgiselm );
-  QDomElement layerselm = doc.createElement( QStringLiteral( "maplayers" ) );
-  Q_FOREACH ( QgsMapLayer* layer, layers )
-  {
-    QDomElement layerelm = doc.createElement( QStringLiteral( "maplayer" ) );
-    layer->writeLayerXml( layerelm, doc, relativeBasePath );
-    layerselm.appendChild( layerelm );
-  }
-  qgiselm.appendChild( layerselm );
-  return doc;
-}
-
-QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document, bool addToRegistry, bool addToLegend )
-{
-  QList<QgsMapLayer*> layers;
-  QDomNodeList layernodes = document.elementsByTagName( QStringLiteral( "maplayer" ) );
-  for ( int i = 0; i < layernodes.size(); ++i )
-  {
-    QDomNode layernode = layernodes.at( i );
-    QDomElement layerElem = layernode.toElement();
-
-    QString type = layerElem.attribute( QStringLiteral( "type" ) );
-    QgsDebugMsg( type );
-    QgsMapLayer *layer = nullptr;
-
-    if ( type == QLatin1String( "vector" ) )
-    {
-      layer = new QgsVectorLayer;
-    }
-    else if ( type == QLatin1String( "raster" ) )
-    {
-      layer = new QgsRasterLayer;
-    }
-    else if ( type == QLatin1String( "plugin" ) )
-    {
-      QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
-      layer = QgsApplication::pluginLayerRegistry()->createLayer( typeName );
-    }
-
-    if ( !layer )
-      continue;
-
-    bool ok = layer->readLayerXml( layerElem );
-    if ( ok )
-    {
-      layers << layer;
-      if ( addToRegistry )
-        QgsProject::instance()->addMapLayer( layer, addToLegend );
-    }
-  }
-  return layers;
-}
-
-QList<QgsMapLayer *> QgsMapLayer::fromLayerDefinitionFile( const QString &qlrfile )
-{
-  QFile file( qlrfile );
-  if ( !file.open( QIODevice::ReadOnly ) )
-  {
-    QgsDebugMsg( "Can't open file" );
-    return QList<QgsMapLayer*>();
-  }
-
-  QDomDocument doc;
-  if ( !doc.setContent( &file ) )
-  {
-    QgsDebugMsg( "Can't set content" );
-    return QList<QgsMapLayer*>();
-  }
-
-  QFileInfo fileinfo( file );
-  QDir::setCurrent( fileinfo.absoluteDir().path() );
-  return QgsMapLayer::fromLayerDefinition( doc );
-}
 
 
 bool QgsMapLayer::writeXml( QDomNode & layer_node, QDomDocument & document ) const

@@ -5248,7 +5248,7 @@ void QgisApp::dwgImport()
 void QgisApp::openLayerDefinition( const QString & path )
 {
   QString errorMessage;
-  bool loaded = QgsLayerDefinition::loadLayerDefinition( path, QgsProject::instance()->layerTreeRoot(), errorMessage );
+  bool loaded = QgsLayerDefinition::loadLayerDefinition( path, QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMessage );
   if ( !loaded )
   {
     QgsDebugMsg( errorMessage );
