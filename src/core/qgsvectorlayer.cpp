@@ -77,7 +77,6 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsdiagramrenderer.h"
 #include "qgsstyle.h"
-#include "qgssymbologyconversion.h"
 #include "qgspallabeling.h"
 #include "qgssimplifymethod.h"
 #include "qgsexpressioncontext.h"
@@ -1841,14 +1840,6 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
       else
       {
         result = false;
-      }
-    }
-    else
-    {
-      QgsFeatureRenderer* r = QgsSymbologyConversion::readOldRenderer( node, geometryType() );
-      if ( r )
-      {
-        setRenderer( r );
       }
     }
 
