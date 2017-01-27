@@ -1776,7 +1776,7 @@ tests:
       OUTPUT:
         name: expected/grid_lines_overlay.gml
         type: vector
-         
+
   - algorithm: qgis:creategridpolygon
     name: Create grid (rectangle with overlay)
     params:
@@ -1794,7 +1794,7 @@ tests:
         compare:
           geometry:
             precision: 7
-        
+
   - algorithm: qgis:creategridpolygon
     name: Create grid (diamond with overlay)
     params:
@@ -1812,7 +1812,7 @@ tests:
         compare:
           geometry:
             precision: 7
-            
+
   - algorithm: qgis:creategridpolygon
     name: Create grid (hexagon with overlay)
     params:
@@ -1830,7 +1830,7 @@ tests:
         compare:
           geometry:
             precision: 7
-          
+
   - algorithm: qgis:deleteholes
     name: Delete holes (no min)
     params:
@@ -2298,6 +2298,17 @@ tests:
     results:
       OUTPUT_LAYER:
         name: expected/zonal_statistics.gml
+        type: vector
+
+  - algorithm: qgis:fixgeometries
+    name: Fix geometries
+    params:
+      INPUT:
+        name: invalidgeometries.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/valid.gml
         type: vector
 
   - algorithm: qgis:polygonize
