@@ -2,11 +2,10 @@
 
 """
 ***************************************************************************
-    Eliminate.py
-    Deprecated as of Jan 2017, use EliminateSelection instead
+    EliminateSelection.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2013 by Bernhard Ströbl
+    Date                 : January 2017
+    Copyright         : (C) 2017 by Bernhard Ströbl
     Email                : bernhard.stroebl@jena.de
 ***************************************************************************
 *                                                                         *
@@ -21,8 +20,8 @@ from builtins import str
 from builtins import range
 
 __author__ = 'Bernhard Ströbl'
-__date__ = 'September 2013'
-__copyright__ = '(C) 2013, Bernhard Ströbl'
+__date__ = 'January 2017'
+__copyright__ = '(C) 2017, Bernhard Ströbl'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
@@ -31,7 +30,6 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QLocale, QDate, QVariant
 
 from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry
 
@@ -39,9 +37,6 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
@@ -49,15 +44,11 @@ from processing.tools import dataobjects, vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class Eliminate(GeoAlgorithm):
+class EliminateSelection(GeoAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     MODE = 'MODE'
-    KEEPSELECTION = 'KEEPSELECTION'
-    ATTRIBUTE = 'ATTRIBUTE'
-    COMPARISONVALUE = 'COMPARISONVALUE'
-    COMPARISON = 'COMPARISON'
 
     MODE_LARGEST_AREA = 0
     MODE_SMALLEST_AREA = 1
@@ -65,15 +56,14 @@ class Eliminate(GeoAlgorithm):
 
     def __init__(self):
         GeoAlgorithm.__init__(self)
-        # this algorithm is deprecated - use EliminateSelection instead
-        self.showInToolbox = False
-        self.showInModeler = False
+        self.showInToolbox = True
+        self.showInModeler = True
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'eliminate.png'))
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Eliminate sliver polygons')
+        self.name, self.i18n_name = self.trAlgorithm('Eliminate selected polygons')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.modes = [self.tr('Largest area'),
@@ -82,151 +72,44 @@ class Eliminate(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addParameter(ParameterBoolean(self.KEEPSELECTION,
-                                           self.tr('Use current selection in input layer (works only if called from toolbox)'), False))
-        self.addParameter(ParameterTableField(self.ATTRIBUTE,
-                                              self.tr('Selection attribute'), self.INPUT))
-        self.comparisons = [
-            '==',
-            '!=',
-            '>',
-            '>=',
-            '<',
-            '<=',
-            'begins with',
-            'contains',
-        ]
-        self.addParameter(ParameterSelection(self.COMPARISON,
-                                             self.tr('Comparison'), self.comparisons, default=0))
-        self.addParameter(ParameterString(self.COMPARISONVALUE,
-                                          self.tr('Value'), default='0'))
         self.addParameter(ParameterSelection(self.MODE,
                                              self.tr('Merge selection with the neighbouring polygon with the'),
                                              self.modes))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Eliminated'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
         inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         boundary = self.getParameterValue(self.MODE) == self.MODE_BOUNDARY
         smallestArea = self.getParameterValue(self.MODE) == self.MODE_SMALLEST_AREA
-        keepSelection = self.getParameterValue(self.KEEPSELECTION)
         processLayer = vector.duplicateInMemory(inLayer)
 
-        if not keepSelection:
-            # Make a selection with the values provided
-            attribute = self.getParameterValue(self.ATTRIBUTE)
-            comparison = self.comparisons[self.getParameterValue(self.COMPARISON)]
-            comparisonvalue = self.getParameterValue(self.COMPARISONVALUE)
-
-            selectindex = vector.resolveFieldIndex(processLayer, attribute)
-            selectType = processLayer.fields()[selectindex].type()
-            selectionError = False
-
-            if selectType in [QVariant.Int, QVariant.LongLong, QVariant.UInt, QVariant.ULongLong]:
-                try:
-                    y = int(comparisonvalue)
-                except ValueError:
-                    selectionError = True
-                    msg = self.tr('Cannot convert "%s" to integer' % str(comparisonvalue))
-            elif selectType == QVariant.Double:
-                try:
-                    y = float(comparisonvalue)
-                except ValueError:
-                    selectionError = True
-                    msg = self.tr('Cannot convert "%s" to float' % str(comparisonvalue))
-            elif selectType == QVariant.String:
-                # 10: string, boolean
-                try:
-                    y = str(comparisonvalue)
-                except ValueError:
-                    selectionError = True
-                    msg = self.tr('Cannot convert "%s" to Unicode' % str(comparisonvalue))
-            elif selectType == QVariant.Date:
-                # date
-                dateAndFormat = comparisonvalue.split(' ')
-
-                if len(dateAndFormat) == 1:
-                    # QDate object
-                    y = QLocale.system().toDate(dateAndFormat[0])
-
-                    if y.isNull():
-                        msg = self.tr('Cannot convert "%s" to date with system date format %s' % (str(dateAndFormat), QLocale.system().dateFormat()))
-                elif len(dateAndFormat) == 2:
-                    y = QDate.fromString(dateAndFormat[0], dateAndFormat[1])
-
-                    if y.isNull():
-                        msg = self.tr('Cannot convert "%s" to date with format string "%s"' % (str(dateAndFormat[0]), dateAndFormat[1]))
-                else:
-                    y = QDate()
-                    msg = ''
-
-                if y.isNull():
-                    # Conversion was unsuccessful
-                    selectionError = True
-                    msg += self.tr('Enter the date and the date format, e.g. "07.26.2011" "MM.dd.yyyy".')
-
-            if (comparison == 'begins with' or comparison == 'contains') \
-               and selectType != QVariant.String:
-                selectionError = True
-                msg = self.tr('"%s" can only be used with string fields' % comparison)
-
-            selected = []
-
-            if selectionError:
-                raise GeoAlgorithmExecutionException(
-                    self.tr('Error in selection input: %s' % msg))
-            else:
-                for feature in processLayer.getFeatures():
-                    aValue = feature.attributes()[selectindex]
-
-                    if aValue is None:
-                        continue
-
-                    if selectType in [QVariant.Int, QVariant.LongLong, QVariant.UInt, QVariant.ULongLong]:
-                        x = int(aValue)
-                    elif selectType == QVariant.Double:
-                        x = float(aValue)
-                    elif selectType == QVariant.String:
-                        # 10: string, boolean
-                        x = str(aValue)
-                    elif selectType == QVariant.Date:
-                        # date
-                        x = aValue  # should be date
-
-                    match = False
-
-                    if comparison == '==':
-                        match = x == y
-                    elif comparison == '!=':
-                        match = x != y
-                    elif comparison == '>':
-                        match = x > y
-                    elif comparison == '>=':
-                        match = x >= y
-                    elif comparison == '<':
-                        match = x < y
-                    elif comparison == '<=':
-                        match = x <= y
-                    elif comparison == 'begins with':
-                        match = x.startswith(y)
-                    elif comparison == 'contains':
-                        match = x.find(y) >= 0
-
-                    if match:
-                        selected.append(feature.id())
-
-            processLayer.selectByIds(selected)
-
-        if processLayer.selectedFeatureCount() == 0:
+        if inLayer.selectedFeatureCount() == 0:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
                                    self.tr('%s: (No selection in input layer "%s")' % (self.commandLineName(), self.getParameterValue(self.INPUT))))
 
         # Keep references to the features to eliminate
         featToEliminate = []
-        for aFeat in processLayer.selectedFeatures():
+
+        for aFeat in inLayer.selectedFeatures():
             featToEliminate.append(aFeat)
 
-        # Delete all features to eliminate in processLayer (we won't save this)
+        # select and delete the features in ProcessLayer that are selected in inLayer
+        idsToEliminate = []
+
+        for aFeat in featToEliminate:
+            bbox = aFeat.geometry().boundingBox()
+            fit = processLayer.getFeatures(
+                    QgsFeatureRequest().setFilterRect(bbox).setSubsetOfAttributes([]))
+
+            selFeat = QgsFeature()
+
+            while fit.nextFeature(selFeat):
+                if aFeat.geometry().equals(selFeat.geometry()):
+                    idsToEliminate.append(selFeat.id())
+                    break
+
+        # Delete all features to eliminate in processLayer
+        processLayer.select(idsToEliminate)
         processLayer.startEditing()
         processLayer.deleteSelectedFeatures()
 
