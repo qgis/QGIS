@@ -379,7 +379,7 @@
   <action name="mActionReset">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mIconClear.svg</normaloff>:/images/themes/default/mIconClear.svg</iconset>
+     <normaloff>:/images/themes/default/mIconClearText.svg</normaloff>:/images/themes/default/mIconClearText.svg</iconset>
    </property>
    <property name="text">
     <string>Reset Georeferencer</string>

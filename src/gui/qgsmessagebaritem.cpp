@@ -98,7 +98,7 @@ void QgsMessageBarItem::writeContent()
   }
   else
   {
-    QString msgIcon( QStringLiteral( "/mIconInfo.png" ) );
+    QString msgIcon( QStringLiteral( "/mIconInfo.svg" ) );
     switch ( mLevel )
     {
       case QgsMessageBar::CRITICAL:

@@ -160,12 +160,10 @@
         <file>themes/default/mActionCapturePolygon.svg</file>
         <file>themes/default/mActionNewTableRow.svg</file>
         <file>themes/default/mActionChangeLabelProperties.svg</file>
-        <file>themes/default/mActionCheckQgisVersion.svg</file>
         <file>themes/default/mActionCollapseTree.svg</file>
         <file>themes/default/mActionComposerManager.svg</file>
         <file>themes/default/mActionConditionalFormatting.svg</file>
         <file>themes/default/mActionContextHelp.png</file>
-        <file>themes/default/mActionCopySelected.png</file>
         <file>themes/default/mActionCreateMemory.svg</file>
         <file>themes/default/mActionCustomProjection.svg</file>
         <file>themes/default/mActionDecreaseBrightness.svg</file>
@@ -199,11 +197,12 @@
         <file>themes/default/mActionFullCumulativeCutStretch.svg</file>
         <file>themes/default/mActionFullHistogramStretch.svg</file>
         <file>themes/default/mActionGroupItems.svg</file>
-        <file>themes/default/mActionHelpAbout.png</file>
+        <file>themes/default/mActionHelpAbout.svg</file>
         <file>themes/default/mActionHelpContents.svg</file>
         <file>themes/default/mActionHelpSponsors.png</file>
         <file>themes/default/mActionHideAllLayers.svg</file>
-        <file>themes/default/mActionHideSelectedLayers.png</file>
+        <file>themes/default/mActionHideSelectedLayers.svg</file>
+        <file>themes/default/mActionHideDeselectedLayers.svg</file>
         <file>themes/default/mActionHistory.svg</file>
         <file>themes/default/mActionHtmlAnnotation.svg</file>
         <file>themes/default/mActionIdentify.svg</file>
@@ -288,7 +287,7 @@
         <file>themes/default/mActionShowPinnedLabels.svg</file>
         <file>themes/default/mActionShowPluginManager.svg</file>
         <file>themes/default/mActionShowRasterCalculator.png</file>
-        <file>themes/default/mActionShowSelectedLayers.png</file>
+        <file>themes/default/mActionShowSelectedLayers.svg</file>
         <file>themes/default/mActionSimplify.svg</file>
         <file>themes/default/mActionSplitFeatures.svg</file>
         <file>themes/default/mActionSplitParts.svg</file>
@@ -319,8 +318,7 @@
         <file>themes/default/mIconCertificateMissing.svg</file>
         <file>themes/default/mIconCertificateTrusted.svg</file>
         <file>themes/default/mIconCertificateUntrusted.svg</file>
-        <file>themes/default/mIconClear.svg</file>
-        <file>themes/default/mIconCollapse.png</file>
+        <file>themes/default/mIconCollapse.svg</file>
         <file>themes/default/mIconCollapseSmall.svg</file>
         <file>themes/default/mIconColorBox.svg</file>
         <file>themes/default/mIconColorPicker.svg</file>
@@ -341,7 +339,7 @@
         <file>themes/default/mIconDeselected.svg</file>
         <file>themes/default/mIconDropDownMenu.svg</file>
         <file>themes/default/mIconEditableEdits.svg</file>
-        <file>themes/default/mIconExpand.png</file>
+        <file>themes/default/mIconExpand.svg</file>
         <file>themes/default/mIconExpandSmall.svg</file>
         <file>themes/default/mIconExpression.svg</file>
         <file>themes/default/mIconExpressionFilter.svg</file>
@@ -354,7 +352,7 @@
         <file>themes/default/mIconFieldInteger.svg</file>
         <file>themes/default/mIconFieldText.svg</file>
         <file>themes/default/mIconFieldTime.svg</file>
-        <file>themes/default/mIconInfo.png</file>
+        <file>themes/default/mIconInfo.svg</file>
         <file>themes/default/mIconImport.gif</file>
         <file>themes/default/mIconLabelQuadrantCenter.svg</file>
         <file>themes/default/mIconLabelQuadrantOffset.svg</file>
@@ -428,7 +426,7 @@
         <file>themes/default/propertyicons/plugin-upgrade.svg</file>
         <file>themes/default/propertyicons/plugins.svg</file>
         <file>themes/default/propertyicons/pyramids.png</file>
-        <file>themes/default/propertyicons/rendering.png</file>
+        <file>themes/default/propertyicons/rendering.svg</file>
         <file>themes/default/propertyicons/render.svg</file>
         <file>themes/default/propertyicons/settings.svg</file>
         <file>themes/default/propertyicons/stylepreset.svg</file>
@@ -501,7 +499,7 @@
         <file>themes/default/cadtools/lock.png</file>
         <file>themes/default/cadtools/parallel.png</file>
         <file>themes/default/cadtools/perpendicular.png</file>
-        <file>themes/default/mIconSuccess.png</file>
+        <file>themes/default/mIconSuccess.svg</file>
         <file>themes/default/mIconWarning.svg</file>
         <file>themes/default/mIconPaintEffects.svg</file>
         <file>themes/default/mActionCircularStringCurvePoint.svg</file>

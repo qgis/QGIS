@@ -1654,7 +1654,7 @@
   <action name="mActionCheckQgisVersion">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCheckQgisVersion.svg</normaloff>:/images/themes/default/mActionCheckQgisVersion.svg</iconset>
+     <normaloff>:/images/themes/default/mIconSuccess.svg</normaloff>:/images/themes/default/mIconSuccess.svg</iconset>
    </property>
    <property name="text">
     <string>Check QGIS Version</string>
@@ -1666,7 +1666,7 @@
   <action name="mActionAbout">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionHelpAbout.png</normaloff>:/images/themes/default/mActionHelpAbout.png</iconset>
+     <normaloff>:/images/themes/default/mActionHelpAbout.svg</normaloff>:/images/themes/default/mActionHelpAbout.svg</iconset>
    </property>
    <property name="text">
     <string>About</string>
@@ -1829,7 +1829,7 @@ Ctrl (Cmd) increments by 15 deg.</string>
   <action name="mActionDecorationScaleBar">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionScaleBar.svg</normaloff>:/images/themes/default/scale_bar.png</iconset>
+     <normaloff>:/images/themes/default/mActionScaleBar.svg</normaloff>:/images/themes/default/mActionScaleBar.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Scale Bar</string>
@@ -2413,7 +2413,7 @@ Acts on currently active editable layer</string>
   <action name="mActionShowSelectedLayers">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionShowSelectedLayers.png</normaloff>:/images/themes/default/mActionShowSelectedLayers.png</iconset>
+     <normaloff>:/images/themes/default/mActionShowSelectedLayers.svg</normaloff>:/images/themes/default/mActionShowSelectedLayers.svg</iconset>
    </property>
    <property name="text">
     <string>Show Selected Layers</string>
@@ -2422,7 +2422,7 @@ Acts on currently active editable layer</string>
   <action name="mActionHideSelectedLayers">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionHideSelectedLayers.png</normaloff>:/images/themes/default/mActionHideSelectedLayers.png</iconset>
+     <normaloff>:/images/themes/default/mActionHideSelectedLayers.svg</normaloff>:/images/themes/default/mActionHideSelectedLayers.svg</iconset>
    </property>
    <property name="text">
     <string>Hide Selected Layers</string>
@@ -2431,7 +2431,7 @@ Acts on currently active editable layer</string>
   <action name="mActionHideDeselectedLayers">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionHideSelectedLayers.png</normaloff>:/images/themes/default/mActionHideSelectedLayers.png</iconset>
+     <normaloff>:/images/themes/default/mActionHideDeselectedLayers.svg</normaloff>:/images/themes/default/mActionHideDeselectedLayers.svg</iconset>
    </property>
    <property name="text">
     <string>Hide Deselected Layers</string>
