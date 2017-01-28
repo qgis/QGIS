@@ -15,6 +15,7 @@
 
 #include "qgsloadstylefromdbdialog.h"
 #include "qgslogger.h"
+#include "qgisapp.h"
 
 #include <QSettings>
 #include <QMessageBox>
@@ -25,7 +26,7 @@ QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
     , mSectionLimit( 0 )
 {
   setupUi( this );
-  setWindowTitle( QStringLiteral( "Saved styles manager" ) );
+  setWindowTitle( QStringLiteral( "Database styles manager" ) );
   mSelectedStyleId = QLatin1String( "" );
   mSelectedStyleName = QLatin1String( "" );
 
@@ -135,14 +136,13 @@ void QgsLoadStyleFromDBDialog::otherTableSelectionChanged()
   //deselect any other row on the other table widget
   QTableWidgetSelectionRange range( 0, 0, mRelatedTable->rowCount() - 1, mRelatedTable->columnCount() - 1 );
   mRelatedTable->setRangeSelected( range, false );
-
 }
 
 void QgsLoadStyleFromDBDialog::selectionChanged( QTableWidget *styleTable )
 {
   QTableWidgetItem *item;
   QList<QTableWidgetItem *> selected = styleTable->selectedItems();
-  //QgsDebugMsg( QString( "itemSelectionChanged(): count() = %1" ).arg( selected.count() )  );
+
   if ( selected.count() > 0 )
   {
     item = selected.at( 0 );
@@ -163,8 +163,7 @@ void QgsLoadStyleFromDBDialog::selectionChanged( QTableWidget *styleTable )
 void QgsLoadStyleFromDBDialog::deleteStyleFromDB()
 {
   QString uri, msgError;
-  QString infoWindowTitle = QObject::tr( "Delete style %1 from %2" ).arg( mSelectedStyleName, mLayer->providerType() );
-  //QgsDebugMsg( QString( "Delete style: %1 " ).arg( mSelectedStyleName ) );
+  QString opInfo = QObject::tr( "Delete style %1 from %2" ).arg( mSelectedStyleName, mLayer->providerType() );
 
   if ( QMessageBox::question( nullptr, QObject::tr( "Delete style" ),
                               QObject::tr( "Are you sure you want to delete the style %1?" ).arg( mSelectedStyleName ),
@@ -176,11 +175,12 @@ void QgsLoadStyleFromDBDialog::deleteStyleFromDB()
 
   if ( !msgError.isNull() )
   {
-    QMessageBox::warning( this, infoWindowTitle, msgError );
+    QgsDebugMsg( opInfo + " failed." );
+    QgisApp::instance()->messageBar()->pushMessage( opInfo , tr( "%1: fail. %2" ).arg( opInfo, msgError ), QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
   }
   else
   {
-    QMessageBox::information( this, infoWindowTitle, tr( "Style deleted" ) );
+    QgisApp::instance()->messageBar()->pushMessage( opInfo , tr( "%1: success" ).arg( opInfo ), QgsMessageBar::INFO, QgisApp::instance()->messageTimeout() );
 
     //Delete all rows from the UI table widgets
     mRelatedTable->setRowCount( 0 );
@@ -193,9 +193,11 @@ void QgsLoadStyleFromDBDialog::deleteStyleFromDB()
     int sectionLimit = mLayer->listStylesInDatabase( ids, names, descriptions, errorMsg );
     if ( !errorMsg.isNull() )
     {
-      QMessageBox::warning( this, tr( "Error occurred retrieving styles from database" ), errorMsg );
-      return;
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Error occurred retrieving styles from database" ), errorMsg, QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
     }
-    initializeLists( ids, names, descriptions, sectionLimit );
+    else
+    {
+      initializeLists( ids, names, descriptions, sectionLimit );
+    }
   }
 }

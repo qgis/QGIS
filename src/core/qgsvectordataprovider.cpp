@@ -702,6 +702,9 @@ bool QgsVectorDataProvider::isDeleteStyleFromDBSupported() const
 
 void QgsVectorDataProvider::deleteStyleById( const QString& uri, QString styleId, QString& errCause )
 {
+  Q_UNUSED( uri );
+  Q_UNUSED( styleId );
+  Q_UNUSED( errCause );
   return;
 }
 
