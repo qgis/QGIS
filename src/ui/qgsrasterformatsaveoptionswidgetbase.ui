@@ -30,6 +30,10 @@
           <property name="text">
            <string>New</string>
           </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+          </property>
          </widget>
         </item>
         <item>
@@ -37,12 +41,20 @@
           <property name="text">
            <string>Remove</string>
           </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+          </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="mProfileResetButton">
           <property name="text">
            <string>Reset</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
           </property>
          </widget>
         </item>
@@ -121,12 +133,16 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>+</string>
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
            </property>
            <property name="iconSize">
             <size>
-             <width>1</width>
-             <height>1</height>
+             <width>16</width>
+             <height>16</height>
             </size>
            </property>
           </widget>
@@ -154,7 +170,11 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>-</string>
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
            </property>
           </widget>
          </item>
@@ -218,6 +238,8 @@
   <tabstop>mOptionsHelpButton</tabstop>
   <tabstop>mOptionsLineEdit</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

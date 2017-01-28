@@ -551,6 +551,12 @@ datasets with maximum width and height specified below.</string>
               <height>0</height>
              </size>
             </property>
+            <attribute name="horizontalHeaderDefaultSectionSize">
+             <number>140</number>
+            </attribute>
+            <attribute name="horizontalHeaderMinimumSectionSize">
+             <number>100</number>
+            </attribute>
            </widget>
           </item>
           <item>
@@ -565,7 +571,7 @@ datasets with maximum width and height specified below.</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionNewAttribute.svg</normaloff>:/images/themes/default/mActionNewAttribute.svg</iconset>
+                <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
               </property>
              </widget>
             </item>
@@ -579,7 +585,7 @@ datasets with maximum width and height specified below.</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
+                <normaloff>:/images/themes/default/mActionSharingImport.svg</normaloff>:/images/themes/default/mActionSharingImport.svg</iconset>
               </property>
              </widget>
             </item>
@@ -596,7 +602,7 @@ datasets with maximum width and height specified below.</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionDeleteAttribute.svg</normaloff>:/images/themes/default/mActionDeleteAttribute.svg</iconset>
+                <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
               </property>
              </widget>
             </item>
