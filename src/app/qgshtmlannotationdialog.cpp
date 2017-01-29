@@ -61,12 +61,6 @@ void QgsHtmlAnnotationDialog::applySettingsToItem()
   {
     QgsHtmlAnnotation* annotation = static_cast< QgsHtmlAnnotation* >( mItem->annotation() );
     annotation->setSourceFile( mFileLineEdit->text() );
-    QgsVectorLayer* layer = annotation->vectorLayer();
-    if ( layer )
-    {
-      //set last used annotation form as default for the layer
-      //layer->setAnnotationForm( mFileLineEdit->text() );
-    }
     mItem->update();
   }
 }

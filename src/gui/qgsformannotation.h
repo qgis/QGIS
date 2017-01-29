@@ -30,7 +30,7 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
 {
     Q_OBJECT
   public:
-    QgsFormAnnotation( QgsVectorLayer* vlayer = nullptr, bool hasFeature = false, int feature = 0 );
+    QgsFormAnnotation( QObject* parent = nullptr );
     ~QgsFormAnnotation();
 
     QSizeF minimumFrameSize() const override;
@@ -45,8 +45,6 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
     virtual void writeXml( QDomElement& elem, QDomDocument & doc ) const override;
     virtual void readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
-    QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
-
   protected:
 
     void renderAnnotation( QgsRenderContext& context, QSizeF size ) const override;
@@ -54,15 +52,11 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
   private slots:
     //! Sets a feature for the current map position and updates the dialog
     void setFeatureForMapPosition();
-    //! Sets visibility status based on mVectorLayer visibility
-    void updateVisibility();
 
   private:
 
     QWidget* mDesignerWidget;
     QSize mMinimumSize;
-    //! Associated vectorlayer (or 0 if attributes are not supposed to be replaced)
-    QgsVectorLayer* mVectorLayer;
     //! True if the item is related to a vector feature
     bool mHasAssociatedFeature;
     //! Associated feature

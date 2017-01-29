@@ -60,7 +60,7 @@ void QgsFormAnnotationDialog::applySettingsToItem()
   {
     QgsFormAnnotation* annotation = static_cast< QgsFormAnnotation* >( mItem->annotation() );
     annotation->setDesignerForm( mFileLineEdit->text() );
-    QgsVectorLayer* layer = annotation->vectorLayer();
+    QgsVectorLayer* layer = qobject_cast< QgsVectorLayer* >( annotation->mapLayer() );
     if ( layer )
     {
       //set last used annotation form as default for the layer

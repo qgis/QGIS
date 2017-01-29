@@ -30,6 +30,8 @@ QgsMapCanvasAnnotationItem::QgsMapCanvasAnnotationItem( QgsAnnotation* annotatio
   connect( mAnnotation, &QgsAnnotation::moved, this, [this] { updatePosition(); } );
   connect( mAnnotation, &QgsAnnotation::appearanceChanged, this, &QgsMapCanvasAnnotationItem::updateBoundingRect );
 
+  connect( mMapCanvas, &QgsMapCanvas::layersChanged, this, &QgsMapCanvasAnnotationItem::onCanvasLayersChanged );
+  connect( mAnnotation, &QgsAnnotation::mapLayerChanged, this, &QgsMapCanvasAnnotationItem::onCanvasLayersChanged );
   updatePosition();
 }
 
@@ -89,6 +91,18 @@ void QgsMapCanvasAnnotationItem::updateBoundingRect()
     double yMinPos = qMin( -halfSymbolSize, offset.y() - frameBorderWidth );
     double yMaxPos = qMax( halfSymbolSize, offset.y() + frameSize.height() + frameBorderWidth );
     mBoundingRect = QRectF( xMinPos, yMinPos, xMaxPos - xMinPos, yMaxPos - yMinPos );
+  }
+}
+
+void QgsMapCanvasAnnotationItem::onCanvasLayersChanged()
+{
+  if ( !mAnnotation->mapLayer() )
+  {
+    setVisible( true );
+  }
+  else
+  {
+    setVisible( mMapCanvas->mapSettings().layers().contains( mAnnotation->mapLayer() ) );
   }
 }
 

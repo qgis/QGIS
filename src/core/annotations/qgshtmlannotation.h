@@ -40,7 +40,7 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
     /**
      * Constructor for QgsHtmlAnnotation.
      */
-    QgsHtmlAnnotation( QObject* parent = nullptr, QgsVectorLayer* vlayer = nullptr, bool hasFeature = false, int feature = 0 );
+    QgsHtmlAnnotation( QObject* parent = nullptr );
 
     ~QgsHtmlAnnotation();
 
@@ -64,11 +64,6 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
     virtual void writeXml( QDomElement& elem, QDomDocument & doc ) const override;
     virtual void readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
-    /**
-     * Returns the vector layer associated with the annotation.
-     */
-    QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
-
   protected:
 
     void renderAnnotation( QgsRenderContext& context, QSizeF size ) const override;
@@ -76,15 +71,11 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
   private slots:
     //! Sets a feature for the current map position and updates the dialog
     void setFeatureForMapPosition();
-    //! Sets visibility status based on mVectorLayer visibility
-    void updateVisibility();
 
     void javascript();
 
   private:
     QgsWebPage* mWebPage;
-    //! Associated vectorlayer (or 0 if attributes are not supposed to be replaced)
-    QgsVectorLayer* mVectorLayer;
     //! True if the item is related to a vector feature
     bool mHasAssociatedFeature;
     //! Associated feature

@@ -88,6 +88,8 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvas
 
     void updateBoundingRect();
 
+    void onCanvasLayersChanged();
+
   private:
 
     //! Draws selection handles around the item

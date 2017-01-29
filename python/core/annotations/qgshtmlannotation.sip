@@ -5,7 +5,7 @@ class QgsHtmlAnnotation : QgsAnnotation
 %End
   public:
 
-    QgsHtmlAnnotation( QObject* parent /TransferThis/ = nullptr, QgsVectorLayer* vlayer = nullptr, bool hasFeature = false, int feature = 0 );
+    QgsHtmlAnnotation( QObject* parent /TransferThis/ = nullptr );
 
     ~QgsHtmlAnnotation();
 
@@ -16,8 +16,6 @@ class QgsHtmlAnnotation : QgsAnnotation
 
     virtual void writeXml( QDomElement& elem, QDomDocument & doc ) const;
     virtual void readXml( const QDomElement& itemElem, const QDomDocument& doc );
-
-    QgsVectorLayer* vectorLayer() const;
 
   protected:
 

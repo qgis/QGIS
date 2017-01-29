@@ -36,23 +36,12 @@
 #include <QUiLoader>
 #include <QWidget>
 
-QgsFormAnnotation::QgsFormAnnotation(QgsVectorLayer* vlayer, bool hasFeature, int feature )
-    : QgsAnnotation()
+QgsFormAnnotation::QgsFormAnnotation( QObject* parent )
+    : QgsAnnotation( parent )
     , mDesignerWidget( nullptr )
-    , mVectorLayer( vlayer )
-    , mHasAssociatedFeature( hasFeature )
-    , mFeature( feature )
+    , mHasAssociatedFeature( false )
+    , mFeature( -1 )
 {
-  if ( mVectorLayer ) //default to the layers edit form
-  {
-    mDesignerForm = mVectorLayer->annotationForm();
-    QObject::connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( setFeatureForMapPosition() ) );
-#if 0
-    QObject::connect( mMapCanvas, SIGNAL( renderComplete( QPainter* ) ), this, SLOT( setFeatureForMapPosition() ) );
-    QObject::connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( updateVisibility() ) );
-#endif
-  }
-
   setFeatureForMapPosition();
 }
 
@@ -91,12 +80,13 @@ QWidget* QgsFormAnnotation::createDesignerWidget( const QString& filePath )
 
   //get feature and set attribute information
   QgsAttributeEditorContext context;
-  if ( mVectorLayer && mHasAssociatedFeature )
+  QgsVectorLayer* vectorLayer = qobject_cast< QgsVectorLayer* >( mapLayer() );
+  if ( vectorLayer && mHasAssociatedFeature )
   {
     QgsFeature f;
-    if ( mVectorLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeature ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
+    if ( vectorLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeature ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
     {
-      const QgsFields& fields = mVectorLayer->fields();
+      const QgsFields& fields = vectorLayer->fields();
       QgsAttributes attrs = f.attributes();
       for ( int i = 0; i < attrs.count(); ++i )
       {
@@ -105,7 +95,7 @@ QWidget* QgsFormAnnotation::createDesignerWidget( const QString& filePath )
           QWidget* attWidget = widget->findChild<QWidget*>( fields.at( i ).name() );
           if ( attWidget )
           {
-            QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( mVectorLayer, i, attWidget, widget, context );
+            QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( vectorLayer, i, attWidget, widget, context );
             if ( eww )
             {
               eww->setValue( attrs.at( i ) );
@@ -165,10 +155,6 @@ QSizeF QgsFormAnnotation::preferredFrameSize() const
 void QgsFormAnnotation::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement formAnnotationElem = doc.createElement( QStringLiteral( "FormAnnotationItem" ) );
-  if ( mVectorLayer )
-  {
-    formAnnotationElem.setAttribute( QStringLiteral( "vectorLayer" ), mVectorLayer->id() );
-  }
   formAnnotationElem.setAttribute( QStringLiteral( "hasFeature" ), mHasAssociatedFeature );
   formAnnotationElem.setAttribute( QStringLiteral( "feature" ), mFeature );
   formAnnotationElem.setAttribute( QStringLiteral( "designerForm" ), mDesignerForm );
@@ -178,19 +164,6 @@ void QgsFormAnnotation::writeXml( QDomElement& elem, QDomDocument & doc ) const
 
 void QgsFormAnnotation::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
-  mVectorLayer = nullptr;
-  if ( itemElem.hasAttribute( QStringLiteral( "vectorLayer" ) ) )
-  {
-    mVectorLayer = dynamic_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( itemElem.attribute( QStringLiteral( "vectorLayer" ), QLatin1String( "" ) ) ) );
-    if ( mVectorLayer )
-    {
-      QObject::connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( setFeatureForMapPosition() ) );
-#if 0
-      QObject::connect( mMapCanvas, SIGNAL( renderComplete( QPainter* ) ), this, SLOT( setFeatureForMapPosition() ) );
-      QObject::connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( updateVisibility() ) );
-#endif
-    }
-  }
   mHasAssociatedFeature = itemElem.attribute( QStringLiteral( "hasFeature" ), QStringLiteral( "0" ) ).toInt();
   mFeature = itemElem.attribute( QStringLiteral( "feature" ), QStringLiteral( "0" ) ).toInt();
   mDesignerForm = itemElem.attribute( QStringLiteral( "designerForm" ), QLatin1String( "" ) );
@@ -199,18 +172,23 @@ void QgsFormAnnotation::readXml( const QDomElement& itemElem, const QDomDocument
   {
     _readXml( annotationElem, doc );
   }
+  // upgrade old layer
+  if ( !mapLayer() && itemElem.hasAttribute( QStringLiteral( "vectorLayer" ) ) )
+  {
+    setMapLayer( QgsProject::instance()->mapLayer( itemElem.attribute( QStringLiteral( "vectorLayer" ) ) ) );
+  }
 
   mDesignerWidget = createDesignerWidget( mDesignerForm );
   if ( mDesignerWidget )
   {
     setFrameBackgroundColor( mDesignerWidget->palette().color( QPalette::Window ) );
   }
-  updateVisibility();
 }
 
 void QgsFormAnnotation::setFeatureForMapPosition()
 {
-  if ( !mVectorLayer)
+  QgsVectorLayer* vectorLayer = qobject_cast< QgsVectorLayer* >( mapLayer() );
+  if ( !vectorLayer )
   {
     return;
   }
@@ -219,7 +197,7 @@ void QgsFormAnnotation::setFeatureForMapPosition()
   QgsRectangle searchRect( mapPosition().x() - halfIdentifyWidth, mapPosition().y() - halfIdentifyWidth,
                            mapPosition().x() + halfIdentifyWidth, mapPosition().y() + halfIdentifyWidth );
 
-  QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( searchRect ).setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( searchRect ).setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect ).setSubsetOfAttributes( QgsAttributeList() ) );
 
   QgsFeature currentFeature;
   QgsFeatureId currentFeatureId = 0;
@@ -243,18 +221,6 @@ void QgsFormAnnotation::setFeatureForMapPosition()
     setFrameBackgroundColor( mDesignerWidget->palette().color( QPalette::Window ) );
   }
   emit appearanceChanged();
-}
-
-void QgsFormAnnotation::updateVisibility()
-{
-  bool visible = true;
-#if 0
-  if ( mVectorLayer && mMapCanvas )
-  {
-    visible = mMapCanvas->layers().contains( mVectorLayer );
-  }
-#endif
-  setVisible( visible );
 }
 
 

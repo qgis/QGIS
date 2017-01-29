@@ -45,6 +45,9 @@ class QgsAnnotation : QObject
     void setMarkerSymbol( QgsMarkerSymbol* symbol /Transfer/ );
     QgsMarkerSymbol* markerSymbol() const;
 
+    QgsMapLayer* mapLayer() const;
+    void setMapLayer( QgsMapLayer* layer );
+
   signals:
 
     void appearanceChanged();

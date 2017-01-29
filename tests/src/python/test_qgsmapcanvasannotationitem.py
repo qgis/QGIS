@@ -18,7 +18,8 @@ from qgis.core import (QgsTextAnnotation,
                        QgsMapSettings,
                        QgsCoordinateReferenceSystem,
                        QgsRectangle,
-                       QgsPoint)
+                       QgsPoint,
+                       QgsVectorLayer)
 from qgis.gui import (QgsMapCanvas,
                       QgsMapCanvasAnnotationItem)
 
@@ -104,6 +105,21 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
         a.setFrameOffsetFromReferencePoint(QPointF(10, 20))
         self.assertAlmostEqual(i.boundingRect().width(), 310, -1)
         self.assertAlmostEqual(i.boundingRect().height(), 220, -1)
+
+    def testVisibility(self):
+        """ test that map canvas annotation item visibility follows layer"""
+        a = QgsTextAnnotation()
+        canvas = QgsMapCanvas()
+        i = QgsMapCanvasAnnotationItem(a, canvas)
+
+        self.assertTrue(i.isVisible())
+
+        layer = QgsVectorLayer("Point?crs=EPSG:3111&field=fldtxt:string",
+                               'test', "memory")
+        a.setMapLayer(layer)
+        self.assertFalse(i.isVisible())
+        canvas.setLayers([layer])
+        self.assertTrue(i.isVisible())
 
 
 if __name__ == '__main__':

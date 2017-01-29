@@ -31,6 +31,7 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem* item, QWid
     , mMarkerSymbol( nullptr )
 {
   setupUi( this );
+  mLayerComboBox->setAllowEmptyLayer( true );
 
   if ( mItem && mItem->annotation() )
   {
@@ -58,6 +59,8 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem* item, QWid
     mBackgroundColorButton->setContext( QStringLiteral( "symbology" ) );
     mBackgroundColorButton->setNoColorString( tr( "Transparent" ) );
     mBackgroundColorButton->setShowNoColor( true );
+
+    mLayerComboBox->setLayer( annotation->mapLayer() );
 
     connect( mBackgroundColorButton, &QgsColorButton::colorChanged, this, &QgsAnnotationWidget::backgroundColorChanged );
 
@@ -88,6 +91,7 @@ void QgsAnnotationWidget::apply()
       annotation->setFrameColor( mFrameColorButton->color() );
       annotation->setFrameBackgroundColor( mBackgroundColorButton->color() );
       annotation->setMarkerSymbol( mMarkerSymbol->clone() );
+      annotation->setMapLayer( mLayerComboBox->currentLayer() );
     }
     mItem->update();
   }
@@ -99,6 +103,7 @@ void QgsAnnotationWidget::blockAllSignals( bool block )
   mMapMarkerButton->blockSignals( block );
   mFrameWidthSpinBox->blockSignals( block );
   mFrameColorButton->blockSignals( block );
+  mLayerComboBox->blockSignals( block );
 }
 
 void QgsAnnotationWidget::on_mMapMarkerButton_clicked()

@@ -17,6 +17,8 @@
 
 #include "qgsannotation.h"
 #include "qgssymbollayerutils.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
 #include <QPen>
 #include <QPainter>
 
@@ -133,6 +135,12 @@ void QgsAnnotation::setMarkerSymbol( QgsMarkerSymbol* symbol )
 {
   mMarkerSymbol.reset( symbol );
   emit appearanceChanged();
+}
+
+void QgsAnnotation::setMapLayer( QgsMapLayer* layer )
+{
+  mMapLayer = layer;
+  emit mapLayerChanged();
 }
 
 void QgsAnnotation::updateBalloon()
@@ -313,6 +321,10 @@ void QgsAnnotation::_writeXml( QDomElement& itemElem, QDomDocument& doc ) const
   annotationElem.setAttribute( QStringLiteral( "frameBackgroundColor" ), mFrameBackgroundColor.name() );
   annotationElem.setAttribute( QStringLiteral( "frameBackgroundColorAlpha" ), mFrameBackgroundColor.alpha() );
   annotationElem.setAttribute( QStringLiteral( "visible" ), isVisible() );
+  if ( mMapLayer )
+  {
+    annotationElem.setAttribute( QStringLiteral( "mapLayer" ), mMapLayer->id() );
+  }
   if ( mMarkerSymbol )
   {
     QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker symbol" ), mMarkerSymbol.data(), doc );
@@ -356,6 +368,10 @@ void QgsAnnotation::_readXml( const QDomElement& annotationElem, const QDomDocum
   mOffsetFromReferencePoint.setY( annotationElem.attribute( QStringLiteral( "offsetY" ), QStringLiteral( "0" ) ).toDouble() );
   mHasFixedMapPosition = annotationElem.attribute( QStringLiteral( "mapPositionFixed" ), QStringLiteral( "1" ) ).toInt();
   mVisible = annotationElem.attribute( QStringLiteral( "visible" ), QStringLiteral( "1" ) ).toInt();
+  if ( annotationElem.hasAttribute( QStringLiteral( "mapLayer" ) ) )
+  {
+    mMapLayer = QgsProject::instance()->mapLayer( annotationElem.attribute( QStringLiteral( "mapLayer" ) ) );
+  }
 
   //marker symbol
   QDomElement symbolElem = annotationElem.firstChildElement( QStringLiteral( "symbol" ) );
@@ -369,5 +385,6 @@ void QgsAnnotation::_readXml( const QDomElement& annotationElem, const QDomDocum
   }
 
   updateBalloon();
+  emit mapLayerChanged();
 }
 

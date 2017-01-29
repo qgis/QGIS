@@ -23,6 +23,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrendercontext.h"
 #include "qgssymbol.h"
+#include "qgsmaplayer.h"
 
 /** \ingroup core
  * \class QgsAnnotation
@@ -225,6 +226,22 @@ class CORE_EXPORT QgsAnnotation : public QObject
      */
     QgsMarkerSymbol* markerSymbol() const { return mMarkerSymbol.data(); }
 
+    /**
+     * Returns the map layer associated with the annotation. Annotations can be
+     * associated with a map layer if their visibility should be synchronized
+     * with the layer's visibility.
+     * @see setMapLayer()
+     */
+    QgsMapLayer* mapLayer() const { return mMapLayer.data(); }
+
+    /**
+     * Sets the map layer associated with the annotation. Annotations can be
+     * associated with a map layer if their visibility should be synchronized
+     * with the layer's visibility.
+     * @see mapLayer()
+     */
+    void setMapLayer( QgsMapLayer* layer );
+
   signals:
 
     //! Emitted whenever the annotation's appearance changes
@@ -235,6 +252,11 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * to be moved to reflect this.
      */
     void moved();
+
+    /**
+     * Emitted when the map layer associated with the annotation changes.
+     */
+    void mapLayerChanged();
 
   protected:
 
@@ -319,6 +341,9 @@ class CORE_EXPORT QgsAnnotation : public QObject
 
     //! Second segment point for drawing the balloon connection (ccw direction)
     QPointF mBalloonSegmentPoint2;
+
+    //! Associated layer (or nullptr if not attached to a layer)
+    QPointer<QgsMapLayer> mMapLayer;
 
 };
 
