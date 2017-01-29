@@ -19,7 +19,9 @@ from qgis.core import (QgsTextAnnotation,
                        QgsCoordinateReferenceSystem,
                        QgsRectangle,
                        QgsPoint,
-                       QgsVectorLayer)
+                       QgsVectorLayer,
+                       QgsFeature,
+                       QgsGeometry)
 from qgis.gui import (QgsMapCanvas,
                       QgsMapCanvasAnnotationItem)
 
@@ -120,6 +122,42 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
         self.assertFalse(i.isVisible())
         canvas.setLayers([layer])
         self.assertTrue(i.isVisible())
+
+    def testSettingFeature(self):
+        """ test that feature is set when item moves """
+        a = QgsTextAnnotation()
+        a.setFrameSize(QSizeF(300, 200))
+        a.setFrameOffsetFromReferencePoint(QPointF(40, 50))
+        a.setHasFixedMapPosition(True)
+        a.setMapPosition(QgsPoint(12, 34))
+        a.setMapPositionCrs(QgsCoordinateReferenceSystem(4326))
+
+        canvas = QgsMapCanvas()
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setFrameStyle(0)
+        canvas.resize(600, 400)
+
+        canvas.setExtent(QgsRectangle(10, 30, 20, 35))
+
+        i = QgsMapCanvasAnnotationItem(a, canvas)
+
+        layer = QgsVectorLayer("Point?crs=EPSG:4326&field=station:string&field=suburb:string",
+                               'test', "memory")
+        canvas.setLayers([layer])
+        f = QgsFeature(layer.fields())
+        f.setGeometry(QgsGeometry.fromPoint(QgsPoint(14, 31)))
+        f.setValid(True)
+        f.setAttributes(['hurstbridge', 'somewhere'])
+        self.assertTrue(layer.dataProvider().addFeatures([f]))
+        a.setMapLayer(layer)
+        self.assertFalse(a.associatedFeature().isValid())
+
+        a.setMapPosition(QgsPoint(14, 31))
+        self.assertTrue(a.associatedFeature().isValid())
+        self.assertEqual(a.associatedFeature().attributes()[0], 'hurstbridge')
+
+        a.setMapPosition(QgsPoint(17, 31))
+        self.assertFalse(a.associatedFeature().isValid())
 
 
 if __name__ == '__main__':

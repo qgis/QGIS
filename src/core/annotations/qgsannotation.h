@@ -242,6 +242,19 @@ class CORE_EXPORT QgsAnnotation : public QObject
      */
     void setMapLayer( QgsMapLayer* layer );
 
+    /**
+     * Returns the feature associated with the annotation, or an invalid
+     * feature if none has been set.
+     * @see setAssociatedFeature()
+     */
+    QgsFeature associatedFeature() const { return mFeature; }
+
+    /**
+     * Sets the feature associated with the annotation.
+     * @see associatedFeature()
+     */
+    virtual void setAssociatedFeature( const QgsFeature& feature ) { mFeature = feature; }
+
   signals:
 
     //! Emitted whenever the annotation's appearance changes
@@ -344,6 +357,9 @@ class CORE_EXPORT QgsAnnotation : public QObject
 
     //! Associated layer (or nullptr if not attached to a layer)
     QPointer<QgsMapLayer> mMapLayer;
+
+    //! Associated feature, or invalid feature if no feature associated
+    QgsFeature mFeature;
 
 };
 

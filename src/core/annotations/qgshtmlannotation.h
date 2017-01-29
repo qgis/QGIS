@@ -45,9 +45,6 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
     ~QgsHtmlAnnotation();
 
     QSizeF minimumFrameSize() const override;
-#if 0
-    void setMapPosition( const QgsPoint& pos ) override;
-#endif
 
     /**
      * Sets the file path for the source HTML file.
@@ -64,27 +61,21 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
     virtual void writeXml( QDomElement& elem, QDomDocument & doc ) const override;
     virtual void readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
+    void setAssociatedFeature( const QgsFeature& feature ) override;
+
   protected:
 
     void renderAnnotation( QgsRenderContext& context, QSizeF size ) const override;
 
   private slots:
-    //! Sets a feature for the current map position and updates the dialog
-    void setFeatureForMapPosition();
 
     void javascript();
 
   private:
-    QgsWebPage* mWebPage;
-    //! True if the item is related to a vector feature
-    bool mHasAssociatedFeature;
-    //! Associated feature
-    QgsFeatureId mFeatureId;
-    QgsFeature mFeature;
+    QgsWebPage* mWebPage = nullptr;
     QString mHtmlFile;
     QString mHtmlSource;
 
-    QString replaceText( QString displayText, QgsVectorLayer *layer, QgsFeature &feat );
 };
 
 #endif // QGSHTMLANNOTATION_H

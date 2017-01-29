@@ -20,9 +20,8 @@
 
 #include "qgsannotation.h"
 #include "qgsfeature.h"
+#include <QWidget>
 #include "qgis_gui.h"
-
-class QGraphicsProxyWidget;
 
 /** \ingroup gui
  * An annotation item that embedds a designer form showing the feature attribute*/
@@ -31,36 +30,27 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
     Q_OBJECT
   public:
     QgsFormAnnotation( QObject* parent = nullptr );
-    ~QgsFormAnnotation();
 
     QSizeF minimumFrameSize() const override;
     //! Returns the optimal frame size
     QSizeF preferredFrameSize() const;
-#if 0
-    void setMapPosition( const QgsPoint& pos ) override;
-#endif
+
     void setDesignerForm( const QString& uiFile );
     QString designerForm() const { return mDesignerForm; }
 
     virtual void writeXml( QDomElement& elem, QDomDocument & doc ) const override;
     virtual void readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
+    void setAssociatedFeature( const QgsFeature& feature ) override;
+
   protected:
 
     void renderAnnotation( QgsRenderContext& context, QSizeF size ) const override;
 
-  private slots:
-    //! Sets a feature for the current map position and updates the dialog
-    void setFeatureForMapPosition();
-
   private:
 
-    QWidget* mDesignerWidget;
+    QScopedPointer<QWidget> mDesignerWidget;
     QSize mMinimumSize;
-    //! True if the item is related to a vector feature
-    bool mHasAssociatedFeature;
-    //! Associated feature
-    QgsFeatureId mFeature;
     //! Path to (and including) the .ui file
     QString mDesignerForm;
 

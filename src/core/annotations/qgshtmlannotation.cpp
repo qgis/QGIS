@@ -38,9 +38,6 @@
 
 QgsHtmlAnnotation::QgsHtmlAnnotation( QObject* parent )
     : QgsAnnotation( parent )
-    , mWebPage( nullptr )
-    , mHasAssociatedFeature( false )
-    , mFeatureId( -1 )
 {
   mWebPage = new QgsWebPage();
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
@@ -48,8 +45,6 @@ QgsHtmlAnnotation::QgsHtmlAnnotation( QObject* parent )
   mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
 
   connect( mWebPage->mainFrame(), &QWebFrame::javaScriptWindowObjectCleared, this, &QgsHtmlAnnotation::javascript );
-
-  setFeatureForMapPosition();
 }
 
 QgsHtmlAnnotation::~QgsHtmlAnnotation()
@@ -71,16 +66,10 @@ void QgsHtmlAnnotation::setSourceFile( const QString& htmlFile )
   }
 
   file.close();
-  setFeatureForMapPosition();
+  setAssociatedFeature( associatedFeature() );
   emit appearanceChanged();
 }
-#if 0
-void QgsHtmlAnnotation::setMapPosition( const QgsPoint& pos )
-{
-  QgsAnnotationItem::setMapPosition( pos );
-  setFeatureForMapPosition();
-}
-#endif
+
 void QgsHtmlAnnotation::renderAnnotation( QgsRenderContext& context, QSizeF size ) const
 {
   if ( !context.painter() )
@@ -108,8 +97,6 @@ QSizeF QgsHtmlAnnotation::minimumFrameSize() const
 void QgsHtmlAnnotation::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement formAnnotationElem = doc.createElement( QStringLiteral( "HtmlAnnotationItem" ) );
-  formAnnotationElem.setAttribute( QStringLiteral( "hasFeature" ), mHasAssociatedFeature );
-  formAnnotationElem.setAttribute( QStringLiteral( "feature" ), mFeatureId );
   formAnnotationElem.setAttribute( QStringLiteral( "htmlfile" ), sourceFile() );
 
   _writeXml( formAnnotationElem, doc );
@@ -118,8 +105,6 @@ void QgsHtmlAnnotation::writeXml( QDomElement& elem, QDomDocument & doc ) const
 
 void QgsHtmlAnnotation::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
-  mHasAssociatedFeature = itemElem.attribute( QStringLiteral( "hasFeature" ), QStringLiteral( "0" ) ).toInt();
-  mFeatureId = itemElem.attribute( QStringLiteral( "feature" ), QStringLiteral( "0" ) ).toInt();
   mHtmlFile = itemElem.attribute( QStringLiteral( "htmlfile" ), QLatin1String( "" ) );
   QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
@@ -139,34 +124,15 @@ void QgsHtmlAnnotation::readXml( const QDomElement& itemElem, const QDomDocument
   }
 }
 
-void QgsHtmlAnnotation::setFeatureForMapPosition()
+void QgsHtmlAnnotation::setAssociatedFeature( const QgsFeature& feature )
 {
+  QgsAnnotation::setAssociatedFeature( feature );
   QString newText;
-  if ( QgsVectorLayer* vectorLayer = qobject_cast< QgsVectorLayer* >( mapLayer() ) )
+  QgsVectorLayer* vectorLayer = qobject_cast< QgsVectorLayer* >( mapLayer() );
+  if ( feature.isValid() && vectorLayer )
   {
-    double halfIdentifyWidth = 0; // QgsMapTool::searchRadiusMU( mMapCanvas );
-    QgsRectangle searchRect( mapPosition().x() - halfIdentifyWidth, mapPosition().y() - halfIdentifyWidth,
-                             mapPosition().x() + halfIdentifyWidth, mapPosition().y() + halfIdentifyWidth );
-
-    QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( searchRect ).setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect ) );
-
-    QgsFeature currentFeature;
-    QgsFeatureId currentFeatureId = 0;
-    bool featureFound = false;
-
-    while ( fit.nextFeature( currentFeature ) )
-    {
-      currentFeatureId = currentFeature.id();
-      featureFound = true;
-      break;
-    }
-
-    mHasAssociatedFeature = featureFound;
-    mFeatureId = currentFeatureId;
-    mFeature = currentFeature;
-
     QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vectorLayer ) );
-    context.setFeature( mFeature );
+    context.setFeature( feature );
     newText = QgsExpression::replaceExpressionText( mHtmlSource, &context );
   }
   else

@@ -17,6 +17,8 @@ class QgsHtmlAnnotation : QgsAnnotation
     virtual void writeXml( QDomElement& elem, QDomDocument & doc ) const;
     virtual void readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
+    virtual void setAssociatedFeature( const QgsFeature& feature );
+
   protected:
 
     void renderAnnotation( QgsRenderContext& context, QSizeF size ) const;

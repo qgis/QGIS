@@ -18,6 +18,10 @@
 #include "qgsmapcanvasannotationitem.h"
 #include "qgsannotation.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptool.h"
+#include "qgsvectorlayer.h"
+#include "qgsfeatureiterator.h"
+#include "qgscsexception.h"
 #include <QPainter>
 
 
@@ -28,11 +32,14 @@ QgsMapCanvasAnnotationItem::QgsMapCanvasAnnotationItem( QgsAnnotation* annotatio
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   connect( mAnnotation, &QgsAnnotation::appearanceChanged, this, [this] { update(); } );
   connect( mAnnotation, &QgsAnnotation::moved, this, [this] { updatePosition(); } );
+  connect( mAnnotation, &QgsAnnotation::moved, this, &QgsMapCanvasAnnotationItem::setFeatureForMapPosition );
+
   connect( mAnnotation, &QgsAnnotation::appearanceChanged, this, &QgsMapCanvasAnnotationItem::updateBoundingRect );
 
   connect( mMapCanvas, &QgsMapCanvas::layersChanged, this, &QgsMapCanvasAnnotationItem::onCanvasLayersChanged );
   connect( mAnnotation, &QgsAnnotation::mapLayerChanged, this, &QgsMapCanvasAnnotationItem::onCanvasLayersChanged );
   updatePosition();
+  setFeatureForMapPosition();
 }
 
 QgsMapCanvasAnnotationItem::~QgsMapCanvasAnnotationItem()
@@ -104,6 +111,40 @@ void QgsMapCanvasAnnotationItem::onCanvasLayersChanged()
   {
     setVisible( mMapCanvas->mapSettings().layers().contains( mAnnotation->mapLayer() ) );
   }
+}
+
+void QgsMapCanvasAnnotationItem::setFeatureForMapPosition()
+{
+  if ( !mAnnotation || !mAnnotation->hasFixedMapPosition() )
+    return;
+
+  QgsVectorLayer* vectorLayer = qobject_cast< QgsVectorLayer* >( mAnnotation->mapLayer() );
+  if ( !vectorLayer )
+    return;
+
+  double halfIdentifyWidth = QgsMapTool::searchRadiusMU( mMapCanvas );
+  QgsPoint mapPosition = mAnnotation->mapPosition();
+
+  try
+  {
+    QgsCoordinateTransform ct( mAnnotation->mapPositionCrs(), mMapCanvas->mapSettings().destinationCrs() );
+    if ( ct.isValid() )
+      mapPosition = ct.transform( mapPosition );
+  }
+  catch ( QgsCsException & )
+  {
+  }
+
+  QgsRectangle searchRect( mapPosition.x() - halfIdentifyWidth, mapPosition.y() - halfIdentifyWidth,
+                           mapPosition.x() + halfIdentifyWidth, mapPosition.y() + halfIdentifyWidth );
+
+  searchRect = mMapCanvas->mapSettings().mapToLayerCoordinates( vectorLayer, searchRect );
+
+  QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( searchRect ).setFlags( QgsFeatureRequest::ExactIntersect ).setLimit( 1 ) );
+
+  QgsFeature currentFeature;
+  ( void )fit.nextFeature( currentFeature );
+  mAnnotation->setAssociatedFeature( currentFeature );
 }
 
 void QgsMapCanvasAnnotationItem::drawSelectionBoxes( QPainter* p ) const

@@ -48,6 +48,9 @@ class QgsAnnotation : QObject
     QgsMapLayer* mapLayer() const;
     void setMapLayer( QgsMapLayer* layer );
 
+    QgsFeature associatedFeature() const;
+    virtual void setAssociatedFeature( const QgsFeature& feature );
+
   signals:
 
     void appearanceChanged();

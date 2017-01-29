@@ -90,6 +90,9 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvas
 
     void onCanvasLayersChanged();
 
+    //! Sets a feature for the current map position
+    void setFeatureForMapPosition();
+
   private:
 
     //! Draws selection handles around the item

@@ -22,7 +22,9 @@ from qgis.core import (QgsTextAnnotation,
                        QgsCoordinateReferenceSystem,
                        QgsRectangle,
                        QgsRenderChecker,
-                       QgsPoint)
+                       QgsPoint,
+                       QgsVectorLayer,
+                       QgsFeature)
 from qgis.PyQt.QtCore import (QDir,
                               QPointF,
                               QSizeF)
@@ -78,6 +80,26 @@ class TestQgsAnnotation(unittest.TestCase):
         a.setSourceFile(html)
         im = self.renderAnnotation(a, QPointF(20, 30))
         self.assertTrue(self.imageCheck('html_annotation', 'html_annotation', im))
+
+    def testHtmlAnnotationWithFeature(self):
+        """ test rendering a html annotation with a feature"""
+        layer = QgsVectorLayer("Point?crs=EPSG:3111&field=station:string&field=suburb:string",
+                               'test', "memory")
+
+        a = QgsHtmlAnnotation()
+        a.setFrameSize(QSizeF(400, 250))
+        a.setFrameOffsetFromReferencePoint(QPointF(70, 90))
+        a.setMapLayer(layer)
+        html = TEST_DATA_DIR + "/test_html_feature.html"
+        a.setSourceFile(html)
+        im = self.renderAnnotation(a, QPointF(20, 30))
+        self.assertTrue(self.imageCheck('html_nofeature', 'html_nofeature', im))
+        f = QgsFeature(layer.fields())
+        f.setValid(True)
+        f.setAttributes(['hurstbridge', 'somewhere'])
+        a.setAssociatedFeature(f)
+        im = self.renderAnnotation(a, QPointF(20, 30))
+        self.assertTrue(self.imageCheck('html_feature', 'html_feature', im))
 
     def testRelativePosition(self):
         """ test rendering an annotation without map point"""
