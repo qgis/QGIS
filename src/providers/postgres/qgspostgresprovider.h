@@ -133,7 +133,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool isValid() const override;
     virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
     virtual bool isDeleteStyleFromDBSupported() const override { return true; }
-    void deleteStyleById( const QString& uri, QString styleId, QString& errCause );
+    void deleteStyleById( const QString& uri, QString styleId, QString& errCause ) const override;
     QgsAttributeList attributeIndexes() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     QString defaultValueClause( int fieldId ) const override;

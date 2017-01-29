@@ -4632,12 +4632,8 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   return numberOfRelatedStyles;
 }
 
-void QgsPostgresProvider::deleteStyleById( const QString &uri, QString styleId, QString &errCause )
+void QgsPostgresProvider::deleteStyleById( const QString &uri, QString styleId, QString &errCause ) const
 {
-  QgsDebugMsg( "deleteStyleById" );
-  QgsDebugMsg( styleId );
-  QgsDebugMsg( uri );
-
   QgsDataSourceUri dsUri( uri );
 
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
