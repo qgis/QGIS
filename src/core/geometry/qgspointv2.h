@@ -220,7 +220,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * \endcode
      * @note added in QGIS 3.0
      */
-    QgsPointV2 project(double distance, double azimuth, double inclination = 90.0 ) const;
+    QgsPointV2 project( double distance, double azimuth, double inclination = 90.0 ) const;
 
     /**
      * Calculates the vector obtained by subtracting a point from this point.

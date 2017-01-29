@@ -2768,7 +2768,7 @@ static QVariant fcnProject( const QVariantList& values, const QgsExpressionConte
   const QgsPointV2* p = dynamic_cast<const QgsPointV2*>( geom.geometry() );
   QgsPointV2 newPoint = p->project( distance,  180.0 * azimuth / M_PI, 180.0 * inclination / M_PI );
 
-  return QVariant::fromValue( QgsGeometry( new QgsPointV2( newPoint) ) );
+  return QVariant::fromValue( QgsGeometry( new QgsPointV2( newPoint ) ) );
 }
 
 static QVariant fcnExtrude( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
