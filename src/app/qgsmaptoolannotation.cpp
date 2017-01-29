@@ -28,6 +28,7 @@
 #include "qgssvgannotationdialog.h"
 #include "qgssvgannotation.h"
 #include "qgsproject.h"
+#include "qgscsexception.h"
 #include <QDialog>
 #include <QMouseEvent>
 
@@ -119,7 +120,8 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent* e )
       QgsAnnotation* annotation = createItem();
       if ( annotation )
       {
-        annotation->setMapPosition( toMapCoordinates( e->pos() ) );
+        QgsPoint mapPos = transformCanvasToAnnotation( toMapCoordinates( e->pos() ), annotation );
+        annotation->setMapPosition( mapPos );
         annotation->setRelativePosition( QPointF( e->posF().x() / mCanvas->width(),
                                          e->posF().y() / mCanvas->height() ) );
         annotation->setFrameSize( QSizeF( 200, 100 ) );
@@ -171,7 +173,8 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent* e )
   {
     if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::MoveMapPosition )
     {
-      annotation->setMapPosition( toMapCoordinates( e->pos() ) );
+      QgsPoint mapPos = transformCanvasToAnnotation( toMapCoordinates( e->pos() ), annotation );
+      annotation->setMapPosition( mapPos );
       annotation->setRelativePosition( QPointF( e->posF().x() / mCanvas->width(),
                                        e->posF().y() / mCanvas->height() ) );
       item->update();
@@ -188,7 +191,8 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent* e )
       }
       else
       {
-        annotation->setMapPosition( toMapCoordinates( newCanvasPos.toPoint() ) );
+        QgsPoint mapPos = transformCanvasToAnnotation( toMapCoordinates( newCanvasPos.toPoint() ), annotation );
+        annotation->setMapPosition( mapPos );
         annotation->setRelativePosition( QPointF( newCanvasPos.x() / mCanvas->width(),
                                          newCanvasPos.y() / mCanvas->height() ) );
       }
@@ -354,4 +358,21 @@ void QgsMapToolAnnotation::toggleTextItemVisibilities()
       textItem->setVisible( !textItem->isVisible() );
     }
   }
+}
+
+QgsPoint QgsMapToolAnnotation::transformCanvasToAnnotation( QgsPoint p, QgsAnnotation* annotation ) const
+{
+  if ( annotation->mapPositionCrs() != mCanvas->mapSettings().destinationCrs() )
+  {
+    QgsCoordinateTransform transform( mCanvas->mapSettings().destinationCrs(), annotation->mapPositionCrs() );
+    try
+    {
+      p = transform.transform( p );
+    }
+    catch ( const QgsCsException & )
+    {
+      // ignore
+    }
+  }
+  return p;
 }
