@@ -210,7 +210,7 @@ class QgsSymbolLayer
       the drawn shape. For example, polygons drawn with an outline will draw half the width
       of the outline outside of the polygon. This amount is estimated, since it may
       be affected by data defined symbology rules.*/
-    virtual double estimateMaxBleed() const;
+    virtual double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     /** Sets the units to use for sizes and widths within the symbol layer. Individual
      * symbol layer subclasses will interpret this in different ways, e.g., a marker symbol

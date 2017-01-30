@@ -386,10 +386,10 @@ QgsSymbolLayer* QgsSimpleFillSymbolLayer::createFromSld( QDomElement &element )
   return sl;
 }
 
-double QgsSimpleFillSymbolLayer::estimateMaxBleed() const
+double QgsSimpleFillSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
-  double penBleed = mBorderStyle == Qt::NoPen ? 0 : ( mBorderWidth / 2.0 );
-  double offsetBleed = mOffset.x() > mOffset.y() ? mOffset.x() : mOffset.y();
+  double penBleed = context.convertToPainterUnits( mBorderStyle == Qt::NoPen ? 0 : ( mBorderWidth / 2.0 ), mBorderWidthUnit, mBorderWidthMapUnitScale );
+  double offsetBleed = context.convertToPainterUnits( mOffset.x() > mOffset.y() ? mOffset.x() : mOffset.y(), mOffsetUnit, mOffsetMapUnitScale );
   return penBleed + offsetBleed;
 }
 
@@ -907,9 +907,9 @@ QgsGradientFillSymbolLayer* QgsGradientFillSymbolLayer::clone() const
   return sl;
 }
 
-double QgsGradientFillSymbolLayer::estimateMaxBleed() const
+double QgsGradientFillSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
-  double offsetBleed = mOffset.x() > mOffset.y() ? mOffset.x() : mOffset.y();
+  double offsetBleed = context.convertToPainterUnits( mOffset.x() > mOffset.y() ? mOffset.x() : mOffset.y(), mOffsetUnit, mOffsetMapUnitScale );
   return offsetBleed;
 }
 
@@ -1502,9 +1502,9 @@ QgsShapeburstFillSymbolLayer* QgsShapeburstFillSymbolLayer::clone() const
   return sl;
 }
 
-double QgsShapeburstFillSymbolLayer::estimateMaxBleed() const
+double QgsShapeburstFillSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
-  double offsetBleed = qMax( mOffset.x(), mOffset.y() );
+  double offsetBleed = context.convertToPainterUnits( qMax( mOffset.x(), mOffset.y() ), mOffsetUnit, mOffsetMapUnitScale );
   return offsetBleed;
 }
 
@@ -1654,11 +1654,11 @@ QgsMapUnitScale QgsImageFillSymbolLayer::mapUnitScale() const
   return mOutlineWidthMapUnitScale;
 }
 
-double QgsImageFillSymbolLayer::estimateMaxBleed() const
+double QgsImageFillSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
   if ( mOutline && mOutline->symbolLayer( 0 ) )
   {
-    double subLayerBleed = mOutline->symbolLayer( 0 )->estimateMaxBleed();
+    double subLayerBleed = mOutline->symbolLayer( 0 )->estimateMaxBleed( context );
     return subLayerBleed;
   }
   return 0;
@@ -2340,7 +2340,7 @@ QSet<QString> QgsLinePatternFillSymbolLayer::usedAttributes( const QgsRenderCont
   return attr;
 }
 
-double QgsLinePatternFillSymbolLayer::estimateMaxBleed() const
+double QgsLinePatternFillSymbolLayer::estimateMaxBleed( const QgsRenderContext& ) const
 {
   return 0;
 }
@@ -2520,14 +2520,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext& 
   for ( int i = 0; i < fillLineSymbol->symbolLayerCount(); i++ )
   {
     QgsSymbolLayer *layer = fillLineSymbol->symbolLayer( i );
-    double layerBleed = layer->estimateMaxBleed();
-    // TODO: to get real bleed we have to scale it using context and units,
-    // unfortunately estimateMaxBleed() ignore units completely, e.g.
-    // QgsMarkerLineSymbolLayer::estimateMaxBleed() is mixing marker size and
-    // offset regardless units. This has to be fixed especially
-    // in estimateMaxBleed(), context probably has to be used.
-    // For now, we only support millimeters
-    double outputPixelLayerBleed = ctx.convertToPainterUnits( layerBleed, QgsUnitTypes::RenderMillimeters );
+    double outputPixelLayerBleed = layer->estimateMaxBleed( context.renderContext() );
     outputPixelBleed = qMax( outputPixelBleed, outputPixelLayerBleed );
 
     QgsMarkerLineSymbolLayer *markerLineLayer = dynamic_cast<QgsMarkerLineSymbolLayer *>( layer );
@@ -3330,7 +3323,7 @@ void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderCo
   applyPattern( context, mBrush, distanceX, distanceY, displacementX, displacementY );
 }
 
-double QgsPointPatternFillSymbolLayer::estimateMaxBleed() const
+double QgsPointPatternFillSymbolLayer::estimateMaxBleed( const QgsRenderContext& ) const
 {
   return 0;
 }
@@ -3732,9 +3725,9 @@ QgsRasterFillSymbolLayer* QgsRasterFillSymbolLayer::clone() const
   return sl;
 }
 
-double QgsRasterFillSymbolLayer::estimateMaxBleed() const
+double QgsRasterFillSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
-  return mOffset.x() > mOffset.y() ? mOffset.x() : mOffset.y();
+  return context.convertToPainterUnits( mOffset.x() > mOffset.y() ? mOffset.x() : mOffset.y(), mOffsetUnit, mOffsetMapUnitScale );
 }
 
 void QgsRasterFillSymbolLayer::setImageFilePath( const QString &imagePath )

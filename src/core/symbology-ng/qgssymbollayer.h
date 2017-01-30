@@ -197,10 +197,11 @@ class CORE_EXPORT QgsSymbolLayer
     bool isLocked() const { return mLocked; }
 
     /** Returns the estimated maximum distance which the layer style will bleed outside
-      the drawn shape. For example, polygons drawn with an outline will draw half the width
+      the drawn shape when drawn in the specified /a context. For example, polygons
+      drawn with an outline will draw half the width
       of the outline outside of the polygon. This amount is estimated, since it may
       be affected by data defined symbology rules.*/
-    virtual double estimateMaxBleed() const { return 0; }
+    virtual double estimateMaxBleed( const QgsRenderContext& context ) const { Q_UNUSED( context ); return 0; }
 
     /** Sets the units to use for sizes and widths within the symbol layer. Individual
      * symbol layer subclasses will interpret this in different ways, e.g., a marker symbol

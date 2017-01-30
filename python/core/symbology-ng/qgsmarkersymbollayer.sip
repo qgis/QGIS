@@ -355,7 +355,7 @@ class QgsFilledMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
     virtual QgsFilledMarkerSymbolLayer* clone() const /Factory/;
     virtual QgsSymbol* subSymbol();
     virtual bool setSubSymbol( QgsSymbol* symbol /Transfer/ );
-    virtual double estimateMaxBleed() const;
+    virtual double estimateMaxBleed( const QgsRenderContext& context ) const;
     QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
     void setColor( const QColor& c );
     virtual QColor color() const;

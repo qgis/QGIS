@@ -566,7 +566,7 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   }
 }
 
-double QgsSimpleLineSymbolLayer::estimateMaxBleed() const
+double QgsSimpleLineSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
   if ( mDrawInsidePolygon )
   {
@@ -575,7 +575,8 @@ double QgsSimpleLineSymbolLayer::estimateMaxBleed() const
   }
   else
   {
-    return ( mWidth / 2.0 ) + mOffset;
+    return context.convertToPainterUnits(( mWidth / 2.0 ), mWidthUnit, mWidthMapUnitScale ) +
+           context.convertToPainterUnits( mOffset, mOffsetUnit, mOffsetMapUnitScale );
   }
 }
 
@@ -1593,9 +1594,10 @@ QSet<QString> QgsMarkerLineSymbolLayer::usedAttributes( const QgsRenderContext& 
   return attr;
 }
 
-double QgsMarkerLineSymbolLayer::estimateMaxBleed() const
+double QgsMarkerLineSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
-  return ( mMarker->size() / 2.0 ) + mOffset;
+  return context.convertToPainterUnits(( mMarker->size() / 2.0 ), mMarker->sizeUnit(), mMarker->sizeMapUnitScale() ) +
+         context.convertToPainterUnits( mOffset, mOffsetUnit, mOffsetMapUnitScale );
 }
 
 

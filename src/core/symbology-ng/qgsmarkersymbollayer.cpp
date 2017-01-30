@@ -1620,11 +1620,11 @@ bool QgsFilledMarkerSymbolLayer::setSubSymbol( QgsSymbol *symbol )
   }
 }
 
-double QgsFilledMarkerSymbolLayer::estimateMaxBleed() const
+double QgsFilledMarkerSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
   if ( mFill.data() )
   {
-    return QgsSymbolLayerUtils::estimateMaxSymbolBleed( mFill.data() );
+    return QgsSymbolLayerUtils::estimateMaxSymbolBleed( mFill.data(), context );
   }
   return 0;
 }

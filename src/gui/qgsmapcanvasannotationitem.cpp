@@ -22,6 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsfeatureiterator.h"
 #include "qgscsexception.h"
+#include "qgssymbollayerutils.h"
 #include <QPainter>
 
 
@@ -76,14 +77,14 @@ QRectF QgsMapCanvasAnnotationItem::boundingRect() const
 void QgsMapCanvasAnnotationItem::updateBoundingRect()
 {
   prepareGeometryChange();
-  double frameBorderWidth;
 
-
-  // TODO
+  QgsRenderContext rc = QgsRenderContext::fromQPainter( nullptr );
+  double fillSymbolBleed = mAnnotation && mAnnotation->fillSymbol() ?
+                           QgsSymbolLayerUtils::estimateMaxSymbolBleed( mAnnotation->fillSymbol(), rc ) : 0;
 
   if ( mAnnotation && !mAnnotation->hasFixedMapPosition() )
   {
-    mBoundingRect = QRectF( - frameBorderWidth / 2.0, -frameBorderWidth / 2.0, mAnnotation->frameSize().width() + frameBorderWidth, mAnnotation->frameSize().height() + frameBorderWidth );
+    mBoundingRect = QRectF( - fillSymbolBleed, -fillSymbolBleed, mAnnotation->frameSize().width() + fillSymbolBleed * 2, mAnnotation->frameSize().height() + fillSymbolBleed * 2 );
   }
   else
   {
@@ -97,10 +98,10 @@ void QgsMapCanvasAnnotationItem::updateBoundingRect()
 
     QSizeF frameSize = mAnnotation ? mAnnotation->frameSize() : QSizeF( 0.0, 0.0 );
 
-    double xMinPos = qMin( -halfSymbolSize, offset.x() - frameBorderWidth );
-    double xMaxPos = qMax( halfSymbolSize, offset.x() + frameSize.width() + frameBorderWidth );
-    double yMinPos = qMin( -halfSymbolSize, offset.y() - frameBorderWidth );
-    double yMaxPos = qMax( halfSymbolSize, offset.y() + frameSize.height() + frameBorderWidth );
+    double xMinPos = qMin( -halfSymbolSize, offset.x() - fillSymbolBleed );
+    double xMaxPos = qMax( halfSymbolSize, offset.x() + frameSize.width() + fillSymbolBleed );
+    double yMinPos = qMin( -halfSymbolSize, offset.y() - fillSymbolBleed );
+    double yMaxPos = qMax( halfSymbolSize, offset.y() + frameSize.height() + fillSymbolBleed );
     mBoundingRect = QRectF( xMinPos, yMinPos, xMaxPos - xMinPos, yMaxPos - yMinPos );
   }
 }

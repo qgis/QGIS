@@ -607,13 +607,13 @@ QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( QgsSymbol* symbol, QSize size,
   return pixmap;
 }
 
-double QgsSymbolLayerUtils::estimateMaxSymbolBleed( QgsSymbol* symbol )
+double QgsSymbolLayerUtils::estimateMaxSymbolBleed( QgsSymbol* symbol, const QgsRenderContext& context )
 {
   double maxBleed = 0;
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
   {
     QgsSymbolLayer* layer = symbol->symbolLayer( i );
-    double layerMaxBleed = layer->estimateMaxBleed();
+    double layerMaxBleed = layer->estimateMaxBleed( context );
     maxBleed = layerMaxBleed > maxBleed ? layerMaxBleed : maxBleed;
   }
 
