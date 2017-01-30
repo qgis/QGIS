@@ -413,11 +413,6 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual bool isDeleteStyleFromDBSupported() const;
 
-    /**
-     * Deletes an existing style from the provider
-     */
-    virtual void deleteStyleById( const QString& uri, QString styleId, QString& errCause );
-
     static QVariant convertValue( QVariant::Type type, const QString& value );
 
     /**

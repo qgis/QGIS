@@ -663,19 +663,20 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         status = vl.loadNamedStyle(mFilePath)
         self.assertTrue(status)
 
-        errorMsg = vl.saveStyleToDatabase("name", "description", False, "")
+        errorMsg = vl.saveStyleToDatabase("by day", "faded greens and elegant patterns", False, "")
         self.assertEqual(errorMsg, "")
 
-        qml, errmsg = vl.getStyleFromDatabase("not_existing")
+        # the style id should be "1", not "by day"
+        qml, errmsg = vl.getStyleFromDatabase("by day")
         self.assertEqual(qml, "")
         self.assertNotEqual(errmsg, "")
 
         related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
         self.assertEqual(related_count, 1)
         self.assertEqual(errmsg, "")
-        self.assertEqual(idlist, ['1'])
-        self.assertEqual(namelist, ['name'])
-        self.assertEqual(desclist, ['description'])
+        self.assertEqual(idlist, ["1"])
+        self.assertEqual(namelist, ["by day"])
+        self.assertEqual(desclist, ["faded greens and elegant patterns"])
 
         qml, errmsg = vl.getStyleFromDatabase("100")
         self.assertEqual(qml, "")
@@ -685,8 +686,10 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(qml.startswith('<!DOCTYPE qgis'), qml)
         self.assertEqual(errmsg, "")
 
-        uri = vl.dataProvider().dataSourceUri()
-        vl.dataProvider().deleteStyleById(uri, "1", errmsg)
+        errmsg = vl.deleteStyleFromDatabase("101")
+        self.assertEqual(errmsg, "")
+
+        errmsg = vl.deleteStyleFromDatabase("1")
         self.assertEqual(errmsg, "")
 
         # table layer_styles does exit, but is now empty

@@ -171,7 +171,8 @@ void QgsLoadStyleFromDBDialog::deleteStyleFromDB()
     return;
 
   uri = mLayer->dataProvider()->dataSourceUri();
-  mLayer->dataProvider()->deleteStyleById( uri, mSelectedStyleId, msgError );
+  //  mLayer->dataProvider()->deleteStyleById( uri, mSelectedStyleId, msgError );
+  mLayer->deleteStyleFromDatabase( mSelectedStyleId, msgError );
 
   if ( !msgError.isNull() )
   {

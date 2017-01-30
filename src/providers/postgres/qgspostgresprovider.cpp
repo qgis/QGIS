@@ -4632,7 +4632,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   return numberOfRelatedStyles;
 }
 
-void QgsPostgresProvider::deleteStyleById( const QString &uri, QString styleId, QString &errCause ) const
+QGISEXTERN void deleteStyleById( const QString &uri, QString styleId, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
 
@@ -4655,6 +4655,9 @@ void QgsPostgresProvider::deleteStyleById( const QString &uri, QString styleId, 
       errCause = QObject::tr( "Error executing the delete query. The query was logged" );
     }
   }
+
+  conn->unref();
+
 }
 
 QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& errCause )
