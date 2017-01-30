@@ -255,7 +255,7 @@ class AlgorithmsTest(object):
                     data = file.read()
 
                 for rule in expected_result.get('rules', []):
-                    self.assertRegexpMatches(data, rule)
+                    self.assertRegex(data, rule)
 
 
 if __name__ == '__main__':
