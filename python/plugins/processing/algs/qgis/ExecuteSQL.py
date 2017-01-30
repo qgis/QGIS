@@ -103,6 +103,7 @@ class ExecuteSQL(GeoAlgorithm):
                 layer = dataobjects.getObjectFromUri(layerSource)
                 if layer:
                     df.addSource('input{}'.format(layerIdx), layer.id())
+                layerIdx += 1
 
         if query == '':
             raise GeoAlgorithmExecutionException(
