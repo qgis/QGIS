@@ -247,6 +247,7 @@
 #include "qgsvirtuallayerdefinitionutils.h"
 #include "qgstransaction.h"
 #include "qgstransactiongroup.h"
+#include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerutils.h"
 #include "qgshelp.h"
 
@@ -8543,7 +8544,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *>& lyrList )
           QgsExpressionContextUtils::setLayerVariable( dupVLayer, variableName, varValue );
         }
 
-        Q_FOREACH ( const QgsVectorJoinInfo& join, vlayer->vectorJoins() )
+        Q_FOREACH ( const QgsVectorLayerJoinInfo& join, vlayer->vectorJoins() )
           dupVLayer->addJoin( join );
 
         for ( int fld = 0; fld < vlayer->fields().count(); fld++ )
@@ -9509,7 +9510,6 @@ void QgisApp::embedLayers()
 
     //layer ids
     QList<QDomNode> brokenNodes;
-    QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
 
     // resolve dependencies
     QgsLayerDefinition::DependencySorter depSorter( projectFile );
@@ -9520,7 +9520,7 @@ void QgisApp::embedLayers()
       Q_FOREACH ( const QString& selId, layerIds )
       {
         if ( selId == id )
-          QgsProject::instance()->createEmbeddedLayer( selId, projectFile, brokenNodes, vectorLayerList );
+          QgsProject::instance()->createEmbeddedLayer( selId, projectFile, brokenNodes );
       }
     }
 

@@ -24,7 +24,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsVirtualLayerDefinitionUtils,
                        QgsWkbTypes,
                        QgsProject,
-                       QgsVectorJoinInfo
+                       QgsVectorLayerJoinInfo
                        )
 
 from qgis.testing import start_app, unittest
@@ -757,11 +757,11 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         v3 = QgsVectorLayer("Point?field=id:integer&field=cname:string", "C", "memory")
         self.assertEqual(v3.isValid(), True)
         QgsProject.instance().addMapLayers([v1, v2, v3])
-        joinInfo = QgsVectorJoinInfo()
-        joinInfo.targetFieldName = "b_id"
-        joinInfo.joinLayerId = v2.id()
-        joinInfo.joinFieldName = "id"
-        #joinInfo.prefix = "B_";
+        joinInfo = QgsVectorLayerJoinInfo()
+        joinInfo.setTargetFieldName("b_id")
+        joinInfo.setJoinLayer(v2)
+        joinInfo.setJoinFieldName("id")
+        #joinInfo.setPrefix("B_")
         v1.addJoin(joinInfo)
         self.assertEqual(len(v1.fields()), 6)
 
@@ -779,20 +779,20 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
         # add a table prefix to the join
         v1.removeJoin(v2.id())
-        joinInfo.prefix = "BB_"
+        joinInfo.setPrefix("BB_")
         v1.addJoin(joinInfo)
         self.assertEqual(len(v1.fields()), 6)
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(v1)
         self.assertEqual(df.query(), 'SELECT t.rowid AS uid, t.id, t.b_id, t.c_id, t.name, j1.bname AS BB_bname, j1.bfield AS BB_bfield FROM {} AS t LEFT JOIN {} AS j1 ON t."b_id"=j1."id"'.format(v1.id(), v2.id()))
-        joinInfo.prefix = ""
+        joinInfo.setPrefix("")
         v1.removeJoin(v2.id())
         v1.addJoin(joinInfo)
 
         # add another join
-        joinInfo2 = QgsVectorJoinInfo()
-        joinInfo2.targetFieldName = "c_id"
-        joinInfo2.joinLayerId = v3.id()
-        joinInfo2.joinFieldName = "id"
+        joinInfo2 = QgsVectorLayerJoinInfo()
+        joinInfo2.setTargetFieldName("c_id")
+        joinInfo2.setJoinLayer(v3)
+        joinInfo2.setJoinFieldName("id")
         v1.addJoin(joinInfo2)
         self.assertEqual(len(v1.fields()), 7)
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(v1)

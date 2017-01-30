@@ -321,7 +321,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @note not available in Python bindings
      */
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
-                              QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
+                              bool saveFlag = true );
 
     /** Create layer group instance defined in an arbitrary project file.
      * @note: added in version 2.4
@@ -926,11 +926,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     */
     bool _getMapLayers( const QDomDocument& doc, QList<QDomNode>& brokenNodes );
 
-    /** Processes any joins attached to a newly added layer.
-     * @param layer layer to process
-     */
-    void processLayerJoins( QgsVectorLayer* layer );
-
     /** Set error message from read/write operation
      * @note not available in Python bindings
      */
@@ -943,7 +938,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     //! Creates layer and adds it to maplayer registry
     //! @note not available in python bindings
-    bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
+    bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes );
 
     //! @note not available in python bindings
     void initializeEmbeddedSubtree( const QString& projectFilePath, QgsLayerTreeGroup* group );

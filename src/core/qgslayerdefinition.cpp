@@ -147,11 +147,9 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject* proj
   // Now that all layers are loaded, refresh the vectorjoins to get the joined fields
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
-    QgsVectorLayer* vlayer = dynamic_cast< QgsVectorLayer * >( layer );
-    if ( vlayer )
+    if ( QgsVectorLayer* vlayer = qobject_cast< QgsVectorLayer * >( layer ) )
     {
-      vlayer->createJoinCaches();
-      vlayer->updateFields();
+      vlayer->resolveReferences( project );
     }
   }
 

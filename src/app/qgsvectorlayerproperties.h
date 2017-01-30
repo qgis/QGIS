@@ -178,7 +178,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QgsFieldsProperties* mFieldsPropertiesDialog;
 
     //! List of joins of a layer at the time of creation of the dialog. Used to return joins to previous state if dialog is canceled
-    QList< QgsVectorJoinInfo > mOldJoins;
+    QList< QgsVectorLayerJoinInfo > mOldJoins;
 
     //! A list of additional pages provided by plugins
     QList<QgsMapLayerConfigWidget*> mLayerPropertiesPages;
@@ -190,7 +190,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void initDiagramTab();
 
     //! Adds a new join to mJoinTreeWidget
-    void addJoinToTreeWidget( const QgsVectorJoinInfo& join , const int insertIndex = -1 );
+    void addJoinToTreeWidget( const QgsVectorLayerJoinInfo& join , const int insertIndex = -1 );
 
     QgsExpressionContext mContext;
 
