@@ -1792,7 +1792,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   //this makes labels align to the font's baseline or highest character
   double topMargin = qMax( 0.25 * labelFontMetrics->ascent(), 0.0 );
   double bottomMargin = 1.0 + labelFontMetrics->descent();
-  QgsLabelFeature::VisualMargin vm( topMargin, 0.0, bottomMargin, 0.0 );
+  QgsMargins vm( 0.0, topMargin, 0.0, bottomMargin );
   vm *= xform->mapUnitsPerPixel();
   ( *labelFeature )->setVisualMargin( vm );
 
