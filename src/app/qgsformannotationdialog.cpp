@@ -14,13 +14,16 @@
  ***************************************************************************/
 #include "qgsformannotationdialog.h"
 #include "qgsannotationwidget.h"
-#include "qgsformannotationitem.h"
+#include "qgsformannotation.h"
+#include "qgsmapcanvasannotationitem.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
+#include "qgsannotationmanager.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
 
-QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsFormAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
+QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
     : QDialog( parent, f )
     , mItem( item )
     , mEmbeddedWidget( nullptr )
@@ -30,14 +33,15 @@ QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsFormAnnotationItem* item, Q
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
-  if ( item )
+  if ( item && item->annotation() )
   {
-    mFileLineEdit->setText( item->designerForm() );
+    QgsFormAnnotation* annotation = static_cast< QgsFormAnnotation* >( item->annotation() );
+    mFileLineEdit->setText( annotation->designerForm() );
   }
 
-  QObject::connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( applySettingsToItem() ) );
+  QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsFormAnnotationDialog::applySettingsToItem );
   QPushButton* deleteButton = new QPushButton( tr( "Delete" ) );
-  QObject::connect( deleteButton, SIGNAL( clicked() ), this, SLOT( deleteItem() ) );
+  QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsFormAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
 }
 
@@ -54,10 +58,11 @@ void QgsFormAnnotationDialog::applySettingsToItem()
     mEmbeddedWidget->apply();
   }
 
-  if ( mItem )
+  if ( mItem && mItem->annotation() )
   {
-    mItem->setDesignerForm( mFileLineEdit->text() );
-    QgsVectorLayer* layer = mItem->vectorLayer();
+    QgsFormAnnotation* annotation = static_cast< QgsFormAnnotation* >( mItem->annotation() );
+    annotation->setDesignerForm( mFileLineEdit->text() );
+    QgsVectorLayer* layer = qobject_cast< QgsVectorLayer* >( annotation->mapLayer() );
     if ( layer )
     {
       //set last used annotation form as default for the layer
@@ -81,12 +86,8 @@ void QgsFormAnnotationDialog::on_mBrowseToolButton_clicked()
 
 void QgsFormAnnotationDialog::deleteItem()
 {
-  QGraphicsScene* scene = mItem->scene();
-  if ( scene )
-  {
-    scene->removeItem( mItem );
-  }
-  delete mItem;
+  if ( mItem && mItem->annotation() )
+    QgsProject::instance()->annotationManager()->removeAnnotation( mItem->annotation() );
   mItem = nullptr;
 }
 

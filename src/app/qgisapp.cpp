@@ -106,6 +106,8 @@
 #include "qgsapplayertreeviewmenuprovider.h"
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
+#include "qgsannotationmanager.h"
+#include "qgsannotationregistry.h"
 #include "qgsattributetabledialog.h"
 #include "qgsattributedialog.h"
 #include "qgsauthmanager.h"
@@ -147,11 +149,11 @@
 #include "qgsexception.h"
 #include "qgsexpressionselectiondialog.h"
 #include "qgsfeature.h"
-#include "qgsformannotationitem.h"
 #include "qgsfieldcalculator.h"
 #include "qgsfieldformatter.h"
 #include "qgsfieldformatterregistry.h"
-#include "qgshtmlannotationitem.h"
+#include "qgsformannotation.h"
+#include "qgshtmlannotation.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsgpsinformationwidget.h"
 #include "qgsguivectorlayertools.h"
@@ -222,11 +224,11 @@
 #include "qgsstatusbarmagnifierwidget.h"
 #include "qgsstatusbarscalewidget.h"
 #include "qgsstyle.h"
-#include "qgssvgannotationitem.h"
+#include "qgssvgannotation.h"
 #include "qgstaskmanager.h"
 #include "qgstaskmanagerwidget.h"
 #include "qgssymbolselectordialog.h"
-#include "qgstextannotationitem.h"
+#include "qgstextannotation.h"
 #include "qgstipgui.h"
 #include "qgsundowidget.h"
 #include "qgsuserinputdockwidget.h"
@@ -777,6 +779,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::updateRecentProjectPaths, this, QStringLiteral( "Update recent project paths" ) );
   functionProfile( &QgisApp::updateProjectFromTemplates, this, QStringLiteral( "Update project from templates" ) );
   functionProfile( &QgisApp::legendLayerSelectionChanged, this, QStringLiteral( "Legend layer selection changed" ) );
+
+  QgsApplication::annotationRegistry()->addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "FormAnnotationItem" ), &QgsFormAnnotation::create ) );
+  connect( QgsProject::instance()->annotationManager(), &QgsAnnotationManager::annotationAdded, this, &QgisApp::annotationCreated );
+
   mSaveRollbackInProgress = false;
 
   QFileSystemWatcher* projectsTemplateWatcher = new QFileSystemWatcher( this );
@@ -1416,6 +1422,12 @@ void QgisApp::dropEventTimeout()
   mMapCanvas->refresh();
 }
 
+void QgisApp::annotationCreated( QgsAnnotation* annotation )
+{
+  // create canvas annotation item for annotation
+  QgsMapCanvasAnnotationItem* canvasItem = new QgsMapCanvasAnnotationItem( annotation, mMapCanvas );
+  Q_UNUSED( canvasItem ); //item is already added automatically to canvas scene
+}
 
 void QgisApp::registerCustomDropHandler( QgsCustomDropHandler* handler )
 {
@@ -1815,25 +1827,6 @@ void QgisApp::showStyleManager()
 {
   QgsStyleManagerDialog dlg( QgsStyle::defaultStyle(), this );
   dlg.exec();
-}
-
-void QgisApp::writeAnnotationItemsToProject( QDomDocument& doc )
-{
-  QList<QgsAnnotationItem*> items = annotationItems();
-  QgsAnnotationItem* item;
-  QListIterator<QgsAnnotationItem*> i( items );
-  // save lowermost annotation (at end of list) first
-  i.toBack();
-  while ( i.hasPrevious() )
-  {
-    item = i.previous();
-
-    if ( ! item )
-    {
-      continue;
-    }
-    item->writeXml( doc );
-  }
 }
 
 void QgisApp::showPythonDialog()
@@ -2825,11 +2818,8 @@ void QgisApp::setupConnections()
            this, SLOT( readProject( const QDomDocument & ) ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
            this, SLOT( writeProject( QDomDocument & ) ) );
-  connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument& ) ),
-           this, SLOT( writeAnnotationItemsToProject( QDomDocument& ) ) );
 
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( loadComposersFromProject( const QDomDocument& ) ) );
-  connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( loadAnnotationItemsFromProject( const QDomDocument& ) ) );
 
   connect( this, SIGNAL( projectRead() ),
            this, SLOT( fileOpenedOKAfterLaunch() ) );
@@ -5999,7 +5989,7 @@ void QgisApp::modifyAnnotation()
 
 void QgisApp::reprojectAnnotations()
 {
-  Q_FOREACH ( QgsAnnotationItem * annotation, annotationItems() )
+  Q_FOREACH ( QgsMapCanvasAnnotationItem * annotation, annotationItems() )
   {
     annotation->updatePosition();
   }
@@ -6930,52 +6920,6 @@ void QgisApp::on_mPrintComposersMenu_aboutToShow()
   mPrintComposersMenu->addActions( acts );
 }
 
-bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
-{
-  if ( !mMapCanvas )
-  {
-    return false;
-  }
-
-  removeAnnotationItems();
-
-  if ( doc.isNull() )
-  {
-    return false;
-  }
-
-  QDomNodeList textItemList = doc.elementsByTagName( QStringLiteral( "TextAnnotationItem" ) );
-  for ( int i = 0; i < textItemList.size(); ++i )
-  {
-    QgsTextAnnotationItem* newTextItem = new QgsTextAnnotationItem( mMapCanvas );
-    newTextItem->readXml( doc, textItemList.at( i ).toElement() );
-  }
-
-  QDomNodeList formItemList = doc.elementsByTagName( QStringLiteral( "FormAnnotationItem" ) );
-  for ( int i = 0; i < formItemList.size(); ++i )
-  {
-    QgsFormAnnotationItem* newFormItem = new QgsFormAnnotationItem( mMapCanvas );
-    newFormItem->readXml( doc, formItemList.at( i ).toElement() );
-  }
-
-#ifdef WITH_QTWEBKIT
-  QDomNodeList htmlItemList = doc.elementsByTagName( QStringLiteral( "HtmlAnnotationItem" ) );
-  for ( int i = 0; i < htmlItemList.size(); ++i )
-  {
-    QgsHtmlAnnotationItem* newHtmlItem = new QgsHtmlAnnotationItem( mMapCanvas );
-    newHtmlItem->readXml( doc, htmlItemList.at( i ).toElement() );
-  }
-#endif
-
-  QDomNodeList svgItemList = doc.elementsByTagName( QStringLiteral( "SVGAnnotationItem" ) );
-  for ( int i = 0; i < svgItemList.size(); ++i )
-  {
-    QgsSvgAnnotationItem* newSvgItem = new QgsSvgAnnotationItem( mMapCanvas );
-    newSvgItem->readXml( doc, svgItemList.at( i ).toElement() );
-  }
-  return true;
-}
-
 void QgisApp::showPinnedLabels( bool show )
 {
   qobject_cast<QgsMapToolPinLabels*>( mMapTools.mPinLabels )->showPinnedLabels( show );
@@ -7012,9 +6956,9 @@ void QgisApp::changeLabelProperties()
   mMapCanvas->setMapTool( mMapTools.mChangeLabelProperties );
 }
 
-QList<QgsAnnotationItem*> QgisApp::annotationItems()
+QList<QgsMapCanvasAnnotationItem*> QgisApp::annotationItems()
 {
-  QList<QgsAnnotationItem*> itemList;
+  QList<QgsMapCanvasAnnotationItem*> itemList;
 
   if ( !mMapCanvas )
   {
@@ -7027,7 +6971,7 @@ QList<QgsAnnotationItem*> QgisApp::annotationItems()
     QList<QGraphicsItem*>::iterator gIt = graphicsItems.begin();
     for ( ; gIt != graphicsItems.end(); ++gIt )
     {
-      QgsAnnotationItem* currentItem = dynamic_cast<QgsAnnotationItem*>( *gIt );
+      QgsMapCanvasAnnotationItem* currentItem = dynamic_cast<QgsMapCanvasAnnotationItem*>( *gIt );
       if ( currentItem )
       {
         itemList.push_back( currentItem );
@@ -7048,14 +6992,13 @@ void QgisApp::removeAnnotationItems()
   {
     return;
   }
-  QList<QgsAnnotationItem*> itemList = annotationItems();
-  QList<QgsAnnotationItem*>::iterator itemIt = itemList.begin();
-  for ( ; itemIt != itemList.end(); ++itemIt )
+  QList<QgsMapCanvasAnnotationItem*> itemList = annotationItems();
+  Q_FOREACH ( QgsMapCanvasAnnotationItem* item, itemList )
   {
-    if ( *itemIt )
+    if ( item )
     {
-      scene->removeItem( *itemIt );
-      delete *itemIt;
+      scene->removeItem( item );
+      delete item;
     }
   }
 }

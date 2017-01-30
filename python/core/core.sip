@@ -13,7 +13,6 @@
 
 %Include qgis.sip
 
-%Include qgsannotation.sip
 %Include qgsapplication.sip
 %Include qgsaction.sip
 %Include qgsactionmanager.sip
@@ -94,6 +93,7 @@
 %Include qgsmapsettings.sip
 %Include qgsmaptopixel.sip
 %Include qgsmapunitscale.sip
+%Include qgsmargins.sip
 %Include qgsmessagelog.sip
 %Include qgsmessageoutput.sip
 %Include qgsmimedatautils.sip
@@ -173,6 +173,12 @@
 %Include qgsvirtuallayerdefinitionutils.sip
 %Include qgsmapthemecollection.sip
 %Include qgsxmlutils.sip
+
+%Include annotations/qgsannotation.sip
+%Include annotations/qgsannotationmanager.sip
+%Include annotations/qgshtmlannotation.sip
+%Include annotations/qgssvgannotation.sip
+%Include annotations/qgstextannotation.sip
 
 %Include auth/qgsauthcertutils.sip
 %Include auth/qgsauthconfig.sip

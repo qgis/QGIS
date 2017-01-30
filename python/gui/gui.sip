@@ -20,7 +20,6 @@
 %Include qgsactionmenu.sip
 %Include qgsadvanceddigitizingcanvasitem.sip
 %Include qgsadvanceddigitizingdockwidget.sip
-%Include qgsannotationitem.sip
 %Include qgsattributedialog.sip
 %Include qgsattributeeditorcontext.sip
 %Include qgsattributeform.sip
@@ -81,7 +80,7 @@
 %Include qgsfilterlineedit.sip
 %Include qgsfloatingwidget.sip
 %Include qgsfocuswatcher.sip
-%Include qgsformannotationitem.sip
+%Include qgsformannotation.sip
 %Include qgsgenericprojectionselector.sip
 %Include qgsgeometryrubberband.sip
 %Include qgsgradientcolorrampdialog.sip
@@ -90,7 +89,6 @@
 %Include qgshelp.sip
 %Include qgshighlight.sip
 %Include qgshistogramwidget.sip
-%Include qgshtmlannotationitem.sip
 %Include qgsidentifymenu.sip
 %Include qgskeyvaluewidget.sip
 %Include qgslistwidget.sip
@@ -100,6 +98,7 @@
 %Include qgsludialog.sip
 %Include qgsmanageconnectionsdialog.sip
 %Include qgsmapcanvas.sip
+%Include qgsmapcanvasannotationitem.sip
 %Include qgsmapcanvasitem.sip
 %Include qgsmapcanvassnapper.sip
 %Include qgsmapcanvassnappingutils.sip
@@ -159,12 +158,10 @@
 %Include qgssourceselectdialog.sip
 %Include qgssublayersdialog.sip
 %Include qgssubstitutionlistwidget.sip
-%Include qgssvgannotationitem.sip
 %Include qgstablewidgetbase.sip
 %Include qgstabwidget.sip
 %Include qgstablewidgetitem.sip
 %Include qgstaskmanagerwidget.sip
-%Include qgstextannotationitem.sip
 %Include qgstextformatwidget.sip
 %Include qgstextpreview.sip
 %Include qgstreewidgetitem.sip

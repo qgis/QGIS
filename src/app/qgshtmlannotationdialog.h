@@ -19,18 +19,18 @@
 #include "qgis_app.h"
 
 class QgsAnnotationWidget;
-class QgsHtmlAnnotationItem;
+class QgsMapCanvasAnnotationItem;
 
 class APP_EXPORT QgsHtmlAnnotationDialog: public QDialog, private Ui::QgsFormAnnotationDialogBase
 {
     Q_OBJECT
   public:
-    QgsHtmlAnnotationDialog( QgsHtmlAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsHtmlAnnotationDialog();
 
   private:
-    QgsHtmlAnnotationItem* mItem;
-    QgsAnnotationWidget* mEmbeddedWidget;
+    QgsMapCanvasAnnotationItem* mItem = nullptr;
+    QgsAnnotationWidget* mEmbeddedWidget = nullptr;
 
   private slots:
     void applySettingsToItem();

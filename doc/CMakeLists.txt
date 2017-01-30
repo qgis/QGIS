@@ -48,6 +48,7 @@ IF(WITH_APIDOC)
     SET(DOXYGEN_INPUT
       ${CMAKE_SOURCE_DIR}/doc
       ${CMAKE_SOURCE_DIR}/src/core
+      ${CMAKE_SOURCE_DIR}/src/core/annotations      
       ${CMAKE_SOURCE_DIR}/src/core/auth
       ${CMAKE_SOURCE_DIR}/src/core/composer
       ${CMAKE_SOURCE_DIR}/src/core/diagram

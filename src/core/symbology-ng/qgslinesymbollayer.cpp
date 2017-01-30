@@ -328,7 +328,7 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbo
   else
   {
     double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
-    QList<QPolygonF> mline = ::offsetLine( points, scaledOffset, context.feature() ? context.feature()->geometry().type() : QgsWkbTypes::LineGeometry );
+    QList<QPolygonF> mline = ::offsetLine( points, scaledOffset, context.originalGeometryType() != QgsWkbTypes::UnknownGeometry ? context.originalGeometryType() : QgsWkbTypes::LineGeometry );
     for ( int part = 0; part < mline.count(); ++part )
     {
 #if 0
@@ -566,7 +566,7 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   }
 }
 
-double QgsSimpleLineSymbolLayer::estimateMaxBleed() const
+double QgsSimpleLineSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
   if ( mDrawInsidePolygon )
   {
@@ -575,7 +575,8 @@ double QgsSimpleLineSymbolLayer::estimateMaxBleed() const
   }
   else
   {
-    return ( mWidth / 2.0 ) + mOffset;
+    return context.convertToPainterUnits(( mWidth / 2.0 ), mWidthUnit, mWidthMapUnitScale ) +
+           context.convertToPainterUnits( qAbs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
   }
 }
 
@@ -875,7 +876,7 @@ void QgsMarkerLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbo
   else
   {
     context.renderContext().setGeometry( nullptr ); //always use segmented geometry with offset
-    QList<QPolygonF> mline = ::offsetLine( points, context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale ), context.feature() ? context.feature()->geometry().type() : QgsWkbTypes::LineGeometry );
+    QList<QPolygonF> mline = ::offsetLine( points, context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale ), context.originalGeometryType() != QgsWkbTypes::UnknownGeometry ? context.originalGeometryType() : QgsWkbTypes::LineGeometry );
 
     for ( int part = 0; part < mline.count(); ++part )
     {
@@ -1593,9 +1594,10 @@ QSet<QString> QgsMarkerLineSymbolLayer::usedAttributes( const QgsRenderContext& 
   return attr;
 }
 
-double QgsMarkerLineSymbolLayer::estimateMaxBleed() const
+double QgsMarkerLineSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
-  return ( mMarker->size() / 2.0 ) + mOffset;
+  return context.convertToPainterUnits(( mMarker->size() / 2.0 ), mMarker->sizeUnit(), mMarker->sizeMapUnitScale() ) +
+         context.convertToPainterUnits( qAbs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
 }
 
 

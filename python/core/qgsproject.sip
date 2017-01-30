@@ -325,6 +325,8 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     QgsMapThemeCollection* mapThemeCollection();
 
+    QgsAnnotationManager* annotationManager();
+
     /**
      * Set a list of layers which should not be taken into account on map identification
      */

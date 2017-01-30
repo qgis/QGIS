@@ -19,8 +19,10 @@
 #define QGSMAPTOOLANNOTATION_H
 
 #include "qgsmaptool.h"
-#include "qgsannotationitem.h"
 #include "qgis_app.h"
+#include "qgsmapcanvasannotationitem.h"
+
+class QgsAnnotation;
 
 class APP_EXPORT QgsMapToolAnnotation: public QgsMapTool
 {
@@ -37,22 +39,28 @@ class APP_EXPORT QgsMapToolAnnotation: public QgsMapTool
     void keyPressEvent( QKeyEvent* e ) override;
 
   protected:
-    //! Creates a new item. To be implemented by subclasses. Returns 0 by default
-    virtual QgsAnnotationItem* createItem( QMouseEvent* e );
+
+    /**
+     * Creates a new item. To be implemented by subclasses.
+     */
+    virtual QgsAnnotation* createItem() const { return nullptr; }
+
     //! Creates an editor widget (caller takes ownership)
-    QDialog* createItemEditor( QgsAnnotationItem* item );
+    QDialog* createItemEditor( QgsMapCanvasAnnotationItem* item );
 
   private:
     //! Returns the topmost annotation item at the position (or 0 if none)
-    QgsAnnotationItem* itemAtPos( QPointF pos );
-    QgsAnnotationItem* selectedItem();
+    QgsMapCanvasAnnotationItem* itemAtPos( QPointF pos ) const;
+    QgsMapCanvasAnnotationItem* selectedItem() const;
     //! Returns a list of all annotationitems in the canvas
-    QList<QgsAnnotationItem*> annotationItems();
+    QList<QgsMapCanvasAnnotationItem*> annotationItems() const;
     //! Switches visibility states of text items
     void toggleTextItemVisibilities();
 
-    QgsAnnotationItem::MouseMoveAction mCurrentMoveAction;
-    QPointF mLastMousePosition;
+    QgsPoint transformCanvasToAnnotation( QgsPoint p, QgsAnnotation* annotation ) const;
+
+    QgsMapCanvasAnnotationItem::MouseMoveAction mCurrentMoveAction = QgsMapCanvasAnnotationItem::NoAction;
+    QPointF mLastMousePosition = QPointF( 0, 0 );
 };
 
 #endif // QGSMAPTOOLANNOTATION_H

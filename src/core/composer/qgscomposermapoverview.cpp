@@ -92,7 +92,7 @@ void QgsComposerMapOverview::draw( QPainter *painter )
   double dotsPerMM = painter->device()->logicalDpiX() / 25.4;
 
   //setup render context
-  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, painter );
   context.setForceVectorOutput( true );
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );

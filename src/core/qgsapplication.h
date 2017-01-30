@@ -38,6 +38,7 @@ class QgsDataItemProviderRegistry;
 class QgsPluginLayerRegistry;
 class QgsMessageLog;
 class QgsProcessingRegistry;
+class QgsAnnotationRegistry;
 
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
@@ -462,6 +463,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QgsProcessingRegistry* processingRegistry();
 
+    /**
+     * Returns the application's annotation registry, used for managing annotation types.
+     * @note added in QGIS 3.0
+     * @note not available in Python bindings
+     */
+    static QgsAnnotationRegistry* annotationRegistry();
+
 #ifdef ANDROID
     //dummy method to workaround sip generation issue issue
     bool x11EventFilter( XEvent * event )
@@ -607,6 +615,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     QgsPluginLayerRegistry* mPluginLayerRegistry = nullptr;
     QgsMessageLog* mMessageLog = nullptr;
     QgsProcessingRegistry* mProcessingRegistry = nullptr;
+    QgsAnnotationRegistry* mAnnotationRegistry = nullptr;
     QString mNullRepresentation;
 };
 

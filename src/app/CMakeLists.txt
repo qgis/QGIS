@@ -540,6 +540,7 @@ INCLUDE_DIRECTORIES(
   ../analysis/raster
   ../analysis/openstreetmap
   ../core
+  ../core/annotations
   ../core/auth
   ../core/gps
   ../core/composer
