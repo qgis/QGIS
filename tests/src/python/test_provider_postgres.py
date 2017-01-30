@@ -33,7 +33,7 @@ from qgis.core import (
     QgsVectorLayerUtils
 )
 from qgis.gui import QgsEditorWidgetRegistry
-from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
+from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant, QDir
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
@@ -638,6 +638,64 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         testKey(lyr, '"f1","F2"', ['f1', 'F2'])
         testKey(lyr, '"f1","F2","f3"', ['f1', 'F2', 'f3'])
         testKey(lyr, None, ['id'])
+
+    def testStyle(self):
+        self.execSQLCommand('DROP TABLE IF EXISTS layer_styles CASCADE')
+
+        vl = self.getEditableLayer()
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().isSaveAndLoadStyleToDBSupported())
+        self.assertTrue(vl.dataProvider().isDeleteStyleFromDBSupported())
+
+        # table layer_styles does not exit
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, -1)
+        self.assertEqual(idlist, [])
+        self.assertEqual(namelist, [])
+        self.assertEqual(desclist, [])
+        self.assertNotEqual(errmsg, "")
+
+        qml, errmsg = vl.getStyleFromDatabase("1")
+        self.assertEqual(qml, "")
+        self.assertNotEqual(errmsg, "")
+
+        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "singleSymbol"))
+        status = vl.loadNamedStyle(mFilePath)
+        self.assertTrue(status)
+
+        errorMsg = vl.saveStyleToDatabase("name", "description", False, "")
+        self.assertEqual(errorMsg, "")
+
+        qml, errmsg = vl.getStyleFromDatabase("not_existing")
+        self.assertEqual(qml, "")
+        self.assertNotEqual(errmsg, "")
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 1)
+        self.assertEqual(errmsg, "")
+        self.assertEqual(idlist, ['1'])
+        self.assertEqual(namelist, ['name'])
+        self.assertEqual(desclist, ['description'])
+
+        qml, errmsg = vl.getStyleFromDatabase("100")
+        self.assertEqual(qml, "")
+        self.assertNotEqual(errmsg, "")
+
+        qml, errmsg = vl.getStyleFromDatabase("1")
+        self.assertTrue(qml.startswith('<!DOCTYPE qgis'), qml)
+        self.assertEqual(errmsg, "")
+
+        uri = vl.dataProvider().dataSourceUri()
+        vl.dataProvider().deleteStyleById(uri, "1", errmsg)
+        self.assertEqual(errmsg, "")
+
+        # table layer_styles does exit, but is now empty
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 0)
+        self.assertEqual(idlist, [])
+        self.assertEqual(namelist, [])
+        self.assertEqual(desclist, [])
+        self.assertEqual(errmsg, "")
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
