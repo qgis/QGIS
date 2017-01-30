@@ -1940,17 +1940,6 @@ bool QgsGeometry::isGeosEqual( const QgsGeometry& g ) const
   return geos.isEqual( *( g.d->geometry ) );
 }
 
-bool QgsGeometry::isGeosEmpty() const
-{
-  if ( !d->geometry )
-  {
-    return false;
-  }
-
-  QgsGeos geos( d->geometry );
-  return geos.isEmpty();
-}
-
 QgsGeometry QgsGeometry::unaryUnion( const QList<QgsGeometry>& geometryList )
 {
   QgsGeos geos( nullptr );

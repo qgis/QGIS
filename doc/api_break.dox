@@ -1057,6 +1057,7 @@ empty geometry collection)
 - static bool compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon ) has been renamed to compareMultiPolygons
 - smoothLine and smoothPolygon are no longer public API (use smooth() instead)
 - avoidIntersections() got an extra argument: list of layers to include in the operation (previously read from active QgsProject)
+- isGeosEmpty() was removed. Use isEmpty() instead.
 
 
 QgsGeometryAnalyzer        {#qgis_api_break_3_0_QgsGeometryAnalyzer}

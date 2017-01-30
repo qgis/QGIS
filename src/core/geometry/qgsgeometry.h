@@ -177,9 +177,9 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Returns true if the geometry is empty (eg a linestring with no vertices,
-     * or a collection with no geometries).
+     * or a collection with no geometries). A null geometry will always
+     * return true for isEmpty().
      * @see isNull()
-     * @see isGeosEmpty()
      */
     bool isEmpty() const;
 
@@ -195,12 +195,6 @@ class CORE_EXPORT QgsGeometry
       @note added in 1.5
      */
     bool isGeosValid() const;
-
-    /** Check if the geometry is empty using GEOS
-      @note added in 1.5
-      @see isEmpty()
-     */
-    bool isGeosEmpty() const;
 
     /** Returns the area of the geometry using GEOS
       @note added in 1.5

@@ -130,11 +130,6 @@ class QgsGeometry
      */
     bool isGeosValid() const;
 
-    /** Check if the geometry is empty using GEOS
-      @note added in 1.5
-     */
-    bool isGeosEmpty() const;
-
     /** Returns the area of the geometry using GEOS
       @note added in 1.5
      */
