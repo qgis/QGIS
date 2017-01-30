@@ -26,38 +26,38 @@
  * entries from a QgsProject.
  * @note added in QGIS 3.0
  */
-namespace SERVER_EXPORT QgsServerProjectUtils
+namespace QgsServerProjectUtils
 {
 
   /** Returns the maximum width for WMS images defined in a QGIS project.
     * @param project the QGIS project
     * @return width if defined in project, -1 otherwise.
     */
-  int wmsMaxWidth( const QgsProject& project );
+  SERVER_EXPORT int wmsMaxWidth( const QgsProject& project );
 
   /** Returns the maximum height for WMS images defined in a QGIS project.
     * @param project the QGIS project
     * @return height if defined in project, -1 otherwise.
     */
-  int wmsMaxHeight( const QgsProject& project );
+  SERVER_EXPORT int wmsMaxHeight( const QgsProject& project );
 
   /** Returns the WMS service url defined in a QGIS project.
     * @param project the QGIS project
     * @return url if defined in project, an empty string otherwise.
     */
-  QString wmsServiceUrl( const QgsProject& project );
+  SERVER_EXPORT QString wmsServiceUrl( const QgsProject& project );
 
   /** Returns the WFS service url defined in a QGIS project.
     * @param project the QGIS project
     * @return url if defined in project, an empty string otherwise.
     */
-  QString wfsServiceUrl( const QgsProject& project );
+  SERVER_EXPORT QString wfsServiceUrl( const QgsProject& project );
 
   /** Returns the WCS service url defined in a QGIS project.
     * @param project the QGIS project
     * @return url if defined in project, an empty string otherwise.
     */
-  QString wcsServiceUrl( const QgsProject& project );
+  SERVER_EXPORT QString wcsServiceUrl( const QgsProject& project );
 };
 
 #endif
