@@ -50,7 +50,9 @@ class TestQgsInvertedPolygon : public QObject
     void graduatedSubRenderer();
     void preprocess();
     void projectionTest();
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_MAJOR >= 2
     void curvedPolygons();
+#endif
 
   private:
     bool mTestHasError;
@@ -147,7 +149,8 @@ void TestQgsInvertedPolygon::projectionTest()
   mMapSettings.setCrsTransformEnabled( false );
 }
 
-// This test relies on GDAL support of curved polygons i.e. GDAL >= 2
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_MAJOR >= 2
+// This test relies on GDAL support of curved polygons
 void TestQgsInvertedPolygon::curvedPolygons()
 {
   QString myCurvedPolysFileName = mTestDataDir + "curved_polys.gpkg";
@@ -163,6 +166,7 @@ void TestQgsInvertedPolygon::curvedPolygons()
   QVERIFY( imageCheck( "inverted_polys_curved" ) );
   mMapSettings.setLayers( QStringList() << curvedLayer->id() );
 }
+#endif
 
 //
 // Private helper functions not called directly by CTest
