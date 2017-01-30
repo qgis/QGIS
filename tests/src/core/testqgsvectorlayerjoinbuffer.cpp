@@ -60,6 +60,8 @@ class TestVectorLayerJoinBuffer : public QObject
     void testJoinLayerDefinitionFile();
     void testCacheUpdate_data();
     void testCacheUpdate();
+    void testRemoveJoinOnLayerDelete();
+    void testResolveReferences();
 
   private:
     QgsProject mProject;
@@ -599,9 +601,65 @@ void TestVectorLayerJoinBuffer::testCacheUpdate()
   fi.nextFeature( fA2 );
   QCOMPARE( fA2.attribute( "id_a" ).toInt(), 3 );
   QCOMPARE( fA2.attribute( "B_value_b" ).toInt(), 12 );
+}
 
-  QgsProject::instance()->removeMapLayer( vlA );
-  QgsProject::instance()->removeMapLayer( vlB );
+void TestVectorLayerJoinBuffer::testRemoveJoinOnLayerDelete()
+{
+  QgsVectorLayer* vlA = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "cacheA" ), QStringLiteral( "memory" ) );
+  QVERIFY( vlA->isValid() );
+  QgsVectorLayer* vlB = new QgsVectorLayer( QStringLiteral( "Point?field=id_b:integer&field=value_b" ), QStringLiteral( "cacheB" ), QStringLiteral( "memory" ) );
+  QVERIFY( vlB->isValid() );
+
+  QgsVectorLayerJoinInfo joinInfo;
+  joinInfo.setTargetFieldName( QStringLiteral( "id_a" ) );
+  joinInfo.setJoinLayer( vlB );
+  joinInfo.setJoinFieldName( QStringLiteral( "id_b" ) );
+  joinInfo.setUsingMemoryCache( true );
+  joinInfo.setPrefix( QStringLiteral( "B_" ) );
+  vlA->addJoin( joinInfo );
+
+  QCOMPARE( vlA->vectorJoins().count(), 1 );
+  QCOMPARE( vlA->vectorJoins()[0].joinLayer(), vlB );
+  QCOMPARE( vlA->vectorJoins()[0].joinLayerId(), vlB->id() );
+  QCOMPARE( vlA->fields().count(), 2 );
+
+  delete vlB;
+
+  QCOMPARE( vlA->vectorJoins().count(), 0 );
+  QCOMPARE( vlA->fields().count(), 1 );
+
+  delete vlA;
+}
+
+void TestVectorLayerJoinBuffer::testResolveReferences()
+{
+  QgsVectorLayer* vlA = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "cacheA" ), QStringLiteral( "memory" ) );
+  QVERIFY( vlA->isValid() );
+  QgsVectorLayer* vlB = new QgsVectorLayer( QStringLiteral( "Point?field=id_b:integer&field=value_b" ), QStringLiteral( "cacheB" ), QStringLiteral( "memory" ) );
+  QVERIFY( vlB->isValid() );
+
+  QgsVectorLayerJoinInfo joinInfo;
+  joinInfo.setTargetFieldName( QStringLiteral( "id_a" ) );
+  joinInfo.setJoinLayerId( vlB->id() );
+  joinInfo.setJoinFieldName( QStringLiteral( "id_b" ) );
+  joinInfo.setUsingMemoryCache( true );
+  joinInfo.setPrefix( QStringLiteral( "B_" ) );
+  vlA->addJoin( joinInfo );
+
+  QCOMPARE( vlA->fields().count(), 1 );
+  QCOMPARE( vlA->vectorJoins()[0].joinLayer(), ( QgsVectorLayer* ) nullptr );
+  QCOMPARE( vlA->vectorJoins()[0].joinLayerId(), vlB->id() );
+
+  QgsProject project;
+  project.addMapLayer( vlB );
+
+  vlA->resolveReferences( &project );
+
+  QCOMPARE( vlA->fields().count(), 2 );
+  QCOMPARE( vlA->vectorJoins()[0].joinLayer(), vlB );
+  QCOMPARE( vlA->vectorJoins()[0].joinLayerId(), vlB->id() );
+
+  delete vlA;
 }
 
 
