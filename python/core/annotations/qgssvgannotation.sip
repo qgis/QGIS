@@ -12,7 +12,9 @@ class QgsSvgAnnotation : QgsAnnotation
 
     void setFilePath( const QString& file );
     QString filePath() const;
-    
+
+    static QgsSvgAnnotation* create() /Factory/;
+
   protected:
 
     void renderAnnotation( QgsRenderContext& context, QSizeF size ) const;

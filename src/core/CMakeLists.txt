@@ -780,6 +780,8 @@ SET(QGIS_CORE_HDRS
   qgswebview.h
   qgslocalec.h
 
+  annotations/qgsannotationregistry.h
+
   auth/qgsauthcertutils.h
   auth/qgsauthconfig.h
   auth/qgsauthcrypto.h

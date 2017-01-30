@@ -67,7 +67,18 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      */
     QList< QgsAnnotation* > annotations() const;
 
+    /**
+     * Reads the manager's state from a DOM element, restoring all annotations
+     * present in the XML document.
+     * @see writeXml()
+     */
     bool readXml( const QDomElement& element, const QDomDocument& doc );
+
+    /**
+     * Returns a DOM element representing the state of the manager.
+     * @see readXml()
+     */
+    QDomElement writeXml( QDomDocument& doc ) const;
 
   signals:
 
@@ -86,7 +97,7 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
 
     QList< QgsAnnotation* > mAnnotations;
 
-    QgsAnnotation* createAnnotationFromXml( const QDomElement& element, const QDomDocument& doc ) const;
+    void createAnnotationFromXml( const QDomElement& element, const QDomDocument& doc );
 
 };
 

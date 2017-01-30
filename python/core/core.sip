@@ -175,6 +175,7 @@
 %Include qgsxmlutils.sip
 
 %Include annotations/qgsannotation.sip
+%Include annotations/qgsannotationmanager.sip
 %Include annotations/qgshtmlannotation.sip
 %Include annotations/qgssvgannotation.sip
 %Include annotations/qgstextannotation.sip

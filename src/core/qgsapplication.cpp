@@ -37,6 +37,7 @@
 #include "qgspluginlayerregistry.h"
 #include "qgsmessagelog.h"
 #include "processing/qgsprocessingregistry.h"
+#include "qgsannotationregistry.h"
 
 #include <QDir>
 #include <QFile>
@@ -135,6 +136,7 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const
   mGpsConnectionRegistry = new QgsGPSConnectionRegistry();
   mPluginLayerRegistry = new QgsPluginLayerRegistry();
   mProcessingRegistry = new QgsProcessingRegistry();
+  mAnnotationRegistry = new QgsAnnotationRegistry();
 
   init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
 }
@@ -266,6 +268,7 @@ void QgsApplication::init( QString customConfigPath )
 
 QgsApplication::~QgsApplication()
 {
+  delete mAnnotationRegistry;
   delete mProcessingRegistry;
   delete mActionScopeRegistry;
   delete mTaskManager;
@@ -1602,6 +1605,11 @@ QgsMessageLog* QgsApplication::messageLog()
 QgsProcessingRegistry*QgsApplication::processingRegistry()
 {
   return instance()->mProcessingRegistry;
+}
+
+QgsAnnotationRegistry*QgsApplication::annotationRegistry()
+{
+  return instance()->mAnnotationRegistry;
 }
 
 QgsFieldFormatterRegistry* QgsApplication::fieldFormatterRegistry()

@@ -23,6 +23,8 @@
 #include "qgsfeatureiterator.h"
 #include "qgscsexception.h"
 #include "qgssymbollayerutils.h"
+#include "qgsproject.h"
+#include "qgsannotationmanager.h"
 #include <QPainter>
 
 
@@ -39,13 +41,12 @@ QgsMapCanvasAnnotationItem::QgsMapCanvasAnnotationItem( QgsAnnotation* annotatio
 
   connect( mMapCanvas, &QgsMapCanvas::layersChanged, this, &QgsMapCanvasAnnotationItem::onCanvasLayersChanged );
   connect( mAnnotation, &QgsAnnotation::mapLayerChanged, this, &QgsMapCanvasAnnotationItem::onCanvasLayersChanged );
+
+  //lifetime is tied to annotation!
+  connect( mAnnotation, &QgsAnnotation::destroyed, this, &QgsMapCanvasAnnotationItem::deleteLater );
+
   updatePosition();
   setFeatureForMapPosition();
-}
-
-QgsMapCanvasAnnotationItem::~QgsMapCanvasAnnotationItem()
-{
-  delete mAnnotation;
 }
 
 void QgsMapCanvasAnnotationItem::updatePosition()

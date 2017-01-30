@@ -29,6 +29,7 @@
 #include "qgssvgannotation.h"
 #include "qgsproject.h"
 #include "qgscsexception.h"
+#include "qgsannotationmanager.h"
 #include <QDialog>
 #include <QMouseEvent>
 
@@ -146,15 +147,11 @@ void QgsMapToolAnnotation::keyPressEvent( QKeyEvent* e )
   {
     if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
     {
-      if ( mCanvas && mCanvas->scene() )
+      QCursor neutralCursor( item->cursorShapeForAction( QgsMapCanvasAnnotationItem::NoAction ) );
+      QgsProject::instance()->annotationManager()->removeAnnotation( item->annotation() );
+      if ( mCanvas )
       {
-        QCursor neutralCursor( item->cursorShapeForAction( QgsMapCanvasAnnotationItem::NoAction ) );
-        mCanvas->scene()->removeItem( item );
-        delete item;
         mCanvas->setCursor( neutralCursor );
-        QgsProject::instance()->setDirty( true ); // TODO QGIS3: Rework the whole annotation code to be MVC compliant, see PR #2506
-
-        // Override default shortcut management in MapCanvas
         e->ignore();
       }
     }

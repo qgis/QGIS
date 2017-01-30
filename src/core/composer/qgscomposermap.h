@@ -352,8 +352,17 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Sets canvas pointer (necessary to query and draw map canvas items)
     void setMapCanvas( QGraphicsView* canvas ) { mMapCanvas = canvas; }
 
-    void setDrawCanvasItems( bool b ) { mDrawCanvasItems = b; }
-    bool drawCanvasItems() const { return mDrawCanvasItems; }
+    /**
+     * Sets whether annotations are drawn within the composer map.
+     * @see drawAnnotations()
+     */
+    void setDrawAnnotations( bool draw ) { mDrawAnnotations = draw; }
+
+    /**
+     * Returns whether annotations are drawn within the composer map.
+     * @see setDrawAnnotations()
+     */
+    bool drawAnnotations() const { return mDrawAnnotations; }
 
     //! Returns the conversion factor map units -> mm
     double mapUnitsToMM() const;
@@ -571,7 +580,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QRectF mCurrentRectangle;
     QGraphicsView* mMapCanvas;
     //! True if annotation items, rubber band, etc. from the main canvas should be displayed
-    bool mDrawCanvasItems;
+    bool mDrawAnnotations;
 
     /** Adjusts an extent rectangle to match the provided item width and height, so that extent
      * center of extent remains the same */
@@ -606,8 +615,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
         @param yShift in: shift in y direction (in item units), out: yShift in map units*/
     void transformShift( double& xShift, double& yShift ) const;
 
-    void drawCanvasItems( QPainter* painter );
-    void drawCanvasItem( const QgsAnnotation* item, QgsRenderContext& context );
+    void drawAnnotations( QPainter* painter );
+    void drawAnnotation( const QgsAnnotation* item, QgsRenderContext& context );
     QPointF composerMapPosForItem( const QgsAnnotation* item ) const;
 
     enum PartType

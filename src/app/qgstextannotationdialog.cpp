@@ -19,6 +19,8 @@
 #include "qgsannotationwidget.h"
 #include "qgstextannotation.h"
 #include "qgsmapcanvasannotationitem.h"
+#include "qgsannotationmanager.h"
+#include "qgsproject.h"
 #include <QColorDialog>
 #include <QGraphicsScene>
 
@@ -156,12 +158,8 @@ void QgsTextAnnotationDialog::blockAllSignals( bool block )
 
 void QgsTextAnnotationDialog::deleteItem()
 {
-  QGraphicsScene* scene = mItem->scene();
-  if ( scene )
-  {
-    scene->removeItem( mItem );
-  }
-  delete mItem;
+  if ( mItem && mItem->annotation() )
+    QgsProject::instance()->annotationManager()->removeAnnotation( mItem->annotation() );
   mItem = nullptr;
 }
 

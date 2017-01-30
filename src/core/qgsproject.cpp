@@ -32,6 +32,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
 #include "qgsrelationmanager.h"
+#include "qgsannotationmanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapthemecollection.h"
 #include "qgslayerdefinition.h"
@@ -319,6 +320,7 @@ QgsProject::QgsProject( QObject* parent )
     , mBadLayerHandler( new QgsProjectBadLayerHandler() )
     , mSnappingConfig( this )
     , mRelationManager( new QgsRelationManager( this ) )
+    , mAnnotationManager( new QgsAnnotationManager( this ) )
     , mRootGroup( new QgsLayerTreeGroup )
     , mAutoTransaction( false )
     , mEvaluateDefaultValues( false )
@@ -453,6 +455,7 @@ void QgsProject::clear()
 
   mEmbeddedLayers.clear();
   mRelationManager->clear();
+  mAnnotationManager->clear();
   mSnappingConfig.reset();
   emit snappingConfigChanged();
 
@@ -916,6 +919,8 @@ bool QgsProject::read()
   emit mapThemeCollectionChanged();
   mMapThemeCollection->readXml( *doc );
 
+  mAnnotationManager->readXml( doc->documentElement(), *doc );
+
   // reassign change dependencies now that all layers are loaded
   QMap<QString, QgsMapLayer*> existingMaps = mapLayers();
   for ( QMap<QString, QgsMapLayer*>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
@@ -1283,6 +1288,9 @@ bool QgsProject::write()
   }
 
   mMapThemeCollection->writeXml( *doc );
+
+  QDomElement annotationsElem = mAnnotationManager->writeXml( *doc );
+  qgisNode.appendChild( annotationsElem );
 
   // now wrap it up and ship it to the project file
   doc->normalize();             // XXX I'm not entirely sure what this does
@@ -2142,6 +2150,11 @@ QgsLayerTreeGroup *QgsProject::layerTreeRoot() const
 QgsMapThemeCollection* QgsProject::mapThemeCollection()
 {
   return mMapThemeCollection.data();
+}
+
+QgsAnnotationManager* QgsProject::annotationManager()
+{
+  return mAnnotationManager.data();
 }
 
 void QgsProject::setNonIdentifiableLayers( const QList<QgsMapLayer*>& layers )

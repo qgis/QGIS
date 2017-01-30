@@ -353,7 +353,10 @@ void QgsAnnotation::_readXml( const QDomElement& annotationElem, const QDomDocum
   QPointF pos;
   pos.setX( annotationElem.attribute( QStringLiteral( "canvasPosX" ), QStringLiteral( "0" ) ).toDouble() );
   pos.setY( annotationElem.attribute( QStringLiteral( "canvasPosY" ), QStringLiteral( "0" ) ).toDouble() );
-  mRelativePosition = pos;
+  if ( pos.x() >= 1 || pos.x() < 0 || pos.y() < 0 || pos.y() >= 1 )
+    mRelativePosition = QPointF();
+  else
+    mRelativePosition = pos;
   QgsPoint mapPos;
   mapPos.setX( annotationElem.attribute( QStringLiteral( "mapPosX" ), QStringLiteral( "0" ) ).toDouble() );
   mapPos.setY( annotationElem.attribute( QStringLiteral( "mapPosY" ), QStringLiteral( "0" ) ).toDouble() );

@@ -17,6 +17,8 @@
 #include "qgsformannotation.h"
 #include "qgsmapcanvasannotationitem.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
+#include "qgsannotationmanager.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
@@ -84,12 +86,8 @@ void QgsFormAnnotationDialog::on_mBrowseToolButton_clicked()
 
 void QgsFormAnnotationDialog::deleteItem()
 {
-  QGraphicsScene* scene = mItem->scene();
-  if ( scene )
-  {
-    scene->removeItem( mItem );
-  }
-  delete mItem;
+  if ( mItem && mItem->annotation() )
+    QgsProject::instance()->annotationManager()->removeAnnotation( mItem->annotation() );
   mItem = nullptr;
 }
 

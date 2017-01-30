@@ -53,6 +53,7 @@ class QgsRelationManager;
 class QgsTolerance;
 class QgsTransactionGroup;
 class QgsVectorLayer;
+class QgsAnnotationManager;
 
 
 /** \ingroup core
@@ -383,6 +384,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
      */
     QgsMapThemeCollection* mapThemeCollection();
+
+    /**
+     * Returns pointer to the project's annotation manager.
+     * @note added in QGIS 3.0
+     */
+    QgsAnnotationManager* annotationManager();
 
     /**
      * Set a list of layers which should not be taken into account on map identification
@@ -959,6 +966,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsSnappingConfig mSnappingConfig;
 
     QgsRelationManager* mRelationManager;
+
+    QScopedPointer<QgsAnnotationManager> mAnnotationManager;
 
     QgsLayerTreeGroup* mRootGroup;
 

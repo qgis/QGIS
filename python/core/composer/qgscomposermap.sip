@@ -258,8 +258,8 @@ class QgsComposerMap : QgsComposerItem
     /** Sets canvas pointer (necessary to query and draw map canvas items)*/
     void setMapCanvas( QGraphicsView* canvas /Transfer/ );
 
-    void setDrawCanvasItems( bool b );
-    bool drawCanvasItems() const;
+    void setDrawAnnotations( bool draw );
+    bool drawAnnotations() const;
 
     /** Returns the conversion factor map units -> mm*/
     double mapUnitsToMM() const;

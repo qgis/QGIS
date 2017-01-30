@@ -54,6 +54,11 @@ class CORE_EXPORT QgsSvgAnnotation: public QgsAnnotation
      */
     QString filePath() const { return mFilePath; }
 
+    /**
+     * Returns a new QgsSvgAnnotation object.
+     */
+    static QgsSvgAnnotation* create() { return new QgsSvgAnnotation(); }
+
   protected:
 
     void renderAnnotation( QgsRenderContext& context, QSizeF size ) const override;

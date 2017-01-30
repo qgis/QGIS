@@ -19,6 +19,8 @@ class QgsHtmlAnnotation : QgsAnnotation
 
     virtual void setAssociatedFeature( const QgsFeature& feature );
 
+    static QgsHtmlAnnotation* create() /Factory/;
+
   protected:
 
     void renderAnnotation( QgsRenderContext& context, QSizeF size ) const;

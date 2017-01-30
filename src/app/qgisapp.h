@@ -39,6 +39,7 @@ class QValidator;
 
 class QgisAppInterface;
 class QgisAppStyleSheet;
+class QgsAnnotation;
 class QgsMapCanvasAnnotationItem;
 class QgsAuthManager;
 class QgsBookmarks;
@@ -1308,15 +1309,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void showStyleManager();
 
-    void writeAnnotationItemsToProject( QDomDocument& doc );
-
     //! Creates the composer instances in a project file and adds them to the menu
     bool loadComposersFromProject( const QDomDocument& doc );
 
     //! Slot to handle display of composers menu, e.g. sorting
     void on_mPrintComposersMenu_aboutToShow();
-
-    bool loadAnnotationItemsFromProject( const QDomDocument& doc );
 
     //! Toggles whether to show pinned labels
     void showPinnedLabels( bool show );
@@ -1389,6 +1386,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Handles processing of dropped mimedata
     void dropEventTimeout();
+
+    void annotationCreated( QgsAnnotation* annotation );
 
   signals:
 

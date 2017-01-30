@@ -63,6 +63,11 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
 
     void setAssociatedFeature( const QgsFeature& feature ) override;
 
+    /**
+     * Returns a new QgsHtmlAnnotation object.
+     */
+    static QgsHtmlAnnotation* create() { return new QgsHtmlAnnotation(); }
+
   protected:
 
     void renderAnnotation( QgsRenderContext& context, QSizeF size ) const override;

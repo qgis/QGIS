@@ -1,8 +1,26 @@
+%ModuleHeaderCode
+#include <qgshtmlannotation.h>
+#include <qgssvgannotation.h>
+#include <qgstextannotation.h>
+%End
+
 class QgsAnnotation : QObject
 {
 %TypeHeaderCode
 #include <qgsannotation.h>
 %End
+
+%ConvertToSubClassCode
+  if ( dynamic_cast< QgsTextAnnotation* > ( sipCpp ) )
+    sipType = sipType_QgsTextAnnotation;
+  else if ( dynamic_cast< QgsSvgAnnotation* > ( sipCpp ) )
+    sipType = sipType_QgsSvgAnnotation;
+  else if ( dynamic_cast< QgsHtmlAnnotation* > ( sipCpp ) )
+    sipType = sipType_QgsHtmlAnnotation;
+  else
+    sipType = NULL;
+%End
+
   public:
 
     QgsAnnotation( QObject* parent /TransferThis/ = nullptr );

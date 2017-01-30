@@ -52,11 +52,9 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvas
     };
 
     /**
-     * Constructor for QgsMapCanvasAnnotationItem. This item takes ownership
-     * of the annotation.
+     * Constructor for QgsMapCanvasAnnotationItem.
      */
     QgsMapCanvasAnnotationItem( QgsAnnotation* annotation, QgsMapCanvas* mapCanvas );
-    ~QgsMapCanvasAnnotationItem();
 
     /**
      * Returns the item's annotation.

@@ -56,6 +56,11 @@ class CORE_EXPORT QgsTextAnnotation: public QgsAnnotation
     virtual void writeXml( QDomElement& elem, QDomDocument & doc ) const override;
     virtual void readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
+    /**
+     * Returns a new QgsTextAnnotation object.
+     */
+    static QgsTextAnnotation* create() { return new QgsTextAnnotation(); }
+
   protected:
 
     void renderAnnotation( QgsRenderContext& context, QSizeF size ) const override;

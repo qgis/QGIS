@@ -43,6 +43,11 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
 
     void setAssociatedFeature( const QgsFeature& feature ) override;
 
+    /**
+     * Returns a new QgsFormAnnotation object.
+     */
+    static QgsFormAnnotation* create() { return new QgsFormAnnotation(); }
+
   protected:
 
     void renderAnnotation( QgsRenderContext& context, QSizeF size ) const override;
