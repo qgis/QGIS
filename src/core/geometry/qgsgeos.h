@@ -141,6 +141,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      */
     double lineLocatePoint( const QgsPointV2& point, QString* errorMsg = nullptr ) const;
 
+    static QgsGeometry polygonize( const QList<QgsAbstractGeometry*>& geometries, QString* errorMsg = nullptr );
+
     /** Create a geometry from a GEOSGeometry
      * @param geos GEOSGeometry. Ownership is NOT transferred.
      */

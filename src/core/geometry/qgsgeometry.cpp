@@ -1940,7 +1940,25 @@ bool QgsGeometry::isGeosEqual( const QgsGeometry& g ) const
   return geos.isEqual( *( g.d->geometry ) );
 }
 
-QgsGeometry QgsGeometry::unaryUnion( const QList<QgsGeometry>& geometryList )
+QgsGeometry QgsGeometry::unaryUnion( const QList<QgsGeometry>& geometries )
+{
+  QgsGeos geos( nullptr );
+
+  QList<QgsAbstractGeometry*> geomV2List;
+  QList<QgsGeometry>::const_iterator it = geometries.constBegin();
+  for ( ; it != geometries.constEnd(); ++it )
+  {
+    if ( !(( *it ).isNull() ) )
+    {
+      geomV2List.append(( *it ).geometry() );
+    }
+  }
+
+  QgsAbstractGeometry* geom = geos.combine( geomV2List );
+  return QgsGeometry( geom );
+}
+
+QgsGeometry QgsGeometry::polygonize( const QList<QgsGeometry>& geometryList )
 {
   QgsGeos geos( nullptr );
 
@@ -1954,8 +1972,7 @@ QgsGeometry QgsGeometry::unaryUnion( const QList<QgsGeometry>& geometryList )
     }
   }
 
-  QgsAbstractGeometry* geom = geos.combine( geomV2List );
-  return QgsGeometry( geom );
+  return geos.polygonize( geomV2List );
 }
 
 void QgsGeometry::convertToStraightSegment()

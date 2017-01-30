@@ -1941,6 +1941,45 @@ double QgsGeos::lineLocatePoint( const QgsPointV2& point, QString* errorMsg ) co
   return distance;
 }
 
+QgsGeometry QgsGeos::polygonize( const QList<QgsAbstractGeometry*>& geometries, QString* errorMsg )
+{
+  GEOSGeometry** const lineGeosGeometries = new GEOSGeometry*[ geometries.size()];
+  int validLines = 0;
+  Q_FOREACH ( const QgsAbstractGeometry* g, geometries )
+  {
+    GEOSGeometry* l = asGeos( g );
+    if ( l )
+    {
+      lineGeosGeometries[validLines] = l;
+      validLines++;
+    }
+  }
+
+  try
+  {
+    GEOSGeomScopedPtr result( GEOSPolygonize_r( geosinit.ctxt, lineGeosGeometries, validLines ) );
+    for ( int i = 0; i < validLines; ++i )
+    {
+      GEOSGeom_destroy_r( geosinit.ctxt, lineGeosGeometries[i] );
+    }
+    delete[] lineGeosGeometries;
+    return QgsGeometry( fromGeos( result.get() ) );
+  }
+  catch ( GEOSException &e )
+  {
+    if ( errorMsg )
+    {
+      *errorMsg = e.what();
+    }
+    for ( int i = 0; i < validLines; ++i )
+    {
+      GEOSGeom_destroy_r( geosinit.ctxt, lineGeosGeometries[i] );
+    }
+    delete[] lineGeosGeometries;
+    return QgsGeometry();
+  }
+}
+
 
 //! Extract coordinates of linestring's endpoints. Returns false on error.
 static bool _linestringEndpoints( const GEOSGeometry* linestring, double& x1, double& y1, double& x2, double& y2 )
