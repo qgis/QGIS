@@ -88,9 +88,7 @@ class CORE_EXPORT QgsAnnotationRegistry
     QgsAnnotationRegistry()
     {
       addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "TextAnnotationItem" ), QgsTextAnnotation::create ) );
-#ifdef WITH_QTWEBKIT
       addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "HtmlAnnotationItem" ), QgsHtmlAnnotation::create ) );
-#endif
       addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "SVGAnnotationItem" ), QgsSvgAnnotation::create ) );
     }
 
