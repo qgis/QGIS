@@ -97,7 +97,7 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       //call geometry->reshape(mCaptureList)
       //register changed geometry in vector layer
       QgsGeometry geom = f.geometry();
-      if ( !geom.isEmpty() )
+      if ( !geom.isNull() )
       {
         reshapeReturn = geom.reshapeGeometry( points() );
         if ( reshapeReturn == 0 )
@@ -117,7 +117,7 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
               return;
             }
 
-            if ( geom.isGeosEmpty() ) //intersection removal might have removed the whole geometry
+            if ( geom.isEmpty() ) //intersection removal might have removed the whole geometry
             {
               emit messageEmitted( tr( "The feature cannot be reshaped because the resulting geometry is empty" ), QgsMessageBar::CRITICAL );
               vlayer->destroyEditCommand();

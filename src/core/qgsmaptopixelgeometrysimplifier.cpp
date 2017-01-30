@@ -306,7 +306,7 @@ bool QgsMapToPixelSimplifier::isGeneralizableByMapBoundingBox( const QgsRectangl
 //! Returns a simplified version the specified geometry (Removing duplicated points) when is applied the specified map2pixel context
 QgsGeometry QgsMapToPixelSimplifier::simplify( const QgsGeometry& geometry ) const
 {
-  if ( geometry.isEmpty() )
+  if ( geometry.isNull() )
   {
     return QgsGeometry();
   }

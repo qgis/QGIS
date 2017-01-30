@@ -56,7 +56,7 @@ QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsGeometry& geom, Qg
     , mBuffer( 0 )
     , mMinWidth( 0 )
 {
-  mGeometry = !geom.isEmpty() ? new QgsGeometry( geom ) : nullptr;
+  mGeometry = !geom.isNull() ? new QgsGeometry( geom ) : nullptr;
   init();
 }
 
@@ -66,7 +66,7 @@ QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsGeometry& geom, Qg
     , mBuffer( 0 )
     , mMinWidth( 0 )
 {
-  mGeometry = !geom.isEmpty() ? new QgsGeometry( geom ) : nullptr;
+  mGeometry = !geom.isNull() ? new QgsGeometry( geom ) : nullptr;
   init();
 }
 

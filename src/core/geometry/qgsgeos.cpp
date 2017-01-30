@@ -1835,7 +1835,7 @@ QgsGeometry QgsGeos::mergeLines( QString* errorMsg ) const
 
 QgsGeometry QgsGeos::closestPoint( const QgsGeometry& other, QString* errorMsg ) const
 {
-  if ( !mGeos || other.isEmpty() )
+  if ( !mGeos || other.isNull() )
   {
     return QgsGeometry();
   }
@@ -1870,7 +1870,7 @@ QgsGeometry QgsGeos::closestPoint( const QgsGeometry& other, QString* errorMsg )
 
 QgsGeometry QgsGeos::shortestLine( const QgsGeometry& other, QString* errorMsg ) const
 {
-  if ( !mGeos || other.isEmpty() )
+  if ( !mGeos || other.isNull() )
   {
     return QgsGeometry();
   }

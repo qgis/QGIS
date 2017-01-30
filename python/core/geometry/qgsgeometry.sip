@@ -57,12 +57,7 @@ class QgsGeometry
      */
     void setGeometry( QgsAbstractGeometry* geometry /Transfer/ );
 
-    /** Returns true if the geometry is empty (ie, contains no underlying geometry
-     * accessible via @link geometry @endlink).
-     * @see geometry
-     * @note added in QGIS 2.10
-     */
-    bool isEmpty() const;
+    bool isNull() const;
 
     /** Creates a new geometry from a WKT string */
     static QgsGeometry fromWkt( const QString& wkt );
@@ -120,6 +115,8 @@ class QgsGeometry
      */
     QgsWkbTypes::GeometryType type() const;
 
+    bool isEmpty() const;
+
     /** Returns true if WKB of the geometry is of WKBMulti* type */
     bool isMultipart() const;
 
@@ -132,11 +129,6 @@ class QgsGeometry
       @note added in 1.5
      */
     bool isGeosValid() const;
-
-    /** Check if the geometry is empty using GEOS
-      @note added in 1.5
-     */
-    bool isGeosEmpty() const;
 
     /** Returns the area of the geometry using GEOS
       @note added in 1.5

@@ -221,7 +221,7 @@ void checkDock::errorListClicked( const QModelIndex& index )
 
   fl.layer->getFeatures( QgsFeatureRequest().setFilterFid( fl.feature.id() ) ).nextFeature( f );
   g = f.geometry();
-  if ( g.isEmpty() )
+  if ( g.isNull() )
   {
     QgsMessageLog::logMessage( tr( "Invalid first geometry" ), tr( "Topology plugin" ) );
     QMessageBox::information( this, tr( "Topology test" ), tr( "Feature not found in the layer.\nThe layer has probably changed.\nRun topology check again." ) );
@@ -254,7 +254,7 @@ void checkDock::errorListClicked( const QModelIndex& index )
 
   fl.layer->getFeatures( QgsFeatureRequest().setFilterFid( fl.feature.id() ) ).nextFeature( f );
   g = f.geometry();
-  if ( g.isEmpty() )
+  if ( g.isNull() )
   {
     QgsMessageLog::logMessage( tr( "Invalid second geometry" ), tr( "Topology plugin" ) );
     QMessageBox::information( this, tr( "Topology test" ), tr( "Feature not found in the layer.\nThe layer has probably changed.\nRun topology check again." ) );
@@ -273,7 +273,7 @@ void checkDock::errorListClicked( const QModelIndex& index )
   else
     mRBFeature2->setToGeometry( g, fl.layer );
 
-  if ( mErrorList[row]->conflict().isEmpty() )
+  if ( mErrorList[row]->conflict().isNull() )
   {
     QgsMessageLog::logMessage( tr( "Invalid conflict" ), tr( "Topology plugin" ) );
     return;

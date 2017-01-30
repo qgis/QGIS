@@ -245,6 +245,7 @@ class QgsPointV2: public QgsAbstractGeometry
     virtual int dimension() const;
     virtual QgsPointV2* clone() const /Factory/;
     void clear();
+    bool isEmpty() const;
     virtual bool fromWkb( QgsConstWkbPtr& wkb );
     virtual bool fromWkt( const QString& wkt );
     QByteArray asWkb() const;

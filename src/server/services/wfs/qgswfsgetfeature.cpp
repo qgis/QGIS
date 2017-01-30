@@ -1094,7 +1094,7 @@ namespace QgsWfs
       QgsFeature f( *feat );
       QgsGeometry geom = feat->geometry();
       exporter.setIncludeGeometry( false );
-      if ( !geom.isEmpty() && withGeom && geometryName != QLatin1String( "NONE" ) )
+      if ( !geom.isNull() && withGeom && geometryName != QLatin1String( "NONE" ) )
       {
         exporter.setIncludeGeometry( true );
         if ( geometryName == QLatin1String( "EXTENT" ) )

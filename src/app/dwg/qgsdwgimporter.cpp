@@ -2577,7 +2577,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
     }
 
     QgsGeometry g( QgsOgrUtils::ogrGeometryToQgsGeometry( ogrG ) );
-    if ( g.isEmpty() )
+    if ( g.isNull() )
     {
       QgsDebugMsg( QString( "%1: could not copy geometry" ).arg( OGR_F_GetFID( insert ) ) );
       continue;
@@ -2668,7 +2668,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
         }
 
         QgsGeometry g( QgsOgrUtils::ogrGeometryToQgsGeometry( ogrG ) );
-        if ( g.isEmpty() )
+        if ( g.isNull() )
         {
           QgsDebugMsg( QString( "%1: could not copy geometry" ).arg( fid ) );
           continue;
