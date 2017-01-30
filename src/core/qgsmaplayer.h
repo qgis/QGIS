@@ -38,6 +38,7 @@
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
 class QgsMapLayerStyleManager;
+class QgsProject;
 
 class QDomDocument;
 class QKeyEvent;
@@ -363,6 +364,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
        @returns true if successful
      */
     bool readLayerXml( const QDomElement& layerElement );
+
+    /** Sets state from Dom document for a specific project.
+      * @param layerElement The Dom element corresponding to ``maplayer'' tag
+      * @param project
+      * @returns true if successful
+      */
+    bool readLayerXml( const QDomElement& layerElement, const QgsProject *project );
 
 
     /** Stores state in Dom node

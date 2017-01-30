@@ -17,6 +17,7 @@
 
 #include "qgswcsutils.h"
 #include "qgsconfigcache.h"
+#include "qgsserverprojectutils.h"
 
 namespace QgsWcs
 {
@@ -40,16 +41,12 @@ namespace QgsWcs
     return parser;
   }
 
-  QString serviceUrl( const QgsServerRequest& request, QgsWCSProjectParser* parser )
+  QString serviceUrl( const QgsServerRequest& request, const QgsProject* project )
   {
     QString href;
-    if ( parser )
+    if ( project )
     {
-      href = parser->wcsServiceUrl();
-      if ( href.isEmpty() )
-      {
-        href = parser->serviceUrl();
-      }
+      href = QgsServerProjectUtils::wcsServiceUrl( *project );
     }
 
     // Build default url

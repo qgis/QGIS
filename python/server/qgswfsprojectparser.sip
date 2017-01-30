@@ -28,8 +28,6 @@ class QgsWfsProjectParser
     ~QgsWfsProjectParser();
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
-    QString serviceUrl() const;
-    QString wfsServiceUrl() const;
     void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const;
 
     void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const;

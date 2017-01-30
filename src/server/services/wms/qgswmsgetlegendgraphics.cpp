@@ -25,13 +25,14 @@
 namespace QgsWms
 {
 
-  void writeGetLegendGraphics( QgsServerInterface* serverIface, const QString& version,
-                               const QgsServerRequest& request, QgsServerResponse& response )
+  void writeGetLegendGraphics( QgsServerInterface* serverIface, const QgsProject* project,
+                               const QString& version, const QgsServerRequest& request,
+                               QgsServerResponse& response )
   {
     Q_UNUSED( version );
 
     QgsServerRequest::Parameters params = request.parameters();
-    QgsRenderer renderer( serverIface, params, getConfigParser( serverIface ) );
+    QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
 
     QScopedPointer<QImage> result( renderer.getLegendGraphics() );
 

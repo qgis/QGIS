@@ -20,12 +20,13 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsgetcapabilities.h"
+#include "qgsserverprojectutils.h"
 
 namespace QgsWms
 {
-  void writeGetCapabilities( QgsServerInterface* serverIface, const QString& version,
-                             const QgsServerRequest& request, QgsServerResponse& response,
-                             bool projectSettings )
+  void writeGetCapabilities( QgsServerInterface* serverIface, const QgsProject* project,
+                             const QString& version, const QgsServerRequest& request,
+                             QgsServerResponse& response, bool projectSettings )
   {
     QString configFilePath = serverIface->configFilePath();
     QgsCapabilitiesCache* capabilitiesCache = serverIface->capabilitiesCache();
@@ -48,7 +49,7 @@ namespace QgsWms
       QgsMessageLog::logMessage( QStringLiteral( "Capabilities document not found in cache" ) );
       QDomDocument doc;
 
-      doc = getCapabilities( serverIface, version, request, projectSettings );
+      doc = getCapabilities( serverIface, project, version, request, projectSettings );
 
       if ( cache )
       {
@@ -70,8 +71,9 @@ namespace QgsWms
     response.write( capabilitiesDocument->toByteArray() );
   }
 
-  QDomDocument getCapabilities( QgsServerInterface* serverIface, const QString& version,
-                                const QgsServerRequest& request, bool projectSettings )
+  QDomDocument getCapabilities( QgsServerInterface* serverIface, const QgsProject* project,
+                                const QString& version, const QgsServerRequest& request,
+                                bool projectSettings )
   {
     QDomDocument doc;
     QDomElement wmsCapabilitiesElement;
@@ -81,7 +83,7 @@ namespace QgsWms
     QgsServerRequest::Parameters parameters = request.parameters();
 
     // Get service URL
-    QUrl href = serviceUrl( request, configParser );
+    QUrl href = serviceUrl( request, project );
 
     //href needs to be a prefix
     QString hrefString = href.toString( QUrl::FullyDecoded );
@@ -271,13 +273,14 @@ namespace QgsWms
     }
 
     //add the xml content for the individual layers/styles
-    configParser->layersAndStylesCapabilities( capabilityElement, doc, version, projectSettings );
+    QString wmsServiceUrl = QgsServerProjectUtils::wmsServiceUrl( *project );
+    configParser->layersAndStylesCapabilities( capabilityElement, doc, version,
+        wmsServiceUrl, projectSettings );
 
     return doc;
   }
 
-
-} // samespace QgsWms
+} // namespace QgsWms
 
 
 

@@ -24,14 +24,15 @@
 
 namespace QgsWms
 {
-  void writeGetPrint( QgsServerInterface* serverIface, const QString& version,
-                      const QgsServerRequest& request, QgsServerResponse& response )
+  void writeGetPrint( QgsServerInterface* serverIface, const QgsProject* project,
+                      const QString& version, const QgsServerRequest& request,
+                      QgsServerResponse& response )
   {
     QgsServerRequest::Parameters params = request.parameters();
 
     Q_UNUSED( version );
 
-    QgsRenderer renderer( serverIface, params, getConfigParser( serverIface ) );
+    QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
 
     QString format = params.value( "FORMAT" );
     QString contentType;

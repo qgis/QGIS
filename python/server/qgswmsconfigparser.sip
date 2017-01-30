@@ -27,7 +27,7 @@ class QgsWmsConfigParser
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
-    virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const = 0;
+    virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, const QString& serviceUrl, bool fullProjectSettings = false ) const = 0;
 
     /** Returns one or possibly several maplayers for a given layer name and style. If no layers/style are found, an empty list is returned*/
     virtual QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache = true ) const = 0;
@@ -42,7 +42,7 @@ class QgsWmsConfigParser
     virtual QDomDocument getStyles( QStringList& layerList ) const = 0;
 
     /** Returns the xml fragment of layers styles description*/
-    virtual QDomDocument describeLayer( QStringList& layerList, const QString& hrefString ) const = 0;
+    virtual QDomDocument describeLayer( QStringList& layerList, const QString& wfsHrefString, const QString& wcsHrefString ) const = 0;
 
     /** Returns if output are MM or PIXEL*/
     virtual QgsUnitTypes::RenderUnit outputUnits() const = 0;
@@ -74,8 +74,6 @@ class QgsWmsConfigParser
     /** Load PAL engine settings  into global project instance*/
     virtual void loadLabelSettings() const = 0;
 
-    virtual QString serviceUrl() const = 0;
-
     virtual QStringList wfsLayerNames() const = 0;
 
     virtual void owsGeneralAndResourceList( QDomElement& parentElement, QDomDocument& doc, const QString& strHref ) const = 0;
@@ -91,8 +89,6 @@ class QgsWmsConfigParser
     virtual QFont legendLayerFont() const = 0;
     virtual QFont legendItemFont() const = 0;
 
-    virtual double maxWidth() const = 0;
-    virtual double maxHeight() const = 0;
     virtual double imageQuality() const = 0;
 
     // WMS GetFeatureInfo precision (decimal places)

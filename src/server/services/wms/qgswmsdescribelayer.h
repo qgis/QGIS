@@ -24,14 +24,15 @@ namespace QgsWms
 
   /** Output GetMap response in Dfx format
    */
-  void writeDescribeLayer( QgsServerInterface* serverIface, const QString& version,
-                           const QgsServerRequest& request, QgsServerResponse& response );
+  void writeDescribeLayer( QgsServerInterface* serverIface, const QgsProject* project,
+                           const QString& version, const QgsServerRequest& request,
+                           QgsServerResponse& response );
 
   /**
    *  DescribeLayer is defined for WMS1.1.1/SLD1.0 and in WMS 1.3.0 SLD Extension
    */
-  QDomDocument describeLayer( QgsServerInterface* serverIface, const QString& version,
-                              const QgsServerRequest& request );
+  QDomDocument describeLayer( QgsServerInterface* serverIface, const QgsProject* project,
+                              const QString& version, const QgsServerRequest& request );
 
 } // samespace QgsWms
 

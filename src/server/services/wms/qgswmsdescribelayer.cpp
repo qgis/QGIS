@@ -20,20 +20,21 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsdescribelayer.h"
+#include "qgsserverprojectutils.h"
 
 namespace QgsWms
 {
 
-  void writeDescribeLayer( QgsServerInterface* serverIface, const QString& version,
+  void writeDescribeLayer( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
                            const QgsServerRequest& request, QgsServerResponse& response )
   {
-    QDomDocument doc = describeLayer( serverIface, version, request );
+    QDomDocument doc = describeLayer( serverIface, project, version, request );
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( doc.toByteArray() );
   }
 
   // DescribeLayer is defined for WMS1.1.1/SLD1.0 and in WMS 1.3.0 SLD Extension
-  QDomDocument describeLayer( QgsServerInterface* serverIface, const QString& version,
+  QDomDocument describeLayer( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
                               const QgsServerRequest& request )
   {
     Q_UNUSED( version );
@@ -64,11 +65,27 @@ namespace QgsWms
       throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Layers is empty" ), 400 );
     }
 
-    QString hrefString = serviceUrl( request, configParser ).toString( QUrl::FullyDecoded );
-    return configParser->describeLayer( layersList, hrefString );
+    // get the wms service url defined in project or keep the one from the
+    // request url
+    QString wmsHrefString = serviceUrl( request, project ).toString( QUrl::FullyDecoded );
+
+    // get the wfs service url defined in project or take the same as the
+    // wms service url
+    QString wfsHrefString = QgsServerProjectUtils::wfsServiceUrl( *project );
+    if ( wfsHrefString.isEmpty() )
+    {
+      wfsHrefString = wmsHrefString;
+    }
+
+    // get the wcs service url defined in project or take the same as the
+    // wms service url
+    QString wcsHrefString = QgsServerProjectUtils::wcsServiceUrl( *project );
+    if ( wcsHrefString.isEmpty() )
+    {
+      wcsHrefString = wmsHrefString;
+    }
+
+    return configParser->describeLayer( layersList, wfsHrefString, wcsHrefString );
   }
+
 } // samespace QgsWms
-
-
-
-
