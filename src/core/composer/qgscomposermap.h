@@ -34,7 +34,6 @@ class QgsComposerMapGrid;
 class QgsMapToPixel;
 class QDomNode;
 class QDomDocument;
-class QGraphicsView;
 class QPainter;
 class QgsFillSymbol;
 class QgsLineSymbol;
@@ -349,9 +348,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     void updateItem() override;
 
-    //! Sets canvas pointer (necessary to query and draw map canvas items)
-    void setMapCanvas( QGraphicsView* canvas ) { mMapCanvas = canvas; }
-
     /**
      * Sets whether annotations are drawn within the composer map.
      * @see drawAnnotations()
@@ -578,7 +574,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     //! Current bounding rectangle. This is used to check if notification to the graphics scene is necessary
     QRectF mCurrentRectangle;
-    QGraphicsView* mMapCanvas;
     //! True if annotation items, rubber band, etc. from the main canvas should be displayed
     bool mDrawAnnotations;
 

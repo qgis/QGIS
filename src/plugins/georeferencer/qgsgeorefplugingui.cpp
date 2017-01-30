@@ -1643,7 +1643,6 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   QgsComposerMap* composerMap = new QgsComposerMap( composition, leftMargin, titleLabel->rect().bottom() + titleLabel->pos().y(), mapWidthMM, mapHeightMM );
   composerMap->setLayers( mCanvas->mapSettings().layers() );
   composerMap->zoomToExtent( layerExtent );
-  composerMap->setMapCanvas( mCanvas );
   composition->addItem( composerMap );
 
   QgsComposerTextTableV2* parameterTable = nullptr;

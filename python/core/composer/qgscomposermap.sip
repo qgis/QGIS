@@ -255,9 +255,6 @@ class QgsComposerMap : QgsComposerItem
 
     void updateItem();
 
-    /** Sets canvas pointer (necessary to query and draw map canvas items)*/
-    void setMapCanvas( QGraphicsView* canvas /Transfer/ );
-
     void setDrawAnnotations( bool draw );
     bool drawAnnotations() const;
 
