@@ -127,9 +127,7 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent* e )
                                          e->posF().y() / mCanvas->height() ) );
         annotation->setFrameSize( QSizeF( 200, 100 ) );
 
-        QgsMapCanvasAnnotationItem* canvasItem = new QgsMapCanvasAnnotationItem( annotation, mCanvas );
-        canvasItem->setSelected( true );
-        QgsProject::instance()->setDirty( true );
+        QgsProject::instance()->annotationManager()->addAnnotation( annotation );
       }
     }
   }
