@@ -359,9 +359,6 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem*, 
 
     //restore rotation
     painter->restore();
-
-    //draw canvas items
-    drawAnnotations( painter );
   }
   else if ( mComposition->plotStyle() == QgsComposition::Print ||
             mComposition->plotStyle() == QgsComposition::Postscript )
@@ -398,10 +395,6 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem*, 
 
     //restore rotation
     painter->restore();
-
-    //draw canvas items
-    drawAnnotations( painter );
-
     mDrawing = false;
   }
 
@@ -416,6 +409,10 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem*, 
   {
     mGridStack->drawItems( painter );
   }
+
+  //draw canvas items
+  drawAnnotations( painter );
+
   if ( shouldDrawPart( Frame ) )
   {
     drawFrame( painter );
