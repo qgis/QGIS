@@ -111,12 +111,12 @@ class CORE_EXPORT QgsGeometry
      */
     void setGeometry( QgsAbstractGeometry* geometry );
 
-    /** Returns true if the geometry is empty (ie, contains no underlying geometry
+    /** Returns true if the geometry is null (ie, contains no underlying geometry
      * accessible via @link geometry @endlink).
      * @see geometry
      * @note added in QGIS 2.10
      */
-    bool isEmpty() const;
+    bool isNull() const;
 
     //! Creates a new geometry from a WKT string
     static QgsGeometry fromWkt( const QString& wkt );
@@ -995,8 +995,8 @@ class CORE_EXPORT QgsGeometry
       return QVariant::fromValue( *this );
     }
 
-    /** Returns true if the geometry is non empty (ie, isEmpty() returns false),
-     * or false if it is an empty, uninitialized geometry (ie, ieEmpty() returns true).
+    /** Returns true if the geometry is non empty (ie, isNull() returns false),
+     * or false if it is an empty, uninitialized geometry (ie, isNull() returns true).
      * @note added in QGIS 3.0
      */
     operator bool() const;

@@ -137,7 +137,7 @@ class CheckValidity(GeoAlgorithm):
             attrs = inFeat.attributes()
 
             valid = True
-            if not geom.isEmpty() and not geom.isGeosEmpty():
+            if not geom.isNull() and not geom.isGeosEmpty():
                 errors = list(geom.validateGeometry())
                 if errors:
                     # QGIS method return a summary at the end

@@ -1044,8 +1044,10 @@ QgsGeometry        {#qgis_api_break_3_0_QgsGeometry}
 
 - All QgsGeometry methods now accept geometry references instead of pointers, and return a QgsGeometry
 value instead of a pointer. The biggest impact with this change is that PyQGIS code should not compare a geometry
-result to None, but instead either use a boolean test (`if g.buffer(10):`) or explicitly use the isEmpty()
+result to None, but instead either use a boolean test (`if g.buffer(10):`) or explicitly use the isNull()
 method to determine if a geometry is valid.
+- isEmpty() was renamed to isNull() to differentiate a missing geometry from a geometry which is empty (eg an
+empty geometry collection)
 - wkbSize() and asWkb() has been replaced by exportToWkb(). WKB representation is no longer cached within QgsGeometry
 - asGeos() has been replaced by exportToGeos(). GEOS representation is no longer cached within QgsGeometry
 - int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType ) has been renamed to addPoints

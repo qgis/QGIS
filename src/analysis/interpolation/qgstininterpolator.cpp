@@ -175,7 +175,7 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
 
   QgsGeometry g = f->geometry();
   {
-    if ( g.isEmpty() )
+    if ( g.isNull() )
     {
       return 2;
     }

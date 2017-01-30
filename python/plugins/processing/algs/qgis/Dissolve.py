@@ -93,7 +93,7 @@ class Dissolve(GeoAlgorithm):
                     first = False
 
                 tmpInGeom = inFeat.geometry()
-                if tmpInGeom.isEmpty() or tmpInGeom.isGeosEmpty():
+                if tmpInGeom.isNull() or tmpInGeom.isGeosEmpty():
                     continue
 
                 errors = tmpInGeom.validateGeometry()

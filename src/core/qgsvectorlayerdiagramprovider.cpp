@@ -241,7 +241,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   {
     scopedPreparedGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), &extentGeom ) ) );
     QgsGeometry* preparedGeom = scopedPreparedGeom.data();
-    if ( preparedGeom->isEmpty() )
+    if ( preparedGeom->isNull() )
       return nullptr;
     geomCopy = preparedGeom->exportToGeos();
   }

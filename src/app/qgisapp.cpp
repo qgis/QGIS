@@ -6661,10 +6661,10 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& 
     }
     progress.setValue( i );
     QgsGeometry currentGeom = featureList.at( i ).geometry();
-    if ( !currentGeom.isEmpty() )
+    if ( !currentGeom.isNull() )
     {
       unionGeom = unionGeom.combine( currentGeom );
-      if ( unionGeom.isEmpty() )
+      if ( unionGeom.isNull() )
       {
         QApplication::restoreOverrideCursor();
         return QgsGeometry();
@@ -7193,7 +7193,7 @@ void QgisApp::mergeSelectedFeatures()
   QgsFeatureList featureList = vl->selectedFeatures();  //get QList<QgsFeature>
   bool canceled;
   QgsGeometry unionGeom = unionGeometries( vl, featureList, canceled );
-  if ( unionGeom.isEmpty() )
+  if ( unionGeom.isNull() )
   {
     if ( !canceled )
     {
@@ -7229,7 +7229,7 @@ void QgisApp::mergeSelectedFeatures()
     bool canceled;
     QgsFeatureList featureListAfter = vl->selectedFeatures();
     unionGeom = unionGeometries( vl, featureListAfter, canceled );
-    if ( unionGeom.isEmpty() )
+    if ( unionGeom.isNull() )
     {
       if ( !canceled )
       {
@@ -7585,7 +7585,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
       if ( destType != QgsWkbTypes::UnknownGeometry )
       {
         QgsGeometry newGeometry = geom.convertToType( destType, destIsMulti );
-        if ( newGeometry.isEmpty() )
+        if ( newGeometry.isNull() )
         {
           continue;
         }

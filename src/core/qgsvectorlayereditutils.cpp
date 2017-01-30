@@ -112,7 +112,7 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId f
   }
 
   L->editBuffer()->changeGeometry( featureId, geometry );
-  return !geometry.isEmpty() ? QgsVectorLayer::Success : QgsVectorLayer::EmptyGeometry;
+  return !geometry.isNull() ? QgsVectorLayer::Success : QgsVectorLayer::EmptyGeometry;
 }
 
 int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds, QgsFeatureId* modifiedFeatureId )
@@ -543,7 +543,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry& geom )
   if ( !L->hasGeometryType() )
     return 1;
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
   {
     return 1;
   }

@@ -856,7 +856,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
 
     //copy the geometry
     QgsGeometry geometry = gmlFeature.geometry();
-    if ( !mGeometryAttribute.isEmpty() && !geometry.isEmpty() )
+    if ( !mGeometryAttribute.isEmpty() && !geometry.isNull() )
     {
       QByteArray array( geometry.exportToWkb() );
 
@@ -1287,7 +1287,7 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
       QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair& featPair = featurePtrList[i];
       QgsFeature f( *( featPair.first ) );
       QgsGeometry geometry = f.geometry();
-      if ( !geometry.isEmpty() )
+      if ( !geometry.isNull() )
       {
         extent = geometry.boundingBox();
       }

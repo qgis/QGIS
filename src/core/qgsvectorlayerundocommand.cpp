@@ -171,7 +171,7 @@ void QgsVectorLayerUndoCommandChangeGeometry::undo()
   {
     // existing feature
 
-    if ( mOldGeom.isEmpty() )
+    if ( mOldGeom.isNull() )
     {
       mBuffer->mChangedGeometries.remove( mFid );
 

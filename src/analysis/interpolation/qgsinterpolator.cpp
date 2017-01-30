@@ -105,7 +105,7 @@ int QgsInterpolator::cacheBaseData()
 
 int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, double attributeValue )
 {
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return 1;
 
   bool hasZValue = false;

@@ -2647,7 +2647,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
                                      QMultiMap<double, QgsSnappingResult>& snappingResults,
                                      QgsSnapper::SnappingType snap_to ) const
 {
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
   {
     return;
   }

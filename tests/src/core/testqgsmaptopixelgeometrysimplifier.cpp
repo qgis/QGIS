@@ -114,7 +114,7 @@ void TestQgsMapToPixelGeometrySimplifier::testDefaultGeometry()
   int fl = QgsMapToPixelSimplifier::SimplifyGeometry;
   QgsMapToPixelSimplifier simplifier( fl, 10.0 );
   QgsGeometry ret = simplifier.simplify( g );
-  QVERIFY( ret.isEmpty() ); // not simplifiable
+  QVERIFY( ret.isNull() ); // not simplifiable
 }
 
 void TestQgsMapToPixelGeometrySimplifier::testLine1()

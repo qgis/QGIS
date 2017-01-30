@@ -306,7 +306,7 @@ struct VTableCursor
     int blob_len = 0;
     char* blob = nullptr;
     QgsGeometry g = mCurrentFeature.geometry();
-    if ( ! g.isEmpty() )
+    if ( ! g.isNull() )
     {
       qgsGeometryToSpatialiteBlob( g, mVtab->crs(), blob, blob_len );
     }

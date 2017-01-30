@@ -2616,7 +2616,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
 
 void QgsPostgresProvider::appendGeomParam( const QgsGeometry& geom, QStringList &params ) const
 {
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
   {
     params << QString::null;
     return;

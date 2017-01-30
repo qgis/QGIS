@@ -240,7 +240,7 @@ void QgsGml::calculateExtentFromFeatures()
       continue;
     }
     currentGeometry = currentFeature->geometry();
-    if ( !currentGeometry.isEmpty() )
+    if ( !currentGeometry.isNull() )
     {
       if ( !bboxInitialized )
       {

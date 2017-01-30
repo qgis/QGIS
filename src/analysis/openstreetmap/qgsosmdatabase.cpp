@@ -504,7 +504,7 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
         sqlite3_bind_null( stmtInsert, ++col );
     }
 
-    if ( !geom.isEmpty() )
+    if ( !geom.isNull() )
     {
       QByteArray wkb( geom.exportToWkb() );
       sqlite3_bind_blob( stmtInsert, ++col, wkb.constData(), wkb.length(), SQLITE_STATIC );

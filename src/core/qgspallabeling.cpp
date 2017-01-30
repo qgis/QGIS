@@ -1369,7 +1369,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   }
 
   QgsGeometry geom = f.geometry();
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
   {
     return;
   }
@@ -1424,7 +1424,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   {
     geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? &extentGeom : nullptr );
 
-    if ( geom.isEmpty() )
+    if ( geom.isNull() )
       return;
   }
   geos_geom_clone = geom.exportToGeos();
@@ -1920,7 +1920,7 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderConte
     geom = f.geometry();
   }
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
   {
     return;
   }
@@ -2755,7 +2755,7 @@ bool QgsPalLabeling::staticWillUseLayer( QgsVectorLayer* layer )
 
 bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry& geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry* clipGeometry )
 {
-  if ( geometry.isEmpty() )
+  if ( geometry.isNull() )
   {
     return false;
   }
@@ -2815,7 +2815,7 @@ QStringList QgsPalLabeling::splitToGraphemes( const QString &text )
 
 QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry& geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry* clipGeometry )
 {
-  if ( geometry.isEmpty() )
+  if ( geometry.isNull() )
   {
     return QgsGeometry();
   }
@@ -2869,7 +2869,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry& geometry, QgsRen
   if ( geom.type() == QgsWkbTypes::PolygonGeometry && !geom.isGeosValid() )
   {
     QgsGeometry bufferGeom = geom.buffer( 0, 0 );
-    if ( bufferGeom.isEmpty() )
+    if ( bufferGeom.isNull() )
     {
       return QgsGeometry();
     }
@@ -2881,7 +2881,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry& geometry, QgsRen
         || ( !qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry->contains( geom ) ) ) )
   {
     QgsGeometry clipGeom = geom.intersection( *clipGeometry ); // creates new geometry
-    if ( clipGeom.isEmpty() )
+    if ( clipGeom.isNull() )
     {
       return QgsGeometry();
     }

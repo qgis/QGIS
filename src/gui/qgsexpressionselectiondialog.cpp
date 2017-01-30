@@ -141,7 +141,7 @@ void QgsExpressionSelectionDialog::on_mButtonZoomToFeatures_clicked()
   while ( features.nextFeature( feat ) )
   {
     QgsGeometry geom = feat.geometry();
-    if ( geom.isEmpty() || geom.geometry()->isEmpty() )
+    if ( geom.isNull() || geom.geometry()->isEmpty() )
       continue;
 
     QgsRectangle r = mMapCanvas->mapSettings().layerExtentToOutputExtent( mLayer, geom.boundingBox() );

@@ -660,7 +660,7 @@ void QgsMapToolNodeTool::deleteNodeSelection()
 
     mSelectedFeature->deleteSelectedVertexes();
 
-    if ( mSelectedFeature->geometry()->isEmpty() )
+    if ( mSelectedFeature->geometry()->isNull() )
     {
       emit messageEmitted( tr( "Geometry has been cleared. Use the add part tool to set geometry for this feature." ) );
     }

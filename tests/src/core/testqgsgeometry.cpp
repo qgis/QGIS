@@ -371,13 +371,13 @@ void TestQgsGeometry::asVariant()
 void TestQgsGeometry::isEmpty()
 {
   QgsGeometry geom;
-  QVERIFY( geom.isEmpty() );
+  QVERIFY( geom.isNull() );
 
   geom.setGeometry( new QgsPointV2( 1.0, 2.0 ) );
-  QVERIFY( !geom.isEmpty() );
+  QVERIFY( !geom.isNull() );
 
   geom.setGeometry( 0 );
-  QVERIFY( geom.isEmpty() );
+  QVERIFY( geom.isNull() );
 
   QgsGeometryCollection collection;
   QVERIFY( collection.isEmpty() );
@@ -3830,7 +3830,7 @@ void TestQgsGeometry::dataStream()
   ds2.device()->seek( 0 );
   ds2 >> resultGeometry;
 
-  QVERIFY( resultGeometry.isEmpty() );
+  QVERIFY( resultGeometry.isNull() );
 }
 
 void TestQgsGeometry::exportToGeoJSON()
@@ -3980,7 +3980,7 @@ void TestQgsGeometry::wkbInOut()
   QgsGeometry badHeader;
   // NOTE: wkb onwership transferred to QgsGeometry
   badHeader.fromWkb( wkb, size );
-  QVERIFY( badHeader.isEmpty() );
+  QVERIFY( badHeader.isNull() );
   QCOMPARE( badHeader.wkbType(), QgsWkbTypes::Unknown );
 }
 
@@ -4106,15 +4106,15 @@ void TestQgsGeometry::poleOfInaccessibility()
   QGSCOMPARENEAR( point.y(), 0, 0.01 );
 
   //empty geometry
-  QVERIFY( QgsGeometry().poleOfInaccessibility( 1 ).isEmpty() );
+  QVERIFY( QgsGeometry().poleOfInaccessibility( 1 ).isNull() );
 
   // not a polygon
   QgsGeometry lineString = QgsGeometry::fromWkt( "LineString(1 0, 2 2 )" );
-  QVERIFY( lineString.poleOfInaccessibility( 1 ).isEmpty() );
+  QVERIFY( lineString.poleOfInaccessibility( 1 ).isNull() );
 
   // invalid threshold
-  QVERIFY( poly1.poleOfInaccessibility( -1 ).isEmpty() );
-  QVERIFY( poly1.poleOfInaccessibility( 0 ).isEmpty() );
+  QVERIFY( poly1.poleOfInaccessibility( -1 ).isNull() );
+  QVERIFY( poly1.poleOfInaccessibility( 0 ).isNull() );
 
   // curved geometry
   QgsGeometry curved = QgsGeometry::fromWkt( "CurvePolygon( CompoundCurve( CircularString(-0.44 0.35, 0.51 0.34, 0.56 0.21, 0.11 -0.33, 0.15 -0.35,"
@@ -4148,8 +4148,8 @@ void TestQgsGeometry::makeValid()
   {
     QgsGeometry gInput = QgsGeometry::fromWkt( pair.first );
     QgsGeometry gExp = QgsGeometry::fromWkt( pair.second );
-    QVERIFY( !gInput.isEmpty() );
-    QVERIFY( !gExp.isEmpty() );
+    QVERIFY( !gInput.isNull() );
+    QVERIFY( !gExp.isNull() );
 
     QgsGeometry gValid = gInput.makeValid();
     QVERIFY( gValid.isGeosValid() );

@@ -110,7 +110,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::prepare()
 QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const QgsFeature& feature )
 {
   QgsGeometry featureGeometry = feature.geometry();
-  if ( featureGeometry.isEmpty() )
+  if ( featureGeometry.isNull() )
   {
     return Success;
   }

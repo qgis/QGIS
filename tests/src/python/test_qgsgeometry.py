@@ -1196,7 +1196,7 @@ class TestQgsGeometry(unittest.TestCase):
     def testExtrude(self):
         # test with empty geometry
         g = QgsGeometry()
-        self.assertTrue(g.extrude(1, 2).isEmpty())
+        self.assertTrue(g.extrude(1, 2).isNull())
 
         points = [QgsPoint(1, 2), QgsPoint(3, 2), QgsPoint(4, 3)]
         line = QgsGeometry.fromPolyline(points)
@@ -1212,10 +1212,10 @@ class TestQgsGeometry(unittest.TestCase):
         # test with empty geometries
         g1 = QgsGeometry()
         g2 = QgsGeometry()
-        self.assertTrue(g1.nearestPoint(g2).isEmpty())
+        self.assertTrue(g1.nearestPoint(g2).isNull())
         g1 = QgsGeometry.fromWkt('LineString( 1 1, 5 1, 5 5 )')
-        self.assertTrue(g1.nearestPoint(g2).isEmpty())
-        self.assertTrue(g2.nearestPoint(g1).isEmpty())
+        self.assertTrue(g1.nearestPoint(g2).isNull())
+        self.assertTrue(g2.nearestPoint(g1).isNull())
 
         g2 = QgsGeometry.fromWkt('Point( 6 3 )')
         expWkt = 'Point( 5 3 )'
@@ -1243,10 +1243,10 @@ class TestQgsGeometry(unittest.TestCase):
         # test with empty geometries
         g1 = QgsGeometry()
         g2 = QgsGeometry()
-        self.assertTrue(g1.shortestLine(g2).isEmpty())
+        self.assertTrue(g1.shortestLine(g2).isNull())
         g1 = QgsGeometry.fromWkt('LineString( 1 1, 5 1, 5 5 )')
-        self.assertTrue(g1.shortestLine(g2).isEmpty())
-        self.assertTrue(g2.shortestLine(g1).isEmpty())
+        self.assertTrue(g1.shortestLine(g2).isNull())
+        self.assertTrue(g2.shortestLine(g1).isNull())
 
         g2 = QgsGeometry.fromWkt('Point( 6 3 )')
         expWkt = 'LineString( 5 3, 6 3 )'
@@ -1380,7 +1380,7 @@ class TestQgsGeometry(unittest.TestCase):
         # test empty list
         geometries = []
         geometry = QgsGeometry.collectGeometry(geometries)
-        assert geometry.isEmpty(), "Expected geometry to be empty"
+        assert geometry.isNull(), "Expected geometry to be empty"
 
         # check that the resulting geometry is multi
         geometry = QgsGeometry.collectGeometry([QgsGeometry.fromWkt('Point (0 0)')])
@@ -3446,7 +3446,7 @@ class TestQgsGeometry(unittest.TestCase):
         # not a (multi)linestring
         geom = QgsGeometry.fromWkt('Point(1 2)')
         result = geom.mergeLines()
-        self.assertTrue(result.isEmpty())
+        self.assertTrue(result.isNull())
 
         # linestring should be returned intact
         geom = QgsGeometry.fromWkt('LineString(0 0, 10 10)')

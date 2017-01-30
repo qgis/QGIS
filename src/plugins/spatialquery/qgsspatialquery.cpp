@@ -178,7 +178,7 @@ bool QgsSpatialQuery::hasValidGeometry( QgsFeature &feature )
 
   QgsGeometry geom = feature.geometry();
 
-  if ( geom.isEmpty() || geom.isGeosEmpty() )
+  if ( geom.isNull() || geom.isGeosEmpty() )
     return false;
 
   return true;
