@@ -277,6 +277,8 @@ void QgsAnnotation::drawFrame( QgsRenderContext& context ) const
     }
     poly << currentSegment.p2();
   }
+  if ( poly.at( 0 ) != poly.at( poly.count() - 1 ) )
+    poly << poly.at( 0 );
 
   mFillSymbol->startRender( context );
   mFillSymbol->renderPolygon( poly, &rings, nullptr, context );
