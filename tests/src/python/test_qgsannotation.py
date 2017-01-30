@@ -21,6 +21,7 @@ from qgis.core import (QgsTextAnnotation,
                        QgsRenderContext,
                        QgsCoordinateReferenceSystem,
                        QgsRectangle,
+                       QgsMultiRenderChecker,
                        QgsRenderChecker,
                        QgsPoint,
                        QgsVectorLayer,
@@ -160,12 +161,12 @@ class TestQgsAnnotation(unittest.TestCase):
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'annotation_' + name + ".png"
         image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
+        checker = QgsMultiRenderChecker()
         checker.setControlPathPrefix("annotations")
         checker.setControlName("expected_" + reference_image)
         checker.setRenderedImage(file_name)
         checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
+        result = checker.runTest(name, 20)
         self.report += checker.report()
         print((self.report))
         return result

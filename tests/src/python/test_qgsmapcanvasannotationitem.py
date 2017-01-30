@@ -21,7 +21,8 @@ from qgis.core import (QgsTextAnnotation,
                        QgsPoint,
                        QgsVectorLayer,
                        QgsFeature,
-                       QgsGeometry)
+                       QgsGeometry,
+                       QgsFillSymbol)
 from qgis.gui import (QgsMapCanvas,
                       QgsMapCanvasAnnotationItem)
 
@@ -86,7 +87,7 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
         a = QgsTextAnnotation()
         a.setFrameSize(QSizeF(300, 200))
         a.setHasFixedMapPosition(False)
-        a.setFrameBorderWidth(0)
+        a.setFillSymbol(QgsFillSymbol.createSimple({'color': 'blue', 'width_border': '0'}))
 
         canvas = QgsMapCanvas()
         canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))

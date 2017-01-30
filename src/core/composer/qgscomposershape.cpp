@@ -83,7 +83,9 @@ void QgsComposerShape::setShapeStyleSymbol( QgsFillSymbol* symbol )
 
 void QgsComposerShape::refreshSymbol()
 {
-  mMaxSymbolBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol, QgsComposerUtils::createRenderContextForComposition( mComposition, nullptr ) );
+  QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( mComposition->referenceMap(), nullptr, mComposition->printResolution() );
+  mMaxSymbolBleed = ( 25.4 / mComposition->printResolution() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol, rc );
+
   updateBoundingRect();
 
   update();
@@ -102,7 +104,9 @@ void QgsComposerShape::createDefaultShapeStyleSymbol()
   properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
   mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
 
-  mMaxSymbolBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol, QgsComposerUtils::createRenderContextForComposition( mComposition, nullptr ) );
+  QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( mComposition->referenceMap(), nullptr, mComposition->printResolution() );
+  mMaxSymbolBleed = ( 25.4 / mComposition->printResolution() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol, rc );
+
   updateBoundingRect();
 
   emit frameChanged();

@@ -488,15 +488,32 @@ void QgsComposerUtils::drawText( QPainter *painter, const QRectF &rect, const QS
   painter->restore();
 }
 
-QgsRenderContext QgsComposerUtils::createRenderContextForMap( QgsComposerMap* map, QPainter* painter )
+QgsRenderContext QgsComposerUtils::createRenderContextForMap( QgsComposerMap* map, QPainter* painter, double dpi )
 {
   if ( !map )
   {
-    return QgsRenderContext::fromQPainter( painter );
+    QgsRenderContext context;
+    context.setPainter( painter );
+    if ( dpi < 0 && painter && painter->device() )
+    {
+      context.setScaleFactor( painter->device()->logicalDpiX() / 25.4 );
+    }
+    else if ( dpi > 0 )
+    {
+      context.setScaleFactor( dpi / 25.4 );
+    }
+    else
+    {
+      context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
+    }
+    return context;
   }
 
   // default to 88 dpi if no painter specified
-  int dpi = ( painter && painter->device() ) ? painter->device()->logicalDpiX() : 88;
+  if ( dpi < 0 )
+  {
+    dpi = ( painter && painter->device() ) ? painter->device()->logicalDpiX() : 88;
+  }
   double dotsPerMM = dpi / 25.4;
 
   // get map settings from reference map

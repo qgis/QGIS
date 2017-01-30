@@ -252,7 +252,7 @@ class CORE_EXPORT QgsComposerUtils
      * @note added in QGIS 3.0
      * @see createRenderContextForComposition()
      */
-    static QgsRenderContext createRenderContextForMap( QgsComposerMap* map, QPainter* painter );
+    static QgsRenderContext createRenderContextForMap( QgsComposerMap* map, QPainter* painter, double dpi = -1 );
 
     /**
      * Creates a render context suitable for the specified composition and QPainter destination.
