@@ -2300,21 +2300,6 @@ tests:
         name: expected/zonal_statistics.gml
         type: vector
 
-  - algorithm: qgis:executesql
-    name: execute SQL
-    params:
-      INPUT_DATASOURCES:
-        params:
-        - name: points.gml
-          type: vector
-        type: multi
-      INPUT_GEOMETRY_TYPE: '0'
-      INPUT_QUERY: select * from points where id2 = 2
-    results:
-      OUTPUT_LAYER:
-        name: expected/execute_sql.gml
-        type: vector
-
   - algorithm: qgis:polygonfromlayerextent
     name: Standard polygon from layer extent
     params:
