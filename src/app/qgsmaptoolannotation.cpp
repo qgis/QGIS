@@ -128,6 +128,19 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent* e )
         annotation->setFrameSize( QSizeF( 200, 100 ) );
 
         QgsProject::instance()->annotationManager()->addAnnotation( annotation );
+
+        // select newly added item
+        Q_FOREACH ( QGraphicsItem* item , mCanvas->items() )
+        {
+          if ( QgsMapCanvasAnnotationItem* annotationItem = dynamic_cast< QgsMapCanvasAnnotationItem* >( item ) )
+          {
+            if ( annotationItem->annotation() == annotation )
+            {
+              annotationItem->setSelected( true );
+              break;
+            }
+          }
+        }
       }
     }
   }
