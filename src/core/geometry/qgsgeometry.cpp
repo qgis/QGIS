@@ -294,6 +294,16 @@ QgsWkbTypes::GeometryType QgsGeometry::type() const
   return static_cast< QgsWkbTypes::GeometryType >( QgsWkbTypes::geometryType( d->geometry->wkbType() ) );
 }
 
+bool QgsGeometry::isEmpty() const
+{
+  if ( !d->geometry )
+  {
+    return true;
+  }
+
+  return d->geometry->isEmpty();
+}
+
 bool QgsGeometry::isMultipart() const
 {
   if ( !d->geometry )

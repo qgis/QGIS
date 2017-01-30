@@ -2348,6 +2348,18 @@ void TestQgsGeometry::polygon()
   QVERIFY( !p1.interiorRing( 0 ) );
   QCOMPARE( p1.wkbType(), QgsWkbTypes::Polygon );
 
+  // empty exterior ring
+  ext = new QgsLineString();
+  p1.setExteriorRing( ext );
+  QVERIFY( p1.isEmpty() );
+  QCOMPARE( p1.numInteriorRings(), 0 );
+  QCOMPARE( p1.nCoordinates(), 0 );
+  QCOMPARE( p1.ringCount(), 1 );
+  QCOMPARE( p1.partCount(), 1 );
+  QVERIFY( p1.exteriorRing() );
+  QVERIFY( !p1.interiorRing( 0 ) );
+  QCOMPARE( p1.wkbType(), QgsWkbTypes::Polygon );
+
   //valid exterior ring
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 10 ) << QgsPointV2( 10, 10 )

@@ -93,7 +93,7 @@ class Dissolve(GeoAlgorithm):
                     first = False
 
                 tmpInGeom = inFeat.geometry()
-                if tmpInGeom.isNull() or tmpInGeom.isGeosEmpty():
+                if tmpInGeom.isNull() or tmpInGeom.isEmpty():
                     continue
 
                 errors = tmpInGeom.validateGeometry()
@@ -137,7 +137,7 @@ class Dissolve(GeoAlgorithm):
                 index_attrs = tuple([attrs[i] for i in field_indexes])
 
                 tmpInGeom = QgsGeometry(inFeat.geometry())
-                if tmpInGeom.isGeosEmpty():
+                if tmpInGeom and tmpInGeom.isEmpty():
                     continue
                 errors = tmpInGeom.validateGeometry()
                 if len(errors) != 0:

@@ -115,6 +115,8 @@ class QgsGeometry
      */
     QgsWkbTypes::GeometryType type() const;
 
+    bool isEmpty() const;
+
     /** Returns true if WKB of the geometry is of WKBMulti* type */
     bool isMultipart() const;
 

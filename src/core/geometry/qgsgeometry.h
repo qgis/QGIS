@@ -115,6 +115,7 @@ class CORE_EXPORT QgsGeometry
      * accessible via @link geometry @endlink).
      * @see geometry
      * @note added in QGIS 2.10
+     * @see isEmpty()
      */
     bool isNull() const;
 
@@ -174,6 +175,14 @@ class CORE_EXPORT QgsGeometry
      */
     QgsWkbTypes::GeometryType type() const;
 
+    /**
+     * Returns true if the geometry is empty (eg a linestring with no vertices,
+     * or a collection with no geometries).
+     * @see isNull()
+     * @see isGeosEmpty()
+     */
+    bool isEmpty() const;
+
     //! Returns true if WKB of the geometry is of WKBMulti* type
     bool isMultipart() const;
 
@@ -189,6 +198,7 @@ class CORE_EXPORT QgsGeometry
 
     /** Check if the geometry is empty using GEOS
       @note added in 1.5
+      @see isEmpty()
      */
     bool isGeosEmpty() const;
 

@@ -312,6 +312,11 @@ QString QgsCircularString::asJSON( int precision ) const
   return json;
 }
 
+bool QgsCircularString::isEmpty() const
+{
+  return mX.isEmpty();
+}
+
 //curve interface
 double QgsCircularString::length() const
 {

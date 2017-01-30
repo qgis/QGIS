@@ -69,6 +69,18 @@ class TestQgsGeometry(unittest.TestCase):
         g.setGeometry(None)
         self.assertFalse(g)
 
+    def testIsEmpty(self):
+        """
+        the bulk of these tests are in testqgsgeometry.cpp for each QgsAbstractGeometry subclass
+        this test just checks the QgsGeometry wrapper
+        """
+        g = QgsGeometry()
+        self.assertTrue(g.isEmpty())
+        g = QgsGeometry.fromWkt('Point(10 10 )')
+        self.assertFalse(g.isEmpty())
+        g = QgsGeometry.fromWkt('MultiPoint ()')
+        self.assertTrue(g.isEmpty())
+
     def testWktPointLoading(self):
         myWKT = 'Point (10 10)'
         myGeometry = QgsGeometry.fromWkt(myWKT)
