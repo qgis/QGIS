@@ -1879,12 +1879,17 @@ void QgsComposerMap::drawAnnotations( QPainter* painter )
   QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( this, painter );
   rc.setForceVectorOutput( true );
   rc.setExpressionContext( createExpressionContext() );
+  QList< QgsMapLayer* > layers = layersToRender( &rc.expressionContext() );
+
   Q_FOREACH ( QgsAnnotation* annotation, annotations )
   {
-    if ( !annotation )
+    if ( !annotation || !annotation->isVisible() )
     {
       continue;
     }
+    if ( annotation->mapLayer() && !layers.contains( annotation->mapLayer() ) )
+      continue;
+
     drawAnnotation( annotation, rc );
   }
 }
