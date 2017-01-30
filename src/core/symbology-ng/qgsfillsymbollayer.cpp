@@ -389,7 +389,7 @@ QgsSymbolLayer* QgsSimpleFillSymbolLayer::createFromSld( QDomElement &element )
 double QgsSimpleFillSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
   double penBleed = context.convertToPainterUnits( mBorderStyle == Qt::NoPen ? 0 : ( mBorderWidth / 2.0 ), mBorderWidthUnit, mBorderWidthMapUnitScale );
-  double offsetBleed = context.convertToPainterUnits( mOffset.x() > mOffset.y() ? mOffset.x() : mOffset.y(), mOffsetUnit, mOffsetMapUnitScale );
+  double offsetBleed = context.convertToPainterUnits( qMax( qAbs( mOffset.x() ), qAbs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
   return penBleed + offsetBleed;
 }
 
@@ -909,7 +909,7 @@ QgsGradientFillSymbolLayer* QgsGradientFillSymbolLayer::clone() const
 
 double QgsGradientFillSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
-  double offsetBleed = context.convertToPainterUnits( mOffset.x() > mOffset.y() ? mOffset.x() : mOffset.y(), mOffsetUnit, mOffsetMapUnitScale );
+  double offsetBleed = context.convertToPainterUnits( qMax( qAbs( mOffset.x() ), qAbs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
   return offsetBleed;
 }
 
@@ -1504,7 +1504,7 @@ QgsShapeburstFillSymbolLayer* QgsShapeburstFillSymbolLayer::clone() const
 
 double QgsShapeburstFillSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
-  double offsetBleed = context.convertToPainterUnits( qMax( mOffset.x(), mOffset.y() ), mOffsetUnit, mOffsetMapUnitScale );
+  double offsetBleed = context.convertToPainterUnits( qMax( qAbs( mOffset.x() ), qAbs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
   return offsetBleed;
 }
 
@@ -3727,7 +3727,7 @@ QgsRasterFillSymbolLayer* QgsRasterFillSymbolLayer::clone() const
 
 double QgsRasterFillSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
-  return context.convertToPainterUnits( mOffset.x() > mOffset.y() ? mOffset.x() : mOffset.y(), mOffsetUnit, mOffsetMapUnitScale );
+  return context.convertToPainterUnits( qMax( qAbs( mOffset.x() ), qAbs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
 }
 
 void QgsRasterFillSymbolLayer::setImageFilePath( const QString &imagePath )

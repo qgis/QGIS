@@ -576,7 +576,7 @@ double QgsSimpleLineSymbolLayer::estimateMaxBleed( const QgsRenderContext& conte
   else
   {
     return context.convertToPainterUnits(( mWidth / 2.0 ), mWidthUnit, mWidthMapUnitScale ) +
-           context.convertToPainterUnits( mOffset, mOffsetUnit, mOffsetMapUnitScale );
+           context.convertToPainterUnits( qAbs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
   }
 }
 
@@ -1597,7 +1597,7 @@ QSet<QString> QgsMarkerLineSymbolLayer::usedAttributes( const QgsRenderContext& 
 double QgsMarkerLineSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
   return context.convertToPainterUnits(( mMarker->size() / 2.0 ), mMarker->sizeUnit(), mMarker->sizeMapUnitScale() ) +
-         context.convertToPainterUnits( mOffset, mOffsetUnit, mOffsetMapUnitScale );
+         context.convertToPainterUnits( qAbs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
 }
 
 
