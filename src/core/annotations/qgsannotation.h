@@ -23,6 +23,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrendercontext.h"
 #include "qgssymbol.h"
+#include "qgsmargins.h"
 #include "qgsmaplayer.h"
 
 /** \ingroup core
@@ -155,6 +156,20 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * @see setFrameSize()
      */
     QSizeF frameSize() const { return mFrameSize; }
+
+    /**
+     * Sets the margins (in millimeters) between the outside of the frame and the annotation
+     * content.
+     * @see contentsMargin()
+     */
+    void setContentsMargin( const QgsMargins& margins );
+
+    /**
+     * Returns the margins (in millimeters) between the outside of the frame and the annotation
+     * content.
+     * @see setContentsMargin()
+     */
+    QgsMargins contentsMargin() const { return mContentsMargins; }
 
     /**
      * Sets the annotation's frame's border width (in pixels).
@@ -336,6 +351,8 @@ class CORE_EXPORT QgsAnnotation : public QObject
 
     //! Point symbol that is to be drawn at the map reference location
     QScopedPointer<QgsMarkerSymbol> mMarkerSymbol;
+
+    QgsMargins mContentsMargins;
 
     //! Width of the frame
     double mFrameBorderWidth = 1.0;

@@ -83,6 +83,12 @@ void QgsAnnotation::setFrameSize( QSizeF size )
   emit appearanceChanged();
 }
 
+void QgsAnnotation::setContentsMargin( const QgsMargins& margins )
+{
+  mContentsMargins = margins;
+  emit appearanceChanged();
+}
+
 void QgsAnnotation::setFrameBorderWidth( double width )
 {
   mFrameBorderWidth = width;
@@ -117,15 +123,16 @@ void QgsAnnotation::render( QgsRenderContext& context ) const
   }
   if ( mHasFixedMapPosition )
   {
-    painter->translate( mOffsetFromReferencePoint.x() + mFrameBorderWidth / 2.0,
-                        mOffsetFromReferencePoint.y() + mFrameBorderWidth / 2.0 );
+    painter->translate( mOffsetFromReferencePoint.x() + context.convertToPainterUnits( mContentsMargins.left(), QgsUnitTypes::RenderMillimeters ),
+                        mOffsetFromReferencePoint.y() + context.convertToPainterUnits( mContentsMargins.top(), QgsUnitTypes::RenderMillimeters ) );
   }
   else
   {
-    painter->translate( mFrameBorderWidth / 2.0, mFrameBorderWidth / 2.0 );
+    painter->translate( context.convertToPainterUnits( mContentsMargins.left(), QgsUnitTypes::RenderMillimeters ),
+                        context.convertToPainterUnits( mContentsMargins.top(), QgsUnitTypes::RenderMillimeters ) );
   }
-  QSizeF size( mFrameSize.width() - mFrameBorderWidth,
-               mFrameSize.height() - mFrameBorderWidth );
+  QSizeF size( mFrameSize.width() - context.convertToPainterUnits( mContentsMargins.left() + mContentsMargins.right(), QgsUnitTypes::RenderMillimeters ),
+               mFrameSize.height() - context.convertToPainterUnits( mContentsMargins.top() + mContentsMargins.bottom(), QgsUnitTypes::RenderMillimeters ) );
 
   renderAnnotation( context, size );
   painter->restore();
@@ -316,6 +323,7 @@ void QgsAnnotation::_writeXml( QDomElement& itemElem, QDomDocument& doc ) const
   annotationElem.setAttribute( QStringLiteral( "canvasPosX" ), qgsDoubleToString( mRelativePosition.x() ) );
   annotationElem.setAttribute( QStringLiteral( "canvasPosY" ), qgsDoubleToString( mRelativePosition.y() ) );
   annotationElem.setAttribute( QStringLiteral( "frameBorderWidth" ), qgsDoubleToString( mFrameBorderWidth ) );
+  annotationElem.setAttribute( QStringLiteral( "contentsMargin" ), mContentsMargins.toString() );
   annotationElem.setAttribute( QStringLiteral( "frameColor" ), mFrameColor.name() );
   annotationElem.setAttribute( QStringLiteral( "frameColorAlpha" ), mFrameColor.alpha() );
   annotationElem.setAttribute( QStringLiteral( "frameBackgroundColor" ), mFrameBackgroundColor.name() );
@@ -358,6 +366,7 @@ void QgsAnnotation::_readXml( const QDomElement& annotationElem, const QDomDocum
   }
 
   mFrameBorderWidth = annotationElem.attribute( QStringLiteral( "frameBorderWidth" ), QStringLiteral( "0.5" ) ).toDouble();
+  mContentsMargins = QgsMargins::fromString( annotationElem.attribute( QStringLiteral( "contentsMargin" ) ) );
   mFrameColor.setNamedColor( annotationElem.attribute( QStringLiteral( "frameColor" ), QStringLiteral( "#000000" ) ) );
   mFrameColor.setAlpha( annotationElem.attribute( QStringLiteral( "frameColorAlpha" ), QStringLiteral( "255" ) ).toInt() );
   mFrameBackgroundColor.setNamedColor( annotationElem.attribute( QStringLiteral( "frameBackgroundColor" ) ) );

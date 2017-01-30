@@ -60,6 +60,11 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem* item, QWid
     mBackgroundColorButton->setNoColorString( tr( "Transparent" ) );
     mBackgroundColorButton->setShowNoColor( true );
 
+    whileBlocking( mSpinTopMargin )->setValue( annotation->contentsMargin().top() );
+    whileBlocking( mSpinLeftMargin )->setValue( annotation->contentsMargin().left() );
+    whileBlocking( mSpinRightMargin )->setValue( annotation->contentsMargin().right() );
+    whileBlocking( mSpinBottomMargin )->setValue( annotation->contentsMargin().bottom() );
+
     mLayerComboBox->setLayer( annotation->mapLayer() );
 
     connect( mBackgroundColorButton, &QgsColorButton::colorChanged, this, &QgsAnnotationWidget::backgroundColorChanged );
@@ -92,6 +97,10 @@ void QgsAnnotationWidget::apply()
       annotation->setFrameBackgroundColor( mBackgroundColorButton->color() );
       annotation->setMarkerSymbol( mMarkerSymbol->clone() );
       annotation->setMapLayer( mLayerComboBox->currentLayer() );
+      annotation->setContentsMargin( QgsMargins( mSpinLeftMargin->value(),
+                                     mSpinTopMargin->value(),
+                                     mSpinRightMargin->value(),
+                                     mSpinBottomMargin->value() ) );
     }
     mItem->update();
   }

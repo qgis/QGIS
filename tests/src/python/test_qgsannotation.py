@@ -24,7 +24,8 @@ from qgis.core import (QgsTextAnnotation,
                        QgsRenderChecker,
                        QgsPoint,
                        QgsVectorLayer,
-                       QgsFeature)
+                       QgsFeature,
+                       QgsMargins)
 from qgis.PyQt.QtCore import (QDir,
                               QPointF,
                               QSizeF)
@@ -110,6 +111,17 @@ class TestQgsAnnotation(unittest.TestCase):
         a.setSourceFile(html)
         im = self.renderAnnotation(a, QPointF(20, 30))
         self.assertTrue(self.imageCheck('relative_style', 'relative_style', im))
+
+    def testMargins(self):
+        """ test rendering an annotation with margins"""
+        a = QgsHtmlAnnotation()
+        a.setFrameSize(QSizeF(400, 250))
+        a.setHasFixedMapPosition(False)
+        a.setContentsMargin(QgsMargins(15, 10, 30, 20))
+        html = TEST_DATA_DIR + "/test_html.html"
+        a.setSourceFile(html)
+        im = self.renderAnnotation(a, QPointF(20, 30))
+        self.assertTrue(self.imageCheck('annotation_margins', 'annotation_margins', im))
 
     def renderAnnotation(self, annotation, offset):
         image = QImage(600, 400, QImage.Format_RGB32)

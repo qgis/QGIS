@@ -28,6 +28,9 @@ class QgsAnnotation : QObject
     void setFrameSize( QSizeF size );
     QSizeF frameSize() const;
 
+    void setContentsMargin( const QgsMargins& margins );
+    QgsMargins contentsMargin() const;
+
     void setFrameBorderWidth( double width );
     double frameBorderWidth() const;
 
