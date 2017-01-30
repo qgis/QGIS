@@ -22,43 +22,42 @@
 #include "qgsproject.h"
 
 /** \ingroup server
- * The QgsServerProjectUtils class provides a way to retrieve specific entries
- * from a QgsProject.
+ * The QgsServerProjectUtils namespace provides a way to retrieve specific
+ * entries from a QgsProject.
  * @note added in QGIS 3.0
  */
-class SERVER_EXPORT QgsServerProjectUtils
+namespace SERVER_EXPORT QgsServerProjectUtils
 {
-  public:
 
-    /** Returns the maximum width for WMS images defined in a QGIS project.
-      * @param project the QGIS project
-      * @return width if defined in project, -1 otherwise.
-      */
-    static int wmsMaxWidth( const QgsProject& project );
+  /** Returns the maximum width for WMS images defined in a QGIS project.
+    * @param project the QGIS project
+    * @return width if defined in project, -1 otherwise.
+    */
+  int wmsMaxWidth( const QgsProject& project );
 
-    /** Returns the maximum height for WMS images defined in a QGIS project.
-      * @param project the QGIS project
-      * @return height if defined in project, -1 otherwise.
-      */
-    static int wmsMaxHeight( const QgsProject& project );
+  /** Returns the maximum height for WMS images defined in a QGIS project.
+    * @param project the QGIS project
+    * @return height if defined in project, -1 otherwise.
+    */
+  int wmsMaxHeight( const QgsProject& project );
 
-    /** Returns the WMS service url defined in a QGIS project.
-      * @param project the QGIS project
-      * @return url if defined in project, an empty string otherwise.
-      */
-    static QString wmsServiceUrl( const QgsProject& project );
+  /** Returns the WMS service url defined in a QGIS project.
+    * @param project the QGIS project
+    * @return url if defined in project, an empty string otherwise.
+    */
+  QString wmsServiceUrl( const QgsProject& project );
 
-    /** Returns the WFS service url defined in a QGIS project.
-      * @param project the QGIS project
-      * @return url if defined in project, an empty string otherwise.
-      */
-    static QString wfsServiceUrl( const QgsProject& project );
+  /** Returns the WFS service url defined in a QGIS project.
+    * @param project the QGIS project
+    * @return url if defined in project, an empty string otherwise.
+    */
+  QString wfsServiceUrl( const QgsProject& project );
 
-    /** Returns the WCS service url defined in a QGIS project.
-      * @param project the QGIS project
-      * @return url if defined in project, an empty string otherwise.
-      */
-    static QString wcsServiceUrl( const QgsProject& project );
+  /** Returns the WCS service url defined in a QGIS project.
+    * @param project the QGIS project
+    * @return url if defined in project, an empty string otherwise.
+    */
+  QString wcsServiceUrl( const QgsProject& project );
 };
 
 #endif
