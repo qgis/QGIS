@@ -22,7 +22,7 @@
 
 
 QgsSvgAnnotation::QgsSvgAnnotation( QObject* parent )
-  : QgsAnnotation( parent )
+    : QgsAnnotation( parent )
 {
 
 }

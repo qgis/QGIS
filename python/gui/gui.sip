@@ -80,6 +80,7 @@
 %Include qgsfilterlineedit.sip
 %Include qgsfloatingwidget.sip
 %Include qgsfocuswatcher.sip
+%Include qgsformannotation.sip
 %Include qgsgenericprojectionselector.sip
 %Include qgsgeometryrubberband.sip
 %Include qgsgradientcolorrampdialog.sip

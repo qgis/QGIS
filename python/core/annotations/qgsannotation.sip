@@ -70,6 +70,7 @@ class QgsAnnotation : QObject
 
     void appearanceChanged();
     void moved();
+    void mapLayerChanged();
 
   protected:
 

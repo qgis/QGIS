@@ -19,7 +19,7 @@
 #include <QDomDocument>
 #include <QPainter>
 
-QgsTextAnnotation::QgsTextAnnotation(QObject* parent)
+QgsTextAnnotation::QgsTextAnnotation( QObject* parent )
     : QgsAnnotation( parent )
     , mDocument( new QTextDocument( QString() ) )
 {
