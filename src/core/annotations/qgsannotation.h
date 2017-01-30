@@ -265,6 +265,10 @@ class CORE_EXPORT QgsAnnotation : public QObject
 
   protected:
 
+    /**
+     * Renders the annotation's contents to a target /a context at the specified /a size.
+     * Derived classes should implement their custom annotation drawing logic here.
+     */
     virtual void renderAnnotation( QgsRenderContext& context, QSizeF size ) const = 0;
 
     /**

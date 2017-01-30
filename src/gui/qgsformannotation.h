@@ -29,13 +29,26 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
 {
     Q_OBJECT
   public:
+
+    /**
+     * Constructor for QgsFormAnnotation.
+     */
     QgsFormAnnotation( QObject* parent = nullptr );
 
     QSizeF minimumFrameSize() const override;
     //! Returns the optimal frame size
     QSizeF preferredFrameSize() const;
 
+    /**
+     * Sets the path to the Qt Designer UI file to show in the annotation.
+     * @see designerForm()
+     */
     void setDesignerForm( const QString& uiFile );
+
+    /**
+     * Returns the path to the Qt Designer UI file to show in the annotation.
+     * @see setDesignerForm()
+     */
     QString designerForm() const { return mDesignerForm; }
 
     virtual void writeXml( QDomElement& elem, QDomDocument & doc ) const override;

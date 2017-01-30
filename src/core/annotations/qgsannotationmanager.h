@@ -23,6 +23,20 @@
 class QgsProject;
 class QgsAnnotation;
 
+
+/** \ingroup core
+ * \class QgsAnnotationManager
+ * \note added in QGIS 3.0
+ *
+ * \brief Manages storage of a set of QgsAnnotation annotation objects.
+ *
+ * QgsAnnotationManager handles the storage, serializing and deserializing
+ * of QgsAnnotations. Usually this class is not constructed directly, but
+ * rather accessed through a QgsProject via QgsProject::annotationManager().
+ *
+ * QgsAnnotationManager retains ownership of all the annotations contained
+ * in the manager.
+ */
 class CORE_EXPORT QgsAnnotationManager : public QObject
 {
     Q_OBJECT
