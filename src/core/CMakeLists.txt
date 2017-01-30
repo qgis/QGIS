@@ -170,6 +170,7 @@ SET(QGIS_CORE_SRCS
   qgsmaptopixel.cpp
   qgsmaptopixelgeometrysimplifier.cpp
   qgsmapunitscale.cpp
+  qgsmargins.cpp
   qgsmessagelog.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
@@ -714,6 +715,7 @@ SET(QGIS_CORE_HDRS
   qgsmaptopixel.h
   qgsmaptopixelgeometrysimplifier.h
   qgsmapunitscale.h
+  qgsmargins.h
   qgsmimedatautils.h
   qgsmultirenderchecker.h
   qgsobjectcustomproperties.h

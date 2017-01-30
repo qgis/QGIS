@@ -93,6 +93,7 @@
 %Include qgsmapsettings.sip
 %Include qgsmaptopixel.sip
 %Include qgsmapunitscale.sip
+%Include qgsmargins.sip
 %Include qgsmessagelog.sip
 %Include qgsmessageoutput.sip
 %Include qgsmimedatautils.sip
