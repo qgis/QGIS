@@ -34,13 +34,6 @@ try:
 except:
     hasMatplotlib = False
 
-try:
-    import shapely
-    assert shapely  # silence pyflakes
-    hasShapely = True
-except:
-    hasShapely = False
-
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (Qgis,
@@ -190,6 +183,7 @@ from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
 from .ServiceAreaFromPoint import ServiceAreaFromPoint
 from .ServiceAreaFromLayer import ServiceAreaFromLayer
 from .TruncateTable import TruncateTable
+from .Polygonize import Polygonize
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -258,7 +252,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RasterCalculator(), Heatmap(), Orthogonalize(),
                         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
                         ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
-                        ServiceAreaFromLayer(), TruncateTable()
+                        ServiceAreaFromLayer(), TruncateTable(), Polygonize()
                         ]
 
         if hasMatplotlib:
@@ -274,10 +268,6 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                 VectorLayerScatterplot(), MeanAndStdDevPlot(), BarPlot(),
                 PolarPlot(),
             ])
-
-        if hasShapely:
-            from .Polygonize import Polygonize
-            self.alglist.extend([Polygonize()])
 
         if Qgis.QGIS_VERSION_INT >= 21300:
             from .ExecuteSQL import ExecuteSQL

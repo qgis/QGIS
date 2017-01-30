@@ -25,12 +25,14 @@ __copyright__ = '(C) 2013, Piotr Pociask'
 
 __revision__ = '$Format:%H$'
 
-from shapely.ops import polygonize
-from shapely.ops import unary_union
-from shapely.geometry import MultiLineString
-
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import Qgis, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import (Qgis,
+                       QgsFields,
+                       QgsField,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsFeatureRequest)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -70,39 +72,36 @@ class Polygonize(GeoAlgorithm):
             fields.append(QgsField('perimeter', QVariant.Double,
                                    'double', 16, 2))
         allLinesList = []
-        features = vector.features(vlayer)
+        features = vector.features(vlayer, QgsFeatureRequest().setSubsetOfAttributes([]))
         feedback.pushInfo(self.tr('Processing lines...'))
         total = 40.0 / len(features)
         for current, inFeat in enumerate(features):
-            inGeom = inFeat.geometry()
-            if inGeom.isMultipart():
-                allLinesList.extend(inGeom.asMultiPolyline())
-            else:
-                allLinesList.append(inGeom.asPolyline())
+            if inFeat.geometry():
+                allLinesList.append(inFeat.geometry())
             feedback.setProgress(int(current * total))
 
         feedback.setProgress(40)
-        allLines = MultiLineString(allLinesList)
 
         feedback.pushInfo(self.tr('Noding lines...'))
-        allLines = unary_union(allLines)
+        allLines = QgsGeometry.unaryUnion(allLinesList)
 
         feedback.setProgress(45)
         feedback.pushInfo(self.tr('Polygonizing...'))
-        polygons = list(polygonize([allLines]))
-        if not polygons:
+        polygons = QgsGeometry.polygonize([allLines])
+        if polygons.isEmpty():
             raise GeoAlgorithmExecutionException(self.tr('No polygons were created!'))
         feedback.setProgress(50)
 
         feedback.pushInfo('Saving polygons...')
         writer = output.getVectorWriter(fields, QgsWkbTypes.Polygon, vlayer.crs())
-        outFeat = QgsFeature()
-        total = 50.0 / len(polygons)
-        for current, polygon in enumerate(polygons):
-            outFeat.setGeometry(QgsGeometry.fromWkt(polygon.wkt))
+        total = 50.0 / polygons.geometry().numGeometries()
+        for i in range(polygons.geometry().numGeometries()):
+            outFeat = QgsFeature()
+            geom = QgsGeometry(polygons.geometry().geometryN(i).clone())
+            outFeat.setGeometry(geom)
             if self.getParameterValue(self.GEOMETRY):
-                outFeat.setAttributes([None] * fieldsCount + [polygon.area,
-                                                              polygon.length])
+                outFeat.setAttributes([None] * fieldsCount + [geom.geometry().area(),
+                                                              geom.geometry().perimeter()])
             writer.addFeature(outFeat)
             feedback.setProgress(50 + int(current * total))
         del writer
