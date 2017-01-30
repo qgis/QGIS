@@ -179,6 +179,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsVectorGradientColorRampV2Dialog<td>QgsGradientColorRampDialog
 <tr><td>QgsVectorGradientColorRampV2DialogBase<td>QgsGradientColorRampDialogBase
 <tr><td>QgsVectorGradientRampV2<td>QgsVectorGradientRamp
+<tr><td>QgsVectorJoinInfo<td>QgsVectorLayerJoinInfo
 <tr><td>QgsVectorLayersetRendererV2<td>QgsVectorLayersetRenderer
 <tr><td>QgsVectorRandomColorRampV2<td>QgsLimitedRandomColorRamp
 <tr><td>QgsVectorRandomColorRampV2Dialog<td>QgsLimitedRandomColorRampDialog
@@ -1528,6 +1529,7 @@ QgsProject        {#qgis_api_break_3_0_QgsProject}
 - read( QDomNode& layerNode ) was renamed to readLayer( const QDomNode& layerNode ).
 - read( const QFileInfo& file ) was replaced by read( const QString& filename ).
 - write( const QFileInfo& file ) was replaced by write( const QString& filename ).
+- createEmbeddedLayer() does not take vectorLayerList as the third parameter anymore.
 
 
 QgsProjectPropertyValue        {#qgis_api_break_3_0_QgsProjectPropertyValue}
@@ -1884,6 +1886,13 @@ QGIS 3.0 defaultValue() only returns literal, constant defaultValues. A new meth
 has been added which returns the SQL clause fragments which must be evaluated by the provider itself.
 
 
+QgsVectorJoinInfo   {#qgis_api_break_3_0_QgsVectorJoinInfo}
+-----------------
+
+- class has been renamed to QgsVectorLayerJoinInfo
+- member variables are now accessible through pairs of getters and setters rather than using direct read/write
+
+
 QgsVectorLayer        {#qgis_api_break_3_0_QgsVectorLayer}
 --------------
 
@@ -1923,6 +1932,9 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - loadNamedStyle(): theResultFlag argument is correctly declared as output argument
 - The duplicate selectionChanged() signal was removed. Use selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&, const bool ) instead.
 - featureCount() now requires a legend key string instead of a QgsSymbol pointer argument.
+- createJoinCaches() has been removed. Caches are created/updated when needed internally.
+- checkJoinLayerRemove() has been removed. Joins are removed internally when joined layer is deleted.
+- readXml() does not resolve references to joined layers. Call resolveReferences() when joined layers are available.
 
 QgsVectorLayerEditBuffer        {#qgis_api_break_3_0_QgsVectorLayerEditBuffer}
 ------------------------
@@ -1948,6 +1960,12 @@ QgsCoordinateReferenceSystem is now implicitly shared, using references to QgsCo
 pointers makes for more robust, safer code. Use an invalid (default constructed) QgsCoordinateReferenceSystem
 in code which previously passed a null pointer to QgsVectorLayerImport.
 - ErrUserCancelled (ImportError enum value) has been renamed to ErrUserCanceled  <!--#spellok-->
+
+
+QgsVectorLayerJoinBuffer        {#qgis_api_break_3_0_QgsVectorLayerJoinBuffer}
+------------------------
+
+- readXml() does not resolve layer IDs to layers anymore. You need to call resolveReferences() afterwards.
 
 
 QgsVectorLayerUndoCommand        {#qgis_api_break_3_0_QgsVectorLayerUndoCommand}

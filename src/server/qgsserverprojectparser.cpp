@@ -237,6 +237,7 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
       addValueRelationLayersForLayer( vlayer );
       QgsVectorLayerJoinBuffer* joinBuffer = vlayer->joinBuffer();
       joinBuffer->readXml( const_cast<QDomElement&>( elem ) );
+      joinBuffer->resolveReferences( QgsProject::instance() );
     }
 
     return layer;

@@ -3,46 +3,6 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
 
-struct QgsVectorJoinInfo
-{
-%TypeHeaderCode
-#include "qgsvectorlayer.h"
-%End
-  QgsVectorJoinInfo();
-
-  /** Join field in the target layer*/
-  QString targetFieldName;
-  /** Source layer*/
-  QString joinLayerId;
-  /** Join field in the source layer*/
-  QString joinFieldName;
-  /** True if the join is cached in virtual memory*/
-  bool memoryCache;
-  /** True if the cached join attributes need to be updated*/
-  bool cacheDirty;
-
-  /** Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
-   * @note not available in python bindings
-   */
-  // QHash< QString, QgsAttributeMap> cachedAttributes;
-
-  /** An optional prefix. If it is a Null string "{layername}_" will be used
-   * @note Added in 2.8
-   */
-  QString prefix;
-
-  bool operator==( const QgsVectorJoinInfo& other ) const;
-
-  /** Set subset of fields to be used from joined layer. Takes ownership of the passed pointer. Null pointer tells to use all fields.
-    @note added in 2.6 */
-  void setJoinFieldNamesSubset( QStringList* fieldNamesSubset /Transfer/ );
-  /** Get subset of fields to be used from joined layer. All fields will be used if null is returned.
-    @note added in 2.6 */
-  QStringList* joinFieldNamesSubset() const;
-};
-
-
-
 /** \ingroup core
  * Represents a vector layer which manages a vector based data sets.
  *
@@ -413,7 +373,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     /** Joins another vector layer to this layer
       @param joinInfo join object containing join layer id, target and source field
       @note since 2.6 returns bool indicating whether the join can be added */
-    bool addJoin( const QgsVectorJoinInfo& joinInfo );
+    bool addJoin( const QgsVectorLayerJoinInfo& joinInfo );
 
     /** Removes a vector layer join
       @returns true if join was found and successfully removed */
@@ -424,7 +384,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      * @note added 2.14.7
      */
     QgsVectorLayerJoinBuffer* joinBuffer();
-    const QList<QgsVectorJoinInfo> vectorJoins() const;
+    const QList<QgsVectorLayerJoinInfo> vectorJoins() const;
 
     /**
      * Sets the list of dependencies.
@@ -655,6 +615,11 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      * @note Called by QgsMapLayer::writeXml().
      */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc ) const;
+
+    /** Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
+     * @note added in 3.0
+     */
+    void resolveReferences( QgsProject* project );
 
     /**
      * Save named and sld style of the layer to the style table in the db.
@@ -1216,10 +1181,6 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     /** Assembles mUpdatedFields considering provider fields, joined fields and added fields */
     void updateFields();
 
-    /** Caches joined attributes if required (and not already done) */
-    // marked as const as these are just caches, and need to be created from const accessors
-    void createJoinCaches() const;
-
     /** Returns the calculated default value for the specified field index. The default
      * value may be taken from a client side default value expression (see setDefaultValueExpression())
      * or taken from the underlying data provider.
@@ -1538,9 +1499,6 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      *  added/deleted or the layer has been subsetted.
      */
     virtual void updateExtents();
-
-    /** Check if there is a join with a layer that will be removed */
-    void checkJoinLayerRemove( const QString& theLayerId );
 
     /**
      * Make layer editable.

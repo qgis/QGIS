@@ -31,7 +31,7 @@ from qgis.core import (Qgis,
                        QgsField,
                        QgsFieldConstraints,
                        QgsFields,
-                       QgsVectorJoinInfo,
+                       QgsVectorLayerJoinInfo,
                        QgsSymbol,
                        QgsSingleSymbolRenderer,
                        QgsCoordinateReferenceSystem,
@@ -1197,20 +1197,20 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         layer = createLayerWithOnePoint()
 
-        join = QgsVectorJoinInfo()
-        join.targetFieldName = "fldint"
-        join.joinLayerId = joinLayer.id()
-        join.joinFieldName = "y"
-        join.memoryCache = True
+        join = QgsVectorLayerJoinInfo()
+        join.setTargetFieldName("fldint")
+        join.setJoinLayer(joinLayer)
+        join.setJoinFieldName("y")
+        join.setUsingMemoryCache(True)
 
         layer.addJoin(join)
 
-        join2 = QgsVectorJoinInfo()
-        join2.targetFieldName = "fldint"
-        join2.joinLayerId = joinLayer2.id()
-        join2.joinFieldName = "y"
-        join2.memoryCache = True
-        join2.prefix = "custom-prefix_"
+        join2 = QgsVectorLayerJoinInfo()
+        join2.setTargetFieldName("fldint")
+        join2.setJoinLayer(joinLayer2)
+        join2.setJoinFieldName("y")
+        join2.setUsingMemoryCache(True)
+        join2.setPrefix("custom-prefix_")
 
         layer.addJoin(join2)
 
@@ -1249,11 +1249,11 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer = createLayerWithTwoPoints()
         QgsProject.instance().addMapLayers([joinLayer, layer])
 
-        join = QgsVectorJoinInfo()
-        join.targetFieldName = "fldint"
-        join.joinLayerId = joinLayer.id()
-        join.joinFieldName = "y"
-        join.memoryCache = True
+        join = QgsVectorLayerJoinInfo()
+        join.setTargetFieldName("fldint")
+        join.setJoinLayer(joinLayer)
+        join.setJoinFieldName("y")
+        join.setUsingMemoryCache(True)
         layer.addJoin(join)
 
         # stats on joined fields should only include values present by join

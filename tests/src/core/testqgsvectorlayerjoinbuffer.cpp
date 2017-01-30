@@ -62,6 +62,7 @@ class TestVectorLayerJoinBuffer : public QObject
     void testCacheUpdate();
 
   private:
+    QgsProject mProject;
     QList<QString> mProviders;
     // map of layers. First key is the name of the layer A, B or C and second key is the provider memory or PG.
     QMap<QPair<QString, QString>, QgsVectorLayer*> mLayers;
@@ -155,7 +156,7 @@ void TestVectorLayerJoinBuffer::initTestCase()
     QgsVectorLayer* vl = mLayers.value( QPair<QString, QString>( QStringLiteral( "A" ), provider ) );
     vl->dataProvider()->addFeatures( QgsFeatureList() << fA1 << fA2 );
     QVERIFY( vl->featureCount() == 2 );
-    QgsProject::instance()->addMapLayer( vl );
+    mProject.addMapLayer( vl );
   }
 
   Q_FOREACH ( const QString provider, mProviders )
@@ -163,7 +164,7 @@ void TestVectorLayerJoinBuffer::initTestCase()
     QgsVectorLayer* vl = mLayers.value( QPair<QString, QString>( QStringLiteral( "B" ), provider ) );
     vl->dataProvider()->addFeatures( QgsFeatureList() << fB1 << fB2 );
     QVERIFY( vl->featureCount() == 2 );
-    QgsProject::instance()->addMapLayer( vl );
+    mProject.addMapLayer( vl );
   }
 
   Q_FOREACH ( const QString provider, mProviders )
@@ -171,7 +172,7 @@ void TestVectorLayerJoinBuffer::initTestCase()
     QgsVectorLayer* vl = mLayers.value( QPair<QString, QString>( QStringLiteral( "C" ), provider ) );
     vl->dataProvider()->addFeatures( QgsFeatureList() << fC1 );
     QVERIFY( vl->featureCount() == 1 );
-    QgsProject::instance()->addMapLayer( vl );
+    mProject.addMapLayer( vl );
   }
 
   Q_FOREACH ( const QString provider, mProviders )
@@ -179,10 +180,10 @@ void TestVectorLayerJoinBuffer::initTestCase()
     QgsVectorLayer* vl = mLayers.value( QPair<QString, QString>( QStringLiteral( "X" ), provider ) );
     vl->dataProvider()->addFeatures( QgsFeatureList() << fX1 );
     QVERIFY( vl->featureCount() == 1 );
-    QgsProject::instance()->addMapLayer( vl );
+    mProject.addMapLayer( vl );
   }
 
-  QVERIFY( QgsProject::instance()->mapLayers().count() == 4*mProviders.count() );
+  QVERIFY( mProject.mapLayers().count() == 4*mProviders.count() );
 }
 
 void TestVectorLayerJoinBuffer::init()
@@ -222,12 +223,12 @@ void TestVectorLayerJoinBuffer::testJoinBasic()
 
   QVERIFY( vlA->fields().count() == 1 );
 
-  QgsVectorJoinInfo joinInfo;
-  joinInfo.targetFieldName = QStringLiteral( "id_a" );
-  joinInfo.joinLayerId = vlB->id();
-  joinInfo.joinFieldName = QStringLiteral( "id_b" );
-  joinInfo.memoryCache = memoryCache;
-  joinInfo.prefix = QStringLiteral( "B_" );
+  QgsVectorLayerJoinInfo joinInfo;
+  joinInfo.setTargetFieldName( QStringLiteral( "id_a" ) );
+  joinInfo.setJoinLayer( vlB );
+  joinInfo.setJoinFieldName( QStringLiteral( "id_b" ) );
+  joinInfo.setUsingMemoryCache( memoryCache );
+  joinInfo.setPrefix( QStringLiteral( "B_" ) );
   vlA->addJoin( joinInfo );
 
   QVERIFY( vlA->fields().count() == 2 );
@@ -272,23 +273,23 @@ void TestVectorLayerJoinBuffer::testJoinTransitive()
 
   // add join A -> B
 
-  QgsVectorJoinInfo joinInfo1;
-  joinInfo1.targetFieldName = QStringLiteral( "id_a" );
-  joinInfo1.joinLayerId = vlB->id();
-  joinInfo1.joinFieldName = QStringLiteral( "id_b" );
-  joinInfo1.memoryCache = true;
-  joinInfo1.prefix = QStringLiteral( "B_" );
+  QgsVectorLayerJoinInfo joinInfo1;
+  joinInfo1.setTargetFieldName( QStringLiteral( "id_a" ) );
+  joinInfo1.setJoinLayer( vlB );
+  joinInfo1.setJoinFieldName( QStringLiteral( "id_b" ) );
+  joinInfo1.setUsingMemoryCache( true );
+  joinInfo1.setPrefix( QStringLiteral( "B_" ) );
   vlA->addJoin( joinInfo1 );
   QVERIFY( vlA->fields().count() == 2 ); // id_a, B_value_b
 
   // add join B -> C
 
-  QgsVectorJoinInfo joinInfo2;
-  joinInfo2.targetFieldName = QStringLiteral( "id_b" );
-  joinInfo2.joinLayerId = vlC->id();
-  joinInfo2.joinFieldName = QStringLiteral( "id_c" );
-  joinInfo2.memoryCache = true;
-  joinInfo2.prefix = QStringLiteral( "C_" );
+  QgsVectorLayerJoinInfo joinInfo2;
+  joinInfo2.setTargetFieldName( QStringLiteral( "id_b" ) );
+  joinInfo2.setJoinLayer( vlC );
+  joinInfo2.setJoinFieldName( QStringLiteral( "id_c" ) );
+  joinInfo2.setUsingMemoryCache( true );
+  joinInfo2.setPrefix( QStringLiteral( "C_" ) );
   vlB->addJoin( joinInfo2 );
   QVERIFY( vlB->fields().count() == 3 ); // id_b, value_b, C_value_c
 
@@ -330,20 +331,20 @@ void TestVectorLayerJoinBuffer::testJoinDetectCycle()
 
   // if A joins B and B joins A, we may get to an infinite loop if the case is not handled properly
 
-  QgsVectorJoinInfo joinInfo;
-  joinInfo.targetFieldName = QStringLiteral( "id_a" );
-  joinInfo.joinLayerId = vlB->id();
-  joinInfo.joinFieldName = QStringLiteral( "id_b" );
-  joinInfo.memoryCache = true;
-  joinInfo.prefix = QStringLiteral( "B_" );
+  QgsVectorLayerJoinInfo joinInfo;
+  joinInfo.setTargetFieldName( QStringLiteral( "id_a" ) );
+  joinInfo.setJoinLayer( vlB );
+  joinInfo.setJoinFieldName( QStringLiteral( "id_b" ) );
+  joinInfo.setUsingMemoryCache( true );
+  joinInfo.setPrefix( QStringLiteral( "B_" ) );
   vlA->addJoin( joinInfo );
 
-  QgsVectorJoinInfo joinInfo2;
-  joinInfo2.targetFieldName = QStringLiteral( "id_b" );
-  joinInfo2.joinLayerId = vlA->id();
-  joinInfo2.joinFieldName = QStringLiteral( "id_a" );
-  joinInfo2.memoryCache = true;
-  joinInfo2.prefix = QStringLiteral( "A_" );
+  QgsVectorLayerJoinInfo joinInfo2;
+  joinInfo2.setTargetFieldName( QStringLiteral( "id_b" ) );
+  joinInfo2.setJoinLayer( vlA );
+  joinInfo2.setJoinFieldName( QStringLiteral( "id_a" ) );
+  joinInfo2.setUsingMemoryCache( true );
+  joinInfo2.setPrefix( QStringLiteral( "A_" ) );
   bool res = vlB->addJoin( joinInfo2 );
 
   QVERIFY( !res );
@@ -375,19 +376,19 @@ void TestVectorLayerJoinBuffer::testJoinSubset()
   QFETCH( bool, memoryCache );
   QFETCH( QString, provider );
 
-  QVERIFY( QgsProject::instance()->mapLayers().count() == 4*mProviders.count() );
+  QVERIFY( mProject.mapLayers().count() == 4*mProviders.count() );
 
   QgsVectorLayer* vlA = mLayers.value( QPair<QString, QString>( QStringLiteral( "A" ), provider ) );
   QgsVectorLayer* vlX = mLayers.value( QPair<QString, QString>( QStringLiteral( "X" ), provider ) );
 
   // case 1: join without subset
 
-  QgsVectorJoinInfo joinInfo;
-  joinInfo.targetFieldName = QStringLiteral( "id_a" );
-  joinInfo.joinLayerId = vlX->id();
-  joinInfo.joinFieldName = QStringLiteral( "id_x" );
-  joinInfo.memoryCache = memoryCache;
-  joinInfo.prefix = QStringLiteral( "X_" );
+  QgsVectorLayerJoinInfo joinInfo;
+  joinInfo.setTargetFieldName( QStringLiteral( "id_a" ) );
+  joinInfo.setJoinLayer( vlX );
+  joinInfo.setJoinFieldName( QStringLiteral( "id_x" ) );
+  joinInfo.setUsingMemoryCache( memoryCache );
+  joinInfo.setPrefix( QStringLiteral( "X_" ) );
   bool res = vlA->addJoin( joinInfo );
   QVERIFY( res );
 
@@ -437,20 +438,20 @@ void TestVectorLayerJoinBuffer::testJoinTwoTimes()
 
   QVERIFY( vlA->fields().count() == 1 );
 
-  QgsVectorJoinInfo joinInfo1;
-  joinInfo1.targetFieldName = QStringLiteral( "id_a" );
-  joinInfo1.joinLayerId = vlB->id();
-  joinInfo1.joinFieldName = QStringLiteral( "id_b" );
-  joinInfo1.memoryCache = true;
-  joinInfo1.prefix = QStringLiteral( "j1_" );
+  QgsVectorLayerJoinInfo joinInfo1;
+  joinInfo1.setTargetFieldName( QStringLiteral( "id_a" ) );
+  joinInfo1.setJoinLayer( vlB );
+  joinInfo1.setJoinFieldName( QStringLiteral( "id_b" ) );
+  joinInfo1.setUsingMemoryCache( true );
+  joinInfo1.setPrefix( QStringLiteral( "j1_" ) );
   vlA->addJoin( joinInfo1 );
 
-  QgsVectorJoinInfo joinInfo2;
-  joinInfo2.targetFieldName = QStringLiteral( "id_a" );
-  joinInfo2.joinLayerId = vlB->id();
-  joinInfo2.joinFieldName = QStringLiteral( "id_b" );
-  joinInfo2.memoryCache = true;
-  joinInfo2.prefix = QStringLiteral( "j2_" );
+  QgsVectorLayerJoinInfo joinInfo2;
+  joinInfo2.setTargetFieldName( QStringLiteral( "id_a" ) );
+  joinInfo2.setJoinLayer( vlB );
+  joinInfo2.setJoinFieldName( QStringLiteral( "id_b" ) );
+  joinInfo2.setUsingMemoryCache( true );
+  joinInfo2.setPrefix( QStringLiteral( "j2_" ) );
   vlA->addJoin( joinInfo2 );
 
   QCOMPARE( vlA->vectorJoins().count(), 2 );
@@ -474,42 +475,42 @@ void TestVectorLayerJoinBuffer::testJoinLayerDefinitionFile()
 {
   bool r;
 
-  QgsProject::instance()->removeAllMapLayers();
+  mProject.removeAllMapLayers();
 
   // Create two layers
   QgsVectorLayer* layerA = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=key:integer&field=value:double&index=yes" ), QStringLiteral( "layerA" ), QStringLiteral( "memory" ) );
   QVERIFY( layerA );
-  QgsProject::instance()->addMapLayer( layerA );
+  mProject.addMapLayer( layerA );
 
   QgsVectorLayer* layerB = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer&index=yes" ), QStringLiteral( "layerB" ), QStringLiteral( "memory" ) );
   QVERIFY( layerB );
-  QgsProject::instance()->addMapLayer( layerB );
+  mProject.addMapLayer( layerB );
 
   // Create vector join
-  QgsVectorJoinInfo joinInfo;
-  joinInfo.targetFieldName = QStringLiteral( "id" );
-  joinInfo.joinLayerId = layerA->id();
-  joinInfo.joinFieldName = QStringLiteral( "key" );
-  joinInfo.memoryCache = true;
-  joinInfo.prefix = QStringLiteral( "joined_" );
+  QgsVectorLayerJoinInfo joinInfo;
+  joinInfo.setTargetFieldName( QStringLiteral( "id" ) );
+  joinInfo.setJoinLayer( layerA );
+  joinInfo.setJoinFieldName( QStringLiteral( "key" ) );
+  joinInfo.setUsingMemoryCache( true );
+  joinInfo.setPrefix( QStringLiteral( "joined_" ) );
   r = layerB->addJoin( joinInfo );
   QVERIFY( r );
 
   // Generate QLR
   QDomDocument qlrDoc( QStringLiteral( "qgis-layer-definition" ) );
   QString errorMessage;
-  r = QgsLayerDefinition::exportLayerDefinition( qlrDoc, QgsProject::instance()->layerTreeRoot()->children(), errorMessage );
+  r = QgsLayerDefinition::exportLayerDefinition( qlrDoc, mProject.layerTreeRoot()->children(), errorMessage );
   QVERIFY2( r, errorMessage.toUtf8().constData() );
 
   // Clear
-  QgsProject::instance()->removeAllMapLayers();
+  mProject.removeAllMapLayers();
 
   // Load QLR
-  r = QgsLayerDefinition::loadLayerDefinition( qlrDoc, QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMessage );
+  r = QgsLayerDefinition::loadLayerDefinition( qlrDoc, &mProject, mProject.layerTreeRoot(), errorMessage );
   QVERIFY2( r, errorMessage.toUtf8().constData() );
 
   // Get layer
-  QList<QgsMapLayer*> mapLayers = QgsProject::instance()->mapLayersByName( QStringLiteral( "layerB" ) );
+  QList<QgsMapLayer*> mapLayers = mProject.mapLayersByName( QStringLiteral( "layerB" ) );
   QCOMPARE( mapLayers.count(), 1 );
 
   QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( mapLayers.value( 0 ) );
@@ -519,7 +520,7 @@ void TestVectorLayerJoinBuffer::testJoinLayerDefinitionFile()
   QCOMPARE( vLayer->vectorJoins().count(), 1 );
 
   // Check for joined field
-  QVERIFY( vLayer->fields().lookupField( joinInfo.prefix + "value" ) >= 0 );
+  QVERIFY( vLayer->fields().lookupField( joinInfo.prefix() + "value" ) >= 0 );
 }
 
 void TestVectorLayerJoinBuffer::testCacheUpdate_data()
@@ -537,8 +538,8 @@ void TestVectorLayerJoinBuffer::testCacheUpdate()
   QVERIFY( vlA->isValid() );
   QgsVectorLayer* vlB = new QgsVectorLayer( QStringLiteral( "Point?field=id_b:integer&field=value_b" ), QStringLiteral( "cacheB" ), QStringLiteral( "memory" ) );
   QVERIFY( vlB->isValid() );
-  QgsProject::instance()->addMapLayer( vlA );
-  QgsProject::instance()->addMapLayer( vlB );
+  mProject.addMapLayer( vlA );
+  mProject.addMapLayer( vlB );
 
   QgsFeature fA1( vlA->dataProvider()->fields(), 1 );
   fA1.setAttribute( QStringLiteral( "id_a" ), 1 );
@@ -556,12 +557,12 @@ void TestVectorLayerJoinBuffer::testCacheUpdate()
 
   vlB->dataProvider()->addFeatures( QgsFeatureList() << fB1 << fB2 );
 
-  QgsVectorJoinInfo joinInfo;
-  joinInfo.targetFieldName = QStringLiteral( "id_a" );
-  joinInfo.joinLayerId = vlB->id();
-  joinInfo.joinFieldName = QStringLiteral( "id_b" );
-  joinInfo.memoryCache = useCache;
-  joinInfo.prefix = QStringLiteral( "B_" );
+  QgsVectorLayerJoinInfo joinInfo;
+  joinInfo.setTargetFieldName( QStringLiteral( "id_a" ) );
+  joinInfo.setJoinLayer( vlB );
+  joinInfo.setJoinFieldName( QStringLiteral( "id_b" ) );
+  joinInfo.setUsingMemoryCache( useCache );
+  joinInfo.setPrefix( QStringLiteral( "B_" ) );
   vlA->addJoin( joinInfo );
 
   QgsFeatureIterator fi = vlA->getFeatures();
