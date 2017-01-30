@@ -843,11 +843,21 @@ class CORE_EXPORT QgsGeometry
      **/
     void validateGeometry( QList<Error> &errors );
 
-    /** Compute the unary union on a list of geometries. May be faster than an iterative union on a set of geometries.
-     * @param geometryList a list of QgsGeometry as input
-     * @returns the new computed QgsGeometry, or an empty QgsGeometry
+    /** Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
+     * The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
+     * input geometries. An empty geometry will be returned in the case of errors.
      */
-    static QgsGeometry unaryUnion( const QList<QgsGeometry>& geometryList );
+    static QgsGeometry unaryUnion( const QList<QgsGeometry>& geometries );
+
+    /**
+     * Creates a GeometryCollection geometry containing possible polygons formed from the constituent
+     * linework of a set of \a geometries. The input geometries must be fully noded (i.e. nodes exist
+     * at every common intersection of the geometries). The easiest way to ensure this is to first
+     * call unaryUnion() on the set of input geometries and then pass the result to polygonize().
+     * An empty geometry will be returned in the case of errors.
+     * @note added in QGIS 3.0
+     */
+    static QgsGeometry polygonize( const QList< QgsGeometry>& geometries );
 
     /** Converts the geometry to straight line segments, if it is a curved geometry type.
      * @note added in QGIS 2.10

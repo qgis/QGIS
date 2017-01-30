@@ -3724,6 +3724,37 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(compareWkt(result, exp, 0.00001),
                         "orthogonalize: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
+    def testPolygonize(self):
+        o = QgsGeometry.polygonize([])
+        self.assertFalse(o)
+        empty = QgsGeometry()
+        o = QgsGeometry.polygonize([empty])
+        self.assertFalse(o)
+        line = QgsGeometry.fromWkt('LineString()')
+        o = QgsGeometry.polygonize([line])
+        self.assertFalse(o)
+
+        l1 = QgsGeometry.fromWkt("LINESTRING (100 180, 20 20, 160 20, 100 180)")
+        l2 = QgsGeometry.fromWkt("LINESTRING (100 180, 80 60, 120 60, 100 180)")
+        o = QgsGeometry.polygonize([l1, l2])
+        exp = "GeometryCollection(POLYGON ((100 180, 160 20, 20 20, 100 180), (100 180, 80 60, 120 60, 100 180)),POLYGON ((100 180, 120 60, 80 60, 100 180)))"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "polygonize: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+        lines = [QgsGeometry.fromWkt('LineString(0 0, 1 1)'),
+                 QgsGeometry.fromWkt('LineString(0 0, 0 1)'),
+                 QgsGeometry.fromWkt('LineString(0 1, 1 1)'),
+                 QgsGeometry.fromWkt('LineString(1 1, 1 0)'),
+                 QgsGeometry.fromWkt('LineString(1 0, 0 0)'),
+                 QgsGeometry.fromWkt('LineString(5 5, 6 6)'),
+                 QgsGeometry.fromWkt('Point(0, 0)')]
+        o = QgsGeometry.polygonize(lines)
+        exp = "GeometryCollection (Polygon ((0 0, 1 1, 1 0, 0 0)),Polygon ((1 1, 0 0, 0 1, 1 1)))"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "polygonize: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
 
 if __name__ == '__main__':
     unittest.main()

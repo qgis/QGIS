@@ -777,6 +777,8 @@ class QgsGeometry
      */
     static QgsGeometry unaryUnion( const QList<QgsGeometry>& geometryList );
 
+    static QgsGeometry polygonize( const QList< QgsGeometry>& lines );
+
     /** Converts the geometry to straight line segments, if it is a curved geometry type.
      * @note added in QGIS 2.10
      * @see requiresConversionToStraightSegments
