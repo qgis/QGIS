@@ -60,7 +60,7 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem* it
 
 void QgsTextAnnotationDialog::showEvent( QShowEvent* )
 {
-  backgroundColorChanged( mItem && mItem->annotation() ? mItem->annotation()->frameBackgroundColor() : Qt::white );
+  backgroundColorChanged( mItem && mItem->annotation() && mItem->annotation()->fillSymbol() ? mItem->annotation()->fillSymbol()->color() : Qt::white );
 }
 
 void QgsTextAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )

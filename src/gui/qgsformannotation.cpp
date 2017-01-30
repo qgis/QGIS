@@ -47,7 +47,12 @@ void QgsFormAnnotation::setDesignerForm( const QString& uiFile )
   if ( mDesignerWidget )
   {
     mMinimumSize = mDesignerWidget->minimumSize();
-    setFrameBackgroundColor( mDesignerWidget->palette().color( QPalette::Window ) );
+    if ( fillSymbol() )
+    {
+      QgsFillSymbol* newFill = fillSymbol()->clone();
+      newFill->setColor( mDesignerWidget->palette().color( QPalette::Window ) );
+      setFillSymbol( newFill );
+    }
     setFrameSize( preferredFrameSize() );
   }
   emit appearanceChanged();
@@ -153,9 +158,11 @@ void QgsFormAnnotation::readXml( const QDomElement& itemElem, const QDomDocument
   }
 
   mDesignerWidget.reset( createDesignerWidget( mDesignerForm ) );
-  if ( mDesignerWidget )
+  if ( mDesignerWidget && fillSymbol() )
   {
-    setFrameBackgroundColor( mDesignerWidget->palette().color( QPalette::Window ) );
+    QgsFillSymbol* newFill = fillSymbol()->clone();
+    newFill->setColor( mDesignerWidget->palette().color( QPalette::Window ) );
+    setFillSymbol( newFill );
   }
 }
 
@@ -165,9 +172,11 @@ void QgsFormAnnotation::setAssociatedFeature( const QgsFeature& feature )
 
   //create new embedded widget
   mDesignerWidget.reset( createDesignerWidget( mDesignerForm ) );
-  if ( mDesignerWidget )
+  if ( mDesignerWidget && fillSymbol() )
   {
-    setFrameBackgroundColor( mDesignerWidget->palette().color( QPalette::Window ) );
+    QgsFillSymbol* newFill = fillSymbol()->clone();
+    newFill->setColor( mDesignerWidget->palette().color( QPalette::Window ) );
+    setFillSymbol( newFill );
   }
   emit appearanceChanged();
 }

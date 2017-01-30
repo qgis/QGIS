@@ -76,7 +76,11 @@ QRectF QgsMapCanvasAnnotationItem::boundingRect() const
 void QgsMapCanvasAnnotationItem::updateBoundingRect()
 {
   prepareGeometryChange();
-  double frameBorderWidth = mAnnotation ? mAnnotation->frameBorderWidth() : 0.0;
+  double frameBorderWidth;
+
+
+  // TODO
+
   if ( mAnnotation && !mAnnotation->hasFixedMapPosition() )
   {
     mBoundingRect = QRectF( - frameBorderWidth / 2.0, -frameBorderWidth / 2.0, mAnnotation->frameSize().width() + frameBorderWidth, mAnnotation->frameSize().height() + frameBorderWidth );

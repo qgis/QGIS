@@ -46,19 +46,6 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem* item, QWid
     {
       mMapPositionFixedCheckBox->setCheckState( Qt::Unchecked );
     }
-    mFrameWidthSpinBox->setValue( annotation->frameBorderWidth() );
-    mFrameColorButton->setColor( annotation->frameColor() );
-    mFrameColorButton->setColorDialogTitle( tr( "Select frame color" ) );
-    mFrameColorButton->setAllowAlpha( true );
-    mFrameColorButton->setContext( QStringLiteral( "symbology" ) );
-    mFrameColorButton->setNoColorString( tr( "Transparent frame" ) );
-    mFrameColorButton->setShowNoColor( true );
-    mBackgroundColorButton->setColor( annotation->frameBackgroundColor() );
-    mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
-    mBackgroundColorButton->setAllowAlpha( true );
-    mBackgroundColorButton->setContext( QStringLiteral( "symbology" ) );
-    mBackgroundColorButton->setNoColorString( tr( "Transparent" ) );
-    mBackgroundColorButton->setShowNoColor( true );
 
     whileBlocking( mSpinTopMargin )->setValue( annotation->contentsMargin().top() );
     whileBlocking( mSpinLeftMargin )->setValue( annotation->contentsMargin().left() );
@@ -67,13 +54,17 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem* item, QWid
 
     mLayerComboBox->setLayer( annotation->mapLayer() );
 
-    connect( mBackgroundColorButton, &QgsColorButton::colorChanged, this, &QgsAnnotationWidget::backgroundColorChanged );
-
     const QgsMarkerSymbol* symbol = annotation->markerSymbol();
     if ( symbol )
     {
       mMarkerSymbol.reset( symbol->clone() );
       updateCenterIcon();
+    }
+    const QgsFillSymbol* fill = annotation->fillSymbol();
+    if ( fill )
+    {
+      mFillSymbol.reset( fill->clone() );
+      updateFillIcon();
     }
 
     blockAllSignals( false );
@@ -92,9 +83,7 @@ void QgsAnnotationWidget::apply()
     if ( annotation )
     {
       annotation->setHasFixedMapPosition( mMapPositionFixedCheckBox->checkState() == Qt::Checked );
-      annotation->setFrameBorderWidth( mFrameWidthSpinBox->value() );
-      annotation->setFrameColor( mFrameColorButton->color() );
-      annotation->setFrameBackgroundColor( mBackgroundColorButton->color() );
+      annotation->setFillSymbol( mFillSymbol->clone() );
       annotation->setMarkerSymbol( mMarkerSymbol->clone() );
       annotation->setMapLayer( mLayerComboBox->currentLayer() );
       annotation->setContentsMargin( QgsMargins( mSpinLeftMargin->value(),
@@ -110,8 +99,6 @@ void QgsAnnotationWidget::blockAllSignals( bool block )
 {
   mMapPositionFixedCheckBox->blockSignals( block );
   mMapMarkerButton->blockSignals( block );
-  mFrameWidthSpinBox->blockSignals( block );
-  mFrameColorButton->blockSignals( block );
   mLayerComboBox->blockSignals( block );
 }
 
@@ -134,6 +121,26 @@ void QgsAnnotationWidget::on_mMapMarkerButton_clicked()
   }
 }
 
+void QgsAnnotationWidget::on_mFrameStyleButton_clicked()
+{
+  if ( !mFillSymbol )
+  {
+    return;
+  }
+  QgsFillSymbol* fillSymbol = mFillSymbol->clone();
+  QgsSymbolSelectorDialog dlg( fillSymbol, QgsStyle::defaultStyle(), nullptr, this );
+  if ( dlg.exec() == QDialog::Rejected )
+  {
+    delete fillSymbol;
+  }
+  else
+  {
+    mFillSymbol.reset( fillSymbol );
+    updateFillIcon();
+    backgroundColorChanged( fillSymbol->color() );
+  }
+}
+
 void QgsAnnotationWidget::updateCenterIcon()
 {
   if ( !mMarkerSymbol )
@@ -142,5 +149,15 @@ void QgsAnnotationWidget::updateCenterIcon()
   }
   QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mMarkerSymbol.data(), mMapMarkerButton->iconSize() );
   mMapMarkerButton->setIcon( icon );
+}
+
+void QgsAnnotationWidget::updateFillIcon()
+{
+  if ( !mFillSymbol )
+  {
+    return;
+  }
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mFillSymbol.data(), mFrameStyleButton->iconSize() );
+  mFrameStyleButton->setIcon( icon );
 }
 

@@ -26,7 +26,14 @@ QgsAnnotation::QgsAnnotation( QObject* parent )
     : QObject( parent )
     , mMarkerSymbol( new QgsMarkerSymbol() )
 {
-
+  QgsStringMap props;
+  props.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
+  props.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
+  props.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
+  props.insert( QStringLiteral( "color_border" ), QStringLiteral( "black" ) );
+  props.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
+  props.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+  mFillSymbol.reset( QgsFillSymbol::createSimple( props ) );
 }
 
 void QgsAnnotation::setVisible( bool visible )
@@ -89,21 +96,9 @@ void QgsAnnotation::setContentsMargin( const QgsMargins& margins )
   emit appearanceChanged();
 }
 
-void QgsAnnotation::setFrameBorderWidth( double width )
+void QgsAnnotation::setFillSymbol( QgsFillSymbol* symbol )
 {
-  mFrameBorderWidth = width;
-  emit appearanceChanged();
-}
-
-void QgsAnnotation::setFrameColor( const QColor& c )
-{
-  mFrameColor = c;
-  emit appearanceChanged();
-}
-
-void QgsAnnotation::setFrameBackgroundColor( const QColor& c )
-{
-  mFrameBackgroundColor = c;
+  mFillSymbol.reset( symbol );
   emit appearanceChanged();
 }
 
@@ -263,17 +258,13 @@ QPointF QgsAnnotation::pointOnLineWithDistance( QPointF startPoint, QPointF dire
 
 void QgsAnnotation::drawFrame( QgsRenderContext& context ) const
 {
-  QPen framePen( mFrameColor );
-  framePen.setWidthF( context.convertToPainterUnits( mFrameBorderWidth, QgsUnitTypes::RenderPixels ) );
+  if ( !mFillSymbol )
+    return;
 
-  QPainter* p = context.painter();
-
-  p->setPen( framePen );
-  QBrush frameBrush( mFrameBackgroundColor );
-  p->setBrush( frameBrush );
-  p->setRenderHint( QPainter::Antialiasing, context.flags() & QgsRenderContext::Antialiasing );
+  context.painter()->setRenderHint( QPainter::Antialiasing, context.flags() & QgsRenderContext::Antialiasing );
 
   QPolygonF poly;
+  QList<QPolygonF> rings; //empty list
   for ( int i = 0; i < 4; ++i )
   {
     QLineF currentSegment = segment( i );
@@ -286,7 +277,10 @@ void QgsAnnotation::drawFrame( QgsRenderContext& context ) const
     }
     poly << currentSegment.p2();
   }
-  p->drawPolygon( poly );
+
+  mFillSymbol->startRender( context );
+  mFillSymbol->renderPolygon( poly, &rings, nullptr, context );
+  mFillSymbol->stopRender( context );
 }
 
 void QgsAnnotation::drawMarkerSymbol( QgsRenderContext& context ) const
@@ -322,12 +316,7 @@ void QgsAnnotation::_writeXml( QDomElement& itemElem, QDomDocument& doc ) const
   annotationElem.setAttribute( QStringLiteral( "frameHeight" ), qgsDoubleToString( mFrameSize.height() ) );
   annotationElem.setAttribute( QStringLiteral( "canvasPosX" ), qgsDoubleToString( mRelativePosition.x() ) );
   annotationElem.setAttribute( QStringLiteral( "canvasPosY" ), qgsDoubleToString( mRelativePosition.y() ) );
-  annotationElem.setAttribute( QStringLiteral( "frameBorderWidth" ), qgsDoubleToString( mFrameBorderWidth ) );
   annotationElem.setAttribute( QStringLiteral( "contentsMargin" ), mContentsMargins.toString() );
-  annotationElem.setAttribute( QStringLiteral( "frameColor" ), mFrameColor.name() );
-  annotationElem.setAttribute( QStringLiteral( "frameColorAlpha" ), mFrameColor.alpha() );
-  annotationElem.setAttribute( QStringLiteral( "frameBackgroundColor" ), mFrameBackgroundColor.name() );
-  annotationElem.setAttribute( QStringLiteral( "frameBackgroundColorAlpha" ), mFrameBackgroundColor.alpha() );
   annotationElem.setAttribute( QStringLiteral( "visible" ), isVisible() );
   if ( mMapLayer )
   {
@@ -339,6 +328,16 @@ void QgsAnnotation::_writeXml( QDomElement& itemElem, QDomDocument& doc ) const
     if ( !symbolElem.isNull() )
     {
       annotationElem.appendChild( symbolElem );
+    }
+  }
+  if ( mFillSymbol )
+  {
+    QDomElement fillElem = doc.createElement( QStringLiteral( "fillSymbol" ) );
+    QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "fill symbol" ), mFillSymbol.data(), doc );
+    if ( !symbolElem.isNull() )
+    {
+      fillElem.appendChild( symbolElem );
+      annotationElem.appendChild( fillElem );
     }
   }
   itemElem.appendChild( annotationElem );
@@ -365,12 +364,7 @@ void QgsAnnotation::_readXml( const QDomElement& annotationElem, const QDomDocum
     mMapPositionCrs = QgsCoordinateReferenceSystem();
   }
 
-  mFrameBorderWidth = annotationElem.attribute( QStringLiteral( "frameBorderWidth" ), QStringLiteral( "0.5" ) ).toDouble();
   mContentsMargins = QgsMargins::fromString( annotationElem.attribute( QStringLiteral( "contentsMargin" ) ) );
-  mFrameColor.setNamedColor( annotationElem.attribute( QStringLiteral( "frameColor" ), QStringLiteral( "#000000" ) ) );
-  mFrameColor.setAlpha( annotationElem.attribute( QStringLiteral( "frameColorAlpha" ), QStringLiteral( "255" ) ).toInt() );
-  mFrameBackgroundColor.setNamedColor( annotationElem.attribute( QStringLiteral( "frameBackgroundColor" ) ) );
-  mFrameBackgroundColor.setAlpha( annotationElem.attribute( QStringLiteral( "frameBackgroundColorAlpha" ), QStringLiteral( "255" ) ).toInt() );
   mFrameSize.setWidth( annotationElem.attribute( QStringLiteral( "frameWidth" ), QStringLiteral( "50" ) ).toDouble() );
   mFrameSize.setHeight( annotationElem.attribute( QStringLiteral( "frameHeight" ), QStringLiteral( "50" ) ).toDouble() );
   mOffsetFromReferencePoint.setX( annotationElem.attribute( QStringLiteral( "offsetX" ), QStringLiteral( "0" ) ).toDouble() );
@@ -391,6 +385,41 @@ void QgsAnnotation::_readXml( const QDomElement& annotationElem, const QDomDocum
     {
       mMarkerSymbol.reset( symbol );
     }
+  }
+
+  mFillSymbol.reset( nullptr );
+  QDomElement fillElem = annotationElem.firstChildElement( QStringLiteral( "fillSymbol" ) );
+  if ( !fillElem.isNull() )
+  {
+    QDomElement symbolElem = fillElem.firstChildElement( QStringLiteral( "symbol" ) );
+    if ( !symbolElem.isNull() )
+    {
+      QgsFillSymbol* symbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem );
+      if ( symbol )
+      {
+        mFillSymbol.reset( symbol );
+      }
+    }
+  }
+  if ( !mFillSymbol )
+  {
+    QColor frameColor;
+    frameColor.setNamedColor( annotationElem.attribute( QStringLiteral( "frameColor" ), QStringLiteral( "#000000" ) ) );
+    frameColor.setAlpha( annotationElem.attribute( QStringLiteral( "frameColorAlpha" ), QStringLiteral( "255" ) ).toInt() );
+    QColor frameBackgroundColor;
+    frameBackgroundColor.setNamedColor( annotationElem.attribute( QStringLiteral( "frameBackgroundColor" ) ) );
+    frameBackgroundColor.setAlpha( annotationElem.attribute( QStringLiteral( "frameBackgroundColorAlpha" ), QStringLiteral( "255" ) ).toInt() );
+    double frameBorderWidth = annotationElem.attribute( QStringLiteral( "frameBorderWidth" ), QStringLiteral( "0.5" ) ).toDouble();
+    // need to roughly convert border width from pixels to mm - just assume 96 dpi
+    frameBorderWidth = frameBorderWidth * 25.4 / 96.0;
+    QgsStringMap props;
+    props.insert( QStringLiteral( "color" ), frameBackgroundColor.name() );
+    props.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
+    props.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
+    props.insert( QStringLiteral( "color_border" ), frameColor.name() );
+    props.insert( QStringLiteral( "width_border" ), QString::number( frameBorderWidth ) );
+    props.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+    mFillSymbol.reset( QgsFillSymbol::createSimple( props ) );
   }
 
   updateBalloon();

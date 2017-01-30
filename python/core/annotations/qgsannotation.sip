@@ -31,14 +31,8 @@ class QgsAnnotation : QObject
     void setContentsMargin( const QgsMargins& margins );
     QgsMargins contentsMargin() const;
 
-    void setFrameBorderWidth( double width );
-    double frameBorderWidth() const;
-
-    void setFrameColor( const QColor& color );
-    QColor frameColor() const;
-
-    void setFrameBackgroundColor( const QColor& color );
-    QColor frameBackgroundColor() const;
+    void setFillSymbol( QgsFillSymbol* symbol /Transfer/ );
+    QgsFillSymbol* fillSymbol() const;
 
     void render( QgsRenderContext& context ) const;
 

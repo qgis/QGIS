@@ -172,40 +172,17 @@ class CORE_EXPORT QgsAnnotation : public QObject
     QgsMargins contentsMargin() const { return mContentsMargins; }
 
     /**
-     * Sets the annotation's frame's border width (in pixels).
-     * @see frameBorderWidth()
+     * Sets the fill symbol used for rendering the annotation frame. Ownership
+     * of the symbol is transferred to the annotation.
+     * @see fillSymbol()
      */
-    void setFrameBorderWidth( double width );
+    void setFillSymbol( QgsFillSymbol* symbol );
 
     /**
-     * Returns the annotation's frame's border width (in pixels).
-     * @see setFrameBorderWidth
+     * Returns the symbol that is used for rendering the annotation frame.
+     * @see setFillSymbol()
      */
-    double frameBorderWidth() const { return mFrameBorderWidth; }
-
-    /**
-     * Sets the annotation's frame's border color.
-     * @see frameColor()
-     */
-    void setFrameColor( const QColor& color );
-
-    /**
-     * Returns the annotation's frame's border color.
-     * @see setFrameColor()
-     */
-    QColor frameColor() const { return mFrameColor; }
-
-    /**
-     * Sets the annotation's frame's background color.
-     * @see frameBackgroundColor()
-     */
-    void setFrameBackgroundColor( const QColor& color );
-
-    /**
-     * Returns the annotation's frame's background color.
-     * @see setFrameBackgroundColor()
-     */
-    QColor frameBackgroundColor() const { return mFrameBackgroundColor; }
+    QgsFillSymbol* fillSymbol() const { return mFillSymbol.data(); }
 
     /**
      * Renders the annotation to a target render context.
@@ -354,14 +331,8 @@ class CORE_EXPORT QgsAnnotation : public QObject
 
     QgsMargins mContentsMargins;
 
-    //! Width of the frame
-    double mFrameBorderWidth = 1.0;
-
-    //! Frame / balloon color
-    QColor mFrameColor = QColor( 0, 0, 0 );
-
-    //! Frame background color
-    QColor mFrameBackgroundColor = QColor( 255, 255, 255 );
+    //! Fill symbol used for drawing annotation
+    QScopedPointer<QgsFillSymbol> mFillSymbol;
 
     //! Segment number where the connection to the map point is attached. -1 if no balloon needed (e.g. if point is contained in frame)
     int mBalloonSegment = -1;

@@ -23,6 +23,7 @@
 
 class QgsMapCanvasAnnotationItem;
 class QgsMarkerSymbol;
+class QgsFillSymbol;
 
 /** A configuration widget to configure the annotation item properties. Usually embedded by QgsAnnotation
 subclass configuration dialogs*/
@@ -42,13 +43,16 @@ class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationW
 
   private slots:
     void on_mMapMarkerButton_clicked();
+    void on_mFrameStyleButton_clicked();
 
   private:
     QgsMapCanvasAnnotationItem* mItem = nullptr;
     QScopedPointer< QgsMarkerSymbol > mMarkerSymbol;
+    QScopedPointer< QgsFillSymbol > mFillSymbol;
 
     void blockAllSignals( bool block );
     void updateCenterIcon();
+    void updateFillIcon();
 };
 
 #endif // QGSANNOTATIONWIDGET_H

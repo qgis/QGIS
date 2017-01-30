@@ -25,7 +25,8 @@ from qgis.core import (QgsTextAnnotation,
                        QgsPoint,
                        QgsVectorLayer,
                        QgsFeature,
-                       QgsMargins)
+                       QgsMargins,
+                       QgsFillSymbol)
 from qgis.PyQt.QtCore import (QDir,
                               QPointF,
                               QSizeF)
@@ -122,6 +123,15 @@ class TestQgsAnnotation(unittest.TestCase):
         a.setSourceFile(html)
         im = self.renderAnnotation(a, QPointF(20, 30))
         self.assertTrue(self.imageCheck('annotation_margins', 'annotation_margins', im))
+
+    def testFillSymbol(self):
+        """ test rendering an annotation with fill symbol"""
+        a = QgsTextAnnotation()
+        a.setFrameSize(QSizeF(400, 250))
+        a.setHasFixedMapPosition(False)
+        a.setFillSymbol(QgsFillSymbol.createSimple({'color': 'blue', 'width_border': '5'}))
+        im = self.renderAnnotation(a, QPointF(20, 30))
+        self.assertTrue(self.imageCheck('annotation_fillstyle', 'annotation_fillstyle', im))
 
     def renderAnnotation(self, annotation, offset):
         image = QImage(600, 400, QImage.Format_RGB32)
