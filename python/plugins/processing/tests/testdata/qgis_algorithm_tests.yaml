@@ -2299,3 +2299,16 @@ tests:
       OUTPUT_LAYER:
         name: expected/zonal_statistics.gml
         type: vector
+
+  - algorithm: qgis:polygonize
+    name: Polygonize
+    params:
+      FIELDS: false
+      GEOMETRY: true
+      INPUT:
+        name: custom/polygonize_lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/polygonize.gml
+        type: vector
