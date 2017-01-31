@@ -11,6 +11,9 @@
 ##
 ## Definitions or ENV variables affecting search locations
 ##
+## OSGEO4W_ROOT          = [A-Z]:/path/to/OSGeo4W/install/root
+##                               (^ use forward slashes!)
+## OSGEO4W_QGIS_SUBDIR   = qgis[-rel|-ltr][-dev], in OSGEO4W_ROOT/apps/
 ## QGIS_MAC_PATH         = /path/to/any/QGIS.app/Contents
 ##
 ## Tim Sutton
