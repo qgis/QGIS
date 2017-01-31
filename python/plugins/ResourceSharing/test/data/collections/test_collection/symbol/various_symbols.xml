@@ -1,0 +1,267 @@
+<!DOCTYPE qgis_style>
+<qgis_style version="1">
+  <symbols>
+    <symbol alpha="1" clip_to_extent="1" type="fill" name="fill_raster">
+      <layer pass="0" class="RasterFill" locked="0">
+        <prop k="alpha" v="1"/>
+        <prop k="angle" v="0"/>
+        <prop k="coordinate_mode" v="0"/>
+        <prop k="imageFile" v="/home/akbar/dev/repositories/qgis_resources/collections/test_collection/image/pikachu.png"/>
+        <prop k="offset" v="0,0"/>
+        <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="offset_unit" v="MM"/>
+        <prop k="width" v="0"/>
+        <prop k="width_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="width_unit" v="Pixel"/>
+      </layer>
+    </symbol>
+    <symbol alpha="1" clip_to_extent="1" type="fill" name="fill_svg">
+      <layer pass="0" class="RasterFill" locked="0">
+        <prop k="alpha" v="1"/>
+        <prop k="angle" v="0"/>
+        <prop k="coordinate_mode" v="0"/>
+        <prop k="imageFile" v="/home/akbar/dev/repositories/qgis_resources/collections/test_collection/image/bulbasaur.png"/>
+        <prop k="offset" v="0,0"/>
+        <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="offset_unit" v="MM"/>
+        <prop k="width" v="50"/>
+        <prop k="width_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="width_unit" v="Pixel"/>
+      </layer>
+    </symbol>
+    <symbol alpha="1" clip_to_extent="1" type="fill" name="fill_svg_line">
+      <layer pass="0" class="SVGFill" locked="0">
+        <prop k="angle" v="0"/>
+        <prop k="color" v="0,0,255,255"/>
+        <prop k="outline_color" v="0,0,0,255"/>
+        <prop k="outline_width" v="0.26"/>
+        <prop k="outline_width_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="outline_width_unit" v="MM"/>
+        <prop k="pattern_width_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="pattern_width_unit" v="MM"/>
+        <prop k="svgFile" v="symbol/poi_cave.svg"/>
+        <prop k="svg_outline_width_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="svg_outline_width_unit" v="MM"/>
+        <prop k="width" v="20"/>
+        <symbol alpha="1" clip_to_extent="1" type="line" name="@fill_svg_line@0">
+          <layer pass="0" class="MarkerLine" locked="0">
+            <prop k="interval" v="3"/>
+            <prop k="interval_map_unit_scale" v="0,0,0,0,0,0"/>
+            <prop k="interval_unit" v="MM"/>
+            <prop k="offset" v="0"/>
+            <prop k="offset_along_line" v="0"/>
+            <prop k="offset_along_line_map_unit_scale" v="0,0,0,0,0,0"/>
+            <prop k="offset_along_line_unit" v="MM"/>
+            <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+            <prop k="offset_unit" v="MM"/>
+            <prop k="placement" v="interval"/>
+            <prop k="rotate" v="1"/>
+            <symbol alpha="1" clip_to_extent="1" type="marker" name="@@fill_svg_line@0@0">
+              <layer pass="0" class="SvgMarker" locked="0">
+                <prop k="angle" v="0"/>
+                <prop k="color" v="255,0,0,255"/>
+                <prop k="horizontal_anchor_point" v="1"/>
+                <prop k="name" v="../../dev/repositories/qgis_resources/collections/test_collection/svg/blastoise.svg"/>
+                <prop k="offset" v="0,0"/>
+                <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+                <prop k="offset_unit" v="MM"/>
+                <prop k="outline_color" v="0,0,0,255"/>
+                <prop k="outline_width" v="0"/>
+                <prop k="outline_width_map_unit_scale" v="0,0,0,0,0,0"/>
+                <prop k="outline_width_unit" v="MM"/>
+                <prop k="scale_method" v="diameter"/>
+                <prop k="size" v="5"/>
+                <prop k="size_map_unit_scale" v="0,0,0,0,0,0"/>
+                <prop k="size_unit" v="MM"/>
+                <prop k="vertical_anchor_point" v="1"/>
+              </layer>
+            </symbol>
+          </layer>
+        </symbol>
+      </layer>
+    </symbol>
+    <symbol alpha="1" clip_to_extent="1" type="line" name="line_arrow">
+      <layer pass="0" class="ArrowLine" locked="0">
+        <prop k="arrow_start_width" v="1"/>
+        <prop k="arrow_start_width_unit" v="MM"/>
+        <prop k="arrow_start_width_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="arrow_type" v="0"/>
+        <prop k="arrow_width" v="1"/>
+        <prop k="arrow_width_unit" v="MM"/>
+        <prop k="arrow_width_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="head_length" v="1.5"/>
+        <prop k="head_length_unit" v="MM"/>
+        <prop k="head_length_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="head_thickness" v="1.5"/>
+        <prop k="head_thickness_unit" v="MM"/>
+        <prop k="head_thickness_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="head_type" v="0"/>
+        <prop k="is_curved" v="1"/>
+        <prop k="is_repeated" v="1"/>
+        <prop k="offset" v="0"/>
+        <prop k="offset_unit" v="MM"/>
+        <prop k="offset_unit_scale" v="0,0,0,0,0,0"/>
+        <symbol alpha="1" clip_to_extent="1" type="fill" name="@line_arrow@0">
+          <layer pass="0" class="SimpleFill" locked="0">
+            <prop k="border_width_map_unit_scale" v="0,0,0,0,0,0"/>
+            <prop k="color" v="212,225,255,255"/>
+            <prop k="joinstyle" v="bevel"/>
+            <prop k="offset" v="0,0"/>
+            <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+            <prop k="offset_unit" v="MM"/>
+            <prop k="outline_color" v="0,0,0,255"/>
+            <prop k="outline_style" v="solid"/>
+            <prop k="outline_width" v="0.26"/>
+            <prop k="outline_width_unit" v="MM"/>
+            <prop k="style" v="solid"/>
+          </layer>
+        </symbol>
+      </layer>
+    </symbol>
+    <symbol alpha="1" clip_to_extent="1" type="line" name="line_svg_marker">
+      <layer pass="0" class="MarkerLine" locked="0">
+        <prop k="interval" v="3"/>
+        <prop k="interval_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="interval_unit" v="MM"/>
+        <prop k="offset" v="0"/>
+        <prop k="offset_along_line" v="0"/>
+        <prop k="offset_along_line_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="offset_along_line_unit" v="MM"/>
+        <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="offset_unit" v="MM"/>
+        <prop k="placement" v="interval"/>
+        <prop k="rotate" v="1"/>
+        <symbol alpha="1" clip_to_extent="1" type="marker" name="@line_svg_marker@0">
+          <layer pass="0" class="SvgMarker" locked="0">
+            <prop k="angle" v="0"/>
+            <prop k="color" v="255,0,0,255"/>
+            <prop k="horizontal_anchor_point" v="1"/>
+            <prop k="name" v="shopping/shopping_photo.svg"/>
+            <prop k="offset" v="0,0"/>
+            <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+            <prop k="offset_unit" v="MM"/>
+            <prop k="outline_color" v="0,0,0,255"/>
+            <prop k="outline_width" v="0"/>
+            <prop k="outline_width_map_unit_scale" v="0,0,0,0,0,0"/>
+            <prop k="outline_width_unit" v="MM"/>
+            <prop k="scale_method" v="diameter"/>
+            <prop k="size" v="2"/>
+            <prop k="size_map_unit_scale" v="0,0,0,0,0,0"/>
+            <prop k="size_unit" v="MM"/>
+            <prop k="vertical_anchor_point" v="1"/>
+          </layer>
+        </symbol>
+      </layer>
+    </symbol>
+    <symbol alpha="1" clip_to_extent="1" type="marker" name="marker_ellipse">
+      <layer pass="0" class="EllipseMarker" locked="0">
+        <prop k="angle" v="-60"/>
+        <prop k="color" v="33,255,244,255"/>
+        <prop k="horizontal_anchor_point" v="1"/>
+        <prop k="joinstyle" v="bevel"/>
+        <prop k="offset" v="0,0"/>
+        <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="offset_unit" v="MM"/>
+        <prop k="outline_color" v="0,0,0,255"/>
+        <prop k="outline_style" v="dash dot"/>
+        <prop k="outline_width" v="0"/>
+        <prop k="outline_width_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="outline_width_unit" v="MM"/>
+        <prop k="size" v="2"/>
+        <prop k="size_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="size_unit" v="MM"/>
+        <prop k="symbol_height" v="3"/>
+        <prop k="symbol_height_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="symbol_height_unit" v="MM"/>
+        <prop k="symbol_name" v="circle"/>
+        <prop k="symbol_width" v="4"/>
+        <prop k="symbol_width_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="symbol_width_unit" v="MM"/>
+        <prop k="vertical_anchor_point" v="1"/>
+      </layer>
+    </symbol>
+    <symbol alpha="1" clip_to_extent="1" type="marker" name="marker_font">
+      <layer pass="0" class="FontMarker" locked="0">
+        <prop k="angle" v="0"/>
+        <prop k="chr" v="Ł"/>
+        <prop k="color" v="244,78,255,255"/>
+        <prop k="font" v="Dingbats"/>
+        <prop k="horizontal_anchor_point" v="1"/>
+        <prop k="joinstyle" v="bevel"/>
+        <prop k="offset" v="0,0"/>
+        <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="offset_unit" v="MM"/>
+        <prop k="outline_color" v="0,0,0,255"/>
+        <prop k="outline_width" v="0"/>
+        <prop k="outline_width_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="outline_width_unit" v="MM"/>
+        <prop k="size" v="2"/>
+        <prop k="size_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="size_unit" v="MM"/>
+        <prop k="vertical_anchor_point" v="1"/>
+      </layer>
+    </symbol>
+    <symbol alpha="1" clip_to_extent="1" type="marker" name="marker_simple">
+      <layer pass="0" class="SimpleMarker" locked="0">
+        <prop k="angle" v="0"/>
+        <prop k="color" v="0,255,157,255"/>
+        <prop k="horizontal_anchor_point" v="1"/>
+        <prop k="joinstyle" v="round"/>
+        <prop k="name" v="star"/>
+        <prop k="offset" v="0,0"/>
+        <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="offset_unit" v="MM"/>
+        <prop k="outline_color" v="0,0,0,255"/>
+        <prop k="outline_style" v="dot"/>
+        <prop k="outline_width" v="0"/>
+        <prop k="outline_width_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="outline_width_unit" v="MM"/>
+        <prop k="scale_method" v="diameter"/>
+        <prop k="size" v="4"/>
+        <prop k="size_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="size_unit" v="MM"/>
+        <prop k="vertical_anchor_point" v="1"/>
+      </layer>
+    </symbol>
+    <symbol alpha="1" clip_to_extent="1" type="marker" name="marker_svg">
+      <layer pass="0" class="SvgMarker" locked="0">
+        <prop k="angle" v="0"/>
+        <prop k="color" v="255,0,0,255"/>
+        <prop k="horizontal_anchor_point" v="1"/>
+        <prop k="name" v="../../dev/repositories/qgis_resources/collections/test_collection/svg/raychu.svg"/>
+        <prop k="offset" v="0,0"/>
+        <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="offset_unit" v="MM"/>
+        <prop k="outline_color" v="0,0,0,255"/>
+        <prop k="outline_width" v="0"/>
+        <prop k="outline_width_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="outline_width_unit" v="MM"/>
+        <prop k="scale_method" v="diameter"/>
+        <prop k="size" v="3"/>
+        <prop k="size_map_unit_scale" v="0,0,0,0,0,0"/>
+        <prop k="size_unit" v="MM"/>
+        <prop k="vertical_anchor_point" v="1"/>
+      </layer>
+    </symbol>
+  </symbols>
+  <colorramps>
+    <colorramp type="colorbrewer" name="cr_colorbrewer">
+      <prop k="colors" v="9"/>
+      <prop k="schemeName" v="Spectral"/>
+    </colorramp>
+    <colorramp type="gradient" name="cr_gradient">
+      <prop k="color1" v="96,96,184,255"/>
+      <prop k="color2" v="171,208,171,255"/>
+      <prop k="discrete" v="0"/>
+    </colorramp>
+    <colorramp type="random" name="cr_random">
+      <prop k="count" v="10"/>
+      <prop k="hueMax" v="359"/>
+      <prop k="hueMin" v="0"/>
+      <prop k="satMax" v="240"/>
+      <prop k="satMin" v="100"/>
+      <prop k="valMax" v="240"/>
+      <prop k="valMin" v="200"/>
+    </colorramp>
+  </colorramps>
+</qgis_style>
