@@ -68,7 +68,7 @@ void QgsMapRendererParallelJob::start()
 
   // start async job
 
-  connect( &mFutureWatcher, SIGNAL( finished() ), SLOT( renderLayersFinished() ) );
+  connect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderLayersFinished );
 
   mFuture = QtConcurrent::map( mLayerJobs, renderLayerStatic );
   mFutureWatcher.setFuture( mFuture );
@@ -91,7 +91,7 @@ void QgsMapRendererParallelJob::cancel()
 
   if ( mStatus == RenderingLayers )
   {
-    disconnect( &mFutureWatcher, SIGNAL( finished() ), this, SLOT( renderLayersFinished() ) );
+    disconnect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderLayersFinished );
 
     mFutureWatcher.waitForFinished();
 
@@ -100,7 +100,7 @@ void QgsMapRendererParallelJob::cancel()
 
   if ( mStatus == RenderingLabels )
   {
-    disconnect( &mLabelingFutureWatcher, SIGNAL( finished() ), this, SLOT( renderingFinished() ) );
+    disconnect( &mLabelingFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderingFinished );
 
     mLabelingFutureWatcher.waitForFinished();
 
@@ -117,7 +117,7 @@ void QgsMapRendererParallelJob::waitForFinished()
 
   if ( mStatus == RenderingLayers )
   {
-    disconnect( &mFutureWatcher, SIGNAL( finished() ), this, SLOT( renderLayersFinished() ) );
+    disconnect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderLayersFinished );
 
     QTime t;
     t.start();
@@ -131,7 +131,7 @@ void QgsMapRendererParallelJob::waitForFinished()
 
   if ( mStatus == RenderingLabels )
   {
-    disconnect( &mLabelingFutureWatcher, SIGNAL( finished() ), this, SLOT( renderingFinished() ) );
+    disconnect( &mLabelingFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderingFinished );
 
     QTime t;
     t.start();
@@ -184,7 +184,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
   {
     mStatus = RenderingLabels;
 
-    connect( &mLabelingFutureWatcher, SIGNAL( finished() ), this, SLOT( renderingFinished() ) );
+    connect( &mLabelingFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderingFinished );
 
     // now start rendering of labeling!
     mLabelingFuture = QtConcurrent::run( renderLabelsStatic, this );

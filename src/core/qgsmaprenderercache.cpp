@@ -41,7 +41,7 @@ void QgsMapRendererCache::clearInternal()
     QgsMapLayer* layer = QgsProject::instance()->mapLayer( it.key() );
     if ( layer )
     {
-      disconnect( layer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );
+      disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapRendererCache::layerRequestedRepaint );
     }
   }
   mCachedImages.clear();
@@ -74,7 +74,7 @@ void QgsMapRendererCache::setCacheImage( const QString& layerId, const QImage& i
   QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId );
   if ( layer )
   {
-    connect( layer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );
+    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapRendererCache::layerRequestedRepaint );
   }
 }
 
@@ -100,6 +100,6 @@ void QgsMapRendererCache::clearCacheImage( const QString& layerId )
   QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId );
   if ( layer )
   {
-    disconnect( layer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );
+    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapRendererCache::layerRequestedRepaint );
   }
 }
