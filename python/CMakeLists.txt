@@ -93,6 +93,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 INCLUDE_DIRECTORIES(
   ../src/core
+  ../src/core/annotations
   ../src/core/auth
   ../src/core/pal
   ../src/core/composer

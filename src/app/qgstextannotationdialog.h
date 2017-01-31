@@ -22,24 +22,23 @@
 #include "qgis_app.h"
 
 class QgsAnnotationWidget;
-class QgsTextAnnotationItem;
+class QgsMapCanvasAnnotationItem;
 
 class APP_EXPORT QgsTextAnnotationDialog: public QDialog, private Ui::QgsTextAnnotationDialogBase
 {
     Q_OBJECT
   public:
-    QgsTextAnnotationDialog( QgsTextAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsTextAnnotationDialog();
+    QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
 
   protected:
 
     virtual void showEvent( QShowEvent * event ) override;
 
   private:
-    QgsTextAnnotationItem* mItem;
+    QgsMapCanvasAnnotationItem* mItem = nullptr;
     //! Text document (a clone of the annotation items document)
-    QTextDocument* mTextDocument;
-    QgsAnnotationWidget* mEmbeddedWidget;
+    QScopedPointer< QTextDocument > mTextDocument;
+    QgsAnnotationWidget* mEmbeddedWidget = nullptr;
 
     void blockAllSignals( bool block );
 

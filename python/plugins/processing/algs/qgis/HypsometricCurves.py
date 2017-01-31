@@ -105,7 +105,7 @@ class HypsometricCurves(GeoAlgorithm):
             geom = f.geometry()
             intersectedGeom = rasterGeom.intersection(geom)
 
-            if intersectedGeom.isGeosEmpty():
+            if intersectedGeom.isEmpty():
                 feedback.pushInfo(
                     self.tr('Feature %d does not intersect raster or '
                             'entirely located in NODATA area' % f.id()))

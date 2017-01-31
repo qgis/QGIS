@@ -3708,7 +3708,6 @@ void QgsComposer::addComposerMap( QgsComposerMap* map )
     return;
   }
 
-  map->setMapCanvas( mapCanvas() ); //set canvas to composer map to have the possibility to draw canvas items
   QgsComposerMapWidget* mapWidget = new QgsComposerMapWidget( map );
   connect( this, SIGNAL( zoomLevelChanged() ), map, SLOT( renderModeUpdateCachedImage() ) );
   mItemWidgetMap.insert( map, mapWidget );

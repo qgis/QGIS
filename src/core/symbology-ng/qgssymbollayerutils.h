@@ -197,7 +197,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static void drawStippledBackground( QPainter* painter, QRect rect );
 
     //! Returns the maximum estimated bleed for the symbol
-    static double estimateMaxSymbolBleed( QgsSymbol* symbol );
+    static double estimateMaxSymbolBleed( QgsSymbol* symbol, const QgsRenderContext& context );
 
     /** Attempts to load a symbol from a DOM element
      * @param element DOM element representing symbol

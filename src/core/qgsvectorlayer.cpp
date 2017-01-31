@@ -149,6 +149,9 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
   mActions = new QgsActionManager( this );
   mConditionalStyles = new QgsConditionalLayerStyles();
 
+  mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
+  connect( mJoinBuffer, &QgsVectorLayerJoinBuffer::joinedFieldsChanged, this, &QgsVectorLayer::onJoinedFieldsChanged );
+
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! mProviderKey.isEmpty() )
   {
@@ -1394,16 +1397,10 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
     }
   }
 
-  //load vector joins
-  if ( !mJoinBuffer )
-  {
-    mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
-    connect( mJoinBuffer, &QgsVectorLayerJoinBuffer::joinedFieldsChanged, this, &QgsVectorLayer::onJoinedFieldsChanged );
-  }
+  // load vector joins - does not resolve references to layers yet
   mJoinBuffer->readXml( layer_node );
 
   updateFields();
-  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
 
   QString errorMsg;
   if ( !readSymbology( layer_node, errorMsg ) )
@@ -1466,7 +1463,6 @@ void QgsVectorLayer::setDataSource( const QString& dataSource, const QString& ba
     setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
   }
 
-  connect( QgsProject::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
   emit repaintRequested();
 }
 
@@ -1503,8 +1499,6 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   // get and store the feature type
   mWkbType = mDataProvider->wkbType();
 
-  mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
-  connect( mJoinBuffer, &QgsVectorLayerJoinBuffer::joinedFieldsChanged, this, &QgsVectorLayer::onJoinedFieldsChanged );
   mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
   updateFields();
 
@@ -1626,6 +1620,12 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   QString errorMsg;
   return writeSymbology( layer_node, document, errorMsg );
 } // bool QgsVectorLayer::writeXml
+
+
+void QgsVectorLayer::resolveReferences( QgsProject* project )
+{
+  mJoinBuffer->resolveReferences( project );
+}
 
 
 bool QgsVectorLayer::readSymbology( const QDomNode& layerNode, QString& errorMessage )
@@ -2647,7 +2647,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
                                      QMultiMap<double, QgsSnappingResult>& snappingResults,
                                      QgsSnapper::SnappingType snap_to ) const
 {
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
   {
     return;
   }
@@ -2900,32 +2900,20 @@ void QgsVectorLayer::destroyEditCommand()
   }
 }
 
-bool QgsVectorLayer::addJoin( const QgsVectorJoinInfo& joinInfo )
+bool QgsVectorLayer::addJoin( const QgsVectorLayerJoinInfo& joinInfo )
 {
-  return mJoinBuffer && mJoinBuffer->addJoin( joinInfo );
+  return mJoinBuffer->addJoin( joinInfo );
 }
 
-void QgsVectorLayer::checkJoinLayerRemove( const QString& theLayerId )
-{
-  removeJoin( theLayerId );
-}
 
 bool QgsVectorLayer::removeJoin( const QString& joinLayerId )
 {
-  bool res = false;
-  if ( mJoinBuffer )
-  {
-    res = mJoinBuffer->removeJoin( joinLayerId );
-  }
-  return res;
+  return mJoinBuffer->removeJoin( joinLayerId );
 }
 
-const QList< QgsVectorJoinInfo > QgsVectorLayer::vectorJoins() const
+const QList< QgsVectorLayerJoinInfo > QgsVectorLayer::vectorJoins() const
 {
-  if ( mJoinBuffer )
-    return mJoinBuffer->vectorJoins();
-  else
-    return QList< QgsVectorJoinInfo >();
+  return mJoinBuffer->vectorJoins();
 }
 
 int QgsVectorLayer::addExpressionField( const QString& exp, const QgsField& fld )
@@ -2976,7 +2964,7 @@ void QgsVectorLayer::updateFields()
     mEditBuffer->updateFields( mFields );
 
   // joined fields
-  if ( mJoinBuffer && mJoinBuffer->containsJoins() )
+  if ( mJoinBuffer->containsJoins() )
     mJoinBuffer->updateFields( mFields );
 
   if ( mExpressionFieldBuffer )
@@ -3072,14 +3060,6 @@ void QgsVectorLayer::updateFields()
   }
 }
 
-
-void QgsVectorLayer::createJoinCaches() const
-{
-  if ( mJoinBuffer->containsJoins() )
-  {
-    mJoinBuffer->createJoinCaches();
-  }
-}
 
 QVariant QgsVectorLayer::defaultValue( int index, const QgsFeature& feature, QgsExpressionContext* context ) const
 {

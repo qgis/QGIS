@@ -235,7 +235,7 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
     }
   }
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return false; // do not let invalid geometries sneak in!
 
   // add the geometry to the list of geometries for this feature

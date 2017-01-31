@@ -76,6 +76,7 @@ namespace QgsWms
       /** Constructor. Does _NOT_ take ownership of
           QgsConfigParser and QgsCapabilitiesCache*/
       QgsRenderer( QgsServerInterface* serverIface,
+                   const QgsProject* project,
                    const QgsServerRequest::Parameters& parameters,
                    QgsWmsConfigParser* parser );
 
@@ -261,6 +262,7 @@ namespace QgsWms
       QgsAccessControl* mAccessControl;
 
       const QgsServerSettings& mSettings;
+      const QgsProject* mProject;
 
     public:
 

@@ -683,7 +683,7 @@ void QgsComposerMapWidget::updateGuiElements()
   mKeepLayerStylesCheckBox->setCheckState( mComposerMap->keepLayerStyles() ? Qt::Checked : Qt::Unchecked );
 
   //draw canvas items
-  if ( mComposerMap->drawCanvasItems() )
+  if ( mComposerMap->drawAnnotations() )
   {
     mDrawCanvasItemsCheckBox->setCheckState( Qt::Checked );
   }
@@ -951,7 +951,7 @@ void QgsComposerMapWidget::on_mDrawCanvasItemsCheckBox_stateChanged( int state )
   }
 
   mComposerMap->beginCommand( tr( "Canvas items toggled" ) );
-  mComposerMap->setDrawCanvasItems( state == Qt::Checked );
+  mComposerMap->setDrawAnnotations( state == Qt::Checked );
   mUpdatePreviewButton->setEnabled( false ); //prevent crashes because of many button clicks
   mComposerMap->setCacheUpdated( false );
   mComposerMap->cache();

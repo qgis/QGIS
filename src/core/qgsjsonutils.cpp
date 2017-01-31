@@ -77,7 +77,7 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
   s += QStringLiteral( "   \"id\":%1,\n" ).arg( !id.isValid() ? QString::number( feature.id() ) : QgsJSONUtils::encodeValue( id ) );
 
   QgsGeometry geom = feature.geometry();
-  if ( !geom.isEmpty() && mIncludeGeometry )
+  if ( !geom.isNull() && mIncludeGeometry )
   {
     if ( mCrs.isValid() )
     {

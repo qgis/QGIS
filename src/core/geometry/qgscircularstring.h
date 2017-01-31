@@ -50,6 +50,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
 
+    bool isEmpty() const override;
     int numPoints() const override;
 
     /** Returns the point at index i within the circular string.

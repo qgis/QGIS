@@ -659,6 +659,14 @@ int QgsCurvePolygon::nCoordinates() const
   return count;
 }
 
+bool QgsCurvePolygon::isEmpty() const
+{
+  if ( !mExteriorRing )
+    return true;
+
+  return mExteriorRing->isEmpty();
+}
+
 double QgsCurvePolygon::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt, QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
 {
   if ( !mExteriorRing )

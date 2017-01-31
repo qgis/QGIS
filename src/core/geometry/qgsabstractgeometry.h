@@ -298,7 +298,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /** Returns true if the geometry is empty
      */
-    bool isEmpty() const;
+    virtual bool isEmpty() const;
 
     /** Returns true if the geometry contains curved segments
      */

@@ -54,7 +54,7 @@ namespace QgsWfs
                                    const QgsAttributeList& attrIndexes, const QSet<QString>& excludedAttributes, const QString& typeName,
                                    bool withGeom, const QString geometryName );
 
-    void startGetFeature( const QgsServerRequest& request, QgsServerResponse& response, QgsWfsProjectParser* configParser, const QString& format,
+    void startGetFeature( const QgsServerRequest& request, QgsServerResponse& response, const QgsProject* project, const QString& format,
                           int prec, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect, const QStringList& typeNames );
 
     void setGetFeature( QgsServerResponse& response, const QString& format, QgsFeature* feat, int featIdx, int prec,
@@ -67,8 +67,9 @@ namespace QgsWfs
 
   /** Output WFS  GetCapabilities response
    */
-  void writeGetFeature( QgsServerInterface* serverIface, const QString& version,
-                        const QgsServerRequest& request, QgsServerResponse& response )
+  void writeGetFeature( QgsServerInterface* serverIface, const QgsProject* project,
+                        const QString& version, const QgsServerRequest& request,
+                        QgsServerResponse& response )
   {
     Q_UNUSED( version );
 
@@ -284,7 +285,7 @@ namespace QgsWfs
                                   ).nextFeature( feature );
 
                 if ( featureCounter == 0 )
-                  startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+                  startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
                 setGetFeature( response, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes,
                                typeName, withGeom, geometryName );
@@ -321,7 +322,7 @@ namespace QgsWfs
               while ( fit.nextFeature( feature ) && ( !hasFeatureLimit || featureCounter < maxFeatures + startIndex ) )
               {
                 if ( featureCounter == startIndex )
-                  startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+                  startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
                 if ( featureCounter >= startIndex )
                 {
@@ -378,7 +379,7 @@ namespace QgsWfs
                   if ( res.toInt() != 0 )
                   {
                     if ( featureCounter == startIndex )
-                      startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+                      startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
                     if ( featureCounter >= startIndex )
                     {
@@ -397,7 +398,7 @@ namespace QgsWfs
             while ( fit.nextFeature( feature ) && ( !hasFeatureLimit || featureCounter < maxFeatures + startIndex ) )
             {
               if ( featureCounter == startIndex )
-                startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+                startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
               if ( featureCounter >= startIndex )
               {
@@ -423,7 +424,7 @@ namespace QgsWfs
 
       QgsProject::instance()->removeAllMapLayers();
       if ( featureCounter <= startIndex )
-        startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+        startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
       endGetFeature( response, format );
       return;
     }
@@ -663,7 +664,7 @@ namespace QgsWfs
                               ).nextFeature( feature );
 
             if ( featureCounter == 0 )
-              startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+              startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
             setGetFeature( response, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes,
                            typeName, withGeom, geometryName );
@@ -711,7 +712,7 @@ namespace QgsWfs
               if ( res.toInt() != 0 )
               {
                 if ( featureCounter == startIndex )
-                  startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+                  startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
                 if ( featureCounter >= startIndex )
                 {
@@ -751,7 +752,7 @@ namespace QgsWfs
                                 ).nextFeature( feature );
 
               if ( featureCounter == 0 )
-                startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+                startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
               setGetFeature( response, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, layerExcludedAttributes,
                              typeName, withGeom, geometryName );
@@ -788,7 +789,7 @@ namespace QgsWfs
             while ( fit.nextFeature( feature ) && ( !hasFeatureLimit || featureCounter < maxFeatures + startIndex ) )
             {
               if ( featureCounter == startIndex )
-                startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+                startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
               if ( featureCounter >= startIndex )
               {
@@ -838,7 +839,7 @@ namespace QgsWfs
                 if ( res.toInt() != 0 )
                 {
                   if ( featureCounter == startIndex )
-                    startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+                    startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
                   if ( featureCounter >= startIndex )
                   {
@@ -878,7 +879,7 @@ namespace QgsWfs
           {
             errors << QStringLiteral( "The feature %2 of layer for the TypeName '%1'" ).arg( tnStr ).arg( featureCounter );
             if ( featureCounter == startIndex )
-              startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+              startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
 
             if ( featureCounter >= startIndex )
             {
@@ -900,7 +901,7 @@ namespace QgsWfs
 
     QgsProject::instance()->removeAllMapLayers();
     if ( featureCounter <= startIndex )
-      startGetFeature( request, response, configParser, format, layerPrec, layerCrs, &searchRect, typeNames );
+      startGetFeature( request, response, project, format, layerPrec, layerCrs, &searchRect, typeNames );
     endGetFeature( response, format );
 
   }
@@ -908,7 +909,7 @@ namespace QgsWfs
   namespace
   {
 
-    void startGetFeature( const QgsServerRequest& request, QgsServerResponse& response, QgsWfsProjectParser* configParser, const QString& format,
+    void startGetFeature( const QgsServerRequest& request, QgsServerResponse& response, const QgsProject* project, const QString& format,
                           int prec, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect, const QStringList& typeNames )
     {
       QString fcString;
@@ -948,7 +949,7 @@ namespace QgsWfs
         response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
 
         //Prepare url
-        QString hrefString = serviceUrl( request, configParser );
+        QString hrefString = serviceUrl( request, project );
 
         QUrl mapUrl( hrefString );
 
@@ -1093,7 +1094,7 @@ namespace QgsWfs
       QgsFeature f( *feat );
       QgsGeometry geom = feat->geometry();
       exporter.setIncludeGeometry( false );
-      if ( !geom.isEmpty() && withGeom && geometryName != QLatin1String( "NONE" ) )
+      if ( !geom.isNull() && withGeom && geometryName != QLatin1String( "NONE" ) )
       {
         exporter.setIncludeGeometry( true );
         if ( geometryName == QLatin1String( "EXTENT" ) )

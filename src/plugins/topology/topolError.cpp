@@ -41,7 +41,7 @@ bool TopolError::fixMove( const FeatureLayer& fl1, const FeatureLayer& fl2 )
   // 0 means success
   QgsGeometry g = f1.geometry();
   QgsGeometry difference = g.makeDifference( f2.geometry() );
-  if ( !difference.isEmpty() )
+  if ( !difference.isNull() )
   {
     return fl1.layer->changeGeometry( f1.id(), difference );
   }
@@ -71,7 +71,7 @@ bool TopolError::fixUnion( const FeatureLayer& fl1, const FeatureLayer& fl2 )
     return false;
 
   QgsGeometry g = f1.geometry().combine( f2.geometry() );
-  if ( g.isEmpty() )
+  if ( g.isNull() )
     return false;
 
   if ( fl2.layer->deleteFeature( f2.id() ) )

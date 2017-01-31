@@ -170,7 +170,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fi
       QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ) );
       fit.nextFeature( f );
       QgsGeometry g = f.geometry();
-      if ( g.isEmpty() )
+      if ( g.isNull() )
         return geomPart;
       if ( !g.isMultipart() )
       {

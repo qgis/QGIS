@@ -163,7 +163,6 @@ SET(QGIS_GUI_SRCS
   qgsactionmenu.cpp
   qgsadvanceddigitizingcanvasitem.cpp
   qgsadvanceddigitizingdockwidget.cpp
-  qgsannotationitem.cpp
   qgsattributedialog.cpp
   qgsattributeform.cpp
   qgsattributeformeditorwidget.cpp
@@ -224,7 +223,7 @@ SET(QGIS_GUI_SRCS
   qgsfilterlineedit.cpp
   qgsfloatingwidget.cpp
   qgsfocuswatcher.cpp
-  qgsformannotationitem.cpp
+  qgsformannotation.cpp
   qgsgenericprojectionselector.cpp
   qgsgeometryrubberband.cpp
   qgsgradientcolorrampdialog.cpp
@@ -233,7 +232,6 @@ SET(QGIS_GUI_SRCS
   qgshighlight.cpp
   qgshistogramwidget.cpp
   qgshelp.cpp
-  qgshtmlannotationitem.cpp
   qgsidentifymenu.cpp
   qgskeyvaluewidget.cpp
   qgslistwidget.cpp
@@ -242,6 +240,7 @@ SET(QGIS_GUI_SRCS
   qgsludialog.cpp
   qgsmanageconnectionsdialog.cpp
   qgsmapcanvas.cpp
+  qgsmapcanvasannotationitem.cpp
   qgsmapcanvasitem.cpp
   qgsmapcanvasmap.cpp
   qgsmapcanvassnapper.cpp
@@ -302,12 +301,10 @@ SET(QGIS_GUI_SRCS
   qgssublayersdialog.cpp
   qgssubstitutionlistwidget.cpp
   qgssqlcomposerdialog.cpp
-  qgssvgannotationitem.cpp
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
   qgstaskmanagerwidget.cpp
-  qgstextannotationitem.cpp
   qgstextformatwidget.cpp
   qgstextpreview.cpp
   qgstreewidgetitem.cpp
@@ -385,13 +382,12 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfilterlineedit.h
   qgsfloatingwidget.h
   qgsfocuswatcher.h
-  qgsformannotationitem.h
+  qgsformannotation.h
   qgsgenericprojectionselector.h
   qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
   qgsgroupwmsdatadialog.h
   qgshistogramwidget.h
-  qgshtmlannotationitem.h
   qgsidentifymenu.h
   qgskeyvaluewidget.h
   qgslistwidget.h
@@ -401,6 +397,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsludialog.h
   qgsmanageconnectionsdialog.h
   qgsmapcanvas.h
+  qgsmapcanvasannotationitem.h
   qgsmapcanvassnappingutils.h
   qgsmapcanvastracer.h
   qgsmaplayeractionregistry.h
@@ -620,7 +617,6 @@ ENDIF(MSVC)
 
 SET(QGIS_GUI_HDRS
   qgisgui.h
-  qgsannotationitem.h
   qgsattributeeditorcontext.h
   qgsattributeforminterface.h
   qgsattributeformlegacyinterface.h
@@ -641,9 +637,7 @@ SET(QGIS_GUI_HDRS
   qgsmaptip.h
   qgsrubberband.h
   qgssqlcomposerdialog.h
-  qgssvgannotationitem.h
   qgstablewidgetitem.h
-  qgstextannotationitem.h
   qgsuserinputdockwidget.h
   qgsvertexmarker.h
   qgsfiledownloader.h
@@ -761,6 +755,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ../core
+  ../core/annotations
   ../core/auth
   ../core/composer
   ../core/fieldformatter

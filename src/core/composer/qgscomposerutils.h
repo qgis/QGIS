@@ -246,12 +246,23 @@ class CORE_EXPORT QgsComposerUtils
     static void drawText( QPainter* painter, const QRectF& rect, const QString& text, const QFont& font, const QColor& color = QColor(), const Qt::AlignmentFlag halignment = Qt::AlignLeft, const Qt::AlignmentFlag valignment = Qt::AlignTop, const int flags = Qt::TextWordWrap );
 
     /**
-     * Creates a render context suitable for the specified composition and QPainter destination.
+     * Creates a render context suitable for the specified composer \a map and \a painter destination.
+     * This method returns a new QgsRenderContext which matches the scale and settings of the
+     * target map. If the \a dpi argument is not specified then the dpi will be taken from the destinatation
+     * painter device.
+     * @note added in QGIS 3.0
+     * @see createRenderContextForComposition()
+     */
+    static QgsRenderContext createRenderContextForMap( QgsComposerMap* map, QPainter* painter, double dpi = -1 );
+
+    /**
+     * Creates a render context suitable for the specified \a composition and \a painter destination.
      * This method returns a new QgsRenderContext which matches the scale and settings from the composition's
      * QgsComposition::referenceMap().
      * @note added in QGIS 3.0
+     * @see createRenderContextForMap()
      */
-    static QgsRenderContext createRenderContext( QgsComposition* composition, QPainter* painter );
+    static QgsRenderContext createRenderContextForComposition( QgsComposition* composition, QPainter* painter );
 
 };
 

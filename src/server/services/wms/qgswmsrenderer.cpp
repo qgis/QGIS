@@ -56,6 +56,7 @@
 #include "qgsfeaturerequest.h"
 #include "qgsmaprendererjobproxy.h"
 #include "qgswmsserviceexception.h"
+#include "qgsserverprojectutils.h"
 
 #include <QImage>
 #include <QPainter>
@@ -95,6 +96,7 @@ namespace QgsWms
 
 
   QgsRenderer::QgsRenderer( QgsServerInterface* serverIface,
+                            const QgsProject* project,
                             const QgsServerRequest::Parameters& parameters,
                             QgsWmsConfigParser* parser )
       : mParameters( parameters )
@@ -104,6 +106,7 @@ namespace QgsWms
       , mConfigParser( parser )
       , mAccessControl( serverIface->accessControls() )
       , mSettings( *serverIface->serverSettings() )
+      , mProject( project )
   {
   }
 
@@ -1646,7 +1649,7 @@ namespace QgsWms
         if ( layer->wkbType() != QgsWkbTypes::NoGeometry && addWktGeometry && hasGeometry )
         {
           QgsGeometry geom = feature.geometry();
-          if ( !geom.isEmpty() )
+          if ( !geom.isNull() )
           {
             if ( layer->crs() != outputCrs )
             {
@@ -2260,23 +2263,26 @@ namespace QgsWms
   bool QgsRenderer::checkMaximumWidthHeight() const
   {
     //test if maxWidth / maxHeight set and WIDTH / HEIGHT parameter is in the range
-    if ( mConfigParser->maxWidth() != -1 )
+    int wmsMaxWidth = QgsServerProjectUtils::wmsMaxWidth( *mProject );
+    if ( wmsMaxWidth != -1 )
     {
       QMap<QString, QString>::const_iterator widthIt = mParameters.find( QStringLiteral( "WIDTH" ) );
       if ( widthIt != mParameters.constEnd() )
       {
-        if ( widthIt->toInt() > mConfigParser->maxWidth() )
+        if ( widthIt->toInt() > wmsMaxWidth )
         {
           return false;
         }
       }
     }
-    if ( mConfigParser->maxHeight() != -1 )
+
+    int wmsMaxHeight = QgsServerProjectUtils::wmsMaxHeight( *mProject );
+    if ( wmsMaxHeight != -1 )
     {
       QMap<QString, QString>::const_iterator heightIt = mParameters.find( QStringLiteral( "HEIGHT" ) );
       if ( heightIt != mParameters.constEnd() )
       {
-        if ( heightIt->toInt() > mConfigParser->maxHeight() )
+        if ( heightIt->toInt() > wmsMaxHeight )
         {
           return false;
         }
@@ -2431,7 +2437,7 @@ namespace QgsWms
     expressionContext.setFeature( *feat );
 
     // always add bounding box info if feature contains geometry
-    if ( !geom.isEmpty() && geom.type() != QgsWkbTypes::UnknownGeometry && geom.type() != QgsWkbTypes::NullGeometry )
+    if ( !geom.isNull() && geom.type() != QgsWkbTypes::UnknownGeometry && geom.type() != QgsWkbTypes::NullGeometry )
     {
       QgsRectangle box = feat->geometry().boundingBox();
       if ( transform.isValid() )
@@ -2466,7 +2472,7 @@ namespace QgsWms
       typeNameElement.appendChild( bbElem );
     }
 
-    if ( withGeom && !geom.isEmpty() )
+    if ( withGeom && !geom.isNull() )
     {
       //add geometry column (as gml)
 

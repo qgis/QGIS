@@ -357,6 +357,9 @@ class QgsSymbolRenderContext
     //! Current feature being rendered - may be null
     const QgsFeature* feature() const;
 
+    void setOriginalGeometryType( QgsWkbTypes::GeometryType type );
+    QgsWkbTypes::GeometryType originalGeometryType() const;
+
     //! Fields of the layer. Currently only available in startRender() calls
     //! to allow symbols with data-defined properties prepare the expressions
     //! (other times fields() returns null)

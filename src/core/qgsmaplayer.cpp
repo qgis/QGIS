@@ -156,6 +156,12 @@ QPainter::CompositionMode QgsMapLayer::blendMode() const
 
 bool QgsMapLayer::readLayerXml( const QDomElement& layerElement )
 {
+  return readLayerXml( layerElement, QgsProject::instance() );
+}
+
+
+bool QgsMapLayer::readLayerXml( const QDomElement& layerElement, const QgsProject *project )
+{
   bool layerError;
 
   QDomNode mnl;
@@ -185,19 +191,19 @@ bool QgsMapLayer::readLayerXml( const QDomElement& layerElement )
   if ( provider == QLatin1String( "spatialite" ) )
   {
     QgsDataSourceUri uri( mDataSource );
-    uri.setDatabase( QgsProject::instance()->readPath( uri.database() ) );
+    uri.setDatabase( project->readPath( uri.database() ) );
     mDataSource = uri.uri();
   }
   else if ( provider == QLatin1String( "ogr" ) )
   {
     QStringList theURIParts = mDataSource.split( '|' );
-    theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0] );
+    theURIParts[0] = project->readPath( theURIParts[0] );
     mDataSource = theURIParts.join( QStringLiteral( "|" ) );
   }
   else if ( provider == QLatin1String( "gpx" ) )
   {
     QStringList theURIParts = mDataSource.split( '?' );
-    theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0] );
+    theURIParts[0] = project->readPath( theURIParts[0] );
     mDataSource = theURIParts.join( QStringLiteral( "?" ) );
   }
   else if ( provider == QLatin1String( "delimitedtext" ) )
@@ -211,7 +217,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement& layerElement )
       urlSource.setPath( file.path() );
     }
 
-    QUrl urlDest = QUrl::fromLocalFile( QgsProject::instance()->readPath( urlSource.toLocalFile() ) );
+    QUrl urlDest = QUrl::fromLocalFile( project->readPath( urlSource.toLocalFile() ) );
     urlDest.setQueryItems( urlSource.queryItems() );
     mDataSource = QString::fromAscii( urlDest.toEncoded() );
   }
@@ -309,7 +315,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement& layerElement )
           QString filename = r.cap( 1 );
           if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
             filename = filename.mid( 1, filename.length() - 2 );
-          mDataSource = "NETCDF:\"" + QgsProject::instance()->readPath( filename ) + "\":" + r.cap( 2 );
+          mDataSource = "NETCDF:\"" + project->readPath( filename ) + "\":" + r.cap( 2 );
           handled = true;
         }
       }
@@ -323,7 +329,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement& layerElement )
           QString filename = r.cap( 2 );
           if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
             filename = filename.mid( 1, filename.length() - 2 );
-          mDataSource = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + QgsProject::instance()->readPath( filename ) + "\":" + r.cap( 3 );
+          mDataSource = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + project->readPath( filename ) + "\":" + r.cap( 3 );
           handled = true;
         }
       }
@@ -337,7 +343,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement& layerElement )
           QString filename = r.cap( 1 );
           if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
             filename = filename.mid( 1, filename.length() - 2 );
-          mDataSource = "HDF5:\"" + QgsProject::instance()->readPath( filename ) + "\":" + r.cap( 2 );
+          mDataSource = "HDF5:\"" + project->readPath( filename ) + "\":" + r.cap( 2 );
           handled = true;
         }
       }
@@ -348,14 +354,14 @@ bool QgsMapLayer::readLayerXml( const QDomElement& layerElement )
         QRegExp r( "([^:]+):([^:]+):(.+)" );
         if ( r.exactMatch( mDataSource ) )
         {
-          mDataSource = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + QgsProject::instance()->readPath( r.cap( 3 ) );
+          mDataSource = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + project->readPath( r.cap( 3 ) );
           handled = true;
         }
       }
     }
 
     if ( !handled )
-      mDataSource = QgsProject::instance()->readPath( mDataSource );
+      mDataSource = project->readPath( mDataSource );
   }
 
   // Set the CRS from project file, asking the user if necessary.

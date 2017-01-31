@@ -475,7 +475,7 @@ QgsFeatureList QgsGeometrySnapper::snapFeatures( const QgsFeatureList& features,
 
 void QgsGeometrySnapper::processFeature( QgsFeature& feature, double snapTolerance, SnapMode mode )
 {
-  if ( !feature.geometry().isEmpty() )
+  if ( !feature.geometry().isNull() )
     feature.setGeometry( snapGeometry( feature.geometry(), snapTolerance, mode ) );
 }
 

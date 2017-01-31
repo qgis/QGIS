@@ -23,6 +23,7 @@
 #include "qgswmsutils.h"
 #include "qgsmediancut.h"
 #include "qgsconfigcache.h"
+#include "qgsserverprojectutils.h"
 
 namespace QgsWms
 {
@@ -46,12 +47,12 @@ namespace QgsWms
     return parser;
   }
 
-  QUrl serviceUrl( const QgsServerRequest& request, QgsWmsConfigParser* parser )
+  QUrl serviceUrl( const QgsServerRequest& request, const QgsProject* project )
   {
     QUrl href;
-    if ( parser )
+    if ( project )
     {
-      href.setUrl( parser->serviceUrl() );
+      href.setUrl( QgsServerProjectUtils::wmsServiceUrl( *project ) );
     }
 
     // Build default url

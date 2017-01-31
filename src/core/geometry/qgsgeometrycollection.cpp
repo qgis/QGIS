@@ -96,6 +96,19 @@ QgsAbstractGeometry* QgsGeometryCollection::geometryN( int n )
   return mGeometries.value( n );
 }
 
+bool QgsGeometryCollection::isEmpty() const
+{
+  if ( mGeometries.isEmpty() )
+    return true;
+
+  Q_FOREACH ( QgsAbstractGeometry* geometry, mGeometries )
+  {
+    if ( !geometry->isEmpty() )
+      return false;
+  }
+  return true;
+}
+
 bool QgsGeometryCollection::addGeometry( QgsAbstractGeometry* g )
 {
   if ( !g )

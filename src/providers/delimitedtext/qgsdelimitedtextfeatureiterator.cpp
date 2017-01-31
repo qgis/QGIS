@@ -318,7 +318,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
         geom = loadGeometryXY( tokens, nullGeom );
       }
 
-      if (( geom.isEmpty() && !nullGeom ) || ( nullGeom && mTestGeometry ) )
+      if (( geom.isNull() && !nullGeom ) || ( nullGeom && mTestGeometry ) )
       {
         // if we didn't get a geom and not because it's null, or we got a null
         // geom and we are testing for intersecting geometries then ignore this
@@ -391,11 +391,11 @@ QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList&
   isNull = false;
   geom = QgsDelimitedTextProvider::geomFromWkt( sWkt, mSource->mWktHasPrefix );
 
-  if ( !geom.isEmpty() && geom.type() != mSource->mGeometryType )
+  if ( !geom.isNull() && geom.type() != mSource->mGeometryType )
   {
     geom = QgsGeometry();
   }
-  if ( !geom.isEmpty() && ! wantGeometry( geom ) )
+  if ( !geom.isNull() && ! wantGeometry( geom ) )
   {
     geom = QgsGeometry();
   }

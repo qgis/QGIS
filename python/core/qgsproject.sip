@@ -71,7 +71,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
 
     /**
      * Returns the project's native coordinate reference system.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see setCrs()
      * @see ellipsoid()
      */
@@ -79,7 +79,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
 
     /**
      * Sets the project's native coordinate reference system.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see crs()
      * @see setEllipsoid()
      */
@@ -89,7 +89,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
      * @see setEllipsoid()
      * @see crs()
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      */
     QString ellipsoid() const;
 
@@ -97,7 +97,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
      * @see ellipsoid()
      * @see setCrs()
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      */
     void setEllipsoid( const QString& ellipsoid );
 
@@ -283,7 +283,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
 
     /**
      * Sets the default distance measurement units for the project.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see distanceUnits()
      * @see setAreaUnits()
      */
@@ -297,7 +297,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
 
     /**
      * Sets the default area measurement units for the project.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see areaUnits()
      * @see setDistanceUnits()
      */
@@ -324,6 +324,8 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      * @note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
      */
     QgsMapThemeCollection* mapThemeCollection();
+
+    QgsAnnotationManager* annotationManager();
 
     /**
      * Set a list of layers which should not be taken into account on map identification

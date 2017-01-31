@@ -709,7 +709,7 @@ QSet<QgsMapLayerDependency> QgsVectorDataProvider::dependencies() const
 
 QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry& geom ) const
 {
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
   {
     return nullptr;
   }

@@ -222,11 +222,6 @@ class QgsComposerUtils
      */
     static void drawText( QPainter* painter, const QRectF& rect, const QString& text, const QFont& font, const QColor& color = QColor(), const Qt::AlignmentFlag halignment = Qt::AlignLeft, const Qt::AlignmentFlag valignment = Qt::AlignTop, const int flags = Qt::TextWordWrap );
 
-    /**
-     * Creates a render context suitable for the specified composition and QPainter destination.
-     * This method returns a new QgsRenderContext which matches the scale and settings from the composition's
-     * QgsComposition::referenceMap().
-     * @note added in QGIS 3.0
-     */
-    static QgsRenderContext createRenderContext( QgsComposition* composition, QPainter* painter );
+    static QgsRenderContext createRenderContextForMap( QgsComposerMap* map, QPainter* painter, double dpi = -1 );
+    static QgsRenderContext createRenderContextForComposition( QgsComposition* composition, QPainter* painter );
 };

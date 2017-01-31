@@ -27,6 +27,7 @@ class QgsGeometryCollection: public QgsAbstractGeometry
     QgsAbstractGeometry* geometryN( int n );
 
     //methods inherited from QgsAbstractGeometry
+    bool isEmpty() const;
     virtual int dimension() const;
     virtual QString geometryType() const;
     virtual void clear();

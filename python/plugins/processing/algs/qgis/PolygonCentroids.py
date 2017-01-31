@@ -80,7 +80,7 @@ class PolygonCentroids(GeoAlgorithm):
             inGeom = feat.geometry()
             attrs = feat.attributes()
 
-            if inGeom.isEmpty():
+            if inGeom.isNull():
                 outGeom = QgsGeometry(None)
             else:
                 outGeom = QgsGeometry(inGeom.centroid())

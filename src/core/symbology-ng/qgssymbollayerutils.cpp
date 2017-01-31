@@ -607,13 +607,13 @@ QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( QgsSymbol* symbol, QSize size,
   return pixmap;
 }
 
-double QgsSymbolLayerUtils::estimateMaxSymbolBleed( QgsSymbol* symbol )
+double QgsSymbolLayerUtils::estimateMaxSymbolBleed( QgsSymbol* symbol, const QgsRenderContext& context )
 {
   double maxBleed = 0;
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
   {
     QgsSymbolLayer* layer = symbol->symbolLayer( i );
-    double layerMaxBleed = layer->estimateMaxBleed();
+    double layerMaxBleed = layer->estimateMaxBleed( context );
     maxBleed = layerMaxBleed > maxBleed ? layerMaxBleed : maxBleed;
   }
 
@@ -741,7 +741,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
     tempPolyline[i] = QgsPoint( tempPtr->rx(), tempPtr->ry() );
 
   QgsGeometry tempGeometry = geometryType == QgsWkbTypes::PolygonGeometry ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolyline( tempPolyline );
-  if ( !tempGeometry.isEmpty() )
+  if ( !tempGeometry.isNull() )
   {
     int quadSegments = 0; // we want mitre joins, not round joins
     double mitreLimit = 2.0; // the default value in GEOS (5.0) allows for fairly sharp endings
@@ -752,7 +752,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
     else
       offsetGeom = tempGeometry.offsetCurve( dist, quadSegments, QgsGeometry::JoinStyleMitre, mitreLimit );
 
-    if ( !offsetGeom.isEmpty() )
+    if ( !offsetGeom.isNull() )
     {
       tempGeometry = offsetGeom;
 
@@ -3664,11 +3664,11 @@ QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF& points )
     for ( i = 0; i < pointCount; ++i ) polyline[i] = QgsPoint( points[i].x(), points[i].y() );
 
     QgsGeometry geom = QgsGeometry::fromPolygon( QgsPolygon() << polyline );
-    if ( !geom.isEmpty() )
+    if ( !geom.isNull() )
     {
       QgsGeometry pointOnSurfaceGeom = geom.pointOnSurface();
 
-      if ( !pointOnSurfaceGeom.isEmpty() )
+      if ( !pointOnSurfaceGeom.isNull() )
       {
         QgsPoint point = pointOnSurfaceGeom.asPoint();
 

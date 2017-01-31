@@ -198,7 +198,7 @@ void QgsFeature::setValid( bool validity )
 
 bool QgsFeature::hasGeometry() const
 {
-  return !d->geometry.isEmpty();
+  return !d->geometry.isNull();
 }
 
 void QgsFeature::initAttributes( int fieldCount )

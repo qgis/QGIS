@@ -38,6 +38,7 @@ email                : sherman at mrcc.com
 #include <QWheelEvent>
 
 #include "qgis.h"
+#include "qgsmapcanvasannotationitem.h"
 #include "qgsapplication.h"
 #include "qgscsexception.h"
 #include "qgsdatumtransformdialog.h"
@@ -654,7 +655,7 @@ void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap
   {
     item = i.previous();
 
-    if ( !item || item->data( 0 ).toString() != QLatin1String( "AnnotationItem" ) )
+    if ( !item || dynamic_cast< QgsMapCanvasAnnotationItem* >( item ) )
     {
       continue;
     }
@@ -976,7 +977,7 @@ bool QgsMapCanvas::boundingBoxOfFeatureIds( const QgsFeatureIds& ids, QgsVectorL
   while ( it.nextFeature( fet ) )
   {
     QgsGeometry geom = fet.geometry();
-    if ( geom.isEmpty() )
+    if ( geom.isNull() )
     {
       errorMsg = tr( "Feature does not have a geometry" );
     }

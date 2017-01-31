@@ -237,6 +237,7 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
       addValueRelationLayersForLayer( vlayer );
       QgsVectorLayerJoinBuffer* joinBuffer = vlayer->joinBuffer();
       joinBuffer->readXml( const_cast<QDomElement&>( elem ) );
+      joinBuffer->resolveReferences( QgsProject::instance() );
     }
 
     return layer;
@@ -642,69 +643,6 @@ QString QgsServerProjectParser::layerName( const QDomElement& layerElem ) const
     return QString();
   }
   return nameElem.text().replace( QLatin1String( "," ), QLatin1String( "%60" ) ); //commas are not allowed in layer names
-}
-
-QString QgsServerProjectParser::serviceUrl() const
-{
-  QString url;
-
-  if ( !mXMLDoc )
-  {
-    return url;
-  }
-
-  QDomElement propertiesElement = propertiesElem();
-  if ( !propertiesElement.isNull() )
-  {
-    QDomElement wmsUrlElem = propertiesElement.firstChildElement( QStringLiteral( "WMSUrl" ) );
-    if ( !wmsUrlElem.isNull() )
-    {
-      url = wmsUrlElem.text();
-    }
-  }
-  return url;
-}
-
-QString QgsServerProjectParser::wfsServiceUrl() const
-{
-  QString url;
-
-  if ( !mXMLDoc )
-  {
-    return url;
-  }
-
-  QDomElement propertiesElement = propertiesElem();
-  if ( !propertiesElement.isNull() )
-  {
-    QDomElement wfsUrlElem = propertiesElement.firstChildElement( QStringLiteral( "WFSUrl" ) );
-    if ( !wfsUrlElem.isNull() )
-    {
-      url = wfsUrlElem.text();
-    }
-  }
-  return url;
-}
-
-QString QgsServerProjectParser::wcsServiceUrl() const
-{
-  QString url;
-
-  if ( !mXMLDoc )
-  {
-    return url;
-  }
-
-  QDomElement propertiesElement = propertiesElem();
-  if ( !propertiesElement.isNull() )
-  {
-    QDomElement wcsUrlElem = propertiesElement.firstChildElement( QStringLiteral( "WCSUrl" ) );
-    if ( !wcsUrlElem.isNull() )
-    {
-      url = wcsUrlElem.text();
-    }
-  }
-  return url;
 }
 
 void QgsServerProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupElem, QDomDocument& doc, bool considerMapExtent ) const

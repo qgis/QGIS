@@ -587,7 +587,7 @@ void QgsComposerMapGrid::calculateCrsTransformLines()
       {
         //look for intersections between lines
         QgsGeometry intersects = ( *yLineIt ).intersection(( *xLineIt ) );
-        if ( intersects.isEmpty() )
+        if ( intersects.isNull() )
           continue;
 
         //go through all intersections and draw grid markers/crosses
@@ -636,7 +636,7 @@ void QgsComposerMapGrid::draw( QPainter* p )
   p->scale( 1 / dotsPerMM, 1 / dotsPerMM ); //scale painter from mm to dots
 
   //setup render context
-  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, p );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, p );
   context.setForceVectorOutput( true );
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
@@ -2056,7 +2056,7 @@ void QgsComposerMapGrid::calculateMaxExtension( double& top, double& right, doub
   }
 
   //setup render context
-  QgsRenderContext context = QgsComposerUtils::createRenderContext( mComposition, nullptr );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, nullptr );
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 

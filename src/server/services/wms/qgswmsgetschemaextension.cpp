@@ -78,10 +78,4 @@ namespace QgsWms
     return xsdDoc;
   }
 
-
-
-} // samespace QgsWms
-
-
-
-
+} // namespace QgsWms

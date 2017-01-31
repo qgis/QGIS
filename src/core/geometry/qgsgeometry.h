@@ -111,12 +111,13 @@ class CORE_EXPORT QgsGeometry
      */
     void setGeometry( QgsAbstractGeometry* geometry );
 
-    /** Returns true if the geometry is empty (ie, contains no underlying geometry
+    /** Returns true if the geometry is null (ie, contains no underlying geometry
      * accessible via @link geometry @endlink).
      * @see geometry
      * @note added in QGIS 2.10
+     * @see isEmpty()
      */
-    bool isEmpty() const;
+    bool isNull() const;
 
     //! Creates a new geometry from a WKT string
     static QgsGeometry fromWkt( const QString& wkt );
@@ -174,6 +175,14 @@ class CORE_EXPORT QgsGeometry
      */
     QgsWkbTypes::GeometryType type() const;
 
+    /**
+     * Returns true if the geometry is empty (eg a linestring with no vertices,
+     * or a collection with no geometries). A null geometry will always
+     * return true for isEmpty().
+     * @see isNull()
+     */
+    bool isEmpty() const;
+
     //! Returns true if WKB of the geometry is of WKBMulti* type
     bool isMultipart() const;
 
@@ -186,11 +195,6 @@ class CORE_EXPORT QgsGeometry
       @note added in 1.5
      */
     bool isGeosValid() const;
-
-    /** Check if the geometry is empty using GEOS
-      @note added in 1.5
-     */
-    bool isGeosEmpty() const;
 
     /** Returns the area of the geometry using GEOS
       @note added in 1.5
@@ -630,6 +634,34 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry convexHull() const;
 
     /**
+     * Creates a Voronoi diagram for the nodes contained within the geometry.
+     *
+     * Returns the Voronoi polygons for the nodes contained within the geometry.
+     * If \a extent is specified then it will be used as a clipping envelope for the diagram.
+     * If no extent is set then the clipping envelope will be automatically calculated.
+     * In either case the diagram will be clipped to the larger of the provided envelope
+     * OR the envelope surrounding all input nodes.
+     * The \a tolerance parameter specifies an optional snapping tolerance which can
+     * be used to improve the robustness of the diagram calculation.
+     * If \a edgesOnly is true than line string boundary geometries will be returned
+     * instead of polygons.
+     * An empty geometry will be returned if the diagram could not be calculated.
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry voronoiDiagram( const QgsGeometry& extent = QgsGeometry(), double tolerance = 0.0, bool edgesOnly = false ) const;
+
+    /**
+     * Returns the Delaunay triangulation for the vertices of the geometry.
+     * The \a tolerance parameter specifies an optional snapping tolerance which can
+     * be used to improve the robustness of the triangulation.
+     * If \a edgesOnly is true than line string boundary geometries will be returned
+     * instead of polygons.
+     * An empty geometry will be returned if the diagram could not be calculated.
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false ) const;
+
+    /**
      * Return interpolated point on line at distance
      * @note added in 1.9
      * @see lineLocatePoint()
@@ -839,11 +871,21 @@ class CORE_EXPORT QgsGeometry
      **/
     void validateGeometry( QList<Error> &errors );
 
-    /** Compute the unary union on a list of geometries. May be faster than an iterative union on a set of geometries.
-     * @param geometryList a list of QgsGeometry as input
-     * @returns the new computed QgsGeometry, or an empty QgsGeometry
+    /** Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
+     * The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
+     * input geometries. An empty geometry will be returned in the case of errors.
      */
-    static QgsGeometry unaryUnion( const QList<QgsGeometry>& geometryList );
+    static QgsGeometry unaryUnion( const QList<QgsGeometry>& geometries );
+
+    /**
+     * Creates a GeometryCollection geometry containing possible polygons formed from the constituent
+     * linework of a set of \a geometries. The input geometries must be fully noded (i.e. nodes exist
+     * at every common intersection of the geometries). The easiest way to ensure this is to first
+     * call unaryUnion() on the set of input geometries and then pass the result to polygonize().
+     * An empty geometry will be returned in the case of errors.
+     * @note added in QGIS 3.0
+     */
+    static QgsGeometry polygonize( const QList< QgsGeometry>& geometries );
 
     /** Converts the geometry to straight line segments, if it is a curved geometry type.
      * @note added in QGIS 2.10
@@ -995,8 +1037,8 @@ class CORE_EXPORT QgsGeometry
       return QVariant::fromValue( *this );
     }
 
-    /** Returns true if the geometry is non empty (ie, isEmpty() returns false),
-     * or false if it is an empty, uninitialized geometry (ie, ieEmpty() returns true).
+    /** Returns true if the geometry is non empty (ie, isNull() returns false),
+     * or false if it is an empty, uninitialized geometry (ie, isNull() returns true).
      * @note added in QGIS 3.0
      */
     operator bool() const;

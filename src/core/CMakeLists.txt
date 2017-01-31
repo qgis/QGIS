@@ -77,6 +77,12 @@ SET(QGIS_CORE_SRCS
   auth/qgsauthmethodmetadata.cpp
   auth/qgsauthmethodregistry.cpp
 
+  annotations/qgsannotation.cpp
+  annotations/qgsannotationmanager.cpp
+  annotations/qgshtmlannotation.cpp
+  annotations/qgssvgannotation.cpp
+  annotations/qgstextannotation.cpp
+
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
 
@@ -164,6 +170,7 @@ SET(QGIS_CORE_SRCS
   qgsmaptopixel.cpp
   qgsmaptopixelgeometrysimplifier.cpp
   qgsmapunitscale.cpp
+  qgsmargins.cpp
   qgsmessagelog.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
@@ -531,6 +538,12 @@ SET(QGIS_CORE_MOC_HDRS
   qgswebpage.h
   qgswebview.h
 
+  annotations/qgsannotation.h
+  annotations/qgsannotationmanager.h
+  annotations/qgshtmlannotation.h
+  annotations/qgssvgannotation.h
+  annotations/qgstextannotation.h
+
   auth/qgsauthmanager.h
   auth/qgsauthmethod.h
 
@@ -638,7 +651,6 @@ SET(QGIS_CORE_HDRS
   qgsactionscope.h
   qgsactionmanager.h
   qgsaggregatecalculator.h
-  qgsannotation.h
   qgsattributetableconfig.h
   qgsattributeeditorelement.h
   qgsbearingutils.h
@@ -703,6 +715,7 @@ SET(QGIS_CORE_HDRS
   qgsmaptopixel.h
   qgsmaptopixelgeometrysimplifier.h
   qgsmapunitscale.h
+  qgsmargins.h
   qgsmimedatautils.h
   qgsmultirenderchecker.h
   qgsobjectcustomproperties.h
@@ -755,6 +768,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayereditutils.h
   qgsvectorlayerfeatureiterator.h
   qgsvectorlayerimport.h
+  qgsvectorlayerjoininfo.h
   qgsvectorlayerlabelprovider.h
   qgsvectorlayerrenderer.h
   qgsvectorlayerundocommand.h
@@ -766,6 +780,8 @@ SET(QGIS_CORE_HDRS
   qgswebframe.h
   qgswebview.h
   qgslocalec.h
+
+  annotations/qgsannotationregistry.h
 
   auth/qgsauthcertutils.h
   auth/qgsauthconfig.h
@@ -918,6 +934,7 @@ ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
+  annotations
   auth
   composer
   dxf

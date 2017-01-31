@@ -490,11 +490,11 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const Qg
         continue;
 
       pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - hCellSizeX, currentY - hCellSizeY, currentX + hCellSizeX, currentY + hCellSizeY ) );
-      if ( !pixelRectGeometry.isEmpty() )
+      if ( !pixelRectGeometry.isNull() )
       {
         //intersection
         QgsGeometry intersectGeometry = pixelRectGeometry.intersection( poly );
-        if ( !intersectGeometry.isEmpty() )
+        if ( !intersectGeometry.isNull() )
         {
           double intersectionArea = intersectGeometry.area();
           if ( intersectionArea >= 0.0 )

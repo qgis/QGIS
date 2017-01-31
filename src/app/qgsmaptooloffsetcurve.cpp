@@ -71,7 +71,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent* e )
     return;
   }
 
-  if ( mOriginalGeometry.isEmpty() )
+  if ( mOriginalGeometry.isNull() )
   {
     deleteRubberBandAndGeometry();
     mGeometryModified = false;
@@ -118,7 +118,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent* e )
       }
     }
 
-    if ( mOriginalGeometry.isEmpty() )
+    if ( mOriginalGeometry.isNull() )
     {
       emit messageEmitted( tr( "Could not find a nearby feature in any vector layer." ) );
     }
@@ -202,7 +202,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent* e )
   delete mSnapVertexMarker;
   mSnapVertexMarker = nullptr;
 
-  if ( mOriginalGeometry.isEmpty() || !mRubberBand )
+  if ( mOriginalGeometry.isNull() || !mRubberBand )
   {
     return;
   }
@@ -356,7 +356,7 @@ void QgsMapToolOffsetCurve::deleteRubberBandAndGeometry()
 
 void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
 {
-  if ( !mRubberBand || mOriginalGeometry.isEmpty() )
+  if ( !mRubberBand || mOriginalGeometry.isNull() )
   {
     return;
   }
@@ -401,7 +401,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
 
 QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry& featureGeom, int vertex )
 {
-  if ( featureGeom.isEmpty() )
+  if ( featureGeom.isNull() )
   {
     return QgsGeometry();
   }
@@ -446,7 +446,7 @@ QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry& fea
 
 QgsGeometry QgsMapToolOffsetCurve::convertToSingleLine( const QgsGeometry& geom, int vertex, bool& isMulti )
 {
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
   {
     return QgsGeometry();
   }

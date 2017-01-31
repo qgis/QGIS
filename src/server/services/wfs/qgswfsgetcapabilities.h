@@ -29,14 +29,16 @@ namespace QgsWfs
   /**
    * Create get capabilities document
    */
-  QDomDocument createGetCapabilitiesDocument( QgsServerInterface* serverIface, const QString& version,
+  QDomDocument createGetCapabilitiesDocument( QgsServerInterface* serverIface,
+      const QgsProject* project, const QString& version,
       const QgsServerRequest& request );
 
   /**
    * Output WFS  GetCapabilities response
    */
-  void writeGetCapabilities( QgsServerInterface* serverIface, const QString& version,
-                             const QgsServerRequest& request, QgsServerResponse& response );
+  void writeGetCapabilities( QgsServerInterface* serverIface, const QgsProject* project,
+                             const QString& version, const QgsServerRequest& request,
+                             QgsServerResponse& response );
 
 } // samespace QgsWfs
 
