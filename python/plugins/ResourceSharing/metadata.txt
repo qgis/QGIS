@@ -1,0 +1,28 @@
+[general]
+name=QGIS Resource Sharing
+qgisMinimumVersion=2.4
+qgisMaximumVersion=3.99
+description=Download collections shared by other users
+about=Developed as GSoC 2016 project, this plugin allows users to search for available collections and install them. Users can also create repositories to put the collections there. There are some options where to put the repository: Github, Bitbucket, local file system, or with https(s). Please read the documentation for more information.
+icon=resources/icon.png
+version=1.0.1
+tags=symbol, style, svg, processing, collections, processing, maps, design, repository
+homepage=http://www.akbargumbira.com/qgis_resources_sharing/
+tracker=https://github.com/akbargumbira/qgis_resources_sharing/issues
+repository=https://github.com/akbargumbira/qgis_resources_sharing
+experimental=False
+deprecated=False
+# changelog=
+
+# Author
+author=Akbar Gumbira
+email=akbargumbira@gmail.com
+
+# Changelog
+changelog=
+	1.0.1 - QGIS3 ready, merged into master as a core plugin
+	0.5.1 - Allow authors to add license details in the collection
+	0.5.1 - Fixed problem in QGIS < 2.12 as a result of using the new QgsAuthManager
+	0.5.1 - Change the behavior of updating and removing directory in settings (This fixed #34)
+	0.5.1 - Use the new official QGIS resource repository (https://github.com/qgis/QGIS-Resources)
+	0.5.0 - Wohooo first release!
