@@ -686,13 +686,11 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(qml.startswith('<!DOCTYPE qgis'), qml)
         self.assertEqual(errmsg, "")
 
-        errmsg = ''
-        res = vl.deleteStyleFromDatabase("100", errmsg)
+        res, errmsg = vl.deleteStyleFromDatabase("100")
         self.assertTrue(res)
         self.assertEqual(errmsg, "")
 
-        errmsg = ''
-        res = vl.deleteStyleFromDatabase("1", errmsg)
+        res, errmsg = vl.deleteStyleFromDatabase("1")
         self.assertTrue(res)
         self.assertEqual(errmsg, "")
 
