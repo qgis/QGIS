@@ -1980,6 +1980,62 @@ QgsGeometry QgsGeos::polygonize( const QList<QgsAbstractGeometry*>& geometries, 
   }
 }
 
+QgsGeometry QgsGeos::voronoiDiagram( const QgsAbstractGeometry* extent, double tolerance, bool edgesOnly, QString* errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return QgsGeometry();
+  }
+
+  GEOSGeometry* extentGeos = nullptr;
+  GEOSGeomScopedPtr extentGeosGeom( nullptr );
+  if ( extent )
+  {
+    extentGeosGeom.reset( asGeos( extent, mPrecision ) );
+    if ( !extentGeosGeom )
+    {
+      return QgsGeometry();
+    }
+    extentGeos = extentGeosGeom.get();
+  }
+
+  GEOSGeomScopedPtr geos;
+  try
+  {
+    geos.reset( GEOSVoronoiDiagram_r( geosinit.ctxt, mGeos, extentGeos, tolerance, edgesOnly ) );
+
+    if ( !geos || GEOSisEmpty_r( geosinit.ctxt, geos.get() ) != 0 )
+    {
+      return QgsGeometry();
+    }
+
+    return QgsGeometry( fromGeos( geos.get() ) );
+  }
+  CATCH_GEOS_WITH_ERRMSG( QgsGeometry() );
+}
+
+QgsGeometry QgsGeos::delaunayTriangulation( double tolerance, bool edgesOnly, QString* errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return QgsGeometry();
+  }
+
+  GEOSGeomScopedPtr geos;
+  try
+  {
+    geos.reset( GEOSDelaunayTriangulation_r( geosinit.ctxt, mGeos, tolerance, edgesOnly ) );
+
+    if ( !geos || GEOSisEmpty_r( geosinit.ctxt, geos.get() ) != 0 )
+    {
+      return QgsGeometry();
+    }
+
+    return QgsGeometry( fromGeos( geos.get() ) );
+  }
+  CATCH_GEOS_WITH_ERRMSG( QgsGeometry() );
+}
+
 
 //! Extract coordinates of linestring's endpoints. Returns false on error.
 static bool _linestringEndpoints( const GEOSGeometry* linestring, double& x1, double& y1, double& x2, double& y2 )

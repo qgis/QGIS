@@ -567,6 +567,10 @@ class QgsGeometry
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
     QgsGeometry convexHull() const;
 
+    QgsGeometry voronoiDiagram( const QgsGeometry& extent = QgsGeometry(), double tolerance = 0.0, bool edgesOnly = false ) const;
+
+    QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false ) const;
+
     /**
      * Return interpolated point on line at distance
      * @note added in 1.9

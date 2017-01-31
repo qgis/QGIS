@@ -1606,6 +1606,28 @@ QgsGeometry QgsGeometry::convexHull() const
   return QgsGeometry( cHull );
 }
 
+QgsGeometry QgsGeometry::voronoiDiagram( const QgsGeometry& extent, double tolerance, bool edgesOnly ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry );
+  return geos.voronoiDiagram( extent.geometry(), tolerance, edgesOnly );
+}
+
+QgsGeometry QgsGeometry::delaunayTriangulation( double tolerance, bool edgesOnly ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry );
+  return geos.delaunayTriangulation( tolerance, edgesOnly );
+}
+
 QgsGeometry QgsGeometry::interpolate( double distance ) const
 {
   if ( !d->geometry )
