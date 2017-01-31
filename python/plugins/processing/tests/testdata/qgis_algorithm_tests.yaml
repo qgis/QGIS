@@ -2324,3 +2324,15 @@ tests:
       OUTPUT:
         name: expected/voronoi.gml
         type: vector
+
+  - algorithm: qgis:voronoipolygons
+    name: Vornoi with buffer region
+    params:
+      BUFFER: 10.0
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/voronoi_buffer.gml
+        type: vector
