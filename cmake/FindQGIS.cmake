@@ -7,8 +7,10 @@
 ## QGIS_ANALYSIS_LIBRARY = full path to the ANALYSIS library
 ## QGIS_PLUGIN_DIR       = full path to where QGIS plugins are installed
 ## QGIS_INCLUDE_DIR      = where to find headers
+## QGIS_UI_INCLUDE_DIR   = where to find ui_* generated headers
 ##
 ## Tim Sutton
+## Larry Shaffer (2017-01-31)
 
 #MESSAGE("Searching for QGIS")
 IF(WIN32)
@@ -100,6 +102,7 @@ ELSE(WIN32)
         ${QGIS_PREFIX_PATH}/lib/qgis/plugins/
         /usr/lib64/qgis/plugins
         /usr/lib/qgis
+        /usr/lib/qgis/plugins
         /usr/local/lib/qgis/plugins
         ${QGIS_MAC_PATH}/PlugIns/qgis
         "$ENV{LIB_DIR}/lib/qgis/plugins"
@@ -113,6 +116,15 @@ ELSE(WIN32)
         /usr/local/include/qgis
         /Library/Frameworks/qgis_core.framework/Headers
         ${QGIS_MAC_PATH}/Frameworks/qgis_core.framework/Headers
+        "$ENV{LIB_DIR}/include/qgis"
+    )
+    FIND_PATH(QGIS_UI_INCLUDE_DIR
+      NAMES ui_qgscredentialdialog.h
+      PATHS
+        {QGIS_PREFIX_PATH}/include/qgis
+        /usr/include/qgis
+        /usr/local/include/qgis
+        /Library/Frameworks/qgis_gui.framework/Headers
         "$ENV{LIB_DIR}/include/qgis"
     )
     # also get other frameworks' headers folders on OS X
@@ -133,8 +145,10 @@ ELSE(WIN32)
         ${QGIS_INCLUDE_DIR}
         ${QGIS_GUI_INCLUDE_DIR}
         ${QGIS_ANALYSIS_INCLUDE_DIR}
+        ${QGIS_UI_INCLUDE_DIR}
       )
     ENDIF (APPLE)
+
     FIND_LIBRARY(QGIS_CORE_LIBRARY
       NAMES qgis_core
       PATHS
