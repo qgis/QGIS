@@ -141,6 +141,15 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      */
     double lineLocatePoint( const QgsPointV2& point, QString* errorMsg = nullptr ) const;
 
+    /**
+     * Creates a GeometryCollection geometry containing possible polygons formed from the constituent
+     * linework of a set of \a geometries. The input geometries must be fully noded (i.e. nodes exist
+     * at every common intersection of the geometries). The easiest way to ensure this is to first
+     * unary union these geometries by calling combine() on the set of input geometries and then
+     * pass the result to polygonize().
+     * An empty geometry will be returned in the case of errors.
+     * @note added in QGIS 3.0
+     */
     static QgsGeometry polygonize( const QList<QgsAbstractGeometry*>& geometries, QString* errorMsg = nullptr );
 
     /** Create a geometry from a GEOSGeometry
