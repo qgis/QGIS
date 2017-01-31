@@ -60,3 +60,6 @@ src/server/qgis_wms.xmi
 tests/testdata/qgis_server_accesscontrol/Hello.qml
 tests/testdata/qgis_server_accesscontrol/project.qgs
 tests/testdata/qgis_server/ets-wms13/project.qgs
+python/plugins/ResourceSharing/test/data/collections/test_collection/style/pikachu_building.qml
+python/plugins/ResourceSharing/test/data/collections/test_collection/style/style_with_svg_other_collection.qml
+python/plugins/ResourceSharing/test/data/collections/test_collection/style/style_with_svg.qml
