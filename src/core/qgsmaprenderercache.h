@@ -42,31 +42,30 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
 
     QgsMapRendererCache();
 
-    //! invalidate the cache contents
+    //! Invalidate the cache contents
     void clear();
 
-    //! initialize cache: set new parameters and erase cache if parameters have changed
+    //! Initialize cache: set new parameters and erase cache if parameters have changed
     //! @return flag whether the parameters are the same as last time
     bool init( const QgsRectangle& extent, double scale );
 
-    //! set cached image for the specified layer ID
+    //! Set the cached image for the specified layer ID
     void setCacheImage( const QString& layerId, const QImage& img );
 
-    //! get cached image for the specified layer ID. Returns null image if it is not cached.
+    //! Returns the cached image for the specified layer ID. Returns null image if it is not cached.
     QImage cacheImage( const QString& layerId );
 
-    //! remove layer from the cache
+    //! Removes a layer from the cache
     void clearCacheImage( const QString& layerId );
 
-  protected slots:
-    //! remove layer (that emitted the signal) from the cache
+  private slots:
+    //! Remove layer (that emitted the signal) from the cache
     void layerRequestedRepaint();
 
-  protected:
-    //! invalidate cache contents (without locking)
+  private:
+    //! Invalidate cache contents (without locking)
     void clearInternal();
 
-  protected:
     QMutex mMutex;
     QgsRectangle mExtent;
     double mScale;

@@ -1335,6 +1335,11 @@ be returned instead of a null pointer if no transformation is required.
 - destinationSrsChanged() was renamed to destinationCrsChanged()
 - getCompositionMode(), getBlendModeEnum() and BlendMode enum have been moved to QgsPainting utility class.
 
+QgsMapRendererCache        {#qgis_api_break_3_0_QgsMapRendererCache}
+-------------------
+
+- All protected members have been made private. This class is not designed to be subclassed.
+
 
 QgsMapRendererJob        {#qgis_api_break_3_0_QgsMapRendererJob}
 -----------------
