@@ -1,0 +1,21 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>random_point_in_extent</Name>
+    <ElementPath>random_point_in_extent</ElementPath>
+    <!--POINT-->
+    <GeometryType>1</GeometryType>
+    <SRSName>EPSG:4326</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>20</FeatureCount>
+      <ExtentXMin>-0.08023</ExtentXMin>
+      <ExtentXMax>7.94418</ExtentXMax>
+      <ExtentYMin>-3.47241</ExtentYMin>
+      <ExtentYMax>2.61486</ExtentYMax>
+    </DatasetSpecificInfo>
+    <PropertyDefn>
+      <Name>id</Name>
+      <ElementPath>id</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+  </GMLFeatureClass>
+</GMLFeatureClassList>

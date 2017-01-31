@@ -2349,3 +2349,17 @@ tests:
       OUTPUT:
         name: expected/random_point_in_layer.gml
         type: vector
+
+  - algorithm: qgis:randompointsinextent
+    name: Random points in map canvas extent
+    params:
+      EXTENT: -0.8838005475086506,8.987239590909544,-3.563560814927923,2.9530989171715136
+      MIN_DISTANCE: 0.0
+      POINT_NUMBER: 20
+    results:
+      OUTPUT:
+        name: expected/random_point_in_extent.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 5
