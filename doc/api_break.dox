@@ -233,6 +233,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 Removed Classes        {#qgis_api_break_3_0_removed_classes}
 ---------------
 
+- QgsAnnotationItem was removed. This was replaced by QgsAnnotation and QgsMapCanvasAnnotationItem.
 - QgsAttributeAction was removed, and replaced by QgsActionManager.
 - QgsAttributeEditor was removed. Use QgsEditorWidgetRegistry::create() instead.
 - QgsColorbutton was removed. QgsColorButtonV2 has now been renamed to QgsColorButton. Hence, QgsColorButtonV2 does not exist anymore.
@@ -248,6 +249,8 @@ Use QgsComposerAttributeTableV2 instead.
 - QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,
 so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).
+- QgsFormAnnotationItem. Use QgsFormAnnotation instead.
+- QgsHtmlAnnotationItem. Use QgsHtmlAnnotation instead.
 - QgsHttpTransaction. This class was outdated and code should be ported to native Qt or Python implementations.
 - QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngine.
 - QgsLabelingEngineInterface. Replaced by QgsLabelingEngine.
@@ -267,7 +270,9 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsLegacyHelpers.
 - QgsProviderCountCalcEvent and QgsProviderExtentCalcEvent. These classes were unused in QGIS core and unmaintained.
 - QgsEditorWidgetConfig was removed. Use QVariantMap instead.
+- QgsSvgAnnotationItem. Use QgsSvgAnnotation instead.
 - QgsSymbologyV2Conversion was removed. Reading of renderers from pre-1.0 versions is not supported anymore.
+- QgsTextAnnotationItem. Use QgsTextAnnotation instead.
 
 
 General changes        {#qgis_api_break_3_0_global}
@@ -346,12 +351,6 @@ QgisInterface        {#qgis_api_break_3_0_QgisInterface}
 
 - fileMenu() has been removed, use projectMenu() instead.
 - actionRemoveLayer was removed as it no longer exists.
-
-
-QgsAnnotation        {#qgis_api_break_3_0_QgsAnnotation}
--------------
-
--  mapPositionFixed() has been renamed to hasFixedMapPosition()
 
 
 QgsAbstractGeometry        {#qgis_api_break_3_0_QgsAbstractGeometry}
@@ -572,6 +571,10 @@ instead.
 and setAtlasScalingMode() instead.
 - storeCurrentLayerSet() was removed. Use setLayers() instead.
 - The layersChanged() slot was removed.
+- setMapCanvas() was removed. This is no longer required to draw map annotations, which are instead retrieved from the composition's
+associated project's annotationManager()
+- setDrawCanvasItems() and drawCanvasItems() were renamed to setDrawAnnotations() and drawAnnotations()
+
 
 QgsComposerMapGrid        {#qgis_api_break_3_0_QgsComposerMapGrid}
 ------------------
@@ -1778,6 +1781,7 @@ were removed. Use the QgsProperty/QgsPropertyCollection methods instead.
 - usedAttributes() now requires a QgsRenderContext argument
 - saveDataDefinedProperties() was removed. This is no longer required.
 - restoreDataDefinedProperties() was renamed to restoreOldDataDefinedProperties()
+- estimateMaxBleed() now requires a QgsRenderContext argument (since the bleed depends on render context for non-pixel units)
 
 
 QgsSymbolLayerRegistry        {#qgis_api_break_3_0_QgsSymbolLayerRegistry}
@@ -1813,6 +1817,7 @@ QgsSymbolLayerUtils (renamed from QgsSymbolLayerUtilsV2)        {#qgis_api_break
 - convertFromMapUnits() was moved to QgsRenderContext::convertFromMapUnits()
 - pixelSizeScaleFactor() was removed. Use QgsRenderContext::convertToPainterUnits() instead.
 - mapUnitScaleFactor() was removed. Use QgsRenderContext::convertToMapUnits() instead.
+- estimateMaxSymbolBleed() now requires a QgsRenderContext argument (since the bleed depends on render context for non-pixel units)
 
 
 QgsSymbolSelectorWidget        {#qgis_api_break_3_0_QgsSymbolSelectorWidget}
