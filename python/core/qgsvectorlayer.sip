@@ -687,7 +687,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     /**
      * Will delete the named style corresponding to style id provided from the database
      */
-    virtual void deleteStyleFromDatabase( const QString& styleId, QString &msgError /Out/ );
+    virtual bool deleteStyleFromDatabase( const QString& styleId, QString &msgError /Out/ );
 
     /**
      * Load a named style from file/local db/datasource db

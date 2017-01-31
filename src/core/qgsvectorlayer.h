@@ -788,7 +788,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Will delete the named style corresponding to style id provided from the database
      */
-    virtual void deleteStyleFromDatabase( const QString& styleId, QString &msgError );
+    virtual bool deleteStyleFromDatabase( const QString& styleId, QString &msgError );
 
     /**
      * Load a named style from file/local db/datasource db

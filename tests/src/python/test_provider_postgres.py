@@ -686,10 +686,12 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(qml.startswith('<!DOCTYPE qgis'), qml)
         self.assertEqual(errmsg, "")
 
-        errmsg = vl.deleteStyleFromDatabase("101")
+        res, errmsg = vl.deleteStyleFromDatabase("100")
+        self.assertTrue(res)
         self.assertEqual(errmsg, "")
 
-        errmsg = vl.deleteStyleFromDatabase("1")
+        res, errmsg = vl.deleteStyleFromDatabase("1")
+        self.assertTrue(res)
         self.assertEqual(errmsg, "")
 
         # table layer_styles does exit, but is now empty
