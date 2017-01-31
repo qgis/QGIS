@@ -16,7 +16,7 @@ src/app/gps/qwtpolar-1.0/
 src/app/gps/qwtpolar-1.1.1/
 src/core/pal
 src/plugins/grass/qtermwidget/
-
+python/plugins/ResourceSharing/resources/js/jquery.js
 
 
 #Extensions
