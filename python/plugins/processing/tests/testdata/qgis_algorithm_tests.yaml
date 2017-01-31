@@ -2336,3 +2336,16 @@ tests:
       OUTPUT:
         name: expected/voronoi_buffer.gml
         type: vector
+
+  - algorithm: qgis:randompointsinlayerbounds
+    name: Standard random points in layer
+    params:
+      MIN_DISTANCE: 0.0
+      POINT_NUMBER: 10
+      VECTOR:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/random_point_in_layer.gml
+        type: vector
