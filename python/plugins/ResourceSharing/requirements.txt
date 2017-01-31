@@ -1,0 +1,4 @@
+dulwich==0.16.3
+giturlparse.py
+
+# test requirements

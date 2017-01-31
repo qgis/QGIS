@@ -1,0 +1,29 @@
+Metadata-Version: 1.1
+Name: dulwich
+Version: 0.16.3
+Summary: Python Git Library
+Home-page: https://www.dulwich.io/
+Author: Jelmer Vernooĳ
+Author-email: jelmer@jelmer.uk
+License: Apachev2 or later or GPLv2
+Description: 
+              Python implementation of the Git file formats and protocols,
+              without the need to have git installed.
+        
+              All functionality is available in pure Python. Optional
+              C extensions can be built for improved performance.
+        
+              The project is named after the part of London that Mr. and Mrs. Git live in
+              in the particular Monty Python sketch.
+              
+Keywords: git
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Operating System :: POSIX
+Classifier: Topic :: Software Development :: Version Control
