@@ -1,5 +1,5 @@
-FILE(GLOB PY_FILES)
-PLUGIN_INSTALL(ResourceSharing . ${PY_FILES}  __init__.py metadata.txt LICENSE.txt)
+FILE(GLOB PY_FILES *.py)
+PLUGIN_INSTALL(ResourceSharing . ${PY_FILES} metadata.txt LICENSE.txt)
 
 FOREACH(dir
 processing
@@ -25,3 +25,5 @@ resources/template)
   ENDFOREACH(_item)
   PLUGIN_INSTALL(ResourceSharing ${dir} ${_files})
 ENDFOREACH(dir)
+
+ADD_SUBDIRECTORY(test)
