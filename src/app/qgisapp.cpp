@@ -5302,11 +5302,6 @@ void QgisApp::openProject( QAction *action )
   QString debugme = action->data().toString();
   if ( saveDirty() )
     addProject( debugme );
-
-  //set the projections enabled icon in the status bar
-  int myProjectionEnabledFlag =
-    QgsProject::instance()->readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), 0 );
-  mMapCanvas->setCrsTransformEnabled( myProjectionEnabledFlag );
 }
 
 void QgisApp::runScript( const QString &filePath )
