@@ -56,6 +56,28 @@ struct LayerRenderJob
 
 typedef QList<LayerRenderJob> LayerRenderJobs;
 
+/** \ingroup core
+ * Structure keeping low-level label rendering job information.
+ */
+struct LabelRenderJob
+{
+  QgsRenderContext context;
+
+  /**
+   * May be null if it is not necessary to draw to separate image (e.g. using composition modes which prevent "flattening" the layer).
+   * Note that if complete is false then img will be uninitialized and contain random data!.
+   */
+  QImage* img = nullptr;
+  //! If true, img already contains cached image from previous rendering
+  bool cached = false;
+  //! If true then label render is complete
+  bool complete = false;
+  //! Time it took to render the labels in ms (it is -1 if not rendered or still rendering)
+  int renderingTime = -1;
+  //! List of layers which participated in the labeling solution
+  QList< QPointer< QgsMapLayer > > participatingLayers;
+};
+
 ///@endcond PRIVATE
 
 /** \ingroup core
@@ -153,6 +175,12 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     const QgsMapSettings& mapSettings() const;
 
+    /**
+     * QgsMapRendererCache ID string for cached label image.
+     * @note not available in Python bindings
+     */
+    static const QString LABEL_CACHE_ID;
+
   signals:
 
     /**
@@ -180,14 +208,29 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     //! @note not available in python bindings
     LayerRenderJobs prepareJobs( QPainter* painter, QgsLabelingEngine* labelingEngine2 );
 
-    //! @note not available in python bindings
-    static QImage composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs );
+    /**
+     * Prepares a labeling job.
+     * @note not available in python bindings
+     * @note added in QGIS 3.0
+     */
+    LabelRenderJob prepareLabelingJob( QPainter* painter, QgsLabelingEngine* labelingEngine2 );
 
     //! @note not available in python bindings
-    void logRenderingTime( const LayerRenderJobs& jobs );
+    static QImage composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs, const LabelRenderJob& labelJob );
+
+    //! @note not available in python bindings
+    void logRenderingTime( const LayerRenderJobs& jobs, const LabelRenderJob& labelJob );
 
     //! @note not available in python bindings
     void cleanupJobs( LayerRenderJobs& jobs );
+
+    /**
+     * Handles clean up tasks for a label job, including deletion of images and storing cached
+     * label results.
+     * @note added in QGIS 3.0
+     * @note not available in python bindings
+     */
+    void cleanupLabelJob( LabelRenderJob& job );
 
     //! @note not available in Python bindings
     static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsLabelingEngine* labelingEngine2, QPainter* painter );
