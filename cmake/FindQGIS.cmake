@@ -9,6 +9,10 @@
 ## QGIS_INCLUDE_DIR      = where to find headers
 ## QGIS_UI_INCLUDE_DIR   = where to find ui_* generated headers
 ##
+## Definitions or ENV variables affecting search locations
+##
+## QGIS_MAC_PATH         = /path/to/any/QGIS.app/Contents
+##
 ## Tim Sutton
 ## Larry Shaffer (2017-01-31)
 
@@ -93,34 +97,33 @@ IF(WIN32)
   ENDIF (MSVC)
 ELSE(WIN32)
   IF(UNIX)
-    # try to use bundle on mac
-    SET (QGIS_MAC_PATH /Applications/QGIS.app/Contents)
     #MESSAGE("Searching for QGIS in /usr/bin; /usr/local/bin")
     FIND_PATH(QGIS_PLUGIN_DIR
       NAMES libspatialqueryplugin.so
       PATHS
+        ${QGIS_MAC_PATH}/PlugIns/qgis
         ${QGIS_PREFIX_PATH}/lib/qgis/plugins/
         /usr/lib64/qgis/plugins
         /usr/lib/qgis
         /usr/lib/qgis/plugins
         /usr/local/lib/qgis/plugins
-        ${QGIS_MAC_PATH}/PlugIns/qgis
         "$ENV{LIB_DIR}/lib/qgis/plugins"
         "$ENV{LIB_DIR}/lib/qgis"
     )
     FIND_PATH(QGIS_INCLUDE_DIR
       NAMES qgis.h
       PATHS
+        ${QGIS_MAC_PATH}/Frameworks/qgis_core.framework/Headers
         {QGIS_PREFIX_PATH}/include/qgis
         /usr/include/qgis
         /usr/local/include/qgis
         /Library/Frameworks/qgis_core.framework/Headers
-        ${QGIS_MAC_PATH}/Frameworks/qgis_core.framework/Headers
         "$ENV{LIB_DIR}/include/qgis"
     )
     FIND_PATH(QGIS_UI_INCLUDE_DIR
       NAMES ui_qgscredentialdialog.h
       PATHS
+        ${QGIS_MAC_PATH}/Frameworks/qgis_gui.framework/Headers
         {QGIS_PREFIX_PATH}/include/qgis
         /usr/include/qgis
         /usr/local/include/qgis
@@ -132,14 +135,16 @@ ELSE(WIN32)
       FIND_PATH(QGIS_GUI_INCLUDE_DIR
         NAMES qgisgui.h
         PATHS
-          /Library/Frameworks/qgis_core.framework/Headers
-          ${QGIS_MAC_PATH}/Frameworks/qgis_gui.framework/Headers
+          ${QGIS_MAC_PATH}/Frameworks
+          /Library/Frameworks
+          PATH_SUFFIXES qgis_gui.framework/Headers
       )
       FIND_PATH(QGIS_ANALYSIS_INCLUDE_DIR
         NAMES qgsinterpolator.h
         PATHS
-          /Library/Frameworks/qgis_analysis.framework/Headers
-          ${QGIS_MAC_PATH}/Frameworks/qgis_analysis.framework/Headers
+          ${QGIS_MAC_PATH}/Frameworks
+          /Library/Frameworks
+          PATH_SUFFIXES qgis_analysis.framework/Headers
       )
       SET(QGIS_INCLUDE_DIR
         ${QGIS_INCLUDE_DIR}
@@ -152,34 +157,37 @@ ELSE(WIN32)
     FIND_LIBRARY(QGIS_CORE_LIBRARY
       NAMES qgis_core
       PATHS
+        ${QGIS_MAC_PATH}/Frameworks
+        ${QGIS_MAC_PATH}/lib
         ${QGIS_PREFIX_PATH}/lib/
         /usr/lib64
         /usr/lib
         /usr/local/lib
         /Library/Frameworks
-        ${QGIS_MAC_PATH}/Frameworks
         "$ENV{LIB_DIR}/lib/"
     )
     FIND_LIBRARY(QGIS_GUI_LIBRARY
       NAMES qgis_gui
       PATHS
+        ${QGIS_MAC_PATH}/Frameworks
+        ${QGIS_MAC_PATH}/lib
         ${QGIS_PREFIX_PATH}/lib/
         /usr/lib64
         /usr/lib
         /usr/local/lib
         /Library/Frameworks
-        ${QGIS_MAC_PATH}/Frameworks
         "$ENV{LIB_DIR}/lib/"
     )
     FIND_LIBRARY(QGIS_ANALYSIS_LIBRARY
       NAMES qgis_analysis
       PATHS
+        ${QGIS_MAC_PATH}/Frameworks
+        ${QGIS_MAC_PATH}/lib
         ${QGIS_PREFIX_PATH}/lib/
         /usr/lib64
         /usr/lib
         /usr/local/lib
         /Library/Frameworks
-        ${QGIS_MAC_PATH}/Frameworks
         "$ENV{LIB_DIR}/lib/"
     )
   ENDIF(UNIX)
