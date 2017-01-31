@@ -634,6 +634,34 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry convexHull() const;
 
     /**
+     * Creates a Voronoi diagram for the nodes contained within the geometry.
+     *
+     * Returns the Voronoi polygons for the nodes contained within the geometry.
+     * If \a extent is specified then it will be used as a clipping envelope for the diagram.
+     * If no extent is set then the clipping envelope will be automatically calculated.
+     * In either case the diagram will be clipped to the larger of the provided envelope
+     * OR the envelope surrounding all input nodes.
+     * The \a tolerance parameter specifies an optional snapping tolerance which can
+     * be used to improve the robustness of the diagram calculation.
+     * If \a edgesOnly is true than line string boundary geometries will be returned
+     * instead of polygons.
+     * An empty geometry will be returned if the diagram could not be calculated.
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry voronoiDiagram( const QgsGeometry& extent = QgsGeometry(), double tolerance = 0.0, bool edgesOnly = false ) const;
+
+    /**
+     * Returns the Delaunay triangulation for the vertices of the geometry.
+     * The \a tolerance parameter specifies an optional snapping tolerance which can
+     * be used to improve the robustness of the triangulation.
+     * If \a edgesOnly is true than line string boundary geometries will be returned
+     * instead of polygons.
+     * An empty geometry will be returned if the diagram could not be calculated.
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false ) const;
+
+    /**
      * Return interpolated point on line at distance
      * @note added in 1.9
      * @see lineLocatePoint()
