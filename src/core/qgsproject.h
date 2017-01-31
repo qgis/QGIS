@@ -133,7 +133,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns the project's native coordinate reference system.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see setCrs()
      * @see ellipsoid()
      */
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Sets the project's native coordinate reference system.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see crs()
      * @see setEllipsoid()
      */
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
      * @see setEllipsoid()
      * @see crs()
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      */
     QString ellipsoid() const;
 
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
      * @see ellipsoid()
      * @see setCrs()
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      */
     void setEllipsoid( const QString& ellipsoid );
 
@@ -343,7 +343,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Sets the default distance measurement units for the project.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see distanceUnits()
      * @see setAreaUnits()
      */
@@ -357,7 +357,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Sets the default area measurement units for the project.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see areaUnits()
      * @see setDistanceUnits()
      */
