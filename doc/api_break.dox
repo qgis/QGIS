@@ -249,6 +249,7 @@ Use QgsComposerAttributeTableV2 instead.
 - QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,
 so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).
+- QgsFileNameWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsFormAnnotationItem. Use QgsFormAnnotation instead.
 - QgsHtmlAnnotationItem. Use QgsHtmlAnnotation instead.
 - QgsHttpTransaction. This class was outdated and code should be ported to native Qt or Python implementations.
@@ -264,11 +265,13 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsMapCanvasMap. It is an internal class used by map canvas.
 - QgsMapLayerRegistry. Its functionality has been moved to QgsProject.
 - QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.
+- QgsPhotoWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.
 - QgsProjectBadLayerGuiHandler was removed. It was unused in QGIS code and barely useful. Implement your own QgsProjectBadLayerHandler subclass if needed.
 - QgsRendererV2DataDefinedMenus was removed. Use QgsDataDefinedButton instead.
 - QgsLegacyHelpers.
 - QgsProviderCountCalcEvent and QgsProviderExtentCalcEvent. These classes were unused in QGIS core and unmaintained.
+- QgsWebviewWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsEditorWidgetConfig was removed. Use QVariantMap instead.
 - QgsSvgAnnotationItem. Use QgsSvgAnnotation instead.
 - QgsSymbologyV2Conversion was removed. Reading of renderers from pre-1.0 versions is not supported anymore.
@@ -850,6 +853,7 @@ QgsDiagramInterpolationSettings        {#qgis_api_break_3_0_QgsDiagramInterpolat
 
 QgsDiagramRenderer        {#qgis_api_break_3_0_QgsDiagramRenderer}
 ------------------
+
 - xform, fields were no longer required and are removed.
 - referencedFields() no longer takes a QgsFields argument.
 - renderDiagram() now takes an optional data defined overrides collection argument.

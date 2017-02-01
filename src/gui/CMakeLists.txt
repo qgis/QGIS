@@ -315,15 +315,6 @@ SET(QGIS_GUI_SRCS
   qgsfiledownloader.cpp
 )
 
-IF (WITH_QTWEBKIT)
-  SET(QGIS_GUI_SRCS
-      ${QGIS_GUI_SRCS}
-      editorwidgets/qgswebviewconfigdlg.cpp
-      editorwidgets/qgswebviewwidgetfactory.cpp
-      editorwidgets/qgswebviewwidgetwrapper.cpp
-  )
-ENDIF (WITH_QTWEBKIT)
-
 
 IF (WITH_TOUCH)
   SET(QGIS_GUI_SRCS
@@ -614,14 +605,6 @@ SET(QGIS_GUI_MOC_HDRS
   layertree/qgslayertreeviewdefaultactions.h
 )
 
-IF (WITH_QTWEBKIT)
-  SET(QGIS_GUI_MOC_HDRS
-      ${QGIS_GUI_MOC_HDRS}
-      editorwidgets/qgswebviewconfigdlg.h
-      editorwidgets/qgswebviewwidgetwrapper.h
-  )
-ENDIF (WITH_QTWEBKIT)
-
 QT5_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
 
 IF(MSVC)
@@ -709,13 +692,6 @@ SET(QGIS_GUI_HDRS
 
   symbology-ng/qgssymbolwidgetcontext.h
 )
-
-IF (WITH_QTWEBKIT)
-  SET(QGIS_GUI_HDRS
-      ${QGIS_GUI_HDRS}
-      editorwidgets/qgswebviewwidgetfactory.h
-  )
-ENDIF (WITH_QTWEBKIT)
 
 IF (WITH_TOUCH)
   SET(QGIS_GUI_HDRS
