@@ -25,6 +25,8 @@ __copyright__ = '(C) 2017, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import QgsWkbTypes
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -42,7 +44,8 @@ class FixGeometry(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input Layer')))
+                                          self.tr('Input Layer'),
+                                          [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Layer with fixed geometries')))
 
@@ -53,7 +56,7 @@ class FixGeometry(GeoAlgorithm):
         writer = self.getOutputFromName(
             self.OUTPUT).getVectorWriter(
                 layer.fields(),
-                layer.wkbType(),
+                QgsWkbTypes.multiType(layer.wkbType()),
                 layer.crs())
 
         features = vector.features(layer)
@@ -68,6 +71,19 @@ class FixGeometry(GeoAlgorithm):
                 if not outputGeometry:
                     ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
                                            'makeValid failed for feature {}'.format(inputFeature.id()))
+
+                if outputGeometry.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(outputGeometry.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
+                    tmpGeometries = outputGeometry.asGeometryCollection()
+                    for g in tmpGeometries:
+                        if g.type() == inputFeature.geometry().type():
+                            try:
+                                outputFeature.setGeometry(QgsGeometry(g))
+                                writer.addFeature(outputFeature)
+                            except:
+                                pass
+                    feedback.setProgress(int(current * total))
+                    continue
+
                 outputFeature.setGeometry(outputGeometry)
 
             writer.addFeature(outputFeature)
