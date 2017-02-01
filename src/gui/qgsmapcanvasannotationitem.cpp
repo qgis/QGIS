@@ -57,7 +57,14 @@ void QgsMapCanvasAnnotationItem::updatePosition()
   if ( mAnnotation->hasFixedMapPosition() )
   {
     QgsCoordinateTransform t( mAnnotation->mapPositionCrs(), mMapCanvas->mapSettings().destinationCrs() );
-    setPos( toCanvasCoordinates( t.transform( mAnnotation->mapPosition() ) ) );
+    QgsPoint coord = mAnnotation->mapPosition();
+    try
+    {
+      coord = t.transform( coord );
+    }
+    catch ( QgsCsException& )
+      {}
+    setPos( toCanvasCoordinates( coord ) );
   }
   else
   {
