@@ -93,6 +93,11 @@ inline static QgsMapLayer* _qgis_findLayer( const QList< QgsMapLayer*> layers, c
   }
 }
 
+inline uint qHash( const QPointer< QgsMapLayer >& key )
+{
+  return qHash( key ? key->id() : QString() );
+}
+
 ///@endcond
 
 #endif // QGSMAPLAYERLISTUTILS_H

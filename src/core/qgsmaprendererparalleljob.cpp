@@ -21,6 +21,7 @@
 #include "qgsmaplayerrenderer.h"
 #include "qgspallabeling.h"
 #include "qgsproject.h"
+#include "qgsmaplayer.h"
 
 #include <QtConcurrentMap>
 
@@ -220,7 +221,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
 
   QTime t;
   t.start();
-  QgsDebugMsgLevel( QString( "job %1 start (layer %2)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.layerId ), 2 );
+  QgsDebugMsgLevel( QString( "job %1 start (layer %2)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.layer ? job.layer->id() : QString() ), 2 );
 
   try
   {
@@ -242,7 +243,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
   }
 
   job.renderingTime = t.elapsed();
-  QgsDebugMsgLevel( QString( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layerId ), 2 );
+  QgsDebugMsgLevel( QString( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layer ? job.layer->id() : QString() ), 2 );
 }
 
 

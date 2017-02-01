@@ -61,12 +61,12 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     /**
      * Set the cached \a image for a particular \a cacheKey. The \a cacheKey usually
      * matches the QgsMapLayer::id() which the image is a render of.
-     * A list of \a dependentLayerIds should be passed containing all layer IDs
+     * A list of \a dependentLayers should be passed containing all layer
      * on which this cache image is dependent. If any of these layers triggers a
      * repaint then the cache image will be cleared.
      * @see cacheImage()
      */
-    void setCacheImage( const QString& cacheKey, const QImage& image, const QStringList& dependentLayerIds = QStringList() );
+    void setCacheImage( const QString& cacheKey, const QImage& image, const QList< QgsMapLayer* >& dependentLayers = QList< QgsMapLayer* >() );
 
     /**
      * Returns true if the cache contains an image with the specified \a cacheKey.
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     //! Disconnects from layers we no longer care about
     void dropUnusedConnections();
 
-    QSet<QString> dependentLayerIds() const;
+    QSet< QPointer< QgsMapLayer > > dependentLayers() const;
 
     mutable QMutex mMutex;
     QgsRectangle mExtent;
@@ -116,8 +116,8 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
 
     //! Map of cache key to cache parameters
     QMap<QString, CacheParameters> mCachedImages;
-    //! List of all layer ids on which this cache is currently connected
-    QSet< QString > mConnectedLayerIds;
+    //! List of all layers on which this cache is currently connected
+    QSet< QPointer< QgsMapLayer > > mConnectedLayers;
 };
 
 

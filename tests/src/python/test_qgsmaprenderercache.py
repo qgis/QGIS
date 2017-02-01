@@ -105,7 +105,7 @@ class TestQgsMapRendererCache(unittest.TestCase):
         # add image to cache
         cache = QgsMapRendererCache()
         im = QImage(200, 200, QImage.Format_RGB32)
-        cache.setCacheImage('xxx', im, [layer.id()])
+        cache.setCacheImage('xxx', im, [layer])
         self.assertFalse(cache.cacheImage('xxx').isNull())
         self.assertTrue(cache.hasCacheImage('xxx'))
 
@@ -144,15 +144,15 @@ class TestQgsMapRendererCache(unittest.TestCase):
 
         # image depends on 1 layer
         im_l1 = QImage(200, 200, QImage.Format_RGB32)
-        cache.setCacheImage('im1', im_l1, [layer1.id()])
+        cache.setCacheImage('im1', im_l1, [layer1])
 
         # image depends on 2 layers
         im_l1_l2 = QImage(200, 200, QImage.Format_RGB32)
-        cache.setCacheImage('im1_im2', im_l1_l2, [layer1.id(), layer2.id()])
+        cache.setCacheImage('im1_im2', im_l1_l2, [layer1, layer2])
 
         # image depends on 2nd layer alone
         im_l2 = QImage(200, 200, QImage.Format_RGB32)
-        cache.setCacheImage('im2', im_l2, [layer2.id()])
+        cache.setCacheImage('im2', im_l2, [layer2])
 
         self.assertFalse(cache.cacheImage('im1').isNull())
         self.assertTrue(cache.hasCacheImage('im1'))
