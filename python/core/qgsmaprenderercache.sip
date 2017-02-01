@@ -12,10 +12,10 @@ class QgsMapRendererCache : QObject
 
     bool init( const QgsRectangle& extent, double scale );
 
-    void setCacheImage( const QString& layerId, const QImage& img );
+    void setCacheImage( const QString& cacheKey, const QImage& image, const QStringList& dependentLayerIds = QStringList() );
 
-    QImage cacheImage( const QString& layerId );
+    QImage cacheImage( const QString& cacheKey ) const;
 
-    void clearCacheImage( const QString& layerId );
+    void clearCacheImage( const QString& cacheKey );
 
 };

@@ -326,7 +326,7 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
       if ( mCache && !job.cached && !job.context.renderingStopped() )
       {
         QgsDebugMsg( "caching image for " + job.layerId );
-        mCache->setCacheImage( job.layerId, *job.img );
+        mCache->setCacheImage( job.layerId, *job.img, QStringList() << job.layerId );
       }
 
       delete job.img;

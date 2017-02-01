@@ -57,7 +57,7 @@ class TestQgsMapRendererCache(unittest.TestCase):
     def testInit(self):
         cache = QgsMapRendererCache()
         extent = QgsRectangle(1, 2, 3, 4)
-        cache.init(extent, 1000)
+        self.assertFalse(cache.init(extent, 1000))
 
         # add a cache image
         im = QImage(200, 200, QImage.Format_RGB32)
@@ -65,13 +65,13 @@ class TestQgsMapRendererCache(unittest.TestCase):
         self.assertFalse(cache.cacheImage('layer').isNull())
 
         # re init, without changing extent or scale
-        cache.init(extent, 1000)
+        self.assertTrue(cache.init(extent, 1000))
 
         # image should still be in cache
         self.assertFalse(cache.cacheImage('layer').isNull())
 
         # reinit with different scale
-        cache.init(extent, 2000)
+        self.assertFalse(cache.init(extent, 2000))
         # cache should be cleared
         self.assertTrue(cache.cacheImage('layer').isNull())
 
@@ -80,11 +80,12 @@ class TestQgsMapRendererCache(unittest.TestCase):
         self.assertFalse(cache.cacheImage('layer').isNull())
 
         # change extent
-        cache.init(QgsRectangle(11, 12, 13, 14), 2000)
+        self.assertFalse(cache.init(QgsRectangle(11, 12, 13, 14), 2000))
         # cache should be cleared
         self.assertTrue(cache.cacheImage('layer').isNull())
 
-    def testRequestRepaint(self):
+    def testRequestRepaintSimple(self):
+        """ test requesting repaint with a single dependent layer """
         layer = QgsVectorLayer("Point?field=fldtxt:string",
                                "layer", "memory")
         QgsProject.instance().addMapLayers([layer])
@@ -93,13 +94,77 @@ class TestQgsMapRendererCache(unittest.TestCase):
         # add image to cache
         cache = QgsMapRendererCache()
         im = QImage(200, 200, QImage.Format_RGB32)
-        cache.setCacheImage(layer.id(), im)
-        self.assertFalse(cache.cacheImage(layer.id()).isNull())
+        cache.setCacheImage('xxx', im, [layer.id()])
+        self.assertFalse(cache.cacheImage('xxx').isNull())
 
         # trigger repaint on layer
         layer.triggerRepaint()
         # cache image should be cleared
-        self.assertTrue(cache.cacheImage(layer.id()).isNull())
+        self.assertTrue(cache.cacheImage('xxx').isNull())
+        QgsProject.instance().removeMapLayer(layer.id())
+
+    def testRequestRepaintMultiple(self):
+        """ test requesting repaint with multiple dependent layers """
+        layer1 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        QgsProject.instance().addMapLayers([layer1, layer2])
+        self.assertTrue(layer1.isValid())
+        self.assertTrue(layer2.isValid())
+
+        # add image to cache - no dependent layers
+        cache = QgsMapRendererCache()
+        im1 = QImage(200, 200, QImage.Format_RGB32)
+        cache.setCacheImage('nolayer', im1)
+        self.assertFalse(cache.cacheImage('nolayer').isNull())
+
+        # trigger repaint on layer
+        layer1.triggerRepaint()
+        layer1.triggerRepaint() # do this a couple of times - we don't want errors due to multiple disconnects, etc
+        layer2.triggerRepaint()
+        layer2.triggerRepaint()
+        # cache image should still exist - it's not dependent on layers
+        self.assertFalse(cache.cacheImage('nolayer').isNull())
+
+        # image depends on 1 layer
+        im_l1 = QImage(200, 200, QImage.Format_RGB32)
+        cache.setCacheImage('im1', im_l1, [layer1.id()])
+
+        # image depends on 2 layers
+        im_l1_l2 = QImage(200, 200, QImage.Format_RGB32)
+        cache.setCacheImage('im1_im2', im_l1_l2, [layer1.id(), layer2.id()])
+
+        # image depends on 2nd layer alone
+        im_l2 = QImage(200, 200, QImage.Format_RGB32)
+        cache.setCacheImage('im2', im_l2, [layer2.id()])
+
+        self.assertFalse(cache.cacheImage('im1').isNull())
+        self.assertFalse(cache.cacheImage('im1_im2').isNull())
+        self.assertFalse(cache.cacheImage('im2').isNull())
+
+        # trigger repaint layer 1 (check twice - don't want disconnect errors)
+        for i in range(2):
+            layer1.triggerRepaint()
+            #should be cleared
+            self.assertTrue(cache.cacheImage('im1').isNull())
+            self.assertTrue(cache.cacheImage('im1_im2').isNull())
+            # should be retained
+            self.assertFalse(cache.cacheImage('im2').isNull())
+            self.assertEqual(cache.cacheImage('im2'), im_l2)
+            self.assertFalse(cache.cacheImage('nolayer').isNull())
+            self.assertEqual(cache.cacheImage('nolayer'), im1)
+
+        # trigger repaint layer 2
+        for i in range(2):
+            layer2.triggerRepaint()
+            #should be cleared
+            self.assertTrue(cache.cacheImage('im1').isNull())
+            self.assertTrue(cache.cacheImage('im1_im2').isNull())
+            self.assertTrue(cache.cacheImage('im2').isNull())
+            # should be retained
+            self.assertFalse(cache.cacheImage('nolayer').isNull())
+            self.assertEqual(cache.cacheImage('nolayer'), im1)
 
 
 if __name__ == '__main__':
