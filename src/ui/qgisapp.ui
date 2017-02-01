@@ -187,6 +187,7 @@
      <string>&amp;Plugins</string>
     </property>
     <addaction name="mActionManagePlugins"/>
+    <addaction name="mActionInstallFromZip"/>
     <addaction name="separator"/>
     <addaction name="mActionShowPythonDialog"/>
    </widget>
@@ -2589,6 +2590,15 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Copy and Move Feature(s)</string>
+   </property>
+  </action>
+  <action name="mActionInstallFromZip">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionInstallPluginFromZip.svg</normaloff>:/images/themes/default/mActionInstallPluginFromZip.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Install plugin from ZIP...</string>
    </property>
   </action>
  </widget>

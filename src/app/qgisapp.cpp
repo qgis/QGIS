@@ -965,11 +965,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     mPluginManager->setPythonUtils( mPythonUtils );
     endProfile();
   }
-  else if ( mActionShowPythonDialog )
+  else if ( mActionShowPythonDialog || mActionInstallFromZip )
   {
     // python is disabled so get rid of the action for python console
+    // and installing plugin from ZUIP
     delete mActionShowPythonDialog;
+    delete mActionInstallFromZip;
     mActionShowPythonDialog = nullptr;
+    mActionInstallFromZip = nullptr;
   }
 
   // Set icon size of toolbars
@@ -1722,6 +1725,7 @@ void QgisApp::createActions()
   // Plugin Menu Items
 
   connect( mActionManagePlugins, SIGNAL( triggered() ), this, SLOT( showPluginManager() ) );
+  connect( mActionInstallFromZip, SIGNAL( triggered() ), this, SLOT( installPluginFromZip() ) );
   connect( mActionShowPythonDialog, SIGNAL( triggered() ), this, SLOT( showPythonDialog() ) );
 
   // Settings Menu Items
@@ -2612,6 +2616,7 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionToggleFullScreen->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleFullScreen.png" ) ) );
   mActionProjectProperties->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionProjectProperties.png" ) ) );
   mActionManagePlugins->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowPluginManager.svg" ) ) );
+  mActionInstallFromZip->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInstallPluginFromZip.svg" ) ) );
   mActionShowPythonDialog->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconRunConsole.png" ) ) );
   mActionCheckQgisVersion->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSuccess.svg" ) ) );
   mActionOptions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
@@ -8908,6 +8913,15 @@ void QgisApp::showPluginManager()
     mQgisInterface->pluginManagerInterface()->showPluginManager();
   }
 }
+
+void QgisApp::installPluginFromZip()
+{
+  if ( mPythonUtils && mPythonUtils->isEnabled() )
+  {
+    QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installFromZipFile()" ) );
+  }
+}
+
 
 // implementation of the python runner
 class QgsPythonRunnerImpl : public QgsPythonRunner
