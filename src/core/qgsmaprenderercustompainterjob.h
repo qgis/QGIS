@@ -71,16 +71,15 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
      */
     void renderSynchronously();
 
-  protected slots:
+  private slots:
     void futureFinished();
 
-  protected:
+  private:
     static void staticRender( QgsMapRendererCustomPainterJob* self ); // function to be used within the thread
 
     // these methods are called within worker thread
     void doRender();
 
-  private:
     QPainter* mPainter;
     QFuture<void> mFuture;
     QFutureWatcher<void> mFutureWatcher;
@@ -90,6 +89,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
     bool mActive;
     LayerRenderJobs mLayerJobs;
     bool mRenderSynchronously;
+
 };
 
 

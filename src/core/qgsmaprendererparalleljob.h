@@ -44,18 +44,16 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     // from QgsMapRendererJobWithPreview
     virtual QImage renderedImage() override;
 
-  protected slots:
+  private slots:
     //! layers are rendered, labeling is still pending
     void renderLayersFinished();
     //! all rendering is finished, including labeling
     void renderingFinished();
 
-  protected:
+  private:
 
     static void renderLayerStatic( LayerRenderJob& job );
     static void renderLabelsStatic( QgsMapRendererParallelJob* self );
-
-  protected:
 
     QImage mFinalImage;
 
@@ -72,6 +70,7 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     QgsRenderContext mLabelingRenderContext;
     QFuture<void> mLabelingFuture;
     QFutureWatcher<void> mLabelingFutureWatcher;
+
 };
 
 

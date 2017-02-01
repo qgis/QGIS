@@ -50,12 +50,13 @@ class CORE_EXPORT QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
 
     void internalFinished();
 
-  protected:
+  private:
 
     QgsMapRendererCustomPainterJob* mInternalJob;
     QImage mImage;
     QPainter* mPainter;
     QgsLabelingResults* mLabelingResults;
+
 };
 
 

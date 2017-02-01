@@ -19,7 +19,6 @@
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgspallabeling.h"
 
-
 QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings& settings )
     : QgsMapRendererQImageJob( settings )
     , mInternalJob( nullptr )
@@ -138,4 +137,3 @@ void QgsMapRendererSequentialJob::internalFinished()
 
   emit finished();
 }
-

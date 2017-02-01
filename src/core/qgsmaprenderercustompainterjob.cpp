@@ -24,7 +24,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsrenderer.h"
 
-
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter )
     : QgsMapRendererJob( settings )
     , mPainter( painter )
