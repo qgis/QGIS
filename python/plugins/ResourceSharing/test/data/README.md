@@ -1,1 +1,0 @@
-# QGIS-style-repo-dummy
