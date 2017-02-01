@@ -30,29 +30,35 @@ class TestQgsMapRendererCache(unittest.TestCase):
         # not set image
         im = cache.cacheImage('littlehands')
         self.assertTrue(im.isNull())
+        self.assertFalse(cache.hasCacheImage('littlehands'))
 
         # set image
         im = QImage(200, 200, QImage.Format_RGB32)
         cache.setCacheImage('littlehands', im)
         self.assertFalse(im.isNull())
         self.assertEqual(cache.cacheImage('littlehands'), im)
+        self.assertTrue(cache.hasCacheImage('littlehands'))
 
         # test another not set image when cache has images
         self.assertTrue(cache.cacheImage('bad').isNull())
+        self.assertFalse(cache.hasCacheImage('bad'))
 
         # clear cache image
         cache.clearCacheImage('not in cache') # no crash!
         cache.clearCacheImage('littlehands')
         im = cache.cacheImage('littlehands')
         self.assertTrue(im.isNull())
+        self.assertFalse(cache.hasCacheImage('littlehands'))
 
         # clear whole cache
         im = QImage(200, 200, QImage.Format_RGB32)
         cache.setCacheImage('littlehands', im)
         self.assertFalse(im.isNull())
+        self.assertTrue(cache.hasCacheImage('littlehands'))
         cache.clear()
         im = cache.cacheImage('littlehands')
         self.assertTrue(im.isNull())
+        self.assertFalse(cache.hasCacheImage('littlehands'))
 
     def testInit(self):
         cache = QgsMapRendererCache()
@@ -63,26 +69,31 @@ class TestQgsMapRendererCache(unittest.TestCase):
         im = QImage(200, 200, QImage.Format_RGB32)
         cache.setCacheImage('layer', im)
         self.assertFalse(cache.cacheImage('layer').isNull())
+        self.assertTrue(cache.hasCacheImage('layer'))
 
         # re init, without changing extent or scale
         self.assertTrue(cache.init(extent, 1000))
 
         # image should still be in cache
         self.assertFalse(cache.cacheImage('layer').isNull())
+        self.assertTrue(cache.hasCacheImage('layer'))
 
         # reinit with different scale
         self.assertFalse(cache.init(extent, 2000))
         # cache should be cleared
         self.assertTrue(cache.cacheImage('layer').isNull())
+        self.assertFalse(cache.hasCacheImage('layer'))
 
         # readd image to cache
         cache.setCacheImage('layer', im)
         self.assertFalse(cache.cacheImage('layer').isNull())
+        self.assertTrue(cache.hasCacheImage('layer'))
 
         # change extent
         self.assertFalse(cache.init(QgsRectangle(11, 12, 13, 14), 2000))
         # cache should be cleared
         self.assertTrue(cache.cacheImage('layer').isNull())
+        self.assertFalse(cache.hasCacheImage('layer'))
 
     def testRequestRepaintSimple(self):
         """ test requesting repaint with a single dependent layer """
@@ -96,11 +107,13 @@ class TestQgsMapRendererCache(unittest.TestCase):
         im = QImage(200, 200, QImage.Format_RGB32)
         cache.setCacheImage('xxx', im, [layer.id()])
         self.assertFalse(cache.cacheImage('xxx').isNull())
+        self.assertTrue(cache.hasCacheImage('xxx'))
 
         # trigger repaint on layer
         layer.triggerRepaint()
         # cache image should be cleared
         self.assertTrue(cache.cacheImage('xxx').isNull())
+        self.assertFalse(cache.hasCacheImage('xxx'))
         QgsProject.instance().removeMapLayer(layer.id())
 
     def testRequestRepaintMultiple(self):
@@ -118,6 +131,7 @@ class TestQgsMapRendererCache(unittest.TestCase):
         im1 = QImage(200, 200, QImage.Format_RGB32)
         cache.setCacheImage('nolayer', im1)
         self.assertFalse(cache.cacheImage('nolayer').isNull())
+        self.assertTrue(cache.hasCacheImage('nolayer'))
 
         # trigger repaint on layer
         layer1.triggerRepaint()
@@ -126,6 +140,7 @@ class TestQgsMapRendererCache(unittest.TestCase):
         layer2.triggerRepaint()
         # cache image should still exist - it's not dependent on layers
         self.assertFalse(cache.cacheImage('nolayer').isNull())
+        self.assertTrue(cache.hasCacheImage('nolayer'))
 
         # image depends on 1 layer
         im_l1 = QImage(200, 200, QImage.Format_RGB32)
@@ -140,18 +155,25 @@ class TestQgsMapRendererCache(unittest.TestCase):
         cache.setCacheImage('im2', im_l2, [layer2.id()])
 
         self.assertFalse(cache.cacheImage('im1').isNull())
+        self.assertTrue(cache.hasCacheImage('im1'))
         self.assertFalse(cache.cacheImage('im1_im2').isNull())
+        self.assertTrue(cache.hasCacheImage('im1_im2'))
         self.assertFalse(cache.cacheImage('im2').isNull())
+        self.assertTrue(cache.hasCacheImage('im2'))
 
         # trigger repaint layer 1 (check twice - don't want disconnect errors)
         for i in range(2):
             layer1.triggerRepaint()
             #should be cleared
             self.assertTrue(cache.cacheImage('im1').isNull())
+            self.assertFalse(cache.hasCacheImage('im1'))
             self.assertTrue(cache.cacheImage('im1_im2').isNull())
+            self.assertFalse(cache.hasCacheImage('im1_im2'))
             # should be retained
+            self.assertTrue(cache.hasCacheImage('im2'))
             self.assertFalse(cache.cacheImage('im2').isNull())
             self.assertEqual(cache.cacheImage('im2'), im_l2)
+            self.assertTrue(cache.hasCacheImage('nolayer'))
             self.assertFalse(cache.cacheImage('nolayer').isNull())
             self.assertEqual(cache.cacheImage('nolayer'), im1)
 
@@ -159,10 +181,14 @@ class TestQgsMapRendererCache(unittest.TestCase):
         for i in range(2):
             layer2.triggerRepaint()
             #should be cleared
+            self.assertFalse(cache.hasCacheImage('im1'))
             self.assertTrue(cache.cacheImage('im1').isNull())
+            self.assertFalse(cache.hasCacheImage('im1_im2'))
             self.assertTrue(cache.cacheImage('im1_im2').isNull())
+            self.assertFalse(cache.hasCacheImage('im2'))
             self.assertTrue(cache.cacheImage('im2').isNull())
             # should be retained
+            self.assertTrue(cache.hasCacheImage('nolayer'))
             self.assertFalse(cache.cacheImage('nolayer').isNull())
             self.assertEqual(cache.cacheImage('nolayer'), im1)
 

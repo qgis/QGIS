@@ -69,10 +69,18 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     void setCacheImage( const QString& cacheKey, const QImage& image, const QStringList& dependentLayerIds = QStringList() );
 
     /**
+     * Returns true if the cache contains an image with the specified \a cacheKey.
+     * @note added in QGIS 3.0
+     * @see cacheImage()
+     */
+    bool hasCacheImage( const QString& cacheKey ) const;
+
+    /**
      * Returns the cached image for the specified \a cacheKey. The \a cacheKey usually
      * matches the QgsMapLayer::id() which the image is a render of.
      * Returns a null image if it is not cached.
      * @see setCacheImage()
+     * @see hasCacheImage()
      */
     QImage cacheImage( const QString& cacheKey ) const;
 

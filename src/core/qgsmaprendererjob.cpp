@@ -257,7 +257,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
       job.context.setFeatureFilterProvider( mFeatureFilterProvider );
 
     // if we can use the cache, let's do it and avoid rendering!
-    if ( mCache && !mCache->cacheImage( ml->id() ).isNull() )
+    if ( mCache && mCache->hasCacheImage( ml->id() ) )
     {
       job.cached = true;
       job.img = new QImage( mCache->cacheImage( ml->id() ) );

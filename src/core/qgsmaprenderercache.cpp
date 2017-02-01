@@ -121,6 +121,11 @@ void QgsMapRendererCache::setCacheImage( const QString& cacheKey, const QImage& 
   mCachedImages[cacheKey] = params;
 }
 
+bool QgsMapRendererCache::hasCacheImage( const QString& cacheKey ) const
+{
+  return mCachedImages.contains( cacheKey );
+}
+
 QImage QgsMapRendererCache::cacheImage( const QString& cacheKey ) const
 {
   QMutexLocker lock( &mMutex );
