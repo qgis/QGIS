@@ -987,11 +987,11 @@ void QgsFieldsProperties::apply()
     int idx = mFieldsList->item( i, attrIdCol )->text().toInt();
     FieldConfig cfg = configForRow( i );
 
-    mLayer->editFormConfig()->setReadOnly( i, !cfg.mEditable );
-    mLayer->editFormConfig()->setLabelOnTop( i, cfg.mLabelOnTop );
-    mLayer->editFormConfig()->setNotNull( i, cfg.mNotNull );
-    mLayer->editFormConfig()->setExpressionDescription( i, cfg.mConstraintDescription );
-    mLayer->editFormConfig()->setExpression( i, cfg.mConstraint );
+    mLayer->editFormConfig()->setReadOnly( idx, !cfg.mEditable );
+    mLayer->editFormConfig()->setLabelOnTop( idx, cfg.mLabelOnTop );
+    mLayer->editFormConfig()->setNotNull( idx, cfg.mNotNull );
+    mLayer->editFormConfig()->setExpressionDescription( idx, cfg.mConstraintDescription );
+    mLayer->editFormConfig()->setExpression( idx, cfg.mConstraint );
 
     mLayer->editFormConfig()->setWidgetType( idx, cfg.mEditorWidgetV2Type );
     mLayer->editFormConfig()->setWidgetConfig( idx, cfg.mEditorWidgetV2Config );
