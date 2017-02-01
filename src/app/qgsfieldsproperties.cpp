@@ -903,8 +903,8 @@ void QgsFieldsProperties::apply()
     int idx = mFieldsList->item( i, attrIdCol )->text().toInt();
     FieldConfig cfg = configForRow( i );
 
-    mLayer->editFormConfig()->setReadOnly( i, !cfg.mEditable );
-    mLayer->editFormConfig()->setLabelOnTop( i, cfg.mLabelOnTop );
+    mLayer->editFormConfig()->setReadOnly( idx, !cfg.mEditable );
+    mLayer->editFormConfig()->setLabelOnTop( idx, cfg.mLabelOnTop );
 
     mLayer->editFormConfig()->setWidgetType( idx, cfg.mEditorWidgetV2Type );
     mLayer->editFormConfig()->setWidgetConfig( idx, cfg.mEditorWidgetV2Config );
