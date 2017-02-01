@@ -1335,6 +1335,14 @@ be returned instead of a null pointer if no transformation is required.
 - destinationSrsChanged() was renamed to destinationCrsChanged()
 - getCompositionMode(), getBlendModeEnum() and BlendMode enum have been moved to QgsPainting utility class.
 
+QgsMapRendererCache        {#qgis_api_break_3_0_QgsMapRendererCache}
+-------------------
+
+- All protected members have been made private. This class is not designed to be subclassed.
+- setCacheImage no longer uses layer IDs for cache keys. Cache keys can now be any arbitrary string.
+A new parameter for setCacheImage is used to list all layers on which the cache image is dependent. This
+allows for cache images which have either no layer dependencies or multiple layer dependencies.
+
 
 QgsMapRendererJob        {#qgis_api_break_3_0_QgsMapRendererJob}
 -----------------

@@ -243,7 +243,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
     {
       job.opacity = 1.0 - vl->layerTransparency() / 100.0;
     }
-    job.layerId = ml->id();
+    job.layer = ml;
     job.renderingTime = -1;
 
     job.context = QgsRenderContext::fromMapSettings( mSettings );
@@ -257,7 +257,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
       job.context.setFeatureFilterProvider( mFeatureFilterProvider );
 
     // if we can use the cache, let's do it and avoid rendering!
-    if ( mCache && !mCache->cacheImage( ml->id() ).isNull() )
+    if ( mCache && mCache->hasCacheImage( ml->id() ) )
     {
       job.cached = true;
       job.img = new QImage( mCache->cacheImage( ml->id() ) );
@@ -323,10 +323,10 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
       delete job.context.painter();
       job.context.setPainter( nullptr );
 
-      if ( mCache && !job.cached && !job.context.renderingStopped() )
+      if ( mCache && !job.cached && !job.context.renderingStopped() && job.layer )
       {
-        QgsDebugMsg( "caching image for " + job.layerId );
-        mCache->setCacheImage( job.layerId, *job.img );
+        QgsDebugMsg( "caching image for " + ( job.layer ? job.layer->id() : QString() ) );
+        mCache->setCacheImage( job.layer->id(), *job.img, QList< QgsMapLayer* >() << job.layer );
       }
 
       delete job.img;
@@ -380,7 +380,7 @@ void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs& jobs )
 
   QMultiMap<int, QString> elapsed;
   Q_FOREACH ( const LayerRenderJob& job, jobs )
-    elapsed.insert( job.renderingTime, job.layerId );
+    elapsed.insert( job.renderingTime, job.layer ? job.layer->id() : QString() );
 
   QList<int> tt( elapsed.uniqueKeys() );
   qSort( tt.begin(), tt.end(), qGreater<int>() );
