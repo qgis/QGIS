@@ -88,6 +88,22 @@ QgsLabelingEngine::~QgsLabelingEngine()
   qDeleteAll( mSubProviders );
 }
 
+QStringList QgsLabelingEngine::participatingLayerIds() const
+{
+  QSet< QString > ids;
+  Q_FOREACH ( QgsAbstractLabelProvider* provider, mProviders )
+  {
+    if ( !provider->layerId().isEmpty() )
+      ids << provider->layerId();
+  }
+  Q_FOREACH ( QgsAbstractLabelProvider* provider, mSubProviders )
+  {
+    if ( !provider->layerId().isEmpty() )
+      ids << provider->layerId();
+  }
+  return ids.toList();
+}
+
 void QgsLabelingEngine::addProvider( QgsAbstractLabelProvider* provider )
 {
   provider->setEngine( this );
