@@ -15,6 +15,7 @@
 ##                               (^ use forward slashes!)
 ## OSGEO4W_QGIS_SUBDIR   = qgis[-rel|-ltr][-dev], in OSGEO4W_ROOT/apps/
 ## QGIS_MAC_PATH         = /path/to/any/QGIS.app/Contents
+## QGIS_BUILD_PATH       = [A-Z:]/path/to/QGIS/build/directory
 ##
 ## Tim Sutton
 ## Larry Shaffer (2017-01-31)
@@ -104,6 +105,7 @@ ELSE(WIN32)
     FIND_PATH(QGIS_PLUGIN_DIR
       NAMES libspatialqueryplugin.so
       PATHS
+        ${QGIS_BUILD_PATH}/PlugIns/qgis
         ${QGIS_MAC_PATH}/PlugIns/qgis
         ${QGIS_PREFIX_PATH}/lib/qgis/plugins/
         /usr/lib64/qgis/plugins
@@ -116,6 +118,7 @@ ELSE(WIN32)
     FIND_PATH(QGIS_INCLUDE_DIR
       NAMES qgis.h
       PATHS
+        ${QGIS_BUILD_PATH}/output/lib/qgis_core.framework/Headers
         ${QGIS_MAC_PATH}/Frameworks/qgis_core.framework/Headers
         {QGIS_PREFIX_PATH}/include/qgis
         /usr/include/qgis
@@ -126,6 +129,7 @@ ELSE(WIN32)
     FIND_PATH(QGIS_UI_INCLUDE_DIR
       NAMES ui_qgscredentialdialog.h
       PATHS
+        ${QGIS_BUILD_PATH}/src/ui
         ${QGIS_MAC_PATH}/Frameworks/qgis_gui.framework/Headers
         {QGIS_PREFIX_PATH}/include/qgis
         /usr/include/qgis
@@ -138,6 +142,7 @@ ELSE(WIN32)
       FIND_PATH(QGIS_GUI_INCLUDE_DIR
         NAMES qgisgui.h
         PATHS
+          ${QGIS_BUILD_PATH}/output/lib
           ${QGIS_MAC_PATH}/Frameworks
           /Library/Frameworks
           PATH_SUFFIXES qgis_gui.framework/Headers
@@ -145,6 +150,7 @@ ELSE(WIN32)
       FIND_PATH(QGIS_ANALYSIS_INCLUDE_DIR
         NAMES qgsinterpolator.h
         PATHS
+          ${QGIS_BUILD_PATH}/output/lib
           ${QGIS_MAC_PATH}/Frameworks
           /Library/Frameworks
           PATH_SUFFIXES qgis_analysis.framework/Headers
@@ -160,6 +166,7 @@ ELSE(WIN32)
     FIND_LIBRARY(QGIS_CORE_LIBRARY
       NAMES qgis_core
       PATHS
+        ${QGIS_BUILD_PATH}/output/lib
         ${QGIS_MAC_PATH}/Frameworks
         ${QGIS_MAC_PATH}/lib
         ${QGIS_PREFIX_PATH}/lib/
@@ -172,6 +179,7 @@ ELSE(WIN32)
     FIND_LIBRARY(QGIS_GUI_LIBRARY
       NAMES qgis_gui
       PATHS
+        ${QGIS_BUILD_PATH}/output/lib
         ${QGIS_MAC_PATH}/Frameworks
         ${QGIS_MAC_PATH}/lib
         ${QGIS_PREFIX_PATH}/lib/
@@ -184,6 +192,7 @@ ELSE(WIN32)
     FIND_LIBRARY(QGIS_ANALYSIS_LIBRARY
       NAMES qgis_analysis
       PATHS
+        ${QGIS_BUILD_PATH}/output/lib
         ${QGIS_MAC_PATH}/Frameworks
         ${QGIS_MAC_PATH}/lib
         ${QGIS_PREFIX_PATH}/lib/
