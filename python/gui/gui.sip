@@ -141,6 +141,7 @@
 %Include qgsprevieweffect.sip
 %Include qgsprojectionselectionwidget.sip
 %Include qgsprojectionselector.sip
+%Include qgspropertyassistantwidget.sip
 %Include qgspropertyoverridebutton.sip
 %Include qgsquerybuilder.sip
 %Include qgsrasterformatsaveoptionswidget.sip

@@ -180,6 +180,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     void showDescriptionDialog();
     void showExpressionDialog();
+    void showAssistant();
     void updateGui();
 
     /**
@@ -213,6 +214,8 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QAction* mActionCopyExpr;
     QAction* mActionClearExpr;
     QAction* mActionAssistant;
+
+    QgsPropertyDefinition mDefinition;
 
     QgsPropertyDefinition::DataType mDataTypes = QgsPropertyDefinition::DataTypeString;
     QString mDataTypesString;
