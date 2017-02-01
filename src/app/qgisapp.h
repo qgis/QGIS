@@ -863,6 +863,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showPluginManager();
     //! load python support if possible
     void loadPythonSupport();
+
+    /** Install plugin from ZIP file
+     * @note added in QGIS 3.0
+     */
+    void installPluginFromZip();
     //! Find the QMenu with the given name within plugin menu (ie the user visible text on the menu item)
     QMenu* getPluginMenu( const QString& menuName );
     //! Add the action to the submenu with the given name under the plugin menu
