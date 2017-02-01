@@ -110,12 +110,12 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     //! each LayerRenderJob.
     //! Ownership is not transferred and the provider must not be deleted
     //! before the render job.
-    void setFeatureFilterProvider( const QgsFeatureFilterProvider *f ) { mFeatureFilterProvider = f; };
+    void setFeatureFilterProvider( const QgsFeatureFilterProvider *f ) { mFeatureFilterProvider = f; }
 
     //! @note Added in QGIS 3.0
     //! Returns the feature filter provider used by the QgsRenderContext of
     //! each LayerRenderJob.
-    const QgsFeatureFilterProvider* featureFilterProvider() const { return mFeatureFilterProvider; };
+    const QgsFeatureFilterProvider* featureFilterProvider() const { return mFeatureFilterProvider; }
 
     struct Error
     {
