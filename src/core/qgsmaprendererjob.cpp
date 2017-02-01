@@ -34,6 +34,8 @@
 #include "qgsvectorlayer.h"
 #include "qgscsexception.h"
 
+///@cond PRIVATE
+
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings& settings )
     : mSettings( settings )
     , mCache( nullptr )
@@ -388,3 +390,5 @@ void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs& jobs )
   }
   QgsMessageLog::logMessage( QStringLiteral( "---" ), tr( "Rendering" ) );
 }
+
+///@endcond PRIVATE

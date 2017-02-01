@@ -26,14 +26,4 @@ class QgsMapRendererParallelJob : QgsMapRendererQImageJob
     // from QgsMapRendererJobWithPreview
     virtual QImage renderedImage();
 
-  protected slots:
-    //! layers are rendered, labeling is still pending
-    void renderLayersFinished();
-    //! all rendering is finished, including labeling
-    void renderingFinished();
-
-  protected:
-
-    static void renderLayerStatic( LayerRenderJob& job );
-    static void renderLabelsStatic( QgsMapRendererParallelJob* self );
 };

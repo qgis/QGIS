@@ -24,7 +24,6 @@
 
 #include <QtConcurrentMap>
 
-
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings& settings )
     : QgsMapRendererQImageJob( settings )
     , mStatus( Idle )
