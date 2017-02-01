@@ -35,7 +35,7 @@ void QgsMapRendererCache::clearInternal()
   mScale = 0;
 
   // make sure we are disconnected from all layers
-  Q_FOREACH ( const QPointer< QgsMapLayer >& layer, mConnectedLayers )
+  Q_FOREACH ( const QgsWeakMapLayerPointer& layer, mConnectedLayers )
   {
     if ( layer.data() )
     {
@@ -48,9 +48,9 @@ void QgsMapRendererCache::clearInternal()
 
 void QgsMapRendererCache::dropUnusedConnections()
 {
-  QSet< QPointer< QgsMapLayer > > stillDepends = dependentLayers();
-  QSet< QPointer< QgsMapLayer > > disconnects = mConnectedLayers.subtract( stillDepends );
-  Q_FOREACH ( const QPointer< QgsMapLayer >& layer, disconnects )
+  QSet< QgsWeakMapLayerPointer > stillDepends = dependentLayers();
+  QSet< QgsWeakMapLayerPointer > disconnects = mConnectedLayers.subtract( stillDepends );
+  Q_FOREACH ( const QgsWeakMapLayerPointer& layer, disconnects )
   {
     if ( layer.data() )
     {
@@ -61,13 +61,13 @@ void QgsMapRendererCache::dropUnusedConnections()
   mConnectedLayers = stillDepends;
 }
 
-QSet<QPointer<QgsMapLayer> > QgsMapRendererCache::dependentLayers() const
+QSet<QgsWeakMapLayerPointer > QgsMapRendererCache::dependentLayers() const
 {
-  QSet< QPointer< QgsMapLayer > > result;
+  QSet< QgsWeakMapLayerPointer > result;
   QMap<QString, CacheParameters>::const_iterator it = mCachedImages.constBegin();
   for ( ; it != mCachedImages.constEnd(); ++it )
   {
-    Q_FOREACH ( const QPointer< QgsMapLayer >& l, it.value().dependentLayers )
+    Q_FOREACH ( const QgsWeakMapLayerPointer& l, it.value().dependentLayers )
     {
       if ( l.data() )
         result << l;
@@ -107,7 +107,7 @@ void QgsMapRendererCache::setCacheImage( const QString& cacheKey, const QImage& 
     if ( layer )
     {
       params.dependentLayers << layer;
-      if ( !mConnectedLayers.contains( QPointer< QgsMapLayer >( layer ) ) )
+      if ( !mConnectedLayers.contains( QgsWeakMapLayerPointer( layer ) ) )
       {
         connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapRendererCache::layerRequestedRepaint );
         mConnectedLayers << layer;

@@ -551,7 +551,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
   // iterate through the map layers and test each layers extent
   // against the current min and max values
   QgsDebugMsg( QString( "Layer count: %1" ).arg( mLayers.count() ) );
-  Q_FOREACH ( const QPointer<QgsMapLayer>& layerPtr, mLayers )
+  Q_FOREACH ( const QgsWeakMapLayerPointer& layerPtr, mLayers )
   {
     if ( QgsMapLayer* lyr = layerPtr.data() )
     {

@@ -198,7 +198,7 @@ void TestQgsMapSettings::testMapLayerListUtils()
   l = _qgis_findLayer( listRawSource, QStringLiteral( "z" ) );
   QCOMPARE( !l, true );
 
-  QList< QPointer<QgsMapLayer> > listQPointer = _qgis_listRawToQPointer( listRawSource );
+  QgsWeakMapLayerPointerList listQPointer = _qgis_listRawToQPointer( listRawSource );
 
   QCOMPARE( listQPointer.count(), 2 );
   QCOMPARE( listQPointer[0].data(), vlA );

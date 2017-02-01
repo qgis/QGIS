@@ -760,7 +760,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( const QgsMapLa
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_name" ), layer->name(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_id" ), layer->id(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer" ), QVariant::fromValue<QPointer<QgsMapLayer> >( QPointer<QgsMapLayer>( const_cast<QgsMapLayer*>( layer ) ) ), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer" ), QVariant::fromValue<QgsWeakMapLayerPointer >( QgsWeakMapLayerPointer( const_cast<QgsMapLayer*>( layer ) ) ), true ) );
 
   const QgsVectorLayer* vLayer = dynamic_cast< const QgsVectorLayer* >( layer );
   if ( vLayer )
