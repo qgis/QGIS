@@ -184,6 +184,7 @@ from .ServiceAreaFromPoint import ServiceAreaFromPoint
 from .ServiceAreaFromLayer import ServiceAreaFromLayer
 from .TruncateTable import TruncateTable
 from .Polygonize import Polygonize
+from .FixGeometry import FixGeometry
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -252,7 +253,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RasterCalculator(), Heatmap(), Orthogonalize(),
                         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
                         ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
-                        ServiceAreaFromLayer(), TruncateTable(), Polygonize()
+                        ServiceAreaFromLayer(), TruncateTable(), Polygonize(),
+                        FixGeometry()
                         ]
 
         if hasMatplotlib:
