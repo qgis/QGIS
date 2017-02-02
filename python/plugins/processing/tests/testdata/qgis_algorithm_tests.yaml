@@ -2310,6 +2310,7 @@ tests:
     results:
       OUTPUT:
         name: expected/polygon_from_extent.gml
+        type: vector
         
   - algorithm: qgis:polygonize
     name: Polygonize
