@@ -1835,7 +1835,7 @@ QgsGeometry QgsGeos::mergeLines( QString* errorMsg ) const
 
 QgsGeometry QgsGeos::closestPoint( const QgsGeometry& other, QString* errorMsg ) const
 {
-  if ( !mGeos || other.isEmpty() )
+  if ( !mGeos || other.isNull() )
   {
     return QgsGeometry();
   }
@@ -1870,7 +1870,7 @@ QgsGeometry QgsGeos::closestPoint( const QgsGeometry& other, QString* errorMsg )
 
 QgsGeometry QgsGeos::shortestLine( const QgsGeometry& other, QString* errorMsg ) const
 {
-  if ( !mGeos || other.isEmpty() )
+  if ( !mGeos || other.isNull() )
   {
     return QgsGeometry();
   }
@@ -1939,6 +1939,101 @@ double QgsGeos::lineLocatePoint( const QgsPointV2& point, QString* errorMsg ) co
   }
 
   return distance;
+}
+
+QgsGeometry QgsGeos::polygonize( const QList<QgsAbstractGeometry*>& geometries, QString* errorMsg )
+{
+  GEOSGeometry** const lineGeosGeometries = new GEOSGeometry*[ geometries.size()];
+  int validLines = 0;
+  Q_FOREACH ( const QgsAbstractGeometry* g, geometries )
+  {
+    GEOSGeometry* l = asGeos( g );
+    if ( l )
+    {
+      lineGeosGeometries[validLines] = l;
+      validLines++;
+    }
+  }
+
+  try
+  {
+    GEOSGeomScopedPtr result( GEOSPolygonize_r( geosinit.ctxt, lineGeosGeometries, validLines ) );
+    for ( int i = 0; i < validLines; ++i )
+    {
+      GEOSGeom_destroy_r( geosinit.ctxt, lineGeosGeometries[i] );
+    }
+    delete[] lineGeosGeometries;
+    return QgsGeometry( fromGeos( result.get() ) );
+  }
+  catch ( GEOSException &e )
+  {
+    if ( errorMsg )
+    {
+      *errorMsg = e.what();
+    }
+    for ( int i = 0; i < validLines; ++i )
+    {
+      GEOSGeom_destroy_r( geosinit.ctxt, lineGeosGeometries[i] );
+    }
+    delete[] lineGeosGeometries;
+    return QgsGeometry();
+  }
+}
+
+QgsGeometry QgsGeos::voronoiDiagram( const QgsAbstractGeometry* extent, double tolerance, bool edgesOnly, QString* errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return QgsGeometry();
+  }
+
+  GEOSGeometry* extentGeos = nullptr;
+  GEOSGeomScopedPtr extentGeosGeom( nullptr );
+  if ( extent )
+  {
+    extentGeosGeom.reset( asGeos( extent, mPrecision ) );
+    if ( !extentGeosGeom )
+    {
+      return QgsGeometry();
+    }
+    extentGeos = extentGeosGeom.get();
+  }
+
+  GEOSGeomScopedPtr geos;
+  try
+  {
+    geos.reset( GEOSVoronoiDiagram_r( geosinit.ctxt, mGeos, extentGeos, tolerance, edgesOnly ) );
+
+    if ( !geos || GEOSisEmpty_r( geosinit.ctxt, geos.get() ) != 0 )
+    {
+      return QgsGeometry();
+    }
+
+    return QgsGeometry( fromGeos( geos.get() ) );
+  }
+  CATCH_GEOS_WITH_ERRMSG( QgsGeometry() );
+}
+
+QgsGeometry QgsGeos::delaunayTriangulation( double tolerance, bool edgesOnly, QString* errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return QgsGeometry();
+  }
+
+  GEOSGeomScopedPtr geos;
+  try
+  {
+    geos.reset( GEOSDelaunayTriangulation_r( geosinit.ctxt, mGeos, tolerance, edgesOnly ) );
+
+    if ( !geos || GEOSisEmpty_r( geosinit.ctxt, geos.get() ) != 0 )
+    {
+      return QgsGeometry();
+    }
+
+    return QgsGeometry( fromGeos( geos.get() ) );
+  }
+  CATCH_GEOS_WITH_ERRMSG( QgsGeometry() );
 }
 
 

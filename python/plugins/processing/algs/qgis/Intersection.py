@@ -107,7 +107,7 @@ class Intersection(GeoAlgorithm):
                         if int_com:
                             int_sym = geom.symDifference(tmpGeom)
                             int_geom = QgsGeometry(int_com.difference(int_sym))
-                    if int_geom.isGeosEmpty() or not int_geom.isGeosValid():
+                    if int_geom.isEmpty() or not int_geom.isGeosValid():
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                                self.tr('GEOS geoprocessing error: One or '
                                                        'more input features have invalid '

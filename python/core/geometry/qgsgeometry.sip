@@ -57,12 +57,7 @@ class QgsGeometry
      */
     void setGeometry( QgsAbstractGeometry* geometry /Transfer/ );
 
-    /** Returns true if the geometry is empty (ie, contains no underlying geometry
-     * accessible via @link geometry @endlink).
-     * @see geometry
-     * @note added in QGIS 2.10
-     */
-    bool isEmpty() const;
+    bool isNull() const;
 
     /** Creates a new geometry from a WKT string */
     static QgsGeometry fromWkt( const QString& wkt );
@@ -120,6 +115,8 @@ class QgsGeometry
      */
     QgsWkbTypes::GeometryType type() const;
 
+    bool isEmpty() const;
+
     /** Returns true if WKB of the geometry is of WKBMulti* type */
     bool isMultipart() const;
 
@@ -132,11 +129,6 @@ class QgsGeometry
       @note added in 1.5
      */
     bool isGeosValid() const;
-
-    /** Check if the geometry is empty using GEOS
-      @note added in 1.5
-     */
-    bool isGeosEmpty() const;
 
     /** Returns the area of the geometry using GEOS
       @note added in 1.5
@@ -575,6 +567,10 @@ class QgsGeometry
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
     QgsGeometry convexHull() const;
 
+    QgsGeometry voronoiDiagram( const QgsGeometry& extent = QgsGeometry(), double tolerance = 0.0, bool edgesOnly = false ) const;
+
+    QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false ) const;
+
     /**
      * Return interpolated point on line at distance
      * @note added in 1.9
@@ -784,6 +780,8 @@ class QgsGeometry
      * @returns the new computed QgsGeometry, or null
      */
     static QgsGeometry unaryUnion( const QList<QgsGeometry>& geometryList );
+
+    static QgsGeometry polygonize( const QList< QgsGeometry>& lines );
 
     /** Converts the geometry to straight line segments, if it is a curved geometry type.
      * @note added in QGIS 2.10

@@ -24,8 +24,11 @@
 """
 from builtins import str
 
-from qgis.PyQt.QtCore import Qt, QObject, QSettings, QDir, QUrl
-from qgis.PyQt.QtWidgets import QMessageBox, QLabel, QFrame, QApplication
+import os
+import zipfile
+
+from qgis.PyQt.QtCore import Qt, QObject, QSettings, QDir, QUrl, QSettings, QFileInfo, QFile
+from qgis.PyQt.QtWidgets import QMessageBox, QLabel, QFrame, QApplication, QFileDialog
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 import qgis
@@ -39,6 +42,7 @@ from .qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDial
 from .qgsplugininstallerpluginerrordialog import QgsPluginInstallerPluginErrorDialog
 from .qgsplugininstallerfetchingdialog import QgsPluginInstallerFetchingDialog
 from .qgsplugininstallerrepositorydialog import QgsPluginInstallerRepositoryDialog
+from .unzip import unzip
 
 
 # public instances:
@@ -345,14 +349,14 @@ class QgsPluginInstaller(QObject):
                         error = True
                         infoString = (self.tr("Plugin uninstall failed"), result)
                         try:
-                            exec ("sys.path_importer_cache.clear()")
-                            exec ("import %s" % plugin["id"])
-                            exec ("reload (%s)" % plugin["id"])
+                            exec("sys.path_importer_cache.clear()")
+                            exec("import %s" % plugin["id"])
+                            exec("reload (%s)" % plugin["id"])
                         except:
                             pass
                     else:
                         try:
-                            exec ("del sys.modules[%s]" % plugin["id"])
+                            exec("del sys.modules[%s]" % plugin["id"])
                         except:
                             pass
                     plugins.getAllInstalled()
@@ -399,12 +403,12 @@ class QgsPluginInstaller(QObject):
             except:
                 pass
             try:
-                exec ("plugins[%s].unload()" % plugin["id"])
-                exec ("del plugins[%s]" % plugin["id"])
+                exec("plugins[%s].unload()" % plugin["id"])
+                exec("del plugins[%s]" % plugin["id"])
             except:
                 pass
             try:
-                exec ("del sys.modules[%s]" % plugin["id"])
+                exec("del sys.modules[%s]" % plugin["id"])
             except:
                 pass
             plugins.getAllInstalled()
@@ -523,3 +527,69 @@ class QgsPluginInstaller(QObject):
         req.setRawHeader("Content-Type", "application/json")
         QgsNetworkAccessManager.instance().post(req, params)
         return True
+
+    def installFromZipFile(self):
+        settings = QSettings()
+        lastDirectory = settings.value('/Qgis/plugin-installer/lastZipDirectory', '.')
+        filePath, _ = QFileDialog.getOpenFileName(iface.mainWindow(),
+                                                  self.tr('Open file'),
+                                                  lastDirectory,
+                                                  self.tr('Plugin packages (*.zip *.ZIP)'))
+        if filePath == '':
+            return
+
+        settings.setValue('/Qgis/plugin-installer/lastZipDirectory',
+                          QFileInfo(filePath).absoluteDir().absolutePath())
+
+        error = False
+        infoString = None
+
+        with zipfile.ZipFile(filePath, 'r') as zf:
+            pluginName = os.path.split(zf.namelist()[0])[0]
+
+        pluginFileName = os.path.splitext(os.path.basename(filePath))[0]
+
+        pluginsDirectory = qgis.utils.home_plugin_path
+        if not QDir(pluginsDirectory).exists():
+            QDir().mkpath(pluginsDirectory)
+
+        # If the target directory already exists as a link,
+        # remove the link without resolving
+        QFile(os.path.join(pluginsDirectory, pluginFileName)).remove()
+
+        try:
+            # Test extraction. If fails, then exception will be raised
+            # and no removing occurs
+            unzip(str(filePath), str(pluginsDirectory))
+            # Removing old plugin files if exist
+            removeDir(QDir.cleanPath(os.path.join(pluginsDirectory, pluginFileName)))
+            # Extract new files
+            unzip(str(filePath), str(pluginsDirectory))
+        except:
+            error = True
+            infoString = (self.tr("Plugin installation failed"),
+                          self.tr("Failed to unzip the plugin package\n{}.\nProbably it is broken".format(zipFilePath)))
+
+        if infoString is None:
+            updateAvailablePlugins()
+            loadPlugin(pluginName)
+            plugins.getAllInstalled(testLoad=True)
+            plugins.rebuild()
+            plugin = plugins.all()[pluginName]
+
+            if settings.contains('/PythonPlugins/' + pluginName):
+                if settings.value('/PythonPlugins/' + pluginName, False, bool):
+                    startPlugin(pluginName)
+                    reloadPlugin(pluginName)
+                else:
+                    unloadPlugin(pluginName)
+                    loadPlugin(pluginName)
+            else:
+                if startPlugin(pluginName):
+                    settings.setValue('/PythonPlugins/' + pluginName, True)
+            infoString = (self.tr("Plugin installed successfully"), "")
+
+        if infoString[0]:
+            level = error and QgsMessageBar.CRITICAL or QgsMessageBar.INFO
+            msg = "<b>%s:</b>%s" % (infoString[0], infoString[1])
+            iface.messageBar().pushMessage(msg, level)

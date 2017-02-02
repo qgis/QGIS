@@ -82,7 +82,7 @@ class Delaunay(GeoAlgorithm):
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
             geom = QgsGeometry(inFeat.geometry())
-            if geom.isEmpty():
+            if geom.isNull():
                 continue
             if geom.isMultipart():
                 points = geom.asMultiPoint()

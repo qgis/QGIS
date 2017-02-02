@@ -587,7 +587,7 @@ void QgsComposerMapGrid::calculateCrsTransformLines()
       {
         //look for intersections between lines
         QgsGeometry intersects = ( *yLineIt ).intersection(( *xLineIt ) );
-        if ( intersects.isEmpty() )
+        if ( intersects.isNull() )
           continue;
 
         //go through all intersections and draw grid markers/crosses

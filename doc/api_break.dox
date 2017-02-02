@@ -179,6 +179,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsVectorGradientColorRampV2Dialog<td>QgsGradientColorRampDialog
 <tr><td>QgsVectorGradientColorRampV2DialogBase<td>QgsGradientColorRampDialogBase
 <tr><td>QgsVectorGradientRampV2<td>QgsVectorGradientRamp
+<tr><td>QgsVectorJoinInfo<td>QgsVectorLayerJoinInfo
 <tr><td>QgsVectorLayersetRendererV2<td>QgsVectorLayersetRenderer
 <tr><td>QgsVectorRandomColorRampV2<td>QgsLimitedRandomColorRamp
 <tr><td>QgsVectorRandomColorRampV2Dialog<td>QgsLimitedRandomColorRampDialog
@@ -232,6 +233,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 Removed Classes        {#qgis_api_break_3_0_removed_classes}
 ---------------
 
+- QgsAnnotationItem was removed. This was replaced by QgsAnnotation and QgsMapCanvasAnnotationItem.
 - QgsAttributeAction was removed, and replaced by QgsActionManager.
 - QgsAttributeEditor was removed. Use QgsEditorWidgetRegistry::create() instead.
 - QgsColorbutton was removed. QgsColorButtonV2 has now been renamed to QgsColorButton. Hence, QgsColorButtonV2 does not exist anymore.
@@ -247,6 +249,9 @@ Use QgsComposerAttributeTableV2 instead.
 - QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,
 so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).
+- QgsFileNameWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
+- QgsFormAnnotationItem. Use QgsFormAnnotation instead.
+- QgsHtmlAnnotationItem. Use QgsHtmlAnnotation instead.
 - QgsHttpTransaction. This class was outdated and code should be ported to native Qt or Python implementations.
 - QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngine.
 - QgsLabelingEngineInterface. Replaced by QgsLabelingEngine.
@@ -260,13 +265,17 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsMapCanvasMap. It is an internal class used by map canvas.
 - QgsMapLayerRegistry. Its functionality has been moved to QgsProject.
 - QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.
+- QgsPhotoWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.
 - QgsProjectBadLayerGuiHandler was removed. It was unused in QGIS code and barely useful. Implement your own QgsProjectBadLayerHandler subclass if needed.
 - QgsRendererV2DataDefinedMenus was removed. Use QgsDataDefinedButton instead.
 - QgsLegacyHelpers.
 - QgsProviderCountCalcEvent and QgsProviderExtentCalcEvent. These classes were unused in QGIS core and unmaintained.
+- QgsWebviewWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsEditorWidgetConfig was removed. Use QVariantMap instead.
+- QgsSvgAnnotationItem. Use QgsSvgAnnotation instead.
 - QgsSymbologyV2Conversion was removed. Reading of renderers from pre-1.0 versions is not supported anymore.
+- QgsTextAnnotationItem. Use QgsTextAnnotation instead.
 
 
 General changes        {#qgis_api_break_3_0_global}
@@ -345,12 +354,6 @@ QgisInterface        {#qgis_api_break_3_0_QgisInterface}
 
 - fileMenu() has been removed, use projectMenu() instead.
 - actionRemoveLayer was removed as it no longer exists.
-
-
-QgsAnnotation        {#qgis_api_break_3_0_QgsAnnotation}
--------------
-
--  mapPositionFixed() has been renamed to hasFixedMapPosition()
 
 
 QgsAbstractGeometry        {#qgis_api_break_3_0_QgsAbstractGeometry}
@@ -571,6 +574,10 @@ instead.
 and setAtlasScalingMode() instead.
 - storeCurrentLayerSet() was removed. Use setLayers() instead.
 - The layersChanged() slot was removed.
+- setMapCanvas() was removed. This is no longer required to draw map annotations, which are instead retrieved from the composition's
+associated project's annotationManager()
+- setDrawCanvasItems() and drawCanvasItems() were renamed to setDrawAnnotations() and drawAnnotations()
+
 
 QgsComposerMapGrid        {#qgis_api_break_3_0_QgsComposerMapGrid}
 ------------------
@@ -846,6 +853,7 @@ QgsDiagramInterpolationSettings        {#qgis_api_break_3_0_QgsDiagramInterpolat
 
 QgsDiagramRenderer        {#qgis_api_break_3_0_QgsDiagramRenderer}
 ------------------
+
 - xform, fields were no longer required and are removed.
 - referencedFields() no longer takes a QgsFields argument.
 - renderDiagram() now takes an optional data defined overrides collection argument.
@@ -1044,8 +1052,10 @@ QgsGeometry        {#qgis_api_break_3_0_QgsGeometry}
 
 - All QgsGeometry methods now accept geometry references instead of pointers, and return a QgsGeometry
 value instead of a pointer. The biggest impact with this change is that PyQGIS code should not compare a geometry
-result to None, but instead either use a boolean test (`if g.buffer(10):`) or explicitly use the isEmpty()
+result to None, but instead either use a boolean test (`if g.buffer(10):`) or explicitly use the isNull()
 method to determine if a geometry is valid.
+- isEmpty() was renamed to isNull() to differentiate a missing geometry from a geometry which is empty (eg an
+empty geometry collection)
 - wkbSize() and asWkb() has been replaced by exportToWkb(). WKB representation is no longer cached within QgsGeometry
 - asGeos() has been replaced by exportToGeos(). GEOS representation is no longer cached within QgsGeometry
 - int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType ) has been renamed to addPoints
@@ -1055,6 +1065,7 @@ method to determine if a geometry is valid.
 - static bool compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon ) has been renamed to compareMultiPolygons
 - smoothLine and smoothPolygon are no longer public API (use smooth() instead)
 - avoidIntersections() got an extra argument: list of layers to include in the operation (previously read from active QgsProject)
+- isGeosEmpty() was removed. Use isEmpty() instead.
 
 
 QgsGeometryAnalyzer        {#qgis_api_break_3_0_QgsGeometryAnalyzer}
@@ -1328,10 +1339,20 @@ be returned instead of a null pointer if no transformation is required.
 - destinationSrsChanged() was renamed to destinationCrsChanged()
 - getCompositionMode(), getBlendModeEnum() and BlendMode enum have been moved to QgsPainting utility class.
 
+QgsMapRendererCache        {#qgis_api_break_3_0_QgsMapRendererCache}
+-------------------
+
+- All protected members have been made private. This class is not designed to be subclassed.
+- setCacheImage no longer uses layer IDs for cache keys. Cache keys can now be any arbitrary string.
+A new parameter for setCacheImage is used to list all layers on which the cache image is dependent. This
+allows for cache images which have either no layer dependencies or multiple layer dependencies.
+
 
 QgsMapRendererJob        {#qgis_api_break_3_0_QgsMapRendererJob}
 -----------------
 
+- All protected members are now considered private, and are no longer exposed to the Python bindings. QgsMapRendererJob
+and subclasses are not designed to be subclassed in PyQGIS.
 - reprojectToLayerExtent() now takes a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should
 be used instead of a null pointer if no transformation is required.
 - prepareJobs() and drawLabeling() (neither available in PyQGIS) do not take QgsPalLabeling parameter anymore. All drawing of labels is done by QgsLabelingEngine.
@@ -1528,6 +1549,7 @@ QgsProject        {#qgis_api_break_3_0_QgsProject}
 - read( QDomNode& layerNode ) was renamed to readLayer( const QDomNode& layerNode ).
 - read( const QFileInfo& file ) was replaced by read( const QString& filename ).
 - write( const QFileInfo& file ) was replaced by write( const QString& filename ).
+- createEmbeddedLayer() does not take vectorLayerList as the third parameter anymore.
 
 
 QgsProjectPropertyValue        {#qgis_api_break_3_0_QgsProjectPropertyValue}
@@ -1773,6 +1795,7 @@ were removed. Use the QgsProperty/QgsPropertyCollection methods instead.
 - usedAttributes() now requires a QgsRenderContext argument
 - saveDataDefinedProperties() was removed. This is no longer required.
 - restoreDataDefinedProperties() was renamed to restoreOldDataDefinedProperties()
+- estimateMaxBleed() now requires a QgsRenderContext argument (since the bleed depends on render context for non-pixel units)
 
 
 QgsSymbolLayerRegistry        {#qgis_api_break_3_0_QgsSymbolLayerRegistry}
@@ -1808,6 +1831,7 @@ QgsSymbolLayerUtils (renamed from QgsSymbolLayerUtilsV2)        {#qgis_api_break
 - convertFromMapUnits() was moved to QgsRenderContext::convertFromMapUnits()
 - pixelSizeScaleFactor() was removed. Use QgsRenderContext::convertToPainterUnits() instead.
 - mapUnitScaleFactor() was removed. Use QgsRenderContext::convertToMapUnits() instead.
+- estimateMaxSymbolBleed() now requires a QgsRenderContext argument (since the bleed depends on render context for non-pixel units)
 
 
 QgsSymbolSelectorWidget        {#qgis_api_break_3_0_QgsSymbolSelectorWidget}
@@ -1884,6 +1908,13 @@ QGIS 3.0 defaultValue() only returns literal, constant defaultValues. A new meth
 has been added which returns the SQL clause fragments which must be evaluated by the provider itself.
 
 
+QgsVectorJoinInfo   {#qgis_api_break_3_0_QgsVectorJoinInfo}
+-----------------
+
+- class has been renamed to QgsVectorLayerJoinInfo
+- member variables are now accessible through pairs of getters and setters rather than using direct read/write
+
+
 QgsVectorLayer        {#qgis_api_break_3_0_QgsVectorLayer}
 --------------
 
@@ -1923,6 +1954,9 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - loadNamedStyle(): theResultFlag argument is correctly declared as output argument
 - The duplicate selectionChanged() signal was removed. Use selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&, const bool ) instead.
 - featureCount() now requires a legend key string instead of a QgsSymbol pointer argument.
+- createJoinCaches() has been removed. Caches are created/updated when needed internally.
+- checkJoinLayerRemove() has been removed. Joins are removed internally when joined layer is deleted.
+- readXml() does not resolve references to joined layers. Call resolveReferences() when joined layers are available.
 
 QgsVectorLayerEditBuffer        {#qgis_api_break_3_0_QgsVectorLayerEditBuffer}
 ------------------------
@@ -1948,6 +1982,12 @@ QgsCoordinateReferenceSystem is now implicitly shared, using references to QgsCo
 pointers makes for more robust, safer code. Use an invalid (default constructed) QgsCoordinateReferenceSystem
 in code which previously passed a null pointer to QgsVectorLayerImport.
 - ErrUserCancelled (ImportError enum value) has been renamed to ErrUserCanceled  <!--#spellok-->
+
+
+QgsVectorLayerJoinBuffer        {#qgis_api_break_3_0_QgsVectorLayerJoinBuffer}
+------------------------
+
+- readXml() does not resolve layer IDs to layers anymore. You need to call resolveReferences() afterwards.
 
 
 QgsVectorLayerUndoCommand        {#qgis_api_break_3_0_QgsVectorLayerUndoCommand}

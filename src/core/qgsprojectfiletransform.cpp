@@ -716,6 +716,15 @@ void QgsProjectFileTransform::transform2990()
         else if ( ewv2Type == QStringLiteral( "FileName" ) )
         {
           editWidgetElement.setAttribute( "type", QStringLiteral( "ExternalResource" ) );
+
+          editWidgetConfiguration.insert( QStringLiteral( "RelativeStorage" ), 1 );
+        }
+        else if ( ewv2Type == QStringLiteral( "WebView" ) )
+        {
+          editWidgetElement.setAttribute( "type", QStringLiteral( "ExternalResource" ) );
+
+          editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerHeight" ), editWidgetConfiguration.value( QStringLiteral( "Height" ) ) );
+          editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerWidth" ), editWidgetConfiguration.value( QStringLiteral( "Width" ) ) );
           editWidgetConfiguration.insert( QStringLiteral( "RelativeStorage" ), 1 );
         }
 

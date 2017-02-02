@@ -133,7 +133,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns the project's native coordinate reference system.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see setCrs()
      * @see ellipsoid()
      */
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Sets the project's native coordinate reference system.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see crs()
      * @see setEllipsoid()
      */
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
      * @see setEllipsoid()
      * @see crs()
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      */
     QString ellipsoid() const;
 
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
      * @see ellipsoid()
      * @see setCrs()
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      */
     void setEllipsoid( const QString& ellipsoid );
 
@@ -321,7 +321,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @note not available in Python bindings
      */
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
-                              QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
+                              bool saveFlag = true );
 
     /** Create layer group instance defined in an arbitrary project file.
      * @note: added in version 2.4
@@ -343,7 +343,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Sets the default distance measurement units for the project.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see distanceUnits()
      * @see setAreaUnits()
      */
@@ -357,7 +357,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Sets the default area measurement units for the project.
-     * @note added in QGIS 2.18
+     * @note added in QGIS 3.0
      * @see areaUnits()
      * @see setDistanceUnits()
      */
@@ -926,11 +926,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     */
     bool _getMapLayers( const QDomDocument& doc, QList<QDomNode>& brokenNodes );
 
-    /** Processes any joins attached to a newly added layer.
-     * @param layer layer to process
-     */
-    void processLayerJoins( QgsVectorLayer* layer );
-
     /** Set error message from read/write operation
      * @note not available in Python bindings
      */
@@ -943,7 +938,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     //! Creates layer and adds it to maplayer registry
     //! @note not available in python bindings
-    bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
+    bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes );
 
     //! @note not available in python bindings
     void initializeEmbeddedSubtree( const QString& projectFilePath, QgsLayerTreeGroup* group );

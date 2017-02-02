@@ -115,12 +115,12 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
         QgsVectorJoinList::iterator joinIt = joins.begin();
         while ( joinIt != joins.end() )
         {
-          if ( joinIt->prefix.isNull() )
+          if ( joinIt->prefix().isNull() )
           {
-            QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( joinIt->joinLayerId ) );
+            QgsVectorLayer* vl = joinIt->joinLayer();
 
             if ( vl )
-              joinIt->prefix = vl->name() + '_';
+              joinIt->setPrefix( vl->name() + '_' );
           }
           ++joinIt;
         }
@@ -157,13 +157,13 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
 
         if ( newLayer )
         {
-          Q_FOREACH ( QgsVectorJoinInfo join, it.value() )
+          Q_FOREACH ( QgsVectorLayerJoinInfo join, it.value() )
           {
-            QgsVectorLayer* newJoinedLayer = layerIdMapping.value( join.joinLayerId );
+            QgsVectorLayer* newJoinedLayer = layerIdMapping.value( join.joinLayerId() );
             if ( newJoinedLayer )
             {
               // If the layer has been offline'd, update join information
-              join.joinLayerId = newJoinedLayer->id();
+              join.setJoinLayer( newJoinedLayer );
             }
             newLayer->addJoin( join );
           }

@@ -977,7 +977,7 @@ bool QgsMapCanvas::boundingBoxOfFeatureIds( const QgsFeatureIds& ids, QgsVectorL
   while ( it.nextFeature( fet ) )
   {
     QgsGeometry geom = fet.geometry();
-    if ( geom.isEmpty() )
+    if ( geom.isNull() )
     {
       errorMsg = tr( "Feature does not have a geometry" );
     }

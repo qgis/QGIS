@@ -2310,4 +2310,16 @@ tests:
     results:
       OUTPUT:
         name: expected/polygon_from_extent.gml
+        
+  - algorithm: qgis:polygonize
+    name: Polygonize
+    params:
+      FIELDS: false
+      GEOMETRY: true
+      INPUT:
+        name: custom/polygonize_lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/polygonize.gml
         type: vector

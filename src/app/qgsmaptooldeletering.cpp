@@ -135,7 +135,7 @@ QgsGeometry QgsMapToolDeleteRing::ringUnderPoint( const QgsPoint& p, QgsFeatureI
   while ( fit.nextFeature( f ) )
   {
     g = f.geometry();
-    if ( g.isEmpty() )
+    if ( g.isNull() )
       continue;
     if ( g.wkbType() == QgsWkbTypes::Polygon ||  g.wkbType()  == QgsWkbTypes::Polygon25D )
     {

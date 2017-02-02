@@ -25,6 +25,7 @@ class QgsCircularString: public QgsCurve
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     QString asJSON( int precision = 17 ) const;
 
+    bool isEmpty() const;
     int numPoints() const;
 
     /** Returns the point at index i within the circular string.

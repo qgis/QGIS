@@ -24,13 +24,16 @@
  *  if the layer is not available yet.
  *  @note not available in python bindings
  */
-struct QgsMapLayerRef
+template<typename TYPE>
+struct _LayerRef
 {
-  QgsMapLayerRef( QgsMapLayer* l = nullptr ): layer( l ), layerId( l ? l->id() : QString() ) {}
-  QgsMapLayerRef( const QString& id ): layer(), layerId( id ) {}
+  _LayerRef( TYPE* l = nullptr ): layer( l ), layerId( l ? l->id() : QString() ) {}
+  _LayerRef( const QString& id ): layer(), layerId( id ) {}
 
-  QPointer<QgsMapLayer> layer;
+  QPointer<TYPE> layer;
   QString layerId;
 };
+
+typedef _LayerRef<QgsMapLayer> QgsMapLayerRef;
 
 #endif // QGSMAPLAYERREF_H

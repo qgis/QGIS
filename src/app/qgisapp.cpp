@@ -247,6 +247,7 @@
 #include "qgsvirtuallayerdefinitionutils.h"
 #include "qgstransaction.h"
 #include "qgstransactiongroup.h"
+#include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerutils.h"
 #include "qgshelp.h"
 
@@ -785,11 +786,20 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mSaveRollbackInProgress = false;
 
-  QFileSystemWatcher* projectsTemplateWatcher = new QFileSystemWatcher( this );
   QString templateDirName = settings.value( QStringLiteral( "/qgis/projectTemplateDir" ),
                             QgsApplication::qgisSettingsDirPath() + "project_templates" ).toString();
-  projectsTemplateWatcher->addPath( templateDirName );
-  connect( projectsTemplateWatcher, SIGNAL( directoryChanged( QString ) ), this, SLOT( updateProjectFromTemplates() ) );
+  if ( !QFileInfo::exists( templateDirName ) )
+  {
+    // create default template directory
+    if ( !QDir().mkdir( QgsApplication::qgisSettingsDirPath() + "project_templates" ) )
+      templateDirName.clear();
+  }
+  if ( !templateDirName.isEmpty() ) // template directory exists, so watch it!
+  {
+    QFileSystemWatcher* projectsTemplateWatcher = new QFileSystemWatcher( this );
+    projectsTemplateWatcher->addPath( templateDirName );
+    connect( projectsTemplateWatcher, &QFileSystemWatcher::directoryChanged, this, [this] { updateProjectFromTemplates(); } );
+  }
 
   // initialize the plugin manager
   startProfile( QStringLiteral( "Plugin manager" ) );
@@ -964,11 +974,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     mPluginManager->setPythonUtils( mPythonUtils );
     endProfile();
   }
-  else if ( mActionShowPythonDialog )
+  else if ( mActionShowPythonDialog || mActionInstallFromZip )
   {
     // python is disabled so get rid of the action for python console
+    // and installing plugin from ZUIP
     delete mActionShowPythonDialog;
+    delete mActionInstallFromZip;
     mActionShowPythonDialog = nullptr;
+    mActionInstallFromZip = nullptr;
   }
 
   // Set icon size of toolbars
@@ -1721,6 +1734,7 @@ void QgisApp::createActions()
   // Plugin Menu Items
 
   connect( mActionManagePlugins, SIGNAL( triggered() ), this, SLOT( showPluginManager() ) );
+  connect( mActionInstallFromZip, SIGNAL( triggered() ), this, SLOT( installPluginFromZip() ) );
   connect( mActionShowPythonDialog, SIGNAL( triggered() ), this, SLOT( showPythonDialog() ) );
 
   // Settings Menu Items
@@ -2611,6 +2625,7 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionToggleFullScreen->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleFullScreen.png" ) ) );
   mActionProjectProperties->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionProjectProperties.png" ) ) );
   mActionManagePlugins->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowPluginManager.svg" ) ) );
+  mActionInstallFromZip->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInstallPluginFromZip.svg" ) ) );
   mActionShowPythonDialog->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconRunConsole.png" ) ) );
   mActionCheckQgisVersion->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSuccess.svg" ) ) );
   mActionOptions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
@@ -6661,10 +6676,10 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& 
     }
     progress.setValue( i );
     QgsGeometry currentGeom = featureList.at( i ).geometry();
-    if ( !currentGeom.isEmpty() )
+    if ( !currentGeom.isNull() )
     {
       unionGeom = unionGeom.combine( currentGeom );
-      if ( unionGeom.isEmpty() )
+      if ( unionGeom.isNull() )
       {
         QApplication::restoreOverrideCursor();
         return QgsGeometry();
@@ -7193,7 +7208,7 @@ void QgisApp::mergeSelectedFeatures()
   QgsFeatureList featureList = vl->selectedFeatures();  //get QList<QgsFeature>
   bool canceled;
   QgsGeometry unionGeom = unionGeometries( vl, featureList, canceled );
-  if ( unionGeom.isEmpty() )
+  if ( unionGeom.isNull() )
   {
     if ( !canceled )
     {
@@ -7229,7 +7244,7 @@ void QgisApp::mergeSelectedFeatures()
     bool canceled;
     QgsFeatureList featureListAfter = vl->selectedFeatures();
     unionGeom = unionGeometries( vl, featureListAfter, canceled );
-    if ( unionGeom.isEmpty() )
+    if ( unionGeom.isNull() )
     {
       if ( !canceled )
       {
@@ -7585,7 +7600,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
       if ( destType != QgsWkbTypes::UnknownGeometry )
       {
         QgsGeometry newGeometry = geom.convertToType( destType, destIsMulti );
-        if ( newGeometry.isEmpty() )
+        if ( newGeometry.isNull() )
         {
           continue;
         }
@@ -8543,7 +8558,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *>& lyrList )
           QgsExpressionContextUtils::setLayerVariable( dupVLayer, variableName, varValue );
         }
 
-        Q_FOREACH ( const QgsVectorJoinInfo& join, vlayer->vectorJoins() )
+        Q_FOREACH ( const QgsVectorLayerJoinInfo& join, vlayer->vectorJoins() )
           dupVLayer->addJoin( join );
 
         for ( int fld = 0; fld < vlayer->fields().count(); fld++ )
@@ -8907,6 +8922,15 @@ void QgisApp::showPluginManager()
     mQgisInterface->pluginManagerInterface()->showPluginManager();
   }
 }
+
+void QgisApp::installPluginFromZip()
+{
+  if ( mPythonUtils && mPythonUtils->isEnabled() )
+  {
+    QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installFromZipFile()" ) );
+  }
+}
+
 
 // implementation of the python runner
 class QgsPythonRunnerImpl : public QgsPythonRunner
@@ -9509,7 +9533,6 @@ void QgisApp::embedLayers()
 
     //layer ids
     QList<QDomNode> brokenNodes;
-    QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
 
     // resolve dependencies
     QgsLayerDefinition::DependencySorter depSorter( projectFile );
@@ -9520,7 +9543,7 @@ void QgisApp::embedLayers()
       Q_FOREACH ( const QString& selId, layerIds )
       {
         if ( selId == id )
-          QgsProject::instance()->createEmbeddedLayer( selId, projectFile, brokenNodes, vectorLayerList );
+          QgsProject::instance()->createEmbeddedLayer( selId, projectFile, brokenNodes );
       }
     }
 

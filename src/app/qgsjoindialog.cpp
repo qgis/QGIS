@@ -20,6 +20,7 @@
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoininfo.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsfieldcombobox.h"
 
@@ -66,20 +67,20 @@ QgsJoinDialog::~QgsJoinDialog()
 {
 }
 
-void QgsJoinDialog::setJoinInfo( const QgsVectorJoinInfo& joinInfo )
+void QgsJoinDialog::setJoinInfo( const QgsVectorLayerJoinInfo& joinInfo )
 {
-  mJoinLayerComboBox->setLayer( QgsProject::instance()->mapLayer( joinInfo.joinLayerId ) );
-  mJoinFieldComboBox->setField( joinInfo.joinFieldName );
-  mTargetFieldComboBox->setField( joinInfo.targetFieldName );
-  mCacheInMemoryCheckBox->setChecked( joinInfo.memoryCache );
-  if ( joinInfo.prefix.isNull() )
+  mJoinLayerComboBox->setLayer( joinInfo.joinLayer() );
+  mJoinFieldComboBox->setField( joinInfo.joinFieldName() );
+  mTargetFieldComboBox->setField( joinInfo.targetFieldName() );
+  mCacheInMemoryCheckBox->setChecked( joinInfo.isUsingMemoryCache() );
+  if ( joinInfo.prefix().isNull() )
   {
     mUseCustomPrefix->setChecked( false );
   }
   else
   {
     mUseCustomPrefix->setChecked( true );
-    mCustomPrefix->setText( joinInfo.prefix );
+    mCustomPrefix->setText( joinInfo.prefix() );
   }
 
   QStringList* lst = joinInfo.joinFieldNamesSubset();
@@ -102,21 +103,18 @@ void QgsJoinDialog::setJoinInfo( const QgsVectorJoinInfo& joinInfo )
   }
 }
 
-QgsVectorJoinInfo QgsJoinDialog::joinInfo() const
+QgsVectorLayerJoinInfo QgsJoinDialog::joinInfo() const
 {
-  QgsVectorJoinInfo info;
-  if ( mJoinLayerComboBox->currentLayer() )
-    info.joinLayerId = mJoinLayerComboBox->currentLayer()->id();
-  info.joinFieldName = mJoinFieldComboBox->currentField();
-  info.targetFieldName = mTargetFieldComboBox->currentField();
-  info.memoryCache = mCacheInMemoryCheckBox->isChecked();
-  info.targetFieldIndex = -1;
-  info.joinFieldIndex = -1;
+  QgsVectorLayerJoinInfo info;
+  info.setJoinLayer( qobject_cast<QgsVectorLayer*>( mJoinLayerComboBox->currentLayer() ) );
+  info.setJoinFieldName( mJoinFieldComboBox->currentField() );
+  info.setTargetFieldName( mTargetFieldComboBox->currentField() );
+  info.setUsingMemoryCache( mCacheInMemoryCheckBox->isChecked() );
 
   if ( mUseCustomPrefix->isChecked() )
-    info.prefix = mCustomPrefix->text();
+    info.setPrefix( mCustomPrefix->text() );
   else
-    info.prefix = QString::null;
+    info.setPrefix( QString::null );
 
   if ( mUseJoinFieldsSubset->isChecked() )
   {

@@ -2498,7 +2498,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
     Q_ASSERT( argNodes.count() == 2 ); // binary spatial ops must have two args
 
     QgsGeometry geom = geometryFromConstExpr( argNodes[1] );
-    if ( !geom.isEmpty() && isGeometryColumn( argNodes[0] ) )
+    if ( !geom.isNull() && isGeometryColumn( argNodes[0] ) )
     {
       QgsRectangle rect = geom.boundingBox();
 

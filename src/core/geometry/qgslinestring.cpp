@@ -88,6 +88,11 @@ void QgsLineString::clear()
   clearCache();
 }
 
+bool QgsLineString::isEmpty() const
+{
+  return mX.isEmpty();
+}
+
 bool QgsLineString::fromWkb( QgsConstWkbPtr& wkbPtr )
 {
   if ( !wkbPtr )

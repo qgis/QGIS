@@ -16,7 +16,7 @@ import qgis  # NOQA
 
 import os
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsField, NULL, QgsProject, QgsVectorJoinInfo
+from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsField, NULL, QgsProject, QgsVectorLayerJoinInfo
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QVariant
 
@@ -175,11 +175,11 @@ class TestQgsFeatureIterator(unittest.TestCase):
 
         QgsProject.instance().addMapLayers([layer, joinLayer])
 
-        join = QgsVectorJoinInfo()
-        join.targetFieldName = "exp1"
-        join.joinLayerId = joinLayer.id()
-        join.joinFieldName = "y"
-        join.memoryCache = True
+        join = QgsVectorLayerJoinInfo()
+        join.setTargetFieldName("exp1")
+        join.setJoinLayer(joinLayer)
+        join.setJoinFieldName("y")
+        join.setUsingMemoryCache(True)
         layer.addJoin(join)
 
         f = QgsFeature()
@@ -217,11 +217,11 @@ class TestQgsFeatureIterator(unittest.TestCase):
 
         QgsProject.instance().addMapLayers([layer, joinLayer])
 
-        join = QgsVectorJoinInfo()
-        join.targetFieldName = "fldint"
-        join.joinLayerId = joinLayer.id()
-        join.joinFieldName = "exp1"
-        join.memoryCache = True
+        join = QgsVectorLayerJoinInfo()
+        join.setTargetFieldName("fldint")
+        join.setJoinLayer(joinLayer)
+        join.setJoinFieldName("exp1")
+        join.setUsingMemoryCache(True)
         layer.addJoin(join)
 
         f = QgsFeature()
@@ -260,11 +260,11 @@ class TestQgsFeatureIterator(unittest.TestCase):
 
         QgsProject.instance().addMapLayers([layer, joinLayer])
 
-        join = QgsVectorJoinInfo()
-        join.targetFieldName = "fldint"
-        join.joinLayerId = joinLayer.id()
-        join.joinFieldName = "y"
-        join.memoryCache = True
+        join = QgsVectorLayerJoinInfo()
+        join.setTargetFieldName("fldint")
+        join.setJoinLayer(joinLayer)
+        join.setJoinFieldName("y")
+        join.setUsingMemoryCache(True)
         layer.addJoin(join)
 
         f = QgsFeature()

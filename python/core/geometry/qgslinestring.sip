@@ -106,7 +106,7 @@ class QgsLineString: public QgsCurve
     virtual int dimension() const;
     virtual QgsLineString* clone() const /Factory/;
     virtual void clear();
-
+    bool isEmpty() const;
     virtual bool fromWkb( QgsConstWkbPtr& wkb );
     virtual bool fromWkt( const QString& wkt );
 

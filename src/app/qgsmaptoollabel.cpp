@@ -84,7 +84,7 @@ void QgsMapToolLabel::createRubberBands()
     if ( currentFeature( f, true ) )
     {
       QgsGeometry geom = f.geometry();
-      if ( !geom.isEmpty() )
+      if ( !geom.isNull() )
       {
         QSettings settings;
         int r = settings.value( QStringLiteral( "/qgis/digitizing/line_color_red" ), 255 ).toInt();

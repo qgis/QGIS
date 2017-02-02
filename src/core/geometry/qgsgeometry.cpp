@@ -126,7 +126,7 @@ void QgsGeometry::setGeometry( QgsAbstractGeometry* geometry )
   d->geometry = geometry;
 }
 
-bool QgsGeometry::isEmpty() const
+bool QgsGeometry::isNull() const
 {
   return !d->geometry;
 }
@@ -223,7 +223,7 @@ QgsGeometry QgsGeometry::collectGeometry( const QList< QgsGeometry >& geometries
   QList< QgsGeometry >::const_iterator git = geometries.constBegin();
   for ( ; git != geometries.constEnd(); ++git )
   {
-    if ( collected.isEmpty() )
+    if ( collected.isNull() )
     {
       collected = QgsGeometry( *git );
       collected.convertToMultiType();
@@ -292,6 +292,16 @@ QgsWkbTypes::GeometryType QgsGeometry::type() const
     return QgsWkbTypes::UnknownGeometry;
   }
   return static_cast< QgsWkbTypes::GeometryType >( QgsWkbTypes::geometryType( d->geometry->wkbType() ) );
+}
+
+bool QgsGeometry::isEmpty() const
+{
+  if ( !d->geometry )
+  {
+    return true;
+  }
+
+  return d->geometry->isEmpty();
 }
 
 bool QgsGeometry::isMultipart() const
@@ -836,7 +846,7 @@ int QgsGeometry::makeDifference( const QgsGeometry* other )
 
 QgsGeometry QgsGeometry::makeDifference( const QgsGeometry& other ) const
 {
-  if ( !d->geometry || other.isEmpty() )
+  if ( !d->geometry || other.isNull() )
   {
     return QgsGeometry();
   }
@@ -873,7 +883,7 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double& area, double &angle
     return QgsGeometry();
 
   QgsGeometry hull = convexHull();
-  if ( hull.isEmpty() )
+  if ( hull.isNull() )
     return QgsGeometry();
 
   QgsVertexId vertexId;
@@ -935,7 +945,7 @@ bool QgsGeometry::intersects( const QgsRectangle& r ) const
 
 bool QgsGeometry::intersects( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || geometry.isEmpty() )
+  if ( !d->geometry || geometry.isNull() )
   {
     return false;
   }
@@ -958,7 +968,7 @@ bool QgsGeometry::contains( const QgsPoint* p ) const
 
 bool QgsGeometry::contains( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || geometry.isEmpty() )
+  if ( !d->geometry || geometry.isNull() )
   {
     return false;
   }
@@ -969,7 +979,7 @@ bool QgsGeometry::contains( const QgsGeometry& geometry ) const
 
 bool QgsGeometry::disjoint( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || geometry.isEmpty() )
+  if ( !d->geometry || geometry.isNull() )
   {
     return false;
   }
@@ -980,7 +990,7 @@ bool QgsGeometry::disjoint( const QgsGeometry& geometry ) const
 
 bool QgsGeometry::equals( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || geometry.isEmpty() )
+  if ( !d->geometry || geometry.isNull() )
   {
     return false;
   }
@@ -991,7 +1001,7 @@ bool QgsGeometry::equals( const QgsGeometry& geometry ) const
 
 bool QgsGeometry::touches( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || geometry.isEmpty() )
+  if ( !d->geometry || geometry.isNull() )
   {
     return false;
   }
@@ -1002,7 +1012,7 @@ bool QgsGeometry::touches( const QgsGeometry& geometry ) const
 
 bool QgsGeometry::overlaps( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || geometry.isEmpty() )
+  if ( !d->geometry || geometry.isNull() )
   {
     return false;
   }
@@ -1013,7 +1023,7 @@ bool QgsGeometry::overlaps( const QgsGeometry& geometry ) const
 
 bool QgsGeometry::within( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || geometry.isEmpty() )
+  if ( !d->geometry || geometry.isNull() )
   {
     return false;
   }
@@ -1024,7 +1034,7 @@ bool QgsGeometry::within( const QgsGeometry& geometry ) const
 
 bool QgsGeometry::crosses( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || geometry.isEmpty() )
+  if ( !d->geometry || geometry.isNull() )
   {
     return false;
   }
@@ -1596,6 +1606,28 @@ QgsGeometry QgsGeometry::convexHull() const
   return QgsGeometry( cHull );
 }
 
+QgsGeometry QgsGeometry::voronoiDiagram( const QgsGeometry& extent, double tolerance, bool edgesOnly ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry );
+  return geos.voronoiDiagram( extent.geometry(), tolerance, edgesOnly );
+}
+
+QgsGeometry QgsGeometry::delaunayTriangulation( double tolerance, bool edgesOnly ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry );
+  return geos.delaunayTriangulation( tolerance, edgesOnly );
+}
+
 QgsGeometry QgsGeometry::interpolate( double distance ) const
 {
   if ( !d->geometry )
@@ -1690,7 +1722,7 @@ double QgsGeometry::interpolateAngle( double distance ) const
 
 QgsGeometry QgsGeometry::intersection( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || geometry.isEmpty() )
+  if ( !d->geometry || geometry.isNull() )
   {
     return QgsGeometry();
   }
@@ -1703,7 +1735,7 @@ QgsGeometry QgsGeometry::intersection( const QgsGeometry& geometry ) const
 
 QgsGeometry QgsGeometry::combine( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || geometry.isEmpty() )
+  if ( !d->geometry || geometry.isNull() )
   {
     return QgsGeometry();
   }
@@ -1737,7 +1769,7 @@ QgsGeometry QgsGeometry::mergeLines() const
 
 QgsGeometry QgsGeometry::difference( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || geometry.isEmpty() )
+  if ( !d->geometry || geometry.isNull() )
   {
     return QgsGeometry();
   }
@@ -1754,7 +1786,7 @@ QgsGeometry QgsGeometry::difference( const QgsGeometry& geometry ) const
 
 QgsGeometry QgsGeometry::symDifference( const QgsGeometry& geometry ) const
 {
-  if ( !d->geometry || geometry.isEmpty() )
+  if ( !d->geometry || geometry.isNull() )
   {
     return QgsGeometry();
   }
@@ -1930,26 +1962,15 @@ bool QgsGeometry::isGeosEqual( const QgsGeometry& g ) const
   return geos.isEqual( *( g.d->geometry ) );
 }
 
-bool QgsGeometry::isGeosEmpty() const
-{
-  if ( !d->geometry )
-  {
-    return false;
-  }
-
-  QgsGeos geos( d->geometry );
-  return geos.isEmpty();
-}
-
-QgsGeometry QgsGeometry::unaryUnion( const QList<QgsGeometry>& geometryList )
+QgsGeometry QgsGeometry::unaryUnion( const QList<QgsGeometry>& geometries )
 {
   QgsGeos geos( nullptr );
 
   QList<QgsAbstractGeometry*> geomV2List;
-  QList<QgsGeometry>::const_iterator it = geometryList.constBegin();
-  for ( ; it != geometryList.constEnd(); ++it )
+  QList<QgsGeometry>::const_iterator it = geometries.constBegin();
+  for ( ; it != geometries.constEnd(); ++it )
   {
-    if ( !(( *it ).isEmpty() ) )
+    if ( !(( *it ).isNull() ) )
     {
       geomV2List.append(( *it ).geometry() );
     }
@@ -1957,6 +1978,23 @@ QgsGeometry QgsGeometry::unaryUnion( const QList<QgsGeometry>& geometryList )
 
   QgsAbstractGeometry* geom = geos.combine( geomV2List );
   return QgsGeometry( geom );
+}
+
+QgsGeometry QgsGeometry::polygonize( const QList<QgsGeometry>& geometryList )
+{
+  QgsGeos geos( nullptr );
+
+  QList<QgsAbstractGeometry*> geomV2List;
+  QList<QgsGeometry>::const_iterator it = geometryList.constBegin();
+  for ( ; it != geometryList.constEnd(); ++it )
+  {
+    if ( !(( *it ).isNull() ) )
+    {
+      geomV2List.append(( *it ).geometry() );
+    }
+  }
+
+  return geos.polygonize( geomV2List );
 }
 
 void QgsGeometry::convertToStraightSegment()

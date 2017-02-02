@@ -645,7 +645,7 @@ void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlI
   {
     QgsFeature feat = list[0].first;
     QgsGeometry geometry = feat.geometry();
-    if ( !geometry.isEmpty() )
+    if ( !geometry.isNull() )
     {
       mWKBType = geometry.wkbType();
     }
@@ -820,7 +820,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
 
     //add geometry column (as gml)
     QgsGeometry geometry = featureIt->geometry();
-    if ( !geometry.isEmpty() )
+    if ( !geometry.isNull() )
     {
       QDomElement geomElem = transactionDoc.createElementNS( mApplicationNamespace, mShared->mGeometryAttribute );
       QgsGeometry the_geom( geometry );

@@ -186,6 +186,12 @@ class CORE_EXPORT QgsLabelingEngine
     //! Get associated map settings
     const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
+    /**
+     * Returns a list of layer IDs for layers with providers in the engine.
+     * @note added in QGIS 3.0
+     */
+    QStringList participatingLayerIds() const;
+
     //! Add provider of label features. Takes ownership of the provider
     void addProvider( QgsAbstractLabelProvider* provider );
 

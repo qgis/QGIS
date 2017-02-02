@@ -1649,7 +1649,7 @@ namespace QgsWms
         if ( layer->wkbType() != QgsWkbTypes::NoGeometry && addWktGeometry && hasGeometry )
         {
           QgsGeometry geom = feature.geometry();
-          if ( !geom.isEmpty() )
+          if ( !geom.isNull() )
           {
             if ( layer->crs() != outputCrs )
             {
@@ -2437,7 +2437,7 @@ namespace QgsWms
     expressionContext.setFeature( *feat );
 
     // always add bounding box info if feature contains geometry
-    if ( !geom.isEmpty() && geom.type() != QgsWkbTypes::UnknownGeometry && geom.type() != QgsWkbTypes::NullGeometry )
+    if ( !geom.isNull() && geom.type() != QgsWkbTypes::UnknownGeometry && geom.type() != QgsWkbTypes::NullGeometry )
     {
       QgsRectangle box = feat->geometry().boundingBox();
       if ( transform.isValid() )
@@ -2472,7 +2472,7 @@ namespace QgsWms
       typeNameElement.appendChild( bbElem );
     }
 
-    if ( withGeom && !geom.isEmpty() )
+    if ( withGeom && !geom.isNull() )
     {
       //add geometry column (as gml)
 

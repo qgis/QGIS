@@ -51,12 +51,4 @@ class QgsMapRendererCustomPainterJob : QgsMapRendererJob
      */
     void renderSynchronously();
 
-  protected slots:
-    void futureFinished();
-
-  protected:
-    static void staticRender( QgsMapRendererCustomPainterJob* self ); // function to be used within the thread
-
-    // these methods are called within worker thread
-    void doRender();
 };

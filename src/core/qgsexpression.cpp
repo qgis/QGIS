@@ -365,7 +365,7 @@ static TVL getTVLValue( const QVariant& value, QgsExpression* parent )
   {
     //geom is false if empty
     QgsGeometry geom = value.value<QgsGeometry>();
-    return geom.isEmpty() ? False : True;
+    return geom.isNull() ? False : True;
   }
   else if ( value.canConvert<QgsFeature>() )
   {
@@ -1760,7 +1760,7 @@ static QVariant fcnY( const QVariantList&, const QgsExpressionContext* context, 
 static QVariant fcnGeomX( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   //if single point, return the point's x coordinate
@@ -1778,7 +1778,7 @@ static QVariant fcnGeomX( const QVariantList& values, const QgsExpressionContext
 static QVariant fcnGeomY( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   //if single point, return the point's y coordinate
@@ -1796,7 +1796,7 @@ static QVariant fcnGeomY( const QVariantList& values, const QgsExpressionContext
 static QVariant fcnGeomZ( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant(); //or 0?
 
   //if single point, return the point's z coordinate
@@ -1813,7 +1813,7 @@ static QVariant fcnGeomZ( const QVariantList& values, const QgsExpressionContext
 static QVariant fcnGeomM( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant(); //or 0?
 
   //if single point, return the point's m value
@@ -1831,7 +1831,7 @@ static QVariant fcnPointN( const QVariantList& values, const QgsExpressionContex
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   //idx is 1 based
@@ -1852,7 +1852,7 @@ static QVariant fcnStartPoint( const QVariantList& values, const QgsExpressionCo
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QgsVertexId vId;
@@ -1869,7 +1869,7 @@ static QVariant fcnEndPoint( const QVariantList& values, const QgsExpressionCont
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QgsVertexId vId;
@@ -1886,7 +1886,7 @@ static QVariant fcnNodesToPoints( const QVariantList& values, const QgsExpressio
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   bool ignoreClosing = false;
@@ -1921,7 +1921,7 @@ static QVariant fcnSegmentsToLines( const QVariantList& values, const QgsExpress
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QList< QgsLineString* > linesToProcess = QgsGeometryUtils::extractLineStrings( geom.geometry() );
@@ -1948,7 +1948,7 @@ static QVariant fcnInteriorRingN( const QVariantList& values, const QgsExpressio
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QgsCurvePolygon* curvePolygon = dynamic_cast< QgsCurvePolygon* >( geom.geometry() );
@@ -1970,7 +1970,7 @@ static QVariant fcnGeometryN( const QVariantList& values, const QgsExpressionCon
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QgsGeometryCollection* collection = dynamic_cast< QgsGeometryCollection* >( geom.geometry() );
@@ -1992,7 +1992,7 @@ static QVariant fcnBoundary( const QVariantList& values, const QgsExpressionCont
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QgsAbstractGeometry* boundary = geom.geometry()->boundary();
@@ -2006,11 +2006,11 @@ static QVariant fcnLineMerge( const QVariantList& values, const QgsExpressionCon
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QgsGeometry merged = geom.mergeLines();
-  if ( merged.isEmpty() )
+  if ( merged.isNull() )
     return QVariant();
 
   return QVariant::fromValue( merged );
@@ -2020,13 +2020,13 @@ static QVariant fcnSimplify( const QVariantList& values, const QgsExpressionCont
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   double tolerance = getDoubleValue( values.at( 1 ), parent );
 
   QgsGeometry simplified = geom.simplify( tolerance );
-  if ( simplified.isEmpty() )
+  if ( simplified.isNull() )
     return QVariant();
 
   return simplified;
@@ -2036,7 +2036,7 @@ static QVariant fcnSimplifyVW( const QVariantList& values, const QgsExpressionCo
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   double tolerance = getDoubleValue( values.at( 1 ), parent );
@@ -2044,7 +2044,7 @@ static QVariant fcnSimplifyVW( const QVariantList& values, const QgsExpressionCo
   QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, QgsMapToPixelSimplifier::Visvalingam );
 
   QgsGeometry simplified = simplifier.simplify( geom );
-  if ( simplified.isEmpty() )
+  if ( simplified.isNull() )
     return QVariant();
 
   return simplified;
@@ -2054,7 +2054,7 @@ static QVariant fcnSmooth( const QVariantList& values, const QgsExpressionContex
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   int iterations = qMin( getIntValue( values.at( 1 ), parent ), 10 );
@@ -2063,7 +2063,7 @@ static QVariant fcnSmooth( const QVariantList& values, const QgsExpressionContex
   double maxAngle = qBound( 0.0, getDoubleValue( values.at( 4 ), parent ), 180.0 );
 
   QgsGeometry smoothed = geom.smooth( iterations, offset, minLength, maxAngle );
-  if ( smoothed.isEmpty() )
+  if ( smoothed.isNull() )
     return QVariant();
 
   return smoothed;
@@ -2114,7 +2114,7 @@ static QVariant fcnMakeLine( const QVariantList& values, const QgsExpressionCont
   Q_FOREACH ( const QVariant& value, values )
   {
     QgsGeometry geom = getGeometry( value, parent );
-    if ( geom.isEmpty() )
+    if ( geom.isNull() )
       continue;
 
     if ( geom.type() != QgsWkbTypes::PointGeometry || geom.isMultipart() )
@@ -2139,7 +2139,7 @@ static QVariant fcnMakePolygon( const QVariantList& values, const QgsExpressionC
   }
 
   QgsGeometry outerRing = getGeometry( values.at( 0 ), parent );
-  if ( outerRing.type() != QgsWkbTypes::LineGeometry || outerRing.isMultipart() || outerRing.isEmpty() )
+  if ( outerRing.type() != QgsWkbTypes::LineGeometry || outerRing.isMultipart() || outerRing.isNull() )
     return QVariant();
 
   QgsPolygonV2* polygon = new QgsPolygonV2();
@@ -2148,10 +2148,10 @@ static QVariant fcnMakePolygon( const QVariantList& values, const QgsExpressionC
   for ( int i = 1; i < values.count(); ++i )
   {
     QgsGeometry ringGeom = getGeometry( values.at( i ), parent );
-    if ( ringGeom.isEmpty() )
+    if ( ringGeom.isNull() )
       continue;
 
-    if ( ringGeom.type() != QgsWkbTypes::LineGeometry || ringGeom.isMultipart() || ringGeom.isEmpty() )
+    if ( ringGeom.type() != QgsWkbTypes::LineGeometry || ringGeom.isMultipart() || ringGeom.isNull() )
       continue;
 
     polygon->addInteriorRing( dynamic_cast< QgsCurve* >( ringGeom.geometry()->clone() ) );
@@ -2165,7 +2165,7 @@ static QVariant pointAt( const QVariantList& values, const QgsExpressionContext*
   FEAT_FROM_CONTEXT( context, f );
   int idx = getIntValue( values.at( 0 ), parent );
   QgsGeometry g = f.geometry();
-  if ( g.isEmpty() )
+  if ( g.isNull() )
     return QVariant();
 
   if ( idx < 0 )
@@ -2202,7 +2202,7 @@ static QVariant fcnGeometry( const QVariantList&, const QgsExpressionContext* co
 {
   FEAT_FROM_CONTEXT( context, f );
   QgsGeometry geom = f.geometry();
-  if ( !geom.isEmpty() )
+  if ( !geom.isNull() )
     return  QVariant::fromValue( geom );
   else
     return QVariant();
@@ -2211,14 +2211,14 @@ static QVariant fcnGeomFromWKT( const QVariantList& values, const QgsExpressionC
 {
   QString wkt = getStringValue( values.at( 0 ), parent );
   QgsGeometry geom = QgsGeometry::fromWkt( wkt );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 static QVariant fcnGeomFromGML( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QString gml = getStringValue( values.at( 0 ), parent );
   QgsGeometry geom = QgsOgcUtils::geometryFromGML( gml );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2279,7 +2279,7 @@ static QVariant fcnGeomPerimeter( const QVariantList&, const QgsExpressionContex
   }
   else
   {
-    return f.geometry().isEmpty() ? QVariant( 0 ) : QVariant( f.geometry().geometry()->perimeter() );
+    return f.geometry().isNull() ? QVariant( 0 ) : QVariant( f.geometry().geometry()->perimeter() );
   }
 }
 
@@ -2297,13 +2297,13 @@ static QVariant fcnPerimeter( const QVariantList& values, const QgsExpressionCon
 static QVariant fcnGeomNumPoints( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
-  return QVariant( geom.isEmpty() ? 0 : geom.geometry()->nCoordinates() );
+  return QVariant( geom.isNull() ? 0 : geom.geometry()->nCoordinates() );
 }
 
 static QVariant fcnGeomNumGeometries( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   return QVariant( geom.geometry()->partCount() );
@@ -2313,7 +2313,7 @@ static QVariant fcnGeomNumInteriorRings( const QVariantList& values, const QgsEx
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QgsCurvePolygon* curvePolygon = dynamic_cast< QgsCurvePolygon* >( geom.geometry() );
@@ -2341,7 +2341,7 @@ static QVariant fcnGeomNumRings( const QVariantList& values, const QgsExpression
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QgsCurvePolygon* curvePolygon = dynamic_cast< QgsCurvePolygon* >( geom.geometry() );
@@ -2375,7 +2375,7 @@ static QVariant fcnBounds( const QVariantList& values, const QgsExpressionContex
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
   QgsGeometry geomBounds = QgsGeometry::fromRect( geom.boundingBox() );
-  QVariant result = !geomBounds.isEmpty() ? QVariant::fromValue( geomBounds ) : QVariant();
+  QVariant result = !geomBounds.isNull() ? QVariant::fromValue( geomBounds ) : QVariant();
   return result;
 }
 
@@ -2418,7 +2418,7 @@ static QVariant fcnYMax( const QVariantList& values, const QgsExpressionContext*
 static QVariant fcnIsClosed( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
-  if ( fGeom.isEmpty() )
+  if ( fGeom.isNull() )
     return QVariant();
 
   QgsCurve* curve = dynamic_cast< QgsCurve* >( fGeom.geometry() );
@@ -2436,7 +2436,7 @@ static QVariant fcnRelate( const QVariantList& values, const QgsExpressionContex
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
 
-  if ( fGeom.isEmpty() || sGeom.isEmpty() )
+  if ( fGeom.isNull() || sGeom.isNull() )
     return QVariant();
 
   QScopedPointer<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( fGeom.geometry() ) );
@@ -2516,7 +2516,7 @@ static QVariant fcnBuffer( const QVariantList& values, const QgsExpressionContex
     seg = getIntValue( values.at( 2 ), parent );
 
   QgsGeometry geom = fGeom.buffer( dist, seg );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2531,7 +2531,7 @@ static QVariant fcnOffsetCurve( const QVariantList& values, const QgsExpressionC
   double mitreLimit = getDoubleValue( values.at( 3 ), parent );
 
   QgsGeometry geom = fGeom.offsetCurve( dist, segments, join, mitreLimit );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2546,7 +2546,7 @@ static QVariant fcnSingleSidedBuffer( const QVariantList& values, const QgsExpre
   double mitreLimit = getDoubleValue( values.at( 3 ), parent );
 
   QgsGeometry geom = fGeom.singleSidedBuffer( dist, segments, QgsGeometry::SideLeft, join, mitreLimit );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2557,7 +2557,7 @@ static QVariant fcnExtend( const QVariantList& values, const QgsExpressionContex
   double distEnd = getDoubleValue( values.at( 2 ), parent );
 
   QgsGeometry geom = fGeom.extendLine( distStart, distEnd );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2573,14 +2573,14 @@ static QVariant fcnCentroid( const QVariantList& values, const QgsExpressionCont
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry geom = fGeom.centroid();
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 static QVariant fcnPointOnSurface( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry geom = fGeom.pointOnSurface();
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2589,7 +2589,7 @@ static QVariant fcnPoleOfInaccessibility( const QVariantList& values, const QgsE
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   double tolerance = getDoubleValue( values.at( 1 ), parent );
   QgsGeometry geom = fGeom.poleOfInaccessibility( tolerance );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2597,7 +2597,7 @@ static QVariant fcnConvexHull( const QVariantList& values, const QgsExpressionCo
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry geom = fGeom.convexHull();
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 static QVariant fcnDifference( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -2605,14 +2605,14 @@ static QVariant fcnDifference( const QVariantList& values, const QgsExpressionCo
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
   QgsGeometry geom = fGeom.difference( sGeom );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
 static QVariant fcnReverse( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
-  if ( fGeom.isEmpty() )
+  if ( fGeom.isNull() )
     return QVariant();
 
   QgsCurve* curve = dynamic_cast< QgsCurve* >( fGeom.geometry() );
@@ -2627,7 +2627,7 @@ static QVariant fcnReverse( const QVariantList& values, const QgsExpressionConte
 static QVariant fcnExteriorRing( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
-  if ( fGeom.isEmpty() )
+  if ( fGeom.isNull() )
     return QVariant();
 
   QgsCurvePolygon* curvePolygon = dynamic_cast< QgsCurvePolygon* >( fGeom.geometry() );
@@ -2650,7 +2650,7 @@ static QVariant fcnIntersection( const QVariantList& values, const QgsExpression
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
   QgsGeometry geom = fGeom.intersection( sGeom );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 static QVariant fcnSymDifference( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -2658,7 +2658,7 @@ static QVariant fcnSymDifference( const QVariantList& values, const QgsExpressio
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
   QgsGeometry geom = fGeom.symDifference( sGeom );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 static QVariant fcnCombine( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -2666,7 +2666,7 @@ static QVariant fcnCombine( const QVariantList& values, const QgsExpressionConte
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
   QgsGeometry geom = fGeom.combine( sGeom );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 static QVariant fcnGeomToWKT( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -2858,7 +2858,7 @@ static QVariant fcnClosestPoint( const QVariantList& values, const QgsExpression
 
   QgsGeometry geom = fromGeom.nearestPoint( toGeom );
 
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2869,7 +2869,7 @@ static QVariant fcnShortestLine( const QVariantList& values, const QgsExpression
 
   QgsGeometry geom = fromGeom.shortestLine( toGeom );
 
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2880,7 +2880,7 @@ static QVariant fcnLineInterpolatePoint( const QVariantList& values, const QgsEx
 
   QgsGeometry geom = lineGeom.interpolate( distance );
 
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -3275,7 +3275,7 @@ static QVariant fcnGetGeometry( const QVariantList& values, const QgsExpressionC
 {
   QgsFeature feat = getFeature( values.at( 0 ), parent );
   QgsGeometry geom = feat.geometry();
-  if ( !geom.isEmpty() )
+  if ( !geom.isNull() )
     return QVariant::fromValue( geom );
   return QVariant();
 }
@@ -5904,7 +5904,7 @@ QString QgsExpression::formatPreviewString( const QVariant& value )
   {
     //result is a geometry
     QgsGeometry geom = value.value<QgsGeometry>();
-    if ( geom.isEmpty() )
+    if ( geom.isNull() )
       return tr( "<i>&lt;empty geometry&gt;</i>" );
     else
       return tr( "<i>&lt;geometry: %1&gt;</i>" ).arg( QgsWkbTypes::displayString( geom.geometry()->wkbType() ) );

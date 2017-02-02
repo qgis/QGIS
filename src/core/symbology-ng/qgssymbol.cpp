@@ -646,7 +646,7 @@ bool QgsSymbol::hasDataDefinedProperties() const
 void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker, int currentVertexMarkerType, int currentVertexMarkerSize )
 {
   QgsGeometry geom = feature.geometry();
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
   {
     return;
   }

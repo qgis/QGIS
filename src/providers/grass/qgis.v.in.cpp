@@ -246,7 +246,7 @@ int main( int argc, char **argv )
     }
 
     QgsGeometry geometry = feature.geometry();
-    if ( !geometry.isEmpty() )
+    if ( !geometry.isNull() )
     {
       // geometry type may be probably different from provider type (e.g. multi x single)
       QgsWkbTypes::Type geometryType = QgsWkbTypes::flatType( geometry.wkbType() );
