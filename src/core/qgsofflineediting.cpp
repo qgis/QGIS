@@ -525,7 +525,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
   if ( layer->hasGeometryType() )
   {
     QString geomType = "";
-    switch ( layer->wkbType() )
+    switch ( QGis::flatType( layer->wkbType() ) )
     {
       case QGis::WKBPoint:
         geomType = "POINT";
@@ -549,6 +549,10 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
         showWarning( tr( "QGIS wkbType %1 not supported" ).arg( layer->wkbType() ) );
         break;
     };
+
+    if ( QGis::flatType( layer->wkbType() ) != layer->wkbType() )
+      showWarning( tr( "Will drop Z and M values from layer %1 in offline copy." ).arg( layer->name() ) );
+
     QString sqlAddGeom = QString( "SELECT AddGeometryColumn('%1', 'Geometry', %2, '%3', 2)" )
                          .arg( tableName )
                          .arg( layer->crs().authid().startsWith( "EPSG:", Qt::CaseInsensitive ) ? layer->crs().authid().mid( 5 ).toLong() : 0 )
@@ -669,6 +673,15 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
           newAttrs[column++] = attrs.at( it );
         }
         f.setAttributes( newAttrs );
+
+        // The spatialite provider doesn't properly handle Z and M values
+        if ( f.geometry() && f.geometry()->geometry() )
+        {
+          QgsAbstractGeometryV2* geom = f.geometry()->geometry()->clone();
+          geom->dropZValue();
+          geom->dropMValue();
+          f.geometry()->setGeometry( geom );
+        }
 
         newLayer->addFeature( f, false );
 
