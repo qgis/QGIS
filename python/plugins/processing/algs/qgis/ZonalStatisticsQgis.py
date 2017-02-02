@@ -100,6 +100,7 @@ class ZonalStatisticsQgis(GeoAlgorithm):
         st = self.getParameterValue(self.STATISTICS)
 
         vectorLayer = dataobjects.getObjectFromUri(vectorPath)
+        rasterLayer = dataobjects.getObjectFromUri(rasterPath)
 
         keys = list(self.STATS.keys())
         selectedStats = 0
@@ -107,7 +108,7 @@ class ZonalStatisticsQgis(GeoAlgorithm):
             selectedStats |= self.STATS[keys[i]]
 
         zs = QgsZonalStatistics(vectorLayer,
-                                rasterPath,
+                                rasterLayer,
                                 columnPrefix,
                                 bandNumber,
                                 selectedStats)

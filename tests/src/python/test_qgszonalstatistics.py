@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.PyQt.QtCore import QDir, QFile
-from qgis.core import QgsVectorLayer, QgsFeature, QgsFeatureRequest
+from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsFeature, QgsFeatureRequest
 from qgis.analysis import QgsZonalStatistics
 
 from qgis.testing import start_app, unittest
@@ -38,8 +38,8 @@ class TestQgsZonalStatistics(unittest.TestCase):
             QFile.copy(TEST_DATA_DIR + f, myTempPath + f)
 
         myVector = QgsVectorLayer(myTempPath + "polys.shp", "poly", "ogr")
-        myRasterPath = myTempPath + "edge_problem.asc"
-        zs = QgsZonalStatistics(myVector, myRasterPath, "", 1, QgsZonalStatistics.All)
+        myRaster = QgsRasterLayer(myTempPath + "edge_problem.asc", "raster", "gdal")
+        zs = QgsZonalStatistics(myVector, myRaster, "", 1, QgsZonalStatistics.All)
         zs.calculateStatistics(None)
 
         feat = QgsFeature()
