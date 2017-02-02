@@ -2336,32 +2336,3 @@ tests:
       OUTPUT:
         name: expected/voronoi_buffer.gml
         type: vector
-
-  - algorithm: qgis:randompointsinlayerbounds
-    name: Standard random points in layer
-    params:
-      CRS: EPSG:4326
-      MIN_DISTANCE: 0.0
-      POINT_NUMBER: 10
-      VECTOR:
-        name: polys.gml
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/random_point_in_layer.gml
-        type: vector
-
-  - algorithm: qgis:randompointsinextent
-    name: Random points in map canvas extent
-    params:
-      CRS: EPSG:4326
-      EXTENT: -0.88,8.98,-3.56,2.95
-      MIN_DISTANCE: 0.0
-      POINT_NUMBER: 20
-    results:
-      OUTPUT:
-        name: expected/random_point_in_extent.gml
-        type: vector
-        compare:
-          geometry:
-            precision: 5
