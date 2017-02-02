@@ -77,6 +77,7 @@ class FixGeometry(GeoAlgorithm):
                     for g in tmpGeometries:
                         if g.type() == inputFeature.geometry().type():
                             try:
+                                g.convertToMultiType()
                                 outputFeature.setGeometry(QgsGeometry(g))
                                 writer.addFeature(outputFeature)
                             except:
@@ -84,6 +85,7 @@ class FixGeometry(GeoAlgorithm):
                     feedback.setProgress(int(current * total))
                     continue
 
+                outputGeometry.convertToMultiType()
                 outputFeature.setGeometry(outputGeometry)
 
             writer.addFeature(outputFeature)
