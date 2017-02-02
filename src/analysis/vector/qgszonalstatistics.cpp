@@ -34,21 +34,8 @@ QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, QgsRasterL
     , mRasterBand( rasterBand )
     , mPolygonLayer( polygonLayer )
     , mAttributePrefix( attributePrefix )
-    , mInputNodataValue( -1 )
     , mStatistics( stats )
-{
-
-}
-
-QgsZonalStatistics::QgsZonalStatistics()
-    : mRasterLayer( nullptr )
-    , mRasterBand( 0 )
-    , mPolygonLayer( nullptr )
-    , mInputNodataValue( -1 )
-    , mStatistics( QgsZonalStatistics::All )
-{
-
-}
+{}
 
 int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
 {

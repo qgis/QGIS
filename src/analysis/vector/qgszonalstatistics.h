@@ -67,7 +67,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     int calculateStatistics( QProgressDialog* p );
 
   private:
-    QgsZonalStatistics();
+    QgsZonalStatistics() = default;
 
     class FeatureStats
     {
@@ -128,15 +128,15 @@ class ANALYSIS_EXPORT QgsZonalStatistics
 
     QString getUniqueFieldName( const QString& fieldName, const QList<QgsField>& newFields );
 
-    QgsRasterLayer* mRasterLayer;
-    QgsRasterDataProvider* mRasterProvider;
-    //! Raster band to calculate statistics from (defaults to 1)
-    int mRasterBand;
-    QgsVectorLayer* mPolygonLayer;
+    QgsRasterLayer* mRasterLayer = nullptr;
+    QgsRasterDataProvider* mRasterProvider = nullptr;
+    //! Raster band to calculate statistics
+    int mRasterBand = 0;
+    QgsVectorLayer* mPolygonLayer = nullptr;
     QString mAttributePrefix;
     //! The nodata value of the input layer
-    float mInputNodataValue;
-    Statistics mStatistics;
+    float mInputNodataValue = -1;
+    Statistics mStatistics = QgsZonalStatistics::All;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsZonalStatistics::Statistics )
