@@ -583,8 +583,9 @@ void TestQgsProperty::propertyTransformer()
   //install into property and test evaluation
   QgsProperty p1;
   p1.setTransformer( new TestTransformer( 10, 20 ) );
-  QCOMPARE( dynamic_cast< const TestTransformer* >( p1.transformer() )->minValue(), 10.0 );
-  QCOMPARE( dynamic_cast< const TestTransformer* >( p1.transformer() )->maxValue(), 20.0 );
+  QVERIFY( dynamic_cast< const TestTransformer* >( p1.transformer() ) );
+  QCOMPARE( static_cast< const TestTransformer* >( p1.transformer() )->minValue(), 10.0 );
+  QCOMPARE( static_cast< const TestTransformer* >( p1.transformer() )->maxValue(), 20.0 );
   p1.setStaticValue( QVariant( QVariant::Double ) );
   QCOMPARE( p1.value( context, -99 ).toDouble(), -1.0 );
   p1.setStaticValue( 11.0 );
@@ -772,24 +773,25 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( r1.minValue(), 15.0 );
   QCOMPARE( r1.maxValue(), 25.0 );
   QCOMPARE( r1.nullColor(), QColor( 100, 150, 200 ) );
-  QCOMPARE( dynamic_cast< QgsGradientColorRamp* >( r1.colorRamp() )->color1(), QColor( 10, 20, 30 ) );
-  QCOMPARE( dynamic_cast< QgsGradientColorRamp* >( r1.colorRamp() )->color2(), QColor( 200, 190, 180 ) );
+  QVERIFY( dynamic_cast< QgsGradientColorRamp* >( r1.colorRamp() ) );
+  QCOMPARE( static_cast< QgsGradientColorRamp* >( r1.colorRamp() )->color1(), QColor( 10, 20, 30 ) );
+  QCOMPARE( static_cast< QgsGradientColorRamp* >( r1.colorRamp() )->color2(), QColor( 200, 190, 180 ) );
 
   // test cloning
   QScopedPointer< QgsColorRampTransformer > r2( t1.clone() );
   QCOMPARE( r2->minValue(), 15.0 );
   QCOMPARE( r2->maxValue(), 25.0 );
   QCOMPARE( r2->nullColor(), QColor( 100, 150, 200 ) );
-  QCOMPARE( dynamic_cast< QgsGradientColorRamp* >( r2->colorRamp() )->color1(), QColor( 10, 20, 30 ) );
-  QCOMPARE( dynamic_cast< QgsGradientColorRamp* >( r2->colorRamp() )->color2(), QColor( 200, 190, 180 ) );
+  QCOMPARE( static_cast< QgsGradientColorRamp* >( r2->colorRamp() )->color1(), QColor( 10, 20, 30 ) );
+  QCOMPARE( static_cast< QgsGradientColorRamp* >( r2->colorRamp() )->color2(), QColor( 200, 190, 180 ) );
 
   // copy constructor
   QgsColorRampTransformer r3( t1 );
   QCOMPARE( r3.minValue(), 15.0 );
   QCOMPARE( r3.maxValue(), 25.0 );
   QCOMPARE( r3.nullColor(), QColor( 100, 150, 200 ) );
-  QCOMPARE( dynamic_cast< QgsGradientColorRamp* >( r3.colorRamp() )->color1(), QColor( 10, 20, 30 ) );
-  QCOMPARE( dynamic_cast< QgsGradientColorRamp* >( r3.colorRamp() )->color2(), QColor( 200, 190, 180 ) );
+  QCOMPARE( static_cast< QgsGradientColorRamp* >( r3.colorRamp() )->color1(), QColor( 10, 20, 30 ) );
+  QCOMPARE( static_cast< QgsGradientColorRamp* >( r3.colorRamp() )->color2(), QColor( 200, 190, 180 ) );
 
   // assignment operator
   QgsColorRampTransformer r4;
@@ -797,8 +799,8 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( r4.minValue(), 15.0 );
   QCOMPARE( r4.maxValue(), 25.0 );
   QCOMPARE( r4.nullColor(), QColor( 100, 150, 200 ) );
-  QCOMPARE( dynamic_cast< QgsGradientColorRamp* >( r4.colorRamp() )->color1(), QColor( 10, 20, 30 ) );
-  QCOMPARE( dynamic_cast< QgsGradientColorRamp* >( r4.colorRamp() )->color2(), QColor( 200, 190, 180 ) );
+  QCOMPARE( static_cast< QgsGradientColorRamp* >( r4.colorRamp() )->color1(), QColor( 10, 20, 30 ) );
+  QCOMPARE( static_cast< QgsGradientColorRamp* >( r4.colorRamp() )->color2(), QColor( 200, 190, 180 ) );
 
   //test various min/max value/color and scaling methods
 
@@ -811,7 +813,7 @@ void TestQgsProperty::colorRampTransformer()
   t.setNullColor( QColor( 1, 10, 11, 21 ) );
   QCOMPARE( t.nullColor(), QColor( 1, 10, 11, 21 ) );
   t.setColorRamp( new QgsGradientColorRamp( QColor( 10, 20, 100 ), QColor( 100, 200, 200 ) ) );
-  QCOMPARE( dynamic_cast< QgsGradientColorRamp* >( t.colorRamp() )->color1(), QColor( 10, 20, 100 ) );
+  QCOMPARE( static_cast< QgsGradientColorRamp* >( t.colorRamp() )->color1(), QColor( 10, 20, 100 ) );
 
   //test colors
   QCOMPARE( t.color( 50 ), QColor( 10, 20, 100 ) ); //out of range

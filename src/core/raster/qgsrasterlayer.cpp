@@ -1108,20 +1108,20 @@ void QgsRasterLayer::refreshRendererIfNeeded( QgsRasterRenderer* rasterRenderer,
 
     // Update main renderer so that the legends get updated
     if ( singleBandRenderer )
-      dynamic_cast<QgsSingleBandGrayRenderer*>( renderer() )->setContrastEnhancement( new QgsContrastEnhancement( * singleBandRenderer->contrastEnhancement() ) );
+      static_cast<QgsSingleBandGrayRenderer*>( renderer() )->setContrastEnhancement( new QgsContrastEnhancement( * singleBandRenderer->contrastEnhancement() ) );
     else if ( multiBandRenderer )
     {
       if ( multiBandRenderer->redContrastEnhancement() )
       {
-        dynamic_cast<QgsMultiBandColorRenderer*>( renderer() )->setRedContrastEnhancement( new QgsContrastEnhancement( *multiBandRenderer->redContrastEnhancement() ) );
+        static_cast<QgsMultiBandColorRenderer*>( renderer() )->setRedContrastEnhancement( new QgsContrastEnhancement( *multiBandRenderer->redContrastEnhancement() ) );
       }
       if ( multiBandRenderer->greenContrastEnhancement() )
       {
-        dynamic_cast<QgsMultiBandColorRenderer*>( renderer() )->setGreenContrastEnhancement( new QgsContrastEnhancement( *multiBandRenderer->greenContrastEnhancement() ) );
+        static_cast<QgsMultiBandColorRenderer*>( renderer() )->setGreenContrastEnhancement( new QgsContrastEnhancement( *multiBandRenderer->greenContrastEnhancement() ) );
       }
       if ( multiBandRenderer->blueContrastEnhancement() )
       {
-        dynamic_cast<QgsMultiBandColorRenderer*>( renderer() )->setBlueContrastEnhancement( new QgsContrastEnhancement( *multiBandRenderer->blueContrastEnhancement() ) );
+        static_cast<QgsMultiBandColorRenderer*>( renderer() )->setBlueContrastEnhancement( new QgsContrastEnhancement( *multiBandRenderer->blueContrastEnhancement() ) );
       }
     }
 

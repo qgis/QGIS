@@ -199,9 +199,11 @@ void QgsCompositionWidget::updateVariables()
 
 void QgsCompositionWidget::updateStyleFromWidget()
 {
-  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
-  mComposition->setPageStyleSymbol( dynamic_cast< QgsFillSymbol* >( w->symbol() ) );
-  mComposition->update();
+  if ( QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() ) )
+  {
+    mComposition->setPageStyleSymbol( dynamic_cast< QgsFillSymbol* >( w->symbol() ) );
+    mComposition->update();
+  }
 }
 
 void QgsCompositionWidget::cleanUpStyleSelector( QgsPanelWidget* container )

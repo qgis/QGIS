@@ -2765,7 +2765,7 @@ static QVariant fcnProject( const QVariantList& values, const QgsExpressionConte
   double azimuth = getDoubleValue( values.at( 2 ), parent );
   double inclination = getDoubleValue( values.at( 3 ), parent );
 
-  const QgsPointV2* p = dynamic_cast<const QgsPointV2*>( geom.geometry() );
+  const QgsPointV2* p = static_cast<const QgsPointV2*>( geom.geometry() );
   QgsPointV2 newPoint = p->project( distance,  180.0 * azimuth / M_PI, 180.0 * inclination / M_PI );
 
   return QVariant::fromValue( QgsGeometry( new QgsPointV2( newPoint ) ) );

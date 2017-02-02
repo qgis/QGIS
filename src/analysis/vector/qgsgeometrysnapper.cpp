@@ -481,7 +481,7 @@ void QgsGeometrySnapper::processFeature( QgsFeature& feature, double snapToleran
 
 QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry, double snapTolerance, SnapMode mode ) const
 {
-  QgsPointV2 center = dynamic_cast< const QgsPointV2* >( geometry.geometry() ) ? *dynamic_cast< const QgsPointV2* >( geometry.geometry() ) :
+  QgsPointV2 center = dynamic_cast< const QgsPointV2* >( geometry.geometry() ) ? *static_cast< const QgsPointV2* >( geometry.geometry() ) :
                       QgsPointV2( geometry.geometry()->boundingBox().center() );
 
   // Get potential reference features and construct snap index

@@ -1557,7 +1557,7 @@ void QgsWmsProjectParser::addOWSLayers( QDomDocument &doc,
       }
 
       QString layerName =  currentLayer->name();
-      if ( mProjectParser && mProjectParser->useLayerIds() )
+      if ( mProjectParser->useLayerIds() )
         layerName = currentLayer->id();
       else if ( !currentLayer->shortName().isEmpty() )
         layerName = currentLayer->shortName();

@@ -701,15 +701,16 @@ void TestQgsRasterLayer::testRefreshRendererIfNeeded()
 {
   QVERIFY2( mpLandsatRasterLayer->isValid(), "landsat.tif layer is not valid!" );
   mpLandsatRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax );
+  QVERIFY( dynamic_cast<QgsMultiBandColorRenderer*>( mpLandsatRasterLayer->renderer() ) );
   mMapSettings->setLayers( QList<QgsMapLayer*>() << mpLandsatRasterLayer );
   mMapSettings->setExtent( mpLandsatRasterLayer->extent() );
-  double initMinVal = dynamic_cast<QgsMultiBandColorRenderer*>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
+  double initMinVal = static_cast<QgsMultiBandColorRenderer*>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
 
   // Should do nothing
   QgsRectangle newExtent = QgsRectangle( 785000, 3340000, 785100, 3340100 );
   mpLandsatRasterLayer->refreshRendererIfNeeded( mpLandsatRasterLayer->renderer(), newExtent );
   QCOMPARE( mpLandsatRasterLayer->renderer()->minMaxOrigin().limits(), QgsRasterMinMaxOrigin::MinMax );
-  double minVal = dynamic_cast<QgsMultiBandColorRenderer*>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
+  double minVal = static_cast<QgsMultiBandColorRenderer*>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
   QGSCOMPARENEAR( initMinVal, minVal, 1e-5 );
 
   // Change to UpdatedCanvas
@@ -719,7 +720,7 @@ void TestQgsRasterLayer::testRefreshRendererIfNeeded()
   mpLandsatRasterLayer->renderer()->setMinMaxOrigin( mmo );
   QCOMPARE( mpLandsatRasterLayer->renderer()->minMaxOrigin().extent(), QgsRasterMinMaxOrigin::UpdatedCanvas );
   mpLandsatRasterLayer->refreshRendererIfNeeded( mpLandsatRasterLayer->renderer(), newExtent );
-  double newMinVal = dynamic_cast<QgsMultiBandColorRenderer*>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
+  double newMinVal = static_cast<QgsMultiBandColorRenderer*>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
   QGSCOMPARENOTNEAR( initMinVal, newMinVal, 1e-5 );
 }
 
