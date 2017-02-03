@@ -56,7 +56,7 @@ bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint& ce
 
   if ( disc < 0 )
   {
-    //no intersection or tangeant
+    //no intersection or tangent
     return false;
   }
   else
@@ -567,7 +567,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
   QgsPoint penultimatePt = penultimatePoint( &penulPointExist );
 
   // *****************************
-  // ---- X Constrain
+  // ---- X constraint
   if ( mXConstraint->isLocked() )
   {
     if ( !mXConstraint->relative() )
@@ -594,7 +594,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
     }
   }
   // *****************************
-  // ---- Y Constrain
+  // ---- Y constraint
   if ( mYConstraint->isLocked() )
   {
     if ( !mYConstraint->relative() )
@@ -621,7 +621,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
     }
   }
   // *****************************
-  // ---- Angle constrain
+  // ---- Angle constraint
   // input angles are in degrees
   if ( mAngleConstraint->lockMode() == CadConstraint::SoftLock )
   {
