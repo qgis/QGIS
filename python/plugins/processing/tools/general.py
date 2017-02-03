@@ -61,14 +61,14 @@ def alghelp(name):
         print('Algorithm not found')
     
 def get_alglist(text=None):
-    s = ''
+    l = []
     for provider in list(algList.algs.values()):
         sortedlist = sorted(list(provider.values()), key=lambda alg: alg.name)
         for alg in sortedlist:
             if text is None or text.lower() in alg.name.lower():
-                s += alg.name.ljust(50, '-') + '--->' + alg.commandLineName() \
-                    + '\n'
-    return s
+                t = alg.name.ljust(50, '-') + '--->' + alg.commandLineName()
+                l.append(t)
+    return l
 
 
 def get_algoptions(name):
