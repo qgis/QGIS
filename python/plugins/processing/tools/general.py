@@ -42,6 +42,25 @@ from processing.gui.Postprocessing import handleAlgorithmResults
 
 
 def alglist(text=None):
+    print(get_alglist(text))
+
+    
+def algoptions(name):
+    s = get_algoptions(name)
+    if s:
+        print(s)
+    else:
+        print('Algorithm not found')
+    
+
+def alghelp(name):
+    s = get_alghelp(name)
+    if s:
+        print(s)
+    else:
+        print('Algorithm not found')
+    
+def get_alglist(text=None):
     s = ''
     for provider in list(algList.algs.values()):
         sortedlist = sorted(list(provider.values()), key=lambda alg: alg.name)
@@ -49,11 +68,10 @@ def alglist(text=None):
             if text is None or text.lower() in alg.name.lower():
                 s += alg.name.ljust(50, '-') + '--->' + alg.commandLineName() \
                     + '\n'
-    print(s)
     return s
 
 
-def algoptions(name):
+def get_algoptions(name):
     alg = Processing.getAlgorithm(name)
     if alg is not None:
         s = ''
@@ -64,19 +82,16 @@ def algoptions(name):
                 for option in param.options:
                     s += '\t' + str(i) + ' - ' + str(option) + '\n'
                     i += 1
-        print(s)
-    else:
-        print('Algorithm not found')
+        return s
 
 
-def alghelp(name):
+def get_alghelp(name):
     alg = Processing.getAlgorithm(name)
     if alg is not None:
         alg = alg.getCopy()
-        print(str(alg))
-        algoptions(name)
-    else:
-        print('Algorithm not found')
+        help = str(alg)
+        opions = get_algoptions(name)
+        return "%\n%s" % (help, options)
 
 
 def runalg(algOrName, *args, **kwargs):
