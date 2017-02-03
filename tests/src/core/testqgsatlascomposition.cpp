@@ -43,7 +43,6 @@ class TestQgsAtlasComposition : public QObject
         , mLabel2( 0 )
         , mAtlasMap( 0 )
         , mOverview( 0 )
-        , mMapSettings( 0 )
         , mVectorLayer( 0 )
         , mVectorLayer2( 0 )
         , mAtlas( 0 )
@@ -84,7 +83,6 @@ class TestQgsAtlasComposition : public QObject
     QgsComposerLabel* mLabel2;
     QgsComposerMap* mAtlasMap;
     QgsComposerMap* mOverview;
-    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsVectorLayer* mVectorLayer2;
     QgsAtlasComposition* mAtlas;
@@ -95,8 +93,6 @@ void TestQgsAtlasComposition::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  mMapSettings = new QgsMapSettings();
 
   //create maplayers from testdata and add to layer registry
   QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/france_parts.shp" );
@@ -115,9 +111,7 @@ void TestQgsAtlasComposition::initTestCase()
 }
 
 TestQgsAtlasComposition::~TestQgsAtlasComposition()
-{
-  delete mMapSettings;
-}
+{}
 
 
 void TestQgsAtlasComposition::cleanupTestCase()
@@ -139,15 +133,12 @@ void TestQgsAtlasComposition::cleanupTestCase()
 void TestQgsAtlasComposition::init()
 {
   //create composition with composer map
-  mMapSettings->setLayers( QList<QgsMapLayer*>() << mVectorLayer );
-  mMapSettings->setCrsTransformEnabled( true );
-  mMapSettings->setMapUnits( QgsUnitTypes::DistanceMeters );
 
   // select epsg:2154
   QgsCoordinateReferenceSystem crs;
   crs.createFromSrid( 2154 );
-  mMapSettings->setDestinationCrs( crs );
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  QgsProject::instance()->setCrs( crs );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   // fix the renderer, fill with green
@@ -163,6 +154,7 @@ void TestQgsAtlasComposition::init()
   // Make sure it doesn't try to render a map for caching onto a still 0-sized image
   mAtlasMap->setPreviewMode( QgsComposerMap::Rectangle );
   mComposition->addComposerMap( mAtlasMap, false );
+  mAtlasMap->setLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   mAtlas = &mComposition->atlasComposition();
   mAtlas->setCoverageLayer( mVectorLayer );
@@ -174,6 +166,7 @@ void TestQgsAtlasComposition::init()
   mOverview->setFrameEnabled( true );
   mOverview->overview()->setFrameMap( mAtlasMap->id() );
   mOverview->setPreviewMode( QgsComposerMap::Rectangle );
+  mOverview->setLayers( QList<QgsMapLayer*>() << mVectorLayer );
   mComposition->addComposerMap( mOverview, false );
   mOverview->setNewExtent( QgsRectangle( 49670.718, 6415139.086, 699672.519, 7065140.887 ) );
 
@@ -188,7 +181,7 @@ void TestQgsAtlasComposition::init()
   mComposition->addComposerLabel( mLabel1 );
   mLabel1->setText( QStringLiteral( "[% \"NAME_1\" %] area" ) );
   mLabel1->setFont( QgsFontUtils::getStandardTestFont() );
-  //need to explictly set width, since expression hasn't been evaluated against
+  //need to explicitly set width, since expression hasn't been evaluated against
   //an atlas feature yet and will be shorter than required
   mLabel1->setSceneRect( QRectF( 150, 5, 60, 15 ) );
 

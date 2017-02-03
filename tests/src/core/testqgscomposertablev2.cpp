@@ -40,7 +40,6 @@ class TestQgsComposerTableV2 : public QObject
   public:
     TestQgsComposerTableV2()
         : mComposition( 0 )
-        , mMapSettings( 0 )
         , mVectorLayer( 0 )
         , mComposerAttributeTable( 0 )
         , mFrame1( 0 )
@@ -79,7 +78,6 @@ class TestQgsComposerTableV2 : public QObject
 
   private:
     QgsComposition* mComposition;
-    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsComposerAttributeTableV2* mComposerAttributeTable;
     QgsComposerFrame* mFrame1;
@@ -95,8 +93,6 @@ void TestQgsComposerTableV2::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mMapSettings = new QgsMapSettings();
-
   //create maplayers from testdata and add to layer registry
   QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
@@ -104,16 +100,11 @@ void TestQgsComposerTableV2::initTestCase()
                                      QStringLiteral( "ogr" ) );
   QgsProject::instance()->addMapLayer( mVectorLayer );
 
-  mMapSettings->setLayers( QList<QgsMapLayer*>() << mVectorLayer );
-  mMapSettings->setCrsTransformEnabled( false );
-
   mReport = QStringLiteral( "<h1>Composer TableV2 Tests</h1>\n" );
 }
 
 void TestQgsComposerTableV2::cleanupTestCase()
 {
-  delete mMapSettings;
-
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -128,7 +119,7 @@ void TestQgsComposerTableV2::cleanupTestCase()
 void TestQgsComposerTableV2::init()
 {
   //create composition with composer map
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 portrait
 
   mComposerAttributeTable = new QgsComposerAttributeTableV2( mComposition, false );
@@ -352,17 +343,17 @@ void TestQgsComposerTableV2::attributeTableEmpty()
   mComposerAttributeTable->setFeatureFilter( QStringLiteral( "1=2" ) );
   mComposerAttributeTable->setFilterFeatures( true );
 
-  mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::HeadersOnly );
+  mComposerAttributeTable->setEmptyTableBehavior( QgsComposerTableV2::HeadersOnly );
   QgsCompositionChecker checker( QStringLiteral( "composerattributetable_headersonly" ), mComposition );
   checker.setControlPathPrefix( QStringLiteral( "composer_table" ) );
   QVERIFY( checker.testComposition( mReport, 0 ) );
 
-  mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::HideTable );
+  mComposerAttributeTable->setEmptyTableBehavior( QgsComposerTableV2::HideTable );
   QgsCompositionChecker checker2( QStringLiteral( "composerattributetable_hidetable" ), mComposition );
   checker2.setControlPathPrefix( QStringLiteral( "composer_table" ) );
   QVERIFY( checker2.testComposition( mReport, 0 ) );
 
-  mComposerAttributeTable->setEmptyTableBehaviour( QgsComposerTableV2::ShowMessage );
+  mComposerAttributeTable->setEmptyTableBehavior( QgsComposerTableV2::ShowMessage );
   mComposerAttributeTable->setEmptyTableMessage( QStringLiteral( "no rows" ) );
   QgsCompositionChecker checker3( QStringLiteral( "composerattributetable_showmessage" ), mComposition );
   checker3.setControlPathPrefix( QStringLiteral( "composer_table" ) );
@@ -844,7 +835,7 @@ void TestQgsComposerTableV2::autoWrap()
 
   mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
   mComposerAttributeTable->setVectorLayer( multiLineLayer );
-  mComposerAttributeTable->setWrapBehaviour( QgsComposerTableV2::WrapText );
+  mComposerAttributeTable->setWrapBehavior( QgsComposerTableV2::WrapText );
 
   mComposerAttributeTable->columns()->at( 0 )->setWidth( 25 );
   mComposerAttributeTable->columns()->at( 1 )->setWidth( 25 );

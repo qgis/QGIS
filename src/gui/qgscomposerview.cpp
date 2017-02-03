@@ -44,7 +44,7 @@
 #include "qgscomposerattributetablev2.h"
 #include "qgsaddremovemultiframecommand.h"
 #include "qgspaperitem.h"
-#include "qgsmapcanvas.h" //for QgsMapCanvas::WheelAction
+#include "qgsmapcanvas.h"
 #include "qgscursors.h"
 #include "qgscomposerutils.h"
 
@@ -242,7 +242,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         selectedItem = composition()->composerItemAt( scenePoint, previousSelectedItem, true );
 
         //if we didn't find a lower item we'll use the top-most as fall-back
-        //this duplicates mapinfo/illustrator/etc behaviour where ctrl-clicks are "cyclic"
+        //this duplicates mapinfo/illustrator/etc behavior where ctrl-clicks are "cyclic"
         if ( !selectedItem )
         {
           selectedItem = composition()->composerItemAt( scenePoint, true );
@@ -290,7 +290,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
 
     case Zoom:
     {
-      if ( !( e->modifiers() & Qt::ShiftModifier ) )
+      if ( !( e->modifiers() & Qt::AltModifier ) )
       {
         //zoom in action
         startMarqueeZoom( scenePoint );
@@ -997,6 +997,12 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       else
       {
         QgsComposerMap* composerMap = new QgsComposerMap( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
+        if ( mCanvas )
+        {
+          composerMap->zoomToExtent( mCanvas->mapSettings().visibleExtent() );
+          composerMap->setLayers( mCanvas->mapSettings().layers() );
+        }
+
         composition()->addComposerMap( composerMap );
 
         composition()->setAllDeselected();
@@ -1243,7 +1249,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       case AddPolygon:
       {
         if ( ! mPolygonItem.isNull() )
-          movePolygonNode( scenePoint );
+          movePolygonNode( scenePoint, shiftModifier );
 
         break;
       }
@@ -1252,7 +1258,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       {
         if ( ! mPolygonItem.isNull() && ! mPolylineItem.isNull() )
         {
-          movePolygonNode( scenePoint );
+          movePolygonNode( scenePoint, shiftModifier );
 
           // rebuild a new qpainter path
           QPainterPath path;
@@ -1703,7 +1709,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     {
       //both control and space pressed
       //set cursor to zoom in/out depending on shift key status
-      QPixmap myZoomQPixmap = QPixmap(( const char ** )(( e->modifiers() & Qt::ShiftModifier ) ? zoom_out : zoom_in ) );
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )(( e->modifiers() & Qt::AltModifier ) ? zoom_out : zoom_in ) );
       QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
       viewport()->setCursor( zoomCursor );
     }
@@ -1737,8 +1743,8 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
       mTemporaryZoomStatus = QgsComposerView::Active;
       mPreviousTool = mCurrentTool;
       setCurrentTool( Zoom );
-      //set cursor to zoom in/out depending on shift key status
-      QPixmap myZoomQPixmap = QPixmap(( const char ** )(( e->modifiers() & Qt::ShiftModifier ) ? zoom_out : zoom_in ) );
+      //set cursor to zoom in/out depending on alt key status
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )(( e->modifiers() & Qt::AltModifier ) ? zoom_out : zoom_in ) );
       QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
       viewport()->setCursor( zoomCursor );
       return;
@@ -1747,10 +1753,10 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
 
   if ( mCurrentTool == QgsComposerView::Zoom )
   {
-    //using the zoom tool, respond to changes in shift key status and update mouse cursor accordingly
+    //using the zoom tool, respond to changes in alt key status and update mouse cursor accordingly
     if ( ! e->isAutoRepeat() )
     {
-      QPixmap myZoomQPixmap = QPixmap(( const char ** )(( e->modifiers() & Qt::ShiftModifier ) ? zoom_out : zoom_in ) );
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )(( e->modifiers() & Qt::AltModifier ) ? zoom_out : zoom_in ) );
       QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
       viewport()->setCursor( zoomCursor );
     }
@@ -1936,10 +1942,10 @@ void QgsComposerView::keyReleaseEvent( QKeyEvent * e )
   }
   else if ( mCurrentTool == QgsComposerView::Zoom )
   {
-    //if zoom tool is active, respond to changes in the shift key status and update cursor accordingly
+    //if zoom tool is active, respond to changes in the alt key status and update cursor accordingly
     if ( ! e->isAutoRepeat() )
     {
-      QPixmap myZoomQPixmap = QPixmap(( const char ** )(( e->modifiers() & Qt::ShiftModifier ) ? zoom_out : zoom_in ) );
+      QPixmap myZoomQPixmap = QPixmap(( const char ** )(( e->modifiers() & Qt::AltModifier ) ? zoom_out : zoom_in ) );
       QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
       viewport()->setCursor( zoomCursor );
     }
@@ -2005,7 +2011,7 @@ void QgsComposerView::wheelEvent( QWheelEvent* event )
 
 void QgsComposerView::wheelZoom( QWheelEvent * event )
 {
-  //get mouse wheel zoom behaviour settings
+  //get mouse wheel zoom behavior settings
   QSettings mySettings;
   double zoomFactor = mySettings.value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toDouble();
 
@@ -2015,7 +2021,7 @@ void QgsComposerView::wheelZoom( QWheelEvent * event )
     zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 10.0;
   }
 
-  //caculate zoom scale factor
+  //calculate zoom scale factor
   bool zoomIn = event->delta() > 0;
   double scaleFactor = ( zoomIn ? 1 / zoomFactor : zoomFactor );
 
@@ -2101,6 +2107,16 @@ void QgsComposerView::setPreviewMode( QgsPreviewEffect::PreviewMode mode )
   }
 
   mPreviewEffect->setMode( mode );
+}
+
+void QgsComposerView::setMapCanvas( QgsMapCanvas* canvas )
+{
+  mCanvas = canvas;
+}
+
+QgsMapCanvas*QgsComposerView::mapCanvas() const
+{
+  return mCanvas;
 }
 
 void QgsComposerView::paintEvent( QPaintEvent* event )
@@ -2244,15 +2260,26 @@ void QgsComposerView::addPolygonNode( QPointF scenePoint )
   mPolygonItem.data()->setPolygon( polygon );
 }
 
-void QgsComposerView::movePolygonNode( QPointF scenePoint )
+void QgsComposerView::movePolygonNode( QPointF scenePoint, bool constrainAngle )
 {
   QPolygonF polygon = mPolygonItem.data()->polygon();
 
-  if ( polygon.size() > 0 )
+  if ( polygon.isEmpty() )
+    return;
+
+  if ( polygon.size() > 1 && constrainAngle )
   {
-    polygon.replace( polygon.size() - 1, scenePoint );
-    mPolygonItem.data()->setPolygon( polygon );
+    QPointF start = polygon.at( polygon.size() - 2 );
+    QLineF newLine = QLineF( start, scenePoint );
+
+    //movement is contrained to 45 degree angles
+    double angle = QgsComposerUtils::snappedAngle( newLine.angle() );
+    newLine.setAngle( angle );
+    scenePoint = newLine.p2();
   }
+
+  polygon.replace( polygon.size() - 1, scenePoint );
+  mPolygonItem.data()->setPolygon( polygon );
 }
 
 void QgsComposerView::displayNodes( const bool display )

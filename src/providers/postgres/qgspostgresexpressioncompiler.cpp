@@ -38,84 +38,76 @@ QString QgsPostgresExpressionCompiler::quotedValue( const QVariant& value, bool&
   return QgsPostgresConn::quotedValue( value );
 }
 
-static const QMap<QString, QString>& functionNamesSqlFunctionsMap()
+static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
 {
-  static QMap<QString, QString> fnNames;
-  if ( fnNames.isEmpty() )
-  {
-    fnNames =
-    {
-      { "sqrt", "sqrt" },
-      { "radians", "radians" },
-      { "degrees", "degrees" },
-      { "abs", "abs" },
-      { "cos", "cos" },
-      { "sin", "sin" },
-      { "tan", "tan" },
-      { "acos", "acos" },
-      { "asin", "asin" },
-      { "atan", "atan" },
-      { "atan2", "atan2" },
-      { "exp", "exp" },
-      { "ln", "ln" },
-      { "log", "log" },
-      { "log10", "log" },
-      { "round", "round" },
-      { "floor", "floor" },
-      { "ceil", "ceil" },
-      { "pi", "pi" },
-      // geometry functions
-      //{ "azimuth", "ST_Azimuth" },
-      { "x", "ST_X" },
-      { "y", "ST_Y" },
-      //{ "z", "ST_Z" },
-      //{ "m", "ST_M" },
-      { "x_min", "ST_XMin" },
-      { "y_min", "ST_YMin" },
-      { "x_max", "ST_XMax" },
-      { "y_max", "ST_YMax" },
-      { "area", "ST_Area" },
-      { "perimeter", "ST_Perimeter" },
-      { "relate", "ST_Relate" },
-      { "disjoint", "ST_Disjoint" },
-      { "intersects", "ST_Intersects" },
-      //{ "touches", "ST_Touches" },
-      { "crosses", "ST_Crosses" },
-      { "contains", "ST_Contains" },
-      { "overlaps", "ST_Overlaps" },
-      { "within", "ST_Within" },
-      { "translate", "ST_Translate" },
-      { "buffer", "ST_Buffer" },
-      { "centroid", "ST_Centroid" },
-      { "point_on_surface", "ST_PointOnSurface" },
+  { "sqrt", "sqrt" },
+  { "radians", "radians" },
+  { "degrees", "degrees" },
+  { "abs", "abs" },
+  { "cos", "cos" },
+  { "sin", "sin" },
+  { "tan", "tan" },
+  { "acos", "acos" },
+  { "asin", "asin" },
+  { "atan", "atan" },
+  { "atan2", "atan2" },
+  { "exp", "exp" },
+  { "ln", "ln" },
+  { "log", "log" },
+  { "log10", "log" },
+  { "round", "round" },
+  { "floor", "floor" },
+  { "ceil", "ceil" },
+  { "pi", "pi" },
+  // geometry functions
+  //{ "azimuth", "ST_Azimuth" },
+  { "x", "ST_X" },
+  { "y", "ST_Y" },
+  //{ "z", "ST_Z" },
+  //{ "m", "ST_M" },
+  { "x_min", "ST_XMin" },
+  { "y_min", "ST_YMin" },
+  { "x_max", "ST_XMax" },
+  { "y_max", "ST_YMax" },
+  { "area", "ST_Area" },
+  { "perimeter", "ST_Perimeter" },
+  { "relate", "ST_Relate" },
+  { "disjoint", "ST_Disjoint" },
+  { "intersects", "ST_Intersects" },
+  //{ "touches", "ST_Touches" },
+  { "crosses", "ST_Crosses" },
+  { "contains", "ST_Contains" },
+  { "overlaps", "ST_Overlaps" },
+  { "within", "ST_Within" },
+  { "translate", "ST_Translate" },
+  { "buffer", "ST_Buffer" },
+  { "centroid", "ST_Centroid" },
+  { "point_on_surface", "ST_PointOnSurface" },
 #if 0
-      { "reverse", "ST_Reverse" },
-      { "is_closed", "ST_IsClosed" },
-      { "convex_hull", "ST_ConvexHull" },
-      { "difference", "ST_Difference" },
+  { "reverse", "ST_Reverse" },
+  { "is_closed", "ST_IsClosed" },
+  { "convex_hull", "ST_ConvexHull" },
+  { "difference", "ST_Difference" },
 #endif
-      { "distance", "ST_Distance" },
+  { "distance", "ST_Distance" },
 #if 0
-      { "intersection", "ST_Intersection" },
-      { "sym_difference", "ST_SymDifference" },
-      { "combine", "ST_Union" },
-      { "union", "ST_Union" },
+  { "intersection", "ST_Intersection" },
+  { "sym_difference", "ST_SymDifference" },
+  { "combine", "ST_Union" },
+  { "union", "ST_Union" },
 #endif
-      { "geom_from_wkt", "ST_GeomFromText" },
-      { "geom_from_gml", "ST_GeomFromGML" },
-      { "char", "chr" },
-      { "coalesce", "coalesce" },
-      { "lower", "lower" },
-      { "trim", "trim" },
-      { "upper", "upper" },
-    };
-  }
-  return fnNames;
-}
+  { "geom_from_wkt", "ST_GeomFromText" },
+  { "geom_from_gml", "ST_GeomFromGML" },
+  { "char", "chr" },
+  { "coalesce", "coalesce" },
+  { "lower", "lower" },
+  { "trim", "trim" },
+  { "upper", "upper" },
+};
 
 QString QgsPostgresExpressionCompiler::sqlFunctionFromFunctionName( const QString& fnName ) const
 {
-  return functionNamesSqlFunctionsMap().value( fnName, QString() );
+  return FUNCTION_NAMES_SQL_FUNCTIONS_MAP.value( fnName, QString() );
 }
 
 QStringList QgsPostgresExpressionCompiler::sqlArgumentsFromFunctionName( const QString& fnName, const QStringList& fnArgs ) const

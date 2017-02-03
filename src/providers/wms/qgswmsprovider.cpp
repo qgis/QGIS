@@ -497,11 +497,6 @@ void QgsWmsProvider::setFormatQueryItem( QUrl &url )
     setQueryItem( url, QStringLiteral( "FORMAT" ), mSettings.mImageMimeType );
 }
 
-QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, int pixelHeight )
-{
-  return draw( viewExtent, pixelWidth, pixelHeight, nullptr );
-}
-
 
 static bool _fuzzyContainsRect( const QRectF& r1, const QRectF& r2 )
 {
@@ -956,11 +951,11 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle& viewExtent, int pi
 
   if ( mDpi != -1 )
   {
-    if ( mSettings.mDpiMode & dpiQGIS )
+    if ( mSettings.mDpiMode & DpiQGIS )
       setQueryItem( url, QStringLiteral( "DPI" ), QString::number( mDpi ) );
-    if ( mSettings.mDpiMode & dpiUMN )
+    if ( mSettings.mDpiMode & DpiUMN )
       setQueryItem( url, QStringLiteral( "MAP_RESOLUTION" ), QString::number( mDpi ) );
-    if ( mSettings.mDpiMode & dpiGeoServer )
+    if ( mSettings.mDpiMode & DpiGeoServer )
       setQueryItem( url, QStringLiteral( "FORMAT_OPTIONS" ), QStringLiteral( "dpi:%1" ).arg( mDpi ) );
   }
 
@@ -1001,11 +996,11 @@ void QgsWmsProvider::createTileRequestsWMSC( const QgsWmtsTileMatrix* tm, const 
 
   if ( mDpi != -1 )
   {
-    if ( mSettings.mDpiMode & dpiQGIS )
+    if ( mSettings.mDpiMode & DpiQGIS )
       setQueryItem( url, QStringLiteral( "DPI" ), QString::number( mDpi ) );
-    if ( mSettings.mDpiMode & dpiUMN )
+    if ( mSettings.mDpiMode & DpiUMN )
       setQueryItem( url, QStringLiteral( "MAP_RESOLUTION" ), QString::number( mDpi ) );
-    if ( mSettings.mDpiMode & dpiGeoServer )
+    if ( mSettings.mDpiMode & DpiGeoServer )
       setQueryItem( url, QStringLiteral( "FORMAT_OPTIONS" ), QStringLiteral( "dpi:%1" ).arg( mDpi ) );
   }
 
@@ -2930,11 +2925,12 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
           params.insert( QStringLiteral( "featureType" ), featureTypeName );
           params.insert( QStringLiteral( "getFeatureInfoUrl" ), requestUrl.toString() );
           featureStore.setParams( params );
-          Q_FOREACH ( QgsFeatureId id, features.keys() )
+          QMap<QgsFeatureId, QgsFeature* >::const_iterator featIt = features.constBegin();
+          for ( ; featIt != features.constEnd(); ++featIt )
           {
-            QgsFeature * feature = features.value( id );
+            QgsFeature * feature = featIt.value();
 
-            QgsDebugMsg( QString( "feature id = %1 : %2 attributes" ).arg( id ).arg( feature->attributes().size() ) );
+            QgsDebugMsg( QString( "feature id = %1 : %2 attributes" ).arg( featIt.key() ).arg( feature->attributes().size() ) );
 
             if ( coordinateTransform.isValid() && feature->hasGeometry() )
             {
@@ -3328,14 +3324,14 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle& 
   QgsDebugMsg( QString( "defaultLegendGraphicResolution: %1" ).arg( defaultLegendGraphicResolution ) );
   if ( defaultLegendGraphicResolution )
   {
-    if ( mSettings.mDpiMode & dpiQGIS )
+    if ( mSettings.mDpiMode & DpiQGIS )
       setQueryItem( url, QStringLiteral( "DPI" ), QString::number( defaultLegendGraphicResolution ) );
-    if ( mSettings.mDpiMode & dpiUMN )
+    if ( mSettings.mDpiMode & DpiUMN )
     {
       setQueryItem( url, QStringLiteral( "MAP_RESOLUTION" ), QString::number( defaultLegendGraphicResolution ) );
       setQueryItem( url, QStringLiteral( "SCALE" ), QString::number( scale, 'f' ) );
     }
-    if ( mSettings.mDpiMode & dpiGeoServer )
+    if ( mSettings.mDpiMode & DpiGeoServer )
     {
       setQueryItem( url, QStringLiteral( "FORMAT_OPTIONS" ), QStringLiteral( "dpi:%1" ).arg( defaultLegendGraphicResolution ) );
       setQueryItem( url, QStringLiteral( "SCALE" ), QString::number( scale, 'f' ) );
@@ -3536,11 +3532,11 @@ QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString& providerU
 {
   if ( feedback )
   {
-    connect( feedback, SIGNAL( cancelled() ), this, SLOT( cancelled() ), Qt::QueuedConnection );
+    connect( feedback, SIGNAL( canceled() ), this, SLOT( canceled() ), Qt::QueuedConnection );
 
-    // rendering could have been cancelled before we started to listen to cancelled() signal
+    // rendering could have been canceled before we started to listen to canceled() signal
     // so let's check before doing the download and maybe quit prematurely
-    if ( feedback->isCancelled() )
+    if ( feedback->isCanceled() )
       return;
   }
 
@@ -3561,7 +3557,7 @@ QgsWmsImageDownloadHandler::~QgsWmsImageDownloadHandler()
 
 void QgsWmsImageDownloadHandler::downloadBlocking()
 {
-  if ( mFeedback && mFeedback->isCancelled() )
+  if ( mFeedback && mFeedback->isCanceled() )
     return; // nothing to do
 
   mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
@@ -3648,7 +3644,7 @@ void QgsWmsImageDownloadHandler::cacheReplyFinished()
   }
   else
   {
-    // report any errors except for the one we have caused by cancelling the request
+    // report any errors except for the one we have caused by canceling the request
     if ( mCacheReply->error() != QNetworkReply::OperationCanceledError )
     {
       QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( mProviderUri );
@@ -3678,9 +3674,9 @@ void QgsWmsImageDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint6
   QgsDebugMsg( tr( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ) );
 }
 
-void QgsWmsImageDownloadHandler::cancelled()
+void QgsWmsImageDownloadHandler::canceled()
 {
-  QgsDebugMsg( "Caught cancelled() signal" );
+  QgsDebugMsg( "Caught canceled() signal" );
   if ( mCacheReply )
   {
     // abort the reply if it is still active
@@ -3705,11 +3701,11 @@ QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString&
 {
   if ( feedback )
   {
-    connect( feedback, SIGNAL( cancelled() ), this, SLOT( cancelled() ), Qt::QueuedConnection );
+    connect( feedback, SIGNAL( canceled() ), this, SLOT( canceled() ), Qt::QueuedConnection );
 
-    // rendering could have been cancelled before we started to listen to cancelled() signal
+    // rendering could have been canceled before we started to listen to canceled() signal
     // so let's check before doing the download and maybe quit prematurely
-    if ( feedback->isCancelled() )
+    if ( feedback->isCanceled() )
       return;
   }
 
@@ -3738,7 +3734,7 @@ QgsWmsTiledImageDownloadHandler::~QgsWmsTiledImageDownloadHandler()
 
 void QgsWmsTiledImageDownloadHandler::downloadBlocking()
 {
-  if ( mFeedback && mFeedback->isCancelled() )
+  if ( mFeedback && mFeedback->isCanceled() )
     return; // nothing to do
 
   mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
@@ -3946,7 +3942,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
   {
     if ( !( mFeedback && mFeedback->isPreviewOnly() ) )
     {
-      // report any errors except for the one we have caused by cancelling the request
+      // report any errors except for the one we have caused by canceling the request
       if ( reply->error() != QNetworkReply::OperationCanceledError )
       {
         QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( mProviderUri );
@@ -3973,9 +3969,9 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
 #endif
 }
 
-void QgsWmsTiledImageDownloadHandler::cancelled()
+void QgsWmsTiledImageDownloadHandler::canceled()
 {
-  QgsDebugMsg( "Caught cancelled() signal" );
+  QgsDebugMsg( "Caught canceled() signal" );
   Q_FOREACH ( QNetworkReply* reply, mReplies )
   {
     QgsDebugMsg( "Aborting tiled network request" );

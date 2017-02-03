@@ -451,7 +451,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
   //now draw actual graphs
   //
 
-  //somtimes there are more bins than needed
+  //sometimes there are more bins than needed
   //we find out the last one that actually has data in it
   //so we can discard the rest and set the x-axis scales correctly
   //

@@ -186,6 +186,12 @@ class CORE_EXPORT QgsLabelingEngine
     //! Get associated map settings
     const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
+    /**
+     * Returns a list of layer IDs for layers with providers in the engine.
+     * @note added in QGIS 3.0
+     */
+    QStringList participatingLayerIds() const;
+
     //! Add provider of label features. Takes ownership of the provider
     void addProvider( QgsAbstractLabelProvider* provider );
 
@@ -220,10 +226,12 @@ class CORE_EXPORT QgsLabelingEngine
     //! Which search method to use for removal collisions between labels
     QgsPalLabeling::Search searchMethod() const { return mSearchMethod; }
 
-    //! Read configuration of the labeling engine from the current project file
-    void readSettingsFromProject();
-    //! Write configuration of the labeling engine to the current project file
-    void writeSettingsToProject();
+    //! Read configuration of the labeling engine from a project
+    void readSettingsFromProject( QgsProject* project );
+    //! Write configuration of the labeling engine to a project
+    void writeSettingsToProject( QgsProject* project );
+    //! Clear configuration of the labeling engine in a project
+    static void clearSettingsInProject( QgsProject* project );
 
   protected:
     void processProvider( QgsAbstractLabelProvider* provider, QgsRenderContext& context, pal::Pal& p );  //#spellok

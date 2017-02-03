@@ -159,19 +159,64 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      */
     void setFontColor( const QColor& c ) {mFontColor = c;}
 
+    /** Returns the color used for fills in the scalebar.
+     * @see setFillColor()
+     * @see fillColor2()
+     * @note added in QGIS 3.0
+     */
+    QColor fillColor() const {return mFillColor;}
+
+    /** Sets the color used for fills in the scalebar.
+     * @see fillColor()
+     * @see setFillColor2()
+     * @note added in QGIS 3.0
+     */
+    void setFillColor( const QColor& color ) {mFillColor = color; mBrush.setColor( color ); }
+
+    /** Returns the secondary color used for fills in the scalebar.
+     * @see setFillColor2()
+     * @see fillColor()
+     * @note added in QGIS 3.0
+     */
+    QColor fillColor2() const {return mFillColor2;}
+
+    /** Sets the secondary color used for fills in the scalebar.
+     * @see fillColor2()
+     * @see setFillColor2()
+     * @note added in QGIS 3.0
+     */
+    void setFillColor2( const QColor& color ) {mFillColor2 = color; mBrush2.setColor( color ); }
+
+    /** Returns the color used for lines in the scalebar.
+     * @see setLineColor()
+     * @note added in QGIS 3.0
+     */
+    QColor lineColor() const {return mLineColor;}
+
+    /** Sets the color used for lines in the scalebar.
+     * @see lineColor()
+     * @note added in QGIS 3.0
+     */
+    void setLineColor( const QColor& color ) { mLineColor = color; mPen.setColor( mLineColor ); }
+
+    /** Returns the line width in millimeters for lines in the scalebar.
+     * @see setLineWidth()
+     * @note added in QGIS 3.0
+     */
+    double lineWidth() const {return mLineWidth;}
+
+    /** Sets the line width in millimeters for lines in the scalebar.
+     * @see lineWidth()
+     * @note added in QGIS 3.0
+     */
+    void setLineWidth( double width ) { mLineWidth = width; mPen.setWidthF( width ); }
+
     /** Returns the pen used for drawing the scalebar.
      * @returns QPen used for drawing the scalebar outlines.
      * @see setPen
      * @see brush
      */
     QPen pen() const {return mPen;}
-
-    /** Sets the pen used for drawing the scalebar.
-     * @param pen QPen to use for drawing the scalebar outlines.
-     * @see pen
-     * @see setBrush
-     */
-    void setPen( const QPen& pen ) {mPen = pen;}
 
     /** Returns the primary brush for the scalebar.
      * @returns QBrush used for filling the scalebar
@@ -181,14 +226,6 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      */
     QBrush brush() const {return mBrush;}
 
-    /** Sets primary brush for the scalebar.
-     * @param brush QBrush to use for filling the scalebar
-     * @see brush
-     * @see setBrush2
-     * @see setPen
-     */
-    void setBrush( const QBrush& brush ) {mBrush = brush;}
-
     /** Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
      * as single and double box styles.
      * @returns QBrush used for secondary color areas
@@ -196,14 +233,6 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see brush
      */
     QBrush brush2() const {return mBrush2;}
-
-    /** Sets secondary brush for the scalebar. This is used for alternating color style scalebars, such
-     * as single and double box styles.
-     * @param brush QBrush to use for secondary color areas
-     * @see brush2
-     * @see setBrush
-     */
-    void setBrush2( const QBrush& brush ) {mBrush2 = brush;}
 
     double height() const {return mHeight;}
     void setHeight( double h ) {mHeight = h;}
@@ -307,6 +336,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void updateSegmentSize();
     //! Sets mCompositionMap to 0 if the map is deleted
     void invalidateCurrentMap();
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr ) override;
 
   protected:
 
@@ -332,6 +362,14 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     //! Font
     QFont mFont;
     QColor mFontColor;
+    //! Fill color
+    QColor mFillColor = QColor( 0, 0, 0 );
+    //! Secondary fill color
+    QColor mFillColor2 = QColor( 255, 255, 255 );
+    //! Line color
+    QColor mLineColor = QColor( 0, 0, 0 );
+    //! Line width
+    double mLineWidth = 0.3;
     //! Outline
     QPen mPen;
     //! Fill

@@ -124,7 +124,7 @@ void QgsGeometryCheckerSetupTab::validateInput()
       nApplicable += factory->checkApplicability( ui, layer->geometryType() );
     }
   }
-  bool outputOk = ui.radioButtonOuputModifyInput->isChecked() || !ui.lineEditOutput->text().isEmpty();
+  bool outputOk = ui.radioButtonOutputModifyInput->isChecked() || !ui.lineEditOutput->text().isEmpty();
   mRunButton->setEnabled( layer && nApplicable > 0 && outputOk );
 }
 

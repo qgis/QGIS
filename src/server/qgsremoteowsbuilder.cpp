@@ -17,9 +17,6 @@
 
 #include "qgsdatasourceuri.h"
 #include "qgsremoteowsbuilder.h"
-#if QT_VERSION < 0x050000
-#include "qgshttptransaction.h"
-#endif
 #include "qgslogger.h"
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
@@ -236,131 +233,11 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
 {
   Q_UNUSED( layerName );
   Q_UNUSED( allowCaching );
-
-#if QT_VERSION < 0x050000
-  QgsDebugMsg( "Entering" );
-
-  //write server url and coverage name to a temporary file
-  QString fileName = createTempFile();
-  if ( fileName.isEmpty() )
-  {
-    return nullptr;
-  }
-
-  QFile tempFile( fileName );
-
-  QTemporaryFile* tmpFile = new QTemporaryFile();
-  if ( !tmpFile->open() )
-  {
-    delete tmpFile;
-    return nullptr;
-  }
-
-  filesToRemove.push_back( tmpFile ); //make sure the temporary file gets deleted after each request
-
-  QgsDebugMsg( "opening successful" );
-  QgsDebugMsg( "url: " + url );
-  //extract server url and coverage name from string
-  QStringList serverSplit = url.split( "?" );
-  if ( serverSplit.size() < 2 )
-  {
-    QgsDebugMsg( "error, no '?' contained in url" );
-    return nullptr;
-  }
-  QString serverUrl = serverSplit.at( 0 );
-  QString request = serverSplit.at( 1 );
-  QStringList parameterSplit = request.split( "&" );
-  QString coverageName;
-  QString format;
-  for ( int i = 0; i < parameterSplit.size(); ++i )
-  {
-    if ( parameterSplit.at( i ).startsWith( "COVERAGE", Qt::CaseInsensitive ) )
-    {
-      coverageName = parameterSplit.at( i ).split( "=" ).at( 1 );
-    }
-    else if ( parameterSplit.at( i ).startsWith( "FORMAT", Qt::CaseInsensitive ) )
-    {
-      format = parameterSplit.at( i ).split( "=" ).at( 1 );
-    }
-  }
-
-  if ( coverageName.isEmpty() )
-  {
-    QgsDebugMsg( "coverage name is empty" );
-    return nullptr;
-  }
-
-  if ( format.isEmpty() )
-  {
-    format = "GeoTIFF"; //use geotiff as default
-  }
-
-  QgsDebugMsg( "wcs server url: " + serverUrl );
-  QgsDebugMsg( "coverage name: " + coverageName );
-
-  //fetch WCS layer in the current resolution as geotiff
-  QString wcsRequest = serverUrl + "?SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&COVERAGE=" + coverageName + "&FORMAT=" + format;
-
-  //CRS (or SRS)
-  QString crs = mParameterMap.value( "CRS", mParameterMap.value( "SRS" ) );
-  if ( crs.isEmpty() )
-  {
-    QgsDebugMsg( "No CRS or SRS parameter found for wcs layer, returning 0" );
-    return nullptr;
-  }
-  wcsRequest += "&CRS=" + crs;
-
-  //width
-  QString width = mParameterMap.value( "WIDTH" );
-  if ( width.isEmpty() )
-  {
-    QgsDebugMsg( "No WIDTH parameter found for wcs layer, returning 0" );
-    return nullptr;
-  }
-  wcsRequest += "&WIDTH=" + width;
-
-  //height
-  QString height = mParameterMap.value( "HEIGHT" );
-  if ( height.isEmpty() )
-  {
-    QgsDebugMsg( "No HEIGHT parameter found for wcs layer, returning 0" );
-    return nullptr;
-  }
-  wcsRequest += "&HEIGHT=" + height;
-
-  //bbox
-  QString bbox = mParameterMap.value( "BBOX" );
-  if ( bbox.isEmpty() )
-  {
-    QgsDebugMsg( "No BBOX parameter found for wcs layer, returning 0" );
-    return nullptr;
-  }
-  wcsRequest += "&BBOX=" + bbox;
-
-  QgsDebugMsg( "WCS request is: " + wcsRequest );
-  //make request and store byte array into temporary file
-  QgsHttpTransaction httpTransaction( wcsRequest );
-  QByteArray result;
-  if ( !httpTransaction.getSynchronously( result ) )
-  {
-    return nullptr;
-  }
-
-  QDataStream tempFileStream( &tempFile );
-  tempFileStream.writeRawData( result.data(), result.size() );
-  tempFile.close();
-
-  QgsRasterLayer* rl = new QgsRasterLayer( fileName, layerNameFromUri( fileName ) );
-  layersToRemove.push_back( rl ); //make sure the layer gets deleted after each request
-  return rl;
-#else
   Q_UNUSED( url )
   Q_UNUSED( filesToRemove )
   Q_UNUSED( layersToRemove )
   QgsDebugMsg( "remote http not supported with Qt5" );
   return nullptr;
-#endif
-
 }
 
 QgsVectorLayer* QgsRemoteOWSBuilder::sosLayer( const QDomElement& remoteOWSElem, const QString& url, const QString& layerName, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const

@@ -20,7 +20,7 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsgetfeatureinfo.h"
-#include "qgswmsservertransitional.h"
+#include "qgswmsrenderer.h"
 
 namespace QgsWms
 {
@@ -146,9 +146,8 @@ namespace QgsWms
     }
     else //unsupported format, set exception
     {
-      writeError( response,  QStringLiteral( "InvalidFormat" ),
-                  QString( "Feature info format '%1' is not supported. Possibilities are 'text/plain', 'text/html' or 'text/xml'." ).arg( infoFormat ) );
-      return;
+      throw QgsServiceException( QStringLiteral( "InvalidFormat" ),
+                                 QString( "Feature info format '%1' is not supported. Possibilities are 'text/plain', 'text/html' or 'text/xml'." ).arg( infoFormat ) );
     }
 
     response.setHeader( QStringLiteral( "Content-Type" ), infoFormat + QStringLiteral( "; charset=utf-8" ) );
@@ -156,25 +155,17 @@ namespace QgsWms
   }
 
 
-  void writeGetFeatureInfo( QgsServerInterface* serverIface, const QString& version,
-                            const QgsServerRequest& request, QgsServerResponse& response )
+  void writeGetFeatureInfo( QgsServerInterface* serverIface, const QgsProject* project,
+                            const QString& version, const QgsServerRequest& request,
+                            QgsServerResponse& response )
   {
     Q_UNUSED( version );
     QgsServerRequest::Parameters params = request.parameters();
-    QgsWmsServer server( serverIface->configFilePath(), params,
-                         getConfigParser( serverIface ),
-                         serverIface->accessControls() );
-    try
-    {
-      QDomDocument doc = server.getFeatureInfo( version );
-      QString outputFormat = params.value( QStringLiteral( "INFO_FORMAT" ), QStringLiteral( "text/plain" ) );
-      writeInfoResponse( doc,  response, outputFormat );
-    }
-    catch ( QgsMapServiceException& ex )
-    {
-      writeError( response, ex.code(), ex.message() );
-    }
+    QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
 
+    QDomDocument doc = renderer.getFeatureInfo( version );
+    QString outputFormat = params.value( QStringLiteral( "INFO_FORMAT" ), QStringLiteral( "text/plain" ) );
+    writeInfoResponse( doc,  response, outputFormat );
   }
 
 

@@ -26,6 +26,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsproject.h"
 #include "qgsmapthemecollection.h"
+#include "qgsproperty.h"
 #include <QObject>
 #include "qgstest.h"
 
@@ -37,7 +38,6 @@ class TestQgsComposerMap : public QObject
     TestQgsComposerMap()
         : mComposition( 0 )
         , mComposerMap( 0 )
-        , mMapSettings( 0 )
         , mRasterLayer( 0 )
         , mPointsLayer( 0 )
         , mPolysLayer( 0 )
@@ -59,7 +59,6 @@ class TestQgsComposerMap : public QObject
   private:
     QgsComposition *mComposition;
     QgsComposerMap *mComposerMap;
-    QgsMapSettings *mMapSettings;
     QgsRasterLayer* mRasterLayer;
     QgsVectorLayer* mPointsLayer;
     QgsVectorLayer* mPolysLayer;
@@ -111,15 +110,12 @@ void TestQgsComposerMap::cleanupTestCase()
 
 void TestQgsComposerMap::init()
 {
-  mMapSettings = new QgsMapSettings();
-
   //create composition with composer map
-  mMapSettings->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
-  mMapSettings->setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
+  mComposerMap->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
   mComposition->addComposerMap( mComposerMap );
 
   mReport = QStringLiteral( "<h1>Composer Map Tests</h1>\n" );
@@ -128,7 +124,6 @@ void TestQgsComposerMap::init()
 void TestQgsComposerMap::cleanup()
 {
   delete mComposition;
-  delete mMapSettings;
 }
 
 void TestQgsComposerMap::render()
@@ -176,7 +171,7 @@ void TestQgsComposerMap::worldFileGeneration()
   mComposerMap->setMapRotation( 30.0 );
 
   mComposition->setGenerateWorldFile( true );
-  mComposition->setWorldFileMap( mComposerMap );
+  mComposition->setReferenceMap( mComposerMap );
 
   double a, b, c, d, e, f;
   mComposition->computeWorldFileParameters( a, b, c, d, e, f );
@@ -261,40 +256,40 @@ void TestQgsComposerMap::dataDefinedLayers()
   ms.setLayers( QList<QgsMapLayer*>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer );
   ms.setCrsTransformEnabled( true );
 
-  mComposition = new QgsComposition( ms, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
   mComposition->addComposerMap( mComposerMap );
 
   //test malformed layer set string
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true, QStringLiteral( "'x'" ), QString() );
+  mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapLayers, QgsProperty::fromExpression( "'x'" ) );
   QList<QgsMapLayer*> result = mComposerMap->layersToRender();
   QVERIFY( result.isEmpty() );
 
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true, QStringLiteral( "'x|'" ), QString() );
+  mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapLayers, QgsProperty::fromExpression( QStringLiteral( "'x|'" ) ) );
   result = mComposerMap->layersToRender();
   QVERIFY( result.isEmpty() );
 
   //test subset of valid layers
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
-                                        QStringLiteral( "'%1|%2'" ).arg( mPolysLayer->name(), mRasterLayer->name() ), QString() );
+  mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapLayers, QgsProperty::fromExpression(
+        QStringLiteral( "'%1|%2'" ).arg( mPolysLayer->name(), mRasterLayer->name() ) ) );
   result = mComposerMap->layersToRender();
   QCOMPARE( result.count(), 2 );
   QVERIFY( result.contains( mPolysLayer ) );
   QVERIFY( result.contains( mRasterLayer ) );
 
-  //test non-existant layer
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
-                                        QStringLiteral( "'x|%1|%2'" ).arg( mLinesLayer->name(), mPointsLayer->name() ), QString() );
+  //test non-existent layer
+  mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapLayers, QgsProperty::fromExpression(
+        QStringLiteral( "'x|%1|%2'" ).arg( mLinesLayer->name(), mPointsLayer->name() ) ) );
   result = mComposerMap->layersToRender();
   QCOMPARE( result.count(), 2 );
   QVERIFY( result.contains( mLinesLayer ) );
   QVERIFY( result.contains( mPointsLayer ) );
 
   //test no layers
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
-                                        QStringLiteral( "''" ), QString() );
+  mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapLayers, QgsProperty::fromExpression(
+        QStringLiteral( "''" ) ) );
   result = mComposerMap->layersToRender();
   QVERIFY( result.isEmpty() );
 
@@ -313,7 +308,7 @@ void TestQgsComposerMap::dataDefinedLayers()
   mComposition->atlasComposition().beginRender();
   mComposition->atlasComposition().prepareForFeature( 0 );
 
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true, QStringLiteral( "\"col1\"" ), QString() );
+  mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapLayers, QgsProperty::fromField( QStringLiteral( "col1" ) ) );
   result = mComposerMap->layersToRender();
   QCOMPARE( result.count(), 1 );
   QCOMPARE( result.at( 0 ), mLinesLayer );
@@ -325,8 +320,8 @@ void TestQgsComposerMap::dataDefinedLayers()
   delete atlasLayer;
 
   //render test
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
-                                        QStringLiteral( "'%1|%2'" ).arg( mPolysLayer->name(), mPointsLayer->name() ), QString() );
+  mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapLayers, QgsProperty::fromExpression(
+        QStringLiteral( "'%1|%2'" ).arg( mPolysLayer->name(), mPointsLayer->name() ) ) );
   mComposerMap->setNewExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
 
   QgsCompositionChecker checker( QStringLiteral( "composermap_ddlayers" ), mComposition );
@@ -337,14 +332,14 @@ void TestQgsComposerMap::dataDefinedLayers()
 void TestQgsComposerMap::dataDefinedStyles()
 {
   delete mComposition;
-  QgsMapSettings ms;
-  ms.setLayers( QList<QgsMapLayer*>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer );
-  ms.setCrsTransformEnabled( true );
 
-  mComposition = new QgsComposition( ms, QgsProject::instance() );
+  QList<QgsMapLayer*> layers = QList<QgsMapLayer*>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
+
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
+  mComposerMap->setLayers( layers );
   mComposition->addComposerMap( mComposerMap );
 
   QgsMapThemeCollection::MapThemeRecord rec;
@@ -363,35 +358,33 @@ void TestQgsComposerMap::dataDefinedStyles()
   mComposerMap->setFollowVisibilityPresetName( QString() );
 
   //test malformed style string
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true, QStringLiteral( "5" ), QString() );
+  mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "5" ) ) );
   result = mComposerMap->layersToRender().toSet();
-  QCOMPARE( result, ms.layers().toSet() );
+  QCOMPARE( result, layers.toSet() );
 
   //test valid preset
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true, QStringLiteral( "'test preset'" ), QString() );
+  mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "'test preset'" ) ) );
   result = mComposerMap->layersToRender().toSet();
   QCOMPARE( result.count(), 2 );
   QVERIFY( result.contains( mLinesLayer ) );
   QVERIFY( result.contains( mPointsLayer ) );
 
-  //test non-existant preset
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true,
-                                        QStringLiteral( "'bad preset'" ), QString() );
+  //test non-existent preset
+  mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "'bad preset'" ) ) );
   result = mComposerMap->layersToRender().toSet();
-  QCOMPARE( result, ms.layers().toSet() );
+  QCOMPARE( result, layers.toSet() );
 
   //test that dd layer set overrides style layers
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true, QStringLiteral( "'test preset'" ), QString() );
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
-                                        QStringLiteral( "'%1'" ).arg( mPolysLayer->name() ), QString() );
+  mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "'test preset'" ) ) );
+  mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapLayers, QgsProperty::fromExpression(
+        QStringLiteral( "'%1'" ).arg( mPolysLayer->name() ) ) );
   result = mComposerMap->layersToRender().toSet();
   QCOMPARE( result.count(), 1 );
   QVERIFY( result.contains( mPolysLayer ) );
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, false, true, QString(), QString() );
+  mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapLayers, QgsProperty() );
 
   //render test
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true,
-                                        QStringLiteral( "'test preset'" ), QString() );
+  mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "'test preset'" ) ) );
   mComposerMap->setNewExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
 
   QgsCompositionChecker checker( QStringLiteral( "composermap_ddstyles" ), mComposition );

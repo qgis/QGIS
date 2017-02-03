@@ -445,10 +445,11 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric | QgsFieldProxyModel::Date );
   mExpressionWidget->setLayer( mLayer );
 
-  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
+  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                             << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  spinPrecision->setMinimum( QgsRendererRangeLabelFormat::MinPrecision );
-  spinPrecision->setMaximum( QgsRendererRangeLabelFormat::MaxPrecision );
+  spinPrecision->setMinimum( QgsRendererRangeLabelFormat::MIN_PRECISION );
+  spinPrecision->setMaximum( QgsRendererRangeLabelFormat::MAX_PRECISION );
 
   btnColorRamp->setShowRandomColorRamp( true );
 
@@ -628,7 +629,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
   else
   {
     methodComboBox->setCurrentIndex( 1 );
-    if ( !mRenderer->ranges().isEmpty() ) // avoid overiding default size with zeros
+    if ( !mRenderer->ranges().isEmpty() ) // avoid overriding default size with zeros
     {
       minSizeSpinBox->setValue( mRenderer->minSymbolSize() );
       maxSizeSpinBox->setValue( mRenderer->maxSymbolSize() );

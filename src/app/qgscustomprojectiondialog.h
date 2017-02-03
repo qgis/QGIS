@@ -19,7 +19,7 @@
 #define QGSCUSTOMCRSDIALOG_H
 
 #include "ui_qgscustomprojectiondialogbase.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgis_app.h"
 
@@ -44,7 +44,7 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     void on_pbnCopyCRS_clicked();
     void on_leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html#custom-coordinate-reference-system" ) ); }
     void on_buttonBox_accepted();
 
   private:
@@ -69,7 +69,7 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     QStringList deletedCRSs;
 
     //Columns in the tree widget
-    enum columns { QGIS_CRS_NAME_COLUMN, QGIS_CRS_ID_COLUMN, QGIS_CRS_PARAMETERS_COLUMN };
+    enum Columns { QgisCrsNameColumn, QgisCrsIdColumn, QgisCrsParametersColumn };
 };
 
 

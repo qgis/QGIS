@@ -29,6 +29,18 @@
 #include <QTextStream>
 #include <QMessageBox>
 
+QgsRasterDataProvider* QgsRasterFileWriter::createOneBandRaster( Qgis::DataType dataType, int width, int height, const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs )
+{
+  if ( mTiledMode )
+    return nullptr;  // does not make sense with tiled mode
+
+  double pixelSize;
+  double geoTransform[6];
+  globalOutputParameters( extent, width, height, geoTransform, pixelSize );
+
+  return initOutput( width, height, crs, geoTransform, 1, dataType, QList<bool>(), QList<double>() );
+}
+
 QgsRasterFileWriter::QgsRasterFileWriter( const QString& outputUrl )
     : mMode( Raw )
     , mOutputUrl( outputUrl )
@@ -214,7 +226,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     }
     else
     {
-      // Verify if we realy need no data value, i.e.
+      // Verify if we really need no data value, i.e.
       QgsRectangle srcExtent = outputExtent;
       QgsRasterProjector *projector = pipe->projector();
       if ( projector && projector->destinationCrs() != projector->sourceCrs() )

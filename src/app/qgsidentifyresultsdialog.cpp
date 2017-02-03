@@ -282,7 +282,7 @@ void QgsIdentifyResultsWebViewItem::loadFinished( bool ok )
   mWebView->show();
   treeWidget()->setItemWidget( this, 0, mWebView );
 
-  // Span columns to save some space, must be after setItemWidget() to take efect.
+  // Span columns to save some space, must be after setItemWidget() to take effect.
   setFirstColumnSpanned( true );
 
   disconnect( mWebView->page(), SIGNAL( loadFinished( bool ) ), this, SLOT( loadFinished( bool ) ) );
@@ -1941,7 +1941,7 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
   // Store selected identify format in layer
   layer->setCustomProperty( QStringLiteral( "identify/format" ), QgsRasterDataProvider::identifyFormatName( format ) );
 
-  // remove all childs of that layer from results, except the first (format)
+  // remove all children of that layer from results, except the first (format)
   QTreeWidgetItem *layItem = layerItem( layer );
   if ( !layItem )
   {

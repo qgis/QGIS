@@ -46,7 +46,7 @@ class ANALYSIS_EXPORT TriDecorator : public Triangulation
     virtual double getXMin() const override;
     virtual double getYMax() const override;
     virtual double getYMin() const override;
-    virtual void setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b ) override;
+    virtual void setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b ) override;
     virtual void setEdgeColor( int r, int g, int b ) override;
     virtual void setForcedEdgeColor( int r, int g, int b ) override;
     virtual void setBreakEdgeColor( int r, int g, int b ) override;

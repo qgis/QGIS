@@ -80,7 +80,7 @@ class GUI_EXPORT QgsEditorWidgetAutoConf
     /**
      * Register a new plugin.
      *
-     * @param plugin The plugin (ownership is transfered)
+     * @param plugin The plugin (ownership is transferred)
      */
     void registerPlugin( QgsEditorWidgetAutoConfPlugin* plugin );
 

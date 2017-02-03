@@ -70,25 +70,25 @@ int CPL_STDCALL progressCallback( double dfComplete,
                                   const char * pszMessage,
                                   void * pProgressArg )
 {
-  static double dfLastComplete = -1.0;
+  static double sDfLastComplete = -1.0;
 
   QgsGdalProgress *prog = static_cast<QgsGdalProgress *>( pProgressArg );
   QgsGdalProvider *mypProvider = prog->provider;
 
-  if ( dfLastComplete > dfComplete )
+  if ( sDfLastComplete > dfComplete )
   {
-    if ( dfLastComplete >= 1.0 )
-      dfLastComplete = -1.0;
+    if ( sDfLastComplete >= 1.0 )
+      sDfLastComplete = -1.0;
     else
-      dfLastComplete = dfComplete;
+      sDfLastComplete = dfComplete;
   }
 
-  if ( floor( dfLastComplete*10 ) != floor( dfComplete*10 ) )
+  if ( floor( sDfLastComplete*10 ) != floor( dfComplete*10 ) )
   {
     mypProvider->emitProgress( prog->type, dfComplete * 100, QString( pszMessage ) );
     mypProvider->emitProgressUpdate( dfComplete * 100 );
   }
-  dfLastComplete = dfComplete;
+  sDfLastComplete = dfComplete;
 
   return true;
 }
@@ -373,31 +373,12 @@ QString QgsGdalProvider::metadata()
 }
 
 
-// Not supported by GDAL
-QImage* QgsGdalProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight )
-{
-  Q_UNUSED( viewExtent );
-  QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );
-  QgsDebugMsg( "pixelHeight = "  + QString::number( pixelHeight ) );
-  QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
-
-  QImage *image = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
-  image->fill( QColor( Qt::gray ).rgb() );
-
-  return image;
-}
-
 QgsRasterBlock* QgsGdalProvider::block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback )
 {
-  //QgsRasterBlock *block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, noDataValue( theBandNo ) );
-  QgsRasterBlock *block;
+  QgsRasterBlock *block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight );
   if ( sourceHasNoDataValue( theBandNo ) && useSourceNoDataValue( theBandNo ) )
   {
-    block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, sourceNoDataValue( theBandNo ) );
-  }
-  else
-  {
-    block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight );
+    block->setNoDataValue( sourceNoDataValue( theBandNo ) );
   }
 
   if ( block->isEmpty() )
@@ -542,7 +523,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   // We have 2 options for resampling:
   //  a) 'Stretch' the src and align the start edge of src to the start edge of dst.
   //     That means however, that to the target cells may be assigned values of source
-  //     which are not nearest to the center of dst cells. Usualy probably not a problem
+  //     which are not nearest to the center of dst cells. Usually probably not a problem
   //     but we are not precise. The shift is in maximum ... TODO
   //  b) We could cut the first destination column and left only the second one which is
   //     completely covered by src. No (significant) stretching is applied in that
@@ -1458,7 +1439,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
                                         const QStringList & theConfigOptions )
 {
   //TODO: Consider making theRasterPyramidList modifyable by this method to indicate if the pyramid exists after build attempt
-  //without requiring the user to rebuild the pyramid list to get the updated infomation
+  //without requiring the user to rebuild the pyramid list to get the updated information
 
   //
   // Note: Make sure the raster is not opened in write mode
@@ -2063,7 +2044,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
       // Then what we have here is a driver with no corresponding
       // file extension; e.g., GRASS.  In which case we append the
       // string to the "catch-all" which will match all file types.
-      // (I.e., "*.*") We use the driver description intead of the
+      // (I.e., "*.*") We use the driver description instead of the
       // long time to prevent the catch-all line from getting too
       // large.
 
@@ -2474,7 +2455,7 @@ void QgsGdalProvider::initBaseDataset()
 
   if ( !hasGeoTransform )
   {
-    // Initialise the affine transform matrix
+    // Initialize the affine transform matrix
     mGeoTransform[0] =  0;
     mGeoTransform[1] =  1;
     mGeoTransform[2] =  0;
@@ -2945,6 +2926,41 @@ QString QgsGdalProvider::validatePyramidsConfigOptions( QgsRaster::RasterPyramid
   }
 
   return QString();
+}
+
+bool QgsGdalProvider::isEditable() const
+{
+  return mUpdate;
+}
+
+bool QgsGdalProvider::setEditable( bool enabled )
+{
+  if ( enabled == mUpdate )
+    return false;
+
+  if ( !mValid )
+    return false;
+
+  if ( mGdalDataset != mGdalBaseDataset )
+    return false;  // ignore the case of warped VRT for now (more complicated setup)
+
+  closeDataset();
+
+  mUpdate = enabled;
+
+  // reopen the dataset
+  mGdalBaseDataset = gdalOpen( dataSourceUri().toUtf8().constData(), mUpdate ? GA_Update : GA_ReadOnly );
+  if ( !mGdalBaseDataset )
+  {
+    QString msg = QStringLiteral( "Cannot reopen GDAL dataset %1:\n%2" ).arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    appendError( ERRMSG( msg ) );
+    return false;
+  }
+
+  //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
+  mGdalDataset = mGdalBaseDataset;
+  mValid = true;
+  return true;
 }
 
 // pyramids resampling

@@ -77,7 +77,7 @@ QgsVariableEditorWidget::~QgsVariableEditorWidget()
 
 void QgsVariableEditorWidget::showEvent( QShowEvent * event )
 {
-  // initialise widget on first show event only
+  // initialize widget on first show event only
   if ( mShown )
   {
     event->accept();
@@ -344,12 +344,8 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope* sc
 
   Q_FOREACH ( const QString& name, scope->filteredVariableNames() )
   {
-    QTreeWidgetItem* item;
-    if ( mVariableToItem.contains( qMakePair( scopeIndex, name ) ) )
-    {
-      item = mVariableToItem.value( qMakePair( scopeIndex, name ) );
-    }
-    else
+    QTreeWidgetItem* item = mVariableToItem.value( qMakePair( scopeIndex, name ) );
+    if ( !item )
     {
       item = new QTreeWidgetItem( scopeItem );
       mVariableToItem.insert( qMakePair( scopeIndex, name ), item );

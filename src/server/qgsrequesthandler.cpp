@@ -19,12 +19,8 @@
 
 #include "qgis.h"
 #include "qgsrequesthandler.h"
-#if QT_VERSION < 0x050000
-#include "qgsftptransaction.h"
-#include "qgshttptransaction.h"
-#endif
 #include "qgsmessagelog.h"
-#include "qgsmapserviceexception.h"
+#include "qgsserverexception.h"
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
 #include <QBuffer>
@@ -38,7 +34,7 @@
 #include <QUrlQuery>
 
 QgsRequestHandler::QgsRequestHandler( QgsServerRequest& request, QgsServerResponse& response )
-    : mException( nullptr )
+    : mExceptionRaised( false )
     , mRequest( request )
     , mResponse( response )
 {
@@ -46,7 +42,6 @@ QgsRequestHandler::QgsRequestHandler( QgsServerRequest& request, QgsServerRespon
 
 QgsRequestHandler::~QgsRequestHandler()
 {
-  delete mException;
 }
 
 QMap<QString, QString> QgsRequestHandler::parameterMap() const
@@ -54,23 +49,9 @@ QMap<QString, QString> QgsRequestHandler::parameterMap() const
   return mRequest.parameters();
 }
 
-void QgsRequestHandler::setHttpResponse( const QByteArray& ba, const QString &format )
-{
-  QgsMessageLog::logMessage( QStringLiteral( "Checking byte array is ok to set..." ) );
-
-  if ( ba.size() < 1 )
-  {
-    return;
-  }
-
-  QgsMessageLog::logMessage( QStringLiteral( "Byte array looks good, setting response..." ) );
-  appendBody( ba );
-  setInfoFormat( format );
-}
-
 bool QgsRequestHandler::exceptionRaised() const
 {
-  return mException;
+  return mExceptionRaised;
 }
 
 void QgsRequestHandler::setHeader( const QString &name, const QString &value )
@@ -108,149 +89,17 @@ void QgsRequestHandler::appendBody( const QByteArray &body )
   mResponse.write( body );
 }
 
-void QgsRequestHandler::setInfoFormat( const QString &format )
-{
-  mInfoFormat = format;
-
-  // Update header
-  QString fmt = mInfoFormat;
-  if ( mInfoFormat.startsWith( QLatin1String( "text/" ) ) || mInfoFormat.startsWith( QLatin1String( "application/vnd.ogc.gml" ) ) )
-  {
-    fmt.append( "; charset=utf-8" );
-  }
-  setHeader( QStringLiteral( "Content-Type" ), fmt );
-
-}
-
 void QgsRequestHandler::sendResponse()
 {
   // Send data to output
   mResponse.flush();
 }
 
-
-
-QString QgsRequestHandler::formatToMimeType( const QString& format ) const
-{
-  if ( format.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 )
-  {
-    return QStringLiteral( "image/png" );
-  }
-  else if ( format.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0 )
-  {
-    return QStringLiteral( "image/jpeg" );
-  }
-  else if ( format.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
-  {
-    return QStringLiteral( "image/svg+xml" );
-  }
-  else if ( format.compare( QLatin1String( "pdf" ), Qt::CaseInsensitive ) == 0 )
-  {
-    return QStringLiteral( "application/pdf" );
-  }
-  return format;
-}
-
-void QgsRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc )
-{
-  QByteArray ba = doc.toByteArray();
-  setHttpResponse( ba, QStringLiteral( "text/xml" ) );
-}
-
-void QgsRequestHandler::setXmlResponse( const QDomDocument& doc )
-{
-  QByteArray ba = doc.toByteArray();
-  setHttpResponse( ba, QStringLiteral( "text/xml" ) );
-}
-
-void QgsRequestHandler::setXmlResponse( const QDomDocument& doc, const QString& mimeType )
-{
-  QByteArray ba = doc.toByteArray();
-  setHttpResponse( ba, mimeType );
-}
-
-void QgsRequestHandler::setServiceException( const QgsMapServiceException& ex )
+void QgsRequestHandler::setServiceException( const QgsServerException& ex )
 {
   // Safety measure to avoid potential leaks if called repeatedly
-  delete mException;
-  mException = new QgsMapServiceException( ex );
-  //create Exception DOM document
-  QDomDocument exceptionDoc;
-  QDomElement serviceExceptionReportElem = exceptionDoc.createElement( QStringLiteral( "ServiceExceptionReport" ) );
-  serviceExceptionReportElem.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.3.0" ) );
-  serviceExceptionReportElem.setAttribute( QStringLiteral( "xmlns" ), QStringLiteral( "http://www.opengis.net/ogc" ) );
-  exceptionDoc.appendChild( serviceExceptionReportElem );
-  QDomElement serviceExceptionElem = exceptionDoc.createElement( QStringLiteral( "ServiceException" ) );
-  serviceExceptionElem.setAttribute( QStringLiteral( "code" ), ex.code() );
-  QDomText messageText = exceptionDoc.createTextNode( ex.message() );
-  serviceExceptionElem.appendChild( messageText );
-  serviceExceptionReportElem.appendChild( serviceExceptionElem );
-
-  QByteArray ba = exceptionDoc.toByteArray();
-  // Clear response headers and body and set new exception
-  // TODO: check for headersSent()
-  clear();
-  setHttpResponse( ba, QStringLiteral( "text/xml" ) );
-}
-
-bool QgsRequestHandler::startGetFeatureResponse( QByteArray* ba, const QString& infoFormat )
-{
-  if ( !ba )
-  {
-    return false;
-  }
-
-  if ( ba->size() < 1 )
-  {
-    return false;
-  }
-
-  QString format;
-  if ( infoFormat == QLatin1String( "GeoJSON" ) )
-    format = QStringLiteral( "text/plain" );
-  else
-    format = QStringLiteral( "text/xml" );
-
-  setInfoFormat( format );
-  appendBody( *ba );
-  // Streaming
-  sendResponse();
-  return true;
-}
-
-void QgsRequestHandler::setGetFeatureResponse( QByteArray* ba )
-{
-  if ( !ba )
-  {
-    return;
-  }
-
-  if ( ba->size() < 1 )
-  {
-    return;
-  }
-  appendBody( *ba );
-  // Streaming
-  sendResponse();
-}
-
-void QgsRequestHandler::endGetFeatureResponse( QByteArray* ba )
-{
-  if ( !ba )
-  {
-    return;
-  }
-  appendBody( *ba );
-  // do NOT call sendResponse()
-  // finish will be called at the end of the transaction
-}
-
-void QgsRequestHandler::setGetCoverageResponse( QByteArray* ba )
-{
-  if ( ba )
-  {
-    setHttpResponse( *ba, QStringLiteral( "image/tiff" ) );
-  }
+  mExceptionRaised = true;
+  mResponse.write( ex );
 }
 
 void QgsRequestHandler::setupParameters()
@@ -258,41 +107,10 @@ void QgsRequestHandler::setupParameters()
   const QgsServerRequest::Parameters parameters = mRequest.parameters();
 
   // SLD
-
   QString value = parameters.value( QStringLiteral( "SLD" ) );
   if ( !value.isEmpty() )
   {
-    // XXX Why keeping this ????
-#if QT_VERSION < 0x050000
-    QByteArray fileContents;
-    if ( value.startsWith( "http", Qt::CaseInsensitive ) )
-    {
-      QgsHttpTransaction http( value );
-      if ( !http.getSynchronously( fileContents ) )
-      {
-        fileContents.clear();
-      }
-    }
-    else if ( value.startsWith( "ftp", Qt::CaseInsensitive ) )
-    {
-      Q_NOWARN_DEPRECATED_PUSH;
-      QgsFtpTransaction ftp;
-      if ( !ftp.get( value, fileContents ) )
-      {
-        fileContents.clear();
-      }
-      value = QUrl::fromPercentEncoding( fileContents );
-      Q_NOWARN_DEPRECATED_POP;
-    }
-
-    if fileContents.size() > 0 )
-    {
-      mRequest.setParameter( QStringLiteral( "SLD" ),  QUrl::fromPercentEncoding( fileContents ) );
-    }
-#else
     QgsMessageLog::logMessage( QStringLiteral( "http and ftp methods not supported with Qt5." ) );
-#endif
-
   }
 
   // SLD_BODY
@@ -412,5 +230,3 @@ void QgsRequestHandler::removeParameter( const QString &key )
 {
   mRequest.removeParameter( key );
 }
-
-

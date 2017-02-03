@@ -9,7 +9,7 @@ for file in $*; do
   tempfile=$(mktemp ${f}XXXX --suffix=.h)
 
   # Remove comments
-  sed 's/a/aA/g;s/__/aB/g;s/#/aC/g' "src/$d/$f.h" | gcc -P -E $arg - | sed 's/aC/#/g;s/aB/__/g;s/aA/a/g' > $tempfile
+  sed 's/a/aA/g;s/__/aB/g;s/#/aC/g' "src/$d/$f.h" | cpp -E $arg - | sed 's/aC/#/g;s/aB/__/g;s/aA/a/g' > $tempfile
 
   # Remove override keyword
   sed -i 's/ override;/;/g' $tempfile

@@ -56,7 +56,7 @@ class QgsAuthIdentCertMethod : public QgsAuthMethod
 
     void removePkiConfigBundle( const QString &authcfg );
 
-    static QMap<QString, QgsPkiConfigBundle *> mPkiConfigBundleCache;
+    static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
 };
 
 #endif // QGSAUTHIDENTCERTMETHOD_H

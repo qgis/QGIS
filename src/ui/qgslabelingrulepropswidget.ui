@@ -92,8 +92,8 @@
               </sizepolicy>
              </property>
              <property name="icon">
-              <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>/images/themes/default/mIconExpression.svg</iconset>
+              <iconset>
+               <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
              </property>
             </widget>
            </item>
@@ -163,10 +163,13 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>scrollArea</tabstop>
   <tabstop>editDescription</tabstop>
   <tabstop>editFilter</tabstop>
   <tabstop>btnExpressionBuilder</tabstop>
   <tabstop>btnTestFilter</tabstop>
+  <tabstop>groupScale</tabstop>
+  <tabstop>groupSettings</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -178,17 +178,17 @@ void QgsVectorFieldSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderConte
   switch ( mVectorFieldType )
   {
     case Cartesian:
-      xComponent = QgsSymbolLayerUtils::convertToPainterUnits( ctx, xVal, mDistanceUnit, mDistanceMapUnitScale );
-      yComponent = QgsSymbolLayerUtils::convertToPainterUnits( ctx, yVal, mDistanceUnit, mDistanceMapUnitScale );
+      xComponent = ctx.convertToPainterUnits( xVal, mDistanceUnit, mDistanceMapUnitScale );
+      yComponent = ctx.convertToPainterUnits( yVal, mDistanceUnit, mDistanceMapUnitScale );
       break;
     case Polar:
       convertPolarToCartesian( xVal, yVal, xComponent, yComponent );
-      xComponent = QgsSymbolLayerUtils::convertToPainterUnits( ctx, xComponent, mDistanceUnit, mDistanceMapUnitScale );
-      yComponent = QgsSymbolLayerUtils::convertToPainterUnits( ctx, yComponent, mDistanceUnit, mDistanceMapUnitScale );
+      xComponent = ctx.convertToPainterUnits( xComponent, mDistanceUnit, mDistanceMapUnitScale );
+      yComponent = ctx.convertToPainterUnits( yComponent, mDistanceUnit, mDistanceMapUnitScale );
       break;
     case Height:
       xComponent = 0;
-      yComponent = QgsSymbolLayerUtils::convertToPainterUnits( ctx, yVal, mDistanceUnit, mDistanceMapUnitScale );
+      yComponent = ctx.convertToPainterUnits( yVal, mDistanceUnit, mDistanceMapUnitScale );
       break;
     default:
       break;
@@ -281,9 +281,9 @@ void QgsVectorFieldSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext& context
   }
 }
 
-QSet<QString> QgsVectorFieldSymbolLayer::usedAttributes() const
+QSet<QString> QgsVectorFieldSymbolLayer::usedAttributes( const QgsRenderContext& context ) const
 {
-  QSet<QString> attributes = QgsMarkerSymbolLayer::usedAttributes();
+  QSet<QString> attributes = QgsMarkerSymbolLayer::usedAttributes( context );
   if ( !mXAttribute.isEmpty() )
   {
     attributes.insert( mXAttribute );
@@ -294,7 +294,7 @@ QSet<QString> QgsVectorFieldSymbolLayer::usedAttributes() const
   }
   if ( mLineSymbol )
   {
-    attributes.unite( mLineSymbol->usedAttributes() );
+    attributes.unite( mLineSymbol->usedAttributes( context ) );
   }
   return attributes;
 }

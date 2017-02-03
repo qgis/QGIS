@@ -143,7 +143,8 @@ class TinInterpolation(GeoAlgorithm):
                                           self.tr('Cell size Y'),
                                           0.0, 999999.000000, 0.0))
         self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Extent')))
+                                          self.tr('Extent'),
+                                          optional=False))
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Interpolated')))
         self.addOutput(OutputVector(self.TRIANULATION_FILE,
@@ -164,6 +165,10 @@ class TinInterpolation(GeoAlgorithm):
         if interpolationData is None:
             raise GeoAlgorithmExecutionException(
                 self.tr('You need to specify at least one input layer.'))
+
+        if cellsizeX == 0.0 or cellsizeY == 0.0:
+            raise GeoAlgorithmExecutionException(
+                self.tr('Cellsize should be greater than 0.'))
 
         xMin = float(extent[0])
         xMax = float(extent[1])

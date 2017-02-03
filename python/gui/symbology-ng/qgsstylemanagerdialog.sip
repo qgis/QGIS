@@ -110,7 +110,7 @@ class QgsStyleManagerDialog : QDialog
     void enableSymbolInputs( bool );
     //! Enables or disables the groupTree specific inputs
     void enableGroupInputs( bool );
-    //! Enables or diables the groupTree items for grouping mode
+    //! Enables or disables the groupTree items for grouping mode
     void enableItemsForGroupingMode( bool );
 
     //! sets the text of the item with bold font

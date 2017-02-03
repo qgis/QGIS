@@ -34,7 +34,7 @@ import locale
 import os
 from functools import cmp_to_key
 
-from qgis.core import QgsCoordinateReferenceSystem, QgsVectorLayer, QgsApplication, QgsWkbTypes, QgsMapLayerProxyModel
+from qgis.core import QgsCoordinateReferenceSystem, QgsApplication, QgsWkbTypes, QgsMapLayerProxyModel
 from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QLineEdit, QPlainTextEdit, QWidget, QHBoxLayout, QToolButton, QFileDialog
 from qgis.gui import (QgsFieldExpressionWidget,
                       QgsExpressionLineEdit,
@@ -121,7 +121,7 @@ class WidgetWrapper(QObject):
             if validator is not None and not validator(v):
                 raise InvalidParameterValue()
             return v
-        return combobox.itemData(combobox.currentIndex())
+        return combobox.currentData()
 
     def createWidget(self):
         pass
@@ -352,7 +352,7 @@ class ExtentWidgetWrapper(WidgetWrapper):
                     raise InvalidParameterValue()
                 return s
             else:
-                return self.widget.itemData(self.widget.currentIndex())
+                return self.widget.currentData()
 
 
 class PointWidgetWrapper(WidgetWrapper):
@@ -397,7 +397,7 @@ class PointWidgetWrapper(WidgetWrapper):
                     raise InvalidParameterValue()
                 return s
             else:
-                return self.widget.itemData(self.widget.currentIndex())
+                return self.widget.currentData()
 
 
 class FileWidgetWrapper(WidgetWrapper):

@@ -57,10 +57,8 @@ namespace QgsWms
       }
 
       void executeRequest( const QgsServerRequest& request, QgsServerResponse& response,
-                           QgsProject* project )
+                           const QgsProject* project )
       {
-        Q_UNUSED( project );
-
         QgsServerRequest::Parameters params = request.parameters();
         QString versionString = params.value( "VERSION" );
         if ( versionString.isEmpty() )
@@ -79,23 +77,22 @@ namespace QgsWms
         QString req = params.value( QStringLiteral( "REQUEST" ) );
         if ( req.isEmpty() )
         {
-          writeError( response, QStringLiteral( "OperationNotSupported" ),
-                      QStringLiteral( "Please check the value of the REQUEST parameter" ) );
-          return;
+          throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
+                                     QStringLiteral( "Please check the value of the REQUEST parameter" ) );
         }
 
         if (( QSTR_COMPARE( mVersion, "1.1.1" ) && QSTR_COMPARE( req, "capabilities" ) )
             || QSTR_COMPARE( req, "GetCapabilities" ) )
         {
-          writeGetCapabilities( mServerIface, versionString, request, response, false );
+          writeGetCapabilities( mServerIface, project, versionString, request, response, false );
         }
-        else if QSTR_COMPARE( req, "GetProjectSettings" )
+        else if ( QSTR_COMPARE( req, "GetProjectSettings" ) )
         {
           //getProjectSettings extends WMS 1.3.0 capabilities
           versionString = QStringLiteral( "1.3.0" );
-          writeGetCapabilities( mServerIface, versionString, request, response, true );
+          writeGetCapabilities( mServerIface, project, versionString, request, response, true );
         }
-        else if QSTR_COMPARE( req, "GetMap" )
+        else if ( QSTR_COMPARE( req, "GetMap" ) )
         {
           QString format = params.value( QStringLiteral( "FORMAT" ) );
           if QSTR_COMPARE( format, "application/dxf" )
@@ -104,47 +101,46 @@ namespace QgsWms
           }
           else
           {
-            writeGetMap( mServerIface, versionString, request, response );
+            writeGetMap( mServerIface, project, versionString, request, response );
           }
         }
-        else if QSTR_COMPARE( req, "GetFeatureInfo" )
+        else if ( QSTR_COMPARE( req, "GetFeatureInfo" ) )
         {
-          writeGetFeatureInfo( mServerIface, versionString, request, response );
+          writeGetFeatureInfo( mServerIface, project, versionString, request, response );
         }
-        else if QSTR_COMPARE( req, "GetContext" )
+        else if ( QSTR_COMPARE( req, "GetContext" ) )
         {
-          writeGetContext( mServerIface, versionString, request, response );
+          writeGetContext( mServerIface, project, versionString, request, response );
         }
-        else if QSTR_COMPARE( req, "GetSchemaExtension" )
+        else if ( QSTR_COMPARE( req, "GetSchemaExtension" ) )
         {
           writeGetSchemaExtension( mServerIface, versionString, request, response );
         }
-        else if QSTR_COMPARE( req, "GetStyle" )
+        else if ( QSTR_COMPARE( req, "GetStyle" ) )
         {
           writeGetStyle( mServerIface, versionString, request, response );
         }
-        else if QSTR_COMPARE( req, "GetStyles" )
+        else if ( QSTR_COMPARE( req, "GetStyles" ) )
         {
           writeGetStyles( mServerIface, versionString, request, response );
         }
-        else if QSTR_COMPARE( req, "DescribeLayer" )
+        else if ( QSTR_COMPARE( req, "DescribeLayer" ) )
         {
-          writeDescribeLayer( mServerIface, versionString, request, response );
+          writeDescribeLayer( mServerIface, project, versionString, request, response );
         }
         else if ( QSTR_COMPARE( req, "GetLegendGraphic" ) || QSTR_COMPARE( req, "GetLegendGraphics" ) )
         {
-          writeGetLegendGraphics( mServerIface, versionString, request, response );
+          writeGetLegendGraphics( mServerIface, project, versionString, request, response );
         }
-        else if QSTR_COMPARE( req, "GetPrint" )
+        else if ( QSTR_COMPARE( req, "GetPrint" ) )
         {
-          writeGetPrint( mServerIface, versionString, request, response );
+          writeGetPrint( mServerIface, project, versionString, request, response );
         }
         else
         {
           // Operation not supported
-          writeError( response, QStringLiteral( "OperationNotSupported" ),
-                      QString( "Request %1 is not supported" ).arg( req ) );
-          return;
+          throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
+                                     QString( "Request %1 is not supported" ).arg( req ) );
         }
       }
 
@@ -172,8 +168,8 @@ class QgsWmsModule: public QgsServiceModule
 // Entry points
 QGISEXTERN QgsServiceModule* QGS_ServiceModule_Init()
 {
-  static QgsWmsModule module;
-  return &module;
+  static QgsWmsModule sModule;
+  return &sModule;
 }
 QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule* )
 {

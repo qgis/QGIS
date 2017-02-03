@@ -80,7 +80,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see setUrl
      * @see contentMode
      */
-    const QUrl& url() const { return mUrl; }
+    QUrl url() const { return mUrl; }
 
     /** Sets the HTML to display in the item when the item is using
      * the QgsComposerHtml::ManualHtml mode. Setting the HTML using this function

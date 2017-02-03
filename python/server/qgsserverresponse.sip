@@ -93,6 +93,11 @@ class QgsServerResponse
     virtual qint64 write( const QByteArray& byteArray );
 
     /**
+     * Write server exception
+     */
+    virtual void write( const QgsServerException& ex );
+
+    /**
      * Return the underlying QIODevice
      */
     virtual QIODevice* io() = 0;

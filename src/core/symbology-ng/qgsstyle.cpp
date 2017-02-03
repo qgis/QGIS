@@ -36,7 +36,7 @@
 
 #define STYLE_CURRENT_VERSION  "1"
 
-QgsStyle *QgsStyle::mDefaultStyle = nullptr;
+QgsStyle *QgsStyle::sDefaultStyle = nullptr;
 
 
 QgsStyle::QgsStyle() : QObject()
@@ -51,27 +51,27 @@ QgsStyle::~QgsStyle()
 
 QgsStyle* QgsStyle::defaultStyle() // static
 {
-  if ( !mDefaultStyle )
+  if ( !sDefaultStyle )
   {
     QString styleFilename = QgsApplication::userStylePath();
 
     // copy default style if user style doesn't exist
     if ( !QFile::exists( styleFilename ) )
     {
-      mDefaultStyle = new QgsStyle;
-      mDefaultStyle->createDb( styleFilename );
+      sDefaultStyle = new QgsStyle;
+      sDefaultStyle->createDb( styleFilename );
       if ( QFile::exists( QgsApplication::defaultStylePath() ) )
       {
-        mDefaultStyle->importXml( QgsApplication::defaultStylePath() );
+        sDefaultStyle->importXml( QgsApplication::defaultStylePath() );
       }
     }
     else
     {
-      mDefaultStyle = new QgsStyle;
-      mDefaultStyle->load( styleFilename );
+      sDefaultStyle = new QgsStyle;
+      sDefaultStyle->load( styleFilename );
     }
   }
-  return mDefaultStyle;
+  return sDefaultStyle;
 }
 
 
@@ -366,7 +366,7 @@ bool QgsStyle::load( const QString& filename )
     return false;
   }
 
-  // Make sure there are no Null fields in parenting symbols ang groups
+  // Make sure there are no Null fields in parenting symbols and groups
   char *query = sqlite3_mprintf( "UPDATE symbol SET favorite=0 WHERE favorite IS NULL;"
                                  "UPDATE colorramp SET favorite=0 WHERE favorite IS NULL;"
                                  "UPDATE symgroup SET parent=0 WHERE parent IS NULL;" );
@@ -1562,7 +1562,7 @@ bool QgsStyle::importXml( const QString& filename )
 
   if ( version == STYLE_CURRENT_VERSION )
   {
-    // For the new style, load symbols individualy
+    // For the new style, load symbols individually
     while ( !e.isNull() )
     {
       if ( e.tagName() == QLatin1String( "symbol" ) )

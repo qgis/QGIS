@@ -261,7 +261,7 @@ class topolTest: public QObject
      * @param layer1 pointer to the first layer
      * @param layer2 not used
      */
-    void setTestCancelled();
+    void setTestCanceled();
 
   private:
     QMap<QString, QgsSpatialIndex*> mLayerIndexes;
@@ -271,7 +271,7 @@ class topolTest: public QObject
     QMap<QgsFeatureId, FeatureLayer> mFeatureMap2;
 
     QgisInterface* theQgsInterface;
-    bool mTestCancelled;
+    bool mTestCanceled;
 
     /**
      * Builds spatial index for the layer
@@ -294,9 +294,9 @@ class topolTest: public QObject
     void fillFeatureMap( QgsVectorLayer* layer, const QgsRectangle& extent );
 
     /**
-     * Returns true if the test was cancelled
+     * Returns true if the test was canceled
      */
-    bool testCancelled();
+    bool testCanceled();
 
   signals:
 

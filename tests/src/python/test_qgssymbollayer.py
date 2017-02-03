@@ -70,7 +70,7 @@ from qgis.core import (QgsCentroidFillSymbolLayer,
                        QgsProject,
                        QgsMultiRenderChecker,
                        QgsSingleSymbolRenderer,
-                       QgsDataDefined
+                       QgsProperty
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -408,7 +408,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         QgsProject.instance().addMapLayer(polys_layer)
 
         layer = QgsSimpleFillSymbolLayer()
-        layer.setDataDefinedProperty("enabled", QgsDataDefined("Name='Lake'"))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression("Name='Lake'"))
         layer.setBorderStyle(Qt.NoPen)
         layer.setColor(QColor(100, 150, 150))
 
@@ -473,7 +473,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         QgsProject.instance().addMapLayer(lines_layer)
 
         layer = QgsSimpleLineSymbolLayer()
-        layer.setDataDefinedProperty("enabled", QgsDataDefined("Name='Highway'"))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression("Name='Highway'"))
         layer.setColor(QColor(100, 150, 150))
         layer.setWidth(5)
 
@@ -536,7 +536,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         QgsProject.instance().addMapLayer(points_layer)
 
         layer = QgsSimpleMarkerSymbolLayer()
-        layer.setDataDefinedProperty("enabled", QgsDataDefined("Class='Biplane'"))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression("Class='Biplane'"))
         layer.setColor(QColor(100, 150, 150))
         layer.setSize(5)
         layer.setOutlineStyle(Qt.NoPen)

@@ -16,6 +16,7 @@
 #define QGSTEXTPREVIEW_H
 
 #include "qgstextrenderer.h"
+#include "qgsrendercontext.h"
 
 #include <QLabel>
 #include "qgis_gui.h"

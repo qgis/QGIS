@@ -272,7 +272,7 @@ void QgsEditFormConfig::readXml( const QDomNode& node )
   }
 
   QDomNode editFormInitCodeSourceNode = node.namedItem( QStringLiteral( "editforminitcodesource" ) );
-  if ( !editFormInitCodeSourceNode.isNull() || ( !editFormInitCodeSourceNode.isNull() && !editFormInitCodeSourceNode.toElement().text().isEmpty() ) )
+  if ( !editFormInitCodeSourceNode.isNull() && !editFormInitCodeSourceNode.toElement().text().isEmpty() )
   {
     setInitCodeSource( static_cast< QgsEditFormConfig::PythonInitCodeSource >( editFormInitCodeSourceNode.toElement().text().toInt() ) );
   }
@@ -297,7 +297,7 @@ void QgsEditFormConfig::readXml( const QDomNode& node )
   }
 
   QDomNode editFormInitFilePathNode = node.namedItem( QStringLiteral( "editforminitfilepath" ) );
-  if ( !editFormInitFilePathNode.isNull() || ( !editFormInitFilePathNode.isNull() && !editFormInitFilePathNode.toElement().text().isEmpty() ) )
+  if ( !editFormInitFilePathNode.isNull() && !editFormInitFilePathNode.toElement().text().isEmpty() )
   {
     setInitFilePath( QgsProject::instance()->readPath( editFormInitFilePathNode.toElement().text() ) );
   }
@@ -520,10 +520,13 @@ QgsAttributeEditorElement* QgsEditFormConfig::attributeEditorElementFromDomEleme
     newElement = relElement;
   }
 
-  if ( elem.hasAttribute( QStringLiteral( "showLabel" ) ) )
-    newElement->setShowLabel( elem.attribute( QStringLiteral( "showLabel" ) ).toInt() );
-  else
-    newElement->setShowLabel( true );
+  if ( newElement )
+  {
+    if ( elem.hasAttribute( QStringLiteral( "showLabel" ) ) )
+      newElement->setShowLabel( elem.attribute( QStringLiteral( "showLabel" ) ).toInt() );
+    else
+      newElement->setShowLabel( true );
+  }
 
   return newElement;
 }

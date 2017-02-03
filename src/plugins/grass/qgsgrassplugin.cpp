@@ -534,7 +534,7 @@ void QgsGrassPlugin::onSplitFeaturesTriggered( bool checked )
       QgsDebugMsg( "grassProvider is null" );
       return;
     }
-    grassProvider->setNewFeatureType( QgsGrassProvider::LAST_TYPE );
+    grassProvider->setNewFeatureType( QgsGrassProvider::sLastType );
   }
 }
 
@@ -721,7 +721,7 @@ void QgsGrassPlugin::redrawRegion()
 
 void QgsGrassPlugin::openMapset()
 {
-  QgsGrassSelect *sel = new QgsGrassSelect( qGisInterface->mainWindow(), QgsGrassSelect::MAPSET );
+  QgsGrassSelect *sel = new QgsGrassSelect( qGisInterface->mainWindow(), QgsGrassSelect::MapSet );
 
   if ( !sel->exec() )
     return;
@@ -895,7 +895,7 @@ void QgsGrassPlugin::setCurrentTheme( QString theThemeName )
 }
 
 // Note this code is duplicated from qgisapp.cpp because
-// I didnt want to make plugins dependent on qgsapplication
+// I didn't want to make plugins dependent on qgsapplication
 // and because it needs grass specific path into
 // the GRASS plugin resource bundle [TS]
 QIcon QgsGrassPlugin::getThemeIcon( const QString &theName )

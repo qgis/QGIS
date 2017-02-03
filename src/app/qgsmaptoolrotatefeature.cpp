@@ -231,7 +231,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
 
       //find the closest feature
       QgsGeometry pointGeometry = QgsGeometry::fromPoint( layerCoords );
-      if ( pointGeometry.isEmpty() )
+      if ( pointGeometry.isNull() )
       {
         return;
       }

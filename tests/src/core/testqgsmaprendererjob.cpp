@@ -69,7 +69,7 @@ class TestQgsMapRendererJob : public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
-    //! This method tests render perfomance
+    //! This method tests render performance
     void performanceTest();
 
     /** This unit test checks if rendering of adjacent tiles (e.g. to render images for tile caches)
@@ -106,7 +106,7 @@ void TestQgsMapRendererJob::initTestCase()
   mFields.append( myField1 );
   mCRS = QgsCoordinateReferenceSystem( GEOWKT );
   //
-  // Create the test dataset if it doesnt exist
+  // Create the test dataset if it doesn't exist
   //
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + '/';

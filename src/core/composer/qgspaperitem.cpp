@@ -20,6 +20,7 @@
 #include "qgsstyle.h"
 #include "qgslogger.h"
 #include "qgsmapsettings.h"
+#include "qgscomposerutils.h"
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 #include <QPainter>
@@ -155,12 +156,9 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
   double dotsPerMM = painter->device()->logicalDpiX() / 25.4;
 
   //setup render context
-  QgsMapSettings ms = mComposition->mapSettings();
-  //context units should be in dots
-  ms.setOutputDpi( painter->device()->logicalDpiX() );
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  context.setPainter( painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, painter );
   context.setForceVectorOutput( true );
+
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 
@@ -179,7 +177,9 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
 
     //page area
     painter->setBrush( QColor( 215, 215, 215 ) );
-    painter->setPen( QPen( QColor( 100, 100, 100 ) ) );
+    QPen pagePen = QPen( QColor( 100, 100, 100 ), 0 );
+    pagePen.setCosmetic( true );
+    painter->setPen( pagePen );
     painter->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
   }
 
@@ -201,12 +201,16 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
 void QgsPaperItem::calculatePageMargin()
 {
   //get max bleed from symbol
-  double maxBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( mComposition->pageStyleSymbol() );
+  QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( mComposition->referenceMap(), nullptr, mComposition->printResolution() );
+  double maxBleedPixels = QgsSymbolLayerUtils::estimateMaxSymbolBleed( mComposition->pageStyleSymbol(), rc );
 
   //Now subtract 1 pixel to prevent semi-transparent borders at edge of solid page caused by
   //anti-aliased painting. This may cause a pixel to be cropped from certain edge lines/symbols,
   //but that can be counteracted by adding a dummy transparent line symbol layer with a wider line width
-  mPageMargin = maxBleed - ( 25.4 / mComposition->printResolution() );
+  maxBleedPixels--;
+
+  double maxBleedMm = ( 25.4 / mComposition->printResolution() ) * maxBleedPixels;
+  mPageMargin = maxBleedMm;
 }
 
 bool QgsPaperItem::writeXml( QDomElement& elem, QDomDocument & doc ) const

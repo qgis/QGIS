@@ -48,6 +48,8 @@ class GridPolygon(GeoAlgorithm):
     EXTENT = 'EXTENT'
     HSPACING = 'HSPACING'
     VSPACING = 'VSPACING'
+    HOVERLAY = 'HOVERLAY'
+    VOVERLAY = 'VOVERLAY'
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
@@ -71,6 +73,10 @@ class GridPolygon(GeoAlgorithm):
                                           self.tr('Horizontal spacing'), 0.0, 1000000000.0, 0.0001))
         self.addParameter(ParameterNumber(self.VSPACING,
                                           self.tr('Vertical spacing'), 0.0, 1000000000.0, 0.0001))
+        self.addParameter(ParameterNumber(self.HOVERLAY,
+                                          self.tr('Horizontal overlay'), 0.0, 1000000000.0, 0.0))
+        self.addParameter(ParameterNumber(self.VOVERLAY,
+                                          self.tr('Vertical overlay'), 0.0, 1000000000.0, 0.0))
         self.addParameter(ParameterCrs(self.CRS, 'Grid CRS', 'EPSG:4326'))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
@@ -80,6 +86,8 @@ class GridPolygon(GeoAlgorithm):
         extent = self.getParameterValue(self.EXTENT).split(',')
         hSpacing = self.getParameterValue(self.HSPACING)
         vSpacing = self.getParameterValue(self.VSPACING)
+        hOverlay = self.getParameterValue(self.HOVERLAY)
+        vOverlay = self.getParameterValue(self.VOVERLAY)
         crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.CRS))
 
         bbox = QgsRectangle(float(extent[0]), float(extent[2]),
@@ -98,6 +106,10 @@ class GridPolygon(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Horizontal spacing is too small for the covered area'))
 
+        if hSpacing <= hOverlay or vSpacing <= vOverlay:
+            raise GeoAlgorithmExecutionException(
+                self.tr('Invalid overlay: %s/%s' % (hOverlay, vOverlay)))
+
         if height < vSpacing:
             raise GeoAlgorithmExecutionException(
                 self.tr('Vertical spacing is too small for the covered area'))
@@ -114,22 +126,23 @@ class GridPolygon(GeoAlgorithm):
 
         if idx == 0:
             self._rectangleGrid(
-                writer, width, height, originX, originY, hSpacing, vSpacing, feedback)
+                writer, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
         elif idx == 1:
             self._diamondGrid(
-                writer, width, height, originX, originY, hSpacing, vSpacing, feedback)
+                writer, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
         elif idx == 2:
             self._hexagonGrid(
-                writer, width, height, originX, originY, hSpacing, vSpacing, feedback)
+                writer, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
 
         del writer
 
     def _rectangleGrid(self, writer, width, height, originX, originY,
-                       hSpacing, vSpacing, feedback):
+                       hSpacing, vSpacing, hOverlay, vOverlay, feedback):
         ft = QgsFeature()
 
-        columns = int(math.ceil(float(width) / hSpacing))
-        rows = int(math.ceil(float(height) / vSpacing))
+        columns = int(math.ceil(float(width) / (hSpacing - hOverlay)))
+        rows = int(math.ceil(float(height) / (vSpacing - vOverlay)))
+
         cells = rows * columns
         count_update = cells * 0.05
 
@@ -137,14 +150,12 @@ class GridPolygon(GeoAlgorithm):
         count = 0
 
         for col in range(columns):
-            # (column + 1) and (row + 1) calculation is used to maintain
-            # topology between adjacent shapes and avoid overlaps/holes
-            # due to rounding errors
-            x1 = originX + (col * hSpacing)
-            x2 = originX + ((col + 1) * hSpacing)
+            x1 = originX + (col * hSpacing - col * hOverlay)
+            x2 = x1 + hSpacing
+
             for row in range(rows):
-                y1 = originY - (row * vSpacing)
-                y2 = originY - ((row + 1) * vSpacing)
+                y1 = originY - (row * vSpacing - row * vOverlay)
+                y2 = y1 - vSpacing
 
                 polyline = []
                 polyline.append(QgsPoint(x1, y1))
@@ -156,20 +167,24 @@ class GridPolygon(GeoAlgorithm):
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
                 ft.setAttributes([x1, y1, x2, y2, id])
                 writer.addFeature(ft)
+
                 id += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:
                     feedback.setProgress(int(count / cells * 100))
 
     def _diamondGrid(self, writer, width, height, originX, originY,
-                     hSpacing, vSpacing, feedback):
+                     hSpacing, vSpacing, hOverlay, vOverlay, feedback):
         ft = QgsFeature()
 
         halfHSpacing = hSpacing / 2
         halfVSpacing = vSpacing / 2
 
-        columns = int(math.ceil(float(width) / halfHSpacing))
-        rows = int(math.ceil(float(height) / vSpacing))
+        halfHOverlay = hOverlay / 2
+        halfVOverlay = vOverlay / 2
+
+        columns = int(math.ceil(float(width) / (halfHSpacing - halfHOverlay)))
+        rows = int(math.ceil(float(height) / (vSpacing - halfVOverlay)))
 
         cells = rows * columns
         count_update = cells * 0.05
@@ -178,19 +193,21 @@ class GridPolygon(GeoAlgorithm):
         count = 0
 
         for col in range(columns):
-            x1 = originX + ((col + 0) * halfHSpacing)
-            x2 = originX + ((col + 1) * halfHSpacing)
-            x3 = originX + ((col + 2) * halfHSpacing)
+            x = originX - (col * halfHOverlay)
+            x1 = x + ((col + 0) * halfHSpacing)
+            x2 = x + ((col + 1) * halfHSpacing)
+            x3 = x + ((col + 2) * halfHSpacing)
 
             for row in range(rows):
+                y = originY + (row * halfVOverlay)
                 if (col % 2) == 0:
-                    y1 = originY - (((row * 2) + 0) * halfVSpacing)
-                    y2 = originY - (((row * 2) + 1) * halfVSpacing)
-                    y3 = originY - (((row * 2) + 2) * halfVSpacing)
+                    y1 = y - (((row * 2) + 0) * halfVSpacing)
+                    y2 = y - (((row * 2) + 1) * halfVSpacing)
+                    y3 = y - (((row * 2) + 2) * halfVSpacing)
                 else:
-                    y1 = originY - (((row * 2) + 1) * halfVSpacing)
-                    y2 = originY - (((row * 2) + 2) * halfVSpacing)
-                    y3 = originY - (((row * 2) + 3) * halfVSpacing)
+                    y1 = y - (((row * 2) + 1) * halfVSpacing)
+                    y2 = y - (((row * 2) + 2) * halfVSpacing)
+                    y3 = y - (((row * 2) + 3) * halfVSpacing)
 
                 polyline = []
                 polyline.append(QgsPoint(x1, y2))
@@ -208,7 +225,7 @@ class GridPolygon(GeoAlgorithm):
                     feedback.setProgress(int(count / cells * 100))
 
     def _hexagonGrid(self, writer, width, height, originX, originY,
-                     hSpacing, vSpacing, feedback):
+                     hSpacing, vSpacing, hOverlay, vOverlay, feedback):
         ft = QgsFeature()
 
         # To preserve symmetry, hspacing is fixed relative to vspacing
@@ -216,10 +233,18 @@ class GridPolygon(GeoAlgorithm):
         xVertexHi = 0.577350269189626 * vSpacing
         hSpacing = xVertexLo + xVertexHi
 
-        halfVSpacing = vSpacing / 2
+        hOverlay = hSpacing - hOverlay
+        if hOverlay < 0:
+            raise GeoAlgorithmExecutionException(
+                self.tr('To preserve symmetry, hspacing is fixed relative to vspacing\n \
+                        hspacing is fixed at: %s and hoverlay is fixed at: %s\n \
+                        hoverlay cannot be negative. Increase hoverlay.' % (hSpacing, hOverlay)))
 
-        columns = int(math.ceil(float(width) / hSpacing))
-        rows = int(math.ceil(float(height) / vSpacing))
+        halfHSpacing = hSpacing / 2.0
+        halfVSpacing = vSpacing / 2.0
+
+        columns = int(math.ceil(float(width) / hOverlay))
+        rows = int(math.ceil(float(height) / (vSpacing - vOverlay)))
 
         cells = rows * columns
         count_update = cells * 0.05
@@ -231,20 +256,20 @@ class GridPolygon(GeoAlgorithm):
             # (column + 1) and (row + 1) calculation is used to maintain
             # topology between adjacent shapes and avoid overlaps/holes
             # due to rounding errors
-            x1 = originX + (col * hSpacing)         # far left
-            x2 = x1 + (xVertexHi - xVertexLo)       # left
-            x3 = originX + ((col + 1) * hSpacing)   # right
-            x4 = x3 + (xVertexHi - xVertexLo)       # far right
+            x1 = originX + (col * hOverlay)                # far left
+            x2 = x1 + (xVertexHi - xVertexLo)              # left
+            x3 = originX + (col * hOverlay) + hSpacing     # right
+            x4 = x3 + (xVertexHi - xVertexLo)              # far right
 
             for row in range(rows):
                 if (col % 2) == 0:
-                    y1 = originY - (((row * 2) + 0) * halfVSpacing)  # hi
-                    y2 = originY - (((row * 2) + 1) * halfVSpacing)  # mid
-                    y3 = originY - (((row * 2) + 2) * halfVSpacing)  # lo
+                    y1 = originY + (row * vOverlay) - (((row * 2) + 0) * halfVSpacing)  # hi
+                    y2 = originY + (row * vOverlay) - (((row * 2) + 1) * halfVSpacing)  # mid
+                    y3 = originY + (row * vOverlay) - (((row * 2) + 2) * halfVSpacing)  # lo
                 else:
-                    y1 = originY - (((row * 2) + 1) * halfVSpacing)  # hi
-                    y2 = originY - (((row * 2) + 2) * halfVSpacing)  # mid
-                    y3 = originY - (((row * 2) + 3) * halfVSpacing)  # lo
+                    y1 = originY + (row * vOverlay) - (((row * 2) + 1) * halfVSpacing)  # hi
+                    y2 = originY + (row * vOverlay) - (((row * 2) + 2) * halfVSpacing)  # mid
+                    y3 = originY + (row * vOverlay) - (((row * 2) + 3) * halfVSpacing)  # lo
 
                 polyline = []
                 polyline.append(QgsPoint(x1, y2))

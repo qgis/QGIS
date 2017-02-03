@@ -86,13 +86,13 @@ mPlugins = dict of dicts {id : {
     "error" unicode,                            # NULL | broken | incompatible | dependent
     "error_details" unicode,                    # error description
     "experimental" boolean,                     # true if experimental, false if stable
-    "deprecated" boolean,                       # true if deprected, false if actual
+    "deprecated" boolean,                       # true if deprecated, false if actual
     "trusted" boolean,                          # true if trusted, false if not trusted
     "version_available" unicode,                # available version
     "zip_repository" unicode,                   # the remote repository id
     "download_url" unicode,                     # url for downloading the plugin
     "filename" unicode,                         # the zip file name to be unzipped after downloaded
-    "downloads" unicode,                        # number of dowloads
+    "downloads" unicode,                        # number of downloads
     "average_vote" unicode,                     # average vote
     "rating_votes" unicode,                     # number of votes
 }}
@@ -398,7 +398,7 @@ class Repositories(QObject):
             self.mRepositories[reposName]["state"] = 3
             self.mRepositories[reposName]["error"] = reply.errorString()
             if reply.error() == QNetworkReply.OperationCanceledError:
-                self.mRepositories[reposName]["error"] += "\n\n" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't cancelled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.")
+                self.mRepositories[reposName]["error"] += "\n\n" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't canceled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.")
         else:
             reposXML = QDomDocument()
             content = reply.readAll()
@@ -770,7 +770,7 @@ class Plugins(QObject):
                             if attrib != "name":
                                 if not self.mPlugins[key][attrib] and plugin[attrib]:
                                     self.mPlugins[key][attrib] = plugin[attrib]
-                        # other remote metadata is preffered:
+                        # other remote metadata is preferred:
                         for attrib in ["name", "plugin_id", "description", "about", "category", "tags", "changelog", "author_name", "author_email", "homepage",
                                        "tracker", "code_repository", "experimental", "deprecated", "version_available", "zip_repository",
                                        "download_url", "filename", "downloads", "average_vote", "rating_votes", "trusted"]:

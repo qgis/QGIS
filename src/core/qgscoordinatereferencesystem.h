@@ -403,7 +403,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     bool isValid() const;
 
     /** Perform some validation on this CRS. If the CRS doesn't validate the
-     * default behaviour settings for layers with unknown CRS will be
+     * default behavior settings for layers with unknown CRS will be
      * consulted and acted on accordingly. By hell or high water this
      * method will do its best to make sure that this CRS is valid - even
      * if that involves resorting to a hard coded default of geocs:wgs84.
@@ -572,7 +572,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     static QStringList recentProjections();
 
-    /** Clears the internal cache used to initialise QgsCoordinateReferenceSystem objects.
+    /** Clears the internal cache used to initialize QgsCoordinateReferenceSystem objects.
      * This should be called whenever the srs database has been modified in order to ensure
      * that outdated CRS objects are not created.
      * @note added in QGIS 3.0
@@ -580,7 +580,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     static void invalidateCache();
 
     // Mutators -----------------------------------
-    // We don't want to expose these to the public api since they wont create
+    // We don't want to expose these to the public api since they won't create
     // a fully valid crs. Programmers should use the createFrom* methods rather
   private:
 
@@ -649,7 +649,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! A string based associative array used for passing records around
     typedef QMap<QString, QString> RecordMap;
 
-    /** Get a record from the srs.db or qgis.db backends, given an sql statment.
+    /** Get a record from the srs.db or qgis.db backends, given an sql statement.
      * @note only handles queries that return a single record.
      * @note it will first try the system srs.db then the users qgis.db!
      * @param theSql The sql query to execute
@@ -687,18 +687,18 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     // cache
 
-    static QReadWriteLock mSrIdCacheLock;
-    static QHash< long, QgsCoordinateReferenceSystem > mSrIdCache;
-    static QReadWriteLock mOgcLock;
-    static QHash< QString, QgsCoordinateReferenceSystem > mOgcCache;
-    static QReadWriteLock mProj4CacheLock;
-    static QHash< QString, QgsCoordinateReferenceSystem > mProj4Cache;
-    static QReadWriteLock mCRSWktLock;
-    static QHash< QString, QgsCoordinateReferenceSystem > mWktCache;
-    static QReadWriteLock mCRSSrsIdLock;
-    static QHash< long, QgsCoordinateReferenceSystem > mSrsIdCache;
-    static QReadWriteLock mCrsStringLock;
-    static QHash< QString, QgsCoordinateReferenceSystem > mStringCache;
+    static QReadWriteLock sSrIdCacheLock;
+    static QHash< long, QgsCoordinateReferenceSystem > sSrIdCache;
+    static QReadWriteLock sOgcLock;
+    static QHash< QString, QgsCoordinateReferenceSystem > sOgcCache;
+    static QReadWriteLock sProj4CacheLock;
+    static QHash< QString, QgsCoordinateReferenceSystem > sProj4Cache;
+    static QReadWriteLock sCRSWktLock;
+    static QHash< QString, QgsCoordinateReferenceSystem > sWktCache;
+    static QReadWriteLock sCRSSrsIdLock;
+    static QHash< long, QgsCoordinateReferenceSystem > sSrsIdCache;
+    static QReadWriteLock sCrsStringLock;
+    static QHash< QString, QgsCoordinateReferenceSystem > sStringCache;
 
     friend class TestQgsCoordinateReferenceSystem;
 };

@@ -475,7 +475,7 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
         ++jt;
       }
       QList<double> values;
-      if ( dissolveGeometry.isEmpty() )
+      if ( dissolveGeometry.isNull() )
       {
         QgsDebugMsg( "no dissolved geometry - should not happen" );
         return false;
@@ -520,7 +520,7 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
         ++jt;
       }
       QList<double> values;
-      if ( dissolveGeometry.isEmpty() )
+      if ( dissolveGeometry.isNull() )
       {
         QgsDebugMsg( "no dissolved geometry - should not happen" );
         return false;
@@ -705,7 +705,7 @@ QgsGeometry QgsGeometryAnalyzer::dissolveFeature( const QgsFeature& f, const Qgs
 
   QgsGeometry featureGeometry = f.geometry();
 
-  if ( dissolveInto.isEmpty() )
+  if ( dissolveInto.isNull() )
   {
     return featureGeometry;
   }
@@ -810,7 +810,7 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
   if ( dissolve )
   {
     QgsFeature dissolveFeature;
-    if ( dissolveGeometry.isEmpty() )
+    if ( dissolveGeometry.isNull() )
     {
       QgsDebugMsg( "no dissolved geometry - should not happen" );
       return false;
@@ -967,7 +967,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
         lrsGeom = locateBetweenMeasures( measure1, measure2, featureIdIt->geometry() );
       }
 
-      if ( !lrsGeom.isEmpty() )
+      if ( !lrsGeom.isNull() )
       {
         ++nOutputFeatures;
         addEventLayerFeature( fet, lrsGeom, featureIdIt->geometry(), fileWriter, memoryProviderFeatures, offsetField, offsetScale, forceSingleGeometry );
@@ -995,7 +995,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
 void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, const QgsGeometry& geom, const QgsGeometry& lineGeom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures,
     int offsetField, double offsetScale, bool forceSingleType )
 {
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
   {
     return;
   }
@@ -1020,7 +1020,7 @@ void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, const QgsGe
       double offsetVal = feature.attribute( offsetField ).toDouble();
       offsetVal *= offsetScale;
       newGeom = createOffsetGeometry( *geomIt, lineGeom, offsetVal );
-      if ( newGeom.isEmpty() )
+      if ( newGeom.isNull() )
       {
         continue;
       }
@@ -1040,7 +1040,7 @@ void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, const QgsGe
 
 QgsGeometry QgsGeometryAnalyzer::createOffsetGeometry( const QgsGeometry& geom, const QgsGeometry& lineGeom, double offset )
 {
-  if ( !geom || lineGeom.isEmpty() )
+  if ( !geom || lineGeom.isNull() )
   {
     return QgsGeometry();
   }
@@ -1135,19 +1135,19 @@ QgsPoint QgsGeometryAnalyzer::createPointOffset( double x, double y, double dist
   double dx = afterVertex.x() - beforeVertex.x();
   double dy = afterVertex.y() - beforeVertex.y();
   double normalX = -dy;
-  double normalY = dx;
-  double normalLength = sqrt( normalX * normalX + normalY * normalY );
+  double normalY = dx;  //#spellok
+  double normalLength = sqrt( normalX * normalX + normalY * normalY );  //#spellok
   normalX *= ( dist / normalLength );
-  normalY *= ( dist / normalLength );
+  normalY *= ( dist / normalLength );  //#spellok
 
-  double debugLength = sqrt( normalX * normalX + normalY * normalY ); //control
+  double debugLength = sqrt( normalX * normalX + normalY * normalY ); //control  //#spellok
   Q_UNUSED( debugLength );
-  return QgsPoint( x - normalX, y - normalY ); //negative values -> left side, positive values -> right side
+  return QgsPoint( x - normalX, y - normalY ); //negative values -> left side, positive values -> right side  //#spellok
 }
 
 QgsGeometry QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, double toMeasure, const QgsGeometry& lineGeom )
 {
-  if ( lineGeom.isEmpty() )
+  if ( lineGeom.isNull() )
   {
     return QgsGeometry();
   }
@@ -1189,7 +1189,7 @@ QgsGeometry QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, doub
 
 QgsGeometry QgsGeometryAnalyzer::locateAlongMeasure( double measure, const QgsGeometry& lineGeom )
 {
-  if ( lineGeom.isEmpty() )
+  if ( lineGeom.isNull() )
   {
     return QgsGeometry();
   }

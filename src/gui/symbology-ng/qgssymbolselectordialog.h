@@ -20,9 +20,9 @@
 
 #include "ui_qgssymbolselectordialogbase.h"
 
-#include "qgsdatadefined.h"
 #include "qgspanelwidget.h"
 #include "qgssymbolwidgetcontext.h"
+#include "qgsproperty.h"
 
 #include <QStandardItemModel>
 #include <QScopedPointer>
@@ -62,14 +62,14 @@ class DataDefinedRestorer: public QObject
     double mSize;
     double mAngle;
     QPointF mMarkerOffset;
-    QgsDataDefined mDDSize;
-    QgsDataDefined mDDAngle;
+    QgsProperty mDDSize;
+    QgsProperty mDDAngle;
 
     QgsLineSymbol* mLine;
     const QgsLineSymbolLayer* mLineSymbolLayer;
     double mWidth;
     double mLineOffset;
-    QgsDataDefined mDDWidth;
+    QgsProperty mDDWidth;
 
     void save();
 };
@@ -215,7 +215,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     void updateLayerPreview();
 
     /**
-     * Update the preivew of the whole symbol in the iterface.
+     * Update the preview of the whole symbol in the interface.
      */
     void updatePreview();
 

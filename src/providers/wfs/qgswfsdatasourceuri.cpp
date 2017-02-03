@@ -22,7 +22,7 @@
 QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString& uri )
     : mURI( uri )
 {
-  // Compatiblity with QGIS < 2.16 layer URI of the format
+  // Compatibility with QGIS < 2.16 layer URI of the format
   // http://example.com/?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=x&SRSNAME=y&username=foo&password=
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) )
   {

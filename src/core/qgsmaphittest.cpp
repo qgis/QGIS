@@ -32,7 +32,7 @@ QgsMapHitTest::QgsMapHitTest( const QgsMapSettings& settings, const QgsGeometry&
     , mLayerFilterExpression( layerFilterExpression )
     , mOnlyExpressions( false )
 {
-  if ( !polygon.isEmpty() && polygon.type() == QgsWkbTypes::PolygonGeometry )
+  if ( !polygon.isNull() && polygon.type() == QgsWkbTypes::PolygonGeometry )
   {
     mPolygon = polygon;
   }
@@ -114,7 +114,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolSet& usedSymbols,
   r->startRender( context, vl->fields() );
 
   QgsGeometry transformedPolygon = mPolygon;
-  if ( !mOnlyExpressions && !mPolygon.isEmpty() )
+  if ( !mOnlyExpressions && !mPolygon.isNull() )
   {
     if ( mSettings.destinationCrs() != vl->crs() )
     {
@@ -127,7 +127,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolSet& usedSymbols,
   QgsFeatureRequest request;
   if ( !mOnlyExpressions )
   {
-    if ( mPolygon.isEmpty() )
+    if ( mPolygon.isNull() )
     {
       request.setFilterRect( context.extent() );
       request.setFlags( QgsFeatureRequest::ExactIntersect );
@@ -153,7 +153,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolSet& usedSymbols,
   {
     context.expressionContext().setFeature( f );
     // filter out elements outside of the polygon
-    if ( !mOnlyExpressions && !mPolygon.isEmpty() )
+    if ( !mOnlyExpressions && !mPolygon.isNull() )
     {
       if ( !transformedPolygon.intersects( f.geometry() ) )
       {

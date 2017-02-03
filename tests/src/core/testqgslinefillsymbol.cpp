@@ -31,7 +31,7 @@
 #include <qgssinglesymbolrenderer.h>
 #include <qgsfillsymbollayer.h>
 #include "qgslinesymbollayer.h"
-#include "qgsdatadefined.h"
+#include "qgsproperty.h"
 
 //qgis test includes
 #include "qgsrenderchecker.h"
@@ -153,7 +153,7 @@ void TestQgsLineFillSymbol::dataDefinedSubSymbol()
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
   QgsLineSymbol* lineSymbol = QgsLineSymbol::createSimple( properties );
-  lineSymbol->symbolLayer( 0 )->setDataDefinedProperty( QStringLiteral( "color" ), new QgsDataDefined( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
+  lineSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineColor, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
   mLineFill->setSubSymbol( lineSymbol );
   QVERIFY( imageCheck( "datadefined_subsymbol" ) );
 }

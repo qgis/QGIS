@@ -137,7 +137,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/rendering.png</normaloff>:/images/themes/default/propertyicons/rendering.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
           </property>
          </item>
          <item>
@@ -197,7 +197,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/digitising.png</normaloff>:/images/themes/default/propertyicons/digitising.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/digitizing.png</normaloff>:/images/themes/default/propertyicons/digitizing.png</iconset>
           </property>
          </item>
          <item>
@@ -308,7 +308,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -337,8 +337,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>651</width>
-                <height>590</height>
+                <width>691</width>
+                <height>702</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1024,7 +1024,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>1065</height>
+                <height>1110</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1553,8 +1553,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>495</width>
-                <height>659</height>
+                <width>843</width>
+                <height>755</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1572,7 +1572,7 @@
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QComboBox" name="cmbAttrTableBehaviour">
+                   <widget class="QComboBox" name="cmbAttrTableBehavior">
                     <item>
                      <property name="text">
                       <string/>
@@ -1589,7 +1589,7 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Attribute table behaviour</string>
+                     <string>Attribute table behavior</string>
                     </property>
                    </widget>
                   </item>
@@ -1911,8 +1911,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>674</width>
-                <height>936</height>
+                <width>713</width>
+                <height>1110</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2662,7 +2662,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>142</width>
+                <width>151</width>
                 <height>239</height>
                </rect>
               </property>
@@ -2752,7 +2752,7 @@
                     </property>
                     <property name="icon">
                      <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/mActionCopySelected.png</normaloff>:/images/themes/default/mActionCopySelected.png</iconset>
+                      <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
                     </property>
                    </widget>
                   </item>
@@ -2771,7 +2771,11 @@
                    </widget>
                   </item>
                   <item row="0" column="0" rowspan="8">
-                   <widget class="QgsColorSchemeList" name="mTreeCustomColors" native="true"/>
+                   <widget class="QgsColorSchemeList" name="mTreeCustomColors" native="true">
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -2809,8 +2813,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>501</width>
-                <height>316</height>
+                <width>523</width>
+                <height>370</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3152,8 +3156,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>604</width>
-                <height>589</height>
+                <width>640</width>
+                <height>660</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3583,8 +3587,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>480</width>
-                <height>571</height>
+                <width>509</width>
+                <height>623</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3852,8 +3856,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>543</width>
-                <height>667</height>
+                <width>572</width>
+                <height>793</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4430,8 +4434,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>412</width>
-                <height>368</height>
+                <width>435</width>
+                <height>402</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4569,8 +4573,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>512</width>
-                <height>638</height>
+                <width>543</width>
+                <height>710</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4588,7 +4592,7 @@
                 </spacer>
                </item>
                <item row="2" column="0">
-                <widget class="QgsCollapsibleGroupBox" name="grpProjectionBehaviour">
+                <widget class="QgsCollapsibleGroupBox" name="grpProjectionBehavior">
                  <property name="title">
                   <string>CRS for new layers</string>
                  </property>
@@ -4815,8 +4819,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>273</width>
-                <height>236</height>
+                <width>292</width>
+                <height>258</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4924,8 +4928,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>484</width>
-                <height>689</height>
+                <width>534</width>
+                <height>790</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5439,15 +5443,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -5489,6 +5493,7 @@
  <tabstops>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>mOptionsScrollArea_01</tabstop>
+  <tabstop>groupBox</tabstop>
   <tabstop>cmbStyle</tabstop>
   <tabstop>cmbUITheme</tabstop>
   <tabstop>cmbIconSize</tabstop>
@@ -5499,9 +5504,11 @@
   <tabstop>mMessageTimeoutSpnBx</tabstop>
   <tabstop>cbxHideSplash</tabstop>
   <tabstop>cbxShowTips</tabstop>
+  <tabstop>cbxCheckVersion</tabstop>
   <tabstop>mCustomGroupBoxChkBx</tabstop>
   <tabstop>mNativeColorDialogsChkBx</tabstop>
   <tabstop>mLiveColorDialogsChkBx</tabstop>
+  <tabstop>groupBox_11</tabstop>
   <tabstop>mProjectOnLaunchCmbBx</tabstop>
   <tabstop>mProjectOnLaunchLineEdit</tabstop>
   <tabstop>mProjectOnLaunchPushBtn</tabstop>
@@ -5516,26 +5523,39 @@
   <tabstop>chbWarnOldProjectVersion</tabstop>
   <tabstop>cmbEnableMacros</tabstop>
   <tabstop>mOptionsScrollArea_03</tabstop>
+  <tabstop>groupBox_2</tabstop>
   <tabstop>mBtnAddSVGPath</tabstop>
   <tabstop>mBtnRemoveSVGPath</tabstop>
   <tabstop>mListSVGPaths</tabstop>
+  <tabstop>groupBox_4</tabstop>
   <tabstop>mBtnAddPluginPath</tabstop>
   <tabstop>mBtnRemovePluginPath</tabstop>
   <tabstop>mListPluginPaths</tabstop>
+  <tabstop>groupBox_29</tabstop>
+  <tabstop>mBtnAddHelpPath</tabstop>
+  <tabstop>mBtnRemoveHelpPath</tabstop>
+  <tabstop>mBtnMoveHelpUp</tabstop>
+  <tabstop>mBtnMoveHelpDown</tabstop>
+  <tabstop>mHelpPathTreeWidget</tabstop>
+  <tabstop>mQSettingsGrpBx</tabstop>
   <tabstop>mRestoreDefaultWindowStateBtn</tabstop>
+  <tabstop>mEnvironmentGrpBx</tabstop>
   <tabstop>mCustomVariablesChkBx</tabstop>
   <tabstop>mAddCustomVarBtn</tabstop>
   <tabstop>mRemoveCustomVarBtn</tabstop>
   <tabstop>mCustomVariablesTable</tabstop>
+  <tabstop>mCurrentVariablesGrpBx</tabstop>
   <tabstop>mCurrentVariablesTable</tabstop>
-  <tabstop>mComboCopyFeatureFormat</tabstop>
   <tabstop>mCurrentVariablesQGISChxBx</tabstop>
   <tabstop>mOptionsScrollArea_11</tabstop>
+  <tabstop>groupBox_18</tabstop>
   <tabstop>cbxAttributeTableDocked</tabstop>
-  <tabstop>cmbAttrTableBehaviour</tabstop>
+  <tabstop>mComboCopyFeatureFormat</tabstop>
+  <tabstop>cmbAttrTableBehavior</tabstop>
   <tabstop>mAttrTableViewComboBox</tabstop>
   <tabstop>spinBoxAttrTableRowCache</tabstop>
   <tabstop>leNullValue</tabstop>
+  <tabstop>groupBox_19</tabstop>
   <tabstop>cmbScanItemsInBrowser</tabstop>
   <tabstop>cmbScanZipInBrowser</tabstop>
   <tabstop>cmbPromptRasterSublayers</tabstop>
@@ -5543,9 +5563,11 @@
   <tabstop>cbxAddPostgisDC</tabstop>
   <tabstop>cbxAddOracleDC</tabstop>
   <tabstop>cbxCompileExpressions</tabstop>
+  <tabstop>groupBox_28</tabstop>
   <tabstop>mBtnRemoveHiddenPath</tabstop>
   <tabstop>mListHiddenBrowserPaths</tabstop>
   <tabstop>mOptionsScrollArea_04</tabstop>
+  <tabstop>groupBox_5</tabstop>
   <tabstop>chkAddedVisibility</tabstop>
   <tabstop>chkUseRenderCaching</tabstop>
   <tabstop>chkParallelRendering</tabstop>
@@ -5557,25 +5579,41 @@
   <tabstop>mSimplifyAlgorithmComboBox</tabstop>
   <tabstop>mSimplifyDrawingAtProvider</tabstop>
   <tabstop>mSimplifyMaximumScaleComboBox</tabstop>
+  <tabstop>doubleSpinBoxMagnifierDefault</tabstop>
+  <tabstop>groupBox_8</tabstop>
   <tabstop>chkAntiAliasing</tabstop>
+  <tabstop>mSegmentationGroupBox</tabstop>
+  <tabstop>mSegmentationToleranceSpinBox</tabstop>
+  <tabstop>mToleranceTypeComboBox</tabstop>
+  <tabstop>groupBox_14</tabstop>
   <tabstop>spnRed</tabstop>
   <tabstop>spnGreen</tabstop>
   <tabstop>spnBlue</tabstop>
   <tabstop>cboxContrastEnhancementAlgorithmSingleBand</tabstop>
+  <tabstop>cboxContrastEnhancementLimitsSingleBand</tabstop>
+  <tabstop>cboxContrastEnhancementAlgorithmMultiBandSingleByte</tabstop>
+  <tabstop>cboxContrastEnhancementLimitsMultiBandSingleByte</tabstop>
+  <tabstop>cboxContrastEnhancementAlgorithmMultiBandMultiByte</tabstop>
+  <tabstop>cboxContrastEnhancementLimitsMultiBandMultiByte</tabstop>
   <tabstop>mRasterCumulativeCutLowerDoubleSpinBox</tabstop>
   <tabstop>mRasterCumulativeCutUpperDoubleSpinBox</tabstop>
   <tabstop>spnThreeBandStdDev</tabstop>
+  <tabstop>groupBox_22</tabstop>
   <tabstop>mLogCanvasRefreshChkBx</tabstop>
   <tabstop>scrollArea</tabstop>
+  <tabstop>groupBox_7</tabstop>
   <tabstop>mButtonAddColor</tabstop>
   <tabstop>mButtonRemoveColor</tabstop>
   <tabstop>mButtonCopyColors</tabstop>
   <tabstop>mButtonPasteColors</tabstop>
   <tabstop>mButtonImportColors</tabstop>
   <tabstop>mButtonExportColors</tabstop>
+  <tabstop>mTreeCustomColors</tabstop>
   <tabstop>mOptionsScrollArea_06</tabstop>
+  <tabstop>groupBox_9</tabstop>
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
+  <tabstop>mLegendGrpBx</tabstop>
   <tabstop>cmbLegendDoubleClickAction</tabstop>
   <tabstop>capitalizeCheckBox</tabstop>
   <tabstop>mLegendLayersBoldChkBx</tabstop>
@@ -5584,17 +5622,21 @@
   <tabstop>cbxCreateRasterLegendIcons</tabstop>
   <tabstop>mLegendGraphicResolutionSpinBox</tabstop>
   <tabstop>mOptionsScrollArea_05</tabstop>
+  <tabstop>mIdentifyGroupBox</tabstop>
   <tabstop>spinBoxIdentifyValue</tabstop>
   <tabstop>mIdentifyHighlightColorButton</tabstop>
   <tabstop>mIdentifyHighlightBufferSpinBox</tabstop>
   <tabstop>mIdentifyHighlightMinWidthSpinBox</tabstop>
+  <tabstop>groupBox_6</tabstop>
   <tabstop>pbnMeasureColor</tabstop>
   <tabstop>mDecimalPlacesSpinBox</tabstop>
   <tabstop>mKeepBaseUnitCheckBox</tabstop>
   <tabstop>mDistanceUnitsComboBox</tabstop>
   <tabstop>mAreaUnitsComboBox</tabstop>
   <tabstop>mAngleUnitsComboBox</tabstop>
+  <tabstop>groupBox_10</tabstop>
   <tabstop>spinZoomFactor</tabstop>
+  <tabstop>groupBox_15</tabstop>
   <tabstop>mListGlobalScales</tabstop>
   <tabstop>pbnAddScale</tabstop>
   <tabstop>pbnRemoveScale</tabstop>
@@ -5602,32 +5644,43 @@
   <tabstop>pbnImportScales</tabstop>
   <tabstop>pbnExportScales</tabstop>
   <tabstop>mOptionsScrollArea_12</tabstop>
+  <tabstop>groupBox_3</tabstop>
   <tabstop>mComposerFontComboBox</tabstop>
+  <tabstop>groupBox_23</tabstop>
   <tabstop>mGridStyleComboBox</tabstop>
   <tabstop>mGridColorButton</tabstop>
+  <tabstop>groupBox_24</tabstop>
   <tabstop>mGridResolutionSpinBox</tabstop>
   <tabstop>mOffsetXSpinBox</tabstop>
   <tabstop>mOffsetYSpinBox</tabstop>
   <tabstop>mSnapToleranceSpinBox</tabstop>
+  <tabstop>groupBox_27</tabstop>
   <tabstop>mBtnAddTemplatePath</tabstop>
   <tabstop>mBtnRemoveTemplatePath</tabstop>
   <tabstop>mListComposerTemplatePaths</tabstop>
   <tabstop>mOptionsScrollArea_07</tabstop>
+  <tabstop>mEnterAttributeValuesGroupBox</tabstop>
   <tabstop>chkDisableAttributeValuesDlg</tabstop>
   <tabstop>chkReuseLastValues</tabstop>
   <tabstop>mValidateGeometries</tabstop>
+  <tabstop>mRubberBandGroupBox</tabstop>
   <tabstop>mLineWidthSpinBox</tabstop>
   <tabstop>mLineColorToolButton</tabstop>
   <tabstop>mFillColorToolButton</tabstop>
   <tabstop>mLineGhostCheckBox</tabstop>
+  <tabstop>mSnappingGroupBox</tabstop>
+  <tabstop>mSnappingEnabledDefault</tabstop>
   <tabstop>mDefaultSnapModeComboBox</tabstop>
   <tabstop>mDefaultSnappingToleranceSpinBox</tabstop>
   <tabstop>mDefaultSnappingToleranceComboBox</tabstop>
   <tabstop>mSearchRadiusVertexEditSpinBox</tabstop>
   <tabstop>mSearchRadiusVertexEditComboBox</tabstop>
+  <tabstop>mSnappingMainDialogComboBox</tabstop>
+  <tabstop>mVertexMarkerGroupBox</tabstop>
   <tabstop>mMarkersOnlyForSelectedCheckBox</tabstop>
   <tabstop>mMarkerStyleComboBox</tabstop>
   <tabstop>mMarkerSizeSpinBox</tabstop>
+  <tabstop>groupBox_21</tabstop>
   <tabstop>mOffsetJoinStyleComboBox</tabstop>
   <tabstop>mOffsetQuadSegSpinBox</tabstop>
   <tabstop>mCurveOffsetMiterLimitComboBox</tabstop>
@@ -5637,6 +5690,7 @@
   <tabstop>pbnEditPyramidsOptions</tabstop>
   <tabstop>lstGdalDrivers</tabstop>
   <tabstop>mOptionsScrollArea_08</tabstop>
+  <tabstop>grpOtfTransform</tabstop>
   <tabstop>radOtfNone</tabstop>
   <tabstop>radOtfAuto</tabstop>
   <tabstop>radOtfTransform</tabstop>
@@ -5645,6 +5699,7 @@
   <tabstop>radUseProjectProjection</tabstop>
   <tabstop>radUseGlobalProjection</tabstop>
   <tabstop>leLayerGlobalCrs</tabstop>
+  <tabstop>mDefaultDatumTransformGroupBox</tabstop>
   <tabstop>chkShowDatumTransformDialog</tabstop>
   <tabstop>mAddDefaultTransformButton</tabstop>
   <tabstop>mRemoveDefaultTransformButton</tabstop>
@@ -5653,6 +5708,7 @@
   <tabstop>grpLocale</tabstop>
   <tabstop>cboLocale</tabstop>
   <tabstop>mAuthConfigsGrpBx</tabstop>
+  <tabstop>mOptionsScrollArea_10</tabstop>
   <tabstop>leWmsSearch</tabstop>
   <tabstop>mNetworkTimeoutSpinBox</tabstop>
   <tabstop>mDefaultCapabilitiesExpirySpinBox</tabstop>
@@ -5669,12 +5725,11 @@
   <tabstop>leProxyPort</tabstop>
   <tabstop>leProxyUser</tabstop>
   <tabstop>leProxyPassword</tabstop>
-  <tabstop>mRemoveUrlPushButton</tabstop>
-  <tabstop>mAdvancedSettingsEnableButton</tabstop>
-  <tabstop>cbxCheckVersion</tabstop>
-  <tabstop>mOptionsScrollArea_10</tabstop>
   <tabstop>mAddUrlPushButton</tabstop>
+  <tabstop>mRemoveUrlPushButton</tabstop>
   <tabstop>mExcludeUrlListWidget</tabstop>
+  <tabstop>mAdvancedSettingsEnableButton</tabstop>
+  <tabstop>grpProjectionBehavior</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

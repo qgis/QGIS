@@ -46,7 +46,7 @@ QgsPenStyleComboBox::QgsPenStyleComboBox( QWidget* parent )
 
 Qt::PenStyle QgsPenStyleComboBox::penStyle() const
 {
-  return ( Qt::PenStyle ) itemData( currentIndex() ).toInt();
+  return ( Qt::PenStyle ) currentData().toInt();
 }
 
 void QgsPenStyleComboBox::setPenStyle( Qt::PenStyle style )
@@ -87,7 +87,7 @@ QgsPenJoinStyleComboBox::QgsPenJoinStyleComboBox( QWidget* parent )
 
 Qt::PenJoinStyle QgsPenJoinStyleComboBox::penJoinStyle() const
 {
-  return ( Qt::PenJoinStyle ) itemData( currentIndex() ).toInt();
+  return ( Qt::PenJoinStyle ) currentData().toInt();
 }
 
 void QgsPenJoinStyleComboBox::setPenJoinStyle( Qt::PenJoinStyle style )
@@ -111,7 +111,7 @@ QgsPenCapStyleComboBox::QgsPenCapStyleComboBox( QWidget* parent )
 
 Qt::PenCapStyle QgsPenCapStyleComboBox::penCapStyle() const
 {
-  return ( Qt::PenCapStyle ) itemData( currentIndex() ).toInt();
+  return ( Qt::PenCapStyle ) currentData().toInt();
 }
 
 void QgsPenCapStyleComboBox::setPenCapStyle( Qt::PenCapStyle style )

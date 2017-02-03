@@ -121,21 +121,6 @@ QgsGeometry QgsFeature::geometry() const
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsFeature::setFeatureId( QgsFeatureId id )
-{
-  if ( id == d->fid )
-    return;
-
-  d.detach();
-  d->fid = id;
-}
-
-/***************************************************************************
- * This class is considered CRITICAL and any change MUST be accompanied with
- * full unit tests in testqgsfeature.cpp.
- * See details in QEP #17
- ****************************************************************************/
-
 void QgsFeature::setId( QgsFeatureId id )
 {
   if ( id == d->fid )
@@ -213,7 +198,7 @@ void QgsFeature::setValid( bool validity )
 
 bool QgsFeature::hasGeometry() const
 {
-  return !d->geometry.isEmpty();
+  return !d->geometry.isNull();
 }
 
 void QgsFeature::initAttributes( int fieldCount )
@@ -324,7 +309,7 @@ QDataStream& operator>>( QDataStream& in, QgsFeature& feature )
   bool valid;
   QgsAttributes attr;
   in >> id >> attr >> geometry >> valid;
-  feature.setFeatureId( id );
+  feature.setId( id );
   feature.setGeometry( geometry );
   feature.setAttributes( attr );
   feature.setValid( valid );

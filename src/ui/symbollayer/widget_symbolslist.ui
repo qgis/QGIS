@@ -286,7 +286,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QgsDataDefinedButton" name="mSizeDDBtn">
+            <widget class="QgsPropertyOverrideButton" name="mSizeDDBtn">
              <property name="text">
               <string>...</string>
              </property>
@@ -329,7 +329,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QgsDataDefinedButton" name="mRotationDDBtn">
+            <widget class="QgsPropertyOverrideButton" name="mRotationDDBtn">
              <property name="text">
               <string>...</string>
              </property>
@@ -379,7 +379,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QgsDataDefinedButton" name="mWidthDDBtn">
+            <widget class="QgsPropertyOverrideButton" name="mWidthDDBtn">
              <property name="text">
               <string>...</string>
              </property>
@@ -410,9 +410,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>

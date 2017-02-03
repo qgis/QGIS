@@ -43,7 +43,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsSingleSymbolRenderer,
                        QgsPointClusterRenderer,
                        QgsMapSettings,
-                       QgsDataDefined
+                       QgsProperty,
+                       QgsSymbolLayer
                        )
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
@@ -193,8 +194,8 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         old_marker = self.layer.renderer().centerSymbol().clone()
 
         new_marker = QgsMarkerSymbol.createSimple({'color': '#ffff00', 'size': '3', 'outline_style': 'no'})
-        new_marker.symbolLayer(0).setDataDefinedProperty('color', QgsDataDefined('@cluster_color'))
-        new_marker.symbolLayer(0).setDataDefinedProperty('size', QgsDataDefined('@cluster_size*2'))
+        new_marker.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression('@cluster_color'))
+        new_marker.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertySize, QgsProperty.fromExpression('@cluster_size*2'))
         self.layer.renderer().setCenterSymbol(new_marker)
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(self.mapsettings)

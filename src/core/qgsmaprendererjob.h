@@ -37,10 +37,10 @@ class QgsMapRendererCache;
 class QgsPalLabeling;
 class QgsFeatureFilterProvider;
 
+/// @cond PRIVATE
 
 /** \ingroup core
  * Structure keeping low-level rendering job information.
- * @note not part of public API!
  */
 struct LayerRenderJob
 {
@@ -50,12 +50,13 @@ struct LayerRenderJob
   QPainter::CompositionMode blendMode;
   double opacity;
   bool cached; // if true, img already contains cached image from previous rendering
-  QString layerId;
+  QPointer< QgsMapLayer > layer;
   int renderingTime; //!< Time it took to render the layer in ms (it is -1 if not rendered or still rendering)
 };
 
 typedef QList<LayerRenderJob> LayerRenderJobs;
 
+///@endcond PRIVATE
 
 /** \ingroup core
  * Abstract base class for map rendering implementations.
@@ -110,12 +111,12 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     //! each LayerRenderJob.
     //! Ownership is not transferred and the provider must not be deleted
     //! before the render job.
-    void setFeatureFilterProvider( const QgsFeatureFilterProvider *f ) { mFeatureFilterProvider = f; };
+    void setFeatureFilterProvider( const QgsFeatureFilterProvider *f ) { mFeatureFilterProvider = f; }
 
     //! @note Added in QGIS 3.0
     //! Returns the feature filter provider used by the QgsRenderContext of
     //! each LayerRenderJob.
-    const QgsFeatureFilterProvider* featureFilterProvider() const { return mFeatureFilterProvider; };
+    const QgsFeatureFilterProvider* featureFilterProvider() const { return mFeatureFilterProvider; }
 
     struct Error
     {
@@ -142,7 +143,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     //! @note The way how geometries are cached is really suboptimal - this method may be removed in future releases
     void setRequestedGeometryCacheForLayers( const QStringList& layerIds ) { mRequestedGeomCacheForLayers = layerIds; }
 
-    //! Find out how log it took to finish the job (in miliseconds)
+    //! Find out how long it took to finish the job (in milliseconds)
     int renderingTime() const { return mRenderingTime; }
 
     /**
@@ -168,6 +169,31 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
   protected:
 
+    QgsMapSettings mSettings;
+    QTime mRenderingStart;
+    Errors mErrors;
+
+    QgsMapRendererCache* mCache = nullptr;
+
+    int mRenderingTime = 0;
+
+    //! @note not available in python bindings
+    LayerRenderJobs prepareJobs( QPainter* painter, QgsLabelingEngine* labelingEngine2 );
+
+    //! @note not available in python bindings
+    static QImage composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs );
+
+    //! @note not available in python bindings
+    void logRenderingTime( const LayerRenderJobs& jobs );
+
+    //! @note not available in python bindings
+    void cleanupJobs( LayerRenderJobs& jobs );
+
+    //! @note not available in Python bindings
+    static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsLabelingEngine* labelingEngine2, QPainter* painter );
+
+  private:
+
     /** Convenience function to project an extent into the layer source
      * CRS, but also split it into two extents if it crosses
      * the +/- 180 degree line. Modifies the given extent to be in the
@@ -176,38 +202,17 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     static bool reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform &ct, QgsRectangle &extent, QgsRectangle &r2 );
 
-    //! @note not available in python bindings
-    LayerRenderJobs prepareJobs( QPainter* painter, QgsLabelingEngine* labelingEngine2 );
-
-    //! @note not available in python bindings
-    void cleanupJobs( LayerRenderJobs& jobs );
-
-    //! @note not available in python bindings
-    void logRenderingTime( const LayerRenderJobs& jobs );
-
-    static QImage composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs );
-
     bool needTemporaryImage( QgsMapLayer* ml );
-
-    //! @note not available in Python bindings
-    static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsLabelingEngine* labelingEngine2, QPainter* painter );
 
     //! called when rendering has finished to update all layers' geometry caches
     void updateLayerGeometryCaches();
-    QgsMapSettings mSettings;
-    Errors mErrors;
-
-    QgsMapRendererCache* mCache;
 
     //! list of layer IDs for which the geometry cache should be updated
     QStringList mRequestedGeomCacheForLayers;
     //! map of geometry caches
     QMap<QString, QgsGeometryCache> mGeometryCaches;
 
-    QTime mRenderingStart;
-    int mRenderingTime;
-
-    const QgsFeatureFilterProvider *mFeatureFilterProvider;
+    const QgsFeatureFilterProvider *mFeatureFilterProvider = nullptr;
 };
 
 

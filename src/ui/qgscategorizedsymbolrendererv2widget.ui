@@ -32,6 +32,9 @@
        <height>16777215</height>
       </size>
      </property>
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
     </widget>
    </item>
    <item row="1" column="0">
@@ -200,12 +203,6 @@
   <zorder>label_10</zorder>
   <zorder>mExpressionWidget</zorder>
   <zorder>label_3</zorder>
-  <zorder>viewCategories</zorder>
-  <zorder>btnChangeCategorizedSymbol</zorder>
-  <zorder>label_9</zorder>
-  <zorder>label_10</zorder>
-  <zorder>mExpressionWidget</zorder>
-  <zorder>label_3</zorder>
  </widget>
  <customwidgets>
   <customwidget>
@@ -222,11 +219,15 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mExpressionWidget</tabstop>
+  <tabstop>btnChangeCategorizedSymbol</tabstop>
+  <tabstop>btnColorRamp</tabstop>
   <tabstop>btnAddCategories</tabstop>
   <tabstop>btnAddCategory</tabstop>
   <tabstop>btnDeleteCategories</tabstop>
   <tabstop>btnDeleteAllCategories</tabstop>
   <tabstop>btnAdvanced</tabstop>
+  <tabstop>viewCategories</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

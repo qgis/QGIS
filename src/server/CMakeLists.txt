@@ -11,7 +11,7 @@ IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 
 IF (ENABLE_TESTS)
-   ADD_DEFINITIONS(-DENABLE_MS_TESTS=1)
+  ADD_DEFINITIONS(-DENABLE_MS_TESTS=1)
 ENDIF (ENABLE_TESTS)
 
 ADD_SUBDIRECTORY(services)
@@ -19,15 +19,12 @@ ADD_SUBDIRECTORY(services)
 ########################################################
 # Files
 
-SET ( qgis_mapserv_SRCS
-  qgis_map_serv.cpp
+SET(qgis_mapserv_SRCS
   qgscapabilitiescache.cpp
   qgsconfigcache.cpp
   qgsrequesthandler.cpp
-  qgsowsserver.cpp
-  qgswfsserver.cpp
-  qgswcsserver.cpp
-  qgsmapserviceexception.cpp
+  qgsserversettings.cpp
+  qgsserverexception.cpp
   qgsmslayercache.cpp
   qgsmslayerbuilder.cpp
   qgshostedvdsbuilder.cpp
@@ -37,13 +34,12 @@ SET ( qgis_mapserv_SRCS
   qgsremotedatasourcebuilder.cpp
   qgssentdatasourcebuilder.cpp
   qgsserverlogger.cpp
-  qgsmapserverutils.cpp
   qgswcsprojectparser.cpp
   qgswfsprojectparser.cpp
   qgswmsconfigparser.cpp
   qgswmsprojectparser.cpp
   qgsserverprojectparser.cpp
-  qgsserverstreamingdevice.cpp
+  qgsserverprojectutils.cpp
   qgssldconfigparser.cpp
   qgsconfigparserutils.cpp
   qgsserver.cpp
@@ -56,39 +52,21 @@ SET ( qgis_mapserv_SRCS
   qgsfcgiserverresponse.cpp
   qgsbufferserverresponse.cpp
   qgsfilterresponsedecorator.cpp
-#----------------------------
+  qgsserverinterface.cpp
+  qgsserverinterfaceimpl.cpp
+  qgsfilterrestorer.cpp
 )
-IF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
-  SET (qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
-    qgsftptransaction.cpp
-  )
-ENDIF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
 
-
-# SET (qgis_mapserv_UIS
-# none used
-# )
 
 SET (qgis_mapserv_MOC_HDRS
   qgscapabilitiescache.h
   qgsconfigcache.h
-#  qgshttptransaction.h
+  # qgshttptransaction.h
+  # qgsftptransaction.cpp
   qgsmslayercache.h
   qgsserverlogger.h
-  qgsserverstreamingdevice.h
+  qgsserversettings.h
 )
-
-IF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
-  SET (qgis_mapserv_MOC_HDRS ${qgis_mapserv_MOC_HDRS}
-    qgsftptransaction.h
-  )
-ENDIF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
-
-SET (qgis_mapserv_RCCS
-  # not used
-  #qgis_mapserv.qrc
-  )
-
 
 
 #############################################################
@@ -97,16 +75,13 @@ SET (qgis_mapserv_RCCS
 
 SET(qgis_mapserv_MOC_HDRS ${qgis_mapserv_MOC_HDRS})
 
-
 IF (WITH_SERVER_PLUGINS)
-SET(qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
+  SET(qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
     qgsserverplugins.cpp
-    qgsserverinterface.cpp
     qgsserverfilter.cpp
     qgsaccesscontrolfilter.cpp
     qgsaccesscontrol.cpp
-    qgsserverinterfaceimpl.cpp
-)
+  )
 ENDIF (WITH_SERVER_PLUGINS)
 
 QT5_WRAP_CPP(qgis_mapserv_MOC_SRCS ${qgis_mapserv_MOC_HDRS})
@@ -116,77 +91,6 @@ IF(MSVC)
 ELSE(MSVC)
   SET_SOURCE_FILES_PROPERTIES(${qgis_mapserv_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
 ENDIF(MSVC)
-
-
-ADD_LIBRARY(qgis_server SHARED ${qgis_mapserv_SRCS} ${qgis_mapserv_MOC_SRCS} ${qgis_mapserv_HDRS} ${qgis_mapserv_MOC_HDRS})
-
-GENERATE_EXPORT_HEADER(
-   qgis_server
-   BASE_NAME SERVER
-   EXPORT_FILE_NAME qgis_server.h
- )
-
-#generate unversioned libs for android
-IF (NOT ANDROID)
-  SET_TARGET_PROPERTIES(qgis_server PROPERTIES
-    VERSION ${COMPLETE_VERSION}
-    SOVERSION ${COMPLETE_VERSION}
-    )
-ENDIF (NOT ANDROID)
-
-TARGET_LINK_LIBRARIES(qgis_server
-  qgis_core
-  qgis_gui
-  qgis_analysis
-  ${PROJ_LIBRARY}
-  ${FCGI_LIBRARY}
-  ${POSTGRES_LIBRARY}
-  ${GDAL_LIBRARY}
-  ${QCA_LIBRARY}
-)
-
-IF (WITH_BINDINGS)
-    TARGET_LINK_LIBRARIES(qgis_server
-      qgispython
-    )
-ENDIF(WITH_BINDINGS)
-
-IF (APPLE)
-  SET_TARGET_PROPERTIES(qgis_server PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
-ENDIF (APPLE)
-
-
-# install
-
-INSTALL(TARGETS qgis_server
-  RUNTIME DESTINATION ${QGIS_BIN_DIR}
-  LIBRARY DESTINATION ${QGIS_LIB_DIR}
-  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
-  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
-  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
-
-INCLUDE_DIRECTORIES(
-    ../python
-)
-
-# end qgis_server library
-
-QT5_WRAP_UI (qgis_mapserv_UIS_H  ${qgis_mapserv_UIS})
-
-
-QT5_ADD_RESOURCES(qgis_mapserv_RCC_SRCS ${qgis_mapserv_RCCS})
-
-# add test resources, e.g. standard test font
-SET(qgis_mapserv_TESTRCCS ../../tests/testdata/testdata.qrc)
-QT5_ADD_RESOURCES(qgis_mapserv_TESTRCC_SRCS ${qgis_mapserv_TESTRCCS})
-
-ADD_EXECUTABLE(qgis_mapserv.fcgi
-  ${qgis_mapserv_SRCS}
-  ${qgis_mapserv_MOC_SRCS}
-  ${qgis_mapserv_RCC_SRCS}
-  ${qgis_mapserv_UIS_H}
-  ${qgis_mapserv_TESTRCC_SRCS}
-  )
 
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
@@ -222,10 +126,27 @@ INCLUDE_DIRECTORIES(
   ../gui/editorwidgets/core
   ../analysis/interpolation
   ../plugins/diagram_overlay
+  ../python
   .
 )
 
-TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
+ADD_LIBRARY(qgis_server SHARED ${qgis_mapserv_SRCS} ${qgis_mapserv_MOC_SRCS} ${qgis_mapserv_HDRS} ${qgis_mapserv_MOC_HDRS})
+
+GENERATE_EXPORT_HEADER(
+  qgis_server
+  BASE_NAME SERVER
+  EXPORT_FILE_NAME qgis_server.h
+)
+
+#generate unversioned libs for android
+IF (NOT ANDROID)
+  SET_TARGET_PROPERTIES(qgis_server PROPERTIES
+    VERSION ${COMPLETE_VERSION}
+    SOVERSION ${COMPLETE_VERSION}
+  )
+ENDIF (NOT ANDROID)
+
+TARGET_LINK_LIBRARIES(qgis_server
   qgis_core
   qgis_gui
   qgis_analysis
@@ -236,6 +157,35 @@ TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
   ${QCA_LIBRARY}
 )
 
+IF (WITH_BINDINGS)
+  TARGET_LINK_LIBRARIES(qgis_server qgispython)
+ENDIF(WITH_BINDINGS)
+
+IF (APPLE)
+  SET_TARGET_PROPERTIES(qgis_server PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+ENDIF (APPLE)
+
+
+# install
+
+INSTALL(TARGETS qgis_server
+  RUNTIME DESTINATION ${QGIS_BIN_DIR}
+  LIBRARY DESTINATION ${QGIS_LIB_DIR}
+  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
+  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
+  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR}
+)
+
+# end qgis_server library
+
+# add test resources, e.g. standard test font
+SET(qgis_mapserv_TESTRCCS ../../tests/testdata/testdata.qrc)
+QT5_ADD_RESOURCES(qgis_mapserv_TESTRCC_SRCS ${qgis_mapserv_TESTRCCS})
+
+ADD_EXECUTABLE(qgis_mapserv.fcgi qgis_map_serv.cpp ${qgis_mapserv_TESTRCC_SRCS})
+
+TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi qgis_server)
+
 
 ########################################################
 # Install
@@ -244,10 +194,10 @@ INSTALL(CODE "MESSAGE(\"Installing server...\")")
 INSTALL(TARGETS
   qgis_mapserv.fcgi
   DESTINATION ${QGIS_CGIBIN_DIR}
-  )
+)
 INSTALL(FILES
   admin.sld
   wms_metadata.xml
   schemaExtension.xsd
   DESTINATION ${QGIS_CGIBIN_DIR}
-  )
+)

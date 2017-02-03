@@ -462,3 +462,35 @@ double QgsPointV2::azimuth( const QgsPointV2& other ) const
   double dy = other.y() - mY;
   return ( atan2( dx, dy ) * 180.0 / M_PI );
 }
+
+
+QgsPointV2 QgsPointV2::project( double distance, double azimuth, double inclination ) const
+{
+  QgsWkbTypes::Type pType( QgsWkbTypes::Point );
+
+  double radsXy = azimuth * M_PI / 180.0;
+  double dx = 0.0, dy = 0.0, dz = 0.0;
+
+  inclination = fmod( inclination, 360.0 );
+
+  if ( !is3D() && qgsDoubleNear( inclination, 90.0 ) )
+  {
+    dx = distance * sin( radsXy );
+    dy = distance * cos( radsXy );
+  }
+  else
+  {
+    pType = QgsWkbTypes::addZ( pType );
+    double radsZ = inclination * M_PI / 180.0;
+    dx = distance * sin( radsZ ) * sin( radsXy );
+    dy = distance * sin( radsZ ) * cos( radsXy );
+    dz = distance * cos( radsZ );
+  }
+
+  if ( isMeasure() )
+  {
+    pType = QgsWkbTypes::addM( pType );
+  }
+
+  return QgsPointV2( pType, mX + dx, mY + dy, mZ + dz, mM );
+}

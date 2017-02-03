@@ -21,7 +21,7 @@
 
 #include "qgspoint.h"
 #include "qgsdistancearea.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgis_app.h"
 
 class QCloseEvent;
@@ -61,7 +61,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void closeEvent( QCloseEvent *e ) override;
 
     //! Show the help for the dialog
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#id38" ) ); }
 
     //! When any external settings change
     void updateSettings();

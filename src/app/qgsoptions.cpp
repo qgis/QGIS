@@ -327,11 +327,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   leWmsSearch->setText( mSettings->value( QStringLiteral( "/qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString() );
 
   // set the attribute table default filter
-  cmbAttrTableBehaviour->clear();
-  cmbAttrTableBehaviour->addItem( tr( "Show all features" ), QgsAttributeTableFilterModel::ShowAll );
-  cmbAttrTableBehaviour->addItem( tr( "Show selected features" ), QgsAttributeTableFilterModel::ShowSelected );
-  cmbAttrTableBehaviour->addItem( tr( "Show features visible on map" ), QgsAttributeTableFilterModel::ShowVisible );
-  cmbAttrTableBehaviour->setCurrentIndex( cmbAttrTableBehaviour->findData( mSettings->value( QStringLiteral( "/qgis/attributeTableBehaviour" ), QgsAttributeTableFilterModel::ShowAll ).toInt() ) );
+  cmbAttrTableBehavior->clear();
+  cmbAttrTableBehavior->addItem( tr( "Show all features" ), QgsAttributeTableFilterModel::ShowAll );
+  cmbAttrTableBehavior->addItem( tr( "Show selected features" ), QgsAttributeTableFilterModel::ShowSelected );
+  cmbAttrTableBehavior->addItem( tr( "Show features visible on map" ), QgsAttributeTableFilterModel::ShowVisible );
+  cmbAttrTableBehavior->setCurrentIndex( cmbAttrTableBehavior->findData( mSettings->value( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ).toInt() ) );
 
   mAttrTableViewComboBox->clear();
   mAttrTableViewComboBox->addItem( tr( "Remember last view" ), -1 );
@@ -375,12 +375,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   // log rendering events, for userspace debugging
   mLogCanvasRefreshChkBx->setChecked( mSettings->value( QStringLiteral( "/Map/logCanvasRefreshEvent" ), false ).toBool() );
 
-  //set the default projection behaviour radio buttongs
-  if ( mSettings->value( QStringLiteral( "/Projections/defaultBehaviour" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
+  //set the default projection behavior radio buttongs
+  if ( mSettings->value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
   {
     radPromptForProjection->setChecked( true );
   }
-  else if ( mSettings->value( QStringLiteral( "/Projections/defaultBehaviour" ), "prompt" ).toString() == QLatin1String( "useProject" ) )
+  else if ( mSettings->value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "useProject" ) )
   {
     radUseProjectProjection->setChecked( true );
   }
@@ -393,7 +393,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   leLayerGlobalCrs->setCrs( mLayerDefaultCrs );
 
   //on the fly CRS transformation settings
-  //it would be logical to have single settings value but originaly the radio buttons were checkboxes
+  //it would be logical to have single settings value but originally the radio buttons were checkboxes
   if ( mSettings->value( QStringLiteral( "/Projections/otfTransformAutoEnable" ), true ).toBool() )
   {
     radOtfAuto->setChecked( true );
@@ -1183,7 +1183,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/showTips%1" ).arg( Qgis::QGIS_VERSION_INT / 100 ), cbxShowTips->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/checkVersion" ), cbxCheckVersion->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/dockAttributeTable" ), cbxAttributeTableDocked->isChecked() );
-  mSettings->setValue( QStringLiteral( "/qgis/attributeTableBehaviour" ), cmbAttrTableBehaviour->currentData() );
+  mSettings->setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), cmbAttrTableBehavior->currentData() );
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableView" ), mAttrTableViewComboBox->currentData() );
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableRowCache" ), spinBoxAttrTableRowCache->value() );
   mSettings->setValue( QStringLiteral( "/qgis/promptForRasterSublayers" ), cmbPromptRasterSublayers->currentIndex() );
@@ -1287,19 +1287,19 @@ void QgsOptions::saveOptions()
   // log rendering events, for userspace debugging
   mSettings->setValue( QStringLiteral( "/Map/logCanvasRefreshEvent" ), mLogCanvasRefreshChkBx->isChecked() );
 
-  //check behaviour so default projection when new layer is added with no
+  //check behavior so default projection when new layer is added with no
   //projection defined...
   if ( radPromptForProjection->isChecked() )
   {
-    mSettings->setValue( QStringLiteral( "/Projections/defaultBehaviour" ), "prompt" );
+    mSettings->setValue( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" );
   }
   else if ( radUseProjectProjection->isChecked() )
   {
-    mSettings->setValue( QStringLiteral( "/Projections/defaultBehaviour" ), "useProject" );
+    mSettings->setValue( QStringLiteral( "/Projections/defaultBehavior" ), "useProject" );
   }
   else //assumes radUseGlobalProjection is checked
   {
-    mSettings->setValue( QStringLiteral( "/Projections/defaultBehaviour" ), "useGlobal" );
+    mSettings->setValue( QStringLiteral( "/Projections/defaultBehavior" ), "useGlobal" );
   }
 
   mSettings->setValue( QStringLiteral( "/Projections/layerDefaultCrs" ), mLayerDefaultCrs.authid() );
@@ -2100,7 +2100,7 @@ void QgsOptions::on_pbnExportScales_clicked()
     return;
   }
 
-  // ensure the user never ommited the extension from the file name
+  // ensure the user never omitted the extension from the file name
   if ( !fileName.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) )
   {
     fileName += QLatin1String( ".xml" );

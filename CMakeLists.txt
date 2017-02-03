@@ -96,7 +96,7 @@ SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be
 IF (WITH_BINDINGS)
   # By default bindings will be installed only to QGIS directory
   # Someone might want to install it to python site-packages directory
-  # as otherwise user has to use PYTHONPATH environemnt variable to add
+  # as otherwise user has to use PYTHONPATH environment variable to add
   # QGIS bindings to package search path
   SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
   SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
@@ -451,7 +451,7 @@ IF (WIN32)
     SET (DEFAULT_BIN_SUBDIR bin)
     SET (DEFAULT_CGIBIN_SUBDIR bin)
     # put all the build products into a single directory
-    # under build (doesnt affect install target) to make for
+    # under build (doesn't affect install target) to make for
     # easier debugging.
 
     # Turn on defines for non standard maths stuff
@@ -569,15 +569,16 @@ IF(COMMAND cmake_policy)
   IF(NOT "${CMAKE_VERSION}" VERSION_LESS "3.3")
     cmake_policy(SET CMP0063 NEW)
   ENDIF(NOT "${CMAKE_VERSION}" VERSION_LESS "3.3")
+  IF(MSVC)
+    cmake_policy(SET CMP0020 NEW)
+  ENDIF(MSVC)
 ENDIF(COMMAND cmake_policy)
 
-IF (WIN32)
-  IF(PEDANTIC AND NOT APPLE)
-    SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
-    SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
-    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
-  ENDIF(PEDANTIC AND NOT APPLE)
-ENDIF(WIN32)
+IF (PEDANTIC AND NOT WIN32 AND NOT APPLE)
+  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
+  SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
+  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
+ENDIF(PEDANTIC AND NOT WIN32 AND NOT APPLE)
 
 SET(CMAKE_CXX_VISIBILITY_PRESET hidden)
 INCLUDE(GenerateExportHeader)

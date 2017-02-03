@@ -313,7 +313,7 @@ class QgsOgcUtilsExprToFilter
     bool GMLNamespaceUsed() const { return mGMLUsed; }
 
     //! Return the error message.
-    const QString& errorMessage() const { return mErrorMessage; }
+    QString errorMessage() const { return mErrorMessage; }
 
   private:
     QDomDocument& mDoc;
@@ -359,7 +359,7 @@ class QgsOgcUtilsSQLStatementToFilter
     bool GMLNamespaceUsed() const { return mGMLUsed; }
 
     //! Return the error message.
-    const QString& errorMessage() const { return mErrorMessage; }
+    QString errorMessage() const { return mErrorMessage; }
 
   private:
     QDomDocument& mDoc;

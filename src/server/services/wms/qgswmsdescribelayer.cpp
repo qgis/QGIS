@@ -20,34 +20,72 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsdescribelayer.h"
-#include "qgswmsservertransitional.h"
+#include "qgsserverprojectutils.h"
 
 namespace QgsWms
 {
 
-  void writeDescribeLayer( QgsServerInterface* serverIface, const QString& version,
+  void writeDescribeLayer( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
                            const QgsServerRequest& request, QgsServerResponse& response )
   {
-    Q_UNUSED( version );
-    QgsServerRequest::Parameters params = request.parameters();
-    try
-    {
-      QgsWmsServer server( serverIface->configFilePath(), params,
-                           getConfigParser( serverIface ),
-                           serverIface->accessControls() );
-      QDomDocument doc = server.describeLayer();
-      response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
-      response.write( doc.toByteArray() );
-    }
-    catch ( QgsMapServiceException& ex )
-    {
-      writeError( response, ex.code(), ex.message() );
-    }
+    QDomDocument doc = describeLayer( serverIface, project, version, request );
+    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
+    response.write( doc.toByteArray() );
   }
 
+  // DescribeLayer is defined for WMS1.1.1/SLD1.0 and in WMS 1.3.0 SLD Extension
+  QDomDocument describeLayer( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
+                              const QgsServerRequest& request )
+  {
+    Q_UNUSED( version );
+
+    QgsServerRequest::Parameters parameters = request.parameters();
+    QgsWmsConfigParser* configParser = getConfigParser( serverIface );
+
+    if ( !parameters.contains( QStringLiteral( "SLD_VERSION" ) ) )
+    {
+      throw QgsServiceException( QStringLiteral( "MissingParameterValue" ),
+                                 QStringLiteral( "SLD_VERSION is mandatory for DescribeLayer operation" ), 400 );
+    }
+    if ( parameters[ QStringLiteral( "SLD_VERSION" )] != QLatin1String( "1.1.0" ) )
+    {
+      throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ),
+                                 QStringLiteral( "SLD_VERSION = %1 is not supported" ).arg( parameters[ QStringLiteral( "SLD_VERSION" )] ), 400 );
+    }
+
+    if ( !parameters.contains( QStringLiteral( "LAYERS" ) ) )
+    {
+      throw QgsServiceException( QStringLiteral( "MissingParameterValue" ),
+                                 QStringLiteral( "LAYERS is mandatory for DescribeLayer operation" ), 400 );
+    }
+
+    QStringList layersList = parameters[ QStringLiteral( "LAYERS" )].split( QStringLiteral( "," ), QString::SkipEmptyParts );
+    if ( layersList.size() < 1 )
+    {
+      throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Layers is empty" ), 400 );
+    }
+
+    // get the wms service url defined in project or keep the one from the
+    // request url
+    QString wmsHrefString = serviceUrl( request, project ).toString( QUrl::FullyDecoded );
+
+    // get the wfs service url defined in project or take the same as the
+    // wms service url
+    QString wfsHrefString = QgsServerProjectUtils::wfsServiceUrl( *project );
+    if ( wfsHrefString.isEmpty() )
+    {
+      wfsHrefString = wmsHrefString;
+    }
+
+    // get the wcs service url defined in project or take the same as the
+    // wms service url
+    QString wcsHrefString = QgsServerProjectUtils::wcsServiceUrl( *project );
+    if ( wcsHrefString.isEmpty() )
+    {
+      wcsHrefString = wmsHrefString;
+    }
+
+    return configParser->describeLayer( layersList, wfsHrefString, wcsHrefString );
+  }
 
 } // samespace QgsWms
-
-
-
-

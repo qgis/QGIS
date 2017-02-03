@@ -277,7 +277,7 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
       minheap_update( &tree, ea->initial_arealist, ea->initial_arealist[after_current].treeindex );
     }
 
-    // rearrange the nodes so the eliminated point will be ingored on the next run
+    // rearrange the nodes so the eliminated point will be ignored on the next run
     ea->initial_arealist[before_current].next = ea->initial_arealist[current].next;
     ea->initial_arealist[after_current ].prev = ea->initial_arealist[current].prev;
 

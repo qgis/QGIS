@@ -18,7 +18,7 @@
 #include "qgscomposerobject.h"
 #include "qgscomposition.h"
 #include "qgsmultirenderchecker.h"
-#include "qgsdatadefined.h"
+#include "qgsproperty.h"
 #include "qgsexpression.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
@@ -33,7 +33,6 @@ class TestQgsComposerObject : public QObject
   public:
     TestQgsComposerObject()
         : mComposition( 0 )
-        , mMapSettings( 0 )
     {
     }
 
@@ -45,8 +44,6 @@ class TestQgsComposerObject : public QObject
     void creation(); //test creation of QgsComposerObject
     void composition(); //test fetching composition from QgsComposerObject
     void writeReadXml(); //test writing object to xml and reading back from it
-    void setRetrieveDDProperty(); //test setting and retreiving a data defined property
-    void evaluateDDProperty(); //test evaluating data defined properties
     void writeRetrieveDDProperty(); //test writing and retrieving dd properties from xml
     void customProperties(); //test setting/getting custom properties
     void writeRetrieveCustomProperties(); //test writing/retreiving custom properties from xml
@@ -54,7 +51,6 @@ class TestQgsComposerObject : public QObject
   private:
     bool renderCheck( const QString& testName, QImage &image, int mismatchCount = 0 );
     QgsComposition *mComposition;
-    QgsMapSettings *mMapSettings;
     QString mReport;
 
 };
@@ -64,8 +60,7 @@ void TestQgsComposerObject::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mMapSettings = new QgsMapSettings();
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = QStringLiteral( "<h1>Composer Object Tests</h1>\n" );
@@ -74,7 +69,6 @@ void TestQgsComposerObject::initTestCase()
 void TestQgsComposerObject::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
@@ -146,57 +140,11 @@ void TestQgsComposerObject::writeReadXml()
   delete readObject;
 }
 
-void TestQgsComposerObject::setRetrieveDDProperty()
-{
-  QgsComposerObject* object = new QgsComposerObject( mComposition );
-  object->setDataDefinedProperty( QgsComposerObject::Transparency, true, true, QStringLiteral( "10 + 40" ), QString() );
-  object->prepareDataDefinedExpressions();
-
-  //test retrieving bad properties
-  QgsDataDefined* result = 0;
-  result = object->dataDefinedProperty( QgsComposerObject::NoProperty );
-  QVERIFY( !result );
-  result = object->dataDefinedProperty( QgsComposerObject::AllProperties );
-  QVERIFY( !result );
-  //property not set
-  result = object->dataDefinedProperty( QgsComposerObject::BlendMode );
-  QVERIFY( !result );
-
-  //test retrieving good property
-  result = object->dataDefinedProperty( QgsComposerObject::Transparency );
-  QVERIFY( result );
-  QVERIFY( result->isActive() );
-  QVERIFY( result->useExpression() );
-  QCOMPARE( result->expression()->dump(), QString( "10 + 40" ) );
-
-  delete object;
-}
-
-void TestQgsComposerObject::evaluateDDProperty()
-{
-  QgsComposerObject* object = new QgsComposerObject( mComposition );
-  object->setDataDefinedProperty( QgsComposerObject::Transparency, true, true, QStringLiteral( "10 + 40" ), QString() );
-  object->prepareDataDefinedExpressions();
-
-  QVariant result;
-  //test evaluating bad properties
-  QCOMPARE( object->dataDefinedEvaluate( QgsComposerObject::NoProperty, result ), false );
-  QCOMPARE( object->dataDefinedEvaluate( QgsComposerObject::AllProperties, result ), false );
-  //not set property
-  QCOMPARE( object->dataDefinedEvaluate( QgsComposerObject::BlendMode, result ), false );
-
-  //test retrieving good property
-  QVERIFY( object->dataDefinedEvaluate( QgsComposerObject::Transparency, result ) );
-  QCOMPARE( result.toInt(), 50 );
-
-  delete object;
-}
-
 void TestQgsComposerObject::writeRetrieveDDProperty()
 {
   QgsComposerObject* object = new QgsComposerObject( mComposition );
-  object->setDataDefinedProperty( QgsComposerObject::TestProperty, true, true, QStringLiteral( "10 + 40" ), QString() );
-  object->prepareDataDefinedExpressions();
+  object->dataDefinedProperties().setProperty( QgsComposerObject::TestProperty, QgsProperty::fromExpression( QStringLiteral( "10 + 40" ) ) );
+  object->prepareProperties();
 
   //test writing object with dd settings
   QDomImplementation DomImplementation;
@@ -217,19 +165,15 @@ void TestQgsComposerObject::writeRetrieveDDProperty()
   QgsComposerObject* readObject = new QgsComposerObject( mComposition );
   QVERIFY( readObject->readXml( composerObjectElem, doc ) );
 
-  QVariant result;
   //test getting not set dd from restored object
-  QgsDataDefined* dd = readObject->dataDefinedProperty( QgsComposerObject::BlendMode );
+  QgsProperty dd = readObject->dataDefinedProperties().property( QgsComposerObject::BlendMode );
   QVERIFY( !dd );
 
   //test getting good property
-  dd = readObject->dataDefinedProperty( QgsComposerObject::TestProperty );
+  dd = readObject->dataDefinedProperties().property( QgsComposerObject::TestProperty );
   QVERIFY( dd );
-  QVERIFY( dd->isActive() );
-  QVERIFY( dd->useExpression() );
-  //evaluating restored dd property
-  QVERIFY( readObject->dataDefinedEvaluate( QgsComposerObject::TestProperty, result ) );
-  QCOMPARE( result.toInt(), 50 );
+  QVERIFY( dd.isActive() );
+  QCOMPARE( dd.propertyType(), QgsProperty::ExpressionBasedProperty );
 
   delete object;
   delete readObject;

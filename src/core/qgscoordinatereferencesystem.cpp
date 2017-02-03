@@ -47,18 +47,18 @@
 
 CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::mCustomSrsValidation = nullptr;
 
-QReadWriteLock QgsCoordinateReferenceSystem::mSrIdCacheLock;
-QHash< long, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::mSrIdCache;
-QReadWriteLock QgsCoordinateReferenceSystem::mOgcLock;
-QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::mOgcCache;
-QReadWriteLock QgsCoordinateReferenceSystem::mProj4CacheLock;
-QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::mProj4Cache;
-QReadWriteLock QgsCoordinateReferenceSystem::mCRSWktLock;
-QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::mWktCache;
-QReadWriteLock QgsCoordinateReferenceSystem::mCRSSrsIdLock;
-QHash< long, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::mSrsIdCache;
-QReadWriteLock QgsCoordinateReferenceSystem::mCrsStringLock;
-QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::mStringCache;
+QReadWriteLock QgsCoordinateReferenceSystem::sSrIdCacheLock;
+QHash< long, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::sSrIdCache;
+QReadWriteLock QgsCoordinateReferenceSystem::sOgcLock;
+QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::sOgcCache;
+QReadWriteLock QgsCoordinateReferenceSystem::sProj4CacheLock;
+QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::sProj4Cache;
+QReadWriteLock QgsCoordinateReferenceSystem::sCRSWktLock;
+QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::sWktCache;
+QReadWriteLock QgsCoordinateReferenceSystem::sCRSSrsIdLock;
+QHash< long, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::sSrsIdCache;
+QReadWriteLock QgsCoordinateReferenceSystem::sCrsStringLock;
+QHash< QString, QgsCoordinateReferenceSystem > QgsCoordinateReferenceSystem::sStringCache;
 
 //--------------------------
 
@@ -150,16 +150,16 @@ bool QgsCoordinateReferenceSystem::createFromId( const long theId, CrsType theTy
 
 bool QgsCoordinateReferenceSystem::createFromString( const QString &theDefinition )
 {
-  mCrsStringLock.lockForRead();
-  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mStringCache.constFind( theDefinition );
-  if ( crsIt != mStringCache.constEnd() )
+  sCrsStringLock.lockForRead();
+  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = sStringCache.constFind( theDefinition );
+  if ( crsIt != sStringCache.constEnd() )
   {
     // found a match in the cache
     *this = crsIt.value();
-    mCrsStringLock.unlock();
+    sCrsStringLock.unlock();
     return true;
   }
-  mCrsStringLock.unlock();
+  sCrsStringLock.unlock();
 
   bool result = false;
   QRegExp reCrsId( "^(epsg|postgis|internal)\\:(\\d+)$", Qt::CaseInsensitive );
@@ -201,9 +201,9 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &theDefinitio
     }
   }
 
-  mCrsStringLock.lockForWrite();
-  mStringCache.insert( theDefinition, *this );
-  mCrsStringLock.unlock();
+  sCrsStringLock.lockForWrite();
+  sStringCache.insert( theDefinition, *this );
+  sCrsStringLock.unlock();
   return result;
 }
 
@@ -255,16 +255,16 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix()
 
 bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString& theCrs )
 {
-  mOgcLock.lockForRead();
-  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mOgcCache.constFind( theCrs );
-  if ( crsIt != mOgcCache.constEnd() )
+  sOgcLock.lockForRead();
+  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = sOgcCache.constFind( theCrs );
+  if ( crsIt != sOgcCache.constEnd() )
   {
     // found a match in the cache
     *this = crsIt.value();
-    mOgcLock.unlock();
+    sOgcLock.unlock();
     return true;
   }
-  mOgcLock.unlock();
+  sOgcLock.unlock();
 
   QString wmsCrs = theCrs;
 
@@ -278,18 +278,18 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString& theCrs )
     re.setPattern( QStringLiteral( "(user|custom|qgis):(\\d+)" ) );
     if ( re.exactMatch( wmsCrs ) && createFromSrsId( re.cap( 2 ).toInt() ) )
     {
-      mOgcLock.lockForWrite();
-      mOgcCache.insert( theCrs, *this );
-      mOgcLock.unlock();
+      sOgcLock.lockForWrite();
+      sOgcCache.insert( theCrs, *this );
+      sOgcLock.unlock();
       return true;
     }
   }
 
   if ( loadFromDb( QgsApplication::srsDbFilePath(), QStringLiteral( "lower(auth_name||':'||auth_id)" ), wmsCrs.toLower() ) )
   {
-    mOgcLock.lockForWrite();
-    mOgcCache.insert( theCrs, *this );
-    mOgcLock.unlock();
+    sOgcLock.lockForWrite();
+    sOgcCache.insert( theCrs, *this );
+    sOgcLock.unlock();
     return true;
   }
 
@@ -319,16 +319,16 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString& theCrs )
     d->mAxisInverted = false;
     d->mAxisInvertedDirty = false;
 
-    mOgcLock.lockForWrite();
-    mOgcCache.insert( theCrs, *this );
-    mOgcLock.unlock();
+    sOgcLock.lockForWrite();
+    sOgcCache.insert( theCrs, *this );
+    sOgcLock.unlock();
 
     return d->mIsValid;
   }
 
-  mOgcLock.lockForWrite();
-  mOgcCache.insert( theCrs, QgsCoordinateReferenceSystem() );
-  mOgcLock.unlock();
+  sOgcLock.lockForWrite();
+  sOgcCache.insert( theCrs, QgsCoordinateReferenceSystem() );
+  sOgcLock.unlock();
   return false;
 }
 
@@ -354,46 +354,46 @@ void QgsCoordinateReferenceSystem::validate()
 
 bool QgsCoordinateReferenceSystem::createFromSrid( long id )
 {
-  mSrIdCacheLock.lockForRead();
-  QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = mSrIdCache.constFind( id );
-  if ( crsIt != mSrIdCache.constEnd() )
+  sSrIdCacheLock.lockForRead();
+  QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = sSrIdCache.constFind( id );
+  if ( crsIt != sSrIdCache.constEnd() )
   {
     // found a match in the cache
     *this = crsIt.value();
-    mSrIdCacheLock.unlock();
+    sSrIdCacheLock.unlock();
     return true;
   }
-  mSrIdCacheLock.unlock();
+  sSrIdCacheLock.unlock();
 
   bool result = loadFromDb( QgsApplication::srsDbFilePath(), QStringLiteral( "srid" ), QString::number( id ) );
 
-  mSrIdCacheLock.lockForWrite();
-  mSrIdCache.insert( id, *this );
-  mSrIdCacheLock.unlock();
+  sSrIdCacheLock.lockForWrite();
+  sSrIdCache.insert( id, *this );
+  sSrIdCacheLock.unlock();
 
   return result;
 }
 
 bool QgsCoordinateReferenceSystem::createFromSrsId( long id )
 {
-  mCRSSrsIdLock.lockForRead();
-  QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = mSrsIdCache.constFind( id );
-  if ( crsIt != mSrsIdCache.constEnd() )
+  sCRSSrsIdLock.lockForRead();
+  QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = sSrsIdCache.constFind( id );
+  if ( crsIt != sSrsIdCache.constEnd() )
   {
     // found a match in the cache
     *this = crsIt.value();
-    mCRSSrsIdLock.unlock();
+    sCRSSrsIdLock.unlock();
     return true;
   }
-  mCRSSrsIdLock.unlock();
+  sCRSSrsIdLock.unlock();
 
   bool result = loadFromDb( id < USER_CRS_START_ID ? QgsApplication::srsDbFilePath() :
                             QgsApplication::qgisUserDbFilePath(),
                             QStringLiteral( "srs_id" ), QString::number( id ) );
 
-  mCRSSrsIdLock.lockForWrite();
-  mSrsIdCache.insert( id, *this );
-  mCRSSrsIdLock.unlock();
+  sCRSSrsIdLock.lockForWrite();
+  sSrsIdCache.insert( id, *this );
+  sCRSSrsIdLock.unlock();
 
   return result;
 }
@@ -515,16 +515,16 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &theWkt )
 {
   d.detach();
 
-  mCRSWktLock.lockForRead();
-  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mWktCache.constFind( theWkt );
-  if ( crsIt != mWktCache.constEnd() )
+  sCRSWktLock.lockForRead();
+  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = sWktCache.constFind( theWkt );
+  if ( crsIt != sWktCache.constEnd() )
   {
     // found a match in the cache
     *this = crsIt.value();
-    mCRSWktLock.unlock();
+    sCRSWktLock.unlock();
     return true;
   }
-  mCRSWktLock.unlock();
+  sCRSWktLock.unlock();
 
   d->mIsValid = false;
   d->mWkt.clear();
@@ -549,9 +549,9 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &theWkt )
     QgsDebugMsg( QString( "UNUSED WKT: %1" ).arg( pWkt ) );
     QgsDebugMsg( "---------------------------------------------------------------\n" );
 
-    mCRSWktLock.lockForWrite();
-    mWktCache.insert( theWkt, *this );
-    mCRSWktLock.unlock();
+    sCRSWktLock.lockForWrite();
+    sWktCache.insert( theWkt, *this );
+    sCRSWktLock.unlock();
     return d->mIsValid;
   }
 
@@ -562,9 +562,9 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &theWkt )
                            OSRGetAuthorityCode( d->mCRS, nullptr ) );
     QgsDebugMsg( "authid recognized as " + authid );
     bool result = createFromOgcWmsCrs( authid );
-    mCRSWktLock.lockForWrite();
-    mWktCache.insert( theWkt, *this );
-    mCRSWktLock.unlock();
+    sCRSWktLock.lockForWrite();
+    sWktCache.insert( theWkt, *this );
+    sCRSWktLock.unlock();
     return result;
   }
 
@@ -604,9 +604,9 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &theWkt )
 
   CPLFree( proj4src );
 
-  mCRSWktLock.lockForWrite();
-  mWktCache.insert( theWkt, *this );
-  mCRSWktLock.unlock();
+  sCRSWktLock.lockForWrite();
+  sWktCache.insert( theWkt, *this );
+  sCRSWktLock.unlock();
 
   return d->mIsValid;
   //setMapunits will be called by createfromproj above
@@ -621,16 +621,16 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
 {
   d.detach();
 
-  mProj4CacheLock.lockForRead();
-  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mProj4Cache.constFind( theProj4String );
-  if ( crsIt != mProj4Cache.constEnd() )
+  sProj4CacheLock.lockForRead();
+  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = sProj4Cache.constFind( theProj4String );
+  if ( crsIt != sProj4Cache.constEnd() )
   {
     // found a match in the cache
     *this = crsIt.value();
-    mProj4CacheLock.unlock();
+    sProj4CacheLock.unlock();
     return true;
   }
-  mProj4CacheLock.unlock();
+  sProj4CacheLock.unlock();
 
   //
   // Examples:
@@ -651,9 +651,9 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
   {
     QgsDebugMsg( "proj string supplied has no +proj argument" );
 
-    mProj4CacheLock.lockForWrite();
-    mProj4Cache.insert( theProj4String, *this );
-    mProj4CacheLock.unlock();
+    sProj4CacheLock.lockForWrite();
+    sProj4Cache.insert( theProj4String, *this );
+    sProj4CacheLock.unlock();
 
     return d->mIsValid;
   }
@@ -820,9 +820,9 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
     setProj4String( myProj4String );
   }
 
-  mProj4CacheLock.lockForWrite();
-  mProj4Cache.insert( theProj4String, *this );
-  mProj4CacheLock.unlock();
+  sProj4CacheLock.lockForWrite();
+  sProj4Cache.insert( theProj4String, *this );
+  sProj4CacheLock.unlock();
 
   return d->mIsValid;
 }
@@ -1121,10 +1121,10 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     // do better than that ... (but perhaps ogr should be enhanced to
     // do this instead?).
 
-    static const double feetToMeter = 0.3048;
-    static const double smallNum = 1e-3;
+    static const double FEET_TO_METER = 0.3048;
+    static const double SMALL_NUM = 1e-3;
 
-    if ( qAbs( toMeter - feetToMeter ) < smallNum )
+    if ( qAbs( toMeter - FEET_TO_METER ) < SMALL_NUM )
       unit = QStringLiteral( "Foot" );
 
     QgsDebugMsg( "Projection has linear units of " + unit );
@@ -1608,7 +1608,7 @@ bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString& name )
   }
 
   //if this is the first record we need to ensure that its srs_id is 10000. For
-  //any rec after that sqlite3 will take care of the autonumering
+  //any rec after that sqlite3 will take care of the autonumbering
   //this was done to support sqlite 3.0 as it does not yet support
   //the autoinc related system tables.
   if ( getRecordCount() == 0 )
@@ -2228,6 +2228,9 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 
     v.clear();
 
+    if ( CSLCount( values ) == 0 )
+      break;
+
     if ( CSLCount( values ) < n )
     {
       qWarning( "Only %d columns", CSLCount( values ) );
@@ -2348,22 +2351,22 @@ QStringList QgsCoordinateReferenceSystem::recentProjections()
 
 void QgsCoordinateReferenceSystem::invalidateCache()
 {
-  mSrIdCacheLock.lockForWrite();
-  mSrIdCache.clear();
-  mSrIdCacheLock.unlock();
-  mOgcLock.lockForWrite();
-  mOgcCache.clear();
-  mOgcLock.unlock();
-  mProj4CacheLock.lockForWrite();
-  mProj4Cache.clear();
-  mProj4CacheLock.unlock();
-  mCRSWktLock.lockForWrite();
-  mWktCache.clear();
-  mCRSWktLock.unlock();
-  mCRSSrsIdLock.lockForWrite();
-  mSrsIdCache.clear();
-  mCRSSrsIdLock.unlock();
-  mCrsStringLock.lockForWrite();
-  mStringCache.clear();
-  mCrsStringLock.unlock();
+  sSrIdCacheLock.lockForWrite();
+  sSrIdCache.clear();
+  sSrIdCacheLock.unlock();
+  sOgcLock.lockForWrite();
+  sOgcCache.clear();
+  sOgcLock.unlock();
+  sProj4CacheLock.lockForWrite();
+  sProj4Cache.clear();
+  sProj4CacheLock.unlock();
+  sCRSWktLock.lockForWrite();
+  sWktCache.clear();
+  sCRSWktLock.unlock();
+  sCRSSrsIdLock.lockForWrite();
+  sSrsIdCache.clear();
+  sCRSSrsIdLock.unlock();
+  sCrsStringLock.lockForWrite();
+  sStringCache.clear();
+  sCrsStringLock.unlock();
 }

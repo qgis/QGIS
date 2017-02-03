@@ -126,7 +126,6 @@ class APP_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     void setFilter();
 
     // layer menu items
-    void addCurrentLayer();
     void addSelectedLayers();
     void showProperties();
     void hideItem();

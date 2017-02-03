@@ -55,8 +55,8 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     void mousePressEvent( QMouseEvent* event ) override;
 
   private:
-    static const int validScaleMultiples[];
-    static const int validScaleMagnitudes[];
+    static const int VALID_SCALE_MULTIPLES[];
+    static const int VALID_SCALE_MAGNITUDES[];
 
     Direction mDirection;
     QTransform mTransform;

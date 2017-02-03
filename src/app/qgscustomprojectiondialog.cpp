@@ -68,7 +68,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
     leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
   }
 
-  leNameList->hideColumn( QGIS_CRS_ID_COLUMN );
+  leNameList->hideColumn( QgisCrsIdColumn );
 
 }
 
@@ -115,9 +115,9 @@ void QgsCustomProjectionDialog::populateList()
       existingCRSparameters[id] = crs.toProj4();
 
       newItem = new QTreeWidgetItem( leNameList, QStringList() );
-      newItem->setText( QGIS_CRS_NAME_COLUMN, name );
-      newItem->setText( QGIS_CRS_ID_COLUMN, id );
-      newItem->setText( QGIS_CRS_PARAMETERS_COLUMN, crs.toProj4() );
+      newItem->setText( QgisCrsNameColumn, name );
+      newItem->setText( QgisCrsIdColumn, id );
+      newItem->setText( QgisCrsParametersColumn, crs.toProj4() );
     }
   }
   else
@@ -127,12 +127,12 @@ void QgsCustomProjectionDialog::populateList()
   sqlite3_finalize( myPreparedStatement );
   sqlite3_close( myDatabase );
 
-  leNameList->sortByColumn( QGIS_CRS_NAME_COLUMN, Qt::AscendingOrder );
+  leNameList->sortByColumn( QgisCrsNameColumn, Qt::AscendingOrder );
 
   QTreeWidgetItemIterator it( leNameList );
   while ( *it )
   {
-    QString id = ( *it )->text( QGIS_CRS_ID_COLUMN );
+    QString id = ( *it )->text( QgisCrsIdColumn );
     customCRSids.push_back( id );
     customCRSnames.push_back( existingCRSnames[id] );
     customCRSparameters.push_back( existingCRSparameters[id] );
@@ -312,9 +312,9 @@ void QgsCustomProjectionDialog::on_pbnAdd_clicked()
 
   QTreeWidgetItem* newItem = new QTreeWidgetItem( leNameList, QStringList() );
 
-  newItem->setText( QGIS_CRS_NAME_COLUMN, name );
-  newItem->setText( QGIS_CRS_ID_COLUMN, id );
-  newItem->setText( QGIS_CRS_PARAMETERS_COLUMN, parameters.toProj4() );
+  newItem->setText( QgisCrsNameColumn, name );
+  newItem->setText( QgisCrsIdColumn, id );
+  newItem->setText( QgisCrsParametersColumn, parameters.toProj4() );
   customCRSnames.push_back( name );
   customCRSids.push_back( id );
   customCRSparameters.push_back( parameters.toProj4() );
@@ -348,14 +348,14 @@ void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetIte
     previousIndex = leNameList->indexOfTopLevelItem( previous );
     customCRSnames[previousIndex] = leName->text();
     customCRSparameters[previousIndex] = teParameters->toPlainText();
-    previous->setText( QGIS_CRS_NAME_COLUMN, leName->text() );
-    previous->setText( QGIS_CRS_PARAMETERS_COLUMN, teParameters->toPlainText() );
+    previous->setText( QgisCrsNameColumn, leName->text() );
+    previous->setText( QgisCrsParametersColumn, teParameters->toPlainText() );
   }
   if ( current )
   {
     currentIndex = leNameList->indexOfTopLevelItem( current );
     leName->setText( customCRSnames[currentIndex] );
-    teParameters->setPlainText( current->text( QGIS_CRS_PARAMETERS_COLUMN ) );
+    teParameters->setPlainText( current->text( QgisCrsParametersColumn ) );
   }
   else
   {
@@ -381,7 +381,7 @@ void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
     }
     teParameters->setPlainText( srs.toProj4() );
     customCRSparameters[leNameList->currentIndex().row()] = srs.toProj4();
-    leNameList->currentItem()->setText( QGIS_CRS_PARAMETERS_COLUMN, srs.toProj4() );
+    leNameList->currentItem()->setText( QgisCrsParametersColumn, srs.toProj4() );
 
   }
   delete mySelector;

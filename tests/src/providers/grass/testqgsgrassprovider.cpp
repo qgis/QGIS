@@ -62,7 +62,7 @@ class TestQgsGrassFeature : public QgsFeature
 };
 
 // Command which can be composed of more GRASS features, e.g. boundaries + centroid equivalent
-// of simple fature polygon
+// of simple feature polygon
 class TestQgsGrassCommand
 {
   public:
@@ -928,7 +928,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   // Add point
   command = TestQgsGrassCommand( TestQgsGrassCommand::AddFeature );
   grassFeature = TestQgsGrassFeature( GV_POINT );
-  grassFeature.setFeatureId( 1 );
+  grassFeature.setId( 1 );
   geometry = new QgsGeometry( new QgsPointV2( QgsWkbTypes::Point, 10, 10, 0 ) );
   grassFeature.setGeometry( *geometry );
   delete geometry;
@@ -1018,7 +1018,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   // Add line feature with attributes
   command = TestQgsGrassCommand( TestQgsGrassCommand::AddFeature );
   grassFeature = TestQgsGrassFeature( GV_LINE );
-  grassFeature.setFeatureId( 1 );
+  grassFeature.setId( 1 );
   line = new QgsLineString();
   pointList.clear();
   pointList << QgsPointV2( QgsWkbTypes::Point, 0, 0, 0 );
@@ -1059,7 +1059,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   command = TestQgsGrassCommand( TestQgsGrassCommand::AddFeature );
   command.verify = false;
   grassFeature = TestQgsGrassFeature( GV_BOUNDARY );
-  grassFeature.setFeatureId( 1 );
+  grassFeature.setId( 1 );
   line = new QgsLineString();
   pointList.clear();
   pointList << QgsPointV2( QgsWkbTypes::Point, 0, 0, 0 );
@@ -1216,6 +1216,7 @@ void TestQgsGrassProvider::edit()
         grassLayer->startEditing();
         grassProvider->startEditing( grassLayer );
 
+        Q_ASSERT( expectedLayer );
         expectedLayer->startEditing();
       }
 
@@ -1582,7 +1583,9 @@ bool TestQgsGrassProvider::compare( QMap<QString, QgsVectorLayer *> layers, bool
 {
   Q_FOREACH ( const QString & grassUri, layers.keys() )
   {
-    if ( !compare( grassUri, layers.value( grassUri ), ok ) )
+    QgsVectorLayer* layer = layers.value( grassUri );
+    Q_ASSERT( layer );
+    if ( !compare( grassUri, layer, ok ) )
     {
       reportRow( "comparison failed: " + grassUri );
     }

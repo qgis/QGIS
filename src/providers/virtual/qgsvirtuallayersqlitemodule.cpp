@@ -306,7 +306,7 @@ struct VTableCursor
     int blob_len = 0;
     char* blob = nullptr;
     QgsGeometry g = mCurrentFeature.geometry();
-    if ( ! g.isEmpty() )
+    if ( ! g.isNull() )
     {
       qgsGeometryToSpatialiteBlob( g, mVtab->crs(), blob, blob_len );
     }
@@ -706,13 +706,13 @@ int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context* ctxt, int idx )
 }
 
 
-static QCoreApplication* coreApp = nullptr;
+static QCoreApplication* sCoreApp = nullptr;
 
 void moduleDestroy( void* )
 {
-  if ( coreApp )
+  if ( sCoreApp )
   {
-    delete coreApp;
+    delete sCoreApp;
   }
 }
 
@@ -902,7 +902,7 @@ int qgsvlayerModuleInit( sqlite3 *db, char **pzErrMsg, void * unused /*const sql
     static int moduleArgc = 1;
     static char moduleName[] = "qgsvlayer_module";
     static char* moduleArgv[] = { moduleName };
-    coreApp = new QCoreApplication( moduleArgc, moduleArgv );
+    sCoreApp = new QCoreApplication( moduleArgc, moduleArgv );
     QgsApplication::init();
     QgsApplication::initQgis();
   }

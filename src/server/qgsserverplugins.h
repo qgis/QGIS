@@ -20,7 +20,6 @@
 
 #include "qgsrequesthandler.h"
 #include "qgsserverinterface.h"
-#include "qgis_server.h"
 
 // This is needed by SIP otherwise it doesn't find QgsPythonUtils header
 class QgsPythonUtils;
@@ -34,7 +33,7 @@ class SERVER_EXPORT QgsServerPlugins
     explicit QgsServerPlugins();
 
     /**
-     * Initialise the python plugins
+     * Initialize the python plugins
      * @param interface QgsServerInterface
      * @return bool true on success
      */

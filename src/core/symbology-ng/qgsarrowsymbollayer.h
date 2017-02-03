@@ -44,7 +44,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     virtual QgsArrowSymbolLayer* clone() const override;
     virtual QgsSymbol* subSymbol() override { return mSymbol.data(); }
     virtual bool setSubSymbol( QgsSymbol* symbol ) override;
-    virtual QSet<QString> usedAttributes() const override;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
 
     //! Get current arrow width
     double arrowWidth() const { return mArrowWidth; }

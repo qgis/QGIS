@@ -155,11 +155,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.reset_buttons()
 
         # get preferred connection save strategy from settings and set it
-        save_strat = self.settings.value('/MetaSearch/ows_save_strategy',
-                                         'title_ask')
-        if save_strat == 'temp_name':
+        save_strategy = self.settings.value('/MetaSearch/ows_save_strategy',
+                                            'title_ask')
+        if save_strategy == 'temp_name':
             self.radioTempName.setChecked(True)
-        elif save_strat == 'title_no_ask':
+        elif save_strategy == 'title_no_ask':
             self.radioTitleNoAsk.setChecked(True)
         else:
             self.radioTitleAsk.setChecked(True)

@@ -80,6 +80,21 @@ class QgsServerRequest
     QMap<QString, QString> parameters() const;
 
     /**
+     * Set a parameter
+     */
+    void setParameter( const QString& key, const QString& value );
+
+    /**
+     * Get a parameter value
+     */
+    QString getParameter( const QString& key ) const;
+
+    /**
+     * Remove a parameter
+     */
+    void removeParameter( const QString& key );
+
+    /**
      * Return post/put data
      * Check for QByteArray::isNull() to check if data
      * is available.

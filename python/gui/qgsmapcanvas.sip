@@ -22,7 +22,6 @@ class QgsMapCanvas : QGraphicsView
     //! Constructor
     QgsMapCanvas( QWidget * parent /TransferThis/ = 0 );
 
-    //! Destructor
     ~QgsMapCanvas();
 
     //! Returns the magnification factor
@@ -77,7 +76,7 @@ class QgsMapCanvas : QGraphicsView
 
     //! Set how often map preview should be updated while it is being rendered (in milliseconds)
     //! @note added in 2.4
-    void setMapUpdateInterval( int timeMiliseconds );
+    void setMapUpdateInterval( int timeMilliseconds );
 
     //! Find out how often map preview should be updated while it is being rendered (in milliseconds)
     //! @note added in 2.4
@@ -89,13 +88,13 @@ class QgsMapCanvas : QGraphicsView
     //! Returns the mapUnitsPerPixel (map units per pixel) for the canvas
     double mapUnitsPerPixel() const;
 
-    //! Returns the current zoom exent of the map canvas
+    //! Returns the current zoom extent of the map canvas
     QgsRectangle extent() const;
-    //! Returns the combined exent for all layers on the map canvas
+    //! Returns the combined extent for all layers on the map canvas
     QgsRectangle fullExtent() const;
 
     //! Set the extent of the map canvas
-    void setExtent( const QgsRectangle &r );
+    void setExtent( const QgsRectangle &r, bool magnified = false );
 
     //! Get the current map canvas rotation in clockwise degrees
     //! @note added in 2.8
@@ -140,10 +139,10 @@ class QgsMapCanvas : QGraphicsView
         @param ids the feature ids*/
     void panToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds& ids );
 
-    /** Pan to the selected features of current (vector) layer keeping same extent. */
+    //! Pan to the selected features of current (vector) layer keeping same extent.
     void panToSelected( QgsVectorLayer* layer = 0 );
 
-    /** \brief Sets the map tool currently being used on the canvas */
+    //! \brief Sets the map tool currently being used on the canvas
     void setMapTool( QgsMapTool* mapTool );
 
     /** \brief Unset the current map tool or last non zoom tool
@@ -154,19 +153,19 @@ class QgsMapCanvas : QGraphicsView
      */
     void unsetMapTool( QgsMapTool* mapTool );
 
-    /** Returns the currently active tool*/
+    //! Returns the currently active tool
     QgsMapTool* mapTool();
 
-    /** Write property of QColor bgColor. */
+    //! Write property of QColor bgColor.
     void setCanvasColor( const QColor & _newVal );
-    /** Read property of QColor bgColor. */
+    //! Read property of QColor bgColor.
     QColor canvasColor() const;
 
-    /** Set color of selected vector features */
+    //! Set color of selected vector features
     //! @note added in 2.4
     void setSelectionColor( const QColor& color );
 
-    /** Emits signal scaleChanged to update scale in main window */
+    //! Emits signal scaleChanged to update scale in main window
     void updateScale();
 
     //! return the map layer at position index in the layer stack
@@ -218,7 +217,7 @@ class QgsMapCanvas : QGraphicsView
     //! returns current layer (set by legend widget)
     QgsMapLayer* currentLayer();
 
-    //! set the wheel zoom factor
+    //! set wheel zoom factor (should be greater than 1)
     void setWheelFactor( double factor );
 
     //! Zoom to a specific scale
@@ -298,6 +297,7 @@ class QgsMapCanvas : QGraphicsView
      *  @note added in 2.8
      */
     QgsSnappingUtils* snappingUtils() const;
+
     /** Assign an instance of snapping utils to the map canvas.
      * The instance is not owned by the canvas, so it is possible to use one instance in multiple canvases.
      *
@@ -332,16 +332,17 @@ class QgsMapCanvas : QGraphicsView
      */
     // const QgsExpressionContextScope& expressionContextScope() const;
 
-     /** Sets the segmentation tolerance applied when rendering curved geometries
+    /** Sets the segmentation tolerance applied when rendering curved geometries
     @param tolerance the segmentation tolerance*/
     void setSegmentationTolerance( double tolerance );
+
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     @param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
 
   public slots:
 
-    /** Repaints the canvas map*/
+    //! Repaints the canvas map
     void refresh();
 
     //! Receives signal about selection change, and pass it on with layer info
@@ -361,7 +362,7 @@ class QgsMapCanvas : QGraphicsView
     //! State of render suppression flag
     bool renderFlag();
 
-    /** A simple helper method to find out if on the fly projections are enabled or not */
+    //! A simple helper method to find out if on the fly projections are enabled or not
     bool hasCrsTransformEnabled();
 
     //! stop rendering (if there is any right now)
@@ -395,6 +396,7 @@ class QgsMapCanvas : QGraphicsView
     void zoomOut();
 
   signals:
+
     /** Emits current mouse position
         \note changed in 1.3 */
     void xyCoordinates( const QgsPoint &p );
@@ -426,11 +428,11 @@ class QgsMapCanvas : QGraphicsView
     void renderComplete( QPainter * );
 
     // ### QGIS 3: renamte to mapRefreshFinished()
-    /** Emitted when canvas finished a refresh request. */
+    //! Emitted when canvas finished a refresh request.
     void mapCanvasRefreshed();
 
     // ### QGIS 3: rename to mapRefreshStarted()
-    /** Emitted when the canvas is about to be rendered. */
+    //! Emitted when the canvas is about to be rendered.
     void renderStarting();
 
     //! Emitted when a new set of layers has been received
@@ -528,6 +530,6 @@ class QgsMapCanvas : QGraphicsView
     //! Make sure the datum transform store is properly populated
     void updateDatumTransformEntries();
 
-private:
+  private:
     void connectNotify( const char * signal );
 }; // class QgsMapCanvas

@@ -540,6 +540,7 @@ INCLUDE_DIRECTORIES(
   ../analysis/raster
   ../analysis/openstreetmap
   ../core
+  ../core/annotations
   ../core/auth
   ../core/gps
   ../core/composer
@@ -601,8 +602,6 @@ TARGET_LINK_LIBRARIES(qgis_app
   ${QT_QTSQL_LIBRARY}
   ${QT_QTUITOOLS_LIBRARY}
   ${QT_QTWEBKIT_LIBRARY}
-  #should only be needed for win
-  ${QT_QTMAIN_LIBRARY}
   ${QWTPOLAR_LIBRARY}
   ${GDAL_LIBRARY}
   qgis_core
@@ -632,11 +631,7 @@ if(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET_TARGET_PROPERTIES(qgis_app PROPERTIES STATIC_LIBRARY_FLAGS "/machine:x64")
 ENDIF(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
 
-TARGET_LINK_LIBRARIES(${QGIS_APP_NAME}
-  #should only be needed for win
-  ${QT_QTMAIN_LIBRARY}
-  qgis_app
-)
+TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} qgis_app)
 
 IF (ANDROID)
   TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} log)

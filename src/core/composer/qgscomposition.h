@@ -62,7 +62,6 @@ class QgsComposerMultiFrameCommand;
 class QgsVectorLayer;
 class QgsComposer;
 class QgsFillSymbol;
-class QgsDataDefined;
 class QgsComposerModel;
 class QgsPaperItem;
 
@@ -105,8 +104,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
       Landscape
     };
 
-    //! Construct a composition, using given map settings and project
-    explicit QgsComposition( const QgsMapSettings& mapSettings, QgsProject* project );
+    /**
+     * Construct a new composition linked to the specified project.
+     */
+    explicit QgsComposition( QgsProject* project );
 
     //! Composition atlas modes
     enum AtlasMode
@@ -301,7 +302,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     double snapGridOffsetY() const {return mSnapGridOffsetY;}
 
     void setGridPen( const QPen& p );
-    const QPen& gridPen() const {return mGridPen;}
+    QPen gridPen() const {return mGridPen;}
 
     void setGridStyle( const GridStyle s );
     GridStyle gridStyle() const {return mGridStyle;}
@@ -411,7 +412,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Returns true if the composition will generate corresponding world files when pages
      * are exported.
      * @see setGenerateWorldFile()
-     * @see worldFileMap()
+     * @see referenceMap()
      */
     bool generateWorldFile() const { return mGenerateWorldFile; }
 
@@ -419,33 +420,30 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * are exported.
      * @param enabled set to true to generate world files
      * @see generateWorldFile()
-     * @see setWorldFileMap()
+     * @see setReferenceMap()
      */
     void setGenerateWorldFile( bool enabled ) { mGenerateWorldFile = enabled; }
 
     /** Returns the map item which will be used to generate corresponding world files when the
-     * composition is exported, or nullptr if no corresponding map is set.
-     * @see setWorldFileMap()
+     * composition is exported. If no map was explicitly set via setReferenceMap(), the largest
+     * map in the composition will be returned (or nullptr if there are no maps in the composition).
+     * @see setReferenceMap()
      * @see generateWorldFile()
      */
-    QgsComposerMap* worldFileMap() const;
+    QgsComposerMap* referenceMap() const;
 
     /** Sets the map item which will be used to generate corresponding world files when the
      * composition is exported.
      * @param map composer map item
-     * @see worldFileMap()
+     * @see referenceMap()
      * @see setGenerateWorldFile()
      */
-    void setWorldFileMap( QgsComposerMap* map );
+    void setReferenceMap( QgsComposerMap* map );
 
     //! Returns true if a composition should use advanced effects such as blend modes
     bool useAdvancedEffects() const {return mUseAdvancedEffects;}
     //! Used to enable or disable advanced effects such as blend modes in a composition
     void setUseAdvancedEffects( const bool effectsEnabled );
-
-    //! Return setting of QGIS map canvas
-    //! @note added in 2.4
-    const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
     QgsComposition::PlotStyle plotStyle() const { return mPlotStyle; }
     void setPlotStyle( const QgsComposition::PlotStyle style ) { mPlotStyle = style; }
@@ -692,7 +690,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Georeferences a file (image of PDF) exported from the composition.
      * @param file filename of exported file
      * @param referenceMap map item to use for georeferencing, or leave as nullptr to use the
-     * currently defined worldFileMap().
+     * currently defined referenceMap().
      * @param exportRegion set to a valid rectangle to indicate that only part of the composition was
      * exported
      * @param dpi set to DPI of exported file, or leave as -1 to use composition's DPI.
@@ -738,22 +736,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @note added in version 2.4
      */
     QList< QgsPaperItem* > pages() { return mPages; }
-
-    /** Returns a reference to the data defined settings for one of the composition's data defined properties.
-     * @param property data defined property to return
-     * @note this method was added in version 2.5
-     */
-    QgsDataDefined* dataDefinedProperty( const QgsComposerObject::DataDefinedProperty property );
-
-    /** Sets parameters for a data defined property for the composition
-     * @param property data defined property to set
-     * @param active true if data defined property is active, false if it is disabled
-     * @param useExpression true if the expression should be used
-     * @param expression expression for data defined property
-     * @param field field name if the data defined property should take its value from a field
-     * @note this method was added in version 2.5
-     */
-    void setDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
 
     /** Returns the items model attached to the composition
      * @returns QgsComposerModel for composition
@@ -854,13 +836,30 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     QgsExpressionContext createExpressionContext() const override;
 
+    /** Returns a reference to the composition's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedProperties()
+     */
+    QgsPropertyCollection& dataDefinedProperties() { return mDataDefinedProperties; }
+
+    /** Returns a reference to the composition's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedProperties()
+     */
+    const QgsPropertyCollection& dataDefinedProperties() const { return mDataDefinedProperties; }
+
+    /** Sets the composition's property collection, used for data defined overrides.
+     * @param collection property collection. Existing properties will be replaced.
+     * @note added in QGIS 3.0
+     * @see dataDefinedProperties()
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection& collection ) { mDataDefinedProperties = collection; }
+
   protected:
     void init();
 
 
   private:
-    //! Reference to map settings of QGIS main map
-    const QgsMapSettings& mMapSettings;
 
     //! Pointer to associated project (not null)
     QgsProject* mProject;
@@ -934,10 +933,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     QgsComposerModel * mItemsModel;
 
-    //! Map of data defined properties for the composition to string name to use when exporting composition to xml
-    QMap< QgsComposerObject::DataDefinedProperty, QString > mDataDefinedNames;
-    //! Map of current data defined properties to QgsDataDefined for the composition
-    QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > mDataDefinedProperties;
+    QgsPropertyCollection mDataDefinedProperties;
 
     QgsObjectCustomProperties mCustomProperties;
 
@@ -976,49 +972,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     void refreshPageSize( const QgsExpressionContext* context = nullptr );
 
-    /** Evaluate a data defined property and return the calculated value
-     * @returns true if data defined property could be successfully evaluated
-     * @param property data defined property to evaluate
-     * @param expressionValue QVariant for storing the evaluated value
-     * @param context expression context for evaluating expressions. Must have feature and fields set
-     * to corresponding atlas feature and coverage layer fields prior to calling this method.
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
-     * @note this method was added in version 2.5
-     */
-    bool dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue,
-                              const QgsExpressionContext& context,
-                              QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
-
-    /** Returns whether a data defined property has been set and is currently active.
-     * @param property data defined property to test
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
-     * @note this method was added in version 2.5
-     */
-    bool dataDefinedActive( const QgsComposerObject::DataDefinedProperty property,
-                            const QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const;
-
-    /** Evaluates a data defined property and returns the calculated value.
-     * @param property data defined property to evaluate
-     * @param feature current atlas feature to evaluate property for
-     * @param fields fields from atlas layer
-     * @param context expression context for evaluating expressions (note, must have fields and feature set)
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
-     * @note this method was added in version 2.5
-     */
-    QVariant dataDefinedValue( QgsComposerObject::DataDefinedProperty property, const QgsFeature *feature, const QgsFields& fields,
-                               const QgsExpressionContext& context,
-                               QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const;
-
-
-    /** Prepares the expression for a data defined property.
-     * @param dd data defined to prepare. If no data defined is set, all data defined expressions will be prepared
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
-     * @param context expression context for expression preparation.  Should have fields set to match the current atlas layer if required prior
-     * to calling this method.
-     * @note this method was added in version 2.5
-     */
-    void prepareDataDefinedExpression( QgsDataDefined *dd, QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties, const QgsExpressionContext& context ) const;
-
     /** Check whether any data defined page settings are active.
      * @returns true if any data defined page settings are active.
      * @note this method was added in version 2.5
@@ -1027,7 +980,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Computes a GDAL style geotransform for georeferencing a composition.
      * @param referenceMap map item to use for georeferencing, or leave as nullptr to use the
-     * currently defined worldFileMap().
+     * currently defined referenceMap().
      * @param exportRegion set to a valid rectangle to indicate that only part of the composition is
      * being exported
      * @param dpi allows overriding the default composition DPI, or leave as -1 to use composition's DPI.
@@ -1087,7 +1040,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     void variablesChanged();
 
-    friend class QgsComposerObject; //for accessing dataDefinedEvaluate, readDataDefinedPropertyMap and writeDataDefinedPropertyMap
     friend class QgsComposerModel; //for accessing updateZValues (should not be public)
     friend class TestQgsComposition;
 };

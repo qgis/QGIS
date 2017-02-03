@@ -21,18 +21,14 @@
 #include "qgsserverprojectparser.h"
 #include "qgis_server.h"
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
 class QgsAccessControl;
-#endif
 
 class SERVER_EXPORT QgsWCSProjectParser
 {
   public:
     QgsWCSProjectParser(
       const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , const QgsAccessControl* ac
-#endif
     );
     ~QgsWCSProjectParser();
 
@@ -40,8 +36,6 @@ class SERVER_EXPORT QgsWCSProjectParser
     QgsWCSProjectParser& operator=( const QgsWCSProjectParser& rh ) = delete;
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
-    QString wcsServiceUrl() const;
-    QString serviceUrl() const;
     void wcsContentMetadata( QDomElement& parentElement, QDomDocument& doc ) const;
     QStringList wcsLayers() const;
     void describeCoverage( const QString& aCoveName, QDomElement& parentElement, QDomDocument& doc ) const;
@@ -49,9 +43,7 @@ class SERVER_EXPORT QgsWCSProjectParser
 
   private:
     QgsServerProjectParser* mProjectParser;
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
     const QgsAccessControl* mAccessControl;
-#endif
 
 };
 

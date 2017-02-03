@@ -41,7 +41,7 @@ class SnapGeometriesToLayer(GeoAlgorithm):
     REFERENCE_LAYER = 'REFERENCE_LAYER'
     TOLERANCE = 'TOLERANCE'
     OUTPUT = 'OUTPUT'
-    BEHAVIOUR = 'BEHAVIOUR'
+    BEHAVIOR = 'BEHAVIOR'
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Snap geometries to layer')
@@ -54,8 +54,8 @@ class SnapGeometriesToLayer(GeoAlgorithm):
         self.modes = [self.tr('Prefer aligning nodes'),
                       self.tr('Prefer closest point')]
         self.addParameter(ParameterSelection(
-            self.BEHAVIOUR,
-            self.tr('Behaviour'),
+            self.BEHAVIOR,
+            self.tr('Behavior'),
             self.modes, default=0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Snapped geometries')))
 
@@ -63,7 +63,7 @@ class SnapGeometriesToLayer(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         reference_layer = dataobjects.getObjectFromUri(self.getParameterValue(self.REFERENCE_LAYER))
         tolerance = self.getParameterValue(self.TOLERANCE)
-        mode = self.getParameterValue(self.BEHAVIOUR)
+        mode = self.getParameterValue(self.BEHAVIOR)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.fields(), layer.wkbType(), layer.crs())

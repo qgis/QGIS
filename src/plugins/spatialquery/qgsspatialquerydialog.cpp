@@ -197,10 +197,10 @@ void QgsSpatialQueryDialog::runQuery()
 
 void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime *datetimeEnd )
 {
-  static int countQuery = 0;
+  static int sCountQuery = 0;
   // Report processing
-  countQuery++;
-  QString msg = tr( "%1)Query" ).arg( countQuery );
+  sCountQuery++;
+  QString msg = tr( "%1)Query" ).arg( sCountQuery );
   teStatus->append( msg );
   msg = tr( "Begin at %L1" ).arg( datetimeStart->toString() );
   teStatus->append( msg );
@@ -224,7 +224,7 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
   teStatus->append( QLatin1String( "" ) );
 
   ckbLogProcessing->setChecked( false );
-  QVariant item = QVariant::fromValue(( int )itemsResult );
+  QVariant item = QVariant::fromValue(( int )ItemsResult );
   int index = cbTypeItems->findData( item );
   cbTypeItems->setCurrentIndex( index );
   on_cbTypeItems_currentIndexChanged( index );
@@ -236,13 +236,13 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
     TypeResultFor typeResultFor = ( TypeResultFor ) cbResultFor->currentData().toInt();
     switch ( typeResultFor )
     {
-      case selectedNew:
+      case SelectedNew:
         mLayerTarget->selectByIds( mFeatureResult );
         break;
-      case selectedAdd:
+      case SelectedAdd:
         mLayerTarget->selectByIds( mLayerTarget->selectedFeatureIds() + mFeatureResult );
         break;
-      case selectedRemove:
+      case SelectedRemove:
         mLayerTarget->selectByIds( mLayerTarget->selectedFeatureIds() - mFeatureResult );
         break;
       default:
@@ -276,17 +276,17 @@ QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreat
   if ( providerType  == QLatin1String( "OGR" ) )
   {
     fieldFID = QStringLiteral( "FID" );
-    return verifyOk;
+    return VerifyOk;
   }
   // Database Postgis and Spatialite
   if ( providerType  == QLatin1String( "POSTGRES" ) || providerType  == QLatin1String( "SPATIALITE" ) )
   {
     fieldFID = mLayerTarget->dataProvider()->fields().at( 0 ).name();
     msg = tr( "Using the field \"%1\" for subset" ).arg( fieldFID );
-    return verifyTry;
+    return VerifyTry;
   }
   msg = tr( "Sorry! Only this providers are enabled: OGR, POSTGRES and SPATIALITE." );
-  return verifyImpossible;
+  return VerifyImpossible;
 } // TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreateSubset(QString &msg, QString &fieldFID)
 
 bool QgsSpatialQueryDialog::addLayerSubset( const QString& name, const QString& subset )
@@ -427,7 +427,7 @@ QIcon QgsSpatialQueryDialog::getIconTypeGeometry( QgsWkbTypes::GeometryType geom
   else if ( QFile::exists( myDefaultPath ) )
   {
     //could still return an empty icon if it
-    //doesnt exist in the default theme either!
+    //doesn't exist in the default theme either!
     return QIcon( myDefaultPath );
   }
   else
@@ -498,7 +498,7 @@ void QgsSpatialQueryDialog::populateCbResulFor()
   cbResultFor->blockSignals( true );
   cbResultFor->clear();
   QVariant item;
-  item = QVariant::fromValue(( int )selectedNew );
+  item = QVariant::fromValue(( int )SelectedNew );
   cbResultFor->addItem( tr( "Create new selection" ), item );
   if ( mLayerTarget->selectedFeatureCount() == 0 )
   {
@@ -506,10 +506,10 @@ void QgsSpatialQueryDialog::populateCbResulFor()
   }
   if ( ! ckbUsingSelectedTarget->isChecked() )
   {
-    item = QVariant::fromValue(( int )selectedAdd );
+    item = QVariant::fromValue(( int )SelectedAdd );
     cbResultFor->addItem( tr( "Add to current selection" ), item );
   }
-  item = QVariant::fromValue(( int )selectedRemove );
+  item = QVariant::fromValue(( int )SelectedRemove );
   cbResultFor->addItem( tr( "Remove from current selection" ), item );
   cbResultFor->blockSignals( false );
 } // void QgsSpatialQueryDialog::populateCbResulFor()
@@ -518,11 +518,11 @@ void QgsSpatialQueryDialog::populateTypeItems()
 {
   QVariant item;
   cbTypeItems->blockSignals( true );
-  item = QVariant::fromValue(( int )itemsResult );
+  item = QVariant::fromValue(( int )ItemsResult );
   cbTypeItems->addItem( tr( "Result query" ), item );
-  item = QVariant::fromValue(( int )itemsInvalidTarget );
+  item = QVariant::fromValue(( int )ItemsInvalidTarget );
   cbTypeItems->addItem( tr( "Invalid source" ), item );
-  item = QVariant::fromValue(( int )itemsInvalidReference );
+  item = QVariant::fromValue(( int )ItemsInvalidReference );
   cbTypeItems->addItem( tr( "Invalid reference" ), item );
   cbTypeItems->blockSignals( false );
 }
@@ -658,16 +658,16 @@ void QgsSpatialQueryDialog::changeLwFeature( QgsVectorLayer* lyr, QgsFeatureId f
 
 void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 {
-  static QgsVectorLayer* lyrCheck = nullptr;
-  static bool hasMsg = false;
-  if ( ! lyrCheck || lyrCheck != lyr )
+  static QgsVectorLayer* sLyrCheck = nullptr;
+  static bool sHasMsg = false;
+  if ( ! sLyrCheck || sLyrCheck != lyr )
   {
-    lyrCheck = lyr;
-    hasMsg = true;
+    sLyrCheck = lyr;
+    sHasMsg = true;
   }
   else
   {
-    hasMsg = false;
+    sHasMsg = false;
   }
 
   QgsFeature feat;
@@ -684,7 +684,7 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
   QgsCoordinateReferenceSystem srcMapcanvas = mIface->mapCanvas()->mapSettings().destinationCrs();
   if ( ! srsSource.isValid() )
   {
-    if ( hasMsg )
+    if ( sHasMsg )
     {
       QString crsMapcanvas = srcMapcanvas.authid();
       bool isFly = mIface->mapCanvas()->mapSettings().hasCrsTransformEnabled();
@@ -795,13 +795,13 @@ void QgsSpatialQueryDialog::on_pbCreateLayerItems_clicked()
   QgsFeatureIds *fids = nullptr;
   switch ( typeItem )
   {
-    case itemsResult:
+    case ItemsResult:
       fids = &mFeatureResult;
       break;
-    case itemsInvalidTarget:
+    case ItemsInvalidTarget:
       fids = &mFeatureInvalidTarget;
       break;
-    case itemsInvalidReference:
+    case ItemsInvalidReference:
       fids = &mFeatureInvalidReference;
       break;
     default:
@@ -811,12 +811,12 @@ void QgsSpatialQueryDialog::on_pbCreateLayerItems_clicked()
   QString msg;
   QString fieldFID;
   TypeVerifyCreateSubset verify = verifyCreateSubset( msg, fieldFID );
-  if ( verify == verifyImpossible )
+  if ( verify == VerifyImpossible )
   {
     QMessageBox::critical( this, title, msg, QMessageBox::Ok );
     return;
   }
-  if ( verify == verifyTry )
+  if ( verify == VerifyTry )
   {
     QMessageBox::warning( this, title, msg, QMessageBox::Ok );
   }
@@ -837,12 +837,12 @@ void QgsSpatialQueryDialog::on_pbCreateLayerSelected_clicked()
   QString msg;
   QString fieldFID;
   TypeVerifyCreateSubset verify = verifyCreateSubset( msg, fieldFID );
-  if ( verify == verifyImpossible )
+  if ( verify == VerifyImpossible )
   {
     QMessageBox::critical( this, title, msg, QMessageBox::Ok );
     return;
   }
-  if ( verify == verifyTry )
+  if ( verify == VerifyTry )
   {
     QMessageBox::warning( this, title, msg, QMessageBox::Ok );
   }
@@ -900,13 +900,13 @@ void QgsSpatialQueryDialog::on_cbTypeItems_currentIndexChanged( int index )
   int totalFeat = mLayerTarget->featureCount();
   switch ( typeItem )
   {
-    case itemsResult:
+    case ItemsResult:
       setItems = &mFeatureResult;
       break;
-    case itemsInvalidTarget:
+    case ItemsInvalidTarget:
       setItems = &mFeatureInvalidTarget;
       break;
-    case itemsInvalidReference:
+    case ItemsInvalidReference:
       setItems = &mFeatureInvalidReference;
       totalFeat = mLayerReference->featureCount();
       break;
@@ -965,7 +965,7 @@ void QgsSpatialQueryDialog::on_cbOperation_currentIndexChanged()
 void QgsSpatialQueryDialog::on_lwFeatures_currentItemChanged( QListWidgetItem * item )
 {
   TypeItems typeItem = ( TypeItems )( cbTypeItems->currentData().toInt() );
-  QgsVectorLayer *lyr = typeItem == itemsInvalidReference ? mLayerReference : mLayerTarget;
+  QgsVectorLayer *lyr = typeItem == ItemsInvalidReference ? mLayerReference : mLayerTarget;
   changeLwFeature( lyr, STRING_TO_FID( item->data( Qt::UserRole ).toString() ) );
 } // void QgsSpatialQueryDialog::on_lwFeatures_currentItemChanged( QListWidgetItem * item )
 
@@ -988,7 +988,7 @@ void QgsSpatialQueryDialog::on_ckbZoomItem_clicked( bool checked )
     {
       QgsFeatureId fid = STRING_TO_FID( lwFeatures->currentItem()->data( Qt::UserRole ).toString() );
       TypeItems typeItem = ( TypeItems )( cbTypeItems->currentData().toInt() );
-      QgsVectorLayer *lyr = typeItem == itemsInvalidReference ? mLayerReference : mLayerTarget;
+      QgsVectorLayer *lyr = typeItem == ItemsInvalidReference ? mLayerReference : mLayerTarget;
       zoomFeature( lyr, fid );
     }
   }

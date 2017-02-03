@@ -40,8 +40,8 @@ class DualEdgeTriangulation: Triangulation
     virtual double getYMin() const;
     /** Returns the number of points*/
     virtual int getNumberOfPoints() const;
-    /** Sets the behaviour of the triangulation in case of crossing forced lines*/
-    virtual void setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b );
+    /** Sets the behavior of the triangulation in case of crossing forced lines*/
+    virtual void setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b );
     /** Sets the color of the normal edges*/
     virtual void setEdgeColor( int r, int g, int b );
     /** Sets the color of the forced edges*/

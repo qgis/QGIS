@@ -473,7 +473,7 @@ void QgsTaskManager::cancelAll()
   }
 }
 
-bool QgsTaskManager::dependenciesSatisified( long taskId ) const
+bool QgsTaskManager::dependenciesSatisfied( long taskId ) const
 {
   mTaskMutex->lock();
   QMap< long, QgsTaskList > dependencies = mTaskDependencies;
@@ -669,7 +669,7 @@ void QgsTaskManager::layersWillBeRemoved( const QStringList& layerIds )
       }
 
       QgsTask* dependentTask = task( it.key() );
-      if ( dependentTask && ( dependentTask->status() != QgsTask::Complete || dependentTask->status() != QgsTask::Terminated ) )
+      if ( dependentTask && ( dependentTask->status() != QgsTask::Complete && dependentTask->status() != QgsTask::Terminated ) )
       {
         // incomplete task is dependent on this layer!
         dependentTask->cancel();
@@ -706,7 +706,7 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   mTasks.remove( id );
   mLayerDependencies.remove( id );
 
-  if ( task->status() != QgsTask::Complete || task->status() != QgsTask::Terminated )
+  if ( task->status() != QgsTask::Complete && task->status() != QgsTask::Terminated )
   {
     if ( isParent )
     {
@@ -728,7 +728,7 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
     }
   }
 
-  // at this stage (hopefully) dependent tasks have been cancelled or queued
+  // at this stage (hopefully) dependent tasks have been canceled or queued
   for ( QMap< long, QgsTaskList >::iterator it = mTaskDependencies.begin(); it != mTaskDependencies.end(); ++it )
   {
     if ( it.value().contains( task ) )
@@ -749,7 +749,7 @@ void QgsTaskManager::processQueue()
   for ( QMap< long, TaskInfo >::iterator it = mTasks.begin(); it != mTasks.end(); ++it )
   {
     QgsTask* task = it.value().task;
-    if ( task && task->mStatus == QgsTask::Queued && dependenciesSatisified( it.key() ) && it.value().added.testAndSetRelaxed( 0, 1 ) )
+    if ( task && task->mStatus == QgsTask::Queued && dependenciesSatisfied( it.key() ) && it.value().added.testAndSetRelaxed( 0, 1 ) )
     {
       QThreadPool::globalInstance()->start( it.value().runnable, it.value().priority );
     }
@@ -777,7 +777,7 @@ void QgsTaskManager::processQueue()
 
 void QgsTaskManager::cancelDependentTasks( long taskId )
 {
-  QgsTask* cancelledTask = task( taskId );
+  QgsTask* canceledTask = task( taskId );
 
   //deep copy
   mTaskMutex->lock();
@@ -788,12 +788,12 @@ void QgsTaskManager::cancelDependentTasks( long taskId )
   QMap< long, QgsTaskList >::const_iterator it = taskDependencies.constBegin();
   for ( ; it != taskDependencies.constEnd(); ++it )
   {
-    if ( it.value().contains( cancelledTask ) )
+    if ( it.value().contains( canceledTask ) )
     {
       // found task with this dependency
 
       // cancel it - note that this will be recursive, so any tasks dependent
-      // on this one will also be cancelled
+      // on this one will also be canceled
       QgsTask* dependentTask = task( it.key() );
       if ( dependentTask )
         dependentTask->cancel();

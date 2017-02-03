@@ -364,7 +364,7 @@ class ModelerDialog(BASE, WIDGET):
         self.repaintModel(controls=False)
         filename, fileFilter = QFileDialog.getSaveFileName(self,
                                                            self.tr('Save Model As PDF'), '',
-                                                           self.tr('SVG files (*.pdf *.PDF)'))
+                                                           self.tr('PDF files (*.pdf *.PDF)'))
         if not filename:
             return
 

@@ -308,7 +308,7 @@ QString QgsProviderRegistry::pluginList( bool asHTML ) const
     list += it->second->description();
 
     if ( asHTML )
-      list + "<br></li>";
+      list += "<br></li>";
     else
       list += '\n';
 
@@ -328,7 +328,7 @@ void QgsProviderRegistry::setLibraryDirectory( QDir const & path )
   init();
 }
 
-QDir const & QgsProviderRegistry::libraryDirectory() const
+QDir QgsProviderRegistry::libraryDirectory() const
 {
   return mLibraryDirectory;
 }

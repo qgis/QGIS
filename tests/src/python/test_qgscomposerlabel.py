@@ -38,7 +38,7 @@ class TestQgsComposerLabel(unittest.TestCase):
         mapSettings.setLayers([mVectorLayer])
         mapSettings.setCrsTransformEnabled(False)
 
-        mComposition = QgsComposition(mapSettings, QgsProject.instance())
+        mComposition = QgsComposition(QgsProject.instance())
         mComposition.setPaperSize(297, 210)
 
         mLabel = QgsComposerLabel(mComposition)

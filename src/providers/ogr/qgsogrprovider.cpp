@@ -739,7 +739,7 @@ QStringList QgsOgrProvider::subLayers() const
         fCount.remove( wkbCircularString );
       }
 
-      bool bIs25D = ( wkbHasZ( layerGeomType ) != 0 );
+      bool bIs25D = wkbHasZ( layerGeomType );
       QMap<OGRwkbGeometryType, int>::const_iterator countIt = fCount.constBegin();
       for ( ; countIt != fCount.constEnd(); ++countIt )
       {
@@ -1130,7 +1130,7 @@ QgsFields QgsOgrProvider::fields() const
 }
 
 
-//TODO - add sanity check for shape file layers, to include cheking to
+//TODO - add sanity check for shape file layers, to include checking to
 //       see if the .shp, .dbf, .shx files are all present and the layer
 //       actually has features
 bool QgsOgrProvider::isValid() const
@@ -1299,7 +1299,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
     QgsFeatureId id = static_cast<QgsFeatureId>( OGR_F_GetFID( feature ) );
     if ( id >= 0 )
     {
-      f.setFeatureId( id );
+      f.setId( id );
 
       if ( mFirstFieldIsFid && attrs.count() > 0 )
       {
@@ -2020,22 +2020,22 @@ static QString createFileFilter_( QString const &longName, QString const &glob )
 QString createFilters( const QString& type )
 {
   //! Database drivers available
-  static QString myDatabaseDrivers;
+  static QString sDatabaseDrivers;
   //! Protocol drivers available
-  static QString myProtocolDrivers;
+  static QString sProtocolDrivers;
   //! File filters
-  static QString myFileFilters;
+  static QString sFileFilters;
   //! Directory drivers
-  static QString myDirectoryDrivers;
+  static QString sDirectoryDrivers;
   //! Extensions
-  static QStringList myExtensions;
+  static QStringList sExtensions;
   //! Wildcards
-  static QStringList myWildcards;
+  static QStringList sWildcards;
 
   // if we've already built the supported vector string, just return what
   // we've already built
 
-  if ( myFileFilters.isEmpty() || myFileFilters.isNull() )
+  if ( sFileFilters.isEmpty() || sFileFilters.isNull() )
   {
     // register ogr plugins
     QgsApplication::registerOgrDrivers();
@@ -2068,305 +2068,305 @@ QString createFilters( const QString& type )
 
       if ( driverName.startsWith( QLatin1String( "AVCBin" ) ) )
       {
-        myDirectoryDrivers += QObject::tr( "Arc/Info Binary Coverage" ) + ",AVCBin;";
+        sDirectoryDrivers += QObject::tr( "Arc/Info Binary Coverage" ) + ",AVCBin;";
       }
       else if ( driverName.startsWith( QLatin1String( "AVCE00" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Arc/Info ASCII Coverage" ), QStringLiteral( "*.e00" ) );
-        myExtensions << QStringLiteral( "e00" );
+        sFileFilters += createFileFilter_( QObject::tr( "Arc/Info ASCII Coverage" ), QStringLiteral( "*.e00" ) );
+        sExtensions << QStringLiteral( "e00" );
       }
       else if ( driverName.startsWith( QLatin1String( "BNA" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Atlas BNA" ), QStringLiteral( "*.bna" ) );
-        myExtensions << QStringLiteral( "bna" );
+        sFileFilters += createFileFilter_( QObject::tr( "Atlas BNA" ), QStringLiteral( "*.bna" ) );
+        sExtensions << QStringLiteral( "bna" );
       }
       else if ( driverName.startsWith( QLatin1String( "CSV" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Comma Separated Value" ), QStringLiteral( "*.csv" ) );
-        myExtensions << QStringLiteral( "csv" );
+        sFileFilters += createFileFilter_( QObject::tr( "Comma Separated Value" ), QStringLiteral( "*.csv" ) );
+        sExtensions << QStringLiteral( "csv" );
       }
       else if ( driverName.startsWith( QObject::tr( "DODS" ) ) )
       {
-        myProtocolDrivers += QLatin1String( "DODS/OPeNDAP,DODS;" );
+        sProtocolDrivers += QLatin1String( "DODS/OPeNDAP,DODS;" );
       }
       else if ( driverName.startsWith( QObject::tr( "CouchDB" ) ) )
       {
-        myProtocolDrivers += QLatin1String( "CouchDB;" );
+        sProtocolDrivers += QLatin1String( "CouchDB;" );
       }
       else if ( driverName.startsWith( QLatin1String( "FileGDB" ) ) )
       {
-        myDirectoryDrivers += QObject::tr( "ESRI FileGDB" ) + ",FileGDB;";
+        sDirectoryDrivers += QObject::tr( "ESRI FileGDB" ) + ",FileGDB;";
       }
       else if ( driverName.startsWith( QLatin1String( "PGeo" ) ) )
       {
-        myDatabaseDrivers += QObject::tr( "ESRI Personal GeoDatabase" ) + ",PGeo;";
+        sDatabaseDrivers += QObject::tr( "ESRI Personal GeoDatabase" ) + ",PGeo;";
 #ifdef Q_OS_WIN
-        myFileFilters += createFileFilter_( QObject::tr( "ESRI Personal GeoDatabase" ), "*.mdb" );
-        myExtensions << "mdb";
+        sFileFilters += createFileFilter_( QObject::tr( "ESRI Personal GeoDatabase" ), "*.mdb" );
+        sExtensions << "mdb";
 #endif
       }
       else if ( driverName.startsWith( QLatin1String( "SDE" ) ) )
       {
-        myDatabaseDrivers += QObject::tr( "ESRI ArcSDE" ) + ",SDE;";
+        sDatabaseDrivers += QObject::tr( "ESRI ArcSDE" ) + ",SDE;";
       }
       else if ( driverName.startsWith( QLatin1String( "ESRI" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "ESRI Shapefiles" ), QStringLiteral( "*.shp" ) );
-        myExtensions << QStringLiteral( "shp" ) << QStringLiteral( "dbf" );
+        sFileFilters += createFileFilter_( QObject::tr( "ESRI Shapefiles" ), QStringLiteral( "*.shp" ) );
+        sExtensions << QStringLiteral( "shp" ) << QStringLiteral( "dbf" );
       }
       else if ( driverName.startsWith( QObject::tr( "FMEObjects Gateway" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "FMEObjects Gateway" ), QStringLiteral( "*.fdd" ) );
-        myExtensions << QStringLiteral( "fdd" );
+        sFileFilters += createFileFilter_( QObject::tr( "FMEObjects Gateway" ), QStringLiteral( "*.fdd" ) );
+        sExtensions << QStringLiteral( "fdd" );
       }
       else if ( driverName.startsWith( QLatin1String( "GeoJSON" ) ) )
       {
-        myProtocolDrivers += QLatin1String( "GeoJSON,GeoJSON;" );
-        myFileFilters += createFileFilter_( QObject::tr( "GeoJSON" ), QStringLiteral( "*.geojson" ) );
-        myExtensions << QStringLiteral( "geojson" );
+        sProtocolDrivers += QLatin1String( "GeoJSON,GeoJSON;" );
+        sFileFilters += createFileFilter_( QObject::tr( "GeoJSON" ), QStringLiteral( "*.geojson" ) );
+        sExtensions << QStringLiteral( "geojson" );
       }
       else if ( driverName.startsWith( QLatin1String( "GeoRSS" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "GeoRSS" ), QStringLiteral( "*.xml" ) );
-        myExtensions << QStringLiteral( "xml" );
+        sFileFilters += createFileFilter_( QObject::tr( "GeoRSS" ), QStringLiteral( "*.xml" ) );
+        sExtensions << QStringLiteral( "xml" );
       }
       else if ( driverName.startsWith( QLatin1String( "GML" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Geography Markup Language [GML]" ), QStringLiteral( "*.gml" ) );
-        myExtensions << QStringLiteral( "gml" );
+        sFileFilters += createFileFilter_( QObject::tr( "Geography Markup Language [GML]" ), QStringLiteral( "*.gml" ) );
+        sExtensions << QStringLiteral( "gml" );
       }
       else if ( driverName.startsWith( QLatin1String( "GMT" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Generic Mapping Tools [GMT]" ), QStringLiteral( "*.gmt" ) );
-        myExtensions << QStringLiteral( "gmt" );
+        sFileFilters += createFileFilter_( QObject::tr( "Generic Mapping Tools [GMT]" ), QStringLiteral( "*.gmt" ) );
+        sExtensions << QStringLiteral( "gmt" );
       }
       else if ( driverName.startsWith( QLatin1String( "GPX" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "GPS eXchange Format [GPX]" ), QStringLiteral( "*.gpx" ) );
-        myExtensions << QStringLiteral( "gpx" );
+        sFileFilters += createFileFilter_( QObject::tr( "GPS eXchange Format [GPX]" ), QStringLiteral( "*.gpx" ) );
+        sExtensions << QStringLiteral( "gpx" );
       }
       else if ( driverName.startsWith( QLatin1String( "GPKG" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "GeoPackage" ), QStringLiteral( "*.gpkg" ) );
-        myExtensions << QStringLiteral( "gpkg" );
+        sFileFilters += createFileFilter_( QObject::tr( "GeoPackage" ), QStringLiteral( "*.gpkg" ) );
+        sExtensions << QStringLiteral( "gpkg" );
       }
       else if ( driverName.startsWith( QLatin1String( "GRASS" ) ) )
       {
-        myDirectoryDrivers += QObject::tr( "Grass Vector" ) + ",GRASS;";
+        sDirectoryDrivers += QObject::tr( "Grass Vector" ) + ",GRASS;";
       }
       else if ( driverName.startsWith( QLatin1String( "IDB" ) ) )
       {
-        myDatabaseDrivers += QObject::tr( "Informix DataBlade" ) + ",IDB;";
+        sDatabaseDrivers += QObject::tr( "Informix DataBlade" ) + ",IDB;";
       }
       else if ( driverName.startsWith( QLatin1String( "Interlis 1" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "INTERLIS 1" ), QStringLiteral( "*.itf *.xml *.ili" ) );
-        myExtensions << QStringLiteral( "itf" ) << QStringLiteral( "xml" ) << QStringLiteral( "ili" );
+        sFileFilters += createFileFilter_( QObject::tr( "INTERLIS 1" ), QStringLiteral( "*.itf *.xml *.ili" ) );
+        sExtensions << QStringLiteral( "itf" ) << QStringLiteral( "xml" ) << QStringLiteral( "ili" );
       }
       else if ( driverName.startsWith( QLatin1String( "Interlis 2" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "INTERLIS 2" ), QStringLiteral( "*.itf *.xml *.ili" ) );
-        myExtensions << QStringLiteral( "itf" ) << QStringLiteral( "xml" ) << QStringLiteral( "ili" );
+        sFileFilters += createFileFilter_( QObject::tr( "INTERLIS 2" ), QStringLiteral( "*.itf *.xml *.ili" ) );
+        sExtensions << QStringLiteral( "itf" ) << QStringLiteral( "xml" ) << QStringLiteral( "ili" );
       }
       else if ( driverName.startsWith( QLatin1String( "Ingres" ) ) )
       {
-        myDatabaseDrivers += QObject::tr( "Ingres" ) + ",Ingres;";
+        sDatabaseDrivers += QObject::tr( "Ingres" ) + ",Ingres;";
       }
       else if ( driverName.startsWith( QLatin1String( "KML" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Keyhole Markup Language [KML]" ), QStringLiteral( "*.kml *.kmz" ) );
-        myExtensions << QStringLiteral( "kml" ) << QStringLiteral( "kmz" );
+        sFileFilters += createFileFilter_( QObject::tr( "Keyhole Markup Language [KML]" ), QStringLiteral( "*.kml *.kmz" ) );
+        sExtensions << QStringLiteral( "kml" ) << QStringLiteral( "kmz" );
       }
       else if ( driverName.startsWith( QLatin1String( "MapInfo File" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Mapinfo File" ), QStringLiteral( "*.mif *.tab" ) );
-        myExtensions << QStringLiteral( "mif" ) << QStringLiteral( "tab" );
+        sFileFilters += createFileFilter_( QObject::tr( "Mapinfo File" ), QStringLiteral( "*.mif *.tab" ) );
+        sExtensions << QStringLiteral( "mif" ) << QStringLiteral( "tab" );
       }
       else if ( driverName.startsWith( QLatin1String( "DGN" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Microstation DGN" ), QStringLiteral( "*.dgn" ) );
-        myExtensions << QStringLiteral( "dgn" );
+        sFileFilters += createFileFilter_( QObject::tr( "Microstation DGN" ), QStringLiteral( "*.dgn" ) );
+        sExtensions << QStringLiteral( "dgn" );
       }
       else if ( driverName.startsWith( QLatin1String( "MySQL" ) ) )
       {
-        myDatabaseDrivers += QObject::tr( "MySQL" ) + ",MySQL;";
+        sDatabaseDrivers += QObject::tr( "MySQL" ) + ",MySQL;";
       }
       else if ( driverName.startsWith( QLatin1String( "MSSQL" ) ) )
       {
-        myDatabaseDrivers += QObject::tr( "MSSQL" ) + ",MSSQL;";
+        sDatabaseDrivers += QObject::tr( "MSSQL" ) + ",MSSQL;";
       }
       else if ( driverName.startsWith( QLatin1String( "OCI" ) ) )
       {
-        myDatabaseDrivers += QObject::tr( "Oracle Spatial" ) + ",OCI;";
+        sDatabaseDrivers += QObject::tr( "Oracle Spatial" ) + ",OCI;";
       }
       else if ( driverName.startsWith( QLatin1String( "ODBC" ) ) )
       {
-        myDatabaseDrivers += QObject::tr( "ODBC" ) + ",ODBC;";
+        sDatabaseDrivers += QObject::tr( "ODBC" ) + ",ODBC;";
       }
       else if ( driverName.startsWith( QLatin1String( "OGDI" ) ) )
       {
-        myDatabaseDrivers += QObject::tr( "OGDI Vectors" ) + ",OGDI;";
+        sDatabaseDrivers += QObject::tr( "OGDI Vectors" ) + ",OGDI;";
       }
       else if ( driverName.startsWith( QLatin1String( "OpenFileGDB" ) ) )
       {
-        myDirectoryDrivers += QObject::tr( "OpenFileGDB" ) + ",OpenFileGDB;";
+        sDirectoryDrivers += QObject::tr( "OpenFileGDB" ) + ",OpenFileGDB;";
       }
       else if ( driverName.startsWith( QLatin1String( "PostgreSQL" ) ) )
       {
-        myDatabaseDrivers += QObject::tr( "PostgreSQL" ) + ",PostgreSQL;";
+        sDatabaseDrivers += QObject::tr( "PostgreSQL" ) + ",PostgreSQL;";
       }
       else if ( driverName.startsWith( QLatin1String( "S57" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "S-57 Base file" ),
-                                            QStringLiteral( "*.000" ) );
-        myExtensions << QStringLiteral( "000" );
+        sFileFilters += createFileFilter_( QObject::tr( "S-57 Base file" ),
+                                           QStringLiteral( "*.000" ) );
+        sExtensions << QStringLiteral( "000" );
       }
       else if ( driverName.startsWith( QLatin1String( "SDTS" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Spatial Data Transfer Standard [SDTS]" ),
-                                            QStringLiteral( "*catd.ddf" ) );
-        myWildcards << QStringLiteral( "*catd.ddf" );
+        sFileFilters += createFileFilter_( QObject::tr( "Spatial Data Transfer Standard [SDTS]" ),
+                                           QStringLiteral( "*catd.ddf" ) );
+        sWildcards << QStringLiteral( "*catd.ddf" );
       }
       else if ( driverName.startsWith( QLatin1String( "SOSI" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Systematic Organization of Spatial Information [SOSI]" ), QStringLiteral( "*.sos" ) );
-        myExtensions << QStringLiteral( "sos" );
+        sFileFilters += createFileFilter_( QObject::tr( "Systematic Organization of Spatial Information [SOSI]" ), QStringLiteral( "*.sos" ) );
+        sExtensions << QStringLiteral( "sos" );
       }
       else if ( driverName.startsWith( QLatin1String( "SQLite" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "SQLite/SpatiaLite" ), QStringLiteral( "*.sqlite *.db *.sqlite3 *.db3 *.s3db *.sl3" ) );
-        myExtensions << QStringLiteral( "sqlite" ) << QStringLiteral( "db" ) << QStringLiteral( "sqlite3" ) << QStringLiteral( "db3" ) << QStringLiteral( "s3db" ) << QStringLiteral( "sl3" );
+        sFileFilters += createFileFilter_( QObject::tr( "SQLite/SpatiaLite" ), QStringLiteral( "*.sqlite *.db *.sqlite3 *.db3 *.s3db *.sl3" ) );
+        sExtensions << QStringLiteral( "sqlite" ) << QStringLiteral( "db" ) << QStringLiteral( "sqlite3" ) << QStringLiteral( "db3" ) << QStringLiteral( "s3db" ) << QStringLiteral( "sl3" );
       }
       else if ( driverName.startsWith( QLatin1String( "SXF" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Storage and eXchange Format" ), QStringLiteral( "*.sxf" ) );
-        myExtensions << QStringLiteral( "sxf" );
+        sFileFilters += createFileFilter_( QObject::tr( "Storage and eXchange Format" ), QStringLiteral( "*.sxf" ) );
+        sExtensions << QStringLiteral( "sxf" );
       }
       else if ( driverName.startsWith( QLatin1String( "UK .NTF" ) ) )
       {
-        myDirectoryDrivers += QObject::tr( "UK. NTF2" ) + ",UK. NTF;";
+        sDirectoryDrivers += QObject::tr( "UK. NTF2" ) + ",UK. NTF;";
       }
       else if ( driverName.startsWith( QLatin1String( "TIGER" ) ) )
       {
-        myDirectoryDrivers += QObject::tr( "U.S. Census TIGER/Line" ) + ",TIGER;";
+        sDirectoryDrivers += QObject::tr( "U.S. Census TIGER/Line" ) + ",TIGER;";
       }
       else if ( driverName.startsWith( QLatin1String( "VRT" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "VRT - Virtual Datasource" ),
-                                            QStringLiteral( "*.vrt *.ovf" ) );
-        myExtensions << QStringLiteral( "vrt" ) << QStringLiteral( "ovf" );
+        sFileFilters += createFileFilter_( QObject::tr( "VRT - Virtual Datasource" ),
+                                           QStringLiteral( "*.vrt *.ovf" ) );
+        sExtensions << QStringLiteral( "vrt" ) << QStringLiteral( "ovf" );
       }
       else if ( driverName.startsWith( QLatin1String( "XPlane" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "X-Plane/Flightgear" ),
-                                            QStringLiteral( "apt.dat nav.dat fix.dat awy.dat" ) );
-        myWildcards << QStringLiteral( "apt.dat" ) << QStringLiteral( "nav.dat" ) << QStringLiteral( "fix.dat" ) << QStringLiteral( "awy.dat" );
+        sFileFilters += createFileFilter_( QObject::tr( "X-Plane/Flightgear" ),
+                                           QStringLiteral( "apt.dat nav.dat fix.dat awy.dat" ) );
+        sWildcards << QStringLiteral( "apt.dat" ) << QStringLiteral( "nav.dat" ) << QStringLiteral( "fix.dat" ) << QStringLiteral( "awy.dat" );
       }
       else if ( driverName.startsWith( QLatin1String( "Geoconcept" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Geoconcept" ), QStringLiteral( "*.gxt *.txt" ) );
-        myExtensions << QStringLiteral( "gxt" ) << QStringLiteral( "txt" );
+        sFileFilters += createFileFilter_( QObject::tr( "Geoconcept" ), QStringLiteral( "*.gxt *.txt" ) );
+        sExtensions << QStringLiteral( "gxt" ) << QStringLiteral( "txt" );
       }
       else if ( driverName.startsWith( QLatin1String( "DXF" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "AutoCAD DXF" ), QStringLiteral( "*.dxf" ) );
-        myExtensions << QStringLiteral( "dxf" );
+        sFileFilters += createFileFilter_( QObject::tr( "AutoCAD DXF" ), QStringLiteral( "*.dxf" ) );
+        sExtensions << QStringLiteral( "dxf" );
       }
       else if ( driverName.startsWith( QLatin1String( "ODS" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Open Document Spreadsheet" ), QStringLiteral( "*.ods" ) );
-        myExtensions << QStringLiteral( "ods" );
+        sFileFilters += createFileFilter_( QObject::tr( "Open Document Spreadsheet" ), QStringLiteral( "*.ods" ) );
+        sExtensions << QStringLiteral( "ods" );
       }
       else if ( driverName.startsWith( QLatin1String( "XLSX" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "MS Office Open XML spreadsheet" ), QStringLiteral( "*.xlsx" ) );
-        myExtensions << QStringLiteral( "xlsx" );
+        sFileFilters += createFileFilter_( QObject::tr( "MS Office Open XML spreadsheet" ), QStringLiteral( "*.xlsx" ) );
+        sExtensions << QStringLiteral( "xlsx" );
       }
       else if ( driverName.endsWith( QLatin1String( "XLS" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "MS Excel format" ), QStringLiteral( "*.xls" ) );
-        myExtensions << QStringLiteral( "xls" );
+        sFileFilters += createFileFilter_( QObject::tr( "MS Excel format" ), QStringLiteral( "*.xls" ) );
+        sExtensions << QStringLiteral( "xls" );
       }
       else if ( driverName.startsWith( QLatin1String( "EDIGEO" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "EDIGEO" ), QStringLiteral( "*.thf" ) );
-        myExtensions << QStringLiteral( "thf" );
+        sFileFilters += createFileFilter_( QObject::tr( "EDIGEO" ), QStringLiteral( "*.thf" ) );
+        sExtensions << QStringLiteral( "thf" );
       }
       else if ( driverName.startsWith( QLatin1String( "NAS" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "NAS - ALKIS" ), QStringLiteral( "*.xml" ) );
-        myExtensions << QStringLiteral( "xml" );
+        sFileFilters += createFileFilter_( QObject::tr( "NAS - ALKIS" ), QStringLiteral( "*.xml" ) );
+        sExtensions << QStringLiteral( "xml" );
       }
       else if ( driverName.startsWith( QLatin1String( "WAsP" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "WAsP" ), QStringLiteral( "*.map" ) );
-        myExtensions << QStringLiteral( "map" );
+        sFileFilters += createFileFilter_( QObject::tr( "WAsP" ), QStringLiteral( "*.map" ) );
+        sExtensions << QStringLiteral( "map" );
       }
       else if ( driverName.startsWith( QLatin1String( "PCIDSK" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "PCI Geomatics Database File" ), QStringLiteral( "*.pix" ) );
-        myExtensions << QStringLiteral( "pix" );
+        sFileFilters += createFileFilter_( QObject::tr( "PCI Geomatics Database File" ), QStringLiteral( "*.pix" ) );
+        sExtensions << QStringLiteral( "pix" );
       }
       else if ( driverName.startsWith( QLatin1String( "GPSTrackMaker" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "GPSTrackMaker" ), QStringLiteral( "*.gtm *.gtz" ) );
-        myExtensions << QStringLiteral( "gtm" ) << QStringLiteral( "gtz" );
+        sFileFilters += createFileFilter_( QObject::tr( "GPSTrackMaker" ), QStringLiteral( "*.gtm *.gtz" ) );
+        sExtensions << QStringLiteral( "gtm" ) << QStringLiteral( "gtz" );
       }
       else if ( driverName.startsWith( QLatin1String( "VFK" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Czech Cadastral Exchange Data Format" ), QStringLiteral( "*.vfk" ) );
-        myExtensions << QStringLiteral( "vfk" );
+        sFileFilters += createFileFilter_( QObject::tr( "Czech Cadastral Exchange Data Format" ), QStringLiteral( "*.vfk" ) );
+        sExtensions << QStringLiteral( "vfk" );
       }
       else if ( driverName.startsWith( QLatin1String( "OSM" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "OpenStreetMap" ), QStringLiteral( "*.osm *.pbf" ) );
-        myExtensions << QStringLiteral( "osm" ) << QStringLiteral( "pbf" );
+        sFileFilters += createFileFilter_( QObject::tr( "OpenStreetMap" ), QStringLiteral( "*.osm *.pbf" ) );
+        sExtensions << QStringLiteral( "osm" ) << QStringLiteral( "pbf" );
       }
       else if ( driverName.startsWith( QLatin1String( "SUA" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Special Use Airspace Format" ), QStringLiteral( "*.sua" ) );
-        myExtensions << QStringLiteral( "sua" );
+        sFileFilters += createFileFilter_( QObject::tr( "Special Use Airspace Format" ), QStringLiteral( "*.sua" ) );
+        sExtensions << QStringLiteral( "sua" );
       }
       else if ( driverName.startsWith( QLatin1String( "OpenAir" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "OpenAir Special Use Airspace Format" ), QStringLiteral( "*.txt" ) );
-        myExtensions << QStringLiteral( "txt" );
+        sFileFilters += createFileFilter_( QObject::tr( "OpenAir Special Use Airspace Format" ), QStringLiteral( "*.txt" ) );
+        sExtensions << QStringLiteral( "txt" );
       }
       else if ( driverName.startsWith( QLatin1String( "PDS" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Planetary Data Systems TABLE" ), QStringLiteral( "*.xml" ) );
-        myExtensions << QStringLiteral( "xml" );
+        sFileFilters += createFileFilter_( QObject::tr( "Planetary Data Systems TABLE" ), QStringLiteral( "*.xml" ) );
+        sExtensions << QStringLiteral( "xml" );
       }
       else if ( driverName.startsWith( QLatin1String( "HTF" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Hydrographic Transfer Format" ), QStringLiteral( "*.htf" ) );
-        myExtensions << QStringLiteral( "htf" );
+        sFileFilters += createFileFilter_( QObject::tr( "Hydrographic Transfer Format" ), QStringLiteral( "*.htf" ) );
+        sExtensions << QStringLiteral( "htf" );
       }
       else if ( driverName.startsWith( QLatin1String( "SVG" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Scalable Vector Graphics" ), QStringLiteral( "*.svg" ) );
-        myExtensions << QStringLiteral( "svg" );
+        sFileFilters += createFileFilter_( QObject::tr( "Scalable Vector Graphics" ), QStringLiteral( "*.svg" ) );
+        sExtensions << QStringLiteral( "svg" );
       }
       else if ( driverName.startsWith( QLatin1String( "ARCGEN" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Arc/Info Generate" ), QStringLiteral( "*.gen" ) );
-        myExtensions << QStringLiteral( "gen" );
+        sFileFilters += createFileFilter_( QObject::tr( "Arc/Info Generate" ), QStringLiteral( "*.gen" ) );
+        sExtensions << QStringLiteral( "gen" );
       }
       else if ( driverName.startsWith( QLatin1String( "PDF" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "Geospatial PDF" ), QStringLiteral( "*.pdf" ) );
-        myExtensions << QStringLiteral( "pdf" );
+        sFileFilters += createFileFilter_( QObject::tr( "Geospatial PDF" ), QStringLiteral( "*.pdf" ) );
+        sExtensions << QStringLiteral( "pdf" );
       }
       else if ( driverName.startsWith( QLatin1String( "SEGY" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "SEG-Y" ), QStringLiteral( "*.sgy *.segy" ) );
-        myExtensions << QStringLiteral( "sgy" ) << QStringLiteral( "segy" );
+        sFileFilters += createFileFilter_( QObject::tr( "SEG-Y" ), QStringLiteral( "*.sgy *.segy" ) );
+        sExtensions << QStringLiteral( "sgy" ) << QStringLiteral( "segy" );
       }
       else if ( driverName.startsWith( QLatin1String( "SEGUKOOA" ) ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "SEG-P1" ), QStringLiteral( "*.seg *.seg1 *.sp1" ) );
-        myFileFilters += createFileFilter_( QObject::tr( "UKOOA P1/90" ), QStringLiteral( "*.uko *.ukooa" ) );
-        myExtensions << QStringLiteral( "seg" ) << QStringLiteral( "seg1" ) << QStringLiteral( "sp1" ) << QStringLiteral( "uko" ) << QStringLiteral( "ukooa" );
+        sFileFilters += createFileFilter_( QObject::tr( "SEG-P1" ), QStringLiteral( "*.seg *.seg1 *.sp1" ) );
+        sFileFilters += createFileFilter_( QObject::tr( "UKOOA P1/90" ), QStringLiteral( "*.uko *.ukooa" ) );
+        sExtensions << QStringLiteral( "seg" ) << QStringLiteral( "seg1" ) << QStringLiteral( "sp1" ) << QStringLiteral( "uko" ) << QStringLiteral( "ukooa" );
       }
       else
       {
@@ -2378,11 +2378,11 @@ QString createFilters( const QString& type )
     }                          // each loaded OGR driver
 
     // sort file filters alphabetically
-    QgsDebugMsg( "myFileFilters: " + myFileFilters );
-    QStringList filters = myFileFilters.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
+    QgsDebugMsg( "myFileFilters: " + sFileFilters );
+    QStringList filters = sFileFilters.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
     filters.sort();
-    myFileFilters = filters.join( QStringLiteral( ";;" ) ) + ";;";
-    QgsDebugMsg( "myFileFilters: " + myFileFilters );
+    sFileFilters = filters.join( QStringLiteral( ";;" ) ) + ";;";
+    QgsDebugMsg( "myFileFilters: " + sFileFilters );
 
     // VSIFileHandler (.zip and .gz files) - second
     //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
@@ -2391,43 +2391,43 @@ QString createFilters( const QString& type )
     QSettings settings;
     if ( settings.value( QStringLiteral( "/qgis/scanZipInBrowser2" ), "basic" ).toString() != QLatin1String( "no" ) )
     {
-      myFileFilters.prepend( createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), QStringLiteral( "*.zip *.gz *.tar *.tar.gz *.tgz" ) ) );
-      myExtensions << QStringLiteral( "zip" ) << QStringLiteral( "gz" ) << QStringLiteral( "tar" ) << QStringLiteral( "tar.gz" ) << QStringLiteral( "tgz" );
+      sFileFilters.prepend( createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), QStringLiteral( "*.zip *.gz *.tar *.tar.gz *.tgz" ) ) );
+      sExtensions << QStringLiteral( "zip" ) << QStringLiteral( "gz" ) << QStringLiteral( "tar" ) << QStringLiteral( "tar.gz" ) << QStringLiteral( "tgz" );
 
     }
 
     // can't forget the default case - first
-    myFileFilters.prepend( QObject::tr( "All files" ) + " (*);;" );
+    sFileFilters.prepend( QObject::tr( "All files" ) + " (*);;" );
 
     // cleanup
-    if ( myFileFilters.endsWith( QLatin1String( ";;" ) ) ) myFileFilters.chop( 2 );
+    if ( sFileFilters.endsWith( QLatin1String( ";;" ) ) ) sFileFilters.chop( 2 );
 
-    QgsDebugMsg( "myFileFilters: " + myFileFilters );
+    QgsDebugMsg( "myFileFilters: " + sFileFilters );
   }
 
   if ( type == QLatin1String( "file" ) )
   {
-    return myFileFilters;
+    return sFileFilters;
   }
   if ( type == QLatin1String( "database" ) )
   {
-    return myDatabaseDrivers;
+    return sDatabaseDrivers;
   }
   if ( type == QLatin1String( "protocol" ) )
   {
-    return myProtocolDrivers;
+    return sProtocolDrivers;
   }
   if ( type == QLatin1String( "directory" ) )
   {
-    return myDirectoryDrivers;
+    return sDirectoryDrivers;
   }
   if ( type == QLatin1String( "extensions" ) )
   {
-    return myExtensions.join( QStringLiteral( "|" ) );
+    return sExtensions.join( QStringLiteral( "|" ) );
   }
   if ( type == QLatin1String( "wildcards" ) )
   {
-    return myWildcards.join( QStringLiteral( "|" ) );
+    return sWildcards.join( QStringLiteral( "|" ) );
   }
   else
   {
@@ -2918,7 +2918,7 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString& sub
       results << textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) );
     OGR_F_Destroy( f );
 
-    if (( limit >= 0 && results.size() >= limit ) || ( feedback && feedback->isCancelled() ) )
+    if (( limit >= 0 && results.size() >= limit ) || ( feedback && feedback->isCanceled() ) )
       break;
   }
 

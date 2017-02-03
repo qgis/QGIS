@@ -20,38 +20,31 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsgetlegendgraphics.h"
-#include "qgswmsservertransitional.h"
+#include "qgswmsrenderer.h"
 
 namespace QgsWms
 {
 
-  void writeGetLegendGraphics( QgsServerInterface* serverIface, const QString& version,
-                               const QgsServerRequest& request, QgsServerResponse& response )
+  void writeGetLegendGraphics( QgsServerInterface* serverIface, const QgsProject* project,
+                               const QString& version, const QgsServerRequest& request,
+                               QgsServerResponse& response )
   {
     Q_UNUSED( version );
 
     QgsServerRequest::Parameters params = request.parameters();
-    QgsWmsConfigParser* parser = getConfigParser( serverIface );
+    QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
 
-    QgsWmsServer server( serverIface->configFilePath(), params, parser,
-                         serverIface->accessControls() );
-    try
+    QScopedPointer<QImage> result( renderer.getLegendGraphics() );
+
+    if ( !result.isNull() )
     {
-      QScopedPointer<QImage> result( server.getLegendGraphics() );
-      if ( !result.isNull() )
-      {
-        QString format = params.value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
-        writeImage( response, *result,  format, server.getImageQuality() );
-      }
-      else
-      {
-        writeError( response, QStringLiteral( "UnknownError" ),
-                    QStringLiteral( "Failed to compute GetLegendGraphics image" ) );
-      }
+      QString format = params.value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
+      writeImage( response, *result,  format, renderer.getImageQuality() );
     }
-    catch ( QgsMapServiceException& ex )
+    else
     {
-      writeError( response, ex.code(), ex.message() );
+      throw QgsServiceException( QStringLiteral( "UnknownError" ),
+                                 QStringLiteral( "Failed to compute GetLegendGraphics image" ) );
     }
   }
 

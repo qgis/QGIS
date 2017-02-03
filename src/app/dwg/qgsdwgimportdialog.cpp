@@ -32,7 +32,6 @@
 #include "qgslayertreemodel.h"
 #include "qgslayertreegroup.h"
 #include "qgsrenderer.h"
-#include "qgsdatadefined.h"
 #include "qgsnullsymbolrenderer.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsfillsymbollayer.h"
@@ -42,6 +41,7 @@
 #include "qgsgenericprojectionselector.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
+#include "qgsproperty.h"
 
 
 struct CursorOverride
@@ -304,7 +304,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
   if ( l )
   {
     QgsSimpleFillSymbolLayer *sfl = new QgsSimpleFillSymbolLayer();
-    sfl->setDataDefinedProperty( "color", new QgsDataDefined( true, false, "", "color" ) );
+    sfl->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromField( "color" ) );
     sfl->setBorderStyle( Qt::NoPen );
     sym = new QgsFillSymbol();
     sym->changeSymbolLayer( 0, sfl );
@@ -315,9 +315,9 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
   if ( l )
   {
     QgsSimpleLineSymbolLayer *sll = new QgsSimpleLineSymbolLayer();
-    sll->setDataDefinedProperty( "color", new QgsDataDefined( true, false, "", "color" ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineColor, QgsProperty::fromField( "color" ) );
     sll->setPenJoinStyle( Qt::MiterJoin );
-    sll->setDataDefinedProperty( "width", new QgsDataDefined( true, false, "", "linewidth" ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, QgsProperty::fromField( "linewidth" ) );
     // sll->setUseCustomDashPattern( true );
     // sll->setCustomDashPatternUnit( QgsSymbolV2::MapUnit );
     // sll->setDataDefinedProperty( "customdash", new QgsDataDefined( true, false, "", "linetype" ) );
@@ -331,9 +331,9 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
   if ( l )
   {
     QgsSimpleLineSymbolLayer *sll = new QgsSimpleLineSymbolLayer();
-    sll->setDataDefinedProperty( "color", new QgsDataDefined( true, false, "", "color" ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineColor, QgsProperty::fromField( "color" ) );
     sll->setPenJoinStyle( Qt::MiterJoin );
-    sll->setDataDefinedProperty( "width", new QgsDataDefined( true, false, "", "width" ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineWidth, QgsProperty::fromField( "width" ) );
     // sll->setUseCustomDashPattern( true );
     // sll->setCustomDashPatternUnit( QgsSymbolV2::MapUnit );
     // sll->setDataDefinedProperty( "customdash", new QgsDataDefined( true, false, "", "linetype" ) );
@@ -358,49 +358,46 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
     pls.drawLabels = true;
     pls.fieldName = "text";
     pls.wrapChar = "\\P";
-    pls.setDataDefinedProperty( QgsPalLayerSettings::Size, true, false, "", "height" );
-    pls.setDataDefinedProperty( QgsPalLayerSettings::Color, true, false, "", "color" );
-    pls.setDataDefinedProperty( QgsPalLayerSettings::MultiLineHeight, true, true, "CASE WHEN interlin<0 THEN 1 ELSE interlin*1.5 END", "" );
+
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromField( QStringLiteral( "height" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Color, QgsProperty::fromField( QStringLiteral( "color" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::MultiLineHeight, QgsProperty::fromExpression( QStringLiteral( "CASE WHEN interlin<0 THEN 1 ELSE interlin*1.5 END" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromExpression( QStringLiteral( "$x" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromExpression( QStringLiteral( "$y" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Hali, QgsProperty::fromExpression( QStringLiteral( "CASE"
+        " WHEN etype=%1 THEN"
+        " CASE"
+        " WHEN alignv IN (1,4,7) THEN 'Left'"
+        " WHEN alignv IN (2,5,6) THEN 'Center'"
+        " ELSE 'Right'"
+        " END"
+        " ELSE"
+        "  CASE"
+        " WHEN alignh=0 THEN 'Left'"
+        " WHEN alignh=1 THEN 'Center'"
+        " WHEN alignh=2 THEN 'Right'"
+        " WHEN alignh=3 THEN 'Left'"
+        " WHEN alignh=4 THEN 'Left'"
+        " END "
+        " END" ).arg( DRW::MTEXT ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Vali, QgsProperty::fromExpression( QStringLiteral( "CASE"
+        " WHEN etype=%1 THEN"
+        " CASE"
+        " WHEN alignv < 4 THEN 'Top'"
+        " WHEN alignv < 7 THEN 'Half'"
+        " ELSE 'Bottom'"
+        " END"
+        " ELSE"
+        " CASE"
+        " WHEN alignv=0 THEN 'Base'"
+        " WHEN alignv=1 THEN 'Bottom'"
+        " WHEN alignv=2 THEN 'Half'"
+        " WHEN alignv=3 THEN 'Top'"
+        " END"
+        " END" ).arg( DRW::MTEXT ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Rotation, QgsProperty::fromExpression( QStringLiteral( "angle*180.0/pi()" ) ) );
+
     pls.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
-    pls.setDataDefinedProperty( QgsPalLayerSettings::PositionX, true, true, "$x", "" );
-    pls.setDataDefinedProperty( QgsPalLayerSettings::PositionY, true, true, "$y", "" );
-    pls.setDataDefinedProperty( QgsPalLayerSettings::Hali, true, true, QString(
-                                  "CASE"
-                                  " WHEN etype=%1 THEN"
-                                  " CASE"
-                                  " WHEN alignv IN (1,4,7) THEN 'Left'"
-                                  " WHEN alignv IN (2,5,6) THEN 'Center'"
-                                  " ELSE 'Right'"
-                                  " END"
-                                  " ELSE"
-                                  "  CASE"
-                                  " WHEN alignh=0 THEN 'Left'"
-                                  " WHEN alignh=1 THEN 'Center'"
-                                  " WHEN alignh=2 THEN 'Right'"
-                                  " WHEN alignh=3 THEN 'Left'"
-                                  " WHEN alignh=4 THEN 'Left'"
-                                  " END "
-                                  " END" ).arg( DRW::MTEXT ), "" );
-
-    pls.setDataDefinedProperty( QgsPalLayerSettings::Vali, true, true, QString(
-                                  "CASE"
-                                  " WHEN etype=%1 THEN"
-                                  " CASE"
-                                  " WHEN alignv < 4 THEN 'Top'"
-                                  " WHEN alignv < 7 THEN 'Half'"
-                                  " ELSE 'Bottom'"
-                                  " END"
-                                  " ELSE"
-                                  " CASE"
-                                  " WHEN alignv=0 THEN 'Base'"
-                                  " WHEN alignv=1 THEN 'Bottom'"
-                                  " WHEN alignv=2 THEN 'Half'"
-                                  " WHEN alignv=3 THEN 'Top'"
-                                  " END"
-                                  " END" ).arg( DRW::MTEXT ), "" );
-
-    pls.setDataDefinedProperty( QgsPalLayerSettings::Rotation, true, true, "angle*180.0/pi()", "" );
-
     pls.writeToLayer( l );
   }
 

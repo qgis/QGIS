@@ -22,7 +22,7 @@
 #include "qgsoptionsdialogbase.h"
 #include "ui_qgsvectorlayerpropertiesbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayer.h"
 #include "layertree/qgslayertreemodel.h"
@@ -104,7 +104,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void loadStyle_clicked();
     void saveStyleAs_clicked();
     void mOptionsStackedWidget_CurrentChanged( int indx );
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html" ) ); }
     void on_pbnUpdateExtents_clicked();
 
     void on_mButtonAddJoin_clicked();
@@ -177,20 +177,20 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //! Fields dialog. If apply is pressed, options are applied to vector's diagrams
     QgsFieldsProperties* mFieldsPropertiesDialog;
 
-    //! List of joins of a layer at the time of creation of the dialog. Used to return joins to previous state if dialog is cancelled
-    QList< QgsVectorJoinInfo > mOldJoins;
+    //! List of joins of a layer at the time of creation of the dialog. Used to return joins to previous state if dialog is canceled
+    QList< QgsVectorLayerJoinInfo > mOldJoins;
 
     //! A list of additional pages provided by plugins
     QList<QgsMapLayerConfigWidget*> mLayerPropertiesPages;
 
     /** Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is cancelled */
+     * was loaded but dialog is canceled */
     QgsMapLayerStyle mOldStyle;
 
     void initDiagramTab();
 
     //! Adds a new join to mJoinTreeWidget
-    void addJoinToTreeWidget( const QgsVectorJoinInfo& join , const int insertIndex = -1 );
+    void addJoinToTreeWidget( const QgsVectorLayerJoinInfo& join , const int insertIndex = -1 );
 
     QgsExpressionContext mContext;
 

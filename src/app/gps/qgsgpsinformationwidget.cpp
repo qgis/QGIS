@@ -208,7 +208,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   mRadAutodetect->setChecked( true );
 #endif
 
-  //auto digitising behaviour
+  //auto digitizing behavior
   mCbxAutoAddVertices->setChecked( mySettings.value( QStringLiteral( "/gps/autoAddVertices" ), "false" ).toBool() );
 
   mCbxAutoCommit->setChecked( mySettings.value( QStringLiteral( "/gps/autoCommit" ), "false" ).toBool() );
@@ -683,12 +683,12 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
     mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : QLatin1String( "" ) );
   } //position
 
-  // Avoid refreshing / panning if we havent moved
+  // Avoid refreshing / panning if we haven't moved
   if ( mLastGpsPosition != myNewCenter )
   {
     mLastGpsPosition = myNewCenter;
 
-    // Pan based on user specified behaviour
+    // Pan based on user specified behavior
     if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
     {
       QgsCoordinateReferenceSystem mypSRS = mpCanvas->mapSettings().destinationCrs();
@@ -967,7 +967,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
     delete f;
     connectGpsSlot();
   } // layerWKBType == QgsWkbTypes::Point
-  mpCanvas->refresh();  // NOTE: cancelling feature add refreshes canvas, OK does not; this may change, however, so do it anyway
+  mpCanvas->refresh();  // NOTE: canceling feature add refreshes canvas, OK does not; this may change, however, so do it anyway
 
   // force focus back to GPS window/ Add Feature button for ease of use by keyboard
   activateWindow();

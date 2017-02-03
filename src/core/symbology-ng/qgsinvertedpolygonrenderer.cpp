@@ -235,7 +235,7 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
     }
   }
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return false; // do not let invalid geometries sneak in!
 
   // add the geometry to the list of geometries for this feature
@@ -464,13 +464,13 @@ QgsFeatureRenderer::Capabilities QgsInvertedPolygonRenderer::capabilities()
   return mSubRenderer->capabilities();
 }
 
-QSet<QString> QgsInvertedPolygonRenderer::usedAttributes() const
+QSet<QString> QgsInvertedPolygonRenderer::usedAttributes( const QgsRenderContext& context ) const
 {
   if ( !mSubRenderer )
   {
     return QSet<QString>();
   }
-  return mSubRenderer->usedAttributes();
+  return mSubRenderer->usedAttributes( context );
 }
 
 QgsLegendSymbologyList QgsInvertedPolygonRenderer::legendSymbologyItems( QSize iconSize )

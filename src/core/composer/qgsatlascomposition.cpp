@@ -439,7 +439,7 @@ void QgsAtlasComposition::computeExtent( QgsComposerMap* map )
   // QgsGeometry::boundingBox is expressed in the geometry"s native CRS
   // We have to transform the grometry to the destination CRS and ask for the bounding box
   // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
-  mTransformedFeatureBounds = currentGeometry( map->composition()->mapSettings().destinationCrs() ).boundingBox();
+  mTransformedFeatureBounds = currentGeometry( map->crs() ).boundingBox();
 }
 
 void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
@@ -481,7 +481,7 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
   if ( map->atlasScalingMode() == QgsComposerMap::Fixed || map->atlasScalingMode() == QgsComposerMap::Predefined || isPointLayer )
   {
     QgsScaleCalculator calc;
-    calc.setMapUnits( composition()->mapSettings().mapUnits() );
+    calc.setMapUnits( map->crs().mapUnits() );
     calc.setDpi( 25.4 );
     double originalScale = calc.calculate( mOrigExtent, map->rect().width() );
     double geomCenterX = ( xa1 + xa2 ) / 2.0;
@@ -661,40 +661,6 @@ void QgsAtlasComposition::readXml( const QDomElement& atlasElem, const QDomDocum
   emit parameterChanged();
 }
 
-void QgsAtlasComposition::readXmlMapSettings( const QDomElement &elem, const QDomDocument &doc )
-{
-  Q_UNUSED( doc );
-  //look for stored composer map, to upgrade pre 2.1 projects
-  int composerMapNo = elem.attribute( QStringLiteral( "composerMap" ), QStringLiteral( "-1" ) ).toInt();
-  QgsComposerMap * composerMap = nullptr;
-  if ( composerMapNo != -1 )
-  {
-    QList<QgsComposerMap*> maps;
-    mComposition->composerItems( maps );
-    for ( QList<QgsComposerMap*>::iterator it = maps.begin(); it != maps.end(); ++it )
-    {
-      if (( *it )->id() == composerMapNo )
-      {
-        composerMap = ( *it );
-        composerMap->setAtlasDriven( true );
-        break;
-      }
-    }
-  }
-
-  //upgrade pre 2.1 projects
-  double margin = elem.attribute( QStringLiteral( "margin" ), QStringLiteral( "0.0" ) ).toDouble();
-  if ( composerMap && !qgsDoubleNear( margin, 0.0 ) )
-  {
-    composerMap->setAtlasMargin( margin );
-  }
-  bool fixedScale = elem.attribute( QStringLiteral( "fixedScale" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
-  if ( composerMap && fixedScale )
-  {
-    composerMap->setAtlasScalingMode( QgsComposerMap::Fixed );
-  }
-}
-
 void QgsAtlasComposition::setHideCoverage( bool hide )
 {
   mHideCoverage = hide;
@@ -717,10 +683,10 @@ bool QgsAtlasComposition::setFilenamePattern( const QString& pattern )
 QgsExpressionContext QgsAtlasComposition::createExpressionContext()
 {
   QgsExpressionContext expressionContext;
-  expressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope( mComposition->project() );
+  expressionContext << QgsExpressionContextUtils::globalScope();
   if ( mComposition )
-    expressionContext << QgsExpressionContextUtils::compositionScope( mComposition );
+    expressionContext << QgsExpressionContextUtils::projectScope( mComposition->project() )
+    << QgsExpressionContextUtils::compositionScope( mComposition );
 
   expressionContext.appendScope( QgsExpressionContextUtils::atlasScope( this ) );
   if ( mCoverageLayer )

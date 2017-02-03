@@ -42,14 +42,14 @@
 QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
-  if ( index.column() == QgsMssqlTableModel::dbtmSql )
+  if ( index.column() == QgsMssqlTableModel::DbtmSql )
   {
     QLineEdit *le = new QLineEdit( parent );
     le->setText( index.data( Qt::DisplayRole ).toString() );
     return le;
   }
 
-  if ( index.column() == QgsMssqlTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
+  if ( index.column() == QgsMssqlTableModel::DbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
     Q_FOREACH ( QgsWkbTypes::Type type,
@@ -68,7 +68,7 @@ QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QSty
     return cb;
   }
 
-  if ( index.column() == QgsMssqlTableModel::dbtmPkCol )
+  if ( index.column() == QgsMssqlTableModel::DbtmPkCol )
   {
     QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
 
@@ -81,7 +81,7 @@ QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QSty
     }
   }
 
-  if ( index.column() == QgsMssqlTableModel::dbtmSrid )
+  if ( index.column() == QgsMssqlTableModel::DbtmSrid )
   {
     QLineEdit *le = new QLineEdit( parent );
     le->setValidator( new QIntValidator( -1, 999999, parent ) );
@@ -97,7 +97,7 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
   QComboBox *cb = qobject_cast<QComboBox *>( editor );
   if ( cb )
   {
-    if ( index.column() == QgsMssqlTableModel::dbtmType )
+    if ( index.column() == QgsMssqlTableModel::DbtmType )
     {
       QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->currentData().toInt();
 
@@ -105,7 +105,7 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
       model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::displayString( type ) : tr( "Select..." ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
-    else if ( index.column() == QgsMssqlTableModel::dbtmPkCol )
+    else if ( index.column() == QgsMssqlTableModel::DbtmPkCol )
     {
       model->setData( index, cb->currentText() );
       model->setData( index, cb->currentText(), Qt::UserRole + 2 );
@@ -350,31 +350,31 @@ void QgsMssqlSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const Q
   }
   else if ( text == tr( "Schema" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsMssqlTableModel::dbtmSchema );
+    mProxyModel.setFilterKeyColumn( QgsMssqlTableModel::DbtmSchema );
   }
   else if ( text == tr( "Table" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsMssqlTableModel::dbtmTable );
+    mProxyModel.setFilterKeyColumn( QgsMssqlTableModel::DbtmTable );
   }
   else if ( text == tr( "Type" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsMssqlTableModel::dbtmType );
+    mProxyModel.setFilterKeyColumn( QgsMssqlTableModel::DbtmType );
   }
   else if ( text == tr( "Geometry column" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsMssqlTableModel::dbtmGeomCol );
+    mProxyModel.setFilterKeyColumn( QgsMssqlTableModel::DbtmGeomCol );
   }
   else if ( text == tr( "Primary key column" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsMssqlTableModel::dbtmPkCol );
+    mProxyModel.setFilterKeyColumn( QgsMssqlTableModel::DbtmPkCol );
   }
   else if ( text == tr( "SRID" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsMssqlTableModel::dbtmSrid );
+    mProxyModel.setFilterKeyColumn( QgsMssqlTableModel::DbtmSrid );
   }
   else if ( text == tr( "Sql" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsMssqlTableModel::dbtmSql );
+    mProxyModel.setFilterKeyColumn( QgsMssqlTableModel::DbtmSql );
   }
 }
 
@@ -436,7 +436,7 @@ void QgsMssqlSourceSelect::addTables()
 
   Q_FOREACH ( const QModelIndex& idx, mTablesTreeView->selectionModel()->selection().indexes() )
   {
-    if ( idx.column() != QgsMssqlTableModel::dbtmTable )
+    if ( idx.column() != QgsMssqlTableModel::DbtmTable )
       continue;
 
     QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), mConnInfo, mUseEstimatedMetadata );
@@ -512,7 +512,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
 
   if ( !QgsMssqlProvider::OpenDatabase( db ) )
   {
-    // Let user know we couldn't initialise the MSSQL provider
+    // Let user know we couldn't initialize the MSSQL provider
     QMessageBox::warning( this,
                           tr( "MSSQL Provider" ), db.lastError().text() );
     return;
@@ -633,8 +633,8 @@ void QgsMssqlSourceSelect::finishList()
 {
   QApplication::restoreOverrideCursor();
 
-  mTablesTreeView->sortByColumn( QgsMssqlTableModel::dbtmTable, Qt::AscendingOrder );
-  mTablesTreeView->sortByColumn( QgsMssqlTableModel::dbtmSchema, Qt::AscendingOrder );
+  mTablesTreeView->sortByColumn( QgsMssqlTableModel::DbtmTable, Qt::AscendingOrder );
+  mTablesTreeView->sortByColumn( QgsMssqlTableModel::DbtmSchema, Qt::AscendingOrder );
 }
 
 void QgsMssqlSourceSelect::columnThreadFinished()
@@ -665,7 +665,7 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
   }
 
   QModelIndex idx = mProxyModel.mapToSource( index );
-  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsMssqlTableModel::dbtmTable ) )->text();
+  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsMssqlTableModel::DbtmTable ) )->text();
 
   QgsVectorLayer *vlayer = new QgsVectorLayer( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata ), tableName, QStringLiteral( "mssql" ) );
 

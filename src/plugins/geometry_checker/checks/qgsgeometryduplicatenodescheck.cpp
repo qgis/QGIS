@@ -110,7 +110,7 @@ void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError* error, int
   }
 }
 
-const QStringList& QgsGeometryDuplicateNodesCheck::getResolutionMethods() const
+QStringList QgsGeometryDuplicateNodesCheck::getResolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "Delete duplicate node" ) << tr( "No action" );
   return methods;

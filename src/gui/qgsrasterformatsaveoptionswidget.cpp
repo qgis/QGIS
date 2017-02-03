@@ -30,7 +30,7 @@
 #include <QMenu>
 
 
-QMap< QString, QStringList > QgsRasterFormatSaveOptionsWidget::mBuiltinProfiles;
+QMap< QString, QStringList > QgsRasterFormatSaveOptionsWidget::sBuiltinProfiles;
 
 static const QString PYRAMID_JPEG_YCBCR_COMPRESSION( QStringLiteral( "JPEG_QUALITY_OVERVIEW=75 COMPRESS_OVERVIEW=JPEG PHOTOMETRIC_OVERVIEW=YCBCR INTERLEAVE_OVERVIEW=PIXEL" ) );
 static const QString PYRAMID_JPEG_COMPRESSION( QStringLiteral( "JPEG_QUALITY_OVERVIEW=75 COMPRESS_OVERVIEW=JPEG INTERLEAVE_OVERVIEW=PIXEL" ) );
@@ -50,40 +50,40 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* par
 
   setType( type );
 
-  if ( mBuiltinProfiles.isEmpty() )
+  if ( sBuiltinProfiles.isEmpty() )
   {
     // key=profileKey values=format,profileName,options
-    mBuiltinProfiles[ QStringLiteral( "z_adefault" )] = ( QStringList() << QLatin1String( "" ) << tr( "Default" ) << QLatin1String( "" ) );
+    sBuiltinProfiles[ QStringLiteral( "z_adefault" )] = ( QStringList() << QLatin1String( "" ) << tr( "Default" ) << QLatin1String( "" ) );
 
     // these GTiff profiles are based on Tim's benchmarks at
     // http://linfiniti.com/2011/05/gdal-efficiency-of-various-compression-algorithms/
     // big: no compression | medium: reasonable size/speed tradeoff | small: smallest size
-    mBuiltinProfiles[ QStringLiteral( "z_gtiff_1big" )] =
+    sBuiltinProfiles[ QStringLiteral( "z_gtiff_1big" )] =
       ( QStringList() << QStringLiteral( "GTiff" ) << tr( "No compression" )
         << QStringLiteral( "COMPRESS=NONE BIGTIFF=IF_NEEDED" ) );
-    mBuiltinProfiles[ QStringLiteral( "z_gtiff_2medium" )] =
+    sBuiltinProfiles[ QStringLiteral( "z_gtiff_2medium" )] =
       ( QStringList() << QStringLiteral( "GTiff" ) << tr( "Low compression" )
         << QStringLiteral( "COMPRESS=PACKBITS" ) );
-    mBuiltinProfiles[ QStringLiteral( "z_gtiff_3small" )] =
+    sBuiltinProfiles[ QStringLiteral( "z_gtiff_3small" )] =
       ( QStringList() << QStringLiteral( "GTiff" ) << tr( "High compression" )
         << QStringLiteral( "COMPRESS=DEFLATE PREDICTOR=2 ZLEVEL=9" ) );
-    mBuiltinProfiles[ QStringLiteral( "z_gtiff_4jpeg" )] =
+    sBuiltinProfiles[ QStringLiteral( "z_gtiff_4jpeg" )] =
       ( QStringList() << QStringLiteral( "GTiff" ) << tr( "JPEG compression" )
         << QStringLiteral( "COMPRESS=JPEG JPEG_QUALITY=75" ) );
 
     // overview compression schemes for GTiff format, see
     // http://www.gdal.org/gdaladdo.html and http://www.gdal.org/frmt_gtiff.html
     // TODO - should we offer GDAL_TIFF_OVR_BLOCKSIZE option here or in QgsRasterPyramidsOptionsWidget ?
-    mBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_1big" )] =
+    sBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_1big" )] =
       ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "No compression" )
         << QStringLiteral( "COMPRESS_OVERVIEW=NONE BIGTIFF_OVERVIEW=IF_NEEDED" ) );
-    mBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_2medium" )] =
+    sBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_2medium" )] =
       ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "Low compression" )
         << QStringLiteral( "COMPRESS_OVERVIEW=PACKBITS" ) );
-    mBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_3small" )] =
+    sBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_3small" )] =
       ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "High compression" )
         << QStringLiteral( "COMPRESS_OVERVIEW=DEFLATE PREDICTOR_OVERVIEW=2 ZLEVEL=9" ) ); // how to set zlevel?
-    mBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_4jpeg" )] =
+    sBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_4jpeg" )] =
       ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "JPEG compression" )
         << PYRAMID_JPEG_YCBCR_COMPRESSION );
   }
@@ -161,7 +161,7 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
   // build profiles list = user + builtin(last)
   QString format = pseudoFormat();
   QStringList profileKeys = profiles();
-  QMapIterator<QString, QStringList> it( mBuiltinProfiles );
+  QMapIterator<QString, QStringList> it( sBuiltinProfiles );
   while ( it.hasNext() )
   {
     it.next();
@@ -185,11 +185,11 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
   {
     QString profileName, profileOptions;
     profileOptions = createOptions( profileKey );
-    if ( mBuiltinProfiles.contains( profileKey ) )
+    if ( sBuiltinProfiles.contains( profileKey ) )
     {
-      profileName = mBuiltinProfiles[ profileKey ][ 1 ];
+      profileName = sBuiltinProfiles[ profileKey ][ 1 ];
       if ( profileOptions.isEmpty() )
-        profileOptions = mBuiltinProfiles[ profileKey ][ 2 ];
+        profileOptions = sBuiltinProfiles[ profileKey ][ 2 ];
     }
     else
     {
@@ -317,21 +317,21 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   bool tmpLayer = false;
   if ( !( mRasterLayer && rasterLayer->dataProvider() ) && ! mRasterFileName.isNull() )
   {
-    // temporarily override /Projections/defaultBehaviour to avoid dialog prompt
+    // temporarily override /Projections/defaultBehavior to avoid dialog prompt
     // this is taken from qgsbrowserdockwidget.cpp
     // TODO - integrate this into qgis core
     QSettings settings;
-    QString defaultProjectionOption = settings.value( QStringLiteral( "/Projections/defaultBehaviour" ), "prompt" ).toString();
-    if ( settings.value( QStringLiteral( "/Projections/defaultBehaviour" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
+    QString defaultProjectionOption = settings.value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString();
+    if ( settings.value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
     {
-      settings.setValue( QStringLiteral( "/Projections/defaultBehaviour" ), "useProject" );
+      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), "useProject" );
     }
     tmpLayer = true;
     rasterLayer = new QgsRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).baseName(), QStringLiteral( "gdal" ) );
-    // restore /Projections/defaultBehaviour
+    // restore /Projections/defaultBehavior
     if ( defaultProjectionOption == QLatin1String( "prompt" ) )
     {
-      settings.setValue( QStringLiteral( "/Projections/defaultBehaviour" ), defaultProjectionOption );
+      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), defaultProjectionOption );
     }
   }
 
@@ -443,7 +443,7 @@ void QgsRasterFormatSaveOptionsWidget::on_mProfileDeleteButton_clicked()
 {
   int index = mProfileComboBox->currentIndex();
   QString profileKey = currentProfileKey();
-  if ( index != -1 && ! mBuiltinProfiles.contains( profileKey ) )
+  if ( index != -1 && ! sBuiltinProfiles.contains( profileKey ) )
   {
     mOptionsMap.remove( profileKey );
     mProfileComboBox->removeItem( index );
@@ -453,9 +453,9 @@ void QgsRasterFormatSaveOptionsWidget::on_mProfileDeleteButton_clicked()
 void QgsRasterFormatSaveOptionsWidget::on_mProfileResetButton_clicked()
 {
   QString profileKey = currentProfileKey();
-  if ( mBuiltinProfiles.contains( profileKey ) )
+  if ( sBuiltinProfiles.contains( profileKey ) )
   {
-    mOptionsMap[ profileKey ] = mBuiltinProfiles[ profileKey ][ 2 ];
+    mOptionsMap[ profileKey ] = sBuiltinProfiles[ profileKey ][ 2 ];
   }
   else
   {

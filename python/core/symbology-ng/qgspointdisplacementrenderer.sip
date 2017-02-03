@@ -26,7 +26,7 @@ class QgsPointDisplacementRenderer : QgsPointDistanceRenderer
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
     void stopRender( QgsRenderContext& context );
     QDomElement save( QDomDocument& doc );
-    virtual QSet<QString> usedAttributes() const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     //! Create a renderer from XML element
     static QgsFeatureRenderer* create( QDomElement& symbologyElem ) /Factory/;

@@ -22,7 +22,7 @@
 #include "qgis.h"
 #include "qgsunittypes.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgis_app.h"
 
 class QgsMapCanvas;
@@ -141,7 +141,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     /*!
      * Slot to show the context help for this dialog
      */
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#project-properties" ) ); }
 
     void on_cbxProjectionEnabled_toggled( bool onFlyEnabled );
 
@@ -173,7 +173,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Signal used to inform listeners that the mouse display precision may have changed
     void displayPrecisionChanged();
 
-    //! Signal used to inform listeners that project scale list may have chnaged
+    //! Signal used to inform listeners that project scale list may have changed
     void scalesChanged( const QStringList &scales = QStringList() );
 
     //! let listening canvases know to refresh

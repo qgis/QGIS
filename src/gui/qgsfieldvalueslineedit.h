@@ -43,7 +43,7 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
         : mLayer( layer )
         , mAttributeIndex( attributeIndex )
         , mFeedback( nullptr )
-        , mWasCancelled( false )
+        , mWasCanceled( false )
     {}
 
     /** Sets the substring to find matching values containing
@@ -52,14 +52,14 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
 
     virtual void run() override
     {
-      mWasCancelled = false;
+      mWasCanceled = false;
       if ( mSubstring.isEmpty() )
       {
         emit collectedValues( QStringList() );
         return;
       }
 
-      // allow responsive cancellation
+      // allow responsive cancelation
       mFeedback = new QgsFeedback();
       // just get 100 values... maybe less/more would be useful?
       mValues = mLayer->uniqueStringsMatching( mAttributeIndex, mSubstring, 100, mFeedback );
@@ -76,17 +76,17 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
     //! Informs the gatherer to immediately stop collecting values
     void stop()
     {
-      // be cautious, in case gatherer stops naturally just as we are cancelling it and mFeedback gets deleted
+      // be cautious, in case gatherer stops naturally just as we are canceling it and mFeedback gets deleted
       mFeedbackMutex.lock();
       if ( mFeedback )
         mFeedback->cancel();
       mFeedbackMutex.unlock();
 
-      mWasCancelled = true;
+      mWasCanceled = true;
     }
 
-    //! Returns true if collection was cancelled before completion
-    bool wasCancelled() const { return mWasCancelled; }
+    //! Returns true if collection was canceled before completion
+    bool wasCanceled() const { return mWasCanceled; }
 
   signals:
 
@@ -103,7 +103,7 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
     QStringList mValues;
     QgsFeedback* mFeedback;
     QMutex mFeedbackMutex;
-    bool mWasCancelled;
+    bool mWasCanceled;
 };
 
 ///@endcond

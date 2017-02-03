@@ -49,10 +49,10 @@ class QgsWFSUtils
     static QSharedMemory* createAndAttachSHM();
 
   private:
-    static QMutex gmMutex;
-    static QThread* gmThread;
-    static bool gmKeepAliveWorks;
-    static int gmCounter;
+    static QMutex sMutex;
+    static QThread* sThread;
+    static bool sKeepAliveWorks;
+    static int sCounter;
 
     //! Return the name of temporary directory.
     static QString getCacheDirectory( bool createIfNotExisting );

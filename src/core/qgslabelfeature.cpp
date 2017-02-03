@@ -77,7 +77,7 @@ void QgsLabelFeature::setPermissibleZone( const QgsGeometry &geometry )
     mPermissibleZoneGeos = nullptr;
   }
 
-  if ( mPermissibleZone.isEmpty() )
+  if ( mPermissibleZone.isNull() )
     return;
 
   mPermissibleZoneGeos = mPermissibleZone.exportToGeos();

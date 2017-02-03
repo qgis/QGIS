@@ -102,7 +102,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
 
   mContext.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
 
-  mAttrNames = mRenderer->usedAttributes();
+  mAttrNames = mRenderer->usedAttributes( context );
 
   //register label and diagram layer to the labeling engine
   prepareLabeling( layer, mAttrNames );
@@ -290,7 +290,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator& fit )
     {
       if ( mContext.renderingStopped() )
       {
-        QgsDebugMsg( QString( "Drawing of vector layer %1 cancelled." ).arg( layerId() ) );
+        QgsDebugMsg( QString( "Drawing of vector layer %1 canceled." ).arg( layerId() ) );
         break;
       }
 

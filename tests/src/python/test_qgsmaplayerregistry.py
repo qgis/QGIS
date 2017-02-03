@@ -498,7 +498,7 @@ class TestQgsProjectMapLayers(unittest.TestCase):
         reg.removeMapLayers(['not_exists'])
         reg.removeMapLayer('not_exists2')
 
-        # check also that the removal of an unexistant layer does not insert a null layer
+        # check also that the removal of an unexistent layer does not insert a null layer
         for k, layer in list(reg.mapLayers().items()):
             assert(layer is not None)
 

@@ -24,12 +24,13 @@
 #include <QFileSystemWatcher>
 #include <QMap>
 #include <QObject>
+
 #include "qgis_server.h"
+#include "qgswmsconfigparser.h"
+#include "qgswfsprojectparser.h"
+#include "qgswcsprojectparser.h"
 
 class QgsServerProjectParser;
-class QgsWCSProjectParser;
-class QgsWfsProjectParser;
-class QgsWmsConfigParser;
 class QgsAccessControl;
 
 class QDomDocument;
@@ -43,21 +44,15 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     QgsServerProjectParser* serverConfiguration( const QString& filePath );
     QgsWCSProjectParser* wcsConfiguration(
       const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , const QgsAccessControl* accessControl
-#endif
     );
     QgsWfsProjectParser* wfsConfiguration(
       const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , const QgsAccessControl* accessControl
-#endif
     );
     QgsWmsConfigParser* wmsConfiguration(
       const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , const QgsAccessControl* accessControl
-#endif
       , const QMap<QString, QString>& parameterMap = ( QMap< QString, QString >() )
     );
 

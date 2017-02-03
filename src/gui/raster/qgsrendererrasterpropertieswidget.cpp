@@ -37,8 +37,8 @@
 
 static void _initRendererWidgetFunctions()
 {
-  static bool initialized = false;
-  if ( initialized )
+  static bool sInitialized = false;
+  if ( sInitialized )
     return;
 
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "paletted" ), QgsPalettedRendererWidget::create );
@@ -47,7 +47,7 @@ static void _initRendererWidgetFunctions()
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "singlebandgray" ), QgsSingleBandGrayRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "hillshade" ), QgsHillshadeRendererWidget::create );
 
-  initialized = true;
+  sInitialized = true;
 }
 
 
@@ -108,7 +108,7 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
   // this is not a problem - nobody is listening to our signals yet
   syncToLayer( mRasterLayer );
 
-  connect( mRasterLayer, SIGNAL( styleChanged() ), this, SLOT( refreshAfterSyleChanged() ) );
+  connect( mRasterLayer, SIGNAL( styleChanged() ), this, SLOT( refreshAfterStyleChanged() ) );
 }
 
 void QgsRendererRasterPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
@@ -390,7 +390,7 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
 
 }
 
-void QgsRendererRasterPropertiesWidget::refreshAfterSyleChanged()
+void QgsRendererRasterPropertiesWidget::refreshAfterStyleChanged()
 {
   if ( mRendererWidget )
   {

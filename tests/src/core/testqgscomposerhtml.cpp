@@ -51,14 +51,12 @@ class TestQgsComposerHtml : public QObject
 
   private:
     QgsComposition *mComposition;
-    QgsMapSettings *mMapSettings;
     QString mReport;
     QFont mTestFont;
 };
 
 TestQgsComposerHtml::TestQgsComposerHtml()
     : mComposition( 0 )
-    , mMapSettings( 0 )
 {
 
 }
@@ -68,8 +66,7 @@ void TestQgsComposerHtml::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mMapSettings = new QgsMapSettings();
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = QStringLiteral( "<h1>Composer HTML Tests</h1>\n" );
@@ -81,7 +78,6 @@ void TestQgsComposerHtml::initTestCase()
 void TestQgsComposerHtml::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

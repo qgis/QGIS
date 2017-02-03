@@ -184,7 +184,7 @@ inline bool isNull( const QVariant& v )
 ///////////////////////////////////////////////
 // operators
 
-const char* QgsExpression::BinaryOperatorText[] =
+const char* QgsExpression::BINARY_OPERATOR_TEXT[] =
 {
   // this must correspond (number and order of element) to the declaration of the enum BinaryOperator
   "OR", "AND",
@@ -193,7 +193,7 @@ const char* QgsExpression::BinaryOperatorText[] =
   "||"
 };
 
-const char* QgsExpression::UnaryOperatorText[] =
+const char* QgsExpression::UNARY_OPERATOR_TEXT[] =
 {
   // this must correspond (number and order of element) to the declaration of the enum UnaryOperator
   "NOT", "-"
@@ -365,7 +365,7 @@ static TVL getTVLValue( const QVariant& value, QgsExpression* parent )
   {
     //geom is false if empty
     QgsGeometry geom = value.value<QgsGeometry>();
-    return geom.isEmpty() ? False : True;
+    return geom.isNull() ? False : True;
   }
   else if ( value.canConvert<QgsFeature>() )
   {
@@ -1612,7 +1612,7 @@ static QVariant fcnDayOfWeek( const QVariantList& values, const QgsExpressionCon
     return QVariant();
 
   // return dayOfWeek() % 7 so that values range from 0 (sun) to 6 (sat)
-  // (to match PostgreSQL behaviour)
+  // (to match PostgreSQL behavior)
   return date.dayOfWeek() % 7;
 }
 
@@ -1760,7 +1760,7 @@ static QVariant fcnY( const QVariantList&, const QgsExpressionContext* context, 
 static QVariant fcnGeomX( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   //if single point, return the point's x coordinate
@@ -1778,7 +1778,7 @@ static QVariant fcnGeomX( const QVariantList& values, const QgsExpressionContext
 static QVariant fcnGeomY( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   //if single point, return the point's y coordinate
@@ -1796,7 +1796,7 @@ static QVariant fcnGeomY( const QVariantList& values, const QgsExpressionContext
 static QVariant fcnGeomZ( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant(); //or 0?
 
   //if single point, return the point's z coordinate
@@ -1813,7 +1813,7 @@ static QVariant fcnGeomZ( const QVariantList& values, const QgsExpressionContext
 static QVariant fcnGeomM( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant(); //or 0?
 
   //if single point, return the point's m value
@@ -1831,7 +1831,7 @@ static QVariant fcnPointN( const QVariantList& values, const QgsExpressionContex
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   //idx is 1 based
@@ -1852,7 +1852,7 @@ static QVariant fcnStartPoint( const QVariantList& values, const QgsExpressionCo
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QgsVertexId vId;
@@ -1869,7 +1869,7 @@ static QVariant fcnEndPoint( const QVariantList& values, const QgsExpressionCont
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QgsVertexId vId;
@@ -1886,7 +1886,7 @@ static QVariant fcnNodesToPoints( const QVariantList& values, const QgsExpressio
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   bool ignoreClosing = false;
@@ -1921,7 +1921,7 @@ static QVariant fcnSegmentsToLines( const QVariantList& values, const QgsExpress
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QList< QgsLineString* > linesToProcess = QgsGeometryUtils::extractLineStrings( geom.geometry() );
@@ -1948,7 +1948,7 @@ static QVariant fcnInteriorRingN( const QVariantList& values, const QgsExpressio
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QgsCurvePolygon* curvePolygon = dynamic_cast< QgsCurvePolygon* >( geom.geometry() );
@@ -1970,7 +1970,7 @@ static QVariant fcnGeometryN( const QVariantList& values, const QgsExpressionCon
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QgsGeometryCollection* collection = dynamic_cast< QgsGeometryCollection* >( geom.geometry() );
@@ -1992,7 +1992,7 @@ static QVariant fcnBoundary( const QVariantList& values, const QgsExpressionCont
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QgsAbstractGeometry* boundary = geom.geometry()->boundary();
@@ -2006,11 +2006,11 @@ static QVariant fcnLineMerge( const QVariantList& values, const QgsExpressionCon
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QgsGeometry merged = geom.mergeLines();
-  if ( merged.isEmpty() )
+  if ( merged.isNull() )
     return QVariant();
 
   return QVariant::fromValue( merged );
@@ -2020,13 +2020,13 @@ static QVariant fcnSimplify( const QVariantList& values, const QgsExpressionCont
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   double tolerance = getDoubleValue( values.at( 1 ), parent );
 
   QgsGeometry simplified = geom.simplify( tolerance );
-  if ( simplified.isEmpty() )
+  if ( simplified.isNull() )
     return QVariant();
 
   return simplified;
@@ -2036,7 +2036,7 @@ static QVariant fcnSimplifyVW( const QVariantList& values, const QgsExpressionCo
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   double tolerance = getDoubleValue( values.at( 1 ), parent );
@@ -2044,7 +2044,7 @@ static QVariant fcnSimplifyVW( const QVariantList& values, const QgsExpressionCo
   QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, QgsMapToPixelSimplifier::Visvalingam );
 
   QgsGeometry simplified = simplifier.simplify( geom );
-  if ( simplified.isEmpty() )
+  if ( simplified.isNull() )
     return QVariant();
 
   return simplified;
@@ -2054,7 +2054,7 @@ static QVariant fcnSmooth( const QVariantList& values, const QgsExpressionContex
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   int iterations = qMin( getIntValue( values.at( 1 ), parent ), 10 );
@@ -2063,7 +2063,7 @@ static QVariant fcnSmooth( const QVariantList& values, const QgsExpressionContex
   double maxAngle = qBound( 0.0, getDoubleValue( values.at( 4 ), parent ), 180.0 );
 
   QgsGeometry smoothed = geom.smooth( iterations, offset, minLength, maxAngle );
-  if ( smoothed.isEmpty() )
+  if ( smoothed.isNull() )
     return QVariant();
 
   return smoothed;
@@ -2114,7 +2114,7 @@ static QVariant fcnMakeLine( const QVariantList& values, const QgsExpressionCont
   Q_FOREACH ( const QVariant& value, values )
   {
     QgsGeometry geom = getGeometry( value, parent );
-    if ( geom.isEmpty() )
+    if ( geom.isNull() )
       continue;
 
     if ( geom.type() != QgsWkbTypes::PointGeometry || geom.isMultipart() )
@@ -2139,7 +2139,7 @@ static QVariant fcnMakePolygon( const QVariantList& values, const QgsExpressionC
   }
 
   QgsGeometry outerRing = getGeometry( values.at( 0 ), parent );
-  if ( outerRing.type() != QgsWkbTypes::LineGeometry || outerRing.isMultipart() || outerRing.isEmpty() )
+  if ( outerRing.type() != QgsWkbTypes::LineGeometry || outerRing.isMultipart() || outerRing.isNull() )
     return QVariant();
 
   QgsPolygonV2* polygon = new QgsPolygonV2();
@@ -2148,10 +2148,10 @@ static QVariant fcnMakePolygon( const QVariantList& values, const QgsExpressionC
   for ( int i = 1; i < values.count(); ++i )
   {
     QgsGeometry ringGeom = getGeometry( values.at( i ), parent );
-    if ( ringGeom.isEmpty() )
+    if ( ringGeom.isNull() )
       continue;
 
-    if ( ringGeom.type() != QgsWkbTypes::LineGeometry || ringGeom.isMultipart() || ringGeom.isEmpty() )
+    if ( ringGeom.type() != QgsWkbTypes::LineGeometry || ringGeom.isMultipart() || ringGeom.isNull() )
       continue;
 
     polygon->addInteriorRing( dynamic_cast< QgsCurve* >( ringGeom.geometry()->clone() ) );
@@ -2165,7 +2165,7 @@ static QVariant pointAt( const QVariantList& values, const QgsExpressionContext*
   FEAT_FROM_CONTEXT( context, f );
   int idx = getIntValue( values.at( 0 ), parent );
   QgsGeometry g = f.geometry();
-  if ( g.isEmpty() )
+  if ( g.isNull() )
     return QVariant();
 
   if ( idx < 0 )
@@ -2202,7 +2202,7 @@ static QVariant fcnGeometry( const QVariantList&, const QgsExpressionContext* co
 {
   FEAT_FROM_CONTEXT( context, f );
   QgsGeometry geom = f.geometry();
-  if ( !geom.isEmpty() )
+  if ( !geom.isNull() )
     return  QVariant::fromValue( geom );
   else
     return QVariant();
@@ -2211,14 +2211,14 @@ static QVariant fcnGeomFromWKT( const QVariantList& values, const QgsExpressionC
 {
   QString wkt = getStringValue( values.at( 0 ), parent );
   QgsGeometry geom = QgsGeometry::fromWkt( wkt );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 static QVariant fcnGeomFromGML( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QString gml = getStringValue( values.at( 0 ), parent );
   QgsGeometry geom = QgsOgcUtils::geometryFromGML( gml );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2279,7 +2279,7 @@ static QVariant fcnGeomPerimeter( const QVariantList&, const QgsExpressionContex
   }
   else
   {
-    return f.geometry().isEmpty() ? QVariant( 0 ) : QVariant( f.geometry().geometry()->perimeter() );
+    return f.geometry().isNull() ? QVariant( 0 ) : QVariant( f.geometry().geometry()->perimeter() );
   }
 }
 
@@ -2297,13 +2297,13 @@ static QVariant fcnPerimeter( const QVariantList& values, const QgsExpressionCon
 static QVariant fcnGeomNumPoints( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
-  return QVariant( geom.isEmpty() ? 0 : geom.geometry()->nCoordinates() );
+  return QVariant( geom.isNull() ? 0 : geom.geometry()->nCoordinates() );
 }
 
 static QVariant fcnGeomNumGeometries( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   return QVariant( geom.geometry()->partCount() );
@@ -2313,7 +2313,7 @@ static QVariant fcnGeomNumInteriorRings( const QVariantList& values, const QgsEx
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QgsCurvePolygon* curvePolygon = dynamic_cast< QgsCurvePolygon* >( geom.geometry() );
@@ -2341,7 +2341,7 @@ static QVariant fcnGeomNumRings( const QVariantList& values, const QgsExpression
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isEmpty() )
+  if ( geom.isNull() )
     return QVariant();
 
   QgsCurvePolygon* curvePolygon = dynamic_cast< QgsCurvePolygon* >( geom.geometry() );
@@ -2375,7 +2375,7 @@ static QVariant fcnBounds( const QVariantList& values, const QgsExpressionContex
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
   QgsGeometry geomBounds = QgsGeometry::fromRect( geom.boundingBox() );
-  QVariant result = !geomBounds.isEmpty() ? QVariant::fromValue( geomBounds ) : QVariant();
+  QVariant result = !geomBounds.isNull() ? QVariant::fromValue( geomBounds ) : QVariant();
   return result;
 }
 
@@ -2418,7 +2418,7 @@ static QVariant fcnYMax( const QVariantList& values, const QgsExpressionContext*
 static QVariant fcnIsClosed( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
-  if ( fGeom.isEmpty() )
+  if ( fGeom.isNull() )
     return QVariant();
 
   QgsCurve* curve = dynamic_cast< QgsCurve* >( fGeom.geometry() );
@@ -2436,7 +2436,7 @@ static QVariant fcnRelate( const QVariantList& values, const QgsExpressionContex
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
 
-  if ( fGeom.isEmpty() || sGeom.isEmpty() )
+  if ( fGeom.isNull() || sGeom.isNull() )
     return QVariant();
 
   QScopedPointer<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( fGeom.geometry() ) );
@@ -2516,7 +2516,7 @@ static QVariant fcnBuffer( const QVariantList& values, const QgsExpressionContex
     seg = getIntValue( values.at( 2 ), parent );
 
   QgsGeometry geom = fGeom.buffer( dist, seg );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2531,7 +2531,7 @@ static QVariant fcnOffsetCurve( const QVariantList& values, const QgsExpressionC
   double mitreLimit = getDoubleValue( values.at( 3 ), parent );
 
   QgsGeometry geom = fGeom.offsetCurve( dist, segments, join, mitreLimit );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2546,7 +2546,7 @@ static QVariant fcnSingleSidedBuffer( const QVariantList& values, const QgsExpre
   double mitreLimit = getDoubleValue( values.at( 3 ), parent );
 
   QgsGeometry geom = fGeom.singleSidedBuffer( dist, segments, QgsGeometry::SideLeft, join, mitreLimit );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2557,7 +2557,7 @@ static QVariant fcnExtend( const QVariantList& values, const QgsExpressionContex
   double distEnd = getDoubleValue( values.at( 2 ), parent );
 
   QgsGeometry geom = fGeom.extendLine( distStart, distEnd );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2573,14 +2573,14 @@ static QVariant fcnCentroid( const QVariantList& values, const QgsExpressionCont
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry geom = fGeom.centroid();
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 static QVariant fcnPointOnSurface( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry geom = fGeom.pointOnSurface();
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2589,7 +2589,7 @@ static QVariant fcnPoleOfInaccessibility( const QVariantList& values, const QgsE
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   double tolerance = getDoubleValue( values.at( 1 ), parent );
   QgsGeometry geom = fGeom.poleOfInaccessibility( tolerance );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2597,7 +2597,7 @@ static QVariant fcnConvexHull( const QVariantList& values, const QgsExpressionCo
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry geom = fGeom.convexHull();
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 static QVariant fcnDifference( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -2605,14 +2605,14 @@ static QVariant fcnDifference( const QVariantList& values, const QgsExpressionCo
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
   QgsGeometry geom = fGeom.difference( sGeom );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
 static QVariant fcnReverse( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
-  if ( fGeom.isEmpty() )
+  if ( fGeom.isNull() )
     return QVariant();
 
   QgsCurve* curve = dynamic_cast< QgsCurve* >( fGeom.geometry() );
@@ -2627,7 +2627,7 @@ static QVariant fcnReverse( const QVariantList& values, const QgsExpressionConte
 static QVariant fcnExteriorRing( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
-  if ( fGeom.isEmpty() )
+  if ( fGeom.isNull() )
     return QVariant();
 
   QgsCurvePolygon* curvePolygon = dynamic_cast< QgsCurvePolygon* >( fGeom.geometry() );
@@ -2650,7 +2650,7 @@ static QVariant fcnIntersection( const QVariantList& values, const QgsExpression
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
   QgsGeometry geom = fGeom.intersection( sGeom );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 static QVariant fcnSymDifference( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -2658,7 +2658,7 @@ static QVariant fcnSymDifference( const QVariantList& values, const QgsExpressio
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
   QgsGeometry geom = fGeom.symDifference( sGeom );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 static QVariant fcnCombine( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -2666,7 +2666,7 @@ static QVariant fcnCombine( const QVariantList& values, const QgsExpressionConte
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
   QgsGeometry geom = fGeom.combine( sGeom );
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 static QVariant fcnGeomToWKT( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -2762,12 +2762,13 @@ static QVariant fcnProject( const QVariantList& values, const QgsExpressionConte
   }
 
   double distance = getDoubleValue( values.at( 1 ), parent );
-  double bearing = getDoubleValue( values.at( 2 ), parent );
+  double azimuth = getDoubleValue( values.at( 2 ), parent );
+  double inclination = getDoubleValue( values.at( 3 ), parent );
 
-  QgsPoint p = geom.asPoint();
-  QgsPoint newPoint = p.project( distance, ( 180 * bearing ) / M_PI );
+  const QgsPointV2* p = static_cast<const QgsPointV2*>( geom.geometry() );
+  QgsPointV2 newPoint = p->project( distance,  180.0 * azimuth / M_PI, 180.0 * inclination / M_PI );
 
-  return QVariant::fromValue( QgsGeometry( new QgsPointV2( newPoint.x(), newPoint.y() ) ) );
+  return QVariant::fromValue( QgsGeometry( new QgsPointV2( newPoint ) ) );
 }
 
 static QVariant fcnExtrude( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -2857,7 +2858,7 @@ static QVariant fcnClosestPoint( const QVariantList& values, const QgsExpression
 
   QgsGeometry geom = fromGeom.nearestPoint( toGeom );
 
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2868,7 +2869,7 @@ static QVariant fcnShortestLine( const QVariantList& values, const QgsExpression
 
   QgsGeometry geom = fromGeom.shortestLine( toGeom );
 
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -2879,7 +2880,7 @@ static QVariant fcnLineInterpolatePoint( const QVariantList& values, const QgsEx
 
   QgsGeometry geom = lineGeom.interpolate( distance );
 
-  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
 
@@ -3274,7 +3275,7 @@ static QVariant fcnGetGeometry( const QVariantList& values, const QgsExpressionC
 {
   QgsFeature feat = getFeature( values.at( 0 ), parent );
   QgsGeometry geom = feat.geometry();
-  if ( !geom.isEmpty() )
+  if ( !geom.isNull() )
     return QVariant::fromValue( geom );
   return QVariant();
 }
@@ -3703,9 +3704,9 @@ bool QgsExpression::registerFunction( QgsExpression::Function* function, bool tr
   {
     return false;
   }
-  QgsExpression::gmFunctions.append( function );
+  QgsExpression::sFunctions.append( function );
   if ( transferOwnership )
-    QgsExpression::gmOwnedFunctions.append( function );
+    QgsExpression::sOwnedFunctions.append( function );
   return true;
 }
 
@@ -3719,7 +3720,7 @@ bool QgsExpression::unregisterFunction( const QString& name )
   int fnIdx = functionIndex( name );
   if ( fnIdx != -1 )
   {
-    QgsExpression::gmFunctions.removeAt( fnIdx );
+    QgsExpression::sFunctions.removeAt( fnIdx );
     return true;
   }
   return false;
@@ -3727,23 +3728,23 @@ bool QgsExpression::unregisterFunction( const QString& name )
 
 void QgsExpression::cleanRegisteredFunctions()
 {
-  qDeleteAll( QgsExpression::gmOwnedFunctions );
-  QgsExpression::gmOwnedFunctions.clear();
+  qDeleteAll( QgsExpression::sOwnedFunctions );
+  QgsExpression::sOwnedFunctions.clear();
 }
 
-QStringList QgsExpression::gmBuiltinFunctions;
+QStringList QgsExpression::sBuiltinFunctions;
 
 const QStringList& QgsExpression::BuiltinFunctions()
 {
-  if ( gmBuiltinFunctions.isEmpty() )
+  if ( sBuiltinFunctions.isEmpty() )
   {
     Functions();  // this method builds the gmBuiltinFunctions as well
   }
-  return gmBuiltinFunctions;
+  return sBuiltinFunctions;
 }
 
-QList<QgsExpression::Function*> QgsExpression::gmFunctions;
-QList<QgsExpression::Function*> QgsExpression::gmOwnedFunctions;
+QList<QgsExpression::Function*> QgsExpression::sFunctions;
+QList<QgsExpression::Function*> QgsExpression::sOwnedFunctions;
 
 const QList<QgsExpression::Function*>& QgsExpression::Functions()
 {
@@ -3754,18 +3755,18 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
   static QMutex sFunctionsMutex( QMutex::Recursive );
   QMutexLocker locker( &sFunctionsMutex );
 
-  if ( gmFunctions.isEmpty() )
+  if ( sFunctions.isEmpty() )
   {
     ParameterList aggParams = ParameterList() << Parameter( QStringLiteral( "expression" ) )
                               << Parameter( QStringLiteral( "group_by" ), true )
                               << Parameter( QStringLiteral( "filter" ), true );
 
-    gmFunctions
+    sFunctions
     << new StaticFunction( QStringLiteral( "sqrt" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnSqrt, QStringLiteral( "Math" ) )
     << new StaticFunction( QStringLiteral( "radians" ), ParameterList() << Parameter( QStringLiteral( "degrees" ) ), fcnRadians, QStringLiteral( "Math" ) )
     << new StaticFunction( QStringLiteral( "degrees" ), ParameterList() << Parameter( QStringLiteral( "radians" ) ), fcnDegrees, QStringLiteral( "Math" ) )
     << new StaticFunction( QStringLiteral( "azimuth" ), ParameterList() << Parameter( QStringLiteral( "point_a" ) ) << Parameter( QStringLiteral( "point_b" ) ), fcnAzimuth, QStringList() << QStringLiteral( "Math" ) << QStringLiteral( "GeometryGroup" ) )
-    << new StaticFunction( QStringLiteral( "project" ), ParameterList() << Parameter( QStringLiteral( "point" ) ) << Parameter( QStringLiteral( "distance" ) ) << Parameter( QStringLiteral( "bearing" ) ), fcnProject, QStringLiteral( "GeometryGroup" ) )
+    << new StaticFunction( QStringLiteral( "project" ), ParameterList() << Parameter( QStringLiteral( "point" ) ) << Parameter( QStringLiteral( "distance" ) ) << Parameter( QStringLiteral( "azimuth" ) ) << Parameter( QStringLiteral( "elevation" ), true, M_PI / 2 ), fcnProject, QStringLiteral( "GeometryGroup" ) )
     << new StaticFunction( QStringLiteral( "abs" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnAbs, QStringLiteral( "Math" ) )
     << new StaticFunction( QStringLiteral( "cos" ), ParameterList() << Parameter( QStringLiteral( "angle" ) ), fcnCos, QStringLiteral( "Math" ) )
     << new StaticFunction( QStringLiteral( "sin" ), ParameterList() << Parameter( QStringLiteral( "angle" ) ), fcnSin, QStringLiteral( "Math" ) )
@@ -3838,7 +3839,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
       // referencedColumns callback: return AllAttributes if @parent variable is referenced
 
       if ( !node )
-        return QSet<QString>() << QgsFeatureRequest::AllAttributes;
+        return QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES;
 
       if ( !node->args() )
         return QSet<QString>();
@@ -3860,7 +3861,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
       }
 
       if ( referencedVars.contains( "parent" ) || referencedVars.contains( QString() ) )
-        return QSet<QString>() << QgsFeatureRequest::AllAttributes;
+        return QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES;
       else
         return referencedCols;
     },
@@ -3868,7 +3869,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
                          )
 
     << new StaticFunction( QStringLiteral( "relation_aggregate" ), ParameterList() << Parameter( QStringLiteral( "relation" ) ) << Parameter( QStringLiteral( "aggregate" ) ) << Parameter( QStringLiteral( "expression" ) ) << Parameter( QStringLiteral( "concatenator" ), true ),
-                           fcnAggregateRelation, QStringLiteral( "Aggregates" ), QString(), False, QSet<QString>() << QgsFeatureRequest::AllAttributes, true )
+                           fcnAggregateRelation, QStringLiteral( "Aggregates" ), QString(), False, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true )
 
     << new StaticFunction( QStringLiteral( "count" ), aggParams, fcnAggregateCount, QStringLiteral( "Aggregates" ), QString(), False, QSet<QString>(), true )
     << new StaticFunction( QStringLiteral( "count_distinct" ), aggParams, fcnAggregateCountDistinct, QStringLiteral( "Aggregates" ), QString(), False, QSet<QString>(), true )
@@ -4085,8 +4086,8 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     //return all attributes string for referencedColumns - this is caught by
     // QgsFeatureRequest::setSubsetOfAttributes and causes all attributes to be fetched by the
     // feature request
-    << new StaticFunction( QStringLiteral( "eval" ), 1, fcnEval, QStringLiteral( "General" ), QString(), true, QSet<QString>() << QgsFeatureRequest::AllAttributes )
-    << new StaticFunction( QStringLiteral( "attribute" ), 2, fcnAttribute, QStringLiteral( "Record" ), QString(), false, QSet<QString>() << QgsFeatureRequest::AllAttributes )
+    << new StaticFunction( QStringLiteral( "eval" ), 1, fcnEval, QStringLiteral( "General" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES )
+    << new StaticFunction( QStringLiteral( "attribute" ), 2, fcnAttribute, QStringLiteral( "Record" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES )
 
     // functions for arrays
     << new StaticFunction( QStringLiteral( "array" ), -1, fcnArray, QStringLiteral( "Arrays" ) )
@@ -4119,14 +4120,14 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     QgsExpressionContextUtils::registerContextFunctions();
 
     //QgsExpression has ownership of all built-in functions
-    Q_FOREACH ( QgsExpression::Function* func, gmFunctions )
+    Q_FOREACH ( QgsExpression::Function* func, sFunctions )
     {
-      gmOwnedFunctions << func;
-      gmBuiltinFunctions << func->name();
-      gmBuiltinFunctions.append( func->aliases() );
+      sOwnedFunctions << func;
+      sBuiltinFunctions << func->name();
+      sBuiltinFunctions.append( func->aliases() );
     }
   }
-  return gmFunctions;
+  return sFunctions;
 }
 
 bool QgsExpression::checkExpression( const QString &text, const QgsExpressionContext *context, QString &errorMessage )
@@ -4304,7 +4305,7 @@ QSet<int> QgsExpression::referencedAttributeIndexes( const QgsFields& fields ) c
 
 for ( const QString& fieldName : referencedFields )
   {
-    if ( fieldName == QgsFeatureRequest::AllAttributes )
+    if ( fieldName == QgsFeatureRequest::ALL_ATTRIBUTES )
     {
       referencedIndexes = fields.allAttributesList().toSet();
       break;
@@ -4506,7 +4507,7 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
     return convertedValue;
   }
 
-  //otherwise try to evalute as expression
+  //otherwise try to evaluate as expression
   QgsExpression expr( text );
 
   QgsExpressionContext context;
@@ -4595,7 +4596,7 @@ bool QgsExpression::NodeUnaryOperator::prepare( QgsExpression *parent, const Qgs
 
 QString QgsExpression::NodeUnaryOperator::dump() const
 {
-  return QStringLiteral( "%1 %2" ).arg( UnaryOperatorText[mOp], mOperand->dump() );
+  return QStringLiteral( "%1 %2" ).arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
 }
 
 QSet<QString> QgsExpression::NodeUnaryOperator::referencedColumns() const
@@ -4663,7 +4664,7 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, const Q
         ENSURE_NO_EVAL_ERROR;
         if ( mOp == boDiv || mOp == boMul || mOp == boMod )
         {
-          parent->setEvalErrorString( tr( "Can't preform /, *, or % on DateTime and Interval" ) );
+          parent->setEvalErrorString( tr( "Can't perform /, *, or % on DateTime and Interval" ) );
           return QVariant();
         }
         return QVariant( computeDateTimeFromInterval( dL, &iL ) );
@@ -5087,7 +5088,7 @@ QString QgsExpression::NodeBinaryOperator::dump() const
     fmt += rOp && ( rOp->precedence() < precedence() ) ? "(%3)" : "%3";
   }
 
-  return fmt.arg( mOpLeft->dump(), BinaryOperatorText[mOp], rdump );
+  return fmt.arg( mOpLeft->dump(), BINARY_OPERATOR_TEXT[mOp], rdump );
 }
 
 QSet<QString> QgsExpression::NodeBinaryOperator::referencedColumns() const
@@ -5654,10 +5655,10 @@ QString QgsExpression::helpText( QString name )
 {
   QgsExpression::initFunctionHelp();
 
-  if ( !gFunctionHelpTexts.contains( name ) )
+  if ( !sFunctionHelpTexts.contains( name ) )
     return tr( "function help for %1 missing" ).arg( name );
 
-  const Help &f = gFunctionHelpTexts[ name ];
+  const Help &f = sFunctionHelpTexts[ name ];
 
   name = f.mName;
   if ( f.mType == tr( "group" ) )
@@ -5764,93 +5765,93 @@ QString QgsExpression::helpText( QString name )
   return helpContents;
 }
 
-QHash<QString, QString> QgsExpression::gVariableHelpTexts;
+QHash<QString, QString> QgsExpression::sVariableHelpTexts;
 
 void QgsExpression::initVariableHelp()
 {
-  if ( !gVariableHelpTexts.isEmpty() )
+  if ( !sVariableHelpTexts.isEmpty() )
     return;
 
   //global variables
-  gVariableHelpTexts.insert( QStringLiteral( "qgis_version" ), QCoreApplication::translate( "variable_help", "Current QGIS version string." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "qgis_version_no" ), QCoreApplication::translate( "variable_help", "Current QGIS version number." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "qgis_release_name" ), QCoreApplication::translate( "variable_help", "Current QGIS release name." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "qgis_os_name" ), QCoreApplication::translate( "variable_help", "Operating system name, e.g., 'windows', 'linux' or 'osx'." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "qgis_platform" ), QCoreApplication::translate( "variable_help", "QGIS platform, e.g., 'desktop' or 'server'." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "user_account_name" ), QCoreApplication::translate( "variable_help", "Current user's operating system account name." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "user_full_name" ), QCoreApplication::translate( "variable_help", "Current user's operating system user name (if available)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "qgis_version" ), QCoreApplication::translate( "variable_help", "Current QGIS version string." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "qgis_version_no" ), QCoreApplication::translate( "variable_help", "Current QGIS version number." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "qgis_release_name" ), QCoreApplication::translate( "variable_help", "Current QGIS release name." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "qgis_os_name" ), QCoreApplication::translate( "variable_help", "Operating system name, e.g., 'windows', 'linux' or 'osx'." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "qgis_platform" ), QCoreApplication::translate( "variable_help", "QGIS platform, e.g., 'desktop' or 'server'." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "user_account_name" ), QCoreApplication::translate( "variable_help", "Current user's operating system account name." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "user_full_name" ), QCoreApplication::translate( "variable_help", "Current user's operating system user name (if available)." ) );
 
   //project variables
-  gVariableHelpTexts.insert( QStringLiteral( "project_title" ), QCoreApplication::translate( "variable_help", "Title of current project." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "project_path" ), QCoreApplication::translate( "variable_help", "Full path (including file name) of current project." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "project_folder" ), QCoreApplication::translate( "variable_help", "Folder for current project." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "project_filename" ), QCoreApplication::translate( "variable_help", "Filename of current project." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "project_crs" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of project (e.g., 'EPSG:4326')." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "project_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of project (full definition)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_title" ), QCoreApplication::translate( "variable_help", "Title of current project." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_path" ), QCoreApplication::translate( "variable_help", "Full path (including file name) of current project." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_folder" ), QCoreApplication::translate( "variable_help", "Folder for current project." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_filename" ), QCoreApplication::translate( "variable_help", "Filename of current project." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_crs" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of project (e.g., 'EPSG:4326')." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of project (full definition)." ) );
 
   //layer variables
-  gVariableHelpTexts.insert( QStringLiteral( "layer_name" ), QCoreApplication::translate( "variable_help", "Name of current layer." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "layer_id" ), QCoreApplication::translate( "variable_help", "ID of current layer." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "layer" ), QCoreApplication::translate( "variable_help", "The current layer." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "layer_name" ), QCoreApplication::translate( "variable_help", "Name of current layer." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "layer_id" ), QCoreApplication::translate( "variable_help", "ID of current layer." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "layer" ), QCoreApplication::translate( "variable_help", "The current layer." ) );
 
   //composition variables
-  gVariableHelpTexts.insert( QStringLiteral( "layout_numpages" ), QCoreApplication::translate( "variable_help", "Number of pages in composition." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "layout_page" ), QCoreApplication::translate( "variable_help", "Current page number in composition." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "layout_pageheight" ), QCoreApplication::translate( "variable_help", "Composition page height in mm." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "layout_pagewidth" ), QCoreApplication::translate( "variable_help", "Composition page width in mm." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "layout_dpi" ), QCoreApplication::translate( "variable_help", "Composition resolution (DPI)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "layout_numpages" ), QCoreApplication::translate( "variable_help", "Number of pages in composition." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "layout_page" ), QCoreApplication::translate( "variable_help", "Current page number in composition." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "layout_pageheight" ), QCoreApplication::translate( "variable_help", "Composition page height in mm." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "layout_pagewidth" ), QCoreApplication::translate( "variable_help", "Composition page width in mm." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "layout_dpi" ), QCoreApplication::translate( "variable_help", "Composition resolution (DPI)." ) );
 
   //atlas variables
-  gVariableHelpTexts.insert( QStringLiteral( "atlas_totalfeatures" ), QCoreApplication::translate( "variable_help", "Total number of features in atlas." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "atlas_featurenumber" ), QCoreApplication::translate( "variable_help", "Current atlas feature number." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "atlas_filename" ), QCoreApplication::translate( "variable_help", "Current atlas file name." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "atlas_pagename" ), QCoreApplication::translate( "variable_help", "Current atlas page name." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "atlas_feature" ), QCoreApplication::translate( "variable_help", "Current atlas feature (as feature object)." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "atlas_featureid" ), QCoreApplication::translate( "variable_help", "Current atlas feature ID." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "atlas_geometry" ), QCoreApplication::translate( "variable_help", "Current atlas feature geometry." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "atlas_totalfeatures" ), QCoreApplication::translate( "variable_help", "Total number of features in atlas." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "atlas_featurenumber" ), QCoreApplication::translate( "variable_help", "Current atlas feature number." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "atlas_filename" ), QCoreApplication::translate( "variable_help", "Current atlas file name." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "atlas_pagename" ), QCoreApplication::translate( "variable_help", "Current atlas page name." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "atlas_feature" ), QCoreApplication::translate( "variable_help", "Current atlas feature (as feature object)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "atlas_featureid" ), QCoreApplication::translate( "variable_help", "Current atlas feature ID." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "atlas_geometry" ), QCoreApplication::translate( "variable_help", "Current atlas feature geometry." ) );
 
   //composer item variables
-  gVariableHelpTexts.insert( QStringLiteral( "item_id" ), QCoreApplication::translate( "variable_help", "Composer item user ID (not necessarily unique)." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "item_uuid" ), QCoreApplication::translate( "variable_help", "Composer item unique ID." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "item_left" ), QCoreApplication::translate( "variable_help", "Left position of composer item (in mm)." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "item_top" ), QCoreApplication::translate( "variable_help", "Top position of composer item (in mm)." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "item_width" ), QCoreApplication::translate( "variable_help", "Width of composer item (in mm)." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "item_height" ), QCoreApplication::translate( "variable_help", "Height of composer item (in mm)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "item_id" ), QCoreApplication::translate( "variable_help", "Composer item user ID (not necessarily unique)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "item_uuid" ), QCoreApplication::translate( "variable_help", "Composer item unique ID." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "item_left" ), QCoreApplication::translate( "variable_help", "Left position of composer item (in mm)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "item_top" ), QCoreApplication::translate( "variable_help", "Top position of composer item (in mm)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "item_width" ), QCoreApplication::translate( "variable_help", "Width of composer item (in mm)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "item_height" ), QCoreApplication::translate( "variable_help", "Height of composer item (in mm)." ) );
 
   //map settings item variables
-  gVariableHelpTexts.insert( QStringLiteral( "map_id" ), QCoreApplication::translate( "variable_help", "ID of current map destination. This will be 'canvas' for canvas renders, and the item ID for composer map renders." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "map_rotation" ), QCoreApplication::translate( "variable_help", "Current rotation of map." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "map_scale" ), QCoreApplication::translate( "variable_help", "Current scale of map." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "map_extent" ), QCoreApplication::translate( "variable_help", "Geometry representing the current extent of the map." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "map_extent_center" ), QCoreApplication::translate( "variable_help", "Center of map." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "map_extent_width" ), QCoreApplication::translate( "variable_help", "Width of map." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "map_extent_height" ), QCoreApplication::translate( "variable_help", "Height of map." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "map_crs" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of map (e.g., 'EPSG:4326')." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "map_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of map (full definition)." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "map_units" ), QCoreApplication::translate( "variable_help", "Units for map measurements." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_id" ), QCoreApplication::translate( "variable_help", "ID of current map destination. This will be 'canvas' for canvas renders, and the item ID for composer map renders." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_rotation" ), QCoreApplication::translate( "variable_help", "Current rotation of map." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_scale" ), QCoreApplication::translate( "variable_help", "Current scale of map." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_extent" ), QCoreApplication::translate( "variable_help", "Geometry representing the current extent of the map." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_extent_center" ), QCoreApplication::translate( "variable_help", "Center of map." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_extent_width" ), QCoreApplication::translate( "variable_help", "Width of map." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_extent_height" ), QCoreApplication::translate( "variable_help", "Height of map." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_crs" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of map (e.g., 'EPSG:4326')." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of map (full definition)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_units" ), QCoreApplication::translate( "variable_help", "Units for map measurements." ) );
 
-  gVariableHelpTexts.insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "grid_axis" ), QCoreApplication::translate( "variable_help", "Current grid annotation axis (e.g., 'x' for longitude, 'y' for latitude)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "grid_axis" ), QCoreApplication::translate( "variable_help", "Current grid annotation axis (e.g., 'x' for longitude, 'y' for latitude)." ) );
 
   //symbol variables
-  gVariableHelpTexts.insert( QStringLiteral( "geometry_part_count" ), QCoreApplication::translate( "variable_help", "Number of parts in rendered feature's geometry." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "geometry_part_num" ), QCoreApplication::translate( "variable_help", "Current geometry part number for feature being rendered." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "geometry_point_count" ), QCoreApplication::translate( "variable_help", "Number of points in the rendered geometry's part. It is only meaningful for line geometries and for symbol layers that set this variable." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "geometry_point_num" ), QCoreApplication::translate( "variable_help", "Current point number in the rendered geometry's part. It is only meaningful for line geometries and for symbol layers that set this variable." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "geometry_part_count" ), QCoreApplication::translate( "variable_help", "Number of parts in rendered feature's geometry." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "geometry_part_num" ), QCoreApplication::translate( "variable_help", "Current geometry part number for feature being rendered." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "geometry_point_count" ), QCoreApplication::translate( "variable_help", "Number of points in the rendered geometry's part. It is only meaningful for line geometries and for symbol layers that set this variable." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "geometry_point_num" ), QCoreApplication::translate( "variable_help", "Current point number in the rendered geometry's part. It is only meaningful for line geometries and for symbol layers that set this variable." ) );
 
-  gVariableHelpTexts.insert( QStringLiteral( "symbol_color" ), QCoreApplication::translate( "symbol_color", "Color of symbol used to render the feature." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "symbol_angle" ), QCoreApplication::translate( "symbol_angle", "Angle of symbol used to render the feature (valid for marker symbols only)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "symbol_color" ), QCoreApplication::translate( "symbol_color", "Color of symbol used to render the feature." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "symbol_angle" ), QCoreApplication::translate( "symbol_angle", "Angle of symbol used to render the feature (valid for marker symbols only)." ) );
 
   //cluster variables
-  gVariableHelpTexts.insert( QStringLiteral( "cluster_color" ), QCoreApplication::translate( "cluster_color", "Color of symbols within a cluster, or NULL if symbols have mixed colors." ) );
-  gVariableHelpTexts.insert( QStringLiteral( "cluster_size" ), QCoreApplication::translate( "cluster_size", "Number of symbols contained within a cluster." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "cluster_color" ), QCoreApplication::translate( "cluster_color", "Color of symbols within a cluster, or NULL if symbols have mixed colors." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "cluster_size" ), QCoreApplication::translate( "cluster_size", "Number of symbols contained within a cluster." ) );
 }
 
 QString QgsExpression::variableHelpText( const QString &variableName, bool showValue, const QVariant &value )
 {
   QgsExpression::initVariableHelp();
-  QString text = gVariableHelpTexts.contains( variableName ) ? QStringLiteral( "<p>%1</p>" ).arg( gVariableHelpTexts.value( variableName ) ) : QString();
+  QString text = sVariableHelpTexts.contains( variableName ) ? QStringLiteral( "<p>%1</p>" ).arg( sVariableHelpTexts.value( variableName ) ) : QString();
   if ( showValue )
   {
     QString valueString;
@@ -5867,32 +5868,32 @@ QString QgsExpression::variableHelpText( const QString &variableName, bool showV
   return text;
 }
 
-QHash<QString, QString> QgsExpression::gGroups;
+QHash<QString, QString> QgsExpression::sGroups;
 
 QString QgsExpression::group( const QString& name )
 {
-  if ( gGroups.isEmpty() )
+  if ( sGroups.isEmpty() )
   {
-    gGroups.insert( QStringLiteral( "General" ), tr( "General" ) );
-    gGroups.insert( QStringLiteral( "Operators" ), tr( "Operators" ) );
-    gGroups.insert( QStringLiteral( "Conditionals" ), tr( "Conditionals" ) );
-    gGroups.insert( QStringLiteral( "Fields and Values" ), tr( "Fields and Values" ) );
-    gGroups.insert( QStringLiteral( "Math" ), tr( "Math" ) );
-    gGroups.insert( QStringLiteral( "Conversions" ), tr( "Conversions" ) );
-    gGroups.insert( QStringLiteral( "Date and Time" ), tr( "Date and Time" ) );
-    gGroups.insert( QStringLiteral( "String" ), tr( "String" ) );
-    gGroups.insert( QStringLiteral( "Color" ), tr( "Color" ) );
-    gGroups.insert( QStringLiteral( "GeometryGroup" ), tr( "Geometry" ) );
-    gGroups.insert( QStringLiteral( "Record" ), tr( "Record" ) );
-    gGroups.insert( QStringLiteral( "Variables" ), tr( "Variables" ) );
-    gGroups.insert( QStringLiteral( "Fuzzy Matching" ), tr( "Fuzzy Matching" ) );
-    gGroups.insert( QStringLiteral( "Recent (%1)" ), tr( "Recent (%1)" ) );
+    sGroups.insert( QStringLiteral( "General" ), tr( "General" ) );
+    sGroups.insert( QStringLiteral( "Operators" ), tr( "Operators" ) );
+    sGroups.insert( QStringLiteral( "Conditionals" ), tr( "Conditionals" ) );
+    sGroups.insert( QStringLiteral( "Fields and Values" ), tr( "Fields and Values" ) );
+    sGroups.insert( QStringLiteral( "Math" ), tr( "Math" ) );
+    sGroups.insert( QStringLiteral( "Conversions" ), tr( "Conversions" ) );
+    sGroups.insert( QStringLiteral( "Date and Time" ), tr( "Date and Time" ) );
+    sGroups.insert( QStringLiteral( "String" ), tr( "String" ) );
+    sGroups.insert( QStringLiteral( "Color" ), tr( "Color" ) );
+    sGroups.insert( QStringLiteral( "GeometryGroup" ), tr( "Geometry" ) );
+    sGroups.insert( QStringLiteral( "Record" ), tr( "Record" ) );
+    sGroups.insert( QStringLiteral( "Variables" ), tr( "Variables" ) );
+    sGroups.insert( QStringLiteral( "Fuzzy Matching" ), tr( "Fuzzy Matching" ) );
+    sGroups.insert( QStringLiteral( "Recent (%1)" ), tr( "Recent (%1)" ) );
   }
 
   //return the translated name for this group. If group does not
   //have a translated name in the gGroups hash, return the name
   //unchanged
-  return gGroups.value( name, name );
+  return sGroups.value( name, name );
 }
 
 QString QgsExpression::formatPreviewString( const QVariant& value )
@@ -5903,7 +5904,7 @@ QString QgsExpression::formatPreviewString( const QVariant& value )
   {
     //result is a geometry
     QgsGeometry geom = value.value<QgsGeometry>();
-    if ( geom.isEmpty() )
+    if ( geom.isNull() )
       return tr( "<i>&lt;empty geometry&gt;</i>" );
     else
       return tr( "<i>&lt;geometry: %1&gt;</i>" ).arg( QgsWkbTypes::displayString( geom.geometry()->wkbType() ) );
@@ -6019,7 +6020,7 @@ bool QgsExpression::Function::usesGeometry( const QgsExpression::NodeFunction* n
 QSet<QString> QgsExpression::Function::referencedColumns( const NodeFunction* node ) const
 {
   Q_UNUSED( node )
-  return QSet<QString>() << QgsFeatureRequest::AllAttributes;
+  return QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES;
 }
 
 bool QgsExpression::Function::operator==( const QgsExpression::Function& other ) const

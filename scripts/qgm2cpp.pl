@@ -21,7 +21,7 @@ print <<EOF;
 /*
  This is NOT a proper c++ source code. This file is only designed to be caught
  by qmake and included in lupdate. It contains all translateable strings collected
- by pylupdate4.
+ by pylupdate5.
 */
 
 EOF

@@ -90,3 +90,30 @@ WCS testing information can be found in:
 About benchmark tests you can read:
 
     ${TOP_SRCDIR}/tests/bench/README
+
+
+# Run python tests in GDB
+
+First find out the required environment variables by running the test outside
+the debugger.
+
+    ctest -V -R ProcessingQgisAlgorithmsTest
+
+Which prints for somewhere in the initialization code something like:
+
+    export LD_LIBRARY_PATH=NOTFOUND:/home/m-kuhn/dev/cpp/qgis/build-qt5/output/lib:
+    export PYTHONPATH=/home/m-kuhn/dev/cpp/qgis/build-qt5/output/python/:/home/m-kuhn/dev/cpp/qgis/build-qt5/output/python/plugins:/home/m-kuhn/dev/cpp/qgis/QGIS/tests/src/python:
+
+First, run these two commands in the terminal.
+
+On the following line it says something like:
+
+    -- Running /usr/bin/python3 /home/m-kuhn/dev/cpp/qgis/QGIS/python/plugins/processing/tests/QgisAlgorithmsTest.py
+
+Which you can run in gdb with:
+
+    gdb -ex r --args /usr/bin/python3 /home/m-kuhn/dev/cpp/qgis/QGIS/python/plugins/processing/tests/QgisAlgorithmsTest.py
+
+Now you can start using the usual gdb (`bt` etc.) interface or - if you have
+installed the [appropriate debug tools (adjust for python3!)](https://wiki.python.org/moin/DebuggingWithGdb)
+even allows doing python introspection (`py-bt`).

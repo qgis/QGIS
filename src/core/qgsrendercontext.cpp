@@ -23,18 +23,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsfeaturefilterprovider.h"
 
+#define POINTS_TO_MM 2.83464567
+#define INCH_TO_MM 25.4
+
 QgsRenderContext::QgsRenderContext()
     : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
-    , mPainter( nullptr )
-    , mRenderingStopped( false )
-    , mScaleFactor( 1.0 )
-    , mRasterScaleFactor( 1.0 )
-    , mRendererScale( 1.0 )
-    , mLabelingEngine( nullptr )
-    , mGeometry( nullptr )
-    , mFeatureFilterProvider( nullptr )
-    , mSegmentationTolerance( M_PI_2 / 90 )
-    , mSegmentationToleranceType( QgsAbstractGeometry::MaximumAngle )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 }
@@ -47,7 +40,6 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext& rh )
     , mMapToPixel( rh.mMapToPixel )
     , mRenderingStopped( rh.mRenderingStopped )
     , mScaleFactor( rh.mScaleFactor )
-    , mRasterScaleFactor( rh.mRasterScaleFactor )
     , mRendererScale( rh.mRendererScale )
     , mLabelingEngine( rh.mLabelingEngine )
     , mSelectionColor( rh.mSelectionColor )
@@ -69,23 +61,31 @@ QgsRenderContext&QgsRenderContext::operator=( const QgsRenderContext & rh )
   mMapToPixel = rh.mMapToPixel;
   mRenderingStopped = rh.mRenderingStopped;
   mScaleFactor = rh.mScaleFactor;
-  mRasterScaleFactor = rh.mRasterScaleFactor;
   mRendererScale = rh.mRendererScale;
   mLabelingEngine = rh.mLabelingEngine;
   mSelectionColor = rh.mSelectionColor;
   mVectorSimplifyMethod = rh.mVectorSimplifyMethod;
   mExpressionContext = rh.mExpressionContext;
   mGeometry = rh.mGeometry;
-  mFeatureFilterProvider = rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr;
+  mFeatureFilterProvider.reset( rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr );
   mSegmentationTolerance = rh.mSegmentationTolerance;
   mSegmentationToleranceType = rh.mSegmentationToleranceType;
   return *this;
 }
 
-QgsRenderContext::~QgsRenderContext()
+QgsRenderContext QgsRenderContext::fromQPainter( QPainter* painter )
 {
-  delete mFeatureFilterProvider;
-  mFeatureFilterProvider = nullptr;
+  QgsRenderContext context;
+  context.setPainter( painter );
+  if ( painter && painter->device() )
+  {
+    context.setScaleFactor( painter->device()->logicalDpiX() / 25.4 );
+  }
+  else
+  {
+    context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
+  }
+  return context;
 }
 
 void QgsRenderContext::setFlags( QgsRenderContext::Flags flags )
@@ -127,7 +127,6 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings& mapSet
   ctx.setFlag( RenderMapTile, mapSettings.testFlag( QgsMapSettings::RenderMapTile ) );
   ctx.setFlag( Antialiasing, mapSettings.testFlag( QgsMapSettings::Antialiasing ) );
   ctx.setFlag( RenderPartialOutput, mapSettings.testFlag( QgsMapSettings::RenderPartialOutput ) );
-  ctx.setRasterScaleFactor( 1.0 );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setRendererScale( mapSettings.scale() );
   ctx.setExpressionContext( mapSettings.expressionContext() );
@@ -198,11 +197,165 @@ void QgsRenderContext::setUseRenderingOptimization( bool enabled )
 
 void QgsRenderContext::setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp )
 {
-  delete mFeatureFilterProvider;
-  mFeatureFilterProvider = nullptr;
-
   if ( ffp )
   {
-    mFeatureFilterProvider = ffp->clone();
+    mFeatureFilterProvider.reset( ffp->clone() );
   }
+  else
+  {
+    mFeatureFilterProvider.reset( nullptr );
+  }
+}
+
+const QgsFeatureFilterProvider* QgsRenderContext::featureFilterProvider() const
+{
+  return mFeatureFilterProvider.data();
+}
+
+double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale ) const
+{
+  double conversionFactor = 1.0;
+  switch ( unit )
+  {
+    case QgsUnitTypes::RenderMillimeters:
+      conversionFactor = mScaleFactor;
+      break;
+
+    case QgsUnitTypes::RenderPoints:
+      conversionFactor = mScaleFactor / POINTS_TO_MM;
+      break;
+
+    case QgsUnitTypes::RenderInches:
+      conversionFactor = mScaleFactor * INCH_TO_MM;
+      break;
+
+    case QgsUnitTypes::RenderMapUnits:
+    {
+      double mup = scale.computeMapUnitsPerPixel( *this );
+      if ( mup > 0 )
+      {
+        conversionFactor = 1.0 / mup;
+      }
+      else
+      {
+        conversionFactor = 1.0;
+      }
+      break;
+    }
+    case QgsUnitTypes::RenderPixels:
+      conversionFactor = 1.0;
+      break;
+
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
+      //no sensible value
+      conversionFactor = 1.0;
+      break;
+  }
+
+  double convertedSize = size * conversionFactor;
+
+  if ( unit == QgsUnitTypes::RenderMapUnits )
+  {
+    //check max/min size
+    if ( scale.minSizeMMEnabled )
+      convertedSize = qMax( convertedSize, scale.minSizeMM * mScaleFactor );
+    if ( scale.maxSizeMMEnabled )
+      convertedSize = qMin( convertedSize, scale.maxSizeMM * mScaleFactor );
+  }
+
+  return convertedSize;
+}
+
+double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale ) const
+{
+  double mup = mMapToPixel.mapUnitsPerPixel();
+
+  switch ( unit )
+  {
+    case QgsUnitTypes::RenderMapUnits:
+    {
+      // check scale
+      double minSizeMU = -DBL_MAX;
+      if ( scale.minSizeMMEnabled )
+      {
+        minSizeMU = scale.minSizeMM * mScaleFactor * mup;
+      }
+      if ( !qgsDoubleNear( scale.minScale, 0.0 ) )
+      {
+        minSizeMU = qMax( minSizeMU, size * ( scale.minScale * mRendererScale ) );
+      }
+      size = qMax( size, minSizeMU );
+
+      double maxSizeMU = DBL_MAX;
+      if ( scale.maxSizeMMEnabled )
+      {
+        maxSizeMU = scale.maxSizeMM * mScaleFactor * mup;
+      }
+      if ( !qgsDoubleNear( scale.maxScale, 0.0 ) )
+      {
+        maxSizeMU = qMin( maxSizeMU, size * ( scale.maxScale * mRendererScale ) );
+      }
+      size = qMin( size, maxSizeMU );
+
+      return size;
+    }
+    case QgsUnitTypes::RenderMillimeters:
+    {
+      return size * mScaleFactor * mup;
+    }
+    case QgsUnitTypes::RenderPoints:
+    {
+      return size * mScaleFactor * mup / POINTS_TO_MM;
+    }
+    case QgsUnitTypes::RenderInches:
+    {
+      return size * mScaleFactor * mup * INCH_TO_MM;
+    }
+    case QgsUnitTypes::RenderPixels:
+    {
+      return size * mup;
+    }
+
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
+      //no sensible value
+      return 0.0;
+  }
+  return 0.0;
+}
+
+double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const
+{
+  double mup = mMapToPixel.mapUnitsPerPixel();
+
+  switch ( outputUnit )
+  {
+    case QgsUnitTypes::RenderMapUnits:
+    {
+      return sizeInMapUnits;
+    }
+    case QgsUnitTypes::RenderMillimeters:
+    {
+      return sizeInMapUnits / ( mScaleFactor * mup );
+    }
+    case QgsUnitTypes::RenderPoints:
+    {
+      return sizeInMapUnits / ( mScaleFactor * mup / POINTS_TO_MM );
+    }
+    case QgsUnitTypes::RenderInches:
+    {
+      return sizeInMapUnits / ( mScaleFactor * mup * INCH_TO_MM );
+    }
+    case QgsUnitTypes::RenderPixels:
+    {
+      return sizeInMapUnits / mup;
+    }
+
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
+      //no sensible value
+      return 0.0;
+  }
+  return 0.0;
 }

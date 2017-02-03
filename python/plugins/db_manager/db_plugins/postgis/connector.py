@@ -513,7 +513,7 @@ class PostGisDBConnector(DBConnector):
         return res
 
     def getTableIndexes(self, table):
-        """ get info about table's indexes. ignore primary key constraint index, they get listed in constaints """
+        """ get info about table's indexes. ignore primary key constraint index, they get listed in constraints """
         schema, tablename = self.getSchemaTableName(table)
         schema_where = u" AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 

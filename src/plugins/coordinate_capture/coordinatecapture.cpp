@@ -52,7 +52,7 @@ static const QString sDescription = QObject::tr( "Capture mouse coordinates in d
 static const QString sCategory = QObject::tr( "Vector" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QString sPluginIcon = QStringLiteral( ":/coordinate_capture/coordinate_capture.png" );
-static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
+static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -288,7 +288,7 @@ void CoordinateCapture::setCurrentTheme( const QString& theThemeName )
   {
     mpTrackMouseButton->setIcon( QIcon( getIconPath( "tracking.svg" ) ) );
     mpCaptureButton->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );
-    mypUserCrsToolButton->setIcon( QIcon( getIconPath( "geographic.png" ) ) );
+    mypUserCrsToolButton->setIcon( QIcon( getIconPath( "mIconProjectionEnabled.svg" ) ) );
     mypCRSLabel->setPixmap( QPixmap( getIconPath( QStringLiteral( "transformed.svg" ) ) ) );
   }
 }

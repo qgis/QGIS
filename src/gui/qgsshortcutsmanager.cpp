@@ -18,14 +18,14 @@
 #include <QSettings>
 #include <QShortcut>
 
-QgsShortcutsManager* QgsShortcutsManager::mInstance = nullptr;
+QgsShortcutsManager* QgsShortcutsManager::sInstance = nullptr;
 
 
 QgsShortcutsManager* QgsShortcutsManager::instance()
 {
-  if ( !mInstance )
-    mInstance = new QgsShortcutsManager( nullptr );
-  return mInstance;
+  if ( !sInstance )
+    sInstance = new QgsShortcutsManager( nullptr );
+  return sInstance;
 }
 
 QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString& settingsRoot )
@@ -103,6 +103,8 @@ bool QgsShortcutsManager::registerAction( QAction* action, const QString& defaul
   QString sequence = settings.value( mSettingsPath + actionText, defaultSequence ).toString();
 
   action->setShortcut( sequence );
+  action->setToolTip( "<b>" + action->toolTip() + "</b>" );
+  this->updateActionToolTip( action, sequence );
 
   return true;
 }
@@ -216,6 +218,7 @@ bool QgsShortcutsManager::setObjectKeySequence( QObject* object, const QString& 
 bool QgsShortcutsManager::setKeySequence( QAction* action, const QString& sequence )
 {
   action->setShortcut( sequence );
+  this->updateActionToolTip( action, sequence );
 
   QString actionText = action->text();
   actionText.remove( '&' ); // remove the accelerator
@@ -306,4 +309,21 @@ void QgsShortcutsManager::actionDestroyed()
 void QgsShortcutsManager::shortcutDestroyed()
 {
   mShortcuts.remove( qobject_cast<QShortcut*>( sender() ) );
+}
+
+void QgsShortcutsManager::updateActionToolTip( QAction *action, QString sequence )
+{
+  QString current = action->toolTip();
+  // Remove the old shortcut.
+  QRegExp rx( "\\(.*\\)" );
+  current.replace( rx, "" );
+
+  if ( !sequence.isEmpty() )
+  {
+    action->setToolTip( current + " (" + sequence + ")" );
+  }
+  else
+  {
+    action->setToolTip( current );
+  }
 }

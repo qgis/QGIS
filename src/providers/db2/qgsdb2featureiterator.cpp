@@ -347,12 +347,12 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
       }
     }
 //    QgsDebugMsg( QString( "Fid: %1; value: %2" ).arg( mSource->mFidColName ).arg( record.value( mSource->mFidColName ).toLongLong() ) );
-    feature.setFeatureId( mQuery->record().value( mSource->mFidColName ).toLongLong() );
+    feature.setId( mQuery->record().value( mSource->mFidColName ).toLongLong() );
 
     if ( mSource->isSpatial() )
     {
       QByteArray ar = record.value( mSource->mGeometryColName ).toByteArray();
-      size_t wkb_size = ar.size();
+      int wkb_size = ar.size();
       if ( 0 < wkb_size )
       {
         unsigned char* db2data = new unsigned char[wkb_size + 1]; // allocate persistent storage

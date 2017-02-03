@@ -379,7 +379,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     //! be used when data defined properties are present
     bool mUsingCache;
     //! Maximum width/height of cache image
-    static const int mMaximumCacheWidth = 3000;
+    static const int MAXIMUM_CACHE_WIDTH = 3000;
 
   private:
 
@@ -420,8 +420,8 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QgsFilledMarkerSymbolLayer* clone() const override;
     virtual QgsSymbol* subSymbol() override;
     virtual bool setSubSymbol( QgsSymbol* symbol ) override;
-    virtual double estimateMaxBleed() const override;
-    QSet<QString> usedAttributes() const override;
+    virtual double estimateMaxBleed( const QgsRenderContext& context ) const override;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
     void setColor( const QColor& c ) override;
     virtual QColor color() const override;
 

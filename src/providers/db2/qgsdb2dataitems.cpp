@@ -139,7 +139,7 @@ void QgsDb2ConnectionItem::refresh()
   // Add new items
   Q_FOREACH ( QgsDataItem *item, items )
   {
-    // Is it present in childs?
+    // Is it present in children?
     int index = findItem( mChildren, item );
     if ( index >= 0 )
     {
@@ -328,7 +328,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData* data, const QString& toS
 
   QStringList importResults;
   bool hasError = false;
-  bool cancelled = false;
+  bool canceled = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
@@ -370,10 +370,10 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData* data, const QString& toS
       }
       else
       {
-        if ( err == QgsVectorLayerImport::ErrUserCancelled )
+        if ( err == QgsVectorLayerImport::ErrUserCanceled )
         {
-          cancelled = true;
-          QgsDebugMsg( "import cancelled" );
+          canceled = true;
+          QgsDebugMsg( "import canceled" );
         }
         else
         {
@@ -396,9 +396,9 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData* data, const QString& toS
   delete progress;
   qApp->restoreOverrideCursor();
 
-  if ( cancelled )
+  if ( canceled )
   {
-    QMessageBox::information( nullptr, tr( "Import to DB2 database" ), tr( "Import cancelled." ) );
+    QMessageBox::information( nullptr, tr( "Import to DB2 database" ), tr( "Import canceled." ) );
     refresh();
   }
   else if ( hasError )
@@ -537,7 +537,7 @@ void QgsDb2SchemaItem::addLayers( QgsDataItem* newLayers )
   // Add new items
   Q_FOREACH ( QgsDataItem *child, newLayers->children() )
   {
-    // Is it present in childs?
+    // Is it present in children?
     if ( findItem( mChildren, child ) >= 0 )
     {
       continue;

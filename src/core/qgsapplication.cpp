@@ -37,6 +37,7 @@
 #include "qgspluginlayerregistry.h"
 #include "qgsmessagelog.h"
 #include "processing/qgsprocessingregistry.h"
+#include "qgsannotationregistry.h"
 
 #include <QDir>
 #include <QFile>
@@ -105,7 +106,7 @@ const char* QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
   \brief The QgsApplication class manages application-wide information.
 
   This is a subclass of QApplication and should be instantiated in place of
-  QApplication. Most methods are static in keeping witn the design of QApplication.
+  QApplication. Most methods are static in keeping with the design of QApplication.
 
   This class hides platform-specific path information and provides
   a portable way of referencing specific files and directories.
@@ -135,6 +136,7 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const
   mGpsConnectionRegistry = new QgsGPSConnectionRegistry();
   mPluginLayerRegistry = new QgsPluginLayerRegistry();
   mProcessingRegistry = new QgsProcessingRegistry();
+  mAnnotationRegistry = new QgsAnnotationRegistry();
 
   init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
 }
@@ -266,6 +268,7 @@ void QgsApplication::init( QString customConfigPath )
 
 QgsApplication::~QgsApplication()
 {
+  delete mAnnotationRegistry;
   delete mProcessingRegistry;
   delete mActionScopeRegistry;
   delete mTaskManager;
@@ -426,10 +429,10 @@ QString QgsApplication::prefixPath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
   {
-    static bool once = true;
-    if ( once )
+    static bool sOnce = true;
+    if ( sOnce )
       qWarning( "!!! prefix path was requested, but it is not valid - we do not run from installed path !!!" );
-    once = false;
+    sOnce = false;
   }
 
   return ABISYM( mPrefixPath );
@@ -484,7 +487,7 @@ QIcon QgsApplication::getThemeIcon( const QString &theName )
   else if ( QFile::exists( myDefaultPath ) )
   {
     //could still return an empty icon if it
-    //doesnt exist in the default theme either!
+    //doesn't exist in the default theme either!
     icon = QIcon( myDefaultPath );
   }
   else
@@ -509,7 +512,7 @@ QPixmap QgsApplication::getThemePixmap( const QString &theName )
   else
   {
     //could still return an empty icon if it
-    //doesnt exist in the default theme either!
+    //doesn't exist in the default theme either!
     return QPixmap( myDefaultPath );
   }
 }
@@ -533,11 +536,14 @@ void QgsApplication::setUITheme( const QString &themeName )
 {
   // Loop all style sheets, find matching name, load it.
   QHash<QString, QString> themes = QgsApplication::uiThemes();
-  QString themename = themeName;
-  if ( !themes.contains( themename ) )
-    themename = QStringLiteral( "default" );
+  if ( themeName == QStringLiteral( "default" ) || !themes.contains( themeName ) )
+  {
+    setThemeName( QStringLiteral( "default" ) );
+    qApp->setStyleSheet( QString() );
+    return;
+  }
 
-  QString path = themes[themename];
+  QString path = themes.value( themeName );
   QString stylesheetname = path + "/style.qss";
   QString autostylesheet = stylesheetname + ".auto";
 
@@ -554,7 +560,6 @@ void QgsApplication::setUITheme( const QString &themeName )
       return;
     }
 
-    QHash<QString, QString> variables;
     QString styledata = file.readAll();
     QTextStream in( &variablesfile );
     while ( !in.atEnd() )
@@ -580,7 +585,7 @@ void QgsApplication::setUITheme( const QString &themeName )
   QString styleSheet = QStringLiteral( "file:///" );
   styleSheet.append( stylesheetname );
   qApp->setStyleSheet( styleSheet );
-  setThemeName( themename );
+  setThemeName( themeName );
 }
 
 QHash<QString, QString> QgsApplication::uiThemes()
@@ -1417,7 +1422,7 @@ bool QgsApplication::createDB( QString *errorMessage )
   // first we look for ~/.qgis/qgis.db
   if ( !qgisPrivateDbFile.exists() )
   {
-    // if it doesnt exist we copy it in from the global resources dir
+    // if it doesn't exist we copy it in from the global resources dir
     QString qgisMasterDbFileName = QgsApplication::qgisMasterDbFilePath();
     QFile masterFile( qgisMasterDbFileName );
 
@@ -1600,6 +1605,11 @@ QgsMessageLog* QgsApplication::messageLog()
 QgsProcessingRegistry*QgsApplication::processingRegistry()
 {
   return instance()->mProcessingRegistry;
+}
+
+QgsAnnotationRegistry*QgsApplication::annotationRegistry()
+{
+  return instance()->mAnnotationRegistry;
 }
 
 QgsFieldFormatterRegistry* QgsApplication::fieldFormatterRegistry()

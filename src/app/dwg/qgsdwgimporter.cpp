@@ -1471,7 +1471,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
 
   QgsPointSequence s;
   QgsCompoundCurve cc;
-  double width;
+  double width = -1.0; // width is set to correct value during first loop
   bool hadBulge( false );
 
   std::vector<DRW_Vertex2D *>::size_type n = data.flags & 1 ? vertexnum : vertexnum - 1;
@@ -1670,7 +1670,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
 
   QgsPointSequence s;
   QgsCompoundCurve cc;
-  double width;
+  double width = -1.0; // width is set to correct value during first loop
   bool hadBulge( false );
 
   std::vector<DRW_Vertex *>::size_type n = data.flags & 1 ? vertexnum : vertexnum - 1;
@@ -2577,7 +2577,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
     }
 
     QgsGeometry g( QgsOgrUtils::ogrGeometryToQgsGeometry( ogrG ) );
-    if ( g.isEmpty() )
+    if ( g.isNull() )
     {
       QgsDebugMsg( QString( "%1: could not copy geometry" ).arg( OGR_F_GetFID( insert ) ) );
       continue;
@@ -2668,7 +2668,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
         }
 
         QgsGeometry g( QgsOgrUtils::ogrGeometryToQgsGeometry( ogrG ) );
-        if ( g.isEmpty() )
+        if ( g.isNull() )
         {
           QgsDebugMsg( QString( "%1: could not copy geometry" ).arg( fid ) );
           continue;

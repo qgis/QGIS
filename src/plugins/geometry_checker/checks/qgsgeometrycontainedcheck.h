@@ -52,7 +52,7 @@ class QgsGeometryContainedCheck : public QgsGeometryCheck
     explicit QgsGeometryContainedCheck( QgsFeaturePool* featurePool ) : QgsGeometryCheck( FeatureCheck, featurePool ) {}
     void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
-    const QStringList& getResolutionMethods() const override;
+    QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Within" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryContainedCheck" ); }
   private:

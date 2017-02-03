@@ -781,14 +781,10 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
 
   qgssize pixelSize = QgsRasterBlock::typeSize( mInput->dataType( bandNo ) );
 
-  QgsRasterBlock *outputBlock;
+  QgsRasterBlock *outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height );
   if ( inputBlock->hasNoDataValue() )
   {
-    outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height, inputBlock->noDataValue() );
-  }
-  else
-  {
-    outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height );
+    outputBlock->setNoDataValue( inputBlock->noDataValue() );
   }
   if ( !outputBlock->isValid() )
   {

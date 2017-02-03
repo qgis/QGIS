@@ -19,6 +19,7 @@
 #include "ui_widget_layerproperties.h"
 #include "qgsexpressioncontext.h"
 #include "qgssymbolwidgetcontext.h"
+#include "qgssymbollayer.h"
 
 class QgsSymbol;
 class QgsSymbolLayer;
@@ -36,7 +37,7 @@ class SymbolLayerItem;
 /** \ingroup gui
  * \class QgsLayerPropertiesWidget
  */
-class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, protected QgsExpressionContextGenerator, private Ui::LayerPropertiesWidget
+class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExpressionContextGenerator, private Ui::LayerPropertiesWidget
 {
     Q_OBJECT
 
@@ -77,6 +78,14 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, protected Qgs
 
     QgsExpressionContext createExpressionContext() const override;
 
+    /**
+     * Registers a data defined override button. Handles setting up connections
+     * for the button and initializing the button to show the correct descriptions
+     * and help text for the associated property.
+     * @note added in QGIS 3.0
+     */
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
+
   protected: // data
     QgsSymbolLayer* mLayer;
 
@@ -86,8 +95,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, protected Qgs
   private slots:
     void reloadLayer();
     void on_mEnabledCheckBox_toggled( bool enabled );
-
-    void updateDataDefinedEnable();
+    void updateProperty();
 
   private:
 

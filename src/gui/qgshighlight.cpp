@@ -37,7 +37,7 @@
    there were considered various possibilities but no optimal solution was found.
    What does not work:
    - lighter/darker color: it would work more or less for fully opaque highlight, but
-     overlaying transparent lighter color over original has small visual efect.
+     overlaying transparent lighter color over original has small visual effect.
    - complemetary color: mixing transparent (128) complement color with original color
      results in grey for all colors
    - contrast line style/ fill pattern: impression is not highligh but just different style
@@ -56,7 +56,7 @@ QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsGeometry& geom, Qg
     , mBuffer( 0 )
     , mMinWidth( 0 )
 {
-  mGeometry = !geom.isEmpty() ? new QgsGeometry( geom ) : nullptr;
+  mGeometry = !geom.isNull() ? new QgsGeometry( geom ) : nullptr;
   init();
 }
 
@@ -66,7 +66,7 @@ QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsGeometry& geom, Qg
     , mBuffer( 0 )
     , mMinWidth( 0 )
 {
-  mGeometry = !geom.isEmpty() ? new QgsGeometry( geom ) : nullptr;
+  mGeometry = !geom.isNull() ? new QgsGeometry( geom ) : nullptr;
   init();
 }
 
@@ -182,8 +182,8 @@ void QgsHighlight::setSymbol( QgsSymbol* symbol, const QgsRenderContext & contex
       {
         simpleFill->setBorderWidth( getSymbolWidth( context, simpleFill->borderWidth(), simpleFill->outputUnit() ) );
       }
-      symbolLayer->removeDataDefinedProperty( QStringLiteral( "color" ) );
-      symbolLayer->removeDataDefinedProperty( QStringLiteral( "color_border" ) );
+      symbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
+      symbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOutlineColor, QgsProperty() );
     }
   }
 }
@@ -194,7 +194,7 @@ double QgsHighlight::getSymbolWidth( const QgsRenderContext & context, double wi
   double scale = 1.;
   if ( unit == QgsUnitTypes::RenderMapUnits )
   {
-    scale = QgsSymbolLayerUtils::lineWidthScaleFactor( context, QgsUnitTypes::RenderMillimeters ) / QgsSymbolLayerUtils::lineWidthScaleFactor( context, QgsUnitTypes::RenderMapUnits );
+    scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMapUnits );
   }
   width =  qMax( width + 2 * mBuffer * scale, mMinWidth * scale );
   return width;
@@ -251,7 +251,7 @@ void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
 
     for ( int j = 0; j < polygon[i].size(); j++ )
     {
-      //adding point only if it is more than a pixel appart from the previous one
+      //adding point only if it is more than a pixel apart from the previous one
       const QPointF cur = toCanvasCoordinates( polygon[i][j] ) - pos();
       if ( 0 == j || std::abs( ring.back().x() - cur.x() ) > 1 || std::abs( ring.back().y() - cur.y() ) > 1 )
       {

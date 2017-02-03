@@ -20,31 +20,55 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsgetcontext.h"
-#include "qgswmsservertransitional.h"
 
 namespace QgsWms
 {
 
-  void writeGetContext( QgsServerInterface* serverIface, const QString& version,
-                        const QgsServerRequest& request, QgsServerResponse& response )
+  void writeGetContext( QgsServerInterface* serverIface, const QgsProject* project,
+                        const QString& version, const QgsServerRequest& request,
+                        QgsServerResponse& response )
   {
-    QgsServerRequest::Parameters params = request.parameters();
-    try
-    {
-      Q_UNUSED( version );
-      QgsWmsServer server( serverIface->configFilePath(), params,
-                           getConfigParser( serverIface ),
-                           serverIface->accessControls() );
-      QDomDocument doc = server.getContext();
-      response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
-      response.write( doc.toByteArray() );
-    }
-    catch ( QgsMapServiceException& ex )
-    {
-      writeError( response, ex.code(), ex.message() );
-    }
+    QDomDocument doc = getContext( serverIface, project, version, request );
+
+    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
+    response.write( doc.toByteArray() );
   }
 
+
+  QDomDocument getContext( QgsServerInterface* serverIface, const QgsProject* project,
+                           const QString& version, const QgsServerRequest& request )
+  {
+    Q_UNUSED( version );
+
+    QgsWmsConfigParser*  configParser = getConfigParser( serverIface );
+
+    QDomDocument doc;
+    QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( QStringLiteral( "xml" ),
+        QStringLiteral( "version=\"1.0\" encoding=\"utf-8\"" ) );
+
+    doc.appendChild( xmlDeclaration );
+
+    QDomElement owsContextElem = doc.createElement( QStringLiteral( "OWSContext" ) );
+    owsContextElem.setAttribute( QStringLiteral( "xmlns" ), QStringLiteral( "http://www.opengis.net/ows-context" ) );
+    owsContextElem.setAttribute( QStringLiteral( "xmlns:ows-context" ), QStringLiteral( "http://www.opengis.net/ows-context" ) );
+    owsContextElem.setAttribute( QStringLiteral( "xmlns:context" ), QStringLiteral( "http://www.opengis.net/context" ) );
+    owsContextElem.setAttribute( QStringLiteral( "xmlns:ows" ), QStringLiteral( "http://www.opengis.net/ows" ) );
+    owsContextElem.setAttribute( QStringLiteral( "xmlns:sld" ), QStringLiteral( "http://www.opengis.net/sld" ) );
+    owsContextElem.setAttribute( QStringLiteral( "xmlns:ogc" ), QStringLiteral( "http://www.opengis.net/ogc" ) );
+    owsContextElem.setAttribute( QStringLiteral( "xmlns:gml" ), QStringLiteral( "http://www.opengis.net/gml" ) );
+    owsContextElem.setAttribute( QStringLiteral( "xmlns:kml" ), QStringLiteral( "http://www.opengis.net/kml/2.2" ) );
+    owsContextElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
+    owsContextElem.setAttribute( QStringLiteral( "xmlns:ns9" ), QStringLiteral( "http://www.w3.org/2005/Atom" ) );
+    owsContextElem.setAttribute( QStringLiteral( "xmlns:xal" ), QStringLiteral( "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0" ) );
+    owsContextElem.setAttribute( QStringLiteral( "xmlns:ins" ), QStringLiteral( "http://www.inspire.org" ) );
+    owsContextElem.setAttribute( QStringLiteral( "version" ), QStringLiteral( "0.3.1" ) );
+    doc.appendChild( owsContextElem );
+
+    QString hrefString = serviceUrl( request, project ).toString( QUrl::FullyDecoded );
+    configParser->owsGeneralAndResourceList( owsContextElem, doc, hrefString );
+
+    return doc;
+  }
 
 } // samespace QgsWms
 

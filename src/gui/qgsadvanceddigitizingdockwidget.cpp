@@ -126,8 +126,8 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   // Connect the UI to the event filter to update constraints
   connect( mEnableAction, SIGNAL( triggered( bool ) ), this, SLOT( activateCad( bool ) ) );
   connect( mConstructionModeButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstructionMode( bool ) ) );
-  connect( mParallelButton, SIGNAL( clicked( bool ) ), this, SLOT( addtionalConstraintClicked( bool ) ) );
-  connect( mPerpendicularButton, SIGNAL( clicked( bool ) ), this, SLOT( addtionalConstraintClicked( bool ) ) );
+  connect( mParallelButton, SIGNAL( clicked( bool ) ), this, SLOT( additionalConstraintClicked( bool ) ) );
+  connect( mPerpendicularButton, SIGNAL( clicked( bool ) ), this, SLOT( additionalConstraintClicked( bool ) ) );
   connect( mLockAngleButton, SIGNAL( clicked( bool ) ), this, SLOT( lockConstraint( bool ) ) );
   connect( mLockDistanceButton, SIGNAL( clicked( bool ) ), this, SLOT( lockConstraint( bool ) ) );
   connect( mLockXButton, SIGNAL( clicked( bool ) ), this, SLOT( lockConstraint( bool ) ) );
@@ -234,7 +234,7 @@ void QgsAdvancedDigitizingDockWidget::activateCad( bool enabled )
   setCadEnabled( enabled );
 }
 
-void QgsAdvancedDigitizingDockWidget::addtionalConstraintClicked( bool activated )
+void QgsAdvancedDigitizingDockWidget::additionalConstraintClicked( bool activated )
 {
   if ( !activated )
   {
@@ -375,7 +375,7 @@ double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString& inputValu
   }
   else
   {
-    // try to evalute expression
+    // try to evaluate expression
     QgsExpression expr( inputValue );
     QVariant result = expr.evaluate();
     if ( expr.hasEvalError() )
@@ -644,7 +644,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
       softAngle -= deltaAngle;
     }
     int quo = qRound( softAngle / commonAngle );
-    if ( qAbs( softAngle - quo * commonAngle ) * 180.0 * M_1_PI <= SoftConstraintToleranceDegrees )
+    if ( qAbs( softAngle - quo * commonAngle ) * 180.0 * M_1_PI <= SOFT_CONSTRAINT_TOLERANCE_DEGREES )
     {
       // also check the distance in pixel to the line, otherwise it's too sticky at long ranges
       softAngle = quo * commonAngle ;
@@ -652,7 +652,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
       // use the direction vector (cos(a),sin(a)) from previous point. |x2-x1|=1 since sin2+cos2=1
       const double dist = qAbs( qCos( softAngle + deltaAngle ) * ( previousPt.y() - point.y() )
                                 - qSin( softAngle + deltaAngle ) * ( previousPt.x() - point.x() ) );
-      if ( dist / mMapCanvas->mapSettings().mapUnitsPerPixel() < SoftConstraintTolerancePixel )
+      if ( dist / mMapCanvas->mapSettings().mapUnitsPerPixel() < SOFT_CONSTRAINT_TOLERANCE_PIXEL )
       {
         mAngleConstraint->setLockMode( CadConstraint::SoftLock );
         mAngleConstraint->setValue( 180.0 / M_PI * softAngle );
@@ -787,7 +787,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
   }
 
   // *****************************
-  // ---- caluclate CAD values
+  // ---- calculate CAD values
   QgsDebugMsg( QString( "point:             %1 %2" ).arg( point.x() ).arg( point.y() ) );
   QgsDebugMsg( QString( "previous point:    %1 %2" ).arg( previousPt.x() ).arg( previousPt.y() ) );
   QgsDebugMsg( QString( "penultimate point: %1 %2" ).arg( penultimatePt.x() ).arg( penultimatePt.y() ) );

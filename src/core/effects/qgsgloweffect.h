@@ -20,9 +20,10 @@
 #include "qgis_core.h"
 #include "qgspainteffect.h"
 #include "qgssymbol.h"
+#include "qgscolorramp.h"
+
 #include <QPainter>
 
-class QgsColorRamp;
 
 /** \ingroup core
  * \class QgsGlowEffect

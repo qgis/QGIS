@@ -446,7 +446,7 @@ $cmd .= " -DBINARY_REVISION=$binary";
 $cmd .= sprintf( " -DVERSION_INT='%d%02d%02d%02d'", $pmajor, $pminor, $ppatch, $binary );
 $cmd .= sprintf( " -DQGIS_BASE='$packagename %d.%d'", $pmajor, $pminor );
 $cmd .= " -DINSTALLER_NAME='$packagename-OSGeo4W-$version-$binary-Setup$archpostfix.exe'";
-$cmd .= " -DDISPLAYED_NAME='$packagename \'$releasename\' ($version)'";
+$cmd .= " -DDISPLAYED_NAME=\"$packagename '$releasename' ($version)\"";
 $cmd .= " -DSHORTNAME='$shortname'";
 $cmd .= " -DINSTALLER_TYPE=OSGeo4W";
 $cmd .= " -DPACKAGE_FOLDER=osgeo4w/$unpacked";

@@ -145,7 +145,7 @@ class CORE_EXPORT QgsDxfExport
     void setLayerTitleAsName( bool layerTitleAsName ) { mLayerTitleAsName = layerTitleAsName; }
 
     /**
-     * Retrieve wether layer title (where set) instead of name shall be use
+     * Retrieve whether layer title (where set) instead of name shall be use
      * @returns flag
      * @see setLayerTitleAsName
      */
@@ -340,8 +340,8 @@ class CORE_EXPORT QgsDxfExport
 
     QTextStream mTextStream;
 
-    static int mDxfColors[][3];
-    static const char *mDxfEncodings[][2];
+    static int sDxfColors[][3];
+    static const char *DXF_ENCODINGS[][2];
 
     int mSymbolLayerCounter; //internal counter
     int mNextHandleId;

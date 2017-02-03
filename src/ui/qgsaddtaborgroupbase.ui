@@ -115,7 +115,7 @@
   <tabstop>mTabButton</tabstop>
   <tabstop>mGroupButton</tabstop>
   <tabstop>mTabList</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>mColumnCountSpinBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

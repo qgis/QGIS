@@ -39,7 +39,8 @@ class QValidator;
 
 class QgisAppInterface;
 class QgisAppStyleSheet;
-class QgsAnnotationItem;
+class QgsAnnotation;
+class QgsMapCanvasAnnotationItem;
 class QgsAuthManager;
 class QgsBookmarks;
 class QgsClipboard;
@@ -252,7 +253,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Returns a pointer to the internal clipboard
     QgsClipboard *clipboard();
 
-    static QgisApp *instance() { return smInstance; }
+    static QgisApp *instance() { return sInstance; }
 
     //! initialize network manager
     void namSetup();
@@ -862,6 +863,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showPluginManager();
     //! load python support if possible
     void loadPythonSupport();
+
+    /** Install plugin from ZIP file
+     * @note added in QGIS 3.0
+     */
+    void installPluginFromZip();
     //! Find the QMenu with the given name within plugin menu (ie the user visible text on the menu item)
     QMenu* getPluginMenu( const QString& menuName );
     //! Add the action to the submenu with the given name under the plugin menu
@@ -1308,15 +1314,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void showStyleManager();
 
-    void writeAnnotationItemsToProject( QDomDocument& doc );
-
     //! Creates the composer instances in a project file and adds them to the menu
     bool loadComposersFromProject( const QDomDocument& doc );
 
     //! Slot to handle display of composers menu, e.g. sorting
     void on_mPrintComposersMenu_aboutToShow();
-
-    bool loadAnnotationItemsFromProject( const QDomDocument& doc );
 
     //! Toggles whether to show pinned labels
     void showPinnedLabels( bool show );
@@ -1389,6 +1391,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Handles processing of dropped mimedata
     void dropEventTimeout();
+
+    void annotationCreated( QgsAnnotation* annotation );
 
   signals:
 
@@ -1506,7 +1510,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsVectorLayer * pasteToNewMemoryVector();
 
     //! Returns all annotation items in the canvas
-    QList<QgsAnnotationItem*> annotationItems();
+    QList<QgsMapCanvasAnnotationItem*> annotationItems();
     //! Removes annotation items in the canvas
     void removeAnnotationItems();
 
@@ -1647,7 +1651,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mCircularStringCurvePoint;
         QgsMapTool *mCircularStringRadius;
         QgsMapTool *mMoveFeature;
-        QgsMapTool *mMoveFeatureCopy;
+        QgsMapTool *mMoveFeatureCopy = nullptr;
         QgsMapTool *mOffsetCurve;
         QgsMapTool *mReshapeFeatures;
         QgsMapTool *mSplitFeatures;
@@ -1786,7 +1790,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsPythonUtils *mPythonUtils;
 
-    static QgisApp *smInstance;
+    static QgisApp *sInstance;
 
     QgsUndoWidget *mUndoWidget;
     QgsDockWidget *mUndoDock;

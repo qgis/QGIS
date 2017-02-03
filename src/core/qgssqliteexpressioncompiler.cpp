@@ -84,28 +84,20 @@ QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant& value, bool& o
   }
 }
 
-static const QMap<QString, QString>& functionNamesSqlFunctionsMap()
-{
-  static QMap<QString, QString> fnNames;
-  if ( fnNames.isEmpty() )
-  {
-    fnNames =
-    {
-      { "abs", "abs" },
-      { "char", "char" },
-      { "coalesce", "coalesce" },
-      { "lower", "lower" },
-      { "round", "round" },
-      { "trim", "trim" },
-      { "upper", "upper" },
-    };
-  }
-  return fnNames;
-}
-
 QString QgsSQLiteExpressionCompiler::sqlFunctionFromFunctionName( const QString& fnName ) const
 {
-  return functionNamesSqlFunctionsMap().value( fnName, QString() );
+  static const QMap<QString, QString> FN_NAMES
+  {
+    { "abs", "abs" },
+    { "char", "char" },
+    { "coalesce", "coalesce" },
+    { "lower", "lower" },
+    { "round", "round" },
+    { "trim", "trim" },
+    { "upper", "upper" },
+  };
+
+  return FN_NAMES.value( fnName, QString() );
 }
 
 QString QgsSQLiteExpressionCompiler::castToReal( const QString& value ) const

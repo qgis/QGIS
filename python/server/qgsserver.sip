@@ -146,7 +146,7 @@ sipReleaseType(qba2, sipType_QByteArray, state);
 // The instance should be regarded as temporary (and be destroyed as
 // soon as it has been used) unless it has been transferred from
 // Python.  sipGetState() is a convenience function that implements
-// this common transfer behaviour.
+// this common transfer behavior.
 return sipGetState(sipTransferObj);
 
 %End

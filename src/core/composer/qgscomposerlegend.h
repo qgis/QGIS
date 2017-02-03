@@ -272,11 +272,20 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     //Overridden to show legend title
     virtual QString displayName() const override;
 
+    /**
+     * Returns the legend's renderer settings object.
+     * @note added in QGIS 3.0
+     */
+    const QgsLegendSettings& legendSettings() const { return mSettings; }
+
   public slots:
     //! Data changed
     void synchronizeWithModel();
     //! Sets mCompositionMap to 0 if the map is deleted
     void invalidateCurrentMap();
+
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr ) override;
+
 
   private slots:
     void updateFilterByMap( bool redraw = true );
@@ -300,6 +309,9 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     QgsLayerTreeGroup* mCustomLayerTree;
 
     QgsLegendSettings mSettings;
+
+    QString mTitle;
+    int mColumnCount = 1;
 
     const QgsComposerMap* mComposerMap;
 

@@ -51,6 +51,53 @@ inline QStringList _qgis_listQPointerToIDs( const QList< QPointer<QgsMapLayer> >
   return lst;
 }
 
+inline static QgsMapLayer* _qgis_findLayer( const QList< QgsMapLayer*> layers, const QString& identifier )
+{
+  QgsMapLayer* matchId = nullptr;
+  QgsMapLayer* matchName = nullptr;
+  QgsMapLayer* matchNameInsensitive = nullptr;
+
+  // Look for match against layer IDs
+  Q_FOREACH ( QgsMapLayer* layer, layers )
+  {
+    if ( !matchId && layer->id() == identifier )
+    {
+      matchId = layer;
+      break;
+    }
+    if ( !matchName && layer->name() == identifier )
+    {
+      matchName = layer;
+    }
+    if ( !matchNameInsensitive && QString::compare( layer->name(), identifier, Qt::CaseInsensitive ) == 0 )
+    {
+      matchNameInsensitive = layer;
+    }
+  }
+
+  if ( matchId )
+  {
+    return matchId;
+  }
+  else if ( matchName )
+  {
+    return matchName;
+  }
+  else if ( matchNameInsensitive )
+  {
+    return matchNameInsensitive;
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
+inline uint qHash( const QPointer< QgsMapLayer >& key )
+{
+  return qHash( key ? key->id() : QString() );
+}
+
 ///@endcond
 
 #endif // QGSMAPLAYERLISTUTILS_H

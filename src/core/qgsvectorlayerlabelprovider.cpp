@@ -15,7 +15,6 @@
 
 #include "qgsvectorlayerlabelprovider.h"
 
-#include "qgsdatadefined.h"
 #include "qgsgeometry.h"
 #include "qgslabelsearchtree.h"
 #include "qgspallabeling.h"
@@ -83,11 +82,17 @@ void QgsVectorLayerLabelProvider::init()
   mPlacement = mSettings.placement;
   mLinePlacementFlags = mSettings.placementFlags;
   mFlags = Flags();
-  if ( mSettings.drawLabels ) mFlags |= DrawLabels;
-  if ( mSettings.displayAll ) mFlags |= DrawAllLabels;
-  if ( mSettings.mergeLines ) mFlags |= MergeConnectedLines;
-  if ( mSettings.centroidInside ) mFlags |= CentroidMustBeInside;
-  if ( mSettings.labelPerPart ) mFlags |= LabelPerFeaturePart;
+  if ( mSettings.drawLabels )
+    mFlags |= DrawLabels;
+  if ( mSettings.displayAll )
+    mFlags |= DrawAllLabels;
+  if ( mSettings.mergeLines && !mSettings.addDirectionSymbol )
+    mFlags |= MergeConnectedLines;
+  if ( mSettings.centroidInside )
+    mFlags |= CentroidMustBeInside;
+  if ( mSettings.labelPerPart )
+    mFlags |= LabelPerFeaturePart;
+
   mPriority = 1 - mSettings.priority / 10.0; // convert 0..10 --> 1..0
 
   if ( mLayerGeometryType == QgsWkbTypes::PointGeometry && mRenderer )
@@ -171,26 +176,9 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QSet
       attributeNames.insert( lyr.fieldName );
     }
 
+    lyr.dataDefinedProperties().prepare( context.expressionContext() );
     // add field indices of data defined expression or field
-    QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator dIt = lyr.dataDefinedProperties.constBegin();
-    for ( ; dIt != lyr.dataDefinedProperties.constEnd(); ++dIt )
-    {
-      QgsDataDefined* dd = dIt.value();
-      if ( !dd->isActive() )
-      {
-        continue;
-      }
-
-      // this will return columns for expressions or field name, depending upon what is set to be used
-      // this also prepares any expressions, too
-      QSet<QString> cols = dd->referencedColumns( context.expressionContext() );
-
-      //QgsDebugMsgLevel( QString( "Data defined referenced columns:" ) + cols.join( "," ), 4 );
-      Q_FOREACH ( const QString& name, cols )
-      {
-        attributeNames.insert( name );
-      }
-    }
+    attributeNames.unite( lyr.dataDefinedProperties().referencedFields( context.expressionContext() ) );
   }
 
   // NOW INITIALIZE QgsPalLayerSettings
@@ -383,7 +371,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::Lab
   QgsPalLayerSettings tmpLyr( mSettings );
 
   // apply any previously applied data defined settings for the label
-  const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues = lf->dataDefinedValues();
+  const QMap< QgsPalLayerSettings::Property, QVariant >& ddValues = lf->dataDefinedValues();
 
   //font
   QFont dFont = lf->definedFont();
@@ -552,8 +540,8 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
     component.center = centerPt;
 
     // convert label size to render units
-    double labelWidthPx = QgsTextRenderer::scaleToPixelContext( label->getWidth(), context, QgsUnitTypes::RenderMapUnits, true );
-    double labelHeightPx = QgsTextRenderer::scaleToPixelContext( label->getHeight(), context, QgsUnitTypes::RenderMapUnits, true );
+    double labelWidthPx = context.convertToPainterUnits( label->getWidth(), QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
+    double labelHeightPx = context.convertToPainterUnits( label->getHeight(), QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
 
     component.size = QSizeF( labelWidthPx, labelHeightPx );
 

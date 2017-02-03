@@ -120,7 +120,7 @@ class QgsFeatureRenderer
     /**
      * Returns a set of attributes required for this renderer.
      */
-    virtual QSet<QString> usedAttributes() const = 0;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const = 0;
 
     /**
      * Returns true if this renderer requires the geometry to apply the filter.
@@ -322,7 +322,7 @@ class QgsFeatureRenderer
     void setOrderByEnabled( bool enabled );
 
     /** Sets an embedded renderer (subrenderer) for this feature renderer. The base class implementation
-     * does nothing with subrenderers, but individual derived classes can use these to modify their behaviour.
+     * does nothing with subrenderers, but individual derived classes can use these to modify their behavior.
      * @param subRenderer the embedded renderer. Ownership will be transferred.
      * @see embeddedRenderer()
      * @note added in QGIS 2.16
@@ -369,11 +369,11 @@ class QgsFeatureRenderer
      */
     void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
 
-    /** @note this function is used to convert old sizeScale expresssions to symbol
+    /** @note this function is used to convert old sizeScale expressions to symbol
      * level DataDefined size
      */
     static void convertSymbolSizeScale( QgsSymbol * symbol, QgsSymbol::ScaleMethod method, const QString & field );
-    /** @note this function is used to convert old rotations expresssions to symbol
+    /** @note this function is used to convert old rotations expressions to symbol
      * level DataDefined angle
      */
     static void convertSymbolRotation( QgsSymbol * symbol, const QString & field );

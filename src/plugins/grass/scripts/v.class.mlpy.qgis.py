@@ -60,7 +60,7 @@
 # TODO: improve doc
 # TODO: input/training could be multiple
 # TODO: handle layers
-# TODO: ouput to new map (all classes/one class), depens what is faster
+# TODO: output to new map (all classes/one class), depens what is faster
 
 
 import grass.script as grass
@@ -244,8 +244,8 @@ def main():
     # TODO: allow same input and output map only if --overwrite was specified
     # TODO: is adding column overwriting or overwriting is only updating of existing?
 
-    # variable names conected to training dataset have training prefix
-    # variable names conected to classified dataset have no prefix
+    # variable names connected to training dataset have training prefix
+    # variable names connected to classified dataset have no prefix
 
     # checking database connection (if map has a table)
     # TODO: layer

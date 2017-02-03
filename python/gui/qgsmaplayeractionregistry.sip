@@ -15,7 +15,7 @@ class QgsMapLayerAction : QAction
     typedef QFlags<QgsMapLayerAction::Target> Targets;
 
     //! Creates a map layer action which can run on any layer
-    //! @note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatiblity reasons.
+    //! @note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
     QgsMapLayerAction( const QString& name, QObject *parent /TransferThis/, Targets targets = AllActions, const QIcon& icon = QIcon() );
 
     //! Creates a map layer action which can run only on a specific layer

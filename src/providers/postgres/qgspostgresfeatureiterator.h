@@ -111,7 +111,7 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
 
     bool mIsTransactionConnection;
 
-    static const int sFeatureQueueSize;
+    static const int FEATURE_QUEUE_SIZE;
 
   private:
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;

@@ -1,7 +1,0 @@
-Slope Average Down
-slopeavedown
-Specialized Grid Analysis tools
-ParameterRaster|-p|D8 Flow Direction Grid|False
-ParameterRaster|-fel|Pit Filled Elevation Grid|False
-ParameterNumber|-dn|Downslope Distance|1|500|50
-OutputRaster|-slpd|Slope Average Down Grid

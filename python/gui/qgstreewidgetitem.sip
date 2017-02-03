@@ -1,10 +1,10 @@
 /** \ingroup gui
  * \class QgsTreeWidgetItem
- * \note added in QGIS 3.0
  * QTreeWidgetItem subclass with custom handling for item sorting.
  *
  * QgsTreeWidgetItem allows for items to be sorted using a specified user role, and
  * also correctly handles sorting numeric or mixed text and numeric values.
+ * \note added in QGIS 3.0
  */
 class QgsTreeWidgetItem : QTreeWidgetItem
 {
@@ -97,12 +97,14 @@ class QgsTreeWidgetItem : QTreeWidgetItem
 
     virtual bool operator<( const QTreeWidgetItem &other ) const;
 
+    bool operator>=( const QTreeWidgetItem &other ) const;
+
 };
 
 /** \ingroup gui
  * \class QgsTreeWidgetItemObject
- * \note added in QGIS 3.0
  * Custom QgsTreeWidgetItem with extra signals when item is edited.
+ * \note added in QGIS 3.0
  */
 class QgsTreeWidgetItemObject: QObject, QgsTreeWidgetItem
 {
@@ -116,14 +118,14 @@ class QgsTreeWidgetItemObject: QObject, QgsTreeWidgetItem
      */
     explicit QgsTreeWidgetItemObject( int type = Type );
 
-    /** Constructs a tree widget item of the specified type and appends it to the items in the given parent. */
+    //! Constructs a tree widget item of the specified type and appends it to the items in the given parent.
     explicit QgsTreeWidgetItemObject( QTreeWidget * parent /TransferThis/, int type = Type );
 
-    /** Sets the value for the item's column and role to the given value. */
+    //! Sets the value for the item's column and role to the given value.
     virtual void setData( int column, int role, const QVariant & value );
 
   signals:
-    /** This signal is emitted when the contents of the column in the specified item has been edited by the user. */
+    //! This signal is emitted when the contents of the column in the specified item has been edited by the user.
     void itemEdited( QTreeWidgetItem* item, int column );
 };
 

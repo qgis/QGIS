@@ -118,7 +118,7 @@ void QgsMapToolSimplify::updateSimplificationPreview()
   Q_FOREACH ( const QgsFeature& fSel, mSelectedFeatures )
   {
     QgsGeometry g = fSel.geometry().simplify( layerTolerance );
-    if ( !g.isEmpty() )
+    if ( !g.isNull() )
     {
       mReducedVertexCount += vertexCount( g );
       mRubberBands.at( i )->setToGeometry( g, vl );
@@ -180,7 +180,7 @@ void QgsMapToolSimplify::storeSimplified()
   Q_FOREACH ( const QgsFeature& feat, mSelectedFeatures )
   {
     QgsGeometry g = feat.geometry().simplify( layerTolerance );
-    if ( !g.isEmpty() )
+    if ( !g.isNull() )
     {
       vlayer->changeGeometry( feat.id(), g );
     }

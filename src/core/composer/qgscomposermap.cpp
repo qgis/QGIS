@@ -36,6 +36,7 @@
 #include "qgsexpression.h"
 #include "qgsmapthemecollection.h"
 #include "qgsannotation.h"
+#include "qgsannotationmanager.h"
 
 #include "qgssymbollayerutils.h" //for pointOnLineWithDistance
 
@@ -55,8 +56,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     , mKeepLayerStyles( false )
     , mFollowVisibilityPreset( false )
     , mUpdatesEnabled( true )
-    , mMapCanvas( nullptr )
-    , mDrawCanvasItems( true )
+    , mDrawAnnotations( true )
     , mAtlasDriven( false )
     , mAtlasScalingMode( Auto )
     , mAtlasMargin( 0.10 )
@@ -85,9 +85,6 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
   int bgBlueInt = project->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
   setBackgroundColor( QColor( bgRedInt, bgGreenInt, bgBlueInt ) );
 
-  //calculate mExtent based on width/height ratio and map canvas extent
-  mExtent = mComposition->mapSettings().visibleExtent();
-
   init();
 
   setSceneRect( QRectF( x, y, width, height ) );
@@ -103,8 +100,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     , mKeepLayerStyles( false )
     , mFollowVisibilityPreset( false )
     , mUpdatesEnabled( true )
-    , mMapCanvas( nullptr )
-    , mDrawCanvasItems( true )
+    , mDrawAnnotations( true )
     , mAtlasDriven( false )
     , mAtlasScalingMode( Auto )
     , mAtlasMargin( 0.10 )
@@ -127,17 +123,6 @@ void QgsComposerMap::init()
   mGridStack = new QgsComposerMapGridStack( this );
   mOverviewStack = new QgsComposerMapOverviewStack( this );
   connectUpdateSlot();
-
-  // data defined strings
-  mDataDefinedNames.insert( QgsComposerObject::MapRotation, QStringLiteral( "dataDefinedMapRotation" ) );
-  mDataDefinedNames.insert( QgsComposerObject::MapScale, QStringLiteral( "dataDefinedMapScale" ) );
-  mDataDefinedNames.insert( QgsComposerObject::MapXMin, QStringLiteral( "dataDefinedMapXMin" ) );
-  mDataDefinedNames.insert( QgsComposerObject::MapYMin, QStringLiteral( "dataDefinedMapYMin" ) );
-  mDataDefinedNames.insert( QgsComposerObject::MapXMax, QStringLiteral( "dataDefinedMapXMax" ) );
-  mDataDefinedNames.insert( QgsComposerObject::MapYMax, QStringLiteral( "dataDefinedMapYMax" ) );
-  mDataDefinedNames.insert( QgsComposerObject::MapAtlasMargin, QStringLiteral( "dataDefinedMapAtlasMargin" ) );
-  mDataDefinedNames.insert( QgsComposerObject::MapLayers, QStringLiteral( "dataDefinedMapLayers" ) );
-  mDataDefinedNames.insert( QgsComposerObject::MapStylePreset, QStringLiteral( "dataDefinedMapStylePreset" ) );
 }
 
 void QgsComposerMap::updateToolTip()
@@ -200,17 +185,17 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, QSizeF
 
 QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF size, int dpi ) const
 {
-  const QgsMapSettings &ms = mComposition->mapSettings();
-
   QgsExpressionContext expressionContext = createExpressionContext();
+  QgsCoordinateReferenceSystem renderCrs = crs();
 
   QgsMapSettings jobMapSettings;
+  jobMapSettings.setDestinationCrs( renderCrs );
+  jobMapSettings.setCrsTransformEnabled( true );
   jobMapSettings.setExtent( extent );
   jobMapSettings.setOutputSize( size.toSize() );
   jobMapSettings.setOutputDpi( dpi );
-  jobMapSettings.setMapUnits( ms.mapUnits() );
+  jobMapSettings.setMapUnits( renderCrs.mapUnits() );
   jobMapSettings.setBackgroundColor( Qt::transparent );
-  jobMapSettings.setOutputImageFormat( ms.outputImageFormat() );
   jobMapSettings.setRotation( mEvaluatedMapRotation );
 
   //set layers to render
@@ -233,15 +218,11 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   }
   jobMapSettings.setLayers( layers );
   jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( expressionContext ) );
-  jobMapSettings.setDestinationCrs( ms.destinationCrs() );
-  jobMapSettings.setCrsTransformEnabled( ms.hasCrsTransformEnabled() );
-  jobMapSettings.setFlags( ms.flags() );
-  jobMapSettings.setFlag( QgsMapSettings::DrawSelection, false );
 
   if ( mComposition->plotStyle() == QgsComposition::Print ||
        mComposition->plotStyle() == QgsComposition::Postscript )
   {
-    //if outputing composer, disable optimisations like layer simplification
+    //if outputting composer, disable optimisations like layer simplification
     jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, false );
   }
 
@@ -249,11 +230,13 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   jobMapSettings.setExpressionContext( context );
 
   // composer-specific overrides of flags
-  jobMapSettings.setFlag( QgsMapSettings::ForceVectorOutput ); // force vector output (no caching of marker images etc.)
+  jobMapSettings.setFlag( QgsMapSettings::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
+  jobMapSettings.setFlag( QgsMapSettings::Antialiasing, true );
   jobMapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
+  jobMapSettings.setFlag( QgsMapSettings::DrawSelection, false );
   jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mComposition->useAdvancedEffects() ); // respect the composition's useAdvancedEffects flag
 
-  jobMapSettings.datumTransformStore() = ms.datumTransformStore();
+  jobMapSettings.datumTransformStore().setDestinationCrs( renderCrs );
 
   return jobMapSettings;
 }
@@ -328,7 +311,7 @@ void QgsComposerMap::cache()
   mDrawing = false;
 }
 
-void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* pWidget )
 {
   Q_UNUSED( pWidget );
 
@@ -374,9 +357,6 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
 
     //restore rotation
     painter->restore();
-
-    //draw canvas items
-    drawCanvasItems( painter, itemStyle );
   }
   else if ( mComposition->plotStyle() == QgsComposition::Print ||
             mComposition->plotStyle() == QgsComposition::Postscript )
@@ -413,10 +393,6 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
 
     //restore rotation
     painter->restore();
-
-    //draw canvas items
-    drawCanvasItems( painter, itemStyle );
-
     mDrawing = false;
   }
 
@@ -431,6 +407,10 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
   {
     mGridStack->drawItems( painter );
   }
+
+  //draw canvas items
+  drawAnnotations( painter );
+
   if ( shouldDrawPart( Frame ) )
   {
     drawFrame( painter );
@@ -506,7 +486,7 @@ void QgsComposerMap::updateCachedImage()
 {
   mCacheUpdated = false;
   cache();
-  QGraphicsRectItem::update();
+  update();
 }
 
 void QgsComposerMap::renderModeUpdateCachedImage()
@@ -515,12 +495,6 @@ void QgsComposerMap::renderModeUpdateCachedImage()
   {
     updateCachedImage();
   }
-}
-
-void QgsComposerMap::layersChanged()
-{
-  syncLayerSet();
-  renderModeUpdateCachedImage();
 }
 
 void QgsComposerMap::setCacheUpdated( bool u )
@@ -540,32 +514,25 @@ QList<QgsMapLayer*> QgsComposerMap::layersToRender( const QgsExpressionContext* 
     QString presetName = mFollowVisibilityPresetName;
 
     // preset name can be overridden by data-defined one
-    QVariant exprVal;
-    if ( dataDefinedEvaluate( QgsComposerObject::MapStylePreset, exprVal, *evalContext ) )
-    {
-      presetName = exprVal.toString();
-    }
+    presetName = mDataDefinedProperties.valueAsString( QgsComposerObject::MapStylePreset, *evalContext, presetName );
 
     if ( mComposition->project()->mapThemeCollection()->hasMapTheme( presetName ) )
       renderLayers = mComposition->project()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
     else  // fallback to using map canvas layers
-      renderLayers = mComposition->mapSettings().layers();
-  }
-  else if ( mKeepLayerSet )
-  {
-    renderLayers = layers();
+      renderLayers = layers();
   }
   else
   {
-    renderLayers = mComposition->mapSettings().layers();
+    renderLayers = layers();
   }
 
-  QVariant exprVal;
-  if ( dataDefinedEvaluate( QgsComposerObject::MapLayers, exprVal, *evalContext ) )
+  bool ok = false;
+  QString ddLayers = mDataDefinedProperties.valueAsString( QgsComposerObject::MapLayers, *evalContext, QString(), &ok );
+  if ( ok )
   {
     renderLayers.clear();
 
-    QStringList layerNames = exprVal.toString().split( '|' );
+    QStringList layerNames = ddLayers.split( '|' );
     //need to convert layer names to layer ids
     Q_FOREACH ( const QString& name, layerNames )
     {
@@ -601,11 +568,8 @@ QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender( const QgsExp
   {
     QString presetName = mFollowVisibilityPresetName;
 
-    QVariant exprVal;
-    if ( dataDefinedEvaluate( QgsComposerObject::MapStylePreset, exprVal, context ) )
-    {
-      presetName = exprVal.toString();
-    }
+    // data defined preset name?
+    presetName = mDataDefinedProperties.valueAsString( QgsComposerObject::MapStylePreset, context, presetName );
 
     if ( mComposition->project()->mapThemeCollection()->hasMapTheme( presetName ) )
       return mComposition->project()->mapThemeCollection()->mapThemeStyleOverrides( presetName );
@@ -625,7 +589,7 @@ QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender( const QgsExp
 double QgsComposerMap::scale() const
 {
   QgsScaleCalculator calculator;
-  calculator.setMapUnits( mComposition->mapSettings().mapUnits() );
+  calculator.setMapUnits( crs().mapUnits() );
   calculator.setDpi( 25.4 );  //QGraphicsView units are mm
   return calculator.calculate( *currentMapExtent(), rect().width() );
 }
@@ -713,11 +677,11 @@ void QgsComposerMap::zoomContent( const double factor, const QPointF point, cons
 
   if ( mAtlasDriven && mAtlasScalingMode == Fixed && mComposition->atlasMode() != QgsComposition::AtlasOff )
   {
-    //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanant
+    //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanent
     //and also apply to the map's original extent (see #9602)
     //we can't use the scaleRatio calculated earlier, as the scale can vary depending on extent for geographic coordinate systems
     QgsScaleCalculator calculator;
-    calculator.setMapUnits( mComposition->mapSettings().mapUnits() );
+    calculator.setMapUnits( crs().mapUnits() );
     calculator.setDpi( 25.4 );  //QGraphicsView units are mm
     double scaleRatio = scale() / calculator.calculate( mExtent, rect().width() );
     mExtent.scale( scaleRatio );
@@ -777,9 +741,14 @@ void QgsComposerMap::setNewExtent( const QgsRectangle& extent )
 void QgsComposerMap::zoomToExtent( const QgsRectangle &extent )
 {
   QgsRectangle newExtent = extent;
+  QgsRectangle currentExtent = *currentMapExtent();
   //Make sure the width/height ratio is the same as the current composer map extent.
   //This is to keep the map item frame size fixed
-  double currentWidthHeightRatio = currentMapExtent()->width() / currentMapExtent()->height();
+  double currentWidthHeightRatio = 1.0;
+  if ( !currentExtent.isNull() )
+    currentWidthHeightRatio = currentExtent.width() / currentExtent.height();
+  else
+    currentWidthHeightRatio = rect().width() / rect().height();
   double newWidthHeightRatio = newExtent.width() / newExtent.height();
 
   if ( currentWidthHeightRatio < newWidthHeightRatio )
@@ -866,9 +835,23 @@ QgsRectangle* QgsComposerMap::currentMapExtent()
   }
   else
   {
-    //otherwise return permenant user set extent
+    //otherwise return permanent user set extent
     return &mExtent;
   }
+}
+
+QgsCoordinateReferenceSystem QgsComposerMap::crs() const
+{
+  if ( mCrs.isValid() )
+    return mCrs;
+  else if ( mComposition && mComposition->project() )
+    return mComposition->project()->crs();
+  return QgsCoordinateReferenceSystem();
+}
+
+void QgsComposerMap::setCrs( const QgsCoordinateReferenceSystem& crs )
+{
+  mCrs = crs;
 }
 
 const QgsRectangle* QgsComposerMap::currentMapExtent() const
@@ -882,7 +865,7 @@ const QgsRectangle* QgsComposerMap::currentMapExtent() const
   }
   else
   {
-    //otherwise return permenant user set extent
+    //otherwise return permanent user set extent
     return &mExtent;
   }
 }
@@ -901,11 +884,11 @@ void QgsComposerMap::setNewScale( double scaleDenominator, bool forceUpdate )
 
   if ( mAtlasDriven && mAtlasScalingMode == Fixed && mComposition->atlasMode() != QgsComposition::AtlasOff )
   {
-    //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanant
+    //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanent
     //and also apply to the map's original extent (see #9602)
     //we can't use the scaleRatio calculated earlier, as the scale can vary depending on extent for geographic coordinate systems
     QgsScaleCalculator calculator;
-    calculator.setMapUnits( mComposition->mapSettings().mapUnits() );
+    calculator.setMapUnits( crs().mapUnits() );
     calculator.setDpi( 25.4 );  //QGraphicsView units are mm
     scaleRatio = scaleDenominator / calculator.calculate( mExtent, rect().width() );
     mExtent.scale( scaleRatio );
@@ -965,49 +948,30 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext* context )
   double maxXD = 0;
   double maxYD = 0;
 
-  if ( dataDefinedEvaluate( QgsComposerObject::MapXMin, exprVal, *evalContext ) )
+  bool ok = false;
+  minXD = mDataDefinedProperties.valueAsDouble( QgsComposerObject::MapXMin, *evalContext, 0.0, &ok );
+  if ( ok )
   {
-    bool ok;
-    minXD = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Map XMin:%1" ).arg( minXD ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      useDdXMin = true;
-      newExtent.setXMinimum( minXD );
-    }
+    useDdXMin = true;
+    newExtent.setXMinimum( minXD );
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::MapYMin, exprVal, *evalContext ) )
+  minYD = mDataDefinedProperties.valueAsDouble( QgsComposerObject::MapYMin, *evalContext, 0.0, &ok );
+  if ( ok )
   {
-    bool ok;
-    minYD = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Map YMin:%1" ).arg( minYD ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      useDdYMin = true;
-      newExtent.setYMinimum( minYD );
-    }
+    useDdYMin = true;
+    newExtent.setYMinimum( minYD );
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::MapXMax, exprVal, *evalContext ) )
+  maxXD = mDataDefinedProperties.valueAsDouble( QgsComposerObject::MapXMax, *evalContext, 0.0, &ok );
+  if ( ok )
   {
-    bool ok;
-    maxXD = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Map XMax:%1" ).arg( maxXD ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      useDdXMax = true;
-      newExtent.setXMaximum( maxXD );
-    }
+    useDdXMax = true;
+    newExtent.setXMaximum( maxXD );
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::MapYMax, exprVal, *evalContext ) )
+  maxYD = mDataDefinedProperties.valueAsDouble( QgsComposerObject::MapYMax, *evalContext, 0.0, &ok );
+  if ( ok )
   {
-    bool ok;
-    maxYD = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Map YMax:%1" ).arg( maxYD ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      useDdYMax = true;
-      newExtent.setYMaximum( maxYD );
-    }
+    useDdYMax = true;
+    newExtent.setYMaximum( maxYD );
   }
 
   if ( newExtent != *currentMapExtent() )
@@ -1042,16 +1006,11 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext* context )
   //now refresh scale, as this potentially overrides extents
 
   //data defined map scale set?
-  if ( dataDefinedEvaluate( QgsComposerObject::MapScale, exprVal, *evalContext ) )
+  double scaleD = mDataDefinedProperties.valueAsDouble( QgsComposerObject::MapScale, *evalContext, 0.0, &ok );
+  if ( ok )
   {
-    bool ok;
-    double scaleD = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Map Scale:%1" ).arg( scaleD ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      setNewScale( scaleD, false );
-      newExtent = *currentMapExtent();
-    }
+    setNewScale( scaleD, false );
+    newExtent = *currentMapExtent();
   }
 
   if ( useDdXMax || useDdXMin || useDdYMax || useDdYMin )
@@ -1093,16 +1052,7 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext* context )
   double mapRotation = mMapRotation;
 
   //data defined map rotation set?
-  if ( dataDefinedEvaluate( QgsComposerObject::MapRotation, exprVal, *evalContext ) )
-  {
-    bool ok;
-    double rotationD = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Map Rotation:%1" ).arg( rotationD ) );
-    if ( ok && !exprVal.isNull() )
-    {
-      mapRotation = rotationD;
-    }
-  }
+  mapRotation = mDataDefinedProperties.valueAsDouble( QgsComposerObject::MapRotation, *evalContext, mapRotation );
 
   if ( !qgsDoubleNear( mEvaluatedMapRotation, mapRotation ) )
   {
@@ -1128,7 +1078,7 @@ void QgsComposerMap::updateItem()
 
 bool QgsComposerMap::containsWmsLayer() const
 {
-  Q_FOREACH ( QgsMapLayer* layer, mComposition->mapSettings().layers() )
+  Q_FOREACH ( QgsMapLayer* layer, layersToRender() )
   {
     if ( QgsRasterLayer* currentRasterLayer = qobject_cast<QgsRasterLayer *>( layer ) )
     {
@@ -1164,7 +1114,7 @@ bool QgsComposerMap::containsAdvancedEffects() const
   // check if map contains advanced effects like blend modes, or flattened layers for transparency
 
   QgsTextFormat layerFormat;
-  Q_FOREACH ( QgsMapLayer* layer, mComposition->mapSettings().layers() )
+  Q_FOREACH ( QgsMapLayer* layer, layersToRender() )
   {
     if ( layer )
     {
@@ -1188,6 +1138,7 @@ bool QgsComposerMap::containsAdvancedEffects() const
         if ( QgsPalLabeling::staticWillUseLayer( currentVectorLayer ) )
         {
           // Check all label blending properties
+
           layerFormat.readFromLayer( currentVectorLayer );
           if ( layerFormat.containsAdvancedEffects() )
             return true;
@@ -1205,8 +1156,12 @@ void QgsComposerMap::connectUpdateSlot()
   QgsProject* project = mComposition->project();
   if ( project )
   {
-    connect( project, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( layersChanged() ) );
-    connect( project, SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layersChanged() ) );
+    // handles updating the stored layer state BEFORE the layers are removed
+    connect( project, static_cast < void ( QgsProject::* )( const QList<QgsMapLayer*>& layers ) > ( &QgsProject::layersWillBeRemoved ),
+             this, &QgsComposerMap::layersAboutToBeRemoved );
+    // redraws the map AFTER layers are removed
+    connect( project, &QgsProject::layersRemoved, this, &QgsComposerMap::renderModeUpdateCachedImage );
+    connect( project, &QgsProject::legendLayersAdded, this, &QgsComposerMap::renderModeUpdateCachedImage );
   }
 }
 
@@ -1243,7 +1198,7 @@ bool QgsComposerMap::writeXml( QDomElement& elem, QDomDocument & doc ) const
     composerMapElem.setAttribute( QStringLiteral( "keepLayerSet" ), QStringLiteral( "false" ) );
   }
 
-  if ( mDrawCanvasItems )
+  if ( mDrawAnnotations )
   {
     composerMapElem.setAttribute( QStringLiteral( "drawCanvasItems" ), QStringLiteral( "true" ) );
   }
@@ -1259,6 +1214,13 @@ bool QgsComposerMap::writeXml( QDomElement& elem, QDomDocument & doc ) const
   extentElem.setAttribute( QStringLiteral( "ymin" ), qgsDoubleToString( mExtent.yMinimum() ) );
   extentElem.setAttribute( QStringLiteral( "ymax" ), qgsDoubleToString( mExtent.yMaximum() ) );
   composerMapElem.appendChild( extentElem );
+
+  if ( mCrs.isValid() )
+  {
+    QDomElement crsElem = doc.createElement( QStringLiteral( "crs" ) );
+    mCrs.writeXml( crsElem, doc );
+    composerMapElem.appendChild( crsElem );
+  }
 
   // follow map theme
   composerMapElem.setAttribute( QStringLiteral( "followPreset" ), mFollowVisibilityPreset ? "true" : "false" );
@@ -1361,6 +1323,17 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
     setNewExtent( QgsRectangle( xmin, ymin, xmax, ymax ) );
   }
 
+  QDomNodeList crsNodeList = itemElem.elementsByTagName( QStringLiteral( "crs" ) );
+  if ( !crsNodeList.isEmpty() )
+  {
+    QDomElement crsElem = crsNodeList.at( 0 ).toElement();
+    mCrs.readXml( crsElem );
+  }
+  else
+  {
+    mCrs = QgsCoordinateReferenceSystem();
+  }
+
   //map rotation
   if ( !qgsDoubleNear( itemElem.attribute( QStringLiteral( "mapRotation" ), QStringLiteral( "0" ) ).toDouble(), 0.0 ) )
   {
@@ -1385,11 +1358,11 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
   QString drawCanvasItemsFlag = itemElem.attribute( QStringLiteral( "drawCanvasItems" ), QStringLiteral( "true" ) );
   if ( drawCanvasItemsFlag.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
   {
-    mDrawCanvasItems = true;
+    mDrawAnnotations = true;
   }
   else
   {
-    mDrawCanvasItems = false;
+    mDrawAnnotations = false;
   }
 
   mLayerStyleOverrides.clear();
@@ -1560,17 +1533,6 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
   return true;
 }
 
-void QgsComposerMap::storeCurrentLayerSet()
-{
-  mLayers = _qgis_listRawToQPointer( mComposition->mapSettings().layers() );
-
-  if ( mKeepLayerStyles )
-  {
-    // also store styles associated with the layers
-    storeCurrentLayerStyles();
-  }
-}
-
 QList<QgsMapLayer*> QgsComposerMap::layers() const
 {
   return _qgis_listQPointerToRaw( mLayers );
@@ -1606,33 +1568,14 @@ void QgsComposerMap::storeCurrentLayerStyles()
   }
 }
 
-void QgsComposerMap::syncLayerSet()
+void QgsComposerMap::layersAboutToBeRemoved( QList< QgsMapLayer* > layers )
 {
-  if ( mLayers.size() < 1 )
+  if ( !mLayers.isEmpty() || mLayerStyleOverrides.isEmpty() )
   {
-    return;
-  }
-
-  //if layer set is fixed, do a lookup in the layer registry to also find the non-visible layers
-  QList<QgsMapLayer*> currentLayers;
-  if ( mKeepLayerSet )
-  {
-    currentLayers = mComposition->project()->mapLayers().values();
-  }
-  else //only consider layers visible in the map
-  {
-    currentLayers = mComposition->mapSettings().layers();
-  }
-
-  for ( int i = mLayers.size() - 1; i >= 0; --i )
-  {
-    if ( QgsMapLayer* layer = mLayers.at( i ).data() )
+    Q_FOREACH ( QgsMapLayer* layer, layers )
     {
-      if ( !currentLayers.contains( layer ) )
-      {
-        mLayerStyleOverrides.remove( layer->id() );
-        mLayers.removeAt( i );
-      }
+      mLayerStyleOverrides.remove( layer->id() );
+      mLayers.removeAll( layer );
     }
   }
 }
@@ -1836,9 +1779,10 @@ QgsExpressionContext QgsComposerMap::createExpressionContext() const
 
   if ( mComposition )
   {
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs" ), mComposition->mapSettings().destinationCrs().authid(), true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_definition" ), mComposition->mapSettings().destinationCrs().toProj4(), true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_units" ), QgsUnitTypes::toString( mComposition->mapSettings().mapUnits() ), true ) );
+    QgsCoordinateReferenceSystem mapCrs = crs();
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs" ), mapCrs.authid(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_definition" ), mapCrs.toProj4(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_units" ), QgsUnitTypes::toString( mapCrs.mapUnits() ), true ) );
   }
 
   context.appendScope( scope );
@@ -1916,44 +1860,44 @@ QPointF QgsComposerMap::mapToItemCoords( QPointF mapCoords ) const
   return QPointF( xItem, yItem );
 }
 
-void QgsComposerMap::drawCanvasItems( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle )
+void QgsComposerMap::drawAnnotations( QPainter* painter )
 {
-  if ( !mMapCanvas || !mDrawCanvasItems )
+  if ( !mComposition || !mComposition->project() || !mDrawAnnotations )
   {
     return;
   }
 
-  QList<QGraphicsItem*> itemList = mMapCanvas->items();
-  if ( itemList.size() < 1 )
-  {
+  QList< QgsAnnotation* > annotations = mComposition->project()->annotationManager()->annotations();
+  if ( annotations.isEmpty() )
     return;
-  }
-  QGraphicsItem* currentItem = nullptr;
 
-  for ( int i = itemList.size() - 1; i >= 0; --i )
+  QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( this, painter );
+  rc.setForceVectorOutput( true );
+  rc.setExpressionContext( createExpressionContext() );
+  QList< QgsMapLayer* > layers = layersToRender( &rc.expressionContext() );
+
+  Q_FOREACH ( QgsAnnotation* annotation, annotations )
   {
-    currentItem = itemList.at( i );
-
-    const QgsAnnotation* annotation = dynamic_cast< const QgsAnnotation* >( currentItem );
-    if ( !annotation )
+    if ( !annotation || !annotation->isVisible() )
     {
       continue;
     }
-    drawCanvasItem( annotation, painter, itemStyle );
+    if ( annotation->mapLayer() && !layers.contains( annotation->mapLayer() ) )
+      continue;
+
+    drawAnnotation( annotation, rc );
   }
 }
 
-void QgsComposerMap::drawCanvasItem( const QgsAnnotation* annotation, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle )
+void QgsComposerMap::drawAnnotation( const QgsAnnotation* annotation, QgsRenderContext& context )
 {
-  if ( !annotation || !annotation->showItem() )
+  if ( !annotation || !annotation->isVisible() || !context.painter() || !context.painter()->device() )
   {
     return;
   }
 
-  painter->save();
-  painter->setRenderHint( QPainter::Antialiasing );
-
-  double scaleFactor = annotation->scaleFactor();
+  context.painter()->save();
+  context.painter()->setRenderHint( QPainter::Antialiasing, context.flags() & QgsRenderContext::Antialiasing );
 
   double itemX, itemY;
   if ( annotation->hasFixedMapPosition() )
@@ -1967,16 +1911,14 @@ void QgsComposerMap::drawCanvasItem( const QgsAnnotation* annotation, QPainter* 
     itemX = annotation->relativePosition().x() * rect().width();
     itemY = annotation->relativePosition().y() * rect().height();
   }
+  context.painter()->translate( itemX, itemY );
 
-  painter->translate( itemX, itemY );
-  painter->scale( scaleFactor, scaleFactor );
+  //setup painter scaling to dots so that symbology is drawn to scale
+  double dotsPerMM = context.painter()->device()->logicalDpiX() / 25.4;
+  context.painter()->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
 
-  //a little trick to let the item know that the paint request comes from the composer
-  const_cast< QgsAnnotation* >( annotation )->setItemData( 1, "composer" );
-  const_cast< QgsAnnotation* >( annotation )->paint( painter, itemStyle, nullptr );
-  const_cast< QgsAnnotation* >( annotation )->setItemData( 1, "" );
-
-  painter->restore();
+  annotation->render( context );
+  context.painter()->restore();
 }
 
 QPointF QgsComposerMap::composerMapPosForItem( const QgsAnnotation* annotation ) const
@@ -1989,12 +1931,12 @@ QPointF QgsComposerMap::composerMapPosForItem( const QgsAnnotation* annotation )
 
   mapX = annotation->mapPosition().x();
   mapY = annotation->mapPosition().y();
-  QgsCoordinateReferenceSystem crs = annotation->mapPositionCrs();
+  QgsCoordinateReferenceSystem annotationCrs = annotation->mapPositionCrs();
 
-  if ( crs != mComposition->mapSettings().destinationCrs() )
+  if ( annotationCrs != crs() )
   {
     //need to reproject
-    QgsCoordinateTransform t( crs, mComposition->mapSettings().destinationCrs() );
+    QgsCoordinateTransform t( annotationCrs, crs() );
     double z = 0.0;
     t.transformInPlace( mapX, mapY, z );
   }
@@ -2049,18 +1991,14 @@ double QgsComposerMap::atlasMargin( const QgsComposerObject::PropertyValueType v
 
     //start with user specified margin
     double margin = mAtlasMargin;
-    QVariant exprVal;
     QgsExpressionContext context = createExpressionContext();
-    if ( dataDefinedEvaluate( QgsComposerObject::MapAtlasMargin, exprVal, context ) )
+
+    bool ok = false;
+    double ddMargin = mDataDefinedProperties.valueAsDouble( QgsComposerObject::MapAtlasMargin, context, 0.0, &ok );
+    if ( ok )
     {
-      bool ok;
-      double ddMargin = exprVal.toDouble( &ok );
-      QgsDebugMsg( QString( "exprVal Map Atlas Margin:%1" ).arg( ddMargin ) );
-      if ( ok && !exprVal.isNull() )
-      {
-        //divide by 100 to convert to 0 -> 1.0 range
-        margin = ddMargin / 100;
-      }
+      //divide by 100 to convert to 0 -> 1.0 range
+      margin = ddMargin / 100;
     }
     return margin;
   }

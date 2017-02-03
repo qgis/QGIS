@@ -22,11 +22,12 @@
 #include <QToolButton>
 #include <QScopedPointer>
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsproperty.h"
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
-class QgsDataDefined;
 class QgsMapCanvas;
+class QgsDataDefined;
 
 /** \ingroup gui
  * \class QgsDataDefinedAssistant
@@ -43,10 +44,9 @@ class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
     QgsDataDefinedAssistant() : mMapCanvas( nullptr ) {}
 
     /**
-     * Get the data defined which was defined by this assistant.
-     * Needs to be reimplemented by subclasses.
+     * Returns the property which was defined by this assistant.
      */
-    virtual QgsDataDefined dataDefined() const = 0;
+    virtual QgsProperty property() const = 0;
 
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.

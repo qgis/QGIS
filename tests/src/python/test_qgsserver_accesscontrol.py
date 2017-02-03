@@ -142,8 +142,8 @@ class RestrictedAccessControl(QgsAccessControlFilter):
         if not self._active:
             return super(RestrictedAccessControl, self).authorizedLayerAttributes(layer, attributes)
 
-        if "colour" in attributes:  #spellok
-            attributes.remove("colour")  #spellok
+        if "colour" in attributes:  # spellok
+            attributes.remove("colour")  # spellok
         return attributes
 
     def allowToEdit(self, layer, feature):
@@ -378,7 +378,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             str(response).find("<qgs:pk>1</qgs:pk>") != -1,
             "No result in GetFeatureInfo\n%s" % response)
         self.assertTrue(
-            str(response).find("<qgs:colour>red</qgs:colour>") != -1,  #spellok
+            str(response).find("<qgs:colour>red</qgs:colour>") != -1,  # spellok
             "No color in result of GetFeatureInfo\n%s" % response)
 
         response, headers = self._get_restricted(query_string)
@@ -386,10 +386,10 @@ class TestQgsServerAccessControl(unittest.TestCase):
             str(response).find("<qgs:pk>1</qgs:pk>") != -1,
             "No result in GetFeatureInfo\n%s" % response)
         self.assertFalse(
-            str(response).find("<qgs:colour>red</qgs:colour>") != -1,  #spellok
+            str(response).find("<qgs:colour>red</qgs:colour>") != -1,  # spellok
             "Unexpected color in result of GetFeatureInfo\n%s" % response)
         self.assertFalse(
-            str(response).find("<qgs:colour>NULL</qgs:colour>") != -1,  #spellok
+            str(response).find("<qgs:colour>NULL</qgs:colour>") != -1,  # spellok
             "Unexpected color NULL in result of GetFeatureInfo\n%s" % response)
 
     def test_wms_getfeatureinfo_hello2(self):
@@ -530,7 +530,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             str(response).find("<qgs:pk>1</qgs:pk>") != -1,
             "No result in GetFeature\n%s" % response)
         self.assertTrue(
-            str(response).find("<qgs:colour>red</qgs:colour>") != -1,  #spellok
+            str(response).find("<qgs:colour>red</qgs:colour>") != -1,  # spellok
             "No color in result of GetFeature\n%s" % response)
 
         response, headers = self._post_restricted(data)
@@ -538,10 +538,10 @@ class TestQgsServerAccessControl(unittest.TestCase):
             str(response).find("<qgs:pk>1</qgs:pk>") != -1,
             "No result in GetFeature\n%s" % response)
         self.assertFalse(
-            str(response).find("<qgs:colour>red</qgs:colour>") != -1,  #spellok
+            str(response).find("<qgs:colour>red</qgs:colour>") != -1,  # spellok
             "Unexpected color in result of GetFeature\n%s" % response)
         self.assertFalse(
-            str(response).find("<qgs:colour>NULL</qgs:colour>") != -1,  #spellok
+            str(response).find("<qgs:colour>NULL</qgs:colour>") != -1,  # spellok
             "Unexpected color NULL in result of GetFeature\n%s" % response)
 
     def test_wfs_getfeature_hello2(self):
@@ -580,7 +580,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         response, headers = self._post_restricted(data)
         self.assertFalse(
             str(response).find("<qgs:pk>1</qgs:pk>") != -1,
-            "Unexpeced result in GetFeatureInfo\n%s" % response)
+            "Unexpeced result in GetFeatureInfo\n%s" % response)  # spellok
 
 
 # # WCS # # WCS # # WCS # #

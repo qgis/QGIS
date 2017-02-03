@@ -41,7 +41,7 @@
 #define ERR(message) QGS_ERROR_MESSAGE(message,"GRASS provider")
 #define QGS_ERROR(message) QgsError(message,"GRASS provider")
 
-// Do not use warning dialogs, providers are also created on threads (rendering) where dialogs connot be used (constructing QPixmap icon)
+// Do not use warning dialogs, providers are also created on threads (rendering) where dialogs cannot be used (constructing QPixmap icon)
 
 QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
     : QgsRasterDataProvider( uri )
@@ -177,50 +177,6 @@ QgsRasterInterface * QgsGrassRasterProvider::clone() const
   provider->copyBaseSettings( *this );
   return provider;
 }
-
-QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight )
-{
-  QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );
-  QgsDebugMsg( "pixelHeight = "  + QString::number( pixelHeight ) );
-  QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
-  clearLastError();
-
-  QImage *image = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
-  image->fill( QColor( Qt::gray ).rgb() );
-
-  QStringList arguments;
-  arguments.append( "map=" +  mMapName + "@" + mMapset );
-
-  arguments.append(( QStringLiteral( "window=%1,%2,%3,%4,%5,%6" )
-                     .arg( QgsRasterBlock::printValue( viewExtent.xMinimum() ),
-                           QgsRasterBlock::printValue( viewExtent.yMinimum() ),
-                           QgsRasterBlock::printValue( viewExtent.xMaximum() ),
-                           QgsRasterBlock::printValue( viewExtent.yMaximum() ) )
-                     .arg( pixelWidth ).arg( pixelHeight ) ) );
-  QString cmd = QgsApplication::libexecPath() + "grass/modules/qgis.d.rast";
-  QByteArray data;
-  try
-  {
-    data = QgsGrass::runModule( mGisdbase, mLocation, mMapset, cmd, arguments );
-  }
-  catch ( QgsGrass::Exception &e )
-  {
-    QString error = tr( "Cannot draw raster" ) + " : " + e.what();
-    QgsDebugMsg( error );
-    appendError( error );
-    // We don't set mValid to false, because the raster can be recreated and work next time
-    return image;
-  }
-  QgsDebugMsg( QString( "%1 bytes read from modules stdout" ).arg( data.size() ) );
-  uchar * ptr = image->bits();
-  // byteCount() in Qt >= 4.6
-  //int size = image->byteCount() < data.size() ? image->byteCount() : data.size();
-  int size = pixelWidth * pixelHeight * 4 < data.size() ? pixelWidth * pixelHeight * 4 : data.size();
-  memcpy( ptr, data.data(), size );
-
-  return image;
-}
-
 
 void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block )
 {
@@ -389,7 +345,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGrassRasterProvider::colorTable( int
   Q_UNUSED( bandNo );
   QList<QgsColorRampShader::ColorRampItem> ct;
 
-  // TODO: check if color can be realy discontinuous in GRASS,
+  // TODO: check if color can be really discontinuous in GRASS,
   // for now we just believe that they are continuous, i.e. end and beginning
   // of the ramp with the same value has the same color
   // we are also expecting ordered CT records in the list

@@ -8,6 +8,7 @@
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/geometry
@@ -170,9 +171,11 @@ ADD_QGIS_TEST(pointpatternfillsymboltest testqgspointpatternfillsymbol.cpp )
 ADD_QGIS_TEST(pointtest testqgspoint.cpp)
 ADD_QGIS_TEST(processingtest testqgsprocessing.cpp)
 ADD_QGIS_TEST(projecttest testqgsproject.cpp)
+ADD_QGIS_TEST(propertytest testqgsproperty.cpp)
 ADD_QGIS_TEST(qgistest testqgis.cpp)
 ADD_QGIS_TEST(rasterfilewritertest testqgsrasterfilewriter.cpp)
 ADD_QGIS_TEST(rasterfilltest testqgsrasterfill.cpp )
+ADD_QGIS_TEST(rasterblocktest testqgsrasterblock.cpp)
 ADD_QGIS_TEST(rasterlayertest testqgsrasterlayer.cpp)
 ADD_QGIS_TEST(rastersublayertest testqgsrastersublayer.cpp)
 ADD_QGIS_TEST(rectangletest testqgsrectangle.cpp)

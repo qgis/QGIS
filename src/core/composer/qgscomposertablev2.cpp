@@ -61,7 +61,7 @@ QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool create
     , mHorizontalGrid( true )
     , mVerticalGrid( true )
     , mBackgroundColor( Qt::white )
-    , mWrapBehaviour( TruncateText )
+    , mWrapBehavior( TruncateText )
 {
 
   if ( mComposition )
@@ -96,7 +96,7 @@ QgsComposerTableV2::QgsComposerTableV2()
     , mHorizontalGrid( true )
     , mVerticalGrid( true )
     , mBackgroundColor( Qt::white )
-    , mWrapBehaviour( TruncateText )
+    , mWrapBehavior( TruncateText )
 {
   initStyles();
 }
@@ -128,7 +128,7 @@ bool QgsComposerTableV2::writeXml( QDomElement& elem, QDomDocument & doc, bool i
   elem.setAttribute( QStringLiteral( "verticalGrid" ), mVerticalGrid );
   elem.setAttribute( QStringLiteral( "showGrid" ), mShowGrid );
   elem.setAttribute( QStringLiteral( "backgroundColor" ), QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
-  elem.setAttribute( QStringLiteral( "wrapBehaviour" ), QString::number( static_cast< int >( mWrapBehaviour ) ) );
+  elem.setAttribute( QStringLiteral( "wrapBehavior" ), QString::number( static_cast< int >( mWrapBehavior ) ) );
 
   //columns
   QDomElement displayColumnsElem = doc.createElement( QStringLiteral( "displayColumns" ) );
@@ -198,7 +198,7 @@ bool QgsComposerTableV2::readXml( const QDomElement &itemElem, const QDomDocumen
   mShowGrid = itemElem.attribute( QStringLiteral( "showGrid" ), QStringLiteral( "1" ) ).toInt();
   mGridColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "gridColor" ), QStringLiteral( "0,0,0,255" ) ) );
   mBackgroundColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "backgroundColor" ), QStringLiteral( "255,255,255,0" ) ) );
-  mWrapBehaviour = QgsComposerTableV2::WrapBehaviour( itemElem.attribute( QStringLiteral( "wrapBehaviour" ), QStringLiteral( "0" ) ).toInt() );
+  mWrapBehavior = QgsComposerTableV2::WrapBehavior( itemElem.attribute( QStringLiteral( "wrapBehavior" ), QStringLiteral( "0" ) ).toInt() );
 
   //restore column specifications
   qDeleteAll( mColumns );
@@ -231,7 +231,9 @@ bool QgsComposerTableV2::readXml( const QDomElement &itemElem, const QDomDocumen
       if ( !styleList.isEmpty() )
       {
         QDomElement styleElem = styleList.at( 0 ).toElement();
-        mCellStyles.value( it.key() )->readXml( styleElem );
+        QgsComposerTableStyle* style = mCellStyles.value( it.key() );
+        if ( style )
+          style->readXml( styleElem );
       }
     }
   }
@@ -473,7 +475,7 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
         QString str = cellContents.toString();
 
         Qt::TextFlag textFlag = static_cast< Qt::TextFlag >( 0 );
-        if ( column->width() <= 0 && mWrapBehaviour == TruncateText )
+        if ( column->width() <= 0 && mWrapBehavior == TruncateText )
         {
           //automatic column width, so we use the Qt::TextDontClip flag when drawing contents, as this works nicer for italicised text
           //which may slightly exceed the calculated width
@@ -581,7 +583,7 @@ void QgsComposerTableV2::setCellMargin( const double margin )
   emit changed();
 }
 
-void QgsComposerTableV2::setEmptyTableBehaviour( const QgsComposerTableV2::EmptyTableMode mode )
+void QgsComposerTableV2::setEmptyTableBehavior( const QgsComposerTableV2::EmptyTableMode mode )
 {
   if ( mode == mEmptyTableMode )
   {
@@ -785,14 +787,14 @@ void QgsComposerTableV2::setBackgroundColor( const QColor &color )
   emit changed();
 }
 
-void QgsComposerTableV2::setWrapBehaviour( QgsComposerTableV2::WrapBehaviour behaviour )
+void QgsComposerTableV2::setWrapBehavior( QgsComposerTableV2::WrapBehavior behavior )
 {
-  if ( behaviour == mWrapBehaviour )
+  if ( behavior == mWrapBehavior )
   {
     return;
   }
 
-  mWrapBehaviour = behaviour;
+  mWrapBehavior = behavior;
   recalculateTableSize();
 
   emit changed();
@@ -1151,7 +1153,7 @@ void QgsComposerTableV2::drawHorizontalGridLines( QPainter *painter, int firstRo
 
 bool QgsComposerTableV2::textRequiresWrapping( const QString& text, double columnWidth, const QFont &font ) const
 {
-  if ( qgsDoubleNear( columnWidth, 0.0 ) || mWrapBehaviour != WrapText )
+  if ( qgsDoubleNear( columnWidth, 0.0 ) || mWrapBehavior != WrapText )
     return false;
 
   QStringList multiLineSplit = text.split( '\n' );
@@ -1225,24 +1227,33 @@ QString QgsComposerTableV2::wrappedText( const QString &value, double columnWidt
 QColor QgsComposerTableV2::backgroundColor( int row, int column ) const
 {
   QColor color = mBackgroundColor;
-  if ( mCellStyles.value( OddColumns )->enabled && column % 2 == 0 )
-    color = mCellStyles.value( OddColumns )->cellBackgroundColor;
-  if ( mCellStyles.value( EvenColumns )->enabled && column % 2 == 1 )
-    color = mCellStyles.value( EvenColumns )->cellBackgroundColor;
-  if ( mCellStyles.value( OddRows )->enabled && row % 2 == 0 )
-    color = mCellStyles.value( OddRows )->cellBackgroundColor;
-  if ( mCellStyles.value( EvenRows )->enabled && row % 2 == 1 )
-    color = mCellStyles.value( EvenRows )->cellBackgroundColor;
-  if ( mCellStyles.value( FirstColumn )->enabled && column == 0 )
-    color = mCellStyles.value( FirstColumn )->cellBackgroundColor;
-  if ( mCellStyles.value( LastColumn )->enabled && column == mColumns.count() - 1 )
-    color = mCellStyles.value( LastColumn )->cellBackgroundColor;
-  if ( mCellStyles.value( HeaderRow )->enabled && row == -1 )
-    color = mCellStyles.value( HeaderRow )->cellBackgroundColor;
-  if ( mCellStyles.value( FirstRow )->enabled && row == 0 )
-    color = mCellStyles.value( FirstRow )->cellBackgroundColor;
-  if ( mCellStyles.value( LastRow )->enabled && row == mTableContents.count() - 1 )
-    color = mCellStyles.value( LastRow )->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( OddColumns ) )
+    if ( style->enabled && column % 2 == 0 )
+      color = style->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( EvenColumns ) )
+    if ( style->enabled && column % 2 == 1 )
+      color = style->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( OddRows ) )
+    if ( style->enabled && row % 2 == 0 )
+      color = style->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( EvenRows ) )
+    if ( style->enabled && row % 2 == 1 )
+      color = style->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( FirstColumn ) )
+    if ( style->enabled && column == 0 )
+      color = style->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( LastColumn ) )
+    if ( style->enabled && column == mColumns.count() - 1 )
+      color = style->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( HeaderRow ) )
+    if ( style->enabled && row == -1 )
+      color = style->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( FirstRow ) )
+    if ( style->enabled && row == 0 )
+      color = style->cellBackgroundColor;
+  if ( QgsComposerTableStyle* style = mCellStyles.value( LastRow ) )
+    if ( style->enabled && row == mTableContents.count() - 1 )
+      color = style->cellBackgroundColor;
 
   return color;
 }

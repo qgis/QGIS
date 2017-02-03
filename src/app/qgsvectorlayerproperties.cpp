@@ -44,6 +44,7 @@
 #include "qgssavestyletodbdialog.h"
 #include "qgsloadstylefromdbdialog.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsconfig.h"
 #include "qgsvectordataprovider.h"
@@ -67,7 +68,6 @@
 
 #include "qgsrendererpropertiesdialog.h"
 #include "qgsstyle.h"
-#include "qgssymbologyconversion.h"
 
 QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsVectorLayer *lyr,
@@ -232,7 +232,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mCrsSelector->setCrs( mLayer->crs() );
 
   //insert existing join info
-  const QList< QgsVectorJoinInfo >& joins = mLayer->vectorJoins();
+  const QList< QgsVectorLayerJoinInfo >& joins = mLayer->vectorJoins();
   for ( int i = 0; i < joins.size(); ++i )
   {
     addJoinToTreeWidget( joins[i] );
@@ -616,10 +616,10 @@ void QgsVectorLayerProperties::onCancel()
     // need to undo changes in vector layer joins - they are applied directly to the layer (not in apply())
     // so other parts of the properties dialog can use the fields from the joined layers
 
-    Q_FOREACH ( const QgsVectorJoinInfo& info, mLayer->vectorJoins() )
-      mLayer->removeJoin( info.joinLayerId );
+    Q_FOREACH ( const QgsVectorLayerJoinInfo& info, mLayer->vectorJoins() )
+      mLayer->removeJoin( info.joinLayerId() );
 
-    Q_FOREACH ( const QgsVectorJoinInfo& info, mOldJoins )
+    Q_FOREACH ( const QgsVectorLayerJoinInfo& info, mOldJoins )
       mLayer->addJoin( info );
   }
 
@@ -1057,24 +1057,24 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
     return;
 
   QList<QgsMapLayer*> joinedLayers;
-  const QList< QgsVectorJoinInfo >& joins = mLayer->vectorJoins();
+  const QList< QgsVectorLayerJoinInfo >& joins = mLayer->vectorJoins();
   joinedLayers.reserve( joins.size() );
   for ( int i = 0; i < joins.size(); ++i )
   {
-    joinedLayers.append( QgsProject::instance()->mapLayer( joins[i].joinLayerId ) );
+    joinedLayers.append( joins[i].joinLayer() );
   }
 
   QgsJoinDialog d( mLayer, joinedLayers );
   if ( d.exec() == QDialog::Accepted )
   {
-    QgsVectorJoinInfo info = d.joinInfo();
+    QgsVectorLayerJoinInfo info = d.joinInfo();
     //create attribute index if possible
     if ( d.createAttributeIndex() )
     {
-      QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( info.joinLayerId ) );
+      QgsVectorLayer* joinLayer = info.joinLayer();
       if ( joinLayer )
       {
-        joinLayer->dataProvider()->createAttributeIndex( joinLayer->fields().indexFromName( info.joinFieldName ) );
+        joinLayer->dataProvider()->createAttributeIndex( joinLayer->fields().indexFromName( info.joinFieldName() ) );
       }
     }
     mLayer->addJoin( info );
@@ -1099,18 +1099,22 @@ void QgsVectorLayerProperties::on_mJoinTreeWidget_itemDoubleClicked( QTreeWidget
 
   QList<QgsMapLayer*> joinedLayers;
   QString joinLayerId = item->data( 0, Qt::UserRole ).toString();
-  const QList< QgsVectorJoinInfo >& joins = mLayer->vectorJoins();
+  const QList< QgsVectorLayerJoinInfo >& joins = mLayer->vectorJoins();
   int j = -1;
   for ( int i = 0; i < joins.size(); ++i )
   {
-    if ( joins[i].joinLayerId == joinLayerId )
+    QgsVectorLayer* joinLayer = joins[i].joinLayer();
+    if ( !joinLayer )
+      continue;  // invalid join (unresolved join layer)
+
+    if ( joinLayer->id() == joinLayerId )
     {
       j = i;
     }
     else
     {
       // remove already joined layers from possible list to be displayed in dialog
-      joinedLayers.append( QgsProject::instance()->mapLayer( joins[i].joinLayerId ) );
+      joinedLayers.append( joinLayer );
     }
   }
   if ( j == -1 )
@@ -1123,7 +1127,7 @@ void QgsVectorLayerProperties::on_mJoinTreeWidget_itemDoubleClicked( QTreeWidget
 
   if ( d.exec() == QDialog::Accepted )
   {
-    QgsVectorJoinInfo info = d.joinInfo();
+    QgsVectorLayerJoinInfo info = d.joinInfo();
 
     // remove old join
     mLayer->removeJoin( joinLayerId );
@@ -1135,10 +1139,10 @@ void QgsVectorLayerProperties::on_mJoinTreeWidget_itemDoubleClicked( QTreeWidget
     //create attribute index if possible
     if ( d.createAttributeIndex() )
     {
-      QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( info.joinLayerId ) );
+      QgsVectorLayer* joinLayer = info.joinLayer();
       if ( joinLayer )
       {
-        joinLayer->dataProvider()->createAttributeIndex( joinLayer->fields().indexFromName( info.joinFieldName ) );
+        joinLayer->dataProvider()->createAttributeIndex( joinLayer->fields().indexFromName( info.joinFieldName() ) );
       }
     }
     mLayer->addJoin( info );
@@ -1149,43 +1153,28 @@ void QgsVectorLayerProperties::on_mJoinTreeWidget_itemDoubleClicked( QTreeWidget
   }
 }
 
-void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorJoinInfo& join, const int insertIndex )
+void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo& join, const int insertIndex )
 {
   QTreeWidgetItem* joinItem = new QTreeWidgetItem();
 
-  QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( join.joinLayerId ) );
+  QgsVectorLayer* joinLayer = join.joinLayer();
   if ( !mLayer || !joinLayer )
   {
     return;
   }
 
   joinItem->setText( 0, joinLayer->name() );
-  joinItem->setData( 0, Qt::UserRole, join.joinLayerId );
+  joinItem->setData( 0, Qt::UserRole, join.joinLayerId() );
 
-  if ( join.joinFieldName.isEmpty() && join.joinFieldIndex >= 0 && join.joinFieldIndex < joinLayer->fields().count() )
-  {
-    joinItem->setText( 1, joinLayer->fields().field( join.joinFieldIndex ).name() );   //for compatibility with 1.x
-  }
-  else
-  {
-    joinItem->setText( 1, join.joinFieldName );
-  }
+  joinItem->setText( 1, join.joinFieldName() );
+  joinItem->setText( 2, join.targetFieldName() );
 
-  if ( join.targetFieldName.isEmpty() && join.targetFieldIndex >= 0 && join.targetFieldIndex < mLayer->fields().count() )
-  {
-    joinItem->setText( 2, mLayer->fields().field( join.targetFieldIndex ).name() );   //for compatibility with 1.x
-  }
-  else
-  {
-    joinItem->setText( 2, join.targetFieldName );
-  }
-
-  if ( join.memoryCache )
+  if ( join.isUsingMemoryCache() )
   {
     joinItem->setText( 3, QChar( 0x2714 ) );
   }
 
-  joinItem->setText( 4, join.prefix );
+  joinItem->setText( 4, join.prefix() );
 
   const QStringList* list = join.joinFieldNamesSubset();
   if ( list )

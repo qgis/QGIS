@@ -21,6 +21,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgscomposermodel.h"
 #include "qgsmapsettings.h"
+#include "qgscomposerutils.h"
 #include <QPainter>
 
 QgsComposerShape::QgsComposerShape( QgsComposition* composition )
@@ -82,7 +83,9 @@ void QgsComposerShape::setShapeStyleSymbol( QgsFillSymbol* symbol )
 
 void QgsComposerShape::refreshSymbol()
 {
-  mMaxSymbolBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol );
+  QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( mComposition->referenceMap(), nullptr, mComposition->printResolution() );
+  mMaxSymbolBleed = ( 25.4 / mComposition->printResolution() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol, rc );
+
   updateBoundingRect();
 
   update();
@@ -101,7 +104,12 @@ void QgsComposerShape::createDefaultShapeStyleSymbol()
   properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
   mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
 
-  mMaxSymbolBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol );
+  if ( mComposition )
+  {
+    QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( mComposition->referenceMap(), nullptr, mComposition->printResolution() );
+    mMaxSymbolBleed = ( 25.4 / mComposition->printResolution() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol, rc );
+  }
+
   updateBoundingRect();
 
   emit frameChanged();
@@ -178,11 +186,7 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
   double dotsPerMM = p->device()->logicalDpiX() / 25.4;
 
   //setup render context
-  QgsMapSettings ms = mComposition->mapSettings();
-  //context units should be in dots
-  ms.setOutputDpi( p->device()->logicalDpiX() );
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  context.setPainter( p );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, p );
   context.setForceVectorOutput( true );
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );

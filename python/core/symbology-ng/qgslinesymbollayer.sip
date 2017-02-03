@@ -41,7 +41,7 @@ class QgsSimpleLineSymbolLayer : QgsLineSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    double estimateMaxBleed() const;
+    double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     // new stuff
 
@@ -161,7 +161,7 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
     virtual void setWidth( double width );
     virtual double width() const;
 
-    double estimateMaxBleed() const;
+    double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     // new stuff
 
@@ -273,9 +273,9 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    QSet<QString> usedAttributes() const;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
-    void setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined /Transfer/ );
+    void setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty& property );
 
   protected:
 

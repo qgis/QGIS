@@ -89,7 +89,7 @@ bool QgsPointDistanceRenderer::renderFeature( QgsFeature& feature, QgsRenderCont
     transformedFeature.setGeometry( geom );
   }
 
-  double searchDistance = mTolerance * QgsSymbolLayerUtils::mapUnitScaleFactor( context, mToleranceUnit, mToleranceMapUnitScale );
+  double searchDistance = context.convertToMapUnits( mTolerance, mToleranceUnit, mToleranceMapUnitScale );
   QgsPoint point = transformedFeature.geometry().asPoint();
   QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( point, searchDistance ) );
   if ( intersectList.empty() )
@@ -204,7 +204,7 @@ QString QgsPointDistanceRenderer::filter( const QgsFields& fields )
     return mRenderer->filter( fields );
 }
 
-QSet<QString> QgsPointDistanceRenderer::usedAttributes() const
+QSet<QString> QgsPointDistanceRenderer::usedAttributes( const QgsRenderContext& context ) const
 {
   QSet<QString> attributeList;
   if ( !mLabelAttributeName.isEmpty() )
@@ -213,7 +213,7 @@ QSet<QString> QgsPointDistanceRenderer::usedAttributes() const
   }
   if ( mRenderer )
   {
-    attributeList += mRenderer->usedAttributes();
+    attributeList += mRenderer->usedAttributes( context );
   }
   return attributeList;
 }
@@ -397,7 +397,7 @@ void QgsPointDistanceRenderer::drawLabels( QPointF centerPoint, QgsSymbolRenderC
   QFont pixelSizeFont = mLabelFont;
   pixelSizeFont.setPixelSize( context.outputLineWidth( mLabelFont.pointSizeF() * 0.3527 ) );
   QFont scaledFont = pixelSizeFont;
-  scaledFont.setPixelSize( pixelSizeFont.pixelSize() * context.renderContext().rasterScaleFactor() );
+  scaledFont.setPixelSize( pixelSizeFont.pixelSize() );
   p->setFont( scaledFont );
 
   QFontMetricsF fontMetrics( pixelSizeFont );
@@ -421,7 +421,6 @@ void QgsPointDistanceRenderer::drawLabels( QPointF centerPoint, QgsSymbolRenderC
     QPointF drawingPoint( centerPoint + currentLabelShift );
     p->save();
     p->translate( drawingPoint.x(), drawingPoint.y() );
-    p->scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
     p->drawText( QPointF( 0, 0 ), groupIt->label );
     p->restore();
   }

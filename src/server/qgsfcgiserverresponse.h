@@ -29,7 +29,7 @@
  * QgsFcgiServerResponse
  * Class defining fcgi response
  */
-class QgsFcgiServerResponse: public QgsServerResponse
+class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
 {
   public:
 
@@ -61,13 +61,13 @@ class QgsFcgiServerResponse: public QgsServerResponse
     /**
      * Set the default headers
      */
-    virtual void setDefaultHeaders();
+    void setDefaultHeaders();
 
   private:
     QMap<QString, QString> mHeaders;
-    QBuffer                mBuffer;
-    bool                   mFinished;
-    bool                   mHeadersSent;
+    QBuffer mBuffer;
+    bool mFinished    = false;
+    bool mHeadersSent = false;
     QgsServerRequest::Method mMethod;
 };
 
@@ -76,7 +76,7 @@ class QgsFcgiServerResponse: public QgsServerResponse
  * QgsFcgiServerResquest
  * Class defining fcgi request
  */
-class QgsFcgiServerRequest: public QgsServerRequest
+class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
 {
   public:
     QgsFcgiServerRequest();
@@ -91,6 +91,11 @@ class QgsFcgiServerRequest: public QgsServerRequest
 
   private:
     void readData();
+
+    // Log request info: print debug infos
+    // about the request
+    void printRequestInfos();
+
 
     QByteArray mData;
     bool       mHasError;

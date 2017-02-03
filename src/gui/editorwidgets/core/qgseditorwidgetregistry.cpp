@@ -29,11 +29,9 @@
 #include "qgsdatetimeeditfactory.h"
 #include "qgsenumerationwidgetfactory.h"
 #include "qgsexternalresourcewidgetfactory.h"
-#include "qgsfilenamewidgetfactory.h"
 #include "qgshiddenwidgetfactory.h"
 #include "qgskeyvaluewidgetfactory.h"
 #include "qgslistwidgetfactory.h"
-#include "qgsphotowidgetfactory.h"
 #include "qgsrangewidgetfactory.h"
 #include "qgsrelationreferencefactory.h"
 #include "qgstexteditwidgetfactory.h"
@@ -41,9 +39,6 @@
 #include "qgsuuidwidgetfactory.h"
 #include "qgsvaluemapwidgetfactory.h"
 #include "qgsvaluerelationwidgetfactory.h"
-#ifdef WITH_QTWEBKIT
-#include "qgswebviewwidgetfactory.h"
-#endif
 
 
 QgsEditorWidgetRegistry* QgsEditorWidgetRegistry::instance()
@@ -59,21 +54,16 @@ void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBa
   reg->registerWidget( QStringLiteral( "Classification" ), new QgsClassificationWidgetWrapperFactory( tr( "Classification" ) ) );
   reg->registerWidget( QStringLiteral( "Range" ), new QgsRangeWidgetFactory( tr( "Range" ) ) );
   reg->registerWidget( QStringLiteral( "UniqueValues" ), new QgsUniqueValueWidgetFactory( tr( "Unique Values" ) ) );
-  reg->registerWidget( QStringLiteral( "FileName" ), new QgsFileNameWidgetFactory( tr( "File Name" ) ) );
   reg->registerWidget( QStringLiteral( "ValueMap" ), new QgsValueMapWidgetFactory( tr( "Value Map" ) ) );
   reg->registerWidget( QStringLiteral( "Enumeration" ), new QgsEnumerationWidgetFactory( tr( "Enumeration" ) ) );
   reg->registerWidget( QStringLiteral( "Hidden" ), new QgsHiddenWidgetFactory( tr( "Hidden" ) ) );
   reg->registerWidget( QStringLiteral( "CheckBox" ), new QgsCheckboxWidgetFactory( tr( "Check Box" ) ) );
   reg->registerWidget( QStringLiteral( "ValueRelation" ), new QgsValueRelationWidgetFactory( tr( "Value Relation" ) ) );
   reg->registerWidget( QStringLiteral( "UuidGenerator" ), new QgsUuidWidgetFactory( tr( "Uuid Generator" ) ) );
-  reg->registerWidget( QStringLiteral( "Photo" ), new QgsPhotoWidgetFactory( tr( "Photo" ) ) );
-#ifdef WITH_QTWEBKIT
-  reg->registerWidget( QStringLiteral( "WebView" ), new QgsWebViewWidgetFactory( tr( "Web View" ) ) );
-#endif
   reg->registerWidget( QStringLiteral( "Color" ), new QgsColorWidgetFactory( tr( "Color" ) ) );
   reg->registerWidget( QStringLiteral( "RelationReference" ), new QgsRelationReferenceFactory( tr( "Relation Reference" ), mapCanvas, messageBar ) );
   reg->registerWidget( QStringLiteral( "DateTime" ), new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
-  reg->registerWidget( QStringLiteral( "ExternalResource" ), new QgsExternalResourceWidgetFactory( tr( "External Resource" ) ) );
+  reg->registerWidget( QStringLiteral( "ExternalResource" ), new QgsExternalResourceWidgetFactory( tr( "Attachment" ) ) );
   reg->registerWidget( QStringLiteral( "KeyValue" ), new QgsKeyValueWidgetFactory( tr( "Key/Value" ) ) );
   reg->registerWidget( QStringLiteral( "List" ), new QgsListWidgetFactory( tr( "List" ) ) );
 }
@@ -98,7 +88,6 @@ QgsEditorWidgetSetup QgsEditorWidgetRegistry::findBest( const QgsVectorLayer* vl
     if ( !setup.isNull() )
       return setup;
   }
-
   return mAutoConf.editorWidgetSetup( vl, fieldName );
 }
 
@@ -179,7 +168,7 @@ QString QgsEditorWidgetRegistry::name( const QString& widgetId )
   return QString();
 }
 
-const QMap<QString, QgsEditorWidgetFactory*>& QgsEditorWidgetRegistry::factories()
+QMap<QString, QgsEditorWidgetFactory*> QgsEditorWidgetRegistry::factories()
 {
   return mWidgetFactories;
 }

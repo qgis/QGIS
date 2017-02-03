@@ -44,7 +44,7 @@ from PyQt5.QtWidgets import (QDialog,
 import struct
 import glob
 
-dash_url = 'http://dash.orfeo-toolbox.org'
+dash_url = 'https://dash.orfeo-toolbox.org'
 
 
 def error(msg):
@@ -61,12 +61,15 @@ def colorDiff(c1, c2):
 
 
 def imageFromPath(path):
-    if (path[:7] == 'http://' or path[:7] == 'file://'):
+    print(path)
+    if (path[:8] == 'https://' or path[:7] == 'file://'):
         # fetch remote image
+        print('fetching remote!')
         data = urllib.request.urlopen(path).read()
         image = QImage()
         image.loadFromData(data)
     else:
+        print('using local!')
         image = QImage(path)
     return image
 
@@ -181,7 +184,7 @@ class ResultHandler(QDialog):
                 ),
                     self.rendered_image.width(
                 ),
-                                                                                           self.rendered_image.height()))
+                    self.rendered_image.height()))
 
         max_width = min(
             self.rendered_image.width(), self.control_image.width())

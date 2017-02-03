@@ -1,5 +1,3 @@
-%Feature PROXY_FACTORY
-
 /*
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
@@ -31,7 +29,6 @@ class QgsNetworkAccessManager : QNetworkAccessManager
     //! destructor
     ~QgsNetworkAccessManager();
 
-%If (PROXY_FACTORY)
     //! insert a factory into the proxy factories list
     void insertProxyFactory( QNetworkProxyFactory *factory /Transfer/ );
 
@@ -40,13 +37,12 @@ class QgsNetworkAccessManager : QNetworkAccessManager
 
     //! retrieve proxy factory list
     const QList<QNetworkProxyFactory *> proxyFactories() const;
-%End
 
     //! retrieve fall back proxy (for urls that no factory returned proxies for)
     const QNetworkProxy &fallbackProxy() const;
 
     //! retrieve exclude list (urls shouldn't use the fallback proxy)
-    const QStringList &excludeList() const;
+    QStringList excludeList() const;
 
     //! set fallback proxy and URL that shouldn't use it.
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
@@ -57,7 +53,7 @@ class QgsNetworkAccessManager : QNetworkAccessManager
     //! Get QNetworkRequest::CacheLoadControl from name
     static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &theName );
 
-    //! Setup the NAM according to the user's settings
+    //! Setup the NAM according to the user's settings #spellok
     void setupDefaultProxyAndCache();
 
     //! return whether the system proxy should be used

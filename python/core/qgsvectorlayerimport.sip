@@ -28,7 +28,7 @@ class QProgressDialog;
       ErrInvalidProvider,
       ErrProviderUnsupportedFeature,
       ErrConnectionFailed,
-      ErrUserCancelled, /*!< User cancelled the import*/
+      ErrUserCanceled, /*!< User canceled the import*/
     };
 
      /**

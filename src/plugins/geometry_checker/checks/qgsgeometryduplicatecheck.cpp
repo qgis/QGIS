@@ -112,7 +112,7 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError* error, int meth
   }
 }
 
-const QStringList& QgsGeometryDuplicateCheck::getResolutionMethods() const
+QStringList QgsGeometryDuplicateCheck::getResolutionMethods() const
 {
   static QStringList methods = QStringList()
                                << tr( "No action" )

@@ -3755,7 +3755,7 @@ QStringList QgsSpatiaLiteProvider::uniqueStringsMatching( int index, const QStri
     return results;
   }
 
-  while (( limit < 0 || results.size() < limit ) && ( !feedback || !feedback->isCancelled() ) )
+  while (( limit < 0 || results.size() < limit ) && ( !feedback || !feedback->isCanceled() ) )
   {
     // this one is an infinitive loop, intended to fetch any row
     int ret = sqlite3_step( stmt );
@@ -3970,7 +3970,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
         {
           // update feature id
-          feature->setFeatureId( sqlite3_last_insert_rowid( mSqliteHandle ) );
+          feature->setId( sqlite3_last_insert_rowid( mSqliteHandle ) );
           mNumberFeatures++;
         }
         else
@@ -5324,7 +5324,7 @@ static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString& errCause
 
   sqlite3_free_table( results );
 
-  // all right, it's empty: proceding to initialize
+  // all right, it's empty: proceeding to initialize
   char *errMsg = nullptr;
   ret = sqlite3_exec( sqlite_handle, above41 ? "SELECT InitSpatialMetadata(1)" : "SELECT InitSpatialMetadata()", nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
@@ -5575,7 +5575,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                                    ",f_table_schema varchar(256)"
                                    ",f_table_name varchar(256)"
                                    ",f_geometry_column varchar(256)"
-                                   ",styleName varchar(30)"
+                                   ",styleName text"
                                    ",styleQML text"
                                    ",styleSLD text"
                                    ",useAsDefault boolean"

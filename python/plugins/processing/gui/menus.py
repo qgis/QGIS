@@ -28,7 +28,7 @@ defaultMenuEntries.update({'qgis:distancematrix': analysisToolsMenu,
                            'qgis:basicstatisticsforfields': analysisToolsMenu,
                            'qgis:nearestneighbouranalysis': analysisToolsMenu,
                            'qgis:meancoordinates': analysisToolsMenu,
-                           'qgis:lineintersecions': analysisToolsMenu})
+                           'qgis:lineintersections': analysisToolsMenu})
 researchToolsMenu = vectorMenu + "/" + Processing.tr('&Research Tools')
 defaultMenuEntries.update({'qgis:randomselection': researchToolsMenu,
                            'qgis:randomselectionwithinsubsets': researchToolsMenu,

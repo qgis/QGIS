@@ -34,6 +34,8 @@
 #include "qgsvectorlayer.h"
 #include "qgscsexception.h"
 
+///@cond PRIVATE
+
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings& settings )
     : mSettings( settings )
     , mCache( nullptr )
@@ -79,7 +81,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
     // geographic coordinates (usually +/- 180 degrees,
     // and is assumed to be so here), and draw each
     // extent separately.
-    static const double splitCoord = 180.0;
+    static const double SPLIT_COORD = 180.0;
 
     if ( ml->crs().isGeographic() )
     {
@@ -132,8 +134,8 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
           // so let's use (-180,180). This hopefully does not add too much overhead. It is
           // more straightforward than rendering with two separate extents and more consistent
           // for rendering, labeling and caching as everything is rendered just in one go
-          extent.setXMinimum( -splitCoord );
-          extent.setXMaximum( splitCoord );
+          extent.setXMinimum( -SPLIT_COORD );
+          extent.setXMaximum( SPLIT_COORD );
         }
       }
 
@@ -241,10 +243,11 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
     {
       job.opacity = 1.0 - vl->layerTransparency() / 100.0;
     }
-    job.layerId = ml->id();
+    job.layer = ml;
     job.renderingTime = -1;
 
     job.context = QgsRenderContext::fromMapSettings( mSettings );
+    job.context.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( ml ) );
     job.context.setPainter( painter );
     job.context.setLabelingEngine( labelingEngine2 );
     job.context.setCoordinateTransform( ct );
@@ -254,7 +257,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
       job.context.setFeatureFilterProvider( mFeatureFilterProvider );
 
     // if we can use the cache, let's do it and avoid rendering!
-    if ( mCache && !mCache->cacheImage( ml->id() ).isNull() )
+    if ( mCache && mCache->hasCacheImage( ml->id() ) )
     {
       job.cached = true;
       job.img = new QImage( mCache->cacheImage( ml->id() ) );
@@ -320,10 +323,10 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
       delete job.context.painter();
       job.context.setPainter( nullptr );
 
-      if ( mCache && !job.cached && !job.context.renderingStopped() )
+      if ( mCache && !job.cached && !job.context.renderingStopped() && job.layer )
       {
-        QgsDebugMsg( "caching image for " + job.layerId );
-        mCache->setCacheImage( job.layerId, *job.img );
+        QgsDebugMsg( "caching image for " + ( job.layer ? job.layer->id() : QString() ) );
+        mCache->setCacheImage( job.layer->id(), *job.img, QList< QgsMapLayer* >() << job.layer );
       }
 
       delete job.img;
@@ -377,7 +380,7 @@ void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs& jobs )
 
   QMultiMap<int, QString> elapsed;
   Q_FOREACH ( const LayerRenderJob& job, jobs )
-    elapsed.insert( job.renderingTime, job.layerId );
+    elapsed.insert( job.renderingTime, job.layer ? job.layer->id() : QString() );
 
   QList<int> tt( elapsed.uniqueKeys() );
   qSort( tt.begin(), tt.end(), qGreater<int>() );
@@ -387,3 +390,5 @@ void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs& jobs )
   }
   QgsMessageLog::logMessage( QStringLiteral( "---" ), tr( "Rendering" ) );
 }
+
+///@endcond PRIVATE

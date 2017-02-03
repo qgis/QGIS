@@ -77,7 +77,7 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QStr
     }
   }
   // Setting the QgsProject instance fileName
-  // to help converting relative pathes to absolute
+  // to help converting relative paths to absolute
   if ( !mProjectPath.isEmpty() )
   {
     QgsProject::instance()->setFileName( mProjectPath );
@@ -171,10 +171,10 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
   QString uri = dataSourceElem.text();
   QString absoluteUri;
   // If QgsProject instance fileName is set,
-  // Is converting relative pathes to absolute still relevant ?
+  // Is converting relative paths to absolute still relevant ?
   if ( !dataSourceElem.isNull() )
   {
-    //convert relative pathes to absolute ones if necessary
+    //convert relative paths to absolute ones if necessary
     if ( uri.startsWith( QLatin1String( "dbname" ) ) ) //database
     {
       QgsDataSourceUri dsUri( uri );
@@ -237,6 +237,7 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
       addValueRelationLayersForLayer( vlayer );
       QgsVectorLayerJoinBuffer* joinBuffer = vlayer->joinBuffer();
       joinBuffer->readXml( const_cast<QDomElement&>( elem ) );
+      joinBuffer->resolveReferences( QgsProject::instance() );
     }
 
     return layer;
@@ -642,69 +643,6 @@ QString QgsServerProjectParser::layerName( const QDomElement& layerElem ) const
     return QString();
   }
   return nameElem.text().replace( QLatin1String( "," ), QLatin1String( "%60" ) ); //commas are not allowed in layer names
-}
-
-QString QgsServerProjectParser::serviceUrl() const
-{
-  QString url;
-
-  if ( !mXMLDoc )
-  {
-    return url;
-  }
-
-  QDomElement propertiesElement = propertiesElem();
-  if ( !propertiesElement.isNull() )
-  {
-    QDomElement wmsUrlElem = propertiesElement.firstChildElement( QStringLiteral( "WMSUrl" ) );
-    if ( !wmsUrlElem.isNull() )
-    {
-      url = wmsUrlElem.text();
-    }
-  }
-  return url;
-}
-
-QString QgsServerProjectParser::wfsServiceUrl() const
-{
-  QString url;
-
-  if ( !mXMLDoc )
-  {
-    return url;
-  }
-
-  QDomElement propertiesElement = propertiesElem();
-  if ( !propertiesElement.isNull() )
-  {
-    QDomElement wfsUrlElem = propertiesElement.firstChildElement( QStringLiteral( "WFSUrl" ) );
-    if ( !wfsUrlElem.isNull() )
-    {
-      url = wfsUrlElem.text();
-    }
-  }
-  return url;
-}
-
-QString QgsServerProjectParser::wcsServiceUrl() const
-{
-  QString url;
-
-  if ( !mXMLDoc )
-  {
-    return url;
-  }
-
-  QDomElement propertiesElement = propertiesElem();
-  if ( !propertiesElement.isNull() )
-  {
-    QDomElement wcsUrlElem = propertiesElement.firstChildElement( QStringLiteral( "WCSUrl" ) );
-    if ( !wcsUrlElem.isNull() )
-    {
-      url = wcsUrlElem.text();
-    }
-  }
-  return url;
 }
 
 void QgsServerProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupElem, QDomDocument& doc, bool considerMapExtent ) const
@@ -1189,6 +1127,27 @@ QSet<QString> QgsServerProjectParser::findRestrictedLayers() const
       }
     }
   }
+  // Add short name in restricted layers
+  else
+  {
+    QDomNodeList layerNodeList = mXMLDoc->elementsByTagName( "maplayer" );
+    for ( int i = 0; i < layerNodeList.size(); ++i )
+    {
+      QDomElement layerElem = layerNodeList.at( i ).toElement();
+      // get name
+      QString lName = layerName( layerElem );
+      if ( restrictedLayerSet.contains( lName ) )
+      {
+        // get short name
+        lName = layerShortName( layerElem );
+        if ( !lName.isEmpty() )
+        {
+          // add short name
+          restrictedLayerSet.insert( lName );
+        }
+      }
+    }
+  }
   return restrictedLayerSet;
 }
 
@@ -1232,6 +1191,7 @@ QList<QDomElement> QgsServerProjectParser::findLegendGroupElements() const
   QDomElement layerTreeElem = mXMLDoc->documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
+    // this is apparently only used to retrieve groups - layers do not need to be resolved
     rootLayerTreeGroup = QgsLayerTreeGroup::readXml( layerTreeElem );
   }
 

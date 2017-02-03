@@ -150,8 +150,8 @@ void QgsMapSettings::updateDerived()
     double xRange = extent.width() / xMean;
     double yRange = extent.height() / yMean;
 
-    static const double minProportion = 1e-12;
-    if ( xRange < minProportion || yRange < minProportion )
+    static const double MIN_PROPORTION = 1e-12;
+    if ( xRange < MIN_PROPORTION || yRange < MIN_PROPORTION )
     {
       mValid = false;
       return;

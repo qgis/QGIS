@@ -100,31 +100,31 @@ class CheckValidity(GeoAlgorithm):
         settings = QSettings()
         method = int(settings.value(settings_method_key, 1))
 
-        valid_ouput = self.getOutputFromName(self.VALID_OUTPUT)
+        valid_output = self.getOutputFromName(self.VALID_OUTPUT)
         valid_fields = layer.fields()
-        valid_writer = valid_ouput.getVectorWriter(
+        valid_writer = valid_output.getVectorWriter(
             valid_fields,
             layer.wkbType(),
             layer.crs())
         valid_count = 0
 
-        invalid_ouput = self.getOutputFromName(self.INVALID_OUTPUT)
+        invalid_output = self.getOutputFromName(self.INVALID_OUTPUT)
         invalid_fields = layer.fields().toList() + [
             QgsField(name='_errors',
                      type=QVariant.String,
                      len=255)]
-        invalid_writer = invalid_ouput.getVectorWriter(
+        invalid_writer = invalid_output.getVectorWriter(
             invalid_fields,
             layer.wkbType(),
             layer.crs())
         invalid_count = 0
 
-        error_ouput = self.getOutputFromName(self.ERROR_OUTPUT)
+        error_output = self.getOutputFromName(self.ERROR_OUTPUT)
         error_fields = [
             QgsField(name='message',
                      type=QVariant.String,
                      len=255)]
-        error_writer = error_ouput.getVectorWriter(
+        error_writer = error_output.getVectorWriter(
             error_fields,
             QgsWkbTypes.Point,
             layer.crs())
@@ -137,7 +137,7 @@ class CheckValidity(GeoAlgorithm):
             attrs = inFeat.attributes()
 
             valid = True
-            if not geom.isEmpty() and not geom.isGeosEmpty():
+            if not geom.isNull() and not geom.isEmpty():
                 errors = list(geom.validateGeometry())
                 if errors:
                     # QGIS method return a summary at the end
@@ -179,8 +179,8 @@ class CheckValidity(GeoAlgorithm):
         del error_writer
 
         if valid_count == 0:
-            valid_ouput.open = False
+            valid_output.open = False
         if invalid_count == 0:
-            invalid_ouput.open = False
+            invalid_output.open = False
         if error_count == 0:
-            error_ouput.open = False
+            error_output.open = False

@@ -25,7 +25,7 @@
 #include "qgsrectangle.h"
 
 // See #9101 before any change of NODATA_COLOR!
-const QRgb QgsRasterBlock::mNoDataColor = qRgba( 0, 0, 0, 0 );
+const QRgb QgsRasterBlock::NO_DATA_COLOR = qRgba( 0, 0, 0, 0 );
 
 QgsRasterBlock::QgsRasterBlock()
     : mValid( true )
@@ -60,26 +60,9 @@ QgsRasterBlock::QgsRasterBlock( Qgis::DataType theDataType, int theWidth, int th
   ( void )reset( mDataType, mWidth, mHeight );
 }
 
-QgsRasterBlock::QgsRasterBlock( Qgis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue )
-    : mValid( true )
-    , mDataType( theDataType )
-    , mTypeSize( 0 )
-    , mWidth( theWidth )
-    , mHeight( theHeight )
-    , mHasNoDataValue( true )
-    , mNoDataValue( theNoDataValue )
-    , mData( nullptr )
-    , mImage( nullptr )
-    , mNoDataBitmap( nullptr )
-    , mNoDataBitmapWidth( 0 )
-    , mNoDataBitmapSize( 0 )
-{
-  ( void )reset( mDataType, mWidth, mHeight, mNoDataValue );
-}
-
 QgsRasterBlock::~QgsRasterBlock()
 {
-  QgsDebugMsgLevel( QString( "mData = %1" ).arg( reinterpret_cast< ulong >( mData ) ), 4 );
+  QgsDebugMsgLevel( QString( "mData = %1" ).arg( reinterpret_cast< quint64 >( mData ) ), 4 );
   qgsFree( mData );
   delete mImage;
   qgsFree( mNoDataBitmap );
@@ -88,18 +71,6 @@ QgsRasterBlock::~QgsRasterBlock()
 bool QgsRasterBlock::reset( Qgis::DataType theDataType, int theWidth, int theHeight )
 {
   QgsDebugMsgLevel( QString( "theWidth= %1 theHeight = %2 theDataType = %3" ).arg( theWidth ).arg( theHeight ).arg( theDataType ), 4 );
-  if ( !reset( theDataType, theWidth, theHeight, std::numeric_limits<double>::quiet_NaN() ) )
-  {
-    return false;
-  }
-  mHasNoDataValue = false;
-  // the mNoDataBitmap is created only if necessary (usually, it is not) in setIsNoData()
-  return true;
-}
-
-bool QgsRasterBlock::reset( Qgis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue )
-{
-  QgsDebugMsgLevel( QString( "theWidth= %1 theHeight = %2 theDataType = %3 theNoDataValue = %4" ).arg( theWidth ).arg( theHeight ).arg( theDataType ).arg( theNoDataValue ), 4 );
 
   qgsFree( mData );
   mData = nullptr;
@@ -144,10 +115,8 @@ bool QgsRasterBlock::reset( Qgis::DataType theDataType, int theWidth, int theHei
   mTypeSize = QgsRasterBlock::typeSize( mDataType );
   mWidth = theWidth;
   mHeight = theHeight;
-  mHasNoDataValue = true;
-  mNoDataValue = theNoDataValue;
   QgsDebugMsgLevel( QString( "mWidth= %1 mHeight = %2 mDataType = %3 mData = %4 mImage = %5" ).arg( mWidth ).arg( mHeight ).arg( mDataType )
-                    .arg( reinterpret_cast< ulong >( mData ) ).arg( reinterpret_cast< ulong >( mImage ) ), 4 );
+                    .arg( reinterpret_cast< quint64 >( mData ) ).arg( reinterpret_cast< quint64 >( mImage ) ), 4 );
   return true;
 }
 
@@ -180,7 +149,7 @@ Qgis::DataType QgsRasterBlock::dataType( QImage::Format theFormat )
 bool QgsRasterBlock::isEmpty() const
 {
   QgsDebugMsgLevel( QString( "mWidth= %1 mHeight = %2 mDataType = %3 mData = %4 mImage = %5" ).arg( mWidth ).arg( mHeight ).arg( mDataType )
-                    .arg( reinterpret_cast< ulong >( mData ) ).arg( reinterpret_cast< ulong >( mImage ) ), 4 );
+                    .arg( reinterpret_cast< quint64 >( mData ) ).arg( reinterpret_cast< quint64 >( mImage ) ), 4 );
   if ( mWidth == 0 || mHeight == 0 ||
        ( typeIsNumeric( mDataType ) && !mData ) ||
        ( typeIsColor( mDataType ) && !mImage ) )
@@ -278,6 +247,18 @@ bool QgsRasterBlock::hasNoData() const
   return mHasNoDataValue || mNoDataBitmap;
 }
 
+void QgsRasterBlock::setNoDataValue( double noDataValue )
+{
+  mHasNoDataValue = true;
+  mNoDataValue = noDataValue;
+}
+
+void QgsRasterBlock::resetNoDataValue()
+{
+  mHasNoDataValue = false;
+  mNoDataValue = std::numeric_limits<double>::quiet_NaN();
+}
+
 bool QgsRasterBlock::isNoDataValue( double value, double noDataValue )
 {
   // TODO: optimize no data value test by memcmp()
@@ -305,7 +286,7 @@ QRgb QgsRasterBlock::color( qgssize index ) const
 
 QRgb QgsRasterBlock::color( int row, int column ) const
 {
-  if ( !mImage ) return mNoDataColor;
+  if ( !mImage ) return NO_DATA_COLOR;
 
   return mImage->pixel( column, row );
 }
@@ -470,7 +451,7 @@ bool QgsRasterBlock::setIsNoData()
       return false;
     }
     QgsDebugMsgLevel( "Fill image", 4 );
-    mImage->fill( mNoDataColor );
+    mImage->fill( NO_DATA_COLOR );
     return true;
   }
 }
@@ -601,7 +582,7 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect theExceptRect )
       return false;
     }
 
-    QRgb nodataRgba = mNoDataColor;
+    QRgb nodataRgba = NO_DATA_COLOR;
     QRgb *nodataRow = new QRgb[mWidth]; // full row of no data
     int rgbSize = sizeof( QRgb );
     for ( int c = 0; c < mWidth; c ++ )
@@ -660,6 +641,33 @@ void QgsRasterBlock::setIsData( qgssize index )
   int bit = column % 8;
   int nodata = 0x80 >> bit;
   mNoDataBitmap[byte] = mNoDataBitmap[byte] & ~nodata;
+}
+
+QByteArray QgsRasterBlock::data() const
+{
+  if ( mData )
+    return QByteArray::fromRawData( static_cast<const char*>( mData ), typeSize( mDataType ) * mWidth * mHeight );
+  else if ( mImage && mImage->constBits() )
+    return QByteArray::fromRawData( reinterpret_cast<const char*>( mImage->constBits() ), mImage->byteCount() );
+  else
+    return QByteArray();
+}
+
+void QgsRasterBlock::setData( const QByteArray& data, int offset )
+{
+  if ( offset < 0 )
+    return;  // negative offsets not allowed
+
+  if ( mData )
+  {
+    int len = qMin( data.size(), typeSize( mDataType ) * mWidth * mHeight - offset );
+    ::memcpy( static_cast<char *>( mData ) + offset, data.constData(), len );
+  }
+  else if ( mImage && mImage->constBits() )
+  {
+    int len = qMin( data.size(), mImage->byteCount() - offset );
+    ::memcpy( mImage->bits() + offset, data.constData(), len );
+  }
 }
 
 char * QgsRasterBlock::bits( qgssize index )

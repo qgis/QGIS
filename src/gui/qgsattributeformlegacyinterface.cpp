@@ -33,7 +33,7 @@ QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString&
 
   QString initLayer = QStringLiteral( "%1 = sip.wrapinstance( %2, qgis.core.QgsVectorLayer )" )
                       .arg( mPyLayerVarName )
-                      .arg(( unsigned long ) form->layer() );
+                      .arg(( quint64 ) form->layer() );
 
   QgsPythonRunner::run( initLayer );
 }
@@ -61,7 +61,7 @@ void QgsAttributeFormLegacyInterface::featureChanged()
   QString pyFeatureVarName = QStringLiteral( "_qgis_feature_%1" ).arg( dt.toString( QStringLiteral( "yyyyMMddhhmmsszzz" ) ) );
   QString initFeature = QStringLiteral( "%1 = sip.wrapinstance( %2, qgis.core.QgsFeature )" )
                         .arg( pyFeatureVarName )
-                        .arg(( unsigned long ) & form()->feature() );
+                        .arg(( quint64 ) & form()->feature() );
 
   QgsPythonRunner::run( initFeature );
 

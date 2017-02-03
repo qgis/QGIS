@@ -35,6 +35,7 @@
 #include "qgsmapsettings.h"
 #include "qgsmessagelog.h"
 #include "qgsserviceregistry.h"
+#include "qgsserversettings.h"
 #include "qgsserverplugins.h"
 #include "qgsserverfilter.h"
 #include "qgsserverinterfaceimpl.h"
@@ -42,6 +43,7 @@
 
 class QgsServerRequest;
 class QgsServerResponse;
+class QgsProject;
 
 /** \ingroup server
  * The QgsServer class provides OGC web services.
@@ -71,7 +73,7 @@ class SERVER_EXPORT QgsServer
      */
     void handleRequest( QgsServerRequest& request, QgsServerResponse& response );
 
-    /** Handles the request from query strinf
+    /** Handles the request from query string
      * The query string is normally read from environment
      * but can be also passed in args and in this case overrides the environment
      * variable.
@@ -85,7 +87,7 @@ class SERVER_EXPORT QgsServer
     QgsServerInterfaceImpl* serverInterface() { return sServerInterface; }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    //! Intialize python
+    //! Initialize python
     //! Note: not in python bindings
     void initPython( );
 #endif
@@ -99,10 +101,6 @@ class SERVER_EXPORT QgsServer
     // static methods of this class
     static QString configPath( const QString& defaultConfigPath,
                                const QMap<QString, QString>& parameters );
-    // Mainly for debug
-    static void dummyMessageHandler( QtMsgType type, const char *msg );
-    // Mainly for debug
-    static void printRequestInfos();
 
     /**
      * @brief QgsServer::printRequestParameters prints the request parameters
@@ -125,15 +123,17 @@ class SERVER_EXPORT QgsServer
     // Status
     static QString* sConfigFilePath;
     static QgsCapabilitiesCache* sCapabilitiesCache;
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
     static QgsServerInterfaceImpl* sServerInterface;
-#endif
     //! Initialization must run once for all servers
-    static bool sInitialised;
+    static bool sInitialized;
 
     //! service registry
     static QgsServiceRegistry sServiceRegistry;
 
+    static QgsServerSettings sSettings;
+
+    // map of QgsProject
+    QMap<QString, const QgsProject*> mProjectRegistry;
 };
 #endif // QGSSERVER_H
 

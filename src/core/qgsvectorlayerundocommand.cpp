@@ -28,17 +28,17 @@
 QgsVectorLayerUndoCommandAddFeature::QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer* buffer, QgsFeature& f )
     : QgsVectorLayerUndoCommand( buffer )
 {
-  static int addedIdLowWaterMark = -1;
+  static int sAddedIdLowWaterMark = -1;
 
   //assign a temporary id to the feature (use negative numbers)
-  addedIdLowWaterMark--;
+  sAddedIdLowWaterMark--;
 
-  QgsDebugMsgLevel( "Assigned feature id " + QString::number( addedIdLowWaterMark ), 4 );
+  QgsDebugMsgLevel( "Assigned feature id " + QString::number( sAddedIdLowWaterMark ), 4 );
 
   // Force a feature ID (to keep other functions in QGIS happy,
   // providers will use their own new feature ID when we commit the new feature)
   // and add to the known added features.
-  f.setFeatureId( addedIdLowWaterMark );
+  f.setId( sAddedIdLowWaterMark );
 
   mFeature = f;
 }
@@ -171,7 +171,7 @@ void QgsVectorLayerUndoCommandChangeGeometry::undo()
   {
     // existing feature
 
-    if ( mOldGeom.isEmpty() )
+    if ( mOldGeom.isNull() )
     {
       mBuffer->mChangedGeometries.remove( mFid );
 
@@ -401,7 +401,7 @@ void QgsVectorLayerUndoCommandDeleteAttribute::undo()
   {
     if ( !FID_IS_NEW( it.key() ) )
     {
-      QgsAttributeMap& attrs = mBuffer->mChangedAttributeValues[it.key()]; // also adds record if nonexistant
+      QgsAttributeMap& attrs = mBuffer->mChangedAttributeValues[it.key()]; // also adds record if nonexistent
       attrs.insert( mFieldIndex, it.value() );
     }
   }

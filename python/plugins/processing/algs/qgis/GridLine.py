@@ -54,6 +54,8 @@ class GridLine(GeoAlgorithm):
     EXTENT = 'EXTENT'
     HSPACING = 'HSPACING'
     VSPACING = 'VSPACING'
+    HOVERLAY = 'HOVERLAY'
+    VOVERLAY = 'VOVERLAY'
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
@@ -71,6 +73,10 @@ class GridLine(GeoAlgorithm):
                                           self.tr('Horizontal spacing'), 0.0, 1000000000.0, default=0.0001))
         self.addParameter(ParameterNumber(self.VSPACING,
                                           self.tr('Vertical spacing'), 0.0, 1000000000.0, default=0.0001))
+        self.addParameter(ParameterNumber(self.HOVERLAY,
+                                          self.tr('Horizontal overlay'), 0.0, 1000000000.0, default=0.0))
+        self.addParameter(ParameterNumber(self.VOVERLAY,
+                                          self.tr('Vertical overlay'), 0.0, 1000000000.0, default=0.0))
         self.addParameter(ParameterCrs(self.CRS, 'Grid CRS', 'EPSG:4326'))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
@@ -79,6 +85,8 @@ class GridLine(GeoAlgorithm):
         extent = self.getParameterValue(self.EXTENT).split(',')
         hSpacing = self.getParameterValue(self.HSPACING)
         vSpacing = self.getParameterValue(self.VSPACING)
+        hOverlay = self.getParameterValue(self.HOVERLAY)
+        vOverlay = self.getParameterValue(self.VOVERLAY)
         crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.CRS))
 
         bbox = QgsRectangle(float(extent[0]), float(extent[2]),
@@ -90,6 +98,10 @@ class GridLine(GeoAlgorithm):
         if hSpacing <= 0 or vSpacing <= 0:
             raise GeoAlgorithmExecutionException(
                 self.tr('Invalid grid spacing: %s/%s' % (hSpacing, vSpacing)))
+
+        if hSpacing <= hOverlay or vSpacing <= vOverlay:
+            raise GeoAlgorithmExecutionException(
+                self.tr('Invalid overlay: %s/%s' % (hOverlay, vOverlay)))
 
         if width < hSpacing:
             raise GeoAlgorithmExecutionException(
@@ -109,6 +121,16 @@ class GridLine(GeoAlgorithm):
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                                                                      QgsWkbTypes.LineString, crs)
+
+        if hOverlay > 0:
+            hSpace = [hSpacing - hOverlay, hOverlay]
+        else:
+            hSpace = [hSpacing, hSpacing]
+
+        if vOverlay > 0:
+            vSpace = [vSpacing - vOverlay, vOverlay]
+        else:
+            vSpace = [vSpacing, vSpacing]
 
         feat = QgsFeature()
         feat.initAttributes(len(fields))
@@ -133,7 +155,7 @@ class GridLine(GeoAlgorithm):
                                 id,
                                 y])
             writer.addFeature(feat)
-            y = y - vSpacing
+            y = y - vSpace[count % 2]
             id += 1
             count += 1
             if int(math.fmod(count, count_update)) == 0:
@@ -160,7 +182,7 @@ class GridLine(GeoAlgorithm):
                                 id,
                                 x])
             writer.addFeature(feat)
-            x = x + hSpacing
+            x = x + hSpace[count % 2]
             id += 1
             count += 1
             if int(math.fmod(count, count_update)) == 0:

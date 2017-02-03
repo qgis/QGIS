@@ -163,7 +163,7 @@
     </widget>
    </item>
    <item row="2" column="2">
-    <widget class="QgsDataDefinedButton" name="mBorderColorDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mBorderColorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -245,7 +245,7 @@
     </widget>
    </item>
    <item row="5" column="2">
-    <widget class="QgsDataDefinedButton" name="mBorderWidthDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mBorderWidthDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -259,7 +259,7 @@
     </widget>
    </item>
    <item row="4" column="2">
-    <widget class="QgsDataDefinedButton" name="mJoinStyleDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mJoinStyleDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -308,7 +308,7 @@
     </widget>
    </item>
    <item row="3" column="2">
-    <widget class="QgsDataDefinedButton" name="mSizeDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mSizeDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -382,7 +382,7 @@
     </layout>
    </item>
    <item row="1" column="2">
-    <widget class="QgsDataDefinedButton" name="mColorDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mColorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -416,35 +416,35 @@
     </layout>
    </item>
    <item row="6" column="2">
-    <widget class="QgsDataDefinedButton" name="mRotationDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mRotationDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="7" column="2">
-    <widget class="QgsDataDefinedButton" name="mOffsetDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mOffsetDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="8" column="2">
-    <widget class="QgsDataDefinedButton" name="mHorizontalAnchorDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mHorizontalAnchorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="9" column="2">
-    <widget class="QgsDataDefinedButton" name="mVerticalAnchorDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mVerticalAnchorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="10" column="2">
-    <widget class="QgsDataDefinedButton" name="mCharDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mCharDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -460,9 +460,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>

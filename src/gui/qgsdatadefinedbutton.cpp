@@ -235,7 +235,7 @@ void QgsDataDefinedButton::mouseReleaseEvent( QMouseEvent *event )
     return;
   }
 
-  // pass to default behaviour
+  // pass to default behavior
   QToolButton::mousePressEvent( event );
 }
 
@@ -493,7 +493,7 @@ void QgsDataDefinedButton::showAssistant()
 
   if ( mAssistant->exec() == QDialog::Accepted )
   {
-    QgsDataDefined dd = mAssistant->dataDefined();
+    QgsDataDefined dd; // = mAssistant->dataDefined();
     setUseExpression( dd.useExpression() );
     setActive( dd.isActive() );
     if ( dd.isActive() && dd.useExpression() )
@@ -809,12 +809,12 @@ QString QgsDataDefinedButton::unitsMmMuPercentDesc()
 
 QString QgsDataDefinedButton::colorNoAlphaDesc()
 {
-  return tr( "string [<b>r,g,b</b>] as int 0-255" );
+  return tr( "string [<b>r,g,b</b>] as int 0-255 or #<b>RRGGBB</b> as hex or <b>color</b> as color's name" );
 }
 
 QString QgsDataDefinedButton::colorAlphaDesc()
 {
-  return tr( "string [<b>r,g,b,a</b>] as int 0-255" );
+  return tr( "string [<b>r,g,b,a</b>] as int 0-255 or #<b>RRGGBBAA</b> as hex or <b>color</b> as color's name" );
 }
 
 QString QgsDataDefinedButton::textHorzAlignDesc()

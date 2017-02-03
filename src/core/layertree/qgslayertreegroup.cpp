@@ -18,7 +18,6 @@
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
-#include "qgsproject.h"
 
 #include <QDomElement>
 #include <QStringList>
@@ -73,9 +72,9 @@ QgsLayerTreeGroup* QgsLayerTreeGroup::addGroup( const QString &name )
   return grp;
 }
 
-QgsLayerTreeLayer*QgsLayerTreeGroup::insertLayer( int index, QgsMapLayer* layer )
+QgsLayerTreeLayer* QgsLayerTreeGroup::insertLayer( int index, QgsMapLayer* layer )
 {
-  if ( !layer || QgsProject::instance()->mapLayer( layer->id() ) != layer )
+  if ( !layer )
     return nullptr;
 
   QgsLayerTreeLayer* ll = new QgsLayerTreeLayer( layer );
@@ -85,7 +84,7 @@ QgsLayerTreeLayer*QgsLayerTreeGroup::insertLayer( int index, QgsMapLayer* layer 
 
 QgsLayerTreeLayer* QgsLayerTreeGroup::addLayer( QgsMapLayer* layer )
 {
-  if ( !layer || QgsProject::instance()->mapLayer( layer->id() ) != layer )
+  if ( !layer )
     return nullptr;
 
   QgsLayerTreeLayer* ll = new QgsLayerTreeLayer( layer );
@@ -276,6 +275,14 @@ QgsLayerTreeGroup* QgsLayerTreeGroup::readXml( QDomElement& element )
   return groupNode;
 }
 
+QgsLayerTreeGroup* QgsLayerTreeGroup::readXml( QDomElement& element, const QgsProject* project )
+{
+  QgsLayerTreeGroup* node = readXml( element );
+  if ( node )
+    node->resolveReferences( project );
+  return node;
+}
+
 void QgsLayerTreeGroup::writeXml( QDomElement& parentElement )
 {
   QDomDocument doc = parentElement.ownerDocument();
@@ -327,6 +334,12 @@ QString QgsLayerTreeGroup::dump() const
 QgsLayerTreeGroup* QgsLayerTreeGroup::clone() const
 {
   return new QgsLayerTreeGroup( *this );
+}
+
+void QgsLayerTreeGroup::resolveReferences( const QgsProject* project )
+{
+  Q_FOREACH ( QgsLayerTreeNode* node, mChildren )
+    node->resolveReferences( project );
 }
 
 static bool _nodeIsChecked( QgsLayerTreeNode* node )

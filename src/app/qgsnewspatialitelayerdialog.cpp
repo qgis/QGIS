@@ -174,7 +174,7 @@ void QgsNewSpatialiteLayerDialog::on_mAddAttributeButton_clicked()
   {
     QString myName = mNameEdit->text();
     //use userrole to avoid translated type string
-    QString myType = mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole ).toString();
+    QString myType = mTypeBox->currentData( Qt::UserRole ).toString();
     mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << myName << myType ) );
 
     checkOk();

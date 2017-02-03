@@ -22,6 +22,17 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget 
 {
   setupUi( this );
 
+  minimumSpinBox->setMinimum( std::numeric_limits<int>::min() );
+  minimumSpinBox->setMaximum( std::numeric_limits<int>::max() );
+  minimumSpinBox->setValue( std::numeric_limits<int>::min() );
+
+  maximumSpinBox->setMinimum( std::numeric_limits<int>::min() );
+  maximumSpinBox->setMaximum( std::numeric_limits<int>::max() );
+  maximumSpinBox->setValue( std::numeric_limits<int>::max() );
+
+  stepSpinBox->setMaximum( std::numeric_limits<int>::max() );
+  stepSpinBox->setValue( 1 );
+
   QString text;
 
   switch ( vl->fields().at( fieldIdx ).type() )

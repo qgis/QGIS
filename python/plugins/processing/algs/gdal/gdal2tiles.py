@@ -74,10 +74,10 @@ class gdal2tiles(GdalAlgorithm):
         params = []
         params.append(ParameterSelection(self.PROFILE,
                                          self.tr('Tile cutting profile'),
-                                         self.PROFILES, 0, False, True))
+                                         self.PROFILES, 0, False, optional=True))
         params.append(ParameterSelection(self.RESAMPLING,
                                          self.tr('Resampling method'),
-                                         self.RESAMPLINGS, 0, False, True))
+                                         self.RESAMPLINGS, 0, False, optional=True))
         params.append(ParameterCrs(self.S_SRS,
                                    self.tr('The spatial reference system used for the source input data'),
                                    None, True))
@@ -101,7 +101,7 @@ class gdal2tiles(GdalAlgorithm):
                                       None, False, True))
         params.append(ParameterSelection(self.WEBVIEWER,
                                          self.tr('Web viewer to generate'),
-                                         self.WEBVIEWERS, 0, False, True))
+                                         self.WEBVIEWERS, 0, False, optional=True))
         params.append(ParameterString(self.TITLE,
                                       self.tr('Title of the map'),
                                       None, False, True))

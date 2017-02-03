@@ -1,5 +1,4 @@
 %Module(name=qgis._core,
-        version=0,
         keyword_arguments="Optional")
 
 %Import QtXml/QtXmlmod.sip
@@ -14,7 +13,6 @@
 
 %Include qgis.sip
 
-%Include qgsannotation.sip
 %Include qgsapplication.sip
 %Include qgsaction.sip
 %Include qgsactionmanager.sip
@@ -95,6 +93,7 @@
 %Include qgsmapsettings.sip
 %Include qgsmaptopixel.sip
 %Include qgsmapunitscale.sip
+%Include qgsmargins.sip
 %Include qgsmessagelog.sip
 %Include qgsmessageoutput.sip
 %Include qgsmimedatautils.sip
@@ -118,6 +117,9 @@
 %Include qgsprojectproperty.sip
 %Include qgssnappingconfig.sip
 %Include qgsprojectversion.sip
+%Include qgsproperty.sip
+%Include qgspropertycollection.sip
+%Include qgspropertytransformer.sip
 %Include qgsprovidermetadata.sip
 %Include qgsproviderregistry.sip
 %Include qgspythonrunner.sip
@@ -153,6 +155,7 @@
 %Include qgsvectorlayereditpassthrough.sip
 %Include qgsvectorlayerimport.sip
 %Include qgsvectorlayerjoinbuffer.sip
+%Include qgsvectorlayerjoininfo.sip
 %Include qgsvectorlayertools.sip
 %Include qgsvectorlayerundocommand.sip
 %Include qgsvectorlayerutils.sip
@@ -171,6 +174,12 @@
 %Include qgsvirtuallayerdefinitionutils.sip
 %Include qgsmapthemecollection.sip
 %Include qgsxmlutils.sip
+
+%Include annotations/qgsannotation.sip
+%Include annotations/qgsannotationmanager.sip
+%Include annotations/qgshtmlannotation.sip
+%Include annotations/qgssvgannotation.sip
+%Include annotations/qgstextannotation.sip
 
 %Include auth/qgsauthcertutils.sip
 %Include auth/qgsauthconfig.sip
@@ -336,8 +345,6 @@
 %Include symbology-ng/qgssymbollayerutils.sip
 %Include symbology-ng/qgsvectorfieldsymbollayer.sip
 %Include symbology-ng/qgsarrowsymbollayer.sip
-
-%Include symbology-ng/qgssymbologyconversion.sip
 
 %Include dxf/qgsdxfexport.sip
 

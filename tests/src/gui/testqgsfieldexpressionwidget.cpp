@@ -105,12 +105,12 @@ void TestQgsFieldExpressionWidget::testRemoveJoin()
 
   QVERIFY( mLayerA->fields().count() == 1 );
 
-  QgsVectorJoinInfo joinInfo;
-  joinInfo.targetFieldName = QStringLiteral( "id_a" );
-  joinInfo.joinLayerId = mLayerB->id();
-  joinInfo.joinFieldName = QStringLiteral( "id_b" );
-  joinInfo.memoryCache = false;
-  joinInfo.prefix = QStringLiteral( "B_" );
+  QgsVectorLayerJoinInfo joinInfo;
+  joinInfo.setTargetFieldName( QStringLiteral( "id_a" ) );
+  joinInfo.setJoinLayer( mLayerB );
+  joinInfo.setJoinFieldName( QStringLiteral( "id_b" ) );
+  joinInfo.setUsingMemoryCache( false );
+  joinInfo.setPrefix( QStringLiteral( "B_" ) );
   mLayerA->addJoin( joinInfo );
 
   QVERIFY( mLayerA->fields().count() == 2 );

@@ -52,15 +52,6 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /* It makes no sense to set input on provider */
     bool setInput( QgsRasterInterface* input );
 
-    /** \brief   Renders the layer as an image
-     * \note When render caching (/qgis/enable_render_caching) is on the wms
-     * provider doesn't wait for the reply of the getmap request or all
-     * tiles replies and can return incomplete images.
-     * Temporarily disable render caching if you require the complete
-     * wms image in the first call.
-     */
-    virtual QImage* draw( const QgsRectangle & viewExtent, int pixelWidth, int pixelHeight ) = 0;
-
     /** Get the extent of the data source.
      * @return QgsRectangle containing the extent of the layer
      */
@@ -161,7 +152,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
                                    QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
                                    const QStringList & theConfigOptions = QStringList() );
 
-    /** \brief Accessor for ths raster layers pyramid list.
+    /** \brief Accessor for the raster layers pyramid list.
      * @param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
      * A pyramid list defines the
      * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
@@ -242,9 +233,44 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Current time stamp of data source */
     virtual QDateTime dataTimestamp() const;
 
+    /** Checks whether the provider is in editing mode, i.e. raster write operations will be accepted.
+     * By default providers are not editable. Use setEditable() method to enable/disable editing.
+     * @see setEditable(), writeBlock()
+     * @note added in QGIS 3.0
+     */
+    virtual bool isEditable() const;
+
+    /** Turns on/off editing mode of the provider. When in editing mode, it is possible
+     * to overwrite data of the provider using writeBlock() calls.
+     * @note Only some providers support editing mode and even those may fail to turn
+     * the underlying data source into editing mode, so it is necessary to check the return
+     * value whether the operation was successful.
+     * @returns true if the switch to/from editing mode was successful
+     * @see isEditable(), writeBlock()
+     * @note added in QGIS 3.0
+     */
+    virtual bool setEditable( bool enabled );
+
     /** Writes into the provider datasource*/
     // TODO: add data type (may be defferent from band type)
     virtual bool write( void* data, int band, int width, int height, int xOffset, int yOffset );
+
+    /** Writes pixel data from a raster block into the provider data source.
+     *
+     * This will override previously stored pixel values. It is assumed that cells in the passed
+     * raster block are aligned with the cells of the data source. If raster block does not cover
+     * the whole area of the data source, only a subset of pixels covered by the raster block
+     * will be overwritten. By default, writing of raster data starts from the first cell
+     * of the raster - it is possible to set offset in pixels by specifying non-zero
+     * xOffset and yOffset values.
+     *
+     * Writing is supported only by some data providers. Provider has to be in editing mode
+     * in order to allow write operations.
+     * @see isEditable(), setEditable()
+     * @returns true on success
+     * @note added in QGIS 3.0
+     */
+    bool writeBlock( QgsRasterBlock* block, int band, int xOffset = 0, int yOffset = 0 );
 
     /** Creates a new dataset with mDataSourceURI */
     static QgsRasterDataProvider* create( const QString &providerKey,

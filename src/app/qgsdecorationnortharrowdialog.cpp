@@ -13,7 +13,7 @@
 #include "qgsdecorationnortharrowdialog.h"
 #include "qgsdecorationnortharrow.h"
 #include "qgslogger.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include <QPainter>
 #include <QSettings>
@@ -65,7 +65,7 @@ QgsDecorationNorthArrowDialog::~QgsDecorationNorthArrowDialog()
 
 void QgsDecorationNorthArrowDialog::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#north-arrow" ) );
 }
 
 void QgsDecorationNorthArrowDialog::on_buttonBox_accepted()

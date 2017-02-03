@@ -16,6 +16,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (
     Qgis,
     QgsField,
+    QgsLayerDefinition,
     QgsPoint,
     QgsMapLayer,
     QgsVectorLayer,
@@ -282,11 +283,11 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         myMemoryLayer.updateFields()
 
         # Export the layer to a layer-definition-XML
-        qlr = QgsMapLayer.asLayerDefinition([myMemoryLayer])
+        qlr = QgsLayerDefinition.exportLayerDefinitionLayers([myMemoryLayer])
         assert qlr is not None
 
         # Import the layer from the layer-definition-XML
-        layers = QgsMapLayer.fromLayerDefinition(qlr)
+        layers = QgsLayerDefinition.loadLayerDefinitionLayers(qlr)
         assert layers is not None
         myImportedLayer = layers[0]
         assert myImportedLayer is not None

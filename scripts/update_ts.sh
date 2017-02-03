@@ -48,19 +48,19 @@ cleanup() {
 
 PATH=$QTDIR/bin:$PATH
 
-if type qmake-qt4 >/dev/null 2>&1; then
-	QMAKE=qmake-qt4
+if type qmake-qt5 >/dev/null 2>&1; then
+	QMAKE=qmake-qt5
 else
 	QMAKE=qmake
 fi
 
-if ! type pylupdate4 >/dev/null 2>&1; then
+if ! type pylupdate5 >/dev/null 2>&1; then
       echo "pylupdate4 not found"
       exit 1
 fi
 
-if type lupdate-qt4 >/dev/null 2>&1; then
-	LUPDATE=lupdate-qt4
+if type lupdate-qt5 >/dev/null 2>&1; then
+	LUPDATE=lupdate-qt5
 else
 	LUPDATE=lupdate
 fi

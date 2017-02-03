@@ -62,7 +62,7 @@ class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
 
     virtual bool setSubSymbol( QgsSymbol* symbol );
 
-    virtual QSet<QString> usedAttributes() const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     //! Will always return true.
     //! This is a hybrid layer, it constructs its own geometry so it does not

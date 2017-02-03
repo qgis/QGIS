@@ -24,7 +24,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsrenderer.h"
 
-
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter )
     : QgsMapRendererJob( settings )
     , mPainter( painter )
@@ -79,7 +78,7 @@ void QgsMapRendererCustomPainterJob::start()
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
     mLabelingEngineV2 = new QgsLabelingEngine();
-    mLabelingEngineV2->readSettingsFromProject();
+    mLabelingEngineV2->readSettingsFromProject( QgsProject::instance() );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
@@ -95,7 +94,7 @@ void QgsMapRendererCustomPainterJob::start()
   }
 
   // now we are ready to start rendering!
-  connect( &mFutureWatcher, SIGNAL( finished() ), SLOT( futureFinished() ) );
+  connect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererCustomPainterJob::futureFinished );
 
   mFuture = QtConcurrent::run( staticRender, this );
   mFutureWatcher.setFuture( mFuture );
@@ -110,8 +109,8 @@ void QgsMapRendererCustomPainterJob::cancel()
     return;
   }
 
-  QgsDebugMsg( "QPAINTER cancelling" );
-  disconnect( &mFutureWatcher, SIGNAL( finished() ), this, SLOT( futureFinished() ) );
+  QgsDebugMsg( "QPAINTER canceling" );
+  disconnect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererCustomPainterJob::futureFinished );
 
   mLabelingRenderContext.setRenderingStopped( true );
   for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
@@ -130,7 +129,7 @@ void QgsMapRendererCustomPainterJob::cancel()
 
   futureFinished();
 
-  QgsDebugMsg( "QPAINTER cancelled" );
+  QgsDebugMsg( "QPAINTER canceled" );
 }
 
 void QgsMapRendererCustomPainterJob::waitForFinished()
@@ -138,7 +137,7 @@ void QgsMapRendererCustomPainterJob::waitForFinished()
   if ( !isActive() )
     return;
 
-  disconnect( &mFutureWatcher, SIGNAL( finished() ), this, SLOT( futureFinished() ) );
+  disconnect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererCustomPainterJob::futureFinished );
 
   QTime t;
   t.start();
@@ -168,7 +167,7 @@ QgsLabelingResults* QgsMapRendererCustomPainterJob::takeLabelingResults()
 void QgsMapRendererCustomPainterJob::waitForFinishedWithEventLoop( QEventLoop::ProcessEventsFlags flags )
 {
   QEventLoop loop;
-  connect( &mFutureWatcher, SIGNAL( finished() ), &loop, SLOT( quit() ) );
+  connect( &mFutureWatcher, &QFutureWatcher<void>::finished, &loop, &QEventLoop::quit );
   loop.exec( flags );
 }
 

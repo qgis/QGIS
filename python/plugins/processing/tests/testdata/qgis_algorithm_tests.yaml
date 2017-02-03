@@ -1477,7 +1477,7 @@ tests:
   - algorithm: qgis:snapgeometriestolayer
     name: Snap points to lines (prefer nodes)
     params:
-      BEHAVIOUR: '0'
+      BEHAVIOR: '0'
       INPUT:
         name: snap_points.gml
         type: vector
@@ -1493,7 +1493,7 @@ tests:
   - algorithm: qgis:snapgeometriestolayer
     name: Snap points to lines (prefer closest)
     params:
-      BEHAVIOUR: '1'
+      BEHAVIOR: '1'
       INPUT:
         name: snap_points.gml
         type: vector
@@ -1763,6 +1763,74 @@ tests:
           geometry:
             precision: 7
 
+  - algorithm: qgis:creategridlines
+    name: Create grid (lines with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HOVERLAY: 2.0
+      HSPACING: 5.0
+      VOVERLAY: 1.0
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_lines_overlay.gml
+        type: vector
+         
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (rectangle with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HOVERLAY: 2.0
+      HSPACING: 5.0
+      TYPE: '0'
+      VOVERLAY: 1.0
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_rectangle_overlay.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+        
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (diamond with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HOVERLAY: 2.0
+      HSPACING: 5.0
+      TYPE: '1'
+      VOVERLAY: 1.0
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_diamond_overlay.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+            
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (hexagon with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HOVERLAY: 2.0
+      HSPACING: 5.0
+      TYPE: '2'
+      VOVERLAY: 1.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/grid_hexagon_overlay.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          
   - algorithm: qgis:deleteholes
     name: Delete holes (no min)
     params:
@@ -2145,3 +2213,102 @@ tests:
         name: points.gml
         type: vector
     results: {}
+
+  - algorithm: qgis:countuniquepointsinpolygon
+    name: standard count unique points in polygon
+    params:
+      CLASSFIELD: id2
+      FIELD: NUMPOINTS
+      POINTS:
+        name: points.gml
+        type: vector
+      POLYGONS:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/count_unique_points.gml
+        type: vector
+
+  - algorithm: qgis:countpointsinpolygonweighted
+    name: standard count points in polygon wighted
+    params:
+      FIELD: NUMPOINTS
+      POINTS:
+        name: custom/points_weighted.gml
+        type: vector
+      POLYGONS:
+        name: polys.gml
+        type: vector
+      WEIGHT: id
+    results:
+      OUTPUT:
+        name: expected/count_points_weighted.gml
+        type: vector
+
+  - algorithm: qgis:pointsalonglines
+    name: standard points alog lines
+    params:
+      DISTANCE: 1.0
+      END_OFFSET: 0.0
+      INPUT:
+        name: lines.gml
+        type: vector
+      START_OFFSET: 0.0
+    results:
+      OUTPUT:
+        name: expected/points_alog_lines.gml
+        type: vector
+
+  - algorithm: qgis:meancoordinates
+    name: standard mean coordinates
+    params:
+      POINTS:
+        name: custom/points.shp
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/mean_coordinates.gml
+        type: vector
+
+  - algorithm: qgis:singlepartstomultipart
+    name: single part to multipart
+    params:
+      FIELD: id
+      INPUT:
+        name: custom/single_part_poly.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/single_to_multi.gml
+        type: vector
+
+  - algorithm: qgis:zonalstatistics
+    name: simple zonal statistics
+    params:
+      COLUMN_PREFIX: _
+      GLOBAL_EXTENT: false
+      INPUT_RASTER:
+        name: dem.tif
+        type: raster
+      INPUT_VECTOR:
+        name: custom/polygon_mask.gml
+        type: vector
+      RASTER_BAND: 1
+    results:
+      OUTPUT_LAYER:
+        name: expected/zonal_statistics.gml
+        type: vector
+
+  - algorithm: qgis:polygonize
+    name: Polygonize
+    params:
+      FIELDS: false
+      GEOMETRY: true
+      INPUT:
+        name: custom/polygonize_lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/polygonize.gml
+        type: vector

@@ -20,9 +20,10 @@
 #include "qgslogger.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgspallabeling.h"
+#include "qgsproject.h"
+#include "qgsmaplayer.h"
 
 #include <QtConcurrentMap>
-
 
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings& settings )
     : QgsMapRendererQImageJob( settings )
@@ -57,7 +58,7 @@ void QgsMapRendererParallelJob::start()
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
     mLabelingEngineV2 = new QgsLabelingEngine();
-    mLabelingEngineV2->readSettingsFromProject();
+    mLabelingEngineV2->readSettingsFromProject( QgsProject::instance() );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
@@ -67,7 +68,7 @@ void QgsMapRendererParallelJob::start()
 
   // start async job
 
-  connect( &mFutureWatcher, SIGNAL( finished() ), SLOT( renderLayersFinished() ) );
+  connect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderLayersFinished );
 
   mFuture = QtConcurrent::map( mLayerJobs, renderLayerStatic );
   mFutureWatcher.setFuture( mFuture );
@@ -90,7 +91,7 @@ void QgsMapRendererParallelJob::cancel()
 
   if ( mStatus == RenderingLayers )
   {
-    disconnect( &mFutureWatcher, SIGNAL( finished() ), this, SLOT( renderLayersFinished() ) );
+    disconnect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderLayersFinished );
 
     mFutureWatcher.waitForFinished();
 
@@ -99,7 +100,7 @@ void QgsMapRendererParallelJob::cancel()
 
   if ( mStatus == RenderingLabels )
   {
-    disconnect( &mLabelingFutureWatcher, SIGNAL( finished() ), this, SLOT( renderingFinished() ) );
+    disconnect( &mLabelingFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderingFinished );
 
     mLabelingFutureWatcher.waitForFinished();
 
@@ -116,7 +117,7 @@ void QgsMapRendererParallelJob::waitForFinished()
 
   if ( mStatus == RenderingLayers )
   {
-    disconnect( &mFutureWatcher, SIGNAL( finished() ), this, SLOT( renderLayersFinished() ) );
+    disconnect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderLayersFinished );
 
     QTime t;
     t.start();
@@ -130,7 +131,7 @@ void QgsMapRendererParallelJob::waitForFinished()
 
   if ( mStatus == RenderingLabels )
   {
-    disconnect( &mLabelingFutureWatcher, SIGNAL( finished() ), this, SLOT( renderingFinished() ) );
+    disconnect( &mLabelingFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderingFinished );
 
     QTime t;
     t.start();
@@ -183,7 +184,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
   {
     mStatus = RenderingLabels;
 
-    connect( &mLabelingFutureWatcher, SIGNAL( finished() ), this, SLOT( renderingFinished() ) );
+    connect( &mLabelingFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderingFinished );
 
     // now start rendering of labeling!
     mLabelingFuture = QtConcurrent::run( renderLabelsStatic, this );
@@ -220,7 +221,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
 
   QTime t;
   t.start();
-  QgsDebugMsgLevel( QString( "job %1 start (layer %2)" ).arg( reinterpret_cast< ulong >( &job ), 0, 16 ).arg( job.layerId ), 2 );
+  QgsDebugMsgLevel( QString( "job %1 start (layer %2)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.layer ? job.layer->id() : QString() ), 2 );
 
   try
   {
@@ -242,7 +243,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
   }
 
   job.renderingTime = t.elapsed();
-  QgsDebugMsgLevel( QString( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast< ulong >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layerId ), 2 );
+  QgsDebugMsgLevel( QString( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layer ? job.layer->id() : QString() ), 2 );
 }
 
 

@@ -24,11 +24,11 @@
 #include "layer.h"
 #include "pal.h"
 #include "problem.h"
+#include "qgsrendercontext.h"
 
 
-
-// helper function for checking for job cancellation within PAL
-static bool _palIsCancelled( void* ctx )
+// helper function for checking for job cancelation within PAL
+static bool _palIsCancelled( void* ctx )  //#spellok
 {
   return ( reinterpret_cast< QgsRenderContext* >( ctx ) )->renderingStopped();
 }
@@ -86,6 +86,22 @@ QgsLabelingEngine::~QgsLabelingEngine()
   delete mResults;
   qDeleteAll( mProviders );
   qDeleteAll( mSubProviders );
+}
+
+QStringList QgsLabelingEngine::participatingLayerIds() const
+{
+  QSet< QString > ids;
+  Q_FOREACH ( QgsAbstractLabelProvider* provider, mProviders )
+  {
+    if ( !provider->layerId().isEmpty() )
+      ids << provider->layerId();
+  }
+  Q_FOREACH ( QgsAbstractLabelProvider* provider, mSubProviders )
+  {
+    if ( !provider->layerId().isEmpty() )
+      ids << provider->layerId();
+  }
+  return ids.toList();
 }
 
 void QgsLabelingEngine::addProvider( QgsAbstractLabelProvider* provider )
@@ -213,7 +229,15 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
   // for each provider: get labels and register them in PAL
   Q_FOREACH ( QgsAbstractLabelProvider* provider, mProviders )
   {
+    bool appendedLayerScope = false;
+    if ( QgsMapLayer* ml = QgsProject::instance()->mapLayer( provider->layerId() ) )
+    {
+      appendedLayerScope = true;
+      context.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( ml ) );
+    }
     processProvider( provider, context, p );  //#spellok
+    if ( appendedLayerScope )
+      delete context.expressionContext().popScope();
   }
 
 
@@ -230,7 +254,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
 
   QgsRectangle extent = extentGeom.boundingBox();
 
-  p.registerCancellationCallback( &_palIsCancelled, reinterpret_cast< void* >( &context ) );
+  p.registerCancellationCallback( &_palIsCancelled, reinterpret_cast< void* >( &context ) );  //#spellok
 
   QTime t;
   t.start();
@@ -255,7 +279,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
   if ( context.renderingStopped() )
   {
     delete problem;
-    return; // it has been cancelled
+    return; // it has been canceled
   }
 
 #if 1 // XXX strk
@@ -339,10 +363,9 @@ QgsLabelingResults* QgsLabelingEngine::takeResults()
 }
 
 
-void QgsLabelingEngine::readSettingsFromProject()
+void QgsLabelingEngine::readSettingsFromProject( QgsProject* prj )
 {
   bool saved = false;
-  QgsProject* prj = QgsProject::instance();
   mSearchMethod = static_cast< QgsPalLabeling::Search >( prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ), static_cast< int >( QgsPalLabeling::Chain ), &saved ) );
   mCandPoint = prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ), 16, &saved );
   mCandLine = prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLine" ), 50, &saved );
@@ -356,18 +379,30 @@ void QgsLabelingEngine::readSettingsFromProject()
   if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true, &saved ) ) mFlags |= RenderOutlineLabels;
 }
 
-void QgsLabelingEngine::writeSettingsToProject()
+void QgsLabelingEngine::writeSettingsToProject( QgsProject* project )
 {
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ), static_cast< int >( mSearchMethod ) );
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ), mCandPoint );
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLine" ), mCandLine );
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygon" ), mCandPolygon );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ), static_cast< int >( mSearchMethod ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ), mCandPoint );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLine" ), mCandLine );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygon" ), mCandPolygon );
 
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), mFlags.testFlag( DrawCandidates ) );
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), mFlags.testFlag( DrawLabelRectOnly ) );
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), mFlags.testFlag( UseAllLabels ) );
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ), mFlags.testFlag( UsePartialCandidates ) );
-  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), mFlags.testFlag( RenderOutlineLabels ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), mFlags.testFlag( DrawCandidates ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), mFlags.testFlag( DrawLabelRectOnly ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), mFlags.testFlag( UseAllLabels ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ), mFlags.testFlag( UsePartialCandidates ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), mFlags.testFlag( RenderOutlineLabels ) );
+}
+
+void QgsLabelingEngine::clearSettingsInProject( QgsProject* project )
+{
+  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ) );
+  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ) );
+  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLine" ) );
+  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygon" ) );
+  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ) );
+  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ) );
+  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ) );
+  project->removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ) );
 }
 
 

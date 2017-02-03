@@ -57,7 +57,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   QgsDistanceArea myDa;
 
   myDa.setSourceCrs( mLayer->crs() );
-  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
+  myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   context.setDistanceArea( myDa );
@@ -166,7 +166,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
     }
   }
 
-  // create new feature template - this will initialise the attributes to valid values, handling default
+  // create new feature template - this will initialize the attributes to valid values, handling default
   // values and field constraints
   QgsExpressionContext context = mLayer->createExpressionContext();
   QgsFeature newFeature = QgsVectorLayerUtils::createFeature( mLayer, mFeature->geometry(), initialAttributeValues,

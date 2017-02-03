@@ -20,7 +20,6 @@
 
 #include "qgsstylemanagerdialog.h"
 #include "qgsstylesavedialog.h"
-#include "qgsdatadefined.h"
 
 #include "qgssymbol.h"
 #include "qgsstyle.h"
@@ -56,7 +55,8 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, 
 {
   setupUi( this );
 
-  mSymbolUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
+  mSymbolUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   btnAdvanced->hide(); // advanced button is hidden by default
   if ( menu ) // show it if there is a menu pointer
@@ -99,17 +99,19 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, 
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setMarkerSize( double ) ) );
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( setLineWidth( double ) ) );
 
-  connect( mRotationDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedMarkerAngle() ) );
-  connect( mRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedMarkerAngle() ) );
-  connect( mSizeDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedMarkerSize() ) );
-  connect( mSizeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedMarkerSize() ) );
-  connect( mWidthDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedLineWidth() ) );
-  connect( mWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedLineWidth() ) );
+  registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
+  connect( mRotationDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedMarkerAngle );
+  registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::PropertySize );
+  connect( mSizeDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedMarkerSize );
+  registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyOutlineWidth );
+  connect( mWidthDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedLineWidth );
 
+#if 0
   if ( mSymbol->type() == QgsSymbol::Marker && mLayer )
     mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, mSymbol ) );
   else if ( mSymbol->type() == QgsSymbol::Line && mLayer )
     mWidthDDBtn->setAssistant( tr( "Width Assistant..." ), new QgsSizeScaleWidget( mLayer, mSymbol ) );
+#endif
 
   // Live color updates are not undoable to child symbol layers
   btnColor->setAcceptLiveUpdates( false );
@@ -127,6 +129,12 @@ QgsSymbolsListWidget::~QgsSymbolsListWidget()
   btnAdvanced->menu()->removeAction( mClipFeaturesAction );
 }
 
+void QgsSymbolsListWidget::registerDataDefinedButton( QgsPropertyOverrideButton * button, QgsSymbolLayer::Property key )
+{
+  button->setProperty( "propertyKey", key );
+  button->registerExpressionContextGenerator( this );
+}
+
 void QgsSymbolsListWidget::setContext( const QgsSymbolWidgetContext& context )
 {
   mContext = context;
@@ -134,11 +142,13 @@ void QgsSymbolsListWidget::setContext( const QgsSymbolWidgetContext& context )
   {
     unitWidget->setMapCanvas( mContext.mapCanvas() );
   }
-  Q_FOREACH ( QgsDataDefinedButton* ddButton, findChildren<QgsDataDefinedButton*>() )
+#if 0
+  Q_FOREACH ( QgsPropertyOverrideButton* ddButton, findChildren<QgsPropertyOverrideButton*>() )
   {
     if ( ddButton->assistant() )
       ddButton->assistant()->setMapCanvas( mContext.mapCanvas() );
   }
+#endif
 }
 
 QgsSymbolWidgetContext QgsSymbolsListWidget::context() const
@@ -288,16 +298,16 @@ void QgsSymbolsListWidget::setMarkerAngle( double angle )
 void QgsSymbolsListWidget::updateDataDefinedMarkerAngle()
 {
   QgsMarkerSymbol* markerSymbol = static_cast<QgsMarkerSymbol*>( mSymbol );
-  QgsDataDefined dd = mRotationDDBtn->currentDataDefined();
+  QgsProperty dd( mRotationDDBtn->toProperty() );
 
   spinAngle->setEnabled( !mRotationDDBtn->isActive() );
 
-  bool isDefault = dd.hasDefaultValues();
+  QgsProperty symbolDD( markerSymbol->dataDefinedAngle() );
 
   if ( // shall we remove datadefined expressions for layers ?
-    ( markerSymbol->dataDefinedAngle().hasDefaultValues() && isDefault )
+    ( !symbolDD && !dd )
     // shall we set the "en masse" expression for properties ?
-    || !isDefault )
+    || dd )
   {
     markerSymbol->setDataDefinedAngle( dd );
     emit changed();
@@ -316,16 +326,16 @@ void QgsSymbolsListWidget::setMarkerSize( double size )
 void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
 {
   QgsMarkerSymbol* markerSymbol = static_cast<QgsMarkerSymbol*>( mSymbol );
-  QgsDataDefined dd = mSizeDDBtn->currentDataDefined();
+  QgsProperty dd( mSizeDDBtn->toProperty() );
 
   spinSize->setEnabled( !mSizeDDBtn->isActive() );
 
-  bool isDefault = dd.hasDefaultValues();
+  QgsProperty symbolDD( markerSymbol->dataDefinedSize() );
 
   if ( // shall we remove datadefined expressions for layers ?
-    ( !markerSymbol->dataDefinedSize().hasDefaultValues() && isDefault )
+    ( !symbolDD && !dd )
     // shall we set the "en masse" expression for properties ?
-    || !isDefault )
+    || dd )
   {
     markerSymbol->setDataDefinedSize( dd );
     markerSymbol->setScaleMethod( QgsSymbol::ScaleDiameter );
@@ -345,16 +355,16 @@ void QgsSymbolsListWidget::setLineWidth( double width )
 void QgsSymbolsListWidget::updateDataDefinedLineWidth()
 {
   QgsLineSymbol* lineSymbol = static_cast<QgsLineSymbol*>( mSymbol );
-  QgsDataDefined dd = mWidthDDBtn->currentDataDefined();
+  QgsProperty dd( mWidthDDBtn->toProperty() );
 
   spinWidth->setEnabled( !mWidthDDBtn->isActive() );
 
-  bool isDefault = dd.hasDefaultValues();
+  QgsProperty symbolDD( lineSymbol->dataDefinedWidth() );
 
   if ( // shall we remove datadefined expressions for layers ?
-    ( !lineSymbol->dataDefinedWidth().hasDefaultValues() && isDefault )
+    ( !symbolDD && !dd )
     // shall we set the "en masse" expression for properties ?
-    || !isDefault )
+    || dd )
   {
     lineSymbol->setDataDefinedWidth( dd );
     emit changed();
@@ -491,7 +501,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 {
   updateSymbolColor();
 
-  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  Q_FOREACH ( QgsPropertyOverrideButton* button, findChildren< QgsPropertyOverrideButton* >() )
   {
     button->registerExpressionContextGenerator( this );
   }
@@ -504,11 +514,11 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
     if ( mLayer )
     {
-      QgsDataDefined ddSize = markerSymbol->dataDefinedSize();
-      mSizeDDBtn->init( mLayer, &ddSize, QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doublePosDesc() );
+      QgsProperty ddSize( markerSymbol->dataDefinedSize() );
+      mSizeDDBtn->init( QgsSymbolLayer::PropertySize, ddSize, QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
       spinSize->setEnabled( !mSizeDDBtn->isActive() );
-      QgsDataDefined ddAngle( markerSymbol->dataDefinedAngle() );
-      mRotationDDBtn->init( mLayer, &ddAngle, QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+      QgsProperty ddAngle( markerSymbol->dataDefinedAngle() );
+      mRotationDDBtn->init( QgsSymbolLayer::PropertyAngle, ddAngle, QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
       spinAngle->setEnabled( !mRotationDDBtn->isActive() );
     }
     else
@@ -524,8 +534,8 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
     if ( mLayer )
     {
-      QgsDataDefined dd( lineSymbol->dataDefinedWidth() );
-      mWidthDDBtn->init( mLayer, &dd, QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+      QgsProperty dd( lineSymbol->dataDefinedWidth() );
+      mWidthDDBtn->init( QgsSymbolLayer::PropertyOutlineWidth, dd, QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
       spinWidth->setEnabled( !mWidthDDBtn->isActive() );
     }
     else

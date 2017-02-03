@@ -37,7 +37,7 @@ QgsComposerArrow::QgsComposerArrow( QgsComposition* c )
     , mArrowHeadOutlineWidth( 1.0 )
     , mArrowHeadOutlineColor( Qt::black )
     , mArrowHeadFillColor( Qt::black )
-    , mBoundsBehaviour( 24 )
+    , mBoundsBehavior( 24 )
     , mLineSymbol( nullptr )
 {
   init();
@@ -51,7 +51,7 @@ QgsComposerArrow::QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsCo
     , mArrowHeadOutlineWidth( 1.0 )
     , mArrowHeadOutlineColor( Qt::black )
     , mArrowHeadFillColor( Qt::black )
-    , mBoundsBehaviour( 24 )
+    , mBoundsBehavior( 24 )
     , mLineSymbol( nullptr )
 {
   mStartXIdx = mStopPoint.x() < mStartPoint.x();
@@ -182,12 +182,9 @@ void QgsComposerArrow::drawLine( QPainter *painter )
   painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); //scale painter from mm to dots
 
   //setup render context
-  QgsMapSettings ms = mComposition->mapSettings();
-  //context units should be in dots
-  ms.setOutputDpi( painter->device()->logicalDpiX() );
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, painter );
   context.setForceVectorOutput( true );
-  context.setPainter( painter );
+
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 
@@ -206,7 +203,7 @@ void QgsComposerArrow::drawLine( QPainter *painter )
 void QgsComposerArrow::drawHardcodedMarker( QPainter *p, MarkerType type )
 {
   Q_UNUSED( type );
-  if ( mBoundsBehaviour == 22 )
+  if ( mBoundsBehavior == 22 )
   {
     //if arrow was created in versions prior to 2.4, use the old rendering style
     QgsComposerUtils::drawArrowHead( p, mStopPoint.x() - pos().x(), mStopPoint.y() - pos().y(), QgsComposerUtils::angle( mStartPoint, mStopPoint ), mArrowHeadWidth );
@@ -222,7 +219,7 @@ void QgsComposerArrow::drawHardcodedMarker( QPainter *p, MarkerType type )
 void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QString &markerPath )
 {
   Q_UNUSED( markerPath );
-  double ang = QgsComposerUtils::angle( mStartPoint, mStopPoint );
+  double theAngle = QgsComposerUtils::angle( mStartPoint, mStopPoint );
 
   double arrowHeadHeight;
   if ( type == StartMarker )
@@ -259,12 +256,12 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
 
   QSvgRenderer r;
   const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( svgFileName, mArrowHeadWidth, mArrowHeadFillColor, mArrowHeadOutlineColor, mArrowHeadOutlineWidth,
-                                 1.0, 1.0 );
+                                 1.0 );
   r.load( svgContent );
 
   p->save();
   p->setRenderHint( QPainter::Antialiasing );
-  if ( mBoundsBehaviour == 22 )
+  if ( mBoundsBehavior == 22 )
   {
     //if arrow was created in versions prior to 2.4, use the old rendering style
     //rotate image fix point for backtransform
@@ -280,7 +277,7 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
       fixPoint.setY( -arrowHeadHeight / 2.0 );
     }
     QPointF rotatedFixPoint;
-    double angleRad = ang / 180 * M_PI;
+    double angleRad = theAngle / 180 * M_PI;
     rotatedFixPoint.setX( fixPoint.x() * cos( angleRad ) + fixPoint.y() * -sin( angleRad ) );
     rotatedFixPoint.setY( fixPoint.x() * sin( angleRad ) + fixPoint.y() * cos( angleRad ) );
     p->translate( canvasPoint.x() - rotatedFixPoint.x(), canvasPoint.y() - rotatedFixPoint.y() );
@@ -290,7 +287,7 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
     p->translate( canvasPoint.x(), canvasPoint.y() );
   }
 
-  p->rotate( ang );
+  p->rotate( theAngle );
   p->translate( -mArrowHeadWidth / 2.0, -arrowHeadHeight / 2.0 );
   r.render( p, QRectF( 0, 0, mArrowHeadWidth, arrowHeadHeight ) );
   p->restore();
@@ -370,7 +367,7 @@ double QgsComposerArrow::computeMarkerMargin() const
 {
   double margin = 0;
 
-  if ( mBoundsBehaviour == 22 )
+  if ( mBoundsBehavior == 22 )
   {
     //if arrow was created in versions prior to 2.4, use the old rendering style
     if ( mMarkerMode == DefaultMarker )
@@ -434,7 +431,7 @@ bool QgsComposerArrow::writeXml( QDomElement& elem, QDomDocument & doc ) const
   composerArrowElem.setAttribute( QStringLiteral( "markerMode" ), mMarkerMode );
   composerArrowElem.setAttribute( QStringLiteral( "startMarkerFile" ), mStartMarkerFile );
   composerArrowElem.setAttribute( QStringLiteral( "endMarkerFile" ), mEndMarkerFile );
-  composerArrowElem.setAttribute( QStringLiteral( "boundsBehaviourVersion" ), QString::number( mBoundsBehaviour ) );
+  composerArrowElem.setAttribute( QStringLiteral( "boundsBehaviorVersion" ), QString::number( mBoundsBehavior ) );
 
   QDomElement styleElem = doc.createElement( QStringLiteral( "lineStyle" ) );
   QDomElement lineStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mLineSymbol, doc );
@@ -466,8 +463,8 @@ bool QgsComposerArrow::readXml( const QDomElement& itemElem, const QDomDocument&
   setStartMarker( itemElem.attribute( QStringLiteral( "startMarkerFile" ), QLatin1String( "" ) ) );
   setEndMarker( itemElem.attribute( QStringLiteral( "endMarkerFile" ), QLatin1String( "" ) ) );
   mMarkerMode = QgsComposerArrow::MarkerMode( itemElem.attribute( QStringLiteral( "markerMode" ), QStringLiteral( "0" ) ).toInt() );
-  //if bounds behaviour version is not set, default to 2.2 behaviour
-  mBoundsBehaviour = itemElem.attribute( QStringLiteral( "boundsBehaviourVersion" ), QStringLiteral( "22" ) ).toInt();
+  //if bounds behavior version is not set, default to 2.2 behavior
+  mBoundsBehavior = itemElem.attribute( QStringLiteral( "boundsBehaviorVersion" ), QStringLiteral( "22" ) ).toInt();
 
   //arrow style
   QDomElement styleElem = itemElem.firstChildElement( QStringLiteral( "lineStyle" ) );
@@ -488,7 +485,7 @@ bool QgsComposerArrow::readXml( const QDomElement& itemElem, const QDomDocument&
     QgsStringMap properties;
     properties.insert( QStringLiteral( "width" ), itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "1.0" ) ) );
 
-    if ( mBoundsBehaviour == 22 )
+    if ( mBoundsBehavior == 22 )
     {
       //if arrow was created in versions prior to 2.4, use the old rendering style
       properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );

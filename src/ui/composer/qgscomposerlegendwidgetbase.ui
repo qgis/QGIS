@@ -83,13 +83,7 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-          </property>
-          <property name="labelAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
+         <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0">
            <widget class="QLabel" name="mTitleLabel">
             <property name="text">
@@ -100,8 +94,12 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="mTitleLineEdit"/>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>Title alignment</string>
+            </property>
+           </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="mMapLabel">
@@ -110,8 +108,12 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QgsComposerItemComboBox" name="mMapComboBox"/>
+          <item row="5" column="0" colspan="2">
+           <widget class="QCheckBox" name="mCheckboxResizeContents">
+            <property name="text">
+             <string>Resize to fit contents</string>
+            </property>
+           </widget>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label">
@@ -120,21 +122,17 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="mWrapCharLineEdit">
-            <property name="frame">
-             <bool>true</bool>
-            </property>
-           </widget>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="mTitleLineEdit"/>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_15">
+          <item row="0" column="2">
+           <widget class="QgsPropertyOverrideButton" name="mLegendTitleDDBtn">
             <property name="text">
-             <string>Title alignment</string>
+             <string>...</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="1" column="1" colspan="2">
            <widget class="QComboBox" name="mTitleAlignCombo">
             <item>
              <property name="text">
@@ -153,10 +151,13 @@
             </item>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2">
-           <widget class="QCheckBox" name="mCheckboxResizeContents">
-            <property name="text">
-             <string>Resize to fit contents</string>
+          <item row="2" column="1" colspan="2">
+           <widget class="QgsComposerItemComboBox" name="mMapComboBox"/>
+          </item>
+          <item row="3" column="1" colspan="2">
+           <widget class="QLineEdit" name="mWrapCharLineEdit">
+            <property name="frame">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -550,21 +551,8 @@
          <property name="collapsed" stdset="0">
           <bool>true</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout_2">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-          </property>
-          <property name="labelAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Count</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="1">
            <widget class="QgsSpinBox" name="mColumnCountSpinBox">
             <property name="prefix">
              <string/>
@@ -577,14 +565,41 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Count</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QgsPropertyOverrideButton" name="mColumnsDDBtn">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="0" colspan="4">
            <widget class="QCheckBox" name="mEqualColumnWidthCheckBox">
             <property name="text">
              <string>Equal column widths</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2">
+          <item row="3" column="0" colspan="4">
            <widget class="QCheckBox" name="mSplitLayerCheckBox">
             <property name="toolTip">
              <string>Allow splitting layer items into multiple columns.</string>
@@ -1014,16 +1029,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -1034,6 +1048,12 @@
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsComposerItemComboBox</class>
@@ -1055,6 +1075,7 @@
   <tabstop>scrollArea</tabstop>
   <tabstop>mMainPropertiesColGroupBox</tabstop>
   <tabstop>mTitleLineEdit</tabstop>
+  <tabstop>mLegendTitleDDBtn</tabstop>
   <tabstop>mTitleAlignCombo</tabstop>
   <tabstop>mMapComboBox</tabstop>
   <tabstop>mWrapCharLineEdit</tabstop>
@@ -1080,6 +1101,7 @@
   <tabstop>mItemFontButton</tabstop>
   <tabstop>mFontColorButton</tabstop>
   <tabstop>mColumnsColGroupBox</tabstop>
+  <tabstop>mColumnsDDBtn</tabstop>
   <tabstop>mColumnCountSpinBox</tabstop>
   <tabstop>mEqualColumnWidthCheckBox</tabstop>
   <tabstop>mSplitLayerCheckBox</tabstop>
@@ -1100,6 +1122,7 @@
   <tabstop>mIconLabelSpaceSpinBox</tabstop>
   <tabstop>mBoxSpaceSpinBox</tabstop>
   <tabstop>mColumnSpaceSpinBox</tabstop>
+  <tabstop>mLineSpacingSpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>

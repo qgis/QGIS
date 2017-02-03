@@ -547,7 +547,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   connect( mActionShowRulers, SIGNAL( triggered( bool ) ), this, SLOT( toggleRulers( bool ) ) );
 
   //init undo/redo buttons
-  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings(), QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
 
   mActionUndo->setEnabled( false );
   mActionRedo->setEnabled( false );
@@ -934,6 +934,23 @@ bool QgsComposer::loadFromTemplate( const QDomDocument& templateDoc, bool clearE
   return result;
 }
 
+void QgsComposer::onCanvasLayersChanged( const QList<QgsMapLayer*>& layers )
+{
+  if ( !mComposition )
+    return;
+
+  QList< QgsComposerMap* > maps;
+  mComposition->composerItems( maps );
+
+  Q_FOREACH ( QgsComposerMap* map, maps )
+  {
+    if ( map->keepLayerSet() )
+      continue;
+
+    map->setLayers( layers );
+  }
+}
+
 void QgsComposer::updateStatusCursorPos( QPointF cursorPosition )
 {
   if ( !mComposition )
@@ -1087,7 +1104,7 @@ void QgsComposer::atlasFeatureChanged( QgsFeature *feature )
   }
   mAtlasPageComboBox->blockSignals( false );
 
-  //update expression context variables in map canvas to allow for previewing atlas feature based renderering
+  //update expression context variables in map canvas to allow for previewing atlas feature based rendering
   mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featurenumber" ), mComposition->atlasComposition().currentFeatureNumber() + 1, true ) );
   mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_pagename" ), mComposition->atlasComposition().currentPageName(), true ) );
   QgsFeature atlasFeature = mComposition->atlasComposition().feature();
@@ -1717,7 +1734,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     if ( !QDir( outputDir ).exists() || !QFileInfo( outputDir ).isWritable() )
     {
       QMessageBox::warning( nullptr, tr( "Unable to write into the directory" ),
-                            tr( "The given output directory is not writable. Cancelling." ),
+                            tr( "The given output directory is not writable. Canceling." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       return;
@@ -1936,7 +1953,7 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
     for ( int i = 0; i < atlasMap->numFeatures(); ++i )
     {
       progress.setValue( i );
-      // process input events in order to allow cancelling
+      // process input events in order to allow canceling
       QCoreApplication::processEvents();
 
       if ( progress.wasCanceled() )
@@ -2077,9 +2094,9 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     mView->setPaintingEnabled( false );
 
     int worldFilePageNo = -1;
-    if ( mComposition->worldFileMap() )
+    if ( mComposition->referenceMap() )
     {
-      worldFilePageNo = mComposition->worldFileMap()->page() - 1;
+      worldFilePageNo = mComposition->referenceMap()->page() - 1;
     }
 
     for ( int i = 0; i < mComposition->numPages(); ++i )
@@ -2252,7 +2269,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     if ( !QDir( dir ).exists() || !QFileInfo( dir ).isWritable() )
     {
       QMessageBox::warning( nullptr, tr( "Unable to write into the directory" ),
-                            tr( "The given output directory is not writable. Cancelling." ),
+                            tr( "The given output directory is not writable. Canceling." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       return;
@@ -2293,7 +2310,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     for ( int feature = 0; feature < atlasMap->numFeatures(); ++feature )
     {
       progress.setValue( feature );
-      // process input events in order to allow cancelling
+      // process input events in order to allow canceling
       QCoreApplication::processEvents();
 
       if ( progress.wasCanceled() )
@@ -2315,9 +2332,9 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       QString filename = QDir( dir ).filePath( atlasMap->currentFilename() ) + fileExt;
 
       int worldFilePageNo = -1;
-      if ( mComposition->worldFileMap() )
+      if ( mComposition->referenceMap() )
       {
-        worldFilePageNo = mComposition->worldFileMap()->page() - 1;
+        worldFilePageNo = mComposition->referenceMap()->page() - 1;
       }
 
       for ( int i = 0; i < mComposition->numPages(); ++i )
@@ -2576,7 +2593,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     if ( !QDir( outputDir ).exists() || !QFileInfo( outputDir ).isWritable() )
     {
       QMessageBox::warning( nullptr, tr( "Unable to write into the directory" ),
-                            tr( "The given output directory is not writable. Cancelling." ),
+                            tr( "The given output directory is not writable. Canceling." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       return;
@@ -3543,7 +3560,7 @@ void QgsComposer::readXml( const QDomElement& composerElem, const QDomDocument& 
   createComposerView();
 
   //read composition settings
-  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings(), QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   QDomNodeList compositionNodeList = composerElem.elementsByTagName( QStringLiteral( "Composition" ) );
   if ( compositionNodeList.size() > 0 )
   {
@@ -3587,10 +3604,6 @@ void QgsComposer::readXml( const QDomElement& composerElem, const QDomDocument& 
   QgsAtlasCompositionWidget* oldAtlasWidget = qobject_cast<QgsAtlasCompositionWidget *>( mAtlasDock->widget() );
   delete oldAtlasWidget;
   mAtlasDock->setWidget( new QgsAtlasCompositionWidget( mAtlasDock, mComposition ) );
-
-  //read atlas map parameters (for pre 2.2 templates)
-  //this part must be done after adding items
-  mComposition->atlasComposition().readXmlMapSettings( atlasElem, doc );
 
   //set state of atlas controls
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
@@ -3695,7 +3708,6 @@ void QgsComposer::addComposerMap( QgsComposerMap* map )
     return;
   }
 
-  map->setMapCanvas( mapCanvas() ); //set canvas to composer map to have the possibility to draw canvas items
   QgsComposerMapWidget* mapWidget = new QgsComposerMapWidget( map );
   connect( this, SIGNAL( zoomLevelChanged() ), map, SLOT( renderModeUpdateCachedImage() ) );
   mItemWidgetMap.insert( map, mapWidget );
@@ -3804,45 +3816,35 @@ void QgsComposer::setSelectionTool()
 
 bool QgsComposer::containsWmsLayer() const
 {
-  QMap<QgsComposerItem*, QgsPanelWidget*>::const_iterator item_it = mItemWidgetMap.constBegin();
-  QgsComposerItem* currentItem = nullptr;
-  QgsComposerMap* currentMap = nullptr;
+  QList< QgsComposerMap *> maps;
+  mComposition->composerItems( maps );
 
-  for ( ; item_it != mItemWidgetMap.constEnd(); ++item_it )
+  Q_FOREACH ( QgsComposerMap* map, maps )
   {
-    currentItem = item_it.key();
-    currentMap = dynamic_cast<QgsComposerMap *>( currentItem );
-    if ( currentMap )
-    {
-      if ( currentMap->containsWmsLayer() )
-      {
-        return true;
-      }
-    }
+    if ( map->containsWmsLayer() )
+      return true;
   }
   return false;
 }
 
 bool QgsComposer::containsAdvancedEffects() const
 {
-  // Check if composer contains any blend modes or flattened layers for transparency
-  QMap<QgsComposerItem*, QgsPanelWidget*>::const_iterator item_it = mItemWidgetMap.constBegin();
-  QgsComposerItem* currentItem = nullptr;
-  QgsComposerMap* currentMap = nullptr;
+  QList< QgsComposerItem *> items;
+  mComposition->composerItems( items );
 
-  for ( ; item_it != mItemWidgetMap.constEnd(); ++item_it )
+  Q_FOREACH ( QgsComposerItem* currentItem, items )
   {
-    currentItem = item_it.key();
     // Check composer item's blend mode
     if ( currentItem->blendMode() != QPainter::CompositionMode_SourceOver )
     {
       return true;
     }
+
     // If item is a composer map, check if it contains any advanced effects
-    currentMap = dynamic_cast<QgsComposerMap *>( currentItem );
-    if ( currentMap && currentMap->containsAdvancedEffects() )
+    if ( QgsComposerMap * currentMap = dynamic_cast<QgsComposerMap *>( currentItem ) )
     {
-      return true;
+      if ( currentMap->containsAdvancedEffects() )
+        return true;
     }
   }
   return false;
@@ -3914,28 +3916,26 @@ void QgsComposer::cleanupAfterTemplateRead()
     {
       //test if composer map extent intersects extent of all layers
       bool intersects = false;
+      QgsMapCanvas* canvas = mQgis && mQgis->mapCanvas() ? mQgis->mapCanvas() : nullptr;
+
       QgsRectangle composerMapExtent = mapItem->extent();
-      if ( mQgis )
+      if ( canvas )
       {
-        QgsMapCanvas* canvas = mQgis->mapCanvas();
-        if ( canvas )
+        QgsRectangle mapCanvasExtent = mQgis->mapCanvas()->fullExtent();
+        if ( composerMapExtent.intersects( mapCanvasExtent ) )
         {
-          QgsRectangle mapCanvasExtent = mQgis->mapCanvas()->fullExtent();
-          if ( composerMapExtent.intersects( mapCanvasExtent ) )
-          {
-            intersects = true;
-          }
+          intersects = true;
         }
       }
 
       //if not: apply current canvas extent
-      if ( !intersects )
+      if ( canvas && !intersects )
       {
         double currentWidth = mapItem->rect().width();
         double currentHeight = mapItem->rect().height();
         if ( currentWidth - 0 > 0.0 ) //don't divide through zero
         {
-          QgsRectangle canvasExtent = mComposition->mapSettings().visibleExtent();
+          QgsRectangle canvasExtent = canvas->mapSettings().visibleExtent();
           //adapt min y of extent such that the size of the map item stays the same
           double newCanvasExtentHeight = currentHeight / currentWidth * canvasExtent.width();
           canvasExtent.setYMinimum( canvasExtent.yMaximum() - newCanvasExtentHeight );
@@ -4041,6 +4041,7 @@ void QgsComposer::createComposerView()
 
   delete mView;
   mView = new QgsComposerView();
+  mView->setMapCanvas( mQgis->mapCanvas() );
   mView->setContentsMargins( 0, 0, 0, 0 );
   mView->setHorizontalRuler( mHorizontalRuler );
   mView->setVerticalRuler( mVerticalRuler );

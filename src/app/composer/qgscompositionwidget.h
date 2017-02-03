@@ -54,7 +54,7 @@ class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWid
     void on_mResolutionSpinBox_valueChanged( const int value );
     void on_mPrintAsRasterCheckBox_toggled( bool state );
     void on_mGenerateWorldFileCheckBox_toggled( bool state );
-    void worldFileMapChanged( QgsComposerItem* );
+    void referenceMapChanged( QgsComposerItem* );
 
     void on_mGridResolutionSpinBox_valueChanged( double d );
     void on_mOffsetXSpinBox_valueChanged( double d );
@@ -100,8 +100,8 @@ class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWid
     void applyWidthHeight();
     //! Makes sure width/height values for custom paper matches the current orientation
     void adjustOrientation();
-    //! Sets GUI elements to snaping distances of composition
-    void displaySnapingSettings();
+    //! Sets GUI elements to snapping distances of composition
+    void displaySnappingSettings();
 
     void updatePageStyle();
 
@@ -114,10 +114,6 @@ class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWid
     void blockSignals( bool block );
 
     //! Sets a data defined property for the item from its current data defined button settings
-    void setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty property );
-
-    //! Returns the data defined property corresponding to a data defined button widget
-    virtual QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton* widget );
-
+    void setDataDefinedProperty( const QgsPropertyOverrideButton *ddBtn, QgsComposerObject::DataDefinedProperty property );
 
 };

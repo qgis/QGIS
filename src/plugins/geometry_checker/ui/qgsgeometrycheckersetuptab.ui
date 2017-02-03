@@ -615,7 +615,7 @@
               <number>2</number>
              </property>
              <item row="0" column="0">
-              <widget class="QRadioButton" name="radioButtonOuputModifyInput">
+              <widget class="QRadioButton" name="radioButtonOutputModifyInput">
                <property name="text">
                 <string>&amp;Modify input layer</string>
                </property>
@@ -754,7 +754,7 @@
   <tabstop>checkBoxGaps</tabstop>
   <tabstop>doubleSpinBoxGapArea</tabstop>
   <tabstop>spinBoxTolerance</tabstop>
-  <tabstop>radioButtonOuputModifyInput</tabstop>
+  <tabstop>radioButtonOutputModifyInput</tabstop>
   <tabstop>radioButtonOutputNew</tabstop>
   <tabstop>lineEditOutput</tabstop>
   <tabstop>pushButtonOutputBrowse</tabstop>

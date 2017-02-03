@@ -88,16 +88,16 @@ void QgsMapToolSelectUtils::expandSelectRectangle( QRect& selectRect,
 
 void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, QMouseEvent* e )
 {
-  QgsVectorLayer::SelectBehaviour behaviour = QgsVectorLayer::SetSelection;
+  QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection;
   if ( e->modifiers() & Qt::ShiftModifier && e->modifiers() & Qt::ControlModifier )
-    behaviour = QgsVectorLayer::IntersectSelection;
+    behavior = QgsVectorLayer::IntersectSelection;
   else if ( e->modifiers() & Qt::ShiftModifier )
-    behaviour = QgsVectorLayer::AddToSelection;
+    behavior = QgsVectorLayer::AddToSelection;
   else if ( e->modifiers() & Qt::ControlModifier )
-    behaviour = QgsVectorLayer::RemoveFromSelection;
+    behavior = QgsVectorLayer::RemoveFromSelection;
 
   bool doContains = e->modifiers() & Qt::AltModifier;
-  setSelectedFeatures( canvas, selectGeometry, behaviour, doContains );
+  setSelectedFeatures( canvas, selectGeometry, behavior, doContains );
 }
 
 void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, QMouseEvent* e )
@@ -123,7 +123,7 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas* canvas, const Qgs
     return;
   }
 
-  QgsVectorLayer::SelectBehaviour behaviour = QgsVectorLayer::SetSelection;
+  QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection;
 
   //either shift or control modifier switches to "toggle" selection mode
   if ( e->modifiers() & Qt::ShiftModifier || e->modifiers() & Qt::ControlModifier )
@@ -131,18 +131,18 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas* canvas, const Qgs
     QgsFeatureId selectId = *selectedFeatures.constBegin();
     QgsFeatureIds layerSelectedFeatures = vlayer->selectedFeatureIds();
     if ( layerSelectedFeatures.contains( selectId ) )
-      behaviour = QgsVectorLayer::RemoveFromSelection;
+      behavior = QgsVectorLayer::RemoveFromSelection;
     else
-      behaviour = QgsVectorLayer::AddToSelection;
+      behavior = QgsVectorLayer::AddToSelection;
   }
 
-  vlayer->selectByIds( selectedFeatures, behaviour );
+  vlayer->selectByIds( selectedFeatures, behavior );
 
   QApplication::restoreOverrideCursor();
 }
 
 void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry,
-    QgsVectorLayer::SelectBehaviour selectBehaviour, bool doContains, bool singleSelect )
+    QgsVectorLayer::SelectBehavior selectBehavior, bool doContains, bool singleSelect )
 {
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
   if ( !vlayer )
@@ -151,7 +151,7 @@ void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas* canvas, const Qgs
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, doContains, singleSelect );
-  vlayer->selectByIds( selectedFeatures, selectBehaviour );
+  vlayer->selectByIds( selectedFeatures, selectBehavior );
 
   QApplication::restoreOverrideCursor();
 }
@@ -240,7 +240,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
   request.setFilterRect( selectGeomTrans.boundingBox() );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
   if ( r )
-    request.setSubsetOfAttributes( r->usedAttributes(), vlayer->fields() );
+    request.setSubsetOfAttributes( r->usedAttributes( context ), vlayer->fields() );
   else
     request.setSubsetOfAttributes( QgsAttributeList() );
 

@@ -76,7 +76,6 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     QgsGdalProvider * clone() const override;
 
-    QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight ) override;
     QString name() const override;
     QString description() const override;
     virtual QgsCoordinateReferenceSystem crs() const override;
@@ -149,14 +148,16 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     static QMap<QString, QString> supportedMimes();
 
+    bool isEditable() const override;
+    bool setEditable( bool enabled ) override;
     bool write( void* data, int band, int width, int height, int xOffset, int yOffset ) override;
+
     bool setNoDataValue( int bandNo, double noDataValue ) override;
     bool remove() override;
 
     QString validateCreationOptions( const QStringList& createOptions, const QString& format ) override;
     QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
                                            const QStringList & theConfigOptions, const QString & fileFormat ) override;
-
   private:
     // update mode
     bool mUpdate;

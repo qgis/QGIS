@@ -45,7 +45,7 @@ static bool _canExportToGeos( const QgsGeometry& geom )
 topolTest::topolTest( QgisInterface* qgsIface )
 {
   theQgsInterface = qgsIface;
-  mTestCancelled = false;
+  mTestCanceled = false;
 
   // one layer tests
   mTopologyRuleMap.insert( tr( "must not have invalid geometries" ),
@@ -139,16 +139,16 @@ topolTest::~topolTest()
     delete *lit;
 }
 
-void topolTest::setTestCancelled()
+void topolTest::setTestCanceled()
 {
-  mTestCancelled = true;
+  mTestCanceled = true;
 }
 
-bool topolTest::testCancelled()
+bool topolTest::testCanceled()
 {
-  if ( mTestCancelled )
+  if ( mTestCanceled )
   {
-    mTestCancelled = false;
+    mTestCanceled = false;
     return true;
   }
 
@@ -173,7 +173,7 @@ ErrorList topolTest::checkCloseFeature( double tolerance, QgsVectorLayer* layer1
     if ( !( ++i % 100 ) )
       emit progress( i );
 
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
 
     QgsGeometry* g1 = it->feature.geometry();
@@ -266,12 +266,12 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer
     if ( !( ++i % 100 ) )
       emit progress( i );
 
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
 
     QgsGeometry g1 = it->feature.geometry();
 
-    if ( g1.isEmpty() )
+    if ( g1.isNull() )
     {
       QgsMessageLog::logMessage( tr( "First geometry invalid in dangling line test." ), tr( "Topology plugin" ) );
       continue;
@@ -378,7 +378,7 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
       continue;
     }
 
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
 
     QgsGeometry g1 = it->feature.geometry();
@@ -400,7 +400,7 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
         continue;
 
       QgsGeometry g2 = mFeatureMap2[*cit].feature.geometry();
-      if ( g2.isEmpty() )
+      if ( g2.isNull() )
       {
         QgsMessageLog::logMessage( tr( "Invalid second geometry in duplicate geometry test." ), tr( "Topology plugin" ) );
         continue;
@@ -488,7 +488,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
       continue;
     }
 
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
 
     QgsGeometry g1 = it->feature.geometry();
@@ -519,7 +519,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
         continue;
 
       QgsGeometry g2 = mFeatureMap2[*cit].feature.geometry();
-      if ( g2.isEmpty() )
+      if ( g2.isNull() )
       {
         QgsMessageLog::logMessage( tr( "Invalid second geometry in overlaps test." ), tr( "Topology plugin" ) );
         continue;
@@ -608,14 +608,14 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
       emit progress( i );
     }
 
-    if ( testCancelled() )
+    if ( testCanceled() )
     {
       break;
     }
 
     g1 = it->feature.geometry();
 
-    if ( g1.isEmpty() )
+    if ( g1.isNull() )
     {
       continue;
     }
@@ -753,12 +753,12 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
     if ( !( ++i % 100 ) )
       emit progress( i );
 
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
 
     QgsGeometry g1 = it->feature.geometry();
 
-    if ( g1.isEmpty() )
+    if ( g1.isNull() )
     {
       QgsMessageLog::logMessage( tr( "Skipping invalid first geometry in pseudo line test." ), tr( "Topology plugin" ) );
       continue;
@@ -854,11 +854,11 @@ ErrorList topolTest::checkValid( double tolerance, QgsVectorLayer* layer1, QgsVe
   {
     if ( !( ++i % 100 ) )
       emit progress( ++i );
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
 
     QgsGeometry g = it->feature.geometry();
-    if ( g.isEmpty() )
+    if ( g.isNull() )
     {
       QgsMessageLog::logMessage( tr( "Invalid geometry in validity test." ), tr( "Topology plugin" ) );
       continue;
@@ -910,7 +910,7 @@ ErrorList topolTest::checkPointCoveredBySegment( double tolerance, QgsVectorLaye
     if ( !( ++i % 100 ) )
       emit progress( i );
 
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
 
     QgsGeometry g1 = it->feature.geometry();
@@ -929,7 +929,7 @@ ErrorList topolTest::checkPointCoveredBySegment( double tolerance, QgsVectorLaye
       QgsFeature& f = mFeatureMap2[*cit].feature;
       QgsGeometry g2 = f.geometry();
 
-      if ( g2.isEmpty() )
+      if ( g2.isNull() )
       {
         QgsMessageLog::logMessage( tr( "Invalid geometry in covering test." ), tr( "Topology plugin" ) );
         continue;
@@ -997,7 +997,7 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer* layer
       emit progress( i );
     }
 
-    if ( testCancelled() )
+    if ( testCanceled() )
     {
       break;
     }
@@ -1139,7 +1139,7 @@ ErrorList topolTest::checkOverlapWithLayer( double tolerance, QgsVectorLayer* la
     if ( !( ++i % 100 ) )
       emit progress( i );
 
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
 
     QgsGeometry g1 = it->feature.geometry();
@@ -1159,7 +1159,7 @@ ErrorList topolTest::checkOverlapWithLayer( double tolerance, QgsVectorLayer* la
       if ( skipItself && f.id() == it->feature.id() )
         continue;
 
-      if ( g2.isEmpty() )
+      if ( g2.isNull() )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing." ), tr( "Topology plugin" ) );
         continue;
@@ -1173,7 +1173,7 @@ ErrorList topolTest::checkOverlapWithLayer( double tolerance, QgsVectorLayer* la
 
         QgsGeometry conflictGeom = g1.intersection( g2 );
         // could this for some reason return NULL?
-        if ( conflictGeom.isEmpty() )
+        if ( conflictGeom.isNull() )
         {
           continue;
         }
@@ -1234,7 +1234,7 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
   {
     if ( !( ++i % 100 ) )
       emit progress( i );
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
     QgsGeometry g1 = it->feature.geometry();
     QgsRectangle bb = g1.boundingBox();
@@ -1247,7 +1247,7 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
       QgsGeometry g2 = f.geometry();
-      if ( g2.isEmpty() || !_canExportToGeos( g2 ) )
+      if ( g2.isNull() || !_canExportToGeos( g2 ) )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
@@ -1311,7 +1311,7 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
   {
     if ( !( ++i % 100 ) )
       emit progress( i );
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
     QgsGeometry g1 = it->feature.geometry();
 
@@ -1333,7 +1333,7 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
       QgsGeometry g2 = f.geometry();
-      if ( g2.isEmpty() || !_canExportToGeos( g2 ) )
+      if ( g2.isNull() || !_canExportToGeos( g2 ) )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
@@ -1410,7 +1410,7 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
   {
     if ( !( ++i % 100 ) )
       emit progress( i );
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
     QgsGeometry g1 = it->feature.geometry();
     QgsRectangle bb = g1.boundingBox();
@@ -1423,7 +1423,7 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
       QgsGeometry g2 = f.geometry();
-      if ( g2.isEmpty() || !_canExportToGeos( g2 ) )
+      if ( g2.isNull() || !_canExportToGeos( g2 ) )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
@@ -1484,7 +1484,7 @@ ErrorList topolTest::checkPolygonContainsPoint( double tolerance, QgsVectorLayer
   {
     if ( !( ++i % 100 ) )
       emit progress( i );
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
     QgsGeometry g1 = it->feature.geometry();
     QgsRectangle bb = g1.boundingBox();
@@ -1497,7 +1497,7 @@ ErrorList topolTest::checkPolygonContainsPoint( double tolerance, QgsVectorLayer
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
       QgsGeometry g2 = f.geometry();
-      if ( g2.isEmpty() || !_canExportToGeos( g2 ) )
+      if ( g2.isNull() || !_canExportToGeos( g2 ) )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
@@ -1534,10 +1534,10 @@ ErrorList topolTest::checkMultipart( double tolerance, QgsVectorLayer *layer1, Q
   {
     if ( !( ++i % 100 ) )
       emit progress( ++i );
-    if ( testCancelled() )
+    if ( testCanceled() )
       break;
     QgsGeometry g = it->feature.geometry();
-    if ( g.isEmpty() )
+    if ( g.isNull() )
     {
       QgsMessageLog::logMessage( tr( "Missing geometry in multipart check." ), tr( "Topology plugin" ) );
       continue;
@@ -1634,7 +1634,7 @@ QgsSpatialIndex* topolTest::createIndex( QgsVectorLayer* layer, const QgsRectang
     if ( !( ++i % 100 ) )
       emit progress( i );
 
-    if ( testCancelled() )
+    if ( testCanceled() )
     {
       delete index;
       return nullptr;
@@ -1671,7 +1671,7 @@ ErrorList topolTest::runTest( const QString& testName, QgsVectorLayer* layer1, Q
   mFeatureMap2.clear();
 
   //checking if new features are not
-  //being recognised due to indexing not being upto date
+  //being recognised due to indexing not being up to date
 
   mLayerIndexes.clear();
 

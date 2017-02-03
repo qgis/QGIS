@@ -46,8 +46,8 @@
 * \brief Generic viewer for browsing event
 * The eVisGenericEventBrowserGui is simply a window that will display an image referenced/stored
 * in an attribute of a feature. Images can either loaded locally from disk or loaded via a URL.
-* The eVisGenericEventBrowserGui also interacts with the map canvas to draw a highlighing symbol
-* on the canvas. The highlighing symbol can also be a pointer showing the direction in which the
+* The eVisGenericEventBrowserGui also interacts with the map canvas to draw a highlighting symbol
+* on the canvas. The highlighting symbol can also be a pointer showing the direction in which the
 * image was taken by referencing a compass bearing recorded as an attribute of a feature.
 */
 class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventBrowserGuiBase

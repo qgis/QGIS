@@ -50,7 +50,7 @@ QgsDecorationCopyright::QgsDecorationCopyright( QObject* parent )
   mMarginUnit = QgsUnitTypes::RenderMillimeters;
 
   setName( "Copyright Label" );
-  // initialise default values in the gui
+  // initialize default values in the gui
   projectRead();
 }
 

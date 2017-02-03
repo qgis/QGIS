@@ -308,7 +308,7 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
                         qgsDoubleToString( mShared->mRect.yMinimum() ),
                         qgsDoubleToString( mShared->mRect.xMaximum() ),
                         qgsDoubleToString( mShared->mRect.yMaximum() ) ) );
-    // Some servers like Geomedia need the srsname to be explictly appended
+    // Some servers like Geomedia need the srsname to be explicitly appended
     // otherwise they are confused and do not interpret it properly
     if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
     {
@@ -700,7 +700,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
     mTimer->deleteLater();
     mTimer = nullptr;
   }
-  // explictly abort here so that mReply is destroyed within the right thread
+  // explicitly abort here so that mReply is destroyed within the right thread
   // otherwise will deadlock because deleteLayer() will not have a valid thread to post
   abort();
   mFeatureHitsAsyncRequest.abort();
@@ -995,7 +995,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
 
     QgsGeometry constGeom = cachedFeature.geometry();
     if ( !mRequest.filterRect().isNull() &&
-         ( constGeom.isEmpty() || !constGeom.intersects( mRequest.filterRect() ) ) )
+         ( constGeom.isNull() || !constGeom.intersects( mRequest.filterRect() ) ) )
     {
       continue;
     }
@@ -1025,7 +1025,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
           mWriterFilename.clear();
         }
       }
-      // Instanciates the reader stream from memory buffer if not empty
+      // Instantiates the reader stream from memory buffer if not empty
       if ( !mReaderByteArray.isEmpty() )
       {
         mReaderStream = new QDataStream( &mReaderByteArray, QIODevice::ReadOnly );
@@ -1055,7 +1055,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
 
         QgsFeature feat;
         ( *mReaderStream ) >> feat;
-        // We need to re-attach fields explictly
+        // We need to re-attach fields explicitly
         feat.setFields( mShared->mFields );
 
         if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
@@ -1075,7 +1075,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
 
         QgsGeometry constGeom = feat.geometry();
         if ( !mRequest.filterRect().isNull() &&
-             ( constGeom.isEmpty() || !constGeom.intersects( mRequest.filterRect() ) ) )
+             ( constGeom.isNull() || !constGeom.intersects( mRequest.filterRect() ) ) )
         {
           continue;
         }
@@ -1165,7 +1165,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeatur
 {
   //copy the geometry
   QgsGeometry geometry = srcFeature.geometry();
-  if ( !mShared->mGeometryAttribute.isEmpty() && !geometry.isEmpty() )
+  if ( !mShared->mGeometryAttribute.isEmpty() && !geometry.isNull() )
   {
     QgsGeometry g;
     g.fromWkb( geometry.exportToWkb() );
@@ -1217,7 +1217,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeatur
 
   //id and valid
   dstFeature.setValid( true );
-  dstFeature.setFeatureId( srcFeature.id() );
+  dstFeature.setId( srcFeature.id() );
   dstFeature.setFields( fields ); // allow name-based attribute lookups
 }
 

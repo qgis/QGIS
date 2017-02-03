@@ -350,6 +350,19 @@ int QgsCompoundCurve::numPoints() const
   return nPoints;
 }
 
+bool QgsCompoundCurve::isEmpty() const
+{
+  if ( mCurves.isEmpty() )
+    return true;
+
+  Q_FOREACH ( QgsCurve* curve, mCurves )
+  {
+    if ( !curve->isEmpty() )
+      return false;
+  }
+  return true;
+}
+
 QgsLineString* QgsCompoundCurve::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   QList< QgsCurve* >::const_iterator curveIt = mCurves.constBegin();
@@ -653,7 +666,7 @@ QList< QPair<int, QgsVertexId> > QgsCompoundCurve::curveVertexId( QgsVertexId id
 
 double QgsCompoundCurve::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
 {
-  return QgsGeometryUtils::closestSegmentFromComponents( mCurves, QgsGeometryUtils::VERTEX, pt, segmentPt, vertexAfter, leftOf, epsilon );
+  return QgsGeometryUtils::closestSegmentFromComponents( mCurves, QgsGeometryUtils::Vertex, pt, segmentPt, vertexAfter, leftOf, epsilon );
 }
 
 bool QgsCompoundCurve::pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const

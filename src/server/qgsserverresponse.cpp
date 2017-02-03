@@ -19,12 +19,12 @@
 
 #include "qgsserverresponse.h"
 #include "qgsmessagelog.h"
-//#include <QTextStream>
+#include "qgsserverexception.h"
+
 
 //! constructor
 QgsServerResponse::QgsServerResponse()
 {
-
 }
 
 
@@ -73,5 +73,22 @@ qint64 QgsServerResponse::write( const char* data )
     return iodev->write( data );
   }
   return 0;
+}
+
+void QgsServerResponse::write( const QgsServerException& ex )
+{
+  QString responseFormat;
+  QByteArray ba = ex.formatResponse( responseFormat );
+
+  if ( headersSent() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Error: Cannot write exception after header sent !" ) );
+    return;
+  }
+
+  clear();
+  setReturnCode( ex.responseCode() );
+  setHeader( "Content-Type", responseFormat );
+  write( ba );
 }
 

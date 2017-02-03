@@ -235,7 +235,7 @@ class CORE_EXPORT QgsStyle : public QObject
 
     /** Renames the given entity with the specified id
      *
-     *  \param type is any of the style entites. Refer enum StyleEntity.
+     *  \param type is any of the style entities. Refer enum StyleEntity.
      *  \param id is the DB id of the entity which is to be renamed
      *  \param newName is the new name of the entity
      */
@@ -243,7 +243,7 @@ class CORE_EXPORT QgsStyle : public QObject
 
     /** Removes the specified entity from the db
      *
-     *  \param type is any of the style entites. Refer enum StyleEntity.
+     *  \param type is any of the style entities. Refer enum StyleEntity.
      *  \param id is the DB id of the entity to be removed
      */
     void remove( StyleEntity type, int id );
@@ -318,7 +318,7 @@ class CORE_EXPORT QgsStyle : public QObject
     //! Returns current file name of the style
     QString fileName() { return mFileName; }
 
-    /** Returns the names of the symbols which have a matching 'substring' in its defintion
+    /** Returns the names of the symbols which have a matching 'substring' in its definition
      *
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param qword is the query string to search the symbols or colorramps.
@@ -385,7 +385,7 @@ class CORE_EXPORT QgsStyle : public QObject
 
     sqlite3* mCurrentDB;
 
-    static QgsStyle* mDefaultStyle;
+    static QgsStyle* sDefaultStyle;
 
     //! Convenience function to open the DB and return a sqlite3 object
     bool openDB( const QString& filename );

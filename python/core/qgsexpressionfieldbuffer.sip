@@ -64,5 +64,5 @@ class QgsExpressionFieldBuffer
      */
     void updateFields( QgsFields& flds );
 
-    const QList<QgsExpressionFieldBuffer::ExpressionField>& expressions() const;
+    QList<QgsExpressionFieldBuffer::ExpressionField> expressions() const;
 };

@@ -494,13 +494,13 @@ class QgisLocalServer(object):
                 else:
                     raise ServerProcessError(
                         'Web/FCGI Process Request HTTPError',
-                        'Cound not connect to process: ' + str(resp.code),
+                        'Could not connect to process: ' + str(resp.code),
                         resp.message
                     )
             except urllib.error.URLError as resp:
                 raise ServerProcessError(
                     'Web/FCGI Process Request URLError',
-                    'Cound not connect to process',
+                    'Could not connect to process',
                     resp.reason
                 )
             else:
@@ -511,7 +511,7 @@ class QgisLocalServer(object):
         if resp is not None:
             raise ServerProcessError(
                 'Web/FCGI Process Request Error',
-                'Cound not connect to process: ' + str(resp.code)
+                'Could not connect to process: ' + str(resp.code)
             )
 
         if (tmp_png is not None

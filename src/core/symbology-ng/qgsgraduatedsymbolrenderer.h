@@ -107,8 +107,8 @@ class CORE_EXPORT QgsRendererRangeLabelFormat
     void setFromDomElement( QDomElement &element );
     void saveToDomElement( QDomElement &element );
 
-    static int MaxPrecision;
-    static int MinPrecision;
+    static const int MAX_PRECISION;
+    static const int MIN_PRECISION;
 
   protected:
     QString mFormat;
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context ) override;
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
     virtual void stopRender( QgsRenderContext& context ) override;
-    virtual QSet<QString> usedAttributes() const override;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
     virtual QString dump() const override;
     virtual QgsGraduatedSymbolRenderer* clone() const override;
     virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props = QgsStringMap() ) const override;

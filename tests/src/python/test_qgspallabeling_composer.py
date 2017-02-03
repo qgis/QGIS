@@ -102,7 +102,7 @@ class TestComposerBase(TestQgsPalLabeling):
 
     def _set_up_composition(self, width, height, dpi):
         # set up composition and add map
-        self._c = QgsComposition(self._TestMapSettings, QgsProject.instance())
+        self._c = QgsComposition(QgsProject.instance())
         """:type: QgsComposition"""
         # self._c.setUseAdvancedEffects(False)
         self._c.setPrintResolution(dpi)
@@ -119,6 +119,7 @@ class TestComposerBase(TestQgsPalLabeling):
         """:type: QgsComposerMap"""
         self._cmap.setPreviewMode(QgsComposerMap.Render)
         self._cmap.setFrameEnabled(False)
+        self._cmap.setLayers(self._TestMapSettings.layers())
         self._c.addComposerMap(self._cmap)
         # now expand map to fill page and set its extent
         self._cmap.setSceneRect(QRectF(0, 0, paperw, paperw))

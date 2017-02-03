@@ -80,7 +80,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Constructor
     QgsMapCanvas( QWidget * parent = nullptr );
 
-
     ~QgsMapCanvas();
 
     //! Returns the magnification factor
@@ -147,9 +146,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Returns the mapUnitsPerPixel (map units per pixel) for the canvas
     double mapUnitsPerPixel() const;
 
-    //! Returns the current zoom exent of the map canvas
+    //! Returns the current zoom extent of the map canvas
     QgsRectangle extent() const;
-    //! Returns the combined exent for all layers on the map canvas
+    //! Returns the combined extent for all layers on the map canvas
     QgsRectangle fullExtent() const;
 
     //! Set the extent of the map canvas
@@ -458,7 +457,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! called when current maptool is destroyed
     void mapToolDestroyed();
 
-    //! called when a renderer job has finished successfully or when it was cancelled
+    //! called when a renderer job has finished successfully or when it was canceled
     void rendererJobFinished();
 
     void mapUpdateTimeout();
@@ -619,7 +618,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
        @note
 
-       Otherwise QScopedPointer would pass the object responsiblity on to the
+       Otherwise QScopedPointer would pass the object responsibility on to the
        copy like a hot potato leaving the copyer in a weird state.
      */
     QgsMapCanvas( QgsMapCanvas const & );
@@ -664,8 +663,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Job that takes care of map rendering in background
     QgsMapRendererQImageJob* mJob;
 
-    //! Flag determining whether the active job has been cancelled
-    bool mJobCancelled;
+    //! Flag determining whether the active job has been canceled
+    bool mJobCanceled;
 
     //! Labeling results from the recently rendered map
     QgsLabelingResults* mLabelingResults;

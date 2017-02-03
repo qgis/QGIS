@@ -206,7 +206,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @param index the index of the attribute
      * @param substring substring to match (case insensitive)
      * @param limit maxmum number of the values to return, or -1 to return all unique values
-     * @param feedback optional feedback object for cancelling request
+     * @param feedback optional feedback object for canceling request
      * @returns list of unique strings containing substring
      */
     virtual QStringList uniqueStringsMatching( int index, const QString& substring, int limit = -1,
@@ -438,7 +438,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * Returns the names of the supported types
      */
-    const QList< NativeType > &nativeTypes() const;
+    QList< NativeType > nativeTypes() const;
 
     /**
      * Returns true if the provider is strict about the type of inserted features
@@ -594,7 +594,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     //! List of errors
     mutable QStringList mErrors;
 
-    static QStringList smEncodings;
+    static QStringList sEncodings;
 
     /**
      * Includes this data provider in the specified transaction. Ownership of transaction is not transferred.

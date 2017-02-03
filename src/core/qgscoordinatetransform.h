@@ -256,7 +256,7 @@ class CORE_EXPORT QgsCoordinateTransform
     void setDestinationDatumTransform( int dt );
 
     //!initialize is used to actually create the Transformer instance
-    void initialise();
+    void initialize();
 
     /** Restores state from the given Dom node.
      * @param node The node from which state will be restored
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsCoordinateTransform
 inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateTransform &r )
 {
   QString mySummary( QStringLiteral( "\n%%%%%%%%%%%%%%%%%%%%%%%%\nCoordinate Transform def begins:" ) );
-  mySummary += QLatin1String( "\n\tInitialised? : " );
+  mySummary += QLatin1String( "\n\tInitialized? : " );
   //prevent warnings
   if ( r.isValid() )
   {

@@ -111,7 +111,7 @@ QgsNewGeoPackageLayerDialog::~QgsNewGeoPackageLayerDialog()
 
 void QgsNewGeoPackageLayerDialog::on_mFieldTypeBox_currentIndexChanged( int )
 {
-  QString myType = mFieldTypeBox->itemData( mFieldTypeBox->currentIndex(), Qt::UserRole ).toString();
+  QString myType = mFieldTypeBox->currentData( Qt::UserRole ).toString();
   mFieldLengthEdit->setEnabled( myType == QLatin1String( "text" ) );
   if ( myType != QLatin1String( "text" ) )
     mFieldLengthEdit->setText( QLatin1String( "" ) );
@@ -121,7 +121,7 @@ void QgsNewGeoPackageLayerDialog::on_mFieldTypeBox_currentIndexChanged( int )
 void QgsNewGeoPackageLayerDialog::on_mGeometryTypeBox_currentIndexChanged( int )
 {
   OGRwkbGeometryType geomType = static_cast<OGRwkbGeometryType>
-                                ( mGeometryTypeBox->itemData( mGeometryTypeBox->currentIndex(), Qt::UserRole ).toInt() );
+                                ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
   bool isSpatial = geomType != wkbNone;
   mGeometryColumnEdit->setEnabled( isSpatial );
   mCheckBoxCreateSpatialIndex->setEnabled( isSpatial );
@@ -196,7 +196,7 @@ void QgsNewGeoPackageLayerDialog::on_mAddAttributeButton_clicked()
     }
 
     //use userrole to avoid translated type string
-    QString myType = mFieldTypeBox->itemData( mFieldTypeBox->currentIndex(), Qt::UserRole ).toString();
+    QString myType = mFieldTypeBox->currentData( Qt::UserRole ).toString();
     QString length = mFieldLengthEdit->text();
     mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << myName << myType << length ) );
 
@@ -348,7 +348,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   QString layerDescription( mLayerDescriptionEdit->text() );
 
   OGRwkbGeometryType wkbType = static_cast<OGRwkbGeometryType>
-                               ( mGeometryTypeBox->itemData( mGeometryTypeBox->currentIndex(), Qt::UserRole ).toInt() );
+                               ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
   OGRSpatialReferenceH hSRS = nullptr;
   // consider spatial reference system of the layer
@@ -437,7 +437,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
     ++it;
   }
 
-  // In GDAL >= 2.0, the driver implements a defered creation strategy, so
+  // In GDAL >= 2.0, the driver implements a deferred creation strategy, so
   // issue a command that will force table creation
   CPLErrorReset();
   OGR_L_ResetReading( hLayer );

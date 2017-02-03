@@ -662,7 +662,7 @@ void QgsMapToolNodeTool::deleteNodeSelection()
 
     mSelectedFeature->deleteSelectedVertexes();
 
-    if ( mSelectedFeature->geometry()->isEmpty() )
+    if ( mSelectedFeature->geometry()->isNull() )
     {
       emit messageEmitted( tr( "Geometry has been cleared. Use the add part tool to set geometry for this feature." ) );
     }
@@ -759,7 +759,7 @@ int QgsMapToolNodeTool::insertSegmentVerticesForSnap( const QList<QgsSnappingRes
     return 1;
   }
 
-  //transform snaping coordinates to layer crs first
+  //transform snapping coordinates to layer crs first
   QList<QgsSnappingResult> transformedSnapResults;
   QgsFeatureIds addedFeatures;
   QList<QgsSnappingResult>::const_iterator it = snapResults.constBegin();

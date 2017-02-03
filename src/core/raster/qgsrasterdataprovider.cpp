@@ -48,14 +48,10 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
   QgsDebugMsgLevel( QString( "theBandNo = %1 theWidth = %2 theHeight = %3" ).arg( theBandNo ).arg( theWidth ).arg( theHeight ), 4 );
   QgsDebugMsgLevel( QString( "theExtent = %1" ).arg( theExtent.toString() ), 4 );
 
-  QgsRasterBlock *block;
+  QgsRasterBlock *block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight );
   if ( sourceHasNoDataValue( theBandNo ) && useSourceNoDataValue( theBandNo ) )
   {
-    block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, sourceNoDataValue( theBandNo ) );
-  }
-  else
-  {
-    block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight );
+    block->setNoDataValue( sourceNoDataValue( theBandNo ) );
   }
 
   if ( block->isEmpty() )
@@ -145,14 +141,10 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
     QgsDebugMsgLevel( QString( "Reading smaller block tmpWidth = %1 theHeight = %2" ).arg( tmpWidth ).arg( tmpHeight ), 4 );
     QgsDebugMsgLevel( QString( "tmpExtent = %1" ).arg( tmpExtent.toString() ), 4 );
 
-    QgsRasterBlock *tmpBlock;
+    QgsRasterBlock *tmpBlock = new QgsRasterBlock( dataType( theBandNo ), tmpWidth, tmpHeight );
     if ( sourceHasNoDataValue( theBandNo ) && useSourceNoDataValue( theBandNo ) )
     {
-      tmpBlock = new QgsRasterBlock( dataType( theBandNo ), tmpWidth, tmpHeight, sourceNoDataValue( theBandNo ) );
-    }
-    else
-    {
-      tmpBlock = new QgsRasterBlock( dataType( theBandNo ), tmpWidth, tmpHeight );
+      tmpBlock->setNoDataValue( sourceNoDataValue( theBandNo ) );
     }
 
     readBlock( theBandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->bits(), feedback );
@@ -345,6 +337,18 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoi
 QString QgsRasterDataProvider::lastErrorFormat()
 {
   return QStringLiteral( "text/plain" );
+}
+
+bool QgsRasterDataProvider::writeBlock( QgsRasterBlock* block, int band, int xOffset, int yOffset )
+{
+  if ( !block )
+    return false;
+  if ( !isEditable() )
+  {
+    QgsDebugMsg( "writeBlock() called on read-only provider." );
+    return false;
+  }
+  return write( block->bits(), band, block->width(), block->height(), xOffset, yOffset );
 }
 
 typedef QList<QPair<QString, QString> > *pyramidResamplingMethods_t();

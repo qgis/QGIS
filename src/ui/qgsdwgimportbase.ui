@@ -246,12 +246,13 @@
   <tabstop>leDrawing</tabstop>
   <tabstop>pbImportDrawing</tabstop>
   <tabstop>pbBrowseDrawing</tabstop>
+  <tabstop>cbExpandInserts</tabstop>
+  <tabstop>cbUseCurves</tabstop>
   <tabstop>leLayerGroup</tabstop>
   <tabstop>mLayers</tabstop>
   <tabstop>cbMergeLayers</tabstop>
   <tabstop>pbDeselectAll</tabstop>
   <tabstop>pbSelectAll</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

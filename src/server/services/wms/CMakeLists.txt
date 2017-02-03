@@ -16,8 +16,9 @@ SET (wms_SRCS
   qgswmsgetschemaextension.cpp
   qgswmsgetstyle.cpp
   qgswmsgetstyles.cpp
-  qgswmsservertransitional.cpp
-  qgsfilterrestorer.cpp
+  qgsmaprendererjobproxy.cpp
+  qgsmediancut.cpp
+  qgswmsrenderer.cpp
 )
 
 ########################################################
@@ -40,14 +41,14 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/server
   ${CMAKE_CURRENT_BINARY_DIR}
-  ../../../core 
+  ../../../core
   ../../../core/dxf
-  ../../../core/geometry 
+  ../../../core/geometry
   ../../../core/raster
   ../../../core/symbology-ng
   ../../../core/composer
   ../../../core/layertree
-  ../../../gui 
+  ../../../gui
   ../../../gui/editorwidgets
   ../../../gui/editorwidgets/core
   ../..

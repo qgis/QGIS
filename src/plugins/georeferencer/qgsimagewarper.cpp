@@ -29,7 +29,7 @@
 #include "qgsgeoreftransform.h"
 #include "qgslogger.h"
 
-bool QgsImageWarper::mWarpCanceled = false;
+bool QgsImageWarper::sWarpCanceled = false;
 
 QgsImageWarper::QgsImageWarper( QWidget *theParent )
     : mParent( theParent )
@@ -252,7 +252,7 @@ int QgsImageWarper::warpFile( const QString& input,
   GDALClose( hSrcDS );
   GDALClose( hDstDS );
 
-  return mWarpCanceled ? -1 : eErr == CE_None ? 1 : 0;
+  return sWarpCanceled ? -1 : eErr == CE_None ? 1 : 0;
 }
 
 
@@ -338,11 +338,11 @@ int CPL_STDCALL QgsImageWarper::updateWarpProgress( double dfComplete, const cha
   // TODO: call QEventLoop manually to make "cancel" button more responsive
   if ( progress->wasCanceled() )
   {
-    mWarpCanceled = true;
+    sWarpCanceled = true;
     return false;
   }
 
-  mWarpCanceled = false;
+  sWarpCanceled = false;
   return true;
 }
 

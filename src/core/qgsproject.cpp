@@ -32,7 +32,9 @@
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
 #include "qgsrelationmanager.h"
+#include "qgsannotationmanager.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoininfo.h"
 #include "qgsmapthemecollection.h"
 #include "qgslayerdefinition.h"
 #include "qgsunittypes.h"
@@ -115,7 +117,7 @@ QgsProjectProperty* findKey_( const QString& scope,
                               QgsProjectPropertyKey& rootProperty )
 {
   QgsProjectPropertyKey* currentProperty = &rootProperty;
-  QgsProjectProperty* nextProperty;           // link to next property down hiearchy
+  QgsProjectProperty* nextProperty;           // link to next property down hierarchy
 
   QStringList keySequence = makeKeyTokens_( scope, key );
 
@@ -194,7 +196,7 @@ QgsProjectProperty *addKey_( const QString& scope,
 
   // cursor through property key/value hierarchy
   QgsProjectPropertyKey *currentProperty = rootProperty;
-  QgsProjectProperty *nextProperty; // link to next property down hiearchy
+  QgsProjectProperty *nextProperty; // link to next property down hierarchy
   QgsProjectPropertyKey* newPropertyKey;
 
   while ( ! keySequence.isEmpty() )
@@ -260,8 +262,8 @@ void removeKey_( const QString& scope,
 {
   QgsProjectPropertyKey *currentProperty = &rootProperty;
 
-  QgsProjectProperty *nextProperty = nullptr;   // link to next property down hiearchy
-  QgsProjectPropertyKey *previousQgsPropertyKey = nullptr; // link to previous property up hiearchy
+  QgsProjectProperty *nextProperty = nullptr;   // link to next property down hierarchy
+  QgsProjectPropertyKey *previousQgsPropertyKey = nullptr; // link to previous property up hierarchy
 
   QStringList keySequence = makeKeyTokens_( scope, key );
 
@@ -319,6 +321,7 @@ QgsProject::QgsProject( QObject* parent )
     , mBadLayerHandler( new QgsProjectBadLayerHandler() )
     , mSnappingConfig( this )
     , mRelationManager( new QgsRelationManager( this ) )
+    , mAnnotationManager( new QgsAnnotationManager( this ) )
     , mRootGroup( new QgsLayerTreeGroup )
     , mAutoTransaction( false )
     , mEvaluateDefaultValues( false )
@@ -341,6 +344,7 @@ QgsProject::~QgsProject()
 {
   delete mBadLayerHandler;
   delete mRelationManager;
+  delete mLayerTreeRegistryBridge;
   delete mRootGroup;
 
   removeAllMapLayers();
@@ -452,6 +456,7 @@ void QgsProject::clear()
 
   mEmbeddedLayers.clear();
   mRelationManager->clear();
+  mAnnotationManager->clear();
   mSnappingConfig.reset();
   emit snappingConfigChanged();
 
@@ -599,14 +604,6 @@ QgsProjectVersion getVersion( const QDomDocument& doc )
   return projectVersion;
 }
 
-void QgsProject::processLayerJoins( QgsVectorLayer* layer )
-{
-  if ( !layer )
-    return;
-
-  layer->createJoinCaches();
-  layer->updateFields();
-}
 
 QgsSnappingConfig QgsProject::snappingConfig() const
 {
@@ -653,9 +650,6 @@ bool QgsProject::_getMapLayers( const QDomDocument& doc, QList<QDomNode>& broken
 
   QVector<QDomNode> sortedLayerNodes = depSorter.sortedLayerNodes();
 
-  // Collect vector layers with joins.
-  // They need to refresh join caches and symbology infos after all layers are loaded
-  QList< QPair< QgsVectorLayer*, QDomElement > > vLayerList;
   int i = 0;
   Q_FOREACH ( const QDomNode& node, sortedLayerNodes )
   {
@@ -667,12 +661,12 @@ bool QgsProject::_getMapLayers( const QDomDocument& doc, QList<QDomNode>& broken
 
     if ( element.attribute( QStringLiteral( "embedded" ) ) == QLatin1String( "1" ) )
     {
-      createEmbeddedLayer( element.attribute( QStringLiteral( "id" ) ), readPath( element.attribute( QStringLiteral( "project" ) ) ), brokenNodes, vLayerList );
+      createEmbeddedLayer( element.attribute( QStringLiteral( "id" ) ), readPath( element.attribute( QStringLiteral( "project" ) ) ), brokenNodes );
       continue;
     }
     else
     {
-      if ( !addLayer( element, brokenNodes, vLayerList ) )
+      if ( !addLayer( element, brokenNodes ) )
       {
         returnStatus = false;
       }
@@ -681,28 +675,10 @@ bool QgsProject::_getMapLayers( const QDomDocument& doc, QList<QDomNode>& broken
     i++;
   }
 
-  // Update field map of layers with joins and create join caches if necessary
-  // Needs to be done here once all dependent layers are loaded
-  QList< QPair< QgsVectorLayer*, QDomElement > >::iterator vIt = vLayerList.begin();
-  for ( ; vIt != vLayerList.end(); ++vIt )
-  {
-    processLayerJoins( vIt->first );
-  }
-
-  QSet<QgsVectorLayer *> notified;
-  for ( vIt = vLayerList.begin(); vIt != vLayerList.end(); ++vIt )
-  {
-    if ( notified.contains( vIt->first ) )
-      continue;
-
-    notified << vIt->first;
-    emit readMapLayer( vIt->first, vIt->second );
-  }
-
   return returnStatus;
 }
 
-bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > > &vectorLayerList )
+bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes )
 {
   QString type = layerElem.attribute( QStringLiteral( "type" ) );
   QgsDebugMsg( "Layer type is " + type );
@@ -732,14 +708,9 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   Q_CHECK_PTR( mapLayer );
 
   // have the layer restore state that is stored in Dom node
-  if ( mapLayer->readLayerXml( layerElem ) && mapLayer->isValid() )
+  if ( mapLayer->readLayerXml( layerElem, this ) && mapLayer->isValid() )
   {
-    // postpone readMapLayer signal for vector layers with joins
-    QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
-    if ( !vLayer || vLayer->vectorJoins().isEmpty() )
-      emit readMapLayer( mapLayer, layerElem );
-    else
-      vectorLayerList.push_back( qMakePair( vLayer, layerElem ) );
+    emit readMapLayer( mapLayer, layerElem );
 
     QList<QgsMapLayer *> myLayers;
     myLayers << mapLayer;
@@ -867,6 +838,7 @@ bool QgsProject::read()
   QDomElement layerTreeElem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
+    // read the tree but do not resolve the references (we have not loaded the layers yet)
     mRootGroup->readChildrenFromXml( layerTreeElem );
   }
   else
@@ -897,6 +869,17 @@ bool QgsProject::read()
     mBadLayerHandler->handleBadLayers( brokenNodes );
   }
 
+  // Resolve references to other vector layers
+  // Needs to be done here once all dependent layers are loaded
+  for ( QMap<QString, QgsMapLayer*>::iterator it = mMapLayers.begin(); it != mMapLayers.end(); it++ )
+  {
+    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( it.value() ) )
+      vl->resolveReferences( this );
+  }
+
+  // now that layers are loaded, we can resolve layer tree's references to the layers
+  mRootGroup->resolveReferences( this );
+
   mLayerTreeRegistryBridge->setEnabled( true );
 
   // load embedded groups and layers
@@ -910,6 +893,8 @@ bool QgsProject::read()
   mMapThemeCollection.reset( new QgsMapThemeCollection( this ) );
   emit mapThemeCollectionChanged();
   mMapThemeCollection->readXml( *doc );
+
+  mAnnotationManager->readXml( doc->documentElement(), *doc );
 
   // reassign change dependencies now that all layers are loaded
   QMap<QString, QgsMapLayer*> existingMaps = mapLayers();
@@ -986,8 +971,7 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
       if ( child->customProperty( QStringLiteral( "embedded" ) ).toInt() )
       {
         QList<QDomNode> brokenNodes;
-        QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
-        createEmbeddedLayer( QgsLayerTree::toLayer( child )->layerId(), child->customProperty( QStringLiteral( "embedded_project" ) ).toString(), brokenNodes, vectorLayerList );
+        createEmbeddedLayer( QgsLayerTree::toLayer( child )->layerId(), child->customProperty( QStringLiteral( "embedded_project" ) ).toString(), brokenNodes );
       }
     }
 
@@ -1136,20 +1120,15 @@ void QgsProject::cleanTransactionGroups( bool force )
 bool QgsProject::readLayer( const QDomNode& layerNode )
 {
   QList<QDomNode> brokenNodes;
-  QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
-  if ( addLayer( layerNode.toElement(), brokenNodes, vectorLayerList ) )
+  if ( addLayer( layerNode.toElement(), brokenNodes ) )
   {
     // have to try to update joins for all layers now - a previously added layer may be dependent on this newly
     // added layer for joins
     QVector<QgsVectorLayer*> vectorLayers = layers<QgsVectorLayer*>();
     Q_FOREACH ( QgsVectorLayer* layer, vectorLayers )
     {
-      processLayerJoins( layer );
-    }
-
-    if ( !vectorLayerList.isEmpty() )
-    {
-      emit readMapLayer( vectorLayerList.at( 0 ).first, vectorLayerList.at( 0 ).second );
+      // TODO: should be only done later - and with all layers (other layers may have referenced this layer)
+      layer->resolveReferences( this );
     }
 
     return true;
@@ -1211,7 +1190,7 @@ bool QgsProject::write()
   // write layer tree - make sure it is without embedded subgroups
   QgsLayerTreeNode *clonedRoot = mRootGroup->clone();
   QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
-  QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( clonedRoot ) ); // convert absolute paths to relative paths if required
+  QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( clonedRoot ), this ); // convert absolute paths to relative paths if required
   clonedRoot->writeXml( qgisNode );
   delete clonedRoot;
 
@@ -1278,6 +1257,9 @@ bool QgsProject::write()
   }
 
   mMapThemeCollection->writeXml( *doc );
+
+  QDomElement annotationsElem = mAnnotationManager->writeXml( *doc );
+  qgisNode.appendChild( annotationsElem );
 
   // now wrap it up and ship it to the project file
   doc->normalize();             // XXX I'm not entirely sure what this does
@@ -1797,19 +1779,19 @@ QString QgsProject::layerIsEmbedded( const QString &id ) const
 }
 
 bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &projectFilePath, QList<QDomNode> &brokenNodes,
-                                      QList< QPair< QgsVectorLayer*, QDomElement > > &vectorLayerList, bool saveFlag )
+                                      bool saveFlag )
 {
   QgsDebugCall;
 
-  static QString prevProjectFilePath;
-  static QDateTime prevProjectFileTimestamp;
-  static QDomDocument projectDocument;
+  static QString sPrevProjectFilePath;
+  static QDateTime sPrevProjectFileTimestamp;
+  static QDomDocument sProjectDocument;
 
   QDateTime projectFileTimestamp = QFileInfo( projectFilePath ).lastModified();
 
-  if ( projectFilePath != prevProjectFilePath || projectFileTimestamp != prevProjectFileTimestamp )
+  if ( projectFilePath != sPrevProjectFilePath || projectFileTimestamp != sPrevProjectFileTimestamp )
   {
-    prevProjectFilePath.clear();
+    sPrevProjectFilePath.clear();
 
     QFile projectFile( projectFilePath );
     if ( !projectFile.open( QIODevice::ReadOnly ) )
@@ -1817,29 +1799,29 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
       return false;
     }
 
-    if ( !projectDocument.setContent( &projectFile ) )
+    if ( !sProjectDocument.setContent( &projectFile ) )
     {
       return false;
     }
 
-    prevProjectFilePath = projectFilePath;
-    prevProjectFileTimestamp = projectFileTimestamp;
+    sPrevProjectFilePath = projectFilePath;
+    sPrevProjectFileTimestamp = projectFileTimestamp;
   }
 
-  // does project store pathes absolute or relative?
-  bool useAbsolutePathes = true;
+  // does project store paths absolute or relative?
+  bool useAbsolutePaths = true;
 
-  QDomElement propertiesElem = projectDocument.documentElement().firstChildElement( QStringLiteral( "properties" ) );
+  QDomElement propertiesElem = sProjectDocument.documentElement().firstChildElement( QStringLiteral( "properties" ) );
   if ( !propertiesElem.isNull() )
   {
     QDomElement absElem = propertiesElem.firstChildElement( QStringLiteral( "Paths" ) ).firstChildElement( QStringLiteral( "Absolute" ) );
     if ( !absElem.isNull() )
     {
-      useAbsolutePathes = absElem.text().compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+      useAbsolutePaths = absElem.text().compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
     }
   }
 
-  QDomElement projectLayersElem = projectDocument.documentElement().firstChildElement( QStringLiteral( "projectlayers" ) );
+  QDomElement projectLayersElem = sProjectDocument.documentElement().firstChildElement( QStringLiteral( "projectlayers" ) );
   if ( projectLayersElem.isNull() )
   {
     return false;
@@ -1863,7 +1845,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
 
       // change datasource path from relative to absolute if necessary
       // see also QgsMapLayer::readLayerXML
-      if ( !useAbsolutePathes )
+      if ( !useAbsolutePaths )
       {
         QString provider( mapLayerElem.firstChildElement( QStringLiteral( "provider" ) ).text() );
         QDomElement dsElem( mapLayerElem.firstChildElement( QStringLiteral( "datasource" ) ) );
@@ -1927,10 +1909,10 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
         }
 
         dsElem.removeChild( dsElem.childNodes().at( 0 ) );
-        dsElem.appendChild( projectDocument.createTextNode( datasource ) );
+        dsElem.appendChild( sProjectDocument.createTextNode( datasource ) );
       }
 
-      if ( addLayer( mapLayerElem, brokenNodes, vectorLayerList ) )
+      if ( addLayer( mapLayerElem, brokenNodes ) )
       {
         return true;
       }
@@ -2043,8 +2025,7 @@ void QgsProject::initializeEmbeddedSubtree( const QString &projectFilePath, QgsL
     {
       // load the layer into our project
       QList<QDomNode> brokenNodes;
-      QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
-      createEmbeddedLayer( QgsLayerTree::toLayer( child )->layerId(), projectFilePath, brokenNodes, vectorLayerList, false );
+      createEmbeddedLayer( QgsLayerTree::toLayer( child )->layerId(), projectFilePath, brokenNodes, false );
     }
   }
 }
@@ -2137,6 +2118,11 @@ QgsLayerTreeGroup *QgsProject::layerTreeRoot() const
 QgsMapThemeCollection* QgsProject::mapThemeCollection()
 {
   return mMapThemeCollection.data();
+}
+
+QgsAnnotationManager* QgsProject::annotationManager()
+{
+  return mAnnotationManager.data();
 }
 
 void QgsProject::setNonIdentifiableLayers( const QList<QgsMapLayer*>& layers )

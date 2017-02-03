@@ -48,6 +48,7 @@ IF(WITH_APIDOC)
     SET(DOXYGEN_INPUT
       ${CMAKE_SOURCE_DIR}/doc
       ${CMAKE_SOURCE_DIR}/src/core
+      ${CMAKE_SOURCE_DIR}/src/core/annotations      
       ${CMAKE_SOURCE_DIR}/src/core/auth
       ${CMAKE_SOURCE_DIR}/src/core/composer
       ${CMAKE_SOURCE_DIR}/src/core/diagram
@@ -84,11 +85,16 @@ IF(WITH_APIDOC)
         ${DOXYGEN_INPUT}
         ${CMAKE_SOURCE_DIR}/src/server/qgsserver.h
         ${CMAKE_SOURCE_DIR}/src/server/qgscapabilitiescache.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsmapserviceexception.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsserverexception.h
         ${CMAKE_SOURCE_DIR}/src/server/qgsrequesthandler.h
         ${CMAKE_SOURCE_DIR}/src/server/qgsserverfilter.h
         ${CMAKE_SOURCE_DIR}/src/server/qgsaccesscontrolfilter.h
         ${CMAKE_SOURCE_DIR}/src/server/qgsserverinterface.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsserverrequest.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsserverresponse.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsserverrequest.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsservice.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsserviceregistry.h
       )
     ENDIF(WITH_SERVER_PLUGINS)
 

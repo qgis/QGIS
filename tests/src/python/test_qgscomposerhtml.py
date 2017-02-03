@@ -43,7 +43,7 @@ class TestQgsComposerHtml(unittest.TestCase):
         """Run before each test."""
         self.iface = get_iface()
         self.mapSettings = QgsMapSettings()
-        self.mComposition = QgsComposition(self.mapSettings, QgsProject.instance())
+        self.mComposition = QgsComposition(QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)  # A4 landscape
 
     def tearDown(self):

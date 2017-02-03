@@ -99,7 +99,7 @@ class CORE_EXPORT QgsExpressionFieldBuffer
      */
     void updateFields( QgsFields& flds );
 
-    const QList<ExpressionField>& expressions() const { return mExpressions; }
+    QList<ExpressionField> expressions() const { return mExpressions; }
 
   private:
     QList<ExpressionField> mExpressions;

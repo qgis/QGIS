@@ -38,6 +38,7 @@ email                : sherman at mrcc.com
 #include <QWheelEvent>
 
 #include "qgis.h"
+#include "qgsmapcanvasannotationitem.h"
 #include "qgsapplication.h"
 #include "qgscsexception.h"
 #include "qgsdatumtransformdialog.h"
@@ -107,7 +108,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent )
     , mLastExtentIndex( -1 )
     , mWheelZoomFactor( 2.0 )
     , mJob( nullptr )
-    , mJobCancelled( false )
+    , mJobCanceled( false )
     , mLabelingResults( nullptr )
     , mUseParallelRendering( false )
     , mDrawRenderingStats( false )
@@ -191,7 +192,7 @@ QgsMapCanvas::~QgsMapCanvas()
   }
   mLastNonZoomMapTool = nullptr;
 
-  // delete canvas items prior to deleteing the canvas
+  // delete canvas items prior to deleting the canvas
   // because they might try to update canvas when it's
   // already being destructed, ends with segfault
   QList<QGraphicsItem*> list = mScene->items();
@@ -430,9 +431,9 @@ bool QgsMapCanvas::isParallelRenderingEnabled() const
   return mUseParallelRendering;
 }
 
-void QgsMapCanvas::setMapUpdateInterval( int timeMiliseconds )
+void QgsMapCanvas::setMapUpdateInterval( int timeMilliseconds )
 {
-  mMapUpdateTimer.setInterval( timeMiliseconds );
+  mMapUpdateTimer.setInterval( timeMilliseconds );
 }
 
 int QgsMapCanvas::mapUpdateInterval() const
@@ -494,7 +495,7 @@ void QgsMapCanvas::refreshMap()
 
   // create the renderer job
   Q_ASSERT( !mJob );
-  mJobCancelled = false;
+  mJobCanceled = false;
   if ( mUseParallelRendering )
     mJob = new QgsMapRendererParallelJob( mSettings );
   else
@@ -531,7 +532,7 @@ void QgsMapCanvas::refreshMap()
 
 void QgsMapCanvas::rendererJobFinished()
 {
-  QgsDebugMsg( QString( "CANVAS finish! %1" ).arg( !mJobCancelled ) );
+  QgsDebugMsg( QString( "CANVAS finish! %1" ).arg( !mJobCanceled ) );
 
   mMapUpdateTimer.stop();
 
@@ -541,7 +542,7 @@ void QgsMapCanvas::rendererJobFinished()
     QgsMessageLog::logMessage( error.layerID + " :: " + error.message, tr( "Rendering" ) );
   }
 
-  if ( !mJobCancelled )
+  if ( !mJobCanceled )
   {
     // take labeling results before emitting renderComplete, so labeling map tools
     // connected to signal work with correct results
@@ -612,7 +613,7 @@ void QgsMapCanvas::stopRendering()
   if ( mJob )
   {
     QgsDebugMsg( "CANVAS stop rendering!" );
-    mJobCancelled = true;
+    mJobCanceled = true;
     mJob->cancel();
     Q_ASSERT( !mJob ); // no need to delete here: already deleted in finished()
   }
@@ -654,7 +655,7 @@ void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap
   {
     item = i.previous();
 
-    if ( !item || item->data( 0 ).toString() != QLatin1String( "AnnotationItem" ) )
+    if ( !item || dynamic_cast< QgsMapCanvasAnnotationItem* >( item ) )
     {
       continue;
     }
@@ -976,7 +977,7 @@ bool QgsMapCanvas::boundingBoxOfFeatureIds( const QgsFeatureIds& ids, QgsVectorL
   while ( it.nextFeature( fet ) )
   {
     QgsGeometry geom = fet.geometry();
-    if ( geom.isEmpty() )
+    if ( geom.isNull() )
     {
       errorMsg = tr( "Feature does not have a geometry" );
     }

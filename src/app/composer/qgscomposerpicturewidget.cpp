@@ -77,7 +77,11 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   connect( mPicture, SIGNAL( pictureRotationChanged( double ) ), this, SLOT( setPicRotationSpinValue( double ) ) );
 
   //connections for data defined buttons
-  connect( mSourceDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPictureLineEdit, SLOT( setDisabled( bool ) ) );
+  connect( mSourceDDBtn, &QgsPropertyOverrideButton::activated, mPictureLineEdit, &QLineEdit::setDisabled );
+  registerDataDefinedButton( mSourceDDBtn, QgsComposerObject::PictureSource );
+  registerDataDefinedButton( mFillColorDDBtn, QgsComposerObject::PictureSvgBackgroundColor );
+  registerDataDefinedButton( mOutlineColorDDBtn, QgsComposerObject::PictureSvgOutlineColor );
+  registerDataDefinedButton( mOutlineWidthDDBtn, QgsComposerObject::PictureSvgOutlineWidth );
 }
 
 QgsComposerPictureWidget::~QgsComposerPictureWidget()
@@ -434,7 +438,7 @@ QIcon QgsComposerPictureWidget::svgToIcon( const QString& filePath ) const
     outlineWidth = 0.6;
 
   bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-  const QImage& img = QgsApplication::svgCache()->svgAsImage( filePath, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
+  const QImage& img = QgsApplication::svgCache()->svgAsImage( filePath, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
 
   return QIcon( QPixmap::fromImage( img ) );
 }
@@ -700,8 +704,10 @@ void QgsComposerPictureWidget::resizeEvent( QResizeEvent * event )
 
 void QgsComposerPictureWidget::populateDataDefinedButtons()
 {
-  registerDataDefinedButton( mSourceDDBtn, QgsComposerObject::PictureSource,
-                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::anyStringDesc() );
+  updateDataDefinedButton( mSourceDDBtn );
+  updateDataDefinedButton( mFillColorDDBtn );
+  updateDataDefinedButton( mOutlineColorDDBtn );
+  updateDataDefinedButton( mOutlineWidthDDBtn );
 
   //initial state of controls - disable related controls when dd buttons are active
   mPictureLineEdit->setEnabled( !mSourceDDBtn->isActive() );

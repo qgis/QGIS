@@ -95,7 +95,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
 
     /** Controls how long strings in the table are handled
      */
-    enum WrapBehaviour
+    enum WrapBehavior
     {
       TruncateText = 0, /*!< text which doesn't fit inside the cell is truncated */
       WrapText /*!< text which doesn't fit inside the cell is wrapped. Note that this only applies to text in columns with a fixed width. */
@@ -133,34 +133,34 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      */
     double cellMargin() const;
 
-    /** Sets the behaviour for empty tables with no content rows.
-     * @param mode behaviour mode for empty tables
-     * @see emptyTableBehaviour
+    /** Sets the behavior for empty tables with no content rows.
+     * @param mode behavior mode for empty tables
+     * @see emptyTableBehavior
      */
-    void setEmptyTableBehaviour( const EmptyTableMode mode );
+    void setEmptyTableBehavior( const EmptyTableMode mode );
 
-    /** Returns the behaviour mode for empty tables. This property controls
+    /** Returns the behavior mode for empty tables. This property controls
      * how the table is drawn if it contains no content rows.
-     * @returns behaviour mode for empty tables
-     * @see setEmptyTableBehaviour
+     * @returns behavior mode for empty tables
+     * @see setEmptyTableBehavior
      */
-    EmptyTableMode emptyTableBehaviour() const;
+    EmptyTableMode emptyTableBehavior() const;
 
     /** Sets the message for empty tables with no content rows. This message
-     * is displayed in the table body if the empty table behaviour is
+     * is displayed in the table body if the empty table behavior is
      * set to ShowMessage
      * @param message message to show for empty tables
      * @see emptyTableMessage
-     * @see setEmptyTableBehaviour
+     * @see setEmptyTableBehavior
      */
     void setEmptyTableMessage( const QString& message );
 
     /** Returns the message for empty tables with no content rows. This message
-     * is displayed in the table body if the empty table behaviour is
+     * is displayed in the table body if the empty table behavior is
      * set to ShowMessage
      * @returns message to show for empty tables
      * @see setEmptyTableMessage
-     * @see emptyTableBehaviour
+     * @see emptyTableBehavior
      */
     QString emptyTableMessage() const;
 
@@ -364,21 +364,21 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      */
     QColor backgroundColor() const;
 
-    /** Sets the wrap behaviour for the table, which controls how text within cells is
+    /** Sets the wrap behavior for the table, which controls how text within cells is
      * automatically wrapped.
-     * @param behaviour wrap behaviour
-     * @see wrapBehaviour
+     * @param behavior wrap behavior
+     * @see wrapBehavior
      * @note added in QGIS 2.12
      */
-    void setWrapBehaviour( WrapBehaviour behaviour );
+    void setWrapBehavior( WrapBehavior behavior );
 
-    /** Returns the wrap behaviour for the table, which controls how text within cells is
+    /** Returns the wrap behavior for the table, which controls how text within cells is
      * automatically wrapped.
-     * @returns current wrap behaviour
-     * @see setWrapBehaviour
+     * @returns current wrap behavior
+     * @see setWrapBehavior
      * @note added in QGIS 2.12
      */
-    WrapBehaviour wrapBehaviour() const;
+    WrapBehavior wrapBehavior() const;
 
     /** Returns a pointer to the list of QgsComposerTableColumns shown in the table
      * @returns pointer to list of columns in table

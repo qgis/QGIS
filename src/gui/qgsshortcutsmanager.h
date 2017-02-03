@@ -230,7 +230,15 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     ActionsHash mActions;
     ShortcutsHash mShortcuts;
     QString mSettingsPath;
-    static QgsShortcutsManager* mInstance;
+    static QgsShortcutsManager* sInstance;
+
+    /**
+     * Updates the action to include the shortcut keys. Shortcut keys are
+     * included between () at the end of the action tooltop.
+     * @param action The action to append the shortcut.
+     * @param sequence The shortcut sequence.
+     */
+    void updateActionToolTip( QAction* action, QString sequence );
 };
 
 #endif // QGSSHORTCUTSMANAGER_H

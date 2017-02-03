@@ -173,9 +173,9 @@ void QgsGrassEditRenderer::stopRender( QgsRenderContext& context )
   mMarkerRenderer->stopRender( context );
 }
 
-QSet<QString> QgsGrassEditRenderer::usedAttributes() const
+QSet<QString> QgsGrassEditRenderer::usedAttributes( const QgsRenderContext& context ) const
 {
-  return mLineRenderer->usedAttributes();
+  return mLineRenderer->usedAttributes( context );
 }
 
 QgsFeatureRenderer* QgsGrassEditRenderer::clone() const

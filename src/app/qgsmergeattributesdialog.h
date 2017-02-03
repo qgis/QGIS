@@ -31,7 +31,7 @@ class QgsVectorLayer;
 class QComboBox;
 
 
-//! A dialog to insert the merge behaviour for attributes (e.g. for the union features editing tool)
+//! A dialog to insert the merge behavior for attributes (e.g. for the union features editing tool)
 class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeAttributesDialogBase
 {
     Q_OBJECT
@@ -75,7 +75,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     /** Returns the table widget column index of a combo box
     @return the column index or -1 in case of error*/
     int findComboColumn( QComboBox* c ) const;
-    //! Calculates the merged value of a column (depending on the selected merge behaviour) and inserts the value in the corresponding cell
+    //! Calculates the merged value of a column (depending on the selected merge behavior) and inserts the value in the corresponding cell
     void refreshMergedValue( int col );
     //! Inserts the attribute value of a specific feature into the row of merged attributes
     QVariant featureAttribute( QgsFeatureId featureId, int col );
@@ -99,7 +99,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     QgsFields mFields;
     QSet<int> mHiddenAttributes;
 
-    static QList< QgsStatisticalSummary::Statistic > mDisplayStats;
+    static const QList< QgsStatisticalSummary::Statistic > DISPLAY_STATS;
 
 };
 

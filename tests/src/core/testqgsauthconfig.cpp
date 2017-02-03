@@ -41,10 +41,10 @@ class TestQgsAuthConfig: public QObject
     void testConfigSslServer();
 
   private:
-    static QString smPkiData;
+    static QString sPkiData;
 };
 
-QString TestQgsAuthConfig::smPkiData = QStringLiteral( TEST_DATA_DIR ) + "/auth_system/certs_keys";
+QString TestQgsAuthConfig::sPkiData = QStringLiteral( TEST_DATA_DIR ) + "/auth_system/certs_keys";
 
 
 void TestQgsAuthConfig::initTestCase()
@@ -126,11 +126,11 @@ void TestQgsAuthConfig::testPkiBundle()
   QVERIFY( bundle.isNull() );
   QVERIFY( !bundle.isValid() );
 
-  QList<QSslCertificate> cacerts( QSslCertificate::fromPath( smPkiData + "/chain_subissuer-issuer-root.pem" ) );
+  QList<QSslCertificate> cacerts( QSslCertificate::fromPath( sPkiData + "/chain_subissuer-issuer-root.pem" ) );
   QVERIFY( !cacerts.isEmpty() );
   QCOMPARE( cacerts.size(), 3 );
-  QgsPkiBundle bundle2( QgsPkiBundle::fromPemPaths( smPkiData + "/fra_cert.pem",
-                        smPkiData + "/fra_key_w-pass.pem",
+  QgsPkiBundle bundle2( QgsPkiBundle::fromPemPaths( sPkiData + "/fra_cert.pem",
+                        sPkiData + "/fra_key_w-pass.pem",
                         QStringLiteral( "password" ),
                         cacerts ) );
   QVERIFY( !bundle2.isNull() );
@@ -155,7 +155,7 @@ void TestQgsAuthConfig::testPkiBundle()
   QVERIFY( !bundle.isNull() );
   QVERIFY( bundle.isValid() );
 
-  QgsPkiBundle bundle4( QgsPkiBundle::fromPkcs12Paths( smPkiData + "/fra_w-chain.p12",
+  QgsPkiBundle bundle4( QgsPkiBundle::fromPkcs12Paths( sPkiData + "/fra_w-chain.p12",
                         QStringLiteral( "password" ) ) );
   QVERIFY( !bundle4.isNull() );
   QVERIFY( bundle4.isValid() );
@@ -174,9 +174,9 @@ void TestQgsAuthConfig::testPkiConfigBundle()
   mconfig.setUri( QStringLiteral( "http://example.com" ) );
   QVERIFY( mconfig.isValid( true ) );
 
-  QSslCertificate clientcert( QSslCertificate::fromPath( smPkiData + "/gerardus_cert.pem" ).at( 0 ) );
+  QSslCertificate clientcert( QSslCertificate::fromPath( sPkiData + "/gerardus_cert.pem" ).at( 0 ) );
   QByteArray keydata;
-  QFile file( smPkiData + "/gerardus_key.pem" );
+  QFile file( sPkiData + "/gerardus_key.pem" );
   if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     keydata = file.readAll();
   file.close();
@@ -201,7 +201,7 @@ void TestQgsAuthConfig::testConfigSslServer()
 {
   QString hostport( QStringLiteral( "localhost:443" ) );
   QString confstr( QStringLiteral( "2|||470|||2|||10~~19|||0~~2" ) );
-  QSslCertificate sslcert( QSslCertificate::fromPath( smPkiData + "/localhost_ssl_cert.pem" ).at( 0 ) );
+  QSslCertificate sslcert( QSslCertificate::fromPath( sPkiData + "/localhost_ssl_cert.pem" ).at( 0 ) );
 
   QgsAuthConfigSslServer sslconfig;
   QVERIFY( sslconfig.isNull() );

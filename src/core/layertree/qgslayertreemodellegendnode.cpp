@@ -58,7 +58,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
   QFont symbolLabelFont = settings.style( QgsLegendStyle::SymbolLabel ).font();
 
   double textHeight = settings.fontHeightCharacterMM( symbolLabelFont, QChar( '0' ) );
-  // itemHeight here is not realy item height, it is only for symbol
+  // itemHeight here is not really item height, it is only for symbol
   // vertical alignment purpose, i.e. ok take single line height
   // if there are more lines, thos run under the symbol
   double itemHeight = qMax( static_cast< double >( settings.symbolSize().height() ), textHeight );
@@ -176,7 +176,7 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext* context ) const
   }
 
   if ( mItem.level() != 0 && !( model() && model()->testFlag( QgsLayerTreeModel::ShowLegendAsTree ) ) )
-    minSz.setWidth( mItem.level() * indentSize + minSz.width() );
+    minSz.setWidth( mItem.level() * INDENT_SIZE + minSz.width() );
 
   return minSz;
 }
@@ -279,10 +279,10 @@ QVariant QgsSymbolLegendNode::data( int role ) const
       else
       {
         // ident the symbol icon to make it look like a tree structure
-        QPixmap pix2( pix.width() + mItem.level() * indentSize, pix.height() );
+        QPixmap pix2( pix.width() + mItem.level() * INDENT_SIZE, pix.height() );
         pix2.fill( Qt::transparent );
         QPainter p( &pix2 );
-        p.drawPixmap( mItem.level() * indentSize, 0, pix );
+        p.drawPixmap( mItem.level() * INDENT_SIZE, 0, pix );
         p.end();
         mPixmap = pix2;
       }
@@ -362,7 +362,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemC
   if ( QgsMarkerSymbol* markerSymbol = dynamic_cast<QgsMarkerSymbol*>( s ) )
   {
     // allow marker symbol to occupy bigger area if necessary
-    double size = QgsSymbolLayerUtils::convertToPainterUnits( context, markerSymbol->size(), markerSymbol->sizeUnit(), markerSymbol->sizeMapUnitScale() ) / context.scaleFactor();
+    double size = context.convertToPainterUnits( markerSymbol->size(), markerSymbol->sizeUnit(), markerSymbol->sizeMapUnitScale() ) / context.scaleFactor();
     height = size;
     width = size;
     if ( width < settings.symbolSize().width() )
@@ -585,7 +585,7 @@ QgsWmsLegendNode::QgsWmsLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* paren
 {
 }
 
-const QImage& QgsWmsLegendNode::getLegendGraphic() const
+QImage QgsWmsLegendNode::getLegendGraphic() const
 {
   if ( ! mValid && ! mFetcher )
   {

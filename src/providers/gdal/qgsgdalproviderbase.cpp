@@ -238,7 +238,7 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
   bool myHasGeoTransform = GDALGetGeoTransform( gdalDataset, myGeoTransform ) == CE_None;
   if ( !myHasGeoTransform )
   {
-    // Initialise the affine transform matrix
+    // Initialize the affine transform matrix
     myGeoTransform[0] =  0;
     myGeoTransform[1] =  1;
     myGeoTransform[2] =  0;
@@ -272,7 +272,7 @@ int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char *pszM
   Q_UNUSED( pszMessage );
 
   QgsRasterBlockFeedback* feedback = static_cast<QgsRasterBlockFeedback*>( pProgressArg );
-  return !feedback->isCancelled();
+  return !feedback->isCanceled();
 }
 
 
@@ -282,10 +282,10 @@ CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWF
   INIT_RASTERIO_EXTRA_ARG( extra );
   if ( 0 && feedback )  // disabled!
   {
-    // Currently the cancellation is disabled... When RasterIO call is cancelled,
+    // Currently the cancelation is disabled... When RasterIO call is canceled,
     // GDAL returns CE_Failure with error code = 0 (CPLE_None), however one would
     // expect to get CPLE_UserInterrupt to clearly identify that the failure was
-    // caused by the cancellation and not that something dodgy is going on.
+    // caused by the cancelation and not that something dodgy is going on.
     // Are both error codes acceptable?
     extra.pfnProgress = _gdalProgressFnWithFeedback;
     extra.pProgressData = ( void* ) feedback;

@@ -34,7 +34,6 @@ class TestQgsComposerEffects : public QObject
         : mComposition( 0 )
         , mComposerRect1( 0 )
         , mComposerRect2( 0 )
-        , mMapSettings( 0 )
     {}
 
   private slots:
@@ -49,7 +48,6 @@ class TestQgsComposerEffects : public QObject
     QgsComposition* mComposition;
     QgsComposerShape *mComposerRect1;
     QgsComposerShape *mComposerRect2;
-    QgsMapSettings *mMapSettings;
     QString mReport;
 };
 
@@ -58,11 +56,9 @@ void TestQgsComposerEffects::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mMapSettings = new QgsMapSettings();
-
   //create composition with two rectangles
 
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerRect1 = new QgsComposerShape( 20, 20, 150, 100, mComposition );
   mComposerRect1->setShapeType( QgsComposerShape::Rectangle );
@@ -79,7 +75,6 @@ void TestQgsComposerEffects::initTestCase()
 void TestQgsComposerEffects::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

@@ -63,12 +63,12 @@ class QgsBufferServerResponse: public QgsServerResponse
     /**
      * Return body
      */
-    const QByteArray& body() const { return mBody; }
+    QByteArray body() const { return mBody; }
 
     /**
      * Return header's map
      */
-    const QMap<QString, QString>& headers() const { return mHeaders; }
+    QMap<QString, QString> headers() const { return mHeaders; }
 
     /**
      * Return the status code

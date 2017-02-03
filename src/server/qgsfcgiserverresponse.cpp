@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgsfcgiserverresponse.h"
 #include "qgslogger.h"
+#include "qgsserverlogger.h"
 #include "qgsmessagelog.h"
 #include <fcgi_stdio.h>
 
@@ -30,16 +31,14 @@
 //
 
 QgsFcgiServerResponse::QgsFcgiServerResponse( QgsServerRequest::Method method )
+    : mMethod( method )
 {
   mBuffer.open( QIODevice::ReadWrite );
-  mHeadersSent    = false;
-  mFinished       = false;
-  mMethod         = method;
+  setDefaultHeaders();
 }
 
 QgsFcgiServerResponse::~QgsFcgiServerResponse()
 {
-
 }
 
 void QgsFcgiServerResponse::clearHeader( const QString& key )
@@ -82,7 +81,6 @@ void QgsFcgiServerResponse::sendError( int code,  const QString& message )
   }
 
   clear();
-  setDefaultHeaders();
   setReturnCode( code );
   setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/html;charset=utf-8" ) );
   write( QStringLiteral( "<html><body>%1</body></html>" ).arg( message ) );
@@ -157,6 +155,9 @@ void QgsFcgiServerResponse::clear()
   mHeaders.clear();
   mBuffer.seek( 0 );
   mBuffer.buffer().clear();
+
+  // Restore default headers
+  setDefaultHeaders();
 }
 
 void QgsFcgiServerResponse::setDefaultHeaders()
@@ -260,6 +261,13 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
 
   setUrl( url );
   setMethod( method );
+
+  // Output debug infos
+  QgsMessageLog::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
+  if ( logLevel <= QgsMessageLog::INFO )
+  {
+    printRequestInfos();
+  }
 }
 
 QgsFcgiServerRequest::~QgsFcgiServerRequest()
@@ -304,4 +312,54 @@ void QgsFcgiServerRequest::readData()
     QgsMessageLog::logMessage( "fcgi: No POST data" );
   }
 }
+
+void QgsFcgiServerRequest::printRequestInfos()
+{
+  QgsMessageLog::logMessage( QStringLiteral( "******************** New request ***************" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  if ( getenv( "REMOTE_ADDR" ) )
+  {
+    QgsMessageLog::logMessage( "REMOTE_ADDR: " + QString( getenv( "REMOTE_ADDR" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  }
+  if ( getenv( "REMOTE_HOST" ) )
+  {
+    QgsMessageLog::logMessage( "REMOTE_HOST: " + QString( getenv( "REMOTE_HOST" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  }
+  if ( getenv( "REMOTE_USER" ) )
+  {
+    QgsMessageLog::logMessage( "REMOTE_USER: " + QString( getenv( "REMOTE_USER" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  }
+  if ( getenv( "REMOTE_IDENT" ) )
+  {
+    QgsMessageLog::logMessage( "REMOTE_IDENT: " + QString( getenv( "REMOTE_IDENT" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  }
+  if ( getenv( "CONTENT_TYPE" ) )
+  {
+    QgsMessageLog::logMessage( "CONTENT_TYPE: " + QString( getenv( "CONTENT_TYPE" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  }
+  if ( getenv( "AUTH_TYPE" ) )
+  {
+    QgsMessageLog::logMessage( "AUTH_TYPE: " + QString( getenv( "AUTH_TYPE" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  }
+  if ( getenv( "HTTP_USER_AGENT" ) )
+  {
+    QgsMessageLog::logMessage( "HTTP_USER_AGENT: " + QString( getenv( "HTTP_USER_AGENT" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  }
+  if ( getenv( "HTTP_PROXY" ) )
+  {
+    QgsMessageLog::logMessage( "HTTP_PROXY: " + QString( getenv( "HTTP_PROXY" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  }
+  if ( getenv( "HTTPS_PROXY" ) )
+  {
+    QgsMessageLog::logMessage( "HTTPS_PROXY: " + QString( getenv( "HTTPS_PROXY" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  }
+  if ( getenv( "NO_PROXY" ) )
+  {
+    QgsMessageLog::logMessage( "NO_PROXY: " + QString( getenv( "NO_PROXY" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  }
+  if ( getenv( "HTTP_AUTHORIZATION" ) )
+  {
+    QgsMessageLog::logMessage( "HTTP_AUTHORIZATION: " + QString( getenv( "HTTP_AUTHORIZATION" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  }
+}
+
 

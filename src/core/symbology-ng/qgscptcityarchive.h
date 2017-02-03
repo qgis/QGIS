@@ -80,13 +80,13 @@ class CORE_EXPORT QgsCptCityArchive
 
     QString mArchiveName;
     QString mBaseDir;
-    static QString mDefaultArchiveName;
-    static QMap< QString, QgsCptCityArchive* > mArchiveRegistry;
+    static QString sDefaultArchiveName;
+    static QMap< QString, QgsCptCityArchive* > sArchiveRegistry;
     // root items, namely directories at root of archive
     QVector< QgsCptCityDataItem* > mRootItems;
     QVector<QgsCptCityDataItem*> mSelectionItems;
     // mapping of copyinginfo, key is fileName
-    static QMap< QString, QMap< QString, QString > > mCopyingInfoMap;
+    static QMap< QString, QMap< QString, QString > > sCopyingInfoMap;
 
 };
 
@@ -225,7 +225,7 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
 
   protected:
 
-    bool mInitialised;
+    bool mInitialized;
     QgsCptCityColorRamp mRamp;
     QList< QIcon > mIcons;
 };
@@ -361,7 +361,7 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     // Refresh item specified by path
     void refresh( const QString& path );
 
-    // Refresh item childs
+    // Refresh item children
     void refresh( const QModelIndex &index = QModelIndex() );
 
     //! return index of a path

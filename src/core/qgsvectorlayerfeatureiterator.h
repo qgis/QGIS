@@ -27,7 +27,7 @@ class QgsExpressionFieldBuffer;
 class QgsVectorLayer;
 class QgsVectorLayerEditBuffer;
 class QgsVectorLayerJoinBuffer;
-struct QgsVectorJoinInfo;
+class QgsVectorLayerJoinInfo;
 class QgsExpressionContext;
 
 class QgsVectorLayerFeatureIterator;
@@ -36,7 +36,7 @@ class QgsVectorLayerFeatureIterator;
  * Partial snapshot of vector layer's state (only the members necessary for access to features)
  * @note not available in Python bindings
 */
-class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
+class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {
   public:
 
@@ -153,12 +153,12 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      */
     void addExpressionAttribute( QgsFeature& f, int attrIndex );
 
-    /** Update feature with uncommited attribute updates.
+    /** Update feature with uncommitted attribute updates.
      * @note not available in Python bindings
      */
     void updateChangedAttributes( QgsFeature& f );
 
-    /** Update feature with uncommited geometry updates.
+    /** Update feature with uncommitted geometry updates.
      * @note not available in Python bindings
      */
     void updateFeatureGeometry( QgsFeature& f );
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      */
     struct FetchJoinInfo
     {
-      const QgsVectorJoinInfo* joinInfo;//!< Cannonical source of information about the join
+      const QgsVectorLayerJoinInfo* joinInfo;//!< Canonical source of information about the join
       QgsAttributeList attributes;      //!< Attributes to fetch
       int indexOffset;                  //!< At what position the joined fields start
       QgsVectorLayer* joinLayer;        //!< Resolved pointer to the joined layer
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     /** Information about joins used in the current select() statement.
       Allows faster mapping of attribute ids compared to mVectorJoins */
-    QMap<const QgsVectorJoinInfo*, FetchJoinInfo> mFetchJoinInfo;
+    QMap<const QgsVectorLayerJoinInfo*, FetchJoinInfo> mFetchJoinInfo;
 
     QMap<int, QgsExpression*> mExpressionFieldInfo;
 

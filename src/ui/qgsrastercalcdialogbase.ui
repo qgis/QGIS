@@ -541,6 +541,7 @@
   <tabstop>mNRowsSpinBox</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mAddResultToProjectCheckBox</tabstop>
+  <tabstop>mOperatorsGroupBox</tabstop>
   <tabstop>mPlusPushButton</tabstop>
   <tabstop>mMultiplyPushButton</tabstop>
   <tabstop>mSqrtButton</tabstop>

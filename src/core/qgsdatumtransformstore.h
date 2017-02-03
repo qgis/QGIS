@@ -54,7 +54,7 @@ class CORE_EXPORT QgsDatumTransformStore
 
     void writeXml( QDomNode& parentNode, QDomDocument& theDoc ) const;
 
-    struct Entry
+    struct CORE_EXPORT Entry
     {
       QString srcAuthId;
       QString destAuthId;

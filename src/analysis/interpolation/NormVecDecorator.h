@@ -30,8 +30,8 @@ class QProgressDialog;
 class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
 {
   public:
-    //! Enumeration for the state of a point. NORMAL means, that the point is not on a breakline, BREAKLINE means that the point is on a breakline (but not an endpoint of it) and ENDPOINT means, that it is an endpoint of a breakline
-    enum pointState {NORMAL, BREAKLINE, ENDPOINT};
+    //! Enumeration for the state of a point. Normal means, that the point is not on a BreakLine, BreakLine means that the point is on a breakline (but not an end point of it) and EndPoint means, that it is an endpoint of a breakline.
+    enum PointState {Normal, BreakLine, EndPoint};
     NormVecDecorator();
     NormVecDecorator( Triangulation* tin );
     virtual ~NormVecDecorator();
@@ -51,15 +51,15 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     bool estimateFirstDerivatives( QProgressDialog* d = nullptr );
     //! Returns a pointer to the normal vector for the point with the number n
     Vector3D* getNormal( int n ) const;
-    //! Finds out, in which triangle a point with coordinates x and y is and assigns the triangle points to p1, p2, p3 and the estimated normals to v1, v2, v3. The vectors are normaly taken from 'mNormVec', exept if p1, p2 or p3 is a point on a breakline. In this case, the normal is calculated on-the-fly. Returns false, if something went wrong and true otherwise
+    //! Finds out, in which triangle a point with coordinates x and y is and assigns the triangle points to p1, p2, p3 and the estimated normals to v1, v2, v3. The vectors are normally taken from 'mNormVec', except if p1, p2 or p3 is a point on a breakline. In this case, the normal is calculated on-the-fly. Returns false, if something went wrong and true otherwise
     bool getTriangle( double x, double y, Point3D* p1, Vector3D* v1, Point3D* p2, Vector3D* v2, Point3D* p3, Vector3D* v3 );
 
-    /** This function behaves similar to the one above. Additionally, the numbers of the points are returned (ptn1, ptn2, ptn3) as well as the pointStates of the triangle points (state1, state2, state3)
+    /** This function behaves similar to the one above. Additionally, the numbers of the points are returned (ptn1, ptn2, ptn3) as well as the PointStates of the triangle points (state1, state2, state3)
       * @note not available in Python bindings
      */
-    bool getTriangle( double x, double y, Point3D* p1, int* ptn1, Vector3D* v1, pointState* state1, Point3D* p2, int* ptn2, Vector3D* v2, pointState* state2, Point3D* p3, int* ptn3, Vector3D* v3, pointState* state3 );
+    bool getTriangle( double x, double y, Point3D* p1, int* ptn1, Vector3D* v1, PointState* state1, Point3D* p2, int* ptn2, Vector3D* v2, PointState* state2, Point3D* p3, int* ptn3, Vector3D* v3, PointState* state3 );
     //! Returns the state of the point with the number 'pointno'
-    pointState getState( int pointno ) const;
+    PointState getState( int pointno ) const;
     //! Sets an interpolator
     void setTriangleInterpolator( TriangleInterpolator* inter ) override;
     //! Swaps the edge which is closest to the point with x and y coordinates (if this is possible) and forces recalculation of the concerned normals (if alreadyestimated is true)
@@ -72,23 +72,23 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
   protected:
     //! Is true, if the normals already have been estimated
     bool alreadyestimated;
-    const static unsigned int mDefaultStorageForNormals = 100000;
+    static const unsigned int DEFAULT_STORAGE_FOR_NORMALS = 100000;
     //! Association with an interpolator object
     TriangleInterpolator* mInterpolator;
     //! Vector that stores the normals for the points. If 'estimateFirstDerivatives()' was called and there is a null pointer, this means, that the triangle point is on a breakline
     QVector<Vector3D*>* mNormVec;
     //! Vector who stores, it a point is not on a breakline, if it is a normal point of the breakline or if it is an endpoint of a breakline
-    QVector<pointState>* mPointState;
-    //! Sets the state (BREAKLINE, NORMAL, ENDPOINT) of a point
-    void setState( int pointno, pointState s );
+    QVector<PointState>* mPointState;
+    //! Sets the state (BreakLine, Normal, EndPoint) of a point
+    void setState( int pointno, PointState s );
 };
 
-inline NormVecDecorator::NormVecDecorator(): TriDecorator(), mInterpolator( nullptr ), mNormVec( new QVector<Vector3D*>( mDefaultStorageForNormals ) ), mPointState( new QVector<pointState>( mDefaultStorageForNormals ) )
+inline NormVecDecorator::NormVecDecorator(): TriDecorator(), mInterpolator( nullptr ), mNormVec( new QVector<Vector3D*>( DEFAULT_STORAGE_FOR_NORMALS ) ), mPointState( new QVector<PointState>( DEFAULT_STORAGE_FOR_NORMALS ) )
 {
   alreadyestimated = false;
 }
 
-inline NormVecDecorator::NormVecDecorator( Triangulation* tin ): TriDecorator( tin ), mInterpolator( nullptr ), mNormVec( new QVector<Vector3D*>( mDefaultStorageForNormals ) ), mPointState( new QVector<pointState>( mDefaultStorageForNormals ) )
+inline NormVecDecorator::NormVecDecorator( Triangulation* tin ): TriDecorator( tin ), mInterpolator( nullptr ), mNormVec( new QVector<Vector3D*>( DEFAULT_STORAGE_FOR_NORMALS ) ), mPointState( new QVector<PointState>( DEFAULT_STORAGE_FOR_NORMALS ) )
 {
   alreadyestimated = false;
 }

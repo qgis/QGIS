@@ -1635,35 +1635,30 @@ QgsExpression* QgsOgcUtils::expressionFromOgcFilter( const QDomElement& element 
 }
 
 
-static const QMap<QString, int>& binaryOperatorsTagNamesMap()
+static const QMap<QString, int> BINARY_OPERATORS_TAG_NAMES_MAP
 {
-  static QMap<QString, int> binOps;
-  if ( binOps.isEmpty() )
-  {
-    // logical
-    binOps.insert( QStringLiteral( "Or" ), QgsExpression::boOr );
-    binOps.insert( QStringLiteral( "And" ), QgsExpression::boAnd );
-    // comparison
-    binOps.insert( QStringLiteral( "PropertyIsEqualTo" ), QgsExpression::boEQ );
-    binOps.insert( QStringLiteral( "PropertyIsNotEqualTo" ), QgsExpression::boNE );
-    binOps.insert( QStringLiteral( "PropertyIsLessThanOrEqualTo" ), QgsExpression::boLE );
-    binOps.insert( QStringLiteral( "PropertyIsGreaterThanOrEqualTo" ), QgsExpression::boGE );
-    binOps.insert( QStringLiteral( "PropertyIsLessThan" ), QgsExpression::boLT );
-    binOps.insert( QStringLiteral( "PropertyIsGreaterThan" ), QgsExpression::boGT );
-    binOps.insert( QStringLiteral( "PropertyIsLike" ), QgsExpression::boLike );
-    // arithmetics
-    binOps.insert( QStringLiteral( "Add" ), QgsExpression::boPlus );
-    binOps.insert( QStringLiteral( "Sub" ), QgsExpression::boMinus );
-    binOps.insert( QStringLiteral( "Mul" ), QgsExpression::boMul );
-    binOps.insert( QStringLiteral( "Div" ), QgsExpression::boDiv );
-  }
-  return binOps;
-}
+  // logical
+  {  QStringLiteral( "Or" ), QgsExpression::boOr },
+  {  QStringLiteral( "And" ), QgsExpression::boAnd },
+  // comparison
+  {  QStringLiteral( "PropertyIsEqualTo" ), QgsExpression::boEQ },
+  {  QStringLiteral( "PropertyIsNotEqualTo" ), QgsExpression::boNE },
+  {  QStringLiteral( "PropertyIsLessThanOrEqualTo" ), QgsExpression::boLE },
+  {  QStringLiteral( "PropertyIsGreaterThanOrEqualTo" ), QgsExpression::boGE },
+  {  QStringLiteral( "PropertyIsLessThan" ), QgsExpression::boLT },
+  {  QStringLiteral( "PropertyIsGreaterThan" ), QgsExpression::boGT },
+  {  QStringLiteral( "PropertyIsLike" ), QgsExpression::boLike },
+  // arithmetics
+  {  QStringLiteral( "Add" ), QgsExpression::boPlus },
+  {  QStringLiteral( "Sub" ), QgsExpression::boMinus },
+  {  QStringLiteral( "Mul" ), QgsExpression::boMul },
+  {  QStringLiteral( "Div" ), QgsExpression::boDiv },
+};
 
 static int binaryOperatorFromTagName( const QString& tagName )
 {
 
-  return binaryOperatorsTagNamesMap().value( tagName, -1 );
+  return BINARY_OPERATORS_TAG_NAMES_MAP.value( tagName, -1 );
 }
 
 static QString binaryOperatorToTagName( QgsExpression::BinaryOperator op )
@@ -1672,7 +1667,7 @@ static QString binaryOperatorToTagName( QgsExpression::BinaryOperator op )
   {
     return QStringLiteral( "PropertyIsLike" );
   }
-  return binaryOperatorsTagNamesMap().key( op, QString() );
+  return BINARY_OPERATORS_TAG_NAMES_MAP.key( op, QString() );
 }
 
 static bool isBinaryOperator( const QString& tagName )
@@ -2293,7 +2288,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionUnaryOperatorToOgcFilter( const Q
       break;
 
     default:
-      mErrorMessage = QObject::tr( "Unary operator %1 not implemented yet" ).arg( QgsExpression::UnaryOperatorText[node->op()] );
+      mErrorMessage = QObject::tr( "Unary operator %1 not implemented yet" ).arg( QgsExpression::UNARY_OPERATOR_TEXT[node->op()] );
       return QDomElement();
   }
 
@@ -2347,7 +2342,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionBinaryOperatorToOgcFilter( const 
   {
     // not implemented binary operators
     // TODO: regex, % (mod), ^ (pow) are not supported yet
-    mErrorMessage = QObject::tr( "Binary operator %1 not implemented yet" ).arg( QgsExpression::BinaryOperatorText[op] );
+    mErrorMessage = QObject::tr( "Binary operator %1 not implemented yet" ).arg( QgsExpression::BINARY_OPERATOR_TEXT[op] );
     return QDomElement();
   }
 
@@ -2439,30 +2434,25 @@ QDomElement QgsOgcUtilsExprToFilter::expressionInOperatorToOgcFilter( const QgsE
   return orElem;
 }
 
-static QMap<QString, QString> binarySpatialOpsMap()
+static const QMap<QString, QString> BINARY_SPATIAL_OPS_MAP
 {
-  static QMap<QString, QString> binSpatialOps;
-  if ( binSpatialOps.isEmpty() )
-  {
-    binSpatialOps.insert( QStringLiteral( "disjoint" ), QStringLiteral( "Disjoint" ) );
-    binSpatialOps.insert( QStringLiteral( "intersects" ), QStringLiteral( "Intersects" ) );
-    binSpatialOps.insert( QStringLiteral( "touches" ), QStringLiteral( "Touches" ) );
-    binSpatialOps.insert( QStringLiteral( "crosses" ), QStringLiteral( "Crosses" ) );
-    binSpatialOps.insert( QStringLiteral( "contains" ), QStringLiteral( "Contains" ) );
-    binSpatialOps.insert( QStringLiteral( "overlaps" ), QStringLiteral( "Overlaps" ) );
-    binSpatialOps.insert( QStringLiteral( "within" ), QStringLiteral( "Within" ) );
-  }
-  return binSpatialOps;
-}
+  { QStringLiteral( "disjoint" ), QStringLiteral( "Disjoint" ) },
+  { QStringLiteral( "intersects" ), QStringLiteral( "Intersects" )},
+  { QStringLiteral( "touches" ), QStringLiteral( "Touches" ) },
+  { QStringLiteral( "crosses" ), QStringLiteral( "Crosses" ) },
+  { QStringLiteral( "contains" ), QStringLiteral( "Contains" ) },
+  { QStringLiteral( "overlaps" ), QStringLiteral( "Overlaps" ) },
+  { QStringLiteral( "within" ), QStringLiteral( "Within" ) }
+};
 
 static bool isBinarySpatialOperator( const QString& fnName )
 {
-  return binarySpatialOpsMap().contains( fnName );
+  return BINARY_SPATIAL_OPS_MAP.contains( fnName );
 }
 
 static QString tagNameForSpatialOperator( const QString& fnName )
 {
-  return binarySpatialOpsMap().value( fnName );
+  return BINARY_SPATIAL_OPS_MAP.value( fnName );
 }
 
 static bool isGeometryColumn( const QgsExpression::Node* node )
@@ -2508,7 +2498,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
     Q_ASSERT( argNodes.count() == 2 ); // binary spatial ops must have two args
 
     QgsGeometry geom = geometryFromConstExpr( argNodes[1] );
-    if ( !geom.isEmpty() && isGeometryColumn( argNodes[0] ) )
+    if ( !geom.isNull() && isGeometryColumn( argNodes[0] ) )
     {
       QgsRectangle rect = geom.boundingBox();
 
@@ -2713,7 +2703,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
       break;
 
     default:
-      mErrorMessage = QObject::tr( "Unary operator %1 not implemented yet" ).arg( QgsSQLStatement::UnaryOperatorText[node->op()] );
+      mErrorMessage = QObject::tr( "Unary operator %1 not implemented yet" ).arg( QgsSQLStatement::UNARY_OPERATOR_TEXT[node->op()] );
       return QDomElement();
   }
 
@@ -2787,7 +2777,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   if ( opText.isEmpty() )
   {
     // not implemented binary operators
-    mErrorMessage = QObject::tr( "Binary operator %1 not implemented yet" ).arg( QgsSQLStatement::BinaryOperatorText[op] );
+    mErrorMessage = QObject::tr( "Binary operator %1 not implemented yet" ).arg( QgsSQLStatement::BINARY_OPERATOR_TEXT[op] );
     return QDomElement();
   }
 

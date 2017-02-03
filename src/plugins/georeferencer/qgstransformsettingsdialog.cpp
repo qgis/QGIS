@@ -297,7 +297,7 @@ QString QgsTransformSettingsDialog::generateModifiedRasterFileName( const QStrin
 }
 
 // Note this code is duplicated from qgisapp.cpp because
-// I didnt want to make plugins on qgsapplication [TS]
+// I didn't want to make plugins on qgsapplication [TS]
 QIcon QgsTransformSettingsDialog::getThemeIcon( const QString &theName )
 {
   if ( QFile::exists( QgsApplication::activeThemePath() + theName ) )

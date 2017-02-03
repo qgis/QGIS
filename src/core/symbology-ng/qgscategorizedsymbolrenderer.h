@@ -19,11 +19,11 @@
 #include "qgssymbol.h"
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
+#include "qgscolorramp.h"
 
 #include <QHash>
 #include <QScopedPointer>
 
-class QgsColorRamp;
 class QgsVectorLayer;
 
 /** \ingroup core
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
     virtual void stopRender( QgsRenderContext& context ) override;
-    virtual QSet<QString> usedAttributes() const override;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
     virtual QString dump() const override;
     virtual QgsCategorizedSymbolRenderer* clone() const override;
     virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props = QgsStringMap() ) const override;

@@ -187,7 +187,7 @@ class CORE_EXPORT QgsAction
     QString mShortTitle;
     QString mIcon;
     QString mCommand;
-    bool mCaptureOutput;
+    bool mCaptureOutput = false;
     QSet<QString> mActionScopes;
     mutable QSharedPointer<QAction> mAction;
     QUuid mId;

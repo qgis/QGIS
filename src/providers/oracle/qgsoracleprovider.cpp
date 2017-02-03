@@ -45,7 +45,7 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
     : QgsVectorDataProvider( uri )
     , mValid( false )
     , mIsQuery( false )
-    , mPrimaryKeyType( pktUnknown )
+    , mPrimaryKeyType( PktUnknown )
     , mFeaturesCounted( -1 )
     , mDetectedGeomType( QgsWkbTypes::Unknown )
     , mRequestedGeomType( QgsWkbTypes::Unknown )
@@ -167,14 +167,14 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
   QString key;
   switch ( mPrimaryKeyType )
   {
-    case pktRowId:
+    case PktRowId:
       key = "ROWID";
       break;
 
-    case pktInt:
-    case pktFidMap:
+    case PktInt:
+    case PktFidMap:
     {
-      Q_ASSERT( mPrimaryKeyType != pktInt || mPrimaryKeyAttrs.size() == 1 );
+      Q_ASSERT( mPrimaryKeyType != PktInt || mPrimaryKeyAttrs.size() == 1 );
 
       QString delim;
       Q_FOREACH ( int idx, mPrimaryKeyAttrs )
@@ -185,7 +185,7 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
       }
     }
     break;
-    case pktUnknown:
+    case PktUnknown:
       mValid = false;
       break;
   }
@@ -271,94 +271,14 @@ QString QgsOracleProvider::storageType() const
   return "Oracle database with locator/spatial extension";
 }
 
-#if QT_VERSION < 0x050000
-static bool operator<( const QVariant &a, const QVariant &b )
-{
-  if ( a.isNull() || b.isNull() )
-    return false;
-
-  if ( a.type() == b.type() )
-  {
-    switch ( a.type() )
-    {
-      case QVariant::Int:
-      case QVariant::Char:
-        return a.toInt() < b.toInt();
-
-      case QVariant::Double:
-        return a.toDouble() < b.toDouble();
-
-      case QVariant::LongLong:
-        return a.toLongLong() < b.toLongLong();
-
-      case QVariant::List:
-      {
-        QList<QVariant> al = a.toList();
-        QList<QVariant> bl = b.toList();
-
-        int i, n = qMin( al.size(), bl.size() );
-        for ( i = 0; i < n && al[i] == bl[i]; i++ )
-          ;
-
-        if ( i == n )
-          return al.size() < bl.size();
-        else
-          return al[i] < bl[i];
-      }
-      break;
-
-      case QVariant::StringList:
-      {
-        QStringList al = a.toStringList();
-        QStringList bl = b.toStringList();
-
-        int i, n = qMin( al.size(), bl.size() );
-        for ( i = 0; i < n && al[i] == bl[i]; i++ )
-          ;
-
-        if ( i == n )
-          return al.size() < bl.size();
-        else
-          return al[i] < bl[i];
-      }
-      break;
-
-      case QVariant::Date:
-        return a.toDate() < b.toDate();
-
-      case QVariant::Time:
-        return a.toTime() < b.toTime();
-
-      case QVariant::DateTime:
-        return a.toDateTime() < b.toDateTime();
-
-      case QVariant::Bool:
-        return a.toBool() < b.toBool();
-
-      case QVariant::UInt:
-        return a.toUInt() < b.toUInt();
-
-      case QVariant::ULongLong:
-        return a.toULongLong() < b.toULongLong();
-
-      default:
-        break;
-    }
-  }
-
-  return a.canConvert( QVariant::String ) && b.canConvert( QVariant::String ) && a.toString() < b.toString();
-}
-#endif
-
-
 QString QgsOracleProvider::pkParamWhereClause() const
 {
   QString whereClause;
 
   switch ( mPrimaryKeyType )
   {
-    case pktInt:
-    case pktFidMap:
+    case PktInt:
+    case PktFidMap:
     {
       Q_ASSERT( mPrimaryKeyAttrs.size() >= 1 );
 
@@ -374,11 +294,11 @@ QString QgsOracleProvider::pkParamWhereClause() const
     }
     break;
 
-    case pktRowId:
+    case PktRowId:
       return "ROWID=?";
       break;
 
-    case pktUnknown:
+    case PktUnknown:
       Q_ASSERT( !"FAILURE: Primary key unknown" );
       whereClause = "NULL IS NOT NULL";
       break;
@@ -399,13 +319,13 @@ void QgsOracleProvider::appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const
 {
   switch ( mPrimaryKeyType )
   {
-    case pktInt:
+    case PktInt:
       QgsDebugMsgLevel( QString( "addBindValue pk %1" ).arg( FID_TO_STRING( fid ) ), 4 );
       qry.addBindValue( FID_TO_STRING( fid ) );
       break;
 
-    case pktRowId:
-    case pktFidMap:
+    case PktRowId:
+    case PktFidMap:
     {
       QVariant pkValsVariant = mShared->lookupKey( fid );
       if ( !pkValsVariant.isNull() )
@@ -429,7 +349,7 @@ void QgsOracleProvider::appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const
     }
     break;
 
-    case pktUnknown:
+    case PktUnknown:
       QgsDebugMsg( "Unknown key type" );
       break;
   }
@@ -442,20 +362,20 @@ QString QgsOracleUtils::whereClause( QgsFeatureId featureId, const QgsFields& fi
 
   switch ( primaryKeyType )
   {
-    case pktInt:
+    case PktInt:
       Q_ASSERT( primaryKeyAttrs.size() == 1 );
       whereClause = QString( "%1=%2" ).arg( QgsOracleConn::quotedIdentifier( fields.at( primaryKeyAttrs[0] ).name() ) ).arg( featureId );
       break;
 
-    case pktRowId:
-    case pktFidMap:
+    case PktRowId:
+    case PktFidMap:
     {
       QVariant pkValsVariant = sharedData->lookupKey( featureId );
       if ( !pkValsVariant.isNull() )
       {
         QList<QVariant> pkVals = pkValsVariant.toList();
 
-        if ( primaryKeyType == pktFidMap )
+        if ( primaryKeyType == PktFidMap )
         {
           Q_ASSERT( pkVals.size() == primaryKeyAttrs.size() );
 
@@ -482,7 +402,7 @@ QString QgsOracleUtils::whereClause( QgsFeatureId featureId, const QgsFields& fi
     }
     break;
 
-    case pktUnknown:
+    case PktUnknown:
       Q_ASSERT( !"FAILURE: Primary key unknown" );
       whereClause = "NULL IS NOT NULL";
       break;
@@ -951,7 +871,7 @@ bool QgsOracleProvider::determinePrimaryKey()
 
     if ( mPrimaryKeyAttrs.size() > 0 )
     {
-      mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && isInt ) ? pktInt : pktFidMap;
+      mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && isInt ) ? PktInt : PktFidMap;
     }
     else if ( !exec( qry, QString( "SELECT 1 FROM all_tables WHERE owner=%1 AND table_name=%2" ).arg( quotedValue( mOwnerName ) ).arg( quotedValue( mTableName ) ) ) )
     {
@@ -962,12 +882,12 @@ bool QgsOracleProvider::determinePrimaryKey()
     else if ( qry.next() )
     {
       // is table
-      mPrimaryKeyType = pktRowId;
+      mPrimaryKeyType = PktRowId;
     }
     else
     {
       QString primaryKey = mUri.keyColumn();
-      mPrimaryKeyType = pktUnknown;
+      mPrimaryKeyType = PktUnknown;
 
       if ( !primaryKey.isEmpty() )
       {
@@ -979,7 +899,7 @@ bool QgsOracleProvider::determinePrimaryKey()
 
           if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
           {
-            mPrimaryKeyType = ( fld.type() == QVariant::Int || fld.type() == QVariant::LongLong || ( fld.type() == QVariant::Double && fld.precision() == 0 ) ) ? pktInt : pktFidMap;
+            mPrimaryKeyType = ( fld.type() == QVariant::Int || fld.type() == QVariant::LongLong || ( fld.type() == QVariant::Double && fld.precision() == 0 ) ) ? PktInt : PktFidMap;
             mPrimaryKeyAttrs << idx;
           }
           else
@@ -1011,20 +931,20 @@ bool QgsOracleProvider::determinePrimaryKey()
     {
       if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
       {
-        mPrimaryKeyType = pktInt;
+        mPrimaryKeyType = PktInt;
         mPrimaryKeyAttrs << idx;
       }
     }
     else
     {
       QgsMessageLog::logMessage( tr( "No key field for query given." ), tr( "Oracle" ) );
-      mPrimaryKeyType = pktUnknown;
+      mPrimaryKeyType = PktUnknown;
     }
   }
 
   qry.finish();
 
-  mValid = mPrimaryKeyType != pktUnknown;
+  mValid = mPrimaryKeyType != PktUnknown;
 
   Q_FOREACH ( int fieldIdx, mPrimaryKeyAttrs )
   {
@@ -1268,7 +1188,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
       delim = ",";
     }
 
-    if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
+    if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap )
     {
       QString keys, kdelim = "";
 
@@ -1408,12 +1328,12 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
       if ( !ins.exec() )
         throw OracleException( tr( "Could not insert feature %1" ).arg( features->id() ), ins );
 
-      if ( mPrimaryKeyType == pktRowId )
+      if ( mPrimaryKeyType == PktRowId )
       {
-        features->setFeatureId( mShared->lookupFid( QList<QVariant>() << QVariant( ins.lastInsertId() ) ) );
+        features->setId( mShared->lookupFid( QList<QVariant>() << QVariant( ins.lastInsertId() ) ) );
         QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
       }
-      else if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
+      else if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap )
       {
         getfid.addBindValue( QVariant( ins.lastInsertId() ) );
         if ( !getfid.exec() || !getfid.next() )
@@ -1440,15 +1360,15 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
     }
 
     // update feature ids
-    if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
+    if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap )
     {
       for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
       {
         QgsAttributes attributevec = features->attributes();
 
-        if ( mPrimaryKeyType == pktInt )
+        if ( mPrimaryKeyType == PktInt )
         {
-          features->setFeatureId( STRING_TO_FID( attributevec[ mPrimaryKeyAttrs[0] ] ) );
+          features->setId( STRING_TO_FID( attributevec[ mPrimaryKeyAttrs[0] ] ) );
         }
         else
         {
@@ -1459,7 +1379,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
             primaryKeyVals << attributevec[ idx ];
           }
 
-          features->setFeatureId( mShared->lookupFid( QVariant( primaryKeyVals ) ) );
+          features->setId( mShared->lookupFid( QVariant( primaryKeyVals ) ) );
         }
         QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
       }
@@ -1864,7 +1784,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
       qry.finish();
 
       // update feature id map if key was changed
-      if ( pkChanged && mPrimaryKeyType == pktFidMap )
+      if ( pkChanged && mPrimaryKeyType == PktFidMap )
       {
         QVariant v = mShared->removeFid( fid );
 
@@ -1933,7 +1853,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry
 
       case QgsWkbTypes::Point:
         g.srid  = mSrid;
-        g.gtype = SDO_GTYPE( dim, gtPoint );
+        g.gtype = SDO_GTYPE( dim, GtPoint );
         g.x = *ptr.dPtr++;
         g.y = *ptr.dPtr++;
         g.z = dim == 3 ? *ptr.dPtr++ : 0.0;
@@ -1949,11 +1869,11 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry
       case QgsWkbTypes::LineString:
       case QgsWkbTypes::MultiLineString:
       {
-        g.gtype = SDO_GTYPE( dim, gtLine );
+        g.gtype = SDO_GTYPE( dim, GtLine );
         int nLines = 1;
         if ( type == QgsWkbTypes::MultiLineString25D || type == QgsWkbTypes::MultiLineString )
         {
-          g.gtype = SDO_GTYPE( dim, gtMultiLine );
+          g.gtype = SDO_GTYPE( dim, GtMultiLine );
           nLines = *ptr.iPtr++;
           ptr.ucPtr++; // Skip endianness of first linestring
           ptr.iPtr++;  // Skip type of first linestring
@@ -1988,11 +1908,11 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry
       case QgsWkbTypes::Polygon:
       case QgsWkbTypes::MultiPolygon:
       {
-        g.gtype = SDO_GTYPE( dim, gtPolygon );
+        g.gtype = SDO_GTYPE( dim, GtPolygon );
         int nPolygons = 1;
         if ( type == QgsWkbTypes::MultiPolygon25D || type == QgsWkbTypes::MultiPolygon )
         {
-          g.gtype = SDO_GTYPE( dim, gtMultiPolygon );
+          g.gtype = SDO_GTYPE( dim, GtMultiPolygon );
           nPolygons = *ptr.iPtr++;
 
           ptr.ucPtr++; // Skip endianness of first polygon
@@ -2029,7 +1949,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry
 
       case QgsWkbTypes::MultiPoint:
       {
-        g.gtype = SDO_GTYPE( dim, gtMultiPoint );
+        g.gtype = SDO_GTYPE( dim, GtMultiPoint );
         int n = *ptr.iPtr++;
 
         g.eleminfo << 1 << 1 << n;
@@ -2202,7 +2122,7 @@ bool QgsOracleProvider::setSubsetString( const QString& theSQL, bool updateFeatu
   }
   qry.finish();
 
-  if ( mPrimaryKeyType == pktInt && !mUseEstimatedMetadata && !uniqueData( mQuery, mAttributeFields.at( mPrimaryKeyAttrs[0] ).name() ) )
+  if ( mPrimaryKeyType == PktInt && !mUseEstimatedMetadata && !uniqueData( mQuery, mAttributeFields.at( mPrimaryKeyAttrs[0] ).name() ) )
   {
     mSqlWhereClause = prevWhere;
     return false;

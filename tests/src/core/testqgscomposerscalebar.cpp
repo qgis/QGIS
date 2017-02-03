@@ -24,6 +24,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsfontutils.h"
+#include "qgsproperty.h"
 #include "qgsproject.h"
 
 #include <QLocale>
@@ -40,7 +41,6 @@ class TestQgsComposerScaleBar : public QObject
         , mComposerMap( 0 )
         , mComposerScaleBar( 0 )
         , mRasterLayer( 0 )
-        , mMapSettings( 0 )
     {}
 
   private slots:
@@ -53,15 +53,14 @@ class TestQgsComposerScaleBar : public QObject
     void doubleBox();
     void numeric();
     void tick();
+    void dataDefined();
 
   private:
     QgsComposition* mComposition;
     QgsComposerMap* mComposerMap;
     QgsComposerScaleBar* mComposerScaleBar;
     QgsRasterLayer* mRasterLayer;
-    QgsMapSettings *mMapSettings;
     QString mReport;
-    QPen mPrevPen;
 };
 
 void TestQgsComposerScaleBar::initTestCase()
@@ -75,9 +74,11 @@ void TestQgsComposerScaleBar::initTestCase()
   // so we enforce C locale to make sure we get expected result
   QLocale::setDefault( QLocale::c() );
 
+  //reproject to WGS84
+  QgsCoordinateReferenceSystem destCRS;
+  destCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsProject::instance()->setCrs( destCRS );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
-
-  mMapSettings = new QgsMapSettings();
 
   //create maplayers from testdata and add to layer registry
   QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
@@ -87,20 +88,14 @@ void TestQgsComposerScaleBar::initTestCase()
   mRasterLayer->setRenderer( rasterRenderer );
 
   //create composition with composer map
-  mMapSettings->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
-  //reproject to WGS84
-  QgsCoordinateReferenceSystem destCRS;
-  destCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
-  mMapSettings->setDestinationCrs( destCRS );
-  mMapSettings->setCrsTransformEnabled( true );
-
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 150, 150 );
   mComposerMap->setFrameEnabled( true );
   mComposition->addComposerMap( mComposerMap );
   mComposerMap->setNewExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
+  mComposerMap->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
   mComposerScaleBar = new QgsComposerScaleBar( mComposition );
   mComposerScaleBar->setSceneRect( QRectF( 20, 180, 50, 20 ) );
@@ -112,9 +107,7 @@ void TestQgsComposerScaleBar::initTestCase()
   mComposerScaleBar->setNumSegmentsLeft( 0 );
   mComposerScaleBar->setNumSegments( 2 );
   mComposerScaleBar->setHeight( 5 );
-  QPen scalePen = mComposerScaleBar->pen();
-  scalePen.setWidthF( 1.0 );
-  mComposerScaleBar->setPen( scalePen );
+  mComposerScaleBar->setLineWidth( 1.0 );
 
   qWarning() << "scalebar font: " << mComposerScaleBar->font().toString() << " exactMatch:" << mComposerScaleBar->font().exactMatch();
 
@@ -124,7 +117,6 @@ void TestQgsComposerScaleBar::initTestCase()
 void TestQgsComposerScaleBar::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapSettings;
   delete mRasterLayer;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
@@ -160,13 +152,11 @@ void TestQgsComposerScaleBar::singleBox()
 void TestQgsComposerScaleBar::singleBoxAlpha()
 {
   mComposerScaleBar->setStyle( QStringLiteral( "Single Box" ) );
-  mComposerScaleBar->setBrush( QBrush( QColor( 255, 0, 0, 100 ) ) );
-  mComposerScaleBar->setBrush2( QBrush( QColor( 0, 255, 0, 50 ) ) );
-  mPrevPen = mComposerScaleBar->pen();
-  QPen newPen = mPrevPen;
-  newPen.setColor( QColor( 0, 0, 255, 150 ) );
-  mComposerScaleBar->setPen( newPen );
+  mComposerScaleBar->setFillColor( QColor( 255, 0, 0, 100 ) );
+  mComposerScaleBar->setFillColor2( QColor( 0, 255, 0, 50 ) );
+  mComposerScaleBar->setLineColor( QColor( 0, 0, 255, 150 ) );
   mComposerScaleBar->setFontColor( QColor( 255, 0, 255, 100 ) );
+  mComposerScaleBar->setLineWidth( 1.0 );
   QgsCompositionChecker checker( QStringLiteral( "composerscalebar_singlebox_alpha" ), mComposition );
   checker.setControlPathPrefix( QStringLiteral( "composer_scalebar" ) );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
@@ -175,9 +165,10 @@ void TestQgsComposerScaleBar::singleBoxAlpha()
 void TestQgsComposerScaleBar::doubleBox()
 {
   // cleanup singleBoxAlpha
-  mComposerScaleBar->setBrush( QBrush( Qt::black ) );
-  mComposerScaleBar->setBrush2( QBrush( Qt::white ) );
-  mComposerScaleBar->setPen( mPrevPen );
+  mComposerScaleBar->setFillColor( Qt::black );
+  mComposerScaleBar->setFillColor2( Qt::white );
+  mComposerScaleBar->setLineColor( Qt::black );
+  mComposerScaleBar->setLineWidth( 1.0 );
   mComposerScaleBar->setFontColor( Qt::black );
   mComposerScaleBar->setStyle( QStringLiteral( "Double Box" ) );
 
@@ -198,9 +189,25 @@ void TestQgsComposerScaleBar::numeric()
 void TestQgsComposerScaleBar::tick()
 {
   mComposerScaleBar->setStyle( QStringLiteral( "Line Ticks Up" ) );
+  mComposerScaleBar->setLineWidth( 1.0 );
   QgsCompositionChecker checker( QStringLiteral( "composerscalebar_tick" ), mComposition );
   checker.setControlPathPrefix( QStringLiteral( "composer_scalebar" ) );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
+}
+
+void TestQgsComposerScaleBar::dataDefined()
+{
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarFillColor, QgsProperty::fromExpression( "'red'" ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarFillColor2, QgsProperty::fromExpression( "'blue'" ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarLineColor, QgsProperty::fromExpression( "'yellow'" ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarLineWidth, QgsProperty::fromExpression( "1.2" ) );
+  mComposerScaleBar->refreshDataDefinedProperty();
+  QCOMPARE( mComposerScaleBar->brush().color().name(), QColor( 255, 0, 0 ).name() );
+  QCOMPARE( mComposerScaleBar->brush2().color().name(), QColor( 0, 0, 255 ).name() );
+  QCOMPARE( mComposerScaleBar->pen().color().name(), QColor( 255, 255, 0 ).name() );
+  QCOMPARE( mComposerScaleBar->pen().widthF(), 1.2 );
+  mComposerScaleBar->setDataDefinedProperties( QgsPropertyCollection() );
+  mComposerScaleBar->setLineWidth( 1.0 );
 }
 
 QGSTEST_MAIN( TestQgsComposerScaleBar )

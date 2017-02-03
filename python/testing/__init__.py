@@ -273,6 +273,11 @@ def start_app(cleanup=True):
         QGISAPP.initQgis()
         print(QGISAPP.showSettings())
 
+        def debug_log_message(message, tag, level):
+            print('{}({}): {}'.format(tag, level, message))
+
+        QgsApplication.instance().messageLog().messageReceived.connect(debug_log_message)
+
         if cleanup:
             import atexit
 

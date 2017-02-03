@@ -17,16 +17,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -356,7 +347,7 @@
            <widget class="QComboBox" name="mEmptyModeComboBox"/>
           </item>
           <item row="10" column="1">
-           <widget class="QComboBox" name="mWrapBehaviourComboBox"/>
+           <widget class="QComboBox" name="mWrapBehaviorComboBox"/>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="mMarginLabel">
@@ -836,10 +827,12 @@
   <tabstop>mBackgroundColorButton</tabstop>
   <tabstop>mAdvancedCustomisationButton</tabstop>
   <tabstop>mWrapStringLineEdit</tabstop>
-  <tabstop>mWrapBehaviourComboBox</tabstop>
+  <tabstop>mWrapBehaviorComboBox</tabstop>
   <tabstop>mShowGridGroupCheckBox</tabstop>
   <tabstop>mGridStrokeWidthSpinBox</tabstop>
   <tabstop>mGridColorButton</tabstop>
+  <tabstop>mDrawHorizontalGrid</tabstop>
+  <tabstop>mDrawVerticalGrid</tabstop>
   <tabstop>groupBox_3</tabstop>
   <tabstop>mHeaderFontPushButton</tabstop>
   <tabstop>mHeaderFontColorButton</tabstop>

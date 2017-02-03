@@ -141,6 +141,45 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      */
     double lineLocatePoint( const QgsPointV2& point, QString* errorMsg = nullptr ) const;
 
+    /**
+     * Creates a GeometryCollection geometry containing possible polygons formed from the constituent
+     * linework of a set of \a geometries. The input geometries must be fully noded (i.e. nodes exist
+     * at every common intersection of the geometries). The easiest way to ensure this is to first
+     * unary union these geometries by calling combine() on the set of input geometries and then
+     * pass the result to polygonize().
+     * An empty geometry will be returned in the case of errors.
+     * @note added in QGIS 3.0
+     */
+    static QgsGeometry polygonize( const QList<QgsAbstractGeometry*>& geometries, QString* errorMsg = nullptr );
+
+    /**
+     * Creates a Voronoi diagram for the nodes contained within the geometry.
+     *
+     * Returns the Voronoi polygons for the nodes contained within the geometry.
+     * If \a extent is specified then it will be used as a clipping envelope for the diagram.
+     * If no extent is set then the clipping envelope will be automatically calculated.
+     * In either case the diagram will be clipped to the larger of the provided envelope
+     * OR the envelope surrounding all input nodes.
+     * The \a tolerance parameter specifies an optional snapping tolerance which can
+     * be used to improve the robustness of the diagram calculation.
+     * If \a edgesOnly is true than line string boundary geometries will be returned
+     * instead of polygons.
+     * An empty geometry will be returned if the diagram could not be calculated.
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry voronoiDiagram( const QgsAbstractGeometry* extent = nullptr, double tolerance = 0.0, bool edgesOnly = false, QString* errorMsg = nullptr ) const;
+
+    /**
+     * Returns the Delaunay triangulation for the vertices of the geometry.
+     * The \a tolerance parameter specifies an optional snapping tolerance which can
+     * be used to improve the robustness of the triangulation.
+     * If \a edgesOnly is true than line string boundary geometries will be returned
+     * instead of polygons.
+     * An empty geometry will be returned if the diagram could not be calculated.
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString* errorMsg = nullptr ) const;
+
     /** Create a geometry from a GEOSGeometry
      * @param geos GEOSGeometry. Ownership is NOT transferred.
      */
@@ -244,7 +283,7 @@ class GEOSException // clazy:exclude=rule-of-three
 
   private:
     QString msg;
-    static QString& lastMsg() { static QString _lastMsg; return _lastMsg; }
+    static QString& lastMsg() { static QString sLastMsg; return sLastMsg; }
 };
 
 /// @endcond

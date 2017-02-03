@@ -38,6 +38,7 @@ ADD_LIBRARY(delimitedtextprovider MODULE ${DTEXT_SRCS} ${DTEXT_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(delimitedtextprovider
   qgis_core
+  qgis_gui
 )
 
 ########################################################

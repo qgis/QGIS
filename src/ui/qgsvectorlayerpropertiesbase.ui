@@ -150,7 +150,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/rendering.png</normaloff>:/images/themes/default/propertyicons/rendering.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
           </property>
          </item>
          <item>
@@ -431,6 +431,9 @@
                </item>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="indexGroupBox">
+                 <property name="focusPolicy">
+                  <enum>Qt::StrongFocus</enum>
+                 </property>
                  <property name="title">
                   <string>Coordinate reference system</string>
                  </property>
@@ -502,7 +505,11 @@
                  </property>
                  <layout class="QGridLayout" name="gridLayout_6">
                   <item row="0" column="0">
-                   <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true"/>
+                   <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget">
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -943,7 +950,11 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QgsFieldExpressionWidget" name="mDisplayExpressionWidget"/>
+               <widget class="QgsFieldExpressionWidget" name="mDisplayExpressionWidget">
+                <property name="focusPolicy">
+                 <enum>Qt::StrongFocus</enum>
+                </property>
+               </widget>
               </item>
               <item row="1" column="0" colspan="2">
                <widget class="QGroupBox" name="groupBox_2">
@@ -991,6 +1002,9 @@
                  </item>
                  <item row="1" column="0" colspan="2">
                   <widget class="QgsFieldExpressionWidget" name="mMapTipExpressionFieldWidget">
+                   <property name="focusPolicy">
+                    <enum>Qt::StrongFocus</enum>
+                   </property>
                    <property name="toolTip">
                     <string>The valid attribute names for this layer</string>
                    </property>
@@ -1814,6 +1828,12 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
@@ -1825,31 +1845,26 @@
    <header>qgsscalerangewidget.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsScaleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsscalecombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsLayerTreeEmbeddedConfigWidget</class>
-   <extends>QWidget</extends>
-   <header>qgslayertreeembeddedconfigwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldExpressionWidget</class>
+   <class>QgsScaleComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgsfieldexpressionwidget.h</header>
+   <header>qgsscalecombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsLayerTreeView</class>
    <extends>QTreeView</extends>
    <header>qgslayertreeview.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsLayerTreeEmbeddedConfigWidget</class>
+   <extends>QWidget</extends>
+   <header>qgslayertreeembeddedconfigwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -1861,16 +1876,19 @@
  <tabstops>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>scrollArea</tabstop>
+  <tabstop>groupBox</tabstop>
   <tabstop>mLayerOrigNameLineEdit</tabstop>
   <tabstop>txtDisplayName</tabstop>
   <tabstop>txtLayerSource</tabstop>
   <tabstop>cboProviderEncoding</tabstop>
+  <tabstop>indexGroupBox</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>pbnIndex</tabstop>
   <tabstop>pbnUpdateExtents</tabstop>
   <tabstop>mScaleVisibilityGroupBox</tabstop>
+  <tabstop>mScaleRangeWidget</tabstop>
+  <tabstop>mSubsetGroupBox</tabstop>
   <tabstop>txtSubsetSQL</tabstop>
-  <tabstop>pbnQueryBuilder</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>scrollArea_19</tabstop>
@@ -1880,28 +1898,37 @@
   <tabstop>mSimplifyDrawingAtProvider</tabstop>
   <tabstop>mSimplifyMaximumScaleComboBox</tabstop>
   <tabstop>mForceRasterCheckBox</tabstop>
-  <tabstop>scrollArea_10</tabstop>
+  <tabstop>mDisplayExpressionWidget</tabstop>
+  <tabstop>mMapTipExpressionFieldWidget</tabstop>
+  <tabstop>mInsertExpressionButton</tabstop>
   <tabstop>scrollArea_6</tabstop>
-  <tabstop>mJoinTreeWidget</tabstop>
   <tabstop>scrollArea_7</tabstop>
   <tabstop>mButtonAddJoin</tabstop>
   <tabstop>mButtonRemoveJoin</tabstop>
   <tabstop>mButtonEditJoin</tabstop>
+  <tabstop>mJoinTreeWidget</tabstop>
   <tabstop>scrollArea_2</tabstop>
+  <tabstop>mMetaDescriptionGrpBx</tabstop>
   <tabstop>mLayerShortNameLineEdit</tabstop>
   <tabstop>mLayerTitleLineEdit</tabstop>
   <tabstop>mLayerAbstractTextEdit</tabstop>
   <tabstop>mLayerKeywordListLineEdit</tabstop>
   <tabstop>mLayerDataUrlLineEdit</tabstop>
   <tabstop>mLayerDataUrlFormatComboBox</tabstop>
+  <tabstop>mMetaAttributionGrpBx</tabstop>
   <tabstop>mLayerAttributionLineEdit</tabstop>
   <tabstop>mLayerAttributionUrlLineEdit</tabstop>
+  <tabstop>mMetaMetaUrlGrpBx</tabstop>
   <tabstop>mLayerMetadataUrlLineEdit</tabstop>
   <tabstop>mLayerMetadataUrlTypeComboBox</tabstop>
   <tabstop>mLayerMetadataUrlFormatComboBox</tabstop>
+  <tabstop>mMetaLegendGrpBx</tabstop>
   <tabstop>mLayerLegendUrlLineEdit</tabstop>
   <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
+  <tabstop>mMetaPropertiesGrpBx</tabstop>
   <tabstop>teMetadata</tabstop>
+  <tabstop>mLayersDependenciesTreeView</tabstop>
+  <tabstop>pbnQueryBuilder</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

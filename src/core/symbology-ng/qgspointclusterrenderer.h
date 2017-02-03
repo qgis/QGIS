@@ -36,7 +36,7 @@ class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
     void stopRender( QgsRenderContext& context ) override;
     QDomElement save( QDomDocument& doc ) override;
-    virtual QSet<QString> usedAttributes() const override;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
 
     //! Creates a renderer from XML element
     static QgsFeatureRenderer* create( QDomElement& symbologyElem );

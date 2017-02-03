@@ -113,6 +113,8 @@ class TestQgsGeometry : public QObject
     void segmentizeCircularString();
     void poleOfInaccessibility();
 
+    void makeValid();
+
   private:
     //! A helper method to do a render check to see if the geometry op is as expected
     bool renderCheck( const QString& theTestName, const QString& theComment = QLatin1String( QLatin1String( "" ) ), int mismatchCount = 0 );
@@ -217,7 +219,7 @@ void TestQgsGeometry::cleanupTestCase()
 void TestQgsGeometry::init()
 {
   //
-  // Reset / reinitialise the geometries before each test is run
+  // Reset / reinitialize the geometries before each test is run
   //
   mPoint1 = QgsPoint( 20.0, 20.0 );
   mPoint2 = QgsPoint( 80.0, 20.0 );
@@ -369,13 +371,13 @@ void TestQgsGeometry::asVariant()
 void TestQgsGeometry::isEmpty()
 {
   QgsGeometry geom;
-  QVERIFY( geom.isEmpty() );
+  QVERIFY( geom.isNull() );
 
   geom.setGeometry( new QgsPointV2( 1.0, 2.0 ) );
-  QVERIFY( !geom.isEmpty() );
+  QVERIFY( !geom.isNull() );
 
   geom.setGeometry( 0 );
-  QVERIFY( geom.isEmpty() );
+  QVERIFY( geom.isNull() );
 
   QgsGeometryCollection collection;
   QVERIFY( collection.isEmpty() );
@@ -837,6 +839,57 @@ void TestQgsGeometry::point()
   QCOMPARE( p31 - QgsVector( 3, 5 ), QgsPointV2( 1 , 2 ) );
   p31 -= QgsVector( 3, 5 );
   QCOMPARE( p31, QgsPointV2( 1, 2 ) );
+
+  // test projecting a point
+  // 2D
+  QgsPointV2 p33 = QgsPointV2( 1, 2 );
+  QCOMPARE( p33.project( 1, 0 ), QgsPointV2( 1, 3 ) );
+  QCOMPARE( p33.project( 1, 0, 0 ), QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 1 ) );
+  QCOMPARE( p33.project( 1.5, 90 ), QgsPointV2( 2.5, 2 ) );
+  QCOMPARE( p33.project( 1.5, 90, 90 ), QgsPointV2( 2.5, 2 ) ); // stay QgsWkbTypes::Point
+  QCOMPARE( p33.project( 2, 180 ), QgsPointV2( 1, 0 ) );
+  QCOMPARE( p33.project( 2, 180, 180 ), QgsPointV2( QgsWkbTypes::PointZ,  1, 2, -2 ) );
+  QCOMPARE( p33.project( 5, 270 ), QgsPointV2( -4, 2 ) );
+  QCOMPARE( p33.project( 5, 270, 270 ), QgsPointV2( QgsWkbTypes::PointZ,  6, 2, 0 ) );
+  QCOMPARE( p33.project( 6, 360 ), QgsPointV2( 1, 8 ) );
+  QCOMPARE( p33.project( 6, 360, 360 ), QgsPointV2( QgsWkbTypes::PointZ,  1, 2, 6 ) );
+  QCOMPARE( p33.project( 5, 450 ), QgsPointV2( 6, 2 ) );
+  QCOMPARE( p33.project( 5, 450, 450 ), QgsPointV2( 6, 2 ) );  // stay QgsWkbTypes::Point
+  QCOMPARE( p33.project( -1, 0 ), QgsPointV2( 1, 1 ) );
+  QCOMPARE( p33.project( -1, 0, 0 ), QgsPointV2( QgsWkbTypes::PointZ, 1, 2, -1 ) );
+  QCOMPARE( p33.project( 1.5, -90 ), QgsPointV2( -0.5, 2 ) );
+  QCOMPARE( p33.project( 1.5, -90, -90 ), QgsPointV2( QgsWkbTypes::PointZ, 2.5, 2, 0 ) );
+  // PointM
+  p33.addMValue( 5.0 );
+  QCOMPARE( p33.project( 1, 0 ), QgsPointV2( QgsWkbTypes::PointM, 1, 3, 0, 5 ) );
+  QCOMPARE( p33.project( 1, 0, 0 ), QgsPointV2( QgsWkbTypes::PointZM, 1, 2, 1, 5 ) );
+  QCOMPARE( p33.project( 5, 450, 450 ), QgsPointV2( QgsWkbTypes::PointM, 6, 2, 0, 5 ) );
+
+  // 3D
+  QgsPointV2 p34 = QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 );
+  QCOMPARE( p34.project( 1, 0 ), QgsPointV2( QgsWkbTypes::PointZ, 1, 3, 2 ) );
+  QCOMPARE( p34.project( 1, 0, 0 ), QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 3 ) );
+  QCOMPARE( p34.project( 1.5, 90 ), QgsPointV2( QgsWkbTypes::PointZ, 2.5, 2, 2 ) );
+  QCOMPARE( p34.project( 1.5, 90, 90 ), QgsPointV2( QgsWkbTypes::PointZ, 2.5, 2, 2 ) );
+  QCOMPARE( p34.project( 2, 180 ), QgsPointV2( QgsWkbTypes::PointZ, 1, 0, 2 ) );
+  QCOMPARE( p34.project( 2, 180, 180 ), QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 0 ) );
+  QCOMPARE( p34.project( 5, 270 ), QgsPointV2( QgsWkbTypes::PointZ, -4, 2, 2 ) );
+  QCOMPARE( p34.project( 5, 270, 270 ), QgsPointV2( QgsWkbTypes::PointZ, 6, 2, 2 ) );
+  QCOMPARE( p34.project( 6, 360 ), QgsPointV2( QgsWkbTypes::PointZ, 1, 8, 2 ) );
+  QCOMPARE( p34.project( 6, 360, 360 ), QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 8 ) );
+  QCOMPARE( p34.project( 5, 450 ), QgsPointV2( QgsWkbTypes::PointZ, 6, 2, 2 ) );
+  QCOMPARE( p34.project( 5, 450, 450 ), QgsPointV2( QgsWkbTypes::PointZ, 6, 2, 2 ) );
+  QCOMPARE( p34.project( -1, 0 ), QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 2 ) );
+  QCOMPARE( p34.project( -1, 0, 0 ), QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 1 ) );
+  QCOMPARE( p34.project( 1.5, -90 ), QgsPointV2( QgsWkbTypes::PointZ, -0.5, 2, 2 ) );
+  QCOMPARE( p34.project( 1.5, -90, -90 ), QgsPointV2( QgsWkbTypes::PointZ, 2.5, 2, 2 ) );
+  // PointM
+  p34.addMValue( 5.0 );
+  QCOMPARE( p34.project( 1, 0 ), QgsPointV2( QgsWkbTypes::PointZM, 1, 3, 2, 5 ) );
+  QCOMPARE( p34.project( 1, 0, 0 ), QgsPointV2( QgsWkbTypes::PointZM, 1, 2, 3, 5 ) );
+  QCOMPARE( p34.project( 5, 450 ), QgsPointV2( QgsWkbTypes::PointZM, 6, 2, 2, 5 ) );
+  QCOMPARE( p34.project( 5, 450, 450 ), QgsPointV2( QgsWkbTypes::PointZM, 6, 2, 2, 5 ) );
+
 }
 
 void TestQgsGeometry::lineString()
@@ -2292,6 +2345,18 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p1.ringCount(), 0 );
   QCOMPARE( p1.partCount(), 0 );
   QVERIFY( !p1.exteriorRing() );
+  QVERIFY( !p1.interiorRing( 0 ) );
+  QCOMPARE( p1.wkbType(), QgsWkbTypes::Polygon );
+
+  // empty exterior ring
+  ext = new QgsLineString();
+  p1.setExteriorRing( ext );
+  QVERIFY( p1.isEmpty() );
+  QCOMPARE( p1.numInteriorRings(), 0 );
+  QCOMPARE( p1.nCoordinates(), 0 );
+  QCOMPARE( p1.ringCount(), 1 );
+  QCOMPARE( p1.partCount(), 1 );
+  QVERIFY( p1.exteriorRing() );
   QVERIFY( !p1.interiorRing( 0 ) );
   QCOMPARE( p1.wkbType(), QgsWkbTypes::Polygon );
 
@@ -3777,7 +3842,7 @@ void TestQgsGeometry::dataStream()
   ds2.device()->seek( 0 );
   ds2 >> resultGeometry;
 
-  QVERIFY( resultGeometry.isEmpty() );
+  QVERIFY( resultGeometry.isNull() );
 }
 
 void TestQgsGeometry::exportToGeoJSON()
@@ -3927,7 +3992,7 @@ void TestQgsGeometry::wkbInOut()
   QgsGeometry badHeader;
   // NOTE: wkb onwership transferred to QgsGeometry
   badHeader.fromWkb( wkb, size );
-  QVERIFY( badHeader.isEmpty() );
+  QVERIFY( badHeader.isNull() );
   QCOMPARE( badHeader.wkbType(), QgsWkbTypes::Unknown );
 }
 
@@ -4053,15 +4118,15 @@ void TestQgsGeometry::poleOfInaccessibility()
   QGSCOMPARENEAR( point.y(), 0, 0.01 );
 
   //empty geometry
-  QVERIFY( QgsGeometry().poleOfInaccessibility( 1 ).isEmpty() );
+  QVERIFY( QgsGeometry().poleOfInaccessibility( 1 ).isNull() );
 
   // not a polygon
   QgsGeometry lineString = QgsGeometry::fromWkt( "LineString(1 0, 2 2 )" );
-  QVERIFY( lineString.poleOfInaccessibility( 1 ).isEmpty() );
+  QVERIFY( lineString.poleOfInaccessibility( 1 ).isNull() );
 
   // invalid threshold
-  QVERIFY( poly1.poleOfInaccessibility( -1 ).isEmpty() );
-  QVERIFY( poly1.poleOfInaccessibility( 0 ).isEmpty() );
+  QVERIFY( poly1.poleOfInaccessibility( -1 ).isNull() );
+  QVERIFY( poly1.poleOfInaccessibility( 0 ).isNull() );
 
   // curved geometry
   QgsGeometry curved = QgsGeometry::fromWkt( "CurvePolygon( CompoundCurve( CircularString(-0.44 0.35, 0.51 0.34, 0.56 0.21, 0.11 -0.33, 0.15 -0.35,"
@@ -4069,6 +4134,39 @@ void TestQgsGeometry::poleOfInaccessibility()
   point = curved.poleOfInaccessibility( 0.01 ).asPoint();
   QGSCOMPARENEAR( point.x(), -0.4324, 0.0001 );
   QGSCOMPARENEAR( point.y(), -0.2434, 0.0001 );
+}
+
+void TestQgsGeometry::makeValid()
+{
+  typedef QPair<QString, QString> InputAndExpectedWktPair;
+  QList<InputAndExpectedWktPair> geoms;
+  // dimension collapse
+  geoms << qMakePair( QString( "LINESTRING(0 0)" ),
+                      QString( "POINT(0 0)" ) );
+  // unclosed ring
+  geoms << qMakePair( QString( "POLYGON((10 22,10 32,20 32,20 22))" ),
+                      QString( "POLYGON((10 22,10 32,20 32,20 22,10 22))" ) );
+  // butterfly polygon (self-intersecting ring)
+  geoms << qMakePair( QString( "POLYGON((0 0, 10 10, 10 0, 0 10, 0 0))" ),
+                      QString( "MULTIPOLYGON(((5 5, 0 0, 0 10, 5 5)),((5 5, 10 10, 10 0, 5 5)))" ) );
+  // polygon with extra tail (a part of the ring does not form any area)
+  geoms << qMakePair( QString( "POLYGON((0 0, 1 0, 1 1, 0 1, 0 0, -1 0, 0 0))" ),
+                      QString( "GEOMETRYCOLLECTION(POLYGON((0 0, 0 1, 1 1, 1 0, 0 0)), LINESTRING(0 0, -1 0))" ) );
+  // collection with invalid geometries
+  geoms << qMakePair( QString( "GEOMETRYCOLLECTION(LINESTRING(0 0, 0 0), POLYGON((0 0, 10 10, 10 0, 0 10, 0 0)), LINESTRING(10 0, 10 10))" ),
+                      QString( "GEOMETRYCOLLECTION(POINT(0 0), MULTIPOLYGON(((5 5, 0 0, 0 10, 5 5)),((5 5, 10 10, 10 0, 5 5))), LINESTRING(10 0, 10 10)))" ) );
+
+  Q_FOREACH ( const InputAndExpectedWktPair& pair, geoms )
+  {
+    QgsGeometry gInput = QgsGeometry::fromWkt( pair.first );
+    QgsGeometry gExp = QgsGeometry::fromWkt( pair.second );
+    QVERIFY( !gInput.isNull() );
+    QVERIFY( !gExp.isNull() );
+
+    QgsGeometry gValid = gInput.makeValid();
+    QVERIFY( gValid.isGeosValid() );
+    QVERIFY( gValid.isGeosEqual( gExp ) );
+  }
 }
 
 QGSTEST_MAIN( TestQgsGeometry )

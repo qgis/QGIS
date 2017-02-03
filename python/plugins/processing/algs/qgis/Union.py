@@ -213,7 +213,7 @@ class Union(GeoAlgorithm):
                         diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))
                     else:
                         try:
-                            # Ihis only happends if the bounding box
+                            # Ihis only happens if the bounding box
                             # intersects, but the geometry doesn't
                             outFeat.setGeometry(diff_geom)
                             outFeat.setAttributes(atMap)

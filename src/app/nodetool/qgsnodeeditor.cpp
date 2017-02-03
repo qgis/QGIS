@@ -31,7 +31,7 @@
 #include <QLineEdit>
 #include <QVector2D>
 
-static const int MinRadiusRole = Qt::UserRole + 1;
+static const int MIN_RADIUS_ROLE = Qt::UserRole + 1;
 
 
 QgsNodeEditorModel::QgsNodeEditorModel( QgsVectorLayer* layer, QgsSelectedFeature* selectedFeature, QgsMapCanvas* canvas, QObject* parent )
@@ -88,7 +88,7 @@ int QgsNodeEditorModel::columnCount( const QModelIndex& parent ) const
 QVariant QgsNodeEditorModel::data( const QModelIndex& index, int role ) const
 {
   if ( !index.isValid() ||
-       ( role != Qt::DisplayRole && role != Qt::EditRole && role != MinRadiusRole && role != Qt::FontRole ) )
+       ( role != Qt::DisplayRole && role != Qt::EditRole && role != MIN_RADIUS_ROLE && role != Qt::FontRole ) )
     return QVariant();
 
   if ( index.row() >= mSelectedFeature->vertexMap().count() )
@@ -120,7 +120,7 @@ QVariant QgsNodeEditorModel::data( const QModelIndex& index, int role ) const
     }
   }
 
-  if ( role == MinRadiusRole )
+  if ( role == MIN_RADIUS_ROLE )
   {
     if ( index.column() == mRCol )
     {
@@ -406,8 +406,8 @@ QWidget*CoordinateItemDelegate::createEditor( QWidget* parent, const QStyleOptio
 {
   QLineEdit* lineEdit = new QLineEdit( parent );
   QDoubleValidator* validator = new QDoubleValidator();
-  if ( !index.data( MinRadiusRole ).isNull() )
-    validator->setBottom( index.data( MinRadiusRole ).toDouble() );
+  if ( !index.data( MIN_RADIUS_ROLE ).isNull() )
+    validator->setBottom( index.data( MIN_RADIUS_ROLE ).toDouble() );
   lineEdit->setValidator( validator );
   return lineEdit;
 }

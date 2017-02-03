@@ -245,7 +245,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             else:
                 fielddata = dict((name, str(f[name])) for name in fields)
             g = f.geometry()
-            if not g.isEmpty():
+            if not g.isNull():
                 fielddata[geomkey] = str(g.exportToWkt())
             else:
                 fielddata[geomkey] = "None"
@@ -660,7 +660,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
 
         def appendfile(layer):
             with open(filename, 'a') as f:
-                f.write('3,tigger\n')
+                f.write('3,tiger\n')
             # print "Appended to file - sleeping"
             time.sleep(1)
             QCoreApplication.instance().processEvents()

@@ -56,8 +56,8 @@ void QgsCollapsibleGroupBoxBasic::init()
   mTitleClicked = false;
 
   // init icons
-  mCollapseIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconCollapse.png" ) );
-  mExpandIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpand.png" ) );
+  mCollapseIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconCollapse.svg" ) );
+  mExpandIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpand.svg" ) );
 
   // collapse button
   mCollapseButton = new QgsGroupBoxCollapseButton( this );
@@ -77,7 +77,7 @@ void QgsCollapsibleGroupBoxBasic::init()
 
 void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent * event )
 {
-  // initialise widget on first show event only
+  // initialize widget on first show event only
   if ( mShown )
   {
     event->accept();
@@ -138,7 +138,7 @@ void QgsCollapsibleGroupBoxBasic::mousePressEvent( QMouseEvent *event )
     return;
   }
 
-  // default behaviour - pass to QGroupBox
+  // default behavior - pass to QGroupBox
   QGroupBox::mousePressEvent( event );
 }
 
@@ -158,7 +158,7 @@ void QgsCollapsibleGroupBoxBasic::mouseReleaseEvent( QMouseEvent *event )
     return;
   }
 
-  // default behaviour - pass to QGroupBox
+  // default behavior - pass to QGroupBox
   QGroupBox::mouseReleaseEvent( event );
 }
 
@@ -167,7 +167,7 @@ void QgsCollapsibleGroupBoxBasic::changeEvent( QEvent *event )
   // always re-enable mCollapseButton when groupbox was previously disabled
   // e.g. resulting from a disabled parent of groupbox, or a signal/slot connection
 
-  // default behaviour - pass to QGroupBox
+  // default behavior - pass to QGroupBox
   QGroupBox::changeEvent( event );
 
   if ( event->type() == QEvent::EnabledChange && isEnabled() )
@@ -524,7 +524,7 @@ void QgsCollapsibleGroupBox::init()
 
 void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
 {
-  // initialise widget on first show event only
+  // initialize widget on first show event only
   if ( mShown )
   {
     event->accept();

@@ -21,7 +21,7 @@
 
 
 /** \ingroup core
- * Interface that can be optionaly attached to an iterator so its
+ * Interface that can be optionally attached to an iterator so its
  * nextFeature() implementaton can check if it must stop as soon as possible.
  * @note Added in QGIS 2.16
  * @note not available in Python bindings

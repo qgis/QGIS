@@ -117,7 +117,7 @@ spatialite_functions = [  # from www.gaia-gis.it/spatialite-2.3.0/spatialite-sql
                           # SQL functions for Spatial-MetaData and Spatial-Index handling
                           "*initspatialmetadata", "*addgeometrycolumn", "*recovergeometrycolumn", "*discardgeometrycolumn",
                           "*createspatialindex", "*creatembrcache", "*disablespatialindex",
-                          # SQL functions implementing FDO/OGR compatibily
+                          # SQL functions implementing FDO/OGR compatibility
                           "*checkspatialmetadata", "*autofdostart", "*autofdostop", "*initfdospatialmetadata",
                           "*addfdogeometrycolumn", "*recoverfdogeometrycolumn", "*discardfdogeometrycolumn",
                           # SQL functions for MbrCache-based queries

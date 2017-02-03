@@ -31,15 +31,13 @@
 
 QgsWCSProjectParser::QgsWCSProjectParser(
   const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* as
-#endif
 )
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    :
-    mAccessControl( as )
-#endif
+    : mAccessControl( as )
 {
+#ifndef HAVE_SERVER_PYTHON_PLUGINS
+  Q_UNUSED( mAccessControl );
+#endif
   mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
 }
 
@@ -51,32 +49,6 @@ QgsWCSProjectParser::~QgsWCSProjectParser()
 void QgsWCSProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
   mProjectParser->serviceCapabilities( parentElement, doc, QStringLiteral( "WCS" ) );
-}
-
-QString QgsWCSProjectParser::wcsServiceUrl() const
-{
-  QString url;
-
-  if ( !mProjectParser->xmlDocument() )
-  {
-    return url;
-  }
-
-  QDomElement propertiesElem = mProjectParser->propertiesElem();
-  if ( !propertiesElem.isNull() )
-  {
-    QDomElement wcsUrlElem = propertiesElem.firstChildElement( QStringLiteral( "WCSUrl" ) );
-    if ( !wcsUrlElem.isNull() )
-    {
-      url = wcsUrlElem.text();
-    }
-  }
-  return url;
-}
-
-QString QgsWCSProjectParser::serviceUrl() const
-{
-  return mProjectParser->serviceUrl();
 }
 
 void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDocument& doc ) const

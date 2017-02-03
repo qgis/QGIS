@@ -18,6 +18,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgsproject.h"
 
 #include <QMimeData>
 #include <QTextStream>
@@ -45,7 +46,7 @@ class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
         : QgsLayerTreeModelLegendNode( nodeL )
     {
       // we need a valid rule key to allow the model to build a tree out of legend nodes
-      // if that's possible (if there is a node without a rule key, building of tree is cancelled)
+      // if that's possible (if there is a node without a rule key, building of tree is canceled)
       mRuleKey = QStringLiteral( "embedded-widget-" ) + QUuid::createUuid().toString();
     }
 
@@ -628,7 +629,7 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings* settings, bool us
         }
       }
     }
-    bool polygonValid = !polygon.isEmpty() && polygon.type() == QgsWkbTypes::PolygonGeometry;
+    bool polygonValid = !polygon.isNull() && polygon.type() == QgsWkbTypes::PolygonGeometry;
     if ( useExpressions && !useExtent && !polygonValid ) // only expressions
     {
       mLegendFilterHitTest.reset( new QgsMapHitTest( *mLegendFilterMapSettings, exprs ) );
@@ -1057,7 +1058,7 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData* data, Qt::DropAction acti
   QDomElement elem = rootElem.firstChildElement();
   while ( !elem.isNull() )
   {
-    QgsLayerTreeNode* node = QgsLayerTreeNode::readXml( elem );
+    QgsLayerTreeNode* node = QgsLayerTreeNode::readXml( elem, QgsProject::instance() );
     if ( node )
       nodes << node;
 
@@ -1109,14 +1110,9 @@ bool QgsLayerTreeModel::testFlag( QgsLayerTreeModel::Flag f ) const
   return mFlags.testFlag( f );
 }
 
-const QIcon& QgsLayerTreeModel::iconGroup()
+QIcon QgsLayerTreeModel::iconGroup()
 {
-  static QIcon icon;
-
-  if ( icon.isNull() )
-    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionFolder.svg" ) );
-
-  return icon;
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionFolder.svg" ) );
 }
 
 QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::filterLegendNodes( const QList<QgsLayerTreeModelLegendNode*>& nodes )

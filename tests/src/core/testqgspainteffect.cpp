@@ -336,7 +336,7 @@ void TestQgsPaintEffect::drawSource()
 
   QPainter painter;
   painter.begin( &image );
-  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &painter );
+  QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
 
   effect = new QgsDrawSourceEffect();
   effect->render( *mPicture, context );
@@ -410,7 +410,7 @@ void TestQgsPaintEffect::blur()
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
-  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &painter );
+  QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
 
   effect = new QgsBlurEffect();
   effect->render( *mPicture, context );
@@ -508,7 +508,7 @@ void TestQgsPaintEffect::dropShadow()
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
-  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &painter );
+  QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
 
   effect = new QgsDropShadowEffect();
   effect->render( *mPicture, context );
@@ -611,7 +611,7 @@ void TestQgsPaintEffect::glow()
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
-  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &painter );
+  QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
 
   effect = new QgsOuterGlowEffect();
   effect->setSpread( 20 );
@@ -673,7 +673,7 @@ void TestQgsPaintEffect::stack()
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
-  QgsRenderContext context = QgsSymbolLayerUtils::createRenderContext( &painter );
+  QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
 
   effect = new QgsEffectStack();
   QgsBlurEffect* blur = new QgsBlurEffect();
@@ -864,7 +864,6 @@ void TestQgsPaintEffect::composer()
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   lineLayer->setSimplifyMethod( simplifyMethod );
 
-  QgsMapSettings ms;
   QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
   line->setColor( QColor( 255, 0, 0 ) );
   line->setWidth( 1.0 );
@@ -878,15 +877,14 @@ void TestQgsPaintEffect::composer()
   renderer->setPaintEffect( effect );
 
   lineLayer->setRenderer( renderer );
-  ms.setLayers( QList<QgsMapLayer*>() << lineLayer );
-  ms.setCrsTransformEnabled( false );
 
-  QgsComposition* composition = new QgsComposition( ms, QgsProject::instance() );
+  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
   composition->setPaperSize( 50, 50 );
   QgsComposerMap* composerMap = new QgsComposerMap( composition, 1, 1, 48, 48 );
   composerMap->setFrameEnabled( true );
   composition->addComposerMap( composerMap );
   composerMap->setNewExtent( lineLayer->extent() );
+  composerMap->setLayers( QList<QgsMapLayer*>() << lineLayer );
 
   QImage outputImage( 591, 591, QImage::Format_RGB32 );
   composition->setPlotStyle( QgsComposition::Print );

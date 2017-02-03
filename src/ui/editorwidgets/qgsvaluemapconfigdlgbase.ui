@@ -94,6 +94,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>loadFromLayerButton</tabstop>
+  <tabstop>loadFromCSVButton</tabstop>
+  <tabstop>tableWidget</tabstop>
+  <tabstop>addNullButton</tabstop>
+  <tabstop>removeSelectedButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

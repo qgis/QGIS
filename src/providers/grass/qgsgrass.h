@@ -160,7 +160,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     // This does not work (gcc/Linux), such exception cannot be caught
     // so I have enabled the old version, if you are able to fix it, please
-    // check first if it realy works, i.e. can be caught!
+    // check first if it really works, i.e. can be caught!
 #if 0
     struct Exception : public QgsException
     {
@@ -226,7 +226,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      * @param gisdbase full path to GRASS GISDBASE.
      * @param location location name (not path!).
      * @param mapset current mupset. Note that some variables depend on mapset and
-     * may influence behaviour of some functions (e.g. search path etc.)
+     * may influence behavior of some functions (e.g. search path etc.)
      */
     static void setMapset( const QString &gisdbase, const QString &location, const QString &mapset );
 
@@ -247,11 +247,11 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     void removeMapsetFromSearchPath( const QString & mapset, QString& error );
 
     //! Error codes returned by error()
-    enum GERROR
+    enum GError
     {
       OK, //!< OK. No error.
-      WARNING, //!< Warning, non fatal error. Should be printed by application.
-      FATAL //!< Fatal error
+      Warning, //!< Warning, non fatal error. Should be printed by application.
+      Fatal //!< Fatal error
     };
 
     //! Reset error code (to OK). Call this before a piece of code where an error is expected
@@ -264,7 +264,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static QString errorMessage( void );
 
     //! Get initialization error
-    static QString initError() { return mInitError; }
+    static QString initError() { return sInitError; }
 
     //! Test is current user is owner of mapset
     static bool isOwner( const QString& gisdbase, const QString& location, const QString& mapset );
@@ -551,7 +551,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // It does not contain paths from PATH environment variable
     static QStringList grassModulesPaths()
     {
-      return mGrassModulesPaths;
+      return sGrassModulesPaths;
     }
 
     // path to QGIS GRASS modules like qgis.g.info etc.
@@ -605,7 +605,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     /** Set mute mode, if set, warning() does not open dialog but prints only
      * debug message and sets the error which returns errorMessage() */
-    static void setMute() { mMute = true; }
+    static void setMute() { sMute = true; }
 
     /** Allocate struct Map_info. Call to this function may result in G_fatal_error
      * and must be surrounded by G_TRY/G_CATCH. */
@@ -613,7 +613,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // Free struct Map_info
     static void vectDestroyMapStruct( struct Map_info *map );
 
-    // Sleep miliseconds (for debugging), does not work on threads(?)
+    // Sleep milliseconds (for debugging), does not work on threads(?)
     static void sleep( int ms );
 
     void emitNewLayer( const QString& uri, const QString& name ) { emit newLayer( uri, name ); }
@@ -621,7 +621,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     /** Parse single line of output from GRASS modules run with GRASS_MESSAGE_FORMAT=gui
      * @param input input string read from module stderr
      * @param text parsed text
-     * @param html html formated parsed text, e.g. + icons
+     * @param html html formatted parsed text, e.g. + icons
      * @param value percent 0-100 or progress as absolute number if total is unknown*/
     static ModuleOutput parseModuleOutput( const QString & input, QString &text, QString &html, int &value );
 
@@ -667,23 +667,23 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     void newLayer( QString uri, QString name );
 
   private:
-    static bool mNonInitializable;
-    static int initialized; // Set to 1 after initialization
-    static bool active; // is active mode
-    static QStringList mGrassModulesPaths;
-    static QString defaultGisdbase;
-    static QString defaultLocation;
-    static QString defaultMapset;
+    static bool sNonInitializable;
+    static int sInitialized; // Set to 1 after initialization
+    static bool sActive; // is active mode
+    static QStringList sGrassModulesPaths;
+    static QString sDefaultGisdbase;
+    static QString sDefaultLocation;
+    static QString sDefaultMapset;
 
     // Mapsets in current search path
     QStringList mMapsetSearchPath;
     QFileSystemWatcher *mMapsetSearchPathWatcher;
 
     /* last error in GRASS libraries */
-    static GERROR lastError;         // static, because used in constructor
-    static QString error_message;
+    static GError sLastError;         // static, because used in constructor
+    static QString sErrorMessage;
     // error set in init() if it failed
-    static QString mInitError;
+    static QString sInitError;
 
     // G_set_error_routine has two versions of the function's first argument it expects:
     // - char* msg - older version
@@ -693,15 +693,15 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static int error_routine( char *msg, int fatal ); // static because pointer to this function is set later
 
     // Current mapset lock file path
-    static QString mMapsetLock;
+    static QString sMapsetLock;
     // Current mapset GISRC file path
-    static QString mGisrc;
+    static QString sGisrc;
     // Temporary directory where GISRC and sockets are stored
-    static QString mTmp;
+    static QString sTmp;
     // Mutex for common locking when calling GRASS functions which are mostly non thread safe
     static QMutex sMutex;
     // Mute mode, do not show warning dialogs.
-    static bool mMute;
+    static bool sMute;
 };
 
 #endif // QGSGRASS_H

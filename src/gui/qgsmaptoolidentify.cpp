@@ -353,7 +353,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   // init distance/area calculator
   QString ellipsoid = QgsProject::instance()->ellipsoid();
   QgsDistanceArea calc;
-  calc.setEllipsoidalMode( mCanvas->hasCrsTransformEnabled() );
+  calc.setEllipsoidalMode( true );
   calc.setEllipsoid( ellipsoid );
   calc.setSourceCrs( layer->crs().srsid() );
 
@@ -518,7 +518,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   {
     // It would be nice to use the same extent and size which was used for drawing,
     // so that WCS can use cache from last draw, unfortunately QgsRasterLayer::draw()
-    // is doing some tricks with extent and size to allign raster to output which
+    // is doing some tricks with extent and size to align raster to output which
     // would be difficult to replicate here.
     // Note: cutting the extent may result in slightly different x and y resolutions
     // and thus shifted point calculated back in QGIS WMS (using average resolution)

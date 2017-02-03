@@ -242,9 +242,13 @@ class QgsComposerLegend : QgsComposerItem
     //Overridden to show legend title
     virtual QString displayName() const;
 
+    const QgsLegendSettings& legendSettings() const;
+
   public slots:
     /** Data changed*/
     void synchronizeWithModel();
     /** Sets mCompositionMap to 0 if the map is deleted*/
     void invalidateCurrentMap();
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr );
+
 };

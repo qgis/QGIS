@@ -724,14 +724,14 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
   painter->restore();
 }
 
-const QPixmap& QgsColorSwatchDelegate::transparentBackground() const
+QPixmap QgsColorSwatchDelegate::transparentBackground() const
 {
-  static QPixmap transpBkgrd;
+  static QPixmap sTranspBkgrd;
 
-  if ( transpBkgrd.isNull() )
-    transpBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
+  if ( sTranspBkgrd.isNull() )
+    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
 
-  return transpBkgrd;
+  return sTranspBkgrd;
 }
 
 QSize QgsColorSwatchDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const

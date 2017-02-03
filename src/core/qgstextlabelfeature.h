@@ -39,12 +39,12 @@ class QgsTextLabelFeature : public QgsLabelFeature
     QString text( int partId ) const;
 
     //! calculate data for info(). setDefinedFont() must have been called already.
-    void calculateInfo( bool curvedLabeling, QFontMetricsF* fm, const QgsMapToPixel* xform, double fontScale, double maxinangle, double maxoutangle );
+    void calculateInfo( bool curvedLabeling, QFontMetricsF* fm, const QgsMapToPixel* xform, double maxinangle, double maxoutangle );
 
     //! Get data-defined values
-    const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& dataDefinedValues() const { return mDataDefinedValues; }
+    const QMap< QgsPalLayerSettings::Property, QVariant >& dataDefinedValues() const { return mDataDefinedValues; }
     //! Set data-defined values
-    void setDataDefinedValues( const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& values ) { mDataDefinedValues = values; }
+    void setDataDefinedValues( const QMap< QgsPalLayerSettings::Property, QVariant >& values ) { mDataDefinedValues = values; }
 
     //! Set font to be used for rendering
     void setDefinedFont( const QFont& f ) { mDefinedFont = f; }
@@ -62,7 +62,7 @@ class QgsTextLabelFeature : public QgsLabelFeature
     //! Metrics of the font for rendering
     QFontMetricsF* mFontMetrics;
     //! Stores attribute values for data defined properties
-    QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > mDataDefinedValues;
+    QMap< QgsPalLayerSettings::Property, QVariant > mDataDefinedValues;
 
 };
 

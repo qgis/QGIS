@@ -1643,7 +1643,7 @@ void QgsProjectProperties::on_pbnExportScales_clicked()
     return;
   }
 
-  // ensure the user never ommited the extension from the file name
+  // ensure the user never omitted the extension from the file name
   if ( !fileName.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) )
   {
     fileName += QLatin1String( ".xml" );
@@ -1874,7 +1874,7 @@ void QgsProjectProperties::populateEllipsoidList()
   mEllipsoidList.append( myItem );
 
   myItem.acronym = QStringLiteral( "PARAMETER:6370997:6370997" );
-  myItem.description = tr( "Parameters:" );
+  myItem.description = tr( "Custom" );
   myItem.semiMajor = 6370997.0;
   myItem.semiMinor = 6370997.0;
   mEllipsoidList.append( myItem );
@@ -1967,31 +1967,25 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
   leSemiMinor->setEnabled( false );
   leSemiMajor->setText( QLatin1String( "" ) );
   leSemiMinor->setText( QLatin1String( "" ) );
-  if ( cbxProjectionEnabled->isChecked() )
+
+  cmbEllipsoid->setEnabled( true );
+  cmbEllipsoid->setToolTip( QLatin1String( "" ) );
+  if ( mEllipsoidList.at( mEllipsoidIndex ).acronym.startsWith( QLatin1String( "PARAMETER:" ) ) )
   {
-    cmbEllipsoid->setEnabled( true );
-    cmbEllipsoid->setToolTip( QLatin1String( "" ) );
-    if ( mEllipsoidList.at( mEllipsoidIndex ).acronym.startsWith( QLatin1String( "PARAMETER:" ) ) )
-    {
-      leSemiMajor->setEnabled( true );
-      leSemiMinor->setEnabled( true );
-    }
-    else
-    {
-      leSemiMajor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
-      leSemiMinor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
-    }
-    if ( mEllipsoidList[ mEllipsoidIndex ].acronym != GEO_NONE )
-    {
-      leSemiMajor->setText( QLocale::system().toString( myMajor, 'f', 3 ) );
-      leSemiMinor->setText( QLocale::system().toString( myMinor, 'f', 3 ) );
-    }
+    leSemiMajor->setEnabled( true );
+    leSemiMinor->setEnabled( true );
   }
   else
   {
-    cmbEllipsoid->setEnabled( false );
-    cmbEllipsoid->setToolTip( tr( "Can only use ellipsoidal calculations when CRS transformation is enabled" ) );
+    leSemiMajor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Custom" ) ) );
+    leSemiMinor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Custom" ) ) );
   }
+  if ( mEllipsoidList[ mEllipsoidIndex ].acronym != GEO_NONE )
+  {
+    leSemiMajor->setText( QLocale::system().toString( myMajor, 'f', 3 ) );
+    leSemiMinor->setText( QLocale::system().toString( myMinor, 'f', 3 ) );
+  }
+
   cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
 }
 
@@ -1999,7 +1993,7 @@ void QgsProjectProperties::projectionSelectorInitialized()
 {
   QgsDebugMsg( "Setting up ellipsoid" );
 
-  // Reading ellipsoid from setttings
+  // Reading ellipsoid from settings
   QStringList mySplitEllipsoid = QgsProject::instance()->ellipsoid().split( ':' );
 
   int myIndex = 0;
@@ -2012,7 +2006,7 @@ void QgsProjectProperties::projectionSelectorInitialized()
     }
   }
 
-  // Update paramaters if present.
+  // Update parameters if present.
   if ( mySplitEllipsoid.length() >= 3 )
   {
     mEllipsoidList[ myIndex ].semiMajor =  mySplitEllipsoid[ 1 ].toDouble();

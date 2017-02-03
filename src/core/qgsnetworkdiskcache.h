@@ -90,8 +90,8 @@ class QgsNetworkDiskCache : public QNetworkDiskCache
         qint64 runExpire() { return QNetworkDiskCache::expire(); }
     };
 
-    static ExpirableNetworkDiskCache smDiskCache;
-    static QMutex smDiskCacheMutex;
+    static ExpirableNetworkDiskCache sDiskCache;
+    static QMutex sDiskCacheMutex;
 
     friend class QgsNetworkAccessManager;
 };

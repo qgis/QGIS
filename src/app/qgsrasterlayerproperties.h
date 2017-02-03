@@ -22,7 +22,7 @@
 #include "qgsoptionsdialogbase.h"
 #include "ui_qgsrasterlayerpropertiesbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgis_app.h"
 
@@ -100,7 +100,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! Save a style when appriate button is pressed.
     void saveStyleAs_clicked();
     //! Help button
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_properties.html" ) ); }
 
     //! Slot to reset all color rendering options to default
     void on_mResetColorRenderingBtn_clicked();
@@ -147,7 +147,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! \brief Flag to indicate if RGB minimum maximum values are actual minimum maximum values
     bool mRGBMinimumMaximumEstimated;
 
-    //! \brief Pointer to the raster layer that this property dilog changes the behaviour of.
+    //! \brief Pointer to the raster layer that this property dilog changes the behavior of.
     QgsRasterLayer * mRasterLayer;
 
     /** \brief If the underlying raster layer doesn't have a provider
@@ -192,7 +192,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     QVector<bool> mTransparencyToEdited;
 
     /** Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is cancelled */
+     * was loaded but dialog is canceled */
     QgsMapLayerStyle mOldStyle;
 };
 #endif

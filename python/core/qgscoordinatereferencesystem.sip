@@ -346,7 +346,7 @@ class QgsCoordinateReferenceSystem
     bool isValid() const;
 
     /** Perform some validation on this CRS. If the CRS doesn't validate the
-     * default behaviour settings for layers with unknown CRS will be
+     * default behavior settings for layers with unknown CRS will be
      * consulted and acted on accordingly. By hell or high water this
      * method will do its best to make sure that this CRS is valid - even
      * if that involves resorting to a hard coded default of geocs:wgs84.
@@ -513,7 +513,7 @@ class QgsCoordinateReferenceSystem
      */
     static QStringList recentProjections();
 
-    /** Clears the internal cache used to initialise QgsCoordinateReferenceSystem objects.
+    /** Clears the internal cache used to initialize QgsCoordinateReferenceSystem objects.
      * This should be called whenever the srs database has been modified in order to ensure
      * that outdated CRS objects are not created.
      * @note added in QGIS 3.0

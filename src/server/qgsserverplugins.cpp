@@ -22,13 +22,12 @@
 #include "qgslogger.h"
 #include "qgspythonutils.h"
 #include "qgsserverlogger.h"
-#include "qgsmapserverutils.h"
 
 #include <QLibrary>
 
 
 // Initialize static members
-QgsPythonUtils* QgsServerPlugins::sPythonUtils;
+QgsPythonUtils *QgsServerPlugins::sPythonUtils;
 
 
 QgsServerPlugins::QgsServerPlugins()
@@ -46,7 +45,6 @@ QStringList &QgsServerPlugins::serverPlugins()
 // This code is mainly borrowed from QGIS desktop Python plugin initialization
 bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
 {
-
   QString pythonlibName( QStringLiteral( "qgispython" ) );
 #if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
   pythonlibName.prepend( QgsApplication::libraryPath() );
@@ -96,11 +94,9 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
 
   //Init plugins: loads a list of installed plugins and filter them
   //for "server" metadata
-  QListIterator<QString> plugins( sPythonUtils->pluginList() );
   bool atLeastOneEnabled = false;
-  while ( plugins.hasNext() )
+  Q_FOREACH ( const QString &pluginName, sPythonUtils->pluginList() )
   {
-    QString pluginName = plugins.next();
     QString pluginService = sPythonUtils->getPluginMetadata( pluginName, QStringLiteral( "server" ) );
     if ( pluginService == QLatin1String( "True" ) )
     {

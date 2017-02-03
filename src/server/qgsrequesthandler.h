@@ -31,7 +31,7 @@
 
 class QDomDocument;
 class QImage;
-class QgsMapServiceException;
+class QgsServerException;
 class QgsServerRequest;
 class QgsServerResponse;
 
@@ -54,29 +54,8 @@ class SERVER_EXPORT QgsRequestHandler
     explicit QgsRequestHandler( QgsServerRequest& request, QgsServerResponse& response );
     ~QgsRequestHandler();
 
-    //! @note not available in Python bindings
-    void setGetCapabilitiesResponse( const QDomDocument& doc );
-
     //! Allow plugins to return a QgsMapServiceException
-    void setServiceException( const QgsMapServiceException &ex );
-
-    //! @note not available in Python bindings
-    void setXmlResponse( const QDomDocument& doc );
-
-    //! @note not available in Python bindings
-    void setXmlResponse( const QDomDocument& doc, const QString& mimeType );
-
-    //! @note not available in Python bindings
-    bool startGetFeatureResponse( QByteArray* ba, const QString& infoFormat );
-
-    //! @note not available in Python bindings
-    void setGetFeatureResponse( QByteArray* ba );
-
-    //! @note not available in Python bindings
-    void endGetFeatureResponse( QByteArray* ba );
-
-    //! @note not available in Python bindings
-    void setGetCoverageResponse( QByteArray* ba );
+    void setServiceException( const QgsServerException &ex );
 
     /** Send out HTTP headers and flush output buffer
      *
@@ -102,9 +81,6 @@ class SERVER_EXPORT QgsRequestHandler
 
     //! Set the info format string such as "text/xml"
     void appendBody( const QByteArray &body );
-
-    //! Set the info format string such as "text/xml"
-    void setInfoFormat( const QString &format );
 
     //! Pointer to last raised exception
     bool exceptionRaised() const;
@@ -132,18 +108,8 @@ class SERVER_EXPORT QgsRequestHandler
     //! Return the requested format string
     QString format() const { return mFormat; }
 
-    //! Return the mime type for the response
-    QString infoFormat() const { return mInfoFormat; }
-
     //! Return true if the HTTP headers were already sent to the client
     bool headersSent() const;
-
-  private:
-    void setHttpResponse( const QByteArray& ba, const QString &format );
-
-    /** Converts format to official mimetype (e.g. 'jpg' to 'image/jpeg')
-      @return mime string (or the entered string if not found)*/
-    QString formatToMimeType( const QString& format ) const;
 
   private:
 
@@ -153,8 +119,7 @@ class SERVER_EXPORT QgsRequestHandler
     QString mFormat;
     QString mFormatString; //format string as it is passed in the request (with base)
     QString mService;
-    QString mInfoFormat;
-    QgsMapServiceException* mException; // Stores the exception
+    bool mExceptionRaised;
 
     QgsServerRequest&   mRequest;
     QgsServerResponse&  mResponse;

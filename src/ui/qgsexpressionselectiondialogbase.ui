@@ -90,6 +90,11 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mButtonZoomToFeatures</tabstop>
+  <tabstop>mButtonSelect</tabstop>
+  <tabstop>mPbnClose</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

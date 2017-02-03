@@ -96,6 +96,19 @@ QgsAbstractGeometry* QgsGeometryCollection::geometryN( int n )
   return mGeometries.value( n );
 }
 
+bool QgsGeometryCollection::isEmpty() const
+{
+  if ( mGeometries.isEmpty() )
+    return true;
+
+  Q_FOREACH ( QgsAbstractGeometry* geometry, mGeometries )
+  {
+    if ( !geometry->isEmpty() )
+      return false;
+  }
+  return true;
+}
+
 bool QgsGeometryCollection::addGeometry( QgsAbstractGeometry* g )
 {
   if ( !g )
@@ -378,7 +391,7 @@ int QgsGeometryCollection::nCoordinates() const
 
 double QgsGeometryCollection::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
 {
-  return QgsGeometryUtils::closestSegmentFromComponents( mGeometries, QgsGeometryUtils::PART, pt, segmentPt, vertexAfter, leftOf, epsilon );
+  return QgsGeometryUtils::closestSegmentFromComponents( mGeometries, QgsGeometryUtils::Part, pt, segmentPt, vertexAfter, leftOf, epsilon );
 }
 
 bool QgsGeometryCollection::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const

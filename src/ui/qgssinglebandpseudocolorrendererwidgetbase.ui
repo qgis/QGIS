@@ -317,6 +317,24 @@ suffix</string>
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mBandComboBox</tabstop>
+  <tabstop>mMinLineEdit</tabstop>
+  <tabstop>mMaxLineEdit</tabstop>
+  <tabstop>mColorInterpolationComboBox</tabstop>
+  <tabstop>btnColorRamp</tabstop>
+  <tabstop>mUnitLineEdit</tabstop>
+  <tabstop>mColormapTreeWidget</tabstop>
+  <tabstop>mClassificationModeComboBox</tabstop>
+  <tabstop>mNumberOfEntriesSpinBox</tabstop>
+  <tabstop>mClassifyButton</tabstop>
+  <tabstop>mAddEntryButton</tabstop>
+  <tabstop>mDeleteEntryButton</tabstop>
+  <tabstop>mLoadFromBandButton</tabstop>
+  <tabstop>mLoadFromFileButton</tabstop>
+  <tabstop>mExportToFileButton</tabstop>
+  <tabstop>mClipCheckBox</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

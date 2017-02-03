@@ -587,7 +587,7 @@ void QgsComposerMapGrid::calculateCrsTransformLines()
       {
         //look for intersections between lines
         QgsGeometry intersects = ( *yLineIt ).intersection(( *xLineIt ) );
-        if ( intersects.isEmpty() )
+        if ( intersects.isNull() )
           continue;
 
         //go through all intersections and draw grid markers/crosses
@@ -636,14 +636,8 @@ void QgsComposerMapGrid::draw( QPainter* p )
   p->scale( 1 / dotsPerMM, 1 / dotsPerMM ); //scale painter from mm to dots
 
   //setup render context
-  QgsMapSettings ms = mComposerMap->composition()->mapSettings();
-  //context units should be in dots
-  ms.setOutputSize( QSizeF( mComposerMap->rect().width() * dotsPerMM, mComposerMap->rect().height() * dotsPerMM ).toSize() );
-  ms.setExtent( *mComposerMap->currentMapExtent() );
-  ms.setOutputDpi( p->device()->logicalDpiX() );
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, p );
   context.setForceVectorOutput( true );
-  context.setPainter( p );
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 
@@ -651,7 +645,7 @@ void QgsComposerMapGrid::draw( QPainter* p )
   QList< QPair< double, QLineF > > horizontalLines;
 
   //is grid in a different crs than map?
-  if ( mGridUnit == MapUnit && mCRS.isValid() && mCRS != ms.destinationCrs() )
+  if ( mGridUnit == MapUnit && mCRS.isValid() && mCRS != mComposerMap->crs() )
   {
     drawGridCrsTransform( context, dotsPerMM, horizontalLines, verticalLines );
   }
@@ -1416,7 +1410,7 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
   }
   else if ( mComposerMap && mComposerMap->composition() )
   {
-    geographic = mComposerMap->composition()->mapSettings().destinationCrs().isGeographic();
+    geographic = mComposerMap->crs().isGeographic();
   }
 
   if ( geographic && coord == QgsComposerMapGrid::Longitude &&
@@ -2062,8 +2056,7 @@ void QgsComposerMapGrid::calculateMaxExtension( double& top, double& right, doub
   }
 
   //setup render context
-  QgsMapSettings ms = mComposerMap->composition()->mapSettings();
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, nullptr );
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 
@@ -2072,7 +2065,7 @@ void QgsComposerMapGrid::calculateMaxExtension( double& top, double& right, doub
   //collect grid lines
   QList< QPair< double, QLineF > > verticalLines;
   QList< QPair< double, QLineF > > horizontalLines;
-  if ( mGridUnit == MapUnit && mCRS.isValid() && mCRS != ms.destinationCrs() )
+  if ( mGridUnit == MapUnit && mCRS.isValid() && mCRS != mComposerMap->crs() )
   {
     drawGridCrsTransform( context, 0, horizontalLines, verticalLines, false );
   }
@@ -2340,7 +2333,7 @@ int QgsComposerMapGrid::crsGridParams( QgsRectangle& crsRect, QgsCoordinateTrans
 
   try
   {
-    QgsCoordinateTransform tr( mComposerMap->composition()->mapSettings().destinationCrs(), mCRS );
+    QgsCoordinateTransform tr( mComposerMap->crs(), mCRS );
     QPolygonF mapPolygon = mComposerMap->transformedMapPolygon();
     QRectF mbr = mapPolygon.boundingRect();
     QgsRectangle mapBoundingRect( mbr.left(), mbr.bottom(), mbr.right(), mbr.top() );
@@ -2372,7 +2365,7 @@ int QgsComposerMapGrid::crsGridParams( QgsRectangle& crsRect, QgsCoordinateTrans
     }
 
     inverseTransform.setSourceCrs( mCRS );
-    inverseTransform.setDestinationCrs( mComposerMap->composition()->mapSettings().destinationCrs() );
+    inverseTransform.setDestinationCrs( mComposerMap->crs() );
   }
   catch ( QgsCsException & cse )
   {

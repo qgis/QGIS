@@ -37,6 +37,7 @@
 #include "qgsmapthemecollection.h"
 #include "qgsmapthemes.h"
 #include "qgisgui.h"
+#include "qgscsexception.h"
 
 #include <QMessageBox>
 
@@ -62,6 +63,9 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
   mPreviewModeComboBox->insertItem( 0, tr( "Cache" ) );
   mPreviewModeComboBox->insertItem( 1, tr( "Render" ) );
   mPreviewModeComboBox->insertItem( 2, tr( "Rectangle" ) );
+
+  mCrsSelector->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
+  mCrsSelector->setNotSetText( tr( "Use project CRS" ) );
 
   // follow preset combo
   mFollowVisibilityPresetCombo->setModel( new QStringListModel( mFollowVisibilityPresetCombo ) );
@@ -99,10 +103,22 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
     connect( mOverviewFrameMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( overviewMapChanged( QgsComposerItem* ) ) );
   }
 
+  connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsComposerMapWidget::mapCrsChanged );
+
+  registerDataDefinedButton( mScaleDDBtn, QgsComposerObject::MapScale );
+  registerDataDefinedButton( mMapRotationDDBtn, QgsComposerObject::MapRotation );
+  registerDataDefinedButton( mXMinDDBtn, QgsComposerObject::MapXMin );
+  registerDataDefinedButton( mYMinDDBtn, QgsComposerObject::MapYMin );
+  registerDataDefinedButton( mXMaxDDBtn, QgsComposerObject::MapXMax );
+  registerDataDefinedButton( mYMaxDDBtn, QgsComposerObject::MapYMax );
+  registerDataDefinedButton( mAtlasMarginDDBtn, QgsComposerObject::MapAtlasMargin );
+  registerDataDefinedButton( mStylePresetsDDBtn, QgsComposerObject::MapStylePreset );
+  registerDataDefinedButton( mLayersDDBtn, QgsComposerObject::MapLayers );
+
   updateGuiElements();
   loadGridEntries();
   loadOverviewEntries();
-  populateDataDefinedButtons();
+
   blockAllSignals( false );
 }
 
@@ -112,24 +128,15 @@ QgsComposerMapWidget::~QgsComposerMapWidget()
 
 void QgsComposerMapWidget::populateDataDefinedButtons()
 {
-  registerDataDefinedButton( mScaleDDBtn, QgsComposerObject::MapScale,
-                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mMapRotationDDBtn, QgsComposerObject::MapRotation,
-                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mXMinDDBtn, QgsComposerObject::MapXMin,
-                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mYMinDDBtn, QgsComposerObject::MapYMin,
-                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mXMaxDDBtn, QgsComposerObject::MapXMax,
-                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mYMaxDDBtn, QgsComposerObject::MapYMax,
-                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mAtlasMarginDDBtn, QgsComposerObject::MapAtlasMargin,
-                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mStylePresetsDDBtn, QgsComposerObject::MapStylePreset,
-                             QgsDataDefinedButton::String, tr( "string matching a style preset name" ) );
-  registerDataDefinedButton( mLayersDDBtn, QgsComposerObject::MapLayers,
-                             QgsDataDefinedButton::String, tr( "list of map layer names separated by | characters" ) );
+  updateDataDefinedButton( mScaleDDBtn );
+  updateDataDefinedButton( mMapRotationDDBtn );
+  updateDataDefinedButton( mXMinDDBtn );
+  updateDataDefinedButton( mYMinDDBtn );
+  updateDataDefinedButton( mXMaxDDBtn );
+  updateDataDefinedButton( mYMaxDDBtn );
+  updateDataDefinedButton( mAtlasMarginDDBtn );
+  updateDataDefinedButton( mStylePresetsDDBtn );
+  updateDataDefinedButton( mLayersDDBtn );
 }
 
 void QgsComposerMapWidget::compositionAtlasToggled( bool atlasEnabled )
@@ -258,6 +265,42 @@ void QgsComposerMapWidget::cleanUpOverviewFrameStyleSelector( QgsPanelWidget* co
 
   updateOverviewFrameSymbolMarker( overview );
   mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::mapCrsChanged( const QgsCoordinateReferenceSystem& crs )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  if ( mComposerMap->presetCrs() == crs )
+    return;
+
+  // try to reproject to maintain extent
+  QgsCoordinateReferenceSystem oldCrs = mComposerMap->crs();
+
+  bool updateExtent = false;
+  QgsRectangle newExtent;
+  try
+  {
+    QgsCoordinateTransform xForm( oldCrs, crs.isValid() ? crs : QgsProject::instance()->crs() );
+    QgsRectangle prevExtent = *mComposerMap->currentMapExtent();
+    newExtent = xForm.transformBoundingBox( prevExtent );
+    updateExtent = true;
+  }
+  catch ( QgsCsException & )
+  {
+    //transform failed, don't update extent
+  }
+
+  mComposerMap->beginCommand( tr( "Map CRS changed" ) );
+  mComposerMap->setCrs( crs );
+  if ( updateExtent )
+    mComposerMap->zoomToExtent( newExtent );
+  mComposerMap->endCommand();
+  mComposerMap->cache();
+  mComposerMap->update();
 }
 
 void QgsComposerMapWidget::on_mAtlasCheckBox_toggled( bool checked )
@@ -469,7 +512,24 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
     return;
   }
 
-  QgsRectangle newExtent = mComposerMap->composition()->mapSettings().visibleExtent();
+  QgsRectangle newExtent = QgisApp::instance()->mapCanvas()->mapSettings().visibleExtent();
+
+  //transform?
+  if ( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs()
+       != mComposerMap->crs() )
+  {
+    try
+    {
+      QgsCoordinateTransform xForm( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(),
+                                    mComposerMap->crs() );
+      newExtent = xForm.transformBoundingBox( newExtent );
+    }
+    catch ( QgsCsException & )
+    {
+      //transform failed, better not proceed
+      return;
+    }
+  }
 
   mComposerMap->beginCommand( tr( "Map extent changed" ) );
   mComposerMap->zoomToExtent( newExtent );
@@ -487,6 +547,23 @@ void QgsComposerMapWidget::on_mViewExtentInCanvasButton_clicked()
 
   if ( !currentMapExtent.isEmpty() )
   {
+    //transform?
+    if ( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs()
+         != mComposerMap->crs() )
+    {
+      try
+      {
+        QgsCoordinateTransform xForm( mComposerMap->crs(),
+                                      QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs() );
+        currentMapExtent = xForm.transformBoundingBox( currentMapExtent );
+      }
+      catch ( QgsCsException & )
+      {
+        //transform failed, better not proceed
+        return;
+      }
+    }
+
     QgisApp::instance()->mapCanvas()->setExtent( currentMapExtent );
     QgisApp::instance()->mapCanvas()->refresh();
   }
@@ -531,6 +608,8 @@ void QgsComposerMapWidget::updateGuiElements()
   }
 
   blockAllSignals( true );
+
+  whileBlocking( mCrsSelector )->setCrs( mComposerMap->presetCrs() );
 
   //width, height, scale
   double scale = mComposerMap->scale();
@@ -604,7 +683,7 @@ void QgsComposerMapWidget::updateGuiElements()
   mKeepLayerStylesCheckBox->setCheckState( mComposerMap->keepLayerStyles() ? Qt::Checked : Qt::Unchecked );
 
   //draw canvas items
-  if ( mComposerMap->drawCanvasItems() )
+  if ( mComposerMap->drawAnnotations() )
   {
     mDrawCanvasItemsCheckBox->setCheckState( Qt::Checked );
   }
@@ -826,20 +905,20 @@ void QgsComposerMapWidget::on_mKeepLayerListCheckBox_stateChanged( int state )
     return;
   }
 
+  // update map
+  storeCurrentLayerSet();
+  mComposerMap->setKeepLayerSet( state == Qt::Checked );
+
+  // update gui
   if ( state == Qt::Checked )
   {
-    mComposerMap->storeCurrentLayerSet();
-    mComposerMap->setKeepLayerSet( true );
-
     // mutually exclusive with following a preset
     mFollowVisibilityPresetCheckBox->setCheckState( Qt::Unchecked );
   }
   else
   {
-    mComposerMap->setLayers( QList<QgsMapLayer*>() );
-    mComposerMap->setKeepLayerSet( false );
-
     mKeepLayerStylesCheckBox->setChecked( Qt::Unchecked );
+    mComposerMap->updateCachedImage();
   }
 
   mKeepLayerStylesCheckBox->setEnabled( state == Qt::Checked );
@@ -872,7 +951,7 @@ void QgsComposerMapWidget::on_mDrawCanvasItemsCheckBox_stateChanged( int state )
   }
 
   mComposerMap->beginCommand( tr( "Canvas items toggled" ) );
-  mComposerMap->setDrawCanvasItems( state == Qt::Checked );
+  mComposerMap->setDrawAnnotations( state == Qt::Checked );
   mUpdatePreviewButton->setEnabled( false ); //prevent crashes because of many button clicks
   mComposerMap->setCacheUpdated( false );
   mComposerMap->cache();
@@ -1447,6 +1526,21 @@ void QgsComposerMapWidget::updateOverviewFrameSymbolMarker( const QgsComposerMap
     QgsFillSymbol* nonConstSymbol = const_cast<QgsFillSymbol*>( overview->frameSymbol() ); //bad
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( nonConstSymbol, mOverviewFrameStyleButton->iconSize() );
     mOverviewFrameStyleButton->setIcon( icon );
+  }
+}
+
+void QgsComposerMapWidget::storeCurrentLayerSet()
+{
+  if ( !mComposerMap )
+    return;
+
+  QList<QgsMapLayer*> layers = QgisApp::instance()->mapCanvas()->mapSettings().layers();
+  mComposerMap->setLayers( layers );
+
+  if ( mComposerMap->keepLayerStyles() )
+  {
+    // also store styles associated with the layers
+    mComposerMap->storeCurrentLayerStyles();
   }
 }
 

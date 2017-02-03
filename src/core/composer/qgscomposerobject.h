@@ -20,13 +20,13 @@
 #include "qgis_core.h"
 #include "qgsobjectcustomproperties.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgspropertycollection.h"
 #include <QObject>
 #include <QDomNode>
 #include <QMap>
 
 class QgsComposition;
 class QPainter;
-class QgsDataDefined;
 
 /** \ingroup core
  * A base class for objects which belong to a map composition.
@@ -59,6 +59,8 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
       Transparency, //!< Item transparency
       BlendMode, //!< Item blend mode
       ExcludeFromExports, //!< Exclude item from exports
+      FrameColor, //!< Item frame color
+      BackgroundColor, //!< Item background color
       //composer map
       MapRotation, //!< Map rotation
       MapScale, //!< Map scale
@@ -71,9 +73,23 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
       MapStylePreset, //!< Layer and style map theme
       //composer picture
       PictureSource, //!< Picture source url
+      PictureSvgBackgroundColor, //!< SVG background color
+      PictureSvgOutlineColor, //!< SVG outline color
+      PictureSvgOutlineWidth, //!< SVG outline width
       //html item
-      SourceUrl //!< Html source url
+      SourceUrl, //!< Html source url
+      //legend item
+      LegendTitle, //!< Legend title
+      LegendColumnCount, //!< Legend column count
+      //scalebar item
+      ScalebarFillColor, //!< Scalebar fill color
+      ScalebarFillColor2, //!< Scalebar secondary fill color
+      ScalebarLineColor, //!< Scalebar line color
+      ScalebarLineWidth, //!< Scalebar line width
     };
+
+    //! Property definitions
+    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
 
     /** Specifies whether the value returned by a function should be the original, user
      * set value, or the current evaluated value for the property. This may differ if
@@ -89,7 +105,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * @param composition parent composition
      */
     QgsComposerObject( QgsComposition* composition );
-    virtual ~QgsComposerObject();
+    virtual ~QgsComposerObject() = default;
 
     /** Returns the composition the item is attached to.
      * @returns QgsComposition for item.
@@ -111,21 +127,24 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      */
     virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
-    /** Returns a reference to the data defined settings for one of the item's data defined properties.
-     * @param property data defined property to return
-     * @note this method was added in version 2.5
+    /** Returns a reference to the object's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedProperties()
      */
-    QgsDataDefined* dataDefinedProperty( const DataDefinedProperty property ) const;
+    QgsPropertyCollection& dataDefinedProperties() { return mDataDefinedProperties; }
 
-    /** Sets parameters for a data defined property for the item
-     * @param property data defined property to set
-     * @param active true if data defined property is active, false if it is disabled
-     * @param useExpression true if the expression should be used
-     * @param expression expression for data defined property
-     * @param field field name if the data defined property should take its value from a field
-     * @note this method was added in version 2.5
+    /** Returns a reference to the object's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedProperties()
      */
-    void setDataDefinedProperty( const DataDefinedProperty property, const bool active, const bool useExpression, const QString &expression, const QString &field );
+    const QgsPropertyCollection& dataDefinedProperties() const { return mDataDefinedProperties; }
+
+    /** Sets the objects's property collection, used for data defined overrides.
+     * @param collection property collection. Existing properties will be replaced.
+     * @note added in QGIS 3.0
+     * @see dataDefinedProperties()
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection& collection ) { mDataDefinedProperties = collection; }
 
     /** Set a custom property for the object.
      * @param key property key. If a property with the same key already exists it will be overwritten.
@@ -190,21 +209,10 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
 
     QgsComposition* mComposition;
 
-    //! Map of data defined properties for the item to string name to use when exporting item to xml
-    QMap< QgsComposerObject::DataDefinedProperty, QString > mDataDefinedNames;
-
     //! Custom properties for object
     QgsObjectCustomProperties mCustomProperties;
 
-    /** Evaluate a data defined property and return the calculated value
-     * @returns true if data defined property could be successfully evaluated
-     * @param property data defined property to evaluate
-     * @param expressionValue QVariant for storing the evaluated value
-     * @param context expression context for evaluating expressions. Must have feature and fields set to current
-     * atlas feature and coverage layer fields prior to calling this method.
-     * @note this method was added in version 2.5
-     */
-    bool dataDefinedEvaluate( const QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue, const QgsExpressionContext& context = QgsExpressionContext() ) const;
+    QgsPropertyCollection mDataDefinedProperties;
 
   signals:
 
@@ -215,16 +223,12 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
 
   private slots:
 
-    /** Prepares all composer item data defined expressions using the current atlas coverage layer if set.
-     * @note this method was added in version 2.5
+    /**
+     * Prepares all composer item data defined properties using the current atlas coverage layer if set.
      */
-    void prepareDataDefinedExpressions() const;
+    void prepareProperties() const;
 
   private:
-
-    //! Map of current data defined properties
-    //mutable since expressions in data defineds need to be preparable
-    mutable QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > mDataDefinedProperties;
 
     friend class TestQgsComposerObject;
 };

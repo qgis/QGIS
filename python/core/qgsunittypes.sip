@@ -20,7 +20,7 @@ class QgsUnitTypes
       DistanceFeet, /*!< imperial feet */
       DistanceNauticalMiles, /*!< nautical miles */
       DistanceYards, /*!< imperial yards */
-      DistanceMiles, /*!< terrestial miles */
+      DistanceMiles, /*!< terrestrial miles */
       DistanceDegrees, /*!< degrees, for planar geographic CRS distance measurements */
       DistanceUnknownUnit, /*!< unknown distance unit */
     };
@@ -69,6 +69,7 @@ class QgsUnitTypes
       RenderPixels, //!< pixels
       RenderPercentage, //!< percentage of another measurement (e.g., canvas size, feature size)
       RenderPoints, //! points (e.g., for font sizes)
+      RenderInches,
       RenderUnknownUnit, //!< mixed or unknown units
     };
 

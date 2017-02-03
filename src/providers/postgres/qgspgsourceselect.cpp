@@ -43,16 +43,16 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
 {
   Q_UNUSED( option );
 
-  QString tableName = index.sibling( index.row(), QgsPgTableModel::dbtmTable ).data( Qt::DisplayRole ).toString();
+  QString tableName = index.sibling( index.row(), QgsPgTableModel::DbtmTable ).data( Qt::DisplayRole ).toString();
   if ( tableName.isEmpty() )
     return nullptr;
 
-  if ( index.column() == QgsPgTableModel::dbtmSql )
+  if ( index.column() == QgsPgTableModel::DbtmSql )
   {
     return new QLineEdit( parent );
   }
 
-  if ( index.column() == QgsPgTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
+  if ( index.column() == QgsPgTableModel::DbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
     Q_FOREACH ( QgsWkbTypes::Type type,
@@ -70,7 +70,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
     return cb;
   }
 
-  if ( index.column() == QgsPgTableModel::dbtmPkCol )
+  if ( index.column() == QgsPgTableModel::DbtmPkCol )
   {
     QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
 
@@ -97,7 +97,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
     }
   }
 
-  if ( index.column() == QgsPgTableModel::dbtmSrid )
+  if ( index.column() == QgsPgTableModel::DbtmSrid )
   {
     QLineEdit *le = new QLineEdit( parent );
     le->setValidator( new QIntValidator( -1, 999999, parent ) );
@@ -114,10 +114,10 @@ void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelInde
   QComboBox *cb = qobject_cast<QComboBox* >( editor );
   if ( cb )
   {
-    if ( index.column() == QgsPgTableModel::dbtmType )
+    if ( index.column() == QgsPgTableModel::DbtmType )
       cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
 
-    if ( index.column() == QgsPgTableModel::dbtmPkCol && !index.data( Qt::UserRole + 2 ).toStringList().isEmpty() )
+    if ( index.column() == QgsPgTableModel::DbtmPkCol && !index.data( Qt::UserRole + 2 ).toStringList().isEmpty() )
     {
       QStringList cols = index.data( Qt::UserRole + 2 ).toStringList();
 
@@ -143,7 +143,7 @@ void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelInde
   {
     bool ok;
     value.toInt( &ok );
-    if ( index.column() == QgsPgTableModel::dbtmSrid && !ok )
+    if ( index.column() == QgsPgTableModel::DbtmSrid && !ok )
       value = QLatin1String( "" );
 
     le->setText( value );
@@ -155,7 +155,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
   QComboBox *cb = qobject_cast<QComboBox *>( editor );
   if ( cb )
   {
-    if ( index.column() == QgsPgTableModel::dbtmType )
+    if ( index.column() == QgsPgTableModel::DbtmType )
     {
       QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->currentData().toInt();
 
@@ -163,7 +163,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
       model->setData( index, type != QgsWkbTypes::Unknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select..." ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
-    else if ( index.column() == QgsPgTableModel::dbtmPkCol )
+    else if ( index.column() == QgsPgTableModel::DbtmPkCol )
     {
       QStandardItemModel *cbm = qobject_cast<QStandardItemModel*>( cb->model() );
       QStringList cols;
@@ -184,7 +184,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
   {
     QString value( le->text() );
 
-    if ( index.column() == QgsPgTableModel::dbtmSrid && value.isEmpty() )
+    if ( index.column() == QgsPgTableModel::DbtmSrid && value.isEmpty() )
     {
       value = tr( "Enter..." );
     }
@@ -408,35 +408,35 @@ void QgsPgSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QStr
   }
   else if ( text == tr( "Schema" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmSchema );
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::DbtmSchema );
   }
   else if ( text == tr( "Table" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmTable );
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::DbtmTable );
   }
   else if ( text == tr( "Comment" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmComment );
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::DbtmComment );
   }
   else if ( text == tr( "Type" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmType );
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::DbtmType );
   }
   else if ( text == tr( "Geometry column" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmGeomCol );
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::DbtmGeomCol );
   }
   else if ( text == tr( "Feature id" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmPkCol );
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::DbtmPkCol );
   }
   else if ( text == tr( "SRID" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmSrid );
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::DbtmSrid );
   }
   else if ( text == tr( "Sql" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmSql );
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::DbtmSql );
   }
 }
 
@@ -492,7 +492,7 @@ void QgsPgSourceSelect::addTables()
 
   Q_FOREACH ( const QModelIndex& idx, mTablesTreeView->selectionModel()->selection().indexes() )
   {
-    if ( idx.column() != QgsPgTableModel::dbtmTable )
+    if ( idx.column() != QgsPgTableModel::DbtmTable )
       continue;
 
     QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), connectionInfo( false ), mUseEstimatedMetadata );
@@ -559,12 +559,12 @@ void QgsPgSourceSelect::finishList()
   QApplication::restoreOverrideCursor();
 
 #if 0
-  for ( int i = 0; i < QgsPgTableModel::dbtmColumns; i++ )
+  for ( int i = 0; i < QgsPgTableModel::DbtmColumns; i++ )
     mTablesTreeView->resizeColumnToContents( i );
 #endif
 
-  mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmTable, Qt::AscendingOrder );
-  mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmSchema, Qt::AscendingOrder );
+  mTablesTreeView->sortByColumn( QgsPgTableModel::DbtmTable, Qt::AscendingOrder );
+  mTablesTreeView->sortByColumn( QgsPgTableModel::DbtmSchema, Qt::AscendingOrder );
 }
 
 void QgsPgSourceSelect::columnThreadFinished()
@@ -600,7 +600,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
   }
 
   QModelIndex idx = mProxyModel.mapToSource( index );
-  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsPgTableModel::dbtmTable ) )->text();
+  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsPgTableModel::DbtmTable ) )->text();
 
   QString uri = mTableModel.layerURI( idx, connectionInfo( false ), mUseEstimatedMetadata );
   if ( uri.isNull() )

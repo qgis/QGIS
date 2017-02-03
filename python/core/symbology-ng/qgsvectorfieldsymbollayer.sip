@@ -48,7 +48,7 @@ class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayer
 
     void drawPreviewIcon( QgsSymbolRenderContext& context, QSize size );
 
-    QSet<QString> usedAttributes() const;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     //setters and getters
     void setXAttribute( const QString& attribute );

@@ -39,7 +39,7 @@ class SERVER_EXPORT QgsSLDConfigParser : public QgsWmsConfigParser
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
-    void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const override;
+    void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, const QString& serviceUrl, bool fullProjectSettings = false ) const override;
 
     //! Returns one or possibly several maplayers for a given layer name and style. If no layers/style are found, an empty list is returned
     QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache = true ) const override;
@@ -54,7 +54,7 @@ class SERVER_EXPORT QgsSLDConfigParser : public QgsWmsConfigParser
     QDomDocument getStyles( QStringList& layerList ) const override;
 
     //! Returns the xml fragment of layers styles description
-    QDomDocument describeLayer( QStringList& layerList, const QString& hrefString ) const override;
+    QDomDocument describeLayer( QStringList& layerList, const QString& wfsHrefString, const QString& wcsHrefString ) const override;
 
     //! Returns if output are MM or PIXEL
     QgsUnitTypes::RenderUnit outputUnits() const override;
@@ -86,8 +86,6 @@ class SERVER_EXPORT QgsSLDConfigParser : public QgsWmsConfigParser
     //! Load PAL engine settings  into global project instance
     void loadLabelSettings() const override;
 
-    QString serviceUrl() const override;
-
     QStringList wfsLayerNames() const override;
 
     void owsGeneralAndResourceList( QDomElement& parentElement, QDomDocument& doc, const QString& strHref ) const override;
@@ -100,11 +98,9 @@ class SERVER_EXPORT QgsSLDConfigParser : public QgsWmsConfigParser
     double legendIconLabelSpace() const override;
     double legendSymbolWidth() const override;
     double legendSymbolHeight() const override;
-    const QFont& legendLayerFont() const override;
-    const QFont& legendItemFont() const override;
+    QFont legendLayerFont() const override;
+    QFont legendItemFont() const override;
 
-    double maxWidth() const override;
-    double maxHeight() const override;
     double imageQuality() const override;
     int wmsPrecision() const override;
 

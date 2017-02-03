@@ -19,7 +19,7 @@
 
 #include "ui_qgsnewspatialitelayerdialogbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include "qgis.h"
 
@@ -48,7 +48,7 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     void selectionChanged();
     void checkOk();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/editing_geometry_attributes.html#vector-create-spatialite" ) ); }
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
 

@@ -22,7 +22,7 @@
 #include "ui_qgsoptionsbase.h"
 #include "qgisgui.h"
 #include "qgisapp.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include <qgscoordinatereferencesystem.h>
 
@@ -176,7 +176,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_mBtnRemoveHiddenPath_clicked();
 
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#options" ) ); }
 
     void on_mBrowseCacheDirectory_clicked();
     void on_mClearCache_clicked();
@@ -242,8 +242,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     QMap<QString, QVariant> mStyleSheetNewOpts;
     QMap<QString, QVariant> mStyleSheetOldOpts;
 
-    static const int PaletteColorRole = Qt::UserRole + 1;
-    static const int PaletteLabelRole = Qt::UserRole + 2;
+    static const int PALETTE_COLOR_ROLE = Qt::UserRole + 1;
+    static const int PALETTE_LABEL_ROLE = Qt::UserRole + 2;
 
 };
 

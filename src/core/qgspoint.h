@@ -60,7 +60,7 @@ class CORE_EXPORT QgsVector
 
     /** Returns the dot product of two vectors, which is the sum of the x component
      *  of this vector multiplied by the x component of another
-     *  vector plus the y component of this vector multipled by the y component of another vector.
+     *  vector plus the y component of this vector multiplied by the y component of another vector.
      */
     double operator*( QgsVector v ) const;
 
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsVector
      */
     QgsVector rotateBy( double rot ) const;
 
-    /** Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0). Will throw an expection
+    /** Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0). Will throw an exception
      * if called on a vector with length of 0.
      */
     QgsVector normalized() const;
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsPoint
     //! Calculates azimuth between this point and other one (clockwise in degree, starting from north)
     double azimuth( const QgsPoint& other ) const;
 
-    /** Returns a new point which correponds to this point projected by a specified distance
+    /** Returns a new point which corresponds to this point projected by a specified distance
      * in a specified bearing.
      * @param distance distance to project
      * @param bearing angle to project in, clockwise in degrees starting from north

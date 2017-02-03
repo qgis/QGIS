@@ -17,10 +17,6 @@
 
 #include "qgis.h"
 #include "qgsremotedatasourcebuilder.h"
-#if QT_VERSION < 0x050000
-#include "qgsftptransaction.h"
-#include "qgshttptransaction.h"
-#endif
 #include "qgslogger.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
@@ -158,30 +154,8 @@ QgsVectorLayer* QgsRemoteDataSourceBuilder::vectorLayerFromRemoteVDS( const QDom
 
 int QgsRemoteDataSourceBuilder::loadData( const QString& url, QByteArray& data ) const
 {
-#if QT_VERSION < 0x050000
-  if ( url.startsWith( "http", Qt::CaseInsensitive ) )
-  {
-    QgsHttpTransaction http( url );
-    if ( !http.getSynchronously( data ) )
-    {
-      QgsDebugMsg( "Error, loading from http failed" );
-      return 1; //no success
-    }
-  }
-  else if ( url.startsWith( "ftp", Qt::CaseInsensitive ) )
-  {
-    Q_NOWARN_DEPRECATED_PUSH;
-    QgsFtpTransaction ftp;
-    if ( ftp.get( url, data ) != 0 )
-    {
-      return 1;
-    }
-    Q_NOWARN_DEPRECATED_POP;
-  }
-#else
   Q_UNUSED( url )
   Q_UNUSED( data )
   QgsDebugMsg( "http and ftp remote datasources not supported with Qt5" );
-#endif
   return 0;
 }

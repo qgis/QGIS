@@ -279,7 +279,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
         {
           //not a polygon type. Impossible to get there
         }
-        if ( f->geometry().isGeosEmpty() ) //avoid intersection might have removed the whole geometry
+        if ( f->geometry().isEmpty() ) //avoid intersection might have removed the whole geometry
         {
           emit messageEmitted( tr( "The feature cannot be added because it's geometry collapsed due to intersection avoidance" ), QgsMessageBar::CRITICAL );
           stopCapturing();

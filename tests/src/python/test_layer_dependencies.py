@@ -126,7 +126,7 @@ class TestLayerDependencies(unittest.TestCase):
         self.assertEqual(m.point(), QgsPoint(1, 0))
 
         f = QgsFeature(self.linesLayer.fields())
-        f.setFeatureId(1)
+        f.setId(1)
         geom = QgsGeometry.fromWkt("LINESTRING(0 0,1 1)")
         f.setGeometry(geom)
         self.linesLayer.startEditing()
@@ -144,7 +144,7 @@ class TestLayerDependencies(unittest.TestCase):
         self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
         # add another line
         f = QgsFeature(self.linesLayer.fields())
-        f.setFeatureId(2)
+        f.setId(2)
         geom = QgsGeometry.fromWkt("LINESTRING(0 0,0.5 0.5)")
         f.setGeometry(geom)
         self.linesLayer.startEditing()
@@ -166,7 +166,7 @@ class TestLayerDependencies(unittest.TestCase):
         self.pointsLayer2.setDependencies([QgsMapLayerDependency(self.pointsLayer.id())])
         # add another line
         f = QgsFeature(self.linesLayer.fields())
-        f.setFeatureId(3)
+        f.setId(3)
         geom = QgsGeometry.fromWkt("LINESTRING(0 0.2,0.5 0.8)")
         f.setGeometry(geom)
         self.linesLayer.startEditing()
@@ -196,7 +196,7 @@ class TestLayerDependencies(unittest.TestCase):
         QgsLayerDefinition.exportLayerDefinition(tmpfile, [ltr])
 
         grp = ltr.addGroup("imported")
-        QgsLayerDefinition.loadLayerDefinition(tmpfile, grp)
+        QgsLayerDefinition.loadLayerDefinition(tmpfile, QgsProject.instance(), grp)
 
         newPointsLayer = None
         newLinesLayer = None
@@ -247,7 +247,7 @@ class TestLayerDependencies(unittest.TestCase):
         u.setConfig(cfg)
         # add another line
         f = QgsFeature(self.linesLayer.fields())
-        f.setFeatureId(4)
+        f.setId(4)
         geom = QgsGeometry.fromWkt("LINESTRING(0.5 0.2,0.6 0)")
         f.setGeometry(geom)
         self.linesLayer.startEditing()

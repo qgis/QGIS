@@ -13,7 +13,7 @@
 #define CoordinateCaptureGUI_H
 
 #include <QDialog>
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 /**
 @author Tim Sutton
@@ -29,7 +29,7 @@ class CoordinateCaptureGui : public QDialog
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "plugins/plugins_coordinate_capture.html" ) ); }
 };
 
 #endif

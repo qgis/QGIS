@@ -337,14 +337,14 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     progress->setRange( 0, layer->featureCount() );
   }
 
-  bool cancelled = false;
+  bool canceled = false;
 
   // write all features
   while ( fit.nextFeature( fet ) )
   {
     if ( progress && progress->wasCanceled() )
     {
-      cancelled = true;
+      canceled = true;
       if ( errorMessage )
       {
         *errorMessage += '\n' + QObject::tr( "Import was canceled at %1 of %2" ).arg( progress->value() ).arg( progress->maximum() );
@@ -439,8 +439,8 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     }
   }
 
-  if ( cancelled )
-    return ErrUserCancelled;
+  if ( canceled )
+    return ErrUserCanceled;
   else if ( errors > 0 )
     return ErrFeatureWriteFailed;
 

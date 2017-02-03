@@ -13,7 +13,7 @@
 #include "qgsdecorationscalebardialog.h"
 #include "qgsdecorationscalebar.h"
 #include "qgslogger.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include <QColorDialog>
 #include <QSettings>
@@ -84,7 +84,7 @@ QgsDecorationScaleBarDialog::~QgsDecorationScaleBarDialog()
 
 void QgsDecorationScaleBarDialog::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#scale-bar" ) );
 }
 
 void QgsDecorationScaleBarDialog::apply()

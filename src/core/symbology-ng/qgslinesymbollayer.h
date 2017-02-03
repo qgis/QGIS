@@ -72,7 +72,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    double estimateMaxBleed() const override;
+    double estimateMaxBleed( const QgsRenderContext& context ) const override;
 
     // new stuff
 
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     virtual void setWidth( double width ) override;
     virtual double width() const override;
 
-    double estimateMaxBleed() const override;
+    double estimateMaxBleed( const QgsRenderContext& context ) const override;
 
     // new stuff
 
@@ -327,9 +327,9 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale& scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    QSet<QString> usedAttributes() const override;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
 
-    void setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined ) override;
+    void setDataDefinedProperty( Property key, const QgsProperty& property ) override;
 
 
   protected:

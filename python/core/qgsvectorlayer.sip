@@ -3,46 +3,6 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
 
-struct QgsVectorJoinInfo
-{
-%TypeHeaderCode
-#include "qgsvectorlayer.h"
-%End
-  QgsVectorJoinInfo();
-
-  /** Join field in the target layer*/
-  QString targetFieldName;
-  /** Source layer*/
-  QString joinLayerId;
-  /** Join field in the source layer*/
-  QString joinFieldName;
-  /** True if the join is cached in virtual memory*/
-  bool memoryCache;
-  /** True if the cached join attributes need to be updated*/
-  bool cacheDirty;
-
-  /** Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
-   * @note not available in python bindings
-   */
-  // QHash< QString, QgsAttributeMap> cachedAttributes;
-
-  /** An optional prefix. If it is a Null string "{layername}_" will be used
-   * @note Added in 2.8
-   */
-  QString prefix;
-
-  bool operator==( const QgsVectorJoinInfo& other ) const;
-
-  /** Set subset of fields to be used from joined layer. Takes ownership of the passed pointer. Null pointer tells to use all fields.
-    @note added in 2.6 */
-  void setJoinFieldNamesSubset( QStringList* fieldNamesSubset /Transfer/ );
-  /** Get subset of fields to be used from joined layer. All fields will be used if null is returned.
-    @note added in 2.6 */
-  QStringList* joinFieldNamesSubset() const;
-};
-
-
-
 /** \ingroup core
  * Represents a vector layer which manages a vector based data sets.
  *
@@ -231,7 +191,7 @@ struct QgsVectorJoinInfo
  *
  * - skipEmptyFields=(yes|no)
  *
- *   If yes then empty fields will be discarded (eqivalent to concatenating consecutive
+ *   If yes then empty fields will be discarded (equivalent to concatenating consecutive
  *   delimiters)
  *
  * - maxFields=#
@@ -334,8 +294,8 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
       InvalidLayer, /**< Edit failed due to invalid layer */
     };
 
-    //! Selection behaviour
-    enum SelectBehaviour
+    //! Selection behavior
+    enum SelectBehavior
     {
       SetSelection, /**< Set selection, removing any existing selection */
       AddToSelection, /**< Add selection to current selection */
@@ -357,7 +317,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      *
      */
     QgsVectorLayer( const QString& path = QString::null, const QString& baseName = QString::null,
-                    const QString& providerLib = QString::null, bool loadDefaultStyleFlag = true );
+                    const QString& providerLib = "ogr", bool loadDefaultStyleFlag = true );
 
     /** Destructor */
     virtual ~QgsVectorLayer();
@@ -413,18 +373,18 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     /** Joins another vector layer to this layer
       @param joinInfo join object containing join layer id, target and source field
       @note since 2.6 returns bool indicating whether the join can be added */
-    bool addJoin( const QgsVectorJoinInfo& joinInfo );
+    bool addJoin( const QgsVectorLayerJoinInfo& joinInfo );
 
     /** Removes a vector layer join
       @returns true if join was found and successfully removed */
     bool removeJoin( const QString& joinLayerId );
 
     /**
-     * Acccessor to the join buffer object
+     * Accessor to the join buffer object
      * @note added 2.14.7
      */
     QgsVectorLayerJoinBuffer* joinBuffer();
-    const QList<QgsVectorJoinInfo> vectorJoins() const;
+    const QList<QgsVectorLayerJoinInfo> vectorJoins() const;
 
     /**
      * Sets the list of dependencies.
@@ -506,34 +466,34 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     /**
      * Select features found within the search rectangle (in layer's coordinates)
      * @param rect search rectangle
-     * @param behaviour selection type, allows adding to current selection, removing
+     * @param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
      * @see invertSelectionInRectangle(QgsRectangle & rect)
      * @see selectByExpression()
      * @see selectByIds()
      */
-    void selectByRect( QgsRectangle & rect, SelectBehaviour behaviour = SetSelection );
+    void selectByRect( QgsRectangle & rect, SelectBehavior behavior = SetSelection );
 
     /** Select matching features using an expression.
      * @param expression expression to evaluate to select features
-     * @param behaviour selection type, allows adding to current selection, removing
+     * @param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
      * @note added in QGIS 2.16
      * @see selectByRect()
      * @see selectByIds()
      */
-    void selectByExpression( const QString& expression, SelectBehaviour behaviour = SetSelection );
+    void selectByExpression( const QString& expression, SelectBehavior behavior = SetSelection );
 
     /** Select matching features using a list of feature IDs. Will emit the
      * selectionChanged() signal with the clearAndSelect flag set.
      * @param ids feature IDs to select
-     * @param behaviour selection type, allows adding to current selection, removing
+     * @param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
      * @note added in QGIS 2.16
      * @see selectByRect()
      * @see selectByExpression()
      */
-    void selectByIds( const QgsFeatureIds &ids, SelectBehaviour behaviour = SetSelection );
+    void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
 
     /**
      * Modifies the current selection on this layer
@@ -656,6 +616,11 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc ) const;
 
+    /** Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
+     * @note added in 3.0
+     */
+    void resolveReferences( QgsProject* project );
+
     /**
      * Save named and sld style of the layer to the style table in the db.
      * @param name
@@ -760,7 +725,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     /**
      * Set the string (typically sql) used to define a subset of the layer
      * @param subset The subset string. This may be the where clause of a sql statement
-     *               or other defintion string specific to the underlying dataprovider
+     *               or other definition string specific to the underlying dataprovider
      *               and data store.
      * @return true, when setting the subset string was successful, false otherwise
      */
@@ -1117,10 +1082,10 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
 
     const QMap< QString, QString >& attributeAliases() const;
 
-    const QSet<QString>& excludeAttributesWms() const;
+    QSet<QString> excludeAttributesWms() const;
     void setExcludeAttributesWms( const QSet<QString>& att );
 
-    const QSet<QString>& excludeAttributesWfs() const;
+    QSet<QString> excludeAttributesWfs() const;
     void setExcludeAttributesWfs( const QSet<QString>& att );
 
     /** Delete an attribute field (but does not commit it) */
@@ -1221,10 +1186,6 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
 
     /** Assembles mUpdatedFields considering provider fields, joined fields and added fields */
     void updateFields();
-
-    /** Caches joined attributes if required (and not already done) */
-    // marked as const as these are just caches, and need to be created from const accessors
-    void createJoinCaches() const;
 
     /** Returns the calculated default value for the specified field index. The default
      * value may be taken from a client side default value expression (see setDefaultValueExpression())
@@ -1343,7 +1304,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      * @param index column index for attribute
      * @param substring substring to match (case insensitive)
      * @param limit maxmum number of the values to return, or -1 to return all unique values
-     * @param feedback optional feedback object for cancelling request
+     * @param feedback optional feedback object for canceling request
      * @returns list of unique strings containing substring
      */
     QStringList uniqueStringsMatching( int index, const QString& substring, int limit = -1,
@@ -1545,9 +1506,6 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      */
     virtual void updateExtents();
 
-    /** Check if there is a join with a layer that will be removed */
-    void checkJoinLayerRemove( const QString& theLayerId );
-
     /**
      * Make layer editable.
      * This starts an edit session on this layer. Changes made in this edit session will not
@@ -1586,7 +1544,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     /** Is emitted, when edited changes successfully have been written to the data provider */
     void editingStopped();
 
-    /** Is emitted, before changes are commited to the data provider */
+    /** Is emitted, before changes are committed to the data provider */
     void beforeCommitChanges();
 
     /** Is emitted, before changes are rolled back*/

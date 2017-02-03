@@ -20,7 +20,6 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsgetschemaextension.h"
-#include "qgswmsservertransitional.h"
 
 namespace QgsWms
 {
@@ -28,26 +27,55 @@ namespace QgsWms
   void writeGetSchemaExtension( QgsServerInterface* serverIface, const QString& version,
                                 const QgsServerRequest& request, QgsServerResponse& response )
   {
-    Q_UNUSED( version );
-    QgsServerRequest::Parameters params = request.parameters();
-    try
-    {
-      QgsWmsServer server( serverIface->configFilePath(), params,
-                           getConfigParser( serverIface ),
-                           serverIface->accessControls() );
-      QDomDocument doc = server.getSchemaExtension();
-      response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
-      response.write( doc.toByteArray() );
-    }
-    catch ( QgsMapServiceException& ex )
-    {
-      writeError( response, ex.code(), ex.message() );
-    }
+    QDomDocument doc = getSchemaExtension( serverIface, version, request );
+    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
+    response.write( doc.toByteArray() );
   }
 
+  QDomDocument getSchemaExtension( QgsServerInterface* serverIface, const QString& version,
+                                   const QgsServerRequest& request )
+  {
+    Q_UNUSED( version );
+    Q_UNUSED( serverIface );
 
-} // samespace QgsWms
+    QgsServerRequest::Parameters parameters = request.parameters();
 
+    QDomDocument xsdDoc;
 
+    QFileInfo xsdFileInfo( QStringLiteral( "schemaExtension.xsd" ) );
+    if ( !xsdFileInfo.exists() )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Error, xsd file 'schemaExtension.xsd' does not exist" ),
+                                 QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
+      return xsdDoc;
+    }
 
+    QString xsdFilePath = xsdFileInfo.absoluteFilePath();
+    QFile xsdFile( xsdFilePath );
+    if ( !xsdFile.exists() )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Error, xsd file 'schemaExtension.xsd' does not exist" ),
+                                 QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
+      return xsdDoc;
+    }
 
+    if ( !xsdFile.open( QIODevice::ReadOnly ) )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Error, cannot open xsd file 'schemaExtension.xsd' does not exist" ),
+                                 QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
+      return xsdDoc;
+    }
+
+    QString errorMsg;
+    int line, column;
+    if ( !xsdDoc.setContent( &xsdFile, true, &errorMsg, &line, &column ) )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Error parsing file 'schemaExtension.xsd" ) +
+                                 QStringLiteral( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ),
+                                 QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
+    }
+
+    return xsdDoc;
+  }
+
+} // namespace QgsWms

@@ -1835,7 +1835,7 @@ QgsGeometry QgsGeos::mergeLines( QString* errorMsg ) const
 
 QgsGeometry QgsGeos::closestPoint( const QgsGeometry& other, QString* errorMsg ) const
 {
-  if ( !mGeos || other.isEmpty() )
+  if ( !mGeos || other.isNull() )
   {
     return QgsGeometry();
   }
@@ -1870,7 +1870,7 @@ QgsGeometry QgsGeos::closestPoint( const QgsGeometry& other, QString* errorMsg )
 
 QgsGeometry QgsGeos::shortestLine( const QgsGeometry& other, QString* errorMsg ) const
 {
-  if ( !mGeos || other.isEmpty() )
+  if ( !mGeos || other.isNull() )
   {
     return QgsGeometry();
   }
@@ -1941,6 +1941,101 @@ double QgsGeos::lineLocatePoint( const QgsPointV2& point, QString* errorMsg ) co
   return distance;
 }
 
+QgsGeometry QgsGeos::polygonize( const QList<QgsAbstractGeometry*>& geometries, QString* errorMsg )
+{
+  GEOSGeometry** const lineGeosGeometries = new GEOSGeometry*[ geometries.size()];
+  int validLines = 0;
+  Q_FOREACH ( const QgsAbstractGeometry* g, geometries )
+  {
+    GEOSGeometry* l = asGeos( g );
+    if ( l )
+    {
+      lineGeosGeometries[validLines] = l;
+      validLines++;
+    }
+  }
+
+  try
+  {
+    GEOSGeomScopedPtr result( GEOSPolygonize_r( geosinit.ctxt, lineGeosGeometries, validLines ) );
+    for ( int i = 0; i < validLines; ++i )
+    {
+      GEOSGeom_destroy_r( geosinit.ctxt, lineGeosGeometries[i] );
+    }
+    delete[] lineGeosGeometries;
+    return QgsGeometry( fromGeos( result.get() ) );
+  }
+  catch ( GEOSException &e )
+  {
+    if ( errorMsg )
+    {
+      *errorMsg = e.what();
+    }
+    for ( int i = 0; i < validLines; ++i )
+    {
+      GEOSGeom_destroy_r( geosinit.ctxt, lineGeosGeometries[i] );
+    }
+    delete[] lineGeosGeometries;
+    return QgsGeometry();
+  }
+}
+
+QgsGeometry QgsGeos::voronoiDiagram( const QgsAbstractGeometry* extent, double tolerance, bool edgesOnly, QString* errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return QgsGeometry();
+  }
+
+  GEOSGeometry* extentGeos = nullptr;
+  GEOSGeomScopedPtr extentGeosGeom( nullptr );
+  if ( extent )
+  {
+    extentGeosGeom.reset( asGeos( extent, mPrecision ) );
+    if ( !extentGeosGeom )
+    {
+      return QgsGeometry();
+    }
+    extentGeos = extentGeosGeom.get();
+  }
+
+  GEOSGeomScopedPtr geos;
+  try
+  {
+    geos.reset( GEOSVoronoiDiagram_r( geosinit.ctxt, mGeos, extentGeos, tolerance, edgesOnly ) );
+
+    if ( !geos || GEOSisEmpty_r( geosinit.ctxt, geos.get() ) != 0 )
+    {
+      return QgsGeometry();
+    }
+
+    return QgsGeometry( fromGeos( geos.get() ) );
+  }
+  CATCH_GEOS_WITH_ERRMSG( QgsGeometry() );
+}
+
+QgsGeometry QgsGeos::delaunayTriangulation( double tolerance, bool edgesOnly, QString* errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return QgsGeometry();
+  }
+
+  GEOSGeomScopedPtr geos;
+  try
+  {
+    geos.reset( GEOSDelaunayTriangulation_r( geosinit.ctxt, mGeos, tolerance, edgesOnly ) );
+
+    if ( !geos || GEOSisEmpty_r( geosinit.ctxt, geos.get() ) != 0 )
+    {
+      return QgsGeometry();
+    }
+
+    return QgsGeometry( fromGeos( geos.get() ) );
+  }
+  CATCH_GEOS_WITH_ERRMSG( QgsGeometry() );
+}
+
 
 //! Extract coordinates of linestring's endpoints. Returns false on error.
 static bool _linestringEndpoints( const GEOSGeometry* linestring, double& x1, double& y1, double& x2, double& y2 )
@@ -1965,7 +2060,7 @@ static bool _linestringEndpoints( const GEOSGeometry* linestring, double& x1, do
 
 
 //! Merge two linestrings if they meet at the given intersection point, return new geometry or null on error.
-static GEOSGeometry* _mergeLinestrings( const GEOSGeometry* line1, const GEOSGeometry* line2, const QgsPoint& interesectionPoint )
+static GEOSGeometry* _mergeLinestrings( const GEOSGeometry* line1, const GEOSGeometry* line2, const QgsPoint& intersectionPoint )
 {
   double x1, y1, x2, y2;
   if ( !_linestringEndpoints( line1, x1, y1, x2, y2 ) )
@@ -1975,15 +2070,15 @@ static GEOSGeometry* _mergeLinestrings( const GEOSGeometry* line1, const GEOSGeo
   if ( !_linestringEndpoints( line2, rx1, ry1, rx2, ry2 ) )
     return nullptr;
 
-  bool interesectionAtOrigLineEndpoint =
-    ( interesectionPoint.x() == x1 && interesectionPoint.y() == y1 ) ||
-    ( interesectionPoint.x() == x2 && interesectionPoint.y() == y2 );
-  bool interesectionAtReshapeLineEndpoint =
-    ( interesectionPoint.x() == rx1 && interesectionPoint.y() == ry1 ) ||
-    ( interesectionPoint.x() == rx2 && interesectionPoint.y() == ry2 );
+  bool intersectionAtOrigLineEndpoint =
+    ( intersectionPoint.x() == x1 && intersectionPoint.y() == y1 ) ||
+    ( intersectionPoint.x() == x2 && intersectionPoint.y() == y2 );
+  bool intersectionAtReshapeLineEndpoint =
+    ( intersectionPoint.x() == rx1 && intersectionPoint.y() == ry1 ) ||
+    ( intersectionPoint.x() == rx2 && intersectionPoint.y() == ry2 );
 
   // the intersection must be at the begin/end of both lines
-  if ( interesectionAtOrigLineEndpoint && interesectionAtReshapeLineEndpoint )
+  if ( intersectionAtOrigLineEndpoint && intersectionAtReshapeLineEndpoint )
   {
     GEOSGeometry* g1 = GEOSGeom_clone_r( geosinit.ctxt, line1 );
     GEOSGeometry* g2 = GEOSGeom_clone_r( geosinit.ctxt, line2 );

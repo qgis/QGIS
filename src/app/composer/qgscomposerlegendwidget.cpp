@@ -78,7 +78,8 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
   mRasterBorderColorButton->setAllowAlpha( true );
   mRasterBorderColorButton->setContext( QStringLiteral( "composer " ) );
 
-  mMapComboBox->setComposition( legend->composition() );
+  if ( legend )
+    mMapComboBox->setComposition( legend->composition() );
   mMapComboBox->setItemType( QgsComposerItem::ComposerMap );
   connect( mMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( composerMapChanged( QgsComposerItem* ) ) );
 
@@ -99,6 +100,9 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
     connect( &legend->composition()->atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( updateFilterLegendByAtlasButton() ) );
     connect( &legend->composition()->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateFilterLegendByAtlasButton() ) );
   }
+
+  registerDataDefinedButton( mLegendTitleDDBtn, QgsComposerObject::LegendTitle );
+  registerDataDefinedButton( mColumnsDDBtn, QgsComposerObject::LegendColumnCount );
 
   setGuiElements();
 
@@ -160,6 +164,8 @@ void QgsComposerLegendWidget::setGuiElements()
   blockAllSignals( false );
 
   on_mCheckBoxAutoUpdate_stateChanged( mLegend->autoUpdateModel() ? Qt::Checked : Qt::Unchecked );
+  updateDataDefinedButton( mLegendTitleDDBtn );
+  updateDataDefinedButton( mColumnsDDBtn );
 }
 
 void QgsComposerLegendWidget::on_mWrapCharLineEdit_textChanged( const QString &text )
@@ -896,7 +902,7 @@ void QgsComposerLegendWidget::updateLegend()
   {
     mLegend->beginCommand( tr( "Legend updated" ) );
 
-    // this will reset the model completely, loosing any changes
+    // this will reset the model completely, losing any changes
     mLegend->setAutoUpdateModel( true );
     mLegend->setAutoUpdateModel( false );
     mLegend->updateItem();

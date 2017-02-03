@@ -65,18 +65,18 @@ class SelectByExpression(GeoAlgorithm):
         method = self.getParameterValue(self.METHOD)
 
         if method == 0:
-            behaviour = QgsVectorLayer.SetSelection
+            behavior = QgsVectorLayer.SetSelection
         elif method == 1:
-            behaviour = QgsVectorLayer.AddToSelection
+            behavior = QgsVectorLayer.AddToSelection
         elif method == 2:
             behavior = QgsVectorLayer.RemoveFromSelection
         elif method == 3:
-            behaviour = QgsVectorLayer.IntersectSelection
+            behavior = QgsVectorLayer.IntersectSelection
 
         expression = self.getParameterValue(self.EXPRESSION)
         qExp = QgsExpression(expression)
         if qExp.hasParserError():
             raise GeoAlgorithmExecutionException(qExp.parserErrorString())
 
-        layer.selectByExpression(expression, behaviour)
+        layer.selectByExpression(expression, behavior)
         self.setOutputValue(self.RESULT, filename)

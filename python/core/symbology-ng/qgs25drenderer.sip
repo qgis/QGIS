@@ -33,7 +33,7 @@ class Qgs25DRenderer : QgsFeatureRenderer
     void startRender( QgsRenderContext& context, const QgsFields& fields );
     void stopRender( QgsRenderContext& context );
 
-    QSet<QString> usedAttributes() const;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
     QgsFeatureRenderer* clone() const;
 
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
@@ -67,7 +67,7 @@ class Qgs25DRenderer : QgsFeatureRenderer
     /**
      * Get wall shading enabled
      */
-    bool wallShadingEnabled();
+    bool wallShadingEnabled() const;
 
     /**
      * Get the shadow's color

@@ -24,8 +24,15 @@ namespace QgsWms
 
   /** Output GetContext response
    */
-  void writeGetContext( QgsServerInterface* serverIface, const QString& version,
-                        const QgsServerRequest& request, QgsServerResponse& response );
+  void writeGetContext( QgsServerInterface* serverIface, const QgsProject* project,
+                        const QString& version, const QgsServerRequest& request,
+                        QgsServerResponse& response );
+
+  /**
+   * Return XML document for the 'GetContext' request
+   */
+  QDomDocument getContext( QgsServerInterface* serverIface, const QgsProject* project,
+                           const QString& version, const QgsServerRequest& request );
 
 } // samespace QgsWms
 

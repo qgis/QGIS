@@ -173,7 +173,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
   {
     //delete the dataset without closing (because it is faster)
     GDALDeleteDataset( outputDriver, mOutputFile.toUtf8().constData() );
-    return static_cast< int >( Cancelled );
+    return static_cast< int >( Canceled );
   }
   GDALClose( outputDataset );
 

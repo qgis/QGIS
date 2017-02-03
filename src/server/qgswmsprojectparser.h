@@ -23,9 +23,7 @@
 #include "qgslayertreegroup.h"
 #include "qgis_server.h"
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
 class QgsAccessControl;
-#endif
 
 class QTextDocument;
 class QSvgRenderer;
@@ -36,19 +34,15 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
   public:
     QgsWmsProjectParser(
       const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
       , const QgsAccessControl* accessControl
-#endif
     );
     virtual ~QgsWmsProjectParser();
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
-    void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const override;
+    void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, const QString& serviceUrl, bool fullProjectSettings = false ) const override;
 
     QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache = true ) const override;
-
-    QString serviceUrl() const override;
 
     QStringList wfsLayerNames() const override;
 
@@ -62,11 +56,9 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
     double legendIconLabelSpace() const override;
     double legendSymbolWidth() const override;
     double legendSymbolHeight() const override;
-    const QFont& legendLayerFont() const override;
-    const QFont& legendItemFont() const override;
+    QFont legendLayerFont() const override;
+    QFont legendItemFont() const override;
 
-    double maxWidth() const override;
-    double maxHeight() const override;
     double imageQuality() const override;
     int wmsPrecision() const override;
 
@@ -94,7 +86,7 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
     QDomDocument getStyles( QStringList& layerList ) const override;
 
     //! Returns the xml fragment of layers styles description
-    QDomDocument describeLayer( QStringList& layerList, const QString& hrefString ) const override;
+    QDomDocument describeLayer( QStringList& layerList, const QString& wfsHrefString, const QString& wcsHrefString ) const override;
 
     //! Returns if output are MM or PIXEL
     QgsUnitTypes::RenderUnit outputUnits() const override;
@@ -133,9 +125,7 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
 
   private:
     QgsServerProjectParser* mProjectParser;
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
     const QgsAccessControl* mAccessControl;
-#endif
 
     mutable QFont mLegendLayerFont;
     mutable QFont mLegendItemFont;
@@ -151,7 +141,7 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
     //! Reads layer drawing order from the legend section of the project file and appends it to the parent elemen (usually the <Capability> element)
     void addDrawingOrder( QDomElement& parentElem, QDomDocument& doc, const QHash<QString, QString> &idNameMap, const QStringList &layerIDList ) const;
 
-    void addLayerStyles( QgsMapLayer* currentLayer, QDomDocument& doc, QDomElement& layerElem, const QString& version ) const;
+    void addLayerStyles( QgsMapLayer* currentLayer, QDomDocument& doc, QDomElement& layerElem, const QString& version, const QString& serviceUrl ) const;
 
     void addLayers( QDomDocument &doc,
                     QDomElement &parentLayer,
@@ -160,6 +150,7 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
                     const QMap<QString, QgsMapLayer *> &layerMap,
                     const QStringList &nonIdentifiableLayers,
                     const QString &version, //1.1.1 or 1.3.0
+                    const QString& serviceUrl,
                     bool fullProjectSettings,
                     QHash<QString, QString> &idNameMap,
                     QStringList &layerIDList ) const;

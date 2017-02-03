@@ -301,7 +301,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList & flist )
   // TODO: sanity checks of fields and geometries
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
-    it->setFeatureId( mNextFeatureId );
+    it->setId( mNextFeatureId );
     it->setValid( true );
 
     mFeatures.insert( mNextFeatureId, *it );

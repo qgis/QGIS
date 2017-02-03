@@ -72,8 +72,7 @@ void QgsPointDisplacementRenderer::drawGroup( QPointF centerPoint, QgsRenderCont
   {
     if ( QgsMarkerSymbol* symbol = feature.symbol )
     {
-      diagonal = qMax( diagonal, QgsSymbolLayerUtils::convertToPainterUnits( context,
-                       M_SQRT2 * symbol->size(),
+      diagonal = qMax( diagonal, context.convertToPainterUnits( M_SQRT2 * symbol->size(),
                        symbol->sizeUnit(), symbol->sizeMapUnitScale() ) );
     }
   }
@@ -215,11 +214,11 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument& doc )
   return rendererElement;
 }
 
-QSet<QString> QgsPointDisplacementRenderer::usedAttributes() const
+QSet<QString> QgsPointDisplacementRenderer::usedAttributes( const QgsRenderContext& context ) const
 {
-  QSet<QString> attr = QgsPointDistanceRenderer::usedAttributes();
+  QSet<QString> attr = QgsPointDistanceRenderer::usedAttributes( context );
   if ( mCenterSymbol )
-    attr.unite( mCenterSymbol->usedAttributes() );
+    attr.unite( mCenterSymbol->usedAttributes( context ) );
   return attr;
 }
 
@@ -271,8 +270,7 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
     }
     case ConcentricRings:
     {
-      double centerDiagonal = QgsSymbolLayerUtils::convertToPainterUnits( symbolContext.renderContext(),
-                              M_SQRT2 * mCenterSymbol->size(),
+      double centerDiagonal = symbolContext.renderContext().convertToPainterUnits( M_SQRT2 * mCenterSymbol->size(),
                               mCenterSymbol->sizeUnit(), mCenterSymbol->sizeMapUnitScale() );
 
       int pointsRemaining = nPosition;

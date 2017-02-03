@@ -176,7 +176,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @see setPredefinedScales
      * @see QgsComposerMap::atlasScalingMode
      */
-    const QVector<qreal>& predefinedScales() const { return mPredefinedScales; }
+    QVector<qreal> predefinedScales() const { return mPredefinedScales; }
 
     /** Sets the list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
@@ -219,15 +219,6 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @note This method should be called before restoring composer item properties
      */
     void readXml( const QDomElement& elem, const QDomDocument& doc );
-
-    /** Reads old (pre 2.2) map related atlas settings from xml
-     * @param elem a QDomElement holding the atlas map properties.
-     * @param doc QDomDocument for the source xml.
-     * @see readXMLMapSettings
-     * @note This method should be called after restoring composer item properties
-     * @note added in version 2.5
-     */
-    void readXmlMapSettings( const QDomElement& elem, const QDomDocument& doc );
 
     QgsComposition* composition() { return mComposition; }
 

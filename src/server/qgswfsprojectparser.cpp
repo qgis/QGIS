@@ -24,17 +24,16 @@
 #include "qgsaccesscontrol.h"
 #include "qgslogger.h"
 
+
 QgsWfsProjectParser::QgsWfsProjectParser(
   const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* ac
-#endif
 )
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    :
-    mAccessControl( ac )
-#endif
+    : mAccessControl( ac )
 {
+#ifndef HAVE_SERVER_PYTHON_PLUGINS
+  Q_UNUSED( mAccessControl );
+#endif
   mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
 }
 
@@ -46,16 +45,6 @@ QgsWfsProjectParser::~QgsWfsProjectParser()
 void QgsWfsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
   mProjectParser->serviceCapabilities( parentElement, doc, QStringLiteral( "WFS" ) );
-}
-
-QString QgsWfsProjectParser::serviceUrl() const
-{
-  return mProjectParser->serviceUrl();
-}
-
-QString QgsWfsProjectParser::wfsServiceUrl() const
-{
-  return mProjectParser->wfsServiceUrl();
 }
 
 void QgsWfsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const

@@ -72,7 +72,7 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     virtual void setStdDev( const QString& value ) { Q_UNUSED( value ); }
     virtual int selectedBand( int index = 0 ) { Q_UNUSED( index ); return -1; }
 
-    //! Load programmaticaly with current values
+    //! Load programmatically with current values
     virtual void doComputations() { }
 
     //! Return min/max widget when it exists.

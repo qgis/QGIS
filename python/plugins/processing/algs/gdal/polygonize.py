@@ -62,11 +62,12 @@ class polygonize(GdalAlgorithm):
         self.addOutput(OutputVector(polygonize.OUTPUT, self.tr('Vectorized')))
 
     def getConsoleCommands(self):
+        output = self.getOutputValue(polygonize.OUTPUT)
+
         arguments = []
         arguments.append(self.getParameterValue(polygonize.INPUT))
         arguments.append('-f')
-        arguments.append('ESRI Shapefile')
-        output = self.getOutputValue(polygonize.OUTPUT)
+        arguments.append(GdalUtils.getVectorDriverFromFileName(output))
         arguments.append(output)
         arguments.append(QFileInfo(output).baseName())
         arguments.append(self.getParameterValue(polygonize.FIELD))

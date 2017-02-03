@@ -27,6 +27,7 @@
 #include "qgsdistancearea.h"
 #include "qgsjsonutils.h"
 #include "qgsmapsettings.h"
+#include "qgscomposermap.h"
 
 #include "qgswebpage.h"
 #include "qgswebframe.h"
@@ -69,9 +70,6 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands )
   {
     QObject::connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( handleFrameRemoval( QgsComposerItem* ) ) );
   }
-
-  // data defined strings
-  mDataDefinedNames.insert( QgsComposerObject::SourceUrl, QStringLiteral( "dataDefinedSourceUrl" ) );
 
   if ( mComposition && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
@@ -144,10 +142,11 @@ void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext 
       QString currentUrl = mUrl.toString();
 
       //data defined url set?
-      QVariant exprVal;
-      if ( dataDefinedEvaluate( QgsComposerObject::SourceUrl, exprVal, *evalContext ) )
+      bool ok = false;
+      currentUrl = mDataDefinedProperties.valueAsString( QgsComposerObject::SourceUrl, *evalContext, currentUrl, &ok );
+      if ( ok )
       {
-        currentUrl = exprVal.toString().trimmed();
+        currentUrl = currentUrl.trimmed();
         QgsDebugMsg( QString( "exprVal Source Url:%1" ).arg( currentUrl ) );
       }
       if ( currentUrl.isEmpty() )
@@ -542,11 +541,13 @@ void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVector
   else if ( mComposition )
   {
     //set to composition's mapsettings' crs
-    mDistanceArea->setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
+    QgsComposerMap* referenceMap = mComposition->referenceMap();
+    if ( referenceMap )
+      mDistanceArea->setSourceCrs( referenceMap->crs().srsid() );
   }
   if ( mComposition )
   {
-    mDistanceArea->setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
+    mDistanceArea->setEllipsoidalMode( true );
     mDistanceArea->setEllipsoid( mComposition->project()->ellipsoid() );
   }
 

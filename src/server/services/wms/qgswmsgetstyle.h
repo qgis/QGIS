@@ -27,6 +27,11 @@ namespace QgsWms
   void writeGetStyle( QgsServerInterface* serverIface, const QString& version,
                       const QgsServerRequest& request, QgsServerResponse& response );
 
+  /** Returns an SLD file with the style of the requested layer
+   */
+  QDomDocument getStyle( QgsServerInterface* serverIface, const QString& version,
+                         const QgsServerRequest& request );
+
 } // samespace QgsWms
 
 

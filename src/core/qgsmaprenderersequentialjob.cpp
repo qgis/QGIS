@@ -19,7 +19,6 @@
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgspallabeling.h"
 
-
 QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings& settings )
     : QgsMapRendererQImageJob( settings )
     , mInternalJob( nullptr )
@@ -40,7 +39,7 @@ QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
   if ( isActive() )
   {
     // still running!
-    QgsDebugMsg( "SEQUENTIAL destruct -- still running! (cancelling)" );
+    QgsDebugMsg( "SEQUENTIAL destruct -- still running! (canceling)" );
     cancel();
   }
 
@@ -138,4 +137,3 @@ void QgsMapRendererSequentialJob::internalFinished()
 
   emit finished();
 }
-

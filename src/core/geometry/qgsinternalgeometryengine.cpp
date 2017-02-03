@@ -58,7 +58,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
     linesToProcess << static_cast<QgsLineString*>( curve->segmentize() );
   }
 
-  QgsMultiPolygonV2 *multipolygon = linesToProcess.size() > 1 ? new QgsMultiPolygonV2() : nullptr;
+  QScopedPointer<QgsMultiPolygonV2> multipolygon( linesToProcess.size() > 1 ? new QgsMultiPolygonV2() : nullptr );
   QgsPolygonV2 *polygon = nullptr;
 
   if ( !linesToProcess.empty() )
@@ -83,7 +83,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
     }
 
     if ( multipolygon )
-      return QgsGeometry( multipolygon );
+      return QgsGeometry( multipolygon.take() );
     else
       return QgsGeometry( polygon );
   }

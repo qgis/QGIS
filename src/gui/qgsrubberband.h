@@ -27,7 +27,7 @@ class QgsVectorLayer;
 class QPaintEvent;
 
 /** \ingroup gui
- * A class for drawing transient features (e.g. digitising lines) on the map.
+ * A class for drawing transient features (e.g. digitizing lines) on the map.
  * It may be used
  */
 class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem

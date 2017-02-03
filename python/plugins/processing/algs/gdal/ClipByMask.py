@@ -89,8 +89,8 @@ class ClipByMask(GdalAlgorithm):
                                           optional=True,
                                           metadata={'widget_wrapper': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}))
         self.addParameter(ParameterSelection(self.RTYPE,
-                                         self.tr('Output raster type'),
-                                         self.TYPE, 5))
+                                             self.tr('Output raster type'),
+                                             self.TYPE, 5))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Clipped (mask)')))
 

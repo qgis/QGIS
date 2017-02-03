@@ -78,9 +78,11 @@ void QgsComposerPolylineWidget::setGuiElementValues()
 
 void QgsComposerPolylineWidget::updateStyleFromWidget()
 {
-  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
-  mComposerPolyline->setPolylineStyleSymbol( dynamic_cast< QgsLineSymbol* >( w->symbol() ) );
-  mComposerPolyline->update();
+  if ( QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() ) )
+  {
+    mComposerPolyline->setPolylineStyleSymbol( dynamic_cast< QgsLineSymbol* >( w->symbol() ) );
+    mComposerPolyline->update();
+  }
 }
 
 void QgsComposerPolylineWidget::cleanUpStyleSelector( QgsPanelWidget* container )

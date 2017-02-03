@@ -45,6 +45,7 @@ class TestQgsLabelingEngine : public QObject
     void testEncodeDecodePositionOrder();
     void testSubstitutions();
     void testCapitalization();
+    void testParticipatingLayers();
 
   private:
     QgsVectorLayer* vl;
@@ -237,7 +238,8 @@ void TestQgsLabelingEngine::testRuleBased()
   s2.placement = QgsPalLayerSettings::OverPoint;
   s2.quadOffset = QgsPalLayerSettings::QuadrantBelowRight;
   s2.displayAll = true;
-  s2.setDataDefinedProperty( QgsPalLayerSettings::Size, true, true, QStringLiteral( "18" ), QString() );
+
+  s2.dataDefinedProperties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromValue( QStringLiteral( "18" ) ) );
 
   root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s2 ), 0, 0, QStringLiteral( "Class = 'Jet'" ) ) );
 
@@ -311,8 +313,8 @@ void TestQgsLabelingEngine::zOrder()
   pls1.setFormat( format );
 
   //use data defined coloring and font size so that stacking order of labels can be determined
-  pls1.setDataDefinedProperty( QgsPalLayerSettings::Color, true, true, QStringLiteral( "case when \"Class\"='Jet' then '#ff5500' when \"Class\"='B52' then '#00ffff' else '#ff00ff' end" ), QString() );
-  pls1.setDataDefinedProperty( QgsPalLayerSettings::Size, true, true, QStringLiteral( "case when \"Class\"='Jet' then 100 when \"Class\"='B52' then 30 else 50 end" ), QString() );
+  pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Color, QgsProperty::fromExpression( QStringLiteral( "case when \"Class\"='Jet' then '#ff5500' when \"Class\"='B52' then '#00ffff' else '#ff00ff' end" ) ) );
+  pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromExpression( QStringLiteral( "case when \"Class\"='Jet' then 100 when \"Class\"='B52' then 30 else 50 end" ) ) );
 
   QgsVectorLayerLabelProvider* provider1 = new QgsVectorLayerLabelProvider( vl, QString(), true, &pls1 );
   QgsLabelingEngine engine;
@@ -329,7 +331,7 @@ void TestQgsLabelingEngine::zOrder()
   img = job.renderedImage();
 
   //test data defined z-index
-  pls1.setDataDefinedProperty( QgsPalLayerSettings::ZIndex, true, true, QStringLiteral( "case when \"Class\"='Jet' then 3 when \"Class\"='B52' then 1 else 2 end" ), QString() );
+  pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::ZIndex, QgsProperty::fromExpression( QStringLiteral( "case when \"Class\"='Jet' then 3 when \"Class\"='B52' then 1 else 2 end" ) ) );
   provider1 = new QgsVectorLayerLabelProvider( vl, QString(), true, &pls1 );
   engine.addProvider( provider1 );
   p.begin( &img );
@@ -341,7 +343,7 @@ void TestQgsLabelingEngine::zOrder()
   QVERIFY( imageCheck( "label_order_zindex", img, 20 ) );
   img = job.renderedImage();
 
-  pls1.removeAllDataDefinedProperties();
+  pls1.dataDefinedProperties().clear();
   format = pls1.format();
   format.setColor( QColor( 255, 50, 100 ) );
   format.setSize( 30 );
@@ -386,7 +388,7 @@ void TestQgsLabelingEngine::zOrder()
 
   //try mixing layer order and z-index
   engine.removeProvider( provider1 );
-  pls1.setDataDefinedProperty( QgsPalLayerSettings::ZIndex, true, true, QStringLiteral( "if(\"Class\"='Jet',3,0)" ), QString() );
+  pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::ZIndex, QgsProperty::fromExpression( QStringLiteral( "if(\"Class\"='Jet',3,0)" ) ) );
   provider1 = new QgsVectorLayerLabelProvider( vl, QString(), true, &pls1 );
   engine.addProvider( provider1 );
 
@@ -531,6 +533,35 @@ void TestQgsLabelingEngine::testCapitalization()
   provider4->prepare( context, attributes );
   provider4->registerFeature( f, context );
   QCOMPARE( provider4->mLabels.at( 0 )->labelText(), QString( "A TeSt LABEL" ) );
+}
+
+void TestQgsLabelingEngine::testParticipatingLayers()
+{
+  QgsLabelingEngine engine;
+  QVERIFY( engine.participatingLayerIds().isEmpty() );
+
+  QgsPalLayerSettings settings1;
+  QgsVectorLayerLabelProvider* provider = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings1 );
+  engine.addProvider( provider );
+  QCOMPARE( engine.participatingLayerIds(), QStringList() << vl->id() );
+
+  QgsVectorLayer* layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "layer2" ), QStringLiteral( "memory" ) );
+  QgsPalLayerSettings settings2;
+  QgsVectorLayerLabelProvider* provider2 = new QgsVectorLayerLabelProvider( layer2, QStringLiteral( "test2" ), true, &settings2 );
+  engine.addProvider( provider2 );
+  QCOMPARE( engine.participatingLayerIds().toSet(), QSet< QString >() << vl->id() << layer2->id() );
+
+  // add a rule-based labeling node
+  QgsRuleBasedLabeling::Rule* root = new QgsRuleBasedLabeling::Rule( 0 );
+  QgsPalLayerSettings s1;
+  root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s1 ) ) );
+  QgsPalLayerSettings s2;
+  root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s2 ) ) );
+
+  QgsVectorLayer* layer3 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "layer3" ), QStringLiteral( "memory" ) );
+  QgsRuleBasedLabelProvider* ruleProvider = new QgsRuleBasedLabelProvider( QgsRuleBasedLabeling( root ), layer3 );
+  engine.addProvider( ruleProvider );
+  QCOMPARE( engine.participatingLayerIds().toSet(), QSet< QString >() << vl->id() << layer2->id() << layer3->id() );
 }
 
 bool TestQgsLabelingEngine::imageCheck( const QString& testName, QImage &image, int mismatchCount )

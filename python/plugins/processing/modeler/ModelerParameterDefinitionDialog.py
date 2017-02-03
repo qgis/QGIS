@@ -33,7 +33,6 @@ from qgis.core import QgsCoordinateReferenceSystem
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QVBoxLayout,
-                                 QHBoxLayout,
                                  QLabel,
                                  QLineEdit,
                                  QComboBox,
@@ -265,8 +264,8 @@ class ModelerParameterDefinitionDialog(QDialog):
 
         self.buttonBox = QDialogButtonBox(self)
         self.buttonBox.setOrientation(Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel
-                                          | QDialogButtonBox.Ok)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel |
+                                          QDialogButtonBox.Ok)
         self.buttonBox.setObjectName('buttonBox')
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
@@ -292,17 +291,17 @@ class ModelerParameterDefinitionDialog(QDialog):
                 name = safeName.lower() + str(i)
         else:
             name = self.param.name
-        if (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN
-                or isinstance(self.param, ParameterBoolean)):
+        if (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN or
+                isinstance(self.param, ParameterBoolean)):
             self.param = ParameterBoolean(name, description, self.state.isChecked())
-        elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD
-                or isinstance(self.param, ParameterTableField)):
+        elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD or
+              isinstance(self.param, ParameterTableField)):
             if self.parentCombo.currentIndex() < 0:
                 QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                     self.tr('Wrong or missing parameter values'))
                 return
-            parent = self.parentCombo.itemData(self.parentCombo.currentIndex())
-            datatype = self.datatypeCombo.itemData(self.datatypeCombo.currentIndex())
+            parent = self.parentCombo.currentData()
+            datatype = self.datatypeCombo.currentData()
             self.param = ParameterTableField(name, description, parent, datatype, multiple=self.multipleCheck.isChecked())
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_RASTER or
                 isinstance(self.param, ParameterRaster)):
@@ -343,7 +342,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 return
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_EXPRESSION or
                 isinstance(self.param, ParameterExpression)):
-            parent = self.parentCombo.itemData(self.parentCombo.currentIndex())
+            parent = self.parentCombo.currentData()
             self.param = ParameterExpression(name, description,
                                              default=str(self.defaultEdit.expression()),
                                              parent_layer=parent)

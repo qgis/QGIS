@@ -31,7 +31,7 @@ import os
 from collections import OrderedDict
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtGui import QBrush, QIcon
+from qgis.PyQt.QtGui import QBrush
 from qgis.PyQt.QtWidgets import QComboBox, QHeaderView, QLineEdit, QSpacerItem, QMessageBox, QSpinBox, QStyledItemDelegate
 from qgis.PyQt.QtCore import QItemSelectionModel, QAbstractTableModel, QModelIndex, QVariant, Qt, pyqtSlot
 
@@ -297,7 +297,7 @@ class FieldDelegate(QStyledItemDelegate):
 
         fieldType = FieldsMappingModel.columns[column]['type']
         if fieldType == QVariant.Type:
-            value = editor.itemData(editor.currentIndex())
+            value = editor.currentData()
             if value is None:
                 value = QVariant.Invalid
             model.setData(index, value)
@@ -329,7 +329,7 @@ class FieldsMappingPanel(BASE, WIDGET):
         self.deleteButton.setIcon(QgsApplication.getThemeIcon('/mActionDeleteAttribute.svg'))
         self.upButton.setIcon(QgsApplication.getThemeIcon('/mActionArrowUp.svg'))
         self.downButton.setIcon(QgsApplication.getThemeIcon('/mActionArrowDown.svg'))
-        self.resetButton.setIcon(QgsApplication.getThemeIcon('/mIconClear.svg'))
+        self.resetButton.setIcon(QgsApplication.getThemeIcon('/mIconClearText.svg'))
 
         self.model = FieldsMappingModel()
         self.fieldsView.setModel(self.model)
@@ -480,7 +480,7 @@ class FieldsMappingPanel(BASE, WIDGET):
 
     @pyqtSlot(bool, name='on_loadLayerFieldsButton_clicked')
     def on_loadLayerFieldsButton_clicked(self, checked=False):
-        layer = self.layerCombo.itemData(self.layerCombo.currentIndex())
+        layer = self.layerCombo.currentData()
         if layer is None:
             return
         self.model.loadLayerFields(layer)

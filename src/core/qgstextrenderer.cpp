@@ -1255,7 +1255,7 @@ QFont QgsTextFormat::scaledFont( const QgsRenderContext& context ) const
 {
   QFont font = d->textFont;
   int fontPixelSize = QgsTextRenderer::sizeToPixel( d->fontSize, context, d->fontSizeUnits,
-                      true, d->fontSizeMapUnitScale );
+                      d->fontSizeMapUnitScale );
   font.setPixelSize( fontPixelSize );
   return font;
 }
@@ -1610,51 +1610,9 @@ bool QgsTextFormat::containsAdvancedEffects() const
 }
 
 
-int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, bool rasterfactor, const QgsMapUnitScale& mapUnitScale )
+int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& mapUnitScale )
 {
-  return static_cast< int >( scaleToPixelContext( size, c, unit, rasterfactor, mapUnitScale ) + 0.5 );
-}
-
-double QgsTextRenderer::scaleToPixelContext( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, bool rasterfactor, const QgsMapUnitScale& mapUnitScale )
-{
-  // if render context is that of device (i.e. not a scaled map), just return size
-  double mapUnitsPerPixel = mapUnitScale.computeMapUnitsPerPixel( c );
-
-  switch ( unit )
-  {
-    case QgsUnitTypes::RenderMapUnits:
-      if ( mapUnitsPerPixel > 0.0 )
-      {
-        size = size / mapUnitsPerPixel * ( rasterfactor ? c.rasterScaleFactor() : 1 );
-      }
-      if ( unit == QgsUnitTypes::RenderMapUnits )
-      {
-        //check max/min size
-        if ( mapUnitScale.minSizeMMEnabled )
-          size = qMax( size, mapUnitScale.minSizeMM * c.scaleFactor() );
-        if ( mapUnitScale.maxSizeMMEnabled )
-          size = qMin( size, mapUnitScale.maxSizeMM * c.scaleFactor() );
-      }
-      break;
-
-    case QgsUnitTypes::RenderPixels:
-      //already in pixels
-      break;
-
-    case QgsUnitTypes::RenderMillimeters:
-      size *= c.scaleFactor() * ( rasterfactor ? c.rasterScaleFactor() : 1 );
-      break;
-
-    case QgsUnitTypes::RenderPoints:
-      size *= 0.352778 * c.scaleFactor() * ( rasterfactor ? c.rasterScaleFactor() : 1 );
-      break;
-
-    case QgsUnitTypes::RenderPercentage:
-    case QgsUnitTypes::RenderUnknownUnit:
-      // no sensible choice
-      break;
-  }
-  return size;
+  return static_cast< int >( c.convertToPainterUnits( size, unit, mapUnitScale ) + 0.5 );
 }
 
 void QgsTextRenderer::drawText( const QRectF& rect, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList& textLines, QgsRenderContext& context, const QgsTextFormat& format, bool drawAsOutlines )
@@ -1828,8 +1786,7 @@ void QgsTextRenderer::drawBuffer( QgsRenderContext& context, const QgsTextRender
 
   QgsTextBufferSettings buffer = format.buffer();
 
-  double penSize = QgsTextRenderer::scaleToPixelContext( buffer.size(), context,
-                   buffer.sizeUnit(), true, buffer.sizeMapUnitScale() );
+  double penSize = context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
 
   QPainterPath path;
   path.setFillRule( Qt::WindingFill );
@@ -2023,14 +1980,12 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
     // only one size used for SVG sizing/scaling (no use of shapeSize.y() or Y field in gui)
     if ( background.sizeType() == QgsTextBackgroundSettings::SizeFixed )
     {
-      sizeOut = scaleToPixelContext( background.size().width(), context, background.sizeUnit(),
-                                     false, background.sizeMapUnitScale() );
+      sizeOut = context.convertToPainterUnits( background.size().width(), background.sizeUnit(), background.sizeMapUnitScale() );
     }
     else if ( background.sizeType() == QgsTextBackgroundSettings::SizeBuffer )
     {
       sizeOut = qMax( component.size.width(), component.size.height() );
-      double bufferSize = scaleToPixelContext( background.size().width(), context, background.sizeUnit(),
-                          false, background.sizeMapUnitScale() );
+      double bufferSize = context.convertToPainterUnits( background.size().width(), background.sizeUnit(), background.sizeMapUnitScale() );
 
       // add buffer
       sizeOut += bufferSize * 2;
@@ -2065,7 +2020,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
       QgsStringMap shdwmap( map );
       shdwmap[QStringLiteral( "fill" )] = shadow.color().name();
       shdwmap[QStringLiteral( "outline" )] = shadow.color().name();
-      shdwmap[QStringLiteral( "size" )] = QString::number( sizeOut * context.rasterScaleFactor() );
+      shdwmap[QStringLiteral( "size" )] = QString::number( sizeOut );
 
       // store SVG's drawing in QPicture for drop shadow call
       QPicture svgPict;
@@ -2101,9 +2056,8 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
       p->save();
       p->translate( component.center.x(), component.center.y() );
       p->rotate( component.rotation );
-      p->scale( 1.0 / context.rasterScaleFactor(), 1.0 / context.rasterScaleFactor() );
-      double xoff = QgsTextRenderer::scaleToPixelContext( background.offset().x(), context, background.offsetUnit(), true, background.offsetMapUnitScale() );
-      double yoff = QgsTextRenderer::scaleToPixelContext( background.offset().y(), context, background.offsetUnit(), true, background.offsetMapUnitScale() );
+      double xoff = context.convertToPainterUnits( background.offset().x(), background.offsetUnit(), background.offsetMapUnitScale() );
+      double yoff = context.convertToPainterUnits( background.offset().y(), background.offsetUnit(), background.offsetMapUnitScale() );
       p->translate( QPointF( xoff, yoff ) );
       p->rotate( component.rotationOffset );
       p->translate( -sizeOut / 2, sizeOut / 2 );
@@ -2135,8 +2089,8 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
     }
     p->translate( component.center.x(), component.center.y() );
     p->rotate( component.rotation );
-    double xoff = QgsTextRenderer::scaleToPixelContext( background.offset().x(), context, background.offsetUnit(), false, background.offsetMapUnitScale() );
-    double yoff = QgsTextRenderer::scaleToPixelContext( background.offset().y(), context, background.offsetUnit(), false, background.offsetMapUnitScale() );
+    double xoff = context.convertToPainterUnits( background.offset().x(), background.offsetUnit(), background.offsetMapUnitScale() );
+    double yoff = context.convertToPainterUnits( background.offset().y(), background.offsetUnit(), background.offsetMapUnitScale() );
     p->translate( QPointF( xoff, yoff ) );
     p->rotate( component.rotationOffset );
     svgM->renderPoint( QPointF( 0, 0 ), svgContext );
@@ -2154,10 +2108,10 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
 
     if ( background.sizeType() == QgsTextBackgroundSettings::SizeFixed )
     {
-      w = scaleToPixelContext( background.size().width(), context, background.sizeUnit(),
-                               false, background.sizeMapUnitScale() );
-      h = scaleToPixelContext( background.size().height(), context, background.sizeUnit(),
-                               false, background.sizeMapUnitScale() );
+      w = context.convertToPainterUnits( background.size().width(), background.sizeUnit(),
+                                         background.sizeMapUnitScale() );
+      h = context.convertToPainterUnits( background.size().height(), background.sizeUnit(),
+                                         background.sizeMapUnitScale() );
     }
     else if ( background.sizeType() == QgsTextBackgroundSettings::SizeBuffer )
     {
@@ -2181,10 +2135,10 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
         w = w / sqrt( 2.0 ) * 2;
       }
 
-      double bufferWidth = scaleToPixelContext( background.size().width(), context, background.sizeUnit(),
-                           false, background.sizeMapUnitScale() );
-      double bufferHeight = scaleToPixelContext( background.size().height(), context, background.sizeUnit(),
-                            false, background.sizeMapUnitScale() );
+      double bufferWidth = context.convertToPainterUnits( background.size().width(), background.sizeUnit(),
+                           background.sizeMapUnitScale() );
+      double bufferHeight = context.convertToPainterUnits( background.size().height(), background.sizeUnit(),
+                            background.sizeMapUnitScale() );
 
       w += bufferWidth * 2;
       h += bufferHeight * 2;
@@ -2203,12 +2157,12 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
     }
     p->translate( QPointF( component.center.x(), component.center.y() ) );
     p->rotate( component.rotation );
-    double xoff = QgsTextRenderer::scaleToPixelContext( background.offset().x(), context, background.offsetUnit(), false, background.offsetMapUnitScale() );
-    double yoff = QgsTextRenderer::scaleToPixelContext( background.offset().y(), context, background.offsetUnit(), false, background.offsetMapUnitScale() );
+    double xoff = context.convertToPainterUnits( background.offset().x(), background.offsetUnit(), background.offsetMapUnitScale() );
+    double yoff = context.convertToPainterUnits( background.offset().y(), background.offsetUnit(), background.offsetMapUnitScale() );
     p->translate( QPointF( xoff, yoff ) );
     p->rotate( component.rotationOffset );
 
-    double penSize = QgsTextRenderer::scaleToPixelContext( background.borderWidth(), context, background.borderWidthUnit(), true, background.borderWidthMapUnitScale() );
+    double penSize = context.convertToPainterUnits( background.borderWidth(), background.borderWidthUnit(), background.borderWidthMapUnitScale() );
 
     QPen pen;
     if ( background.borderWidth() > 0 )
@@ -2239,8 +2193,8 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
       }
       else
       {
-        double xRadius = QgsTextRenderer::scaleToPixelContext( background.radii().width(), context, background.radiiUnit(), true, background.radiiMapUnitScale() );
-        double yRadius = QgsTextRenderer::scaleToPixelContext( background.radii().height(), context, background.radiiUnit(), true, background.radiiMapUnitScale() );
+        double xRadius = context.convertToPainterUnits( background.radii().width(), background.radiiUnit(), background.radiiMapUnitScale() );
+        double yRadius = context.convertToPainterUnits( background.radii().height(), background.radiiUnit(), background.radiiMapUnitScale() );
         shapep.drawRoundedRect( rect, xRadius, yRadius );
       }
     }
@@ -2250,8 +2204,6 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
       shapep.drawEllipse( rect );
     }
     shapep.end();
-
-    p->scale( 1.0 / context.rasterScaleFactor(), 1.0 / context.rasterScaleFactor() );
 
     if ( format.shadow().enabled() && format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowShape )
     {
@@ -2292,7 +2244,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext& context, const QgsTextRender
 
   // generate pixmap representation of label component drawing
   bool mapUnits = shadow.blurRadiusUnit() == QgsUnitTypes::RenderMapUnits;
-  double radius = QgsTextRenderer::scaleToPixelContext( shadow.blurRadius(), context, shadow.blurRadiusUnit(), !mapUnits, shadow.blurRadiusMapUnitScale() );
+  double radius = context.convertToPainterUnits( shadow.blurRadius(), shadow.blurRadiusUnit(), shadow.blurRadiusMapUnitScale() );
   radius /= ( mapUnits ? context.scaleFactor() / component.dpiRatio : 1 );
   radius = static_cast< int >( radius + 0.5 );
 
@@ -2305,7 +2257,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext& context, const QgsTextRender
                   componentHeight + ( pictbuffer * 2.0 ) + ( blurbuffer * 2.0 ),
                   QImage::Format_ARGB32_Premultiplied );
 
-  // TODO: add labeling gui option to not show any shadows under/over a certian size
+  // TODO: add labeling gui option to not show any shadows under/over a certain size
   // keep very small QImages from causing paint device issues, i.e. must be at least > 1
   int minBlurImgSize = 1;
   // max limitation on QgsSvgCache is 10,000 for screen, which will probably be reasonable for future caching here, too
@@ -2352,8 +2304,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext& context, const QgsTextRender
   picti.end();
 #endif
 
-  double offsetDist = QgsTextRenderer::scaleToPixelContext( shadow.offsetDistance(), context,
-                      shadow.offsetUnit(), true, shadow.offsetMapUnitScale() );
+  double offsetDist = context.convertToPainterUnits( shadow.offsetDistance(), shadow.offsetUnit(), shadow.offsetMapUnitScale() );
   double angleRad = shadow.offsetAngle() * M_PI / 180; // to radians
   if ( shadow.offsetGlobal() )
   {
@@ -2483,10 +2434,6 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
     context.painter()->translate( component.origin );
     if ( !qgsDoubleNear( component.rotation, 0.0 ) )
       context.painter()->rotate( -component.rotation * 180 / M_PI );
-
-    // scale down painter: the font size has been multiplied by raster scale factor
-    // to workaround a Qt font scaling bug with small font sizes
-    context.painter()->scale( 1.0 / context.rasterScaleFactor(), 1.0 / context.rasterScaleFactor() );
 
     // figure x offset for horizontal alignment of multiple lines
     double xMultiLineOffset = 0.0;

@@ -20,7 +20,6 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsgetstyle.h"
-#include "qgswmsservertransitional.h"
 
 namespace QgsWms
 {
@@ -28,22 +27,37 @@ namespace QgsWms
   void writeGetStyle( QgsServerInterface* serverIface, const QString& version,
                       const QgsServerRequest& request, QgsServerResponse& response )
   {
-    QgsServerRequest::Parameters params = request.parameters();
+    QDomDocument doc = getStyle( serverIface, version, request );
+    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
+    response.write( doc.toByteArray() );
+  }
 
-    try
+  QDomDocument getStyle( QgsServerInterface* serverIface, const QString& version,
+                         const QgsServerRequest& request )
+  {
+    Q_UNUSED( version );
+
+    QgsWmsConfigParser* configParser = getConfigParser( serverIface );
+    QgsServerRequest::Parameters parameters = request.parameters();
+
+    QDomDocument doc;
+
+    QString styleName = parameters.value( QStringLiteral( "STYLE" ) );
+    QString layerName = parameters.value( QStringLiteral( "LAYER" ) );
+
+    if ( styleName.isEmpty() )
     {
-      Q_UNUSED( version );
-      QgsWmsServer server( serverIface->configFilePath(), params,
-                           getConfigParser( serverIface ),
-                           serverIface->accessControls() );
-      QDomDocument doc = server.getStyle();
-      response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
-      response.write( doc.toByteArray() );
+      throw QgsServiceException( QStringLiteral( "StyleNotSpecified" ),
+                                 QStringLiteral( "Style is mandatory for GetStyle operation" ), 400 );
     }
-    catch ( QgsMapServiceException& ex )
+
+    if ( layerName.isEmpty() )
     {
-      writeError( response, ex.code(), ex.message() );
+      throw QgsServiceException( QStringLiteral( "LayerNotSpecified" ),
+                                 QStringLiteral( "Layer is mandatory for GetStyle operation" ), 400 );
     }
+
+    return configParser->getStyle( styleName, layerName );
   }
 
 

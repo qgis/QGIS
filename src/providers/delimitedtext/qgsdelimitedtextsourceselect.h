@@ -16,7 +16,7 @@
 #include "ui_qgsdelimitedtextsourceselectbase.h"
 
 #include <QTextStream>
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgisgui.h"
 
 class QButtonGroup;
@@ -62,7 +62,7 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested()
     {
-      QgsContextHelp::run( metaObject()->className() );
+      QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#id8" ) );
     }
     void on_btnBrowseForFile_clicked();
 

@@ -70,13 +70,13 @@ void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem& c
 {
   d.detach();
   d->mSourceCRS = crs;
-  d->initialise();
+  d->initialize();
 }
 void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSystem& crs )
 {
   d.detach();
   d->mDestCRS = crs;
-  d->initialise();
+  d->initialize();
 }
 
 QgsCoordinateReferenceSystem QgsCoordinateTransform::sourceCrs() const
@@ -582,7 +582,7 @@ bool QgsCoordinateTransform::readXml( const QDomNode & theNode )
   d->mSourceDatumTransform = theNode.toElement().attribute( QStringLiteral( "sourceDatumTransform" ), QStringLiteral( "-1" ) ).toInt();
   d->mDestinationDatumTransform = theNode.toElement().attribute( QStringLiteral( "destinationDatumTransform" ), QStringLiteral( "-1" ) ).toInt();
 
-  return d->initialise();
+  return d->initialize();
 }
 
 bool QgsCoordinateTransform::writeXml( QDomNode & theNode, QDomDocument & theDoc ) const
@@ -789,8 +789,8 @@ void QgsCoordinateTransform::setDestinationDatumTransform( int dt )
   d->mDestinationDatumTransform = dt;
 }
 
-void QgsCoordinateTransform::initialise()
+void QgsCoordinateTransform::initialize()
 {
   d.detach();
-  d->initialise();
+  d->initialize();
 }

@@ -73,13 +73,8 @@ void QgsComposerPolygon::_draw( QPainter *painter )
   //setup painter scaling to dots so that raster symbology is drawn to scale
   const double dotsPerMM = painter->device()->logicalDpiX() / 25.4;
 
-  QgsMapSettings ms = mComposition->mapSettings();
-  ms.setOutputDpi( painter->device()->logicalDpiX() );
-
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  context.setPainter( painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, painter );
   context.setForceVectorOutput( true );
-
   context.setExpressionContext( createExpressionContext() );
 
   painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots

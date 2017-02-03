@@ -173,7 +173,7 @@ void QgsMapOverviewCanvas::refresh()
 
   if ( mJob )
   {
-    QgsDebugMsg( "oveview - cancelling old" );
+    QgsDebugMsg( "oveview - canceling old" );
     mJob->cancel();
     QgsDebugMsg( "oveview - deleting old" );
     delete mJob; // get rid of previous job (if any)
@@ -227,14 +227,14 @@ void QgsMapOverviewCanvas::setLayers( const QList<QgsMapLayer*>& layers )
 {
   Q_FOREACH ( QgsMapLayer* ml, mSettings.layers() )
   {
-    disconnect( ml, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );
+    disconnect( ml, &QgsMapLayer::repaintRequested, this, &QgsMapOverviewCanvas::layerRepaintRequested );
   }
 
   mSettings.setLayers( layers );
 
   Q_FOREACH ( QgsMapLayer* ml, mSettings.layers() )
   {
-    connect( ml, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );
+    connect( ml, &QgsMapLayer::repaintRequested, this, &QgsMapOverviewCanvas::layerRepaintRequested );
   }
 
   updateFullExtent();

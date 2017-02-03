@@ -321,7 +321,7 @@ void QgsProjectPropertyKey::dump( int tabs ) const
         QgsDebugMsg( QString( "%1key: <%2>  subkey: <%3>" )
                      .arg( tabString,
                            i.key(),
-                           dynamic_cast<QgsProjectPropertyKey*>( i.value() )->name() ) );
+                           static_cast<QgsProjectPropertyKey*>( i.value() )->name() ) );
         i.value()->dump( tabs + 1 );
       }
 

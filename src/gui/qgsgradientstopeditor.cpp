@@ -376,14 +376,14 @@ void QgsGradientStopEditor::keyPressEvent( QKeyEvent *e )
   QWidget::keyPressEvent( e );
 }
 
-const QPixmap& QgsGradientStopEditor::transparentBackground()
+QPixmap QgsGradientStopEditor::transparentBackground()
 {
-  static QPixmap transpBkgrd;
+  static QPixmap sTranspBkgrd;
 
-  if ( transpBkgrd.isNull() )
-    transpBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
+  if ( sTranspBkgrd.isNull() )
+    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
 
-  return transpBkgrd;
+  return sTranspBkgrd;
 }
 
 void QgsGradientStopEditor::drawStopMarker( QPainter& painter, QPoint topMiddle, const QColor &color, bool selected )

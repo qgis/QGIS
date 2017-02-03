@@ -220,7 +220,7 @@ class QgsCoordinateTransform
     void setDestinationDatumTransform( int dt );
 
     //!initialize is used to actually create the Transformer instance
-    void initialise();
+    void initialize();
 
     /** Restores state from the given Dom node.
      * @param node The node from which state will be restored

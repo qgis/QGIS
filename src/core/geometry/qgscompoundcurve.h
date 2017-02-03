@@ -58,6 +58,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     virtual QgsPointV2 endPoint() const override;
     virtual void points( QgsPointSequence &pts ) const override;
     virtual int numPoints() const override;
+    bool isEmpty() const override;
 
     /** Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.

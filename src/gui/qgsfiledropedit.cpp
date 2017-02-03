@@ -89,7 +89,7 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
 }
 
 /*!
-  Check if dragged object is acceptible. Called when a drag is in progress
+  Check if dragged object is acceptable. Called when a drag is in progress
   and the mouse enters this widget.
 */
 void QgsFileDropEdit::dragEnterEvent( QDragEnterEvent *event )

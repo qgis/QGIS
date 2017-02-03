@@ -20,6 +20,7 @@
 #include "qgsmultirenderchecker.h"
 #include "qgscomposerpicture.h"
 #include "qgsproject.h"
+#include "qgsproperty.h"
 #include <QObject>
 #include "qgstest.h"
 #include <QColor>
@@ -66,7 +67,6 @@ class TestQgsComposerPicture : public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerPicture* mComposerPicture;
-    QgsMapSettings *mMapSettings;
     QString mReport;
     QString mPngImage;
     QString mSvgImage;
@@ -76,7 +76,6 @@ class TestQgsComposerPicture : public QObject
 TestQgsComposerPicture::TestQgsComposerPicture()
     : mComposition( 0 )
     , mComposerPicture( 0 )
-    , mMapSettings( 0 )
 {
 
 }
@@ -86,13 +85,11 @@ void TestQgsComposerPicture::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mMapSettings = new QgsMapSettings();
-
   mPngImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_image.png";
   mSvgImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_svg.svg";
   mSvgParamsImage = QStringLiteral( TEST_DATA_DIR ) + "/svg_params.svg";
 
-  mComposition = new QgsComposition( *mMapSettings, QgsProject::instance() );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mComposerPicture = new QgsComposerPicture( mComposition );
@@ -107,7 +104,6 @@ void TestQgsComposerPicture::cleanupTestCase()
 {
   delete mComposerPicture;
   delete mComposition;
-  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
@@ -395,8 +391,7 @@ void TestQgsComposerPicture::pictureExpression()
   mComposition->addComposerPicture( mComposerPicture );
 
   QString expr = QStringLiteral( "'%1' || '/sample_svg.svg'" ).arg( TEST_DATA_DIR );
-  mComposerPicture->setDataDefinedProperty( QgsComposerObject::PictureSource,
-      true, true, expr, QString() );
+  mComposerPicture->dataDefinedProperties().setProperty( QgsComposerObject::PictureSource, QgsProperty::fromExpression( expr ) );
   mComposerPicture->refreshPicture();
 
   QgsCompositionChecker checker( QStringLiteral( "composerpicture_expression" ), mComposition );
@@ -404,8 +399,7 @@ void TestQgsComposerPicture::pictureExpression()
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
-  mComposerPicture->setDataDefinedProperty( QgsComposerObject::PictureSource,
-      false, false, QString(), QString() );
+  mComposerPicture->dataDefinedProperties().setProperty( QgsComposerObject::PictureSource, QgsProperty() );
 }
 
 void TestQgsComposerPicture::pictureInvalidExpression()
@@ -414,8 +408,7 @@ void TestQgsComposerPicture::pictureInvalidExpression()
   mComposition->addComposerPicture( mComposerPicture );
 
   QString expr = QStringLiteral( "bad expression" );
-  mComposerPicture->setDataDefinedProperty( QgsComposerObject::PictureSource,
-      true, true, expr, QString() );
+  mComposerPicture->dataDefinedProperties().setProperty( QgsComposerObject::PictureSource, QgsProperty::fromExpression( expr ) );
   mComposerPicture->refreshPicture();
 
   QgsCompositionChecker checker( QStringLiteral( "composerpicture_badexpression" ), mComposition );
@@ -423,8 +416,7 @@ void TestQgsComposerPicture::pictureInvalidExpression()
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
-  mComposerPicture->setDataDefinedProperty( QgsComposerObject::PictureSource,
-      false, false, QString(), QString() );
+  mComposerPicture->dataDefinedProperties().setProperty( QgsComposerObject::PictureSource, QgsProperty() );
 }
 
 QGSTEST_MAIN( TestQgsComposerPicture )

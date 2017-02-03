@@ -54,7 +54,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * Individual record of a visible layer in a map theme record.
      * @note Added in QGIS 3.0
      */
-    class MapThemeLayerRecord
+    class CORE_EXPORT MapThemeLayerRecord
     {
       public:
         //! Initialize layer record with a map layer - it will be stored as a weak pointer
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      *
      * @note Added in QGIS 3.0, Previously called PresetRecord
      */
-    class MapThemeRecord
+    class CORE_EXPORT MapThemeRecord
     {
       public:
 

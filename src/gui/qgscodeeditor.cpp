@@ -69,7 +69,7 @@ void QgsCodeEditor::focusOutEvent( QFocusEvent *event )
 }
 
 // This workaround a likely bug in QScintilla. The ESC key should not be consumned
-// by the main entry, so that the default behaviour (Dialog closing) can trigger,
+// by the main entry, so that the default behavior (Dialog closing) can trigger,
 // but only is the auto-completion suggestion list isn't displayed
 void QgsCodeEditor::keyPressEvent( QKeyEvent * event )
 {

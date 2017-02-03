@@ -42,7 +42,7 @@ QgsProjectFileTransform::TransformItem QgsProjectFileTransform::sTransformers[] 
   {PFV( 0, 9, 0 ), PFV( 0, 9, 1 ), &QgsProjectFileTransform::transformNull},
   {PFV( 0, 9, 1 ), PFV( 0, 10, 0 ), &QgsProjectFileTransform::transform091to0100},
   // Following line is a hack that takes us straight from 0.9.2 to 0.11.0
-  // due to an unknown bug in migrating 0.9.2 files which we didnt pursue (TS & GS)
+  // due to an unknown bug in migrating 0.9.2 files which we didn't pursue (TS & GS)
   {PFV( 0, 9, 2 ), PFV( 0, 11, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 0, 10, 0 ), PFV( 0, 11, 0 ), &QgsProjectFileTransform::transform0100to0110},
   {PFV( 0, 11, 0 ), PFV( 1, 0, 0 ), &QgsProjectFileTransform::transform0110to1000},
@@ -609,7 +609,7 @@ void QgsProjectFileTransform::transform1800to1900()
 
 void QgsProjectFileTransform::transform2200to2300()
 {
-  //composer: set placement for all picture items to middle, to mimic <=2.2 behaviour
+  //composer: set placement for all picture items to middle, to mimic <=2.2 behavior
   QDomNodeList composerPictureList = mDom.elementsByTagName( QStringLiteral( "ComposerPicture" ) );
   for ( int i = 0; i < composerPictureList.size(); ++i )
   {
@@ -704,6 +704,29 @@ void QgsProjectFileTransform::transform2990()
           }
           editWidgetConfiguration.insert( QStringLiteral( "map" ), map );
         }
+        else if ( ewv2Type == QStringLiteral( "Photo" ) )
+        {
+          editWidgetElement.setAttribute( "type", QStringLiteral( "ExternalResource" ) );
+
+          editWidgetConfiguration.insert( QStringLiteral( "DocumentViewer" ), 1 );
+          editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerHeight" ), editWidgetConfiguration.value( QStringLiteral( "Height" ) ) );
+          editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerWidth" ), editWidgetConfiguration.value( QStringLiteral( "Width" ) ) );
+          editWidgetConfiguration.insert( QStringLiteral( "RelativeStorage" ), 1 );
+        }
+        else if ( ewv2Type == QStringLiteral( "FileName" ) )
+        {
+          editWidgetElement.setAttribute( "type", QStringLiteral( "ExternalResource" ) );
+
+          editWidgetConfiguration.insert( QStringLiteral( "RelativeStorage" ), 1 );
+        }
+        else if ( ewv2Type == QStringLiteral( "WebView" ) )
+        {
+          editWidgetElement.setAttribute( "type", QStringLiteral( "ExternalResource" ) );
+
+          editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerHeight" ), editWidgetConfiguration.value( QStringLiteral( "Height" ) ) );
+          editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerWidth" ), editWidgetConfiguration.value( QStringLiteral( "Width" ) ) );
+          editWidgetConfiguration.insert( QStringLiteral( "RelativeStorage" ), 1 );
+        }
 
         editWidgetConfigElement.appendChild( QgsXmlUtils::writeVariant( editWidgetConfiguration, mDom ) );
       }
@@ -768,10 +791,10 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNo
   //convert renderer specific properties
   QString drawingStyle = rasterPropertiesElem.firstChildElement( QStringLiteral( "mDrawingStyle" ) ).text();
 
-  // While PalettedColor should normaly contain only integer values, usually
+  // While PalettedColor should normally contain only integer values, usually
   // color palette 0-255, it may happen (Tim, issue #7023) that it contains
   // colormap classification with double values and text labels
-  // (which should normaly only appear in SingleBandPseudoColor drawingStyle)
+  // (which should normally only appear in SingleBandPseudoColor drawingStyle)
   // => we have to check first the values and change drawingStyle if necessary
   if ( drawingStyle == QLatin1String( "PalettedColor" ) )
   {

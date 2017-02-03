@@ -189,7 +189,7 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString& string, const Q
   {
     // Assume that it's just WKT for now.
     QgsGeometry geometry = QgsGeometry::fromWkt( row );
-    if ( geometry.isEmpty() )
+    if ( geometry.isNull() )
       continue;
 
     QgsFeature feature;

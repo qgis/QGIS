@@ -21,6 +21,8 @@
 #include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include "qgsrectangle.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsrendercontext.h"
 #include <QFont>
 #include <QGraphicsRectItem>
 
@@ -32,7 +34,6 @@ class QgsComposerMapGrid;
 class QgsMapToPixel;
 class QDomNode;
 class QDomDocument;
-class QGraphicsView;
 class QPainter;
 class QgsFillSymbol;
 class QgsLineSymbol;
@@ -150,7 +151,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void zoomToExtent( const QgsRectangle& extent );
 
-    /** Sets new Extent for the current atlas preview and changes width, height (and implicitely also scale).
+    /** Sets new Extent for the current atlas preview and changes width, height (and implicitly also scale).
       Atlas preview extents are only temporary, and are regenerated whenever the atlas feature changes
      */
     void setNewAtlasFeatureExtent( const QgsRectangle& extent );
@@ -166,20 +167,72 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! @note not available in python bindings
     QgsRectangle* currentMapExtent();
 
+    /**
+     * Returns coordinate reference system used for rendering the map.
+     * This will match the presetCrs() if that is set, or if a preset
+     * CRS is not set then the map's CRS will follow the composition's
+     * project's CRS.
+     * @note added in QGIS 3.0
+     * @see presetCrs()
+     * @see setCrs()
+     */
+    QgsCoordinateReferenceSystem crs() const;
+
+    /**
+     * Returns the map's preset coordinate reference system. If set, this
+     * CRS will be used to render the map regardless of any project CRS
+     * setting. If the returned CRS is not valid then the project CRS
+     * will be used to render the map.
+     * @note added in QGIS 3.0
+     * @see crs()
+     * @see setCrs()
+     */
+    QgsCoordinateReferenceSystem presetCrs() const { return mCrs; }
+
+    /**
+     * Sets the map's preset coordinate reference system. If a valid CRS is
+     * set, this CRS will be used to render the map regardless of any project CRS
+     * setting. If the CRS is not valid then the project CRS will be used to render the map.
+     * @see crs()
+     * @see presetCrs()
+     * @note added in QGIS 3.0
+     */
+    void setCrs( const QgsCoordinateReferenceSystem& crs );
+
     PreviewMode previewMode() const {return mPreviewMode;}
     void setPreviewMode( PreviewMode m );
 
-    //! Getter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
+    /**
+     * Getter for flag that determines if a stored layer set should be used
+     * or the current layer set of the QGIS map canvas.
+     * @see setKeepLayerSet()
+     * @see layers()
+     */
     bool keepLayerSet() const {return mKeepLayerSet;}
-    //! Setter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
+
+    /**
+     * Setter for flag that determines if the stored layer set should be used
+     * or the current layer set of the QGIS map canvas.
+     * @see keepLayerSet()
+     * @see layers()
+     */
     void setKeepLayerSet( bool enabled ) {mKeepLayerSet = enabled;}
 
-    //! Getter for stored layer set that is used if mKeepLayerSet is true
+    /**
+     * Getter for stored layer set. This will usually be synchronized with the main app canvas
+     * layer set (and layer order), unless the keepLayerSet() flag is true.
+     * @see setLayers()
+     * @see keepLayerSet()
+     */
     QList<QgsMapLayer*> layers() const;
-    //! Setter for stored layer set that is used if mKeepLayerSet is true
+
+    /**
+     * Setter for stored layer set.  This will usually be synchronized with the main app canvas
+     * layer set (and layer order), unless the keepLayerSet() flag is true.
+     * @see layers()
+     * @see keepLayerSet()
+     */
     void setLayers( const QList<QgsMapLayer*> layers );
-    //! Stores the current layer set of the qgis mapcanvas in mLayerSet
-    void storeCurrentLayerSet();
 
     //! Getter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8
     bool keepLayerStyles() const { return mKeepLayerStyles; }
@@ -295,11 +348,17 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     void updateItem() override;
 
-    //! Sets canvas pointer (necessary to query and draw map canvas items)
-    void setMapCanvas( QGraphicsView* canvas ) { mMapCanvas = canvas; }
+    /**
+     * Sets whether annotations are drawn within the composer map.
+     * @see drawAnnotations()
+     */
+    void setDrawAnnotations( bool draw ) { mDrawAnnotations = draw; }
 
-    void setDrawCanvasItems( bool b ) { mDrawCanvasItems = b; }
-    bool drawCanvasItems() const { return mDrawCanvasItems; }
+    /**
+     * Returns whether annotations are drawn within the composer map.
+     * @see setDrawAnnotations()
+     */
+    bool drawAnnotations() const { return mDrawAnnotations; }
 
     //! Returns the conversion factor map units -> mm
     double mapUnitsToMM() const;
@@ -427,13 +486,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr ) override;
 
-  protected slots:
-
-    /** Called when layers are added or removed from the layer registry. Updates the maps
-     * layer set and redraws the map if required.
-     * @note added in QGIS 2.9
-     */
-    void layersChanged();
+  private slots:
+    void layersAboutToBeRemoved( QList<QgsMapLayer*> layers );
 
   private:
 
@@ -444,10 +498,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     QgsComposerMapOverviewStack* mOverviewStack;
 
-    // Map region in map units realy used for rendering
+    // Map region in map units really used for rendering
     // It can be the same as mUserExtent, but it can be bigger in on dimension if mCalculate==Scale,
     // so that full rectangle in paper is used.
     QgsRectangle mExtent;
+
+    //! Map CRS
+    QgsCoordinateReferenceSystem mCrs;
 
     // Current temporary map region in map units. This is overwritten when atlas feature changes. It's also
     // used when the user changes the map extent and an atlas preview is enabled. This allows the user
@@ -517,9 +574,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     //! Current bounding rectangle. This is used to check if notification to the graphics scene is necessary
     QRectF mCurrentRectangle;
-    QGraphicsView* mMapCanvas;
     //! True if annotation items, rubber band, etc. from the main canvas should be displayed
-    bool mDrawCanvasItems;
+    bool mDrawAnnotations;
 
     /** Adjusts an extent rectangle to match the provided item width and height, so that extent
      * center of extent remains the same */
@@ -554,8 +610,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
         @param yShift in: shift in y direction (in item units), out: yShift in map units*/
     void transformShift( double& xShift, double& yShift ) const;
 
-    void drawCanvasItems( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle );
-    void drawCanvasItem( const QgsAnnotation* item, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle );
+    void drawAnnotations( QPainter* painter );
+    void drawAnnotation( const QgsAnnotation* item, QgsRenderContext& context );
     QPointF composerMapPosForItem( const QgsAnnotation* item ) const;
 
     enum PartType

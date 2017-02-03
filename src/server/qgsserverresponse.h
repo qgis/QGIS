@@ -24,10 +24,14 @@
 #include <QString>
 #include <QIODevice>
 
+class QgsServerException;
+
 /**
  * \ingroup server
  * QgsServerResponse
  * Class defining response interface passed to services QgsService::executeRequest() method
+ *
+ * @note added in QGIS 3.0
  */
 
 // Note:
@@ -125,6 +129,11 @@ class SERVER_EXPORT QgsServerResponse
      * @note not available in python bindings
      */
     virtual qint64 write( const char* data );
+
+    /**
+     * Write server exception
+     */
+    virtual void write( const QgsServerException& ex );
 
     /**
      * Return the underlying QIODevice

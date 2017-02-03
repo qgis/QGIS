@@ -58,7 +58,7 @@ class APP_EXPORT QgsPointRotationItem: public QgsMapCanvasItem
     Orientation mOrientation;
     //! Font to display the numerical rotation values
     QFont mFont;
-    //! Symboll pixmap
+    //! Symbol pixmap
     QPixmap mPixmap;
     int mRotation;
 };

@@ -44,7 +44,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
       AttributeAction //!< Custom actions (manually defined in layer properties)
     };
 
-    struct ActionData
+    struct GUI_EXPORT ActionData
     {
       ActionData();
       ActionData( const QgsAction& action, QgsFeatureId featureId, QgsMapLayer* mapLayer );

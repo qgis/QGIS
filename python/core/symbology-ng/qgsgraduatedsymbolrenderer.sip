@@ -76,8 +76,8 @@ class QgsRendererRangeLabelFormat
     void setFromDomElement( QDomElement &element );
     void saveToDomElement( QDomElement &element );
 
-    static int MaxPrecision;
-    static int MinPrecision;
+    static const int MAX_PRECISION;
+    static const int MIN_PRECISION;
 
 };
 
@@ -102,7 +102,7 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
 
     virtual void stopRender( QgsRenderContext& context );
 
-    virtual QSet<QString> usedAttributes() const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     virtual QString dump() const;
 
