@@ -41,8 +41,8 @@ from processing.core.parameters import ParameterSelection
 from processing.gui.Postprocessing import handleAlgorithmResults
 
 
-def alglist(text=None):
-    print(get_alglist(text))
+def alglist(algname=None):
+    print(get_alglist(algname))
 
     
 def algoptions(name):
@@ -60,12 +60,12 @@ def alghelp(name):
     else:
         print('Algorithm not found')
     
-def get_alglist(text=None):
+def get_alglist(algname=None):
     l = []
     for provider in list(algList.algs.values()):
         sortedlist = sorted(list(provider.values()), key=lambda alg: alg.name)
         for alg in sortedlist:
-            if text is None or text.lower() in alg.name.lower():
+            if algname is None or algname.lower() in alg.name.lower():
                 t = alg.name.ljust(50, '-') + '--->' + alg.commandLineName()
                 l.append(t)
     return l
