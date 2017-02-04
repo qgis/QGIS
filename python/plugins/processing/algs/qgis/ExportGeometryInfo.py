@@ -53,7 +53,7 @@ class ExportGeometryInfo(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Export/Add geometry columns')
-        self.tags = self.trAlgorithm('export,measurements,areas,lengths,perimeters,latitudes,longitudes,,x,y,z,extract,points,lines,polygons')
+        self.tags = self.tr('export,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.calc_methods = [self.tr('Layer CRS'),
