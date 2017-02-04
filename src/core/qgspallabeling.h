@@ -575,7 +575,7 @@ class CORE_EXPORT QgsPalLayerSettings
     int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
 
     //! Property definitions
-    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
+    static QgsPropertiesDefinition PROPERTY_DEFINITIONS;
 
   private:
 
@@ -643,6 +643,8 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsTextFormat mFormat;
 
     static const QVector< PredefinedPointPosition > DEFAULT_PLACEMENT_ORDER;
+
+    static void initPropertyDefinitions();
 };
 
 /** \ingroup core

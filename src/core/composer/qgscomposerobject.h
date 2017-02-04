@@ -89,7 +89,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     };
 
     //! Property definitions
-    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
+    static QgsPropertiesDefinition PROPERTY_DEFINITIONS;
 
     /** Specifies whether the value returned by a function should be the original, user
      * set value, or the current evaluated value for the property. This may differ if
@@ -229,6 +229,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     void prepareProperties() const;
 
   private:
+    static void initPropertyDefinitions();
 
     friend class TestQgsComposerObject;
 };

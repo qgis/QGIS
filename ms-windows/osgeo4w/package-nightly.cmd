@@ -200,7 +200,7 @@ cmake -G Ninja ^
 	-D WITH_INTERNAL_HTTPLIB2=FALSE ^
 	-D WITH_INTERNAL_FUTURE=FALSE ^
 	-D QCA_INCLUDE_DIR=%OSGEO4W_ROOT%\apps\Qt5\include\QtCrypto ^
-	-D QCA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qca.lib ^
+	-D QCA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qca-qt5.lib ^
 	-D QSCINTILLA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qscintilla2.lib ^
 	-D SUPPRESS_SIP_WARNINGS=TRUE ^
 	%CMAKE_OPT% ^

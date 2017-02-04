@@ -25,21 +25,29 @@
 #include <QDomElement>
 #include <QPainter>
 
-const QgsPropertiesDefinition QgsDiagramLayerSettings::PROPERTY_DEFINITIONS
+QgsPropertiesDefinition QgsDiagramLayerSettings::PROPERTY_DEFINITIONS;
+
+void QgsDiagramLayerSettings::initPropertyDefinitions()
 {
-  { QgsDiagramLayerSettings::BackgroundColor, QgsPropertyDefinition( "backgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-  { QgsDiagramLayerSettings::OutlineColor, QgsPropertyDefinition( "outlineColor", QObject::tr( "Outline color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-  { QgsDiagramLayerSettings::OutlineWidth, QgsPropertyDefinition( "outlineWidth", QObject::tr( "Outline width" ), QgsPropertyDefinition::DoublePositive ) },
-  { QgsDiagramLayerSettings::PositionX, QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
-  { QgsDiagramLayerSettings::PositionY, QgsPropertyDefinition( "positionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
-  { QgsDiagramLayerSettings::Distance, QgsPropertyDefinition( "distance", QObject::tr( "Placement distance" ), QgsPropertyDefinition::DoublePositive ) },
-  { QgsDiagramLayerSettings::Priority, QgsPropertyDefinition( "priority", QObject::tr( "Placement priority" ), QgsPropertyDefinition::DoublePositive ) },
-  { QgsDiagramLayerSettings::ZIndex, QgsPropertyDefinition( "zIndex", QObject::tr( "Placement z-index" ), QgsPropertyDefinition::Double ) },
-  { QgsDiagramLayerSettings::IsObstacle, QgsPropertyDefinition( "isObstacle", QObject::tr( "Diagram is an obstacle" ), QgsPropertyDefinition::Boolean ) },
-  { QgsDiagramLayerSettings::Show, QgsPropertyDefinition( "show", QObject::tr( "Show diagram" ), QgsPropertyDefinition::Boolean ) },
-  { QgsDiagramLayerSettings::AlwaysShow, QgsPropertyDefinition( "alwaysShow", QObject::tr( "Always show diagram" ), QgsPropertyDefinition::Boolean ) },
-  { QgsDiagramLayerSettings::StartAngle, QgsPropertyDefinition( "startAngle", QObject::tr( "Pie chart start angle" ), QgsPropertyDefinition::Double ) },
-};
+  if ( !PROPERTY_DEFINITIONS.isEmpty() )
+    return;
+
+  PROPERTY_DEFINITIONS = QgsPropertiesDefinition
+  {
+    { QgsDiagramLayerSettings::BackgroundColor, QgsPropertyDefinition( "backgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { QgsDiagramLayerSettings::OutlineColor, QgsPropertyDefinition( "outlineColor", QObject::tr( "Outline color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { QgsDiagramLayerSettings::OutlineWidth, QgsPropertyDefinition( "outlineWidth", QObject::tr( "Outline width" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsDiagramLayerSettings::PositionX, QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
+    { QgsDiagramLayerSettings::PositionY, QgsPropertyDefinition( "positionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
+    { QgsDiagramLayerSettings::Distance, QgsPropertyDefinition( "distance", QObject::tr( "Placement distance" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsDiagramLayerSettings::Priority, QgsPropertyDefinition( "priority", QObject::tr( "Placement priority" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsDiagramLayerSettings::ZIndex, QgsPropertyDefinition( "zIndex", QObject::tr( "Placement z-index" ), QgsPropertyDefinition::Double ) },
+    { QgsDiagramLayerSettings::IsObstacle, QgsPropertyDefinition( "isObstacle", QObject::tr( "Diagram is an obstacle" ), QgsPropertyDefinition::Boolean ) },
+    { QgsDiagramLayerSettings::Show, QgsPropertyDefinition( "show", QObject::tr( "Show diagram" ), QgsPropertyDefinition::Boolean ) },
+    { QgsDiagramLayerSettings::AlwaysShow, QgsPropertyDefinition( "alwaysShow", QObject::tr( "Always show diagram" ), QgsPropertyDefinition::Boolean ) },
+    { QgsDiagramLayerSettings::StartAngle, QgsPropertyDefinition( "startAngle", QObject::tr( "Pie chart start angle" ), QgsPropertyDefinition::Double ) },
+  };
+}
 
 QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh )
     : mCt( rh.mCt )
@@ -52,7 +60,9 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings&
     , mRenderer( rh.mRenderer ? rh.mRenderer->clone() : nullptr )
     , mShowAll( rh.mShowAll )
     , mDataDefinedProperties( rh.mDataDefinedProperties )
-{}
+{
+  initPropertyDefinitions();
+}
 
 QgsDiagramLayerSettings& QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings & rh )
 {

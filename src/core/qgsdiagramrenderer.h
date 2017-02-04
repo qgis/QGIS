@@ -287,7 +287,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     void setDataDefinedProperties( const QgsPropertyCollection& collection ) { mDataDefinedProperties = collection; }
 
     //! Property definitions
-    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
+    static QgsPropertiesDefinition PROPERTY_DEFINITIONS;
 
   private:
 
@@ -323,6 +323,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     //! Property collection for data defined diagram settings
     QgsPropertyCollection mDataDefinedProperties;
 
+    static void initPropertyDefinitions();
 };
 
 /** \ingroup core

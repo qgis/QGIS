@@ -110,7 +110,7 @@ class CORE_EXPORT QgsSymbolLayer
     };
 
     //! Property definitions
-    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
+    static QgsPropertiesDefinition PROPERTY_DEFINITIONS;
 
     virtual ~QgsSymbolLayer();
 
@@ -349,6 +349,8 @@ class CORE_EXPORT QgsSymbolLayer
      */
     void copyPaintEffect( QgsSymbolLayer* destLayer ) const;
 
+  private:
+    static void initPropertyDefinitions();
 };
 
 //////////////////////
