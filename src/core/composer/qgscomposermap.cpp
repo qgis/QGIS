@@ -1231,7 +1231,7 @@ bool QgsComposerMap::writeXml( QDomElement& elem, QDomDocument & doc ) const
 
   //layer set
   QDomElement layerSetElem = doc.createElement( QStringLiteral( "LayerSet" ) );
-  Q_FOREACH ( const QPointer<QgsMapLayer>& layerPtr, mLayers )
+  Q_FOREACH ( const QgsWeakMapLayerPointer& layerPtr, mLayers )
   {
     QgsMapLayer* layer = layerPtr.data();
     if ( !layer )
@@ -1557,7 +1557,7 @@ void QgsComposerMap::setLayerStyleOverrides( const QMap<QString, QString>& overr
 void QgsComposerMap::storeCurrentLayerStyles()
 {
   mLayerStyleOverrides.clear();
-  Q_FOREACH ( const QPointer<QgsMapLayer>& layerPtr, mLayers )
+  Q_FOREACH ( const QgsWeakMapLayerPointer& layerPtr, mLayers )
   {
     if ( QgsMapLayer* layer = layerPtr.data() )
     {

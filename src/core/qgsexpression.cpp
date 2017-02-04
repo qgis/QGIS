@@ -332,7 +332,7 @@ static QgsExpression::Node* getNode( const QVariant& value, QgsExpression* paren
 
 QgsVectorLayer* getVectorLayer( const QVariant& value, QgsExpression* )
 {
-  QgsMapLayer* ml = value.value< QPointer<QgsMapLayer> >().data();
+  QgsMapLayer* ml = value.value< QgsWeakMapLayerPointer >().data();
   QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
   if ( !vl )
   {

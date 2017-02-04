@@ -50,7 +50,7 @@ struct LayerRenderJob
   QPainter::CompositionMode blendMode;
   double opacity;
   bool cached; // if true, img already contains cached image from previous rendering
-  QPointer< QgsMapLayer > layer;
+  QgsWeakMapLayerPointer layer;
   int renderingTime; //!< Time it took to render the layer in ms (it is -1 if not rendered or still rendering)
 };
 

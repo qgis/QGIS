@@ -920,4 +920,18 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
 Q_DECLARE_METATYPE( QgsMapLayer* )
 
+/**
+ * Weak pointer for QgsMapLayer
+ * @note added in QGIS 3.0
+ * @note not available in Python bindings
+ */
+typedef QPointer< QgsMapLayer > QgsWeakMapLayerPointer;
+
+/**
+ * A list of weak pointers to QgsMapLayers.
+ * @note added in QGIS 3.0
+ * @note not available in Python bindings
+ */
+typedef QList< QgsWeakMapLayerPointer > QgsWeakMapLayerPointerList;
+
 #endif

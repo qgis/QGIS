@@ -35,7 +35,7 @@
 using namespace pal;
 
 QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer, const QString& providerId, bool withFeatureLoop, const QgsPalLayerSettings* settings, const QString& layerName )
-    : QgsAbstractLabelProvider( layer->id(), providerId )
+    : QgsAbstractLabelProvider( layer, providerId )
     , mSettings( settings ? *settings : QgsPalLayerSettings::fromLayer( layer ) )
     , mLayerGeometryType( layer->geometryType() )
     , mRenderer( layer->renderer() )
@@ -57,25 +57,6 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer,
 
   init();
 }
-
-QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( const QgsPalLayerSettings& settings,
-    const QString& layerId,
-    const QgsFields& fields,
-    const QgsCoordinateReferenceSystem& crs,
-    QgsAbstractFeatureSource* source,
-    bool ownsSource, QgsFeatureRenderer* renderer )
-    : QgsAbstractLabelProvider( layerId )
-    , mSettings( settings )
-    , mLayerGeometryType( QgsWkbTypes::UnknownGeometry )
-    , mRenderer( renderer )
-    , mFields( fields )
-    , mCrs( crs )
-    , mSource( source )
-    , mOwnsSource( ownsSource )
-{
-  init();
-}
-
 
 void QgsVectorLayerLabelProvider::init()
 {

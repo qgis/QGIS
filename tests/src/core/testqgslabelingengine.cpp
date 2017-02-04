@@ -538,18 +538,18 @@ void TestQgsLabelingEngine::testCapitalization()
 void TestQgsLabelingEngine::testParticipatingLayers()
 {
   QgsLabelingEngine engine;
-  QVERIFY( engine.participatingLayerIds().isEmpty() );
+  QVERIFY( engine.participatingLayers().isEmpty() );
 
   QgsPalLayerSettings settings1;
   QgsVectorLayerLabelProvider* provider = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings1 );
   engine.addProvider( provider );
-  QCOMPARE( engine.participatingLayerIds(), QStringList() << vl->id() );
+  QCOMPARE( engine.participatingLayers(), QList<QgsMapLayer*>() << vl );
 
   QgsVectorLayer* layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "layer2" ), QStringLiteral( "memory" ) );
   QgsPalLayerSettings settings2;
   QgsVectorLayerLabelProvider* provider2 = new QgsVectorLayerLabelProvider( layer2, QStringLiteral( "test2" ), true, &settings2 );
   engine.addProvider( provider2 );
-  QCOMPARE( engine.participatingLayerIds().toSet(), QSet< QString >() << vl->id() << layer2->id() );
+  QCOMPARE( engine.participatingLayers().toSet(), QSet< QgsMapLayer* >() << vl << layer2 );
 
   // add a rule-based labeling node
   QgsRuleBasedLabeling::Rule* root = new QgsRuleBasedLabeling::Rule( 0 );
@@ -561,7 +561,7 @@ void TestQgsLabelingEngine::testParticipatingLayers()
   QgsVectorLayer* layer3 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "layer3" ), QStringLiteral( "memory" ) );
   QgsRuleBasedLabelProvider* ruleProvider = new QgsRuleBasedLabelProvider( QgsRuleBasedLabeling( root ), layer3 );
   engine.addProvider( ruleProvider );
-  QCOMPARE( engine.participatingLayerIds().toSet(), QSet< QString >() << vl->id() << layer2->id() << layer3->id() );
+  QCOMPARE( engine.participatingLayers().toSet(), QSet< QgsMapLayer* >() << vl << layer2 << layer3 );
 }
 
 bool TestQgsLabelingEngine::imageCheck( const QString& testName, QImage &image, int mismatchCount )

@@ -99,7 +99,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     struct CacheParameters
     {
       QImage cachedImage;
-      QList< QPointer< QgsMapLayer > > dependentLayers;
+      QgsWeakMapLayerPointerList dependentLayers;
     };
 
     //! Invalidate cache contents (without locking)
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     //! Disconnects from layers we no longer care about
     void dropUnusedConnections();
 
-    QSet< QPointer< QgsMapLayer > > dependentLayers() const;
+    QSet< QgsWeakMapLayerPointer > dependentLayers() const;
 
     mutable QMutex mMutex;
     QgsRectangle mExtent;
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     //! Map of cache key to cache parameters
     QMap<QString, CacheParameters> mCachedImages;
     //! List of all layers on which this cache is currently connected
-    QSet< QPointer< QgsMapLayer > > mConnectedLayers;
+    QSet< QgsWeakMapLayerPointer > mConnectedLayers;
 };
 
 

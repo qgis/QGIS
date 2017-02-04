@@ -30,13 +30,13 @@
 #include "qgsrectangle.h"
 #include "qgsscalecalculator.h"
 #include "qgsexpressioncontext.h"
+#include "qgsmaplayer.h"
 
 class QPainter;
 
 class QgsCoordinateTransform;
 class QgsScaleCalculator;
 class QgsMapRendererJob;
-class QgsMapLayer;
 
 
 /** \ingroup core
@@ -310,7 +310,7 @@ class CORE_EXPORT QgsMapSettings
     double mMagnificationFactor;
 
     //! list of layers to be rendered (stored as weak pointers)
-    QList< QPointer<QgsMapLayer> > mLayers;
+    QgsWeakMapLayerPointerList mLayers;
     QMap<QString, QString> mLayerStyleOverrides;
     QString mCustomRenderFlags;
     QgsExpressionContext mExpressionContext;

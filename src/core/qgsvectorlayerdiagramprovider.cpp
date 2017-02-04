@@ -24,29 +24,8 @@
 #include "feature.h"
 #include "labelposition.h"
 
-
-QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider(
-  const QgsDiagramLayerSettings* diagSettings,
-  const QgsDiagramRenderer* diagRenderer,
-  const QString& layerId,
-  const QgsFields& fields,
-  const QgsCoordinateReferenceSystem& crs,
-  QgsAbstractFeatureSource* source,
-  bool ownsSource )
-    : QgsAbstractLabelProvider( layerId )
-    , mSettings( *diagSettings )
-    , mDiagRenderer( diagRenderer->clone() )
-    , mFields( fields )
-    , mLayerCrs( crs )
-    , mSource( source )
-    , mOwnsSource( ownsSource )
-{
-  init();
-}
-
-
 QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer* layer, bool ownFeatureLoop )
-    : QgsAbstractLabelProvider( layer->id() )
+    : QgsAbstractLabelProvider( layer )
     , mSettings( *layer->diagramLayerSettings() )
     , mDiagRenderer( layer->diagramRenderer()->clone() )
     , mFields( layer->fields() )

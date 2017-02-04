@@ -25,6 +25,7 @@
 #include "pal.h"
 #include "problem.h"
 #include "qgsrendercontext.h"
+#include "qgsmaplayer.h"
 
 
 // helper function for checking for job cancelation within PAL
@@ -88,20 +89,20 @@ QgsLabelingEngine::~QgsLabelingEngine()
   qDeleteAll( mSubProviders );
 }
 
-QStringList QgsLabelingEngine::participatingLayerIds() const
+QList< QgsMapLayer* > QgsLabelingEngine::participatingLayers() const
 {
-  QSet< QString > ids;
+  QSet< QgsMapLayer* > layers;
   Q_FOREACH ( QgsAbstractLabelProvider* provider, mProviders )
   {
-    if ( !provider->layerId().isEmpty() )
-      ids << provider->layerId();
+    if ( provider->layer() )
+      layers << provider->layer();
   }
   Q_FOREACH ( QgsAbstractLabelProvider* provider, mSubProviders )
   {
-    if ( !provider->layerId().isEmpty() )
-      ids << provider->layerId();
+    if ( provider->layer() )
+      layers << provider->layer();
   }
-  return ids.toList();
+  return layers.toList();
 }
 
 void QgsLabelingEngine::addProvider( QgsAbstractLabelProvider* provider )
@@ -230,7 +231,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
   Q_FOREACH ( QgsAbstractLabelProvider* provider, mProviders )
   {
     bool appendedLayerScope = false;
-    if ( QgsMapLayer* ml = QgsProject::instance()->mapLayer( provider->layerId() ) )
+    if ( QgsMapLayer* ml = provider->layer() )
     {
       appendedLayerScope = true;
       context.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( ml ) );
@@ -415,9 +416,10 @@ QgsAbstractLabelProvider*QgsLabelFeature::provider() const
 
 }
 
-QgsAbstractLabelProvider::QgsAbstractLabelProvider( const QString& layerId, const QString& providerId )
+QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer* layer, const QString& providerId )
     : mEngine( nullptr )
-    , mLayerId( layerId )
+    , mLayerId( layer ? layer->id() : QString() )
+    , mLayer( layer )
     , mProviderId( providerId )
     , mFlags( DrawLabels )
     , mPlacement( QgsPalLayerSettings::AroundPoint )
