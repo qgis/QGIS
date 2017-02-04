@@ -180,31 +180,31 @@ class TestQgsGeometry(unittest.TestCase):
                 bbox = geom.geometry().boundingBox()
                 exp = float(row['x_min'])
                 result = bbox.xMinimum()
-                assert doubleNear(result, exp), "Min X {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+                self.assertAlmostEqual(result, exp, 5, "Min X {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
                 exp = float(row['y_min'])
                 result = bbox.yMinimum()
-                assert doubleNear(result, exp), "Min Y {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+                self.assertAlmostEqual(result, exp, 5, "Min Y {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
                 exp = float(row['x_max'])
                 result = bbox.xMaximum()
-                assert doubleNear(result, exp), "Max X {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+                self.assertAlmostEqual(result, exp, 5, "Max X {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
                 exp = float(row['y_max'])
                 result = bbox.yMaximum()
-                assert doubleNear(result, exp), "Max Y {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+                self.assertAlmostEqual(result, exp, 5, "Max Y {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
 
                 # test area calculation
                 exp = float(row['area'])
                 result = geom.geometry().area()
-                assert doubleNear(result, exp), "Area {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+                self.assertAlmostEqual(result, exp, 5, "Area {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
 
                 # test length calculation
                 exp = float(row['length'])
                 result = geom.geometry().length()
-                assert doubleNear(result, exp, 0.00001), "Length {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+                self.assertAlmostEqual(result, exp, 5, "Length {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
 
                 # test perimeter calculation
                 exp = float(row['perimeter'])
                 result = geom.geometry().perimeter()
-                assert doubleNear(result, exp, 0.00001), "Perimeter {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
+                self.assertAlmostEqual(result, exp, 5, "Perimeter {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
 
     def testIntersection(self):
         myLine = QgsGeometry.fromPolyline([
