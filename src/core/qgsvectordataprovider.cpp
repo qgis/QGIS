@@ -609,6 +609,11 @@ QStringList QgsVectorDataProvider::errors()
   return mErrors;
 }
 
+bool QgsVectorDataProvider::isDeleteStyleFromDBSupported() const
+{
+  return false;
+}
+
 void QgsVectorDataProvider::pushError( const QString& msg )
 {
   QgsDebugMsg( msg );
