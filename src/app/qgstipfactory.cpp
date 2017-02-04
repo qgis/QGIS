@@ -86,7 +86,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "You can add a current date variable to your map"
                         " layout. Create a regular text label and add the string"
                         " $CURRENT_DATE(yyyy-MM-dd) to the text box. See the"
-                        " <a href=\"https://doc.qt.io/qt-5.7/qdate.html#toString\">"
+                        " <a href=\"https://doc.qt.io/qt-5.3/qdate.html#toString\">"
                         "QDate::toString format documentation</a> for the possible date formats."
                       ) );
   addGuiTip( myTip );
@@ -95,11 +95,14 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " elements. The first one ( <img src=\":/images/themes/default/mActionSelect.svg\"/> )"
                         " selects and moves elements in the layout. After selecting the element"
                         " with this tool you can also move them around with the arrow keys."
-                        " For accurate positioning use the <strong>Position and Size</strong> section,"
-                        " which can be found in the tab <strong>Item Properties -> Position and Size</strong>."
+                        " For accurate positioning use the <strong>%1</strong> section,"
+                        " which can be found in the tab <strong>%2</strong>."
                         " The other move tool ( <img src=\":/images/themes/default/mActionMoveItemContent.svg\"/> )"
-                        " allows you to move the map content within a map frame."
-                      ) );
+                        " allows you to move the map content within a map frame." )
+                      .arg( tr( "Position and Size" ) )
+                      .arg( tr( "Item Properties" ) )
+                      );
+  addGuiTip( myTip );
   addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
   myTip.setTitle( tr( "Lock an element in the layout view" ) );
@@ -116,13 +119,16 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "In the Print Composer you can rotate a map by setting its rotation value"
                         " in the tab <strong>Item Properties -> Map -> Main properties</strong> section."
                         " To place a north arrow in your layout you can use the"
-                        " <strong>Add Image</strong> tool. After the selection and"
+                        " <strong>%1</strong> tool. After the selection and"
                         " placement of the north arrow in the layout you can link it"
-                        " with a specific map frame by activating the <strong>Sync with map</strong>"
+                        " with a specific map frame by activating the <strong>%2</strong>"
                         " checkbox and selecting a map frame. Whenever you change the rotation"
                         " value of a linked map, the north arrow will now automatically adjust"
-                        " its rotation."
-                      ) );
+                        " its rotation." )
+                      .arg( tr( "Add Image" ) )
+                      .arg( tr( "Sync with map" ) )
+                      );
+  addGuiTip( myTip );
   addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
   myTip.setTitle( tr( "Numeric scale value in map layout linked to map frame" ) );
@@ -137,8 +143,11 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "You can use the scroll wheel on your mouse to zoom in,"
                         " out and pan the map. Scroll forwards to zoom in, scroll backwards to"
                         " zoom out and press and hold the scroll wheel down to pan the map. You"
-                        " can configure the zoom scale factor in the <strong>Options -> Map tools</strong> panel."
-                      ) );
+                        " can configure the zoom scale factor in the <strong> %1 -> %2 </strong> panel." )
+                      .arg( tr( "Options" ) )
+                      .arg( tr( "Map tools" ) )
+                      );
+  addGuiTip( myTip );
   addGuiTip( myTip );
   // by Tim
   myTip.setTitle( tr( "Disabling rendering" ) );
@@ -182,12 +191,15 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setTitle( tr( "QGIS has Plugins!" ) );
   myTip.setContent( tr( "QGIS has plugins that extend its functionality."
                         " QGIS ships with some core plugins you can explore from the"
-                        " <strong>Plugins -> Manage and Install</strong> Plugins menu. In addition there"
+                        " <strong> %1 -> %2</strong> menu. In addition there"
                         " are a lot of <a href=\"https://plugins.qgis.org/\">Python plugins </a>"
                         " contributed by the user community that can be"
                         " installed via this same menu. Don't miss out on all QGIS has to offer!"
-                        " Check out the plugins and see what they can do for you."
-                      ) );
+                        " Check out the plugins and see what they can do for you." )
+                      .arg( tr( "Plugins" ) )
+                      .arg( tr( "Manage and Install Plugins..." ) )
+                      );
+  addGuiTip( myTip );
   addGenericTip( myTip );
   // by yjacolin
   myTip.setTitle( tr( "Add an action to layer" ) );
@@ -220,24 +232,30 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "If you have a number of aerial photos spread across a wide area, instead of "
                         "loading each file as a separate layer you can treat them all as a single layer "
                         "by using a .vrt file. "
-                        "To create a .vrt, go to <strong>Raster -> Miscellaneous -> Build Virtual Raster (Catalog)</strong>."
-                      ) );
+                        "To create a .vrt, go to <strong> %1 -> %2 -> %3</strong>.")
+                      .arg( tr( "Raster" ) )
+                      .arg( tr( "Miscellaneous" ) )
+                      .arg( tr( "Build Virtual Raster (Catalog)" ) )
+                      );
   addGuiTip( myTip );
   // by Harrissou Sant-anna
   myTip.setTitle( tr( "Switch quickly between different styles of the layer" ) );
   myTip.setContent( tr( "From the Layer properties dialog, use the <strong>Styles -> Add</strong> combobox"
                         " to create as many combinations of layer properties settings (symbology, labeling,"
                         " diagram, fields form, actions...) as you want. Then, simply switch between styles"
-                        " from the context menu of the layer in <strong>Layers Panel</strong> to automatically"
-                        "get different custom representations of your data."
-                      ) );
+                        " from the context menu of the layer in <strong>%1</strong> to automatically"
+                        " get different custom representations of your data." )
+                      .arg( tr( "Layers Panel" ) )
+                      );
   addGuiTip( myTip );
   // by Harrissou Sant-anna
   myTip.setTitle( tr( "Live update rendering" ) );
-  myTip.setContent( tr( "Press F7 to activate the <strong>Layer Styling</strong> panel from which you can"
-                        " easily and quickly configure the layer rendering. Check the <strong>Live update</strong>"
-                        " option to automatically apply to the map canvas each of your modifications."
-                      ) );
+  myTip.setContent( tr( "Press F7 to activate the <strong>%1</strong> panel from which you can"
+                        " easily and quickly configure the layer rendering. Check the <strong>%2</strong>"
+                        " option to automatically apply to the map canvas each of your modifications." )
+                      .arg( tr( "Layer Styling" ) )
+                      .arg( tr( "Live update" ) )
+                      );
   addGuiTip( myTip );
   // by Harrissou Sant-anna
   myTip.setTitle( tr( "Print or export a specific feature from an atlas composition" ) );
@@ -258,9 +276,11 @@ QgsTipFactory::QgsTipFactory() : QObject()
   // by Harrissou Sant-anna
   myTip.setTitle( tr( "Set your own shortcuts for your actions" ) );
   myTip.setContent( tr( "QGIS provides you with a list of predefined shortcuts you can use to speed"
-                        " your workflow. These are available under <strong>Settings -> Configure"
-                        " shortcuts</strong> menu and can be extended and customized for any dialog or tool."
-                      ) );
+                        " your workflow. These are available under <strong> %1 -> %2 </strong>"
+                        "  menu and can be extended and customized for any dialog or tool." )
+                      .arg( tr( "Settings" ) )
+                      .arg( tr( "Keyboard Shortcuts" ) )
+                      );
   addGuiTip( myTip );
 
   /* Template for adding more tips
