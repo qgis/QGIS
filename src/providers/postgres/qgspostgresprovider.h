@@ -191,6 +191,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     virtual bool isSaveAndLoadStyleToDBSupported() override { return true; }
 
+    virtual bool isDeleteStyleFromDBSupported() const override { return true; }
+
     QgsAttributeList attributeIndexes() override;
 
     QgsAttributeList pkAttributeIndexes() override { return mPrimaryKeyAttrs; }

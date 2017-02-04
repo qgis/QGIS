@@ -13,10 +13,13 @@
 #include "ui_qgsloadstylefromdbdialog.h"
 #include "qgisgui.h"
 #include "qgsfield.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 
 class APP_EXPORT QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadStyleFromDBDialogLayout
 {
     QString mSelectedStyleId;
+    QString mSelectedStyleName;
     int mSectionLimit;
     QString qmlStyle;
     Q_OBJECT
@@ -27,12 +30,17 @@ class APP_EXPORT QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadS
 
     void initializeLists( const QStringList& ids, const QStringList& names, const QStringList& descriptions, int sectionLimit );
     QString getSelectedStyleId();
+    void selectionChanged( QTableWidget *styleTable );
+
+    void setLayer( QgsVectorLayer *l );
 
   public slots:
-    void cellSelectedRelatedTable( int r );
-    void cellSelectedOthersTable( int r );
+    void relatedTableSelectionChanged();
+    void otherTableSelectionChanged();
+    void deleteStyleFromDB();
 
   private:
+    QgsVectorLayer *mLayer;
 
 };
 

@@ -9,6 +9,7 @@
 
 #include "qgsloadstylefromdbdialog.h"
 #include "qgslogger.h"
+#include "qgisapp.h"
 
 #include <QSettings>
 #include <QMessageBox>
@@ -19,10 +20,11 @@ QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
     , mSectionLimit( 0 )
 {
   setupUi( this );
-  setWindowTitle( "Load style from database" );
+  setWindowTitle( QStringLiteral( "Database styles manager" ) );
   mSelectedStyleId = "";
 
   mLoadButton->setDisabled( true );
+  mDeleteButton->setDisabled( true );
   mRelatedTable->setEditTriggers( QTableWidget::NoEditTriggers );
   mRelatedTable->horizontalHeader()->setStretchLastSection( true );
   mRelatedTable->setSelectionBehavior( QTableWidget::SelectRows );
@@ -33,16 +35,18 @@ QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
   mOthersTable->setSelectionBehavior( QTableWidget::SelectRows );
   mOthersTable->verticalHeader()->setVisible( false );
 
-  connect( mRelatedTable, SIGNAL( cellClicked( int, int ) ), this, SLOT( cellSelectedRelatedTable( int ) ) );
-  connect( mOthersTable, SIGNAL( cellClicked( int, int ) ), this, SLOT( cellSelectedOthersTable( int ) ) );
+  connect( mRelatedTable, SIGNAL( itemSelectionChanged() ), this, SLOT( relatedTableSelectionChanged() ) );
+  connect( mOthersTable, SIGNAL( itemSelectionChanged() ), this, SLOT( otherTableSelectionChanged() ) );
   connect( mRelatedTable, SIGNAL( doubleClicked( QModelIndex ) ), this, SLOT( accept() ) );
   connect( mOthersTable, SIGNAL( doubleClicked( QModelIndex ) ), this, SLOT( accept() ) );
   connect( mCancelButton, SIGNAL( clicked() ), this, SLOT( reject() ) );
+  connect( mDeleteButton, SIGNAL( clicked() ), this, SLOT( deleteStyleFromDB() ) );
   connect( mLoadButton, SIGNAL( clicked() ), this, SLOT( accept() ) );
 
   setTabOrder( mRelatedTable, mOthersTable );
   setTabOrder( mOthersTable, mCancelButton );
-  setTabOrder( mCancelButton, mLoadButton );
+  setTabOrder( mCancelButton, mDeleteButton );
+  setTabOrder( mDeleteButton, mLoadButton );
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/loadStyleFromDb/geometry" ).toByteArray() );
@@ -96,14 +100,98 @@ QString QgsLoadStyleFromDBDialog::getSelectedStyleId()
   return mSelectedStyleId;
 }
 
-void QgsLoadStyleFromDBDialog::cellSelectedRelatedTable( int r )
+void QgsLoadStyleFromDBDialog::setLayer( QgsVectorLayer *l )
 {
-  mLoadButton->setEnabled( true );
-  mSelectedStyleId = mRelatedTable->item( r, 0 )->data( Qt::UserRole ).toString();
+  mLayer = l;
+  if ( mLayer->dataProvider()->isDeleteStyleFromDBSupported() )
+  {
+    //QgsDebugMsg( "QgsLoadStyleFromDBDialog::setLayer → The dataProvider supports isDeleteStyleFromDBSupported" );
+    mDeleteButton->setVisible( true );
+  }
+  else
+  {
+    // QgsDebugMsg( "QgsLoadStyleFromDBDialog::setLayer → The dataProvider does not supports isDeleteStyleFromDBSupported" );
+    mDeleteButton->setVisible( false );
+  }
 }
 
-void QgsLoadStyleFromDBDialog::cellSelectedOthersTable( int r )
+void QgsLoadStyleFromDBDialog::relatedTableSelectionChanged()
 {
-  mLoadButton->setEnabled( true );
-  mSelectedStyleId = mOthersTable->item( r, 0 )->data( Qt::UserRole ).toString();
+  selectionChanged( mRelatedTable );
+  //deselect any other row on the other table widget
+  QTableWidgetSelectionRange range( 0, 0, mOthersTable->rowCount() - 1, mOthersTable->columnCount() - 1 );
+  mOthersTable->setRangeSelected( range, false );
+}
+
+void QgsLoadStyleFromDBDialog::otherTableSelectionChanged()
+{
+  selectionChanged( mOthersTable );
+  //deselect any other row on the other table widget
+  QTableWidgetSelectionRange range( 0, 0, mRelatedTable->rowCount() - 1, mRelatedTable->columnCount() - 1 );
+  mRelatedTable->setRangeSelected( range, false );
+}
+
+void QgsLoadStyleFromDBDialog::selectionChanged( QTableWidget *styleTable )
+{
+  QTableWidgetItem *item;
+  QList<QTableWidgetItem *> selected = styleTable->selectedItems();
+
+  if ( selected.count() > 0 )
+  {
+    item = selected.at( 0 );
+    mSelectedStyleName = item->text();
+    mSelectedStyleId = item->data( Qt::UserRole ).toString();
+    mLoadButton->setEnabled( true );
+    mDeleteButton->setEnabled( true );
+  }
+  else
+  {
+    mSelectedStyleName = "";
+    mSelectedStyleId = "";
+    mLoadButton->setEnabled( false );
+    mDeleteButton->setEnabled( false );
+  }
+}
+
+void QgsLoadStyleFromDBDialog::deleteStyleFromDB()
+{
+  QString uri, msgError;
+  QString opInfo = QObject::tr( "Delete style %1 from %2" ).arg( mSelectedStyleName, mLayer->providerType() );
+
+  if ( QMessageBox::question( nullptr, QObject::tr( "Delete style" ),
+                              QObject::tr( "Are you sure you want to delete the style %1?" ).arg( mSelectedStyleName ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
+  uri = mLayer->dataProvider()->dataSourceUri();
+  //  mLayer->dataProvider()->deleteStyleById( uri, mSelectedStyleId, msgError );
+  mLayer->deleteStyleFromDatabase( mSelectedStyleId, msgError );
+
+  if ( !msgError.isNull() )
+  {
+    QgsDebugMsg( opInfo + " failed." );
+    QgisApp::instance()->messageBar()->pushMessage( opInfo , tr( "%1: fail. %2" ).arg( opInfo, msgError ), QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
+  }
+  else
+  {
+    QgisApp::instance()->messageBar()->pushMessage( opInfo , tr( "%1: success" ).arg( opInfo ), QgsMessageBar::INFO, QgisApp::instance()->messageTimeout() );
+
+    //Delete all rows from the UI table widgets
+    mRelatedTable->setRowCount( 0 );
+    mOthersTable->setRowCount( 0 );
+
+    //Fill UI widgets again from DB. Other users might have change the styles meanwhile.
+    QString errorMsg;
+    QStringList ids, names, descriptions;
+    //get the list of styles in the db
+    int sectionLimit = mLayer->listStylesInDatabase( ids, names, descriptions, errorMsg );
+    if ( !errorMsg.isNull() )
+    {
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Error occurred retrieving styles from database" ), errorMsg, QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
+    }
+    else
+    {
+      initializeLists( ids, names, descriptions, sectionLimit );
+    }
+  }
 }
