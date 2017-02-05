@@ -23,6 +23,7 @@ class QgsPropertyDefinition
       BlendMode,
       Point,
       Size,
+      Size2D,
       LineStyle,
       FillStyle,
       CapStyle,

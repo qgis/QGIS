@@ -112,6 +112,11 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString& name, const QString
       break;
 
     case Size:
+      mTypes = DataTypeNumeric;
+      mHelpText = QObject::tr( "double [&gt;= 0.0]" );
+      break;
+
+    case Size2D:
       mTypes = DataTypeString;
       mHelpText = QObject::tr( "double size [<b>width,height</b>]" );
       break;

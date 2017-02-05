@@ -64,7 +64,8 @@ class CORE_EXPORT QgsPropertyDefinition
       PenJoinStyle, //!< Pen join style
       BlendMode, //!< Blend mode
       Point, //!< 2D point
-      Size, //!< 2D size
+      Size, //!< 1D size (eg marker radius, or square marker height/width)
+      Size2D, //!< 2D size (width/height different)
       LineStyle, //!< Line style (eg solid/dashed)
       FillStyle, //!< Fill style (eg solid, lines)
       CapStyle, //!< Line cap style (eg round)

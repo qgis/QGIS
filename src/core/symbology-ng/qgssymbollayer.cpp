@@ -40,14 +40,14 @@ void QgsSymbolLayer::initPropertyDefinitions()
 
   PROPERTY_DEFINITIONS = QgsPropertiesDefinition
   {
-    { QgsSymbolLayer::PropertySize, QgsPropertyDefinition( "size", QObject::tr( "Symbol size" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsSymbolLayer::PropertySize, QgsPropertyDefinition( "size", QObject::tr( "Symbol size" ), QgsPropertyDefinition::Size ) },
     { QgsSymbolLayer::PropertyAngle, QgsPropertyDefinition( "angle", QObject::tr( "Rotation angle" ), QgsPropertyDefinition::Double ) },
     { QgsSymbolLayer::PropertyName, QgsPropertyDefinition( "name", QObject::tr( "Symbol name" ), QgsPropertyDefinition::String ) },
     { QgsSymbolLayer::PropertyFillColor, QgsPropertyDefinition( "fillColor", QObject::tr( "Symbol fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsSymbolLayer::PropertyOutlineColor, QgsPropertyDefinition( "outlineColor", QObject::tr( "Symbol outline color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsSymbolLayer::PropertyOutlineWidth, QgsPropertyDefinition( "outlineWidth", QObject::tr( "Symbol outline width" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsSymbolLayer::PropertyOutlineStyle, QgsPropertyDefinition( "outlineStyle", QObject::tr( "Symbol outline style" ), QgsPropertyDefinition::LineStyle )},
-    { QgsSymbolLayer::PropertyOffset, QgsPropertyDefinition( "offset", QObject::tr( "Symbol offset" ), QgsPropertyDefinition::Size )},
+    { QgsSymbolLayer::PropertyOffset, QgsPropertyDefinition( "offset", QObject::tr( "Symbol offset" ), QgsPropertyDefinition::Offset )},
     { QgsSymbolLayer::PropertyCharacter, QgsPropertyDefinition( "char", QObject::tr( "Marker character(s)" ), QgsPropertyDefinition::String )},
     { QgsSymbolLayer::PropertyWidth, QgsPropertyDefinition( "width", QObject::tr( "Symbol width" ), QgsPropertyDefinition::DoublePositive )},
     { QgsSymbolLayer::PropertyHeight, QgsPropertyDefinition( "height", QObject::tr( "Symbol height" ), QgsPropertyDefinition::DoublePositive )},
