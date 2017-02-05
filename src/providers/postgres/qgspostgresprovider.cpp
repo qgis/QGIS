@@ -4093,7 +4093,7 @@ static QVariant parseArray( const QString& txt, QVariant::Type type, QVariant::T
 {
   if ( !txt.startsWith( '{' ) || !txt.endsWith( '}' ) )
   {
-    if( !txt.isEmpty() )
+    if ( !txt.isEmpty() )
       QgsLogger::warning( "Error parsing array, missing curly braces: " + txt );
     return QVariant( type );
   }
