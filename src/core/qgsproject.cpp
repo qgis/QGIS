@@ -519,20 +519,14 @@ scope.  "layers" is a list containing three string values.
 */
 void _getProperties( const QDomDocument& doc, QgsProjectPropertyKey& project_properties )
 {
-  QDomNodeList properties = doc.elementsByTagName( QStringLiteral( "properties" ) );
+  QDomElement propertiesElem = doc.documentElement().firstChildElement( QStringLiteral( "properties" ) );
 
-  if ( properties.count() > 1 )
-  {
-    QgsDebugMsg( "there appears to be more than one ``properties'' XML tag ... bailing" );
-    return;
-  }
-  else if ( properties.count() < 1 )  // no properties found, so we're done
+  if ( propertiesElem.isNull() )  // no properties found, so we're done
   {
     return;
   }
 
-  // item(0) because there should only be ONE "properties" node
-  QDomNodeList scopes = properties.item( 0 ).childNodes();
+  QDomNodeList scopes = propertiesElem.childNodes();
 
   if ( scopes.count() < 1 )
   {
@@ -540,9 +534,7 @@ void _getProperties( const QDomDocument& doc, QgsProjectPropertyKey& project_pro
     return;
   }
 
-  QDomNode propertyNode = properties.item( 0 );
-
-  if ( ! project_properties.readXml( propertyNode ) )
+  if ( ! project_properties.readXml( propertiesElem ) )
   {
     QgsDebugMsg( "Project_properties.readXml() failed" );
   }
