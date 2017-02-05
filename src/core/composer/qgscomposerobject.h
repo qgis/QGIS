@@ -88,9 +88,6 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
       ScalebarLineWidth, //!< Scalebar line width
     };
 
-    //! Property definitions
-    static QgsPropertiesDefinition PROPERTY_DEFINITIONS;
-
     /** Specifies whether the value returned by a function should be the original, user
      * set value, or the current evaluated value for the property. This may differ if
      * a property has a data defined expression active.
@@ -100,6 +97,12 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
       EvaluatedValue = 0, //!< Return the current evaluated value for the property
       OriginalValue //!< Return the original, user set value
     };
+
+    /**
+     * Returns the composer object property definitions.
+     * @note added in QGIS 3.0
+     */
+    static const QgsPropertiesDefinition& propertyDefinitions();
 
     /** Constructor
      * @param composition parent composition
@@ -229,6 +232,9 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     void prepareProperties() const;
 
   private:
+    //! Property definitions
+    static QgsPropertiesDefinition sPropertyDefinitions;
+
     static void initPropertyDefinitions();
 
     friend class TestQgsComposerObject;

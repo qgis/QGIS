@@ -156,11 +156,11 @@ void QgsCompositionWidget::populateDataDefinedButtons()
     connect( button, &QgsPropertyOverrideButton::changed, this, &QgsCompositionWidget::updateDataDefinedProperty );
   }
 
-  mPaperSizeDDBtn->init( QgsComposerObject::PresetPaperSize, mComposition->dataDefinedProperties(), QgsComposerObject::PROPERTY_DEFINITIONS, vl );
-  mPaperWidthDDBtn->init( QgsComposerObject::PaperWidth, mComposition->dataDefinedProperties(), QgsComposerObject::PROPERTY_DEFINITIONS, vl );
-  mPaperHeightDDBtn->init( QgsComposerObject::PaperHeight, mComposition->dataDefinedProperties(), QgsComposerObject::PROPERTY_DEFINITIONS, vl );
-  mNumPagesDDBtn->init( QgsComposerObject::NumPages, mComposition->dataDefinedProperties(), QgsComposerObject::PROPERTY_DEFINITIONS, vl );
-  mPaperOrientationDDBtn->init( QgsComposerObject::PaperOrientation, mComposition->dataDefinedProperties(), QgsComposerObject::PROPERTY_DEFINITIONS, vl );
+  mPaperSizeDDBtn->init( QgsComposerObject::PresetPaperSize, mComposition->dataDefinedProperties(), QgsComposerObject::propertyDefinitions(), vl );
+  mPaperWidthDDBtn->init( QgsComposerObject::PaperWidth, mComposition->dataDefinedProperties(), QgsComposerObject::propertyDefinitions(), vl );
+  mPaperHeightDDBtn->init( QgsComposerObject::PaperHeight, mComposition->dataDefinedProperties(), QgsComposerObject::propertyDefinitions(), vl );
+  mNumPagesDDBtn->init( QgsComposerObject::NumPages, mComposition->dataDefinedProperties(), QgsComposerObject::propertyDefinitions(), vl );
+  mPaperOrientationDDBtn->init( QgsComposerObject::PaperOrientation, mComposition->dataDefinedProperties(), QgsComposerObject::propertyDefinitions(), vl );
 
   //initial state of controls - disable related controls when dd buttons are active
   mPaperSizeComboBox->setEnabled( !mPaperSizeDDBtn->isActive() );

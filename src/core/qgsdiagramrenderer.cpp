@@ -25,14 +25,14 @@
 #include <QDomElement>
 #include <QPainter>
 
-QgsPropertiesDefinition QgsDiagramLayerSettings::PROPERTY_DEFINITIONS;
+QgsPropertiesDefinition QgsDiagramLayerSettings::sPropertyDefinitions;
 
 void QgsDiagramLayerSettings::initPropertyDefinitions()
 {
-  if ( !PROPERTY_DEFINITIONS.isEmpty() )
+  if ( !sPropertyDefinitions.isEmpty() )
     return;
 
-  PROPERTY_DEFINITIONS = QgsPropertiesDefinition
+  sPropertyDefinitions = QgsPropertiesDefinition
   {
     { QgsDiagramLayerSettings::BackgroundColor, QgsPropertyDefinition( "backgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsDiagramLayerSettings::OutlineColor, QgsPropertyDefinition( "outlineColor", QObject::tr( "Outline color" ), QgsPropertyDefinition::ColorWithAlpha ) },
@@ -47,6 +47,12 @@ void QgsDiagramLayerSettings::initPropertyDefinitions()
     { QgsDiagramLayerSettings::AlwaysShow, QgsPropertyDefinition( "alwaysShow", QObject::tr( "Always show diagram" ), QgsPropertyDefinition::Boolean ) },
     { QgsDiagramLayerSettings::StartAngle, QgsPropertyDefinition( "startAngle", QObject::tr( "Pie chart start angle" ), QgsPropertyDefinition::Double ) },
   };
+}
+
+const QgsPropertiesDefinition& QgsDiagramLayerSettings::propertyDefinitions()
+{
+  initPropertyDefinitions();
+  return sPropertyDefinitions;
 }
 
 QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh )
@@ -105,7 +111,7 @@ void QgsDiagramLayerSettings::readXml( const QDomElement& elem, const QgsVectorL
   QDomNodeList propertyElems = elem.elementsByTagName( "properties" );
   if ( !propertyElems.isEmpty() )
   {
-    ( void )mDataDefinedProperties.readXml( propertyElems.at( 0 ).toElement(), elem.ownerDocument(), PROPERTY_DEFINITIONS );
+    ( void )mDataDefinedProperties.readXml( propertyElems.at( 0 ).toElement(), elem.ownerDocument(), sPropertyDefinitions );
   }
   else
   {
@@ -148,7 +154,7 @@ void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& do
 
   QDomElement diagramLayerElem = doc.createElement( QStringLiteral( "DiagramLayerSettings" ) );
   QDomElement propertiesElem = doc.createElement( "properties" );
-  ( void )mDataDefinedProperties.writeXml( propertiesElem, doc, PROPERTY_DEFINITIONS );
+  ( void )mDataDefinedProperties.writeXml( propertiesElem, doc, sPropertyDefinitions );
   diagramLayerElem.appendChild( propertiesElem );
   diagramLayerElem.setAttribute( QStringLiteral( "placement" ), mPlacement );
   diagramLayerElem.setAttribute( QStringLiteral( "linePlacementFlags" ), mPlacementFlags );

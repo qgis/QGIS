@@ -371,6 +371,13 @@ class CORE_EXPORT QgsPalLayerSettings
       AlwaysShow = 20
     };
 
+    /**
+     * Returns the labeling property definitions.
+     * @note added in QGIS 3.0
+     */
+    static const QgsPropertiesDefinition& propertyDefinitions();
+
+
     // whether to label this layer
     bool enabled;
 
@@ -574,9 +581,6 @@ class CORE_EXPORT QgsPalLayerSettings
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
 
-    //! Property definitions
-    static QgsPropertiesDefinition PROPERTY_DEFINITIONS;
-
   private:
 
     /**
@@ -645,6 +649,10 @@ class CORE_EXPORT QgsPalLayerSettings
     static const QVector< PredefinedPointPosition > DEFAULT_PLACEMENT_ORDER;
 
     static void initPropertyDefinitions();
+
+    //! Property definitions
+    static QgsPropertiesDefinition sPropertyDefinitions;
+
 };
 
 /** \ingroup core

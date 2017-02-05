@@ -31,14 +31,14 @@
 #include <QPointF>
 #include <QPolygonF>
 
-QgsPropertiesDefinition QgsSymbolLayer::PROPERTY_DEFINITIONS;
+QgsPropertiesDefinition QgsSymbolLayer::sPropertyDefinitions;
 
 void QgsSymbolLayer::initPropertyDefinitions()
 {
-  if ( !PROPERTY_DEFINITIONS.isEmpty() )
+  if ( !sPropertyDefinitions.isEmpty() )
     return;
 
-  PROPERTY_DEFINITIONS = QgsPropertiesDefinition
+  sPropertyDefinitions = QgsPropertiesDefinition
   {
     { QgsSymbolLayer::PropertySize, QgsPropertyDefinition( "size", QObject::tr( "Symbol size" ), QgsPropertyDefinition::Size ) },
     { QgsSymbolLayer::PropertyAngle, QgsPropertyDefinition( "angle", QObject::tr( "Rotation angle" ), QgsPropertyDefinition::Double ) },
@@ -187,6 +187,12 @@ void QgsSymbolLayer::prepareExpressions( const QgsSymbolRenderContext& context )
     //QgsFields is implicitly shared, so it's cheap to make a copy
     mFields = context.fields();
   }
+}
+
+const QgsPropertiesDefinition&QgsSymbolLayer::propertyDefinitions()
+{
+  QgsSymbolLayer::initPropertyDefinitions();
+  return sPropertyDefinitions;
 }
 
 QgsSymbolLayer::~QgsSymbolLayer()

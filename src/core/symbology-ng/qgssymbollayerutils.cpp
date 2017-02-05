@@ -906,7 +906,7 @@ QgsSymbolLayer* QgsSymbolLayerUtils::loadSymbolLayer( QDomElement& element )
     QDomElement ddProps = element.firstChildElement( QStringLiteral( "data_defined_properties" ) );
     if ( !ddProps.isNull() )
     {
-      layer->dataDefinedProperties().readXml( ddProps, element.ownerDocument(), QgsSymbolLayer::PROPERTY_DEFINITIONS );
+      layer->dataDefinedProperties().readXml( ddProps, element.ownerDocument(), QgsSymbolLayer::propertyDefinitions() );
     }
 
     return layer;
@@ -957,7 +957,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString& name, QgsSymbol* sym
       layer->paintEffect()->saveProperties( doc, layerEl );
 
     QDomElement ddProps = doc.createElement( QStringLiteral( "data_defined_properties" ) );
-    layer->dataDefinedProperties().writeXml( ddProps, doc, QgsSymbolLayer::PROPERTY_DEFINITIONS );
+    layer->dataDefinedProperties().writeXml( ddProps, doc, QgsSymbolLayer::propertyDefinitions() );
     layerEl.appendChild( ddProps );
 
     if ( layer->subSymbol() )

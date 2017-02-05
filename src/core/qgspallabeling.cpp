@@ -90,14 +90,14 @@ const QVector< QgsPalLayerSettings::PredefinedPointPosition > QgsPalLayerSetting
 << QgsPalLayerSettings::TopMiddle
 << QgsPalLayerSettings::BottomMiddle;*/
 
-QgsPropertiesDefinition QgsPalLayerSettings::PROPERTY_DEFINITIONS;
+QgsPropertiesDefinition QgsPalLayerSettings::sPropertyDefinitions;
 
 void QgsPalLayerSettings::initPropertyDefinitions()
 {
-  if ( !PROPERTY_DEFINITIONS.isEmpty() )
+  if ( !sPropertyDefinitions.isEmpty() )
     return;
 
-  PROPERTY_DEFINITIONS = QgsPropertiesDefinition
+  sPropertyDefinitions = QgsPropertiesDefinition
   {
     { QgsPalLayerSettings::Size, QgsPropertyDefinition( "Size" , QObject::tr( "Font size" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsPalLayerSettings::Bold, QgsPropertyDefinition( "Bold", QObject::tr( "Bold style" ), QgsPropertyDefinition::Boolean ) },
@@ -392,6 +392,11 @@ QgsPalLayerSettings QgsPalLayerSettings::fromLayer( QgsVectorLayer* layer )
   return settings;
 }
 
+const QgsPropertiesDefinition& QgsPalLayerSettings::propertyDefinitions()
+{
+  initPropertyDefinitions();
+  return sPropertyDefinitions;
+}
 
 QgsExpression* QgsPalLayerSettings::getLabelExpression()
 {
@@ -438,7 +443,7 @@ QString updateDataDefinedString( const QString& value )
 
 void QgsPalLayerSettings::readOldDataDefinedProperty( QgsVectorLayer* layer, QgsPalLayerSettings::Property p )
 {
-  QString newPropertyName = "labeling/dataDefined/" + PROPERTY_DEFINITIONS.value( p ).name();
+  QString newPropertyName = "labeling/dataDefined/" + sPropertyDefinitions.value( p ).name();
   QVariant newPropertyField = layer->customProperty( newPropertyName, QVariant() );
 
   if ( !newPropertyField.isValid() )
@@ -476,8 +481,8 @@ void QgsPalLayerSettings::readOldDataDefinedPropertyMap( QgsVectorLayer* layer, 
     return;
   }
 
-  QgsPropertiesDefinition::const_iterator i = PROPERTY_DEFINITIONS.constBegin();
-  for ( ; i != PROPERTY_DEFINITIONS.constEnd(); ++i )
+  QgsPropertiesDefinition::const_iterator i = sPropertyDefinitions.constBegin();
+  for ( ; i != sPropertyDefinitions.constEnd(); ++i )
   {
     if ( layer )
     {
@@ -650,7 +655,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
     QDomDocument doc( QStringLiteral( "dd" ) );
     doc.setContent( layer->customProperty( QStringLiteral( "labeling/ddProperties" ) ).toString() );
     QDomElement elem = doc.firstChildElement( QStringLiteral( "properties" ) );
-    mDataDefinedProperties.readXml( elem, doc, PROPERTY_DEFINITIONS );
+    mDataDefinedProperties.readXml( elem, doc, sPropertyDefinitions );
   }
   else
   {
@@ -741,7 +746,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
 
   doc = QDomDocument( QStringLiteral( "dd" ) );
   QDomElement ddElem = doc.createElement( QStringLiteral( "properties" ) );
-  mDataDefinedProperties.writeXml( ddElem, doc, PROPERTY_DEFINITIONS );
+  mDataDefinedProperties.writeXml( ddElem, doc, sPropertyDefinitions );
   QString ddProps;
   QTextStream streamProps( &ddProps );
   ddElem.save( streamProps, -1 );
@@ -857,7 +862,7 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   QDomElement ddElem = elem.firstChildElement( QStringLiteral( "dd_properties" ) );
   if ( !ddElem.isNull() )
   {
-    mDataDefinedProperties.readXml( ddElem, ddElem.ownerDocument(), PROPERTY_DEFINITIONS );
+    mDataDefinedProperties.readXml( ddElem, ddElem.ownerDocument(), sPropertyDefinitions );
   }
   else
   {
@@ -946,7 +951,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
   renderingElem.setAttribute( QStringLiteral( "zIndex" ), zIndex );
 
   QDomElement ddElem = doc.createElement( QStringLiteral( "dd_properties" ) );
-  mDataDefinedProperties.writeXml( ddElem, doc, PROPERTY_DEFINITIONS );
+  mDataDefinedProperties.writeXml( ddElem, doc, sPropertyDefinitions );
 
   QDomElement elem = doc.createElement( QStringLiteral( "settings" ) );
   elem.appendChild( textStyleElem );

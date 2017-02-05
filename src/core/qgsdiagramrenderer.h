@@ -96,6 +96,12 @@ class CORE_EXPORT QgsDiagramLayerSettings
     };
 
     /**
+     * Returns the diagram property definitions.
+     * @note added in QGIS 3.0
+     */
+    static const QgsPropertiesDefinition& propertyDefinitions();
+
+    /**
      * Constructor for QgsDiagramLayerSettings.
      */
     QgsDiagramLayerSettings() = default;
@@ -286,9 +292,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
      */
     void setDataDefinedProperties( const QgsPropertyCollection& collection ) { mDataDefinedProperties = collection; }
 
-    //! Property definitions
-    static QgsPropertiesDefinition PROPERTY_DEFINITIONS;
-
   private:
 
     //! Associated coordinate transform, or invalid transform for no transformation
@@ -324,6 +327,10 @@ class CORE_EXPORT QgsDiagramLayerSettings
     QgsPropertyCollection mDataDefinedProperties;
 
     static void initPropertyDefinitions();
+
+    //! Property definitions
+    static QgsPropertiesDefinition sPropertyDefinitions;
+
 };
 
 /** \ingroup core

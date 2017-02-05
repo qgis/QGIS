@@ -23,14 +23,14 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
-QgsPropertiesDefinition QgsComposerObject::PROPERTY_DEFINITIONS;
+QgsPropertiesDefinition QgsComposerObject::sPropertyDefinitions;
 
 void QgsComposerObject::initPropertyDefinitions()
 {
-  if ( !PROPERTY_DEFINITIONS.isEmpty() )
+  if ( !sPropertyDefinitions.isEmpty() )
     return;
 
-  PROPERTY_DEFINITIONS = QgsPropertiesDefinition
+  sPropertyDefinitions = QgsPropertiesDefinition
   {
     { QgsComposerObject::TestProperty, QgsPropertyDefinition( "dataDefinedProperty" , QgsPropertyDefinition::DataTypeString, "invalid property", QString() ) },
     { QgsComposerObject::PresetPaperSize, QgsPropertyDefinition( "dataDefinedPaperSize" , QgsPropertyDefinition::DataTypeString, QObject::tr( "Paper size" ), QObject::tr( "string " ) + QLatin1String( "[<b>A5</b>|<b>A4</b>|<b>A3</b>|<b>A2</b>|<b>A1</b>|<b>A0</b>"
@@ -76,6 +76,12 @@ void QgsComposerObject::initPropertyDefinitions()
   };
 }
 
+const QgsPropertiesDefinition& QgsComposerObject::propertyDefinitions()
+{
+  QgsComposerObject::initPropertyDefinitions();
+  return sPropertyDefinitions;
+}
+
 QgsComposerObject::QgsComposerObject( QgsComposition* composition )
     : QObject( nullptr )
     , mComposition( composition )
@@ -109,7 +115,7 @@ bool QgsComposerObject::writeXml( QDomElement &elem, QDomDocument &doc ) const
   }
 
   QDomElement ddPropsElement = doc.createElement( QStringLiteral( "dataDefinedProperties" ) );
-  mDataDefinedProperties.writeXml( ddPropsElement, doc, PROPERTY_DEFINITIONS );
+  mDataDefinedProperties.writeXml( ddPropsElement, doc, sPropertyDefinitions );
   elem.appendChild( ddPropsElement );
 
   //custom properties
@@ -132,7 +138,7 @@ bool QgsComposerObject::readXml( const QDomElement &itemElem, const QDomDocument
   QDomNode propsNode = itemElem.namedItem( QStringLiteral( "dataDefinedProperties" ) );
   if ( !propsNode.isNull() )
   {
-    mDataDefinedProperties.readXml( propsNode.toElement(), doc, PROPERTY_DEFINITIONS );
+    mDataDefinedProperties.readXml( propsNode.toElement(), doc, sPropertyDefinitions );
   }
 
   //custom properties

@@ -339,7 +339,7 @@ void QgsDataDefinedValueDialog::init( int propertyKey )
 {
   QgsProperty dd( symbolDataDefined() );
 
-  mDDBtn->init( propertyKey, dd, QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
+  mDDBtn->init( propertyKey, dd, QgsSymbolLayer::propertyDefinitions(), mLayer );
   mDDBtn->registerExpressionContextGenerator( this );
 
   QgsSymbol* initialSymbol = nullptr;

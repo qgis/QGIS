@@ -122,7 +122,11 @@ class QgsSymbolLayer
       PropertyArrowType, //!< Arrow type
     };
 
-    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
+    /**
+     * Returns the symbol layer property definitions.
+     * @note added in QGIS 3.0
+     */
+    static const QgsPropertiesDefinition& propertyDefinitions();
 
     virtual ~QgsSymbolLayer();
 

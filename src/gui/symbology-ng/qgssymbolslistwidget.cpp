@@ -515,10 +515,10 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     if ( mLayer )
     {
       QgsProperty ddSize( markerSymbol->dataDefinedSize() );
-      mSizeDDBtn->init( QgsSymbolLayer::PropertySize, ddSize, QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
+      mSizeDDBtn->init( QgsSymbolLayer::PropertySize, ddSize, QgsSymbolLayer::propertyDefinitions(), mLayer );
       spinSize->setEnabled( !mSizeDDBtn->isActive() );
       QgsProperty ddAngle( markerSymbol->dataDefinedAngle() );
-      mRotationDDBtn->init( QgsSymbolLayer::PropertyAngle, ddAngle, QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
+      mRotationDDBtn->init( QgsSymbolLayer::PropertyAngle, ddAngle, QgsSymbolLayer::propertyDefinitions(), mLayer );
       spinAngle->setEnabled( !mRotationDDBtn->isActive() );
     }
     else
@@ -535,7 +535,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     if ( mLayer )
     {
       QgsProperty dd( lineSymbol->dataDefinedWidth() );
-      mWidthDDBtn->init( QgsSymbolLayer::PropertyOutlineWidth, dd, QgsSymbolLayer::PROPERTY_DEFINITIONS, mLayer );
+      mWidthDDBtn->init( QgsSymbolLayer::PropertyOutlineWidth, dd, QgsSymbolLayer::propertyDefinitions(), mLayer );
       spinWidth->setEnabled( !mWidthDDBtn->isActive() );
     }
     else

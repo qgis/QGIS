@@ -270,6 +270,12 @@ class QgsPalLayerSettings
       AlwaysShow
     };
 
+    /**
+     * Returns the labeling property definitions.
+     * @note added in QGIS 3.0
+     */
+    static const QgsPropertiesDefinition& propertyDefinitions();
+
     // whether to label this layer
     bool enabled;
 
@@ -459,8 +465,6 @@ class QgsPalLayerSettings
     int mFeaturesToLabel; // total features that will probably be labeled, may be less (figured before PAL)
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
-
-    static const QgsPropertiesDefinition PROPERTY_DEFINITIONS;
 
 };
 
