@@ -1382,8 +1382,8 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer* layer )
 
   if ( layer->customProperty( QStringLiteral( "labeling/fontSizeUnit" ) ).toString().isEmpty() )
   {
-    d->fontSizeUnits = layer->customProperty( QStringLiteral( "labeling/fontSizeInMapUnits" ), 0 ).toUInt() == 0 ?
-                       QgsUnitTypes::RenderPoints : QgsUnitTypes::RenderMapUnits;
+    d->fontSizeUnits = layer->customProperty( QStringLiteral( "labeling/fontSizeInMapUnits" ), QVariant( false ) ).toBool() ?
+                       QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderPoints;
   }
   else
   {
