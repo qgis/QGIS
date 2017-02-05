@@ -293,21 +293,26 @@ QString QgsProperty::expressionString() const
 
 QString QgsProperty::asExpression() const
 {
+  QString exp;
   switch ( d->type )
   {
     case StaticProperty:
-      return QgsExpression::quotedValue( d->staticValue );
+      exp = QgsExpression::quotedValue( d->staticValue );
+      break;
 
     case FieldBasedProperty:
-      return QgsExpression::quotedColumnRef( d->fieldName );
+      exp = QgsExpression::quotedColumnRef( d->fieldName );
+      break;
 
     case ExpressionBasedProperty:
-      return d->expressionString;
+      exp = d->expressionString;
+      break;
 
     case InvalidProperty:
-      return QString();
+      exp = QString();
+      break;
   }
-  return QString();
+  return d->transformer ? d->transformer->toExpression( exp ) : exp;
 }
 
 bool QgsProperty::prepare( const QgsExpressionContext& context ) const

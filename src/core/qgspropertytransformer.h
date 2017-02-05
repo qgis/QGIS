@@ -126,6 +126,12 @@ class CORE_EXPORT QgsPropertyTransformer
      */
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const = 0;
 
+    /**
+     * Converts the transformer to a QGIS expression string. The \a baseExpression string consists
+     * of a sub-expression reflecting the parent property's state.
+     */
+    virtual QString toExpression( const QString& baseExpression ) const = 0;
+
   protected:
 
     //! Minimum value expected by the transformer
@@ -181,6 +187,7 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
     virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const override;
     virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc ) override;
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const override;
+    virtual QString toExpression( const QString& baseExpression ) const override;
 
     /**
      * Calculates the size corresponding to a specific value.
@@ -303,6 +310,7 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
     virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const override;
     virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc ) override;
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const override;
+    virtual QString toExpression( const QString& baseExpression ) const override;
 
     /**
      * Calculates the color corresponding to a specific value.
@@ -338,10 +346,25 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
      */
     void setNullColor( const QColor& color ) { mNullColor = color; }
 
+    /**
+     * Returns the color ramp's name.
+     * @see setRampName()
+     */
+    QString rampName() const { return mRampName; }
+
+    /**
+     * Sets the color ramp's \a name. The ramp name must be set to match
+     * a color ramp available in the style database for conversion to expression
+     * to work correctly.
+     * @see rampName()
+     */
+    void setRampName( const QString& name ) { mRampName = name; }
+
   private:
 
     QScopedPointer< QgsColorRamp > mGradientRamp;
     QColor mNullColor;
+    QString mRampName;
 
 };
 

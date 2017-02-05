@@ -47,6 +47,7 @@ class TestTransformer : public QgsPropertyTransformer
     {
       return new TestTransformer( mMinValue, mMaxValue );
     }
+    virtual QString toExpression( const QString& ) const override { return QString(); }
 
   private:
 
@@ -80,6 +81,7 @@ class TestQgsProperty : public QObject
     void propertyTransformer(); //test for QgsPropertyTransformer
     void sizeScaleTransformer(); //test for QgsSizeScaleTransformer
     void colorRampTransformer(); //test for QgsColorRampTransformer
+    void asExpression(); //test converting property to expression
     void propertyCollection(); //test for QgsPropertyCollection
     void collectionStack(); //test for QgsPropertyCollectionStack
 
@@ -729,6 +731,19 @@ void TestQgsProperty::sizeScaleTransformer()
   QCOMPARE( t.size( 100 ), 10.0 );
   QVERIFY( qgsDoubleNear( t.size( 150 ), 13.5355, 0.001 ) );
   QCOMPARE( t.size( 200 ), 20.0 );
+
+  //as expression
+  QgsSizeScaleTransformer t2( QgsSizeScaleTransformer::Linear,
+                              15,
+                              25,
+                              150,
+                              250,
+                              -10,
+                              1.6 );
+  QCOMPARE( t2.toExpression( "5+6" ), QStringLiteral( "coalesce(scale_linear(5+6, 15, 25, 150, 250), -10)" ) );
+  t2.setType( QgsSizeScaleTransformer::Exponential );
+  t2.setExponent( 1.6 );
+  QCOMPARE( t2.toExpression( "5+6" ), QStringLiteral( "coalesce(scale_exp(5+6, 15, 25, 150, 250, 1.6), -10)" ) );
 }
 
 void TestQgsProperty::colorRampTransformer()
@@ -765,6 +780,7 @@ void TestQgsProperty::colorRampTransformer()
                               25,
                               new QgsGradientColorRamp( QColor( 10, 20, 30 ), QColor( 200, 190, 180 ) ),
                               QColor( 100, 150, 200 ) );
+  t1.setRampName( "rampname " );
 
   QDomElement element = doc.createElement( "xform" );
   QVERIFY( t1.writeXml( element, doc ) );
@@ -773,6 +789,7 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( r1.minValue(), 15.0 );
   QCOMPARE( r1.maxValue(), 25.0 );
   QCOMPARE( r1.nullColor(), QColor( 100, 150, 200 ) );
+  QCOMPARE( r1.rampName(), QString( "rampname " ) );
   QVERIFY( dynamic_cast< QgsGradientColorRamp* >( r1.colorRamp() ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r1.colorRamp() )->color1(), QColor( 10, 20, 30 ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r1.colorRamp() )->color2(), QColor( 200, 190, 180 ) );
@@ -782,6 +799,7 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( r2->minValue(), 15.0 );
   QCOMPARE( r2->maxValue(), 25.0 );
   QCOMPARE( r2->nullColor(), QColor( 100, 150, 200 ) );
+  QCOMPARE( r2->rampName(), QString( "rampname " ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r2->colorRamp() )->color1(), QColor( 10, 20, 30 ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r2->colorRamp() )->color2(), QColor( 200, 190, 180 ) );
 
@@ -790,6 +808,7 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( r3.minValue(), 15.0 );
   QCOMPARE( r3.maxValue(), 25.0 );
   QCOMPARE( r3.nullColor(), QColor( 100, 150, 200 ) );
+  QCOMPARE( r3.rampName(), QString( "rampname " ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r3.colorRamp() )->color1(), QColor( 10, 20, 30 ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r3.colorRamp() )->color2(), QColor( 200, 190, 180 ) );
 
@@ -799,6 +818,7 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( r4.minValue(), 15.0 );
   QCOMPARE( r4.maxValue(), 25.0 );
   QCOMPARE( r4.nullColor(), QColor( 100, 150, 200 ) );
+  QCOMPARE( r4.rampName(), QString( "rampname " ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r4.colorRamp() )->color1(), QColor( 10, 20, 30 ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r4.colorRamp() )->color2(), QColor( 200, 190, 180 ) );
 
@@ -814,6 +834,8 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( t.nullColor(), QColor( 1, 10, 11, 21 ) );
   t.setColorRamp( new QgsGradientColorRamp( QColor( 10, 20, 100 ), QColor( 100, 200, 200 ) ) );
   QCOMPARE( static_cast< QgsGradientColorRamp* >( t.colorRamp() )->color1(), QColor( 10, 20, 100 ) );
+  t.setRampName( "colorramp" );
+  QCOMPARE( t.rampName(), QString( "colorramp" ) );
 
   //test colors
   QCOMPARE( t.color( 50 ), QColor( 10, 20, 100 ) ); //out of range
@@ -821,6 +843,42 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( t.color( 150 ), QColor( 55, 110, 150 ) );
   QCOMPARE( t.color( 200 ), QColor( 100, 200, 200 ) );
   QCOMPARE( t.color( 250 ), QColor( 100, 200, 200 ) ); //out of range
+
+  //toExpression
+  QgsColorRampTransformer t5( 15,
+                              25,
+                              new QgsGradientColorRamp( QColor( 10, 20, 30 ), QColor( 200, 190, 180 ) ),
+                              QColor( 100, 150, 200 ) );
+  QCOMPARE( t5.toExpression( "5+6" ), QStringLiteral( "coalesce(ramp_color('custom ramp',scale_linear(5+6, 15, 25, 0, 1), '#6496c8')" ) );
+  t5.setRampName( "my ramp" );
+  QCOMPARE( t5.toExpression( "5+6" ), QStringLiteral( "coalesce(ramp_color('my ramp',scale_linear(5+6, 15, 25, 0, 1), '#6496c8')" ) );
+}
+
+void TestQgsProperty::asExpression()
+{
+  // static property
+  QgsProperty p = QgsProperty::fromValue( 5 );
+  QCOMPARE( p.asExpression(), QStringLiteral( "5" ) );
+  p = QgsProperty::fromValue( "value" );
+  QCOMPARE( p.asExpression(), QStringLiteral( "'value'" ) );
+
+  // field based property
+  p = QgsProperty::fromField( "a field" );
+  QCOMPARE( p.asExpression(), QStringLiteral( "\"a field\"" ) );
+
+  // expression based property
+  p = QgsProperty::fromExpression( "5 + 6" );
+  QCOMPARE( p.asExpression(), QStringLiteral( "5 + 6" ) );
+
+  // with transformer
+  p.setTransformer( new QgsSizeScaleTransformer( QgsSizeScaleTransformer::Linear,
+                    15,
+                    25,
+                    150,
+                    250,
+                    -10,
+                    1 ) );
+  QCOMPARE( p.asExpression(), QStringLiteral( "coalesce(scale_linear(5 + 6, 15, 25, 150, 250), -10)" ) );
 }
 
 void TestQgsProperty::propertyCollection()

@@ -172,6 +172,29 @@ QVariant QgsSizeScaleTransformer::transform( const QgsExpressionContext& context
   }
 }
 
+QString QgsSizeScaleTransformer::toExpression( const QString& baseExpression ) const
+{
+  QString minValueString = QString::number( mMinValue );
+  QString maxValueString = QString::number( mMaxValue );
+  QString minSizeString = QString::number( mMinSize );
+  QString maxSizeString = QString::number( mMaxSize );
+  QString nullSizeString = QString::number( mNullSize );
+  QString exponentString = QString::number( mExponent );
+
+  switch ( mType )
+  {
+    case Linear:
+      return QStringLiteral( "coalesce(scale_linear(%1, %2, %3, %4, %5), %6)" ).arg( baseExpression, minValueString, maxValueString, minSizeString, maxSizeString, nullSizeString );
+
+    case Area:
+    case Flannery:
+    case Exponential:
+      return QStringLiteral( "coalesce(scale_exp(%1, %2, %3, %4, %5, %6), %7)" ).arg( baseExpression, minValueString, maxValueString, minSizeString, maxSizeString, exponentString, nullSizeString );
+
+  }
+  return QString();
+}
+
 
 //
 // QgsColorRampTransformer
@@ -191,6 +214,7 @@ QgsColorRampTransformer::QgsColorRampTransformer( const QgsColorRampTransformer 
     : QgsPropertyTransformer( other )
     , mGradientRamp( other.mGradientRamp ? other.mGradientRamp->clone() : nullptr )
     , mNullColor( other.mNullColor )
+    , mRampName( other.mRampName )
 {
 
 }
@@ -201,14 +225,17 @@ QgsColorRampTransformer &QgsColorRampTransformer::operator=( const QgsColorRampT
   mMaxValue = other.mMaxValue;
   mGradientRamp.reset( other.mGradientRamp ? other.mGradientRamp->clone() : nullptr );
   mNullColor = other.mNullColor;
+  mRampName = other.mRampName;
   return *this;
 }
 
 QgsColorRampTransformer* QgsColorRampTransformer::clone()
 {
-  return new QgsColorRampTransformer( mMinValue, mMaxValue,
-                                      mGradientRamp ? mGradientRamp->clone() : nullptr,
-                                      mNullColor );
+  QgsColorRampTransformer* c = new QgsColorRampTransformer( mMinValue, mMaxValue,
+      mGradientRamp ? mGradientRamp->clone() : nullptr,
+      mNullColor );
+  c->setRampName( mRampName );
+  return c;
 }
 
 bool QgsColorRampTransformer::writeXml( QDomElement &transformerElem, QDomDocument &doc ) const
@@ -222,6 +249,7 @@ bool QgsColorRampTransformer::writeXml( QDomElement &transformerElem, QDomDocume
     transformerElem.appendChild( colorRampElem );
   }
   transformerElem.setAttribute( "nullColor", QgsSymbolLayerUtils::encodeColor( mNullColor ) );
+  transformerElem.setAttribute( "rampName", mRampName );
 
   return true;
 }
@@ -239,6 +267,7 @@ bool QgsColorRampTransformer::readXml( const QDomElement &transformerElem, const
   }
 
   mNullColor = QgsSymbolLayerUtils::decodeColor( transformerElem.attribute( "nullColor", "0,0,0,0" ) );
+  mRampName = transformerElem.attribute( "rampName", QString() );
   return true;
 }
 
@@ -261,6 +290,19 @@ QVariant QgsColorRampTransformer::transform( const QgsExpressionContext &context
   {
     return value;
   }
+}
+
+QString QgsColorRampTransformer::toExpression( const QString& baseExpression ) const
+{
+  if ( !mGradientRamp )
+    return QgsExpression::quotedValue( mNullColor.name() );
+
+  QString minValueString = QString::number( mMinValue );
+  QString maxValueString = QString::number( mMaxValue );
+  QString nullColorString = mNullColor.name();
+
+  return QStringLiteral( "coalesce(ramp_color('%1',scale_linear(%2, %3, %4, 0, 1), '%5')" ).arg( !mRampName.isEmpty() ? mRampName : QStringLiteral( "custom ramp" ),
+         baseExpression, minValueString, maxValueString, nullColorString );
 }
 
 QColor QgsColorRampTransformer::color( double value ) const

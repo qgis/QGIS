@@ -45,6 +45,7 @@ class QgsPropertyTransformer
     void setMaxValue( double max );
 
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const = 0;
+    virtual QString toExpression( const QString& baseExpression ) const = 0;
 
 };
 
@@ -77,6 +78,7 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
     virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const;
     virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc );
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const;
+    virtual QString toExpression( const QString& baseExpression ) const;
 
     double size( double value ) const;
 
@@ -125,6 +127,7 @@ class QgsColorRampTransformer : QgsPropertyTransformer
     virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const;
     virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc );
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const;
+    virtual QString toExpression( const QString& baseExpression ) const;
 
     QColor color( double value ) const;
 
@@ -135,6 +138,10 @@ class QgsColorRampTransformer : QgsPropertyTransformer
     QColor nullColor() const;
 
     void setNullColor( const QColor& color );
+
+    QString rampName() const;
+
+    void setRampName( const QString& name );
 
 };
 
