@@ -3607,7 +3607,7 @@ bool QgsOgrProvider::leaveUpdateMode()
   return true;
 }
 
-bool QgsOgrProvider::isSaveAndLoadStyleToDBSupported() const
+bool QgsOgrProvider::isSaveAndLoadStyleToDatabaseSupported() const
 {
   // We could potentially extend support for styling to other drivers
   // with multiple layer support.

@@ -120,7 +120,7 @@ void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar, int timeout, Q
   QgsMessageBar::MessageLevel level( QgsMessageBar::INFO );
 
   // check that a master password is even set in auth db
-  if ( !QgsAuthManager::instance()->masterPasswordHashInDb() )
+  if ( !QgsAuthManager::instance()->masterPasswordHashInDatabase() )
   {
     msg = QObject::tr( "Master password reset: NO current password hash in database" );
     msgbar->pushMessage( QgsAuthManager::instance()->authManTag(), msg, QgsMessageBar::WARNING, 0 );
@@ -206,7 +206,7 @@ void QgsAuthGuiUtils::eraseAuthenticationDatabase( QgsMessageBar *msgbar, int ti
                                        QMessageBox::Ok | QMessageBox::Cancel,
                                        QMessageBox::Cancel );
 
-  QgsAuthManager::instance()->setScheduledAuthDbErase( false );
+  QgsAuthManager::instance()->setScheduledAuthDatabaseErase( false );
 
   if ( btn == QMessageBox::Cancel )
   {

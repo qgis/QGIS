@@ -4374,7 +4374,7 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFl
 QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag, bool loadFromLocalDB )
 {
   QgsDataSourceUri dsUri( theURI );
-  if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDBSupported() )
+  if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
   {
     QScopedPointer<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
     if ( myLib )

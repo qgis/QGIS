@@ -229,7 +229,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         # First test with invalid URI
         vl = QgsVectorLayer('/idont/exist.gpkg', 'test', 'ogr')
 
-        self.assertFalse(vl.dataProvider().isSaveAndLoadStyleToDBSupported())
+        self.assertFalse(vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
 
         related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
         self.assertEqual(related_count, -1)
@@ -271,7 +271,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         vl2 = QgsVectorLayer('{}|layername=test2'.format(tmpfile), 'test2', 'ogr')
         self.assertTrue(vl2.isValid())
 
-        self.assertTrue(vl.dataProvider().isSaveAndLoadStyleToDBSupported())
+        self.assertTrue(vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
 
         related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
         self.assertEqual(related_count, 0)

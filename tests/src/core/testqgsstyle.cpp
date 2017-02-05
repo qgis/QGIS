@@ -81,7 +81,7 @@ void TestStyle::initTestCase()
   // initialize with test settings directory so we don't mess with user's stuff
   QgsApplication::init( QDir::tempPath() + "/dot-qgis" );
   QgsApplication::initQgis();
-  QgsApplication::createDB();
+  QgsApplication::createDatabase();
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   // output test environment
@@ -94,7 +94,7 @@ void TestStyle::initTestCase()
 
   //initize a temporary memory-based style for tests to avoid clashing with shipped symbols
   mStyle = new QgsStyle();
-  mStyle->createMemoryDb();
+  mStyle->createMemoryDatabase();
 
   // cpt-city ramp, small selection available in <testdir>/cpt-city
   QgsCptCityArchive::initArchives();

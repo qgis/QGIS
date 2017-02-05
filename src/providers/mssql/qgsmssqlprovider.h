@@ -99,7 +99,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     bool isValid() const override;
 
-    virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
+    virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
 
     virtual bool addFeatures( QgsFeatureList & flist ) override;
 

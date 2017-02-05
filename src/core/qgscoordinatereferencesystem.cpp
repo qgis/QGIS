@@ -285,7 +285,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString& theCrs )
     }
   }
 
-  if ( loadFromDb( QgsApplication::srsDbFilePath(), QStringLiteral( "lower(auth_name||':'||auth_id)" ), wmsCrs.toLower() ) )
+  if ( loadFromDatabase( QgsApplication::srsDatabaseFilePath(), QStringLiteral( "lower(auth_name||':'||auth_id)" ), wmsCrs.toLower() ) )
   {
     sOgcLock.lockForWrite();
     sOgcCache.insert( theCrs, *this );
@@ -365,7 +365,7 @@ bool QgsCoordinateReferenceSystem::createFromSrid( long id )
   }
   sSrIdCacheLock.unlock();
 
-  bool result = loadFromDb( QgsApplication::srsDbFilePath(), QStringLiteral( "srid" ), QString::number( id ) );
+  bool result = loadFromDatabase( QgsApplication::srsDatabaseFilePath(), QStringLiteral( "srid" ), QString::number( id ) );
 
   sSrIdCacheLock.lockForWrite();
   sSrIdCache.insert( id, *this );
@@ -387,9 +387,9 @@ bool QgsCoordinateReferenceSystem::createFromSrsId( long id )
   }
   sCRSSrsIdLock.unlock();
 
-  bool result = loadFromDb( id < USER_CRS_START_ID ? QgsApplication::srsDbFilePath() :
-                            QgsApplication::qgisUserDbFilePath(),
-                            QStringLiteral( "srs_id" ), QString::number( id ) );
+  bool result = loadFromDatabase( id < USER_CRS_START_ID ? QgsApplication::srsDatabaseFilePath() :
+                                  QgsApplication::qgisUserDatabaseFilePath(),
+                                  QStringLiteral( "srs_id" ), QString::number( id ) );
 
   sCRSSrsIdLock.lockForWrite();
   sSrsIdCache.insert( id, *this );
@@ -398,7 +398,7 @@ bool QgsCoordinateReferenceSystem::createFromSrsId( long id )
   return result;
 }
 
-bool QgsCoordinateReferenceSystem::loadFromDb( const QString& db, const QString& expression, const QString& value )
+bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString& db, const QString& expression, const QString& value )
 {
   d.detach();
 
@@ -418,7 +418,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( const QString& db, const QString&
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = openDb( db, &myDatabase );
+  myResult = openDatabase( db, &myDatabase );
   if ( myResult != SQLITE_OK )
   {
     QgsDebugMsg( "failed : " + db + " could not be opened!" );
@@ -841,7 +841,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
 
   QgsDebugMsg( "running query: " + theSql );
   // Get the full path name to the sqlite3 spatial reference database.
-  myDatabaseFileName = QgsApplication::srsDbFilePath();
+  myDatabaseFileName = QgsApplication::srsDatabaseFilePath();
   QFileInfo myInfo( myDatabaseFileName );
   if ( !myInfo.exists() )
   {
@@ -850,7 +850,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
   }
 
   //check the db is available
-  myResult = openDb( myDatabaseFileName, &myDatabase );
+  myResult = openDatabase( myDatabaseFileName, &myDatabase );
   if ( myResult != SQLITE_OK )
   {
     return myMap;
@@ -886,7 +886,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     sqlite3_finalize( myPreparedStatement );
     sqlite3_close( myDatabase );
 
-    myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
+    myDatabaseFileName = QgsApplication::qgisUserDatabaseFilePath();
     QFileInfo myFileInfo;
     myFileInfo.setFile( myDatabaseFileName );
     if ( !myFileInfo.exists() )
@@ -896,7 +896,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     }
 
     //check the db is available
-    myResult = openDb( myDatabaseFileName, &myDatabase );
+    myResult = openDatabase( myDatabaseFileName, &myDatabase );
     if ( myResult != SQLITE_OK )
     {
       return myMap;
@@ -1178,10 +1178,10 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
                   .arg( quotedValue( d->mProjectionAcronym ),
                         quotedValue( d->mEllipsoidAcronym ) );
   // Get the full path name to the sqlite3 spatial reference database.
-  QString myDatabaseFileName = QgsApplication::srsDbFilePath();
+  QString myDatabaseFileName = QgsApplication::srsDatabaseFilePath();
 
   //check the db is available
-  myResult = openDb( myDatabaseFileName, &myDatabase );
+  myResult = openDatabase( myDatabaseFileName, &myDatabase );
   if ( myResult != SQLITE_OK )
   {
     return 0;
@@ -1218,9 +1218,9 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
   // Try the users db now
   //
 
-  myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
+  myDatabaseFileName = QgsApplication::qgisUserDatabaseFilePath();
   //check the db is available
-  myResult = openDb( myDatabaseFileName, &myDatabase );
+  myResult = openDatabase( myDatabaseFileName, &myDatabase );
   if ( myResult != SQLITE_OK )
   {
     return 0;
@@ -1479,7 +1479,7 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
   //
   if ( theSrsId >= USER_CRS_START_ID )
   {
-    myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
+    myDatabaseFileName = QgsApplication::qgisUserDatabaseFilePath();
     QFileInfo myFileInfo;
     myFileInfo.setFile( myDatabaseFileName );
     if ( !myFileInfo.exists() ) //its unlikely that this condition will ever be reached
@@ -1490,13 +1490,13 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
   }
   else //must be  a system projection then
   {
-    myDatabaseFileName = QgsApplication::srsDbFilePath();
+    myDatabaseFileName = QgsApplication::srsDatabaseFilePath();
   }
   QgsDebugMsg( "db = " + myDatabaseFileName );
 
   sqlite3 *db;
   int rc;
-  rc = openDb( myDatabaseFileName, &db );
+  rc = openDatabase( myDatabaseFileName, &db );
   if ( rc )
   {
     return QString();
@@ -1524,7 +1524,7 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
   return myProjString;
 }
 
-int QgsCoordinateReferenceSystem::openDb( const QString& path, sqlite3 **db, bool readonly )
+int QgsCoordinateReferenceSystem::openDatabase( const QString& path, sqlite3 **db, bool readonly )
 {
   QgsDebugMsgLevel( "path = " + path, 3 );
   int myResult = readonly
@@ -1635,11 +1635,11 @@ bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString& name )
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase );
+  myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8().data(), &myDatabase );
   if ( myResult != SQLITE_OK )
   {
     QgsDebugMsg( QString( "Can't open or create database %1: %2" )
-                 .arg( QgsApplication::qgisUserDbFilePath(),
+                 .arg( QgsApplication::qgisUserDatabaseFilePath(),
                        sqlite3_errmsg( myDatabase ) ) );
     return false;
   }
@@ -1680,7 +1680,7 @@ long QgsCoordinateReferenceSystem::getRecordCount()
   int           myResult;
   long          myRecordCount = 0;
   //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
+  myResult = sqlite3_open_v2( QgsApplication::qgisUserDatabaseFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
   if ( myResult != SQLITE_OK )
   {
     QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
@@ -1832,25 +1832,25 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
   return true;
 }
 
-int QgsCoordinateReferenceSystem::syncDb()
+int QgsCoordinateReferenceSystem::syncDatabase()
 {
-  QString dbFilePath = QgsApplication::srsDbFilePath();
+  QString dbFilePath = QgsApplication::srsDatabaseFilePath();
   syncDatumTransform( dbFilePath );
 
   int inserted = 0, updated = 0, deleted = 0, errors = 0;
 
-  qDebug( "Load srs db from: %s", QgsApplication::srsDbFilePath().toLocal8Bit().constData() );
+  qDebug( "Load srs db from: %s", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData() );
 
   sqlite3 *database;
   if ( sqlite3_open( dbFilePath.toUtf8().constData(), &database ) != SQLITE_OK )
   {
-    qCritical( "Could not open database: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
+    qCritical( "Could not open database: %s [%s]\n", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
     return -1;
   }
 
   if ( sqlite3_exec( database, "BEGIN TRANSACTION", nullptr, nullptr, nullptr ) != SQLITE_OK )
   {
-    qCritical( "Could not begin transaction: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
+    qCritical( "Could not begin transaction: %s [%s]\n", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
     return -1;
   }
 
@@ -2082,7 +2082,7 @@ int QgsCoordinateReferenceSystem::syncDb()
 
   if ( sqlite3_exec( database, "COMMIT", nullptr, nullptr, nullptr ) != SQLITE_OK )
   {
-    qCritical( "Could not commit transaction: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
+    qCritical( "Could not commit transaction: %s [%s]\n", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
     return -1;
   }
 
@@ -2213,7 +2213,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 
   if ( sqlite3_exec( db, "BEGIN TRANSACTION", nullptr, nullptr, nullptr ) != SQLITE_OK )
   {
-    qCritical( "Could not begin transaction: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( db ) );
+    qCritical( "Could not begin transaction: %s [%s]\n", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData(), sqlite3_errmsg( db ) );
     sqlite3_close( db );
     fclose( fp );
     return false;
@@ -2283,7 +2283,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
 
   if ( sqlite3_exec( db, "COMMIT", nullptr, nullptr, nullptr ) != SQLITE_OK )
   {
-    qCritical( "Could not commit transaction: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( db ) );
+    qCritical( "Could not commit transaction: %s [%s]\n", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData(), sqlite3_errmsg( db ) );
     return false;
   }
 

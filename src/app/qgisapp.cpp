@@ -634,7 +634,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   qApp->processEvents();
   // Do this early on before anyone else opens it and prevents us copying it
   QString dbError;
-  if ( !QgsApplication::createDB( &dbError ) )
+  if ( !QgsApplication::createDatabase( &dbError ) )
   {
     QMessageBox::critical( this, tr( "Private qgis.db" ), dbError );
   }
@@ -11916,7 +11916,7 @@ void QgisApp::eraseAuthenticationDatabase()
     if ( layertree && layertree->customProperty( QStringLiteral( "loading" ) ).toBool() )
     {
       QgsDebugMsg( "Project loading, skipping auth db erase" );
-      QgsAuthManager::instance()->setScheduledAuthDbEraseRequestEmitted( false );
+      QgsAuthManager::instance()->setScheduledAuthDatabaseEraseRequestEmitted( false );
       return;
     }
   }

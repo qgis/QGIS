@@ -87,7 +87,7 @@ void QgsCustomProjectionDialog::populateList()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
+  myResult = sqlite3_open_v2( QgsApplication::qgisUserDatabaseFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
   if ( myResult != SQLITE_OK )
   {
     QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
@@ -150,10 +150,10 @@ bool  QgsCustomProjectionDialog::deleteCrs( const QString& id )
   QString mySql = "delete from tbl_srs where srs_id=" + quotedValue( id );
   QgsDebugMsg( mySql );
   //check the db is available
-  myResult = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8(), &myDatabase );
+  myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8(), &myDatabase );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ), QgsApplication::qgisUserDbFilePath() ) );
+    QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ), QgsApplication::qgisUserDatabaseFilePath() ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
     Q_ASSERT( myResult == SQLITE_OK );
@@ -180,18 +180,18 @@ void  QgsCustomProjectionDialog::insertProjection( const QString& myProjectionAc
   QString mySql;
   const char   *myTail;
   //check the db is available
-  int           myResult = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8(), &myDatabase );
+  int           myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8(), &myDatabase );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ), QgsApplication::qgisUserDbFilePath() ) );
+    QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ), QgsApplication::qgisUserDatabaseFilePath() ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
     Q_ASSERT( myResult == SQLITE_OK );
   }
-  int srsResult = sqlite3_open( QgsApplication::srsDbFilePath().toUtf8(), &srsDatabase );
+  int srsResult = sqlite3_open( QgsApplication::srsDatabaseFilePath().toUtf8(), &srsDatabase );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database %1 [%2]" ).arg( QgsApplication::srsDbFilePath(), sqlite3_errmsg( srsDatabase ) ) );
+    QgsDebugMsg( QString( "Can't open database %1 [%2]" ).arg( QgsApplication::srsDatabaseFilePath(), sqlite3_errmsg( srsDatabase ) ) );
   }
   else
   {
@@ -268,10 +268,10 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem myCRS, con
     sqlite3_stmt *myPreparedStatement;
     int           myResult;
     //check if the db is available
-    myResult = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8(), &myDatabase );
+    myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8(), &myDatabase );
     if ( myResult != SQLITE_OK )
     {
-      QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ), QgsApplication::qgisUserDbFilePath() ) );
+      QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ), QgsApplication::qgisUserDatabaseFilePath() ) );
       // XXX This will likely never happen since on open, sqlite creates the
       //     database if it does not exist.
       Q_ASSERT( myResult == SQLITE_OK );

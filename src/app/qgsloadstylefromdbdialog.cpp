@@ -107,7 +107,7 @@ QString QgsLoadStyleFromDBDialog::getSelectedStyleId()
 void QgsLoadStyleFromDBDialog::setLayer( QgsVectorLayer *l )
 {
   mLayer = l;
-  mDeleteButton->setVisible( mLayer->dataProvider()->isDeleteStyleFromDbSupported() );
+  mDeleteButton->setVisible( mLayer->dataProvider()->isDeleteStyleFromDatabaseSupported() );
 }
 
 void QgsLoadStyleFromDBDialog::onRelatedTableSelectionChanged()

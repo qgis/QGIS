@@ -215,7 +215,7 @@ class QgsStyle : QObject
      *  \note added in QGIS 3.0
      *  \see createMemoryDb()
      */
-    bool createDb( const QString& filename );
+    bool createDatabase( const QString& filename );
 
     /** Creates a temporary memory database
      *
@@ -224,7 +224,7 @@ class QgsStyle : QObject
      *  \note added in QGIS 3.0
      *  \see createDb()
      */
-    bool createMemoryDb();
+    bool createMemoryDatabase();
 
     /** Creates tables structure for new database
      *
@@ -305,7 +305,7 @@ class QgsStyle : QObject
 
   protected:
     //! Convenience function to open the DB and return a sqlite3 object
-    bool openDB( const QString& filename );
+    bool openDatabase( const QString& filename );
 
     /** Convenience function that would run queries which don't generate return values
      *  \param query query to run
