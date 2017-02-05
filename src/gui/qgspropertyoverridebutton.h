@@ -105,7 +105,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     /**
      * Returns true if the button has an active property.
      */
-    bool isActive() const { return mActive; }
+    bool isActive() const { return mProperty.isActive(); }
 
     /**
      * Returns the data type which the widget will accept. This is used to filter
@@ -197,8 +197,6 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QStringList mFieldNameList;
     QStringList mFieldTypeList;
 
-    bool mActive;
-    bool mUseExpression;
     QString mExpressionString;
     QString mFieldName;
 
@@ -226,6 +224,9 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QgsExpressionContextGenerator* mExpressionContextGenerator;
 
     QList< QPointer<QWidget> > mCheckedWidgets;
+
+    //! Internal property used for storing state of widget
+    QgsProperty mProperty;
 
   private slots:
     void aboutToShowMenu();
