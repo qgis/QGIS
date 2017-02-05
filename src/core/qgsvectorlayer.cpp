@@ -4301,8 +4301,7 @@ QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 
 int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )
 {
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+  QScopedPointer<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4312,7 +4311,6 @@ int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, 
 
   if ( !listStylesExternalMethod )
   {
-    delete myLib;
     msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "listStyles" ) );
     return -1;
   }
@@ -4322,8 +4320,7 @@ int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, 
 
 QString QgsVectorLayer::getStyleFromDatabase( const QString& styleId, QString &msgError )
 {
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+  QScopedPointer<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4333,7 +4330,6 @@ QString QgsVectorLayer::getStyleFromDatabase( const QString& styleId, QString &m
 
   if ( !getStyleByIdMethod )
   {
-    delete myLib;
     msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "getStyleById" ) );
     return QObject::tr( "" );
   }
@@ -4343,7 +4339,7 @@ QString QgsVectorLayer::getStyleFromDatabase( const QString& styleId, QString &m
 
 bool QgsVectorLayer::deleteStyleFromDatabase( const QString& styleId, QString &msgError )
 {
-  QLibrary *myLib = QgsProviderRegistry::instance()->providerLibrary( mProviderKey );
+  QScopedPointer<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4352,7 +4348,6 @@ bool QgsVectorLayer::deleteStyleFromDatabase( const QString& styleId, QString &m
   deleteStyleById_t* deleteStyleByIdMethod = reinterpret_cast< deleteStyleById_t * >( cast_to_fptr( myLib->resolve( "deleteStyleById" ) ) );
   if ( !deleteStyleByIdMethod )
   {
-    delete myLib;
     msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "deleteStyleById" ) );
     return false;
   }
@@ -4365,8 +4360,7 @@ void QgsVectorLayer::saveStyleToDatabase( const QString& name, const QString& de
 {
 
   QString sldStyle, qmlStyle;
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+  QScopedPointer<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4376,7 +4370,6 @@ void QgsVectorLayer::saveStyleToDatabase( const QString& name, const QString& de
 
   if ( !saveStyleExternalMethod )
   {
-    delete myLib;
     msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "saveStyle" ) );
     return;
   }
@@ -4412,8 +4405,7 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFl
   QgsDataSourceUri dsUri( theURI );
   if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDBSupported() )
   {
-    QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-    QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+    QScopedPointer<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
     if ( myLib )
     {
       loadStyle_t* loadStyleExternalMethod = reinterpret_cast< loadStyle_t * >( cast_to_fptr( myLib->resolve( "loadStyle" ) ) );
