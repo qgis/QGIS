@@ -786,7 +786,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     virtual QString getStyleFromDatabase( const QString& styleId, QString &msgError );
 
     /**
-     * Will delete the named style corresponding to style id provided from the database
+     * Delete a style from the database
+     * @note added in QGIS 3.0
+     * @param styleId the provider's layer_styles table id of the style to delete
+     * @param msgError reference to string that will be updated with any error messages
+     * @return true in case of success
      */
     virtual bool deleteStyleFromDatabase( const QString& styleId, QString &msgError );
 

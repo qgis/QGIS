@@ -695,7 +695,7 @@ bool QgsVectorDataProvider::isSaveAndLoadStyleToDBSupported() const
   return false;
 }
 
-bool QgsVectorDataProvider::isDeleteStyleFromDBSupported() const
+bool QgsVectorDataProvider::isDeleteStyleFromDbSupported() const
 {
   return false;
 }

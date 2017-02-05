@@ -27,7 +27,6 @@ class APP_EXPORT QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadS
     QString mSelectedStyleId;
     QString mSelectedStyleName;
     int mSectionLimit;
-    QString qmlStyle;
     Q_OBJECT
   public:
     explicit QgsLoadStyleFromDBDialog( QWidget *parent = nullptr );
@@ -37,16 +36,15 @@ class APP_EXPORT QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadS
     void initializeLists( const QStringList& ids, const QStringList& names, const QStringList& descriptions, int sectionLimit );
     QString getSelectedStyleId();
     void selectionChanged( QTableWidget *styleTable );
-
     void setLayer( QgsVectorLayer *l );
 
   public slots:
-    void relatedTableSelectionChanged();
-    void otherTableSelectionChanged();
+    void onRelatedTableSelectionChanged();
+    void onOthersTableSelectionChanged();
     void deleteStyleFromDB();
 
   private:
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
 
 };
 

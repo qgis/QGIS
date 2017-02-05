@@ -645,7 +645,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         vl = self.getEditableLayer()
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.dataProvider().isSaveAndLoadStyleToDBSupported())
-        self.assertTrue(vl.dataProvider().isDeleteStyleFromDBSupported())
+        self.assertTrue(vl.dataProvider().isDeleteStyleFromDbSupported())
 
         # table layer_styles does not exit
         related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()

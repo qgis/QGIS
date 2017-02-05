@@ -4343,22 +4343,19 @@ QString QgsVectorLayer::getStyleFromDatabase( const QString& styleId, QString &m
 
 bool QgsVectorLayer::deleteStyleFromDatabase( const QString& styleId, QString &msgError )
 {
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+  QLibrary *myLib = QgsProviderRegistry::instance()->providerLibrary( mProviderKey );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
     return false;
   }
   deleteStyleById_t* deleteStyleByIdMethod = reinterpret_cast< deleteStyleById_t * >( cast_to_fptr( myLib->resolve( "deleteStyleById" ) ) );
-
   if ( !deleteStyleByIdMethod )
   {
     delete myLib;
     msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "deleteStyleById" ) );
     return false;
   }
-
   return deleteStyleByIdMethod( mDataSource, styleId, msgError );
 }
 
