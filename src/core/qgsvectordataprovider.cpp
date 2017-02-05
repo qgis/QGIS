@@ -695,6 +695,11 @@ bool QgsVectorDataProvider::isSaveAndLoadStyleToDBSupported() const
   return false;
 }
 
+bool QgsVectorDataProvider::isDeleteStyleFromDbSupported() const
+{
+  return false;
+}
+
 void QgsVectorDataProvider::pushError( const QString& msg ) const
 {
   QgsDebugMsg( msg );

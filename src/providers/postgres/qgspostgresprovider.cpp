@@ -4634,6 +4634,40 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   return numberOfRelatedStyles;
 }
 
+QGISEXTERN bool deleteStyleById( const QString &uri, QString styleId, QString &errCause )
+{
+  QgsDataSourceUri dsUri( uri );
+  bool deleted;
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
+    deleted = false;
+  }
+  else
+  {
+    QString deleteStyleQuery = QStringLiteral( "DELETE FROM layer_styles WHERE id=%1" ).arg(
+                                 QgsPostgresConn::quotedValue( styleId ) );
+    QgsPostgresResult result( conn->PQexec( deleteStyleQuery ) );
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+    {
+      QgsDebugMsg(
+        QString( "PQexec of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
+        .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ).arg( deleteStyleQuery ) );
+      QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( deleteStyleQuery ) );
+      errCause = QObject::tr( "Error executing the delete query. The query was logged" );
+      deleted = false;
+    }
+    else
+    {
+      deleted = true;
+    }
+  }
+  conn->unref();
+  return deleted;
+}
+
 QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& errCause )
 {
   QgsDataSourceUri dsUri( uri );

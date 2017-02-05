@@ -407,6 +407,14 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual bool isSaveAndLoadStyleToDBSupported() const;
 
+    /**
+     * Checks if the provider supports style removal
+     * Must be implemented by providers that support delete styles from db returning true
+     * @note added in QGIS 3.0
+     * @return true if delete operation is supported by the provider
+     */
+    virtual bool isDeleteStyleFromDbSupported() const;
+
     static QVariant convertValue( QVariant::Type type, const QString& value );
 
     /**
