@@ -63,8 +63,9 @@ void QgsMapRendererParallelJob::start()
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
+  bool canUseLabelCache = prepareLabelCache();
   mLayerJobs = prepareJobs( nullptr, mLabelingEngineV2 );
-  mLabelJob = prepareLabelingJob( nullptr, mLabelingEngineV2 );
+  mLabelJob = prepareLabelingJob( nullptr, mLabelingEngineV2, canUseLabelCache );
 
   QgsDebugMsg( QString( "QThreadPool max thread count is %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
 

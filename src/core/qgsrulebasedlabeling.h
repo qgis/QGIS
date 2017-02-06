@@ -260,6 +260,12 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         //! register individual features
         RegisterResult registerFeature( QgsFeature& feature, QgsRenderContext& context, RuleToProviderMap& subProviders, QgsGeometry* obstacleGeometry = nullptr );
 
+        /**
+         * Returns true if this rule or any of its children requires advanced composition effects
+         * to render.
+         */
+        bool requiresAdvancedEffects() const;
+
       protected:
 
         /**
@@ -326,6 +332,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer* layer ) const override;
     virtual QStringList subProviders() const override;
     virtual QgsPalLayerSettings settings( QgsVectorLayer* layer, const QString& providerId = QString() ) const override;
+    bool requiresAdvancedEffects( QgsVectorLayer* layer ) const override;
 
   protected:
     Rule* mRootRule;

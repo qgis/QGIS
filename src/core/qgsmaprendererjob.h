@@ -70,6 +70,8 @@ struct LabelRenderJob
   QImage* img = nullptr;
   //! If true, img already contains cached image from previous rendering
   bool cached = false;
+  //! Will be true if labeling is eligible for caching
+  bool canUseCache = false;
   //! If true then label render is complete
   bool complete = false;
   //! Time it took to render the labels in ms (it is -1 if not rendered or still rendering)
@@ -218,6 +220,13 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     int mRenderingTime = 0;
 
+    /**
+     * Prepares the cache for storing the result of labeling. Returns false if
+     * the render cannot use cached labels and should not cache the result.
+     * @note not available in Python bindings
+     */
+    bool prepareLabelCache() const;
+
     //! @note not available in python bindings
     LayerRenderJobs prepareJobs( QPainter* painter, QgsLabelingEngine* labelingEngine2 );
 
@@ -226,7 +235,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * @note not available in python bindings
      * @note added in QGIS 3.0
      */
-    LabelRenderJob prepareLabelingJob( QPainter* painter, QgsLabelingEngine* labelingEngine2 );
+    LabelRenderJob prepareLabelingJob( QPainter* painter, QgsLabelingEngine* labelingEngine2, bool canUseLabelCache = true );
 
     //! @note not available in python bindings
     static QImage composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs, const LabelRenderJob& labelJob );

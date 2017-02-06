@@ -83,8 +83,9 @@ void QgsMapRendererCustomPainterJob::start()
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
+  bool canUseLabelCache = prepareLabelCache();
   mLayerJobs = prepareJobs( mPainter, mLabelingEngineV2 );
-  mLabelJob = prepareLabelingJob( mPainter, mLabelingEngineV2 );
+  mLabelJob = prepareLabelingJob( mPainter, mLabelingEngineV2, canUseLabelCache );
 
   QgsDebugMsg( "Rendering prepared in (seconds): " + QString( "%1" ).arg( prepareTime.elapsed() / 1000.0 ) );
 
