@@ -102,10 +102,10 @@
             <bool>false</bool>
            </property>
            <property name="collapsed" stdset="0">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="saveCollapsedState" stdset="0">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
            <layout class="QGridLayout" name="gridLayout">
             <property name="leftMargin">
