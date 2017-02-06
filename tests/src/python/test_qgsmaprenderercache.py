@@ -116,6 +116,13 @@ class TestQgsMapRendererCache(unittest.TestCase):
         self.assertFalse(cache.hasCacheImage('xxx'))
         QgsProject.instance().removeMapLayer(layer.id())
 
+        # test that cache is also cleared on deferred update
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer", "memory")
+        cache.setCacheImage('xxx', im, [layer])
+        layer.triggerRepaint(True)
+        self.assertFalse(cache.hasCacheImage('xxx'))
+
     def testRequestRepaintMultiple(self):
         """ test requesting repaint with multiple dependent layers """
         layer1 = QgsVectorLayer("Point?field=fldtxt:string",
