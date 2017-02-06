@@ -85,6 +85,12 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     QImage cacheImage( const QString& cacheKey ) const;
 
     /**
+     * Returns a list of map layers on which an image in the cache depends.
+     * @note added in QGIS 3.0
+     */
+    QList< QgsMapLayer* > dependentLayers( const QString& cacheKey ) const;
+
+    /**
      * Removes an image from the cache with matching \a cacheKey.
      * @see clear()
      */

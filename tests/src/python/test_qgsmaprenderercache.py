@@ -192,6 +192,26 @@ class TestQgsMapRendererCache(unittest.TestCase):
             self.assertFalse(cache.cacheImage('nolayer').isNull())
             self.assertEqual(cache.cacheImage('nolayer'), im1)
 
+    def testDependentLayers(self):
+        # bad layer tests
+        cache = QgsMapRendererCache()
+        self.assertEqual(cache.dependentLayers('not a layer'), [])
+
+        layer1 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+
+        im = QImage(200, 200, QImage.Format_RGB32)
+        cache.setCacheImage('no depends', im, [])
+        self.assertEqual(cache.dependentLayers('no depends'), [])
+        cache.setCacheImage('depends', im, [layer1, layer2])
+        self.assertEqual(set(cache.dependentLayers('depends')), set([layer1, layer2]))
+
+        # try deleting a layer in the meantime..
+        layer2 = None
+        self.assertEqual(set(cache.dependentLayers('depends')), set([layer1]))
+
 
 if __name__ == '__main__':
     unittest.main()

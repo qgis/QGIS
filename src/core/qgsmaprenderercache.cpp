@@ -129,6 +129,15 @@ QImage QgsMapRendererCache::cacheImage( const QString& cacheKey ) const
   return mCachedImages.value( cacheKey ).cachedImage;
 }
 
+QList< QgsMapLayer* > QgsMapRendererCache::dependentLayers( const QString& cacheKey ) const
+{
+  if ( mCachedImages.contains( cacheKey ) )
+  {
+    return _qgis_listQPointerToRaw( mCachedImages.value( cacheKey ).dependentLayers );
+  }
+  return QList< QgsMapLayer* >();
+}
+
 void QgsMapRendererCache::layerRequestedRepaint()
 {
   QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( sender() );
