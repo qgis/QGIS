@@ -152,8 +152,8 @@ touch %SRCDIR%\CMakeLists.txt
 echo CMAKE: %DATE% %TIME%
 if errorlevel 1 goto error
 
-set LIB=%LIB%;%OSGEO4W_ROOT%\lib
-set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
+set LIB=%LIB%;%OSGEO4W_ROOT%\apps\Qt5\lib;%OSGEO4W_ROOT%\lib
+set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\apps\Qt5\include;%OSGEO4W_ROOT%\include
 
 cmake -G Ninja ^
 	-D CMAKE_CXX_COMPILER="%CMAKE_COMPILER_PATH:\=/%/cl.exe" ^
