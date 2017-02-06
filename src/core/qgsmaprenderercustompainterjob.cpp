@@ -156,6 +156,10 @@ bool QgsMapRendererCustomPainterJob::isActive() const
   return mActive;
 }
 
+bool QgsMapRendererCustomPainterJob::usedCachedLabels() const
+{
+  return mLabelJob.cached;
+}
 
 QgsLabelingResults* QgsMapRendererCustomPainterJob::takeLabelingResults()
 {

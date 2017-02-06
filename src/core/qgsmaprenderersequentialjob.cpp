@@ -98,6 +98,11 @@ bool QgsMapRendererSequentialJob::isActive() const
   return nullptr != mInternalJob;
 }
 
+bool QgsMapRendererSequentialJob::usedCachedLabels() const
+{
+  return mUsedCachedLabels;
+}
+
 QgsLabelingResults* QgsMapRendererSequentialJob::takeLabelingResults()
 {
   QgsLabelingResults* tmp = mLabelingResults;
@@ -125,6 +130,7 @@ void QgsMapRendererSequentialJob::internalFinished()
   mPainter = nullptr;
 
   mLabelingResults = mInternalJob->takeLabelingResults();
+  mUsedCachedLabels = mInternalJob->usedCachedLabels();
 
   mErrors = mInternalJob->errors();
 

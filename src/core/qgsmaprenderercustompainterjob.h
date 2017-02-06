@@ -41,6 +41,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
     virtual void cancel() override;
     virtual void waitForFinished() override;
     virtual bool isActive() const override;
+    virtual bool usedCachedLabels() const override;
     virtual QgsLabelingResults* takeLabelingResults() override;
 
     //! @note not available in python bindings

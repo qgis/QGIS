@@ -24,6 +24,8 @@ class QgsMapRendererJob : QObject
     //! Tell whether the rendering job is currently running in background.
     virtual bool isActive() const = 0;
 
+    virtual bool usedCachedLabels() const = 0;
+
     //! Get pointer to internal labeling engine (in order to get access to the results)
     virtual QgsLabelingResults* takeLabelingResults() = 0 /Transfer/;
 

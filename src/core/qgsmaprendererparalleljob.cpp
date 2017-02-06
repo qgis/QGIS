@@ -153,6 +153,11 @@ bool QgsMapRendererParallelJob::isActive() const
   return mStatus != Idle;
 }
 
+bool QgsMapRendererParallelJob::usedCachedLabels() const
+{
+  return mLabelJob.cached;
+}
+
 QgsLabelingResults* QgsMapRendererParallelJob::takeLabelingResults()
 {
   if ( mLabelingEngineV2 )
