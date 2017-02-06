@@ -40,6 +40,7 @@ void QgsMapRendererCache::clearInternal()
     if ( layer.data() )
     {
       disconnect( layer.data(), &QgsMapLayer::repaintRequested, this, &QgsMapRendererCache::layerRequestedRepaint );
+      disconnect( layer.data(), &QgsMapLayer::willBeDeleted, this, &QgsMapRendererCache::layerRequestedRepaint );
     }
   }
   mCachedImages.clear();
@@ -55,6 +56,7 @@ void QgsMapRendererCache::dropUnusedConnections()
     if ( layer.data() )
     {
       disconnect( layer.data(), &QgsMapLayer::repaintRequested, this, &QgsMapRendererCache::layerRequestedRepaint );
+      disconnect( layer.data(), &QgsMapLayer::willBeDeleted, this, &QgsMapRendererCache::layerRequestedRepaint );
     }
   }
 
@@ -110,6 +112,7 @@ void QgsMapRendererCache::setCacheImage( const QString& cacheKey, const QImage& 
       if ( !mConnectedLayers.contains( QgsWeakMapLayerPointer( layer ) ) )
       {
         connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapRendererCache::layerRequestedRepaint );
+        connect( layer, &QgsMapLayer::willBeDeleted, this, &QgsMapRendererCache::layerRequestedRepaint );
         mConnectedLayers << layer;
       }
     }

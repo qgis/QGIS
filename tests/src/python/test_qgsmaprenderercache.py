@@ -208,9 +208,35 @@ class TestQgsMapRendererCache(unittest.TestCase):
         cache.setCacheImage('depends', im, [layer1, layer2])
         self.assertEqual(set(cache.dependentLayers('depends')), set([layer1, layer2]))
 
-        # try deleting a layer in the meantime..
+    def testLayerRemoval(self):
+        """test that cached image is cleared when a dependent layer is removed"""
+        cache = QgsMapRendererCache()
+        layer1 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        im = QImage(200, 200, QImage.Format_RGB32)
+        cache.setCacheImage('depends', im, [layer1, layer2])
+        cache.setCacheImage('depends2', im, [layer1])
+        cache.setCacheImage('depends3', im, [layer2])
+        cache.setCacheImage('no depends', im, [])
+        self.assertTrue(cache.hasCacheImage('depends'))
+        self.assertTrue(cache.hasCacheImage('depends2'))
+        self.assertTrue(cache.hasCacheImage('depends3'))
+        self.assertTrue(cache.hasCacheImage('no depends'))
+
+        # try deleting a layer
         layer2 = None
-        self.assertEqual(set(cache.dependentLayers('depends')), set([layer1]))
+        self.assertFalse(cache.hasCacheImage('depends'))
+        self.assertTrue(cache.hasCacheImage('depends2'))
+        self.assertFalse(cache.hasCacheImage('depends3'))
+        self.assertTrue(cache.hasCacheImage('no depends'))
+
+        layer1 = None
+        self.assertFalse(cache.hasCacheImage('depends'))
+        self.assertFalse(cache.hasCacheImage('depends2'))
+        self.assertFalse(cache.hasCacheImage('depends3'))
+        self.assertTrue(cache.hasCacheImage('no depends'))
 
 
 if __name__ == '__main__':
