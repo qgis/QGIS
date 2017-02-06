@@ -82,7 +82,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
     QgsVectorLayer* vl = const_cast< QgsVectorLayer* >( qobject_cast<const QgsVectorLayer *>( ml ) );
     if ( vl && QgsPalLabeling::staticWillUseLayer( vl ) )
       labeledLayers << vl;
-    if ( vl->labeling()->requiresAdvancedEffects( vl ) )
+    if ( vl && vl->labeling() && vl->labeling()->requiresAdvancedEffects( vl ) )
     {
       canCache = false;
       break;
