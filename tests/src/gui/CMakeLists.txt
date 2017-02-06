@@ -119,6 +119,7 @@ MACRO (ADD_QGIS_TEST testname testsrc)
 ENDMACRO (ADD_QGIS_TEST)
 
 ADD_QGIS_TEST(zoomtest testqgsmaptoolzoom.cpp)
+ADD_QGIS_TEST(edittooltest testqgsmaptooledit.cpp)
 
 # a simple app for testing GUI of renderers
 # These tests are old and are never run so removed for now.
