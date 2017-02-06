@@ -10408,7 +10408,7 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *>& theLayers )
 
     if ( provider )
     {
-      connect( provider, &QgsDataProvider::dataChanged, layer, &QgsMapLayer::triggerRepaint );
+      connect( provider, &QgsDataProvider::dataChanged, layer, [layer] { layer->triggerRepaint(); } );
       connect( provider, &QgsDataProvider::dataChanged, mMapCanvas, &QgsMapCanvas::refresh );
     }
   }

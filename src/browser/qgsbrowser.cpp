@@ -439,7 +439,7 @@ void QgsBrowser::updateCurrentTab()
       QgsRasterLayer *rlayer = qobject_cast< QgsRasterLayer * >( mLayer );
       if ( rlayer )
       {
-        connect( rlayer->dataProvider(), &QgsRasterDataProvider::dataChanged, rlayer, &QgsRasterLayer::triggerRepaint );
+        connect( rlayer->dataProvider(), &QgsRasterDataProvider::dataChanged, rlayer, [rlayer] { rlayer->triggerRepaint(); } );
         connect( rlayer->dataProvider(), &QgsRasterDataProvider::dataChanged, mapCanvas, &QgsMapCanvas::refresh );
       }
     }

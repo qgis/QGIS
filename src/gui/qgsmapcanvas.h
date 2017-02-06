@@ -612,6 +612,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Make sure the datum transform store is properly populated
     void updateDatumTransformEntries();
 
+  private slots:
+
+    void layerRepaintRequested( bool deferred );
+
   private:
     /// this class is non-copyable
 

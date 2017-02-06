@@ -1591,9 +1591,9 @@ QgsMapLayerStyleManager* QgsMapLayer::styleManager() const
   return mStyleManager;
 }
 
-void QgsMapLayer::triggerRepaint()
+void QgsMapLayer::triggerRepaint( bool deferredUpdate )
 {
-  emit repaintRequested();
+  emit repaintRequested( deferredUpdate );
 }
 
 QString QgsMapLayer::metadata() const

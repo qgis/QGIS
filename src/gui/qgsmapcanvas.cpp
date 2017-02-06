@@ -295,7 +295,7 @@ void QgsMapCanvas::setLayers( const QList<QgsMapLayer*>& layers )
 
   Q_FOREACH ( QgsMapLayer* layer, oldLayers )
   {
-    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::refresh );
+    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::layerRepaintRequested );
     disconnect( layer, &QgsMapLayer::crsChanged, this, &QgsMapCanvas::layerCrsChange );
     if ( QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
@@ -307,7 +307,7 @@ void QgsMapCanvas::setLayers( const QList<QgsMapLayer*>& layers )
 
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
-    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::refresh );
+    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::layerRepaintRequested );
     connect( layer, &QgsMapLayer::crsChanged, this, &QgsMapCanvas::layerCrsChange );
     if ( QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
@@ -1666,6 +1666,12 @@ void QgsMapCanvas::updateDatumTransformEntries()
     if ( !mSettings.datumTransformStore().hasEntryForLayer( layer ) )
       getDatumTransformInfo( layer, layer->crs().authid(), destAuthId );
   }
+}
+
+void QgsMapCanvas::layerRepaintRequested( bool deferred )
+{
+  if ( !deferred )
+    refresh();
 }
 
 

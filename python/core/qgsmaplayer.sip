@@ -634,13 +634,7 @@ class QgsMapLayer : QObject
      */
     void setScaleBasedVisibility( const bool enabled );
 
-    /**
-     * Will advice the map canvas (and any other interested party) that this layer requires to be repainted.
-     * Will emit a repaintRequested() signal.
-     *
-     * @note in 2.6 function moved from vector/raster subclasses to QgsMapLayer
-     */
-    void triggerRepaint();
+    void triggerRepaint( bool deferredUpdate = false );
 
     /** \brief Obtain Metadata for this layer */
     virtual QString metadata() const;
@@ -687,10 +681,7 @@ class QgsMapLayer : QObject
     /** Emit a signal that layer's CRS has been reset */
     void crsChanged();
 
-    /** By emitting this signal the layer tells that either appearance or content have been changed
-     * and any view showing the rendered layer should refresh itself.
-     */
-    void repaintRequested();
+    void repaintRequested( bool deferredUpdate = false );
 
     /** This is used to send a request that any mapcanvas using this layer update its extents */
     void recalculateExtents() const;

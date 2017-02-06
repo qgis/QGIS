@@ -207,9 +207,10 @@ void QgsMapOverviewCanvas::mapRenderingFinished()
   update();
 }
 
-void QgsMapOverviewCanvas::layerRepaintRequested()
+void QgsMapOverviewCanvas::layerRepaintRequested( bool deferred )
 {
-  refresh();
+  if ( !deferred )
+    refresh();
 }
 
 

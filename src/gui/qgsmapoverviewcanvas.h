@@ -75,7 +75,11 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 
   protected slots:
     void mapRenderingFinished();
-    void layerRepaintRequested();
+
+    /**
+     * Triggered when a layer in the overview requests a repaint.
+     */
+    void layerRepaintRequested( bool deferred = false );
 
   protected:
 
