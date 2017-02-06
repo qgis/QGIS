@@ -41,6 +41,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     Q_PROPERTY( QString defaultValue READ defaultValue WRITE setDefaultValue )
     Q_PROPERTY( QString value READ value WRITE setValue NOTIFY valueChanged )
     Q_PROPERTY( bool showClearButton READ showClearButton WRITE setShowClearButton )
+    Q_PROPERTY( bool showSearchIcon READ showSearchIcon WRITE setShowSearchIcon )
 
   public:
 
@@ -97,6 +98,19 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @see isNull()
      */
     QString nullValue() const { return mNullValue; }
+
+    /** Define if a search icon shall be shown on the left of the image
+     * when no text is entered
+     * @param visible set to false to hide the search icon
+     * @note added in QGIS 3.0
+     */
+    void setShowSearchIcon( bool visible );
+
+    /** Returns if a search icon shall be shown on the left of the image
+     * when no text is entered
+     * @note added in QGIS 3.0
+     */
+    bool showSearchIcon() const { return mSearchIconVisible; }
 
     /** Sets the default value for the widget. The default value is a value
      * which the widget will be reset to if it is cleared and the clearMode()
@@ -179,6 +193,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
   private:
 
     bool mClearButtonVisible;
+    bool mSearchIconVisible;
 
     ClearMode mClearMode;
 
@@ -192,10 +207,14 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     QPixmap mClearIconPixmap;
     QPixmap mClearHoverPixmap;
 
+    QSize mSearchIconSize;
+    QPixmap mSearchIconPixmap;
+
     //! Returns true if clear button should be shown
     bool shouldShowClear() const;
 
     QRect clearRect() const;
+    QRect searchRect() const;
 };
 
 /// @cond PRIVATE
