@@ -1432,7 +1432,7 @@ int QgsProject::readNumEntry( const QString& scope, const QString &key, int def,
     value = property->value();
   }
 
-  bool valid = value.canConvert( QVariant::String );
+  bool valid = value.canConvert( QVariant::Int );
 
   if ( ok )
   {
