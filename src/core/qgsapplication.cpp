@@ -101,6 +101,8 @@ const char* QgsApplication::QGIS_ORGANIZATION_NAME = "QGIS";
 const char* QgsApplication::QGIS_ORGANIZATION_DOMAIN = "qgis.org";
 const char* QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
 
+QgsApplication::ApplicationMembers* QgsApplication::sApplicationMembers = nullptr;
+
 /*!
   \class QgsApplication
   \brief The QgsApplication class manages application-wide information.
@@ -119,24 +121,7 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const
 {
   sPlatformName = platformName;
 
-  // don't use initializer lists or scoped pointers - as more objects are added here we
-  // will need to be careful with the order of creation/destruction
-  mMessageLog = new QgsMessageLog();
-  mProfiler = new QgsRuntimeProfiler();
-  mTaskManager = new QgsTaskManager();
-  mActionScopeRegistry = new QgsActionScopeRegistry();
-  mFieldFormatterRegistry = new QgsFieldFormatterRegistry();
-  mSvgCache = new QgsSvgCache();
-  mColorSchemeRegistry = new QgsColorSchemeRegistry();
-  mColorSchemeRegistry->addDefaultSchemes();
-  mPaintEffectRegistry = new QgsPaintEffectRegistry();
-  mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
-  mRendererRegistry = new QgsRendererRegistry();
-  mRasterRendererRegistry = new QgsRasterRendererRegistry();
-  mGpsConnectionRegistry = new QgsGPSConnectionRegistry();
-  mPluginLayerRegistry = new QgsPluginLayerRegistry();
-  mProcessingRegistry = new QgsProcessingRegistry();
-  mAnnotationRegistry = new QgsAnnotationRegistry();
+  mApplicationMembers = new ApplicationMembers();
 
   init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
 }
@@ -268,22 +253,8 @@ void QgsApplication::init( QString customConfigPath )
 
 QgsApplication::~QgsApplication()
 {
-  delete mAnnotationRegistry;
-  delete mProcessingRegistry;
-  delete mActionScopeRegistry;
-  delete mTaskManager;
-  delete mFieldFormatterRegistry;
-  delete mRasterRendererRegistry;
-  delete mRendererRegistry;
-  delete mSymbolLayerRegistry;
-  delete mPaintEffectRegistry;
-  delete mColorSchemeRegistry;
-  delete mSvgCache;
-  delete mGpsConnectionRegistry;
-  delete mPluginLayerRegistry;
   delete mDataItemProviderRegistry;
-  delete mProfiler;
-  delete mMessageLog;
+  delete mApplicationMembers;
 }
 
 QgsApplication* QgsApplication::instance()
@@ -359,7 +330,7 @@ bool QgsApplication::notify( QObject * receiver, QEvent * event )
 
 QgsRuntimeProfiler *QgsApplication::profiler()
 {
-  return instance()->mProfiler;
+  return members()->mProfiler;
 }
 
 void QgsApplication::setFileOpenEventReceiver( QObject * receiver )
@@ -1373,26 +1344,31 @@ void QgsApplication::setCustomVariable( const QString& name, const QVariant& val
 
 QString QgsApplication::nullRepresentation()
 {
-  QgsApplication* app = instance();
-  if ( app->mNullRepresentation.isNull() )
-    app->mNullRepresentation = QSettings().value( QStringLiteral( "qgis/nullValue" ), QStringLiteral( "NULL" ) ).toString();
-  return app->mNullRepresentation;
+  ApplicationMembers* appMembers = members();
+  if ( appMembers->mNullRepresentation.isNull() )
+  {
+    appMembers->mNullRepresentation = QSettings().value( QStringLiteral( "qgis/nullValue" ), QStringLiteral( "NULL" ) ).toString();
+  }
+  return appMembers->mNullRepresentation;
 }
 
 void QgsApplication::setNullRepresentation( const QString& nullRepresentation )
 {
-  QgsApplication* app = instance();
-  if ( app->mNullRepresentation == nullRepresentation )
+  ApplicationMembers* appMembers = members();
+  if ( !appMembers || appMembers->mNullRepresentation == nullRepresentation )
     return;
 
-  app->mNullRepresentation = nullRepresentation;
+  appMembers->mNullRepresentation = nullRepresentation;
   QSettings().setValue( QStringLiteral( "qgis/nullValue" ), nullRepresentation );
-  emit app->nullRepresentationChanged();
+
+  QgsApplication* app = instance();
+  if ( app )
+    emit app->nullRepresentationChanged();
 }
 
 QgsActionScopeRegistry* QgsApplication::actionScopeRegistry()
 {
-  return instance()->mActionScopeRegistry;
+  return members()->mActionScopeRegistry;
 }
 
 bool QgsApplication::createDatabase( QString *errorMessage )
@@ -1549,70 +1525,127 @@ void QgsApplication::setMaxThreads( int maxThreads )
 
 QgsTaskManager* QgsApplication::taskManager()
 {
-  return instance()->mTaskManager;
+  return members()->mTaskManager;
 }
 
 QgsColorSchemeRegistry* QgsApplication::colorSchemeRegistry()
 {
-  return instance()->mColorSchemeRegistry;
+  return members()->mColorSchemeRegistry;
 }
 
 QgsPaintEffectRegistry* QgsApplication::paintEffectRegistry()
 {
-  return instance()->mPaintEffectRegistry;
+  return members()->mPaintEffectRegistry;
 }
 
-QgsRendererRegistry*QgsApplication::rendererRegistry()
+QgsRendererRegistry* QgsApplication::rendererRegistry()
 {
-  return instance()->mRendererRegistry;
+  return members()->mRendererRegistry;
 }
 
 QgsRasterRendererRegistry* QgsApplication::rasterRendererRegistry()
 {
-  return instance()->mRasterRendererRegistry;
+  return members()->mRasterRendererRegistry;
 }
 
-QgsDataItemProviderRegistry*QgsApplication::dataItemProviderRegistry()
+QgsDataItemProviderRegistry* QgsApplication::dataItemProviderRegistry()
 {
   return instance()->mDataItemProviderRegistry;
 }
 
 QgsSvgCache* QgsApplication::svgCache()
 {
-  return instance()->mSvgCache;
+  return members()->mSvgCache;
 }
 
 QgsSymbolLayerRegistry* QgsApplication::symbolLayerRegistry()
 {
-  return instance()->mSymbolLayerRegistry;
+  return members()->mSymbolLayerRegistry;
 }
 
 QgsGPSConnectionRegistry* QgsApplication::gpsConnectionRegistry()
 {
-  return instance()->mGpsConnectionRegistry;
+  return members()->mGpsConnectionRegistry;
 }
 
 QgsPluginLayerRegistry*QgsApplication::pluginLayerRegistry()
 {
-  return instance()->mPluginLayerRegistry;
+  return members()->mPluginLayerRegistry;
 }
 
 QgsMessageLog* QgsApplication::messageLog()
 {
-  return instance()->mMessageLog;
+  return members()->mMessageLog;
 }
 
-QgsProcessingRegistry*QgsApplication::processingRegistry()
+QgsProcessingRegistry* QgsApplication::processingRegistry()
 {
-  return instance()->mProcessingRegistry;
+  return members()->mProcessingRegistry;
 }
 
-QgsAnnotationRegistry*QgsApplication::annotationRegistry()
+QgsAnnotationRegistry* QgsApplication::annotationRegistry()
 {
-  return instance()->mAnnotationRegistry;
+  return members()->mAnnotationRegistry;
 }
 
 QgsFieldFormatterRegistry* QgsApplication::fieldFormatterRegistry()
 {
-  return instance()->mFieldFormatterRegistry;
+  return members()->mFieldFormatterRegistry;
+}
+
+QgsApplication::ApplicationMembers::ApplicationMembers()
+{
+  // don't use initializer lists or scoped pointers - as more objects are added here we
+  // will need to be careful with the order of creation/destruction
+  mMessageLog = new QgsMessageLog();
+  mProfiler = new QgsRuntimeProfiler();
+  mTaskManager = new QgsTaskManager();
+  mActionScopeRegistry = new QgsActionScopeRegistry();
+  mFieldFormatterRegistry = new QgsFieldFormatterRegistry();
+  mSvgCache = new QgsSvgCache();
+  mColorSchemeRegistry = new QgsColorSchemeRegistry();
+  mColorSchemeRegistry->addDefaultSchemes();
+  mPaintEffectRegistry = new QgsPaintEffectRegistry();
+  mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
+  mRendererRegistry = new QgsRendererRegistry();
+  mRasterRendererRegistry = new QgsRasterRendererRegistry();
+  mGpsConnectionRegistry = new QgsGPSConnectionRegistry();
+  mPluginLayerRegistry = new QgsPluginLayerRegistry();
+  mProcessingRegistry = new QgsProcessingRegistry();
+  mAnnotationRegistry = new QgsAnnotationRegistry();
+}
+
+QgsApplication::ApplicationMembers::~ApplicationMembers()
+{
+  delete mActionScopeRegistry;
+  delete mAnnotationRegistry;
+  delete mColorSchemeRegistry;
+  delete mFieldFormatterRegistry;
+  delete mGpsConnectionRegistry;
+  delete mMessageLog;
+  delete mPaintEffectRegistry;
+  delete mPluginLayerRegistry;
+  delete mProcessingRegistry;
+  delete mProfiler;
+  delete mRasterRendererRegistry;
+  delete mRendererRegistry;
+  delete mSvgCache;
+  delete mSymbolLayerRegistry;
+  delete mTaskManager;
+}
+
+QgsApplication::ApplicationMembers* QgsApplication::members()
+{
+  if ( instance() )
+  {
+    return instance()->mApplicationMembers;
+  }
+  else
+  {
+    static QMutex sMemberMutex( QMutex::Recursive );
+    QMutexLocker lock( &sMemberMutex );
+    if ( !sApplicationMembers )
+      sApplicationMembers = new ApplicationMembers();
+    return sApplicationMembers;
+  }
 }

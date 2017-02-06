@@ -54,6 +54,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     Q_OBJECT
 
   public:
+
     static const char* QGIS_ORGANIZATION_NAME;
     static const char* QGIS_ORGANIZATION_DOMAIN;
     static const char* QGIS_APPLICATION_NAME;
@@ -555,6 +556,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     void nullRepresentationChanged();
 
   private:
+
     static void copyPath( const QString& src, const QString& dst );
     static QObject* ABISYM( mFileOpenEventReceiver );
     static QStringList ABISYM( mFileOpenEventList );
@@ -600,23 +602,37 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     QMap<QString, QIcon> mIconCache;
 
-    QgsActionScopeRegistry* mActionScopeRegistry = nullptr;
-    QgsRuntimeProfiler* mProfiler = nullptr;
-    QgsTaskManager* mTaskManager = nullptr;
-    QgsFieldFormatterRegistry* mFieldFormatterRegistry = nullptr;
-    QgsColorSchemeRegistry* mColorSchemeRegistry = nullptr;
-    QgsPaintEffectRegistry* mPaintEffectRegistry = nullptr;
-    QgsRendererRegistry* mRendererRegistry = nullptr;
-    QgsSvgCache* mSvgCache = nullptr;
-    QgsSymbolLayerRegistry* mSymbolLayerRegistry = nullptr;
-    QgsRasterRendererRegistry* mRasterRendererRegistry = nullptr;
-    QgsGPSConnectionRegistry* mGpsConnectionRegistry = nullptr;
     QgsDataItemProviderRegistry* mDataItemProviderRegistry = nullptr;
-    QgsPluginLayerRegistry* mPluginLayerRegistry = nullptr;
-    QgsMessageLog* mMessageLog = nullptr;
-    QgsProcessingRegistry* mProcessingRegistry = nullptr;
-    QgsAnnotationRegistry* mAnnotationRegistry = nullptr;
-    QString mNullRepresentation;
+
+    struct ApplicationMembers
+    {
+      QgsActionScopeRegistry* mActionScopeRegistry = nullptr;
+      QgsAnnotationRegistry* mAnnotationRegistry = nullptr;
+      QgsColorSchemeRegistry* mColorSchemeRegistry = nullptr;
+      QgsFieldFormatterRegistry* mFieldFormatterRegistry = nullptr;
+      QgsGPSConnectionRegistry* mGpsConnectionRegistry = nullptr;
+      QgsMessageLog* mMessageLog = nullptr;
+      QgsPaintEffectRegistry* mPaintEffectRegistry = nullptr;
+      QgsPluginLayerRegistry* mPluginLayerRegistry = nullptr;
+      QgsProcessingRegistry* mProcessingRegistry = nullptr;
+      QgsRasterRendererRegistry* mRasterRendererRegistry = nullptr;
+      QgsRendererRegistry* mRendererRegistry = nullptr;
+      QgsRuntimeProfiler* mProfiler = nullptr;
+      QgsSvgCache* mSvgCache = nullptr;
+      QgsSymbolLayerRegistry* mSymbolLayerRegistry = nullptr;
+      QgsTaskManager* mTaskManager = nullptr;
+      QString mNullRepresentation;
+
+      ApplicationMembers();
+      ~ApplicationMembers();
+    };
+
+    // Applications members which belong to an instance of QgsApplication
+    ApplicationMembers* mApplicationMembers = nullptr;
+    // ... but in case QgsApplication is never instantiated (eg with custom designer widgets), we fall back to static members
+    static ApplicationMembers* sApplicationMembers;
+
+    static ApplicationMembers* members();
 };
 
 #endif
