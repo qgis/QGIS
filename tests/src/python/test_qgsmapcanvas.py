@@ -90,6 +90,70 @@ class TestQgsMapCanvas(unittest.TestCase):
         # now we expect the canvas check to fail (since they'll be a new polygon rendered over it)
         self.assertFalse(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas))
 
+    def testRefreshOnTimer(self):
+        """ test that map canvas refreshes with auto refreshing layers """
+        canvas = QgsMapCanvas()
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setFrameStyle(0)
+        canvas.resize(600, 400)
+        self.assertEqual(canvas.width(), 600)
+        self.assertEqual(canvas.height(), 400)
+
+        layer = QgsVectorLayer("Polygon?crs=epsg:4326&field=fldtxt:string",
+                               "layer", "memory")
+
+        canvas.setLayers([layer])
+        canvas.setExtent(QgsRectangle(10, 30, 20, 35))
+        canvas.show()
+
+        # need to wait until first redraw can occur (note that we first need to wait till drawing starts!)
+        while not canvas.isDrawing():
+            app.processEvents()
+        while canvas.isDrawing():
+            app.processEvents()
+
+        self.assertTrue(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas))
+
+        # add polygon to layer
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromRect(QgsRectangle(5, 25, 25, 45)))
+        self.assertTrue(layer.dataProvider().addFeatures([f]))
+
+        # set auto refresh on layer
+        layer.setAutoRefreshInterval(100)
+        layer.setAutoRefreshEnabled(True)
+
+        timeout = time.time() + 1
+        # expect canvas to auto refresh...
+        while not canvas.isDrawing():
+            app.processEvents()
+            self.assertTrue(time.time() < timeout)
+        while canvas.isDrawing():
+            app.processEvents()
+            self.assertTrue(time.time() < timeout)
+
+        # add a polygon to layer
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromRect(QgsRectangle(5, 25, 25, 45)))
+        self.assertTrue(layer.dataProvider().addFeatures([f]))
+        # wait for canvas auto refresh
+        while not canvas.isDrawing():
+            app.processEvents()
+            self.assertTrue(time.time() < timeout)
+        while canvas.isDrawing():
+            app.processEvents()
+            self.assertTrue(time.time() < timeout)
+
+        # now canvas should look different...
+        self.assertFalse(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas))
+
+        # switch off auto refresh
+        layer.setAutoRefreshEnabled(False)
+        timeout = time.time() + 0.5
+        while time.time() < timeout:
+            # messy, but only way to check that canvas redraw doesn't occur
+            self.assertFalse(canvas.isDrawing())
+
     def canvasImageCheck(self, name, reference_image, canvas):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'

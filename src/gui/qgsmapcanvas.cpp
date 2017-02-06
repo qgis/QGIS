@@ -176,6 +176,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent )
   QPixmap zoomPixmap = QPixmap(( const char ** )( zoom_in ) );
   mZoomCursor = QCursor( zoomPixmap, 7, 7 );
 
+  connect( &mAutoRefreshTimer, &QTimer::timeout, this, &QgsMapCanvas::autoRefreshTriggered );
+
   setInteractive( false );
 
   refresh();
@@ -297,6 +299,7 @@ void QgsMapCanvas::setLayers( const QList<QgsMapLayer*>& layers )
   {
     disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::layerRepaintRequested );
     disconnect( layer, &QgsMapLayer::crsChanged, this, &QgsMapCanvas::layerCrsChange );
+    disconnect( layer, &QgsMapLayer::autoRefreshIntervalChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
     if ( QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
@@ -309,17 +312,18 @@ void QgsMapCanvas::setLayers( const QList<QgsMapLayer*>& layers )
   {
     connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::layerRepaintRequested );
     connect( layer, &QgsMapLayer::crsChanged, this, &QgsMapCanvas::layerCrsChange );
+    connect( layer, &QgsMapLayer::autoRefreshIntervalChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
     if ( QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       connect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
     }
   }
-
   updateDatumTransformEntries();
 
   QgsDebugMsg( "Layers have changed, refreshing" );
   emit layersChanged();
 
+  updateAutoRefreshTimer();
   refresh();
 }
 
@@ -1674,7 +1678,40 @@ void QgsMapCanvas::layerRepaintRequested( bool deferred )
     refresh();
 }
 
+void QgsMapCanvas::autoRefreshTriggered()
+{
+  if ( mJob )
+  {
+    // canvas is currently being redrawn, so we skip this auto refresh
+    // otherwise we could get stuck in the situation where an auto refresh is triggered
+    // too often to allow the canvas to ever finish rendering
+    return;
+  }
 
+  refresh();
+}
+
+void QgsMapCanvas::updateAutoRefreshTimer()
+{
+  // min auto refresh interval stores the smallest interval between layer auto refreshes. We automatically
+  // trigger a map refresh on this minimum interval
+  int minAutoRefreshInterval = -1;
+  Q_FOREACH ( QgsMapLayer* layer, mSettings.layers() )
+  {
+    if ( layer->hasAutoRefreshEnabled() && layer->autoRefreshInterval() > 0 )
+      minAutoRefreshInterval = minAutoRefreshInterval > 0 ? qMin( layer->autoRefreshInterval(), minAutoRefreshInterval ) : layer->autoRefreshInterval();
+  }
+
+  if ( minAutoRefreshInterval > 0 )
+  {
+    mAutoRefreshTimer.setInterval( minAutoRefreshInterval );
+    mAutoRefreshTimer.start();
+  }
+  else
+  {
+    mAutoRefreshTimer.stop();
+  }
+}
 
 QgsMapTool* QgsMapCanvas::mapTool()
 {

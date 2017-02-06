@@ -53,6 +53,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_OBJECT
 
     Q_PROPERTY( QString name READ name WRITE setName NOTIFY nameChanged )
+    Q_PROPERTY( int autoRefreshInterval READ autoRefreshInterval WRITE setAutoRefreshInterval NOTIFY autoRefreshIntervalChanged )
 
   public:
 
@@ -646,6 +647,44 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     bool hasScaleBasedVisibility() const;
 
+    /**
+     * Returns true if auto refresh is enabled for the layer.
+     * @note added in QGIS 3.0
+     * @see autoRefreshInterval()
+     * @see setAutoRefreshEnabled()
+     */
+    bool hasAutoRefreshEnabled() const;
+
+    /**
+     * Returns the auto refresh interval (in milliseconds). Note that
+     * auto refresh is only active when hasAutoRefreshEnabled() is true.
+     * @note added in QGIS 3.0
+     * @see autoRefreshEnabled()
+     * @see setAutoRefreshInterval()
+     */
+    int autoRefreshInterval() const;
+
+    /**
+     * Sets the auto refresh interval (in milliseconds) for the layer. This
+     * will cause the layer to be automatically redrawn on a matching interval.
+     * Note that auto refresh must be enabled by calling setAutoRefreshEnabled().
+     *
+     * Note that auto refresh triggers deferred repaints of the layer. Any map
+     * canvas must be refreshed separately in order to view the refreshed layer.
+     * @note added in QGIS 3.0
+     * @see autoRefreshInterval()
+     * @see setAutoRefreshEnabled()
+     */
+    void setAutoRefreshInterval( int interval );
+
+    /**
+     * Sets whether auto refresh is enabled for the layer.
+     * @note added in QGIS 3.0
+     * @see hasAutoRefreshEnabled()
+     * @see setAutoRefreshInterval()
+     */
+    void setAutoRefreshEnabled( bool enabled );
+
   public slots:
 
     //! Event handler for when a coordinate transform fails due to bad vertex error
@@ -786,6 +825,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void willBeDeleted();
 
+    /**
+     * Emitted when the auto refresh interval changes.
+     * @see setAutoRefreshInterval()
+     * @note added in QGIS 3.0
+     */
+    void autoRefreshIntervalChanged( int interval );
+
   protected:
     //! Set the extent
     virtual void setExtent( const QgsRectangle &rect );
@@ -920,6 +966,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Manager of multiple styles available for a layer (may be null)
     QgsMapLayerStyleManager* mStyleManager;
+
+    //! Timer for triggering automatic refreshes of the layer
+    QTimer mRefreshTimer;
+
 };
 
 Q_DECLARE_METATYPE( QgsMapLayer* )

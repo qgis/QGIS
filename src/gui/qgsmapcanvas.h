@@ -616,6 +616,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     void layerRepaintRequested( bool deferred );
 
+    void autoRefreshTriggered();
+
+    void updateAutoRefreshTimer();
+
   private:
     /// this class is non-copyable
 
@@ -705,6 +709,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     std::unique_ptr< QgsRubberBand > mZoomRubberBand;
 
     QCursor mZoomCursor;
+
+    QTimer mAutoRefreshTimer;
 
     //! Force a resize of the map canvas item
     //! @note added in 2.16

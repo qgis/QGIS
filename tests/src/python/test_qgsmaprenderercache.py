@@ -19,7 +19,9 @@ from qgis.core import (QgsMapRendererCache,
                        QgsVectorLayer,
                        QgsProject)
 from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QImage
+from time import sleep
 start_app()
 
 
@@ -245,6 +247,24 @@ class TestQgsMapRendererCache(unittest.TestCase):
         self.assertFalse(cache.hasCacheImage('depends3'))
         self.assertTrue(cache.hasCacheImage('no depends'))
 
+    def testClearOnLayerAutoRefresh(self):
+        """ test that cache is cleared when layer auto refresh is triggered """
+        cache = QgsMapRendererCache()
+        layer1 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer1", "memory")
+        im = QImage(200, 200, QImage.Format_RGB32)
+        cache.setCacheImage('l1', im, [layer1])
+        self.assertTrue(cache.hasCacheImage('l1'))
+
+        layer1.setAutoRefreshInterval(100)
+        layer1.setAutoRefreshEnabled(True)
+        self.assertTrue(cache.hasCacheImage('l1'))
+
+        # wait a second...
+        sleep(1)
+        QCoreApplication.processEvents()
+        # cache should be cleared
+        self.assertFalse(cache.hasCacheImage('l1'))
 
 if __name__ == '__main__':
     unittest.main()

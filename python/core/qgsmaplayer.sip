@@ -603,6 +603,11 @@ class QgsMapLayer : QObject
      */
     bool hasScaleBasedVisibility() const;
 
+    bool hasAutoRefreshEnabled() const;
+    int autoRefreshInterval() const;
+    void setAutoRefreshInterval( int interval );
+    void setAutoRefreshEnabled( bool enabled );
+
   public slots:
 
     /** Event handler for when a coordinate transform fails due to bad vertex error */
@@ -729,6 +734,8 @@ class QgsMapLayer : QObject
      * @note added in QGIS 3.0
      */
     void willBeDeleted();
+
+    void autoRefreshIntervalChanged( int interval );
 
   protected:
     /** Set the extent */
