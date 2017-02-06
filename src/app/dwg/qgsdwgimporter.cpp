@@ -635,56 +635,54 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
     return false;
   }
 
+  switch ( result )
+  {
+    case DRW::BAD_NONE:
+      error = QObject::tr( "No error." );
+      break;
+    case DRW::BAD_UNKNOWN:
+      error = QObject::tr( "Unknown error." );
+      break;
+    case DRW::BAD_OPEN:
+      error = QObject::tr( "error opening file." );
+      break;
+    case DRW::BAD_VERSION:
+      error = QObject::tr( "unsupported version." );
+      break;
+    case DRW::BAD_READ_METADATA:
+      error = QObject::tr( "error reading metadata." );
+      break;
+    case DRW::BAD_READ_FILE_HEADER:
+      error = QObject::tr( "error in file header read process." );
+      break;
+    case DRW::BAD_READ_HEADER:
+      error = QObject::tr( "error in header vars read process." );
+      break;
+    case DRW::BAD_READ_HANDLES:
+      error = QObject::tr( "error in object map read process." );
+      break;
+    case DRW::BAD_READ_CLASSES:
+      error = QObject::tr( "error in classes read process." );
+      break;
+    case DRW::BAD_READ_TABLES:
+      error = QObject::tr( "error in tables read process." );
+      result = DRW::BAD_NONE;
+      break;
+    case DRW::BAD_READ_BLOCKS:
+      error = QObject::tr( "error in block read process." );
+      break;
+    case DRW::BAD_READ_ENTITIES:
+      error = QObject::tr( "error in entities read process." );
+      break;
+    case DRW::BAD_READ_OBJECTS:
+      error = QObject::tr( "error in objects read process." );
+      break;
+  }
+
   if ( result != DRW::BAD_NONE )
   {
-    switch ( result )
-    {
-      case DRW::BAD_NONE:
-        error = QObject::tr( "No error." );
-        break;
-      case DRW::BAD_UNKNOWN:
-        error = QObject::tr( "Unknown error." );
-        break;
-      case DRW::BAD_OPEN:
-        error = QObject::tr( "error opening file." );
-        break;
-      case DRW::BAD_VERSION:
-        error = QObject::tr( "unsupported version." );
-        break;
-      case DRW::BAD_READ_METADATA:
-        error = QObject::tr( "error reading metadata." );
-        break;
-      case DRW::BAD_READ_FILE_HEADER:
-        error = QObject::tr( "error in file header read process." );
-        break;
-      case DRW::BAD_READ_HEADER:
-        error = QObject::tr( "error in header vars read process." );
-        break;
-      case DRW::BAD_READ_HANDLES:
-        error = QObject::tr( "error in object map read process." );
-        break;
-      case DRW::BAD_READ_CLASSES:
-        error = QObject::tr( "error in classes read process." );
-        break;
-      case DRW::BAD_READ_TABLES:
-        error = QObject::tr( "error in tables read process." );
-        result = DRW::BAD_NONE;
-        break;
-      case DRW::BAD_READ_BLOCKS:
-        error = QObject::tr( "error in block read process." );
-        break;
-      case DRW::BAD_READ_ENTITIES:
-        error = QObject::tr( "error in entities read process." );
-        break;
-      case DRW::BAD_READ_OBJECTS:
-        error = QObject::tr( "error in objects read process." );
-        break;
-    }
-
     QgsDebugMsg( QString( "error:%1" ).arg( error ) );
-
-    if ( result != DRW::BAD_NONE )
-      return false;
+    return false;
   }
 
   return !doExpandInserts || expandInserts( error );
@@ -2553,7 +2551,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
 
   OGRFeatureH insert = nullptr;
   int i = 0, errors = 0;
-  for ( int i = 0, errors = 0; true; ++i )
+  for ( int i = 0; true; ++i )
   {
     if ( i % 1000 == 0 )
     {
@@ -2731,17 +2729,11 @@ bool QgsDwgImporter::expandInserts( QString &error )
         ++j;
       }
 
-      if ( f )
-        OGR_F_Destroy( f );
-
       OGR_DS_ReleaseResultSet( mDs, src );
 
       QgsDebugMsgLevel( QString( "%1: %2 features copied" ).arg( name ).arg( j ), 5 );
     }
   }
-
-  if ( insert )
-    OGR_F_Destroy( insert );
 
   if ( errors > 0 )
   {

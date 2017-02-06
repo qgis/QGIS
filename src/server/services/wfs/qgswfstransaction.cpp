@@ -485,9 +485,6 @@ namespace QgsWfs
     respElem.appendChild( trElem );
 
     return resp;
-
-
-    return doc;
   }
 
   namespace
