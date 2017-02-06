@@ -26,6 +26,7 @@
 #include "qgsextentgroupboxplugin.h"
 #include "qgsfieldcomboboxplugin.h"
 #include "qgsfieldexpressionwidgetplugin.h"
+#include "qgsfilewidgetplugin.h"
 #include "qgsfilterlineeditplugin.h"
 #include "qgsmaplayercomboboxplugin.h"
 #include "qgsprojectionselectionwidgetplugin.h"
@@ -49,6 +50,7 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   mWidgets.append( new QgsExtentGroupBoxPlugin( this ) );
   mWidgets.append( new QgsFieldComboBoxPlugin( this ) );
   mWidgets.append( new QgsFieldExpressionWidgetPlugin( this ) );
+  mWidgets.append( new QgsFileWidgetPlugin( this ) );
   mWidgets.append( new QgsFilterLineEditPlugin( this ) );
   mWidgets.append( new QgsMapLayerComboBoxPlugin( this ) );
   mWidgets.append( new QgsProjectionSelectionWidgetPlugin( this ) );
