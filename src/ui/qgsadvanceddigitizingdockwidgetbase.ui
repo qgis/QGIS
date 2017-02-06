@@ -117,8 +117,7 @@
               <item row="0" column="2">
                <widget class="QToolButton" name="mParallelButton">
                 <property name="toolTip">
-                 <string>Parallel;
-press p to switch between perpendicular, parallel and normal mode</string>
+                 <string/>
                 </property>
                 <property name="text">
                  <string>...</string>
@@ -141,8 +140,7 @@ press p to switch between perpendicular, parallel and normal mode</string>
               <item row="0" column="1">
                <widget class="QToolButton" name="mPerpendicularButton">
                 <property name="toolTip">
-                 <string>Perpendicular;
-press p to switch between perpendicular, parallel and normal mode</string>
+                 <string/>
                 </property>
                 <property name="text">
                  <string>...</string>
@@ -165,8 +163,7 @@ press p to switch between perpendicular, parallel and normal mode</string>
               <item row="0" column="0">
                <widget class="QToolButton" name="mConstructionModeButton">
                 <property name="toolTip">
-                 <string>Construction mode;
-press c to toggle on/off</string>
+                 <string/>
                 </property>
                 <property name="text">
                  <string>...</string>
@@ -246,16 +243,14 @@ press c to toggle on/off</string>
             <item row="3" column="2">
              <widget class="QLineEdit" name="mYLineEdit">
               <property name="toolTip">
-               <string>Y coordinate;
-press y for quick access</string>
+               <string/>
               </property>
              </widget>
             </item>
             <item row="3" column="3">
              <widget class="QToolButton" name="mLockYButton">
               <property name="toolTip">
-               <string>Lock y coordinate;
-press Ctrl + y for quick access</string>
+               <string/>
               </property>
               <property name="text">
                <string>...</string>
@@ -272,8 +267,7 @@ press Ctrl + y for quick access</string>
             <item row="2" column="3">
              <widget class="QToolButton" name="mLockXButton">
               <property name="toolTip">
-               <string>Lock x coordinate;
-press Ctrl + x for quick access</string>
+               <string/>
               </property>
               <property name="text">
                <string>...</string>
@@ -290,8 +284,7 @@ press Ctrl + x for quick access</string>
             <item row="3" column="0">
              <widget class="QToolButton" name="mRelativeYButton">
               <property name="toolTip">
-               <string>Toggles relative y to previous node;
-press Shift + y for quick access</string>
+               <string/>
               </property>
               <property name="text">
                <string>...</string>
@@ -308,8 +301,7 @@ press Shift + y for quick access</string>
             <item row="1" column="3">
              <widget class="QToolButton" name="mLockAngleButton">
               <property name="toolTip">
-               <string>Lock angle;
-press Ctrl + a for quick access</string>
+               <string/>
               </property>
               <property name="text">
                <string>...</string>
@@ -326,8 +318,7 @@ press Ctrl + a for quick access</string>
             <item row="2" column="2">
              <widget class="QLineEdit" name="mXLineEdit">
               <property name="toolTip">
-               <string>X coordinate;
-press x for quick access</string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -341,8 +332,7 @@ press x for quick access</string>
             <item row="1" column="0">
              <widget class="QToolButton" name="mRelativeAngleButton">
               <property name="toolTip">
-               <string>Toggles relative angle to previous segment;
-press Shift + a for quick access</string>
+               <string/>
               </property>
               <property name="text">
                <string>...</string>
@@ -362,8 +352,7 @@ press Shift + a for quick access</string>
             <item row="1" column="2">
              <widget class="QLineEdit" name="mAngleLineEdit">
               <property name="toolTip">
-               <string>Angle;
-press a for quick access</string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -384,8 +373,7 @@ press a for quick access</string>
             <item row="0" column="3">
              <widget class="QToolButton" name="mLockDistanceButton">
               <property name="toolTip">
-               <string>Lock distance;
-press Ctrl + d for quick access</string>
+               <string/>
               </property>
               <property name="text">
                <string>...</string>
@@ -402,16 +390,14 @@ press Ctrl + d for quick access</string>
             <item row="0" column="2">
              <widget class="QLineEdit" name="mDistanceLineEdit">
               <property name="toolTip">
-               <string>Distance;
-press d for quick access</string>
+               <string/>
               </property>
              </widget>
             </item>
             <item row="2" column="0">
              <widget class="QToolButton" name="mRelativeXButton">
               <property name="toolTip">
-               <string>Toggles relative x to previous node;
-press Shift + x for quick access</string>
+               <string/>
               </property>
               <property name="text">
                <string>...</string>
@@ -428,7 +414,7 @@ press Shift + x for quick access</string>
             <item row="0" column="4">
              <widget class="QToolButton" name="mRepeatingLockDistanceButton">
               <property name="toolTip">
-               <string>Continuously lock distance</string>
+               <string/>
               </property>
               <property name="text">
                <string>...</string>
@@ -445,7 +431,7 @@ press Shift + x for quick access</string>
             <item row="1" column="4">
              <widget class="QToolButton" name="mRepeatingLockAngleButton">
               <property name="toolTip">
-               <string>Continuously lock angle</string>
+               <string/>
               </property>
               <property name="text">
                <string>...</string>
@@ -462,7 +448,7 @@ press Shift + x for quick access</string>
             <item row="2" column="4">
              <widget class="QToolButton" name="mRepeatingLockXButton">
               <property name="toolTip">
-               <string>Continuously lock x coordinate</string>
+               <string/>
               </property>
               <property name="text">
                <string>...</string>
@@ -479,7 +465,7 @@ press Shift + x for quick access</string>
             <item row="3" column="4">
              <widget class="QToolButton" name="mRepeatingLockYButton">
               <property name="toolTip">
-               <string>Continuously lock y coordinate</string>
+               <string/>
               </property>
               <property name="text">
                <string>...</string>
