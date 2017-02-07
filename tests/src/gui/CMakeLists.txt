@@ -30,6 +30,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${QWT_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
+  ${QSCINTILLA_INCLUDE_DIR}
 )
 
 #############################################################
@@ -146,4 +147,3 @@ ADD_QGIS_TEST(editorwidgetregistrytest testqgseditorwidgetregistry.cpp)
 ADD_QGIS_TEST(keyvaluewidgettest testqgskeyvaluewidget.cpp)
 ADD_QGIS_TEST(listwidgettest testqgslistwidget.cpp)
 ADD_QGIS_TEST(filedownloader testqgsfiledownloader.cpp)
-
