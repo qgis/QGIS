@@ -79,7 +79,6 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     : mDS( nullptr )
     , mLayer( nullptr )
     , mOgrRef( nullptr )
-    , mGeom( nullptr )
     , mError( NoError )
     , mCodec( nullptr )
     , mWkbType( geometryType )
@@ -108,7 +107,6 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& vectorFileName,
     : mDS( nullptr )
     , mLayer( nullptr )
     , mOgrRef( nullptr )
-    , mGeom( nullptr )
     , mError( NoError )
     , mCodec( nullptr )
     , mWkbType( geometryType )
@@ -622,11 +620,6 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   QgsDebugMsg( "Done creating fields" );
 
   mWkbType = geometryType;
-  if ( mWkbType != QgsWkbTypes::NoGeometry )
-  {
-    // create geometry which will be used for import
-    mGeom = createEmptyGeometry( mWkbType );
-  }
 
   if ( newFilename )
     *newFilename = vectorFileName;
@@ -2069,7 +2062,8 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature& feature )
       else // wkb type matches
       {
         QByteArray wkb( geom.exportToWkb() );
-        OGRErr err = OGR_G_ImportFromWkb( mGeom, reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), wkb.length() );
+        OGRGeometryH ogrGeom = createEmptyGeometry( mWkbType );
+        OGRErr err = OGR_G_ImportFromWkb( ogrGeom, reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), wkb.length() );
         if ( err != OGRERR_NONE )
         {
           mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
@@ -2080,8 +2074,8 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature& feature )
           return nullptr;
         }
 
-        // set geometry (ownership is not passed to OGR)
-        OGR_F_SetGeometry( poFeature, mGeom );
+        // set geometry (ownership is passed to OGR)
+        OGR_F_SetGeometryDirectly( poFeature, ogrGeom );
       }
     }
     else
@@ -2118,11 +2112,6 @@ bool QgsVectorFileWriter::writeFeature( OGRLayerH layer, OGRFeatureH feature )
 
 QgsVectorFileWriter::~QgsVectorFileWriter()
 {
-  if ( mGeom )
-  {
-    OGR_G_DestroyGeometry( mGeom );
-  }
-
   if ( mDS )
   {
     OGR_DS_Destroy( mDS );
