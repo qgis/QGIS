@@ -34,6 +34,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import Qgis, QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -110,6 +111,10 @@ class MeanCoords(GeoAlgorithm):
                     weight = float(feat.attributes()[weightIndex])
                 except:
                     weight = 1.00
+
+            if weight < 0:
+                raise GeoAlgorithmExecutionException(self.tr('Negative weight value found. Please fix you data and try again.'))
+
             if clazz not in means:
                 means[clazz] = (0, 0, 0)
 
