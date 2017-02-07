@@ -68,6 +68,7 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer* layer, Q
   }
 
   setupUi( this );
+  this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mModel = new QgsRuleBasedRendererModel( mRenderer );
 #ifdef ENABLE_MODELTEST
