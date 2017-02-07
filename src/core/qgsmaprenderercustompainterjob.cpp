@@ -28,7 +28,6 @@
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter )
     : QgsMapRendererJob( settings )
     , mPainter( painter )
-    , mLabelingEngineV2( nullptr )
     , mActive( false )
     , mRenderSynchronously( false )
 {
@@ -40,9 +39,6 @@ QgsMapRendererCustomPainterJob::~QgsMapRendererCustomPainterJob()
   QgsDebugMsg( "QPAINTER destruct" );
   Q_ASSERT( !mFutureWatcher.isRunning() );
   //cancel();
-
-  delete mLabelingEngineV2;
-  mLabelingEngineV2 = nullptr;
 }
 
 void QgsMapRendererCustomPainterJob::start()
@@ -73,19 +69,18 @@ void QgsMapRendererCustomPainterJob::start()
   Q_ASSERT_X( qgsDoubleNear( thePaintDevice->logicalDpiX(), mSettings.outputDpi() ), "Job::startRender()", errMsg.toLatin1().data() );
 #endif
 
-  delete mLabelingEngineV2;
-  mLabelingEngineV2 = nullptr;
+  mLabelingEngineV2.reset();
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
-    mLabelingEngineV2 = new QgsLabelingEngine();
+    mLabelingEngineV2.reset( new QgsLabelingEngine() );
     mLabelingEngineV2->readSettingsFromProject( QgsProject::instance() );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
   bool canUseLabelCache = prepareLabelCache();
-  mLayerJobs = prepareJobs( mPainter, mLabelingEngineV2 );
-  mLabelJob = prepareLabelingJob( mPainter, mLabelingEngineV2, canUseLabelCache );
+  mLayerJobs = prepareJobs( mPainter, mLabelingEngineV2.get() );
+  mLabelJob = prepareLabelingJob( mPainter, mLabelingEngineV2.get(), canUseLabelCache );
 
   QgsDebugMsg( "Rendering prepared in (seconds): " + QString( "%1" ).arg( prepareTime.elapsed() / 1000.0 ) );
 
@@ -284,12 +279,12 @@ void QgsMapRendererCustomPainterJob::doRender()
         mLabelJob.img->fill( 0 );
         painter.begin( mLabelJob.img );
         mLabelJob.context.setPainter( &painter );
-        drawLabeling( mSettings, mLabelJob.context, mLabelingEngineV2, &painter );
+        drawLabeling( mSettings, mLabelJob.context, mLabelingEngineV2.get(), &painter );
         painter.end();
       }
       else
       {
-        drawLabeling( mSettings, mLabelJob.context, mLabelingEngineV2, mPainter );
+        drawLabeling( mSettings, mLabelJob.context, mLabelingEngineV2.get(), mPainter );
       }
 
       mLabelJob.complete = true;

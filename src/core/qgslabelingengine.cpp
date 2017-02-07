@@ -77,14 +77,11 @@ QgsLabelingEngine::QgsLabelingEngine()
     , mCandPoint( 16 )
     , mCandLine( 50 )
     , mCandPolygon( 30 )
-    , mResults( nullptr )
-{
-  mResults = new QgsLabelingResults;
-}
+    , mResults( new QgsLabelingResults )
+{}
 
 QgsLabelingEngine::~QgsLabelingEngine()
 {
-  delete mResults;
   qDeleteAll( mProviders );
   qDeleteAll( mSubProviders );
 }
@@ -358,9 +355,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
 
 QgsLabelingResults* QgsLabelingEngine::takeResults()
 {
-  QgsLabelingResults* res = mResults;
-  mResults = nullptr;
-  return res;
+  return mResults.release();
 }
 
 

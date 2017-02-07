@@ -29,7 +29,6 @@
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings& settings )
     : QgsMapRendererQImageJob( settings )
     , mStatus( Idle )
-    , mLabelingEngineV2( nullptr )
 {
 }
 
@@ -39,9 +38,6 @@ QgsMapRendererParallelJob::~QgsMapRendererParallelJob()
   {
     cancel();
   }
-
-  delete mLabelingEngineV2;
-  mLabelingEngineV2 = nullptr;
 }
 
 void QgsMapRendererParallelJob::start()
@@ -53,19 +49,18 @@ void QgsMapRendererParallelJob::start()
 
   mStatus = RenderingLayers;
 
-  delete mLabelingEngineV2;
-  mLabelingEngineV2 = nullptr;
+  mLabelingEngineV2.reset();
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
-    mLabelingEngineV2 = new QgsLabelingEngine();
+    mLabelingEngineV2.reset( new QgsLabelingEngine() );
     mLabelingEngineV2->readSettingsFromProject( QgsProject::instance() );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
   bool canUseLabelCache = prepareLabelCache();
-  mLayerJobs = prepareJobs( nullptr, mLabelingEngineV2 );
-  mLabelJob = prepareLabelingJob( nullptr, mLabelingEngineV2, canUseLabelCache );
+  mLayerJobs = prepareJobs( nullptr, mLabelingEngineV2.get() );
+  mLabelJob = prepareLabelingJob( nullptr, mLabelingEngineV2.get(), canUseLabelCache );
 
   QgsDebugMsg( QString( "QThreadPool max thread count is %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
 
@@ -280,7 +275,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob* s
     // draw the labels!
     try
     {
-      drawLabeling( self->mSettings, job.context, self->mLabelingEngineV2, &painter );
+      drawLabeling( self->mSettings, job.context, self->mLabelingEngineV2.get(), &painter );
     }
     catch ( QgsException & e )
     {

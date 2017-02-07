@@ -210,7 +210,7 @@ class CORE_EXPORT QgsLabelingEngine
     QgsLabelingResults* takeResults();
 
     //! For internal use by the providers
-    QgsLabelingResults* results() const { return mResults; }
+    QgsLabelingResults* results() const { return mResults.get(); }
 
     //! Set flags of the labeling engine
     void setFlags( Flags flags ) { mFlags = flags; }
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsLabelingEngine
     int mCandPoint, mCandLine, mCandPolygon;
 
     //! Resulting labeling layout
-    QgsLabelingResults* mResults;
+    std::unique_ptr< QgsLabelingResults > mResults;
 
 };
 

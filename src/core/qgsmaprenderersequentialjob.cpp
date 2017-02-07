@@ -23,7 +23,6 @@ QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings& 
     : QgsMapRendererQImageJob( settings )
     , mInternalJob( nullptr )
     , mPainter( nullptr )
-    , mLabelingResults( nullptr )
 {
   QgsDebugMsg( "SEQUENTIAL construct" );
 
@@ -44,9 +43,6 @@ QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
   }
 
   Q_ASSERT( !mInternalJob && !mPainter );
-
-  delete mLabelingResults;
-  mLabelingResults = nullptr;
 }
 
 
@@ -54,6 +50,8 @@ void QgsMapRendererSequentialJob::start()
 {
   if ( isActive() )
     return; // do nothing if we are already running
+
+  mLabelingResults.reset();
 
   mRenderingStart.start();
 
@@ -105,9 +103,7 @@ bool QgsMapRendererSequentialJob::usedCachedLabels() const
 
 QgsLabelingResults* QgsMapRendererSequentialJob::takeLabelingResults()
 {
-  QgsLabelingResults* tmp = mLabelingResults;
-  mLabelingResults = nullptr;
-  return tmp;
+  return mLabelingResults.release();
 }
 
 
@@ -129,7 +125,7 @@ void QgsMapRendererSequentialJob::internalFinished()
   delete mPainter;
   mPainter = nullptr;
 
-  mLabelingResults = mInternalJob->takeLabelingResults();
+  mLabelingResults.reset( mInternalJob->takeLabelingResults() );
   mUsedCachedLabels = mInternalJob->usedCachedLabels();
 
   mErrors = mInternalJob->errors();
