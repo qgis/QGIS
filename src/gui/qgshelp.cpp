@@ -53,7 +53,15 @@ QUrl QgsHelp::helpUrl( const QString& key )
 
   Q_FOREACH ( const QString& path, paths )
   {
-    fullPath = path;
+    if ( path.endsWith( "\\" ) || path.endsWith( "/" ) )
+    {
+      fullPath = path.left( path.size() - 1 );
+    }
+    else
+    {
+      fullPath = path;
+    }
+
     Q_FOREACH ( const QString& var, scope->variableNames() )
     {
       QRegularExpression rx( QStringLiteral( "(<!\\$\\$)*(\\$%1)" ).arg( var ) );
