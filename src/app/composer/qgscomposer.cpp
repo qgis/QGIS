@@ -3984,7 +3984,7 @@ void QgsComposer::populatePrintComposersMenu()
   if ( acts.size() > 1 )
   {
     // sort actions in case main app's aboutToShow slot has not yet
-    qSort( acts.begin(), acts.end(), cmpByText_ );
+    std::sort( acts.begin(), acts.end(), cmpByText_ );
   }
   mPrintComposersMenu->addActions( acts );
 }

@@ -2277,7 +2277,7 @@ QList<LabelPosition*> * Problem::getSolution( bool returnInactive )
   // if features collide, order by size, so smaller ones appear on top
   if ( returnInactive )
   {
-    qSort( solList->begin(), solList->end(), compareLabelArea );
+    std::sort( solList->begin(), solList->end(), compareLabelArea );
   }
 
   return solList;

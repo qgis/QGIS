@@ -153,7 +153,7 @@ void QgsBrowserModel::addRootItems()
     QList<QgsDataItem *> providerGroup = providerMap.values( key );
     if ( providerGroup.size() > 1 )
     {
-      qSort( providerGroup.begin(), providerGroup.end(), cmpByDataItemName_ );
+      std::sort( providerGroup.begin(), providerGroup.end(), cmpByDataItemName_ );
     }
 
     Q_FOREACH ( QgsDataItem * ditem, providerGroup )

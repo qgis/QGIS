@@ -670,7 +670,7 @@ QStringList QgsVectorDataProvider::availableEncodings()
   }
 
   // Do case-insensitive sorting of encodings
-  qSort( sEncodings.begin(), sEncodings.end(), _compareEncodings );
+  std::sort( sEncodings.begin(), sEncodings.end(), _compareEncodings );
 
   return sEncodings;
 }

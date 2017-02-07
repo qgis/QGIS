@@ -1386,7 +1386,7 @@ void QgsGrassModuleSelection::onLayerSelectionChanged()
   {
     cats << QgsGrassFeatureIterator::catFromFid( fid );
   }
-  qSort( cats );
+  std::sort( cats.begin(), cats.end() );
   QString list;
   // make ranges of cats
   int last = -1;

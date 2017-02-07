@@ -847,7 +847,7 @@ void QgsRuleBasedRenderer::startRender( QgsRenderContext& context, const QgsFiel
 
   QSet<int> symbolZLevelsSet = mRootRule->collectZLevels();
   QList<int> symbolZLevels = symbolZLevelsSet.toList();
-  qSort( symbolZLevels );
+  std::sort( symbolZLevels.begin(), symbolZLevels.end() );
 
   // create mapping from unnormalized levels [unlimited range] to normalized levels [0..N-1]
   // and prepare rendering queue
@@ -1152,7 +1152,7 @@ void QgsRuleBasedRenderer::refineRuleRanges( QgsRuleBasedRenderer::Rule* initial
 
 void QgsRuleBasedRenderer::refineRuleScales( QgsRuleBasedRenderer::Rule* initialRule, QList<int> scales )
 {
-  qSort( scales ); // make sure the scales are in ascending order
+  std::sort( scales.begin(), scales.end() ); // make sure the scales are in ascending order
   int oldScale = initialRule->scaleMinDenom();
   int maxDenom = initialRule->scaleMaxDenom();
   QgsSymbol* symbol = initialRule->symbol();

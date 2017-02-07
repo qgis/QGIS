@@ -166,7 +166,7 @@ QStringList QgsExpressionContextScope::filteredVariableNames() const
     filtered << variable;
   }
   QgsExpressionContextVariableCompare cmp( *this );
-  qSort( filtered.begin(), filtered.end(), cmp );
+  std::sort( filtered.begin(), filtered.end(), cmp );
 
   return filtered;
 }

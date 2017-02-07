@@ -297,7 +297,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
     colorRampItems.append( newColorRampItem );
   }
 
-  qSort( colorRampItems );
+  std::sort( colorRampItems.begin(), colorRampItems.end() );
   setColorRampItemList( colorRampItems );
 }
 

@@ -27,7 +27,7 @@ QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *pa
   setupUi( this );
 
   QStringList dims = layer.dimensions.keys();
-  qSort( dims );
+  std::sort( dims.begin(), dims.end() );
 
   mDimensions->setRowCount( dims.size() );
 

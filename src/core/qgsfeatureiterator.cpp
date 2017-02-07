@@ -165,7 +165,7 @@ void QgsAbstractFeatureIterator::setupOrderBy( const QList<QgsFeatureRequest::Or
       mCachedFeatures.append( indexedFeature );
     }
 
-    qSort( mCachedFeatures.begin(), mCachedFeatures.end(), QgsExpressionSorter( preparedOrderBys ) );
+    std::sort( mCachedFeatures.begin(), mCachedFeatures.end(), QgsExpressionSorter( preparedOrderBys ) );
 
     mFeatureIterator = mCachedFeatures.constBegin();
     mUseCachedFeatures = true;

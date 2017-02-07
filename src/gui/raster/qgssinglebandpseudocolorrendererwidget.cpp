@@ -160,7 +160,7 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRendererWidget::renderer()
     colorRampItems.append( newColorRampItem );
   }
   // sort the shader items
-  qSort( colorRampItems );
+  std::sort( colorRampItems.begin(), colorRampItems.end() );
   colorRampShader->setColorRampItemList( colorRampItems );
 
   if ( !btnColorRamp->isNull() )

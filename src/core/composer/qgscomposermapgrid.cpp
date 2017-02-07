@@ -1974,7 +1974,7 @@ QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( QPointF p
   distanceToSide << qMakePair( p.y(), QgsComposerMapGrid::Top );
   distanceToSide << qMakePair( mComposerMap->rect().height() - p.y(), QgsComposerMapGrid::Bottom );
 
-  qSort( distanceToSide.begin(), distanceToSide.end(), sortByDistance );
+  std::sort( distanceToSide.begin(), distanceToSide.end(), sortByDistance );
   return distanceToSide.at( 0 ).second;
 }
 

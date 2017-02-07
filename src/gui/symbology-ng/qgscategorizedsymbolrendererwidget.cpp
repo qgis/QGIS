@@ -319,7 +319,7 @@ bool QgsCategorizedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt:
 
 void QgsCategorizedSymbolRendererModel::deleteRows( QList<int> rows )
 {
-  qSort( rows ); // list might be unsorted, depending on how the user selected the rows
+  std::sort( rows.begin(), rows.end() ); // list might be unsorted, depending on how the user selected the rows
   for ( int i = rows.size() - 1; i >= 0; i-- )
   {
     beginRemoveRows( QModelIndex(), rows[i], rows[i] );

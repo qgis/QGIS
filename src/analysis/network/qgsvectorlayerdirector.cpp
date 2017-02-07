@@ -233,7 +233,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
 
   QgsPointCompare pointCompare( builder->topologyTolerance() );
 
-  qSort( points.begin(), points.end(), pointCompare );
+  std::sort( points.begin(), points.end(), pointCompare );
   QVector< QgsPoint >::iterator tmp = std::unique( points.begin(), points.end() );
   points.resize( tmp - points.begin() );
 
@@ -243,7 +243,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
   for ( i = 0; i < snappedPoints.size() ; ++i )
     snappedPoints[ i ] = *( my_binary_search( points.begin(), points.end(), snappedPoints[ i ], pointCompare ) );
 
-  qSort( pointLengthMap.begin(), pointLengthMap.end(), TiePointInfoCompare );
+  std::sort( pointLengthMap.begin(), pointLengthMap.end(), TiePointInfoCompare );
 
   {
     // fill attribute list 'la'
@@ -264,7 +264,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
         tmpAttr.push_back( *it2 );
       }
     }
-    qSort( tmpAttr.begin(), tmpAttr.end() );
+    std::sort( tmpAttr.begin(), tmpAttr.end() );
 
     int lastAttrId = -1;
     for ( it2 = tmpAttr.begin(); it2 != tmpAttr.end(); ++it2 )

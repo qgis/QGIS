@@ -175,7 +175,7 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
       }
     }
   }
-  qSort( profileKeys );
+  std::sort( profileKeys.begin(), profileKeys.end() );
 
   // populate mOptionsMap and mProfileComboBox
   mOptionsMap.clear();

@@ -277,7 +277,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
         changeAttributeMap.insert( meanIndex, QVariant( mean ) );
       if ( mStatistics & QgsZonalStatistics::Median )
       {
-        qSort( featureStats.values.begin(), featureStats.values.end() );
+        std::sort( featureStats.values.begin(), featureStats.values.end() );
         int size =  featureStats.values.count();
         bool even = ( size % 2 ) < 1;
         double medianValue;
@@ -311,7 +311,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
       if ( mStatistics & QgsZonalStatistics::Minority || mStatistics & QgsZonalStatistics::Majority )
       {
         QList<int> vals = featureStats.valueCount.values();
-        qSort( vals.begin(), vals.end() );
+        std::sort( vals.begin(), vals.end() );
         if ( mStatistics & QgsZonalStatistics::Minority )
         {
           float minorityKey = featureStats.valueCount.key( vals.first() );

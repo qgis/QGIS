@@ -202,7 +202,7 @@ int QgsAtlasComposition::updateFeatures()
   if ( !mFeatureKeys.isEmpty() )
   {
     FieldSorter sorter( mFeatureKeys, mSortAscending );
-    qSort( mFeatureIds.begin(), mFeatureIds.end(), sorter );
+    std::sort( mFeatureIds.begin(), mFeatureIds.end(), sorter );
   }
 
   emit numberFeaturesChanged( mFeatureIds.size() );
@@ -750,7 +750,7 @@ void QgsAtlasComposition::setPredefinedScales( const QVector<qreal>& scales )
 {
   mPredefinedScales = scales;
   // make sure the list is sorted
-  qSort( mPredefinedScales.begin(), mPredefinedScales.end() );
+  std::sort( mPredefinedScales.begin(), mPredefinedScales.end() );
 }
 
 QgsGeometry QgsAtlasComposition::currentGeometry( const QgsCoordinateReferenceSystem& crs ) const

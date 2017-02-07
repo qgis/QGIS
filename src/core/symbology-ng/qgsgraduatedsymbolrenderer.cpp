@@ -573,7 +573,7 @@ static QList<double> _calcQuantileBreaks( QList<double> values, int classes )
   // (indices of X: 1...n)
 
   // sort the values first
-  qSort( values );
+  std::sort( values.begin(), values.end() );
 
   QList<double> breaks;
 
@@ -709,7 +709,7 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
   int n = sample.size();
 
   // sort the sample values
-  qSort( sample );
+  std::sort( sample.begin(), sample.end() );
 
   QVector< QVector<int> > matrixOne( n + 1 );
   QVector< QVector<double> > matrixTwo( n + 1 );
@@ -828,7 +828,7 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer* vlayer, Mode mod
     if ( !ok || values.isEmpty() )
       return;
 
-    qSort( values ); // vmora: is wondering if O( n log(n) ) is really necessary here, min and max are O( n )
+    std::sort( values.begin(), values.end() ); // vmora: is wondering if O( n log(n) ) is really necessary here, min and max are O( n )
     minimum = values.first();
     maximum = values.last();
     valuesLoaded = true;
@@ -1518,18 +1518,18 @@ void QgsGraduatedSymbolRenderer::sortByValue( Qt::SortOrder order )
 {
   if ( order == Qt::AscendingOrder )
   {
-    qSort( mRanges.begin(), mRanges.end(), valueLessThan );
+    std::sort( mRanges.begin(), mRanges.end(), valueLessThan );
   }
   else
   {
-    qSort( mRanges.begin(), mRanges.end(), valueGreaterThan );
+    std::sort( mRanges.begin(), mRanges.end(), valueGreaterThan );
   }
 }
 
 bool QgsGraduatedSymbolRenderer::rangesOverlap() const
 {
   QgsRangeList sortedRanges = mRanges;
-  qSort( sortedRanges.begin(), sortedRanges.end(), valueLessThan );
+  std::sort( sortedRanges.begin(), sortedRanges.end(), valueLessThan );
 
   QgsRangeList::const_iterator it = sortedRanges.constBegin();
   if ( it == sortedRanges.constEnd() )
@@ -1557,7 +1557,7 @@ bool QgsGraduatedSymbolRenderer::rangesOverlap() const
 bool QgsGraduatedSymbolRenderer::rangesHaveGaps() const
 {
   QgsRangeList sortedRanges = mRanges;
-  qSort( sortedRanges.begin(), sortedRanges.end(), valueLessThan );
+  std::sort( sortedRanges.begin(), sortedRanges.end(), valueLessThan );
 
   QgsRangeList::const_iterator it = sortedRanges.constBegin();
   if ( it == sortedRanges.constEnd() )
@@ -1590,11 +1590,11 @@ void QgsGraduatedSymbolRenderer::sortByLabel( Qt::SortOrder order )
 {
   if ( order == Qt::AscendingOrder )
   {
-    qSort( mRanges.begin(), mRanges.end(), labelLessThan );
+    std::sort( mRanges.begin(), mRanges.end(), labelLessThan );
   }
   else
   {
-    qSort( mRanges.begin(), mRanges.end(), labelGreaterThan );
+    std::sort( mRanges.begin(), mRanges.end(), labelGreaterThan );
   }
 }
 

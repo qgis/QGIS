@@ -1005,7 +1005,7 @@ QMimeData* QgsLayerTreeModel::mimeData( const QModelIndexList& indexes ) const
 {
   // Sort the indexes. Depending on how the user selected the items, the indexes may be unsorted.
   QModelIndexList sortedIndexes = indexes;
-  qSort( sortedIndexes.begin(), sortedIndexes.end(), qLess<QModelIndex>() );
+  std::sort( sortedIndexes.begin(), sortedIndexes.end(), std::less<QModelIndex>() );
 
   QList<QgsLayerTreeNode*> nodesFinal = indexes2nodes( sortedIndexes, true );
 

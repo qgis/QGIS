@@ -1553,7 +1553,7 @@ void QgisApp::readSettings()
   {
     projectKeys.append( key.toInt() );
   }
-  qSort( projectKeys );
+  std::sort( projectKeys.begin(), projectKeys.end() );
 
   Q_FOREACH ( int key, projectKeys )
   {
@@ -2108,7 +2108,7 @@ void QgisApp::createToolBars()
   }
 
   // sort actions in toolbar menu
-  qSort( toolbarMenuActions.begin(), toolbarMenuActions.end(), cmpByText_ );
+  std::sort( toolbarMenuActions.begin(), toolbarMenuActions.end(), cmpByText_ );
 
   mToolbarMenu->addActions( toolbarMenuActions );
 
@@ -6930,7 +6930,7 @@ void QgisApp::on_mPrintComposersMenu_aboutToShow()
   if ( acts.size() > 1 )
   {
     // sort actions by text
-    qSort( acts.begin(), acts.end(), cmpByText_ );
+    std::sort( acts.begin(), acts.end(), cmpByText_ );
   }
   mPrintComposersMenu->addActions( acts );
 }
@@ -12040,7 +12040,7 @@ QMenu* QgisApp::createPopupMenu()
       }
     }
 
-    qSort( panels.begin(), panels.end(), cmpByText_ );
+    std::sort( panels.begin(), panels.end(), cmpByText_ );
     QWidgetAction* panelstitle = new QWidgetAction( menu );
     QLabel* plabel = new QLabel( QStringLiteral( "<b>%1</b>" ).arg( tr( "Panels" ) ) );
     plabel->setMargin( 3 );
@@ -12058,7 +12058,7 @@ QMenu* QgisApp::createPopupMenu()
     tlabel->setAlignment( Qt::AlignHCenter );
     toolbarstitle->setDefaultWidget( tlabel );
     menu->addAction( toolbarstitle );
-    qSort( toolbars.begin(), toolbars.end(), cmpByText_ );
+    std::sort( toolbars.begin(), toolbars.end(), cmpByText_ );
     Q_FOREACH ( QAction* a, toolbars )
     {
       menu->addAction( a );

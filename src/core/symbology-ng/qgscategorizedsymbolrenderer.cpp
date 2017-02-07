@@ -352,11 +352,11 @@ void QgsCategorizedSymbolRenderer::sortByValue( Qt::SortOrder order )
 {
   if ( order == Qt::AscendingOrder )
   {
-    qSort( mCategories.begin(), mCategories.end(), valueLessThan );
+    std::sort( mCategories.begin(), mCategories.end(), valueLessThan );
   }
   else
   {
-    qSort( mCategories.begin(), mCategories.end(), valueGreaterThan );
+    std::sort( mCategories.begin(), mCategories.end(), valueGreaterThan );
   }
 }
 
@@ -374,11 +374,11 @@ void QgsCategorizedSymbolRenderer::sortByLabel( Qt::SortOrder order )
 {
   if ( order == Qt::AscendingOrder )
   {
-    qSort( mCategories.begin(), mCategories.end(), labelLessThan );
+    std::sort( mCategories.begin(), mCategories.end(), labelLessThan );
   }
   else
   {
-    qSort( mCategories.begin(), mCategories.end(), labelGreaterThan );
+    std::sort( mCategories.begin(), mCategories.end(), labelGreaterThan );
   }
 }
 

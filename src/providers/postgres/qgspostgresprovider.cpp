@@ -2409,7 +2409,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
     conn->begin();
 
     QList<int> idsList = ids.values();
-    qSort( idsList.begin(), idsList.end(), qGreater<int>() );
+    std::sort( idsList.begin(), idsList.end(), std::greater<int>() );
 
     for ( QList<int>::const_iterator iter = idsList.begin(); iter != idsList.end(); ++iter )
     {

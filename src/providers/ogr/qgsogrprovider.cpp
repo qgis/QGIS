@@ -1447,7 +1447,7 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
   bool res = true;
   QList<int> attrsLst = attributes.toList();
   // sort in descending order
-  qSort( attrsLst.begin(), attrsLst.end(), qGreater<int>() );
+  std::sort( attrsLst.begin(), attrsLst.end(), std::greater<int>() );
   Q_FOREACH ( int attr, attrsLst )
   {
     if ( mFirstFieldIsFid )
@@ -4028,7 +4028,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
     OGR_F_Destroy( hFeature );
   }
 
-  qSort( listTimestamp.begin(), listTimestamp.end() );
+  std::sort( listTimestamp.begin(), listTimestamp.end() );
   // Sort from most recent to least recent
   for ( int i = listTimestamp.size() - 1; i >= 0; i-- )
   {

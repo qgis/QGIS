@@ -137,11 +137,11 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
 
   if ( config.value( "OrderByValue" ).toBool() )
   {
-    qSort( cache.begin(), cache.end(), orderByValueLessThan );
+    std::sort( cache.begin(), cache.end(), orderByValueLessThan );
   }
   else
   {
-    qSort( cache.begin(), cache.end(), orderByKeyLessThan );
+    std::sort( cache.begin(), cache.end(), orderByKeyLessThan );
   }
 
   return cache;

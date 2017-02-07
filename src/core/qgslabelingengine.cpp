@@ -327,7 +327,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
   painter->setRenderHint( QPainter::Antialiasing );
 
   // sort labels
-  qSort( labels->begin(), labels->end(), QgsLabelSorter( mMapSettings ) );
+  std::sort( labels->begin(), labels->end(), QgsLabelSorter( mMapSettings ) );
 
   // draw the labels
   QList<pal::LabelPosition*>::iterator it = labels->begin();

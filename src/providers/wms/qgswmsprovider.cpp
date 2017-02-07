@@ -450,7 +450,7 @@ bool QgsWmsProvider::setImageCrs( QString const & crs )
     {
       mTileMatrixSet = &mCaps.mTileMatrixSets[ mSettings.mTileMatrixSetId ];
       QList<double> keys = mTileMatrixSet->tileMatrices.keys();
-      qSort( keys );
+      std::sort( keys.begin(), keys.end() );
       Q_FOREACH ( double key, keys )
       {
         resolutions << key;
@@ -849,7 +849,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
       // order tile requests according to the distance from view center
       LessThanTileRequest cmp;
       cmp.center = viewExtent.center();
-      qSort( requestsFinal.begin(), requestsFinal.end(), cmp );
+      std::sort( requestsFinal.begin(), requestsFinal.end(), cmp );
 
       QgsWmsTiledImageDownloadHandler handler( dataSourceUri(), mSettings.authorization(), mTileReqNo, requestsFinal, image, viewExtent, mSettings.mSmoothPixmapTransform, feedback );
       handler.downloadBlocking();

@@ -105,7 +105,7 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds& fids )
       rows << row;
   }
 
-  qSort( rows );
+  std::sort( rows.begin(), rows.end() );
 
   int lastRow = -1;
   int beginRow = -1;

@@ -1949,7 +1949,7 @@ void QgsGrassProvider::onUndoIndexChanged( int currentIndex )
   QgsDebugMsg( QString( "currentIndex = %1" ).arg( currentIndex ) );
   // multiple commands maybe undone with single undoIndexChanged signal
   QList<int> indexes = mLayer->map()->undoCommands().keys();
-  qSort( indexes );
+  std::sort( indexes.begin(), indexes.end() );
   for ( int i = indexes.size() - 1; i >= 0; i-- )
   {
     int index = indexes[i];

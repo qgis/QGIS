@@ -726,7 +726,7 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
   Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, nodesWithRemoval.keys() )
   {
     QList<int> toDelete = nodesWithRemoval[nodeLayer];
-    qSort( toDelete.begin(), toDelete.end(), qGreater<int>() );
+    std::sort( toDelete.begin(), toDelete.end(), std::greater<int>() );
     QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( nodeLayer );
 
     Q_FOREACH ( int i, toDelete )

@@ -1601,7 +1601,7 @@ int FeaturePart::createCandidates( QList< LabelPosition*>& lPos,
     }
   }
 
-  qSort( lPos.begin(), lPos.end(), CostCalculator::candidateSortGrow );
+  std::sort( lPos.begin(), lPos.end(), CostCalculator::candidateSortGrow );
   return lPos.count();
 }
 

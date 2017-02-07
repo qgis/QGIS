@@ -383,7 +383,7 @@ void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs& jobs )
     elapsed.insert( job.renderingTime, job.layer ? job.layer->id() : QString() );
 
   QList<int> tt( elapsed.uniqueKeys() );
-  qSort( tt.begin(), tt.end(), qGreater<int>() );
+  std::sort( tt.begin(), tt.end(), std::greater<int>() );
   Q_FOREACH ( int t, tt )
   {
     QgsMessageLog::logMessage( tr( "%1 ms: %2" ).arg( t ).arg( QStringList( elapsed.values( t ) ).join( QStringLiteral( ", " ) ) ), tr( "Rendering" ) );

@@ -3444,13 +3444,13 @@ void QgsSymbolLayerUtils::sortVariantList( QList<QVariant>& list, Qt::SortOrder 
 {
   if ( order == Qt::AscendingOrder )
   {
-    //qSort( list.begin(), list.end(), _QVariantLessThan );
-    qSort( list.begin(), list.end(), qgsVariantLessThan );
+    //std::sort( list.begin(), list.end(), _QVariantLessThan );
+    std::sort( list.begin(), list.end(), qgsVariantLessThan );
   }
   else // Qt::DescendingOrder
   {
-    //qSort( list.begin(), list.end(), _QVariantGreaterThan );
-    qSort( list.begin(), list.end(), qgsVariantGreaterThan );
+    //std::sort( list.begin(), list.end(), _QVariantGreaterThan );
+    std::sort( list.begin(), list.end(), qgsVariantGreaterThan );
   }
 }
 
