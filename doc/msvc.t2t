@@ -8,11 +8,11 @@ MinGW).
 This section describes the setup required to allow Visual Studio to be used to
 build QGIS. 
 
-===Visual C++ Express Edition===
+===Visual C++ Community Edition===
 
-The free (as in free beer) Express Edition installer is available under:
+The free (as in free beer) Community installer is available under:
 
-	https://download.my.visualstudio.com/db/en_visual_studio_express_2015_for_windows_10_x86_x64_web_installer_6878617.exe?t=9437eae7-7ff2-462a-a349-312fd069ef2d&e=1486459960&h=1fa3414e467f267c795c01bc38b9472d&su=1
+	http://download.microsoft.com/download/D/2/3/D23F4D0F-BA2D-4600-8725-6CCECEA05196/vs_community_ENU.exe
 
 ===Other tools and dependencies===
 
@@ -45,6 +45,10 @@ and from OSGeo4W (select //Advanced Installation//):
 - pyqt5
 - python3-devel
 - python3-qscintilla
+- python3-nose2
+- python3-future
+- python3-pyyaml
+- python3-mock
 - qca-qt5-devel
 - qca-qt5-libs
 - qscintilla-qt5
