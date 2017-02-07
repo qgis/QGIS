@@ -383,7 +383,7 @@ qgis:polygonstolines: >
 
 qgis:spatialiteexecutesql: >
   This algorithm performs a SQL database query on a Spatialite database.
-  
+
 qgis:postgisexecutesql: >
   This algorithm performs a SQL database query on a PostGIS database connected to QGIS.
 
@@ -514,7 +514,7 @@ qgis:snappointstogrid: >
 
 qgis:splitwithlines: >
   This algorithm splits the lines or polygons in one layer using the lines in another layer to define the breaking points. Intersection between geometries in both layers are considered as split points.
-  
+
   Output will contain multi geometries for split features.
 
 qgis:splitvectorlayer: >
@@ -571,16 +571,20 @@ qgis:zonalstatistics:
 
 qgis:rastercalculator: >
     This algorithm allows to perform algebraic operations using raster layers.
-    
+
     The resulting layer will have its values computed according to an expression. The expression can contain numerical values, operators and references to any of the layers in the current project. The following functions are also supported:
-    
+
     - sin(), cos(), tan(), atan2(), ln(), log10()
-    
+
     The extent and cellsize can be defined by the user. If the extent is not specified, the minimum extent that covers the input layers will be used. If the cell size is not specified, the minimum cell size of all input layers will be used.
-    
+
     The cell size is assumed to be the same in both X and Y axes.
-    
+
     Layers are referred by their name as displayed in the layer list and the number of the band to use (based on 1), using the pattern 'layer_name@band number'. For instance, the first band from a layer named DEM will be referred as DEM@1.
-    
+
     When using the calculator in the batch interface or from the console, the files to use have to be specified. The corresponding layers are referred using the base name of the file (without the full path). For instance, is using a layer at path/to/my/rasterfile.tif, the first band of that layer will be referred as rasterfile.tif@1.
-    
+
+qgis:fixgeometries: >
+    This algorithm attempts to create a valid representation of a given invalid geometry without losing any of the input vertices. Already-valid geometries are returned without further intervention. Always outputs multi-geometry layer.
+
+    NOTE: M values will be dropped from the output.
