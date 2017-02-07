@@ -17,6 +17,7 @@
 
 #include "qgsexpressioncontext.h"
 #include "qgis_gui.h"
+#include <memory>
 
 class QgsMapCanvas;
 
@@ -89,7 +90,7 @@ class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
   private:
 
     QgsMapCanvas* mMapCanvas;
-    QScopedPointer< QgsExpressionContext > mExpressionContext;
+    std::unique_ptr< QgsExpressionContext > mExpressionContext;
     QList< QgsExpressionContextScope > mAdditionalScopes;
 
 };

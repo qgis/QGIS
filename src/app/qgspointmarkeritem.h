@@ -22,6 +22,7 @@
 #include <QFontMetricsF>
 #include <QPixmap>
 #include "qgis_app.h"
+#include <memory>
 
 class QgsMarkerSymbol;
 
@@ -91,9 +92,9 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
   private:
 
     QgsFeature mFeature;
-    QScopedPointer< QgsMarkerSymbol > mMarkerSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
     QPointF mLocation;
-    QScopedPointer< QgsDrawSourceEffect > mOpacityEffect;
+    std::unique_ptr< QgsDrawSourceEffect > mOpacityEffect;
 
     QgsRenderContext renderContext( QPainter* painter );
 };

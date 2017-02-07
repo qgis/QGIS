@@ -99,8 +99,8 @@ void TestQgsMeasureTool::testLengthCalculation()
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
   // run length calculation
-  QScopedPointer< QgsMeasureTool > tool( new QgsMeasureTool( mCanvas, false ) );
-  QScopedPointer< QgsMeasureDialog > dlg( new QgsMeasureDialog( tool.data() ) );
+  std::unique_ptr< QgsMeasureTool > tool( new QgsMeasureTool( mCanvas, false ) );
+  std::unique_ptr< QgsMeasureDialog > dlg( new QgsMeasureDialog( tool.get() ) );
 
   tool->restart();
   tool->addPoint( QgsPoint( 2484588, 2425722 ) );
@@ -116,8 +116,8 @@ void TestQgsMeasureTool::testLengthCalculation()
 
   // change project length unit, check calculation respects unit
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
-  QScopedPointer< QgsMeasureTool > tool2( new QgsMeasureTool( mCanvas, false ) );
-  QScopedPointer< QgsMeasureDialog > dlg2( new QgsMeasureDialog( tool2.data() ) );
+  std::unique_ptr< QgsMeasureTool > tool2( new QgsMeasureTool( mCanvas, false ) );
+  std::unique_ptr< QgsMeasureDialog > dlg2( new QgsMeasureDialog( tool2.get() ) );
 
   tool2->restart();
   tool2->addPoint( QgsPoint( 2484588, 2425722 ) );
@@ -166,8 +166,8 @@ void TestQgsMeasureTool::testAreaCalculation()
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
 
   // run length calculation
-  QScopedPointer< QgsMeasureTool > tool( new QgsMeasureTool( mCanvas, true ) );
-  QScopedPointer< QgsMeasureDialog > dlg( new QgsMeasureDialog( tool.data() ) );
+  std::unique_ptr< QgsMeasureTool > tool( new QgsMeasureTool( mCanvas, true ) );
+  std::unique_ptr< QgsMeasureDialog > dlg( new QgsMeasureDialog( tool.get() ) );
 
   tool->restart();
   tool->addPoint( QgsPoint( 2484588, 2425722 ) );
@@ -185,8 +185,8 @@ void TestQgsMeasureTool::testAreaCalculation()
 
   // change project area unit, check calculation respects unit
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
-  QScopedPointer< QgsMeasureTool > tool2( new QgsMeasureTool( mCanvas, true ) );
-  QScopedPointer< QgsMeasureDialog > dlg2( new QgsMeasureDialog( tool2.data() ) );
+  std::unique_ptr< QgsMeasureTool > tool2( new QgsMeasureTool( mCanvas, true ) );
+  std::unique_ptr< QgsMeasureDialog > dlg2( new QgsMeasureDialog( tool2.get() ) );
 
   tool2->restart();
   tool2->addPoint( QgsPoint( 2484588, 2425722 ) );

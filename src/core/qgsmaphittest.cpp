@@ -143,7 +143,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolSet& usedSymbols,
   SymbolSet lUsedSymbolsRuleKey;
   bool allExpressionFalse = false;
   bool hasExpression = mLayerFilterExpression.contains( vl->id() );
-  QScopedPointer<QgsExpression> expr;
+  std::unique_ptr<QgsExpression> expr;
   if ( hasExpression )
   {
     expr.reset( new QgsExpression( mLayerFilterExpression[vl->id()] ) );

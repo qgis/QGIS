@@ -66,7 +66,7 @@ class CORE_EXPORT QgsTextAnnotation: public QgsAnnotation
     void renderAnnotation( QgsRenderContext& context, QSizeF size ) const override;
 
   private:
-    QScopedPointer< QTextDocument > mDocument;
+    std::unique_ptr< QTextDocument > mDocument;
 };
 
 #endif // QGSTEXTANNOTATION_H

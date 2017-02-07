@@ -422,7 +422,7 @@ void QgsSymbolSelectorWidget::layerChanged()
     layerProp->setDockMode( this->dockMode() );
     layerProp->setContext( mContext );
     setWidget( layerProp );
-    connect( layerProp, SIGNAL( changed() ), mDataDefineRestorer.data(), SLOT( restore() ) );
+    connect( layerProp, SIGNAL( changed() ), mDataDefineRestorer.get(), SLOT( restore() ) );
     connect( layerProp, SIGNAL( changed() ), this, SLOT( updateLayerPreview() ) );
     // This connection when layer type is changed
     connect( layerProp, SIGNAL( changeLayer( QgsSymbolLayer* ) ), this, SLOT( changeLayer( QgsSymbolLayer* ) ) );

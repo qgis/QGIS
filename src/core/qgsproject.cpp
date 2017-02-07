@@ -731,7 +731,7 @@ bool QgsProject::read()
 {
   clearError();
 
-  QScopedPointer<QDomDocument> doc( new QDomDocument( QStringLiteral( "qgis" ) ) );
+  std::unique_ptr<QDomDocument> doc( new QDomDocument( QStringLiteral( "qgis" ) ) );
 
   if ( !mFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
@@ -1156,7 +1156,7 @@ bool QgsProject::write()
   QDomDocumentType documentType =
     DomImplementation.createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ),
                                           QStringLiteral( "SYSTEM" ) );
-  QScopedPointer<QDomDocument> doc( new QDomDocument( documentType ) );
+  std::unique_ptr<QDomDocument> doc( new QDomDocument( documentType ) );
 
   QDomElement qgisNode = doc->createElement( QStringLiteral( "qgis" ) );
   qgisNode.setAttribute( QStringLiteral( "projectname" ), title() );
@@ -2109,12 +2109,12 @@ QgsLayerTreeGroup *QgsProject::layerTreeRoot() const
 
 QgsMapThemeCollection* QgsProject::mapThemeCollection()
 {
-  return mMapThemeCollection.data();
+  return mMapThemeCollection.get();
 }
 
 QgsAnnotationManager* QgsProject::annotationManager()
 {
-  return mAnnotationManager.data();
+  return mAnnotationManager.get();
 }
 
 void QgsProject::setNonIdentifiableLayers( const QList<QgsMapLayer*>& layers )

@@ -147,7 +147,7 @@ void QgsAnnotationWidget::updateCenterIcon()
   {
     return;
   }
-  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mMarkerSymbol.data(), mMapMarkerButton->iconSize() );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mMarkerSymbol.get(), mMapMarkerButton->iconSize() );
   mMapMarkerButton->setIcon( icon );
 }
 
@@ -157,7 +157,7 @@ void QgsAnnotationWidget::updateFillIcon()
   {
     return;
   }
-  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mFillSymbol.data(), mFrameStyleButton->iconSize() );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mFillSymbol.get(), mFrameStyleButton->iconSize() );
   mFrameStyleButton->setIcon( icon );
 }
 

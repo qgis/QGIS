@@ -606,10 +606,10 @@ void TestQgsExpressionContext::layerScope()
   layerScope = 0;
 
   //create a map layer
-  QScopedPointer<QgsVectorLayer> vectorLayer( new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "test layer" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> vectorLayer( new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "test layer" ), QStringLiteral( "memory" ) ) );
 
   QgsExpressionContext context;
-  context << QgsExpressionContextUtils::layerScope( vectorLayer.data() );
+  context << QgsExpressionContextUtils::layerScope( vectorLayer.get() );
 
   QCOMPARE( context.variable( "layer_name" ).toString(), vectorLayer->name() );
   QCOMPARE( context.variable( "layer_id" ).toString(), vectorLayer->id() );
@@ -622,17 +622,17 @@ void TestQgsExpressionContext::layerScope()
   QCOMPARE( fromVar, vectorLayer->fields() );
 
   //test setting layer variables
-  QgsExpressionContextUtils::setLayerVariable( vectorLayer.data(), QStringLiteral( "testvar" ), "testval" );
+  QgsExpressionContextUtils::setLayerVariable( vectorLayer.get(), QStringLiteral( "testvar" ), "testval" );
   delete layerScope;
-  layerScope = QgsExpressionContextUtils::layerScope( vectorLayer.data() );
+  layerScope = QgsExpressionContextUtils::layerScope( vectorLayer.get() );
   QCOMPARE( layerScope->variable( "testvar" ).toString(), QString( "testval" ) );
 
   QVariantMap variables;
   variables.insert( QStringLiteral( "var1" ), QStringLiteral( "val1" ) );
   variables.insert( QStringLiteral( "var2" ), QStringLiteral( "val2" ) );
-  QgsExpressionContextUtils::setLayerVariables( vectorLayer.data(), variables );
+  QgsExpressionContextUtils::setLayerVariables( vectorLayer.get(), variables );
   delete layerScope;
-  layerScope = QgsExpressionContextUtils::layerScope( vectorLayer.data() );
+  layerScope = QgsExpressionContextUtils::layerScope( vectorLayer.get() );
   QCOMPARE( layerScope->variable( "testvar" ), QVariant() );
   QCOMPARE( layerScope->variable( "var1" ).toString(), QString( "val1" ) );
   QCOMPARE( layerScope->variable( "var2" ).toString(), QString( "val2" ) );

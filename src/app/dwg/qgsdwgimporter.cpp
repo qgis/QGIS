@@ -44,6 +44,7 @@
 #include <cpl_string.h>
 #include <gdal.h>
 #include <ogr_srs_api.h>
+#include <memory>
 
 #define LOG( x ) { QgsDebugMsg( x ); QgsMessageLog::logMessage( x, QObject::tr( "DWG/DXF import" ) ); }
 #define ONCE( x ) { static bool show=true; if( show ) LOG( x ); show=false; }
@@ -614,7 +615,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   if ( fi.suffix().toLower() == "dxf" )
   {
     //loads dxf
-    QScopedPointer<dxfRW> dxf( new dxfRW( drawing.toUtf8() ) );
+    std::unique_ptr<dxfRW> dxf( new dxfRW( drawing.toUtf8() ) );
     if ( !dxf->read( this, false ) )
     {
       result = DRW::BAD_UNKNOWN;
@@ -623,7 +624,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   else if ( fi.suffix().toLower() == "dwg" )
   {
     //loads dwg
-    QScopedPointer<dwgR> dwg( new dwgR( drawing.toUtf8() ) );
+    std::unique_ptr<dwgR> dwg( new dwgR( drawing.toUtf8() ) );
     if ( !dwg->read( this, false ) )
     {
       result = dwg->getError();
@@ -1185,12 +1186,12 @@ void QgsDwgImporter::addAppId( const DRW_AppId &data )
 bool QgsDwgImporter::createFeature( OGRLayerH layer, OGRFeatureH f, const QgsAbstractGeometry &g0 ) const
 {
   const QgsAbstractGeometry *g;
-  QScopedPointer<QgsAbstractGeometry> sg( nullptr );
+  std::unique_ptr<QgsAbstractGeometry> sg( nullptr );
 
   if ( !mUseCurves && g0.hasCurvedSegments() )
   {
     sg.reset( g0.segmentize() );
-    g = sg.data();
+    g = sg.get();
   }
   else
   {

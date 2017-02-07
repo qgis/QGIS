@@ -75,7 +75,7 @@ void TestQgsAttributeTable::testFieldCalculation()
   //test field calculation
 
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
@@ -94,9 +94,9 @@ void TestQgsAttributeTable::testFieldCalculation()
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
   // run length calculation
-  QScopedPointer< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.data() ) );
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
   tempLayer->startEditing();
-  dlg->runFieldCalculation( tempLayer.data(), QStringLiteral( "col1" ), QStringLiteral( "$length" ) );
+  dlg->runFieldCalculation( tempLayer.get(), QStringLiteral( "col1" ), QStringLiteral( "$length" ) );
   tempLayer->commitChanges();
   // check result
   QgsFeatureIterator fit = tempLayer->dataProvider()->getFeatures();
@@ -107,9 +107,9 @@ void TestQgsAttributeTable::testFieldCalculation()
 
   // change project length unit, check calculation respects unit
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
-  QScopedPointer< QgsAttributeTableDialog > dlg2( new QgsAttributeTableDialog( tempLayer.data() ) );
+  std::unique_ptr< QgsAttributeTableDialog > dlg2( new QgsAttributeTableDialog( tempLayer.get() ) );
   tempLayer->startEditing();
-  dlg2->runFieldCalculation( tempLayer.data(), QStringLiteral( "col1" ), QStringLiteral( "$length" ) );
+  dlg2->runFieldCalculation( tempLayer.get(), QStringLiteral( "col1" ), QStringLiteral( "$length" ) );
   tempLayer->commitChanges();
   // check result
   fit = tempLayer->dataProvider()->getFeatures();
@@ -123,7 +123,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   //test $area field calculation
 
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
@@ -145,9 +145,9 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
 
   // run area calculation
-  QScopedPointer< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.data() ) );
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
   tempLayer->startEditing();
-  dlg->runFieldCalculation( tempLayer.data(), QStringLiteral( "col1" ), QStringLiteral( "$area" ) );
+  dlg->runFieldCalculation( tempLayer.get(), QStringLiteral( "col1" ), QStringLiteral( "$area" ) );
   tempLayer->commitChanges();
   // check result
   QgsFeatureIterator fit = tempLayer->dataProvider()->getFeatures();
@@ -158,9 +158,9 @@ void TestQgsAttributeTable::testFieldCalculationArea()
 
   // change project area unit, check calculation respects unit
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
-  QScopedPointer< QgsAttributeTableDialog > dlg2( new QgsAttributeTableDialog( tempLayer.data() ) );
+  std::unique_ptr< QgsAttributeTableDialog > dlg2( new QgsAttributeTableDialog( tempLayer.get() ) );
   tempLayer->startEditing();
-  dlg2->runFieldCalculation( tempLayer.data(), QStringLiteral( "col1" ), QStringLiteral( "$area" ) );
+  dlg2->runFieldCalculation( tempLayer.get(), QStringLiteral( "col1" ), QStringLiteral( "$area" ) );
   tempLayer->commitChanges();
   // check result
   fit = tempLayer->dataProvider()->getFeatures();

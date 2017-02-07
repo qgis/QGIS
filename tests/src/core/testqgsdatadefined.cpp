@@ -17,7 +17,7 @@
 #include <QString>
 #include <QStringList>
 #include <QSettings>
-#include <QSharedPointer>
+#include <memory>
 
 #include "qgsdatadefined.h"
 #include "qgsapplication.h"
@@ -78,19 +78,19 @@ void TestQgsDataDefined::create()
   QCOMPARE( dd->field(), QString( "field" ) );
 
   //test with string constructor
-  QScopedPointer<QgsDataDefined> stringConstructorField( new QgsDataDefined( QStringLiteral( "\"col1\"" ) ) );
+  std::unique_ptr<QgsDataDefined> stringConstructorField( new QgsDataDefined( QStringLiteral( "\"col1\"" ) ) );
   QVERIFY( stringConstructorField->isActive() );
   QVERIFY( ! stringConstructorField->useExpression() );
   QVERIFY( stringConstructorField->expressionString().isEmpty() );
   QCOMPARE( stringConstructorField->field(), QString( "col1" ) );
 
-  QScopedPointer<QgsDataDefined> stringConstructorExp( new QgsDataDefined( QStringLiteral( "1 + 2" ) ) );
+  std::unique_ptr<QgsDataDefined> stringConstructorExp( new QgsDataDefined( QStringLiteral( "1 + 2" ) ) );
   QVERIFY( stringConstructorExp->isActive() );
   QVERIFY( stringConstructorExp->useExpression() );
   QCOMPARE( stringConstructorExp->expressionString(), QString( "1 + 2" ) );
   QVERIFY( stringConstructorExp->field().isEmpty() );
 
-  QScopedPointer<QgsDataDefined> stringConstructorEmpty( new QgsDataDefined( QString() ) );
+  std::unique_ptr<QgsDataDefined> stringConstructorEmpty( new QgsDataDefined( QString() ) );
   QVERIFY( ! stringConstructorEmpty->isActive() );
 }
 

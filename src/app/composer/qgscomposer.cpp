@@ -913,7 +913,7 @@ void QgsComposer::setTitle( const QString& title )
 bool QgsComposer::loadFromTemplate( const QDomDocument& templateDoc, bool clearExisting )
 {
   // provide feedback, since composer will be hidden when loading template (much faster)
-  QScopedPointer< QDialog > dlg( new QgsBusyIndicatorDialog( tr( "Loading template into composer..." ), this ) );
+  std::unique_ptr< QDialog > dlg( new QgsBusyIndicatorDialog( tr( "Loading template into composer..." ), this ) );
   dlg->setStyleSheet( mQgis->styleSheet() );
   dlg->show();
 

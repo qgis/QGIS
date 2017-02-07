@@ -305,7 +305,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   {
     layer->parent()->takeChild( layer );
   }
-  mLayersDependenciesTreeModel.reset( new QgsLayerTreeModel( mLayersDependenciesTreeGroup.data() ) );
+  mLayersDependenciesTreeModel.reset( new QgsLayerTreeModel( mLayersDependenciesTreeGroup.get() ) );
   // use visibility as selection
   mLayersDependenciesTreeModel->setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
 
@@ -321,7 +321,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     layer->setItemVisibilityChecked( dependencySources.contains( layer->layerId() ) );
   }
 
-  mLayersDependenciesTreeView->setModel( mLayersDependenciesTreeModel.data() );
+  mLayersDependenciesTreeView->setModel( mLayersDependenciesTreeModel.get() );
 } // QgsVectorLayerProperties ctor
 
 

@@ -215,11 +215,11 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   }
 
   GEOSGeometry* geomCopy = nullptr;
-  QScopedPointer<QgsGeometry> scopedPreparedGeom;
+  std::unique_ptr<QgsGeometry> scopedPreparedGeom;
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), &extentGeom ) )
   {
     scopedPreparedGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), &extentGeom ) ) );
-    QgsGeometry* preparedGeom = scopedPreparedGeom.data();
+    QgsGeometry* preparedGeom = scopedPreparedGeom.get();
     if ( preparedGeom->isNull() )
       return nullptr;
     geomCopy = preparedGeom->exportToGeos();
@@ -233,7 +233,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     return nullptr; // invalid geometry
 
   GEOSGeometry* geosObstacleGeomClone = nullptr;
-  QScopedPointer<QgsGeometry> scopedObstacleGeom;
+  std::unique_ptr<QgsGeometry> scopedObstacleGeom;
   if ( isObstacle && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom ) )
   {
     QgsGeometry preparedObstacleGeom = QgsPalLabeling::prepareGeometry( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom );

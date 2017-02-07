@@ -29,7 +29,7 @@ typedef QgsTransaction* createTransaction_t( const QString& connString );
 
 QgsTransaction* QgsTransaction::create( const QString& connString, const QString& providerKey )
 {
-  QScopedPointer< QLibrary > lib( QgsProviderRegistry::instance()->providerLibrary( providerKey ) );
+  std::unique_ptr< QLibrary > lib( QgsProviderRegistry::instance()->providerLibrary( providerKey ) );
   if ( !lib )
     return nullptr;
 
@@ -164,7 +164,7 @@ bool QgsTransaction::rollback( QString& errorMsg )
 
 bool QgsTransaction::supportsTransaction( const QgsVectorLayer* layer )
 {
-  QScopedPointer< QLibrary > lib( QgsProviderRegistry::instance()->providerLibrary( layer->providerType() ) );
+  std::unique_ptr< QLibrary > lib( QgsProviderRegistry::instance()->providerLibrary( layer->providerType() ) );
   if ( !lib )
     return false;
 

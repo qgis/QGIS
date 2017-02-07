@@ -975,14 +975,14 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   }
 
   //try to keep < 2.12 API - handle no passed render context
-  QScopedPointer< QgsRenderContext > scopedRc;
+  std::unique_ptr< QgsRenderContext > scopedRc;
   if ( !context )
   {
     scopedRc.reset( new QgsRenderContext() );
     if ( f )
       scopedRc->expressionContext().setFeature( *f );
   }
-  QgsRenderContext* rc = context ? context : scopedRc.data();
+  QgsRenderContext* rc = context ? context : scopedRc.get();
 
   QString wrapchr = wrapChar;
   double multilineH = mFormat.lineHeight();
@@ -1329,9 +1329,9 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   }
 
   // NOTE: this should come AFTER any option that affects font metrics
-  QScopedPointer<QFontMetricsF> labelFontMetrics( new QFontMetricsF( labelFont ) );
+  std::unique_ptr<QFontMetricsF> labelFontMetrics( new QFontMetricsF( labelFont ) );
   double labelX, labelY; // will receive label size
-  calculateLabelSize( labelFontMetrics.data(), labelText, labelX, labelY, mCurFeat, &context );
+  calculateLabelSize( labelFontMetrics.get(), labelText, labelX, labelY, mCurFeat, &context );
 
 
   // maximum angle between curved label characters (hardcoded defaults used in QGIS <2.0)
@@ -1391,7 +1391,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
 
   // simplify?
   const QgsVectorSimplifyMethod &simplifyMethod = context.vectorSimplifyMethod();
-  QScopedPointer<QgsGeometry> scopedClonedGeom;
+  std::unique_ptr<QgsGeometry> scopedClonedGeom;
   if ( simplifyMethod.simplifyHints() != QgsVectorSimplifyMethod::NoSimplification && simplifyMethod.forceLocalOptimization() )
   {
     int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
@@ -1444,13 +1444,13 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   }
   geos_geom_clone = geom.exportToGeos();
 
-  QScopedPointer<QgsGeometry> scopedObstacleGeom;
+  std::unique_ptr<QgsGeometry> scopedObstacleGeom;
   if ( isObstacle )
   {
     if ( obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( *obstacleGeometry, context, ct, doClip ? &extentGeom : nullptr ) )
     {
       scopedObstacleGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( *obstacleGeometry, context, ct, doClip ? &extentGeom : nullptr ) ) );
-      obstacleGeometry = scopedObstacleGeom.data();
+      obstacleGeometry = scopedObstacleGeom.get();
     }
   }
 
@@ -1818,7 +1818,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   // TODO: only for placement which needs character info
   // account for any data defined font metrics adjustments
   lf->calculateInfo( placement == QgsPalLayerSettings::Curved || placement == QgsPalLayerSettings::PerimeterCurved,
-                     labelFontMetrics.data(), xform, maxcharanglein, maxcharangleout );
+                     labelFontMetrics.get(), xform, maxcharanglein, maxcharangleout );
   // for labelFeature the LabelInfo is passed to feat when it is registered
 
   // TODO: allow layer-wide feature dist in PAL...?
@@ -1942,7 +1942,7 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderConte
 
   // simplify?
   const QgsVectorSimplifyMethod &simplifyMethod = context.vectorSimplifyMethod();
-  QScopedPointer<QgsGeometry> scopedClonedGeom;
+  std::unique_ptr<QgsGeometry> scopedClonedGeom;
   if ( simplifyMethod.simplifyHints() != QgsVectorSimplifyMethod::NoSimplification && simplifyMethod.forceLocalOptimization() )
   {
     int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
@@ -1952,7 +1952,7 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderConte
   }
 
   GEOSGeometry* geos_geom_clone = nullptr;
-  QScopedPointer<QgsGeometry> scopedPreparedGeom;
+  std::unique_ptr<QgsGeometry> scopedPreparedGeom;
 
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, &extentGeom ) )
   {

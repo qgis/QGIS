@@ -1688,8 +1688,8 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString& name )
       return false;
     }
 
-    QScopedPointer< QgsColorRamp > ramp( colorRamp( name ) );
-    symEl = QgsSymbolLayerUtils::saveColorRamp( name, ramp.data(), doc );
+    std::unique_ptr< QgsColorRamp > ramp( colorRamp( name ) );
+    symEl = QgsSymbolLayerUtils::saveColorRamp( name, ramp.get(), doc );
     if ( symEl.isNull() )
     {
       QgsDebugMsg( "Couldn't convert color ramp to valid XML!" );

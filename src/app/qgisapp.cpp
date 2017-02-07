@@ -449,15 +449,15 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
           if ( !originalSymbol )
             return;
 
-          QScopedPointer< QgsSymbol > symbol( originalSymbol->clone() );
+          std::unique_ptr< QgsSymbol > symbol( originalSymbol->clone() );
           QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() );
-          QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyle::defaultStyle(), vlayer, this );
+          QgsSymbolSelectorDialog dlg( symbol.get(), QgsStyle::defaultStyle(), vlayer, this );
           QgsSymbolWidgetContext context;
           context.setMapCanvas( mMapCanvas );
           dlg.setContext( context );
           if ( dlg.exec() )
           {
-            node->setSymbol( symbol.take() );
+            node->setSymbol( symbol.release() );
           }
 
           return;
@@ -6241,7 +6241,7 @@ void QgisApp::saveAsRasterFile()
   // TODO: show error dialogs
   // TODO: this code should go somewhere else, but probably not into QgsRasterFileWriter
   // clone pipe/provider is not really necessary, ready for threads
-  QScopedPointer<QgsRasterPipe> pipe( nullptr );
+  std::unique_ptr<QgsRasterPipe> pipe( nullptr );
 
   if ( d.mode() == QgsRasterLayerSaveAsDialog::RawDataMode )
   {
@@ -6303,7 +6303,7 @@ void QgisApp::saveAsRasterFile()
   fileWriter.setPyramidsFormat( d.pyramidsFormat() );
   fileWriter.setPyramidsConfigOptions( d.pyramidsConfigOptions() );
 
-  QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( pipe.data(), d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
+  QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( pipe.get(), d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
   if ( err != QgsRasterFileWriter::NoError )
   {
     QMessageBox::warning( this, tr( "Error" ),

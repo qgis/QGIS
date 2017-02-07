@@ -72,7 +72,7 @@ bool QgsTransactionGroup::modified() const
 
 void QgsTransactionGroup::onEditingStarted()
 {
-  if ( !mTransaction.isNull() )
+  if ( mTransaction )
     return;
 
   mTransaction.reset( QgsTransaction::create( mConnString, mProviderKey ) );

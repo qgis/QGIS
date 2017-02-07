@@ -63,7 +63,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
 
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
 
-  QScopedPointer< QLibrary > myLib( pReg->providerLibrary( providerKey ) );
+  std::unique_ptr< QLibrary > myLib( pReg->providerLibrary( providerKey ) );
   if ( !myLib )
   {
     mError = ErrInvalidProvider;

@@ -261,7 +261,7 @@ void QgsRasterFormatSaveOptionsWidget::helpOptions()
   if ( mProvider == QLatin1String( "gdal" ) && mFormat != QLatin1String( "" ) && ! mPyramids )
   {
     // get helpCreationOptionsFormat() function ptr for provider
-    QScopedPointer< QLibrary > library( QgsProviderRegistry::instance()->providerLibrary( mProvider ) );
+    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->providerLibrary( mProvider ) );
     if ( library )
     {
       helpCreationOptionsFormat_t * helpCreationOptionsFormat =
@@ -357,7 +357,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
     else
     {
       // get validateCreationOptionsFormat() function ptr for provider
-      QScopedPointer< QLibrary > library( QgsProviderRegistry::instance()->providerLibrary( mProvider ) );
+      std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->providerLibrary( mProvider ) );
       if ( library )
       {
         validateCreationOptionsFormat_t * validateCreationOptionsFormat =

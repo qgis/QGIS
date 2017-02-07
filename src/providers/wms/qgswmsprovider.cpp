@@ -636,7 +636,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
     double vres = viewExtent.width() / pixelWidth;
 
     const QgsWmtsTileMatrix *tm = nullptr;
-    QScopedPointer<QgsWmtsTileMatrix> tempTm;
+    std::unique_ptr<QgsWmtsTileMatrix> tempTm;
     enum QgsTileMode tileMode;
 
     if ( mSettings.mTiled )
@@ -662,7 +662,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
       tempTm->matrixWidth  = ceil( mLayerExtent.width() / mSettings.mMaxWidth / vres );
       tempTm->matrixHeight = ceil( mLayerExtent.height() / mSettings.mMaxHeight / vres );
       tempTm->tres = vres;
-      tm = tempTm.data();
+      tm = tempTm.get();
 
       tileMode = WMSC;
     }
@@ -3382,9 +3382,9 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh, const 
   if ( !mLegendGraphicFetcher )
     return QImage();
 
-  connect( mLegendGraphicFetcher.data(), SIGNAL( finish( const QImage& ) ), this, SLOT( getLegendGraphicReplyFinished( const QImage& ) ) );
-  connect( mLegendGraphicFetcher.data(), SIGNAL( error( const QString& ) ), this, SLOT( getLegendGraphicReplyErrored( const QString& ) ) );
-  connect( mLegendGraphicFetcher.data(), SIGNAL( progress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
+  connect( mLegendGraphicFetcher.get(), SIGNAL( finish( const QImage& ) ), this, SLOT( getLegendGraphicReplyFinished( const QImage& ) ) );
+  connect( mLegendGraphicFetcher.get(), SIGNAL( error( const QString& ) ), this, SLOT( getLegendGraphicReplyErrored( const QString& ) ) );
+  connect( mLegendGraphicFetcher.get(), SIGNAL( progress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
   mLegendGraphicFetcher->start();
 
   QEventLoop loop;
@@ -3453,7 +3453,7 @@ void QgsWmsProvider::getLegendGraphicReplyFinished( const QImage& img )
 #endif
   }
 
-  if ( reply == mLegendGraphicFetcher.data() )
+  if ( reply == mLegendGraphicFetcher.get() )
   {
     QEventLoop *loop = qobject_cast< QEventLoop *>( reply->property( "eventLoop" ).value< QObject *>() );
     if ( loop )
@@ -3469,7 +3469,7 @@ void QgsWmsProvider::getLegendGraphicReplyErrored( const QString& message )
 
   QObject* reply = sender();
 
-  if ( reply == mLegendGraphicFetcher.data() )
+  if ( reply == mLegendGraphicFetcher.get() )
   {
     QEventLoop *loop = qobject_cast< QEventLoop *>( reply->property( "eventLoop" ).value< QObject *>() );
     if ( loop )

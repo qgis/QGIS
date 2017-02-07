@@ -95,7 +95,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
   private:
     QgsGeometryGeneratorSymbolLayer( const QString& expression );
 
-    QScopedPointer<QgsExpression> mExpression;
+    std::unique_ptr<QgsExpression> mExpression;
     QgsFillSymbol* mFillSymbol;
     QgsLineSymbol* mLineSymbol;
     QgsMarkerSymbol* mMarkerSymbol;

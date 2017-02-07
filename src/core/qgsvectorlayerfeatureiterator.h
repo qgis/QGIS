@@ -20,6 +20,7 @@
 #include "qgsfields.h"
 
 #include <QSet>
+#include <memory>
 
 typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 
@@ -200,7 +201,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     bool mHasVirtualAttributes;
 
   private:
-    QScopedPointer<QgsExpressionContext> mExpressionContext;
+    std::unique_ptr<QgsExpressionContext> mExpressionContext;
 
     QgsInterruptionChecker* mInterruptionChecker;
 

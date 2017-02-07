@@ -25,6 +25,7 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QColor>
+#include <memory>
 
 class QgsColorRamp;
 
@@ -362,7 +363,7 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
 
   private:
 
-    QScopedPointer< QgsColorRamp > mGradientRamp;
+    std::unique_ptr< QgsColorRamp > mGradientRamp;
     QColor mNullColor;
     QString mRampName;
 

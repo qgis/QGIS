@@ -115,7 +115,7 @@ void QgsColorRampShader::setColorRampType( const QString& theType )
 
 QgsColorRamp* QgsColorRampShader::sourceColorRamp() const
 {
-  return mSourceColorRamp.data();
+  return mSourceColorRamp.get();
 }
 
 void QgsColorRampShader::setSourceColorRamp( QgsColorRamp* colorramp )

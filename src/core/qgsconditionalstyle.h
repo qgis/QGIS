@@ -146,7 +146,7 @@ class CORE_EXPORT QgsConditionalStyle
      * @brief The symbol used to generate the icon for the style
      * @return The QgsSymbol used for the icon
      */
-    QgsSymbol* symbol() const { return mSymbol.data(); }
+    QgsSymbol* symbol() const { return mSymbol.get(); }
 
     /**
      * @brief The text color set for style
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsConditionalStyle
     bool mValid;
     QString mName;
     QString mRule;
-    QScopedPointer<QgsSymbol> mSymbol;
+    std::unique_ptr<QgsSymbol> mSymbol;
     QFont mFont;
     QColor mBackColor;
     QColor mTextColor;

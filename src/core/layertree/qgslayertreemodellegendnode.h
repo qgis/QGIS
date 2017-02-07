@@ -342,7 +342,7 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
     bool mValid;
 
-    mutable QScopedPointer<QgsImageFetcher> mFetcher;
+    mutable std::unique_ptr<QgsImageFetcher> mFetcher;
 };
 
 #endif // QGSLAYERTREEMODELLEGENDNODE_H

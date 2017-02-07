@@ -404,7 +404,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
   context.setFields( layer->fields() );
 
   //prepare filter expression
-  QScopedPointer<QgsExpression> filterExpression;
+  std::unique_ptr<QgsExpression> filterExpression;
   bool activeFilter = false;
   if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
   {
@@ -465,7 +465,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
   {
     context.setFeature( f );
     //check feature against filter
-    if ( activeFilter && !filterExpression.isNull() )
+    if ( activeFilter && filterExpression )
     {
       QVariant result = filterExpression->evaluate( &context );
       // skip this feature if the filter evaluation is false

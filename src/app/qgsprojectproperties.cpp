@@ -1718,8 +1718,8 @@ void QgsProjectProperties::populateStyles()
   for ( int i = 0; i < colorRamps.count(); ++i )
   {
     QString name = colorRamps[i];
-    QScopedPointer< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
-    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), cboStyleColorRamp->iconSize() );
+    std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
+    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), cboStyleColorRamp->iconSize() );
     cboStyleColorRamp->addItem( icon, name );
   }
 

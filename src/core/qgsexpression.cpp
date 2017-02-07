@@ -2439,7 +2439,7 @@ static QVariant fcnRelate( const QVariantList& values, const QgsExpressionContex
   if ( fGeom.isNull() || sGeom.isNull() )
     return QVariant();
 
-  QScopedPointer<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( fGeom.geometry() ) );
+  std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( fGeom.geometry() ) );
 
   if ( values.length() == 2 )
   {

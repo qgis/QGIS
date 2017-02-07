@@ -140,7 +140,7 @@ namespace QgisGui
 #else
 
     //create a file dialog using the filter list generated above
-    QScopedPointer<QFileDialog> fileDialog( new QFileDialog( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( ";;" ) ) );
+    std::unique_ptr<QFileDialog> fileDialog( new QFileDialog( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( ";;" ) ) );
 
     // allow for selection of more than one file
     fileDialog->setFileMode( QFileDialog::AnyFile );

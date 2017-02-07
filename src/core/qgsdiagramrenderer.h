@@ -550,7 +550,7 @@ class CORE_EXPORT QgsDiagramRenderer
      * @see setSizeLegendSymbol()
      * @see sizeLegend()
      */
-    QgsMarkerSymbol* sizeLegendSymbol() const { return mSizeLegendSymbol.data(); }
+    QgsMarkerSymbol* sizeLegendSymbol() const { return mSizeLegendSymbol.get(); }
 
     /** Sets the marker symbol used for rendering the diagram size legend.
      * @param symbol marker symbol, ownership is transferred to the renderer.
@@ -604,7 +604,7 @@ class CORE_EXPORT QgsDiagramRenderer
     bool mShowSizeLegend;
 
     //! Marker symbol to use in size legends
-    QScopedPointer< QgsMarkerSymbol > mSizeLegendSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mSizeLegendSymbol;
 };
 
 /** \ingroup core

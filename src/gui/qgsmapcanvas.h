@@ -600,7 +600,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     class CanvasProperties;
 
     /// Handle pattern for implementation object
-    QScopedPointer<CanvasProperties> mCanvasProperties;
+    std::unique_ptr<CanvasProperties> mCanvasProperties;
 
 #if 0
 
@@ -698,7 +698,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool mZoomDragging;
 
     //! Zoom by rectangle rubber band
-    QScopedPointer< QgsRubberBand > mZoomRubberBand;
+    std::unique_ptr< QgsRubberBand > mZoomRubberBand;
 
     QCursor mZoomCursor;
 

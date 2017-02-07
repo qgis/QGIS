@@ -25,6 +25,7 @@
 
 
 #include <QTransform>
+#include <memory>
 #include <queue>
 
 QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry& geometry )
@@ -58,7 +59,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
     linesToProcess << static_cast<QgsLineString*>( curve->segmentize() );
   }
 
-  QScopedPointer<QgsMultiPolygonV2> multipolygon( linesToProcess.size() > 1 ? new QgsMultiPolygonV2() : nullptr );
+  std::unique_ptr<QgsMultiPolygonV2> multipolygon( linesToProcess.size() > 1 ? new QgsMultiPolygonV2() : nullptr );
   QgsPolygonV2 *polygon = nullptr;
 
   if ( !linesToProcess.empty() )
@@ -83,7 +84,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
     }
 
     if ( multipolygon )
-      return QgsGeometry( multipolygon.take() );
+      return QgsGeometry( multipolygon.release() );
     else
       return QgsGeometry( polygon );
   }
@@ -171,12 +172,12 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision ,
   if ( !surface )
     return QgsGeometry();
 
-  QScopedPointer< QgsPolygonV2 > segmentizedPoly;
+  std::unique_ptr< QgsPolygonV2 > segmentizedPoly;
   const QgsPolygonV2* polygon = dynamic_cast< const QgsPolygonV2* >( mGeometry );
   if ( !polygon )
   {
     segmentizedPoly.reset( static_cast< QgsPolygonV2*>( surface->segmentize() ) );
-    polygon = segmentizedPoly.data();
+    polygon = segmentizedPoly.get();
   }
 
   // start with the bounding box
@@ -201,28 +202,28 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision ,
   }
 
   // take centroid as the first best guess
-  QScopedPointer< Cell > bestCell( getCentroidCell( polygon ) );
+  std::unique_ptr< Cell > bestCell( getCentroidCell( polygon ) );
 
   // special case for rectangular polygons
-  QScopedPointer< Cell > bboxCell( new Cell( bounds.xMinimum() + bounds.width() / 2.0,
-                                   bounds.yMinimum() + bounds.height() / 2.0,
-                                   0, polygon ) );
+  std::unique_ptr< Cell > bboxCell( new Cell( bounds.xMinimum() + bounds.width() / 2.0,
+                                    bounds.yMinimum() + bounds.height() / 2.0,
+                                    0, polygon ) );
   if ( bboxCell->d > bestCell->d )
   {
-    bestCell.reset( bboxCell.take() );
+    bestCell.reset( bboxCell.release() );
   }
 
   while ( cellQueue.size() > 0 )
   {
     // pick the most promising cell from the queue
-    QScopedPointer< Cell > cell( cellQueue.top() );
+    std::unique_ptr< Cell > cell( cellQueue.top() );
     cellQueue.pop();
-    Cell* currentCell = cell.data();
+    Cell* currentCell = cell.get();
 
     // update the best cell if we found a better one
     if ( currentCell->d > bestCell->d )
     {
-      bestCell.reset( cell.take() );
+      bestCell.reset( cell.release() );
     }
 
     // do not drill down further if there's no chance of a better solution
@@ -347,7 +348,7 @@ QgsLineString* doOrthogonalize( QgsLineString* ring, int iterations, double tole
   bool isClosed = ring->isClosed();
   int numPoints = ring->numPoints();
 
-  QScopedPointer< QgsLineString > best( ring->clone() );
+  std::unique_ptr< QgsLineString > best( ring->clone() );
 
   for ( int it = 0; it < iterations; ++it )
   {
@@ -406,17 +407,17 @@ QgsLineString* doOrthogonalize( QgsLineString* ring, int iterations, double tole
 
   delete ring;
 
-  return best.take();
+  return best.release();
 }
 
 
 QgsAbstractGeometry* orthogonalizeGeom( const QgsAbstractGeometry* geom, int maxIterations, double tolerance, double lowerThreshold, double upperThreshold )
 {
-  QScopedPointer< QgsAbstractGeometry > segmentizedCopy;
+  std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
   if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
   {
     segmentizedCopy.reset( geom->segmentize() );
-    geom = segmentizedCopy.data();
+    geom = segmentizedCopy.get();
   }
 
   if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )

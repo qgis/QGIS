@@ -57,7 +57,7 @@ void QgsInvertedPolygonRenderer::setEmbeddedRenderer( QgsFeatureRenderer* subRen
 
 const QgsFeatureRenderer* QgsInvertedPolygonRenderer::embeddedRenderer() const
 {
-  return mSubRenderer.data();
+  return mSubRenderer.get();
 }
 
 void QgsInvertedPolygonRenderer::setLegendSymbolItem( const QString& key, QgsSymbol* symbol )
@@ -360,13 +360,13 @@ QString QgsInvertedPolygonRenderer::dump() const
 QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::clone() const
 {
   QgsInvertedPolygonRenderer* newRenderer;
-  if ( mSubRenderer.isNull() )
+  if ( !mSubRenderer )
   {
     newRenderer = new QgsInvertedPolygonRenderer( nullptr );
   }
   else
   {
-    newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer.data()->clone() );
+    newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer.get()->clone() );
   }
   newRenderer->setPreprocessingEnabled( preprocessingEnabled() );
   copyRendererData( newRenderer );

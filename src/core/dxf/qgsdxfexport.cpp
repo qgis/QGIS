@@ -3644,7 +3644,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
   if ( !fet->hasGeometry() )
     return;
 
-  QScopedPointer<QgsAbstractGeometry> geom( fet->geometry().geometry()->clone() );
+  std::unique_ptr<QgsAbstractGeometry> geom( fet->geometry().geometry()->clone() );
   if ( ct.isValid() )
   {
     geom->transform( ct );
@@ -3702,7 +3702,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
 
   if ( penStyle != Qt::NoPen )
   {
-    const QgsAbstractGeometry *tempGeom = geom.data();
+    const QgsAbstractGeometry *tempGeom = geom.get();
 
     switch ( QgsWkbTypes::flatType( geometryType ) )
     {
@@ -3716,11 +3716,11 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
           QgsGeos geos( tempGeom );
-          if ( tempGeom != geom.data() )
+          if ( tempGeom != geom.get() )
             delete tempGeom;
           tempGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
           if ( !tempGeom )
-            tempGeom = geom.data();
+            tempGeom = geom.get();
         }
 
         writePolyline( tempGeom->coordinateSequence().at( 0 ).at( 0 ), layer, lineStyleName, penColor, width );
@@ -3737,11 +3737,11 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
           QgsGeos geos( tempGeom );
-          if ( tempGeom != geom.data() )
+          if ( tempGeom != geom.get() )
             delete tempGeom;
           tempGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
           if ( !tempGeom )
-            tempGeom = geom.data();
+            tempGeom = geom.get();
         }
 
         const QgsCoordinateSequence &cs = tempGeom->coordinateSequence();
@@ -3763,11 +3763,11 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
           QgsGeos geos( tempGeom );
-          if ( tempGeom != geom.data() )
+          if ( tempGeom != geom.get() )
             delete tempGeom;
           tempGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
           if ( !tempGeom )
-            tempGeom = geom.data();
+            tempGeom = geom.get();
         }
 
         const QgsCoordinateSequence &cs = tempGeom->coordinateSequence();
@@ -3784,11 +3784,11 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
           QgsGeos geos( tempGeom );
-          if ( tempGeom != geom.data() )
+          if ( tempGeom != geom.get() )
             delete tempGeom;
           tempGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
           if ( !tempGeom )
-            tempGeom = geom.data();
+            tempGeom = geom.get();
         }
 
         const QgsCoordinateSequence &cs = tempGeom->coordinateSequence();
@@ -3803,13 +3803,13 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
         break;
     }
 
-    if ( tempGeom != geom.data() )
+    if ( tempGeom != geom.get() )
       delete tempGeom;
   }
 
   if ( brushStyle != Qt::NoBrush )
   {
-    const QgsAbstractGeometry *tempGeom = geom.data();
+    const QgsAbstractGeometry *tempGeom = geom.get();
 
     switch ( QgsWkbTypes::flatType( geometryType ) )
     {
@@ -3837,7 +3837,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
 
     }
 
-    if ( tempGeom != geom.data() )
+    if ( tempGeom != geom.get() )
       delete tempGeom;
   }
 }

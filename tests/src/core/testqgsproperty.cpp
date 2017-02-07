@@ -674,7 +674,7 @@ void TestQgsProperty::sizeScaleTransformer()
   QCOMPARE( r1.type(), QgsSizeScaleTransformer::Exponential );
 
   // test cloning
-  QScopedPointer< QgsSizeScaleTransformer > r2( t1.clone() );
+  std::unique_ptr< QgsSizeScaleTransformer > r2( t1.clone() );
   QCOMPARE( r2->minValue(), 15.0 );
   QCOMPARE( r2->maxValue(), 25.0 );
   QCOMPARE( r2->minSize(), 150.0 );
@@ -795,7 +795,7 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( static_cast< QgsGradientColorRamp* >( r1.colorRamp() )->color2(), QColor( 200, 190, 180 ) );
 
   // test cloning
-  QScopedPointer< QgsColorRampTransformer > r2( t1.clone() );
+  std::unique_ptr< QgsColorRampTransformer > r2( t1.clone() );
   QCOMPARE( r2->minValue(), 15.0 );
   QCOMPARE( r2->maxValue(), 25.0 );
   QCOMPARE( r2->nullColor(), QColor( 100, 150, 200 ) );

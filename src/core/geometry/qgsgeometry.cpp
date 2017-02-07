@@ -2337,7 +2337,7 @@ QgsLineString* smoothCurve( const QgsLineString& line, const unsigned int iterat
                             const double offset, double squareDistThreshold, double maxAngleRads,
                             bool isRing )
 {
-  QScopedPointer< QgsLineString > result( new QgsLineString( line ) );
+  std::unique_ptr< QgsLineString > result( new QgsLineString( line ) );
   for ( unsigned int iteration = 0; iteration < iterations; ++iteration )
   {
     QgsPointSequence outputLine;
@@ -2415,7 +2415,7 @@ QgsLineString* smoothCurve( const QgsLineString& line, const unsigned int iterat
 
     result->setPoints( outputLine );
   }
-  return result.take();
+  return result.release();
 }
 
 QgsLineString* QgsGeometry::smoothLine( const QgsLineString& line, const unsigned int iterations, const double offset, double minimumDistance, double maxAngle ) const
@@ -2429,7 +2429,7 @@ QgsPolygonV2* QgsGeometry::smoothPolygon( const QgsPolygonV2& polygon, const uns
 {
   double maxAngleRads = maxAngle * M_PI / 180.0;
   double squareDistThreshold = minimumDistance > 0 ? minimumDistance * minimumDistance : -1;
-  QScopedPointer< QgsPolygonV2 > resultPoly( new QgsPolygonV2 );
+  std::unique_ptr< QgsPolygonV2 > resultPoly( new QgsPolygonV2 );
 
   resultPoly->setExteriorRing( smoothCurve( *( static_cast< const QgsLineString*>( polygon.exteriorRing() ) ), iterations, offset,
                                squareDistThreshold, maxAngleRads, true ) );
@@ -2439,7 +2439,7 @@ QgsPolygonV2* QgsGeometry::smoothPolygon( const QgsPolygonV2& polygon, const uns
     resultPoly->addInteriorRing( smoothCurve( *( static_cast< const QgsLineString*>( polygon.interiorRing( i ) ) ), iterations, offset,
                                  squareDistThreshold, maxAngleRads, true ) );
   }
-  return resultPoly.take();
+  return resultPoly.release();
 }
 
 QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const

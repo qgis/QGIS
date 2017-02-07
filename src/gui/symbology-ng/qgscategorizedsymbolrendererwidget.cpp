@@ -735,7 +735,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   // recreate renderer
   QgsCategorizedSymbolRenderer *r = new QgsCategorizedSymbolRenderer( attrName, cats );
   r->setSourceSymbol( mCategorizedSymbol->clone() );
-  QScopedPointer< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
+  std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
   if ( ramp )
     r->setSourceColorRamp( ramp->clone() );
 

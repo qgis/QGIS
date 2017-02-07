@@ -18,6 +18,7 @@
 #include <QStringList>
 #include <QSettings>
 #include <QSharedPointer>
+#include <memory>
 
 #include "qgsfield.h"
 #include "qgsapplication.h"
@@ -74,7 +75,7 @@ void TestQgsField::cleanup()
 
 void TestQgsField::create()
 {
-  QScopedPointer<QgsField> field( new QgsField( QStringLiteral( "name" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) ) );
+  std::unique_ptr<QgsField> field( new QgsField( QStringLiteral( "name" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) ) );
   QCOMPARE( field->name(), QString( "name" ) );
   QCOMPARE( field->type(), QVariant::Double );
   QCOMPARE( field->typeName(), QString( "double" ) );

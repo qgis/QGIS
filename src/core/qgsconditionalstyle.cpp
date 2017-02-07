@@ -142,7 +142,7 @@ QgsConditionalStyle::QgsConditionalStyle( const QgsConditionalStyle &other )
     , mTextColor( other.mTextColor )
     , mIcon( other.mIcon )
 {
-  if ( other.mSymbol.data() )
+  if ( other.mSymbol )
     mSymbol.reset( other.mSymbol->clone() );
 }
 
@@ -155,7 +155,7 @@ QgsConditionalStyle& QgsConditionalStyle::operator=( const QgsConditionalStyle &
   mTextColor = other.mTextColor;
   mIcon = other.mIcon;
   mName = other.mName;
-  if ( other.mSymbol.data() )
+  if ( other.mSymbol )
   {
     mSymbol.reset( other.mSymbol->clone() );
   }
@@ -180,7 +180,7 @@ void QgsConditionalStyle::setSymbol( QgsSymbol* value )
   if ( value )
   {
     mSymbol.reset( value->clone() );
-    mIcon = QgsSymbolLayerUtils::symbolPreviewPixmap( mSymbol.data(), QSize( 16, 16 ) );
+    mIcon = QgsSymbolLayerUtils::symbolPreviewPixmap( mSymbol.get(), QSize( 16, 16 ) );
   }
   else
   {
@@ -280,9 +280,9 @@ bool QgsConditionalStyle::writeXml( QDomNode &node, QDomDocument &doc ) const
   stylesel.setAttribute( QStringLiteral( "text_color" ), mTextColor.name() );
   QDomElement labelFontElem = QgsFontUtils::toXmlElement( mFont, doc, QStringLiteral( "font" ) );
   stylesel.appendChild( labelFontElem );
-  if ( ! mSymbol.isNull() )
+  if ( mSymbol )
   {
-    QDomElement symbolElm = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "icon" ), mSymbol.data(), doc );
+    QDomElement symbolElm = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "icon" ), mSymbol.get(), doc );
     stylesel.appendChild( symbolElm );
   }
   node.appendChild( stylesel );

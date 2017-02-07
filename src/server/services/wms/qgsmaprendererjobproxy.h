@@ -56,7 +56,7 @@ namespace QgsWms
     private:
       bool mParallelRendering;
       QgsAccessControl* mAccessControl;
-      QScopedPointer<QPainter> mPainter;
+      std::unique_ptr<QPainter> mPainter;
   };
 
 

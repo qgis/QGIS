@@ -898,7 +898,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     AnnotationFormat mGridAnnotationFormat;
 
     QString mGridAnnotationExpressionString;
-    mutable QScopedPointer< QgsExpression > mGridAnnotationExpression;
+    mutable std::unique_ptr< QgsExpression > mGridAnnotationExpression;
 
     FrameStyle mGridFrameStyle;
     FrameSideFlags mGridFrameSides;

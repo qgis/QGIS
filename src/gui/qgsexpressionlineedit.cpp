@@ -156,7 +156,7 @@ void QgsExpressionLineEdit::editExpression()
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
 
   QgsExpressionBuilderDialog dlg( mLayer, currentExpression, this, QStringLiteral( "generic" ), context );
-  if ( !mDa.isNull() )
+  if ( mDa )
   {
     dlg.setGeomCalculator( *mDa );
   }

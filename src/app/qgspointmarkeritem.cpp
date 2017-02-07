@@ -94,7 +94,7 @@ void QgsPointMarkerItem::setSymbol( QgsMarkerSymbol *symbol )
 
 QgsMarkerSymbol*QgsPointMarkerItem::symbol()
 {
-  return mMarkerSymbol.data();
+  return mMarkerSymbol.get();
 }
 
 void QgsPointMarkerItem::setFeature( const QgsFeature& feature )

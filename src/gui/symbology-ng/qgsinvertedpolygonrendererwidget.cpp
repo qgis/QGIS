@@ -107,7 +107,7 @@ QgsFeatureRenderer* QgsInvertedPolygonRendererWidget::renderer()
       mRenderer->setEmbeddedRenderer( embeddedRenderer->clone() );
     }
   }
-  return mRenderer.data();
+  return mRenderer.get();
 }
 
 void QgsInvertedPolygonRendererWidget::setContext( const QgsSymbolWidgetContext& context )
@@ -124,7 +124,7 @@ void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged(
   if ( m )
   {
     mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRenderer*>( mRenderer->embeddedRenderer() )->clone() ) );
-    connect( mEmbeddedRendererWidget.data(), SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+    connect( mEmbeddedRendererWidget.get(), SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
     mEmbeddedRendererWidget->setContext( mContext );
 
     if ( layout()->count() > 2 )
@@ -132,7 +132,7 @@ void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged(
       // remove the current renderer widget
       layout()->takeAt( 2 );
     }
-    layout()->addWidget( mEmbeddedRendererWidget.data() );
+    layout()->addWidget( mEmbeddedRendererWidget.get() );
   }
 }
 

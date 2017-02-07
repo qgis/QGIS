@@ -380,7 +380,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QString mUsageInfo;
     QString mCurrentDefinition;
 
-    QScopedPointer<QgsDataDefinedAssistant> mAssistant;
+    std::unique_ptr<QgsDataDefinedAssistant> mAssistant;
 
     QIcon mIconDataDefine;
     QIcon mIconDataDefineOn;

@@ -151,8 +151,8 @@ Qt::ItemFlags QgsSymbolLegendNode::flags() const
 
 QSize QgsSymbolLegendNode::minimumIconSize() const
 {
-  QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
-  return minimumIconSize( context.data() );
+  std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
+  return minimumIconSize( context.get() );
 }
 
 QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext* context ) const
@@ -225,11 +225,11 @@ QgsRenderContext * QgsSymbolLegendNode::createTemporaryRenderContext() const
   bool validData = !qgsDoubleNear( mupp, 0.0 ) && dpi != 0 && !qgsDoubleNear( scale, 0.0 );
 
   // setup temporary render context
-  QScopedPointer<QgsRenderContext> context( new QgsRenderContext );
+  std::unique_ptr<QgsRenderContext> context( new QgsRenderContext );
   context->setScaleFactor( dpi / 25.4 );
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
-  return validData ? context.take() : nullptr;
+  return validData ? context.release() : nullptr;
 }
 
 void QgsSymbolLegendNode::checkAll( bool state )
@@ -265,8 +265,8 @@ QVariant QgsSymbolLegendNode::data( int role ) const
       QPixmap pix;
       if ( mItem.symbol() )
       {
-        QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
-        pix = QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), mIconSize, 0, context.data() );
+        std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
+        pix = QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), mIconSize, 0, context.get() );
       }
       else
       {
@@ -603,9 +603,9 @@ QImage QgsWmsLegendNode::getLegendGraphic() const
     mFetcher.reset( prov->getLegendGraphicFetcher( ms ) );
     if ( mFetcher )
     {
-      connect( mFetcher.data(), SIGNAL( finish( const QImage& ) ), this, SLOT( getLegendGraphicFinished( const QImage& ) ) );
-      connect( mFetcher.data(), SIGNAL( error( const QString& ) ), this, SLOT( getLegendGraphicErrored( const QString& ) ) );
-      connect( mFetcher.data(), SIGNAL( progress( qint64, qint64 ) ), this, SLOT( getLegendGraphicProgress( qint64, qint64 ) ) );
+      connect( mFetcher.get(), SIGNAL( finish( const QImage& ) ), this, SLOT( getLegendGraphicFinished( const QImage& ) ) );
+      connect( mFetcher.get(), SIGNAL( error( const QString& ) ), this, SLOT( getLegendGraphicErrored( const QString& ) ) );
+      connect( mFetcher.get(), SIGNAL( progress( qint64, qint64 ) ), this, SLOT( getLegendGraphicProgress( qint64, qint64 ) ) );
       mFetcher->start();
     } // else QgsDebugMsg("XXX No legend supported?");
 

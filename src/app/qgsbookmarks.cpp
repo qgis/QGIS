@@ -101,7 +101,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   mProjectModel = new QgsProjectBookmarksTableModel();
   mModel.reset( new QgsMergedBookmarksTableModel( *mQgisModel, *mProjectModel, lstBookmarks ) );
 
-  lstBookmarks->setModel( mModel.data() );
+  lstBookmarks->setModel( mModel.get() );
 
   QSettings settings;
   lstBookmarks->header()->restoreState( settings.value( QStringLiteral( "/Windows/Bookmarks/headerstate" ) ).toByteArray() );

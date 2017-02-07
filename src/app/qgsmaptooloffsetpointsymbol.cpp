@@ -77,7 +77,7 @@ void QgsMapToolOffsetPointSymbol::canvasPressOnFeature( QgsMapMouseEvent *e, con
 {
   Q_UNUSED( e );
   mClickedFeature = feature;
-  createPreviewItem( mMarkerSymbol.data() );
+  createPreviewItem( mMarkerSymbol.get() );
   mOffsetItem->setPointLocation( snappedPoint );
   updateOffsetPreviewItem( mClickedPoint, mClickedPoint );
   mOffsetting = true;
@@ -97,7 +97,7 @@ bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbol* mar
       continue;
 
     ok = true;
-    if ( mMarkerSymbol.isNull() )
+    if ( !mMarkerSymbol )
     {
       double symbolRotation = markerSymbol->angle();
       if ( layer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertyAngle ) )

@@ -65,7 +65,7 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
 
     QWidget* mWidget;
     QgsLabelingGui* mLabelGui;
-    QScopedPointer< QgsAbstractVectorLayerLabeling > mOldSettings;
+    std::unique_ptr< QgsAbstractVectorLayerLabeling > mOldSettings;
     QgsPalLayerSettings mOldPalSettings;
 };
 

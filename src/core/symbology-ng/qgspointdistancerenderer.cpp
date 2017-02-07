@@ -161,7 +161,7 @@ void QgsPointDistanceRenderer::setEmbeddedRenderer( QgsFeatureRenderer* r )
 
 const QgsFeatureRenderer*QgsPointDistanceRenderer::embeddedRenderer() const
 {
-  return mRenderer.data();
+  return mRenderer.get();
 }
 
 void QgsPointDistanceRenderer::setLegendSymbolItem( const QString& key, QgsSymbol* symbol )

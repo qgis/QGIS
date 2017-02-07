@@ -46,13 +46,13 @@ QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canva
 
 void QgsLabelingWidget::resetSettings()
 {
-  if ( mOldSettings.data() )
+  if ( mOldSettings )
   {
     if ( mOldSettings->type() == QLatin1String( "simple" ) )
     {
       mOldPalSettings.writeToLayer( mLayer );
     }
-    mLayer->setLabeling( mOldSettings.take() );
+    mLayer->setLabeling( mOldSettings.release() );
   }
   setLayer( mLayer );
 }

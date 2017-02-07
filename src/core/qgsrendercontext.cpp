@@ -209,7 +209,7 @@ void QgsRenderContext::setFeatureFilterProvider( const QgsFeatureFilterProvider*
 
 const QgsFeatureFilterProvider* QgsRenderContext::featureFilterProvider() const
 {
-  return mFeatureFilterProvider.data();
+  return mFeatureFilterProvider.get();
 }
 
 double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale ) const

@@ -65,7 +65,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     static QgsSingleSymbolRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer );
 
   protected:
-    QScopedPointer<QgsSymbol> mSymbol;
+    std::unique_ptr<QgsSymbol> mSymbol;
 
 };
 

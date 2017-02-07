@@ -20,6 +20,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsdistancearea.h"
 #include "qgis_gui.h"
+#include <memory>
 
 class QgsFilterLineEdit;
 class QToolButton;
@@ -152,7 +153,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
     QgsCodeEditorSQL* mCodeEditor;
     QToolButton* mButton;
     QString mExpressionDialogTitle;
-    QScopedPointer<QgsDistanceArea> mDa;
+    std::unique_ptr<QgsDistanceArea> mDa;
     QgsExpressionContext mExpressionContext;
     const QgsExpressionContextGenerator* mExpressionContextGenerator;
     QgsVectorLayer* mLayer;

@@ -396,7 +396,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     QgsRectangle mGetLegendGraphicExtent;
 
-    QScopedPointer<QgsImageFetcher> mLegendGraphicFetcher;
+    std::unique_ptr<QgsImageFetcher> mLegendGraphicFetcher;
 
     /**
      * Visibility status of the given active sublayer

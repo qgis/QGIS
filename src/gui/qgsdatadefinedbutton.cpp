@@ -395,7 +395,7 @@ void QgsDataDefinedButton::aboutToShowMenu()
     mDefineMenu->addAction( mActionPasteExpr );
   }
 
-  if ( mAssistant.data() )
+  if ( mAssistant )
   {
     mDefineMenu->addSeparator();
     mDefineMenu->addAction( mActionAssistant );
@@ -488,7 +488,7 @@ void QgsDataDefinedButton::showDescriptionDialog()
 
 void QgsDataDefinedButton::showAssistant()
 {
-  if ( !mAssistant.data() )
+  if ( !mAssistant )
     return;
 
   if ( mAssistant->exec() == QDialog::Accepted )
@@ -700,12 +700,12 @@ void QgsDataDefinedButton::setAssistant( const QString& title, QgsDataDefinedAss
 {
   mActionAssistant->setText( title.isEmpty() ? tr( "Assistant..." ) : title );
   mAssistant.reset( assistant );
-  mAssistant.data()->setParent( this, Qt::Dialog );
+  mAssistant->setParent( this, Qt::Dialog );
 }
 
 QgsDataDefinedAssistant *QgsDataDefinedButton::assistant()
 {
-  return mAssistant.data();
+  return mAssistant.get();
 }
 
 void QgsDataDefinedButton::checkCheckedWidgets( bool check )

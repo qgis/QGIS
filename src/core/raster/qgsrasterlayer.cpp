@@ -926,7 +926,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
     if ( myBand != -1 )
     {
       Qgis::DataType myType = static_cast< Qgis::DataType >( mDataProvider->dataType( myBand ) );
-      QScopedPointer<QgsContrastEnhancement> myEnhancement( new QgsContrastEnhancement( static_cast< Qgis::DataType >( myType ) ) );
+      std::unique_ptr<QgsContrastEnhancement> myEnhancement( new QgsContrastEnhancement( static_cast< Qgis::DataType >( myType ) ) );
       myEnhancement->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
 
       double min;
@@ -950,7 +950,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
       {
         myEnhancement->setMinimumValue( min );
         myEnhancement->setMaximumValue( max );
-        myEnhancements.append( myEnhancement.take() );
+        myEnhancements.append( myEnhancement.release() );
       }
     }
     else

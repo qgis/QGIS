@@ -18,7 +18,7 @@
 #define QGSBOOKMARKS_H
 
 #include <QSqlTableModel>
-#include <QScopedPointer>
+#include <memory>
 
 #include "ui_qgsbookmarksbase.h"
 #include "qgsdockwidget.h"
@@ -121,7 +121,7 @@ class APP_EXPORT QgsBookmarks : public QgsDockWidget, private Ui::QgsBookmarksBa
   private:
     QSqlTableModel* mQgisModel;
     QgsProjectBookmarksTableModel* mProjectModel;
-    QScopedPointer<QgsMergedBookmarksTableModel> mModel;
+    std::unique_ptr<QgsMergedBookmarksTableModel> mModel;
 
     void saveWindowLocation();
     void restorePosition();

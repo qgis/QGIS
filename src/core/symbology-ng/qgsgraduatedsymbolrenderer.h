@@ -66,7 +66,7 @@ class CORE_EXPORT QgsRendererRange
 
   protected:
     double mLowerValue, mUpperValue;
-    QScopedPointer<QgsSymbol> mSymbol;
+    std::unique_ptr<QgsSymbol> mSymbol;
     QString mLabel;
     bool mRender;
 
@@ -333,11 +333,11 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QString mAttrName;
     QgsRangeList mRanges;
     Mode mMode;
-    QScopedPointer<QgsSymbol> mSourceSymbol;
-    QScopedPointer<QgsColorRamp> mSourceColorRamp;
+    std::unique_ptr<QgsSymbol> mSourceSymbol;
+    std::unique_ptr<QgsColorRamp> mSourceColorRamp;
     QgsRendererRangeLabelFormat mLabelFormat;
 
-    QScopedPointer<QgsExpression> mExpression;
+    std::unique_ptr<QgsExpression> mExpression;
     GraduatedMethod mGraduatedMethod;
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum;

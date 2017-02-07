@@ -108,7 +108,7 @@ void QgsVariableEditorWidget::setContext( QgsExpressionContext* context )
 void QgsVariableEditorWidget::reloadContext()
 {
   mTreeWidget->resetTree();
-  mTreeWidget->setContext( mContext.data() );
+  mTreeWidget->setContext( mContext.get() );
   mTreeWidget->refreshTree();
 }
 

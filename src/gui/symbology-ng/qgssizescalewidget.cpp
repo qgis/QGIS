@@ -184,7 +184,7 @@ QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsS
 
 QgsProperty QgsSizeScaleWidget::property() const
 {
-  QScopedPointer<QgsScaleExpression> exp( createExpression() );
+  std::unique_ptr<QgsScaleExpression> exp( createExpression() );
   return QgsProperty::fromExpression( exp->expression() );
 }
 
@@ -210,7 +210,7 @@ void QgsSizeScaleWidget::updatePreview()
   if ( !mSymbol || !mLayer )
     return;
 
-  QScopedPointer<QgsScaleExpression> expr( createExpression() );
+  std::unique_ptr<QgsScaleExpression> expr( createExpression() );
 
   if ( expr->type() == QgsScaleExpression::Exponential )
     exponentSpinBox->show();
@@ -224,29 +224,29 @@ void QgsSizeScaleWidget::updatePreview()
   int widthMax = 0;
   for ( int i = 0; i < breaks.length(); i++ )
   {
-    QScopedPointer< QgsSymbolLegendNode > node;
+    std::unique_ptr< QgsSymbolLegendNode > node;
     if ( dynamic_cast<const QgsMarkerSymbol*>( mSymbol ) )
     {
-      QScopedPointer< QgsMarkerSymbol > symbol( static_cast<QgsMarkerSymbol*>( mSymbol->clone() ) );
+      std::unique_ptr< QgsMarkerSymbol > symbol( static_cast<QgsMarkerSymbol*>( mSymbol->clone() ) );
       symbol->setDataDefinedSize( QgsProperty() );
       symbol->setDataDefinedAngle( QgsProperty() ); // to avoid symbol not being drawn
       symbol->setSize( expr->size( breaks[i] ) );
-      node.reset( new QgsSymbolLegendNode( mLayerTreeLayer, QgsLegendSymbolItem( symbol.data(), QString::number( i ), QString() ) ) );
+      node.reset( new QgsSymbolLegendNode( mLayerTreeLayer, QgsLegendSymbolItem( symbol.get(), QString::number( i ), QString() ) ) );
     }
     else if ( dynamic_cast<const QgsLineSymbol*>( mSymbol ) )
     {
-      QScopedPointer< QgsLineSymbol > symbol( static_cast<QgsLineSymbol*>( mSymbol->clone() ) );
+      std::unique_ptr< QgsLineSymbol > symbol( static_cast<QgsLineSymbol*>( mSymbol->clone() ) );
       symbol->setDataDefinedWidth( QgsProperty() );
       symbol->setWidth( expr->size( breaks[i] ) );
-      node.reset( new QgsSymbolLegendNode( mLayerTreeLayer, QgsLegendSymbolItem( symbol.data(), QString::number( i ), QString() ) ) );
+      node.reset( new QgsSymbolLegendNode( mLayerTreeLayer, QgsLegendSymbolItem( symbol.get(), QString::number( i ), QString() ) ) );
 
     }
 
     const QSize sz( node->minimumIconSize() );
     node->setIconSize( sz );
-    QScopedPointer< QStandardItem > item( new QStandardItem( node->data( Qt::DecorationRole ).value<QPixmap>(), QString::number( breaks[i] ) ) );
+    std::unique_ptr< QStandardItem > item( new QStandardItem( node->data( Qt::DecorationRole ).value<QPixmap>(), QString::number( breaks[i] ) ) );
     widthMax = qMax( sz.width(), widthMax );
-    mPreviewList.appendRow( item.take() );
+    mPreviewList.appendRow( item.release() );
   }
 
   // center icon and align text left by giving icons the same width

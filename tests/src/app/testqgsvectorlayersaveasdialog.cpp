@@ -71,13 +71,13 @@ void TestQgsVectorLayerSaveAsDialog::cleanupTestCase()
 void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
 {
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "none?field=code:int&field=regular:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "none?field=code:int&field=regular:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
 
   // Set a widget
   tempLayer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ValueRelation" ), QVariantMap() ) );
 
-  QgsVectorLayerSaveAsDialog d( tempLayer.data() );
+  QgsVectorLayerSaveAsDialog d( tempLayer.get() );
 
   QPushButton* mDeselectAllAttributes = d.findChild<QPushButton*>( QStringLiteral( "mDeselectAllAttributes" ) );
   QTest::mouseClick( mDeselectAllAttributes, Qt::LeftButton );

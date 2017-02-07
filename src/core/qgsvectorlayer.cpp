@@ -3077,12 +3077,12 @@ QVariant QgsVectorLayer::defaultValue( int index, const QgsFeature& feature, Qgs
     return mDataProvider->defaultValue( index );
 
   QgsExpressionContext* evalContext = context;
-  QScopedPointer< QgsExpressionContext > tempContext;
+  std::unique_ptr< QgsExpressionContext > tempContext;
   if ( !evalContext )
   {
     // no context passed, so we create a default one
     tempContext.reset( new QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( this ) ) );
-    evalContext = tempContext.data();
+    evalContext = tempContext.get();
   }
 
   if ( feature.isValid() )
@@ -3559,7 +3559,7 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
 {
   QList<QVariant> values;
 
-  QScopedPointer<QgsExpression> expression;
+  std::unique_ptr<QgsExpression> expression;
   QgsExpressionContext context;
 
   int attrNum = mFields.lookupField( fieldOrExpression );
@@ -3579,7 +3579,7 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
 
   QgsFeature f;
   QSet<QString> lst;
-  if ( expression.isNull() )
+  if ( !expression )
     lst.insert( fieldOrExpression );
   else
     lst = expression->referencedColumns();
@@ -4272,7 +4272,7 @@ QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 
 int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )
 {
-  QScopedPointer<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4291,7 +4291,7 @@ int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, 
 
 QString QgsVectorLayer::getStyleFromDatabase( const QString& styleId, QString &msgError )
 {
-  QScopedPointer<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4310,7 +4310,7 @@ QString QgsVectorLayer::getStyleFromDatabase( const QString& styleId, QString &m
 
 bool QgsVectorLayer::deleteStyleFromDatabase( const QString& styleId, QString &msgError )
 {
-  QScopedPointer<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4331,7 +4331,7 @@ void QgsVectorLayer::saveStyleToDatabase( const QString& name, const QString& de
 {
 
   QString sldStyle, qmlStyle;
-  QScopedPointer<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4376,7 +4376,7 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFl
   QgsDataSourceUri dsUri( theURI );
   if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDBSupported() )
   {
-    QScopedPointer<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+    std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
     if ( myLib )
     {
       loadStyle_t* loadStyleExternalMethod = reinterpret_cast< loadStyle_t * >( cast_to_fptr( myLib->resolve( "loadStyle" ) ) );

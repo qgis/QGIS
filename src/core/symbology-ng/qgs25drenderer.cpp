@@ -116,7 +116,7 @@ QDomElement Qgs25DRenderer::save( QDomDocument& doc )
 
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "25dRenderer" ) );
 
-  QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "symbol" ), mSymbol.data(), doc );
+  QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "symbol" ), mSymbol.get(), doc );
 
   rendererElem.appendChild( symbolElem );
 
@@ -162,14 +162,14 @@ QgsSymbol*Qgs25DRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContex
 {
   Q_UNUSED( feature )
   Q_UNUSED( context )
-  return mSymbol.data();
+  return mSymbol.get();
 }
 
 QgsSymbolList Qgs25DRenderer::symbols( QgsRenderContext& context )
 {
   Q_UNUSED( context );
   QgsSymbolList lst;
-  lst.append( mSymbol.data() );
+  lst.append( mSymbol.get() );
   return lst;
 }
 

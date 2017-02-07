@@ -245,7 +245,7 @@ bool QgsColorRampTransformer::writeXml( QDomElement &transformerElem, QDomDocume
 
   if ( mGradientRamp )
   {
-    QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( "[source]", mGradientRamp.data(), doc );
+    QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( "[source]", mGradientRamp.get(), doc );
     transformerElem.appendChild( colorRampElem );
   }
   transformerElem.setAttribute( "nullColor", QgsSymbolLayerUtils::encodeColor( mNullColor ) );
@@ -317,7 +317,7 @@ QColor QgsColorRampTransformer::color( double value ) const
 
 QgsColorRamp *QgsColorRampTransformer::colorRamp() const
 {
-  return mGradientRamp.data();
+  return mGradientRamp.get();
 }
 
 void QgsColorRampTransformer::setColorRamp( QgsColorRamp* ramp )

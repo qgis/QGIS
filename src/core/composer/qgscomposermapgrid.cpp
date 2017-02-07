@@ -1467,7 +1467,7 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
   {
     expressionContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_number" ), value, true ) );
     expressionContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), coord == QgsComposerMapGrid::Longitude ? "x" : "y", true ) );
-    if ( !mGridAnnotationExpression.data() )
+    if ( !mGridAnnotationExpression )
     {
       mGridAnnotationExpression.reset( new QgsExpression( mGridAnnotationExpressionString ) );
       mGridAnnotationExpression->prepare( &expressionContext );

@@ -429,7 +429,7 @@ QgsDiagramRenderer::QgsDiagramRenderer( const QgsDiagramRenderer& other )
     : mDiagram( other.mDiagram ? other.mDiagram->clone() : nullptr )
     , mShowAttributeLegend( other.mShowAttributeLegend )
     , mShowSizeLegend( other.mShowSizeLegend )
-    , mSizeLegendSymbol( other.mSizeLegendSymbol.data() ? other.mSizeLegendSymbol->clone() : nullptr )
+    , mSizeLegendSymbol( other.mSizeLegendSymbol ? other.mSizeLegendSymbol->clone() : nullptr )
 {
 }
 
@@ -438,7 +438,7 @@ QgsDiagramRenderer &QgsDiagramRenderer::operator=( const QgsDiagramRenderer & ot
   mDiagram = other.mDiagram ? other.mDiagram->clone() : nullptr;
   mShowAttributeLegend = other.mShowAttributeLegend;
   mShowSizeLegend = other.mShowSizeLegend;
-  mSizeLegendSymbol.reset( other.mSizeLegendSymbol.data() ? other.mSizeLegendSymbol->clone() : nullptr );
+  mSizeLegendSymbol.reset( other.mSizeLegendSymbol ? other.mSizeLegendSymbol->clone() : nullptr );
   return *this;
 }
 
@@ -573,7 +573,7 @@ void QgsDiagramRenderer::_writeXml( QDomElement& rendererElem, QDomDocument& doc
   }
   rendererElem.setAttribute( QStringLiteral( "attributeLegend" ), mShowAttributeLegend );
   rendererElem.setAttribute( QStringLiteral( "sizeLegend" ), mShowSizeLegend );
-  QDomElement sizeLegendSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "sizeSymbol" ), mSizeLegendSymbol.data(), doc );
+  QDomElement sizeLegendSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "sizeSymbol" ), mSizeLegendSymbol.get(), doc );
   rendererElem.appendChild( sizeLegendSymbolElem );
 }
 
@@ -765,13 +765,13 @@ QList< QgsLayerTreeModelLegendNode* > QgsLinearlyInterpolatedDiagramRenderer::le
   if ( mShowAttributeLegend )
     nodes = mSettings.legendItems( nodeLayer );
 
-  if ( mShowSizeLegend && mDiagram && mSizeLegendSymbol.data() )
+  if ( mShowSizeLegend && mDiagram && mSizeLegendSymbol )
   {
     // add size legend
     Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue, 4 ) )
     {
       double size = mDiagram->legendSize( v, mSettings, mInterpolationSettings );
-      QgsLegendSymbolItem si( mSizeLegendSymbol.data(), QString::number( v ), QString() );
+      QgsLegendSymbolItem si( mSizeLegendSymbol.get(), QString::number( v ), QString() );
       QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( si.symbol() );
       s->setSize( size );
       s->setSizeUnit( mSettings.sizeType );

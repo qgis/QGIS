@@ -144,7 +144,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
   private:
 
     //! Embedded renderer
-    QScopedPointer<QgsFeatureRenderer> mSubRenderer;
+    std::unique_ptr<QgsFeatureRenderer> mSubRenderer;
 
     //! Structure where the reversed geometry is built during renderFeature
     struct CombinedFeature

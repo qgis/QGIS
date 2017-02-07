@@ -24,6 +24,7 @@ originally part of the larger QgsRasterLayer class
 #include "qgis_core.h"
 #include <QColor>
 #include <QVector>
+#include <memory>
 
 #include "qgscolorramp.h"
 #include "qgsrasterinterface.h"
@@ -169,7 +170,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
   protected:
 
     //! Source color ramp
-    QScopedPointer<QgsColorRamp> mSourceColorRamp;
+    std::unique_ptr<QgsColorRamp> mSourceColorRamp;
 
   private:
 

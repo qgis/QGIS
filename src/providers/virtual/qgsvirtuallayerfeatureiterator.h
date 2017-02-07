@@ -20,6 +20,7 @@ email                : hugo dot mercier at oslandia dot com
 
 #include <qgsvirtuallayerprovider.h>
 #include <qgsfeatureiterator.h>
+#include <memory>
 
 class QgsVirtualLayerFeatureSource : public QgsAbstractFeatureSource
 {
@@ -47,7 +48,7 @@ class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSour
 
     virtual bool fetchFeature( QgsFeature& feature ) override;
 
-    QScopedPointer<Sqlite::Query> mQuery;
+    std::unique_ptr<Sqlite::Query> mQuery;
 
     QgsFeatureId mFid;
 

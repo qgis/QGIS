@@ -1554,7 +1554,7 @@ QString QgsFilledMarkerSymbolLayer::layerType() const
 
 void QgsFilledMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  if ( mFill.data() )
+  if ( mFill.get() )
   {
     mFill->startRender( context.renderContext(), context.fields() );
   }
@@ -1564,7 +1564,7 @@ void QgsFilledMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
 void QgsFilledMarkerSymbolLayer::stopRender( QgsSymbolRenderContext& context )
 {
-  if ( mFill.data() )
+  if ( mFill.get() )
   {
     mFill->stopRender( context.renderContext() );
   }
@@ -1585,7 +1585,7 @@ QgsStringMap QgsFilledMarkerSymbolLayer::properties() const
   map[QStringLiteral( "horizontal_anchor_point" )] = QString::number( mHorizontalAnchorPoint );
   map[QStringLiteral( "vertical_anchor_point" )] = QString::number( mVerticalAnchorPoint );
 
-  if ( mFill.data() )
+  if ( mFill )
   {
     map[QStringLiteral( "color" )] = QgsSymbolLayerUtils::encodeColor( mFill->color() );
   }
@@ -1603,7 +1603,7 @@ QgsFilledMarkerSymbolLayer *QgsFilledMarkerSymbolLayer::clone() const
 
 QgsSymbol* QgsFilledMarkerSymbolLayer::subSymbol()
 {
-  return mFill.data();
+  return mFill.get();
 }
 
 bool QgsFilledMarkerSymbolLayer::setSubSymbol( QgsSymbol *symbol )
@@ -1622,9 +1622,9 @@ bool QgsFilledMarkerSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 
 double QgsFilledMarkerSymbolLayer::estimateMaxBleed( const QgsRenderContext& context ) const
 {
-  if ( mFill.data() )
+  if ( mFill )
   {
-    return QgsSymbolLayerUtils::estimateMaxSymbolBleed( mFill.data(), context );
+    return QgsSymbolLayerUtils::estimateMaxSymbolBleed( mFill.get(), context );
   }
   return 0;
 }
@@ -1632,7 +1632,7 @@ double QgsFilledMarkerSymbolLayer::estimateMaxBleed( const QgsRenderContext& con
 QSet<QString> QgsFilledMarkerSymbolLayer::usedAttributes( const QgsRenderContext& context ) const
 {
   QSet<QString> attr = QgsSimpleMarkerSymbolLayerBase::usedAttributes( context );
-  if ( mFill.data() )
+  if ( mFill )
     attr.unite( mFill->usedAttributes( context ) );
   return attr;
 }
@@ -1640,13 +1640,13 @@ QSet<QString> QgsFilledMarkerSymbolLayer::usedAttributes( const QgsRenderContext
 void QgsFilledMarkerSymbolLayer::setColor( const QColor& c )
 {
   mColor = c;
-  if ( mFill.data() )
+  if ( mFill )
     mFill->setColor( c );
 }
 
 QColor QgsFilledMarkerSymbolLayer::color() const
 {
-  return mFill.data() ?  mFill->color() : mColor;
+  return mFill ?  mFill->color() : mColor;
 }
 
 void QgsFilledMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path )

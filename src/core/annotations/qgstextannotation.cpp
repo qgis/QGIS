@@ -28,7 +28,7 @@ QgsTextAnnotation::QgsTextAnnotation( QObject* parent )
 
 const QTextDocument* QgsTextAnnotation::document() const
 {
-  return mDocument.data();
+  return mDocument.get();
 }
 
 void QgsTextAnnotation::setDocument( const QTextDocument* doc )

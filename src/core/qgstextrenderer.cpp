@@ -1841,11 +1841,11 @@ void QgsTextRenderer::drawBuffer( QgsRenderContext& context, const QgsTextRender
 double QgsTextRenderer::textWidth( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList &textLines, QFontMetricsF* fm )
 {
   //calculate max width of text lines
-  QScopedPointer< QFontMetricsF > newFm;
+  std::unique_ptr< QFontMetricsF > newFm;
   if ( !fm )
   {
     newFm.reset( new QFontMetricsF( format.scaledFont( context ) ) );
-    fm = newFm.data();
+    fm = newFm.get();
   }
 
   double maxWidth = 0;
@@ -1859,11 +1859,11 @@ double QgsTextRenderer::textWidth( const QgsRenderContext& context, const QgsTex
 double QgsTextRenderer::textHeight( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines, DrawMode mode, QFontMetricsF* fm )
 {
   //calculate max width of text lines
-  QScopedPointer< QFontMetricsF > newFm;
+  std::unique_ptr< QFontMetricsF > newFm;
   if ( !fm )
   {
     newFm.reset( new QFontMetricsF( format.scaledFont( context ) ) );
-    fm = newFm.data();
+    fm = newFm.get();
   }
 
   double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline

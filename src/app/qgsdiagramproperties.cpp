@@ -251,7 +251,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     mCheckBoxAttributeLegend->setChecked( dr->attributeLegend() );
     mCheckBoxSizeLegend->setChecked( dr->sizeLegend() );
     mSizeLegendSymbol.reset( dr->sizeLegendSymbol() ? dr->sizeLegendSymbol()->clone() : QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSizeLegendSymbol.data(), mButtonSizeLegendSymbol->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSizeLegendSymbol.get(), mButtonSizeLegendSymbol->iconSize() );
     mButtonSizeLegendSymbol->setIcon( icon );
 
     //assume single category or linearly interpolated diagram renderer for now
@@ -943,7 +943,7 @@ void QgsDiagramProperties::on_mButtonSizeLegendSymbol_clicked()
   if ( d.exec() == QDialog::Accepted )
   {
     mSizeLegendSymbol.reset( newSymbol );
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSizeLegendSymbol.data(), mButtonSizeLegendSymbol->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSizeLegendSymbol.get(), mButtonSizeLegendSymbol->iconSize() );
     mButtonSizeLegendSymbol->setIcon( icon );
   }
   else

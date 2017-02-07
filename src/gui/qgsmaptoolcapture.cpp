@@ -635,7 +635,7 @@ void QgsMapToolCapture::validateGeometry()
     delete mGeomErrorMarkers.takeFirst();
   }
 
-  QScopedPointer<QgsGeometry> g;
+  std::unique_ptr<QgsGeometry> g;
 
   switch ( mCaptureMode )
   {
@@ -659,10 +659,10 @@ void QgsMapToolCapture::validateGeometry()
       break;
   }
 
-  if ( !g.data() )
+  if ( !g )
     return;
 
-  mValidator = new QgsGeometryValidator( g.data() );
+  mValidator = new QgsGeometryValidator( g.get() );
   connect( mValidator, SIGNAL( errorFound( QgsGeometry::Error ) ), this, SLOT( addError( QgsGeometry::Error ) ) );
   connect( mValidator, SIGNAL( finished() ), this, SLOT( validationFinished() ) );
   mValidator->start();

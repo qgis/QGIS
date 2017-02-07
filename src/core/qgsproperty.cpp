@@ -681,11 +681,11 @@ bool QgsProperty::readXml( const QDomElement &propertyElem, const QDomDocument &
   {
     QDomElement transformerElem = transformerNodeList.at( 0 ).toElement();
     QgsPropertyTransformer::Type type = static_cast< QgsPropertyTransformer::Type >( transformerElem.attribute( "t", "0" ).toInt() );
-    QScopedPointer< QgsPropertyTransformer > transformer( QgsPropertyTransformer::create( type ) );
+    std::unique_ptr< QgsPropertyTransformer > transformer( QgsPropertyTransformer::create( type ) );
     if ( transformer )
     {
       if ( transformer->readXml( transformerElem, doc ) )
-        d->transformer = transformer.take();
+        d->transformer = transformer.release();
     }
   }
 

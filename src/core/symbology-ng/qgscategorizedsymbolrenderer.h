@@ -61,7 +61,7 @@ class CORE_EXPORT QgsRendererCategory
 
   protected:
     QVariant mValue;
-    QScopedPointer<QgsSymbol> mSymbol;
+    std::unique_ptr<QgsSymbol> mSymbol;
     QString mLabel;
     bool mRender;
 
@@ -184,9 +184,9 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
   protected:
     QString mAttrName;
     QgsCategoryList mCategories;
-    QScopedPointer<QgsSymbol> mSourceSymbol;
-    QScopedPointer<QgsColorRamp> mSourceColorRamp;
-    QScopedPointer<QgsExpression> mExpression;
+    std::unique_ptr<QgsSymbol> mSourceSymbol;
+    std::unique_ptr<QgsColorRamp> mSourceColorRamp;
+    std::unique_ptr<QgsExpression> mExpression;
 
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum;

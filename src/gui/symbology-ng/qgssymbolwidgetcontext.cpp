@@ -65,7 +65,7 @@ void QgsSymbolWidgetContext::setExpressionContext( QgsExpressionContext* context
 
 QgsExpressionContext* QgsSymbolWidgetContext::expressionContext() const
 {
-  return mExpressionContext.data();
+  return mExpressionContext.get();
 }
 
 void QgsSymbolWidgetContext::setAdditionalExpressionContextScopes( const QList<QgsExpressionContextScope>& scopes )
