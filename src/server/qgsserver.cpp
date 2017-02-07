@@ -46,7 +46,6 @@
 #include <QImage>
 #include <QSettings>
 #include <QDateTime>
-#include <QScopedPointer>
 
 // TODO: remove, it's only needed by a single debug message
 #include <fcgi_stdio.h>

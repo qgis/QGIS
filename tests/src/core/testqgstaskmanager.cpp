@@ -20,7 +20,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include <QObject>
-#include <QSharedPointer>
 #include "qgstest.h"
 
 class TestTask : public QgsTask

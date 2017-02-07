@@ -20,7 +20,6 @@
 #include <QMap>
 #include <QPointer>
 #include <QToolButton>
-#include <QScopedPointer>
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsproperty.h"
 #include "qgis_gui.h"

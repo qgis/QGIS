@@ -122,7 +122,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
   private:
     //! Mutable data shared between provider and feature sources
-    QSharedPointer<QgsWFSSharedData> mShared;
+    std::shared_ptr<QgsWFSSharedData> mShared;
 
     friend class QgsWFSFeatureSource;
 

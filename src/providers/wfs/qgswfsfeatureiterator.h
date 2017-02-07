@@ -22,6 +22,7 @@
 #include "qgsgml.h"
 #include "qgsspatialindex.h"
 
+#include <memory>
 #include <QProgressDialog>
 #include <QPushButton>
 
@@ -217,7 +218,7 @@ class QgsWFSFeatureIterator : public QObject,
     //! Copies feature attributes / geometry from srcFeature to dstFeature
     void copyFeature( const QgsFeature& srcFeature, QgsFeature& dstFeature );
 
-    QSharedPointer<QgsWFSSharedData> mShared;  //!< Mutable data shared between provider and feature sources
+    std::shared_ptr<QgsWFSSharedData> mShared;  //!< Mutable data shared between provider and feature sources
 
     //! Subset of attributes (relatives to mShared->mFields) to fetch. Only valid if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
     QgsAttributeList mSubSetAttributes;
@@ -256,7 +257,7 @@ class QgsWFSFeatureSource : public QgsAbstractFeatureSource
 
   protected:
 
-    QSharedPointer<QgsWFSSharedData> mShared;  //!< Mutable data shared between provider and feature sources
+    std::shared_ptr<QgsWFSSharedData> mShared;  //!< Mutable data shared between provider and feature sources
 
     friend class QgsWFSFeatureIterator;
 };

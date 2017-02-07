@@ -20,7 +20,6 @@
 #include "qgsrenderer.h"
 #include "qgssymbol.h"
 #include "qgsexpression.h"
-#include <QScopedPointer>
 
 /** \ingroup core
  * \class QgsSingleSymbolRenderer

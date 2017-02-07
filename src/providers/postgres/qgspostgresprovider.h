@@ -23,7 +23,7 @@
 #include "qgsvectorlayerimport.h"
 #include "qgspostgresconn.h"
 #include "qgsfields.h"
-#include <QSharedPointer>
+#include <memory>
 
 class QgsFeature;
 class QgsField;
@@ -337,7 +337,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString mDetectedSrid;            //! Spatial reference detected in the database
     QString mRequestedSrid;           //! Spatial reference requested in the uri
 
-    QSharedPointer<QgsPostgresSharedData> mShared;  //!< Mutable data shared between provider and feature sources
+    std::shared_ptr<QgsPostgresSharedData> mShared;  //!< Mutable data shared between provider and feature sources
 
     bool getGeometryDetails();
 
@@ -419,14 +419,14 @@ class QgsPostgresUtils
                                 QgsPostgresConn* conn,
                                 QgsPostgresPrimaryKeyType pkType,
                                 const QList<int>& pkAttrs,
-                                QSharedPointer<QgsPostgresSharedData> sharedData );
+                                std::shared_ptr<QgsPostgresSharedData> sharedData );
 
     static QString whereClause( const QgsFeatureIds& featureIds,
                                 const QgsFields& fields,
                                 QgsPostgresConn* conn,
                                 QgsPostgresPrimaryKeyType pkType,
                                 const QList<int>& pkAttrs,
-                                QSharedPointer<QgsPostgresSharedData> sharedData );
+                                std::shared_ptr<QgsPostgresSharedData> sharedData );
 
     static QString andWhereClauses( const QString& c1, const QString& c2 );
 

@@ -97,7 +97,7 @@ void QgsFieldExpressionWidget::setLeftHandButtonStyle( bool isLeft )
 
 void QgsFieldExpressionWidget::setGeomCalculator( const QgsDistanceArea &da )
 {
-  mDa = QSharedPointer<const QgsDistanceArea>( new QgsDistanceArea( da ) );
+  mDa = std::shared_ptr<const QgsDistanceArea>( new QgsDistanceArea( da ) );
 }
 
 QString QgsFieldExpressionWidget::currentText() const
@@ -211,7 +211,7 @@ void QgsFieldExpressionWidget::editExpression()
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
 
   QgsExpressionBuilderDialog dlg( vl, currentExpression, this, QStringLiteral( "generic" ), context );
-  if ( !mDa.isNull() )
+  if ( mDa )
   {
     dlg.setGeomCalculator( *mDa );
   }

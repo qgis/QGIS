@@ -71,7 +71,7 @@ void TestQgsDataDefined::cleanup()
 
 void TestQgsDataDefined::create()
 {
-  QSharedPointer<QgsDataDefined> dd( new QgsDataDefined( true, true, QStringLiteral( "exp" ), QStringLiteral( "field" ) ) );
+  std::shared_ptr<QgsDataDefined> dd( new QgsDataDefined( true, true, QStringLiteral( "exp" ), QStringLiteral( "field" ) ) );
   QVERIFY( dd->isActive() );
   QVERIFY( dd->useExpression() );
   QCOMPARE( dd->expressionString(), QString( "exp" ) );

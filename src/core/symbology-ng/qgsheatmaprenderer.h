@@ -21,7 +21,6 @@
 #include "qgssymbol.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
-#include <QScopedPointer>
 
 class QgsColorRamp;
 

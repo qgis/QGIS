@@ -59,7 +59,7 @@ class TestQgsRuleBasedRenderer: public QObject
       xml2domElement( QStringLiteral( "rulebasedrenderer_invalid.xml" ), doc );
       QDomElement elem = doc.documentElement();
 
-      QSharedPointer<QgsRuleBasedRenderer> r( static_cast<QgsRuleBasedRenderer*>( QgsRuleBasedRenderer::create( elem ) ) );
+      std::shared_ptr<QgsRuleBasedRenderer> r( static_cast<QgsRuleBasedRenderer*>( QgsRuleBasedRenderer::create( elem ) ) );
       QVERIFY( !r );
     }
 

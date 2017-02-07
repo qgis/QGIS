@@ -21,7 +21,6 @@
 #include <QMap>
 #include <QPointer>
 #include <QToolButton>
-#include <QScopedPointer>
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
 #include "qgsexpressioncontext.h"

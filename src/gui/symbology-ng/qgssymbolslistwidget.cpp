@@ -41,7 +41,6 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QPushButton>
-#include <QScopedPointer>
 
 
 QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer )

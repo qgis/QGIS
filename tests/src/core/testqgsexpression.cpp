@@ -16,7 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QtConcurrentMap>
-#include <QSharedPointer>
 
 #include <qgsapplication.h>
 //header for class being tested

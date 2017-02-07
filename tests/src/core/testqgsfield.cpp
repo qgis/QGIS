@@ -17,7 +17,6 @@
 #include <QString>
 #include <QStringList>
 #include <QSettings>
-#include <QSharedPointer>
 #include <memory>
 
 #include "qgsfield.h"

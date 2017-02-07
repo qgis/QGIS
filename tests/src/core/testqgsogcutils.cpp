@@ -15,7 +15,7 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-#include <QSharedPointer>
+#include <memory>
 
 //qgis includes...
 #include <qgsgeometry.h>
@@ -374,8 +374,8 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter()
   QVERIFY( doc.setContent( xmlText, true ) );
   QDomElement rootElem = doc.documentElement();
 
-  QSharedPointer<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem ) );
-  QVERIFY( expr );
+  std::shared_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem ) );
+  QVERIFY( expr.get() );
 
   qDebug( "OGC XML  : %s", xmlText.toAscii().data() );
   qDebug( "EXPR-DUMP: %s", expr->expression().toAscii().data() );

@@ -17,7 +17,6 @@
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
-#include <QSharedPointer>
 #include <QCoreApplication>
 #include <QWidget>
 
@@ -162,13 +161,13 @@ void TestQgsRubberband::testVisibility()
   QCOMPARE( mRubberband->isVisible(), false );
 
   // Check visibility after setting to empty geometry
-  QSharedPointer<QgsGeometry> emptyGeom( new QgsGeometry );
-  mRubberband->setToGeometry( *emptyGeom.data(), mPolygonLayer );
+  std::shared_ptr<QgsGeometry> emptyGeom( new QgsGeometry );
+  mRubberband->setToGeometry( *emptyGeom.get(), mPolygonLayer );
   QCOMPARE( mRubberband->isVisible(), false );
 
   // Check that visibility changes
   mRubberband->setVisible( true );
-  mRubberband->setToGeometry( *emptyGeom.data(), mPolygonLayer );
+  mRubberband->setToGeometry( *emptyGeom.get(), mPolygonLayer );
   QCOMPARE( mRubberband->isVisible(), false );
 
   // Check visibility after setting to valid geometry

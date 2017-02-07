@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QScopedPointer>
 
 #include "qgsmaphittest.h"
 

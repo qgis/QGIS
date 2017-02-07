@@ -18,7 +18,6 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingprovider.h"
 #include <QObject>
-#include <QSharedPointer>
 #include "qgstest.h"
 
 //dummy provider for testing

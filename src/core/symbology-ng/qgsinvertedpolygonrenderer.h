@@ -21,7 +21,6 @@
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include <QScopedPointer>
 
 /** \ingroup core
  * QgsInvertedPolygonRenderer is a polygon-only feature renderer used to

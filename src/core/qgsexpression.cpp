@@ -4325,11 +4325,11 @@ bool QgsExpression::needsGeometry() const
 
 void QgsExpression::initGeomCalculator()
 {
-  if ( d->mCalc.data() )
+  if ( d->mCalc.get() )
     return;
 
   // Use planimetric as default
-  d->mCalc = QSharedPointer<QgsDistanceArea>( new QgsDistanceArea() );
+  d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
   d->mCalc->setEllipsoidalMode( false );
 }
 
@@ -4349,9 +4349,9 @@ void QgsExpression::setGeomCalculator( const QgsDistanceArea *calc )
 {
   detach();
   if ( calc )
-    d->mCalc = QSharedPointer<QgsDistanceArea>( new QgsDistanceArea( *calc ) );
+    d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea( *calc ) );
   else
-    d->mCalc.clear();
+    d->mCalc.reset();
 }
 
 bool QgsExpression::prepare( const QgsExpressionContext *context )
@@ -4424,7 +4424,7 @@ QString QgsExpression::dump() const
 
 QgsDistanceArea* QgsExpression::geomCalculator()
 {
-  return d->mCalc.data();
+  return d->mCalc.get();
 }
 
 QgsUnitTypes::DistanceUnit QgsExpression::distanceUnits() const

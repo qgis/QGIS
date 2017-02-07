@@ -19,7 +19,6 @@
 #include "qgssymbol.h"
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
-#include <QScopedPointer>
 #include <QRegExp>
 
 /** \ingroup core

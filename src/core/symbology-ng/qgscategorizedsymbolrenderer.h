@@ -22,7 +22,6 @@
 #include "qgscolorramp.h"
 
 #include <QHash>
-#include <QScopedPointer>
 
 class QgsVectorLayer;
 
