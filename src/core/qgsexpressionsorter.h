@@ -130,7 +130,7 @@ class QgsExpressionSorter
       }
 
       // Equal
-      return true;
+      return false;
     }
 
     void sortFeatures( QList<QgsFeature>& features, QgsExpressionContext* expressionContext )
