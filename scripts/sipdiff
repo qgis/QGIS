@@ -29,6 +29,12 @@ for file in $*; do
   # Remove public keyword from inherited classes
   ${GP}sed -i 's/\(class.*:\) public\(.*\)/\1\2/g' $tempfile
 
+  # Remove Q_OBJECT,ENUMS,PROPERTY
+  ${GP}sed -i -r '/^\s*Q_(OBJECT|ENUMS|PROPERTY).*?$/d' $tempfile
+
+  # Remove function definition in header
+  ${GP}sed -i -r 's/^(\s*)?(inline )?(void|bool|int|double|Q\w+)(\s+[^ ]*?\(.*?\)( const)?)\s*\{.*?\}$/\1\3\4;/g' $tempfile
+
   vimdiff $tempfile python/$d/$f.sip
 
   rm $tempfile
