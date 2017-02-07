@@ -828,9 +828,9 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer* vlayer, Mode mod
     if ( !ok || values.isEmpty() )
       return;
 
-    std::sort( values.begin(), values.end() ); // vmora: is wondering if O( n log(n) ) is really necessary here, min and max are O( n )
-    minimum = values.first();
-    maximum = values.last();
+    auto result = std::minmax_element( values.begin(), values.end() );
+    minimum = *result.first;
+    maximum = *result.second;
     valuesLoaded = true;
   }
   else
