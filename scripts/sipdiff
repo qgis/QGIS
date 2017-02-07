@@ -1,4 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# GNU prefix command for mac os support (gsed, gsplit)
+GP=
+if [[ "$OSTYPE" =~ darwin* ]]; then
+  GP=g
+fi
 
 for file in $*; do
   d=${file#*/}
@@ -6,22 +12,22 @@ for file in $*; do
   f=${file##*/}
   f=${f%.*}
 
-  tempfile=$(mktemp ${f}XXXX --suffix=.h)
+  tempfile=$(${GP}mktemp ${f}XXXX --suffix=.h)
 
   # Remove comments
-  sed 's/a/aA/g;s/__/aB/g;s/#/aC/g' "src/$d/$f.h" | cpp -E $arg - | sed 's/aC/#/g;s/aB/__/g;s/aA/a/g' > $tempfile
+  ${GP}sed 's/a/aA/g;s/__/aB/g;s/#/aC/g' "src/$d/$f.h" | cpp -E $arg - | ${GP}sed 's/aC/#/g;s/aB/__/g;s/aA/a/g' > $tempfile
 
   # Remove override keyword
-  sed -i 's/ override;/;/g' $tempfile
+  ${GP}sed -i 's/ override;/;/g' $tempfile
 
   # Remove preprocessor directives
-  sed -i '/^#/d' $tempfile
+  ${GP}sed -i '/^#/d' $tempfile
 
   # Remove CORE_EXPORT etc
-  sed -i 's/ [A-Z]*_EXPORT//g' $tempfile
+  ${GP}sed -i 's/ [A-Z]*_EXPORT//g' $tempfile
 
   # Remove public keyword from inherited classes
-  sed -i 's/\(class.*:\) public\(.*\)/\1\2/g' $tempfile
+  ${GP}sed -i 's/\(class.*:\) public\(.*\)/\1\2/g' $tempfile
 
   vimdiff $tempfile python/$d/$f.sip
 
