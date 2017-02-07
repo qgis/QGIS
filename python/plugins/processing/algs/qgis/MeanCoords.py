@@ -113,7 +113,7 @@ class MeanCoords(GeoAlgorithm):
                     weight = 1.00
 
             if weight < 0:
-                raise GeoAlgorithmExecutionException(self.tr('Negative weight value found. Please fix you data and try again.'))
+                raise GeoAlgorithmExecutionException(self.tr('Negative weight value found. Please fix your data and try again.'))
 
             if clazz not in means:
                 means[clazz] = (0, 0, 0)
