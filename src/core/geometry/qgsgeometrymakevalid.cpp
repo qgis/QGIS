@@ -897,6 +897,7 @@ QgsAbstractGeometry* _qgis_lwgeom_make_valid( const QgsAbstractGeometry& lwgeom_
 
   // try to convert to GEOS, if impossible, clean that up first
   // otherwise (adding only duplicates of existing points)
+  GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
   GEOSGeometry* geosgeom = QgsGeos::asGeos( &lwgeom_in );
   if ( ! geosgeom )
@@ -927,11 +928,12 @@ QgsAbstractGeometry* _qgis_lwgeom_make_valid( const QgsAbstractGeometry& lwgeom_
   }
 
   GEOSGeometry* geosout = LWGEOM_GEOS_makeValid( geosgeom, errorMessage );
-  GEOSGeom_destroy( geosgeom );
+  GEOSGeom_destroy_r( handle, geosgeom );
   if ( !geosout )
     return NULL;
 
   QgsAbstractGeometry* lwgeom_out = QgsGeos::fromGeos( geosout );
+  GEOSGeom_destroy_r( handle, geosout );
   if ( !lwgeom_out )
     return NULL;
 
