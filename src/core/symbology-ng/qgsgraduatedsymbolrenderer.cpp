@@ -144,7 +144,7 @@ QString QgsRendererRange::dump() const
 
 void QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props, bool firstRange ) const
 {
-  if ( mSymbol || props.value( QStringLiteral( "attribute" ), QLatin1String( "" ) ).isEmpty() )
+  if ( !mSymbol || props.value( QStringLiteral( "attribute" ), QLatin1String( "" ) ).isEmpty() )
     return;
 
   QString attrName = props[ QStringLiteral( "attribute" )];
@@ -1251,6 +1251,9 @@ QgsColorRamp* QgsGraduatedSymbolRenderer::sourceColorRamp()
 
 void QgsGraduatedSymbolRenderer::setSourceColorRamp( QgsColorRamp* ramp )
 {
+  if ( ramp == mSourceColorRamp.get() )
+    return;
+
   mSourceColorRamp.reset( ramp );
 }
 
