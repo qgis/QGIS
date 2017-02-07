@@ -4238,6 +4238,11 @@ QgsExpression::QgsExpression( const QgsExpression& other )
 
 QgsExpression& QgsExpression::operator=( const QgsExpression & other )
 {
+  if ( !d->ref.deref() )
+  {
+    delete d;
+  }
+
   d = other.d;
   d->ref.ref();
   return *this;
