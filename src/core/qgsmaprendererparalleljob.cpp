@@ -22,6 +22,7 @@
 #include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerlistutils.h"
 
 #include <QtConcurrentMap>
 
@@ -62,7 +63,9 @@ void QgsMapRendererParallelJob::start()
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
+  bool canUseLabelCache = prepareLabelCache();
   mLayerJobs = prepareJobs( nullptr, mLabelingEngineV2 );
+  mLabelJob = prepareLabelingJob( nullptr, mLabelingEngineV2, canUseLabelCache );
 
   QgsDebugMsg( QString( "QThreadPool max thread count is %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
 
@@ -81,7 +84,7 @@ void QgsMapRendererParallelJob::cancel()
 
   QgsDebugMsg( QString( "PARALLEL cancel at status %1" ).arg( mStatus ) );
 
-  mLabelingRenderContext.setRenderingStopped( true );
+  mLabelJob.context.setRenderingStopped( true );
   for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
   {
     it->context.setRenderingStopped( true );
@@ -151,6 +154,11 @@ bool QgsMapRendererParallelJob::isActive() const
   return mStatus != Idle;
 }
 
+bool QgsMapRendererParallelJob::usedCachedLabels() const
+{
+  return mLabelJob.cached;
+}
+
 QgsLabelingResults* QgsMapRendererParallelJob::takeLabelingResults()
 {
   if ( mLabelingEngineV2 )
@@ -162,7 +170,7 @@ QgsLabelingResults* QgsMapRendererParallelJob::takeLabelingResults()
 QImage QgsMapRendererParallelJob::renderedImage()
 {
   if ( mStatus == RenderingLayers )
-    return composeImage( mSettings, mLayerJobs );
+    return composeImage( mSettings, mLayerJobs, mLabelJob );
   else
     return mFinalImage; // when rendering labels or idle
 }
@@ -172,15 +180,11 @@ void QgsMapRendererParallelJob::renderLayersFinished()
   Q_ASSERT( mStatus == RenderingLayers );
 
   // compose final image
-  mFinalImage = composeImage( mSettings, mLayerJobs );
-
-  logRenderingTime( mLayerJobs );
-
-  cleanupJobs( mLayerJobs );
+  mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
 
   QgsDebugMsg( "PARALLEL layers finished" );
 
-  if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) && !mLabelingRenderContext.renderingStopped() )
+  if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) && !mLabelJob.context.renderingStopped() )
   {
     mStatus = RenderingLabels;
 
@@ -200,6 +204,12 @@ void QgsMapRendererParallelJob::renderLayersFinished()
 void QgsMapRendererParallelJob::renderingFinished()
 {
   QgsDebugMsg( "PARALLEL finished" );
+
+  logRenderingTime( mLayerJobs, mLabelJob );
+
+  cleanupJobs( mLayerJobs );
+
+  cleanupLabelJob( mLabelJob );
 
   mStatus = Idle;
 
@@ -249,27 +259,53 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
 
 void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob* self )
 {
-  QPainter painter( &self->mFinalImage );
+  LabelRenderJob& job = self->mLabelJob;
 
-  try
+  if ( !job.cached )
   {
-    drawLabeling( self->mSettings, self->mLabelingRenderContext, self->mLabelingEngineV2, &painter );
-  }
-  catch ( QgsException & e )
-  {
-    Q_UNUSED( e );
-    QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
-  }
-  catch ( std::exception & e )
-  {
-    Q_UNUSED( e );
-    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
-  }
-  catch ( ... )
-  {
-    QgsDebugMsg( "Caught unhandled unknown exception" );
-  }
+    QTime labelTime;
+    labelTime.start();
 
-  painter.end();
+    QPainter painter;
+    if ( job.img )
+    {
+      job.img->fill( 0 );
+      painter.begin( job.img );
+    }
+    else
+    {
+      painter.begin( &self->mFinalImage );
+    }
+
+    // draw the labels!
+    try
+    {
+      drawLabeling( self->mSettings, job.context, self->mLabelingEngineV2, &painter );
+    }
+    catch ( QgsException & e )
+    {
+      Q_UNUSED( e );
+      QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
+    }
+    catch ( std::exception & e )
+    {
+      Q_UNUSED( e );
+      QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
+    }
+    catch ( ... )
+    {
+      QgsDebugMsg( "Caught unhandled unknown exception" );
+    }
+
+    painter.end();
+
+    job.renderingTime = labelTime.elapsed();
+    job.complete = true;
+    job.participatingLayers = _qgis_listRawToQPointer( self->mLabelingEngineV2->participatingLayers() );
+    if ( job.img )
+    {
+      self->mFinalImage = composeImage( self->mSettings, self->mLayerJobs, self->mLabelJob );
+    }
+  }
 }
 

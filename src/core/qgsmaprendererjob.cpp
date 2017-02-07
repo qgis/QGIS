@@ -33,8 +33,13 @@
 #include "qgsvectorlayerrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgscsexception.h"
+#include "qgslabelingengine.h"
+#include "qgsmaplayerlistutils.h"
+#include "qgsvectorlayerlabeling.h"
 
 ///@cond PRIVATE
+
+const QString QgsMapRendererJob::LABEL_CACHE_ID = QStringLiteral( "_labels_" );
 
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings& settings )
     : mSettings( settings )
@@ -64,6 +69,39 @@ void QgsMapRendererJob::setCache( QgsMapRendererCache* cache )
 const QgsMapSettings& QgsMapRendererJob::mapSettings() const
 {
   return mSettings;
+}
+
+bool QgsMapRendererJob::prepareLabelCache() const
+{
+  bool canCache = mCache;
+
+  // calculate which layers will be labeled
+  QSet< QgsMapLayer* > labeledLayers;
+  Q_FOREACH ( const QgsMapLayer* ml, mSettings.layers() )
+  {
+    QgsVectorLayer* vl = const_cast< QgsVectorLayer* >( qobject_cast<const QgsVectorLayer *>( ml ) );
+    if ( vl && QgsPalLabeling::staticWillUseLayer( vl ) )
+      labeledLayers << vl;
+    if ( vl && vl->labeling() && vl->labeling()->requiresAdvancedEffects( vl ) )
+    {
+      canCache = false;
+      break;
+    }
+  }
+
+  if ( mCache && mCache->hasCacheImage( LABEL_CACHE_ID ) )
+  {
+    // we may need to clear label cache and re-register labeled features - check for that here
+
+    // can we reuse the cached label solution?
+    bool canUseCache = canCache && mCache->dependentLayers( LABEL_CACHE_ID ).toSet() == labeledLayers;
+    if ( !canUseCache )
+    {
+      // no - participating layers have changed
+      mCache->clearCacheImage( LABEL_CACHE_ID );
+    }
+  }
+  return canCache;
 }
 
 
@@ -179,12 +217,14 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
   QListIterator<QgsMapLayer*> li( mSettings.layers() );
   li.toBack();
 
+  bool cacheValid = false;
   if ( mCache )
   {
-    bool cacheValid = mCache->init( mSettings.visibleExtent(), mSettings.scale() );
+    cacheValid = mCache->init( mSettings.visibleExtent(), mSettings.scale() );
     QgsDebugMsg( QString( "CACHE VALID: %1" ).arg( cacheValid ) );
-    Q_UNUSED( cacheValid );
   }
+
+  bool requiresLabelRedraw = !( mCache && mCache->hasCacheImage( LABEL_CACHE_ID ) );
 
   mGeometryCaches.clear();
 
@@ -229,8 +269,12 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
     if ( mCache && ml->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
-      if ( vl->isEditable() || ( labelingEngine2 && QgsPalLabeling::staticWillUseLayer( vl ) ) )
+      bool requiresLabeling = false;
+      requiresLabeling = ( labelingEngine2 && QgsPalLabeling::staticWillUseLayer( vl ) ) && requiresLabelRedraw;
+      if ( vl->isEditable() || requiresLabeling )
+      {
         mCache->clearCacheImage( ml->id() );
+      }
     }
 
     layerJobs.append( LayerRenderJob() );
@@ -312,6 +356,47 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
   return layerJobs;
 }
 
+LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter* painter, QgsLabelingEngine* labelingEngine2, bool canUseLabelCache )
+{
+  LabelRenderJob job;
+  job.context = QgsRenderContext::fromMapSettings( mSettings );
+  job.context.setPainter( painter );
+  job.context.setLabelingEngine( labelingEngine2 );
+  job.context.setExtent( mSettings.visibleExtent() );
+
+  // if we can use the cache, let's do it and avoid rendering!
+  bool hasCache = canUseLabelCache && mCache && mCache->hasCacheImage( LABEL_CACHE_ID );
+  if ( hasCache )
+  {
+    job.cached = true;
+    job.complete = true;
+    job.img = new QImage( mCache->cacheImage( LABEL_CACHE_ID ) );
+    job.context.setPainter( nullptr );
+  }
+  else
+  {
+    if ( canUseLabelCache && ( mCache || !painter ) )
+    {
+      // Flattened image for drawing labels
+      QImage * mypFlattenedImage = nullptr;
+      mypFlattenedImage = new QImage( mSettings.outputSize().width(),
+                                      mSettings.outputSize().height(),
+                                      mSettings.outputImageFormat() );
+      if ( mypFlattenedImage->isNull() )
+      {
+        mErrors.append( Error( QStringLiteral( "labels" ), tr( "Insufficient memory for label image %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
+        delete mypFlattenedImage;
+      }
+      else
+      {
+        job.img = mypFlattenedImage;
+      }
+    }
+  }
+
+  return job;
+}
+
 
 void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
 {
@@ -343,13 +428,29 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
     }
   }
 
+
   jobs.clear();
 
   updateLayerGeometryCaches();
 }
 
+void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob& job )
+{
+  if ( job.img )
+  {
+    if ( mCache && !job.cached && !job.context.renderingStopped() )
+    {
+      QgsDebugMsg( "caching label result image" );
+      mCache->setCacheImage( LABEL_CACHE_ID, *job.img, _qgis_listQPointerToRaw( job.participatingLayers ) );
+    }
 
-QImage QgsMapRendererJob::composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs )
+    delete job.img;
+    job.img = nullptr;
+  }
+}
+
+
+QImage QgsMapRendererJob::composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs, const LabelRenderJob& labelJob )
 {
   QImage image( settings.outputSize(), settings.outputImageFormat() );
   image.fill( settings.backgroundColor().rgba() );
@@ -368,11 +469,21 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings& settings, const La
     painter.drawImage( 0, 0, *job.img );
   }
 
+  // IMPORTANT - don't draw labelJob img before the label job is complete,
+  // as the image is uninitialized and full of garbage before the label job
+  // commences
+  if ( labelJob.img && labelJob.complete )
+  {
+    painter.setCompositionMode( QPainter::CompositionMode_SourceOver );
+    painter.setOpacity( 1.0 );
+    painter.drawImage( 0, 0, *labelJob.img );
+  }
+
   painter.end();
   return image;
 }
 
-void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs& jobs )
+void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs& jobs, const LabelRenderJob& labelJob )
 {
   QSettings settings;
   if ( !settings.value( QStringLiteral( "/Map/logCanvasRefreshEvent" ), false ).toBool() )
@@ -381,6 +492,8 @@ void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs& jobs )
   QMultiMap<int, QString> elapsed;
   Q_FOREACH ( const LayerRenderJob& job, jobs )
     elapsed.insert( job.renderingTime, job.layer ? job.layer->id() : QString() );
+
+  elapsed.insert( labelJob.renderingTime, tr( "Labeling" ) );
 
   QList<int> tt( elapsed.uniqueKeys() );
   std::sort( tt.begin(), tt.end(), std::greater<int>() );

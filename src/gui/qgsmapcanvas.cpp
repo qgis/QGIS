@@ -546,8 +546,11 @@ void QgsMapCanvas::rendererJobFinished()
   {
     // take labeling results before emitting renderComplete, so labeling map tools
     // connected to signal work with correct results
-    delete mLabelingResults;
-    mLabelingResults = mJob->takeLabelingResults();
+    if ( !mJob->usedCachedLabels() )
+    {
+      delete mLabelingResults;
+      mLabelingResults = mJob->takeLabelingResults();
+    }
 
     QImage img = mJob->renderedImage();
 

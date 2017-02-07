@@ -60,3 +60,8 @@ QgsPalLayerSettings QgsVectorLayerSimpleLabeling::settings( QgsVectorLayer* laye
   else
     return QgsPalLayerSettings();
 }
+
+bool QgsVectorLayerSimpleLabeling::requiresAdvancedEffects( QgsVectorLayer* layer ) const
+{
+  return settings( layer ).format().containsAdvancedEffects();
+}

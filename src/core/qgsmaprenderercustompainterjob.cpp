@@ -23,6 +23,7 @@
 #include "qgspallabeling.h"
 #include "qgsvectorlayer.h"
 #include "qgsrenderer.h"
+#include "qgsmaplayerlistutils.h"
 
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter )
     : QgsMapRendererJob( settings )
@@ -82,7 +83,9 @@ void QgsMapRendererCustomPainterJob::start()
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
+  bool canUseLabelCache = prepareLabelCache();
   mLayerJobs = prepareJobs( mPainter, mLabelingEngineV2 );
+  mLabelJob = prepareLabelingJob( mPainter, mLabelingEngineV2, canUseLabelCache );
 
   QgsDebugMsg( "Rendering prepared in (seconds): " + QString( "%1" ).arg( prepareTime.elapsed() / 1000.0 ) );
 
@@ -112,7 +115,7 @@ void QgsMapRendererCustomPainterJob::cancel()
   QgsDebugMsg( "QPAINTER canceling" );
   disconnect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererCustomPainterJob::futureFinished );
 
-  mLabelingRenderContext.setRenderingStopped( true );
+  mLabelJob.context.setRenderingStopped( true );
   for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
   {
     it->context.setRenderingStopped( true );
@@ -154,6 +157,10 @@ bool QgsMapRendererCustomPainterJob::isActive() const
   return mActive;
 }
 
+bool QgsMapRendererCustomPainterJob::usedCachedLabels() const
+{
+  return mLabelJob.cached;
+}
 
 QgsLabelingResults* QgsMapRendererCustomPainterJob::takeLabelingResults()
 {
@@ -187,10 +194,11 @@ void QgsMapRendererCustomPainterJob::futureFinished()
   mRenderingTime = mRenderingStart.elapsed();
   QgsDebugMsg( "QPAINTER futureFinished" );
 
-  logRenderingTime( mLayerJobs );
+  logRenderingTime( mLayerJobs, mLabelJob );
 
   // final cleanup
   cleanupJobs( mLayerJobs );
+  cleanupLabelJob( mLabelJob );
 
   emit finished();
 }
@@ -263,8 +271,38 @@ void QgsMapRendererCustomPainterJob::doRender()
 
   QgsDebugMsg( "Done rendering map layers" );
 
-  if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) && !mLabelingRenderContext.renderingStopped() )
-    drawLabeling( mSettings, mLabelingRenderContext, mLabelingEngineV2, mPainter );
+  if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) && !mLabelJob.context.renderingStopped() )
+  {
+    if ( !mLabelJob.cached )
+    {
+      QTime labelTime;
+      labelTime.start();
+
+      if ( mLabelJob.img )
+      {
+        QPainter painter;
+        mLabelJob.img->fill( 0 );
+        painter.begin( mLabelJob.img );
+        mLabelJob.context.setPainter( &painter );
+        drawLabeling( mSettings, mLabelJob.context, mLabelingEngineV2, &painter );
+        painter.end();
+      }
+      else
+      {
+        drawLabeling( mSettings, mLabelJob.context, mLabelingEngineV2, mPainter );
+      }
+
+      mLabelJob.complete = true;
+      mLabelJob.renderingTime = labelTime.elapsed();
+      mLabelJob.participatingLayers = _qgis_listRawToQPointer( mLabelingEngineV2->participatingLayers() );
+    }
+  }
+  if ( mLabelJob.img && mLabelJob.complete )
+  {
+    mPainter->setCompositionMode( QPainter::CompositionMode_SourceOver );
+    mPainter->setOpacity( 1.0 );
+    mPainter->drawImage( 0, 0, *mLabelJob.img );
+  }
 
   QgsDebugMsg( "Rendering completed in (seconds): " + QString( "%1" ).arg( renderTime.elapsed() / 1000.0 ) );
 }
