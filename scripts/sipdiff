@@ -35,6 +35,9 @@ for file in $*; do
   # Remove function definition in header
   ${GP}sed -i -r 's/^(\s*)?(inline )?(void|bool|int|double|Q\w+)(\s+[^ ]*?\(.*?\)( const)?)\s*\{.*?\}$/\1\3\4;/g' $tempfile
 
+  # Remove nullptr
+  ${GP}sed -i 's/nullptr/0/g' $tempfile
+
   vimdiff $tempfile python/$d/$f.sip
 
   rm $tempfile
