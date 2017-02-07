@@ -81,9 +81,9 @@ bool QgsRendererRange::operator<( const QgsRendererRange &other ) const
 
 void QgsRendererRange::swap( QgsRendererRange & other )
 {
-  qSwap( mLowerValue, other.mLowerValue );
-  qSwap( mUpperValue, other.mUpperValue );
-  qSwap( mSymbol, other.mSymbol );
+  std::swap( mLowerValue, other.mLowerValue );
+  std::swap( mUpperValue, other.mUpperValue );
+  std::swap( mSymbol, other.mSymbol );
   std::swap( mLabel, other.mLabel );
 }
 

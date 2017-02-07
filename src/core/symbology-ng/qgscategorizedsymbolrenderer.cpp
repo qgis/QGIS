@@ -64,9 +64,9 @@ QgsRendererCategory& QgsRendererCategory::operator=( QgsRendererCategory cat )
 
 void QgsRendererCategory::swap( QgsRendererCategory & cat )
 {
-  qSwap( mValue, cat.mValue );
-  qSwap( mSymbol, cat.mSymbol );
-  qSwap( mLabel, cat.mLabel );
+  std::swap( mValue, cat.mValue );
+  std::swap( mSymbol, cat.mSymbol );
+  std::swap( mLabel, cat.mLabel );
 }
 
 QVariant QgsRendererCategory::value() const

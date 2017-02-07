@@ -197,7 +197,7 @@ void HistogramItem::draw( QPainter *painter, const QwtScaleMap &xMap,
       int y1 = yMap.transform( iData.interval( i ).minValue() );
       int y2 = yMap.transform( iData.interval( i ).maxValue() );
       if ( y1 > y2 )
-        qSwap( y1, y2 );
+        std::swap( y1, y2 );
 
       if ( i < ( int )iData.size() - 2 )
       {
@@ -229,7 +229,7 @@ void HistogramItem::draw( QPainter *painter, const QwtScaleMap &xMap,
       int x1 = xMap.transform( iData.interval( i ).minValue() );
       int x2 = xMap.transform( iData.interval( i ).maxValue() );
       if ( x1 > x2 )
-        qSwap( x1, x2 );
+        std::swap( x1, x2 );
 
       if ( i < ( int )iData.size() - 2 )
       {

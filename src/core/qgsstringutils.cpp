@@ -115,8 +115,8 @@ int QgsStringUtils::levenshteinDistance( const QString& string1, const QString& 
   //ensure the inner loop is longer
   if ( length1 > length2 )
   {
-    qSwap( s1, s2 );
-    qSwap( length1, length2 );
+    std::swap( s1, s2 );
+    std::swap( length1, length2 );
   }
 
   //levenshtein algorithm begins here
@@ -198,7 +198,7 @@ QString QgsStringUtils::longestCommonSubstring( const QString& string1, const QS
       }
       s2Char++;
     }
-    qSwap( currentScores, previousScores );
+    std::swap( currentScores, previousScores );
     s1Char++;
     s2Char = s2Start;
   }
