@@ -55,7 +55,7 @@ else
 fi
 
 if ! type pylupdate5 >/dev/null 2>&1; then
-      echo "pylupdate4 not found"
+      echo "pylupdate5 not found"
       exit 1
 fi
 
@@ -105,13 +105,13 @@ fi
 
 echo Updating python translations
 cd python
-pylupdate4 user.py utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
+pylupdate5 user.py utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
 perl ../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
 rm python-i18n.ts
 cd ..
 for i in python/plugins/*/CMakeLists.txt; do
 	cd ${i%/*}
-	pylupdate4 -tr-function trAlgorithm $(find . -name "*.py" -o -name "*.ui") -ts python-i18n.ts
+	pylupdate5 -tr-function trAlgorithm $(find . -name "*.py" -o -name "*.ui") -ts python-i18n.ts
 	perl ../../../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
 	rm python-i18n.ts
 	cd ../../..
