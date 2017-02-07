@@ -21,6 +21,7 @@ class QgsMapRendererCustomPainterJob : QgsMapRendererJob
     virtual void cancel();
     virtual void waitForFinished();
     virtual bool isActive() const;
+    virtual bool usedCachedLabels() const;
     virtual QgsLabelingResults* takeLabelingResults() /Transfer/;
 
     //! @note not available in python bindings
