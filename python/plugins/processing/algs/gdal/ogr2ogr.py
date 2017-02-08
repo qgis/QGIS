@@ -134,7 +134,8 @@ class Ogr2Ogr(GdalAlgorithm):
         arguments = []
         arguments.append('-f')
         arguments.append(outFormat)
-        if len(options) > 0:
+
+        if options is not None and len(options.strip()) > 0:
             arguments.append(options)
 
         arguments.append(output)
