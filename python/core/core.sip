@@ -131,7 +131,6 @@
 %Include qgsrunprocess.sip
 %Include qgsruntimeprofiler.sip
 %Include qgsscalecalculator.sip
-%Include qgsscaleexpression.sip
 %Include qgsscaleutils.sip
 %Include qgssimplifymethod.sip
 %Include qgssnapper.sip

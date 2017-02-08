@@ -274,6 +274,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsProviderCountCalcEvent and QgsProviderExtentCalcEvent. These classes were unused in QGIS core and unmaintained.
 - QgsWebviewWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsEditorWidgetConfig was removed. Use QVariantMap instead.
+- QgsScaleExpression. Use QgsProperty with a QgsSizeScalePropertyTransformer instead.
 - QgsSvgAnnotationItem. Use QgsSvgAnnotation instead.
 - QgsSymbologyV2Conversion was removed. Reading of renderers from pre-1.0 versions is not supported anymore.
 - QgsTextAnnotationItem. Use QgsTextAnnotation instead.

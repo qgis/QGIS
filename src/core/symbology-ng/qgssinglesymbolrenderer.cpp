@@ -308,17 +308,17 @@ QgsLegendSymbolListV2 QgsSingleSymbolRenderer::legendSymbolItemsV2() const
     QgsProperty sizeDD( symbol->dataDefinedSize() );
     if ( sizeDD && sizeDD.isActive() && sizeDD.propertyType() == QgsProperty::ExpressionBasedProperty )
     {
-      QgsScaleExpression scaleExp( sizeDD.asExpression() );
-      if ( scaleExp.type() != QgsScaleExpression::Unknown )
+      if ( QgsSizeScaleTransformer* sizeTransformer = dynamic_cast< QgsSizeScaleTransformer* >( ddSize.transformer() ) )
       {
-        QgsLegendSymbolItem title( nullptr, scaleExp.baseExpression(), QString() );
+        QgsLegendSymbolItem title( nullptr, ddSize.propertyType() == QgsProperty::ExpressionBasedProperty ? ddSize.expressionString()
+                                   : ddSize.field(), QString() );
         lst << title;
-        Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( scaleExp.minValue(), scaleExp.maxValue(), 4 ) )
+        Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( sizeTransformer->minValue(), sizeTransformer->maxValue(), 4 ) )
         {
           QgsLegendSymbolItem si( mSymbol.get(), QString::number( v ), QString() );
           QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( si.symbol() );
           s->setDataDefinedSize( QgsProperty() );
-          s->setSize( scaleExp.size( v ) );
+          s->setSize( sizeTransformer->size( v ) );
           lst << si;
         }
         return lst;

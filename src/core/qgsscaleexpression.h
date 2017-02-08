@@ -43,7 +43,7 @@ class CORE_EXPORT QgsScaleExpression : public QgsExpression
      * to determine whether it's a scale expression
      * @param expression expression string
      */
-    QgsScaleExpression( const QString &expression );
+    Q_DECL_DEPRECATED QgsScaleExpression( const QString &expression );
 
     /** Constructor for QgsScaleExpression which creates an expression from
      * specified parameters
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsScaleExpression : public QgsExpression
      * @param nullSize size in case expression evaluates to NULL
      * @param exponent to use in case of Exponential type
      */
-    QgsScaleExpression( Type type, const QString& baseExpression, double minValue, double maxValue, double minSize, double maxSize, double nullSize = 0, double exponent = 1 );
+    Q_DECL_DEPRECATED QgsScaleExpression( Type type, const QString& baseExpression, double minValue, double maxValue, double minSize, double maxSize, double nullSize = 0, double exponent = 1 );
 
     operator bool() const { return ! mExpression.isEmpty(); }
 
