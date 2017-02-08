@@ -78,6 +78,7 @@ class TestQgsProperty : public QObject
     void staticProperty(); //test for QgsStaticProperty
     void fieldBasedProperty(); //test for QgsFieldBasedProperty
     void expressionBasedProperty(); //test for QgsExpressionBasedProperty
+    void equality();
     void propertyTransformer(); //test for QgsPropertyTransformer
     void propertyTransformerFromExpression(); // text converting expression into QgsPropertyTransformer
     void sizeScaleTransformer(); //test for QgsSizeScaleTransformer
@@ -555,6 +556,41 @@ void TestQgsProperty::expressionBasedProperty()
   p2.setTransformer( new TestTransformer( 10, 20 ) );
   p4 = p2;
   QVERIFY( p4.transformer() );
+}
+
+void TestQgsProperty::equality()
+{
+  QgsProperty dd1;
+  dd1.setActive( true );
+  dd1.setField( QStringLiteral( "field" ) );
+  QgsProperty dd2;
+  dd2.setActive( true );
+  dd2.setField( QStringLiteral( "field" ) );
+  QVERIFY( dd1 == dd2 );
+  QVERIFY( !( dd1 != dd2 ) );
+
+  dd1.setExpressionString( QStringLiteral( "expression" ) );
+  dd2.setExpressionString( QStringLiteral( "expression" ) );
+  QVERIFY( dd1 == dd2 );
+  QVERIFY( !( dd1 != dd2 ) );
+
+  //test that all applicable components contribute to equality
+  dd2.setActive( false );
+  QVERIFY( !( dd1 == dd2 ) );
+  QVERIFY( dd1 != dd2 );
+  dd2.setActive( true );
+  dd2.setExpressionString( QStringLiteral( "a" ) );
+  QVERIFY( !( dd1 == dd2 ) );
+  QVERIFY( dd1 != dd2 );
+  dd2.setField( QStringLiteral( "field" ) );
+  QVERIFY( !( dd1 == dd2 ) );
+  QVERIFY( dd1 != dd2 );
+  dd1.setField( QStringLiteral( "fieldb" ) );
+  QVERIFY( !( dd1 == dd2 ) );
+  QVERIFY( dd1 != dd2 );
+  dd1.setField( QStringLiteral( "field" ) );
+  QVERIFY( dd1 == dd2 );
+  QVERIFY( !( dd1 != dd2 ) );
 }
 
 void TestQgsProperty::propertyTransformer()
