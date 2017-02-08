@@ -4537,6 +4537,7 @@ void QgsExpression::NodeList::append( QgsExpression::NamedNode* node )
   mList.append( node->node );
   mNameList.append( node->name.toLower() );
   mHasNamedNodes = true;
+  delete node;
 }
 
 QgsExpression::NodeList* QgsExpression::NodeList::clone() const
@@ -5362,7 +5363,7 @@ bool QgsExpression::NodeFunction::validateParams( int fnIndex, QgsExpression::No
   const ParameterList& functionParams = Functions()[fnIndex]->parameters();
   if ( functionParams.isEmpty() )
   {
-    error = QStringLiteral( "%1 does not supported named parameters" ).arg( Functions()[fnIndex]->name() );
+    error = QStringLiteral( "%1 does not support named parameters" ).arg( Functions()[fnIndex]->name() );
     return false;
   }
   else
