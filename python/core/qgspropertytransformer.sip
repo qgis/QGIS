@@ -47,6 +47,8 @@ class QgsPropertyTransformer
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const = 0;
     virtual QString toExpression( const QString& baseExpression ) const = 0;
 
+    static QgsPropertyTransformer* fromExpression( const QString& expression, QString& baseExpression /Out/, QString& fieldName /Out/ ) /Factory/;
+
 };
 
 class QgsSizeScaleTransformer : QgsPropertyTransformer
@@ -79,6 +81,8 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
     virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc );
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const;
     virtual QString toExpression( const QString& baseExpression ) const;
+
+    static QgsSizeScaleTransformer* fromExpression( const QString& expression, QString& baseExpression /Out/, QString& fieldName /Out/ ) /Factory/;
 
     double size( double value ) const;
 

@@ -131,6 +131,8 @@ class QgsProperty
 
     const QgsPropertyTransformer* transformer() const;
 
+    bool convertToTransformer();
+
 };
 
 

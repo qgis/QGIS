@@ -704,5 +704,28 @@ const QgsPropertyTransformer* QgsProperty::transformer() const
   return d->transformer;
 }
 
+bool QgsProperty::convertToTransformer()
+{
+  if ( d->type != ExpressionBasedProperty )
+    return false;
+
+  if ( d->transformer )
+    return false; // already a transformer
+
+  QString baseExpression;
+  QString fieldName;
+  std::unique_ptr< QgsPropertyTransformer > transformer( QgsPropertyTransformer::fromExpression( d->expressionString, baseExpression, fieldName ) );
+  if ( !transformer )
+    return false;
+
+  d.detach();
+  d->transformer = transformer.release();
+  if ( !fieldName.isEmpty() )
+    setField( fieldName );
+  else
+    setExpressionString( baseExpression );
+  return true;
+}
+
 
 

@@ -414,6 +414,14 @@ class CORE_EXPORT QgsProperty
      */
     const QgsPropertyTransformer* transformer() const;
 
+    /**
+     * Attempts to convert an existing expression based property to a base expression with
+     * corresponding transformer. Returns true if conversion was successful. Note that
+     * calling this method requires multiple parsing of expressions, so it should only
+     * be called in non-performance critical code.
+     */
+    bool convertToTransformer();
+
   private:
 
     mutable QExplicitlySharedDataPointer<QgsPropertyPrivate> d;
