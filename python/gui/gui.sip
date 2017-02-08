@@ -51,7 +51,6 @@
 %Include qgsconfigureshortcutsdialog.sip
 %Include qgscredentialdialog.sip
 %Include qgscustomdrophandler.sip
-%Include qgsdatadefinedbutton.sip
 %Include qgsdetaileditemdata.sip
 %Include qgsdetaileditemdelegate.sip
 %Include qgsdetaileditemwidget.sip

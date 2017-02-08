@@ -18,7 +18,6 @@
 #define QGSSIZESCALEWIDGET_H
 
 #include "qgslayertreegroup.h"
-#include "qgsdatadefinedbutton.h"
 #include "ui_widget_size_scale.h"
 #include <QStandardItemModel>
 #include <QItemDelegate>
@@ -30,6 +29,45 @@ class QgsLayerTreeLayer;
 class QgsScaleExpression;
 class QgsAbstractProperty;
 class QgsMapCanvas;
+
+/** \ingroup gui
+ * \class QgsDataDefinedAssistant
+ * An assistant (wizard) dialog, accessible from a QgsDataDefinedButton.
+ * Can be used to guide users through creation of an expression for the
+ * data defined button.
+ * @note added in 2.10
+ */
+class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
+{
+    Q_OBJECT
+
+  public:
+    QgsDataDefinedAssistant() : mMapCanvas( nullptr ) {}
+
+    /**
+     * Returns the property which was defined by this assistant.
+     */
+    virtual QgsProperty property() const = 0;
+
+    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @see mapCanvas()
+     * @note added in QGIS 2.12
+     */
+    virtual void setMapCanvas( QgsMapCanvas* canvas ) { mMapCanvas = canvas; }
+
+    /** Returns the map canvas associated with the widget.
+     * @see setMapCanvas
+     * @note added in QGIS 2.12
+     */
+    const QgsMapCanvas* mapCanvas() const { return mMapCanvas; }
+
+  protected:
+
+    QgsMapCanvas* mMapCanvas;
+};
+
 
 /** \ingroup gui
  * \class QgsSizeScaleWidget

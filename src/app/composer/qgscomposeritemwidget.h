@@ -24,7 +24,6 @@
 
 class QgsComposerItem;
 class QgsAtlasComposition;
-class QgsDataDefinedButton;
 
 
 // NOTE - the inheritance here is tricky, as we need to avoid the multiple inheritance
