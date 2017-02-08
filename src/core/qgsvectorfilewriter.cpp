@@ -320,9 +320,13 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   }
 
   if ( action == CreateOrOverwriteFile )
+  {
     QgsDebugMsg( "Created data source" );
+  }
   else
+  {
     QgsDebugMsg( "Opened data source in update mode" );
+  }
 
   // use appropriate codec
   mCodec = QTextCodec::codecForName( fileEncoding.toLocal8Bit().constData() );
