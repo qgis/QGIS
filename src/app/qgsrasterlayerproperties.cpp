@@ -1762,7 +1762,7 @@ void QgsRasterLayerProperties::loadStyle_clicked()
                        this,
                        tr( "Load layer properties from style file" ),
                        lastUsedDir,
-                       tr( "QGIS Layer Properties File" ) + " (*.qlp);;" + tr( "QGIS Layer Style File" ) + " (*.qml)" );
+                       tr( "QGIS Layer Properties File" ) + " (*.qlp);;" + tr( "QGIS 2.x Layer Style File" ) + " (*.qml)" );
   if ( fileName.isEmpty() )
     return;
 

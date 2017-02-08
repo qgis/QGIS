@@ -300,7 +300,7 @@ void QgsMapLayerStyleManagerWidget::loadStyle()
 
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), myLastUsedDir,
                        tr( "QGIS Layer Properties File" ) + " (*.qlp);;" +
-                       tr( "QGIS Layer Style File" ) + " (*.qml);;" +
+                       tr( "QGIS 2.x Layer Style File" ) + " (*.qml);;" +
                        tr( "SLD File" ) + " (*.sld)" );
   if ( myFileName.isNull() )
   {
