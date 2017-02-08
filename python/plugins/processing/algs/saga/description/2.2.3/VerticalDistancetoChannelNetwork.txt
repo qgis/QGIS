@@ -1,8 +1,0 @@
-Vertical Distance to Channel Network
-ta_channels
-ParameterRaster|ELEVATION|Elevation|False
-ParameterRaster|CHANNELS|Channel Network|False
-ParameterNumber|THRESHOLD|Tension Threshold [Percentage of Cell Size]|None|None|1
-ParameterBoolean|NOUNDERGROUND  |Keep Base Level below Surface|True
-OutputRaster|DISTANCE|Vertical Distance to Channel Network
-OutputRaster|BASELEVEL|Channel Network Base Level

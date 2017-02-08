@@ -41,6 +41,9 @@ SAGA_LOG_CONSOLE = 'SAGA_LOG_CONSOLE'
 SAGA_FOLDER = 'SAGA_FOLDER'
 SAGA_IMPORT_EXPORT_OPTIMIZATION = 'SAGA_IMPORT_EXPORT_OPTIMIZATION'
 
+_installedVersion = None
+_installedVersionFound = False
+
 
 def sagaBatchJobFilename():
     if isWindows():
@@ -107,9 +110,6 @@ def createSagaBatchJobFileFromSagaCommands(commands):
                 fout.write('saga_cmd ' + command + '\n')
 
         fout.write('exit')
-
-_installedVersion = None
-_installedVersionFound = False
 
 
 def getInstalledVersion(runSaga=False):

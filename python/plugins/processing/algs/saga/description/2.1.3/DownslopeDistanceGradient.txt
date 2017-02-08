@@ -1,7 +1,0 @@
-Downslope Distance Gradient
-ta_morphometry
-ParameterRaster|DEM|Elevation|False
-ParameterNumber|DISTANCE|Vertical Distance|None|None|10
-ParameterSelection|OUTPUT|Output|[0] distance;[1] gradient (tangens);[2] gradient (degree)
-OutputRaster|GRADIENT|Gradient
-OutputRaster|DIFFERENCE|Gradient Difference
