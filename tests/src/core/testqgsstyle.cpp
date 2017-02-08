@@ -255,9 +255,12 @@ void TestStyle::testFavorites()
   int count = favorites.count();
 
   // add some symbols to favorites
-  mStyle->saveSymbol( "symbolA", QgsMarkerSymbol::createSimple( QgsStringMap() ), true, QStringList() );
-  mStyle->saveSymbol( "symbolB", QgsMarkerSymbol::createSimple( QgsStringMap() ), false, QStringList() );
-  mStyle->saveSymbol( "symbolC", QgsMarkerSymbol::createSimple( QgsStringMap() ), true, QStringList() );
+  std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  mStyle->saveSymbol( "symbolA", sym1.get(), true, QStringList() );
+  mStyle->saveSymbol( "symbolB", sym2.get(), false, QStringList() );
+  mStyle->saveSymbol( "symbolC", sym3.get(), true, QStringList() );
 
   // check for added symbols to favorites
   favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
@@ -307,9 +310,12 @@ void TestStyle::testTags()
   QVERIFY( !tags.contains( "purple" ) );
 
   //add some symbols
-  QVERIFY( mStyle->saveSymbol( "symbol1", QgsMarkerSymbol::createSimple( QgsStringMap() ), false, QStringList() << "red" << "starry" ) );
-  mStyle->addSymbol( QStringLiteral( "blue starry" ), QgsMarkerSymbol::createSimple( QgsStringMap() ), true );
-  mStyle->addSymbol( QStringLiteral( "red circle" ), QgsMarkerSymbol::createSimple( QgsStringMap() ), true );
+  std::unique_ptr< QgsMarkerSymbol> sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol> sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol> sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  QVERIFY( mStyle->saveSymbol( "symbol1", sym1.get() , false, QStringList() << "red" << "starry" ) );
+  mStyle->addSymbol( QStringLiteral( "blue starry" ), sym2.release(), true );
+  mStyle->addSymbol( QStringLiteral( "red circle" ), sym3.release(), true );
 
   //tag them
   QVERIFY( mStyle->tagSymbol( QgsStyle::SymbolEntity, "blue starry", QStringList() << "blue" << "starry" ) );

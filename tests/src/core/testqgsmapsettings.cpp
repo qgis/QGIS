@@ -33,6 +33,7 @@ class TestQgsMapSettings: public QObject
     Q_OBJECT
   private slots:
     void initTestCase();
+    void cleanupTestCase();
     void visibleExtent();
     void mapUnitsPerPixel();
     void visiblePolygon();
@@ -47,6 +48,11 @@ void TestQgsMapSettings::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
+}
+
+void TestQgsMapSettings::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
 }
 
 QString TestQgsMapSettings::toString( const QPolygonF& p, int dec ) const
