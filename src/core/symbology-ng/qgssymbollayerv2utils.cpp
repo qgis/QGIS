@@ -2592,14 +2592,6 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
     return false;
   }
 
-  // check if it is a single string value
-  if ( elem.hasChildNodes() &&
-       elem.firstChild().nodeType() == QDomNode::TextNode )
-  {
-    function = elem.firstChild().nodeValue();
-    return true;
-  }
-
   // parse ogc:Filter
   QgsExpression *expr = QgsOgcUtils::expressionFromOgcFilter( elem );
   if ( !expr )
