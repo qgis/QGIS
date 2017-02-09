@@ -90,10 +90,9 @@ class warp(GdalAlgorithm):
                                           self.tr('Raster extent'),
                                           optional=True))
 
-        if GdalUtils.version() >= 2000000:
-            self.addParameter(ParameterCrs(self.EXT_CRS,
-                                           self.tr('CRS of the raster extent, leave blank for using Destination SRS'),
-                                           optional=True))
+        self.addParameter(ParameterCrs(self.EXT_CRS,
+                                       self.tr('CRS of the raster extent, leave blank for using Destination SRS'),
+                                       optional=True))
 
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options'),
@@ -151,10 +150,9 @@ class warp(GdalAlgorithm):
                 arguments.append(regionCoords[1])
                 arguments.append(regionCoords[3])
 
-                if GdalUtils.version() >= 2000000:
-                    if rastext_crs:
-                        arguments.append('-te_srs')
-                        arguments.append(rastext_crs)
+                if rastext_crs:
+                    arguments.append('-te_srs')
+                    arguments.append(rastext_crs)
 
         if opts:
             arguments.append('-co')
