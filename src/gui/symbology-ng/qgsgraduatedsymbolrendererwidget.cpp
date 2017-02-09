@@ -439,6 +439,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   // setup user interface
   setupUi( this );
+  this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mModel = new QgsGraduatedSymbolRendererModel( this );
 
