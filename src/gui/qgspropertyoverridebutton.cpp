@@ -449,18 +449,14 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction* action )
       mExpressionString = exprString;
       mProperty.setExpressionString( mExpressionString );
       mProperty.setTransformer( nullptr );
-      setActivePrivate( mProperty.isActive() );
+      setActivePrivate( true );
       updateGui();
       emit changed();
     }
   }
   else if ( action == mActionClearExpr )
   {
-    // only deactivate if defined expression is being used
-    if ( mProperty.isActive() && mProperty.propertyType() == QgsProperty::ExpressionBasedProperty )
-    {
-      setActivePrivate( false );
-    }
+    setActivePrivate( false );
     mProperty.setStaticValue( QVariant() );
     mProperty.setTransformer( nullptr );
     mExpressionString.clear();
@@ -528,6 +524,13 @@ void QgsPropertyOverrideButton::showExpressionDialog()
 
 void QgsPropertyOverrideButton::showAssistant()
 {
+  //first step - try to convert any existing expression to a transformer if one doesn't
+  //already exist
+  if ( !mProperty.transformer() )
+  {
+    ( void )mProperty.convertToTransformer();
+  }
+
   QgsPanelWidget* panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {

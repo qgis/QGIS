@@ -82,7 +82,7 @@ void QgsPropertyAssistantWidget::registerExpressionContextGenerator( QgsExpressi
 
 void QgsPropertyAssistantWidget::updateProperty( QgsProperty& property )
 {
-  property.setActive( true );
+  property.setActive( !mExpressionWidget->currentText().isEmpty() );
   if ( mExpressionWidget->isExpression() )
     property.setExpressionString( mExpressionWidget->currentField() );
   else

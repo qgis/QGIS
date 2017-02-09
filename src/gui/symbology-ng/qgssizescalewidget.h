@@ -22,6 +22,7 @@
 #include <QStandardItemModel>
 #include <QItemDelegate>
 #include "qgis_gui.h"
+#include "qgsproperty.h"
 
 class QgsVectorLayer;
 class QgsSymbol;
