@@ -420,7 +420,7 @@ class GrassUtils:
 
         if helpPath is None:
             if isWindows():
-                localPath = os.path.join(Grass7Utils.grassPath(), 'docs/html')
+                localPath = os.path.join(GrassUtils.grassPath(), 'docs/html')
                 if os.path.exists(localPath):
                     helpPath = os.path.abspath(localPath)
             elif isMac():
