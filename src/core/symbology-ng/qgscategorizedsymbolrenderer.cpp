@@ -793,7 +793,7 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRenderer::legendSymbolItemsV2() const
       return QgsFeatureRenderer::legendSymbolItemsV2();
     }
 
-    if ( QgsSizeScaleTransformer* sizeTransformer = dynamic_cast< QgsSizeScaleTransformer* >( ddSize.transformer() ) )
+    if ( const QgsSizeScaleTransformer* sizeTransformer = dynamic_cast< const QgsSizeScaleTransformer* >( ddSize.transformer() ) )
     {
       QgsLegendSymbolItem title( nullptr, ddSize.propertyType() == QgsProperty::ExpressionBasedProperty ? ddSize.expressionString()
                                  : ddSize.field(), QString() );

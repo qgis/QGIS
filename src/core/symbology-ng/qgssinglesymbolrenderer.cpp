@@ -308,10 +308,10 @@ QgsLegendSymbolListV2 QgsSingleSymbolRenderer::legendSymbolItemsV2() const
     QgsProperty sizeDD( symbol->dataDefinedSize() );
     if ( sizeDD && sizeDD.isActive() && sizeDD.propertyType() == QgsProperty::ExpressionBasedProperty )
     {
-      if ( QgsSizeScaleTransformer* sizeTransformer = dynamic_cast< QgsSizeScaleTransformer* >( ddSize.transformer() ) )
+      if ( const QgsSizeScaleTransformer* sizeTransformer = dynamic_cast< const QgsSizeScaleTransformer* >( sizeDD.transformer() ) )
       {
-        QgsLegendSymbolItem title( nullptr, ddSize.propertyType() == QgsProperty::ExpressionBasedProperty ? ddSize.expressionString()
-                                   : ddSize.field(), QString() );
+        QgsLegendSymbolItem title( nullptr, sizeDD.propertyType() == QgsProperty::ExpressionBasedProperty ? sizeDD.expressionString()
+                                   : sizeDD.field(), QString() );
         lst << title;
         Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( sizeTransformer->minValue(), sizeTransformer->maxValue(), 4 ) )
         {

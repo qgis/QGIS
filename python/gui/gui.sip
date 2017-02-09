@@ -240,7 +240,6 @@
 %Include symbology-ng/qgsrendererwidget.sip
 %Include symbology-ng/qgsrulebasedrendererwidget.sip
 %Include symbology-ng/qgssinglesymbolrendererwidget.sip
-%Include symbology-ng/qgssizescalewidget.sip
 %Include symbology-ng/qgssmartgroupeditordialog.sip
 %Include symbology-ng/qgsstyleexportimportdialog.sip
 %Include symbology-ng/qgsstylegroupselectiondialog.sip
