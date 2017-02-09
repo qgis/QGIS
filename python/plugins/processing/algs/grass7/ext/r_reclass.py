@@ -26,6 +26,9 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
+from processing.tools.system import getTempFilename
+
+
 def checkParameterValuesBeforeExecuting(alg):
     """ Verify if we have the right parameters """
     if alg.getParameterValue(u'rules') and alg.getParameterValue(u'txtrules'):
@@ -39,7 +42,7 @@ def processCommand(alg):
     txtRules = alg.getParameterValue(u'txtrules')
     if txtRules:
         # Creates a temporary txt file
-        tempRulesName = alg.getTempFilename()
+        tempRulesName = getTempFilename()
 
         # Inject rules into temporary txt file
         with open(tempRulesName, "w") as tempRules:
