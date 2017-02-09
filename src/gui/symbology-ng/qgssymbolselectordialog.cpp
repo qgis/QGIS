@@ -230,6 +230,7 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyle* s
   mPresentWidget = nullptr;
 
   setupUi( this );
+  this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   // setup icons
   btnAddLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
