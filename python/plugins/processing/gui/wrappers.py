@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    wrappers.py
+    wrappers.py - Standard parameters widget wrappers
     ---------------------
     Date                 : May 2016
     Copyright            : (C) 2016 by Arnaud Morvan, Victor Olaya
@@ -17,8 +17,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import range
 
 
 __author__ = 'Arnaud Morvan'
@@ -101,14 +99,14 @@ class WidgetWrapper(QObject):
 
     widgetValueHasChanged = pyqtSignal(object)
 
-    def __init__(self, param, dialog, row=0, col=0):
+    def __init__(self, param, dialog, row=0, col=0, **kwargs):
         QObject.__init__(self)
         self.param = param
         self.dialog = dialog
         self.row = row
         self.col = col
         self.dialogType = dialogTypes.get(dialog.__class__.__name__, DIALOG_STANDARD)
-        self.widget = self.createWidget()
+        self.widget = self.createWidget(**kwargs)
         if param.default is not None:
             self.setValue(param.default)
 
@@ -123,7 +121,7 @@ class WidgetWrapper(QObject):
             return v
         return combobox.currentData()
 
-    def createWidget(self):
+    def createWidget(self, **kwargs):
         pass
 
     def setValue(self, value):
