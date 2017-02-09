@@ -211,10 +211,10 @@ class BatchPanel(BASE, WIDGET):
                     return
             toSave.append({self.PARAMETERS: algParams, self.OUTPUTS: algOutputs})
 
-        filename, __ = str(QFileDialog.getSaveFileName(self,
-                                                       self.tr('Save batch'),
-                                                       None,
-                                                       self.tr('JSON files (*.json)')))
+        filename, __ = QFileDialog.getSaveFileName(self,
+                                                   self.tr('Save batch'),
+                                                   None,
+                                                   self.tr('JSON files (*.json)'))
         if filename:
             if not filename.endswith('.json'):
                 filename += '.json'
